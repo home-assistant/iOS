@@ -23,7 +23,7 @@ final class HomeViewModel: ObservableObject {
         let count: Int
         let activeCount: Int
         let summaryText: String
-        
+
         var isActive: Bool {
             activeCount > 0
         }
@@ -55,7 +55,7 @@ final class HomeViewModel: ObservableObject {
     var cachedUserName: String = ""
     private var lastUsagePredictionLoadTime: Date?
     private let usagePredictionLoadInterval: TimeInterval = 120 // 2 minutes
-    
+
     var domainSummaries: [DomainSummary] = [] {
         didSet {
             Current.Log.verbose("Domain summaries updated: \(domainSummaries.count) summaries")
@@ -306,42 +306,42 @@ final class HomeViewModel: ObservableObject {
             computeDomainSummaries()
         }
     }
-    
+
     // MARK: - Domain Summaries
-    
+
     private func computeDomainSummaries() {
         // Define domains we want to summarize (starting with light and cover)
         let domainsToSummarize: [(domain: String, displayName: String, icon: String)] = [
             ("light", "Lights", "lightbulb.fill"),
-            ("cover", "Covers", "rectangle.on.rectangle.angled")
+            ("cover", "Covers", "rectangle.on.rectangle.angled"),
         ]
-        
+
         var summaries: [DomainSummary] = []
-        
+
         for domainInfo in domainsToSummarize {
             let domainEntities = entityStates.values.filter { $0.domain == domainInfo.domain }
-            
+
             // Filter out hidden and disabled entities
             let visibleEntities = domainEntities.filter { entity in
                 guard let appEntity = appEntities?.first(where: { $0.entityId == entity.entityId }) else {
                     return false
                 }
-                return !appEntity.isHidden && !appEntity.isDisabled && 
-                       !configuration.hiddenEntityIds.contains(entity.entityId)
+                return !appEntity.isHidden && !appEntity.isDisabled &&
+                    !configuration.hiddenEntityIds.contains(entity.entityId)
             }
-            
+
             guard !visibleEntities.isEmpty else { continue }
-            
+
             let activeCount = visibleEntities.filter { entity in
                 isEntityActive(entity)
             }.count
-            
+
             let summaryText = generateSummaryText(
                 domain: domainInfo.domain,
                 totalCount: visibleEntities.count,
                 activeCount: activeCount
             )
-            
+
             let summary = DomainSummary(
                 id: domainInfo.domain,
                 domain: domainInfo.domain,
@@ -351,13 +351,13 @@ final class HomeViewModel: ObservableObject {
                 activeCount: activeCount,
                 summaryText: summaryText
             )
-            
+
             summaries.append(summary)
         }
-        
+
         domainSummaries = summaries
     }
-    
+
     private func isEntityActive(_ entity: HAEntity) -> Bool {
         // Check if entity is in an "active" state
         switch entity.domain {
@@ -375,7 +375,7 @@ final class HomeViewModel: ObservableObject {
             return entity.state == "on"
         }
     }
-    
+
     private func generateSummaryText(domain: String, totalCount: Int, activeCount: Int) -> String {
         switch domain {
         case "light":

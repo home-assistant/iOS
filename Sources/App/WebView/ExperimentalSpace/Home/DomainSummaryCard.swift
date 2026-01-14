@@ -1,40 +1,34 @@
+import Shared
 import SwiftUI
 
 @available(iOS 26.0, *)
 struct DomainSummaryCard: View {
     let summary: HomeViewModel.DomainSummary
     let action: () -> Void
-    
+
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                // Icon
-                Image(systemName: summary.icon)
-                    .font(.system(size: 28, weight: .semibold))
-                    .foregroundStyle(summary.isActive ? .orange : .secondary)
-                    .frame(width: 44, height: 44)
-                
-                // Content
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(summary.displayName)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.primary)
-                    
-                    Text(summary.summaryText)
-                        .font(.system(size: 15))
-                        .foregroundStyle(.secondary)
-                }
-                
-                Spacer()
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(UIColor.secondarySystemGroupedBackground))
-            )
+        EntityTileView(
+            entityName: summary.displayName,
+            entityState: summary.summaryText,
+            icon: iconForDomain(summary.icon),
+            iconColor: summary.isActive ? .orange : .gray,
+            isUnavailable: false,
+            onIconTap: action,
+            onTileTap: action
+        )
+    }
+
+    private func iconForDomain(_ systemName: String) -> MaterialDesignIcons {
+        // Map system icon names to Material Design Icons
+        // You can expand this mapping as needed
+        switch systemName {
+        case "lightbulb.fill":
+            return .lightbulbIcon
+        case "rectangle.on.rectangle.angled":
+            return .curtainsIcon
+        default:
+            return .dotsHorizontalIcon
         }
-        .buttonStyle(.plain)
     }
 }
 
@@ -42,23 +36,16 @@ struct DomainSummaryCard: View {
 struct DomainSummariesSection: View {
     let summaries: [HomeViewModel.DomainSummary]
     let onTapSummary: (HomeViewModel.DomainSummary) -> Void
-    
+
     var body: some View {
         if !summaries.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                // Section header
-                Text("Summaries")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(.primary)
-                    .padding(.horizontal, 4)
-                
-                // Grid of summary cards
+            Section {
                 LazyVGrid(
                     columns: [
-                        GridItem(.flexible(), spacing: 12),
-                        GridItem(.flexible(), spacing: 12)
+                        GridItem(.flexible(), spacing: DesignSystem.Spaces.one),
+                        GridItem(.flexible(), spacing: DesignSystem.Spaces.one),
                     ],
-                    spacing: 12
+                    spacing: DesignSystem.Spaces.one
                 ) {
                     ForEach(summaries) { summary in
                         DomainSummaryCard(summary: summary) {
@@ -66,8 +53,12 @@ struct DomainSummariesSection: View {
                         }
                     }
                 }
+            } header: {
+                EntityDisplayComponents.sectionHeader(
+                    "Summaries", // TODO: Replace with L10n.HomeView.Summaries.title when available
+                    showChevron: false
+                )
             }
-            .padding(.bottom, 16)
         }
     }
 }
@@ -92,9 +83,9 @@ struct DomainSummariesSection: View {
             count: 5,
             activeCount: 0,
             summaryText: "All closed"
-        )
+        ),
     ]
-    
+
     return DomainSummariesSection(summaries: summaries) { summary in
         print("Tapped: \(summary.displayName)")
     }

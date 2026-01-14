@@ -102,7 +102,7 @@ struct EntityTileView: View {
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
                     .stroke(
                         isUnavailable ? .gray : .tileBorder,
-                        style: isUnavailable ? 
+                        style: isUnavailable ?
                             StrokeStyle(lineWidth: Constants.borderLineWidth, dash: [5, 3]) :
                             StrokeStyle(lineWidth: Constants.borderLineWidth)
                     )
@@ -141,11 +141,11 @@ struct EntityTileView: View {
         Text(entityName)
             .font(.footnote)
             .fontWeight(.semibold)
-            #if os(iOS)
+        #if os(iOS)
             .foregroundColor(Color(uiColor: .label))
-            #else
+        #else
             .foregroundColor(.primary)
-            #endif
+        #endif
             .lineLimit(2)
             .multilineTextAlignment(.leading)
     }
@@ -153,11 +153,11 @@ struct EntityTileView: View {
     private var entityStateText: some View {
         Text(entityState)
             .font(.caption)
-            #if os(iOS)
+        #if os(iOS)
             .foregroundColor(Color(uiColor: .secondaryLabel))
-            #else
+        #else
             .foregroundColor(.secondary)
-            #endif
+        #endif
     }
 
     private var iconView: some View {

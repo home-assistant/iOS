@@ -41,7 +41,7 @@ struct HomeEntityTileView: View {
         .matchedTransitionSource(id: haEntity.entityId, in: namespace)
         .fullScreenCover(isPresented: $showMoreInfoDialog) {
             EntityMoreInfoDialogView(
-                server: server, 
+                server: server,
                 haEntity: haEntity
             )
             .navigationTransition(.zoom(sourceID: haEntity.entityId, in: namespace))
