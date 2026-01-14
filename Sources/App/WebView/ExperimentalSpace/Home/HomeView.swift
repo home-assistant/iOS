@@ -121,32 +121,69 @@ struct HomeView: View {
             sectionOrder: viewModel.configuration.sectionOrder,
             visibleSectionIds: viewModel.configuration.visibleSectionIds
         )
+        let layout = viewModel.configuration.areasLayout ?? .list
 
         return ScrollView {
-            LazyVStack(
-                alignment: .leading,
-                spacing: DesignSystem.Spaces.three
-            ) {
-                predictionSection
+            switch layout {
+            case .grid:
+                areasGridView(sections: filteredSections)
+            case .list:
+                areasListView(sections: filteredSections)
+            }
+        }
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
 
-                // Display regular sections
-                ForEach(filteredSections) { section in
-                    let visibleEntities = visibleEntitiesForSection(section)
-                    if !visibleEntities.isEmpty || viewModel.configuration.visibleSectionIds.contains(section.id) {
-                        Section {
-                            entityTilesGrid(
-                                for: visibleEntities,
-                                section: section
-                            )
-                        } header: {
-                            sectionHeader(section.name, section: section)
-                        }
+    private func areasListView(sections: [HomeViewModel.RoomSection]) -> some View {
+        LazyVStack(
+            alignment: .leading,
+            spacing: DesignSystem.Spaces.three
+        ) {
+            predictionSection
+
+            // Display regular sections
+            ForEach(sections) { section in
+                let visibleEntities = visibleEntitiesForSection(section)
+                if !visibleEntities.isEmpty || viewModel.configuration.visibleSectionIds.contains(section.id) {
+                    Section {
+                        entityTilesGrid(
+                            for: visibleEntities,
+                            section: section
+                        )
+                    } header: {
+                        sectionHeader(section.name, section: section)
+                    }
+                }
+            }
+        }
+        .padding()
+    }
+
+    private func areasGridView(sections: [HomeViewModel.RoomSection]) -> some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.three) {
+            predictionSection
+                .padding()
+
+            LazyVGrid(
+                columns: [
+                    GridItem(.adaptive(minimum: 120, maximum: 200), spacing: DesignSystem.Spaces.two)
+                ],
+                spacing: DesignSystem.Spaces.two
+            ) {
+                ForEach(sections) { section in
+                    if !isReorderMode {
+                        AreaGridButton(
+                            section: section,
+                            action: {
+                                selectedRoom = (id: section.id, name: section.name)
+                            }
+                        )
+                        .matchedTransitionSource(id: section.id, in: roomNameSpace)
                     }
                 }
             }
             .padding()
         }
-        .transition(.opacity.combined(with: .move(edge: .bottom)))
     }
 
     @ViewBuilder
@@ -413,6 +450,35 @@ struct HomeView: View {
                     Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
                 }
             }
+        }
+    }
+}
+
+// MARK: - Area Grid Button
+
+@available(iOS 26.0, *)
+struct AreaGridButton: View {
+    let section: HomeViewModel.RoomSection
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: DesignSystem.Spaces.one) {
+                Image(systemSymbol: .houseCircle)
+                    .font(.system(size: 32))
+                    .foregroundColor(.haPrimary)
+
+                Text(section.name)
+                    .font(.body.weight(.semibold))
+                    .foregroundColor(.white)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .aspectRatio(1, contentMode: .fill)
+            .background(Color.haPrimary.opacity(0.2))
+            .cornerRadius(12)
         }
     }
 }
