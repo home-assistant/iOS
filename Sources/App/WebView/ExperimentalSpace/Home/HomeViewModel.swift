@@ -15,7 +15,7 @@ final class HomeViewModel: ObservableObject {
         let entityIds: Set<String>
     }
 
-    struct DomainSummary: Identifiable {
+    struct DomainSummary: Identifiable, Equatable {
         let id: String // domain name
         let domain: Domain
         let displayName: String
@@ -56,11 +56,7 @@ final class HomeViewModel: ObservableObject {
     private var lastUsagePredictionLoadTime: Date?
     private let usagePredictionLoadInterval: TimeInterval = 120 // 2 minutes
 
-    var domainSummaries: [DomainSummary] = [] {
-        didSet {
-            Current.Log.verbose("Domain summaries updated: \(domainSummaries.count) summaries")
-        }
-    }
+    var domainSummaries: [DomainSummary] = []
 
     var orderedSectionsForMenu: [RoomSection] {
         // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
@@ -355,7 +351,11 @@ final class HomeViewModel: ObservableObject {
             summaries.append(summary)
         }
 
-        domainSummaries = summaries
+        // Only update if summaries actually changed
+        if domainSummaries != summaries {
+            domainSummaries = summaries
+            Current.Log.verbose("Domain summaries updated: \(domainSummaries.count) summaries")
+        }
     }
 
     private func isEntityActive(_ entity: HAEntity) -> Bool {
