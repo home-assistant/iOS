@@ -10,6 +10,7 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
     var allowMultipleSelection: Bool
     var entityOrderByRoom: [String: [String]]
     var hiddenEntityIds: Set<String>
+    var showUsagePredictionSection: Bool
 
     init(
         id: String,
@@ -17,7 +18,8 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
         visibleSectionIds: Set<String> = [],
         allowMultipleSelection: Bool = false,
         entityOrderByRoom: [String: [String]] = [:],
-        hiddenEntityIds: Set<String> = []
+        hiddenEntityIds: Set<String> = [],
+        showUsagePredictionSection: Bool = true
     ) {
         self.id = id
         self.sectionOrder = sectionOrder
@@ -25,6 +27,7 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
         self.allowMultipleSelection = allowMultipleSelection
         self.entityOrderByRoom = entityOrderByRoom
         self.hiddenEntityIds = hiddenEntityIds
+        self.showUsagePredictionSection = showUsagePredictionSection
     }
 
     /// Fetch configuration for a specific server

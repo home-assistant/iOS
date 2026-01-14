@@ -14,6 +14,10 @@ final class HomeViewModel: ObservableObject {
         let entityIds: Set<String>
     }
 
+    // MARK: - Constants
+
+    static let usagePredictionSectionId = "usage-prediction-common-control"
+
     var groupedEntities: [RoomSection] = []
     var isLoading = false
     var errorMessage: String?
@@ -34,6 +38,8 @@ final class HomeViewModel: ObservableObject {
     }
 
     var cachedUserName: String = ""
+    private var lastUsagePredictionLoadTime: Date?
+    private let usagePredictionLoadInterval: TimeInterval = 120 // 2 minutes
 
     var orderedSectionsForMenu: [RoomSection] {
         // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
@@ -56,7 +62,7 @@ final class HomeViewModel: ObservableObject {
             return nil
         }
         return RoomSection(
-            id: "usage-prediction-common-control",
+            id: Self.usagePredictionSectionId,
             name: L10n.HomeView.CommonControls.title(cachedUserName),
             entityIds: Set(entities)
         )
@@ -105,14 +111,32 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func loadUsagePredictionCommonControl() async {
+        // Check if we should load based on time interval
+        let shouldLoad = shouldLoadUsagePrediction()
+        guard shouldLoad else {
+            Current.Log.verbose("Skipping usage prediction load - within 2 minute interval")
+            return
+        }
+
         Current.api(for: server)?.connection.send(.usagePredictionCommonControl()) { result in
             switch result {
             case let .success(usagePredictionCommonControl):
                 self.usagePredictionCommonControl = usagePredictionCommonControl
+                self.lastUsagePredictionLoadTime = Date()
             case let .failure(error):
                 Current.Log.error("Failed to load usage prediction common control: \(error.localizedDescription)")
             }
         }
+    }
+
+    private func shouldLoadUsagePrediction() -> Bool {
+        guard let lastLoadTime = lastUsagePredictionLoadTime else {
+            // Never loaded before, should load
+            return true
+        }
+
+        let timeSinceLastLoad = Date().timeIntervalSince(lastLoadTime)
+        return timeSinceLastLoad >= usagePredictionLoadInterval
     }
 
     // MARK: - Lifecycle Management
@@ -120,6 +144,9 @@ final class HomeViewModel: ObservableObject {
     /// Call this when the app enters foreground
     func handleAppDidBecomeActive() {
         Current.Log.info("HomeViewModel: App became active, starting subscriptions")
+        Task {
+            await loadUsagePredictionCommonControl()
+        }
         startSubscriptions()
     }
 

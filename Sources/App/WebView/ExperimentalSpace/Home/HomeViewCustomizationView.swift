@@ -10,14 +10,26 @@ struct HomeViewCustomizationView: View {
 
     var body: some View {
         NavigationStack {
-            Text("Unavailable")
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        CloseButton {
-                            dismiss()
-                        }
+            Form {
+                Section {
+                    Toggle(
+                        "Controls Prediction Section",
+                        isOn: Binding(
+                            get: { viewModel.configuration.showUsagePredictionSection },
+                            set: { newValue in
+                                viewModel.configuration.showUsagePredictionSection = newValue
+                            }
+                        )
+                    )
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    CloseButton {
+                        dismiss()
                     }
                 }
+            }
         }
     }
 }
