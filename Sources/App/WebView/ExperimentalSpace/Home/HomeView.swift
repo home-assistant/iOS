@@ -127,20 +127,7 @@ struct HomeView: View {
                 alignment: .leading,
                 spacing: DesignSystem.Spaces.three
             ) {
-                // Display usage prediction common control section at the top
-                if let usagePredictionSection = viewModel.usagePredictionSection {
-                    let visibleEntities = visibleEntitiesForSection(usagePredictionSection)
-                    if !visibleEntities.isEmpty {
-                        Section {
-                            entityTilesGrid(
-                                for: visibleEntities,
-                                section: usagePredictionSection
-                            )
-                        } header: {
-                            sectionHeader(usagePredictionSection.name, section: usagePredictionSection)
-                        }
-                    }
-                }
+                predictionSection
 
                 // Display regular sections
                 ForEach(filteredSections) { section in
@@ -160,6 +147,26 @@ struct HomeView: View {
             .padding()
         }
         .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    @ViewBuilder
+    private var predictionSection: some View {
+        if viewModel.configuration.showUsagePredictionSection {
+            // Display usage prediction common control section at the top
+            if let usagePredictionSection = viewModel.usagePredictionSection {
+                let visibleEntities = visibleEntitiesForSection(usagePredictionSection)
+                if !visibleEntities.isEmpty {
+                    Section {
+                        entityTilesGrid(
+                            for: visibleEntities,
+                            section: usagePredictionSection
+                        )
+                    } header: {
+                        sectionHeader(usagePredictionSection.name, section: usagePredictionSection)
+                    }
+                }
+            }
+        }
     }
 
     private func visibleEntitiesForSection(_ section: HomeViewModel.RoomSection) -> [HAEntity] {
@@ -369,7 +376,7 @@ struct HomeView: View {
     private func sectionHeader(_ title: String, section: HomeViewModel.RoomSection) -> some View {
         Group {
             // Handle usage prediction section separately (not in groupedEntities)
-            if section.id == "usage-prediction-common-control" {
+            if section.id == HomeViewModel.usagePredictionSectionId {
                 EntityDisplayComponents.sectionHeader(
                     title,
                     showChevron: false
