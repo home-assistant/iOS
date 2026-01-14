@@ -56,11 +56,23 @@ struct MagicItemAddView: View {
                         actionsList
                     }
                     .searchable(text: $viewModel.searchText)
-                case .entities, .scripts, .scenes:
+                case .entities:
                     VStack {
                         pickerView
                             .padding(.horizontal)
-                        entitiesPerServerList(domainFilter: viewModel.selectedItemType == .scripts ? .script : viewModel.selectedItemType == .scenes ? .scene : nil)
+                        entitiesPerServerList()
+                    }
+                case .scripts:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        entitiesPerServerList(domainFilter: .script)
+                    }
+                case .scenes:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        entitiesPerServerList(domainFilter: .scene)
                     }
                 }
             }
@@ -148,24 +160,6 @@ struct MagicItemAddView: View {
     }
 
     @ViewBuilder
-    private var scriptsPerServerList: some View {
-        ForEach(Array(viewModel.scripts.keys), id: \.identifier) { server in
-            Section(server.info.name) {
-                list(entities: viewModel.scripts[server] ?? [], serverId: server.identifier.rawValue, type: .script)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var scenesPerServerList: some View {
-        ForEach(Array(viewModel.scenes.keys), id: \.identifier) { server in
-            Section(server.info.name) {
-                list(entities: viewModel.scenes[server] ?? [], serverId: server.identifier.rawValue, type: .scene)
-            }
-        }
-    }
-
-    @ViewBuilder
     private func entitiesPerServerList(domainFilter: Domain? = nil) -> some View {
         EntityPicker(
             selectedServerId: Current.servers.all.first(where: { $0.identifier.rawValue == viewModel.selectedServerId })?.identifier.rawValue,
@@ -195,32 +189,6 @@ struct MagicItemAddView: View {
                 }
             }
         )
-    }
-
-    @ViewBuilder
-    private func list(entities: [HAAppEntity], serverId: String, type: MagicItem.ItemType) -> some View {
-        ForEach(entities.filter({ entity in
-            visibleForSearch(title: entity.name, entityId: entity.entityId)
-        }), id: \.id) { entity in
-            NavigationLink {
-                MagicItemCustomizationView(
-                    mode: .add,
-                    context: context,
-                    item: .init(
-                        id: entity.entityId,
-                        serverId: serverId,
-                        type: type
-                    )
-                ) { itemToAdd in
-                    self.itemToAdd(itemToAdd)
-                    dismiss()
-                }
-            } label: {
-                EntityRowView(
-                    entity: entity
-                )
-            }
-        }
     }
 
     private func visibleForSearch(title: String, entityId: String) -> Bool {

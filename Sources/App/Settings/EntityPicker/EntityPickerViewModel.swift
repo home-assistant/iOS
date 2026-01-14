@@ -38,6 +38,7 @@ final class EntityPickerViewModel: ObservableObject {
     init(domainFilter: Domain?, selectedServerId: String?) {
         self.domainFilter = domainFilter
         self.selectedServerId = selectedServerId
+        self.selectedDomainFilter = domainFilter?.rawValue
         setupFiltering()
     }
 
@@ -145,7 +146,7 @@ final class EntityPickerViewModel: ObservableObject {
                 // Filter by search term
                 if searchTerm.count > 2 {
                     return entity.name.lowercased().contains(searchTerm.lowercased()) ||
-                        entity.entityId.lowercased().contains(searchTerm.lowercased())
+                    entity.entityId.lowercased().contains(searchTerm.lowercased())
                 }
 
                 return true
@@ -169,7 +170,7 @@ final class EntityPickerViewModel: ObservableObject {
 
                 // Group entities by area
                 for entity in filteredEntities {
-                    let areaName = entityToArea[entity.entityId] ?? "No Area"
+                    let areaName = entityToArea[entity.entityId] ?? L10n.EntityPicker.List.Area.NoArea.title
                     result[areaName, default: []].append(entity)
                 }
             }

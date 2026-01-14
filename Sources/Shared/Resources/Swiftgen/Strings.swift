@@ -1163,6 +1163,14 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.title") }
       }
     }
+    public enum List {
+      public enum Area {
+        public enum NoArea {
+          /// No area
+          public static var title: String { return L10n.tr("Localizable", "entity_picker.list.area.no_area.title") }
+        }
+      }
+    }
   }
 
   public enum Extensions {

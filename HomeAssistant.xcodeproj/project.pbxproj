@@ -4958,10 +4958,6 @@
 			children = (
 				4251AA972C6B9D30004CCC9D /* Edit */,
 				42D5ACD72C64C0CF00D9C4E2 /* Add */,
-				426BB0C42D393F0E0062D905 /* EntityPicker.swift */,
-				4210CD112F16A1AB00B71FB9 /* EntityFilterPickerView.swift */,
-				4210CD0F2F16906800B71FB9 /* EntityRowView.swift */,
-				4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */,
 				426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */,
 			);
 			path = MagicItem;
@@ -5006,6 +5002,17 @@
 				425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */,
 			);
 			path = Domains;
+			sourceTree = "<group>";
+		};
+		4257EA912F1790DE00D81506 /* EntityPicker */ = {
+			isa = PBXGroup;
+			children = (
+				426BB0C42D393F0E0062D905 /* EntityPicker.swift */,
+				4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */,
+				4210CD112F16A1AB00B71FB9 /* EntityFilterPickerView.swift */,
+				4210CD0F2F16906800B71FB9 /* EntityRowView.swift */,
+			);
+			path = EntityPicker;
 			sourceTree = "<group>";
 		};
 		425C5A052CF756CF00206B5B /* Views */ = {
@@ -6753,6 +6760,7 @@
 		B661FB6B226BCC8500E541DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				4257EA912F1790DE00D81506 /* EntityPicker */,
 				429AFE5A2DB7BE3200AF0836 /* General */,
 				4211551F2D3525E800A71630 /* AppIcon */,
 				4278CB862D01F0BE00CFAAC9 /* Gestures */,
