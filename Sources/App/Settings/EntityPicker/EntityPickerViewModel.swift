@@ -166,10 +166,8 @@ final class EntityPickerViewModel: ObservableObject {
         let noAreaTitle = L10n.EntityPicker.List.Area.NoArea.title
 
         // Pull cached lookups
-        let entityToArea: [String: String]
-        let areaIdToEntityIds: [String: Set<String>]
-        entityToArea = cachedEntityToArea
-        areaIdToEntityIds = cachedAreaIdToEntityIds
+        let entityToArea = cachedEntityToArea
+        let areaIdToEntityIds = cachedAreaIdToEntityIds
 
         // Get entities already filtered by server
         let serverScopedEntities = entitiesForCurrentServer()
