@@ -216,4 +216,18 @@ final class EntityPickerViewModel: ObservableObject {
             self.filteredEntitiesByGroup = filtered
         }
     }
+
+    // MARK: - Test helpers (DEBUG only)
+
+    #if DEBUG
+    /// Exposes private groupByDomain for unit tests
+    func _test_groupByDomain() {
+        groupByDomain()
+    }
+
+    /// Exposes private updateFilteredEntities for unit tests
+    func _test_updateFilteredEntities() {
+        updateFilteredEntities()
+    }
+    #endif
 }

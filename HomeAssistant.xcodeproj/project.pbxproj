@@ -923,6 +923,7 @@
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
 		429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */; };
 		429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
+		429C33BF2F17989F0033EF5E /* EntityPickerViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		429D51C52EFA0E750014AD0D /* ModernAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51C42EFA0E750014AD0D /* ModernAssistView.swift */; };
@@ -2561,6 +2562,7 @@
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
 		429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorDetailsView.swift; sourceTree = "<group>"; };
 		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
+		429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPickerViewModel.test.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		429D51C42EFA0E750014AD0D /* ModernAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernAssistView.swift; sourceTree = "<group>"; };
 		42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarButtonsConfigurator.swift; sourceTree = "<group>"; };
@@ -5382,6 +5384,14 @@
 			path = General;
 			sourceTree = "<group>";
 		};
+		429C33BE2F17988D0033EF5E /* EntityPicker */ = {
+			isa = PBXGroup;
+			children = (
+				429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */,
+			);
+			path = EntityPicker;
+			sourceTree = "<group>";
+		};
 		42A2AB7E2C80750A00C5608D /* Control */ = {
 			isa = PBXGroup;
 			children = (
@@ -6719,6 +6729,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				429C33BE2F17988D0033EF5E /* EntityPicker */,
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
 				11EFD3C1272642FC000AF78B /* Additions */,
@@ -9489,6 +9500,7 @@
 				428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
+				429C33BF2F17989F0033EF5E /* EntityPickerViewModel.test.swift in Sources */,
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift in Sources */,
 				42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */,
