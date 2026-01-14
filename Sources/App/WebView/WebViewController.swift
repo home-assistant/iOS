@@ -1071,7 +1071,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     // MARK: - Public
 
     /// avoidUnecessaryReload Avoids reloading when the URL is the same as the current one
-    public func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
+    func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
         loadViewIfNeeded()
 
         // these paths do not show frontend pages, and so we don't want to display them in our webview
@@ -1098,7 +1098,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     /// Used for OpenPage intent
-    public func openPanel(_ url: URL) {
+    func openPanel(_ url: URL) {
         loadViewIfNeeded()
 
         guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil || server.info
@@ -1155,7 +1155,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.reload()
     }
 
-    public func showSettingsViewController() {
+    func showSettingsViewController() {
         getLatestConfig()
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
@@ -1167,7 +1167,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    public func openActionAutomationEditor(actionId: String) {
+    func openActionAutomationEditor(actionId: String) {
         guard server.info.version >= .externalBusCommandAutomationEditor else {
             showActionAutomationEditorNotAvailable()
             return

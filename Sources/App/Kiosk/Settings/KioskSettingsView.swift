@@ -36,7 +36,7 @@ public struct KioskSettingsView: View {
         .navigationTitle(L10n.Kiosk.title)
         .disabled(requiresAuth && !isAuthenticated)
         .overlay {
-            if requiresAuth && !isAuthenticated {
+            if requiresAuth, !isAuthenticated {
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
             }
@@ -98,15 +98,19 @@ public struct KioskSettingsView: View {
             }
         } else if authSettings.allowDevicePasscodeExit {
             // Biometric not available, try passcode
-            context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: L10n.Kiosk.AuthError.reason) { success, _ in
-                DispatchQueue.main.async {
-                    if success {
-                        isAuthenticated = true
-                    } else {
-                        dismiss()
+            context
+                .evaluatePolicy(
+                    .deviceOwnerAuthentication,
+                    localizedReason: L10n.Kiosk.AuthError.reason
+                ) { success, _ in
+                    DispatchQueue.main.async {
+                        if success {
+                            isAuthenticated = true
+                        } else {
+                            dismiss()
+                        }
                     }
                 }
-            }
         } else {
             // No auth available, allow access
             isAuthenticated = true
@@ -385,7 +389,7 @@ public struct KioskSettingsView: View {
                         case .userFallback:
                             // User chose to use passcode - try passcode auth if allowed
                             if settings.allowDevicePasscodeExit {
-                                self.attemptPasscodeAuth()
+                                attemptPasscodeAuth()
                             }
                         default:
                             authErrorMessage = authError.localizedDescription
