@@ -1385,6 +1385,12 @@ public enum L10n {
   }
 
   public enum HomeView {
+    public enum CommonControls {
+      /// Welcome %@
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_view.common_controls.title", String(describing: p1))
+      }
+    }
     public enum ContextMenu {
       /// Hide
       public static var hide: String { return L10n.tr("Localizable", "home_view.context_menu.hide") }

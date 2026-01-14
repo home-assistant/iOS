@@ -355,6 +355,7 @@
 "home_view.menu.settings" = "Settings";
 "home_view.menu.show_all" = "Show All";
 "home_view.navigation.subtitle.experimental" = "Experimental feature";
+"home_view.common_controls.title" = "Welcome %@";
 "improv.button.continue" = "Continue";
 "improv.connection_state.authorized" = "Setting up Wi-Fi";
 "improv.connection_state.provisioning" = "Connecting to Wi-Fi";
