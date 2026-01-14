@@ -1446,6 +1446,10 @@ public enum L10n {
         /// Controls prediction section
         public static var title: String { return L10n.tr("Localizable", "home_view.customization.common_controls.title") }
       }
+      public enum Summaries {
+        /// Summaries
+        public static var title: String { return L10n.tr("Localizable", "home_view.customization.summaries.title") }
+      }
     }
     public enum EmptyState {
       /// No entities found

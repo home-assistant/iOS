@@ -217,7 +217,7 @@ struct HomeView: View {
 
     @ViewBuilder
     private var summariesSection: some View {
-        if !viewModel.domainSummaries.isEmpty {
+        if viewModel.configuration.showSummaries, !viewModel.domainSummaries.isEmpty {
             DomainSummariesSection(summaries: viewModel.domainSummaries) { summary in
                 // TODO: Handle tap - could navigate to a filtered view of that domain
                 Current.Log.info("Tapped domain summary: \(summary.displayName)")

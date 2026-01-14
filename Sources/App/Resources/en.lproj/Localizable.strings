@@ -361,6 +361,7 @@
 "home_view.customization.areas_layout.title" = "Areas layout";
 "home_view.customization.areas_layout.list.title" = "List";
 "home_view.customization.areas_layout.grid.title" = "Grid";
+"home_view.customization.summaries.title" = "Summaries";
 "home_view.summaries.title" = "Summaries";
 "home_view.summaries.lights.title" = "Lights";
 "home_view.summaries.covers.title" = "Covers";
