@@ -38,8 +38,14 @@ struct EntityTileView: View {
             .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
             .overlay(
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                    .stroke(.tileBorder, lineWidth: Constants.borderLineWidth)
+                    .stroke(
+                        isUnavailable ? .gray : .tileBorder,
+
+                        style: isUnavailable ? StrokeStyle(lineWidth: Constants.borderLineWidth, dash: [5, 3]) :
+                            StrokeStyle(lineWidth: Constants.borderLineWidth)
+                    )
             )
+            .opacity(isUnavailable ? 0.5 : 1.0)
             .onChange(of: haEntity) { _, _ in
                 updateIconColor()
             }
@@ -57,6 +63,11 @@ struct EntityTileView: View {
                 )
                 .navigationTransition(.zoom(sourceID: haEntity.entityId, in: namespace))
             }
+    }
+
+    private var isUnavailable: Bool {
+        let state = haEntity.state.lowercased()
+        return [Domain.State.unavailable.rawValue, Domain.State.unknown.rawValue].contains(state)
     }
 
     private var tileContent: some View {
@@ -142,6 +153,11 @@ struct EntityTileView: View {
         let colorMode = haEntity.attributes["color_mode"] as? String
         let rgbColor = haEntity.attributes["rgb_color"] as? [Int]
         let hsColor = haEntity.attributes["hs_color"] as? [Double]
+
+        if isUnavailable {
+            iconColor = .gray
+            return
+        }
 
         iconColor = EntityIconColorProvider.iconColor(
             domain: Domain(entityId: haEntity.entityId) ?? .switch,
