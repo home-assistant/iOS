@@ -1141,6 +1141,36 @@ public enum L10n {
   public enum EntityPicker {
     /// Pick entity
     public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.placeholder") }
+    public enum Filter {
+      public enum Area {
+        /// Area
+        public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.area.title") }
+        public enum All {
+          /// All areas
+          public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.area.all.title") }
+        }
+      }
+      public enum Domain {
+        /// Domain
+        public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.domain.title") }
+        public enum All {
+          /// All domains
+          public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.domain.all.title") }
+        }
+      }
+      public enum GroupBy {
+        /// Group by
+        public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.title") }
+      }
+    }
+    public enum List {
+      public enum Area {
+        public enum NoArea {
+          /// No area
+          public static var title: String { return L10n.tr("Localizable", "entity_picker.list.area.no_area.title") }
+        }
+      }
+    }
   }
 
   public enum Extensions {

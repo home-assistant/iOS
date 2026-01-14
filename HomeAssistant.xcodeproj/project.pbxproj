@@ -628,6 +628,8 @@
 		4210CD002F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
 		4210CD032F155C4500B71FB9 /* AssistConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */; };
 		4210CD052F155D2600B71FB9 /* AssistSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */; };
+		4210CD102F16906800B71FB9 /* EntityRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD0F2F16906800B71FB9 /* EntityRowView.swift */; };
+		4210CD122F16A1AB00B71FB9 /* EntityFilterPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD112F16A1AB00B71FB9 /* EntityFilterPickerView.swift */; };
 		421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155202D3525F500A71630 /* AppIconSelectorView.swift */; };
 		421155232D354F3F00A71630 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155222D354F3F00A71630 /* AppIcon.swift */; };
 		421155252D355C6700A71630 /* WidgetBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155242D355C6700A71630 /* WidgetBuilderView.swift */; };
@@ -924,6 +926,7 @@
 		429C33C22F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
 		429C33C32F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
 		429C33C52F17CE4C0033EF5E /* AreaGridButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C42F17CE4C0033EF5E /* AreaGridButton.swift */; };
+		429C33BF2F17989F0033EF5E /* EntityPickerViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		429D51C52EFA0E750014AD0D /* ModernAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51C42EFA0E750014AD0D /* ModernAssistView.swift */; };
@@ -2300,6 +2303,8 @@
 		4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfiguration.swift; sourceTree = "<group>"; };
 		4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfigurationTable.swift; sourceTree = "<group>"; };
 		4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsViewModel.swift; sourceTree = "<group>"; };
+		4210CD0F2F16906800B71FB9 /* EntityRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRowView.swift; sourceTree = "<group>"; };
+		4210CD112F16A1AB00B71FB9 /* EntityFilterPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFilterPickerView.swift; sourceTree = "<group>"; };
 		421155202D3525F500A71630 /* AppIconSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectorView.swift; sourceTree = "<group>"; };
 		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		421155242D355C6700A71630 /* WidgetBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderView.swift; sourceTree = "<group>"; };
@@ -2562,6 +2567,7 @@
 		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
 		429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAUsagePredictionCommonControl.swift; sourceTree = "<group>"; };
 		429C33C42F17CE4C0033EF5E /* AreaGridButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaGridButton.swift; sourceTree = "<group>"; };
+		429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPickerViewModel.test.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		429D51C42EFA0E750014AD0D /* ModernAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernAssistView.swift; sourceTree = "<group>"; };
 		42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarButtonsConfigurator.swift; sourceTree = "<group>"; };
@@ -4959,8 +4965,6 @@
 			children = (
 				4251AA972C6B9D30004CCC9D /* Edit */,
 				42D5ACD72C64C0CF00D9C4E2 /* Add */,
-				426BB0C42D393F0E0062D905 /* EntityPicker.swift */,
-				4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */,
 				426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */,
 			);
 			path = MagicItem;
@@ -5005,6 +5009,17 @@
 				425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */,
 			);
 			path = Domains;
+			sourceTree = "<group>";
+		};
+		4257EA912F1790DE00D81506 /* EntityPicker */ = {
+			isa = PBXGroup;
+			children = (
+				426BB0C42D393F0E0062D905 /* EntityPicker.swift */,
+				4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */,
+				4210CD112F16A1AB00B71FB9 /* EntityFilterPickerView.swift */,
+				4210CD0F2F16906800B71FB9 /* EntityRowView.swift */,
+			);
+			path = EntityPicker;
 			sourceTree = "<group>";
 		};
 		425C5A052CF756CF00206B5B /* Views */ = {
@@ -5382,6 +5397,14 @@
 				429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */,
 			);
 			path = Models;
+      sourceTree = "<group>";
+		};
+		429C33BE2F17988D0033EF5E /* EntityPicker */ = {
+			isa = PBXGroup;
+			children = (
+				429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */,
+			);
+			path = EntityPicker;
 			sourceTree = "<group>";
 		};
 		42A2AB7E2C80750A00C5608D /* Control */ = {
@@ -6722,6 +6745,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				429C33BE2F17988D0033EF5E /* EntityPicker */,
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
 				11EFD3C1272642FC000AF78B /* Additions */,
@@ -6763,6 +6787,7 @@
 		B661FB6B226BCC8500E541DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				4257EA912F1790DE00D81506 /* EntityPicker */,
 				429AFE5A2DB7BE3200AF0836 /* General */,
 				4211551F2D3525E800A71630 /* AppIcon */,
 				4278CB862D01F0BE00CFAAC9 /* Gestures */,
@@ -9129,6 +9154,7 @@
 				42F5C0852F02BBA000C50310 /* AppIntentProvider.swift in Sources */,
 				42FCCFFB2B9B1C310057783F /* ThreadTransferCredentialToHAViewModel.swift in Sources */,
 				4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */,
+				4210CD102F16906800B71FB9 /* EntityRowView.swift in Sources */,
 				42B980D32DC24E1300BC5C08 /* SensorDetailLabelRowView.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */,
@@ -9170,6 +9196,7 @@
 				42B980D92DC24E5D00BC5C08 /* SensorDetailViewModel.swift in Sources */,
 				420E2AE82C47471B004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				4280E0712DC23CCF0004BE7D /* SensorRow.swift in Sources */,
+				4210CD122F16A1AB00B71FB9 /* EntityFilterPickerView.swift in Sources */,
 				42C101282CD3DABA0012BA78 /* IntentCoverEntity.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				1101D7F92621479200AAE617 /* SettingsButtonRow.swift in Sources */,
@@ -9489,6 +9516,7 @@
 				428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
+				429C33BF2F17989F0033EF5E /* EntityPickerViewModel.test.swift in Sources */,
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift in Sources */,
 				42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */,
