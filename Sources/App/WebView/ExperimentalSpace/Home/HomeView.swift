@@ -210,6 +210,20 @@ struct HomeView: View {
                 }
             }
         }
+        
+        // Display domain summaries section
+        summariesSection
+    }
+    
+    @ViewBuilder
+    private var summariesSection: some View {
+        if !viewModel.domainSummaries.isEmpty {
+            DomainSummariesSection(summaries: viewModel.domainSummaries) { summary in
+                // TODO: Handle tap - could navigate to a filtered view of that domain
+                Current.Log.info("Tapped domain summary: \(summary.displayName)")
+            }
+            .padding(.top, 8)
+        }
     }
 
     private func visibleEntitiesForSection(_ section: HomeViewModel.RoomSection) -> [HAEntity] {

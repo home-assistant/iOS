@@ -15,6 +15,20 @@ final class HomeViewModel: ObservableObject {
         let entityIds: Set<String>
     }
 
+    struct DomainSummary: Identifiable {
+        let id: String // domain name
+        let domain: String
+        let displayName: String
+        let icon: String
+        let count: Int
+        let activeCount: Int
+        let summaryText: String
+        
+        var isActive: Bool {
+            activeCount > 0
+        }
+    }
+
     // MARK: - Constants
 
     static let usagePredictionSectionId = "usage-prediction-common-control"
@@ -41,6 +55,12 @@ final class HomeViewModel: ObservableObject {
     var cachedUserName: String = ""
     private var lastUsagePredictionLoadTime: Date?
     private let usagePredictionLoadInterval: TimeInterval = 120 // 2 minutes
+    
+    var domainSummaries: [DomainSummary] = [] {
+        didSet {
+            Current.Log.verbose("Domain summaries updated: \(domainSummaries.count) summaries")
+        }
+    }
 
     var orderedSectionsForMenu: [RoomSection] {
         // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
@@ -220,6 +240,7 @@ final class HomeViewModel: ObservableObject {
             onChange: { [weak self] entities in
                 guard let self else { return }
                 appEntities = entities
+                computeDomainSummaries()
             }
         )
     }
@@ -282,6 +303,99 @@ final class HomeViewModel: ObservableObject {
         entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
             guard let self else { return }
             entityStates = states
+            computeDomainSummaries()
+        }
+    }
+    
+    // MARK: - Domain Summaries
+    
+    private func computeDomainSummaries() {
+        // Define domains we want to summarize (starting with light and cover)
+        let domainsToSummarize: [(domain: String, displayName: String, icon: String)] = [
+            ("light", "Lights", "lightbulb.fill"),
+            ("cover", "Covers", "rectangle.on.rectangle.angled")
+        ]
+        
+        var summaries: [DomainSummary] = []
+        
+        for domainInfo in domainsToSummarize {
+            let domainEntities = entityStates.values.filter { $0.domain == domainInfo.domain }
+            
+            // Filter out hidden and disabled entities
+            let visibleEntities = domainEntities.filter { entity in
+                guard let appEntity = appEntities?.first(where: { $0.entityId == entity.entityId }) else {
+                    return false
+                }
+                return !appEntity.isHidden && !appEntity.isDisabled && 
+                       !configuration.hiddenEntityIds.contains(entity.entityId)
+            }
+            
+            guard !visibleEntities.isEmpty else { continue }
+            
+            let activeCount = visibleEntities.filter { entity in
+                isEntityActive(entity)
+            }.count
+            
+            let summaryText = generateSummaryText(
+                domain: domainInfo.domain,
+                totalCount: visibleEntities.count,
+                activeCount: activeCount
+            )
+            
+            let summary = DomainSummary(
+                id: domainInfo.domain,
+                domain: domainInfo.domain,
+                displayName: domainInfo.displayName,
+                icon: domainInfo.icon,
+                count: visibleEntities.count,
+                activeCount: activeCount,
+                summaryText: summaryText
+            )
+            
+            summaries.append(summary)
+        }
+        
+        domainSummaries = summaries
+    }
+    
+    private func isEntityActive(_ entity: HAEntity) -> Bool {
+        // Check if entity is in an "active" state
+        switch entity.domain {
+        case "light", "switch", "fan":
+            return entity.state == "on"
+        case "cover":
+            return entity.state == "open" || entity.state == "opening"
+        case "lock":
+            return entity.state == "unlocked"
+        case "climate":
+            return entity.state != "off"
+        case "media_player":
+            return entity.state == "playing" || entity.state == "paused"
+        default:
+            return entity.state == "on"
+        }
+    }
+    
+    private func generateSummaryText(domain: String, totalCount: Int, activeCount: Int) -> String {
+        switch domain {
+        case "light":
+            if activeCount == 0 {
+                // L10n.HomeView.Summaries.Light.allOff
+                return "All off"
+            } else {
+                // L10n.HomeView.Summaries.Light.countOn(activeCount)
+                return "\(activeCount) on"
+            }
+        case "cover":
+            if activeCount == 0 {
+                // L10n.HomeView.Summaries.Cover.allClosed
+                return "All closed"
+            } else {
+                // L10n.HomeView.Summaries.Cover.countOpen(activeCount)
+                return "\(activeCount) open"
+            }
+        default:
+            return "\(activeCount) active"
         }
     }
 
