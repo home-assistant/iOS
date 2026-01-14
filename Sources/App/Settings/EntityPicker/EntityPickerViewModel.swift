@@ -206,6 +206,10 @@ final class EntityPickerViewModel: ObservableObject {
                     let areaName = entityToArea[entity.entityId] ?? noAreaTitle
                     result[areaName, default: []].append(entity)
                 }
+                // Ensure the "No Area" group appears last by moving it to the end
+                if let noAreaGroup = result.removeValue(forKey: noAreaTitle) {
+                    result[noAreaTitle] = noAreaGroup
+                }
                 return result
             }
         }.value
