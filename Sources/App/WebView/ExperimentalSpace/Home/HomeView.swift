@@ -171,7 +171,7 @@ struct HomeView: View {
                 )
                 LazyVGrid(
                     columns: [
-                        GridItem(.adaptive(minimum: 100, maximum: 150), spacing: DesignSystem.Spaces.one)
+                        GridItem(.adaptive(minimum: 100, maximum: 150), spacing: DesignSystem.Spaces.one),
                     ],
                     spacing: DesignSystem.Spaces.one
                 ) {

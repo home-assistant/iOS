@@ -1,10 +1,9 @@
 import Foundation
 import GRDB
-import Shared
 import SFSafeSymbols
+import Shared
 
 struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equatable {
-
     enum AreasLayout: Codable, CaseIterable {
         case list
         case grid

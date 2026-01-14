@@ -37,6 +37,7 @@ struct HomeViewCustomizationView: View {
             )
         }
     }
+
     private var areasLayoutSection: some View {
         Section {
             Picker(
@@ -48,11 +49,10 @@ struct HomeViewCustomizationView: View {
                     }
                 )
             ) {
-                ForEach(HomeViewConfiguration.AreasLayout.allCases, id: \.self) { layout  in
+                ForEach(HomeViewConfiguration.AreasLayout.allCases, id: \.self) { layout in
                     Label(layout.localizableName, systemSymbol: layout.icon).tag(layout)
                 }
             }
         }
     }
 }
-

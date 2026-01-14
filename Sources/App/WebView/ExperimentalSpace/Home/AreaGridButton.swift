@@ -1,6 +1,6 @@
-import SwiftUI
-import Shared
 import SFSafeSymbols
+import Shared
+import SwiftUI
 
 @available(iOS 26.0, *)
 struct AreaGridButton: View {
@@ -37,9 +37,15 @@ struct AreaGridButton: View {
     }
 
     private var icon: some View {
-        let materialDesignIcon = MaterialDesignIcons(serversideValueNamed: section.icon.orEmpty, fallback: .squareRoundedOutlineIcon)
+        let materialDesignIcon = MaterialDesignIcons(
+            serversideValueNamed: section.icon.orEmpty,
+            fallback: .squareRoundedOutlineIcon
+        )
         return Group {
-            Image(uiImage: materialDesignIcon.image(ofSize: .init(width: Constants.iconSize, height: Constants.iconSize), color: .haPrimary))
+            Image(uiImage: materialDesignIcon.image(
+                ofSize: .init(width: Constants.iconSize, height: Constants.iconSize),
+                color: .haPrimary
+            ))
         }
         .font(.system(size: Constants.iconSize))
     }
