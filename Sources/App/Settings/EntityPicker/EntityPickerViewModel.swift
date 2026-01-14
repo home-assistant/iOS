@@ -68,10 +68,10 @@ final class EntityPickerViewModel: ObservableObject {
         $selectedServerId
             .removeDuplicates()
             .sink { [weak self] serverId in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Clear server-specific cache when server changes
-                self.cachedEntitiesByServer.removeAll()
-                self.fetchServerData(for: serverId)
+                cachedEntitiesByServer.removeAll()
+                fetchServerData(for: serverId)
             }
             .store(in: &cancellables)
     }
@@ -159,10 +159,10 @@ final class EntityPickerViewModel: ObservableObject {
 
     private func performFiltering() async {
         // Snapshot state needed for filtering
-        let searchTerm = self.searchTerm
-        let domainFilter = self.selectedDomainFilter
-        let areaFilter = self.selectedAreaFilter
-        let grouping = self.selectedGrouping
+        let searchTerm = searchTerm
+        let domainFilter = selectedDomainFilter
+        let areaFilter = selectedAreaFilter
+        let grouping = selectedGrouping
         let noAreaTitle = L10n.EntityPicker.List.Area.NoArea.title
 
         // Pull cached lookups
@@ -189,7 +189,7 @@ final class EntityPickerViewModel: ObservableObject {
                 // Filter by search term (only when 3+ chars)
                 if searchTerm.count > 2 {
                     let lower = searchTerm.lowercased()
-                    if !entity.name.lowercased().contains(lower) && !entity.entityId.lowercased().contains(lower) {
+                    if !entity.name.lowercased().contains(lower), !entity.entityId.lowercased().contains(lower) {
                         return false
                     }
                 }
@@ -219,4 +219,3 @@ final class EntityPickerViewModel: ObservableObject {
         }
     }
 }
-

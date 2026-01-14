@@ -162,7 +162,8 @@ struct MagicItemAddView: View {
     @ViewBuilder
     private func entitiesPerServerList(domainFilter: Domain? = nil) -> some View {
         EntityPicker(
-            selectedServerId: Current.servers.all.first(where: { $0.identifier.rawValue == viewModel.selectedServerId })?.identifier.rawValue,
+            selectedServerId: Current.servers.all
+                .first(where: { $0.identifier.rawValue == viewModel.selectedServerId })?.identifier.rawValue,
             selectedEntity: $selectedEntity,
             domainFilter: domainFilter,
             mode: .inline

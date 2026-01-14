@@ -16,9 +16,17 @@ struct EntityPicker: View {
     @Binding private var selectedEntity: HAAppEntity?
     private let mode: Mode
 
-    init(selectedServerId: String? = nil, selectedEntity: Binding<HAAppEntity?>, domainFilter: Domain?, mode: Mode = .button) {
+    init(
+        selectedServerId: String? = nil,
+        selectedEntity: Binding<HAAppEntity?>,
+        domainFilter: Domain?,
+        mode: Mode = .button
+    ) {
         self._selectedEntity = selectedEntity
-        self._viewModel = .init(wrappedValue: EntityPickerViewModel(domainFilter: domainFilter, selectedServerId: selectedServerId))
+        self._viewModel = .init(wrappedValue: EntityPickerViewModel(
+            domainFilter: domainFilter,
+            selectedServerId: selectedServerId
+        ))
         self.mode = mode
     }
 
@@ -53,17 +61,17 @@ struct EntityPicker: View {
     private var fullscreen: some View {
         NavigationView {
             content
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton {
-                        if mode == .button {
-                            viewModel.showList = false
-                        } else {
-                            dismiss()
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        CloseButton {
+                            if mode == .button {
+                                viewModel.showList = false
+                            } else {
+                                dismiss()
+                            }
                         }
                     }
                 }
-            }
         }
         .navigationViewStyle(.stack)
     }
