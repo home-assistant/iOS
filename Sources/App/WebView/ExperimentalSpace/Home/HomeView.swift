@@ -368,7 +368,13 @@ struct HomeView: View {
     @ViewBuilder
     private func sectionHeader(_ title: String, section: HomeViewModel.RoomSection) -> some View {
         Group {
-            if let section = viewModel.groupedEntities.first(where: { $0.name == title }) {
+            // Handle usage prediction section separately (not in groupedEntities)
+            if section.id == "usage-prediction-common-control" {
+                EntityDisplayComponents.sectionHeader(
+                    title,
+                    showChevron: false
+                )
+            } else if let section = viewModel.groupedEntities.first(where: { $0.name == title }) {
                 EntityDisplayComponents.sectionHeader(
                     title,
                     showChevron: true,
