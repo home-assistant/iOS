@@ -200,7 +200,10 @@ extension WebViewController {
         Current.Log.info("Showing kiosk settings")
 
         let settingsView = KioskSettingsView()
-        let hostingController = UIHostingController(rootView: NavigationView { settingsView })
+        let hostingController = UIHostingController(
+            rootView: NavigationView { settingsView }
+                .navigationViewStyle(.stack)
+        )
 
         hostingController.modalPresentationStyle = .pageSheet
         present(hostingController, animated: true)

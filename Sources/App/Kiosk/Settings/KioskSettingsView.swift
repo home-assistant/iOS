@@ -14,15 +14,18 @@ public struct KioskSettingsView: View {
     @State private var isAuthenticated = false
     @State private var showingAuthError = false
     @State private var authErrorMessage = ""
+    /// Captured at init time - whether auth is required to access settings
+    /// This is set once and doesn't change even if settings are modified during the session
+    @State private var authRequired: Bool
 
     public init() {
-        _settings = State(initialValue: KioskModeManager.shared.settings)
-    }
-
-    /// Whether authentication is required to access settings
-    /// Uses manager.settings (persisted) not local settings copy
-    private var requiresAuth: Bool {
-        manager.isKioskModeActive && (manager.settings.allowBiometricExit || manager.settings.allowDevicePasscodeExit)
+        let mgr = KioskModeManager.shared
+        _settings = State(initialValue: mgr.settings)
+        // Capture auth requirement at init time based on current kiosk state
+        _authRequired = State(
+            initialValue: mgr.isKioskModeActive &&
+                (mgr.settings.allowBiometricExit || mgr.settings.allowDevicePasscodeExit)
+        )
     }
 
     public var body: some View {
@@ -34,22 +37,26 @@ public struct KioskSettingsView: View {
             clockOptionsSection
         }
         .navigationTitle(L10n.Kiosk.title)
-        .disabled(requiresAuth && !isAuthenticated)
+        .disabled(authRequired && !isAuthenticated)
         .overlay {
-            if requiresAuth, !isAuthenticated {
+            if authRequired, !isAuthenticated {
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
             }
         }
         .onAppear {
-            if requiresAuth {
-                authenticateForSettings()
+            if authRequired {
+                // Delay auth prompt slightly to let the modal fully present
+                // This prevents the auth dialog from dismissing the settings modal
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    authenticateForSettings()
+                }
             } else {
                 isAuthenticated = true
             }
         }
         .onChange(of: settings) { newValue in
-            if isAuthenticated || !requiresAuth {
+            if isAuthenticated || !authRequired {
                 manager.updateSettings(newValue)
             }
         }
@@ -121,42 +128,28 @@ public struct KioskSettingsView: View {
 
     private var kioskModeSection: some View {
         Section {
-            if manager.isKioskModeActive {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemSymbol: .lockFill)
-                            .foregroundColor(.green)
-                        Text(L10n.Kiosk.Active.title)
-                            .font(.headline)
+            Toggle(isOn: Binding(
+                get: { manager.isKioskModeActive },
+                set: { newValue in
+                    if newValue {
+                        manager.enableKioskMode()
+                    } else {
+                        attemptKioskExit()
                     }
+                }
+            )) {
+                Label(L10n.Kiosk.enableButton, systemSymbol: .lock)
+            }
 
-                    Text(L10n.Kiosk.screenLabel(manager.screenState.rawValue))
+            if manager.isKioskModeActive {
+                Text(L10n.Kiosk.screenLabel(manager.screenState.rawValue))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                if let screensaver = manager.activeScreensaverMode {
+                    Text(L10n.Kiosk.screensaverLabel(screensaver.displayName))
                         .font(.caption)
                         .foregroundColor(.secondary)
-
-                    if let screensaver = manager.activeScreensaverMode {
-                        Text(L10n.Kiosk.screensaverLabel(screensaver.displayName))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Button(role: .destructive) {
-                        attemptKioskExit()
-                    } label: {
-                        Label(L10n.Kiosk.exitButton, systemSymbol: .lockOpen)
-                    }
-                    .accessibilityHint(L10n.Kiosk.exitHint)
-                }
-            } else {
-                Toggle(isOn: Binding(
-                    get: { manager.isKioskModeActive },
-                    set: { newValue in
-                        if newValue {
-                            manager.enableKioskMode()
-                        }
-                    }
-                )) {
-                    Label(L10n.Kiosk.enableButton, systemSymbol: .lock)
                 }
             }
         } header: {
@@ -353,8 +346,12 @@ public struct KioskSettingsView: View {
     // MARK: - Authentication
 
     private func attemptKioskExit() {
+        // Use persisted settings for auth checks, not local copy
+        // This prevents bypassing auth by disabling it in the form first
+        let authSettings = manager.settings
+
         // If neither biometric nor passcode auth is required, just exit
-        guard settings.allowBiometricExit || settings.allowDevicePasscodeExit else {
+        guard authSettings.allowBiometricExit || authSettings.allowDevicePasscodeExit else {
             manager.disableKioskMode()
             return
         }
@@ -363,13 +360,13 @@ public struct KioskSettingsView: View {
         var error: NSError?
 
         // Configure which auth methods are allowed
-        if !settings.allowDevicePasscodeExit {
+        if !authSettings.allowDevicePasscodeExit {
             // Only allow biometric, no passcode fallback
             context.localizedFallbackTitle = ""
         }
 
         // Determine which policy to use based on settings
-        let policy: LAPolicy = settings.allowBiometricExit
+        let policy: LAPolicy = authSettings.allowBiometricExit
             ? .deviceOwnerAuthenticationWithBiometrics
             : .deviceOwnerAuthentication
 
@@ -388,7 +385,7 @@ public struct KioskSettingsView: View {
                             break
                         case .userFallback:
                             // User chose to use passcode - try passcode auth if allowed
-                            if settings.allowDevicePasscodeExit {
+                            if authSettings.allowDevicePasscodeExit {
                                 attemptPasscodeAuth()
                             }
                         default:
@@ -398,7 +395,7 @@ public struct KioskSettingsView: View {
                     }
                 }
             }
-        } else if settings.allowDevicePasscodeExit {
+        } else if authSettings.allowDevicePasscodeExit {
             // Biometric not available, try passcode
             attemptPasscodeAuth()
         } else {
