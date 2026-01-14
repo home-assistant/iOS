@@ -2,6 +2,20 @@ import Foundation
 import GRDB
 
 public extension HAAppEntity {
+    var registryTitle: String? {
+        do {
+            let registryEntity = try Current.database().read { db in
+                try AppEntityRegistry
+                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                    .filter(Column(DatabaseTables.EntityRegistry.entityId.rawValue) == entityId)
+                    .fetchOne(db)
+            }
+            return registryEntity?.name
+        } catch {
+            return nil
+        }
+    }
+
     var area: AppArea? {
         do {
             let areas = try AppArea.fetchAreas(for: serverId)
@@ -35,6 +49,30 @@ public extension HAAppEntity {
             Current.Log.error("Failed to fetch device for entity \(entityId): \(error)")
             return nil
         }
+    }
+
+    /// area name -> device name
+    var contextualSubtitle: String? {
+        var subtitle = ""
+        if let areaName = area?.name, !areaName.isEmpty {
+            subtitle = areaName
+        }
+        if let deviceName = device?.name,
+           !deviceName.isEmpty,
+           deviceName.range(of: name, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
+            if !subtitle.isEmpty {
+                subtitle += " • "
+            }
+            subtitle += deviceName
+        }
+        if subtitle.isEmpty {
+            if let domain = Domain(rawValue: domain), [.script, .scene, .automation].contains(domain) {
+                return nil
+            } else {
+                subtitle = entityId
+            }
+        }
+        return subtitle
     }
 }
 

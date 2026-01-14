@@ -1413,6 +1413,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "camera_player.errors.unknown" = "Unknown error";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.no_stream_available" = "No stream available";
+"entity_picker.filter.domain.title" = "Domain";
+"entity_picker.filter.domain.all.title" = "All domains";
+"entity_picker.filter.area.title" = "Area";
+"entity_picker.filter.area.all.title" = "All areas";
+"entity_picker.filter.group_by.title" = "Group by";
+"entity_picker.list.area.no_area.title" = "No area";
 
 /* Kiosk Mode Settings */
 "kiosk.title" = "Kiosk Mode";

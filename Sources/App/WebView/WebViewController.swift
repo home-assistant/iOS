@@ -258,14 +258,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         // Setup kiosk mode integration
         setupKioskMode()
-
-//        #if DEBUG
-//        if #available(iOS 26.0, *) {
-//            let view = HomeView(server: server).embeddedInHostingController()
-//            view.modalPresentationStyle = .fullScreen
-//            present(view, animated: false)
-//        }
-//        #endif
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
