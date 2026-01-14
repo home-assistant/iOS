@@ -1415,9 +1415,37 @@ public enum L10n {
   }
 
   public enum HomeView {
+    public enum Areas {
+      /// Areas
+      public static var title: String { return L10n.tr("Localizable", "home_view.areas.title") }
+    }
+    public enum CommonControls {
+      /// Welcome %@
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_view.common_controls.title", String(describing: p1))
+      }
+    }
     public enum ContextMenu {
       /// Hide
       public static var hide: String { return L10n.tr("Localizable", "home_view.context_menu.hide") }
+    }
+    public enum Customization {
+      public enum AreasLayout {
+        /// Areas layout
+        public static var title: String { return L10n.tr("Localizable", "home_view.customization.areas_layout.title") }
+        public enum Grid {
+          /// Grid
+          public static var title: String { return L10n.tr("Localizable", "home_view.customization.areas_layout.grid.title") }
+        }
+        public enum List {
+          /// List
+          public static var title: String { return L10n.tr("Localizable", "home_view.customization.areas_layout.list.title") }
+        }
+      }
+      public enum CommonControls {
+        /// Controls prediction section
+        public static var title: String { return L10n.tr("Localizable", "home_view.customization.common_controls.title") }
+      }
     }
     public enum EmptyState {
       /// No entities found

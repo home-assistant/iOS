@@ -346,6 +346,7 @@
 "home_sections_reorder_view.done" = "Done";
 "home_sections_reorder_view.title" = "Reorder Rooms";
 "home_view.context_menu.hide" = "Hide";
+"home_view.areas.title" = "Areas";
 "home_view.empty_state.no_entities" = "No entities found";
 "home_view.menu.allow_multiple_selection" = "Allow multiple selection";
 "home_view.menu.customize" = "Customize";
@@ -355,6 +356,11 @@
 "home_view.menu.settings" = "Settings";
 "home_view.menu.show_all" = "Show All";
 "home_view.navigation.subtitle.experimental" = "Experimental feature";
+"home_view.common_controls.title" = "Welcome %@";
+"home_view.customization.common_controls.title" = "Controls prediction section";
+"home_view.customization.areas_layout.title" = "Areas layout";
+"home_view.customization.areas_layout.list.title" = "List";
+"home_view.customization.areas_layout.grid.title" = "Grid";
 "improv.button.continue" = "Continue";
 "improv.connection_state.authorized" = "Setting up Wi-Fi";
 "improv.connection_state.provisioning" = "Connecting to Wi-Fi";

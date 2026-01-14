@@ -93,13 +93,15 @@ public enum DatabaseTables {
     }
 
     // Home View Configuration (per server)
-    public enum HomeViewConfiguration: String {
+    public enum HomeViewConfiguration: String, CaseIterable {
         case id
         case sectionOrder
         case visibleSectionIds
         case allowMultipleSelection
         case entityOrderByRoom
         case hiddenEntityIds
+        case showUsagePredictionSection
+        case areasLayout
     }
 
     // Camera List Configuration (per server)
