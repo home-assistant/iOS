@@ -36,6 +36,7 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
     var hiddenEntityIds: Set<String>
     var showUsagePredictionSection: Bool
     var areasLayout: AreasLayout?
+    var showSummaries: Bool
 
     init(
         id: String,
@@ -45,7 +46,8 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
         entityOrderByRoom: [String: [String]] = [:],
         hiddenEntityIds: Set<String> = [],
         showUsagePredictionSection: Bool = true,
-        areasLayout: AreasLayout? = .list
+        areasLayout: AreasLayout? = .list,
+        showSummaries: Bool = true
     ) {
         self.id = id
         self.sectionOrder = sectionOrder
@@ -55,6 +57,7 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
         self.hiddenEntityIds = hiddenEntityIds
         self.showUsagePredictionSection = showUsagePredictionSection
         self.areasLayout = areasLayout
+        self.showSummaries = showSummaries
     }
 
     /// Fetch configuration for a specific server

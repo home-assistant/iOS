@@ -35,6 +35,16 @@ struct HomeViewCustomizationView: View {
                     }
                 )
             )
+
+            Toggle(
+                L10n.HomeView.Customization.Summaries.title,
+                isOn: Binding(
+                    get: { viewModel.configuration.showSummaries },
+                    set: { newValue in
+                        viewModel.configuration.showSummaries = newValue
+                    }
+                )
+            )
         }
     }
 

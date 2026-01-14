@@ -18,6 +18,7 @@ final class HomeViewConfigurationTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.HomeViewConfiguration.hiddenEntityIds.rawValue, .jsonText)
                     t.column(DatabaseTables.HomeViewConfiguration.showUsagePredictionSection.rawValue, .boolean)
                     t.column(DatabaseTables.HomeViewConfiguration.areasLayout.rawValue, .text)
+                    t.column(DatabaseTables.HomeViewConfiguration.showSummaries.rawValue, .boolean)
                 }
             }
         } else {
