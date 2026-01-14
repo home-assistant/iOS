@@ -1,11 +1,11 @@
 import Foundation
-import Testing
 @testable import HomeAssistant
+import Testing
 
 // MARK: - KioskSettings Codable Tests
 
 struct KioskSettingsCodableTests {
-    @Test func testDefaultSettingsRoundtrip() async throws {
+    @Test func defaultSettingsRoundtrip() async throws {
         let original = KioskSettings()
         let encoded = try JSONEncoder().encode(original)
         let decoded = try JSONDecoder().decode(KioskSettings.self, from: encoded)
@@ -13,7 +13,7 @@ struct KioskSettingsCodableTests {
         #expect(decoded == original)
     }
 
-    @Test func testCustomSettingsRoundtrip() async throws {
+    @Test func customSettingsRoundtrip() async throws {
         var settings = KioskSettings()
         settings.isKioskModeEnabled = true
         settings.allowBiometricExit = false
@@ -40,7 +40,7 @@ struct KioskSettingsCodableTests {
         #expect(decoded.secretExitGestureTaps == 5)
     }
 
-    @Test func testDashboardConfigRoundtrip() async throws {
+    @Test func dashboardConfigRoundtrip() async throws {
         let config = DashboardConfig(
             id: "test-id",
             name: "Living Room",
@@ -59,7 +59,7 @@ struct KioskSettingsCodableTests {
         #expect(decoded.includeInRotation == config.includeInRotation)
     }
 
-    @Test func testDashboardConfigDefaultsOnDecode() async throws {
+    @Test func dashboardConfigDefaultsOnDecode() async throws {
         // Simulate legacy data missing optional fields
         let json = """
         {"name": "Test", "url": "/test"}
@@ -74,7 +74,7 @@ struct KioskSettingsCodableTests {
         #expect(!decoded.id.isEmpty) // Should generate UUID
     }
 
-    @Test func testEntityTriggerRoundtrip() async throws {
+    @Test func entityTriggerRoundtrip() async throws {
         let trigger = EntityTrigger(
             entityId: "binary_sensor.motion",
             triggerState: "on",
@@ -91,7 +91,7 @@ struct KioskSettingsCodableTests {
         #expect(decoded.enabled == trigger.enabled)
     }
 
-    @Test func testClockEntityConfigRoundtrip() async throws {
+    @Test func clockEntityConfigRoundtrip() async throws {
         let config = ClockEntityConfig(
             entityId: "sensor.temperature",
             label: "Outdoor",
@@ -113,7 +113,7 @@ struct KioskSettingsCodableTests {
         #expect(decoded.suffix == "outside")
     }
 
-    @Test func testQuickActionRoundtrip() async throws {
+    @Test func quickActionRoundtrip() async throws {
         let action = QuickAction(
             name: "Movie Mode",
             icon: "mdi:movie",
@@ -133,7 +133,7 @@ struct KioskSettingsCodableTests {
         }
     }
 
-    @Test func testTriggerActionRoundtrip() async throws {
+    @Test func triggerActionRoundtrip() async throws {
         let actions: [TriggerAction] = [
             .navigate(url: "/lovelace/cameras"),
             .setBrightness(level: 0.5),
@@ -155,7 +155,7 @@ struct KioskSettingsCodableTests {
 // MARK: - TimeOfDay Tests
 
 struct TimeOfDayTests {
-    @Test func testIsBeforeSameHourEarlierMinute() async throws {
+    @Test func isBeforeSameHourEarlierMinute() async throws {
         let earlier = TimeOfDay(hour: 10, minute: 15)
         let later = TimeOfDay(hour: 10, minute: 45)
 
@@ -163,7 +163,7 @@ struct TimeOfDayTests {
         #expect(later.isBefore(earlier) == false)
     }
 
-    @Test func testIsBeforeDifferentHours() async throws {
+    @Test func isBeforeDifferentHours() async throws {
         let morning = TimeOfDay(hour: 7, minute: 30)
         let evening = TimeOfDay(hour: 19, minute: 30)
 
@@ -171,7 +171,7 @@ struct TimeOfDayTests {
         #expect(evening.isBefore(morning) == false)
     }
 
-    @Test func testIsBeforeSameTime() async throws {
+    @Test func isBeforeSameTime() async throws {
         let time1 = TimeOfDay(hour: 12, minute: 0)
         let time2 = TimeOfDay(hour: 12, minute: 0)
 
@@ -179,7 +179,7 @@ struct TimeOfDayTests {
         #expect(time2.isBefore(time1) == false)
     }
 
-    @Test func testIsBeforeMidnightEdgeCases() async throws {
+    @Test func isBeforeMidnightEdgeCases() async throws {
         let beforeMidnight = TimeOfDay(hour: 23, minute: 59)
         let afterMidnight = TimeOfDay(hour: 0, minute: 1)
 
@@ -199,13 +199,13 @@ struct TimeOfDayTests {
 // MARK: - DeviceOrientation Tests
 
 struct DeviceOrientationTests {
-    @Test func testMatchesExactSame() async throws {
+    @Test func matchesExactSame() async throws {
         #expect(DeviceOrientation.portrait.matches(.portrait) == true)
         #expect(DeviceOrientation.landscapeLeft.matches(.landscapeLeft) == true)
         #expect(DeviceOrientation.landscapeRight.matches(.landscapeRight) == true)
     }
 
-    @Test func testMatchesLandscapeVariants() async throws {
+    @Test func matchesLandscapeVariants() async throws {
         // .landscape should match both landscapeLeft and landscapeRight
         #expect(DeviceOrientation.landscape.matches(.landscapeLeft) == true)
         #expect(DeviceOrientation.landscape.matches(.landscapeRight) == true)
@@ -215,14 +215,14 @@ struct DeviceOrientationTests {
         #expect(DeviceOrientation.landscapeRight.matches(.landscape) == true)
     }
 
-    @Test func testMatchesDifferentOrientations() async throws {
+    @Test func matchesDifferentOrientations() async throws {
         #expect(DeviceOrientation.portrait.matches(.landscape) == false)
         #expect(DeviceOrientation.portrait.matches(.landscapeLeft) == false)
         #expect(DeviceOrientation.landscapeLeft.matches(.portrait) == false)
         #expect(DeviceOrientation.faceUp.matches(.faceDown) == false)
     }
 
-    @Test func testFromUIDeviceOrientation() async throws {
+    @Test func fromUIDeviceOrientation() async throws {
         #expect(DeviceOrientation.from(.portrait) == .portrait)
         #expect(DeviceOrientation.from(.portraitUpsideDown) == .portraitUpsideDown)
         #expect(DeviceOrientation.from(.landscapeLeft) == .landscapeLeft)
@@ -236,7 +236,7 @@ struct DeviceOrientationTests {
 // MARK: - Enum Display Name Tests
 
 struct EnumDisplayNameTests {
-    @Test func testScreensaverModeDisplayNames() async throws {
+    @Test func screensaverModeDisplayNames() async throws {
         #expect(ScreensaverMode.blank.displayName == "Blank (Black Screen)")
         #expect(ScreensaverMode.dim.displayName == "Dim Dashboard")
         #expect(ScreensaverMode.clock.displayName == "Clock")
@@ -246,21 +246,21 @@ struct EnumDisplayNameTests {
         #expect(ScreensaverMode.customURL.displayName == "Custom Dashboard")
     }
 
-    @Test func testClockStyleDisplayNames() async throws {
+    @Test func clockStyleDisplayNames() async throws {
         #expect(ClockStyle.large.displayName == "Large")
         #expect(ClockStyle.minimal.displayName == "Minimal")
         #expect(ClockStyle.analog.displayName == "Analog")
         #expect(ClockStyle.digital.displayName == "Digital")
     }
 
-    @Test func testScreenCornerDisplayNames() async throws {
+    @Test func screenCornerDisplayNames() async throws {
         #expect(ScreenCorner.topLeft.displayName == "Top Left")
         #expect(ScreenCorner.topRight.displayName == "Top Right")
         #expect(ScreenCorner.bottomLeft.displayName == "Bottom Left")
         #expect(ScreenCorner.bottomRight.displayName == "Bottom Right")
     }
 
-    @Test func testCameraPopupSizeParameters() async throws {
+    @Test func cameraPopupSizeParameters() async throws {
         let small = CameraPopupSize.small.sizeParameters
         #expect(small.widthPercent == 0.4)
         #expect(small.maxWidth == 320)
@@ -274,7 +274,7 @@ struct EnumDisplayNameTests {
 // MARK: - IconMapper Tests
 
 struct IconMapperTests {
-    @Test func testCommonMDIToSFSymbol() async throws {
+    @Test func commonMDIToSFSymbol() async throws {
         #expect(IconMapper.sfSymbol(from: "mdi:home") == "house.fill")
         #expect(IconMapper.sfSymbol(from: "mdi:lightbulb") == "lightbulb.fill")
         #expect(IconMapper.sfSymbol(from: "mdi:thermometer") == "thermometer")
@@ -283,7 +283,7 @@ struct IconMapperTests {
         #expect(IconMapper.sfSymbol(from: "mdi:lock-open") == "lock.open.fill")
     }
 
-    @Test func testMDIPrefixStripping() async throws {
+    @Test func mDIPrefixStripping() async throws {
         // Should work with mdi: prefix - returns mapped value
         let withPrefix = IconMapper.sfSymbol(from: "mdi:home")
         #expect(withPrefix == "house.fill")
@@ -295,21 +295,21 @@ struct IconMapperTests {
         #expect(!directKey.isEmpty)
     }
 
-    @Test func testUnknownMDIReturnsFallback() async throws {
+    @Test func unknownMDIReturnsFallback() async throws {
         let unknown = IconMapper.sfSymbol(from: "mdi:some-unknown-icon-xyz")
 
         // Should return a fallback symbol
         #expect(unknown == "questionmark.circle")
     }
 
-    @Test func testWeatherIcons() async throws {
+    @Test func weatherIcons() async throws {
         #expect(IconMapper.sfSymbol(from: "mdi:weather-cloudy") == "cloud")
         #expect(IconMapper.sfSymbol(from: "mdi:weather-rainy") == "cloud.rain")
         #expect(IconMapper.sfSymbol(from: "mdi:weather-snowy") == "cloud.snow")
         #expect(IconMapper.sfSymbol(from: "mdi:weather-sunny") == "sun.max")
     }
 
-    @Test func testDeviceIcons() async throws {
+    @Test func deviceIcons() async throws {
         #expect(IconMapper.sfSymbol(from: "mdi:television") == "tv")
         #expect(IconMapper.sfSymbol(from: "mdi:speaker") == "speaker.wave.2")
         #expect(IconMapper.sfSymbol(from: "mdi:fan") == "fan")
