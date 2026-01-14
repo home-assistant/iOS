@@ -16,6 +16,7 @@ struct HomeView: View {
     @State private var selectedRoom: (id: String, name: String)?
     @State private var isReorderMode = false
     @State private var draggedEntity: String?
+    @State private var draggedArea: String?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
 
@@ -126,7 +127,7 @@ struct HomeView: View {
         return ScrollView {
             switch layout {
             case .grid:
-                areasGridView(sections: filteredSections)
+                areasGridView(sections: orderedAreas(filteredSections))
             case .list:
                 areasListView(sections: filteredSections)
             }
@@ -176,7 +177,28 @@ struct HomeView: View {
                     spacing: DesignSystem.Spaces.one
                 ) {
                     ForEach(sections) { section in
-                        if !isReorderMode {
+                        if isReorderMode {
+                            AreaGridButton(
+                                section: section,
+                                action: {
+                                    selectedRoom = (id: section.id, name: section.name)
+                                }
+                            )
+                            .modifier(EditModeIndicatorModifier(
+                                isEditing: true,
+                                isDragging: draggedArea == section.id
+                            ))
+                            .onDrag {
+                                draggedArea = section.id
+                                return NSItemProvider(object: section.id as NSString)
+                            }
+                            .onDrop(of: [.text], delegate: AreaDropDelegate(
+                                area: section,
+                                areas: sections,
+                                draggedArea: $draggedArea,
+                                viewModel: viewModel
+                            ))
+                        } else {
                             AreaGridButton(
                                 section: section,
                                 action: {
@@ -339,6 +361,10 @@ struct HomeView: View {
     @ViewBuilder
     private var filterMenuContent: some View {
         reorderButton
+        // Show reorder areas button only when grid layout is active
+        if viewModel.configuration.areasLayout == .grid {
+            reorderAreasButton
+        }
         Divider()
         showAllButton
         allowMultipleSelectionButton
@@ -375,6 +401,16 @@ struct HomeView: View {
             showReorder = true
         } label: {
             Label(L10n.HomeView.Menu.reorder, systemSymbol: .listDash)
+        }
+    }
+
+    private var reorderAreasButton: some View {
+        Button {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                isReorderMode.toggle()
+            }
+        } label: {
+            Label("Reorder Areas", systemSymbol: isReorderMode ? .checkmark : .squareGrid2x2)
         }
     }
 
@@ -473,6 +509,25 @@ struct HomeView: View {
                 } label: {
                     Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
                 }
+            }
+        }
+    }
+
+    // MARK: - Helper Methods
+
+    /// Orders areas based on saved area order
+    private func orderedAreas(_ sections: [HomeViewModel.RoomSection]) -> [HomeViewModel.RoomSection] {
+        let savedOrder = viewModel.getAreaOrder()
+
+        if savedOrder.isEmpty {
+            return sections
+        } else {
+            let orderIndex = Dictionary(uniqueKeysWithValues: savedOrder.enumerated().map { ($1, $0) })
+            return sections.sorted { a, b in
+                let ia = orderIndex[a.id] ?? Int.max
+                let ib = orderIndex[b.id] ?? Int.max
+                if ia == ib { return a.name < b.name }
+                return ia < ib
             }
         }
     }

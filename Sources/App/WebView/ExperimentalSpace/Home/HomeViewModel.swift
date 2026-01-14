@@ -492,4 +492,14 @@ final class HomeViewModel: ObservableObject {
     func getEntityOrder(for roomId: String) -> [String] {
         configuration.entityOrderByRoom[roomId] ?? []
     }
+
+    // MARK: - Area Order
+
+    func saveAreaOrder(_ order: [String]) {
+        configuration.areaOrder = order
+    }
+
+    func getAreaOrder() -> [String] {
+        configuration.areaOrder
+    }
 }

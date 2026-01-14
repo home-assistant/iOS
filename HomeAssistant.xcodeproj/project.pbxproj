@@ -2524,7 +2524,8 @@
 		4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModeIndicatorModifier.swift; sourceTree = "<group>"; };
 		4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDropDelegate.swift; sourceTree = "<group>"; };
 		4289FCB02F0BFC07005189AA /* RoomIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomIdentifier.swift; sourceTree = "<group>"; };
-		4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewConfiguration.swift; sourceTree = "<group>"; };
+				A11C6FE10E3E4A64B0939A24 /* AreaDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaDropDelegate.swift; sourceTree = "<group>"; };
+4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewConfiguration.swift; sourceTree = "<group>"; };
 		4289FCBA2F0C0143005189AA /* HomeViewConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewConfigurationTable.swift; sourceTree = "<group>"; };
 		428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilySizes.swift; sourceTree = "<group>"; };
 		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
@@ -5795,6 +5796,7 @@
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
 				428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
+				A11C6FE10E3E4A64B0939A24 /* AreaDropDelegate.swift */,
 				4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */,
 				420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */,
 				429C33C42F17CE4C0033EF5E /* AreaGridButton.swift */,
@@ -9377,6 +9379,7 @@
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
 				428DC00F2F0D8BF5003B08D5 /* FanControlsView.swift in Sources */,
+				7AB78A2517854A45BB666D34 /* AreaDropDelegate.swift in Sources */,
 				4289FCB92F0BFF50005189AA /* HomeViewConfiguration.swift in Sources */,
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
 				4210CCF32F1532C400B71FB9 /* CameraMJPEGPlayerView.swift in Sources */,

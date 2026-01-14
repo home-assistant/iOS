@@ -103,6 +103,7 @@ public enum DatabaseTables {
         case showUsagePredictionSection
         case areasLayout
         case showSummaries
+        case areaOrder
     }
 
     // Camera List Configuration (per server)
