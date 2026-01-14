@@ -35,8 +35,9 @@ final class EntityPickerViewModel: ObservableObject {
     private var filterTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
 
-    init(domainFilter: Domain?) {
+    init(domainFilter: Domain?, selectedServerId: String?) {
         self.domainFilter = domainFilter
+        self.selectedServerId = selectedServerId
         setupFiltering()
     }
 

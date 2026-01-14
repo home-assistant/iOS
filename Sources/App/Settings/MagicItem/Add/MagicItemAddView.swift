@@ -18,6 +18,7 @@ struct MagicItemAddView: View {
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = MagicItemAddViewModel()
+    @State private var selectedEntity: HAAppEntity?
     private let visiblePickerOptions: [PickerOption]
 
     let context: Context
@@ -47,20 +48,22 @@ struct MagicItemAddView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                pickerView
+            Group {
                 switch viewModel.selectedItemType {
                 case .actions:
-                    actionsList
-                case .scripts:
-                    scriptsPerServerList
-                case .scenes:
-                    scenesPerServerList
-                case .entities:
-                    entitiesPerServerList
+                    List {
+                        pickerView
+                        actionsList
+                    }
+                    .searchable(text: $viewModel.searchText)
+                case .entities, .scripts, .scenes:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        entitiesPerServerList(domainFilter: viewModel.selectedItemType == .scripts ? .script : viewModel.selectedItemType == .scenes ? .scene : nil)
+                    }
                 }
             }
-            .searchable(text: $viewModel.searchText)
             .onAppear {
                 autoSelectItemType()
                 viewModel.loadContent()
@@ -163,12 +166,35 @@ struct MagicItemAddView: View {
     }
 
     @ViewBuilder
-    private var entitiesPerServerList: some View {
-        ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
-        if let server = Current.servers.all
-            .first(where: { $0.identifier.rawValue == viewModel.selectedServerId }) ?? Current.servers.all.first {
-            list(entities: viewModel.entities[server] ?? [], serverId: server.identifier.rawValue, type: .entity)
-        }
+    private func entitiesPerServerList(domainFilter: Domain? = nil) -> some View {
+        EntityPicker(
+            selectedServerId: Current.servers.all.first(where: { $0.identifier.rawValue == viewModel.selectedServerId })?.identifier.rawValue,
+            selectedEntity: $selectedEntity,
+            domainFilter: domainFilter,
+            mode: .inline
+        )
+        .background(
+            NavigationLink("", isActive: .init(get: {
+                selectedEntity != nil
+            }, set: { _ in
+                selectedEntity = nil
+            })) {
+                if let selectedEntity {
+                    MagicItemCustomizationView(
+                        mode: .add,
+                        context: context,
+                        item: .init(
+                            id: selectedEntity.entityId,
+                            serverId: selectedEntity.serverId,
+                            type: .entity
+                        )
+                    ) { itemToAdd in
+                        self.itemToAdd(itemToAdd)
+                        dismiss()
+                    }
+                }
+            }
+        )
     }
 
     @ViewBuilder

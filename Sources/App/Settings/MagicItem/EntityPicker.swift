@@ -6,6 +6,7 @@ struct EntityPicker: View {
     enum Mode {
         case button
         case list
+        case inline
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -15,9 +16,9 @@ struct EntityPicker: View {
     @Binding private var selectedEntity: HAAppEntity?
     private let mode: Mode
 
-    init(selectedEntity: Binding<HAAppEntity?>, domainFilter: Domain?, mode: Mode = .button) {
+    init(selectedServerId: String? = nil, selectedEntity: Binding<HAAppEntity?>, domainFilter: Domain?, mode: Mode = .button) {
         self._selectedEntity = selectedEntity
-        self._viewModel = .init(wrappedValue: EntityPickerViewModel(domainFilter: domainFilter))
+        self._viewModel = .init(wrappedValue: EntityPickerViewModel(domainFilter: domainFilter, selectedServerId: selectedServerId))
         self.mode = mode
     }
 
@@ -27,11 +28,12 @@ struct EntityPicker: View {
             case .button:
                 button
                     .sheet(isPresented: $viewModel.showList) {
-                        screen
+                        fullscreen
                     }
-
             case .list:
-                screen
+                fullscreen
+            case .inline:
+                content
             }
         }
     }
@@ -48,50 +50,9 @@ struct EntityPicker: View {
         })
     }
 
-    private var screen: some View {
+    private var fullscreen: some View {
         NavigationView {
-            List {
-                ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
-                if #unavailable(iOS 26.0) {
-                    filtersView
-                }
-                ForEach(
-                    viewModel.filteredEntitiesByGroup.sorted(by: { $0.key < $1.key }),
-                    id: \.key
-                ) { group, filteredEntities in
-                    Section(group.uppercased()) {
-                        ForEach(filteredEntities, id: \.id) { entity in
-                            Button(action: {
-                                selectedEntity = entity
-                                viewModel.showList = false
-                            }, label: {
-                                EntityRowView(
-                                    entity: entity,
-                                    isSelected: selectedEntity == entity
-                                )
-                            })
-                            .tint(.accentColor)
-                        }
-                    }
-                }
-            }
-            .searchable(text: $viewModel.searchTerm)
-            .modify { view in
-                if #available(iOS 26.0, *) {
-                    view.safeAreaBar(edge: .bottom) {
-                        filtersView
-                            .padding(.horizontal)
-                    }
-                } else {
-                    view
-                }
-            }
-            .onAppear {
-                viewModel.fetchEntities()
-                if viewModel.selectedServerId == nil {
-                    viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
-                }
-            }
+            content
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
@@ -105,6 +66,51 @@ struct EntityPicker: View {
             }
         }
         .navigationViewStyle(.stack)
+    }
+
+    private var content: some View {
+        List {
+            ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
+            if #unavailable(iOS 26.0) {
+                filtersView
+            }
+            ForEach(
+                viewModel.filteredEntitiesByGroup.sorted(by: { $0.key < $1.key }),
+                id: \.key
+            ) { group, filteredEntities in
+                Section(group.uppercased()) {
+                    ForEach(filteredEntities, id: \.id) { entity in
+                        Button(action: {
+                            selectedEntity = entity
+                            viewModel.showList = false
+                        }, label: {
+                            EntityRowView(
+                                entity: entity,
+                                isSelected: selectedEntity == entity
+                            )
+                        })
+                        .tint(.accentColor)
+                    }
+                }
+            }
+        }
+        .searchable(text: $viewModel.searchTerm)
+        .modify { view in
+            if #available(iOS 26.0, *) {
+                view.safeAreaBar(edge: .bottom) {
+                    filtersView
+                        .padding(.horizontal)
+                }
+            } else {
+                view
+            }
+        }
+        .onAppear {
+            viewModel.fetchEntities()
+            if viewModel.selectedServerId == nil {
+                viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
+            }
+        }
     }
 
     @ViewBuilder
