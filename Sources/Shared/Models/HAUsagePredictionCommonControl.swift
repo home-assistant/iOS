@@ -1,3 +1,11 @@
+//
+//  HAUsagePredictionCommonControl.swift
+//  HomeAssistant
+//
+//  Created by Bruno Pantaleão on 14/1/26.
+//  Copyright © 2026 Home Assistant. All rights reserved.
+//
+
 import Foundation
 import HAKit
 

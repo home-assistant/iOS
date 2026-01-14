@@ -11,13 +11,8 @@ final class HomeViewModel: ObservableObject {
     struct RoomSection: Identifiable, Equatable {
         let id: String
         let name: String
-        let icon: String?
         let entityIds: Set<String>
     }
-
-    // MARK: - Constants
-
-    static let usagePredictionSectionId = "usage-prediction-common-control"
 
     var groupedEntities: [RoomSection] = []
     var isLoading = false
@@ -37,10 +32,6 @@ final class HomeViewModel: ObservableObject {
             buildRoomsIfNeeded()
         }
     }
-
-    var cachedUserName: String = ""
-    private var lastUsagePredictionLoadTime: Date?
-    private let usagePredictionLoadInterval: TimeInterval = 120 // 2 minutes
 
     var orderedSectionsForMenu: [RoomSection] {
         // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
@@ -63,9 +54,8 @@ final class HomeViewModel: ObservableObject {
             return nil
         }
         return RoomSection(
-            id: Self.usagePredictionSectionId,
-            name: L10n.HomeView.CommonControls.title(cachedUserName),
-            icon: "app.background.dotted",
+            id: "usage-prediction-common-control",
+            name: "Common Controls",
             entityIds: Set(entities)
         )
     }
@@ -93,9 +83,6 @@ final class HomeViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
 
-        // Cache the username from the current user
-        await cacheUserName()
-
         // Load usage prediction common control data
         await loadUsagePredictionCommonControl()
 
@@ -104,41 +91,15 @@ final class HomeViewModel: ObservableObject {
         isLoading = false
     }
 
-    private func cacheUserName() async {
-        Current.api(for: server)?.connection.caches.user.once { [weak self] user in
-            guard let self else { return }
-            cachedUserName = user.name ?? ""
-            Current.Log.verbose("Cached user name: \(String(describing: user.name))")
-        }
-    }
-
     private func loadUsagePredictionCommonControl() async {
-        // Check if we should load based on time interval
-        let shouldLoad = shouldLoadUsagePrediction()
-        guard shouldLoad else {
-            Current.Log.verbose("Skipping usage prediction load - within 2 minute interval")
-            return
-        }
-
         Current.api(for: server)?.connection.send(.usagePredictionCommonControl()) { result in
             switch result {
-            case let .success(usagePredictionCommonControl):
+            case .success(let usagePredictionCommonControl):
                 self.usagePredictionCommonControl = usagePredictionCommonControl
-                self.lastUsagePredictionLoadTime = Date()
-            case let .failure(error):
+            case .failure(let error):
                 Current.Log.error("Failed to load usage prediction common control: \(error.localizedDescription)")
             }
         }
-    }
-
-    private func shouldLoadUsagePrediction() -> Bool {
-        guard let lastLoadTime = lastUsagePredictionLoadTime else {
-            // Never loaded before, should load
-            return true
-        }
-
-        let timeSinceLastLoad = Date().timeIntervalSince(lastLoadTime)
-        return timeSinceLastLoad >= usagePredictionLoadInterval
     }
 
     // MARK: - Lifecycle Management
@@ -146,9 +107,6 @@ final class HomeViewModel: ObservableObject {
     /// Call this when the app enters foreground
     func handleAppDidBecomeActive() {
         Current.Log.info("HomeViewModel: App became active, starting subscriptions")
-        Task {
-            await loadUsagePredictionCommonControl()
-        }
         startSubscriptions()
     }
 
@@ -289,7 +247,7 @@ final class HomeViewModel: ObservableObject {
         guard let areas else { return }
 
         groupedEntities = areas.map {
-            RoomSection(id: $0.id, name: $0.name, icon: $0.icon, entityIds: $0.entities)
+            RoomSection(id: $0.id, name: $0.name, entityIds: $0.entities)
         }
     }
 
