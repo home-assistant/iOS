@@ -1,11 +1,12 @@
 import LocalAuthentication
 import SFSafeSymbols
+import Shared
 import SwiftUI
 
 // MARK: - Main Kiosk Settings View
 
-/// Basic kiosk settings view for PR 1
-/// Additional settings (dashboard rotation, entity triggers, camera) will be added in future PRs
+/// Kiosk settings view
+/// TODO: Add dashboard rotation, entity triggers, and camera settings
 public struct KioskSettingsView: View {
     @ObservedObject private var manager = KioskModeManager.shared
     @State private var settings: KioskSettings
@@ -25,12 +26,12 @@ public struct KioskSettingsView: View {
             screensaverSection
             clockOptionsSection
         }
-        .navigationTitle("Kiosk Mode")
+        .navigationTitle(L10n.Kiosk.title)
         .onChange(of: settings) { newValue in
             manager.updateSettings(newValue)
         }
-        .alert("Authentication Error", isPresented: $showingAuthError) {
-            Button("OK", role: .cancel) {}
+        .alert(L10n.Kiosk.AuthError.title, isPresented: $showingAuthError) {
+            Button(L10n.okLabel, role: .cancel) {}
         } message: {
             Text(authErrorMessage)
         }
@@ -45,16 +46,16 @@ public struct KioskSettingsView: View {
                     HStack {
                         Image(systemSymbol: .lockFill)
                             .foregroundColor(.green)
-                        Text("Kiosk Mode Active")
+                        Text(L10n.Kiosk.Active.title)
                             .font(.headline)
                     }
 
-                    Text("Screen: \(manager.screenState.rawValue)")
+                    Text(L10n.Kiosk.screenLabel(manager.screenState.rawValue))
                         .font(.caption)
                         .foregroundColor(.secondary)
 
                     if let screensaver = manager.activeScreensaverMode {
-                        Text("Screensaver: \(screensaver.displayName)")
+                        Text(L10n.Kiosk.screensaverLabel(screensaver.displayName))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -62,9 +63,9 @@ public struct KioskSettingsView: View {
                     Button(role: .destructive) {
                         attemptKioskExit()
                     } label: {
-                        Label("Exit Kiosk Mode", systemSymbol: .lockOpen)
+                        Label(L10n.Kiosk.exitButton, systemSymbol: .lockOpen)
                     }
-                    .accessibilityHint("Double-tap to exit kiosk mode. Authentication may be required.")
+                    .accessibilityHint(L10n.Kiosk.exitHint)
                 }
             } else {
                 Toggle(isOn: Binding(
@@ -75,16 +76,14 @@ public struct KioskSettingsView: View {
                         }
                     }
                 )) {
-                    Label("Enable Kiosk Mode", systemSymbol: .lock)
+                    Label(L10n.Kiosk.enableButton, systemSymbol: .lock)
                 }
             }
         } header: {
-            Text("Kiosk Mode")
+            Text(L10n.Kiosk.Section.title)
         } footer: {
             if !manager.isKioskModeActive {
-                Text(
-                    "When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit."
-                )
+                Text(L10n.Kiosk.Footer.description)
             }
         }
     }
@@ -94,51 +93,54 @@ public struct KioskSettingsView: View {
     private var coreSettingsSection: some View {
         Section {
             Toggle(isOn: $settings.allowBiometricExit) {
-                Label("Allow Face ID / Touch ID", systemSymbol: .faceid)
+                Label(L10n.Kiosk.Security.biometric, systemSymbol: .faceid)
             }
 
             Toggle(isOn: $settings.allowDevicePasscodeExit) {
-                Label("Allow Device Passcode", systemSymbol: .lockShield)
+                Label(L10n.Kiosk.Security.passcode, systemSymbol: .lockShield)
             }
 
             Toggle(isOn: $settings.navigationLockdown) {
-                Label("Lock Navigation", systemSymbol: .handRaised)
+                Label(L10n.Kiosk.Security.lockNavigation, systemSymbol: .handRaised)
             }
 
             Toggle(isOn: $settings.hideStatusBar) {
-                Label("Hide Status Bar", systemSymbol: .rectangleExpandVertical)
+                Label(L10n.Kiosk.Security.hideStatusBar, systemSymbol: .rectangleExpandVertical)
             }
 
             Toggle(isOn: $settings.preventAutoLock) {
-                Label("Prevent Auto-Lock", systemSymbol: .lockOpenDisplay)
+                Label(L10n.Kiosk.Security.preventAutolock, systemSymbol: .lockOpenDisplay)
             }
 
             Toggle(isOn: $settings.wakeOnTouch) {
-                Label("Wake on Touch", systemSymbol: .handTap)
+                Label(L10n.Kiosk.Security.wakeOnTouch, systemSymbol: .handTap)
             }
 
             // Secret Exit Gesture
             Toggle(isOn: $settings.secretExitGestureEnabled) {
-                Label("Secret Exit Gesture", systemSymbol: .handTap)
+                Label(L10n.Kiosk.Security.secretGesture, systemSymbol: .handTap)
             }
 
             if settings.secretExitGestureEnabled {
-                Picker("Exit Gesture Corner", selection: $settings.secretExitGestureCorner) {
+                Picker(L10n.Kiosk.Security.gestureCorner, selection: $settings.secretExitGestureCorner) {
                     ForEach(ScreenCorner.allCases, id: \.self) { corner in
                         Text(corner.displayName).tag(corner)
                     }
                 }
 
                 Stepper(value: $settings.secretExitGestureTaps, in: 2 ... 5) {
-                    Label("Taps Required: \(settings.secretExitGestureTaps)", systemSymbol: .number)
+                    Label(L10n.Kiosk.Security.tapsRequired(settings.secretExitGestureTaps), systemSymbol: .number)
                 }
             }
         } header: {
-            Text("Security & Display")
+            Text(L10n.Kiosk.Security.section)
         } footer: {
             if settings.secretExitGestureEnabled {
                 Text(
-                    "Tap the \(settings.secretExitGestureCorner.displayName.lowercased()) corner \(settings.secretExitGestureTaps) times to access kiosk settings when locked."
+                    L10n.Kiosk.Security.gestureFooter(
+                        settings.secretExitGestureCorner.displayName.lowercased(),
+                        settings.secretExitGestureTaps
+                    )
                 )
             }
         }
@@ -149,48 +151,48 @@ public struct KioskSettingsView: View {
     private var brightnessSection: some View {
         Section {
             Toggle(isOn: $settings.brightnessControlEnabled) {
-                Label("Brightness Control", systemSymbol: .sunMax)
+                Label(L10n.Kiosk.Brightness.control, systemSymbol: .sunMax)
             }
 
             if settings.brightnessControlEnabled {
                 VStack(alignment: .leading) {
-                    Text("Manual Brightness: \(Int(settings.manualBrightness * 100))%")
+                    Text(L10n.Kiosk.Brightness.manual(Int(settings.manualBrightness * 100)))
                         .font(.caption)
                     Slider(value: $settings.manualBrightness, in: 0.1 ... 1.0, step: 0.05)
                 }
 
                 Toggle(isOn: $settings.brightnessScheduleEnabled) {
-                    Label("Day/Night Schedule", systemSymbol: .clock)
+                    Label(L10n.Kiosk.Brightness.schedule, systemSymbol: .clock)
                 }
 
                 if settings.brightnessScheduleEnabled {
                     VStack(alignment: .leading) {
-                        Text("Day Brightness: \(Int(settings.dayBrightness * 100))%")
+                        Text(L10n.Kiosk.Brightness.day(Int(settings.dayBrightness * 100)))
                             .font(.caption)
                         Slider(value: $settings.dayBrightness, in: 0.1 ... 1.0, step: 0.05)
                     }
 
                     VStack(alignment: .leading) {
-                        Text("Night Brightness: \(Int(settings.nightBrightness * 100))%")
+                        Text(L10n.Kiosk.Brightness.night(Int(settings.nightBrightness * 100)))
                             .font(.caption)
                         Slider(value: $settings.nightBrightness, in: 0.05 ... 1.0, step: 0.05)
                     }
 
                     HStack {
-                        Text("Day starts")
+                        Text(L10n.Kiosk.Brightness.dayStarts)
                         Spacer()
                         TimeOfDayPicker(time: $settings.dayStartTime)
                     }
 
                     HStack {
-                        Text("Night starts")
+                        Text(L10n.Kiosk.Brightness.nightStarts)
                         Spacer()
                         TimeOfDayPicker(time: $settings.nightStartTime)
                     }
                 }
             }
         } header: {
-            Text("Brightness")
+            Text(L10n.Kiosk.Brightness.section)
         }
     }
 
@@ -199,45 +201,45 @@ public struct KioskSettingsView: View {
     private var screensaverSection: some View {
         Section {
             Toggle(isOn: $settings.screensaverEnabled) {
-                Label("Screensaver", systemSymbol: .moonStars)
+                Label(L10n.Kiosk.Screensaver.toggle, systemSymbol: .moonStars)
             }
 
             if settings.screensaverEnabled {
-                // For PR 1, only basic modes are fully supported
-                Picker("Mode", selection: $settings.screensaverMode) {
-                    Text("Clock").tag(ScreensaverMode.clock)
-                    Text("Dim").tag(ScreensaverMode.dim)
-                    Text("Blank").tag(ScreensaverMode.blank)
+                // TODO: Add photo and custom URL screensaver modes
+                Picker(L10n.Kiosk.Screensaver.mode, selection: $settings.screensaverMode) {
+                    Text(L10n.Kiosk.Screensaver.Mode.clock).tag(ScreensaverMode.clock)
+                    Text(L10n.Kiosk.Screensaver.Mode.dim).tag(ScreensaverMode.dim)
+                    Text(L10n.Kiosk.Screensaver.Mode.blank).tag(ScreensaverMode.blank)
                 }
 
                 HStack {
-                    Text("Timeout")
+                    Text(L10n.Kiosk.Screensaver.timeout)
                     Spacer()
                     Picker("", selection: $settings.screensaverTimeout) {
-                        Text("1 minute").tag(TimeInterval(60))
-                        Text("2 minutes").tag(TimeInterval(120))
-                        Text("5 minutes").tag(TimeInterval(300))
-                        Text("10 minutes").tag(TimeInterval(600))
-                        Text("15 minutes").tag(TimeInterval(900))
-                        Text("30 minutes").tag(TimeInterval(1800))
+                        Text(L10n.Kiosk.Screensaver.Timeout._1min).tag(TimeInterval(60))
+                        Text(L10n.Kiosk.Screensaver.Timeout._2min).tag(TimeInterval(120))
+                        Text(L10n.Kiosk.Screensaver.Timeout._5min).tag(TimeInterval(300))
+                        Text(L10n.Kiosk.Screensaver.Timeout._10min).tag(TimeInterval(600))
+                        Text(L10n.Kiosk.Screensaver.Timeout._15min).tag(TimeInterval(900))
+                        Text(L10n.Kiosk.Screensaver.Timeout._30min).tag(TimeInterval(1800))
                     }
                     .labelsHidden()
                 }
 
                 VStack(alignment: .leading) {
-                    Text("Dim Level: \(Int(settings.screensaverDimLevel * 100))%")
+                    Text(L10n.Kiosk.Screensaver.dimLevel(Int(settings.screensaverDimLevel * 100)))
                         .font(.caption)
                     Slider(value: $settings.screensaverDimLevel, in: 0.01 ... 0.5, step: 0.01)
                 }
 
                 Toggle(isOn: $settings.pixelShiftEnabled) {
-                    Label("Pixel Shift (OLED)", systemSymbol: .arrowLeftArrowRight)
+                    Label(L10n.Kiosk.Screensaver.pixelShift, systemSymbol: .arrowLeftArrowRight)
                 }
             }
         } header: {
-            Text("Screensaver")
+            Text(L10n.Kiosk.Screensaver.section)
         } footer: {
-            Text("Pixel shift helps prevent burn-in on OLED displays by slightly moving content periodically.")
+            Text(L10n.Kiosk.Screensaver.pixelShiftFooter)
         }
     }
 
@@ -245,25 +247,25 @@ public struct KioskSettingsView: View {
 
     private var clockOptionsSection: some View {
         Section {
-            Picker("Clock Style", selection: $settings.clockStyle) {
+            Picker(L10n.Kiosk.Clock.style, selection: $settings.clockStyle) {
                 ForEach(ClockStyle.allCases, id: \.self) { style in
                     Text(style.displayName).tag(style)
                 }
             }
 
             Toggle(isOn: $settings.clockShowDate) {
-                Label("Show Date", systemSymbol: .calendar)
+                Label(L10n.Kiosk.Clock.showDate, systemSymbol: .calendar)
             }
 
             Toggle(isOn: $settings.clockShowSeconds) {
-                Label("Show Seconds", systemSymbol: .clock)
+                Label(L10n.Kiosk.Clock.showSeconds, systemSymbol: .clock)
             }
 
             Toggle(isOn: $settings.clockUse24HourFormat) {
-                Label("24-Hour Format", systemSymbol: .clock)
+                Label(L10n.Kiosk.Clock._24hour, systemSymbol: .clock)
             }
         } header: {
-            Text("Clock Display")
+            Text(L10n.Kiosk.Clock.section)
         }
     }
 
@@ -275,7 +277,7 @@ public struct KioskSettingsView: View {
 
         // Check what authentication methods are available
         if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
-            let reason = "Authenticate to exit kiosk mode"
+            let reason = L10n.Kiosk.AuthError.reason
 
             context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authError in
                 DispatchQueue.main.async {
@@ -310,7 +312,7 @@ struct TimeOfDayPicker: View {
 
     var body: some View {
         HStack {
-            Picker("Hour", selection: $time.hour) {
+            Picker(L10n.Kiosk.Time.hour, selection: $time.hour) {
                 ForEach(0 ..< 24, id: \.self) { hour in
                     Text(String(format: "%02d", hour)).tag(hour)
                 }
@@ -321,7 +323,7 @@ struct TimeOfDayPicker: View {
 
             Text(":")
 
-            Picker("Minute", selection: $time.minute) {
+            Picker(L10n.Kiosk.Time.minute, selection: $time.minute) {
                 ForEach([0, 15, 30, 45], id: \.self) { minute in
                     Text(String(format: "%02d", minute)).tag(minute)
                 }

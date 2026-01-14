@@ -3,22 +3,17 @@ import Shared
 import SwiftUI
 import UIKit
 
-// MARK: - Notification Name Extension
-
-extension Notification.Name {
-    static let kioskPixelShiftTick = Notification.Name("KioskPixelShift")
-}
-
-// MARK: - Screensaver View Controller
+// MARK: - Kiosk Screensaver View Controller
 
 /// Main view controller that hosts and manages screensaver views
-/// Supports screensaver modes: blank, dim, clock (photos and custom URL in future PRs)
-public final class ScreensaverViewController: UIViewController, UIGestureRecognizerDelegate {
+/// Supports screensaver modes: blank, dim, clock
+/// TODO: Add photo and custom URL screensaver modes
+public final class KioskScreensaverViewController: UIViewController, UIGestureRecognizerDelegate, KioskModeObserver {
     // MARK: - Properties
 
     private var currentMode: ScreensaverMode?
     private var hostingController: UIHostingController<AnyView>?
-    private var secretExitGestureController: SecretExitGestureViewController?
+    private var secretExitGestureController: KioskSecretExitGestureViewController?
     private var cancellables = Set<AnyCancellable>()
     private var pixelShiftOffset: CGPoint = .zero
     private var wakeGesture: UITapGestureRecognizer?
@@ -88,7 +83,7 @@ public final class ScreensaverViewController: UIViewController, UIGestureRecogni
     // MARK: - Secret Exit Gesture
 
     private func setupSecretExitGesture() {
-        let controller = SecretExitGestureViewController()
+        let controller = KioskSecretExitGestureViewController()
         secretExitGestureController = controller
 
         // Forward the callback
@@ -114,7 +109,7 @@ public final class ScreensaverViewController: UIViewController, UIGestureRecogni
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        KioskModeManager.shared.removeObserver(self)
     }
 
     override public var prefersStatusBarHidden: Bool {
@@ -148,17 +143,16 @@ public final class ScreensaverViewController: UIViewController, UIGestureRecogni
             showDimScreensaver()
 
         case .clock, .clockWithEntities:
-            // For PR 1, clockWithEntities falls back to basic clock
-            // Entity display will be added in PR 2
+            // TODO: Add entity display support for clockWithEntities mode
             showClockScreensaver()
 
         case .photos, .photosWithClock:
-            // Photos not implemented in PR 1, fall back to clock
+            // TODO: Implement photo screensaver
             Current.Log.warning("Photo screensaver not yet implemented, falling back to clock")
             showClockScreensaver()
 
         case .customURL:
-            // Custom URL not implemented in PR 1, fall back to clock
+            // TODO: Implement custom URL screensaver
             Current.Log.warning("Custom URL screensaver not yet implemented, falling back to clock")
             showClockScreensaver()
         }
@@ -211,16 +205,13 @@ public final class ScreensaverViewController: UIViewController, UIGestureRecogni
     // MARK: - Private Methods
 
     private func setupObservers() {
-        // Listen for pixel shift ticks
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handlePixelShiftTick),
-            name: .kioskPixelShiftTick,
-            object: nil
-        )
+        // Register as kiosk mode observer for pixel shift notifications
+        KioskModeManager.shared.addObserver(self)
     }
 
-    @objc private func handlePixelShiftTick() {
+    // MARK: - KioskModeObserver
+
+    public func kioskPixelShiftDidTrigger(amount: CGFloat) {
         applyPixelShift()
     }
 
@@ -252,7 +243,7 @@ public final class ScreensaverViewController: UIViewController, UIGestureRecogni
     }
 
     private func showClockScreensaver() {
-        let clockView = ClockScreensaverView()
+        let clockView = KioskClockScreensaverView()
         embedSwiftUIView(AnyView(clockView))
     }
 

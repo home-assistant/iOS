@@ -3,6 +3,32 @@ import Foundation
 import Shared
 import UIKit
 
+// MARK: - Kiosk Mode Observer Protocol
+
+/// Protocol for observing kiosk mode changes
+/// Implement this protocol and register with KioskModeManager to receive updates
+public protocol KioskModeObserver: AnyObject {
+    /// Called when kiosk mode is enabled or disabled
+    func kioskModeDidChange(isActive: Bool)
+
+    /// Called when kiosk settings change
+    func kioskSettingsDidChange(_ settings: KioskSettings)
+
+    /// Called when screen state changes (on/dimmed/screensaver/off)
+    func kioskScreenStateDidChange(_ state: ScreenState)
+
+    /// Called when pixel shift should be applied (for OLED burn-in prevention)
+    func kioskPixelShiftDidTrigger(amount: CGFloat)
+}
+
+/// Default implementations make all methods optional
+public extension KioskModeObserver {
+    func kioskModeDidChange(isActive: Bool) {}
+    func kioskSettingsDidChange(_ settings: KioskSettings) {}
+    func kioskScreenStateDidChange(_ state: ScreenState) {}
+    func kioskPixelShiftDidTrigger(amount: CGFloat) {}
+}
+
 // MARK: - Kiosk Mode Manager
 
 /// Central singleton managing kiosk mode functionality
@@ -50,6 +76,10 @@ public final class KioskModeManager: ObservableObject {
     /// Whether connected to Home Assistant
     @Published public private(set) var isConnectedToHA: Bool = false
 
+    /// Pixel shift trigger counter - observe this in SwiftUI to trigger pixel shift
+    /// Increments each time pixel shift should occur
+    @Published public private(set) var pixelShiftTrigger: Int = 0
+
     // MARK: - Private Properties
 
     private var cancellables = Set<AnyCancellable>()
@@ -57,6 +87,17 @@ public final class KioskModeManager: ObservableObject {
     private var brightnessTimer: Timer?
     private var pixelShiftTimer: Timer?
     private var originalBrightness: Float?
+
+    /// Weak wrapper for observers to avoid retain cycles
+    private class WeakObserver {
+        weak var observer: KioskModeObserver?
+        init(_ observer: KioskModeObserver) {
+            self.observer = observer
+        }
+    }
+
+    /// Registered observers
+    private var observers: [WeakObserver] = []
 
     // MARK: - Callbacks
 
@@ -75,11 +116,44 @@ public final class KioskModeManager: ObservableObject {
     /// Called when kiosk mode is enabled/disabled (for UI lockdown)
     public var onKioskModeChange: ((Bool) -> Void)?
 
-    // MARK: - Notifications
+    // MARK: - Observer Management
 
-    public static let settingsDidChangeNotification = Notification.Name("KioskModeSettingsDidChange")
-    public static let screenStateDidChangeNotification = Notification.Name("KioskModeScreenStateDidChange")
-    public static let kioskModeDidChangeNotification = Notification.Name("KioskModeDidChange")
+    /// Register an observer to receive kiosk mode updates
+    public func addObserver(_ observer: KioskModeObserver) {
+        // Clean up any nil references while adding
+        observers.removeAll { $0.observer == nil }
+
+        // Check if already registered
+        guard !observers.contains(where: { $0.observer === observer }) else { return }
+
+        observers.append(WeakObserver(observer))
+    }
+
+    /// Unregister an observer
+    public func removeObserver(_ observer: KioskModeObserver) {
+        observers.removeAll { $0.observer === observer || $0.observer == nil }
+    }
+
+    /// Notify all observers of kiosk mode change
+    private func notifyObserversOfModeChange() {
+        observers.forEach { $0.observer?.kioskModeDidChange(isActive: isKioskModeActive) }
+    }
+
+    /// Notify all observers of settings change
+    private func notifyObserversOfSettingsChange() {
+        observers.forEach { $0.observer?.kioskSettingsDidChange(settings) }
+    }
+
+    /// Notify all observers of screen state change
+    private func notifyObserversOfScreenStateChange() {
+        observers.forEach { $0.observer?.kioskScreenStateDidChange(screenState) }
+    }
+
+    /// Notify all observers of pixel shift
+    private func notifyObserversOfPixelShift() {
+        let amount = settings.pixelShiftAmount
+        observers.forEach { $0.observer?.kioskPixelShiftDidTrigger(amount: amount) }
+    }
 
     // MARK: - Initialization
 
@@ -124,7 +198,7 @@ public final class KioskModeManager: ObservableObject {
         startIdleTimer()
 
         onKioskModeChange?(true)
-        NotificationCenter.default.post(name: Self.kioskModeDidChangeNotification, object: nil)
+        notifyObserversOfModeChange()
     }
 
     /// Disable kiosk mode
@@ -152,7 +226,7 @@ public final class KioskModeManager: ObservableObject {
         hideScreensaver(source: "kiosk_disabled")
 
         onKioskModeChange?(false)
-        NotificationCenter.default.post(name: Self.kioskModeDidChangeNotification, object: nil)
+        notifyObserversOfModeChange()
     }
 
     /// Update settings
@@ -207,7 +281,7 @@ public final class KioskModeManager: ObservableObject {
         applyBrightnessSchedule()
 
         screenState = .on
-        NotificationCenter.default.post(name: Self.screenStateDidChangeNotification, object: nil)
+        notifyObserversOfScreenStateChange()
 
         // Refresh if configured
         if settings.refreshOnWake {
@@ -306,7 +380,7 @@ public final class KioskModeManager: ObservableObject {
         }
 
         onShowScreensaver?(mode)
-        NotificationCenter.default.post(name: Self.screenStateDidChangeNotification, object: nil)
+        notifyObserversOfScreenStateChange()
     }
 
     private func hideScreensaver(source: String) {
@@ -418,11 +492,8 @@ public final class KioskModeManager: ObservableObject {
     }
 
     private func triggerPixelShift() {
-        NotificationCenter.default.post(
-            name: Notification.Name("KioskPixelShift"),
-            object: nil,
-            userInfo: ["amount": settings.pixelShiftAmount]
-        )
+        pixelShiftTrigger += 1
+        notifyObserversOfPixelShift()
     }
 
     // MARK: - Time Utilities
@@ -517,7 +588,7 @@ public final class KioskModeManager: ObservableObject {
             }
         }
 
-        NotificationCenter.default.post(name: Self.settingsDidChangeNotification, object: nil)
+        notifyObserversOfSettingsChange()
     }
 
     // MARK: - Observers

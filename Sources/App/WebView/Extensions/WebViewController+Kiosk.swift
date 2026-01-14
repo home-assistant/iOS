@@ -12,14 +12,14 @@ private var kioskCancellablesKey: UInt8 = 0
 
 extension WebViewController {
     /// The screensaver view controller
-    private var screensaverController: ScreensaverViewController? {
-        get { objc_getAssociatedObject(self, &screensaverKey) as? ScreensaverViewController }
+    private var screensaverController: KioskScreensaverViewController? {
+        get { objc_getAssociatedObject(self, &screensaverKey) as? KioskScreensaverViewController }
         set { objc_setAssociatedObject(self, &screensaverKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
     /// The secret exit gesture view controller
-    private var secretExitGestureController: SecretExitGestureViewController? {
-        get { objc_getAssociatedObject(self, &secretExitGestureKey) as? SecretExitGestureViewController }
+    private var secretExitGestureController: KioskSecretExitGestureViewController? {
+        get { objc_getAssociatedObject(self, &secretExitGestureKey) as? KioskSecretExitGestureViewController }
         set { objc_setAssociatedObject(self, &secretExitGestureKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
@@ -62,14 +62,14 @@ extension WebViewController {
         // Observe kiosk mode and settings changes using Combine (auto-cleanup on dealloc)
         var cancellables = Set<AnyCancellable>()
 
-        NotificationCenter.default.publisher(for: KioskModeManager.kioskModeDidChangeNotification)
+        manager.$isKioskModeActive
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.kioskModeDidChange()
             }
             .store(in: &cancellables)
 
-        NotificationCenter.default.publisher(for: KioskModeManager.settingsDidChangeNotification)
+        manager.$settings
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.kioskSettingsDidChange()
@@ -93,7 +93,7 @@ extension WebViewController {
     // MARK: - Screensaver
 
     private func setupScreensaver() {
-        let controller = ScreensaverViewController()
+        let controller = KioskScreensaverViewController()
         screensaverController = controller
 
         // Forward the callback for showing settings
@@ -117,7 +117,7 @@ extension WebViewController {
     }
 
     private func setupSecretExitGesture() {
-        let controller = SecretExitGestureViewController()
+        let controller = KioskSecretExitGestureViewController()
         secretExitGestureController = controller
 
         controller.onShowSettings = { [weak self] in

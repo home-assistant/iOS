@@ -256,6 +256,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
 
+        // Setup kiosk mode integration
+        setupKioskMode()
+
 //        #if DEBUG
 //        if #available(iOS 26.0, *) {
 //            let view = HomeView(server: server).embeddedInHostingController()

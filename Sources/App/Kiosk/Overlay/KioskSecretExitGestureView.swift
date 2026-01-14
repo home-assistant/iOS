@@ -2,11 +2,11 @@ import Combine
 import SwiftUI
 import UIKit
 
-// MARK: - Secret Exit Gesture View
+// MARK: - Kiosk Secret Exit Gesture View
 
 /// An invisible overlay that detects multi-tap gestures in a corner to access kiosk settings
 /// This provides an escape hatch when navigation is locked down
-public struct SecretExitGestureView: View {
+public struct KioskSecretExitGestureView: View {
     @ObservedObject private var kioskManager = KioskModeManager.shared
     @Binding var showSettings: Bool
 
@@ -88,15 +88,13 @@ private struct SecretTapArea: View {
             tapCount = 0
             resetTimer = nil
 
-            // Provide haptic feedback
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+            // Provide success haptic feedback
+            TouchFeedbackManager.shared.playFeedback(for: .action)
 
             onTriggered()
         } else {
             // Provide subtle feedback for each tap
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.impactOccurred()
+            TouchFeedbackManager.shared.playFeedback(for: .tap)
 
             // Reset tap count if no more taps within window
             resetTimer = Timer.scheduledTimer(withTimeInterval: tapWindow, repeats: false) { _ in
@@ -152,8 +150,8 @@ private class CornerTapPassthroughView: UIView {
 }
 
 /// A UIView wrapper for the secret exit gesture that can be added to UIKit view controllers
-public class SecretExitGestureViewController: UIViewController {
-    private var hostingController: UIHostingController<SecretExitGestureWrapper>?
+public class KioskSecretExitGestureViewController: UIViewController, KioskModeObserver {
+    private var hostingController: UIHostingController<KioskSecretExitGestureWrapper>?
     private var cancellables = Set<AnyCancellable>()
     private var passthroughView: CornerTapPassthroughView?
 
@@ -174,7 +172,7 @@ public class SecretExitGestureViewController: UIViewController {
     }
 
     private func setupGestureView() {
-        let wrapper = SecretExitGestureWrapper { [weak self] in
+        let wrapper = KioskSecretExitGestureWrapper { [weak self] in
             self?.onShowSettings?()
         }
 
@@ -200,24 +198,21 @@ public class SecretExitGestureViewController: UIViewController {
     }
 
     private func setupSettingsObserver() {
-        // Observe kiosk settings changes
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(settingsDidChange),
-            name: KioskModeManager.settingsDidChangeNotification,
-            object: nil
-        )
-
-        // Also observe kiosk mode state changes
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(settingsDidChange),
-            name: KioskModeManager.kioskModeDidChangeNotification,
-            object: nil
-        )
+        // Register as kiosk mode observer for settings and mode changes
+        KioskModeManager.shared.addObserver(self)
     }
 
-    @objc private func settingsDidChange() {
+    deinit {
+        KioskModeManager.shared.removeObserver(self)
+    }
+
+    // MARK: - KioskModeObserver
+
+    public func kioskModeDidChange(isActive: Bool) {
+        updatePassthroughSettings()
+    }
+
+    public func kioskSettingsDidChange(_ settings: KioskSettings) {
         updatePassthroughSettings()
     }
 
@@ -231,12 +226,12 @@ public class SecretExitGestureViewController: UIViewController {
 }
 
 /// Internal wrapper that converts the binding-based API to a closure-based one
-private struct SecretExitGestureWrapper: View {
+private struct KioskSecretExitGestureWrapper: View {
     let onShowSettings: () -> Void
     @State private var showSettings = false
 
     var body: some View {
-        SecretExitGestureView(showSettings: $showSettings)
+        KioskSecretExitGestureView(showSettings: $showSettings)
             .onChange(of: showSettings) { newValue in
                 if newValue {
                     showSettings = false

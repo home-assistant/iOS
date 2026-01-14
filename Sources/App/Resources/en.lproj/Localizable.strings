@@ -1413,3 +1413,68 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "camera_player.errors.unknown" = "Unknown error";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.no_stream_available" = "No stream available";
+
+/* Kiosk Mode Settings */
+"kiosk.title" = "Kiosk Mode";
+"kiosk.active.title" = "Kiosk Mode Active";
+"kiosk.screen_label" = "Screen: %@";
+"kiosk.screensaver_label" = "Screensaver: %@";
+"kiosk.exit_button" = "Exit Kiosk Mode";
+"kiosk.exit_hint" = "Double-tap to exit kiosk mode. Authentication may be required.";
+"kiosk.enable_button" = "Enable Kiosk Mode";
+"kiosk.section.title" = "Kiosk Mode";
+"kiosk.footer.description" = "When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.";
+"kiosk.auth_error.title" = "Authentication Error";
+"kiosk.auth_error.reason" = "Authenticate to exit kiosk mode";
+
+/* Kiosk Security & Display Settings */
+"kiosk.security.section" = "Security & Display";
+"kiosk.security.biometric" = "Allow Face ID / Touch ID";
+"kiosk.security.passcode" = "Allow Device Passcode";
+"kiosk.security.lock_navigation" = "Lock Navigation";
+"kiosk.security.hide_status_bar" = "Hide Status Bar";
+"kiosk.security.prevent_autolock" = "Prevent Auto-Lock";
+"kiosk.security.wake_on_touch" = "Wake on Touch";
+"kiosk.security.secret_gesture" = "Secret Exit Gesture";
+"kiosk.security.gesture_corner" = "Exit Gesture Corner";
+"kiosk.security.taps_required" = "Taps Required: %d";
+"kiosk.security.gesture_footer" = "Tap the %@ corner %d times to access kiosk settings when locked.";
+
+/* Kiosk Brightness Settings */
+"kiosk.brightness.section" = "Brightness";
+"kiosk.brightness.control" = "Brightness Control";
+"kiosk.brightness.manual" = "Manual Brightness: %d%%";
+"kiosk.brightness.schedule" = "Day/Night Schedule";
+"kiosk.brightness.day" = "Day Brightness: %d%%";
+"kiosk.brightness.night" = "Night Brightness: %d%%";
+"kiosk.brightness.day_starts" = "Day starts";
+"kiosk.brightness.night_starts" = "Night starts";
+
+/* Kiosk Screensaver Settings */
+"kiosk.screensaver.section" = "Screensaver";
+"kiosk.screensaver.toggle" = "Screensaver";
+"kiosk.screensaver.mode" = "Mode";
+"kiosk.screensaver.mode.clock" = "Clock";
+"kiosk.screensaver.mode.dim" = "Dim";
+"kiosk.screensaver.mode.blank" = "Blank";
+"kiosk.screensaver.timeout" = "Timeout";
+"kiosk.screensaver.timeout.1min" = "1 minute";
+"kiosk.screensaver.timeout.2min" = "2 minutes";
+"kiosk.screensaver.timeout.5min" = "5 minutes";
+"kiosk.screensaver.timeout.10min" = "10 minutes";
+"kiosk.screensaver.timeout.15min" = "15 minutes";
+"kiosk.screensaver.timeout.30min" = "30 minutes";
+"kiosk.screensaver.dim_level" = "Dim Level: %d%%";
+"kiosk.screensaver.pixel_shift" = "Pixel Shift (OLED)";
+"kiosk.screensaver.pixel_shift_footer" = "Pixel shift helps prevent burn-in on OLED displays by slightly moving content periodically.";
+
+/* Kiosk Clock Display Settings */
+"kiosk.clock.section" = "Clock Display";
+"kiosk.clock.style" = "Clock Style";
+"kiosk.clock.show_date" = "Show Date";
+"kiosk.clock.show_seconds" = "Show Seconds";
+"kiosk.clock.24hour" = "24-Hour Format";
+
+/* Time Picker */
+"kiosk.time.hour" = "Hour";
+"kiosk.time.minute" = "Minute";

@@ -1,11 +1,11 @@
 import Combine
 import SwiftUI
 
-// MARK: - Clock Screensaver View
+// MARK: - Kiosk Clock Screensaver View
 
 /// A screensaver view displaying time with optional date
-/// Note: Entity display will be added in PR 2
-public struct ClockScreensaverView: View {
+/// TODO: Add entity display support
+public struct KioskClockScreensaverView: View {
     @ObservedObject private var manager = KioskModeManager.shared
     @State private var currentTime = Date()
     @State private var pixelShiftOffset: CGSize = .zero
@@ -41,7 +41,7 @@ public struct ClockScreensaverView: View {
         .onReceive(timeTimer) { _ in
             currentTime = Date()
         }
-        .onReceive(NotificationCenter.default.publisher(for: .kioskPixelShiftTick)) { _ in
+        .onChange(of: manager.pixelShiftTrigger) { _ in
             applyPixelShift()
         }
     }
@@ -90,7 +90,7 @@ public struct ClockScreensaverView: View {
     }
 
     private var analogClockDisplay: some View {
-        AnalogClockView(date: currentTime)
+        KioskAnalogClockView(date: currentTime)
             .frame(
                 width: KioskConstants.UI.analogClockSize,
                 height: KioskConstants.UI.analogClockSize
@@ -148,9 +148,9 @@ public struct ClockScreensaverView: View {
     }
 }
 
-// MARK: - Analog Clock View
+// MARK: - Kiosk Analog Clock View
 
-struct AnalogClockView: View {
+struct KioskAnalogClockView: View {
     let date: Date
 
     private var calendar: Calendar { Calendar.current }
@@ -221,6 +221,6 @@ struct AnalogClockView: View {
 // MARK: - Preview
 
 #Preview("Large Clock") {
-    ClockScreensaverView()
+    KioskClockScreensaverView()
         .preferredColorScheme(.dark)
 }
