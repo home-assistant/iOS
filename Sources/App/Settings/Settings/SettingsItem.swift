@@ -5,6 +5,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case servers
     case general
     case gestures
+    case kiosk
     case location
     case notifications
     case sensors
@@ -24,6 +25,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .servers: return L10n.Settings.ConnectionSection.servers
         case .general: return L10n.SettingsDetails.General.title
         case .gestures: return L10n.Gestures.Screen.title
+        case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .sensors: return L10n.SettingsSensors.title
@@ -49,6 +51,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: 24)
             case .gestures:
                 MaterialDesignIconsImage(icon: .gestureIcon, size: 24)
+            case .kiosk:
+                MaterialDesignIconsImage(icon: .tabletIcon, size: 24)
             case .location:
                 MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: 24)
             case .notifications:
@@ -97,6 +101,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             GeneralSettingsView()
         case .gestures:
             GesturesSetupView()
+        case .kiosk:
+            KioskSettingsView()
         case .location:
             SettingsLocationView()
         case .notifications:
@@ -131,7 +137,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         allCases.filter { item in
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
-            if item == .servers || item == .gestures || item == .watch || item == .carPlay ||
+            if item == .servers || item == .gestures || item == .kiosk || item == .watch || item == .carPlay ||
                 item == .complications || item == .nfc || item == .help ||
                 item == .whatsNew {
                 return false
@@ -142,7 +148,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .location, .notifications]
+        [.general, .gestures, .kiosk, .location, .notifications]
     }
 
     static var integrationItems: [SettingsItem] {
