@@ -108,9 +108,8 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
         view.bringSubviewToFront(controller.view)
     }
 
-    deinit {
-        KioskModeManager.shared.removeObserver(self)
-    }
+    // Note: No need to explicitly remove observer in deinit - KioskModeManager uses weak references
+    // that automatically clean up when this object is deallocated
 
     override public var prefersStatusBarHidden: Bool {
         true

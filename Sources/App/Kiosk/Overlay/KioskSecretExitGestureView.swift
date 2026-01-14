@@ -202,9 +202,8 @@ public class KioskSecretExitGestureViewController: UIViewController, KioskModeOb
         KioskModeManager.shared.addObserver(self)
     }
 
-    deinit {
-        KioskModeManager.shared.removeObserver(self)
-    }
+    // Note: No need to explicitly remove observer in deinit - KioskModeManager uses weak references
+    // that automatically clean up when this object is deallocated
 
     // MARK: - KioskModeObserver
 
