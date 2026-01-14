@@ -59,7 +59,7 @@ enum EntityDisplayComponents {
     ) -> some View {
         LazyVGrid(columns: standardGridColumns, spacing: DesignSystem.Spaces.oneAndHalf) {
             ForEach(entities, id: \.entityId) { entity in
-                EntityTileView(
+                HomeEntityTileView(
                     server: server,
                     haEntity: entity
                 )
@@ -84,7 +84,7 @@ enum EntityDisplayComponents {
     ) -> some View {
         LazyVGrid(columns: standardGridColumns, spacing: DesignSystem.Spaces.oneAndHalf) {
             ForEach(entities, id: \.entityId) { entity in
-                EntityTileView(
+                HomeEntityTileView(
                     server: server,
                     haEntity: entity
                 )

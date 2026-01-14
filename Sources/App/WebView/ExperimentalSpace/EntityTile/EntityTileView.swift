@@ -1,8 +1,48 @@
-import AppIntents
 import HAKit
 import Shared
 import SwiftUI
 
+/// Pure UI component for displaying an entity tile
+/// This view is designed to be reusable across different contexts in the app
+///
+/// ## Usage Example
+/// ```swift
+/// // Simple usage with static data
+/// EntityTileView(
+///     entityName: "Living Room Light",
+///     entityState: "On",
+///     icon: .lightbulbIcon,
+///     iconColor: .yellow,
+///     isUnavailable: false,
+///     onIconTap: {
+///         // Handle icon tap action
+///     },
+///     onTileTap: {
+///         // Handle tile tap action
+///     }
+/// )
+///
+/// // Usage in a custom view
+/// struct CustomEntityList: View {
+///     let entities: [MyCustomEntity]
+///
+///     var body: some View {
+///         ForEach(entities) { entity in
+///             EntityTileView(
+///                 entityName: entity.name,
+///                 entityState: entity.status,
+///                 icon: entity.icon,
+///                 iconColor: entity.color,
+///                 onIconTap: { performAction(on: entity) }
+///             )
+///         }
+///     }
+/// }
+/// ```
+///
+/// For Home Assistant entity integration, use `HomeEntityTileView` instead,
+/// which handles all the business logic like device class lookup, icon color
+/// computation, and AppIntents integration.
 @available(iOS 26.0, *)
 struct EntityTileView: View {
     enum Constants {
@@ -15,19 +55,41 @@ struct EntityTileView: View {
         static let textVStackSpacing: CGFloat = 2
     }
 
-    let server: Server
-    let haEntity: HAEntity
+    // MARK: - Display Data
 
-    @Namespace private var namespace
+    let entityName: String
+    let entityState: String
+    let icon: MaterialDesignIcons
+    let iconColor: Color
+    let isUnavailable: Bool
+    let onIconTap: (() -> Void)?
+    let onTileTap: (() -> Void)?
+
+    // MARK: - State
+
     @State private var triggerHaptic = 0
-    @State private var iconColor: Color = .secondary
-    @State private var showMoreInfoDialog = false
-    @State private var deviceClass: DeviceClass = .unknown
 
-    init(server: Server, haEntity: HAEntity) {
-        self.server = server
-        self.haEntity = haEntity
+    // MARK: - Initializer
+
+    init(
+        entityName: String,
+        entityState: String,
+        icon: MaterialDesignIcons,
+        iconColor: Color,
+        isUnavailable: Bool = false,
+        onIconTap: (() -> Void)? = nil,
+        onTileTap: (() -> Void)? = nil
+    ) {
+        self.entityName = entityName
+        self.entityState = entityState
+        self.icon = icon
+        self.iconColor = iconColor
+        self.isUnavailable = isUnavailable
+        self.onIconTap = onIconTap
+        self.onTileTap = onTileTap
     }
+
+    // MARK: - Body
 
     var body: some View {
         tileContent
@@ -40,35 +102,18 @@ struct EntityTileView: View {
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
                     .stroke(
                         isUnavailable ? .gray : .tileBorder,
-
-                        style: isUnavailable ? StrokeStyle(lineWidth: Constants.borderLineWidth, dash: [5, 3]) :
+                        style: isUnavailable ? 
+                            StrokeStyle(lineWidth: Constants.borderLineWidth, dash: [5, 3]) :
                             StrokeStyle(lineWidth: Constants.borderLineWidth)
                     )
             )
             .opacity(isUnavailable ? 0.5 : 1.0)
-            .onChange(of: haEntity) { _, _ in
-                updateIconColor()
-            }
-            .onAppear {
-                getDeviceClass()
-                updateIconColor()
-            }
-            .matchedTransitionSource(id: haEntity.entityId, in: namespace)
             .onTapGesture {
-                showMoreInfoDialog = true
-            }
-            .fullScreenCover(isPresented: $showMoreInfoDialog) {
-                EntityMoreInfoDialogView(
-                    server: server, haEntity: haEntity
-                )
-                .navigationTransition(.zoom(sourceID: haEntity.entityId, in: namespace))
+                onTileTap?()
             }
     }
 
-    private var isUnavailable: Bool {
-        let state = haEntity.state.lowercased()
-        return [Domain.State.unavailable.rawValue, Domain.State.unknown.rawValue].contains(state)
-    }
+    // MARK: - View Components
 
     private var tileContent: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
@@ -93,42 +138,33 @@ struct EntityTileView: View {
     }
 
     private var entityNameText: some View {
-        Text(haEntity.attributes.friendlyName ?? haEntity.entityId)
+        Text(entityName)
             .font(.footnote)
             .fontWeight(.semibold)
+            #if os(iOS)
             .foregroundColor(Color(uiColor: .label))
+            #else
+            .foregroundColor(.primary)
+            #endif
             .lineLimit(2)
             .multilineTextAlignment(.leading)
     }
 
     private var entityStateText: some View {
-        Text(
-            Domain(entityId: haEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
-        )
-        .font(.caption)
-        .foregroundColor(Color(uiColor: .secondaryLabel))
-    }
-
-    private func getDeviceClass() {
-        deviceClass = DeviceClassProvider.deviceClass(
-            for: haEntity.entityId,
-            serverId: server.identifier.rawValue
-        )
+        Text(entityState)
+            .font(.caption)
+            #if os(iOS)
+            .foregroundColor(Color(uiColor: .secondaryLabel))
+            #else
+            .foregroundColor(.secondary)
+            #endif
     }
 
     private var iconView: some View {
-        let icon: MaterialDesignIcons
-        if let entityIcon = haEntity.attributes.icon {
-            icon = MaterialDesignIcons(serversideValueNamed: entityIcon)
-        } else if let domain = Domain(entityId: haEntity.entityId) {
-            let stateString = haEntity.state
-            let domainState = Domain.State(rawValue: stateString) ?? .unknown
-            icon = domain.icon(deviceClass: deviceClass.rawValue, state: domainState)
-        } else {
-            icon = .homeIcon
-        }
-
-        return Button(intent: AppIntentProvider.intent(for: haEntity, server: server)) {
+        Button {
+            onIconTap?()
+            triggerHaptic += 1
+        } label: {
             VStack {
                 Text(verbatim: icon.unicode)
                     .font(.custom(MaterialDesignIcons.familyName, size: Constants.iconFontSize))
@@ -140,31 +176,6 @@ struct EntityTileView: View {
             .clipShape(Circle())
         }
         .buttonStyle(.plain)
-        .simultaneousGesture(
-            TapGesture().onEnded {
-                triggerHaptic += 1
-            }
-        )
         .sensoryFeedback(.impact, trigger: triggerHaptic)
-    }
-
-    private func updateIconColor() {
-        let state = haEntity.state
-        let colorMode = haEntity.attributes["color_mode"] as? String
-        let rgbColor = haEntity.attributes["rgb_color"] as? [Int]
-        let hsColor = haEntity.attributes["hs_color"] as? [Double]
-
-        if isUnavailable {
-            iconColor = .gray
-            return
-        }
-
-        iconColor = EntityIconColorProvider.iconColor(
-            domain: Domain(entityId: haEntity.entityId) ?? .switch,
-            state: state,
-            colorMode: colorMode,
-            rgbColor: rgbColor,
-            hsColor: hsColor
-        )
     }
 }
