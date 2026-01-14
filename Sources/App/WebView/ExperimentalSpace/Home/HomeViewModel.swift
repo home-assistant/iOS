@@ -33,6 +33,8 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    var cachedUserName: String = ""
+
     var orderedSectionsForMenu: [RoomSection] {
         // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
         if configuration.sectionOrder.isEmpty {
@@ -55,7 +57,7 @@ final class HomeViewModel: ObservableObject {
         }
         return RoomSection(
             id: "usage-prediction-common-control",
-            name: "Common Controls",
+            name: L10n.HomeView.CommonControls.title(cachedUserName),
             entityIds: Set(entities)
         )
     }
@@ -83,6 +85,9 @@ final class HomeViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
 
+        // Cache the username from the current user
+        await cacheUserName()
+
         // Load usage prediction common control data
         await loadUsagePredictionCommonControl()
 
@@ -91,12 +96,20 @@ final class HomeViewModel: ObservableObject {
         isLoading = false
     }
 
+    private func cacheUserName() async {
+        Current.api(for: server)?.connection.caches.user.once { [weak self] user in
+            guard let self else { return }
+            cachedUserName = user.name ?? ""
+            Current.Log.verbose("Cached user name: \(String(describing: user.name))")
+        }
+    }
+
     private func loadUsagePredictionCommonControl() async {
         Current.api(for: server)?.connection.send(.usagePredictionCommonControl()) { result in
             switch result {
-            case .success(let usagePredictionCommonControl):
+            case let .success(usagePredictionCommonControl):
                 self.usagePredictionCommonControl = usagePredictionCommonControl
-            case .failure(let error):
+            case let .failure(error):
                 Current.Log.error("Failed to load usage prediction common control: \(error.localizedDescription)")
             }
         }
