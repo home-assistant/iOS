@@ -10,25 +10,16 @@ struct DomainSummaryCard: View {
         EntityTileView(
             entityName: summary.displayName,
             entityState: summary.summaryText,
-            icon: iconForDomain(summary.icon),
-            iconColor: summary.isActive ? .orange : .gray,
+            icon: iconForDomain,
+            iconColor: summary.isActive ? summary.domain.accentColor : .gray,
             isUnavailable: false,
             onIconTap: action,
             onTileTap: action
         )
     }
 
-    private func iconForDomain(_ systemName: String) -> MaterialDesignIcons {
-        // Map system icon names to Material Design Icons
-        // You can expand this mapping as needed
-        switch systemName {
-        case "lightbulb.fill":
-            return .lightbulbIcon
-        case "rectangle.on.rectangle.angled":
-            return .curtainsIcon
-        default:
-            return .dotsHorizontalIcon
-        }
+    var iconForDomain: MaterialDesignIcons {
+        summary.domain.icon()
     }
 }
 
@@ -55,7 +46,7 @@ struct DomainSummariesSection: View {
                 }
             } header: {
                 EntityDisplayComponents.sectionHeader(
-                    "Summaries", // TODO: Replace with L10n.HomeView.Summaries.title when available
+                    L10n.HomeView.Summaries.title,
                     showChevron: false
                 )
             }
@@ -68,7 +59,7 @@ struct DomainSummariesSection: View {
     let summaries = [
         HomeViewModel.DomainSummary(
             id: "light",
-            domain: "light",
+            domain: .light,
             displayName: "Lights",
             icon: "lightbulb.fill",
             count: 10,
@@ -77,7 +68,7 @@ struct DomainSummariesSection: View {
         ),
         HomeViewModel.DomainSummary(
             id: "cover",
-            domain: "cover",
+            domain: .cover,
             displayName: "Covers",
             icon: "rectangle.on.rectangle.angled",
             count: 5,
@@ -86,7 +77,7 @@ struct DomainSummariesSection: View {
         ),
     ]
 
-    return DomainSummariesSection(summaries: summaries) { summary in
+    DomainSummariesSection(summaries: summaries) { summary in
         print("Tapped: \(summary.displayName)")
     }
     .padding()

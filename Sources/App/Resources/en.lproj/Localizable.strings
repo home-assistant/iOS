@@ -361,6 +361,9 @@
 "home_view.customization.areas_layout.title" = "Areas layout";
 "home_view.customization.areas_layout.list.title" = "List";
 "home_view.customization.areas_layout.grid.title" = "Grid";
+"home_view.summaries.title" = "Summaries";
+"home_view.summaries.lights.title" = "Lights";
+"home_view.summaries.covers.title" = "Covers";
 "improv.button.continue" = "Continue";
 "improv.connection_state.authorized" = "Setting up Wi-Fi";
 "improv.connection_state.provisioning" = "Connecting to Wi-Fi";

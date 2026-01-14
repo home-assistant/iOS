@@ -1473,6 +1473,18 @@ public enum L10n {
         public static var experimental: String { return L10n.tr("Localizable", "home_view.navigation.subtitle.experimental") }
       }
     }
+    public enum Summaries {
+      /// Summaries
+      public static var title: String { return L10n.tr("Localizable", "home_view.summaries.title") }
+      public enum Covers {
+        /// Covers
+        public static var title: String { return L10n.tr("Localizable", "home_view.summaries.covers.title") }
+      }
+      public enum Lights {
+        /// Lights
+        public static var title: String { return L10n.tr("Localizable", "home_view.summaries.lights.title") }
+      }
+    }
   }
 
   public enum Improv {

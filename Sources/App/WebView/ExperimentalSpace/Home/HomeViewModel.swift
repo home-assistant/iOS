@@ -17,7 +17,7 @@ final class HomeViewModel: ObservableObject {
 
     struct DomainSummary: Identifiable {
         let id: String // domain name
-        let domain: String
+        let domain: Domain
         let displayName: String
         let icon: String
         let count: Int
@@ -311,15 +311,15 @@ final class HomeViewModel: ObservableObject {
 
     private func computeDomainSummaries() {
         // Define domains we want to summarize (starting with light and cover)
-        let domainsToSummarize: [(domain: String, displayName: String, icon: String)] = [
-            ("light", "Lights", "lightbulb.fill"),
-            ("cover", "Covers", "rectangle.on.rectangle.angled"),
+        let domainsToSummarize: [(domain: Domain, displayName: String, icon: String)] = [
+            (.light, L10n.HomeView.Summaries.Lights.title, "lightbulb.fill"),
+            (.cover, L10n.HomeView.Summaries.Covers.title, "rectangle.on.rectangle.angled"),
         ]
 
         var summaries: [DomainSummary] = []
 
         for domainInfo in domainsToSummarize {
-            let domainEntities = entityStates.values.filter { $0.domain == domainInfo.domain }
+            let domainEntities = entityStates.values.filter { $0.domain == domainInfo.domain.rawValue }
 
             // Filter out hidden and disabled entities
             let visibleEntities = domainEntities.filter { entity in
@@ -343,7 +343,7 @@ final class HomeViewModel: ObservableObject {
             )
 
             let summary = DomainSummary(
-                id: domainInfo.domain,
+                id: domainInfo.domain.rawValue,
                 domain: domainInfo.domain,
                 displayName: domainInfo.displayName,
                 icon: domainInfo.icon,
@@ -360,25 +360,28 @@ final class HomeViewModel: ObservableObject {
 
     private func isEntityActive(_ entity: HAEntity) -> Bool {
         // Check if entity is in an "active" state
-        switch entity.domain {
-        case "light", "switch", "fan":
+        guard let domain = Domain(entityId: entity.entityId) else {
             return entity.state == "on"
-        case "cover":
+        }
+
+        switch domain {
+        case .light, .switch, .fan:
+            return entity.state == "on"
+        case .cover:
             return entity.state == "open" || entity.state == "opening"
-        case "lock":
+        case .lock:
             return entity.state == "unlocked"
-        case "climate":
-            return entity.state != "off"
-        case "media_player":
-            return entity.state == "playing" || entity.state == "paused"
+        case .automation, .scene, .script:
+            // These don't really have "active" states
+            return false
         default:
             return entity.state == "on"
         }
     }
 
-    private func generateSummaryText(domain: String, totalCount: Int, activeCount: Int) -> String {
+    private func generateSummaryText(domain: Domain, totalCount: Int, activeCount: Int) -> String {
         switch domain {
-        case "light":
+        case .light:
             if activeCount == 0 {
                 // L10n.HomeView.Summaries.Light.allOff
                 return "All off"
@@ -386,7 +389,7 @@ final class HomeViewModel: ObservableObject {
                 // L10n.HomeView.Summaries.Light.countOn(activeCount)
                 return "\(activeCount) on"
             }
-        case "cover":
+        case .cover:
             if activeCount == 0 {
                 // L10n.HomeView.Summaries.Cover.allClosed
                 return "All closed"
