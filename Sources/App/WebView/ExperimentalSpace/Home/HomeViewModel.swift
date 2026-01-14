@@ -27,6 +27,39 @@ final class HomeViewModel: ObservableObject {
 
     var appEntities: [HAAppEntity]?
     var registryEntities: [AppEntityRegistryListForDisplay]?
+    var usagePredictionCommonControl: HAUsagePredictionCommonControl? {
+        didSet {
+            buildRoomsIfNeeded()
+        }
+    }
+
+    var orderedSectionsForMenu: [RoomSection] {
+        // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
+        if configuration.sectionOrder.isEmpty {
+            return groupedEntities
+        } else {
+            let orderIndex = Dictionary(uniqueKeysWithValues: configuration.sectionOrder.enumerated().map { ($1, $0) })
+            return groupedEntities.sorted { a, b in
+                let ia = orderIndex[a.id] ?? Int.max
+                let ib = orderIndex[b.id] ?? Int.max
+                if ia == ib { return a.name < b.name }
+                return ia < ib
+            }
+        }
+    }
+
+    /// Returns the Usage Prediction Common Control section if available
+    var usagePredictionSection: RoomSection? {
+        guard let entities = usagePredictionCommonControl?.entities, !entities.isEmpty else {
+            return nil
+        }
+        return RoomSection(
+            id: "usage-prediction-common-control",
+            name: "Common Controls",
+            entityIds: Set(entities)
+        )
+    }
+
     private var areas: [AppArea]? {
         didSet {
             buildRoomsIfNeeded()
@@ -50,9 +83,23 @@ final class HomeViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
 
+        // Load usage prediction common control data
+        await loadUsagePredictionCommonControl()
+
         // Subscribe to entity changes - sections will be built when data arrives
         startSubscriptions()
         isLoading = false
+    }
+
+    private func loadUsagePredictionCommonControl() async {
+        Current.api(for: server)?.connection.send(.usagePredictionCommonControl()) { result in
+            switch result {
+            case .success(let usagePredictionCommonControl):
+                self.usagePredictionCommonControl = usagePredictionCommonControl
+            case .failure(let error):
+                Current.Log.error("Failed to load usage prediction common control: \(error.localizedDescription)")
+            }
+        }
     }
 
     // MARK: - Lifecycle Management
@@ -224,21 +271,6 @@ final class HomeViewModel: ObservableObject {
         }
         // Otherwise, filter to only selected sections
         return orderedSections.filter { visibleSectionIds.contains($0.id) }
-    }
-
-    var orderedSectionsForMenu: [RoomSection] {
-        // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
-        if configuration.sectionOrder.isEmpty {
-            return groupedEntities
-        } else {
-            let orderIndex = Dictionary(uniqueKeysWithValues: configuration.sectionOrder.enumerated().map { ($1, $0) })
-            return groupedEntities.sorted { a, b in
-                let ia = orderIndex[a.id] ?? Int.max
-                let ib = orderIndex[b.id] ?? Int.max
-                if ia == ib { return a.name < b.name }
-                return ia < ib
-            }
-        }
     }
 
     func toggledSelection(

@@ -618,16 +618,16 @@
 		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
 		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
-		4210CCFF2F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
-		4210CD002F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
-		4210CD032F155C4500B71FB9 /* AssistConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */; };
-		4210CD052F155D2600B71FB9 /* AssistSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */; };
 		4210CCD92F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */; };
 		4210CCDB2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */; };
 		4210CCDD2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */; };
 		4210CCEB2F152AD000B71FB9 /* CameraPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */; };
 		4210CCEF2F152ED800B71FB9 /* CameraStreamHLSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */; };
 		4210CCF32F1532C400B71FB9 /* CameraMJPEGPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */; };
+		4210CCFF2F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
+		4210CD002F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
+		4210CD032F155C4500B71FB9 /* AssistConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */; };
+		4210CD052F155D2600B71FB9 /* AssistSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */; };
 		421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155202D3525F500A71630 /* AppIconSelectorView.swift */; };
 		421155232D354F3F00A71630 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155222D354F3F00A71630 /* AppIcon.swift */; };
 		421155252D355C6700A71630 /* WidgetBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155242D355C6700A71630 /* WidgetBuilderView.swift */; };
@@ -921,6 +921,8 @@
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
 		429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */; };
 		429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
+		429C33C22F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
+		429C33C32F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		429D51C52EFA0E750014AD0D /* ModernAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51C42EFA0E750014AD0D /* ModernAssistView.swift */; };
@@ -2288,15 +2290,15 @@
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
 		420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayEntitiesListTemplate+Build.swift"; sourceTree = "<group>"; };
-		4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfiguration.swift; sourceTree = "<group>"; };
-		4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfigurationTable.swift; sourceTree = "<group>"; };
-		4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsViewModel.swift; sourceTree = "<group>"; };
 		4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerVideoView.swift; sourceTree = "<group>"; };
 		4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerViewControls.swift; sourceTree = "<group>"; };
 		4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerViewController.swift; sourceTree = "<group>"; };
 		4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPlayerView.swift; sourceTree = "<group>"; };
 		4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSView.swift; sourceTree = "<group>"; };
 		4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMJPEGPlayerView.swift; sourceTree = "<group>"; };
+		4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfiguration.swift; sourceTree = "<group>"; };
+		4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfigurationTable.swift; sourceTree = "<group>"; };
+		4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsViewModel.swift; sourceTree = "<group>"; };
 		421155202D3525F500A71630 /* AppIconSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectorView.swift; sourceTree = "<group>"; };
 		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		421155242D355C6700A71630 /* WidgetBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderView.swift; sourceTree = "<group>"; };
@@ -2557,6 +2559,7 @@
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
 		429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorDetailsView.swift; sourceTree = "<group>"; };
 		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
+		429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAUsagePredictionCommonControl.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		429D51C42EFA0E750014AD0D /* ModernAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernAssistView.swift; sourceTree = "<group>"; };
 		42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarButtonsConfigurator.swift; sourceTree = "<group>"; };
@@ -5369,6 +5372,16 @@
 			path = General;
 			sourceTree = "<group>";
 		};
+		429C33C02F17A6CF0033EF5E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */,
+				42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */,
+				429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		42A2AB7E2C80750A00C5608D /* Control */ = {
 			isa = PBXGroup;
 			children = (
@@ -5750,8 +5763,8 @@
 			isa = PBXGroup;
 			children = (
 				42DFE8772EFB08C80058DADB /* HomeView.swift */,
-				428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */,
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
+				428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
 				4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */,
 				420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */,
@@ -6999,13 +7012,12 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
+				429C33C02F17A6CF0033EF5E /* Models */,
 				4245DC022EBA42C3005E0E04 /* AreasService.swift */,
 				420CFC612D3F9C15009A94F3 /* Database */,
 				4278CB822D01F09400CFAAC9 /* AppGesture.swift */,
 				424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */,
-				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
-				42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */,
-				42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */,
 				426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */,
 				42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */,
 				427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */,
@@ -9565,6 +9577,7 @@
 				B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
 				11AF4D1A249C8253006C74C0 /* PedometerSensor.swift in Sources */,
 				1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
+				429C33C32F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */,
 				42070EEC2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */,
 				11B38EF9275C54A300205C7B /* RenderTemplateIntentHandler.swift in Sources */,
 				427A7CDA2EBDFB1700D17841 /* AppArea.swift in Sources */,
@@ -10052,6 +10065,7 @@
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,
+				429C33C22F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
 				42B2637F2E16A1DC0042DF10 /* BaseColors.swift in Sources */,
 				426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,

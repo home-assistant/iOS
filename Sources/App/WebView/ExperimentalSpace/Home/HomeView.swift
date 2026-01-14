@@ -127,6 +127,22 @@ struct HomeView: View {
                 alignment: .leading,
                 spacing: DesignSystem.Spaces.three
             ) {
+                // Display usage prediction common control section at the top
+                if let usagePredictionSection = viewModel.usagePredictionSection {
+                    let visibleEntities = visibleEntitiesForSection(usagePredictionSection)
+                    if !visibleEntities.isEmpty {
+                        Section {
+                            entityTilesGrid(
+                                for: visibleEntities,
+                                section: usagePredictionSection
+                            )
+                        } header: {
+                            sectionHeader(usagePredictionSection.name, section: usagePredictionSection)
+                        }
+                    }
+                }
+
+                // Display regular sections
                 ForEach(filteredSections) { section in
                     let visibleEntities = visibleEntitiesForSection(section)
                     if !visibleEntities.isEmpty || viewModel.configuration.visibleSectionIds.contains(section.id) {
