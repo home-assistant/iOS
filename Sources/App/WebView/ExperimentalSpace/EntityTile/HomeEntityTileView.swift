@@ -10,15 +10,17 @@ import SwiftUI
 struct HomeEntityTileView: View {
     let server: Server
     let haEntity: HAEntity
+    let areaName: String?
 
     @Namespace private var namespace
     @State private var iconColor: Color = .secondary
     @State private var showMoreInfoDialog = false
     @State private var deviceClass: DeviceClass = .unknown
 
-    init(server: Server, haEntity: HAEntity) {
+    init(server: Server, haEntity: HAEntity, areaName: String? = nil) {
         self.server = server
         self.haEntity = haEntity
+        self.areaName = areaName
     }
 
     var body: some View {
@@ -55,7 +57,13 @@ struct HomeEntityTileView: View {
     }
 
     private var entityState: String {
-        Domain(entityId: haEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
+        let state = Domain(entityId: haEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
+
+        if let areaName {
+            return "\(state) · \(areaName)"
+        }
+
+        return state
     }
 
     private var icon: MaterialDesignIcons {

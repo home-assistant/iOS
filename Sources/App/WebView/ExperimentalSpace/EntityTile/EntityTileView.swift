@@ -158,6 +158,8 @@ struct EntityTileView: View {
         #else
             .foregroundColor(.secondary)
         #endif
+            .lineLimit(1)
+            .truncationMode(.tail)
     }
 
     private var iconView: some View {

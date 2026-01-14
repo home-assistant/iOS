@@ -452,13 +452,18 @@ struct HomeView: View {
     }
 
     private func entityTilesGrid(for entities: [HAEntity], section: HomeViewModel.RoomSection) -> some View {
-        EntityDisplayComponents.conditionalEntityGrid(
+        let isUsagePredictionSection = section.id == HomeViewModel.usagePredictionSectionId
+
+        return EntityDisplayComponents.conditionalEntityGrid(
             entities: entities,
             server: viewModel.server,
             isReorderMode: isReorderMode,
             draggedEntity: $draggedEntity,
             roomId: section.id,
-            viewModel: viewModel
+            viewModel: viewModel,
+            areaNameProvider: isUsagePredictionSection ? { entityId in
+                viewModel.areaName(for: entityId)
+            } : nil
         ) { entity in
             Group {
                 EntityDisplayComponents.enterEditModeButton(isReorderMode: $isReorderMode)

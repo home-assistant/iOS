@@ -410,6 +410,11 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    /// Returns the area name for a given entity ID, or nil if not found
+    func areaName(for entityId: String) -> String? {
+        groupedEntities.first(where: { $0.entityIds.contains(entityId) })?.name
+    }
+
     func filteredSections(sectionOrder: [String], visibleSectionIds: Set<String>) -> [RoomSection] {
         // Apply saved ordering
         let orderedSections: [RoomSection]
