@@ -357,6 +357,9 @@
 "home_view.navigation.subtitle.experimental" = "Experimental feature";
 "home_view.common_controls.title" = "Welcome %@";
 "home_view.customization.common_controls.title" = "Controls prediction section";
+"home_view.customization.areas_layout.title" = "Areas layout";
+"home_view.customization.areas_layout.list.title" = "List";
+"home_view.customization.areas_layout.grid.title" = "Grid";
 "improv.button.continue" = "Continue";
 "improv.connection_state.authorized" = "Setting up Wi-Fi";
 "improv.connection_state.provisioning" = "Connecting to Wi-Fi";

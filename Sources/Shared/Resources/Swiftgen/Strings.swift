@@ -1396,6 +1396,18 @@ public enum L10n {
       public static var hide: String { return L10n.tr("Localizable", "home_view.context_menu.hide") }
     }
     public enum Customization {
+      public enum AreasLayout {
+        /// Areas layout
+        public static var title: String { return L10n.tr("Localizable", "home_view.customization.areas_layout.title") }
+        public enum Grid {
+          /// Grid
+          public static var title: String { return L10n.tr("Localizable", "home_view.customization.areas_layout.grid.title") }
+        }
+        public enum List {
+          /// List
+          public static var title: String { return L10n.tr("Localizable", "home_view.customization.areas_layout.list.title") }
+        }
+      }
       public enum CommonControls {
         /// Controls prediction section
         public static var title: String { return L10n.tr("Localizable", "home_view.customization.common_controls.title") }
