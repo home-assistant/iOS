@@ -37,6 +37,13 @@ public struct KioskSettingsView: View {
             clockOptionsSection
         }
         .navigationTitle(L10n.Kiosk.title)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(L10n.doneLabel) {
+                    dismiss()
+                }
+            }
+        }
         .disabled(authRequired && !isAuthenticated)
         .overlay {
             if authRequired, !isAuthenticated {
@@ -166,10 +173,6 @@ public struct KioskSettingsView: View {
 
             Toggle(isOn: $settings.allowDevicePasscodeExit) {
                 Label(L10n.Kiosk.Security.passcode, systemSymbol: .lockShield)
-            }
-
-            Toggle(isOn: $settings.navigationLockdown) {
-                Label(L10n.Kiosk.Security.lockNavigation, systemSymbol: .handRaised)
             }
 
             Toggle(isOn: $settings.hideStatusBar) {
