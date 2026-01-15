@@ -46,6 +46,30 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var loadActiveURLIfNeededInProgress = false
 
+    // MARK: - Safe Area -> Frontend CSS
+
+    /// Applies safe area insets as CSS custom properties for the frontend to consume.
+    /// Values are provided in points (which map 1:1 to CSS px at default page scale).
+    private func applySafeAreaInsetsToFrontend() {
+        guard isViewLoaded else { return }
+        let insets = view.safeAreaInsets
+
+        // Convert to CGFloat values; CSS expects unit-suffixed strings.
+        let top = max(insets.top, 0)
+        let right = max(insets.right, 0)
+        let bottom = max(insets.bottom, 0)
+        let left = max(insets.left, 0)
+
+        let js = """
+            document.documentElement.style.setProperty('--app-safe-area-inset-top', '\(top)px');
+            document.documentElement.style.setProperty('--app-safe-area-inset-bottom', '\(bottom)px');
+            document.documentElement.style.setProperty('--app-safe-area-inset-left', '\(left)px');
+            document.documentElement.style.setProperty('--app-safe-area-inset-right', '\(right)px');
+        """
+
+        webView?.evaluateJavaScript(js, completionHandler: nil)
+    }
+
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
         improvManager: ImprovManager.shared
@@ -255,6 +279,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
+
+        // Initialize CSS safe area variables once the view is set up
+        applySafeAreaInsetsToFrontend()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -264,6 +291,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             self.webView?.setNeedsLayout()
             self.webView?.layoutIfNeeded()
         }, completion: nil)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        applySafeAreaInsetsToFrontend()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -280,6 +312,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+            applySafeAreaInsetsToFrontend()
         }
     }
 
@@ -439,10 +472,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private func setupWebViewConstraints(statusBarView: UIView) {
         webView.translatesAutoresizingMaskIntoConstraints = false
-        webView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        webView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor).isActive = true
-        webView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: view.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
 
@@ -511,7 +546,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             statusBarView.topAnchor.constraint(equalTo: view.topAnchor),
             statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor),
             statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            statusBarView.bottomAnchor.constraint(equalTo: view.topAnchor),
         ])
 
         if Current.isCatalyst {
@@ -1268,6 +1303,9 @@ extension WebViewController {
         initialURL = nil
 
         updateWebViewSettings(reason: .load)
+
+        // Update safe area CSS variables after content load
+        applySafeAreaInsetsToFrontend()
     }
 
     func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
@@ -1542,3 +1580,4 @@ extension WebViewController: WebViewControllerProtocol {
         }
     }
 }
+
