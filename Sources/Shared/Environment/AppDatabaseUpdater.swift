@@ -17,6 +17,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     private var lastUpdate: Date?
     private var updateTask: Task<Void, Never>?
+    private var currentUpdateTask: Task<Void, Never>?
 
     init() {
         NotificationCenter.default.addObserver(
@@ -34,10 +35,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     func stop() {
         updateTask?.cancel()
         updateTask = nil
+        currentUpdateTask?.cancel()
+        currentUpdateTask = nil
     }
 
     func update() async {
-        stop()
+        // If an update is already running, wait for it to finish
+        if let task = currentUpdateTask {
+            Current.Log.verbose("Update already in progress, awaiting existing task")
+            await task.value
+            return
+        }
 
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -120 {
             Current.Log.verbose("Skipping database update, last update was \(lastUpdate)")
@@ -48,26 +56,25 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
 
-        updateTask = Task { [weak self] in
-            for server in Current.servers.all {
-                guard let self else {
-                    break
-                }
+        currentUpdateTask = Task { [weak self] in
+            guard let self else { return }
+            defer { self.currentUpdateTask = nil }
 
+            for server in Current.servers.all {
                 guard server.info.connection.activeURL() != nil else {
                     continue
                 }
-                // Check if task was cancelled before processing next server
                 if Task.isCancelled {
                     Current.Log.verbose("Update task cancelled")
                     break
                 }
-
                 await updateServer(server: server)
             }
         }
 
-        await updateTask?.value
+        if let task = currentUpdateTask {
+            await task.value
+        }
     }
 
     private func updateServer(server: Server) async {
