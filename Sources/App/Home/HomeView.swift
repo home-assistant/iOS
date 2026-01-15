@@ -57,8 +57,33 @@ struct HomeView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showSettings = true
+                    Menu {
+                        Button {
+                            showSettings = true
+                        } label: {
+                            Label(L10n.Settings.NavigationBar.title, systemSymbol: .gearshape)
+                        }
+                        
+                        if Current.servers.all.count > 1 {
+                            Divider()
+                            
+                            ForEach(Current.servers.all, id: \.identifier) { server in
+                                Button {
+                                    selectedServerId = server.identifier.rawValue
+                                    Task {
+                                        await viewModel.loadEntities(for: server.identifier.rawValue)
+                                    }
+                                } label: {
+                                    HStack {
+                                        Text(server.info.name)
+                                        if selectedServerId == server.identifier.rawValue {
+                                            Spacer()
+                                            Image(systemSymbol: .checkmark)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     } label: {
                         Image(systemSymbol: .gearshape)
                     }
