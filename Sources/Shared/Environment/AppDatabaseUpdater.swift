@@ -183,7 +183,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesDatabase(server: Server) async {
         guard !Task.isCancelled else { return }
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
+            guard self != nil else {
+                continuation.resume()
+                return
+            }
             guard let api = Current.api(for: server) else {
                 Current.Log.error("No API available for server \(server.info.name)")
                 continuation.resume()
@@ -218,10 +222,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private func updateEntitiesRegistry(server: Server) async {
         guard !Task.isCancelled else { return }
         let registryEntries: [EntityRegistryEntry]? =
-            await withCheckedContinuation { (continuation: CheckedContinuation<
+            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
                 [EntityRegistryEntry]?,
                 Never
             >) in
+                guard let self else {
+                    continuation.resume(returning: nil)
+                    return
+                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
@@ -261,10 +269,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private func updateDevicesRegistry(server: Server) async {
         guard !Task.isCancelled else { return }
         let registryEntries: [DeviceRegistryEntry]? =
-            await withCheckedContinuation { (continuation: CheckedContinuation<
+            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
                 [DeviceRegistryEntry]?,
                 Never
             >) in
+                guard let self else {
+                    continuation.resume(returning: nil)
+                    return
+                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
@@ -304,10 +316,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private func updateEntitiesRegistryListForDisplay(server: Server) async {
         guard !Task.isCancelled else { return }
         let response: EntityRegistryListForDisplay? =
-            await withCheckedContinuation { (continuation: CheckedContinuation<
+            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
                 EntityRegistryListForDisplay?,
                 Never
             >) in
+                guard let self else {
+                    continuation.resume(returning: nil)
+                    return
+                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
@@ -386,7 +402,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         do {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+                guard self != nil else {
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
                 Current.database().asyncWrite { db in
                     let existingAreaIds = try AppArea
                         .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
@@ -455,12 +475,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             }
         }
         do {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+                guard self != nil else {
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
                 guard !Task.isCancelled else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                // Note: we batch entities into memory before this write. This is a trade-off for simpler, atomic updates;
+                // Note: we batch entities into memory before this write. This is a trade-off for simpler, atomic
+                // updates;
                 // if memory usage becomes an issue for very large datasets, consider a streaming or chunked approach.
                 Current.database().asyncWrite { db in
                     // Get existing IDs for this server
@@ -520,7 +545,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         do {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+                guard self != nil else {
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
                 if Task.isCancelled {
                     continuation.resume(throwing: CancellationError())
                     return
@@ -586,7 +615,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         do {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+                guard self != nil else {
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
                 if Task.isCancelled {
                     continuation.resume(throwing: CancellationError())
                     return
