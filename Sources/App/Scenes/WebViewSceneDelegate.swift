@@ -178,9 +178,6 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         Current.modelManager.subscribe(isAppInForeground: {
             UIApplication.shared.applicationState == .active
         })
-
-        await Current.appDatabaseUpdater.update()
-        Current.panelsUpdater.update()
     }
 
     /// Force update location when user opens the app

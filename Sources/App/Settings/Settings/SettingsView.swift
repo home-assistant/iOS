@@ -22,7 +22,9 @@ struct SettingsView: View {
         .onAppear {
             appDatabaseUpdaterTask?.cancel()
             appDatabaseUpdaterTask = Task {
-                await Current.appDatabaseUpdater.update()
+                for server in Current.servers.all {
+                    await Current.appDatabaseUpdater.update(server: server)
+                }
             }
         }
     }

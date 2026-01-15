@@ -4,11 +4,11 @@ import HAKit
 import UIKit
 
 /// AppDatabaseUpdater coordinates fetching data from servers and persisting it into the local database.
-/// It ensures only one global update runs at a time, applies per-server throttling with backoff,
-/// and performs bounded parallel per-server updates with careful cancellation and batched DB writes.
+/// It ensures only one update per server runs at a time (different servers can update concurrently),
+/// applies per-server throttling with backoff, and performs careful cancellation and batched DB writes.
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func update() async
+    func update(server: Server) async
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -16,11 +16,31 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         case noAPI
     }
 
-    private var lastUpdate: Date?
-    // Legacy task reference (kept for compatibility/cancellation); work is now serialized by `currentUpdateTask`.
-    private var updateTask: Task<Void, Never>?
-    // Single in-flight global update task. Additional calls to `update()` await this task.
-    private var currentUpdateTask: Task<Void, Never>?
+    // Actor for thread-safe task management
+    private actor TaskCoordinator {
+        private var currentUpdateTasks: [String: Task<Void, Never>] = [:]
+
+        func getTask(for serverId: String) -> Task<Void, Never>? {
+            currentUpdateTasks[serverId]
+        }
+
+        func setTask(_ task: Task<Void, Never>, for serverId: String) {
+            currentUpdateTasks[serverId] = task
+        }
+
+        func removeTask(for serverId: String) {
+            currentUpdateTasks.removeValue(forKey: serverId)
+        }
+
+        func cancelAllTasks() {
+            for (_, task) in currentUpdateTasks {
+                task.cancel()
+            }
+            currentUpdateTasks.removeAll()
+        }
+    }
+
+    private let taskCoordinator = TaskCoordinator()
 
     // Simple adaptive throttling/backoff
     // - Tracks consecutive failures per server to increase delay between attempts.
@@ -29,8 +49,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private var perServerLastUpdate: [String: Date] = [:]
     // Base throttle applied to all servers; backoff is added on top of this.
     private let baseThrottleSeconds: TimeInterval = 120
-    // Maximum number of servers updated concurrently within a single global update run.
-    private let maxParallelServers = 2
 
     static var shared = AppDatabaseUpdater()
 
@@ -50,61 +68,47 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Cancels any in-flight work and clears transient state.
     /// Called when app enters background or when we need to abort updates early.
     func stop() {
-        // Cancel legacy task (if any)
-        updateTask?.cancel()
-        updateTask = nil
-        // Cancel the serialized global update task
-        currentUpdateTask?.cancel()
-        currentUpdateTask = nil
+        Task {
+            await taskCoordinator.cancelAllTasks()
+        }
+
         // Reset backoff tracking to free memory and avoid stale penalties
         consecutiveFailuresByServer.removeAll()
     }
 
-    /// Starts an update if none is currently running.
-    /// - Ensures only one global update runs at a time by awaiting `currentUpdateTask` if present.
-    /// - Applies a global throttle (120s) and per-server throttling with exponential backoff on failures.
-    /// - Executes per-server updates with bounded concurrency to balance throughput and resource usage.
-    func update() async {
-        // If another update is running, wait for it to complete instead of starting a new one.
-        if let task = currentUpdateTask {
-            Current.Log.verbose("Update already in progress, awaiting existing task")
-            await task.value
+    /// Starts an update for a specific server.
+    /// - Parameter server: The specific server to update.
+    /// - Ensures only one update per server runs at a time. Different servers can update concurrently.
+    /// - Applies per-server throttling with exponential backoff on failures.
+    func update(server: Server) async {
+        let serverId = server.identifier.rawValue
+
+        // Check if an update for this specific server is already running
+        if let existingTask = await taskCoordinator.getTask(for: serverId) {
+            Current.Log.verbose("Update already in progress for server \(server.info.name), awaiting existing task")
+            await existingTask.value
             return
         }
 
-        // Global throttle to avoid re-running too frequently regardless of server state.
-        guard shouldPerformUpdate() else { return }
+        Current.Log.verbose("Updating database for server \(server.info.name)")
 
-        lastUpdate = Date()
-        Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
-
-        // Launch the serialized global update task. It will clear itself on completion via `defer`.
-        currentUpdateTask = Task { [weak self] in
+        // Launch the server-specific update task
+        let updateTask = Task { [weak self] in
             guard let self else { return }
-            defer { self.currentUpdateTask = nil }
+            defer {
+                // Clean up task reference when complete
+                Task {
+                    await self.taskCoordinator.removeTask(for: serverId)
+                }
+            }
 
-            await performServerUpdates()
+            await performSingleServerUpdate(server: server)
         }
 
-        if let task = currentUpdateTask {
-            await task.value
-        }
-    }
+        // Store the task for this server
+        await taskCoordinator.setTask(updateTask, for: serverId)
 
-    /// Checks if enough time has passed since the last update based on global throttle.
-    private func shouldPerformUpdate() -> Bool {
-        if let lastUpdate, lastUpdate.timeIntervalSinceNow > -120 {
-            Current.Log.verbose("Skipping database update, last update was \(lastUpdate)")
-            return false
-        }
-        return true
-    }
-
-    /// Filters servers that should be updated based on connection status and per-server throttling.
-    private func filterServersToUpdate() -> [Server] {
-        Current.servers.all.filter { server in
-            shouldUpdateServer(server)
-        }
+        await updateTask.value
     }
 
     /// Determines if a specific server should be updated based on connection and throttle rules.
@@ -122,44 +126,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         return true
     }
 
-    /// Performs bounded parallel updates for all eligible servers.
-    private func performServerUpdates() async {
+    /// Performs an update for a single specific server.
+    private func performSingleServerUpdate(server: Server) async {
         guard !Task.isCancelled else { return }
-
-        let serversToUpdate = filterServersToUpdate()
-        guard !Task.isCancelled else { return }
-
-        // Bounded parallelism: keep up to `maxParallelServers` updates in-flight.
-        // This improves throughput while limiting DB/network contention.
-        await withTaskGroup(of: (String, Bool).self) { group in
-            var inFlight = 0
-            var iterator = serversToUpdate.makeIterator()
-
-            // Schedules the next server update if capacity allows and not cancelled.
-            func scheduleNext() {
-                if Task.isCancelled { return }
-                guard inFlight < self.maxParallelServers, let server = iterator.next() else { return }
-                inFlight += 1
-                group.addTask { [weak self] in
-                    guard let self else { return (server.identifier.rawValue, false) }
-                    if Task.isCancelled { return (server.identifier.rawValue, false) }
-                    let success = await safeUpdateServer(server: server)
-                    return (server.identifier.rawValue, success)
-                }
-            }
-
-            // Prime initial tasks
-            for _ in 0 ..< self.maxParallelServers {
-                scheduleNext()
-            }
-
-            while let result = await group.next() {
-                inFlight -= 1
-                let (serverId, success) = result
-                updateServerTracking(serverId: serverId, success: success)
-                scheduleNext()
-            }
+        guard shouldUpdateServer(server) else {
+            Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
+            return
         }
+
+        let success = await safeUpdateServer(server: server)
+        updateServerTracking(serverId: server.identifier.rawValue, success: success)
     }
 
     /// Updates per-server tracking after an update attempt completes.
