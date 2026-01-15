@@ -229,8 +229,15 @@ class IncomingURLHandler {
                 Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
                     .done { controller in
                         if #available(iOS 26.0, *) {
+                            // Check if HomeView is already presented
+                            if controller.overlayedController?.view.tag == WebViewControllerOverlayedViewTags.homeView.rawValue {
+                                Current.Log.info("HomeView is already presented, skipping re-presentation")
+                                return
+                            }
+                            
                             let view = HomeView(server: server).embeddedInHostingController()
                             view.modalPresentationStyle = .fullScreen
+                            view.view.tag = WebViewControllerOverlayedViewTags.homeView.rawValue
                             controller.presentOverlayController(controller: view, animated: false)
                         }
                     }
