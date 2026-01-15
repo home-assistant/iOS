@@ -87,6 +87,7 @@ public final class KioskModeManager: ObservableObject {
     private var brightnessTimer: Timer?
     private var pixelShiftTimer: Timer?
     private var originalBrightness: Float?
+    private var isIdleTimerPaused = false
 
     /// Weak wrapper for observers to avoid retain cycles
     private class WeakObserver {
@@ -257,6 +258,22 @@ public final class KioskModeManager: ObservableObject {
         }
     }
 
+    /// Pause the idle timer (e.g., when settings view is open)
+    public func pauseIdleTimer() {
+        isIdleTimerPaused = true
+        stopIdleTimer()
+        Current.Log.verbose("Idle timer paused")
+    }
+
+    /// Resume the idle timer
+    public func resumeIdleTimer() {
+        isIdleTimerPaused = false
+        if isKioskModeActive {
+            startIdleTimer()
+        }
+        Current.Log.verbose("Idle timer resumed")
+    }
+
     /// Set current dashboard URL
     public func setCurrentDashboard(_ url: String) {
         currentDashboard = url
@@ -407,6 +424,8 @@ public final class KioskModeManager: ObservableObject {
     private func startIdleTimer() {
         stopIdleTimer()
 
+        // Don't start if paused (e.g., settings view is open)
+        guard !isIdleTimerPaused else { return }
         guard settings.screensaverEnabled else { return }
 
         let timeout = settings.screensaverTimeout

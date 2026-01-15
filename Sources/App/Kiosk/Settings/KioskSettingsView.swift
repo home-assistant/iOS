@@ -45,6 +45,9 @@ public struct KioskSettingsView: View {
             }
         }
         .onAppear {
+            // Pause screensaver idle timer while settings are open
+            manager.pauseIdleTimer()
+
             if authRequired {
                 // Delay auth prompt slightly to let the modal fully present
                 // This prevents the auth dialog from dismissing the settings modal
@@ -54,6 +57,10 @@ public struct KioskSettingsView: View {
             } else {
                 isAuthenticated = true
             }
+        }
+        .onDisappear {
+            // Resume screensaver idle timer when settings are closed
+            manager.resumeIdleTimer()
         }
         .onChange(of: settings) { newValue in
             if isAuthenticated || !authRequired {
@@ -139,18 +146,6 @@ public struct KioskSettingsView: View {
                 }
             )) {
                 Label(L10n.Kiosk.enableButton, systemSymbol: .lock)
-            }
-
-            if manager.isKioskModeActive {
-                Text(L10n.Kiosk.screenLabel(manager.screenState.rawValue))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-
-                if let screensaver = manager.activeScreensaverMode {
-                    Text(L10n.Kiosk.screensaverLabel(screensaver.displayName))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
             }
         } header: {
             Text(L10n.Kiosk.Section.title)
