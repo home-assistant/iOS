@@ -743,6 +743,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         DispatchQueue.main.async { [self] in
             loadActiveURLIfNeeded()
         }
+
+        Task {
+            await Current.appDatabaseUpdater.update(server: server)
+            Current.panelsUpdater.update()
+        }
     }
 
     private func showNoActiveURLError() {
