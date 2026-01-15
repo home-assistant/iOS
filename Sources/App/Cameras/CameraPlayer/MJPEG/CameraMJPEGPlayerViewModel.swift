@@ -37,6 +37,8 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
             case let .fulfilled(imagePath):
                 if let url = api.server.info.connection.activeURL()?.appendingPathComponent(imagePath.mjpegPath ?? "") {
                     DispatchQueue.main.async { [weak self] in
+                        self?.isLoading = false
+                        self?.hasStarted = false
                         self?.startStream(url, api: api)
                     }
                 } else {
@@ -46,6 +48,8 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
                 Current.Log.error("Failed to get MJPEG URL: \(error.localizedDescription)")
                 DispatchQueue.main.async { [weak self] in
                     self?.errorMessage = error.localizedDescription
+                    self?.isLoading = false
+                    self?.hasStarted = false
                 }
             }
 
@@ -64,13 +68,20 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
         streamer = api.VideoStreamer()
         streamer?.streamImages(fromURL: url) { [weak self] uiImage, error in
             DispatchQueue.main.async {
-                self?.uiImage = uiImage
-            }
-            if let error {
-                Current.Log.error("MJPEG Stream error: \(error.localizedDescription)")
-                DispatchQueue.main.async { [weak self] in
-                    self?.errorMessage = error.localizedDescription
-                    self?.stop()
+                guard let self else { return }
+                
+                if let uiImage {
+                    // First frame received, stream has started successfully
+                    self.isLoading = false
+                    self.uiImage = uiImage
+                } else if let error {
+                    // Stream error occurred
+                    Current.Log.error("MJPEG Stream error: \(error.localizedDescription)")
+                    self.errorMessage = error.localizedDescription
+                    self.isLoading = false
+                    self.hasStarted = false
+                    self.streamer?.cancel()
+                    self.streamer = nil
                 }
             }
         }
