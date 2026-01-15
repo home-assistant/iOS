@@ -64,7 +64,6 @@ struct WidgetsBundle18: WidgetBundle {
         ControlButton()
         ControlOpenPage()
         ControlOpenEntity()
-        ControlOpenCamerasList()
         ControlOpenCamera()
         ControlOpenCoverEntity()
         ControlOpenInputBoolean()
@@ -73,6 +72,7 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenSensor()
         ControlOpenSwitch()
         #if DEBUG
+        ControlOpenCamerasList()
         ControlOpenExperimentalDashboard()
         #endif
 
