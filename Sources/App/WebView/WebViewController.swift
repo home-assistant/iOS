@@ -781,13 +781,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         loadActiveURLIfNeededInProgress = true
         Current.Log.info("loadActiveURLIfNeeded called")
 
-        Current.connectivity.syncNetworkInformation { [weak self] in
+        Task { @MainActor [weak self] in
             defer {
                 self?.loadActiveURLIfNeededInProgress = false
             }
 
             guard let self else { return }
-            guard let webviewURL = server.info.connection.webviewURL() else {
+            guard let webviewURL = await server.info.connection.webviewURL() else {
                 Current.Log.info("not loading, no url")
                 showNoActiveURLError()
                 return
@@ -1526,10 +1526,10 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     @objc func refresh() {
-        Current.connectivity.syncNetworkInformation { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             // called via menu/keyboard shortcut too
-            if let webviewURL = server.info.connection.webviewURL() {
+            if let webviewURL = await server.info.connection.webviewURL() {
                 if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                     reload()
                 } else {
