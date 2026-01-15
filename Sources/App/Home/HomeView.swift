@@ -98,9 +98,14 @@ struct HomeView: View {
             .task {
                 let serverId = selectedServerId ?? Current.servers.all.first?.identifier.rawValue
                 if let serverId {
-                    await viewModel.loadEntities(for: serverId)
-                    selectedServerId = serverId
+                    loadTask = Task {
+                        await viewModel.loadEntities(for: serverId)
+                        selectedServerId = serverId
+                    }
                 }
+            }
+            .onDisappear {
+                loadTask?.cancel()
             }
         }
         .navigationViewStyle(.stack)
