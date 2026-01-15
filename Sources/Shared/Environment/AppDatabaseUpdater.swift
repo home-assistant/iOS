@@ -456,8 +456,13 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
         do {
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                guard !Task.isCancelled else { return }
-                Current.database().asyncWrite { [entitiesListForDisplay] db in
+                guard !Task.isCancelled else {
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
+                // Note: we batch entities into memory before this write. This is a trade-off for simpler, atomic updates;
+                // if memory usage becomes an issue for very large datasets, consider a streaming or chunked approach.
+                Current.database().asyncWrite { db in
                     // Get existing IDs for this server
                     let existingIds = try AppEntityRegistryListForDisplay
                         .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
@@ -516,7 +521,10 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                guard !Task.isCancelled else { return }
+                if Task.isCancelled {
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
                 Current.database().asyncWrite { db in
                     // Get existing unique IDs for this server
                     let existingIds = try AppEntityRegistry
@@ -579,7 +587,10 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                guard !Task.isCancelled else { return }
+                if Task.isCancelled {
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
                 Current.database().asyncWrite { db in
                     // Get existing device IDs for this server
                     let existingIds = try AppDeviceRegistry
