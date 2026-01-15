@@ -70,10 +70,11 @@ struct HomeView: View {
                             
                             ForEach(Current.servers.all, id: \.identifier) { server in
                                 Button {
+                                    let serverId = server.identifier.rawValue
                                     loadTask?.cancel()
-                                    selectedServerId = server.identifier.rawValue
+                                    selectedServerId = serverId
                                     loadTask = Task {
-                                        await viewModel.loadEntities(for: server.identifier.rawValue)
+                                        await viewModel.loadEntities(for: serverId)
                                     }
                                 } label: {
                                     HStack {
@@ -98,9 +99,9 @@ struct HomeView: View {
             .task {
                 let serverId = selectedServerId ?? Current.servers.all.first?.identifier.rawValue
                 if let serverId {
+                    selectedServerId = serverId
                     loadTask = Task {
                         await viewModel.loadEntities(for: serverId)
-                        selectedServerId = serverId
                     }
                 }
             }
