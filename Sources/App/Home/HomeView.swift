@@ -5,6 +5,7 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var selectedServerId: String?
     @State private var showSettings = false
+    @State private var loadTask: Task<Void, Never>?
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewControllerProvider = ViewControllerProvider()
 
@@ -69,8 +70,9 @@ struct HomeView: View {
                             
                             ForEach(Current.servers.all, id: \.identifier) { server in
                                 Button {
+                                    loadTask?.cancel()
                                     selectedServerId = server.identifier.rawValue
-                                    Task {
+                                    loadTask = Task {
                                         await viewModel.loadEntities(for: server.identifier.rawValue)
                                     }
                                 } label: {
@@ -94,11 +96,10 @@ struct HomeView: View {
                     .environmentObject(viewControllerProvider)
             }
             .task {
-                if let serverId = selectedServerId ?? Current.servers.all.first?.identifier.rawValue {
+                let serverId = selectedServerId ?? Current.servers.all.first?.identifier.rawValue
+                if let serverId {
                     await viewModel.loadEntities(for: serverId)
-                    if selectedServerId == nil {
-                        selectedServerId = serverId
-                    }
+                    selectedServerId = serverId
                 }
             }
         }
