@@ -271,6 +271,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         loadActiveURLIfNeeded()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateDatabaseAndPanels()
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         userActivity?.resignCurrent()
     }
@@ -740,7 +745,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         DispatchQueue.main.async { [self] in
             loadActiveURLIfNeeded()
         }
+    }
 
+    /// Updates the app database and panels for the current server
+    /// Called after view appears and on pull to refresh to avoid blocking app launch
+    private func updateDatabaseAndPanels() {
         Task {
             await Current.appDatabaseUpdater.update(server: server)
             Current.panelsUpdater.update()
@@ -1545,5 +1554,6 @@ extension WebViewController: WebViewControllerProtocol {
                 showNoActiveURLError()
             }
         }
+        updateDatabaseAndPanels()
     }
 }
