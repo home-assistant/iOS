@@ -56,9 +56,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    // Actor for thread-safe task management
+    // Actor for thread-safe task management and queuing
     private actor TaskCoordinator {
         private var currentUpdateTasks: [String: Task<Void, Never>] = [:]
+        private var updateQueue: [(serverId: String, task: () async -> Void)] = []
+        private var isProcessingQueue = false
 
         func getTask(for serverId: String) -> Task<Void, Never>? {
             currentUpdateTasks[serverId]
@@ -77,6 +79,40 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 task.cancel()
             }
             currentUpdateTasks.removeAll()
+            updateQueue.removeAll()
+            isProcessingQueue = false
+        }
+
+        /// Enqueues a server update task to be processed sequentially
+        func enqueueUpdate(serverId: String, task: @escaping () async -> Void) {
+            // Check if this server is already in the queue
+            if updateQueue.contains(where: { $0.serverId == serverId }) {
+                Current.Log.verbose("Update for server \(serverId) already queued, skipping duplicate")
+                return
+            }
+
+            updateQueue.append((serverId: serverId, task: task))
+
+            // Start processing if not already running
+            if !isProcessingQueue {
+                Task {
+                    await processQueue()
+                }
+            }
+        }
+
+        /// Processes queued updates one at a time
+        private func processQueue() async {
+            guard !isProcessingQueue else { return }
+            isProcessingQueue = true
+
+            while !updateQueue.isEmpty {
+                let queuedUpdate = updateQueue.removeFirst()
+                Current.Log.verbose("Processing queued update for server: \(queuedUpdate.serverId)")
+                await queuedUpdate.task()
+            }
+
+            isProcessingQueue = false
         }
     }
 
@@ -119,7 +155,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Starts an update for a specific server in the background.
     /// This method returns immediately and does not block the caller.
     /// - Parameter server: The specific server to update.
-    /// - Ensures only one update per server runs at a time. Different servers can update concurrently.
+    /// - Server updates are queued and processed sequentially, one at a time.
     /// - Applies per-server throttling with exponential backoff on failures.
     func update(server: Server) {
         // Explicitly detach from the calling context to ensure we don't block the main thread
@@ -129,36 +165,34 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
             let serverId = server.identifier.rawValue
 
-            // Check if an update for this specific server is already running
-            if let existingTask = await taskCoordinator.getTask(for: serverId) {
-                Current.Log.verbose("Update already in progress for server \(server.info.name), awaiting existing task")
-                await existingTask.value
-                return
-            }
-
-            Current.Log.verbose("Updating database for server \(server.info.name)")
-
-            // Show toast indicating update has started
-            await showUpdateToast(for: server)
-
-            // Launch the server-specific update task
-            let updateTask = Task { [weak self] in
+            // Enqueue the update to be processed sequentially
+            await taskCoordinator.enqueueUpdate(serverId: serverId) { [weak self] in
                 guard let self else { return }
-                defer {
-                    // Hide toast and clean up task reference when complete
-                    Task {
-                        await self.hideUpdateToast(for: server)
-                        await self.taskCoordinator.removeTask(for: serverId)
+
+                Current.Log.verbose("Updating database for server \(server.info.name)")
+
+                // Show toast indicating update has started
+                await showUpdateToast(for: server)
+
+                // Launch the server-specific update task
+                let updateTask = Task { [weak self] in
+                    guard let self else { return }
+                    defer {
+                        // Hide toast and clean up task reference when complete
+                        Task {
+                            await self.hideUpdateToast(for: server)
+                            await self.taskCoordinator.removeTask(for: serverId)
+                        }
                     }
+
+                    await performSingleServerUpdate(server: server)
                 }
 
-                await performSingleServerUpdate(server: server)
+                // Store the task for this server
+                await taskCoordinator.setTask(updateTask, for: serverId)
+
+                await updateTask.value
             }
-
-            // Store the task for this server
-            await taskCoordinator.setTask(updateTask, for: serverId)
-
-            await updateTask.value
         }
     }
 
