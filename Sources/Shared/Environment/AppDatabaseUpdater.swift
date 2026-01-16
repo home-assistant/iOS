@@ -8,8 +8,7 @@ import UIKit
 /// applies per-server throttling with backoff, and performs careful cancellation and batched DB writes.
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func update(server: Server) async
-    func updateInBackground(server: Server)
+    func update(server: Server)
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -126,14 +125,15 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         consecutiveFailuresByServer.removeAll()
     }
 
-    /// Starts an update for a specific server.
+    /// Starts an update for a specific server in the background.
+    /// This method returns immediately and does not block the caller.
     /// - Parameter server: The specific server to update.
     /// - Ensures only one update per server runs at a time. Different servers can update concurrently.
     /// - Applies per-server throttling with exponential backoff on failures.
-    func update(server: Server) async {
+    func update(server: Server) {
         // Explicitly detach from the calling context to ensure we don't block the main thread
-        // even if called from @MainActor context
-        await Task.detached(priority: .userInitiated) { [weak self] in
+        // Returns immediately while work continues in the background
+        Task.detached(priority: .userInitiated) { [weak self] in
             guard let self else { return }
             
             let serverId = server.identifier.rawValue
@@ -168,15 +168,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             await self.taskCoordinator.setTask(updateTask, for: serverId)
 
             await updateTask.value
-        }.value
-    }
-
-    /// Starts an update for a specific server without blocking the caller.
-    /// Use this when you want to trigger an update but don't need to wait for it to complete.
-    /// - Parameter server: The specific server to update.
-    func updateInBackground(server: Server) {
-        Task.detached(priority: .utility) { [weak self] in
-            await self?.update(server: server)
         }
     }
 
