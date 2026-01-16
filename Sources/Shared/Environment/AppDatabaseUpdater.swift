@@ -9,6 +9,7 @@ import UIKit
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
     func update(server: Server) async
+    func updateInBackground(server: Server)
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -130,38 +131,53 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// - Ensures only one update per server runs at a time. Different servers can update concurrently.
     /// - Applies per-server throttling with exponential backoff on failures.
     func update(server: Server) async {
-        let serverId = server.identifier.rawValue
-
-        // Check if an update for this specific server is already running
-        if let existingTask = await taskCoordinator.getTask(for: serverId) {
-            Current.Log.verbose("Update already in progress for server \(server.info.name), awaiting existing task")
-            await existingTask.value
-            return
-        }
-
-        Current.Log.verbose("Updating database for server \(server.info.name)")
-
-        // Show toast indicating update has started
-        await showUpdateToast(for: server)
-
-        // Launch the server-specific update task
-        let updateTask = Task { [weak self] in
+        // Explicitly detach from the calling context to ensure we don't block the main thread
+        // even if called from @MainActor context
+        await Task.detached(priority: .userInitiated) { [weak self] in
             guard let self else { return }
-            defer {
-                // Hide toast and clean up task reference when complete
-                Task {
-                    await self.hideUpdateToast(for: server)
-                    await self.taskCoordinator.removeTask(for: serverId)
-                }
+            
+            let serverId = server.identifier.rawValue
+
+            // Check if an update for this specific server is already running
+            if let existingTask = await self.taskCoordinator.getTask(for: serverId) {
+                Current.Log.verbose("Update already in progress for server \(server.info.name), awaiting existing task")
+                await existingTask.value
+                return
             }
 
-            await performSingleServerUpdate(server: server)
+            Current.Log.verbose("Updating database for server \(server.info.name)")
+
+            // Show toast indicating update has started
+            await self.showUpdateToast(for: server)
+
+            // Launch the server-specific update task
+            let updateTask = Task { [weak self] in
+                guard let self else { return }
+                defer {
+                    // Hide toast and clean up task reference when complete
+                    Task {
+                        await self.hideUpdateToast(for: server)
+                        await self.taskCoordinator.removeTask(for: serverId)
+                    }
+                }
+
+                await self.performSingleServerUpdate(server: server)
+            }
+
+            // Store the task for this server
+            await self.taskCoordinator.setTask(updateTask, for: serverId)
+
+            await updateTask.value
+        }.value
+    }
+
+    /// Starts an update for a specific server without blocking the caller.
+    /// Use this when you want to trigger an update but don't need to wait for it to complete.
+    /// - Parameter server: The specific server to update.
+    func updateInBackground(server: Server) {
+        Task.detached(priority: .utility) { [weak self] in
+            await self?.update(server: server)
         }
-
-        // Store the task for this server
-        await taskCoordinator.setTask(updateTask, for: serverId)
-
-        await updateTask.value
     }
 
     /// Determines if a specific server should be updated based on connection and throttle rules.
@@ -448,22 +464,25 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     private func updateAreasDatabase(server: Server) async {
-        let fetchTimer = ProfilingTimer("Step 5.1: fetchAreasAndItsEntities")
-        let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
-        fetchTimer.end()
+        // Ensure this work happens off the main thread
+        await Task.detached(priority: .utility) {
+            let fetchTimer = ProfilingTimer("Step 5.1: fetchAreasAndItsEntities")
+            let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
+            fetchTimer.end()
 
-        guard let areas = Current.areasProvider().areas[server.identifier.rawValue] else {
-            Current.Log.verbose("No areas found for server \(server.info.name)")
-            return
-        }
+            guard let areas = Current.areasProvider().areas[server.identifier.rawValue] else {
+                Current.Log.verbose("No areas found for server \(server.info.name)")
+                return
+            }
 
-        let saveTimer = ProfilingTimer("Step 5.2: saveAreasToDatabase (count: \(areas.count))")
-        await saveAreasToDatabase(
-            areas: areas,
-            areasAndEntities: areasAndEntities,
-            serverId: server.identifier.rawValue
-        )
-        saveTimer.end()
+            let saveTimer = ProfilingTimer("Step 5.2: saveAreasToDatabase (count: \(areas.count))")
+            await self.saveAreasToDatabase(
+                areas: areas,
+                areasAndEntities: areasAndEntities,
+                serverId: server.identifier.rawValue
+            )
+            saveTimer.end()
+        }.value
     }
 
     /// Persists areas and their entity relationships for a server.
@@ -480,15 +499,19 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             return
         }
 
-        let modelTimer = ProfilingTimer("Step 5.2.1: Building AppArea models (count: \(areas.count))")
-        let appAreas = areas.map { area in
-            AppArea(
-                from: area,
-                serverId: serverId,
-                entities: areasAndEntities[area.areaId]
-            )
-        }
-        modelTimer.end()
+        // Ensure model building happens off the main thread
+        let appAreas = await Task.detached(priority: .utility) {
+            let modelTimer = ProfilingTimer("Step 5.2.1: Building AppArea models (count: \(areas.count))")
+            let result = areas.map { area in
+                AppArea(
+                    from: area,
+                    serverId: serverId,
+                    entities: areasAndEntities[area.areaId]
+                )
+            }
+            modelTimer.end()
+            return result
+        }.value
 
         // Nothing to persist; keep going (delete pass below might still remove stale rows).
         if appAreas.isEmpty {
@@ -502,6 +525,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
+                // Database writes are already async and happen on GRDB's background queue
                 Current.database().asyncWrite { db in
                     let existingAreaIds = try AppArea
                         .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
