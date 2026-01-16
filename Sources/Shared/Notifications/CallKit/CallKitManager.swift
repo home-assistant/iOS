@@ -15,8 +15,20 @@ public class CallKitManager: NSObject {
     private let callController = CXCallController()
     public weak var delegate: CallKitManagerDelegate?
 
-    private var activeCallInfo: [String: Any]?
-    private var activeCallUUID: UUID?
+    // Thread-safe access to call state
+    private let queue = DispatchQueue(label: "com.homeassistant.callkit")
+    private var _activeCallInfo: [String: Any]?
+    private var _activeCallUUID: UUID?
+
+    private var activeCallInfo: [String: Any]? {
+        get { queue.sync { _activeCallInfo } }
+        set { queue.sync { _activeCallInfo = newValue } }
+    }
+
+    private var activeCallUUID: UUID? {
+        get { queue.sync { _activeCallUUID } }
+        set { queue.sync { _activeCallUUID = newValue } }
+    }
 
     override private init() {
         let config = CXProviderConfiguration()
@@ -82,7 +94,11 @@ extension CallKitManager: CXProviderDelegate {
     public func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
         Current.Log.info("User answered call")
 
-        if let callInfo = activeCallInfo {
+        // Capture current call info atomically
+        let callInfo = activeCallInfo
+        let callUUID = activeCallUUID
+
+        if let callInfo {
             // Notify delegate that call was answered
             delegate?.callKitManager(self, didAnswerCallWithInfo: callInfo)
         }
@@ -91,10 +107,11 @@ extension CallKitManager: CXProviderDelegate {
         action.fulfill()
 
         // End the call immediately since we just need to trigger opening Assist
-        if let uuid = activeCallUUID {
-            endCall(uuid: uuid)
+        if let callUUID {
+            endCall(uuid: callUUID)
         }
 
+        // Clear state
         activeCallInfo = nil
         activeCallUUID = nil
     }

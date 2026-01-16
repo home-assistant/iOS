@@ -377,7 +377,10 @@ extension NotificationManager: CallKitManagerDelegate {
         let autoStartRecording = info["auto_start_recording"] as? Bool ?? false
 
         // Determine which server to use
-        let server = Current.servers.all.first ?? Current.servers.all.first!
+        guard let server = Current.servers.all.first else {
+            Current.Log.error("No servers available to open Assist")
+            return
+        }
 
         // Open AssistView
         Current.sceneManager.webViewWindowControllerPromise.done { windowController in
