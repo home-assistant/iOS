@@ -23,7 +23,7 @@ public class ToastHostingController: UIHostingController<ToastView> {
     /// Indicates whether the status bar should be hidden.
     ///
     /// This property is queried by UIKit to determine status bar visibility.
-    public override var prefersStatusBarHidden: Bool {
+    override public var prefersStatusBarHidden: Bool {
         isStatusBarHidden
     }
 }

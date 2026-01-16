@@ -68,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // swiftlint:disable prohibit_environment_assignment
         Current.backgroundTask = ApplicationBackgroundTaskRunner()
-        
+
         // Initialize UIApplication wrapper for shared framework
         Current.application = {
             UIApplication.shared

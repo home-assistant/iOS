@@ -8,7 +8,7 @@ public class PassThroughWindow: UIWindow {
     public var toast: Toast? = nil
     public var isPresented: Bool = false
 
-    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let hitView = super.hitTest(point, with: event),
               let rootView = rootViewController?.view else {
             return nil

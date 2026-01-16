@@ -16,6 +16,36 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         case noAPI
     }
 
+    /// Represents each step in the server update process
+    enum UpdateStep: Int, CaseIterable {
+        case entities = 1
+        case entitiesRegistryListForDisplay = 2
+        case entitiesRegistry = 3
+        case devicesRegistry = 4
+        case areas = 5
+
+        /// The total number of update steps
+        static var totalSteps: Int {
+            allCases.count
+        }
+
+        /// Human-readable description of the step
+        var description: String {
+            switch self {
+            case .entities:
+                return "Fetching entities"
+            case .entitiesRegistryListForDisplay:
+                return "Fetching entity display data"
+            case .entitiesRegistry:
+                return "Fetching entity registry"
+            case .devicesRegistry:
+                return "Fetching device registry"
+            case .areas:
+                return "Fetching areas"
+            }
+        }
+    }
+
     // Actor for thread-safe task management
     private actor TaskCoordinator {
         private var currentUpdateTasks: [String: Task<Void, Never>] = [:]
@@ -165,21 +195,31 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Each phase checks for cancellation to bail out quickly when needed.
     private func updateServer(server: Server) async {
         guard !Task.isCancelled else { return }
-        // 1) Entities (fetch_states)
+
+        // Step 1: Entities (fetch_states)
+        await updateToastStep(for: server, step: .entities)
         await updateEntitiesDatabase(server: server)
         if Task.isCancelled { return }
-        // 2) Entities registry list for display
+
+        // Step 2: Entities registry list for display
+        await updateToastStep(for: server, step: .entitiesRegistryListForDisplay)
         await updateEntitiesRegistryListForDisplay(server: server)
         if Task.isCancelled { return }
-        // 3) Entities registry
+
+        // Step 3: Entities registry
+        await updateToastStep(for: server, step: .entitiesRegistry)
         await updateEntitiesRegistry(server: server)
         if Task.isCancelled { return }
-        // 4) Devices registry
+
+        // Step 4: Devices registry
+        await updateToastStep(for: server, step: .devicesRegistry)
         await updateDevicesRegistry(server: server)
         if Task.isCancelled { return }
-        // 5) Areas with their entities
+
+        // Step 5: Areas with their entities
         // IMPORTANT: This must be executed after entities and device registry
         // since we rely on that data to map entities to areas
+        await updateToastStep(for: server, step: .areas)
         await updateAreasDatabase(server: server)
     }
 
@@ -680,17 +720,27 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     /// Shows a toast notification indicating a server update is in progress.
     @MainActor
-    private func showUpdateToast(for server: Server) {
+    private func showUpdateToast(for server: Server, step: UpdateStep? = nil) {
         if #available(iOS 18, *) {
             let toastId = "server-update-\(server.identifier.rawValue)"
+            var message = "Syncing server data..."
+            if let step {
+                message += " (\(step.rawValue)/\(UpdateStep.totalSteps))"
+            }
             ToastManager.shared.show(
                 id: toastId,
                 symbol: "arrow.triangle.2.circlepath.circle.fill",
                 symbolForegroundStyle: (.white, .blue),
                 title: "Updating \(server.info.name)",
-                message: "Syncing server data..."
+                message: message
             )
         }
+    }
+
+    /// Updates the toast notification with the current step.
+    @MainActor
+    private func updateToastStep(for server: Server, step: UpdateStep) {
+        showUpdateToast(for: server, step: step)
     }
 
     /// Hides the toast notification for a completed server update.
