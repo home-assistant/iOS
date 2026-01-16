@@ -269,18 +269,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesDatabase(server: Server) async {
         guard !isUpdateCancelled else { return }
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            guard self != nil else {
-                continuation.resume()
-                return
-            }
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             guard let api = Current.api(for: server) else {
                 Current.Log.error("No API available for server \(server.info.name)")
                 continuation.resume()
                 return
             }
             // If cancelled after acquiring API, resume the continuation to avoid hanging.
-            if Task.isCancelled {
+            if isUpdateCancelled {
                 continuation.resume()
                 return
             }
@@ -308,21 +304,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private func updateEntitiesRegistry(server: Server) async {
         guard !isUpdateCancelled else { return }
         let registryEntries: [EntityRegistryEntry]? =
-            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
+            await withCheckedContinuation { (continuation: CheckedContinuation<
                 [EntityRegistryEntry]?,
                 Never
             >) in
-                guard let self else {
-                    continuation.resume(returning: nil)
-                    return
-                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if Task.isCancelled {
+                if isUpdateCancelled {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -355,21 +347,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private func updateDevicesRegistry(server: Server) async {
         guard !isUpdateCancelled else { return }
         let registryEntries: [DeviceRegistryEntry]? =
-            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
+            await withCheckedContinuation { (continuation: CheckedContinuation<
                 [DeviceRegistryEntry]?,
                 Never
             >) in
-                guard let self else {
-                    continuation.resume(returning: nil)
-                    return
-                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if Task.isCancelled {
+                if isUpdateCancelled {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -402,21 +390,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private func updateEntitiesRegistryListForDisplay(server: Server) async {
         guard !isUpdateCancelled else { return }
         let response: EntityRegistryListForDisplay? =
-            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
+            await withCheckedContinuation { (continuation: CheckedContinuation<
                 EntityRegistryListForDisplay?,
                 Never
             >) in
-                guard let self else {
-                    continuation.resume(returning: nil)
-                    return
-                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if Task.isCancelled {
+                if isUpdateCancelled {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -502,11 +486,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             let dbTimer = ProfilingTimer("Step 5.2.2: Database write transaction")
-            try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard self != nil else {
-                    continuation.resume(throwing: CancellationError())
-                    return
-                }
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
                 // Database writes are already async and happen on GRDB's background queue
                 Current.database().asyncWrite { db in
                     let existingAreaIds = try AppArea
@@ -578,18 +558,18 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
         do {
             try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard self != nil else {
+                guard let self else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                guard !Task.isCancelled else {
+                guard !isUpdateCancelled else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
                 // Note: we batch entities into memory before this write. This is a trade-off for simpler, atomic
                 // updates;
                 // if memory usage becomes an issue for very large datasets, consider a streaming or chunked approach.
-                Current.database().asyncWrite { db in
+                Current.database().asyncWrite { [entitiesListForDisplay] db in
                     // Get existing IDs for this server
                     let existingIds = try AppEntityRegistryListForDisplay
                         .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
@@ -648,11 +628,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard self != nil else {
+                guard let self else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                guard !Task.isCancelled else {
+                guard !isUpdateCancelled else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
@@ -718,11 +698,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard self != nil else {
+                guard let self else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                guard !Task.isCancelled else {
+                guard !isUpdateCancelled else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
