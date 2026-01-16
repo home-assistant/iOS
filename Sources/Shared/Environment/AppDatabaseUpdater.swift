@@ -21,8 +21,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     // MARK: - Cancellation Helper
 
     /// Centralized cancellation check that can be customized in the future.
-    /// Returns `true` if the current task has been cancelled.
-    private var isUpdateCancelled: Bool {
+    /// Returns `true` if the current task has been cancelled or the app is no longer in the foreground.
+    private func isUpdateCancelled() -> Bool {
         Task.isCancelled || !Current.isForegroundApp()
     }
 
