@@ -1590,6 +1590,12 @@ public enum L10n {
       /// Kiosk Mode Active
       public static var title: String { return L10n.tr("Localizable", "kiosk.active.title") }
     }
+    public enum Auth {
+      /// Authentication Required
+      public static var `required`: String { return L10n.tr("Localizable", "kiosk.auth.required") }
+      /// Try Again
+      public static var tryAgain: String { return L10n.tr("Localizable", "kiosk.auth.try_again") }
+    }
     public enum AuthError {
       /// Authenticate to exit kiosk mode
       public static var reason: String { return L10n.tr("Localizable", "kiosk.auth_error.reason") }
@@ -1683,8 +1689,8 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "kiosk.section.title") }
     }
     public enum Security {
-      /// Allow Face ID / Touch ID
-      public static var biometric: String { return L10n.tr("Localizable", "kiosk.security.biometric") }
+      /// Device Authentication
+      public static var deviceAuth: String { return L10n.tr("Localizable", "kiosk.security.device_auth") }
       /// Exit Gesture Corner
       public static var gestureCorner: String { return L10n.tr("Localizable", "kiosk.security.gesture_corner") }
       /// Tap the %@ corner %d times to access kiosk settings when locked.
@@ -1695,8 +1701,6 @@ public enum L10n {
       public static var hideStatusBar: String { return L10n.tr("Localizable", "kiosk.security.hide_status_bar") }
       /// Lock Navigation
       public static var lockNavigation: String { return L10n.tr("Localizable", "kiosk.security.lock_navigation") }
-      /// Allow Device Passcode
-      public static var passcode: String { return L10n.tr("Localizable", "kiosk.security.passcode") }
       /// Prevent Auto-Lock
       public static var preventAutolock: String { return L10n.tr("Localizable", "kiosk.security.prevent_autolock") }
       /// Secret Exit Gesture

@@ -23,8 +23,7 @@ public struct KioskSettingsView: View {
         _settings = State(initialValue: mgr.settings)
         // Capture auth requirement at init time based on current kiosk state
         _authRequired = State(
-            initialValue: mgr.isKioskModeActive &&
-                (mgr.settings.allowBiometricExit || mgr.settings.allowDevicePasscodeExit)
+            initialValue: mgr.isKioskModeActive && mgr.settings.requireDeviceAuthentication
         )
     }
 
@@ -47,8 +46,40 @@ public struct KioskSettingsView: View {
         .disabled(authRequired && !isAuthenticated)
         .overlay {
             if authRequired, !isAuthenticated {
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea()
+                ZStack {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+
+                    VStack(spacing: 20) {
+                        Image(systemSymbol: .lockFill)
+                            .font(.system(size: 48))
+                            .foregroundColor(.white)
+
+                        Text(L10n.Kiosk.Auth.required)
+                            .font(.headline)
+                            .foregroundColor(.white)
+
+                        HStack(spacing: 16) {
+                            Button {
+                                dismiss()
+                            } label: {
+                                Text(L10n.cancelLabel)
+                                    .frame(minWidth: 100)
+                            }
+                            .buttonStyle(.bordered)
+
+                            Button {
+                                authenticateForSettings()
+                            } label: {
+                                Text(L10n.Kiosk.Auth.tryAgain)
+                                    .frame(minWidth: 100)
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                    }
+                    .padding(32)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                }
             }
         }
         .onAppear {
@@ -91,50 +122,37 @@ public struct KioskSettingsView: View {
     private func authenticateForSettings() {
         let context = LAContext()
         var error: NSError?
-        let authSettings = manager.settings // Use persisted settings for auth checks
+        let authSettings = manager.settings
 
-        // Determine which policy to use based on settings
-        let policy: LAPolicy = authSettings.allowBiometricExit
-            ? .deviceOwnerAuthenticationWithBiometrics
-            : .deviceOwnerAuthentication
+        // No authentication required
+        guard authSettings.requireDeviceAuthentication else {
+            isAuthenticated = true
+            return
+        }
 
-        if context.canEvaluatePolicy(policy, error: &error) {
-            let reason = L10n.Kiosk.AuthError.reason
+        // Use device owner authentication (Face ID/Touch ID with passcode fallback)
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
+            // No authentication available on device, allow access
+            isAuthenticated = true
+            return
+        }
 
-            context.evaluatePolicy(policy, localizedReason: reason) { success, authError in
-                DispatchQueue.main.async {
-                    if success {
-                        isAuthenticated = true
-                    } else if let authError = authError as? LAError {
-                        switch authError.code {
-                        case .userCancel, .appCancel:
-                            // User cancelled - dismiss settings
-                            dismiss()
-                        default:
-                            authErrorMessage = authError.localizedDescription
-                            showingAuthError = true
-                        }
+        let reason = L10n.Kiosk.AuthError.reason
+        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authError in
+            DispatchQueue.main.async {
+                if success {
+                    isAuthenticated = true
+                } else if let authError = authError as? LAError {
+                    switch authError.code {
+                    case .userCancel, .appCancel:
+                        // User cancelled - they can retry or close via overlay
+                        break
+                    default:
+                        authErrorMessage = authError.localizedDescription
+                        showingAuthError = true
                     }
                 }
             }
-        } else if authSettings.allowDevicePasscodeExit {
-            // Biometric not available, try passcode
-            context
-                .evaluatePolicy(
-                    .deviceOwnerAuthentication,
-                    localizedReason: L10n.Kiosk.AuthError.reason
-                ) { success, _ in
-                    DispatchQueue.main.async {
-                        if success {
-                            isAuthenticated = true
-                        } else {
-                            dismiss()
-                        }
-                    }
-                }
-        } else {
-            // No auth available, allow access
-            isAuthenticated = true
         }
     }
 
@@ -167,12 +185,8 @@ public struct KioskSettingsView: View {
 
     private var coreSettingsSection: some View {
         Section {
-            Toggle(isOn: $settings.allowBiometricExit) {
-                Label(L10n.Kiosk.Security.biometric, systemSymbol: .faceid)
-            }
-
-            Toggle(isOn: $settings.allowDevicePasscodeExit) {
-                Label(L10n.Kiosk.Security.passcode, systemSymbol: .lockShield)
+            Toggle(isOn: $settings.requireDeviceAuthentication) {
+                Label(L10n.Kiosk.Security.deviceAuth, systemSymbol: .lockShield)
             }
 
             Toggle(isOn: $settings.hideStatusBar) {
@@ -348,8 +362,8 @@ public struct KioskSettingsView: View {
         // This prevents bypassing auth by disabling it in the form first
         let authSettings = manager.settings
 
-        // If neither biometric nor passcode auth is required, just exit
-        guard authSettings.allowBiometricExit || authSettings.allowDevicePasscodeExit else {
+        // If no authentication required, just exit
+        guard authSettings.requireDeviceAuthentication else {
             manager.disableKioskMode()
             return
         }
@@ -357,55 +371,14 @@ public struct KioskSettingsView: View {
         let context = LAContext()
         var error: NSError?
 
-        // Configure which auth methods are allowed
-        if !authSettings.allowDevicePasscodeExit {
-            // Only allow biometric, no passcode fallback
-            context.localizedFallbackTitle = ""
-        }
-
-        // Determine which policy to use based on settings
-        let policy: LAPolicy = authSettings.allowBiometricExit
-            ? .deviceOwnerAuthenticationWithBiometrics
-            : .deviceOwnerAuthentication
-
-        // Check what authentication methods are available
-        if context.canEvaluatePolicy(policy, error: &error) {
-            let reason = L10n.Kiosk.AuthError.reason
-
-            context.evaluatePolicy(policy, localizedReason: reason) { success, authError in
-                DispatchQueue.main.async {
-                    if success {
-                        manager.disableKioskMode()
-                    } else if let authError = authError as? LAError {
-                        switch authError.code {
-                        case .userCancel, .appCancel:
-                            // User cancelled, do nothing
-                            break
-                        case .userFallback:
-                            // User chose to use passcode - try passcode auth if allowed
-                            if authSettings.allowDevicePasscodeExit {
-                                attemptPasscodeAuth()
-                            }
-                        default:
-                            authErrorMessage = authError.localizedDescription
-                            showingAuthError = true
-                        }
-                    }
-                }
-            }
-        } else if authSettings.allowDevicePasscodeExit {
-            // Biometric not available, try passcode
-            attemptPasscodeAuth()
-        } else {
-            // No authentication methods available/configured, just exit
+        // Use device owner authentication (Face ID/Touch ID with passcode fallback)
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
+            // No authentication available on device, allow exit
             manager.disableKioskMode()
+            return
         }
-    }
 
-    private func attemptPasscodeAuth() {
-        let context = LAContext()
         let reason = L10n.Kiosk.AuthError.reason
-
         context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authError in
             DispatchQueue.main.async {
                 if success {
@@ -413,6 +386,7 @@ public struct KioskSettingsView: View {
                 } else if let authError = authError as? LAError {
                     switch authError.code {
                     case .userCancel, .appCancel:
+                        // User cancelled, do nothing
                         break
                     default:
                         authErrorMessage = authError.localizedDescription

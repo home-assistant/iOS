@@ -57,6 +57,7 @@ public extension DatabaseQueue {
             HomeViewConfigurationTable(),
             CameraListConfigurationTable(),
             AssistConfigurationTable(),
+            KioskSettingsTable(),
         ]
     }
 

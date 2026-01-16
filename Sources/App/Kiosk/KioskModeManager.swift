@@ -191,9 +191,6 @@ public final class KioskModeManager: ObservableObject {
             Current.Log.info("Screen auto-lock disabled")
         }
 
-        // Update touch feedback configuration
-        TouchFeedbackManager.shared.configure(from: settings)
-
         // Apply settings
         applyBrightnessSchedule()
         startIdleTimer()
@@ -550,38 +547,15 @@ public final class KioskModeManager: ObservableObject {
 
     // MARK: - Settings Persistence
 
-    private static let settingsKey = "KioskModeSettings"
-
     private static func loadSettings() -> KioskSettings {
-        guard let data = UserDefaults.standard.data(forKey: settingsKey) else {
-            Current.Log.info("No saved kiosk settings found, using defaults")
-            return KioskSettings()
-        }
-
-        do {
-            let settings = try JSONDecoder().decode(KioskSettings.self, from: data)
-            Current.Log.info("Loaded kiosk settings from UserDefaults")
-            return settings
-        } catch {
-            Current.Log.error("Failed to decode kiosk settings: \(error)")
-            return KioskSettings()
-        }
+        KioskSettingsRecord.loadSettings()
     }
 
     private func saveSettings() {
-        do {
-            let data = try JSONEncoder().encode(settings)
-            UserDefaults.standard.set(data, forKey: Self.settingsKey)
-            Current.Log.verbose("Saved kiosk settings to UserDefaults")
-        } catch {
-            Current.Log.error("Failed to encode kiosk settings: \(error)")
-        }
+        KioskSettingsRecord.saveSettings(settings)
     }
 
     private func settingsDidChange(from oldValue: KioskSettings, to newValue: KioskSettings) {
-        // Update touch feedback configuration
-        TouchFeedbackManager.shared.configure(from: newValue)
-
         // Handle kiosk mode toggle
         if oldValue.isKioskModeEnabled != newValue.isKioskModeEnabled {
             if newValue.isKioskModeEnabled {

@@ -1,5 +1,85 @@
 import Foundation
+import GRDB
+import Shared
 import UIKit
+
+// MARK: - GRDB Record Wrapper
+
+/// GRDB record wrapper for persisting KioskSettings as JSON
+/// This follows the same pattern as CarPlayConfig and WatchConfig
+public struct KioskSettingsRecord: Codable, FetchableRecord, PersistableRecord {
+    public static var databaseTableName: String { GRDBDatabaseTable.kioskSettings.rawValue }
+    public static let recordId = "kiosk-settings"
+
+    public var id: String = KioskSettingsRecord.recordId
+    public var settingsJSON: String
+
+    public init(id: String = KioskSettingsRecord.recordId, settingsJSON: String) {
+        self.id = id
+        self.settingsJSON = settingsJSON
+    }
+
+    public init(settings: KioskSettings) throws {
+        self.id = KioskSettingsRecord.recordId
+        let data = try JSONEncoder().encode(settings)
+        guard let json = String(data: data, encoding: .utf8) else {
+            throw NSError(
+                domain: "KioskSettings",
+                code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Failed to encode settings to JSON"]
+            )
+        }
+        self.settingsJSON = json
+    }
+
+    public func toSettings() throws -> KioskSettings {
+        guard let data = settingsJSON.data(using: .utf8) else {
+            throw NSError(
+                domain: "KioskSettings",
+                code: 2,
+                userInfo: [NSLocalizedDescriptionKey: "Failed to decode settings JSON"]
+            )
+        }
+        return try JSONDecoder().decode(KioskSettings.self, from: data)
+    }
+
+    /// Load settings from database
+    public static func loadSettings() -> KioskSettings {
+        do {
+            let record: KioskSettingsRecord? = try Current.database().read { db in
+                try KioskSettingsRecord.fetchOne(db)
+            }
+            if let record {
+                return try record.toSettings()
+            }
+            Current.Log.info("No saved kiosk settings found in GRDB, using defaults")
+            return KioskSettings()
+        } catch {
+            Current.Log.error("Failed to load kiosk settings from GRDB: \(error)")
+            return KioskSettings()
+        }
+    }
+
+    /// Save settings to database
+    public static func saveSettings(_ settings: KioskSettings) {
+        do {
+            let record = try KioskSettingsRecord(settings: settings)
+            try Current.database().write { db in
+                try record.insert(db, onConflict: .replace)
+            }
+            Current.Log.verbose("Saved kiosk settings to GRDB")
+        } catch {
+            Current.Log.error("Failed to save kiosk settings to GRDB: \(error)")
+        }
+    }
+
+    // MARK: - CodingKeys for GRDB column mapping
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case settingsJSON = "settings_json"
+    }
+}
 
 // MARK: - Main Settings Container
 
@@ -11,11 +91,8 @@ public struct KioskSettings: Codable, Equatable {
     /// Whether kiosk mode is currently enabled
     public var isKioskModeEnabled: Bool = false
 
-    /// Whether biometric (Face ID/Touch ID) is required to exit kiosk mode
-    public var allowBiometricExit: Bool = false
-
-    /// Whether device passcode is required as fallback to exit
-    public var allowDevicePasscodeExit: Bool = false
+    /// Whether device authentication (Face ID, Touch ID, or passcode) is required to access settings
+    public var requireDeviceAuthentication: Bool = false
 
     /// Lock navigation (disable back gestures, pull-to-refresh, etc.)
     public var navigationLockdown: Bool = true

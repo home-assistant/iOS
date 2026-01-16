@@ -87,15 +87,8 @@ private struct SecretTapArea: View {
             // Success - trigger action
             tapCount = 0
             resetTimer = nil
-
-            // Provide success haptic feedback
-            TouchFeedbackManager.shared.playFeedback(for: .action)
-
             onTriggered()
         } else {
-            // Provide subtle feedback for each tap
-            TouchFeedbackManager.shared.playFeedback(for: .tap)
-
             // Reset tap count if no more taps within window
             resetTimer = Timer.scheduledTimer(withTimeInterval: tapWindow, repeats: false) { _ in
                 tapCount = 0

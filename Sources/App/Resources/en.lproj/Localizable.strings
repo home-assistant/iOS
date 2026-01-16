@@ -1447,11 +1447,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.footer.description" = "When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.";
 "kiosk.auth_error.title" = "Authentication Error";
 "kiosk.auth_error.reason" = "Authenticate to exit kiosk mode";
+"kiosk.auth.required" = "Authentication Required";
+"kiosk.auth.try_again" = "Try Again";
 
 /* Kiosk Security & Display Settings */
 "kiosk.security.section" = "Security & Display";
-"kiosk.security.biometric" = "Allow Face ID / Touch ID";
-"kiosk.security.passcode" = "Allow Device Passcode";
+"kiosk.security.device_auth" = "Device Authentication";
 "kiosk.security.lock_navigation" = "Lock Navigation";
 "kiosk.security.hide_status_bar" = "Hide Status Bar";
 "kiosk.security.prevent_autolock" = "Prevent Auto-Lock";

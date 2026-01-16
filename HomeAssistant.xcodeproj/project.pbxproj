@@ -480,7 +480,6 @@
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		20226C5AB77E1229852ADDC8 /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27653D385E4CEB58E52A350 /* Pods_iOS_Extensions_Widgets.framework */; };
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
-		2B9F0937F9D34F02ADC825B6 /* TouchFeedbackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0B08E87CB14CA787A8936B /* TouchFeedbackManager.swift */; };
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
@@ -589,6 +588,8 @@
 		420CFC6A2D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */; };
 		420CFC6C2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */; };
 		420CFC6D2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */; };
+		42KIOSK0012D4218001A94F3 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0012D4218000A94F3 /* KioskSettingsTable.swift */; };
+		42KIOSK0012D4218002A94F3 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0012D4218000A94F3 /* KioskSettingsTable.swift */; };
 		420CFC702D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */; };
 		420CFC712D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */; };
 		420CFC782D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */; };
@@ -987,7 +988,6 @@
 		42B7BFEF2E97CDE40056BADC /* HomeNetworkInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7BFEE2E97CDE40056BADC /* HomeNetworkInputView.swift */; };
 		42B7BFF12E97D1540056BADC /* HomeNetworkInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7BFF02E97D1540056BADC /* HomeNetworkInputViewModel.swift */; };
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
-		42KIOSK012E0F000000000001 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK002E0F000000000001 /* KioskSettings.test.swift */; };
 		42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */; };
 		42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */; };
 		42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */; };
@@ -1204,6 +1204,7 @@
 		42FDCA282F0C7EC200C92958 /* entityregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 42FDCA252F0C7BFA00C92958 /* entityregistry.json */; };
 		42FDCA2A2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
 		42FDCA2B2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
+		42KIOSK012E0F000000000001 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK002E0F000000000001 /* KioskSettings.test.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
@@ -2290,6 +2291,7 @@
 		420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAppEntityTable.swift; sourceTree = "<group>"; };
 		420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigTable.swift; sourceTree = "<group>"; };
+		42KIOSK0012D4218000A94F3 /* KioskSettingsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsTable.swift; sourceTree = "<group>"; };
 		420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelinesTable.swift; sourceTree = "<group>"; };
 		420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryListForDisplayTable.swift; sourceTree = "<group>"; };
 		420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPanelTable.swift; sourceTree = "<group>"; };
@@ -2802,7 +2804,6 @@
 		42B7BFEE2E97CDE40056BADC /* HomeNetworkInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkInputView.swift; sourceTree = "<group>"; };
 		42B7BFF02E97D1540056BADC /* HomeNetworkInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkInputViewModel.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
-		42KIOSK002E0F000000000001 /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
 		42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.swift; sourceTree = "<group>"; };
 		42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.test.swift; sourceTree = "<group>"; };
 		42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistChatItem.swift; sourceTree = "<group>"; };
@@ -2988,6 +2989,7 @@
 		42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClass.swift; sourceTree = "<group>"; };
 		42FDCA252F0C7BFA00C92958 /* entityregistry.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = entityregistry.json; sourceTree = "<group>"; };
 		42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryTable.swift; sourceTree = "<group>"; };
+		42KIOSK002E0F000000000001 /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingHelper.swift; sourceTree = "<group>"; };
@@ -3402,7 +3404,6 @@
 		DA2CE827B2DBBDBFB11559DF /* Pods-iOS-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.beta.xcconfig"; sourceTree = "<group>"; };
 		DB8A733CCD8345288030B319 /* KioskSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.swift; sourceTree = "<group>"; };
 		DD90A8F251D0671EFAC931ED /* Pods_iOS_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE0B08E87CB14CA787A8936B /* TouchFeedbackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchFeedbackManager.swift; sourceTree = "<group>"; };
 		DFE9B91096F09C0E2A124B76 /* Pods-iOS-Extensions-Widgets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.release.xcconfig"; sourceTree = "<group>"; };
 		E1A08868E5F1AEA7C24FAAAE /* Pods-iOS-Extensions-NotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.release.xcconfig"; sourceTree = "<group>"; };
 		E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-PushProvider-metadata.plist"; path = "Pods/Pods-iOS-Extensions-PushProvider-metadata.plist"; sourceTree = "<group>"; };
@@ -4381,7 +4382,6 @@
 			children = (
 				ED3A6B339BFB4E13A4E5E435 /* IconMapper.swift */,
 				ABD2DB3459FE4F3DA0E1E0DD /* AnimationUtilities.swift */,
-				DE0B08E87CB14CA787A8936B /* TouchFeedbackManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -4712,6 +4712,7 @@
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
 				4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */,
 				4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */,
+				42KIOSK0012D4218000A94F3 /* KioskSettingsTable.swift */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -6422,6 +6423,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		42KIOSK032E0F000000000001 /* Kiosk */ = {
+			isa = PBXGroup;
+			children = (
+				42KIOSK002E0F000000000001 /* KioskSettings.test.swift */,
+			);
+			path = Kiosk;
+			sourceTree = "<group>";
+		};
 		46C3EB192D721000009A893F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -7368,14 +7377,6 @@
 				1120C5832749C6350046C38B /* ServerProviding.swift */,
 			);
 			path = Common;
-			sourceTree = "<group>";
-		};
-		42KIOSK032E0F000000000001 /* Kiosk */ = {
-			isa = PBXGroup;
-			children = (
-				42KIOSK002E0F000000000001 /* KioskSettings.test.swift */,
-			);
-			path = Kiosk;
 			sourceTree = "<group>";
 		};
 		F7CD87130CAC4001A6C4D328 /* Kiosk */ = {
@@ -9338,7 +9339,6 @@
 				8260D23DA1A34FEC885DBB15 /* KioskModeManager.swift in Sources */,
 				A209BEDF9035461A8A7569CF /* IconMapper.swift in Sources */,
 				E7B8FBAD8A934D91B4A5117B /* AnimationUtilities.swift in Sources */,
-				2B9F0937F9D34F02ADC825B6 /* TouchFeedbackManager.swift in Sources */,
 				A482583B18D6494C9A1995A7 /* KioskScreensaverViewController.swift in Sources */,
 				A9FAF15DB9BE4F8B9B5F1FBD /* KioskClockScreensaverView.swift in Sources */,
 				C8A2BCC3E2944AF2B75CA9FF /* KioskSecretExitGestureView.swift in Sources */,
@@ -9887,6 +9887,7 @@
 				3997926B2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
 				420CFC6D2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */,
+				42KIOSK0012D4218001A94F3 /* KioskSettingsTable.swift in Sources */,
 				11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */,
 				11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				428DBFF82F0C9009003B08D5 /* DeviceRegistryEntry.swift in Sources */,
@@ -10218,6 +10219,7 @@
 				42070EEE2BAC523F0031E96F /* AssistService.swift in Sources */,
 				42D3E4BF2C5D321300444BE6 /* NotificationIdentifier.swift in Sources */,
 				420CFC6C2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */,
+				42KIOSK0012D4218002A94F3 /* KioskSettingsTable.swift in Sources */,
 				114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,
 				118261FD24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
 				42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */,
