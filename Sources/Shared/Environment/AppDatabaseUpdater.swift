@@ -165,7 +165,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Determines if a specific server should be updated based on connection and throttle rules.
     private func shouldUpdateServer(_ server: Server) -> Bool {
         guard server.info.connection.activeURL() != nil else { return false }
-        if isUpdateCancelled { return false }
+        if isUpdateCancelled() { return false }
 
         // Per-server throttle with exponential backoff
         if let last = perServerLastUpdate[server.identifier.rawValue] {
@@ -179,7 +179,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     /// Performs an update for a single specific server.
     private func performSingleServerUpdate(server: Server) async {
-        guard !isUpdateCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         guard shouldUpdateServer(server) else {
             Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
             return
@@ -202,16 +202,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Wraps a per-server update with cancellation checks and returns whether it succeeded.
     /// This allows the scheduler to apply backoff on failures and update last-run times on success.
     private func safeUpdateServer(server: Server) async -> Bool {
-        if isUpdateCancelled { return false }
+        if isUpdateCancelled() { return false }
         await updateServer(server: server)
-        if isUpdateCancelled { return false }
+        if isUpdateCancelled() { return false }
         return true
     }
 
     /// Runs the full update pipeline for a single server in sequence.
     /// Each phase checks for cancellation to bail out quickly when needed.
     private func updateServer(server: Server) async {
-        guard !isUpdateCancelled else { return }
+        guard !isUpdateCancelled() else { return }
 
         let totalTimer = ProfilingTimer("Starting full update for server: \(server.info.name)")
 
@@ -222,7 +222,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             await updateEntitiesDatabase(server: server)
             timer.end()
         }
-        if isUpdateCancelled { return }
+        if isUpdateCancelled() { return }
 
         // Step 2: Entities registry list for display
         await updateToastStep(for: server, step: .entitiesRegistryListForDisplay)
@@ -231,7 +231,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             await updateEntitiesRegistryListForDisplay(server: server)
             timer.end()
         }
-        if isUpdateCancelled { return }
+        if isUpdateCancelled() { return }
 
         // Step 3: Entities registry
         await updateToastStep(for: server, step: .entitiesRegistry)
@@ -240,7 +240,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             await updateEntitiesRegistry(server: server)
             timer.end()
         }
-        if isUpdateCancelled { return }
+        if isUpdateCancelled() { return }
 
         // Step 4: Devices registry
         await updateToastStep(for: server, step: .devicesRegistry)
@@ -249,7 +249,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             await updateDevicesRegistry(server: server)
             timer.end()
         }
-        if isUpdateCancelled { return }
+        if isUpdateCancelled() { return }
 
         // Step 5: Areas with their entities
         // IMPORTANT: This must be executed after entities and device registry
@@ -268,7 +268,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Fetches entities' states from the API and forwards results to persistence.
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesDatabase(server: Server) async {
-        guard !isUpdateCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             guard let api = Current.api(for: server) else {
                 Current.Log.error("No API available for server \(server.info.name)")
@@ -276,7 +276,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 return
             }
             // If cancelled after acquiring API, resume the continuation to avoid hanging.
-            if isUpdateCancelled {
+            if self.isUpdateCancelled() {
                 continuation.resume()
                 return
             }
@@ -302,7 +302,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Fetches entity registry from the API and forwards results to persistence.
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesRegistry(server: Server) async {
-        guard !isUpdateCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         let registryEntries: [EntityRegistryEntry]? =
             await withCheckedContinuation { (continuation: CheckedContinuation<
                 [EntityRegistryEntry]?,
@@ -314,7 +314,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if isUpdateCancelled {
+                if self.isUpdateCancelled() {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -345,7 +345,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Fetches device registry from the API and forwards results to persistence.
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateDevicesRegistry(server: Server) async {
-        guard !isUpdateCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         let registryEntries: [DeviceRegistryEntry]? =
             await withCheckedContinuation { (continuation: CheckedContinuation<
                 [DeviceRegistryEntry]?,
@@ -357,7 +357,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if isUpdateCancelled {
+                if self.isUpdateCancelled() {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -388,7 +388,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Fetches entity registry list-for-display from the API and forwards results to persistence.
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesRegistryListForDisplay(server: Server) async {
-        guard !isUpdateCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         let response: EntityRegistryListForDisplay? =
             await withCheckedContinuation { (continuation: CheckedContinuation<
                 EntityRegistryListForDisplay?,
@@ -400,7 +400,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if isUpdateCancelled {
+                if self.isUpdateCancelled() {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -460,7 +460,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         serverId: String
     ) async {
         // Check for cancellation before starting database work
-        guard !isUpdateCancelled else {
+        guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping areas database save - task cancelled")
             return
         }
@@ -537,7 +537,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Builds the payload with a streaming loop to reduce intermediate allocations vs filter+map.
     private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) async {
         // Check for cancellation before starting database work
-        guard !isUpdateCancelled else {
+        guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping EntityRegistryListForDisplay database save - task cancelled")
             return
         }
@@ -562,7 +562,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                guard !isUpdateCancelled else {
+                guard !isUpdateCancelled() else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
@@ -617,7 +617,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Persists the entity registry for a server using a single transaction and differential deletes.
     private func saveEntityRegistry(_ registryEntries: [EntityRegistryEntry], serverId: String) async {
         // If cancelled before touching the DB, bail out early to avoid unnecessary work.
-        guard !isUpdateCancelled else {
+        guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping entity registry database save - task cancelled")
             return
         }
@@ -632,7 +632,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                guard !isUpdateCancelled else {
+                guard !isUpdateCancelled() else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
@@ -687,7 +687,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Persists the device registry for a server using a single transaction and differential deletes.
     private func saveDeviceRegistry(_ registryEntries: [DeviceRegistryEntry], serverId: String) async {
         // If cancelled before touching the DB, bail out early to avoid unnecessary work.
-        guard !isUpdateCancelled else {
+        guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping device registry database save - task cancelled")
             return
         }
@@ -702,7 +702,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                guard !isUpdateCancelled else {
+                guard !isUpdateCancelled() else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
