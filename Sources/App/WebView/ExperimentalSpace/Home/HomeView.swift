@@ -85,13 +85,10 @@ struct HomeView: View {
             break
         }
     }
-    
+
     private func switchToServer(_ server: Server) {
         guard server.identifier != viewModel.server.identifier else { return }
-        dismiss()
-        Current.sceneManager.webViewWindowControllerPromise.done { controller in
-            controller.open(server: server)
-        }
+        viewModel.switchToServer(server)
     }
 
     // MARK: - Content Views
@@ -428,19 +425,19 @@ struct HomeView: View {
                 } label: {
                     Label(L10n.HomeView.Menu.settings, systemSymbol: .gearshape)
                 }
-                
+
                 if Current.servers.all.count > 1 {
-                    Divider()
-                    
-                    ForEach(Current.servers.all, id: \.identifier) { server in
-                        Button {
-                            switchToServer(server)
-                        } label: {
-                            HStack {
-                                Text(server.info.name)
-                                if viewModel.server.identifier == server.identifier {
-                                    Spacer()
-                                    Image(systemSymbol: .checkmark)
+                    Section("Servers") {
+                        ForEach(Current.servers.all, id: \.identifier) { server in
+                            Button {
+                                switchToServer(server)
+                            } label: {
+                                HStack {
+                                    Text(server.info.name)
+                                    if viewModel.server.identifier == server.identifier {
+                                        Spacer()
+                                        Image(systemSymbol: .checkmark)
+                                    }
                                 }
                             }
                         }
