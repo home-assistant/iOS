@@ -427,7 +427,7 @@ struct HomeView: View {
                 }
 
                 if Current.servers.all.count > 1 {
-                    Section("Servers") {
+                    Section(L10n.ServersSelection.title) {
                         ForEach(Current.servers.all, id: \.identifier) { server in
                             Button {
                                 switchToServer(server)
