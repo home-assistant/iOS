@@ -122,59 +122,43 @@ final class AreasService: AreasServiceProtocol {
         devicesAndAreas: [AppDeviceRegistry],
         entitiesAndAreas: [AppEntityRegistry]
     ) -> [String: Set<String>] {
-        /// area_id : [device_id]
-        var areasAndDevicesDict: [String: [String]] = [:]
+        /// area_id : Set<device_id>
+        var areasAndDevicesDict: [String: Set<String>] = [:]
+        /// device_id : area_id (reverse lookup for O(1) access)
+        var deviceToAreaMap: [String: String] = [:]
 
-        // Get all devices from an area
+        // Build area->devices mapping and device->area reverse lookup
         for device in devicesAndAreas {
-            let deviceId = device.deviceId
             if let areaId = device.areaId {
-                if var deviceIds = areasAndDevicesDict[areaId] {
-                    deviceIds.append(deviceId)
-                    areasAndDevicesDict[areaId] = deviceIds
-                } else {
-                    areasAndDevicesDict[areaId] = [deviceId]
-                }
+                areasAndDevicesDict[areaId, default: []].insert(device.deviceId)
+                deviceToAreaMap[device.deviceId] = areaId
             }
         }
 
-        /// area_id : [entity_id]
+        /// area_id : Set<entity_id>
         var areasAndEntitiesDict: [String: Set<String>] = [:]
+        /// device_id : Set<entity_id> (built in one pass)
+        var deviceChildrenEntities: [String: Set<String>] = [:]
 
-        // Get all entities from an area
+        // Single pass through entities: add to areas and build device->entities mapping
         for entity in entitiesAndAreas {
-            if let areaId = entity.areaId, let entityId = entity.entityId {
-                if var entityIds = areasAndEntitiesDict[areaId] {
-                    entityIds.insert(entityId)
-                    areasAndEntitiesDict[areaId] = entityIds
-                } else {
-                    areasAndEntitiesDict[areaId] = [entityId]
-                }
+            guard let entityId = entity.entityId else { continue }
+
+            // Add entity directly to its area
+            if let areaId = entity.areaId {
+                areasAndEntitiesDict[areaId, default: []].insert(entityId)
+            }
+
+            // Build device->entities mapping for later
+            if let deviceId = entity.deviceId {
+                deviceChildrenEntities[deviceId, default: []].insert(entityId)
             }
         }
 
-        /// device_id : [entity_id]
-        var deviceChildrenEntities: [String: [String]] = [:]
-
-        // Get entities from a device
-        for areaAndDevices in areasAndDevicesDict {
-            for deviceId in areaAndDevices.value {
-                deviceChildrenEntities[deviceId] = entitiesAndAreas.filter { $0.deviceId == deviceId }
-                    .compactMap(\.entityId)
-            }
-        }
-
-        // Add device children entities to dictionary of areas and entities
-        deviceChildrenEntities.forEach { deviceAndChildren in
-            guard let areaOfDevice = areasAndDevicesDict.first(where: { areaAndDevices in
-                areaAndDevices.value.contains(deviceAndChildren.key)
-            })?.key else { return }
-
-            if var entityIds = areasAndEntitiesDict[areaOfDevice] {
-                deviceAndChildren.value.forEach { entityIds.insert($0) }
-                areasAndEntitiesDict[areaOfDevice] = entityIds
-            } else {
-                areasAndEntitiesDict[areaOfDevice] = Set(deviceAndChildren.value)
+        // Add device children entities to their areas (using reverse lookup)
+        for (deviceId, entityIds) in deviceChildrenEntities {
+            if let areaId = deviceToAreaMap[deviceId] {
+                areasAndEntitiesDict[areaId, default: []].formUnion(entityIds)
             }
         }
 
