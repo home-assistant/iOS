@@ -1501,3 +1501,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 /* Time Picker */
 "kiosk.time.hour" = "Hour";
 "kiosk.time.minute" = "Minute";
+"database_updater.toast.title" = "Updating %@";
+"database_updater.toast.syncing" = "Syncing server data...";
+"database_updater.toast.syncing_with_progress" = "Syncing server data... (%d/%d)";

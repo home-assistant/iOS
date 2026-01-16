@@ -1097,6 +1097,21 @@ public enum L10n {
     }
   }
 
+  public enum DatabaseUpdater {
+    public enum Toast {
+      /// Syncing server data...
+      public static var syncing: String { return L10n.tr("Localizable", "database_updater.toast.syncing") }
+      /// Syncing server data... (%d/%d)
+      public static func syncingWithProgress(_ p1: Int, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "database_updater.toast.syncing_with_progress", p1, p2)
+      }
+      /// Updating %@
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "database_updater.toast.title", String(describing: p1))
+      }
+    }
+  }
+
   public enum Debug {
     public enum Reset {
       public enum EntitiesDatabase {

@@ -32,30 +32,46 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Constants
 
     static let usagePredictionSectionId = "usage-prediction-common-control"
+    private let usagePredictionLoadInterval: TimeInterval = 120 // 2 minutes
 
-    var groupedEntities: [RoomSection] = []
-    var isLoading = false
-    var errorMessage: String?
-    var server: Server
-    var entityStates: [String: HAEntity] = [:]
+    // MARK: - Core Dependencies
+
+    var server: Server {
+        didSet {
+            if oldValue.identifier != server.identifier {
+                handleServerChange()
+            }
+        }
+    }
+
     var configuration: HomeViewConfiguration {
         didSet {
             saveCachedData()
         }
     }
 
+    private let entityService = EntityDisplayService()
+
+    // MARK: - UI State
+
+    var isLoading = false
+    var errorMessage: String?
+
+    // MARK: - Entity Data
+
+    var entityStates: [String: HAEntity] = [:]
     var appEntities: [HAAppEntity]?
     var registryEntities: [AppEntityRegistryListForDisplay]?
-    var usagePredictionCommonControl: HAUsagePredictionCommonControl? {
+
+    private var areas: [AppArea]? {
         didSet {
             buildRoomsIfNeeded()
         }
     }
 
-    var cachedUserName: String = ""
-    private var lastUsagePredictionLoadTime: Date?
-    private let usagePredictionLoadInterval: TimeInterval = 120 // 2 minutes
+    // MARK: - Sections & Summaries
 
+    var groupedEntities: [RoomSection] = []
     var domainSummaries: [DomainSummary] = []
 
     var orderedSectionsForMenu: [RoomSection] {
@@ -73,6 +89,16 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Usage Prediction
+
+    var usagePredictionCommonControl: HAUsagePredictionCommonControl? {
+        didSet {
+            buildRoomsIfNeeded()
+        }
+    }
+
+    private var lastUsagePredictionLoadTime: Date?
+
     /// Returns the Usage Prediction Common Control section if available
     var usagePredictionSection: RoomSection? {
         guard let entities = usagePredictionCommonControl?.entities, !entities.isEmpty else {
@@ -86,17 +112,19 @@ final class HomeViewModel: ObservableObject {
         )
     }
 
-    private var areas: [AppArea]? {
-        didSet {
-            buildRoomsIfNeeded()
-        }
-    }
+    // MARK: - User Data
 
-    private let entityService = EntityDisplayService()
+    var cachedUserName: String = ""
+
+    // MARK: - Database Observations
+
     private var configObservation: AnyDatabaseCancellable?
     private var appEntitiesObservation: AnyDatabaseCancellable?
     private var registryEntitiesObservation: AnyDatabaseCancellable?
     private var areasObservation: AnyDatabaseCancellable?
+
+    // MARK: - Subscription Management
+
     private var isSubscriptionActive = false
     private var saveTask: Task<Void, Never>?
 
@@ -118,6 +146,43 @@ final class HomeViewModel: ObservableObject {
         // Subscribe to entity changes - sections will be built when data arrives
         startSubscriptions()
         isLoading = false
+    }
+
+    /// Switch to a different server and reload all data
+    func switchToServer(_ newServer: Server) {
+        guard newServer.identifier != server.identifier else { return }
+        server = newServer
+    }
+
+    private func handleServerChange() {
+        Current.Log.info("HomeViewModel: Server changed to \(server.info.name), reloading data")
+
+        // Stop all current subscriptions
+        stopSubscriptions()
+
+        // Reset all state
+        resetState()
+
+        // Load configuration for the new server
+        configuration = HomeViewConfiguration(id: server.identifier.rawValue)
+
+        // Reload entities for the new server
+        Task {
+            await loadEntities()
+        }
+    }
+
+    private func resetState() {
+        groupedEntities = []
+        entityStates = [:]
+        appEntities = nil
+        registryEntities = nil
+        areas = nil
+        usagePredictionCommonControl = nil
+        domainSummaries = []
+        cachedUserName = ""
+        lastUsagePredictionLoadTime = nil
+        errorMessage = nil
     }
 
     private func cacheUserName() async {
@@ -225,7 +290,7 @@ final class HomeViewModel: ObservableObject {
             try HAAppEntity
                 .filter(Column(DatabaseTables.AppEntity.hiddenBy.rawValue) == nil)
                 .filter(Column(DatabaseTables.AppEntity.disabledBy.rawValue) == nil)
-                .filter(Column("serverId") == serverId)
+                .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
                 .fetchAll(db)
         }
         appEntitiesObservation = observation.start(
@@ -282,16 +347,16 @@ final class HomeViewModel: ObservableObject {
 
     /// Sort entity IDs for a specific room using saved order
     private func sortEntityIdsForRoom(_ entityIds: [String], roomId: String) -> [String] {
-        guard let order = configuration.entityOrderByRoom[roomId], !order.isEmpty else {
+        guard let savedOrder = configuration.entityOrderByRoom[roomId], !savedOrder.isEmpty else {
             // No custom order, sort alphabetically by entity ID
             return entityIds.sorted()
         }
 
-        let orderIndex = Dictionary(uniqueKeysWithValues: order.enumerated().map { ($1, $0) })
-        return entityIds.sorted { a, b in
-            let ia = orderIndex[a] ?? Int.max
-            let ib = orderIndex[b] ?? Int.max
-            return ia == ib ? a < b : ia < ib
+        let orderIndexByEntityId = Dictionary(uniqueKeysWithValues: savedOrder.enumerated().map { ($1, $0) })
+        return entityIds.sorted { firstEntityId, secondEntityId in
+            let firstIndex = orderIndexByEntityId[firstEntityId] ?? Int.max
+            let secondIndex = orderIndexByEntityId[secondEntityId] ?? Int.max
+            return firstIndex == secondIndex ? firstEntityId < secondEntityId : firstIndex < secondIndex
         }
     }
 

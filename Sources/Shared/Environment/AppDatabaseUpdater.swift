@@ -3,17 +3,57 @@ import GRDB
 import HAKit
 import UIKit
 
+// MARK: - AppDatabaseUpdater
+
 /// AppDatabaseUpdater coordinates fetching data from servers and persisting it into the local database.
 /// It ensures only one update per server runs at a time (different servers can update concurrently),
 /// applies per-server throttling with backoff, and performs careful cancellation and batched DB writes.
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func update(server: Server) async
+    func update(server: Server)
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     enum UpdateError: Error {
         case noAPI
+    }
+
+    // MARK: - Cancellation Helper
+
+    /// Centralized cancellation check that can be customized in the future.
+    /// Returns `true` if the current task has been cancelled or the app is no longer in the foreground.
+    private func isUpdateCancelled() -> Bool {
+        Task.isCancelled || !Current.isForegroundApp()
+    }
+
+    /// Represents each step in the server update process
+    enum UpdateStep: Int, CaseIterable {
+        case entities = 1
+        case entitiesRegistryListForDisplay = 2
+        case entitiesRegistry = 3
+        case devicesRegistry = 4
+        case areas = 5
+
+        /// The total number of update steps
+        static var totalSteps: Int {
+            allCases.count
+        }
+
+        /// Human-readable description of the step
+        var description: String {
+            switch self {
+            case .entities:
+                return "Fetching entities"
+            case .entitiesRegistryListForDisplay:
+                return "Fetching entity display data"
+            case .entitiesRegistry:
+                return "Fetching entity registry"
+            case .devicesRegistry:
+                return "Fetching device registry"
+            case .areas:
+                return "Fetching areas"
+            }
+        }
     }
 
     // Actor for thread-safe task management
@@ -76,45 +116,56 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         consecutiveFailuresByServer.removeAll()
     }
 
-    /// Starts an update for a specific server.
+    /// Starts an update for a specific server in the background.
+    /// This method returns immediately and does not block the caller.
     /// - Parameter server: The specific server to update.
     /// - Ensures only one update per server runs at a time. Different servers can update concurrently.
     /// - Applies per-server throttling with exponential backoff on failures.
-    func update(server: Server) async {
-        let serverId = server.identifier.rawValue
-
-        // Check if an update for this specific server is already running
-        if let existingTask = await taskCoordinator.getTask(for: serverId) {
-            Current.Log.verbose("Update already in progress for server \(server.info.name), awaiting existing task")
-            await existingTask.value
-            return
-        }
-
-        Current.Log.verbose("Updating database for server \(server.info.name)")
-
-        // Launch the server-specific update task
-        let updateTask = Task { [weak self] in
+    func update(server: Server) {
+        // Explicitly detach from the calling context to ensure we don't block the main thread
+        // Returns immediately while work continues in the background
+        Task.detached(priority: .userInitiated) { [weak self] in
             guard let self else { return }
-            defer {
-                // Clean up task reference when complete
-                Task {
-                    await self.taskCoordinator.removeTask(for: serverId)
-                }
+
+            let serverId = server.identifier.rawValue
+
+            // Check if an update for this specific server is already running
+            if let existingTask = await taskCoordinator.getTask(for: serverId) {
+                Current.Log.verbose("Update already in progress for server \(server.info.name), awaiting existing task")
+                await existingTask.value
+                return
             }
 
-            await performSingleServerUpdate(server: server)
+            Current.Log.verbose("Updating database for server \(server.info.name)")
+
+            // Show toast indicating update has started
+            await showUpdateToast(for: server)
+
+            // Launch the server-specific update task
+            let updateTask = Task { [weak self] in
+                guard let self else { return }
+                defer {
+                    // Hide toast and clean up task reference when complete
+                    Task {
+                        await self.hideUpdateToast(for: server)
+                        await self.taskCoordinator.removeTask(for: serverId)
+                    }
+                }
+
+                await performSingleServerUpdate(server: server)
+            }
+
+            // Store the task for this server
+            await taskCoordinator.setTask(updateTask, for: serverId)
+
+            await updateTask.value
         }
-
-        // Store the task for this server
-        await taskCoordinator.setTask(updateTask, for: serverId)
-
-        await updateTask.value
     }
 
     /// Determines if a specific server should be updated based on connection and throttle rules.
     private func shouldUpdateServer(_ server: Server) -> Bool {
         guard server.info.connection.activeURL() != nil else { return false }
-        if Task.isCancelled { return false }
+        if isUpdateCancelled() { return false }
 
         // Per-server throttle with exponential backoff
         if let last = perServerLastUpdate[server.identifier.rawValue] {
@@ -128,7 +179,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     /// Performs an update for a single specific server.
     private func performSingleServerUpdate(server: Server) async {
-        guard !Task.isCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         guard shouldUpdateServer(server) else {
             Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
             return
@@ -151,50 +202,81 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Wraps a per-server update with cancellation checks and returns whether it succeeded.
     /// This allows the scheduler to apply backoff on failures and update last-run times on success.
     private func safeUpdateServer(server: Server) async -> Bool {
-        if Task.isCancelled { return false }
+        if isUpdateCancelled() { return false }
         await updateServer(server: server)
-        if Task.isCancelled { return false }
+        if isUpdateCancelled() { return false }
         return true
     }
 
     /// Runs the full update pipeline for a single server in sequence.
     /// Each phase checks for cancellation to bail out quickly when needed.
     private func updateServer(server: Server) async {
-        guard !Task.isCancelled else { return }
-        // 1) Entities (fetch_states)
-        await updateEntitiesDatabase(server: server)
-        if Task.isCancelled { return }
-        // 2) Entities registry list for display
-        await updateEntitiesRegistryListForDisplay(server: server)
-        if Task.isCancelled { return }
-        // 3) Entities registry
-        await updateEntitiesRegistry(server: server)
-        if Task.isCancelled { return }
-        // 4) Devices registry
-        await updateDevicesRegistry(server: server)
-        if Task.isCancelled { return }
-        // 5) Areas with their entities
+        guard !isUpdateCancelled() else { return }
+
+        let totalTimer = ProfilingTimer("Starting full update for server: \(server.info.name)")
+
+        // Step 1: Entities (fetch_states)
+        await updateToastStep(for: server, step: .entities)
+        do {
+            let timer = ProfilingTimer("Step 1 (Entities)")
+            await updateEntitiesDatabase(server: server)
+            timer.end()
+        }
+        if isUpdateCancelled() { return }
+
+        // Step 2: Entities registry list for display
+        await updateToastStep(for: server, step: .entitiesRegistryListForDisplay)
+        do {
+            let timer = ProfilingTimer("Step 2 (Entities Registry List For Display)")
+            await updateEntitiesRegistryListForDisplay(server: server)
+            timer.end()
+        }
+        if isUpdateCancelled() { return }
+
+        // Step 3: Entities registry
+        await updateToastStep(for: server, step: .entitiesRegistry)
+        do {
+            let timer = ProfilingTimer("Step 3 (Entities Registry)")
+            await updateEntitiesRegistry(server: server)
+            timer.end()
+        }
+        if isUpdateCancelled() { return }
+
+        // Step 4: Devices registry
+        await updateToastStep(for: server, step: .devicesRegistry)
+        do {
+            let timer = ProfilingTimer("Step 4 (Devices Registry)")
+            await updateDevicesRegistry(server: server)
+            timer.end()
+        }
+        if isUpdateCancelled() { return }
+
+        // Step 5: Areas with their entities
         // IMPORTANT: This must be executed after entities and device registry
         // since we rely on that data to map entities to areas
-        await updateAreasDatabase(server: server)
+        await updateToastStep(for: server, step: .areas)
+        do {
+            let timer = ProfilingTimer("Step 5 (Areas)")
+            await updateAreasDatabase(server: server)
+            timer.end()
+        }
+
+        totalTimer.end()
+        Current.Log.info("✅ [Profiling] Full update for server \(server.info.name) completed")
     }
 
     /// Fetches entities' states from the API and forwards results to persistence.
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesDatabase(server: Server) async {
-        guard !Task.isCancelled else { return }
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            guard self != nil else {
-                continuation.resume()
-                return
-            }
+        guard !isUpdateCancelled() else { return }
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             guard let api = Current.api(for: server) else {
                 Current.Log.error("No API available for server \(server.info.name)")
                 continuation.resume()
                 return
             }
             // If cancelled after acquiring API, resume the continuation to avoid hanging.
-            if Task.isCancelled {
+            if self.isUpdateCancelled() {
                 continuation.resume()
                 return
             }
@@ -220,23 +302,19 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Fetches entity registry from the API and forwards results to persistence.
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesRegistry(server: Server) async {
-        guard !Task.isCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         let registryEntries: [EntityRegistryEntry]? =
-            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
+            await withCheckedContinuation { (continuation: CheckedContinuation<
                 [EntityRegistryEntry]?,
                 Never
             >) in
-                guard let self else {
-                    continuation.resume(returning: nil)
-                    return
-                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if Task.isCancelled {
+                if self.isUpdateCancelled() {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -267,23 +345,19 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Fetches device registry from the API and forwards results to persistence.
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateDevicesRegistry(server: Server) async {
-        guard !Task.isCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         let registryEntries: [DeviceRegistryEntry]? =
-            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
+            await withCheckedContinuation { (continuation: CheckedContinuation<
                 [DeviceRegistryEntry]?,
                 Never
             >) in
-                guard let self else {
-                    continuation.resume(returning: nil)
-                    return
-                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if Task.isCancelled {
+                if self.isUpdateCancelled() {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -314,23 +388,19 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Fetches entity registry list-for-display from the API and forwards results to persistence.
     /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesRegistryListForDisplay(server: Server) async {
-        guard !Task.isCancelled else { return }
+        guard !isUpdateCancelled() else { return }
         let response: EntityRegistryListForDisplay? =
-            await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<
+            await withCheckedContinuation { (continuation: CheckedContinuation<
                 EntityRegistryListForDisplay?,
                 Never
             >) in
-                guard let self else {
-                    continuation.resume(returning: nil)
-                    return
-                }
                 guard let api = Current.api(for: server) else {
                     Current.Log.error("No API available for server \(server.info.name)")
                     continuation.resume(returning: nil)
                     return
                 }
                 // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if Task.isCancelled {
+                if self.isUpdateCancelled() {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -360,18 +430,25 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     private func updateAreasDatabase(server: Server) async {
-        let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
+        // Ensure this work happens off the main thread
+        await Task.detached(priority: .utility) {
+            let fetchTimer = ProfilingTimer("Step 5.1: fetchAreasAndItsEntities")
+            let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
+            fetchTimer.end()
 
-        guard let areas = Current.areasProvider().areas[server.identifier.rawValue] else {
-            Current.Log.verbose("No areas found for server \(server.info.name)")
-            return
-        }
+            guard let areas = Current.areasProvider().areas[server.identifier.rawValue] else {
+                Current.Log.verbose("No areas found for server \(server.info.name)")
+                return
+            }
 
-        await saveAreasToDatabase(
-            areas: areas,
-            areasAndEntities: areasAndEntities,
-            serverId: server.identifier.rawValue
-        )
+            let saveTimer = ProfilingTimer("Step 5.2: saveAreasToDatabase (count: \(areas.count))")
+            await self.saveAreasToDatabase(
+                areas: areas,
+                areasAndEntities: areasAndEntities,
+                serverId: server.identifier.rawValue
+            )
+            saveTimer.end()
+        }.value
     }
 
     /// Persists areas and their entity relationships for a server.
@@ -383,18 +460,24 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         serverId: String
     ) async {
         // Check for cancellation before starting database work
-        guard !Task.isCancelled else {
+        guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping areas database save - task cancelled")
             return
         }
 
-        let appAreas = areas.map { area in
-            AppArea(
-                from: area,
-                serverId: serverId,
-                entities: areasAndEntities[area.areaId]
-            )
-        }
+        // Ensure model building happens off the main thread
+        let appAreas = await Task.detached(priority: .utility) {
+            let modelTimer = ProfilingTimer("Step 5.2.1: Building AppArea models (count: \(areas.count))")
+            let result = areas.map { area in
+                AppArea(
+                    from: area,
+                    serverId: serverId,
+                    entities: areasAndEntities[area.areaId]
+                )
+            }
+            modelTimer.end()
+            return result
+        }.value
 
         // Nothing to persist; keep going (delete pass below might still remove stale rows).
         if appAreas.isEmpty {
@@ -402,11 +485,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         do {
-            try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard self != nil else {
-                    continuation.resume(throwing: CancellationError())
-                    return
-                }
+            let dbTimer = ProfilingTimer("Step 5.2.2: Database write transaction")
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                // Database writes are already async and happen on GRDB's background queue
                 Current.database().asyncWrite { db in
                     let existingAreaIds = try AppArea
                         .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
@@ -435,6 +516,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     }
                 }
             }
+            dbTimer.end()
             Current.Log.verbose("Successfully saved \(appAreas.count) areas for server \(serverId)")
         } catch is CancellationError {
             Current.Log.verbose("Areas database save cancelled for server \(serverId)")
@@ -455,7 +537,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Builds the payload with a streaming loop to reduce intermediate allocations vs filter+map.
     private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) async {
         // Check for cancellation before starting database work
-        guard !Task.isCancelled else {
+        guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping EntityRegistryListForDisplay database save - task cancelled")
             return
         }
@@ -476,18 +558,18 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
         do {
             try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard self != nil else {
+                guard let self else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                guard !Task.isCancelled else {
+                guard !isUpdateCancelled() else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
                 // Note: we batch entities into memory before this write. This is a trade-off for simpler, atomic
                 // updates;
                 // if memory usage becomes an issue for very large datasets, consider a streaming or chunked approach.
-                Current.database().asyncWrite { db in
+                Current.database().asyncWrite { [entitiesListForDisplay] db in
                     // Get existing IDs for this server
                     let existingIds = try AppEntityRegistryListForDisplay
                         .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
@@ -535,7 +617,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Persists the entity registry for a server using a single transaction and differential deletes.
     private func saveEntityRegistry(_ registryEntries: [EntityRegistryEntry], serverId: String) async {
         // If cancelled before touching the DB, bail out early to avoid unnecessary work.
-        guard !Task.isCancelled else {
+        guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping entity registry database save - task cancelled")
             return
         }
@@ -546,11 +628,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard self != nil else {
+                guard let self else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                if Task.isCancelled {
+                guard !isUpdateCancelled() else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
@@ -605,7 +687,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Persists the device registry for a server using a single transaction and differential deletes.
     private func saveDeviceRegistry(_ registryEntries: [DeviceRegistryEntry], serverId: String) async {
         // If cancelled before touching the DB, bail out early to avoid unnecessary work.
-        guard !Task.isCancelled else {
+        guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping device registry database save - task cancelled")
             return
         }
@@ -616,11 +698,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard self != nil else {
+                guard let self else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                if Task.isCancelled {
+                guard !isUpdateCancelled() else {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
@@ -670,5 +752,67 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             ))
             assertionFailure("Failed to save device registry in database: \(error)")
         }
+    }
+
+    // MARK: - Toast Management
+
+    /// Generates a unique toast identifier for a server update.
+    @MainActor
+    private func toastId(for server: Server) -> String {
+        "server-update-\(server.identifier.rawValue)"
+    }
+
+    /// Shows a toast notification indicating a server update is in progress.
+    @MainActor
+    private func showUpdateToast(for server: Server, step: UpdateStep? = nil) {
+        if #available(iOS 18, *) {
+            let message: String
+            if let step {
+                message = L10n.DatabaseUpdater.Toast.syncingWithProgress(step.rawValue, UpdateStep.totalSteps)
+            } else {
+                message = L10n.DatabaseUpdater.Toast.syncing
+            }
+
+            ToastManager.shared.show(
+                id: toastId(for: server),
+                symbol: "arrow.triangle.2.circlepath.circle.fill",
+                symbolForegroundStyle: (.white, .blue),
+                title: L10n.DatabaseUpdater.Toast.title(server.info.name),
+                message: message
+            )
+        }
+    }
+
+    /// Updates the toast notification with the current step.
+    @MainActor
+    private func updateToastStep(for server: Server, step: UpdateStep) {
+        showUpdateToast(for: server, step: step)
+    }
+
+    /// Hides the toast notification for a completed server update.
+    @MainActor
+    private func hideUpdateToast(for server: Server) {
+        if #available(iOS 18, *) {
+            ToastManager.shared.hide(id: toastId(for: server))
+        }
+    }
+}
+
+// MARK: - Profiling Helper
+
+/// A simple timing helper that works across iOS versions
+private struct ProfilingTimer {
+    private let startTime: CFAbsoluteTime
+    private let label: String
+
+    init(_ label: String) {
+        self.label = label
+        self.startTime = CFAbsoluteTimeGetCurrent()
+        Current.Log.info("🔍 [Profiling] \(label)")
+    }
+
+    func end() {
+        let duration = CFAbsoluteTimeGetCurrent() - startTime
+        Current.Log.info("⏱️ [Profiling] \(label) completed in \(String(format: "%.3f", duration))s")
     }
 }

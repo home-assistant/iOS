@@ -3,9 +3,9 @@ import SwiftUI
 /// Extracting Main Window to retrieve the window scene and create the overlay window for our dynamic island based
 /// toasts!
 @available(iOS 18, *)
-struct WindowExtractor: UIViewRepresentable {
-    var result: (UIWindow) -> Void
-    func makeUIView(context: Context) -> UIView {
+public struct WindowExtractor: UIViewRepresentable {
+    public var result: (UIWindow) -> Void
+    public func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = .clear
         DispatchQueue.main.async {
@@ -16,5 +16,5 @@ struct WindowExtractor: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    public func updateUIView(_ uiView: UIView, context: Context) {}
 }

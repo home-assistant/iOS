@@ -86,6 +86,11 @@ struct HomeView: View {
         }
     }
 
+    private func switchToServer(_ server: Server) {
+        guard server.identifier != viewModel.server.identifier else { return }
+        viewModel.switchToServer(server)
+    }
+
     // MARK: - Content Views
 
     private var contentView: some View {
@@ -419,6 +424,24 @@ struct HomeView: View {
                     showSettings = true
                 } label: {
                     Label(L10n.HomeView.Menu.settings, systemSymbol: .gearshape)
+                }
+
+                if Current.servers.all.count > 1 {
+                    Section(L10n.ServersSelection.title) {
+                        ForEach(Current.servers.all, id: \.identifier) { server in
+                            Button {
+                                switchToServer(server)
+                            } label: {
+                                HStack {
+                                    Text(server.info.name)
+                                    if viewModel.server.identifier == server.identifier {
+                                        Spacer()
+                                        Image(systemSymbol: .checkmark)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             } label: {
                 Image(systemSymbol: .ellipsis)
