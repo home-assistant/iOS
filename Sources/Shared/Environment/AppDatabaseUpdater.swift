@@ -16,6 +16,25 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         case noAPI
     }
 
+    // MARK: - Profiling Helper
+
+    /// A simple timing helper that works across iOS versions
+    private struct ProfilingTimer {
+        private let startTime: CFAbsoluteTime
+        private let label: String
+
+        init(_ label: String) {
+            self.label = label
+            self.startTime = CFAbsoluteTimeGetCurrent()
+            Current.Log.info("🔍 [Profiling] \(label)")
+        }
+
+        func end() {
+            let duration = CFAbsoluteTimeGetCurrent() - startTime
+            Current.Log.info("⏱️ [Profiling] \(label) completed in \(String(format: "%.3f", duration))s")
+        }
+    }
+
     /// Represents each step in the server update process
     enum UpdateStep: Int, CaseIterable {
         case entities = 1
@@ -196,31 +215,56 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private func updateServer(server: Server) async {
         guard !Task.isCancelled else { return }
 
+        let totalTimer = ProfilingTimer("Starting full update for server: \(server.info.name)")
+
         // Step 1: Entities (fetch_states)
         await updateToastStep(for: server, step: .entities)
-        await updateEntitiesDatabase(server: server)
+        do {
+            let timer = ProfilingTimer("Step 1 (Entities)")
+            await updateEntitiesDatabase(server: server)
+            timer.end()
+        }
         if Task.isCancelled { return }
 
         // Step 2: Entities registry list for display
         await updateToastStep(for: server, step: .entitiesRegistryListForDisplay)
-        await updateEntitiesRegistryListForDisplay(server: server)
+        do {
+            let timer = ProfilingTimer("Step 2 (Entities Registry List For Display)")
+            await updateEntitiesRegistryListForDisplay(server: server)
+            timer.end()
+        }
         if Task.isCancelled { return }
 
         // Step 3: Entities registry
         await updateToastStep(for: server, step: .entitiesRegistry)
-        await updateEntitiesRegistry(server: server)
+        do {
+            let timer = ProfilingTimer("Step 3 (Entities Registry)")
+            await updateEntitiesRegistry(server: server)
+            timer.end()
+        }
         if Task.isCancelled { return }
 
         // Step 4: Devices registry
         await updateToastStep(for: server, step: .devicesRegistry)
-        await updateDevicesRegistry(server: server)
+        do {
+            let timer = ProfilingTimer("Step 4 (Devices Registry)")
+            await updateDevicesRegistry(server: server)
+            timer.end()
+        }
         if Task.isCancelled { return }
 
         // Step 5: Areas with their entities
         // IMPORTANT: This must be executed after entities and device registry
         // since we rely on that data to map entities to areas
         await updateToastStep(for: server, step: .areas)
-        await updateAreasDatabase(server: server)
+        do {
+            let timer = ProfilingTimer("Step 5 (Areas)")
+            await updateAreasDatabase(server: server)
+            timer.end()
+        }
+
+        totalTimer.end()
+        Current.Log.info("✅ [Profiling] Full update for server \(server.info.name) completed")
     }
 
     /// Fetches entities' states from the API and forwards results to persistence.
@@ -404,18 +448,22 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     private func updateAreasDatabase(server: Server) async {
+        let fetchTimer = ProfilingTimer("Step 5.1: fetchAreasAndItsEntities")
         let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
+        fetchTimer.end()
 
         guard let areas = Current.areasProvider().areas[server.identifier.rawValue] else {
             Current.Log.verbose("No areas found for server \(server.info.name)")
             return
         }
 
+        let saveTimer = ProfilingTimer("Step 5.2: saveAreasToDatabase (count: \(areas.count))")
         await saveAreasToDatabase(
             areas: areas,
             areasAndEntities: areasAndEntities,
             serverId: server.identifier.rawValue
         )
+        saveTimer.end()
     }
 
     /// Persists areas and their entity relationships for a server.
@@ -432,6 +480,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             return
         }
 
+        let modelTimer = ProfilingTimer("Step 5.2.1: Building AppArea models (count: \(areas.count))")
         let appAreas = areas.map { area in
             AppArea(
                 from: area,
@@ -439,6 +488,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 entities: areasAndEntities[area.areaId]
             )
         }
+        modelTimer.end()
 
         // Nothing to persist; keep going (delete pass below might still remove stale rows).
         if appAreas.isEmpty {
@@ -446,6 +496,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         do {
+            let dbTimer = ProfilingTimer("Step 5.2.2: Database write transaction")
             try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
                 guard self != nil else {
                     continuation.resume(throwing: CancellationError())
@@ -479,6 +530,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     }
                 }
             }
+            dbTimer.end()
             Current.Log.verbose("Successfully saved \(appAreas.count) areas for server \(serverId)")
         } catch is CancellationError {
             Current.Log.verbose("Areas database save cancelled for server \(serverId)")
