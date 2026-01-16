@@ -1,7 +1,7 @@
 import SwiftUI
 
 @available(iOS 18, *)
-extension View {
+public extension View {
     @ViewBuilder
     func dynamicIslandToast(isPresented: Binding<Bool>, value: Toast) -> some View {
         modifier(
@@ -17,13 +17,13 @@ extension View {
 // https://www.patreon.com/posts/swiftui-dynamic-147414349
 /// Helper View Modifier
 @available(iOS 18, *)
-struct DynamicIslandToastViewModifier: ViewModifier {
-    @Binding var isPresented: Bool
-    var value: Toast
+public struct DynamicIslandToastViewModifier: ViewModifier {
+    @Binding public var isPresented: Bool
+    public var value: Toast
     /// View Properties
     @State private var overlayWindow: PassThroughWindow?
     @State private var overlayController: ToastHostingController?
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .background(WindowExtractor { mainWindow in
                 createOverlayWindow(mainWindow)
@@ -82,9 +82,9 @@ struct DynamicIslandToastViewModifier: ViewModifier {
 }
 
 @available(iOS 18, *)
-struct ToastView: View {
-    var window: PassThroughWindow
-    var body: some View {
+public struct ToastView: View {
+    public var window: PassThroughWindow
+    public var body: some View {
         GeometryReader {
             let safeArea = $0.safeAreaInsets
             let size = $0.size
@@ -155,7 +155,7 @@ struct ToastView: View {
     func ToastContent(_ haveDynamicIsland: Bool) -> some View {
         if let toast = window.toast {
             HStack(spacing: 10) {
-                Image(systemSymbol: toast.symbol)
+                Image(systemName: toast.symbol)
                     .font(toast.symbolFont)
                     .foregroundStyle(toast.symbolForegroundStyle.0, toast.symbolForegroundStyle.1)
                     /// Optional: .symbolEffect(.wiggle, value: isExpanded)

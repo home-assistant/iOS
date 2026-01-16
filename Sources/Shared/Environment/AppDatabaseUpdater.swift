@@ -92,12 +92,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         Current.Log.verbose("Updating database for server \(server.info.name)")
 
+        // Show toast indicating update has started
+        await showUpdateToast(for: server)
+
         // Launch the server-specific update task
         let updateTask = Task { [weak self] in
             guard let self else { return }
             defer {
-                // Clean up task reference when complete
+                // Hide toast and clean up task reference when complete
                 Task {
+                    await self.hideUpdateToast(for: server)
                     await self.taskCoordinator.removeTask(for: serverId)
                 }
             }
@@ -669,6 +673,32 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 ]
             ))
             assertionFailure("Failed to save device registry in database: \(error)")
+        }
+    }
+
+    // MARK: - Toast Management
+
+    /// Shows a toast notification indicating a server update is in progress.
+    @MainActor
+    private func showUpdateToast(for server: Server) {
+        if #available(iOS 18, *) {
+            let toastId = "server-update-\(server.identifier.rawValue)"
+            ToastManager.shared.show(
+                id: toastId,
+                symbol: "arrow.triangle.2.circlepath.circle.fill",
+                symbolForegroundStyle: (.white, .blue),
+                title: "Updating \(server.info.name)",
+                message: "Syncing server data..."
+            )
+        }
+    }
+
+    /// Hides the toast notification for a completed server update.
+    @MainActor
+    private func hideUpdateToast(for server: Server) {
+        if #available(iOS 18, *) {
+            let toastId = "server-update-\(server.identifier.rawValue)"
+            ToastManager.shared.hide(id: toastId)
         }
     }
 }

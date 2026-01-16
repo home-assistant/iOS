@@ -24,17 +24,15 @@ import SwiftUI
 /// ```
 @available(iOS 18, *)
 @MainActor
-final class ToastManager {
-    static var toastComponentVersion = 1
-
+public final class ToastManager {
     /// The shared singleton instance of the toast manager.
-    static let shared = ToastManager()
+    public static let shared = ToastManager()
 
+    public static var toastComponentVersion = 1
     private var overlayWindow: PassThroughWindow?
     private var overlayController: ToastHostingController?
     private var autoDismissTask: Task<Void, Never>?
-
-    private init() {}
+    public init() {}
 
     /// Shows a toast with the specified parameters.
     ///
@@ -47,9 +45,9 @@ final class ToastManager {
     ///   - message: The message text displayed below the title.
     ///   - duration: Optional duration in seconds after which the toast auto-dismisses.
     ///               Pass `nil` for a permanent toast that must be dismissed manually.
-    func show(
+    public func show(
         id: String,
-        symbol: SFSymbol,
+        symbol: String,
         symbolFont: Font = .system(size: 35),
         symbolForegroundStyle: (Color, Color),
         title: String,
@@ -73,7 +71,7 @@ final class ToastManager {
     ///   - toast: The toast to display.
     ///   - duration: Optional duration in seconds after which the toast auto-dismisses.
     ///               Pass `nil` for a permanent toast that must be dismissed manually.
-    func show(toast: Toast, duration: TimeInterval? = nil) {
+    public func show(toast: Toast, duration: TimeInterval? = nil) {
         // Cancel any pending auto-dismiss
         autoDismissTask?.cancel()
         autoDismissTask = nil
@@ -93,7 +91,7 @@ final class ToastManager {
             autoDismissTask = Task { [weak self] in
                 try? await Task.sleep(for: .seconds(duration))
                 guard !Task.isCancelled else { return }
-                await self?.hide(id: toast.id)
+                self?.hide(id: toast.id)
             }
         }
     }
@@ -101,13 +99,13 @@ final class ToastManager {
     /// Hides the toast with the specified ID.
     ///
     /// - Parameter id: The identifier of the toast to hide.
-    func hide(id: String) {
+    public func hide(id: String) {
         guard let overlayWindow, overlayWindow.toast?.id == id else { return }
         hideCurrentToast()
     }
 
     /// Hides any currently displayed toast.
-    func hideCurrentToast() {
+    public func hideCurrentToast() {
         autoDismissTask?.cancel()
         autoDismissTask = nil
 
@@ -118,8 +116,9 @@ final class ToastManager {
     // MARK: - Private Methods
 
     private func ensureOverlayWindow() {
+        #if os(iOS)
         // Try to find an existing window first
-        if let windowScene = UIApplication.shared.connectedScenes
+        if let windowScene = Current.application?().connectedScenes
             .compactMap({ $0 as? UIWindowScene })
             .first(where: { $0.activationState == .foregroundActive }) {
             if let existingWindow = windowScene.windows.first(where: { $0.tag == 1009 }) as? PassThroughWindow {
@@ -143,5 +142,6 @@ final class ToastManager {
             overlayWindow = window
             overlayController = hostingController
         }
+        #endif
     }
 }

@@ -3,12 +3,12 @@ import SwiftUI
 @available(iOS 18, *)
 @Observable
 /// Custom UIWindow that passes through touches in transparent/non-interactive areas
-class PassThroughWindow: UIWindow {
+public class PassThroughWindow: UIWindow {
     /// View Based Properties
-    var toast: Toast? = nil
-    var isPresented: Bool = false
+    public var toast: Toast? = nil
+    public var isPresented: Bool = false
 
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let hitView = super.hitTest(point, with: event),
               let rootView = rootViewController?.view else {
             return nil
