@@ -718,20 +718,28 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     // MARK: - Toast Management
 
+    /// Generates a unique toast identifier for a server update.
+    @MainActor
+    private func toastId(for server: Server) -> String {
+        "server-update-\(server.identifier.rawValue)"
+    }
+
     /// Shows a toast notification indicating a server update is in progress.
     @MainActor
     private func showUpdateToast(for server: Server, step: UpdateStep? = nil) {
         if #available(iOS 18, *) {
-            let toastId = "server-update-\(server.identifier.rawValue)"
-            var message = "Syncing server data..."
+            let message: String
             if let step {
-                message += " (\(step.rawValue)/\(UpdateStep.totalSteps))"
+                message = L10n.DatabaseUpdater.Toast.syncingWithProgress(step.rawValue, UpdateStep.totalSteps)
+            } else {
+                message = L10n.DatabaseUpdater.Toast.syncing
             }
+
             ToastManager.shared.show(
-                id: toastId,
+                id: toastId(for: server),
                 symbol: "arrow.triangle.2.circlepath.circle.fill",
                 symbolForegroundStyle: (.white, .blue),
-                title: "Updating \(server.info.name)",
+                title: L10n.DatabaseUpdater.Toast.title(server.info.name),
                 message: message
             )
         }
@@ -747,8 +755,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     @MainActor
     private func hideUpdateToast(for server: Server) {
         if #available(iOS 18, *) {
-            let toastId = "server-update-\(server.identifier.rawValue)"
-            ToastManager.shared.hide(id: toastId)
+            ToastManager.shared.hide(id: toastId(for: server))
         }
     }
 }
