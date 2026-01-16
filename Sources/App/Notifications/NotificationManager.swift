@@ -27,6 +27,11 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             name: UIApplication.didBecomeActiveNotification,
             object: nil
         )
+
+        #if os(iOS)
+        // Set up CallKit delegate
+        CallKitManager.shared.delegate = self
+        #endif
     }
 
     func setupNotifications() {
@@ -361,3 +366,27 @@ extension NotificationManager: MessagingDelegate {
         }.cauterize()
     }
 }
+
+#if os(iOS)
+extension NotificationManager: CallKitManagerDelegate {
+    func callKitManager(_ manager: CallKitManager, didAnswerCallWithInfo info: [String: Any]) {
+        Current.Log.info("CallKit call answered, opening Assist")
+
+        // Extract optional parameters from the call info
+        let pipelineId = info["pipeline_id"] as? String ?? ""
+        let autoStartRecording = info["auto_start_recording"] as? Bool ?? false
+
+        // Determine which server to use
+        let server = Current.servers.all.first ?? Current.servers.all.first!
+
+        // Open AssistView
+        Current.sceneManager.webViewWindowControllerPromise.done { windowController in
+            windowController.webViewExternalMessageHandler.showAssist(
+                server: server,
+                pipeline: pipelineId,
+                autoStartRecording: autoStartRecording
+            )
+        }
+    }
+}
+#endif
