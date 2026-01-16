@@ -30,6 +30,25 @@ public class CallKitManager: NSObject {
         set { queue.sync { _activeCallUUID = newValue } }
     }
 
+    // Atomically capture and clear call state
+    private func captureAndClearState() -> (info: [String: Any]?, uuid: UUID?) {
+        queue.sync {
+            let info = _activeCallInfo
+            let uuid = _activeCallUUID
+            _activeCallInfo = nil
+            _activeCallUUID = nil
+            return (info, uuid)
+        }
+    }
+
+    // Atomically clear call state
+    private func clearState() {
+        queue.sync {
+            _activeCallInfo = nil
+            _activeCallUUID = nil
+        }
+    }
+
     override private init() {
         let config = CXProviderConfiguration()
         config.supportsVideo = false
@@ -87,25 +106,19 @@ public class CallKitManager: NSObject {
 extension CallKitManager: CXProviderDelegate {
     public func providerDidReset(_ provider: CXProvider) {
         Current.Log.info("CallKit provider did reset")
-        activeCallInfo = nil
-        activeCallUUID = nil
+        clearState()
     }
 
     public func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
         Current.Log.info("User answered call")
 
-        // Capture current call info atomically before clearing
-        let callInfo = activeCallInfo
-        let callUUID = activeCallUUID
-
-        // Clear state immediately to prevent reuse
-        activeCallInfo = nil
-        activeCallUUID = nil
+        // Atomically capture and clear call state
+        let (callInfo, callUUID) = captureAndClearState()
 
         // Mark the action as fulfilled
         action.fulfill()
 
-        // Notify delegate with captured state (happens after state is cleared for thread safety)
+        // Notify delegate with captured state
         if let callInfo {
             delegate?.callKitManager(self, didAnswerCallWithInfo: callInfo)
         }
@@ -119,8 +132,7 @@ extension CallKitManager: CXProviderDelegate {
     public func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
         Current.Log.info("Call ended")
         action.fulfill()
-        activeCallInfo = nil
-        activeCallUUID = nil
+        clearState()
     }
 
     public func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
