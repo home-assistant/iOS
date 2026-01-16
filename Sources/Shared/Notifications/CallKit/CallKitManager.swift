@@ -94,26 +94,26 @@ extension CallKitManager: CXProviderDelegate {
     public func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
         Current.Log.info("User answered call")
 
-        // Capture current call info atomically
+        // Capture current call info atomically before clearing
         let callInfo = activeCallInfo
         let callUUID = activeCallUUID
 
-        if let callInfo {
-            // Notify delegate that call was answered
-            delegate?.callKitManager(self, didAnswerCallWithInfo: callInfo)
-        }
+        // Clear state immediately to prevent reuse
+        activeCallInfo = nil
+        activeCallUUID = nil
 
         // Mark the action as fulfilled
         action.fulfill()
+
+        // Notify delegate with captured state (happens after state is cleared for thread safety)
+        if let callInfo {
+            delegate?.callKitManager(self, didAnswerCallWithInfo: callInfo)
+        }
 
         // End the call immediately since we just need to trigger opening Assist
         if let callUUID {
             endCall(uuid: callUUID)
         }
-
-        // Clear state
-        activeCallInfo = nil
-        activeCallUUID = nil
     }
 
     public func provider(_ provider: CXProvider, perform action: CXEndCallAction) {

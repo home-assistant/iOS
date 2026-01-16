@@ -389,6 +389,8 @@ extension NotificationManager: CallKitManagerDelegate {
                 pipeline: pipelineId,
                 autoStartRecording: autoStartRecording
             )
+        }.catch { error in
+            Current.Log.error("Failed to open Assist from CallKit: \(error)")
         }
     }
 }
