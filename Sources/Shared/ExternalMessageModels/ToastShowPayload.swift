@@ -1,12 +1,12 @@
 import Foundation
 
-struct ToastShowPayload: ExternalBusPayload {
-    let id: String
-    let message: String
-    let dismissable: Bool
-    let duration: Double?
+public struct ToastShowPayload: ExternalBusPayload {
+    public let id: String
+    public let message: String
+    public let dismissable: Bool
+    public let duration: Double?
 
-    init?(payload: [String: Any]?) {
+    public init?(payload: [String: Any]?) {
         guard let id = payload?["id"] as? String, let message = payload?["message"] as? String else {
             return nil
         }

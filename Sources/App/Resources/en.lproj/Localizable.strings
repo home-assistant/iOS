@@ -1434,3 +1434,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "entity_picker.filter.area.all.title" = "All areas";
 "entity_picker.filter.group_by.title" = "Group by";
 "entity_picker.list.area.no_area.title" = "No area";
+"database_updater.toast.title" = "Updating %@";
+"database_updater.toast.syncing" = "Syncing server data...";
+"database_updater.toast.syncing_with_progress" = "Syncing server data... (%d/%d)";

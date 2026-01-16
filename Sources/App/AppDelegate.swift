@@ -69,16 +69,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // swiftlint:disable prohibit_environment_assignment
         Current.backgroundTask = ApplicationBackgroundTaskRunner()
 
+        // Initialize UIApplication wrapper for shared framework
+        Current.application = {
+            UIApplication.shared
+        }
+
         Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
             if Current.isCatalyst {
                 return false
             } else {
                 return lifecycleManager.isActive
             }
-        }
-
-        Current.isForegroundApp = { [lifecycleManager] in
-            lifecycleManager.isActive
         }
 
         #if targetEnvironment(simulator)

@@ -2,18 +2,18 @@ import SFSafeSymbols
 import SwiftUI
 
 @available(iOS 18, *)
-struct Toast {
+public struct Toast {
     private(set) var id: String
-    var symbol: SFSymbol
-    var symbolFont: Font
-    var symbolForegroundStyle: (Color, Color)
+    public var symbol: String
+    public var symbolFont: Font
+    public var symbolForegroundStyle: (Color, Color)
 
-    var title: String
-    var message: String
+    public var title: String
+    public var message: String
 
-    init(
+    public init(
         id: String = UUID().uuidString,
-        symbol: SFSymbol,
+        symbol: String,
         symbolFont: Font = .system(size: 35),
         symbolForegroundStyle: (Color, Color),
         title: String,
@@ -27,9 +27,9 @@ struct Toast {
         self.message = message
     }
 
-    static var example1: Toast {
+    public static var example1: Toast {
         Toast(
-            symbol: .checkmarkSealFill,
+            symbol: "checkmark.seal.fill",
             symbolFont: .system(size: 35),
             symbolForegroundStyle: (.white, .green),
             title: "Transaction Success!",
@@ -37,9 +37,9 @@ struct Toast {
         )
     }
 
-    static var example2: Toast {
+    public static var example2: Toast {
         Toast(
-            symbol: .xmarkSealFill,
+            symbol: "xmark.seal.fill",
             symbolFont: .system(size: 35),
             symbolForegroundStyle: (.white, .red),
             title: "Transaction Failed!",

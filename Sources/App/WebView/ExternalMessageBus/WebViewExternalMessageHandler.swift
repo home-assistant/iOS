@@ -423,8 +423,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if #available(iOS 18, *) {
             ToastManager.shared.show(
                 id: payload.id,
-                symbol: .infoCircleFill,
-                symbolForegroundStyle: (.white, .accentColor),
+                symbol: SFSymbol.infoCircleFill.rawValue,
+                symbolForegroundStyle: (.white, .haPrimary),
                 title: payload.message,
                 message: "",
                 duration: payload.duration

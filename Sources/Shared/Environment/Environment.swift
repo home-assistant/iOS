@@ -138,6 +138,12 @@ public class AppEnvironment {
     public var realmFatalPresentation: ((UIViewController) -> Void)?
 
     public var impactFeedback: ImpactFeedbackGeneratorProtocol = ImpactFeedbackGenerator()
+    /// Wrapper around UIApplication for use in shared framework
+    public var application: (() -> UIApplication)?
+
+    public lazy var isForegroundApp = {
+        self.application?().applicationState == .active
+    }
     #endif
 
     public var style: Style = .init()
@@ -290,8 +296,6 @@ public class AppEnvironment {
         false
         #endif
     }
-
-    public var isForegroundApp = { false }
 
     public var appConfiguration: AppConfiguration {
         if isFastlaneSnapshot {
