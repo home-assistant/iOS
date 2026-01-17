@@ -68,11 +68,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || kioskPrefersStatusBarHidden
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || kioskPrefersHomeIndicatorAutoHidden
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -255,6 +255,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
+
+        // Setup kiosk mode integration
+        setupKioskMode()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -1081,7 +1084,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     // MARK: - Public
 
     /// avoidUnecessaryReload Avoids reloading when the URL is the same as the current one
-    public func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
+    func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
         loadViewIfNeeded()
 
         // these paths do not show frontend pages, and so we don't want to display them in our webview
@@ -1108,7 +1111,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     /// Used for OpenPage intent
-    public func openPanel(_ url: URL) {
+    func openPanel(_ url: URL) {
         loadViewIfNeeded()
 
         guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil || server.info
@@ -1165,7 +1168,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.reload()
     }
 
-    public func showSettingsViewController() {
+    func showSettingsViewController() {
         getLatestConfig()
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
@@ -1177,7 +1180,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    public func openActionAutomationEditor(actionId: String) {
+    func openActionAutomationEditor(actionId: String) {
         guard server.info.version >= .externalBusCommandAutomationEditor else {
             showActionAutomationEditorNotAvailable()
             return
