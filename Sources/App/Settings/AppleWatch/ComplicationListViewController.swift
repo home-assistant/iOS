@@ -5,6 +5,7 @@ import PromiseKit
 import RealmSwift
 import Shared
 import Version
+import PMKFoundation
 
 class ComplicationListViewController: HAFormViewController {
     @objc private func add(_ sender: UIBarButtonItem) {

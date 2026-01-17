@@ -3,6 +3,7 @@ import Eureka
 import Foundation
 import PromiseKit
 import Shared
+import PMKFoundation
 
 final class ConnectionURLViewController: HAFormViewController, TypedRowControllerType {
     typealias RowValue = ConnectionURLViewController

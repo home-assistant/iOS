@@ -1,0 +1,358 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "abseil",
+        "repositoryURL": "https://github.com/google/abseil-cpp-binary.git",
+        "state": {
+          "branch": null,
+          "revision": "194a6706acbd25e4ef639bcaddea16e8758a3e27",
+          "version": "1.2024011602.0"
+        }
+      },
+      {
+        "package": "Alamofire",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
+        "state": {
+          "branch": null,
+          "revision": "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+          "version": "5.10.2"
+        }
+      },
+      {
+        "package": "AppCheck",
+        "repositoryURL": "https://github.com/google/app-check.git",
+        "state": {
+          "branch": null,
+          "revision": "61b85103a1aeed8218f17c794687781505fbbef5",
+          "version": "11.2.0"
+        }
+      },
+      {
+        "package": "CallbackURLKit",
+        "repositoryURL": "https://github.com/phimage/CallbackURLKit",
+        "state": {
+          "branch": null,
+          "revision": "5411bfc17cd0787ac80c46f312c7235783ff9421",
+          "version": "3.0.0"
+        }
+      },
+      {
+        "package": "ColorPickerRow",
+        "repositoryURL": "git@github.com:EurekaCommunity/ColorPickerRow.git",
+        "state": {
+          "branch": "master",
+          "revision": "a6a367836a65b88dc407e63a3af51863ad116fee",
+          "version": null
+        }
+      },
+      {
+        "package": "Communicator",
+        "repositoryURL": "https://github.com/KaneCheshire/Communicator",
+        "state": {
+          "branch": "main",
+          "revision": "d56a35cd3dec97b6ee8de6d2b87648f9dd45899b",
+          "version": null
+        }
+      },
+      {
+        "package": "EMTLoadingIndicator",
+        "repositoryURL": "https://github.com/tc-sgupta/EMTLoadingIndicator",
+        "state": {
+          "branch": "master",
+          "revision": "36061fafa63a01bf8551fe20fb303395bf1da375",
+          "version": null
+        }
+      },
+      {
+        "package": "Eureka",
+        "repositoryURL": "https://github.com/xmartlabs/Eureka",
+        "state": {
+          "branch": null,
+          "revision": "028ef8e3191a256b8f6b8bb6b9496efcb0762dbc",
+          "version": "5.5.0"
+        }
+      },
+      {
+        "package": "Firebase",
+        "repositoryURL": "https://github.com/firebase/firebase-ios-sdk.git",
+        "state": {
+          "branch": null,
+          "revision": "0d885d28250fb1196b614bc9455079b75c531f72",
+          "version": "11.7.0"
+        }
+      },
+      {
+        "package": "PMKFoundation",
+        "repositoryURL": "https://github.com/PromiseKit/Foundation",
+        "state": {
+          "branch": null,
+          "revision": "d967438f58183e02f091f4c17ac7f04f70947e0a",
+          "version": "4.0.0"
+        }
+      },
+      {
+        "package": "GoogleAppMeasurement",
+        "repositoryURL": "https://github.com/google/GoogleAppMeasurement.git",
+        "state": {
+          "branch": null,
+          "revision": "be0881ff728eca210ccb628092af400c086abda3",
+          "version": "11.7.0"
+        }
+      },
+      {
+        "package": "GoogleDataTransport",
+        "repositoryURL": "https://github.com/google/GoogleDataTransport.git",
+        "state": {
+          "branch": null,
+          "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
+          "version": "10.1.0"
+        }
+      },
+      {
+        "package": "GoogleUtilities",
+        "repositoryURL": "https://github.com/google/GoogleUtilities.git",
+        "state": {
+          "branch": null,
+          "revision": "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
+          "version": "8.0.2"
+        }
+      },
+      {
+        "package": "GRDB",
+        "repositoryURL": "https://github.com/groue/GRDB.swift.git",
+        "state": {
+          "branch": null,
+          "revision": "2cf6c756e1e5ef6901ebae16576a7e4e4b834622",
+          "version": "6.29.3"
+        }
+      },
+      {
+        "package": "gRPC",
+        "repositoryURL": "https://github.com/google/grpc-binary.git",
+        "state": {
+          "branch": null,
+          "revision": "f56d8fc3162de9a498377c7b6cea43431f4f5083",
+          "version": "1.65.1"
+        }
+      },
+      {
+        "package": "GTMSessionFetcher",
+        "repositoryURL": "https://github.com/google/gtm-session-fetcher.git",
+        "state": {
+          "branch": null,
+          "revision": "85b7b231882c3c472b8bda4fb495324d3f19bab6",
+          "version": "4.2.0"
+        }
+      },
+      {
+        "package": "HAKit",
+        "repositoryURL": "https://github.com/home-assistant/HAKit.git",
+        "state": {
+          "branch": null,
+          "revision": "13d771213a496d3db4af234125586769ccaa8967",
+          "version": "0.4.4"
+        }
+      },
+      {
+        "package": "InteropForGoogle",
+        "repositoryURL": "https://github.com/google/interop-ios-for-google-sdks.git",
+        "state": {
+          "branch": null,
+          "revision": "2d12673670417654f08f5f90fdd62926dc3a2648",
+          "version": "100.0.0"
+        }
+      },
+      {
+        "package": "KeychainAccess",
+        "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess",
+        "state": {
+          "branch": "master",
+          "revision": "e0c7eebc5a4465a3c4680764f26b7a61f567cdaf",
+          "version": null
+        }
+      },
+      {
+        "package": "leveldb",
+        "repositoryURL": "https://github.com/firebase/leveldb.git",
+        "state": {
+          "branch": null,
+          "revision": "a0bc79961d7be727d258d33d5a6b2f1023270ba1",
+          "version": "1.22.5"
+        }
+      },
+      {
+        "package": "MBProgressHUD",
+        "repositoryURL": "https://github.com/jdg/MBProgressHUD",
+        "state": {
+          "branch": null,
+          "revision": "bca42b801100b2b3a4eda0ba8dd33d858c780b0d",
+          "version": "1.2.0"
+        }
+      },
+      {
+        "package": "nanopb",
+        "repositoryURL": "https://github.com/firebase/nanopb.git",
+        "state": {
+          "branch": null,
+          "revision": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+          "version": "2.30910.0"
+        }
+      },
+      {
+        "package": "ObjectMapper",
+        "repositoryURL": "https://github.com/tristanhimmelman/ObjectMapper.git",
+        "state": {
+          "branch": "master",
+          "revision": "6021c6035e83a306047348666f6400dc61445d3b",
+          "version": null
+        }
+      },
+      {
+        "package": "PromiseKit",
+        "repositoryURL": "https://github.com/mxcl/PromiseKit",
+        "state": {
+          "branch": null,
+          "revision": "6fcc08077124e9747f1ec7bd8bb78f5caffe5a79",
+          "version": "8.1.2"
+        }
+      },
+      {
+        "package": "Promises",
+        "repositoryURL": "https://github.com/google/promises.git",
+        "state": {
+          "branch": null,
+          "revision": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+          "version": "2.4.0"
+        }
+      },
+      {
+        "package": "Reachability",
+        "repositoryURL": "https://github.com/ashleymills/Reachability.swift?tab=readme-ov-file",
+        "state": {
+          "branch": "master",
+          "revision": "21d1dc412cfecbe6e34f1f4c4eb88d3f912654a6",
+          "version": null
+        }
+      },
+      {
+        "package": "RealmDatabase",
+        "repositoryURL": "https://github.com/realm/realm-core.git",
+        "state": {
+          "branch": null,
+          "revision": "85eeca41654cc9070ad81a21a4b1d153ad467c33",
+          "version": "14.13.1"
+        }
+      },
+      {
+        "package": "Realm",
+        "repositoryURL": "git@github.com:realm/realm-swift.git",
+        "state": {
+          "branch": "master",
+          "revision": "1f09fb14dd9d275b5686016fe8508d491b87cb0b",
+          "version": null
+        }
+      },
+      {
+        "package": "Improv-iOS",
+        "repositoryURL": "git@github.com:hi2gage/sdk-iOS.git",
+        "state": {
+          "branch": "main",
+          "revision": "237efd52c2128c0386839ead699158beff97c279",
+          "version": null
+        }
+      },
+      {
+        "package": "SFSafeSymbols",
+        "repositoryURL": "https://github.com/SFSafeSymbols/SFSafeSymbols.git",
+        "state": {
+          "branch": null,
+          "revision": "e2e28f4e56e1769c2ec3c61c9355fc64eb7a535a",
+          "version": "5.3.0"
+        }
+      },
+      {
+        "package": "Starscream",
+        "repositoryURL": "https://github.com/bgoncal/Starscream",
+        "state": {
+          "branch": null,
+          "revision": "7e3d24425c20649105cb4bdd612b6bab66f73ade",
+          "version": "4.0.8"
+        }
+      },
+      {
+        "package": "SwiftProtobuf",
+        "repositoryURL": "https://github.com/apple/swift-protobuf.git",
+        "state": {
+          "branch": null,
+          "revision": "ebc7251dd5b37f627c93698e4374084d98409633",
+          "version": "1.28.2"
+        }
+      },
+      {
+        "package": "Sodium",
+        "repositoryURL": "https://github.com/zacwest/swift-sodium.git",
+        "state": {
+          "branch": "xcode-14.0.1",
+          "revision": "c66991f2ea610d437b31656795226c8e52002abd",
+          "version": null
+        }
+      },
+      {
+        "package": "SwiftMessages",
+        "repositoryURL": "https://github.com/SwiftKickMobile/SwiftMessages",
+        "state": {
+          "branch": null,
+          "revision": "c544df6ce316422b9d65a571f932e800213dd09c",
+          "version": "10.0.1"
+        }
+      },
+      {
+        "package": "UIColorHexSwift",
+        "repositoryURL": "https://github.com/yeahdongcn/UIColor-Hex-Swift",
+        "state": {
+          "branch": null,
+          "revision": "f37f97bc1a5b545b39ab5330e133e56fa4f38cff",
+          "version": "5.1.9"
+        }
+      },
+      {
+        "package": "Version",
+        "repositoryURL": "git@github.com:mrackwitz/Version.git",
+        "state": {
+          "branch": null,
+          "revision": "fd4b0eb5756aa7f1c33977fb626cf37d2140a3a0",
+          "version": "0.8.0"
+        }
+      },
+      {
+        "package": "ViewRow",
+        "repositoryURL": "https://github.com/EurekaCommunity/ViewRow",
+        "state": {
+          "branch": null,
+          "revision": "3428a3b825a5641ae7fb65f3f787aba2b1b4dab9",
+          "version": "0.9.0"
+        }
+      },
+      {
+        "package": "XCGLogger",
+        "repositoryURL": "https://github.com/DaveWoodCom/XCGLogger.git",
+        "state": {
+          "branch": null,
+          "revision": "4def3c1c772ca90ad5e7bfc8ac437c3b0b4276cf",
+          "version": "7.1.5"
+        }
+      },
+      {
+        "package": "ZIPFoundation",
+        "repositoryURL": "git@github.com:weichsel/ZIPFoundation.git",
+        "state": {
+          "branch": null,
+          "revision": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+          "version": "0.9.19"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -3,6 +3,7 @@
 
 import Eureka
 import Foundation
+import UIKit
 
 // swiftlint:disable type_name line_length
 open class _SearchSelectorViewController<

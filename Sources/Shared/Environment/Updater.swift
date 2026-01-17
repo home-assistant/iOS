@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 import Version
+import PMKFoundation
 
 public struct AvailableUpdate: Codable, Comparable {
     public var id: Int

@@ -3,6 +3,7 @@ import PromiseKit
 import QuickLook
 import Shared
 import UIKit
+import PMKFoundation
 
 class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessionTaskDelegate {
     let authDetails: OnboardingAuthDetails

@@ -6,6 +6,7 @@ import PromiseKit
 import Shared
 import UIKit
 import Version
+import PMKFoundation
 
 class ConnectionSettingsViewController: HAFormViewController, RowControllerType {
     public var onDismissCallback: ((UIViewController) -> Void)?

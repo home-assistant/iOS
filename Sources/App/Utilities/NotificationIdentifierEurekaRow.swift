@@ -1,5 +1,6 @@
 import Eureka
 import Foundation
+import UIKit
 
 public final class NotificationIdentifierRow: Row<NotificationIdentifierTextCell>, RowType {
     public var uppercaseOnly: Bool = true {

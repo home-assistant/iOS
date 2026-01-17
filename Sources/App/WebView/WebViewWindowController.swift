@@ -3,6 +3,7 @@ import MBProgressHUD
 import PromiseKit
 import Shared
 import UIKit
+import PMKFoundation
 
 final class WebViewWindowController {
     let window: UIWindow

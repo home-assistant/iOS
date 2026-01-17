@@ -1,4 +1,5 @@
 import Eureka
+import UIKit
 
 public final class ButtonRowWithLoading: _ButtonRowOf<Bool>, RowType {
     public required init(tag: String?) {

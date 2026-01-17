@@ -1,5 +1,5 @@
 import SwiftUI
-import UIColor_Hex_Swift
+import UIColorHexSwift
 
 extension Color {
     init(hex: String) {

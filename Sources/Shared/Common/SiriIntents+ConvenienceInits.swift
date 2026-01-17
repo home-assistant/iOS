@@ -3,7 +3,7 @@ import Foundation
 import HAKit
 import Intents
 import MapKit
-import UIColor_Hex_Swift
+import UIColorHexSwift
 
 public extension CallServiceIntent {
     convenience init(domain: String, service: String) {

@@ -3,6 +3,7 @@ import Eureka
 import Foundation
 import PromiseKit
 import Shared
+import PMKFoundation
 
 class NFCListViewController: HAFormViewController {
     override init() {

@@ -3,6 +3,7 @@ import Eureka
 import HAKit
 import PromiseKit
 import Shared
+import PMKFoundation
 
 class SettingsViewController: HAFormViewController {
     struct ContentSection: OptionSet, ExpressibleByIntegerLiteral {

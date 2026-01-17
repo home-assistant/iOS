@@ -5,6 +5,7 @@ import PromiseKit
 import RealmSwift
 import Shared
 import UIKit
+import PMKFoundation
 
 class NotificationSettingsViewController: HAFormViewController {
     public var doneButton: Bool = false

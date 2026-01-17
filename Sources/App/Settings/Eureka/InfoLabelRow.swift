@@ -1,5 +1,6 @@
 import Eureka
 import Foundation
+import UIKit
 
 final class InfoLabelRow: _LabelRow, RowType {
     enum DisplayType {

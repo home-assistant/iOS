@@ -1,4 +1,5 @@
 import Alamofire
+import Foundation
 
 final class CustomServerTrustManager: ServerTrustManager, ServerTrustEvaluating {
     let exceptions: () -> SecurityExceptions

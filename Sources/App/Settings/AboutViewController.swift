@@ -1,4 +1,4 @@
-import CPDAcknowledgements
+//import CPDAcknowledgements
 import Eureka
 import SafariServices
 import Shared
@@ -70,14 +70,14 @@ class AboutViewController: HAFormViewController {
                 UIApplication.shared.open(URL(string: urlStr)!, options: [:], completionHandler: nil)
             }
 
-            <<< pushLookingButtonRow {
-                $0.title = L10n.About.Acknowledgements.title
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    self.generateAcknowledgements()
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
-                })
-            }
+//            <<< pushLookingButtonRow {
+//                $0.title = L10n.About.Acknowledgements.title
+//                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+//                    self.generateAcknowledgements()
+//                }, onDismiss: { vc in
+//                    _ = vc.navigationController?.popViewController(animated: true)
+//                })
+//            }
 
             <<< pushLookingButtonRow {
                 $0.title = L10n.About.Review.title
@@ -154,24 +154,24 @@ class AboutViewController: HAFormViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    func generateAcknowledgements() -> CPDAcknowledgementsViewController {
-        var licenses = [CPDLibrary]()
-
-        for fileName in [
-            "Pods-iOS-App-metadata",
-            "ManualPodLicenses",
-        ] {
-            if let file = Bundle.main.url(forResource: fileName, withExtension: "plist"),
-               let dictionary = NSDictionary(contentsOf: file),
-               let license = dictionary["specs"] as? [[String: Any]] {
-                licenses += license.map { CPDLibrary(cocoaPodsMetadataPlistDictionary: $0) }
-            }
-        }
-
-        licenses.sort(by: { $0.title < $1.title })
-
-        return CPDAcknowledgementsViewController(style: nil, acknowledgements: licenses, contributions: nil)
-    }
+//    func generateAcknowledgements() -> CPDAcknowledgementsViewController {
+//        var licenses = [CPDLibrary]()
+//
+//        for fileName in [
+//            "Pods-iOS-App-metadata",
+//            "ManualPodLicenses",
+//        ] {
+//            if let file = Bundle.main.url(forResource: fileName, withExtension: "plist"),
+//               let dictionary = NSDictionary(contentsOf: file),
+//               let license = dictionary["specs"] as? [[String: Any]] {
+//                licenses += license.map { CPDLibrary(cocoaPodsMetadataPlistDictionary: $0) }
+//            }
+//        }
+//
+//        licenses.sort(by: { $0.title < $1.title })
+//
+//        return CPDAcknowledgementsViewController(style: nil, acknowledgements: licenses, contributions: nil)
+//    }
 
     func openInTwitterApp(username: String) {
         /* Tweetbot app precedence */

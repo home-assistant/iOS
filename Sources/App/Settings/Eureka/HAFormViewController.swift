@@ -1,4 +1,5 @@
 import Eureka
+import UIKit
 
 class HAFormViewController: FormViewController {
     init() {

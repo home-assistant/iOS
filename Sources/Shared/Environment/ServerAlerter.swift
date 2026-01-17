@@ -1,6 +1,8 @@
 import Foundation
 import PromiseKit
 import Version
+import PMKFoundation
+import HAKit
 
 public struct ServerAlert: Codable, Equatable {
     public struct VersionRequirement: Codable, Equatable {
@@ -171,5 +173,17 @@ public class ServerAlerter {
 
     private func isHandled(alert: ServerAlert) -> Bool {
         Current.settingsStore.prefs.stringArray(forKey: allHandledKeys)?.contains(alert.id) == true
+    }
+}
+
+public extension HACache {
+    /// Wrap a once subscription in a Guarantee
+    ///
+    /// - SeeAlso: `HACache.once(_:)`
+    /// - Returns: The promies for the value, and a block to cancel
+    func once() -> (promise: Guarantee<ValueType>, cancel: () -> Void) {
+        let (guarantee, seal) = Guarantee<ValueType>.pending()
+        let token = once(seal)
+        return (promise: guarantee, cancel: token.cancel)
     }
 }
