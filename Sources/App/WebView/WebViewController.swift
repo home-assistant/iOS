@@ -887,8 +887,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 self?.updateSensors()
             }
             
-            // Reset the timestamp to avoid triggering again immediately
-            lastPullToRefreshTimestamp = nil
+            // Set the timestamp to now after cache reset to ensure proper timing for next pull
+            // This prevents immediate re-triggering while still tracking for future pulls
+            lastPullToRefreshTimestamp = now
         } else {
             // First pull-to-refresh or outside the 10-second window
             lastPullToRefreshTimestamp = now

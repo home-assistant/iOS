@@ -24,7 +24,7 @@ final class WebViewControllerPullToRefreshTests: XCTestCase {
         sut = WebViewController(server: server, shouldLoadImmediately: false)
     }
     
-    override func tearDown() {
+    override func tearDown() async throws {
         sut = nil
         mockWebsiteDataStoreHandler = nil
         
@@ -32,7 +32,7 @@ final class WebViewControllerPullToRefreshTests: XCTestCase {
         Current.websiteDataStoreHandler = originalWebsiteDataStoreHandler
         Current.date = originalDateProvider
         
-        super.tearDown()
+        try await super.tearDown()
     }
     
     func testPullToRefreshFirstTimeDoesNotResetCache() throws {
@@ -84,25 +84,64 @@ final class WebViewControllerPullToRefreshTests: XCTestCase {
     }
     
     func testPullToRefreshThreeTimesOnlyResetsCacheOnSecondPull() throws {
-        // Given: Multiple pull-to-refresh actions
+        // Given: Multiple pull-to-refresh actions with time control
         let refreshControl = UIRefreshControl()
+        
+        // Create a custom date provider that we can control
+        var currentDate = Date()
+        Current.date = { currentDate }
         
         // When: First pull-to-refresh
         sut.pullToRefresh(refreshControl)
         XCTAssertFalse(mockWebsiteDataStoreHandler.cleanCacheCalled)
         
-        // And: Second pull-to-refresh within 10 seconds (should reset cache)
+        // And: Advance time by 5 seconds and perform second pull (within 10 seconds - should reset cache)
+        currentDate = currentDate.addingTimeInterval(5)
         sut.pullToRefresh(refreshControl)
         XCTAssertTrue(mockWebsiteDataStoreHandler.cleanCacheCalled)
         
         // Reset the mock
         mockWebsiteDataStoreHandler.cleanCacheCalled = false
         
-        // And: Third pull-to-refresh immediately after
+        // And: Advance time by another 5 seconds and perform third pull (within 10 seconds from second pull)
+        currentDate = currentDate.addingTimeInterval(5)
         sut.pullToRefresh(refreshControl)
         
-        // Then: Cache should NOT be reset again (timestamp was reset after second pull)
+        // Then: Cache should be reset again since it's within 10 seconds of the second pull
+        XCTAssertTrue(mockWebsiteDataStoreHandler.cleanCacheCalled)
+    }
+    
+    func testPullToRefreshFourTimesAlternatesResetPattern() throws {
+        // Given: Multiple pull-to-refresh actions with time control
+        let refreshControl = UIRefreshControl()
+        
+        // Create a custom date provider that we can control
+        var currentDate = Date()
+        Current.date = { currentDate }
+        
+        // When: First pull-to-refresh
+        sut.pullToRefresh(refreshControl)
         XCTAssertFalse(mockWebsiteDataStoreHandler.cleanCacheCalled)
+        
+        // And: Second pull within 10 seconds (should reset cache)
+        currentDate = currentDate.addingTimeInterval(5)
+        sut.pullToRefresh(refreshControl)
+        XCTAssertTrue(mockWebsiteDataStoreHandler.cleanCacheCalled)
+        
+        // Reset the mock
+        mockWebsiteDataStoreHandler.cleanCacheCalled = false
+        
+        // And: Move time forward by 11 seconds (outside 10-second window)
+        currentDate = currentDate.addingTimeInterval(11)
+        
+        // And: Third pull after 10 seconds (treated as new first pull)
+        sut.pullToRefresh(refreshControl)
+        XCTAssertFalse(mockWebsiteDataStoreHandler.cleanCacheCalled)
+        
+        // And: Fourth pull within 10 seconds (should reset cache again)
+        currentDate = currentDate.addingTimeInterval(5)
+        sut.pullToRefresh(refreshControl)
+        XCTAssertTrue(mockWebsiteDataStoreHandler.cleanCacheCalled)
     }
 }
 
