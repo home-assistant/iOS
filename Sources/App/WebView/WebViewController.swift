@@ -869,24 +869,24 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
         let now = Current.date()
-        
+
         // Check if this is a consecutive pull-to-refresh within 10 seconds
         if let lastTimestamp = lastPullToRefreshTimestamp,
            now.timeIntervalSince(lastTimestamp) < 10 {
             // Second pull-to-refresh within 10 seconds - reset frontend cache
             Current.Log.info("Consecutive pull-to-refresh detected within 10 seconds, resetting frontend cache")
-            
+
             // Provide haptic feedback
             let feedbackGenerator = UINotificationFeedbackGenerator()
             feedbackGenerator.notificationOccurred(.success)
-            
+
             // Reset the cache
             Current.websiteDataStoreHandler.cleanCache { [weak self] in
                 Current.Log.info("Frontend cache reset after consecutive pull-to-refresh")
                 self?.refresh()
                 self?.updateSensors()
             }
-            
+
             // Set the timestamp to now after cache reset to ensure proper timing for next pull
             // This prevents immediate re-triggering while still tracking for future pulls
             lastPullToRefreshTimestamp = now
