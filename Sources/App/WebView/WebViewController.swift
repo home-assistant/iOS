@@ -46,6 +46,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var loadActiveURLIfNeededInProgress = false
 
+    /// Track the timestamp of the last pull-to-refresh action
+    private var lastPullToRefreshTimestamp: Date?
+
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
         improvManager: ImprovManager.shared
@@ -865,8 +868,33 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
-        refresh()
-        updateSensors()
+        let now = Current.date()
+        
+        // Check if this is a consecutive pull-to-refresh within 10 seconds
+        if let lastTimestamp = lastPullToRefreshTimestamp,
+           now.timeIntervalSince(lastTimestamp) < 10 {
+            // Second pull-to-refresh within 10 seconds - reset frontend cache
+            Current.Log.info("Consecutive pull-to-refresh detected within 10 seconds, resetting frontend cache")
+            
+            // Provide haptic feedback
+            let feedbackGenerator = UINotificationFeedbackGenerator()
+            feedbackGenerator.notificationOccurred(.success)
+            
+            // Reset the cache
+            Current.websiteDataStoreHandler.cleanCache { [weak self] in
+                Current.Log.info("Frontend cache reset after consecutive pull-to-refresh")
+                self?.refresh()
+                self?.updateSensors()
+            }
+            
+            // Reset the timestamp to avoid triggering again immediately
+            lastPullToRefreshTimestamp = nil
+        } else {
+            // First pull-to-refresh or outside the 10-second window
+            lastPullToRefreshTimestamp = now
+            refresh()
+            updateSensors()
+        }
     }
 
     @objc func openSettingsView(_ sender: UIButton) {
