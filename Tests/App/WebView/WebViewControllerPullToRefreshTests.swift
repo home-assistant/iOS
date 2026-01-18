@@ -5,9 +5,15 @@ import XCTest
 final class WebViewControllerPullToRefreshTests: XCTestCase {
     private var sut: WebViewController!
     private var mockWebsiteDataStoreHandler: MockWebsiteDataStoreHandler!
+    private var originalWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol!
+    private var originalDateProvider: @Sendable () -> Date!
     
     override func setUp() async throws {
         try await super.setUp()
+        
+        // Save original handlers
+        originalWebsiteDataStoreHandler = Current.websiteDataStoreHandler
+        originalDateProvider = Current.date
         
         // Setup test environment
         mockWebsiteDataStoreHandler = MockWebsiteDataStoreHandler()
@@ -21,6 +27,11 @@ final class WebViewControllerPullToRefreshTests: XCTestCase {
     override func tearDown() {
         sut = nil
         mockWebsiteDataStoreHandler = nil
+        
+        // Restore original handlers
+        Current.websiteDataStoreHandler = originalWebsiteDataStoreHandler
+        Current.date = originalDateProvider
+        
         super.tearDown()
     }
     
