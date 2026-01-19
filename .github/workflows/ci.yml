@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-      - uses: ruby/setup-ruby@675dd7ba1b06c8786a1480d89c384f5620a42647  # v1.281.0
+      - uses: ruby/setup-ruby@80740b3b13bf9857e28854481ca95a84e78a2bdf  # v1.284.0
         with:
           ruby-version: "3.1"
           bundler-cache: true
@@ -133,7 +133,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
 
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v5.0.1
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7  # v5.0.2
         name: "Cache: Pods"
         id: cache_pods
         with:
@@ -145,7 +145,7 @@ jobs:
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
             ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v5.0.1
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7  # v5.0.2
         name: "Cache: Gems"
         id: cache_gems
         with:
@@ -200,7 +200,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v4.6.2
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7  # v4.6.2
         name: "Cache: Pods"
         id: cache_pods
         with:
@@ -212,7 +212,7 @@ jobs:
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
             ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v5.0.1
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7  # v5.0.2
         name: "Cache: Gems"
         id: cache_gems
         with:
