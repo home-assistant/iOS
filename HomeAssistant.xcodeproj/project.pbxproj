@@ -906,6 +906,7 @@
 		42955C252F1A552A00E398E8 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1382F0FE50C00E20584 /* ToastView.swift */; };
 		42955C262F1A552A00E398E8 /* ToastHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1402F0FE5B000E20584 /* ToastHostingController.swift */; };
 		42955C272F1A552A00E398E8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1372F0FE50C00E20584 /* Toast.swift */; };
+		42955C352F1E25FB00E398E8 /* CallKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42955C322F1E25FB00E398E8 /* CallKitManager.swift */; };
 		4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */; };
 		4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36C2B90DB630051B63C /* PerformAction.swift */; };
 		4296C3762B91F0F50051B63C /* WidgetActionsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */; };
@@ -2551,6 +2552,7 @@
 		429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptCommandsTests.swift; sourceTree = "<group>"; };
 		429481EC2DA943E700A8B468 /* ListPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPicker.swift; sourceTree = "<group>"; };
 		429481EE2DA94B9900A8B468 /* ListPickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPickerTests.swift; sourceTree = "<group>"; };
+		42955C322F1E25FB00E398E8 /* CallKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallKitManager.swift; sourceTree = "<group>"; };
 		4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntentActionAppEntity.swift; sourceTree = "<group>"; };
 		4296C36C2B90DB630051B63C /* PerformAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
@@ -5323,6 +5325,14 @@
 			path = Audio;
 			sourceTree = "<group>";
 		};
+		42955C332F1E25FB00E398E8 /* CallKit */ = {
+			isa = PBXGroup;
+			children = (
+				42955C322F1E25FB00E398E8 /* CallKitManager.swift */,
+			);
+			path = CallKit;
+			sourceTree = "<group>";
+		};
 		4296C36A2B90DB630051B63C /* AppIntents */ = {
 			isa = PBXGroup;
 			children = (
@@ -7263,6 +7273,7 @@
 		D0EEF325214DF30D00D1D360 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				42955C332F1E25FB00E398E8 /* CallKit */,
 				420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */,
 				425573EE2B589B0F00145217 /* NotificationIdentifier.swift */,
 				11ADF93D267D34A20040A7E3 /* NotificationCommands */,
@@ -9944,6 +9955,7 @@
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */,
+				42955C352F1E25FB00E398E8 /* CallKitManager.swift in Sources */,
 				46C62BA12D8A3799002C0001 /* SnapshottablePreviewConfigurations.swift in Sources */,
 				42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,

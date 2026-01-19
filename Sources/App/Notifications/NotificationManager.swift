@@ -383,8 +383,8 @@ extension NotificationManager: CallKitManagerDelegate {
         }
 
         // Open AssistView
-        Current.sceneManager.webViewWindowControllerPromise.done { windowController in
-            windowController.webViewExternalMessageHandler.showAssist(
+        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { webViewController in
+            webViewController.webViewExternalMessageHandler.showAssist(
                 server: server,
                 pipeline: pipelineId,
                 autoStartRecording: autoStartRecording

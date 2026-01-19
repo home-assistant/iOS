@@ -2,7 +2,6 @@ import AVFoundation
 import CallKit
 import Foundation
 import PromiseKit
-import Shared
 
 public protocol CallKitManagerDelegate: AnyObject {
     func callKitManager(_ manager: CallKitManager, didAnswerCallWithInfo info: [String: Any])
@@ -55,9 +54,6 @@ public class CallKitManager: NSObject {
         config.maximumCallGroups = 1
         config.maximumCallsPerCallGroup = 1
         config.supportedHandleTypes = [.generic]
-
-        // Set the app name for the incoming call UI
-        config.localizedName = "Home Assistant"
 
         provider = CXProvider(configuration: config)
 
