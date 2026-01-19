@@ -875,16 +875,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
            now.timeIntervalSince(lastTimestamp) < 10 {
             // Second pull-to-refresh within 10 seconds - reset frontend cache
             Current.Log.info("Consecutive pull-to-refresh detected within 10 seconds, resetting frontend cache")
-
-            // Provide haptic feedback
-            let feedbackGenerator = UINotificationFeedbackGenerator()
-            feedbackGenerator.notificationOccurred(.success)
+            Current.impactFeedback.impactOccurred(style: .medium)
 
             // Reset the cache
             Current.websiteDataStoreHandler.cleanCache { [weak self] in
                 Current.Log.info("Frontend cache reset after consecutive pull-to-refresh")
-                self?.refresh()
-                self?.updateSensors()
+                self?.pullToRefreshActions()
             }
 
             // Set the timestamp to now after cache reset to ensure proper timing for next pull
@@ -893,9 +889,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         } else {
             // First pull-to-refresh or outside the 10-second window
             lastPullToRefreshTimestamp = now
-            refresh()
-            updateSensors()
+            pullToRefreshActions()
         }
+    }
+
+    private func pullToRefreshActions() {
+        refresh()
+        updateSensors()
     }
 
     @objc func openSettingsView(_ sender: UIButton) {
