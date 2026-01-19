@@ -55,7 +55,7 @@ public class CallKitManager: NSObject {
         config.maximumCallsPerCallGroup = 1
         config.supportedHandleTypes = [.generic]
 
-        provider = CXProvider(configuration: config)
+        self.provider = CXProvider(configuration: config)
 
         super.init()
 
