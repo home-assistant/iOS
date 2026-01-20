@@ -1327,7 +1327,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.controls.open_lock.configuration.parameter.entity" = "Schloss";
 "widgets.controls.open_lock.configuration.title" = "Schloss öffnen";
 "widgets.controls.open_lock.description" = "Öffnet die ausgewählte Schloss-Entität innerhalb der App.";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Seite auswählen";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Seite";
 "widgets.controls.open_page.configuration.title" = "Seite öffnen";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Sensor";

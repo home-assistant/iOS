@@ -1326,7 +1326,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "widgets.controls.open_lock.configuration.parameter.entity" = "門鎖";
 "widgets.controls.open_lock.configuration.title" = "開啟門鎖";
 "widgets.controls.open_lock.description" = "開啟應用程式內所選門鎖實體";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "選擇頁面";
+
 "widgets.controls.open_page.configuration.parameter.page" = "頁面";
 "widgets.controls.open_page.configuration.title" = "開啟頁面";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "感測器";

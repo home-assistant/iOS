@@ -1325,7 +1325,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.controls.open_lock.configuration.parameter.entity" = "Lås";
 "widgets.controls.open_lock.configuration.title" = "Öppna lås";
 "widgets.controls.open_lock.description" = "Opens the selected lock entity inside the app";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Välj sida";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Sida";
 "widgets.controls.open_page.configuration.title" = "Öppna sida";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Sensor";

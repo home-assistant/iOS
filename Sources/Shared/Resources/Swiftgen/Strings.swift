@@ -4880,8 +4880,6 @@ public enum L10n {
           /// Open Page
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.title") }
           public enum Parameter {
-            /// Choose page
-            public static var choosePage: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.parameter.choose_page") }
             /// Page
             public static var page: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.parameter.page") }
           }

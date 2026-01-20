@@ -1324,7 +1324,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.controls.open_lock.configuration.parameter.entity" = "锁";
 "widgets.controls.open_lock.configuration.title" = "打开锁";
 "widgets.controls.open_lock.description" = "在应用中打开选定的锁实体";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "选择页面";
+
 "widgets.controls.open_page.configuration.parameter.page" = "页面";
 "widgets.controls.open_page.configuration.title" = "打开页面";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "传感器";
