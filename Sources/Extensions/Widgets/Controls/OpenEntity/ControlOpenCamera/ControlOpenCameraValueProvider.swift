@@ -32,7 +32,7 @@ struct ControlOpenCameraValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenCamera.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenCameraValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenCameraItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenCamera.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.video.rawValue),
             displayText: nil
         )

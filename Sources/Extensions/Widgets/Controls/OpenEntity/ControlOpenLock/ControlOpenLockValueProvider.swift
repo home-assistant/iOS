@@ -32,7 +32,7 @@ struct ControlOpenLockValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenLock.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenLockValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenLockItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenLock.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.lock.rawValue),
             displayText: nil
         )

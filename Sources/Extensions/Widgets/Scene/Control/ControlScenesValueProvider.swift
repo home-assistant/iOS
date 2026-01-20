@@ -46,7 +46,7 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
             entityId: "",
             serverId: "",
             serverName: "",
-            displayString: L10n.Widgets.Controls.Scenes.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Scenes.pendingConfiguration,
             iconName: ""
         )
     }

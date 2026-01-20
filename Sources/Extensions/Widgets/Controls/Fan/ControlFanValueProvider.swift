@@ -77,7 +77,7 @@ struct ControlFanValueProvider: AppIntentControlValueProvider {
             id: UUID().uuidString,
             entityId: "",
             serverId: "",
-            displayString: L10n.Widgets.Controls.Fan.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Fan.pendingConfiguration,
             iconName: (value ?? false) ? SFSymbol.fanFill.rawValue : SFSymbol.fan.rawValue
         )
     }

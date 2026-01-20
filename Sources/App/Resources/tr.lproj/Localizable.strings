@@ -1326,7 +1326,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "widgets.controls.open_lock.configuration.parameter.entity" = "Kilitle";
 "widgets.controls.open_lock.configuration.title" = "Kilidi Aç";
 "widgets.controls.open_lock.description" = "Seçilen kilit öğesini uygulama içinde açar.";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Sayfayı seçin";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Sayfa";
 "widgets.controls.open_page.configuration.title" = "Sayfayı Aç";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Sensör";

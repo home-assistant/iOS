@@ -32,7 +32,7 @@ struct ControlOpenCoverEntityValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenCoverEntity.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenCoverEntityValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenCoverEntityItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenCoverEntity.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.curtainsClosed.rawValue),
             displayText: nil
         )
