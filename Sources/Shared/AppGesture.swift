@@ -34,6 +34,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     // Page
     case backPage
     case nextPage
+    case refresh
+    case openInBrowser
     // Servers
     case showServersList
     case nextServer
@@ -48,7 +50,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         switch self {
         case .showSidebar, .searchEntities, .searchDevices, .searchCommands, .assist:
             .homeAssistant
-        case .backPage, .nextPage:
+        case .backPage, .nextPage, .refresh, .openInBrowser:
             .page
         case .showServersList, .nextServer, .previousServer:
             .servers
@@ -67,6 +69,10 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.backPage
         case .nextPage:
             L10n.Gestures.Value.Option.nextPage
+        case .refresh:
+            L10n.Gestures.Value.Option.refresh
+        case .openInBrowser:
+            L10n.Gestures.Value.Option.openInBrowser
         case .searchEntities:
             L10n.Gestures.Value.Option.searchEntities
         case .showServersList:
@@ -97,6 +103,10 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         case .backPage:
             nil
         case .nextPage:
+            nil
+        case .refresh:
+            nil
+        case .openInBrowser:
             nil
         case .searchEntities:
             L10n.Gestures.Value.Option.MoreInfo.searchEntities

@@ -17,6 +17,10 @@ final class WebViewGestureHandler {
             webViewNavigateBack()
         case .nextPage:
             webViewNavigateForward()
+        case .refresh:
+            webView?.refresh()
+        case .openInBrowser:
+            openInBrowser()
         case .showServersList:
             showServersList()
         case .nextServer:
@@ -101,6 +105,16 @@ final class WebViewGestureHandler {
             } else {
                 Current.Log.info("Open assist command sent to webview")
             }
+        }
+    }
+
+    private func openInBrowser() {
+        guard let url = webView?.currentURL else { return }
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return }
+        // Remove external_auth=1 query item from URL
+        urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
+        if let cleanURL = urlComponents.url {
+            URLOpener.shared.open(cleanURL, options: [:], completionHandler: nil)
         }
     }
 

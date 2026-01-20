@@ -8,6 +8,7 @@ protocol WebViewControllerProtocol: AnyObject {
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }
     var traitCollection: UITraitCollection { get }
+    var currentURL: URL? { get }
 
     func presentOverlayController(controller: UIViewController, animated: Bool)
     func presentAlertController(controller: UIViewController, animated: Bool)

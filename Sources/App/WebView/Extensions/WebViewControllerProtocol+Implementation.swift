@@ -6,6 +6,10 @@ extension WebViewController: WebViewControllerProtocol {
         presentedViewController
     }
 
+    var currentURL: URL? {
+        webView.url
+    }
+
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.dismissOverlayController(animated: false, completion: { [weak self] in
