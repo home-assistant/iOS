@@ -105,6 +105,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 modifierFlags: .command,
                 action: #selector(pasteContent)
             ),
+            UIKeyCommand(
+                input: "r",
+                modifierFlags: .command,
+                action: #selector(refresh)
+            ),
         ]
 
         // Add find command for iOS 16+
