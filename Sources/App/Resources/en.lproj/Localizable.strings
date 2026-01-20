@@ -1437,3 +1437,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "database_updater.toast.title" = "Updating %@";
 "database_updater.toast.syncing" = "Syncing server data...";
 "database_updater.toast.syncing_with_progress" = "Syncing server data... (%d/%d)";
+"action_toast.success.title" = "Action Completed";
+"action_toast.error.title" = "Action Failed";
+"action_toast.script_executed" = "Script executed";
+"action_toast.scene_activated" = "Scene activated";
+"action_toast.entity_toggled" = "%@ toggled";

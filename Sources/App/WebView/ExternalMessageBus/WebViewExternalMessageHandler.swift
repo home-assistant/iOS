@@ -421,10 +421,23 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func showToast(payload: ToastShowPayload) {
         if #available(iOS 18, *) {
+            // Map style string to ToastStyle enum
+            let toastStyle: ToastStyle
+            switch payload.style?.lowercased() {
+            case "success":
+                toastStyle = .success
+            case "error":
+                toastStyle = .error
+            case "warning":
+                toastStyle = .warning
+            default:
+                toastStyle = .info
+            }
+
             ToastManager.shared.show(
                 id: payload.id,
-                symbol: SFSymbol.infoCircleFill.rawValue,
-                symbolForegroundStyle: (.white, .haPrimary),
+                symbol: toastStyle.symbol,
+                symbolForegroundStyle: toastStyle.colors,
                 title: payload.message,
                 message: "",
                 duration: payload.duration

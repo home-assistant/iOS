@@ -5,6 +5,7 @@ public struct ToastShowPayload: ExternalBusPayload {
     public let message: String
     public let dismissable: Bool
     public let duration: Double?
+    public let style: String?
 
     public init?(payload: [String: Any]?) {
         guard let id = payload?["id"] as? String, let message = payload?["message"] as? String else {
@@ -14,5 +15,6 @@ public struct ToastShowPayload: ExternalBusPayload {
         self.message = message
         self.duration = payload?["duration"] as? Double
         self.dismissable = payload?["dismissable"] as? Bool ?? false
+        self.style = payload?["style"] as? String
     }
 }

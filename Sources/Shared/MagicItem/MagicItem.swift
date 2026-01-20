@@ -2,6 +2,9 @@ import Foundation
 import GRDB
 import HAKit
 import PromiseKit
+#if os(iOS)
+import SwiftUI
+#endif
 
 /// Object that represents iOS item that can be displayed in Watch, Widgets, CarPlay and perform different action types
 public struct MagicItem: Codable, Equatable, Hashable {
@@ -334,13 +337,19 @@ public extension MagicItem {
                     )
                 }
             }() {
-                request.pipe(to: { result in
+                request.pipe(to: { [self] result in
                     switch result {
                     case .fulfilled:
                         Current.Log.verbose("Success executing magic item \(id)")
+                        #if os(iOS)
+                        showExecutionToast(success: true)
+                        #endif
                         completion(true)
                     case let .rejected(error):
                         Current.Log.error("Error while executing magic item \(id): \(error.localizedDescription)")
+                        #if os(iOS)
+                        showExecutionToast(success: false, errorMessage: error.localizedDescription)
+                        #endif
                         completion(false)
                     }
                 })
@@ -391,4 +400,39 @@ public extension MagicItem {
             return .value
         }
     }
+
+    #if os(iOS)
+    /// Shows a toast notification for magic item execution result.
+    private func showExecutionToast(success: Bool, errorMessage: String? = nil) {
+        guard #available(iOS 18, *) else { return }
+
+        Task { @MainActor in
+            let title: String
+            let message: String?
+
+            if success {
+                switch type {
+                case .script:
+                    title = L10n.ActionToast.scriptExecuted
+                    message = displayText ?? id.replacingOccurrences(of: "script.", with: "")
+                case .scene:
+                    title = L10n.ActionToast.sceneActivated
+                    message = displayText ?? id.replacingOccurrences(of: "scene.", with: "")
+                case .entity:
+                    let entityName = displayText ?? id.split(separator: ".").last.map(String.init) ?? id
+                    title = L10n.ActionToast.entityToggled(entityName)
+                    message = nil
+                case .action:
+                    title = L10n.ActionToast.Success.title
+                    message = displayText
+                }
+                ToastManager.shared.showSuccess(title: title, message: message)
+            } else {
+                title = L10n.ActionToast.Error.title
+                message = errorMessage
+                ToastManager.shared.showError(title: title, message: message)
+            }
+        }
+    }
+    #endif
 }

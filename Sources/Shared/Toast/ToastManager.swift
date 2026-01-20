@@ -1,6 +1,36 @@
 import SFSafeSymbols
 import SwiftUI
 
+/// Preset toast styles for common use cases.
+@available(iOS 18, *)
+public enum ToastStyle {
+    case success
+    case error
+    case warning
+    case info
+    case syncing
+
+    var symbol: String {
+        switch self {
+        case .success: "checkmark.circle.fill"
+        case .error: "xmark.circle.fill"
+        case .warning: "exclamationmark.triangle.fill"
+        case .info: "info.circle.fill"
+        case .syncing: "arrow.triangle.2.circlepath.circle.fill"
+        }
+    }
+
+    var colors: (Color, Color) {
+        switch self {
+        case .success: (.white, .green)
+        case .error: (.white, .red)
+        case .warning: (.white, .orange)
+        case .info: (.white, .haPrimary)
+        case .syncing: (.white, .blue)
+        }
+    }
+}
+
 /// A manager class that provides imperative control over toast presentation.
 ///
 /// Use this class to show and hide toasts from UIKit contexts where SwiftUI view modifiers
@@ -94,6 +124,51 @@ public final class ToastManager {
                 self?.hide(id: toast.id)
             }
         }
+    }
+
+    /// Shows a styled toast with the specified parameters.
+    ///
+    /// - Parameters:
+    ///   - style: The preset style for the toast (success, error, warning, info, syncing).
+    ///   - title: The title text displayed in the toast.
+    ///   - message: Optional message text displayed below the title.
+    ///   - duration: Optional duration in seconds after which the toast auto-dismisses.
+    ///               Defaults to 2 seconds for non-syncing styles.
+    public func showStyled(
+        _ style: ToastStyle,
+        title: String,
+        message: String? = nil,
+        duration: TimeInterval? = 2.0
+    ) {
+        let id = "toast-\(style)-\(UUID().uuidString)"
+        show(
+            id: id,
+            symbol: style.symbol,
+            symbolForegroundStyle: style.colors,
+            title: title,
+            message: message,
+            duration: duration
+        )
+    }
+
+    /// Shows a success toast.
+    ///
+    /// - Parameters:
+    ///   - title: The title text displayed in the toast.
+    ///   - message: Optional message text displayed below the title.
+    ///   - duration: Optional duration in seconds. Defaults to 2 seconds.
+    public func showSuccess(title: String, message: String? = nil, duration: TimeInterval? = 2.0) {
+        showStyled(.success, title: title, message: message, duration: duration)
+    }
+
+    /// Shows an error toast.
+    ///
+    /// - Parameters:
+    ///   - title: The title text displayed in the toast.
+    ///   - message: Optional message text displayed below the title.
+    ///   - duration: Optional duration in seconds. Defaults to 3 seconds for errors.
+    public func showError(title: String, message: String? = nil, duration: TimeInterval? = 3.0) {
+        showStyled(.error, title: title, message: message, duration: duration)
     }
 
     /// Hides the toast with the specified ID.

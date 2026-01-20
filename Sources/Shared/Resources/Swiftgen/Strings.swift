@@ -1112,6 +1112,25 @@ public enum L10n {
     }
   }
 
+  public enum ActionToast {
+    public enum Success {
+      /// Action Completed
+      public static var title: String { return L10n.tr("Localizable", "action_toast.success.title") }
+    }
+    public enum Error {
+      /// Action Failed
+      public static var title: String { return L10n.tr("Localizable", "action_toast.error.title") }
+    }
+    /// Script executed
+    public static var scriptExecuted: String { return L10n.tr("Localizable", "action_toast.script_executed") }
+    /// Scene activated
+    public static var sceneActivated: String { return L10n.tr("Localizable", "action_toast.scene_activated") }
+    /// %@ toggled
+    public static func entityToggled(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "action_toast.entity_toggled", String(describing: p1))
+    }
+  }
+
   public enum Debug {
     public enum Reset {
       public enum EntitiesDatabase {
