@@ -22,17 +22,26 @@ final class HomeViewConfigurationTable: DatabaseTableProtocol {
                 }
             }
         } else {
+            // In case a column is added or removed from the table, we need to alter the table
             try database.write { db in
-                for column in DatabaseTables.HomeViewConfiguration.allCases {
-                    let shouldCreateColumn = try !db.columns(in: GRDBDatabaseTable.homeViewConfiguration.rawValue)
-                        .contains { columnInfo in
-                            columnInfo.name == column.rawValue
-                        }
+                let tableName = GRDBDatabaseTable.homeViewConfiguration.rawValue
+                let existingColumns = try db.columns(in: tableName)
+                let definedColumns = Set(DatabaseTables.HomeViewConfiguration.allCases.map(\.rawValue))
 
+                // Add new columns that don't exist yet
+                for column in DatabaseTables.HomeViewConfiguration.allCases {
+                    let shouldCreateColumn = !existingColumns.contains { $0.name == column.rawValue }
                     if shouldCreateColumn {
-                        try db.alter(table: GRDBDatabaseTable.homeViewConfiguration.rawValue) { tableAlteration in
+                        try db.alter(table: tableName) { tableAlteration in
                             tableAlteration.add(column: column.rawValue)
                         }
+                    }
+                }
+
+                // Remove columns that are no longer defined
+                for existingColumn in existingColumns where !definedColumns.contains(existingColumn.name) {
+                    try db.alter(table: tableName) { tableAlteration in
+                        tableAlteration.drop(column: existingColumn.name)
                     }
                 }
             }
