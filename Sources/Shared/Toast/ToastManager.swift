@@ -2,7 +2,6 @@ import SFSafeSymbols
 import SwiftUI
 
 /// Preset toast styles for common use cases.
-@available(iOS 18, *)
 public enum ToastStyle {
     case success
     case error
@@ -10,7 +9,7 @@ public enum ToastStyle {
     case info
     case syncing
 
-    var symbol: String {
+    public var symbol: String {
         switch self {
         case .success: "checkmark.circle.fill"
         case .error: "xmark.circle.fill"
@@ -20,7 +19,8 @@ public enum ToastStyle {
         }
     }
 
-    var colors: (Color, Color) {
+    @available(iOS 18, *)
+    public var colors: (Color, Color) {
         switch self {
         case .success: (.white, .green)
         case .error: (.white, .red)
