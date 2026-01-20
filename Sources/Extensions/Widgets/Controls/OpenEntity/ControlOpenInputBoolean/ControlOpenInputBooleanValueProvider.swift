@@ -32,7 +32,7 @@ struct ControlOpenInputBooleanValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenInputBoolean.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenInputBooleanValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenInputBooleanItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenInputBoolean.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.switchProgrammableFill.rawValue),
             displayText: nil
         )
