@@ -11,6 +11,8 @@ final class WebViewGestureHandler {
         switch action {
         case .assist:
             showAssistThroughKeyEvent()
+        case .showAssistView:
+            showAssistView()
         case .showSidebar:
             showSidebar()
         case .backPage:
@@ -104,6 +106,14 @@ final class WebViewGestureHandler {
                 Current.Log.info("Open assist command sent to webview")
             }
         }
+    }
+
+    private func showAssistView() {
+        guard let server = webView?.server else {
+            Current.Log.error("No server available to open AssistView")
+            return
+        }
+        webView?.webViewExternalMessageHandler.showAssist(server: server, pipeline: "", autoStartRecording: false)
     }
 
     private func openInBrowser() {

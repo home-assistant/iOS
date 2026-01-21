@@ -31,6 +31,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     case searchDevices
     case searchCommands
     case assist
+    case showAssistView
     // Page
     case backPage
     case nextPage
@@ -47,7 +48,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
 
     public var category: HAGestureActionCategory {
         switch self {
-        case .showSidebar, .searchEntities, .searchDevices, .searchCommands, .assist:
+        case .showSidebar, .searchEntities, .searchDevices, .searchCommands, .assist, .showAssistView:
             .homeAssistant
         case .backPage, .nextPage, .openInBrowser:
             .page
@@ -90,6 +91,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.searchCommands
         case .assist:
             L10n.Gestures.Value.Option.assist
+        case .showAssistView:
+            L10n.Gestures.Value.Option.showAssistView
         }
     }
 
@@ -122,6 +125,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         case .openDebug:
             nil
         case .assist:
+            nil
+        case .showAssistView:
             nil
         }
     }

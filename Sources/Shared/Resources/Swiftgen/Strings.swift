@@ -1360,6 +1360,8 @@ public enum L10n {
         public static var searchEntities: String { return L10n.tr("Localizable", "gestures.value.option.search_entities") }
         /// Servers list
         public static var serversList: String { return L10n.tr("Localizable", "gestures.value.option.servers_list") }
+        /// Open Assist (Native)
+        public static var showAssistView: String { return L10n.tr("Localizable", "gestures.value.option.show_assist_view") }
         /// Open App settings
         public static var showSettings: String { return L10n.tr("Localizable", "gestures.value.option.show_settings") }
         /// Show sidebar
