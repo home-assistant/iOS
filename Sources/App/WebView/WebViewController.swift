@@ -52,6 +52,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var loadActiveURLIfNeededInProgress = false
 
+    /// Track the timestamp of the last pull-to-refresh action
+    private var lastPullToRefreshTimestamp: Date?
+
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
         improvManager: ImprovManager.shared
@@ -107,6 +110,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 input: "v",
                 modifierFlags: .command,
                 action: #selector(pasteContent)
+            ),
+            UIKeyCommand(
+                input: "r",
+                modifierFlags: .command,
+                action: #selector(refresh)
             ),
         ]
 
@@ -874,6 +882,32 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
+        let now = Current.date()
+
+        // Check if this is a consecutive pull-to-refresh within 10 seconds
+        if let lastTimestamp = lastPullToRefreshTimestamp,
+           now.timeIntervalSince(lastTimestamp) < 10 {
+            // Second pull-to-refresh within 10 seconds - reset frontend cache
+            Current.Log.info("Consecutive pull-to-refresh detected within 10 seconds, resetting frontend cache")
+            Current.impactFeedback.impactOccurred(style: .medium)
+
+            // Reset the cache
+            Current.websiteDataStoreHandler.cleanCache { [weak self] in
+                Current.Log.info("Frontend cache reset after consecutive pull-to-refresh")
+                self?.pullToRefreshActions()
+            }
+
+            // Set the timestamp to now after cache reset to ensure proper timing for next pull
+            // This prevents immediate re-triggering while still tracking for future pulls
+            lastPullToRefreshTimestamp = now
+        } else {
+            // First pull-to-refresh or outside the 10-second window
+            lastPullToRefreshTimestamp = now
+            pullToRefreshActions()
+        }
+    }
+
+    private func pullToRefreshActions() {
         refresh()
         updateSensors()
     }

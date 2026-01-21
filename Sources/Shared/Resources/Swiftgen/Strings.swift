@@ -4882,11 +4882,15 @@ public enum L10n {
       }
       public enum Automations {
         /// Choose automation
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.automations.pending_configuration") }
+        /// Choose automation
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.automations.placeholder_title") }
       }
       public enum Button {
         /// Press button
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.button.description") }
+        /// Choose button
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.button.pending_configuration") }
         /// Choose button
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.button.placeholder_title") }
         /// Button
@@ -4896,6 +4900,8 @@ public enum L10n {
         /// Toggle cover
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.cover.description") }
         /// Choose cover
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.cover.pending_configuration") }
+        /// Choose cover
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.cover.placeholder_title") }
         /// Cover
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.cover.title") }
@@ -4904,6 +4910,8 @@ public enum L10n {
         /// Turn on/off your fan
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.fan.description") }
         /// Choose fan
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.fan.pending_configuration") }
+        /// Choose fan
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.fan.placeholder_title") }
         /// Fan
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.fan.title") }
@@ -4911,6 +4919,8 @@ public enum L10n {
       public enum Light {
         /// Turn on/off your light
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.light.description") }
+        /// Choose light
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.light.pending_configuration") }
         /// Choose Light
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.light.placeholder_title") }
         /// Light
@@ -4919,6 +4929,8 @@ public enum L10n {
       public enum OpenCamera {
         /// Opens the selected camera entity inside the app
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_camera.description") }
+        /// Choose camera
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_camera.pending_configuration") }
         public enum Configuration {
           /// Open Camera
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_camera.configuration.title") }
@@ -4944,7 +4956,13 @@ public enum L10n {
           }
         }
       }
+      public enum OpenCoverEntity {
+        /// Choose cover
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_cover_entity.pending_configuration") }
+      }
       public enum OpenEntity {
+        /// Choose entity
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_entity.pending_configuration") }
         public enum Configuration {
           /// Open Entity
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_entity.configuration.title") }
@@ -4969,6 +4987,8 @@ public enum L10n {
       public enum OpenInputBoolean {
         /// Opens the selected input boolean entity inside the app
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_input_boolean.description") }
+        /// Choose input boolean
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_input_boolean.pending_configuration") }
         public enum Configuration {
           /// Open Input Boolean
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_input_boolean.configuration.title") }
@@ -4981,6 +5001,8 @@ public enum L10n {
       public enum OpenLight {
         /// Opens the selected light entity inside the app
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_light.description") }
+        /// Choose light
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_light.pending_configuration") }
         public enum Configuration {
           /// Open Light
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_light.configuration.title") }
@@ -4993,6 +5015,8 @@ public enum L10n {
       public enum OpenLock {
         /// Opens the selected lock entity inside the app
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_lock.description") }
+        /// Choose lock
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_lock.pending_configuration") }
         public enum Configuration {
           /// Open Lock
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_lock.configuration.title") }
@@ -5003,12 +5027,12 @@ public enum L10n {
         }
       }
       public enum OpenPage {
+        /// Choose page
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_page.pending_configuration") }
         public enum Configuration {
           /// Open Page
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.title") }
           public enum Parameter {
-            /// Choose page
-            public static var choosePage: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.parameter.choose_page") }
             /// Page
             public static var page: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.parameter.page") }
           }
@@ -5017,6 +5041,8 @@ public enum L10n {
       public enum OpenSensor {
         /// Opens the selected sensor entity inside the app
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_sensor.description") }
+        /// Choose sensor
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_sensor.pending_configuration") }
         public enum Configuration {
           /// Open Sensor
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_sensor.configuration.title") }
@@ -5029,6 +5055,8 @@ public enum L10n {
       public enum OpenSwitch {
         /// Opens the selected switch entity inside the app
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_switch.description") }
+        /// Choose switch
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.open_switch.pending_configuration") }
         public enum Configuration {
           /// Open Switch
           public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_switch.configuration.title") }
@@ -5046,6 +5074,8 @@ public enum L10n {
       }
       public enum Scenes {
         /// Choose scene
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.scenes.pending_configuration") }
+        /// Choose scene
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.scenes.placeholder_title") }
       }
       public enum Script {
@@ -5056,11 +5086,15 @@ public enum L10n {
       }
       public enum Scripts {
         /// Choose script
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.scripts.pending_configuration") }
+        /// Choose script
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.scripts.placeholder_title") }
       }
       public enum Switch {
         /// Turn on/off your switch
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.switch.description") }
+        /// Choose switch
+        public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.switch.pending_configuration") }
         /// Choose switch
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.switch.placeholder_title") }
         /// Switch

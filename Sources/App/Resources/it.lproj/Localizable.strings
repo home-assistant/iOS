@@ -1326,7 +1326,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_lock.configuration.parameter.entity" = "Lock";
 "widgets.controls.open_lock.configuration.title" = "Open Lock";
 "widgets.controls.open_lock.description" = "Opens the selected lock entity inside the app";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Scegli pagina";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Pagina";
 "widgets.controls.open_page.configuration.title" = "Apri Pagina";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Sensor";

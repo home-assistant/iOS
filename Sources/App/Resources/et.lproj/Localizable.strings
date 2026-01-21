@@ -1326,7 +1326,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.controls.open_lock.configuration.parameter.entity" = "Lukk";
 "widgets.controls.open_lock.configuration.title" = "Ava lukk";
 "widgets.controls.open_lock.description" = "Avab valitud lukustusüksuse rakenduses";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Vali lehekülg";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Lehekülg";
 "widgets.controls.open_page.configuration.title" = "Ava lehekülg";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Andur";

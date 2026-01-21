@@ -1325,7 +1325,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.controls.open_lock.configuration.parameter.entity" = "ロック";
 "widgets.controls.open_lock.configuration.title" = "ロックを開く";
 "widgets.controls.open_lock.description" = "選択したロックエンティティをアプリ内で開きます";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "ページを選択";
+
 "widgets.controls.open_page.configuration.parameter.page" = "ページ";
 "widgets.controls.open_page.configuration.title" = "ページを開く";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "センサー";

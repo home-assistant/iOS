@@ -1326,7 +1326,7 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.controls.open_lock.configuration.parameter.entity" = "Замок";
 "widgets.controls.open_lock.configuration.title" = "Открыть замок";
 "widgets.controls.open_lock.description" = "Открывает выбранный объект замка внутри приложения";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Выберите страницу";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Страница";
 "widgets.controls.open_page.configuration.title" = "Открыть страницу";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Сенсор";

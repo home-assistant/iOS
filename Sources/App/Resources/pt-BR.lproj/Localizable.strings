@@ -1326,7 +1326,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.controls.open_lock.configuration.parameter.entity" = "Lock";
 "widgets.controls.open_lock.configuration.title" = "Open Lock";
 "widgets.controls.open_lock.description" = "Opens the selected lock entity inside the app";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Escolha a página";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Página";
 "widgets.controls.open_page.configuration.title" = "Abrir página";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Sensor";

@@ -1326,7 +1326,7 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "widgets.controls.open_lock.configuration.parameter.entity" = "Lås";
 "widgets.controls.open_lock.configuration.title" = "Åbn lås";
 "widgets.controls.open_lock.description" = "Åbner den valgte låseenhed i appen";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Vælg side";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Side";
 "widgets.controls.open_page.configuration.title" = "Åbn side";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Sensor";

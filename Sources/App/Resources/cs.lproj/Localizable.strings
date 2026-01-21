@@ -1326,7 +1326,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.controls.open_lock.configuration.parameter.entity" = "Zámek";
 "widgets.controls.open_lock.configuration.title" = "Otevřít zámek";
 "widgets.controls.open_lock.description" = "Otevře vybranou entitu zámku v aplikaci";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Vybrat stránku";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Stránka";
 "widgets.controls.open_page.configuration.title" = "Otevřít stránku";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Senzor";

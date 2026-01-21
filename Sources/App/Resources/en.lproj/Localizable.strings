@@ -1343,7 +1343,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_lock.configuration.parameter.entity" = "Lock";
 "widgets.controls.open_lock.configuration.title" = "Open Lock";
 "widgets.controls.open_lock.description" = "Opens the selected lock entity inside the app";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Open Page";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Sensor";
@@ -1361,6 +1361,23 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.switch.description" = "Turn on/off your switch";
 "widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Switch";
+"widgets.controls.automations.pending_configuration" = "Choose automation";
+"widgets.controls.button.pending_configuration" = "Choose button";
+"widgets.controls.cover.pending_configuration" = "Choose cover";
+"widgets.controls.fan.pending_configuration" = "Choose fan";
+"widgets.controls.light.pending_configuration" = "Choose light";
+"widgets.controls.open_camera.pending_configuration" = "Choose camera";
+"widgets.controls.open_cover_entity.pending_configuration" = "Choose cover";
+"widgets.controls.open_entity.pending_configuration" = "Choose entity";
+"widgets.controls.open_input_boolean.pending_configuration" = "Choose input boolean";
+"widgets.controls.open_light.pending_configuration" = "Choose light";
+"widgets.controls.open_lock.pending_configuration" = "Choose lock";
+"widgets.controls.open_page.pending_configuration" = "Choose page";
+"widgets.controls.open_sensor.pending_configuration" = "Choose sensor";
+"widgets.controls.open_switch.pending_configuration" = "Choose switch";
+"widgets.controls.scenes.pending_configuration" = "Choose scene";
+"widgets.controls.scripts.pending_configuration" = "Choose script";
+"widgets.controls.switch.pending_configuration" = "Choose switch";
 "widgets.custom.intent_activate_failed.body" = "Please try again";
 "widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
 "widgets.custom.intent_press_failed.body" = "Please try again";
