@@ -1326,7 +1326,7 @@
 "widgets.controls.open_lock.configuration.parameter.entity" = "Κλειδαριά";
 "widgets.controls.open_lock.configuration.title" = "Ανοιγμα κλειδαριάς";
 "widgets.controls.open_lock.description" = "Ανοίγει την επιλεγμένη οντότητα κλειδώματος μέσα στην εφαρμογή";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Επιλέξτε σελίδα";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Σελίδα";
 "widgets.controls.open_page.configuration.title" = "Ανοιγμα σελίδας";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Αισθητήρας";

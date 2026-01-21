@@ -1325,7 +1325,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "widgets.controls.open_lock.configuration.parameter.entity" = "Lock";
 "widgets.controls.open_lock.configuration.title" = "Open Lock";
 "widgets.controls.open_lock.description" = "Opens the selected lock entity inside the app";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Pilih halaman";
+
 "widgets.controls.open_page.configuration.parameter.page" = "Halaman";
 "widgets.controls.open_page.configuration.title" = "Buka Halaman";
 "widgets.controls.open_sensor.configuration.parameter.entity" = "Sensor";
