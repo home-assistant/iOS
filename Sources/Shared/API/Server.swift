@@ -247,3 +247,13 @@ public final class Server: Hashable, Comparable, CustomStringConvertible {
         identifier.description
     }
 }
+
+#if !os(watchOS)
+public extension Server {
+    /// Triggers a refresh of this server's data from Home Assistant
+    /// - Parameter forceUpdate: Whether to force the update regardless of cache state. Defaults to `false`.
+    func refreshAppDatabase(forceUpdate: Bool = false) {
+        Current.appDatabaseUpdater.update(server: self, forceUpdate: forceUpdate)
+    }
+}
+#endif

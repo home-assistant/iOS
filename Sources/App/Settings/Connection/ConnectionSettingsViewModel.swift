@@ -63,6 +63,10 @@ final class ConnectionSettingsViewModel: ObservableObject {
         }
     }
 
+    func updateAppDatabase() {
+        server.refreshAppDatabase(forceUpdate: true)
+    }
+
     // MARK: - Setup
 
     private func setupObservers() {
