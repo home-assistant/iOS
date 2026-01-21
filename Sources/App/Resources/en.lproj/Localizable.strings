@@ -1454,3 +1454,16 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "database_updater.toast.title" = "Updating %@";
 "database_updater.toast.syncing" = "Syncing server data...";
 "database_updater.toast.syncing_with_progress" = "Syncing server data... (%d/%d)";
+"connectivity.diagnostics.title" = "Connectivity diagnostics";
+"connectivity.diagnostics.run_checks" = "Run checks";
+"connectivity.diagnostics.start" = "Start diagnostics";
+"connectivity.check.dns" = "DNS Resolution";
+"connectivity.check.dns.description" = "Resolving hostname to IP address";
+"connectivity.check.port" = "Port Reachability";
+"connectivity.check.port.description" = "Checking if port is reachable";
+"connectivity.check.tls" = "TLS Certificate";
+"connectivity.check.tls.description" = "Validating TLS certificate";
+"connectivity.check.server" = "Server Connection";
+"connectivity.check.server.description" = "Testing server connection";
+"connectivity.check.running" = "Checking...";
+"connectivity.check.skipped" = "Skipped due to previous failure";
