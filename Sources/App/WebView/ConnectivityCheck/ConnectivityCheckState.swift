@@ -19,19 +19,6 @@ enum ConnectivityCheckType: String, CaseIterable {
             return L10n.Connectivity.Check.server
         }
     }
-
-    var description: String {
-        switch self {
-        case .dns:
-            return L10n.Connectivity.Check.Dns.description
-        case .port:
-            return L10n.Connectivity.Check.Port.description
-        case .tls:
-            return L10n.Connectivity.Check.Tls.description
-        case .server:
-            return L10n.Connectivity.Check.Server.description
-        }
-    }
 }
 
 enum ConnectivityCheckResult: Equatable {
