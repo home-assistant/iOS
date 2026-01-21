@@ -62,6 +62,11 @@ struct GesturesSetupView: View {
                     }
                 }
             }
+
+            // Show Assist configuration section when showAssistView gesture is configured
+            if viewModel.hasAssistViewGesture {
+                assistConfigurationSection
+            }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -71,6 +76,41 @@ struct GesturesSetupView: View {
                     Text(L10n.Gestures.Reset.title)
                 }
             }
+        }
+    }
+
+    private var assistConfigurationSection: some View {
+        Section(L10n.Gestures.AssistConfiguration.title) {
+            HStack {
+                Text(L10n.Gestures.AssistConfiguration.Pipeline.title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                AssistPipelinePicker(
+                    selectedServerId: .init(
+                        get: { viewModel.assistConfiguration.serverId },
+                        set: { newValue in
+                            var config = viewModel.assistConfiguration
+                            config.serverId = newValue
+                            viewModel.updateAssistConfiguration(config)
+                        }
+                    ),
+                    selectedPipelineId: .init(
+                        get: { viewModel.assistConfiguration.pipelineId },
+                        set: { newValue in
+                            var config = viewModel.assistConfiguration
+                            config.pipelineId = newValue
+                            viewModel.updateAssistConfiguration(config)
+                        }
+                    )
+                )
+            }
+            Toggle(L10n.Gestures.AssistConfiguration.AutoStartRecording.title, isOn: .init(
+                get: { viewModel.assistConfiguration.autoStartRecording },
+                set: { newValue in
+                    var config = viewModel.assistConfiguration
+                    config.autoStartRecording = newValue
+                    viewModel.updateAssistConfiguration(config)
+                }
+            ))
         }
     }
 

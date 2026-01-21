@@ -331,6 +331,9 @@
 "gestures.value.option.show_assist_view" = "Open Assist (Native)";
 "gestures.value.option.show_settings" = "Open App settings";
 "gestures.value.option.show_sidebar" = "Show sidebar";
+"gestures.assist_configuration.title" = "Assist Configuration";
+"gestures.assist_configuration.pipeline.title" = "Pipeline";
+"gestures.assist_configuration.auto_start_recording.title" = "Start with voice";
 "grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Cant build API URL";

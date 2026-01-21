@@ -260,3 +260,23 @@ public extension [AppGesture: HAGestureAction] {
         }
     }
 }
+
+/// Configuration for the showAssistView gesture action
+public struct GestureAssistConfiguration: Codable, Equatable {
+    /// The server ID to use for the assist. If nil, uses the current server.
+    public var serverId: String?
+    /// The pipeline ID to use. If nil, uses the default pipeline.
+    public var pipelineId: String?
+    /// Whether to automatically start voice recording when opening Assist.
+    public var autoStartRecording: Bool
+
+    public init(serverId: String? = nil, pipelineId: String? = nil, autoStartRecording: Bool = false) {
+        self.serverId = serverId
+        self.pipelineId = pipelineId
+        self.autoStartRecording = autoStartRecording
+    }
+
+    public static var `default`: GestureAssistConfiguration {
+        .init()
+    }
+}

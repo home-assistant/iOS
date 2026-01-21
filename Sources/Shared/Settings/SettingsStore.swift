@@ -450,6 +450,24 @@ public class SettingsStore {
             }
         }
     }
+
+    public var gestureAssistConfiguration: GestureAssistConfiguration {
+        get {
+            guard let data = prefs.data(forKey: "gestureAssistConfiguration"),
+                  let decoded = try? JSONDecoder().decode(GestureAssistConfiguration.self, from: data) else {
+                return .default
+            }
+            return decoded
+        }
+        set {
+            do {
+                let encoded = try JSONEncoder().encode(newValue)
+                prefs.set(encoded, forKey: "gestureAssistConfiguration")
+            } catch {
+                Current.Log.error("Failed to encode gestureAssistConfiguration, error \(error.localizedDescription)")
+            }
+        }
+    }
     #endif
 
     // MARK: - Debug settings

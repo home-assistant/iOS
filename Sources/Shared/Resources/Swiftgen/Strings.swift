@@ -1334,6 +1334,18 @@ public enum L10n {
       /// Swipe Right
       public static var title: String { return L10n.tr("Localizable", "gestures.swipe_right.title") }
     }
+    public enum AssistConfiguration {
+      /// Assist Configuration
+      public static var title: String { return L10n.tr("Localizable", "gestures.assist_configuration.title") }
+      public enum Pipeline {
+        /// Pipeline
+        public static var title: String { return L10n.tr("Localizable", "gestures.assist_configuration.pipeline.title") }
+      }
+      public enum AutoStartRecording {
+        /// Start with voice
+        public static var title: String { return L10n.tr("Localizable", "gestures.assist_configuration.auto_start_recording.title") }
+      }
+    }
     public enum Value {
       public enum Option {
         /// Open Assist

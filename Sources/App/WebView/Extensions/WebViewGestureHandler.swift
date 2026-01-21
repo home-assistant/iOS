@@ -113,7 +113,22 @@ final class WebViewGestureHandler {
             Current.Log.error("No server available to open AssistView")
             return
         }
-        webView?.webViewExternalMessageHandler.showAssist(server: server, pipeline: "", autoStartRecording: false)
+
+        let config = Current.settingsStore.gestureAssistConfiguration
+        // If a specific server is configured and exists, use it; otherwise use the current webview's server
+        let targetServer: Server
+        if let configuredServerId = config.serverId,
+           let configuredServer = Current.servers.all.first(where: { $0.identifier.rawValue == configuredServerId }) {
+            targetServer = configuredServer
+        } else {
+            targetServer = server
+        }
+
+        webView?.webViewExternalMessageHandler.showAssist(
+            server: targetServer,
+            pipeline: config.pipelineId ?? "",
+            autoStartRecording: config.autoStartRecording
+        )
     }
 
     private func openInBrowser() {
