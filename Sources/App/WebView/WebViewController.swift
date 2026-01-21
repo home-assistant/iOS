@@ -1,5 +1,6 @@
 import AVFoundation
 import AVKit
+import Combine
 import CoreLocation
 import HAKit
 import Improv_iOS
@@ -32,6 +33,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var emptyStateView: UIView?
     private let emptyStateTransitionDuration: TimeInterval = 0.3
+
+    // Kiosk mode properties
+    var screensaverController: KioskScreensaverViewController?
+    var secretExitGestureController: KioskSecretExitGestureViewController?
+    var kioskCancellables = Set<AnyCancellable>()
 
     private var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
@@ -71,11 +77,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || kioskPrefersStatusBarHidden
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || kioskPrefersHomeIndicatorAutoHidden
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -263,6 +269,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
+
+        // Setup kiosk mode integration
+        setupKioskMode()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
