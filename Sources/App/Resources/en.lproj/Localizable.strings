@@ -324,7 +324,6 @@
 "gestures.value.option.open_debug" = "Open debug";
 "gestures.value.option.open_in_browser" = "Open in browser";
 "gestures.value.option.previous_server" = "Previous server";
-"gestures.value.option.refresh" = "Refresh page";
 "gestures.value.option.search_commands" = "Search commands";
 "gestures.value.option.search_devices" = "Search devices";
 "gestures.value.option.search_entities" = "Search entities";

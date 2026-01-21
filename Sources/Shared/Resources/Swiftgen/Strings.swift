@@ -1352,8 +1352,6 @@ public enum L10n {
         public static var openInBrowser: String { return L10n.tr("Localizable", "gestures.value.option.open_in_browser") }
         /// Previous server
         public static var previousServer: String { return L10n.tr("Localizable", "gestures.value.option.previous_server") }
-        /// Refresh page
-        public static var refresh: String { return L10n.tr("Localizable", "gestures.value.option.refresh") }
         /// Search commands
         public static var searchCommands: String { return L10n.tr("Localizable", "gestures.value.option.search_commands") }
         /// Search devices
