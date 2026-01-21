@@ -1,5 +1,6 @@
 import AVFoundation
 import AVKit
+import Combine
 import CoreLocation
 import HAKit
 import Improv_iOS
@@ -32,6 +33,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var emptyStateView: UIView?
     private let emptyStateTransitionDuration: TimeInterval = 0.3
+
+    // Kiosk mode properties
+    var screensaverController: KioskScreensaverViewController?
+    var secretExitGestureController: KioskSecretExitGestureViewController?
+    var kioskCancellables = Set<AnyCancellable>()
 
     private var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
@@ -1084,7 +1090,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     // MARK: - Public
 
     /// avoidUnecessaryReload Avoids reloading when the URL is the same as the current one
-    func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
+    public func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
         loadViewIfNeeded()
 
         // these paths do not show frontend pages, and so we don't want to display them in our webview
@@ -1111,7 +1117,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     /// Used for OpenPage intent
-    func openPanel(_ url: URL) {
+    public func openPanel(_ url: URL) {
         loadViewIfNeeded()
 
         guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil || server.info
@@ -1168,7 +1174,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.reload()
     }
 
-    func showSettingsViewController() {
+    public func showSettingsViewController() {
         getLatestConfig()
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
@@ -1180,7 +1186,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    func openActionAutomationEditor(actionId: String) {
+    public func openActionAutomationEditor(actionId: String) {
         guard server.info.version >= .externalBusCommandAutomationEditor else {
             showActionAutomationEditorNotAvailable()
             return

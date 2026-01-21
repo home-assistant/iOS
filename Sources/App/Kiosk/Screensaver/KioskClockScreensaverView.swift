@@ -1,4 +1,5 @@
 import Combine
+import Shared
 import SwiftUI
 
 // MARK: - Kiosk Clock Screensaver View
@@ -7,7 +8,7 @@ import SwiftUI
 /// TODO: Add entity display support
 public struct KioskClockScreensaverView: View {
     @ObservedObject private var manager = KioskModeManager.shared
-    @State private var currentTime = Date()
+    @State private var currentTime = Current.date()
     @State private var pixelShiftOffset: CGSize = .zero
 
     private let timeTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -39,7 +40,7 @@ public struct KioskClockScreensaverView: View {
             }
         }
         .onReceive(timeTimer) { _ in
-            currentTime = Date()
+            currentTime = Current.date()
         }
         .onChange(of: manager.pixelShiftTrigger) { _ in
             applyPixelShift()

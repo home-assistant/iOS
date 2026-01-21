@@ -77,7 +77,7 @@ public struct KioskSettingsRecord: Codable, FetchableRecord, PersistableRecord {
 
     enum CodingKeys: String, CodingKey {
         case id
-        case settingsJSON = "settings_json"
+        case settingsJSON
     }
 }
 

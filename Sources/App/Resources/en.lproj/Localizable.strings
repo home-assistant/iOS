@@ -1435,7 +1435,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "entity_picker.filter.group_by.title" = "Group by";
 "entity_picker.list.area.no_area.title" = "No area";
 
-/* Kiosk Mode Settings */
 "kiosk.title" = "Kiosk Mode";
 "kiosk.active.title" = "Kiosk Mode Active";
 "kiosk.screen_label" = "Screen: %@";
@@ -1450,7 +1449,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.auth.required" = "Authentication Required";
 "kiosk.auth.try_again" = "Try Again";
 
-/* Kiosk Security & Display Settings */
 "kiosk.security.section" = "Security & Display";
 "kiosk.security.device_auth" = "Device Authentication";
 "kiosk.security.lock_navigation" = "Lock Navigation";
@@ -1462,7 +1460,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.security.taps_required" = "Taps Required: %d";
 "kiosk.security.gesture_footer" = "Tap the %@ corner %d times to access kiosk settings when locked.";
 
-/* Kiosk Brightness Settings */
 "kiosk.brightness.section" = "Brightness";
 "kiosk.brightness.control" = "Brightness Control";
 "kiosk.brightness.manual" = "Manual Brightness: %d%%";
@@ -1472,7 +1469,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.brightness.day_starts" = "Day starts";
 "kiosk.brightness.night_starts" = "Night starts";
 
-/* Kiosk Screensaver Settings */
 "kiosk.screensaver.section" = "Screensaver";
 "kiosk.screensaver.toggle" = "Screensaver";
 "kiosk.screensaver.mode" = "Mode";
@@ -1491,14 +1487,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.screensaver.pixel_shift" = "Pixel Shift (OLED)";
 "kiosk.screensaver.pixel_shift_footer" = "Pixel shift helps prevent burn-in on OLED displays by slightly moving content periodically.";
 
-/* Kiosk Clock Display Settings */
 "kiosk.clock.section" = "Clock Display";
 "kiosk.clock.style" = "Clock Style";
 "kiosk.clock.show_date" = "Show Date";
 "kiosk.clock.show_seconds" = "Show Seconds";
 "kiosk.clock.24hour" = "24-Hour Format";
 
-/* Time Picker */
 "kiosk.time.hour" = "Hour";
 "kiosk.time.minute" = "Minute";
 "database_updater.toast.title" = "Updating %@";

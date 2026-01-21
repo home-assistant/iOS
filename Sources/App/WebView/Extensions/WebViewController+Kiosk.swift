@@ -1,38 +1,11 @@
 import Combine
-import ObjectiveC
 import Shared
 import SwiftUI
 import UIKit
 
 // MARK: - Kiosk Mode Extension
 
-private var screensaverKey: UInt8 = 0
-private var secretExitGestureKey: UInt8 = 0
-private var kioskCancellablesKey: UInt8 = 0
-
 extension WebViewController {
-    /// The screensaver view controller
-    private var screensaverController: KioskScreensaverViewController? {
-        get { objc_getAssociatedObject(self, &screensaverKey) as? KioskScreensaverViewController }
-        set { objc_setAssociatedObject(self, &screensaverKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
-    }
-
-    /// The secret exit gesture view controller
-    private var secretExitGestureController: KioskSecretExitGestureViewController? {
-        get { objc_getAssociatedObject(self, &secretExitGestureKey) as? KioskSecretExitGestureViewController }
-        set { objc_setAssociatedObject(self, &secretExitGestureKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
-    }
-
-    /// Cancellables for kiosk mode observers - auto-cleanup on dealloc
-    private var kioskCancellables: Set<AnyCancellable> {
-        get {
-            (objc_getAssociatedObject(self, &kioskCancellablesKey) as? Set<AnyCancellable>) ?? Set()
-        }
-        set {
-            objc_setAssociatedObject(self, &kioskCancellablesKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-
     /// Setup kiosk mode integration with KioskModeManager
     /// Call this from viewDidLoad
     public func setupKioskMode() {
@@ -199,11 +172,27 @@ extension WebViewController {
     private func showKioskSettings() {
         Current.Log.info("Showing kiosk settings")
 
-        let settingsView = KioskSettingsView()
-        let hostingController = UIHostingController(
-            rootView: NavigationView { settingsView }
-                .navigationViewStyle(.stack)
-        )
+        // Use NavigationStack on iOS 16+ to avoid NavigationView dismissal issues
+        // NavigationView in a modal can cause unexpected dismissals
+        let hostingController: UIHostingController<AnyView>
+        if #available(iOS 16.0, *) {
+            hostingController = UIHostingController(
+                rootView: AnyView(
+                    NavigationStack {
+                        KioskSettingsView()
+                    }
+                )
+            )
+        } else {
+            hostingController = UIHostingController(
+                rootView: AnyView(
+                    NavigationView {
+                        KioskSettingsView()
+                    }
+                    .navigationViewStyle(.stack)
+                )
+            )
+        }
 
         hostingController.modalPresentationStyle = .pageSheet
         present(hostingController, animated: true)

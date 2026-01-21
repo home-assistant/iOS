@@ -181,6 +181,6 @@ public enum DatabaseTables {
     // Kiosk mode settings (stored as JSON blob)
     public enum KioskSettings: String {
         case id
-        case settingsJSON = "settings_json"
+        case settingsJSON
     }
 }

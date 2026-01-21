@@ -1,5 +1,6 @@
 import CoreGraphics
 import Foundation
+import Shared
 
 // MARK: - Kiosk Constants
 
@@ -83,14 +84,14 @@ public enum KioskConstants {
         public static let edgeGestureSize: CGFloat = 30
         /// Swipe gesture threshold
         public static let swipeThreshold: CGFloat = 50
-        /// Standard corner radius
-        public static let cornerRadius: CGFloat = 12
-        /// Small corner radius
-        public static let smallCornerRadius: CGFloat = 8
-        /// Standard padding
-        public static let standardPadding: CGFloat = 16
-        /// Small padding
-        public static let smallPadding: CGFloat = 8
+        /// Standard corner radius (uses DesignSystem)
+        public static let cornerRadius: CGFloat = DesignSystem.CornerRadius.oneAndHalf
+        /// Small corner radius (uses DesignSystem)
+        public static let smallCornerRadius: CGFloat = DesignSystem.CornerRadius.one
+        /// Standard padding (uses DesignSystem)
+        public static let standardPadding: CGFloat = DesignSystem.Spaces.two
+        /// Small padding (uses DesignSystem)
+        public static let smallPadding: CGFloat = DesignSystem.Spaces.one
         /// Large clock font size
         public static let largeClockFontSize: CGFloat = 120
         /// Minimal clock font size
