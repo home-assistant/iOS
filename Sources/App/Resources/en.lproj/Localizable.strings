@@ -1467,3 +1467,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "connectivity.check.server.description" = "Testing server connection";
 "connectivity.check.running" = "Checking...";
 "connectivity.check.skipped" = "Skipped due to previous failure";
+"settings.connection_section.refresh_server" = "Update server information";

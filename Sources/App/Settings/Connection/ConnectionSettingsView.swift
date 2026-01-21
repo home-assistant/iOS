@@ -275,6 +275,12 @@ struct ConnectionSettingsView: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+
+            Button {
+                viewModel.updateAppDatabase()
+            } label: {
+                Label(L10n.Settings.ConnectionSection.refreshServer, systemSymbol: .arrowClockwise)
+            }
         }
     }
 

@@ -9,22 +9,12 @@ struct SettingsView: View {
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
     @StateObject private var serversObserver = ServersObserver()
 
-    @State private var appDatabaseUpdaterTask: Task<Void, Never>?
-
     var body: some View {
         Group {
             if Current.isCatalyst {
                 macOSView
             } else {
                 iOSView
-            }
-        }
-        .onAppear {
-            appDatabaseUpdaterTask?.cancel()
-            appDatabaseUpdaterTask = Task {
-                for server in Current.servers.all {
-                    await Current.appDatabaseUpdater.update(server: server)
-                }
             }
         }
     }
