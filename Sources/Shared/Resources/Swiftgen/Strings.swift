@@ -2540,6 +2540,8 @@ public enum L10n {
       public static var localPushDescription: String { return L10n.tr("Localizable", "settings.connection_section.local_push_description") }
       /// Logged in as
       public static var loggedInAs: String { return L10n.tr("Localizable", "settings.connection_section.logged_in_as") }
+      /// Update server information
+      public static var refreshServer: String { return L10n.tr("Localizable", "settings.connection_section.refresh_server") }
       /// Servers
       public static var servers: String { return L10n.tr("Localizable", "settings.connection_section.servers") }
       /// Reorder to define default server

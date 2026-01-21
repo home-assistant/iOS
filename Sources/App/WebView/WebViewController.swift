@@ -759,7 +759,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Called after view appears and on pull to refresh to avoid blocking app launch
     private func updateDatabaseAndPanels() {
         // Update runs in background automatically, returns immediately
-        Current.appDatabaseUpdater.update(server: server)
+        Current.appDatabaseUpdater.update(server: server, forceUpdate: false)
         Current.panelsUpdater.update()
     }
 
