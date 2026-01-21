@@ -27,6 +27,11 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             name: UIApplication.didBecomeActiveNotification,
             object: nil
         )
+
+        #if os(iOS)
+        // Set up CallKit delegate
+        CallKitManager.shared.delegate = self
+        #endif
     }
 
     func setupNotifications() {
@@ -361,3 +366,32 @@ extension NotificationManager: MessagingDelegate {
         }.cauterize()
     }
 }
+
+#if os(iOS)
+extension NotificationManager: CallKitManagerDelegate {
+    func callKitManager(_ manager: CallKitManager, didAnswerCallWithInfo info: [String: Any]) {
+        Current.Log.info("CallKit call answered, opening Assist")
+
+        // Extract optional parameters from the call info
+        let pipelineId = info["pipeline_id"] as? String ?? ""
+        let autoStartRecording = info["auto_start_recording"] as? Bool ?? false
+
+        // Determine which server to use
+        guard let server = Current.servers.all.first else {
+            Current.Log.error("No servers available to open Assist")
+            return
+        }
+
+        // Open AssistView
+        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { webViewController in
+            webViewController.webViewExternalMessageHandler.showAssist(
+                server: server,
+                pipeline: pipelineId,
+                autoStartRecording: autoStartRecording
+            )
+        }.catch { error in
+            Current.Log.error("Failed to open Assist from CallKit: \(error)")
+        }
+    }
+}
+#endif

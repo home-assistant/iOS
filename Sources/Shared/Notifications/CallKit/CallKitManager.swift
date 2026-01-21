@@ -1,0 +1,141 @@
+import AVFoundation
+import CallKit
+import Foundation
+import PromiseKit
+
+public protocol CallKitManagerDelegate: AnyObject {
+    func callKitManager(_ manager: CallKitManager, didAnswerCallWithInfo info: [String: Any])
+}
+
+public class CallKitManager: NSObject {
+    public static let shared = CallKitManager()
+
+    private let provider: CXProvider
+    private let callController = CXCallController()
+    public weak var delegate: CallKitManagerDelegate?
+
+    // Thread-safe access to call state
+    private let queue = DispatchQueue(label: "com.homeassistant.callkit")
+    private var _activeCallInfo: [String: Any]?
+    private var _activeCallUUID: UUID?
+
+    private var activeCallInfo: [String: Any]? {
+        get { queue.sync { _activeCallInfo } }
+        set { queue.sync { _activeCallInfo = newValue } }
+    }
+
+    private var activeCallUUID: UUID? {
+        get { queue.sync { _activeCallUUID } }
+        set { queue.sync { _activeCallUUID = newValue } }
+    }
+
+    // Atomically capture and clear call state
+    private func captureAndClearState() -> (info: [String: Any]?, uuid: UUID?) {
+        queue.sync {
+            let info = _activeCallInfo
+            let uuid = _activeCallUUID
+            _activeCallInfo = nil
+            _activeCallUUID = nil
+            return (info, uuid)
+        }
+    }
+
+    // Atomically clear call state
+    private func clearState() {
+        queue.sync {
+            _activeCallInfo = nil
+            _activeCallUUID = nil
+        }
+    }
+
+    override private init() {
+        let config = CXProviderConfiguration()
+        config.supportsVideo = false
+        config.maximumCallGroups = 1
+        config.maximumCallsPerCallGroup = 1
+        config.supportedHandleTypes = [.generic]
+
+        self.provider = CXProvider(configuration: config)
+
+        super.init()
+
+        provider.setDelegate(self, queue: nil)
+    }
+
+    public func reportIncomingCall(callerName: String, userInfo: [String: Any]) -> Promise<Void> {
+        Promise { seal in
+            let uuid = UUID()
+            let update = CXCallUpdate()
+            update.remoteHandle = CXHandle(type: .generic, value: callerName)
+            update.hasVideo = false
+            update.localizedCallerName = callerName
+
+            activeCallInfo = userInfo
+            activeCallUUID = uuid
+
+            provider.reportNewIncomingCall(with: uuid, update: update) { error in
+                if let error {
+                    Current.Log.error("Failed to report incoming call: \(error)")
+                    seal.reject(error)
+                } else {
+                    Current.Log.info("Successfully reported incoming call")
+                    seal.fulfill(())
+                }
+            }
+        }
+    }
+
+    private func endCall(uuid: UUID) {
+        let endCallAction = CXEndCallAction(call: uuid)
+        let transaction = CXTransaction(action: endCallAction)
+
+        callController.request(transaction) { error in
+            if let error {
+                Current.Log.error("Failed to end call: \(error)")
+            } else {
+                Current.Log.info("Successfully ended call")
+            }
+        }
+    }
+}
+
+extension CallKitManager: CXProviderDelegate {
+    public func providerDidReset(_ provider: CXProvider) {
+        Current.Log.info("CallKit provider did reset")
+        clearState()
+    }
+
+    public func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
+        Current.Log.info("User answered call")
+
+        // Atomically capture and clear call state
+        let (callInfo, callUUID) = captureAndClearState()
+
+        // Mark the action as fulfilled
+        action.fulfill()
+
+        // Notify delegate with captured state
+        if let callInfo {
+            delegate?.callKitManager(self, didAnswerCallWithInfo: callInfo)
+        }
+
+        // End the call immediately since we just need to trigger opening Assist
+        if let callUUID {
+            endCall(uuid: callUUID)
+        }
+    }
+
+    public func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
+        Current.Log.info("Call ended")
+        action.fulfill()
+        clearState()
+    }
+
+    public func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
+        Current.Log.info("CallKit audio session activated")
+    }
+
+    public func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
+        Current.Log.info("CallKit audio session deactivated")
+    }
+}

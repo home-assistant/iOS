@@ -1,0 +1,26 @@
+{
+    "input": {
+        "title": "extra excluded title",
+        "message": "call_assist",
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "16.0",
+            "app_version": "2024.7"
+        }
+    },
+    "rate_limit": false,
+    "headers": {
+        "apns-push-type": "background"
+    },
+    "payload": {
+        "aps": {
+            "contentAvailable": true
+        },
+        "homeassistant": {
+            "command": "call_assist",
+            "caller_name": "Home Assistant",
+            "pipeline_id": "",
+            "auto_start_recording": false
+        }
+    }
+}

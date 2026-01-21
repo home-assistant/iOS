@@ -22,6 +22,7 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
+        register(command: "call_assist", handler: HandlerCallAssist())
         #endif
 
         #if os(iOS) || os(macOS)
@@ -126,6 +127,22 @@ private struct HandlerUpdateWidgets: NotificationCommandHandler {
         ))
         DataWidgetsUpdater.update()
         return Promise.value(())
+    }
+}
+
+private struct HandlerCallAssist: NotificationCommandHandler {
+    func handle(_ payload: [String: Any]) -> Promise<Void> {
+        Current.Log.verbose("CallKit assist triggered by notification command")
+        Current.clientEventStore.addEvent(ClientEvent(
+            text: "Notification command triggered CallKit assist",
+            type: .notification
+        ))
+
+        // Extract caller name from payload, default to "Home Assistant"
+        let callerName = payload["caller_name"] as? String ?? "Home Assistant"
+
+        // Report incoming call via CallKit
+        return CallKitManager.shared.reportIncomingCall(callerName: callerName, userInfo: payload)
     }
 }
 #endif
