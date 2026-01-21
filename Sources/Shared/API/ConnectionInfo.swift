@@ -307,6 +307,14 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
+    /// Returns a URL for troubleshooting purposes, such as displaying in error messages or running connectivity checks.
+    /// This method provides read-only access to connection URLs that are otherwise private.
+    /// - Parameter type: The type of URL to retrieve for troubleshooting
+    /// - Returns: The URL for the specified type, if available
+    public func urlForTroubleshooting(type: URLType) -> URL? {
+        address(for: type)
+    }
+
     public mutating func set(address: URL?, for addressType: URLType) {
         switch addressType {
         case .internal:

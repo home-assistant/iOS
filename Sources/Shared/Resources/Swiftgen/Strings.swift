@@ -1086,6 +1086,47 @@ public enum L10n {
     }
   }
 
+  public enum Connectivity {
+    public enum Check {
+      /// DNS Resolution
+      public static var dns: String { return L10n.tr("Localizable", "connectivity.check.dns") }
+      /// Port Reachability
+      public static var port: String { return L10n.tr("Localizable", "connectivity.check.port") }
+      /// Checking...
+      public static var running: String { return L10n.tr("Localizable", "connectivity.check.running") }
+      /// Server Connection
+      public static var server: String { return L10n.tr("Localizable", "connectivity.check.server") }
+      /// Skipped due to previous failure
+      public static var skipped: String { return L10n.tr("Localizable", "connectivity.check.skipped") }
+      /// TLS Certificate
+      public static var tls: String { return L10n.tr("Localizable", "connectivity.check.tls") }
+      public enum Dns {
+        /// Resolving hostname to IP address
+        public static var description: String { return L10n.tr("Localizable", "connectivity.check.dns.description") }
+      }
+      public enum Port {
+        /// Checking if port is reachable
+        public static var description: String { return L10n.tr("Localizable", "connectivity.check.port.description") }
+      }
+      public enum Server {
+        /// Testing server connection
+        public static var description: String { return L10n.tr("Localizable", "connectivity.check.server.description") }
+      }
+      public enum Tls {
+        /// Validating TLS certificate
+        public static var description: String { return L10n.tr("Localizable", "connectivity.check.tls.description") }
+      }
+    }
+    public enum Diagnostics {
+      /// Run checks
+      public static var runChecks: String { return L10n.tr("Localizable", "connectivity.diagnostics.run_checks") }
+      /// Start diagnostics
+      public static var start: String { return L10n.tr("Localizable", "connectivity.diagnostics.start") }
+      /// Connectivity diagnostics
+      public static var title: String { return L10n.tr("Localizable", "connectivity.diagnostics.title") }
+    }
+  }
+
   public enum Database {
     public enum Problem {
       /// Delete Database & Quit App
