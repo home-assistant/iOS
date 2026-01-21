@@ -2,13 +2,17 @@ import Foundation
 import GRDB
 
 final class AppEntityRegistryTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.entityRegistry.rawValue }
+
+    var definedColumns: [String] { DatabaseTables.EntityRegistry.allCases.map(\.rawValue) }
+
     func createIfNeeded(database: DatabaseQueue) throws {
         let shouldCreateTable = try database.read { db in
-            try !db.tableExists(GRDBDatabaseTable.entityRegistry.rawValue)
+            try !db.tableExists(tableName)
         }
         if shouldCreateTable {
             try database.write { db in
-                try db.create(table: GRDBDatabaseTable.entityRegistry.rawValue) { t in
+                try db.create(table: tableName) { t in
                     // Core identifiers
                     t.column(DatabaseTables.EntityRegistry.serverId.rawValue, .text).notNull().indexed()
                     t.column(DatabaseTables.EntityRegistry.uniqueId.rawValue, .text).notNull().indexed()
@@ -51,6 +55,8 @@ final class AppEntityRegistryTable: DatabaseTableProtocol {
                     ])
                 }
             }
+        } else {
+            try migrateColumns(database: database)
         }
     }
 }
