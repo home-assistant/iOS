@@ -1,42 +1,39 @@
 import GRDB
 @testable import Shared
-import XCTest
+import Testing
 
-class GRDBInitializationTests: XCTestCase {
-    var testDatabasePath: String!
-
-    override func setUp() {
-        super.setUp()
-        // Create a unique test database path for each test
+@Suite("GRDB Initialization Tests")
+struct GRDBInitializationTests {
+    /// Helper to create a unique test database path
+    func makeTestDatabasePath() -> String {
         let tempDirectory = NSTemporaryDirectory()
-        testDatabasePath = (tempDirectory as NSString).appendingPathComponent("test_grdb_\(UUID().uuidString).sqlite")
+        return (tempDirectory as NSString).appendingPathComponent("test_grdb_\(UUID().uuidString).sqlite")
     }
 
-    override func tearDown() {
-        // Clean up test database
-        if let path = testDatabasePath {
-            try? FileManager.default.removeItem(atPath: path)
-        }
-        testDatabasePath = nil
-        super.tearDown()
+    /// Helper to clean up test database
+    func cleanupDatabase(at path: String) {
+        try? FileManager.default.removeItem(atPath: path)
     }
 
+    @Test("Database path in test environment")
     func testDatabasePathInTestEnvironment() throws {
-        // The test environment variable should already be set by XCTest
+        // The test environment variable should already be set by the test framework
         let path = DatabaseQueue.databasePath()
 
         // In test environment, path should be in temp directory
-        XCTAssertTrue(
+        #expect(
             path.contains(NSTemporaryDirectory()) || path.contains("test_database.sqlite"),
             "Database path in test environment should use temp directory or test_database.sqlite"
         )
     }
 
+    @Test("Tables returns exactly 13 tables")
     func testTablesReturns13Tables() throws {
         let tables = DatabaseQueue.tables()
-        XCTAssertEqual(tables.count, 13, "DatabaseQueue.tables() should return exactly 13 tables")
+        #expect(tables.count == 13, "DatabaseQueue.tables() should return exactly 13 tables")
     }
 
+    @Test("Tables contains all expected table names")
     func testTablesContainsAllExpectedTables() throws {
         let tables = DatabaseQueue.tables()
         let tableNames = tables.map(\.tableName)
@@ -59,15 +56,19 @@ class GRDBInitializationTests: XCTestCase {
         ]
 
         for expectedName in expectedTableNames {
-            XCTAssertTrue(
+            #expect(
                 tableNames.contains(expectedName),
                 "tables() should contain table named '\(expectedName)'"
             )
         }
     }
 
+    @Test("App database creates all tables")
     func testAppDatabaseCreatesAllTables() throws {
         // Create a test database using the static method
+        let testDatabasePath = makeTestDatabasePath()
+        defer { cleanupDatabase(at: testDatabasePath) }
+
         let database = try DatabaseQueue(path: testDatabasePath)
 
         // Create all tables
@@ -81,14 +82,18 @@ class GRDBInitializationTests: XCTestCase {
         }
 
         for table in DatabaseQueue.tables() {
-            XCTAssertTrue(
+            #expect(
                 existingTables.contains(table.tableName),
                 "Database should contain table '\(table.tableName)'"
             )
         }
     }
 
+    @Test("deleteOldTables removes clientEvent table")
     func testDeleteOldTablesRemovesClientEventTable() throws {
+        let testDatabasePath = makeTestDatabasePath()
+        defer { cleanupDatabase(at: testDatabasePath) }
+
         let database = try DatabaseQueue(path: testDatabasePath)
 
         // Create the old clientEvent table
@@ -103,7 +108,7 @@ class GRDBInitializationTests: XCTestCase {
         var tableExists = try database.read { db in
             try db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
         }
-        XCTAssertTrue(tableExists, "clientEvent table should exist before cleanup")
+        #expect(tableExists, "clientEvent table should exist before cleanup")
 
         // Call deleteOldTables
         DatabaseQueue.deleteOldTables(database: database)
@@ -112,26 +117,31 @@ class GRDBInitializationTests: XCTestCase {
         tableExists = try database.read { db in
             try db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
         }
-        XCTAssertFalse(tableExists, "clientEvent table should not exist after cleanup")
+        #expect(!tableExists, "clientEvent table should not exist after cleanup")
     }
 
+    @Test("deleteOldTables handles missing table gracefully")
     func testDeleteOldTablesHandlesMissingTableGracefully() throws {
+        let testDatabasePath = makeTestDatabasePath()
+        defer { cleanupDatabase(at: testDatabasePath) }
+
         let database = try DatabaseQueue(path: testDatabasePath)
 
         // Verify clientEvent table doesn't exist
         let tableExists = try database.read { db in
             try db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
         }
-        XCTAssertFalse(tableExists, "clientEvent table should not exist initially")
+        #expect(!tableExists, "clientEvent table should not exist initially")
 
-        // Call deleteOldTables (should not throw error)
-        XCTAssertNoThrow(
-            DatabaseQueue.deleteOldTables(database: database),
-            "deleteOldTables should handle missing table gracefully"
-        )
+        // Call deleteOldTables (should not throw error since test is marked as `throws`)
+        DatabaseQueue.deleteOldTables(database: database)
     }
 
+    @Test("Table creation error logs to ClientEventStore")
     func testTableCreationErrorLogsToClientEventStore() throws {
+        let testDatabasePath = makeTestDatabasePath()
+        defer { cleanupDatabase(at: testDatabasePath) }
+
         // Mock the client event store
         var loggedEvents: [ClientEvent] = []
         let mockStore = MockClientEventStore(onAddEvent: { event in
@@ -165,15 +175,19 @@ class GRDBInitializationTests: XCTestCase {
         }
 
         // Verify error was logged
-        XCTAssertEqual(loggedEvents.count, 1, "Should have logged 1 error")
-        XCTAssertTrue(
+        #expect(loggedEvents.count == 1, "Should have logged 1 error")
+        #expect(
             loggedEvents.first?.text.contains("Failed create GRDB table") ?? false,
             "Error message should contain 'Failed create GRDB table'"
         )
-        XCTAssertEqual(loggedEvents.first?.type, .database, "Error type should be .database")
+        #expect(loggedEvents.first?.type == .database, "Error type should be .database")
     }
 
+    @Test("Multiple tables can coexist")
     func testMultipleTablesCanCoexist() throws {
+        let testDatabasePath = makeTestDatabasePath()
+        defer { cleanupDatabase(at: testDatabasePath) }
+
         let database = try DatabaseQueue(path: testDatabasePath)
 
         // Create multiple tables
@@ -190,9 +204,9 @@ class GRDBInitializationTests: XCTestCase {
             try String.fetchAll(db, sql: "SELECT name FROM sqlite_master WHERE type='table'")
         }
 
-        XCTAssertTrue(existingTables.contains(table1.tableName))
-        XCTAssertTrue(existingTables.contains(table2.tableName))
-        XCTAssertTrue(existingTables.contains(table3.tableName))
+        #expect(existingTables.contains(table1.tableName))
+        #expect(existingTables.contains(table2.tableName))
+        #expect(existingTables.contains(table3.tableName))
     }
 }
 
