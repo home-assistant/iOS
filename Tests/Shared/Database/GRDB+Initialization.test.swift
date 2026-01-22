@@ -133,8 +133,7 @@ struct GRDBInitializationTests {
         }
         #expect(!tableExists, "clientEvent table should not exist initially")
 
-        // Call deleteOldTables (should not throw error)
-        // In Testing framework, we just call it and if it throws, the test will fail
+        // Call deleteOldTables (should not throw error since test is marked as `throws`)
         DatabaseQueue.deleteOldTables(database: database)
     }
 
