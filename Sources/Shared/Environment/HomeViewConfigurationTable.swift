@@ -2,14 +2,18 @@ import Foundation
 import GRDB
 
 final class HomeViewConfigurationTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.homeViewConfiguration.rawValue }
+
+    var definedColumns: [String] { DatabaseTables.HomeViewConfiguration.allCases.map(\.rawValue) }
+
     func createIfNeeded(database: DatabaseQueue) throws {
         let shouldCreateTable = try database.read { db in
-            try !db.tableExists(GRDBDatabaseTable.homeViewConfiguration.rawValue)
+            try !db.tableExists(tableName)
         }
 
         if shouldCreateTable {
             try database.write { db in
-                try db.create(table: GRDBDatabaseTable.homeViewConfiguration.rawValue) { t in
+                try db.create(table: tableName) { t in
                     t.primaryKey(DatabaseTables.HomeViewConfiguration.id.rawValue, .text).notNull()
                     t.column(DatabaseTables.HomeViewConfiguration.sectionOrder.rawValue, .jsonText)
                     t.column(DatabaseTables.HomeViewConfiguration.visibleSectionIds.rawValue, .jsonText)
@@ -22,20 +26,7 @@ final class HomeViewConfigurationTable: DatabaseTableProtocol {
                 }
             }
         } else {
-            try database.write { db in
-                for column in DatabaseTables.HomeViewConfiguration.allCases {
-                    let shouldCreateColumn = try !db.columns(in: GRDBDatabaseTable.homeViewConfiguration.rawValue)
-                        .contains { columnInfo in
-                            columnInfo.name == column.rawValue
-                        }
-
-                    if shouldCreateColumn {
-                        try db.alter(table: GRDBDatabaseTable.homeViewConfiguration.rawValue) { tableAlteration in
-                            tableAlteration.add(column: column.rawValue)
-                        }
-                    }
-                }
-            }
+            try migrateColumns(database: database)
         }
     }
 }
