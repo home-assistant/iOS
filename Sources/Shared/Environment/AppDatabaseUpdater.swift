@@ -10,7 +10,7 @@ import UIKit
 /// applies per-server throttling with backoff, and performs careful cancellation and batched DB writes.
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func update(server: Server)
+    func update(server: Server, forceUpdate: Bool)
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -155,9 +155,10 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Starts an update for a specific server in the background.
     /// This method returns immediately and does not block the caller.
     /// - Parameter server: The specific server to update.
+    /// - Parameter forceUpdate: Forces update regardless of other conditions
     /// - Server updates are queued and processed sequentially, one at a time.
     /// - Applies per-server throttling with exponential backoff on failures.
-    func update(server: Server) {
+    func update(server: Server, forceUpdate: Bool) {
         // Explicitly detach from the calling context to ensure we don't block the main thread
         // Returns immediately while work continues in the background
         Task.detached(priority: .userInitiated) { [weak self] in
@@ -169,7 +170,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             await taskCoordinator.enqueueUpdate(serverId: serverId) { [weak self] in
                 guard let self else { return }
 
-                Current.Log.verbose("Updating database for server \(server.info.name)")
+                Current.Log.verbose("Updating database for server \(server.info.name)\(forceUpdate ? " (forced)" : "")")
 
                 // Show toast indicating update has started
                 await showUpdateToast(for: server)
@@ -185,7 +186,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                         }
                     }
 
-                    await performSingleServerUpdate(server: server)
+                    await performSingleServerUpdate(server: server, forceUpdate: forceUpdate)
                 }
 
                 // Store the task for this server
@@ -197,9 +198,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     /// Determines if a specific server should be updated based on connection and throttle rules.
-    private func shouldUpdateServer(_ server: Server) -> Bool {
+    private func shouldUpdateServer(_ server: Server, forceUpdate: Bool) -> Bool {
         guard server.info.connection.activeURL() != nil else { return false }
         if isUpdateCancelled() { return false }
+
+        // Skip throttle checks if forceUpdate is true
+        if forceUpdate {
+            return true
+        }
 
         // Per-server throttle with exponential backoff
         if let last = perServerLastUpdate[server.identifier.rawValue] {
@@ -212,9 +218,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     /// Performs an update for a single specific server.
-    private func performSingleServerUpdate(server: Server) async {
+    private func performSingleServerUpdate(server: Server, forceUpdate: Bool) async {
         guard !isUpdateCancelled() else { return }
-        guard shouldUpdateServer(server) else {
+        guard shouldUpdateServer(server, forceUpdate: forceUpdate) else {
             Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
             return
         }

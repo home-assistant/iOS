@@ -906,6 +906,9 @@
 		42955C252F1A552A00E398E8 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1382F0FE50C00E20584 /* ToastView.swift */; };
 		42955C262F1A552A00E398E8 /* ToastHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1402F0FE5B000E20584 /* ToastHostingController.swift */; };
 		42955C272F1A552A00E398E8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1372F0FE50C00E20584 /* Toast.swift */; };
+		42955C3A2F20E2E800E398E8 /* ConnectivityCheckState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42955C372F20E2E800E398E8 /* ConnectivityCheckState.swift */; };
+		42955C3B2F20E2E800E398E8 /* ConnectivityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42955C362F20E2E800E398E8 /* ConnectivityChecker.swift */; };
+		42955C3C2F20E2E800E398E8 /* ConnectivityCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42955C382F20E2E800E398E8 /* ConnectivityCheckView.swift */; };
 		4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */; };
 		4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36C2B90DB630051B63C /* PerformAction.swift */; };
 		4296C3762B91F0F50051B63C /* WidgetActionsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */; };
@@ -2551,6 +2554,9 @@
 		429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptCommandsTests.swift; sourceTree = "<group>"; };
 		429481EC2DA943E700A8B468 /* ListPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPicker.swift; sourceTree = "<group>"; };
 		429481EE2DA94B9900A8B468 /* ListPickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPickerTests.swift; sourceTree = "<group>"; };
+		42955C362F20E2E800E398E8 /* ConnectivityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityChecker.swift; sourceTree = "<group>"; };
+		42955C372F20E2E800E398E8 /* ConnectivityCheckState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityCheckState.swift; sourceTree = "<group>"; };
+		42955C382F20E2E800E398E8 /* ConnectivityCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityCheckView.swift; sourceTree = "<group>"; };
 		4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntentActionAppEntity.swift; sourceTree = "<group>"; };
 		4296C36C2B90DB630051B63C /* PerformAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
@@ -3972,6 +3978,7 @@
 		11AD2E2A2528FDB700FBC437 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				42955C392F20E2E800E398E8 /* ConnectivityCheck */,
 				42D6EABC2F0FF98F00FA249B /* ExternalMessageBus */,
 				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
@@ -5321,6 +5328,16 @@
 				42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */,
 			);
 			path = Audio;
+			sourceTree = "<group>";
+		};
+		42955C392F20E2E800E398E8 /* ConnectivityCheck */ = {
+			isa = PBXGroup;
+			children = (
+				42955C362F20E2E800E398E8 /* ConnectivityChecker.swift */,
+				42955C372F20E2E800E398E8 /* ConnectivityCheckState.swift */,
+				42955C382F20E2E800E398E8 /* ConnectivityCheckView.swift */,
+			);
+			path = ConnectivityCheck;
 			sourceTree = "<group>";
 		};
 		4296C36A2B90DB630051B63C /* AppIntents */ = {
@@ -9158,6 +9175,9 @@
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */,
 				42070EE82BAC43240031E96F /* AssistSession.swift in Sources */,
+				42955C3A2F20E2E800E398E8 /* ConnectivityCheckState.swift in Sources */,
+				42955C3B2F20E2E800E398E8 /* ConnectivityChecker.swift in Sources */,
+				42955C3C2F20E2E800E398E8 /* ConnectivityCheckView.swift in Sources */,
 				427FEE092D9C04050047C00C /* OnboardingServersListViewModel.swift in Sources */,
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				4263A6662EFB291D0089C338 /* LightIntent.swift in Sources */,

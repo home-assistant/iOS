@@ -5,6 +5,7 @@ import SwiftUI
 struct ConnectionErrorDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showExportLogsShareSheet: Bool = false
+    @StateObject private var connectivityState = ConnectivityCheckState()
 
     private let feedbackGenerator = UINotificationFeedbackGenerator()
     let server: Server?
@@ -67,7 +68,10 @@ struct ConnectionErrorDetailsView: View {
                             Text(L10n.ConnectionError.MoreDetailsSection.title)
                                 .font(.body.bold())
                         } expandedContent: {
-                            advancedContent
+                            VStack(alignment: .leading, spacing: DesignSystem.Spaces.three) {
+                                advancedContent
+                                troubleShootingView
+                            }
                         }
                         .frame(maxWidth: 600)
                         .padding()
@@ -96,9 +100,9 @@ struct ConnectionErrorDetailsView: View {
                         Button(action: {
                             openSettings()
                         }, label: {
-                            Image(uiImage: MaterialDesignIcons.cogIcon.image(
+                            Image(uiImage: MaterialDesignIcons.cogOutlineIcon.image(
                                 ofSize: .init(width: 28, height: 28),
-                                color: .white
+                                color: .label
                             ))
                         })
                     }
@@ -119,6 +123,44 @@ struct ConnectionErrorDetailsView: View {
     private func openSettings() {
         Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
             controller.showSettingsViewController()
+        }
+    }
+
+    @ViewBuilder
+    private var troubleShootingView: some View {
+        if let url = extractURL() {
+            ConnectivityCheckView(
+                state: connectivityState,
+                url: url,
+                onRunChecks: {
+                    runConnectivityChecks(url: url)
+                }
+            )
+        }
+    }
+
+    private func extractURL() -> URL? {
+        // Try to extract URL from error
+        if let urlError = error as? URLError, let url = urlError.failingURL {
+            return url
+        }
+
+        // Try to extract from server
+        if let server {
+            if let externalURL = server.info.connection.urlForTroubleshooting(type: .external) {
+                return externalURL
+            } else if let internalURL = server.info.connection.urlForTroubleshooting(type: .internal) {
+                return internalURL
+            }
+        }
+
+        return nil
+    }
+
+    private func runConnectivityChecks(url: URL) {
+        Task {
+            let checker = ConnectivityChecker(state: connectivityState)
+            await checker.runChecks(for: url)
         }
     }
 
