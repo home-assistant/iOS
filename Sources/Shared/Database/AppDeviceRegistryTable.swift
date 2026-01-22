@@ -4,7 +4,7 @@ import GRDB
 final class AppDeviceRegistryTable: DatabaseTableProtocol {
     var tableName: String { GRDBDatabaseTable.deviceRegistry.rawValue }
 
-    var definedColumns: [String] { DatabaseTables.DeviceRegistry.allCases.map(\.rawValue) }
+    var definedColumns: [String] { DatabaseTables.DeviceRegistry.allCases.filter { $0 != .id }.map(\.rawValue) }
 
     func createIfNeeded(database: DatabaseQueue) throws {
         let shouldCreateTable = try database.read { db in
