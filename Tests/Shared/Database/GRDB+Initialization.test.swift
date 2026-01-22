@@ -198,7 +198,7 @@ class GRDBInitializationTests: XCTestCase {
 
 // MARK: - Mock Client Event Store
 
-class MockClientEventStore: ClientEventStoreProtocol {
+final class MockClientEventStore: ClientEventStoreProtocol {
     private let onAddEvent: (ClientEvent) -> Void
 
     init(onAddEvent: @escaping (ClientEvent) -> Void) {
