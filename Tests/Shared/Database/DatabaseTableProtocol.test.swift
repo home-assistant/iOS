@@ -1,6 +1,6 @@
-import Testing
 import GRDB
 @testable import Shared
+import Testing
 
 @Suite("Database Table Protocol Tests")
 struct DatabaseTableProtocolTests {

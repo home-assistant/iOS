@@ -1,6 +1,6 @@
-import XCTest
 import GRDB
 @testable import Shared
+import XCTest
 
 class GRDBInitializationTests: XCTestCase {
     var testDatabasePath: String!
