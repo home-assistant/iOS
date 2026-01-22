@@ -737,6 +737,8 @@
 		425744842F2227A900D35D89 /* AppIntentConfirmationAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4257447F2F22279D00D35D89 /* AppIntentConfirmationAttributes.swift */; };
 		425744872F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425744852F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift */; };
 		425744882F22293200D35D89 /* AppIntentConfirmationLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425744852F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift */; };
+		4257448A2F222AD000D35D89 /* ShowConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425744892F222AD000D35D89 /* ShowConfirmationAppIntent.swift */; };
+		4257448B2F222AD000D35D89 /* ShowConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425744892F222AD000D35D89 /* ShowConfirmationAppIntent.swift */; };
 		425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425762742E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */; };
@@ -2425,6 +2427,7 @@
 		4257447F2F22279D00D35D89 /* AppIntentConfirmationAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentConfirmationAttributes.swift; sourceTree = "<group>"; };
 		425744802F22279D00D35D89 /* AppIntentNotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentNotificationHelper.swift; sourceTree = "<group>"; };
 		425744852F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentConfirmationLiveActivity.swift; sourceTree = "<group>"; };
+		425744892F222AD000D35D89 /* ShowConfirmationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowConfirmationAppIntent.swift; sourceTree = "<group>"; };
 		425762722E71A8B800AE5083 /* ModalCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalCloseButton.swift; sourceTree = "<group>"; };
 		425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneDelegate.swift; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
@@ -7298,6 +7301,7 @@
 		D0EEF325214DF30D00D1D360 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				425744892F222AD000D35D89 /* ShowConfirmationAppIntent.swift */,
 				4257447F2F22279D00D35D89 /* AppIntentConfirmationAttributes.swift */,
 				425744802F22279D00D35D89 /* AppIntentNotificationHelper.swift */,
 				420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */,
@@ -9814,6 +9818,7 @@
 				11C4628F24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				B6723345225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				11F2F26F25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */,
+				4257448B2F222AD000D35D89 /* ShowConfirmationAppIntent.swift in Sources */,
 				11F2F24225871CB000F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */,
 				11B38EF3275C54A300205C7B /* PerformActionIntentHandler.swift in Sources */,
@@ -9995,6 +10000,7 @@
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
 				B613936924F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				42D3E49C2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */,
+				4257448A2F222AD000D35D89 /* ShowConfirmationAppIntent.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */,

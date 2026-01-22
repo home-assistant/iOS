@@ -21,6 +21,7 @@ internal enum SharedPlistFiles {
     internal static let cfBundleShortVersionString: String = _document["CFBundleShortVersionString"]
     internal static let cfBundleVersion: String = _document["CFBundleVersion"]
     internal static let nsPrincipalClass: String = _document["NSPrincipalClass"]
+    internal static let nsSupportsLiveActivities: Bool = _document["NSSupportsLiveActivities"]
   }
 }
 // swiftlint:enable identifier_name line_length type_body_length

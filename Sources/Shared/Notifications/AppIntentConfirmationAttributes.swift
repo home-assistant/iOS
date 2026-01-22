@@ -1,10 +1,8 @@
-#if canImport(ActivityKit)
+#if canImport(ActivityKit) && !targetEnvironment(macCatalyst) && os(iOS)
 import ActivityKit
-#endif
 import Foundation
 
 /// Activity attributes for displaying AppIntent execution confirmations in the Dynamic Island
-#if canImport(ActivityKit)
 @available(iOS 16.1, *)
 public struct AppIntentConfirmationAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
