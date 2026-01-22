@@ -129,6 +129,8 @@
 	<string>We use Siri to allow created shortcuts to interact with the app.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Used to dictate text to Assist.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>AssistInAppIntent</string>

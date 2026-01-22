@@ -34,6 +34,12 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
+        // Live Activities
+        if #available(iOS 16.2, *) {
+            AppIntentConfirmationLiveActivity()
+        }
+
+        // Widgets
         WidgetCustom()
         WidgetAssist()
         WidgetScripts()
@@ -52,6 +58,9 @@ struct WidgetsBundle18: WidgetBundle {
     }
 
     var body: some Widget {
+        // Live Activities
+        AppIntentConfirmationLiveActivity()
+
         // Controls
         ControlAssist()
         ControlLight()

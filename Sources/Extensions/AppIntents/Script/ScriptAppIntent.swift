@@ -61,11 +61,14 @@ final class ScriptAppIntent: AppIntent {
                 }
         }
         if showConfirmationNotification {
-            Current.notificationDispatcher.send(.init(
+            AppIntentNotificationHelper.showConfirmation(
                 id: .scriptAppIntentRun,
                 title: success ? L10n.AppIntents.Scripts.SuccessMessage.content(script.displayString) : L10n.AppIntents
-                    .Scripts.FailureMessage.content(script.displayString)
-            ))
+                    .Scripts.FailureMessage.content(script.displayString),
+                body: nil,
+                isSuccess: success,
+                duration: 3.0
+            )
         }
 
         DataWidgetsUpdater.update()

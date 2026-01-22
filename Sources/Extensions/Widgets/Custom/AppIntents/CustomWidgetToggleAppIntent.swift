@@ -41,11 +41,13 @@ struct CustomWidgetToggleAppIntent: AppIntent {
                         .error(
                             "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
                         )
-                    Current.notificationDispatcher.send(.init(
+                    AppIntentNotificationHelper.showConfirmation(
                         id: .intentToggleFailed,
                         title: L10n.Widgets.Custom.IntentToggleFailed.title,
-                        body: L10n.Widgets.Custom.IntentToggleFailed.body
-                    ))
+                        body: L10n.Widgets.Custom.IntentToggleFailed.body,
+                        isSuccess: false,
+                        duration: 4.0
+                    )
                     continuation.resume()
                 }
             }

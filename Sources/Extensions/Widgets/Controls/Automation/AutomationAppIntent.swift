@@ -71,12 +71,15 @@ final class AutomationAppIntent: AppIntent {
             }
         }
         if showConfirmationNotification {
-            Current.notificationDispatcher.send(.init(
+            AppIntentNotificationHelper.showConfirmation(
                 id: .automationAppIntentRun,
                 title: success ? L10n.AppIntents.Automations.SuccessMessage.content(automation.displayString) : L10n
                     .AppIntents
-                    .Automations.FailureMessage.content(automation.displayString)
-            ))
+                    .Automations.FailureMessage.content(automation.displayString),
+                body: nil,
+                isSuccess: success,
+                duration: 3.0
+            )
         }
 
         DataWidgetsUpdater.update()

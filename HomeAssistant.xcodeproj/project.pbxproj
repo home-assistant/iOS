@@ -731,6 +731,12 @@
 		425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.test.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
+		425744812F22279D00D35D89 /* AppIntentConfirmationAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4257447F2F22279D00D35D89 /* AppIntentConfirmationAttributes.swift */; };
+		425744822F22279D00D35D89 /* AppIntentNotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425744802F22279D00D35D89 /* AppIntentNotificationHelper.swift */; };
+		425744832F2227A900D35D89 /* AppIntentNotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425744802F22279D00D35D89 /* AppIntentNotificationHelper.swift */; };
+		425744842F2227A900D35D89 /* AppIntentConfirmationAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4257447F2F22279D00D35D89 /* AppIntentConfirmationAttributes.swift */; };
+		425744872F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425744852F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift */; };
+		425744882F22293200D35D89 /* AppIntentConfirmationLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425744852F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift */; };
 		425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425762742E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */; };
@@ -2416,6 +2422,9 @@
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
+		4257447F2F22279D00D35D89 /* AppIntentConfirmationAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentConfirmationAttributes.swift; sourceTree = "<group>"; };
+		425744802F22279D00D35D89 /* AppIntentNotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentNotificationHelper.swift; sourceTree = "<group>"; };
+		425744852F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentConfirmationLiveActivity.swift; sourceTree = "<group>"; };
 		425762722E71A8B800AE5083 /* ModalCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalCloseButton.swift; sourceTree = "<group>"; };
 		425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneDelegate.swift; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
@@ -3821,6 +3830,7 @@
 		1171506E24DFCDE60065E874 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				425744862F2227FD00D35D89 /* AppIntentConfirmation */,
 				428863582EF9641400319CF4 /* CameraList */,
 				42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */,
 				422368892D40F980005911E4 /* Lockscreen */,
@@ -5020,6 +5030,14 @@
 				425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */,
 			);
 			path = Domains;
+			sourceTree = "<group>";
+		};
+		425744862F2227FD00D35D89 /* AppIntentConfirmation */ = {
+			isa = PBXGroup;
+			children = (
+				425744852F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift */,
+			);
+			path = AppIntentConfirmation;
 			sourceTree = "<group>";
 		};
 		4257EA912F1790DE00D81506 /* EntityPicker */ = {
@@ -7280,6 +7298,8 @@
 		D0EEF325214DF30D00D1D360 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				4257447F2F22279D00D35D89 /* AppIntentConfirmationAttributes.swift */,
+				425744802F22279D00D35D89 /* AppIntentNotificationHelper.swift */,
 				420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */,
 				425573EE2B589B0F00145217 /* NotificationIdentifier.swift */,
 				11ADF93D267D34A20040A7E3 /* NotificationCommands */,
@@ -8942,6 +8962,7 @@
 				42F5C0942F02D57E00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */,
 				422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */,
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
+				425744872F2227FD00D35D89 /* AppIntentConfirmationLiveActivity.swift in Sources */,
 				4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */,
 				42F958992BB4684700497981 /* WidgetAssist.swift in Sources */,
 				421F2B9A2EF8479400F21FE5 /* ControlAutomation.swift in Sources */,
@@ -9231,6 +9252,7 @@
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */,
+				425744882F22293200D35D89 /* AppIntentConfirmationLiveActivity.swift in Sources */,
 				426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
@@ -9674,6 +9696,8 @@
 				1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				420A80972E9CF98C00D30A6B /* ImpactFeedbackGeneratorProtocol.swift in Sources */,
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
+				425744832F2227A900D35D89 /* AppIntentNotificationHelper.swift in Sources */,
+				425744842F2227A900D35D89 /* AppIntentConfirmationAttributes.swift in Sources */,
 				11169BC6262BE45F005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				11B38EF5275C54A300205C7B /* GetCameraImageIntentHandler.swift in Sources */,
@@ -10151,6 +10175,8 @@
 				110ED58F25A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
 				116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */,
 				428DBFF92F0C9009003B08D5 /* DeviceRegistryEntry.swift in Sources */,
+				425744812F22279D00D35D89 /* AppIntentConfirmationAttributes.swift in Sources */,
+				425744822F22279D00D35D89 /* AppIntentNotificationHelper.swift in Sources */,
 				42DEDA9A2C5B926400E9D29D /* AppVersionSensor.swift in Sources */,
 				11F2F24125871CAF00F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				427647252C8F38590027B21F /* HAAreasRegistryResponse.swift in Sources */,

@@ -65,11 +65,14 @@ final class SceneAppIntent: AppIntent {
             }
         }
         if showConfirmationNotification {
-            Current.notificationDispatcher.send(.init(
+            AppIntentNotificationHelper.showConfirmation(
                 id: .sceneAppIntentRun,
                 title: success ? L10n.AppIntents.Scenes.SuccessMessage.content(scene.displayString) : L10n.AppIntents
-                    .Scenes.FailureMessage.content(scene.displayString)
-            ))
+                    .Scenes.FailureMessage.content(scene.displayString),
+                body: nil,
+                isSuccess: success,
+                duration: 3.0
+            )
         }
 
         DataWidgetsUpdater.update()
