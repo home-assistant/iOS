@@ -4,7 +4,11 @@ import GRDB
 final class AppEntityRegistryTable: DatabaseTableProtocol {
     var tableName: String { GRDBDatabaseTable.entityRegistry.rawValue }
 
-    var definedColumns: [String] { DatabaseTables.EntityRegistry.allCases.map(\.rawValue) }
+    var definedColumns: [String] {
+        DatabaseTables.EntityRegistry.allCases
+            .filter { $0 != .id }
+            .map(\.rawValue)
+    }
 
     func createIfNeeded(database: DatabaseQueue) throws {
         let shouldCreateTable = try database.read { db in
