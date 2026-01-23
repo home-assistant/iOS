@@ -31,11 +31,85 @@ final class WatchConfigurationViewModel: ObservableObject {
         watchConfig.items.append(item)
     }
 
+    func addFolder(named name: String) {
+        let folderItem = MagicItem(
+            id: UUID().uuidString,
+            serverId: "",
+            type: .folder,
+            customization: .init(),
+            action: .default,
+            displayText: name,
+            items: []
+        )
+        watchConfig.items.append(folderItem)
+    }
+
     func updateItem(_ item: MagicItem) {
-        if let indexToUpdate = watchConfig.items
-            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+        // Try root level first
+        if let indexToUpdate = watchConfig.items.firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
             watchConfig.items.remove(at: indexToUpdate)
             watchConfig.items.insert(item, at: indexToUpdate)
+            return
+        }
+        // Try inside folders
+        for (folderIndex, folder) in watchConfig.items.enumerated() where folder.type == .folder {
+            if let items = folder.items, let index = items.firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+                var updatedFolder = folder
+                var updatedItems = items
+                updatedItems.remove(at: index)
+                updatedItems.insert(item, at: index)
+                updatedFolder.items = updatedItems
+                watchConfig.items[folderIndex] = updatedFolder
+                return
+            }
+        }
+    }
+
+    func addItemToFolder(folderId: String, item: MagicItem) {
+        if let index = watchConfig.items.firstIndex(where: { $0.type == .folder && $0.id == folderId }) {
+            var folder = watchConfig.items[index]
+            var folderItems = folder.items ?? []
+            folderItems.append(item)
+            folder.items = folderItems
+            watchConfig.items[index] = folder
+        }
+    }
+
+    func deleteItemInFolder(folderId: String, at offsets: IndexSet) {
+        guard let index = watchConfig.items.firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = watchConfig.items[index]
+        var folderItems = folder.items ?? []
+        folderItems.remove(atOffsets: offsets)
+        folder.items = folderItems
+        watchConfig.items[index] = folder
+    }
+
+    func moveItemWithinFolder(folderId: String, from source: IndexSet, to destination: Int) {
+        guard let index = watchConfig.items.firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = watchConfig.items[index]
+        var folderItems = folder.items ?? []
+        folderItems.move(fromOffsets: source, toOffset: destination)
+        folder.items = folderItems
+        watchConfig.items[index] = folder
+    }
+
+    func moveItemToFolder(itemId: String, serverId: String, toFolderId: String) {
+        // Remove from root if present
+        if let rootIndex = watchConfig.items.firstIndex(where: { $0.id == itemId && $0.serverId == serverId }) {
+            let item = watchConfig.items.remove(at: rootIndex)
+            addItemToFolder(folderId: toFolderId, item: item)
+            return
+        }
+        // Remove from any folder if present
+        for (folderIndex, folder) in watchConfig.items.enumerated() where folder.type == .folder {
+            if var items = folder.items, let index = items.firstIndex(where: { $0.id == itemId && $0.serverId == serverId }) {
+                let item = items.remove(at: index)
+                var updatedFolder = folder
+                updatedFolder.items = items
+                watchConfig.items[folderIndex] = updatedFolder
+                addItemToFolder(folderId: toFolderId, item: item)
+                return
+            }
         }
     }
 

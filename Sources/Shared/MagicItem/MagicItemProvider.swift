@@ -206,6 +206,13 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                     MaterialDesignIcons.dotsGridIcon.name,
                 customization: item.customization
             )
+        case .folder:
+            return .init(
+                id: item.id,
+                name: item.displayText ?? "Folder",
+                iconName: MaterialDesignIcons.folderIcon.name,
+                customization: item.customization
+            )
         }
     }
 }

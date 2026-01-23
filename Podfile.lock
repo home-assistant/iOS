@@ -270,7 +270,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   GRDB.swift: 682e07f771a9100f0bdf40fd0bed57b83ca08e29
-  HAKit: 2e0570970efe11fa54ad5cceb5d4c4c3fca4c603
+  HAKit: 8628e7a8f87fc30e2b3b67b10920dc846f33a77b
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -297,4 +297,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 3e51f6f88d22cb69fd187779f567da9019ee707a
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

@@ -20,6 +20,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
     public var customization: Customization?
     public var action: ItemAction?
     public var displayText: String?
+    public var items: [MagicItem]?
 
     /// Server unique ID - e.g. "EB1364-script.open_gate"
     public var serverUniqueId: String {
@@ -41,7 +42,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
         type: ItemType,
         customization: Customization? = .init(),
         action: ItemAction? = .default,
-        displayText: String? = nil
+        displayText: String? = nil,
+        items: [MagicItem]? = nil
     ) {
         self.id = id
         self.serverId = serverId
@@ -49,6 +51,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         self.customization = customization
         self.action = action
         self.displayText = displayText
+        self.items = items
     }
 
     public enum ItemType: String, Codable {
@@ -57,6 +60,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case script
         case scene
         case entity
+        case folder
     }
 
     public struct Customization: Codable, Equatable {
@@ -116,6 +120,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     serversideValueNamed: info.iconName,
                     fallback: .dotsGridIcon
                 )
+            case .folder:
+                icon = .folderIcon
             }
         }
 
@@ -332,6 +338,9 @@ public extension MagicItem {
                         entityId: id,
                         state: currentItemState
                     )
+                case .folder:
+                    // Folders don't execute actions
+                    return nil
                 }
             }() {
                 request.pipe(to: { result in

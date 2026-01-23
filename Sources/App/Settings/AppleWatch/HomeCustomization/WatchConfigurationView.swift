@@ -9,6 +9,8 @@ struct WatchConfigurationView: View {
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
+    @State private var showAddFolderSheet = false
+    @State private var newFolderName: String = "Folder"
 
     var body: some View {
         content
@@ -41,6 +43,9 @@ struct WatchConfigurationView: View {
                 Button(action: {}, label: {
                     Text(verbatim: L10n.okLabel)
                 })
+            }
+            .sheet(isPresented: $showAddFolderSheet) {
+                addFolderSheet
             }
     }
 
@@ -96,6 +101,55 @@ struct WatchConfigurationView: View {
                 viewModel.showAddItem = true
             } label: {
                 Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
+            }
+            Button {
+                newFolderName = "Folder"
+                showAddFolderSheet = true
+            } label: {
+                Label("Add Folder", systemSymbol: .folder)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var addFolderSheet: some View {
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                addFolderForm
+            }
+            .presentationDetents([.medium])
+        } else {
+            NavigationView {
+                addFolderForm
+            }
+            .navigationViewStyle(.stack)
+        }
+    }
+
+    private var addFolderForm: some View {
+        Form {
+            Section("Folder Name") {
+                TextField("Folder", text: $newFolderName)
+                    .textInputAutocapitalization(.words)
+            }
+        }
+        .navigationTitle("New Folder")
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(action: { showAddFolderSheet = false }) {
+                    Text(L10n.cancelLabel)
+                }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    let name = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let finalName = name.isEmpty ? "Folder" : name
+                    viewModel.addFolder(named: finalName)
+                    showAddFolderSheet = false
+                }) {
+                    Text(L10n.Watch.Configuration.AddItem.title)
+                }
+                .disabled(newFolderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
     }
@@ -170,6 +224,16 @@ struct WatchConfigurationView: View {
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         if item.type == .action {
             itemRow(item: item, info: info)
+        } else if item.type == .folder {
+            NavigationLink {
+                FolderDetailView(
+                    folderId: item.id,
+                    folderName: item.displayText ?? "Folder",
+                    viewModel: viewModel
+                )
+            } label: {
+                itemRow(item: item, info: info)
+            }
         } else {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in

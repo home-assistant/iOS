@@ -207,6 +207,9 @@ final class WatchCommunicatorService {
                 serviceData: ["entity_id": itemId],
                 responseIdentifier: responseIdentifier
             )
+        case .folder:
+            // Folders don't execute actions, they are containers
+            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
         }
     }
 

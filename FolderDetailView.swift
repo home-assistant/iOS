@@ -1,0 +1,106 @@
+import Shared
+import SwiftUI
+
+struct FolderDetailView: View {
+    let folderId: String
+    let folderName: String
+    @ObservedObject var viewModel: WatchConfigurationViewModel
+
+    @State private var showAddItem = false
+
+    var body: some View {
+        List {
+            Section(folderName) {
+                ForEach(folderItems, id: \.serverUniqueId) { item in
+                    row(for: item)
+                }
+                .onMove { indices, newOffset in
+                    viewModel.moveItemWithinFolder(folderId: folderId, from: indices, to: newOffset)
+                }
+                .onDelete { indexSet in
+                    viewModel.deleteItemInFolder(folderId: folderId, at: indexSet)
+                }
+                Button {
+                    showAddItem = true
+                } label: {
+                    Label(L10n.Watch.Configuration.AddItem.title, systemImage: "plus")
+                }
+            }
+        }
+        .preferredColorScheme(.dark)
+        .navigationTitle(folderName)
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showAddItem) {
+            MagicItemAddView(context: .watch) { itemToAdd in
+                guard let itemToAdd else { return }
+                viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
+            }
+            .preferredColorScheme(.dark)
+        }
+    }
+
+    private var folderItems: [MagicItem] {
+        if let folder = viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == folderId }) {
+            return folder.items ?? []
+        }
+        return []
+    }
+
+    @ViewBuilder
+    private func row(for item: MagicItem) -> some View {
+        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
+            id: item.id,
+            name: item.id,
+            iconName: "",
+            customization: nil
+        )
+
+        if item.type == .action {
+            HStack {
+                Image(uiImage: image(for: item, itemInfo: itemInfo))
+                Text(item.name(info: itemInfo))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "line.3.horizontal")
+                    .foregroundStyle(.gray)
+            }
+        } else {
+            NavigationLink {
+                MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
+                    viewModel.updateItem(updatedMagicItem)
+                }
+            } label: {
+                HStack {
+                    Image(uiImage: image(for: item, itemInfo: itemInfo))
+                    Text(item.name(info: itemInfo))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Image(systemName: "line.3.horizontal")
+                        .foregroundStyle(.gray)
+                }
+            }
+        }
+    }
+
+    private func image(for item: MagicItem, itemInfo: MagicItem.Info) -> UIImage {
+        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
+        return icon.image(ofSize: .init(width: 18, height: 18), color: .white)
+    }
+}
+
+#Preview {
+    let vm = WatchConfigurationViewModel()
+    vm.watchConfig.items = [
+        MagicItem(
+            id: "folder1",
+            serverId: "",
+            type: .folder,
+            customization: .init(),
+            action: .default,
+            displayText: "My Folder",
+            items: [
+                MagicItem(id: "script.turn_on", serverId: "s1", type: .script),
+                MagicItem(id: "scene.night", serverId: "s1", type: .scene)
+            ]
+        ),
+    ]
+    return NavigationView { FolderDetailView(folderId: "folder1", folderName: "My Folder", viewModel: vm) }
+}
