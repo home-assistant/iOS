@@ -44,6 +44,16 @@ final class WatchConfigurationViewModel: ObservableObject {
         watchConfig.items.append(folderItem)
     }
 
+    func updateFolder(_ folder: MagicItem) {
+        guard folder.type == .folder else { return }
+        if let indexToUpdate = watchConfig.items.firstIndex(where: { $0.type == .folder && $0.id == folder.id }) {
+            var updatedFolder = folder
+            // Preserve existing items in the folder
+            updatedFolder.items = watchConfig.items[indexToUpdate].items
+            watchConfig.items[indexToUpdate] = updatedFolder
+        }
+    }
+
     func updateItem(_ item: MagicItem) {
         // Try root level first
         if let indexToUpdate = watchConfig.items.firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {

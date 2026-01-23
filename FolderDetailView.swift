@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -82,7 +83,10 @@ struct FolderDetailView: View {
 
     private func image(for item: MagicItem, itemInfo: MagicItem.Info) -> UIImage {
         let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-        return icon.image(ofSize: .init(width: 18, height: 18), color: .white)
+        return icon.image(
+            ofSize: .init(width: 18, height: 18),
+            color: .init(hex: itemInfo.customization?.iconColor)
+        )
     }
 }
 

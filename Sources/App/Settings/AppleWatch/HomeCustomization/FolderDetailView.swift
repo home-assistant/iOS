@@ -8,6 +8,11 @@ struct FolderDetailView: View {
     @ObservedObject var viewModel: WatchConfigurationViewModel
 
     @State private var showAddItem = false
+    @State private var showEditFolder = false
+
+    private var folder: MagicItem? {
+        viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == folderId })
+    }
 
     var body: some View {
         List {
@@ -31,12 +36,31 @@ struct FolderDetailView: View {
         .preferredColorScheme(.dark)
         .navigationTitle(folderName)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showEditFolder = true
+                } label: {
+                    Image(systemSymbol: .pencil)
+                }
+            }
+        }
         .sheet(isPresented: $showAddItem) {
             MagicItemAddView(context: .watch) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
             }
             .preferredColorScheme(.dark)
+        }
+        .sheet(isPresented: $showEditFolder) {
+            if let folder {
+                NavigationView {
+                    FolderEditView(folder: folder) { updatedFolder in
+                        viewModel.updateFolder(updatedFolder)
+                    }
+                }
+                .preferredColorScheme(.dark)
+            }
         }
     }
 
