@@ -109,7 +109,7 @@ public enum Domain: String, CaseIterable {
                 return state == .on ?
                     CoreStrings.componentBinarySensorEntityComponentWindowStateOn :
                     CoreStrings.componentBinarySensorEntityComponentWindowStateOff
-            case .garage:
+            case .garage, .garageDoor:
                 return state == .on ?
                     CoreStrings.componentBinarySensorEntityComponentGarageDoorStateOn :
                     CoreStrings.componentBinarySensorEntityComponentGarageDoorStateOff
