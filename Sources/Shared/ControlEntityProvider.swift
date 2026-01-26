@@ -154,10 +154,26 @@ public final class ControlEntityProvider {
         )
         let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
         stateValue = stateValue.capitalizedFirst
-        return .init(
-            value: stateValue,
-            unitOfMeasurement: unitOfMeasurement,
-            domainState: .init(rawValue: stateValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
-        )
+
+        let domain = Domain(entityId: entityId)
+        if let deviceClass = {
+            let rawDeviceClass = (state?["attributes"] as? [String: Any])?["device_class"] as? String
+            return DeviceClass(rawValue: rawDeviceClass ?? "")
+        }(),
+            let domainState = Domain.State(rawValue: stateValue.lowercased()),
+            unitOfMeasurement == nil,
+            let stateForDeviceClass = domain?.stateForDeviceClass(deviceClass, state: domainState) {
+            return .init(
+                value: stateForDeviceClass,
+                unitOfMeasurement: nil,
+                domainState: domainState
+            )
+        } else {
+            return .init(
+                value: stateValue,
+                unitOfMeasurement: unitOfMeasurement,
+                domainState: Domain.State(rawValue: stateValue)
+            )
+        }
     }
 }

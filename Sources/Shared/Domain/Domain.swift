@@ -96,8 +96,11 @@ public enum Domain: String, CaseIterable {
             return baseState
         }
 
-        let deviceClass = entity.deviceClass
+        return stateForDeviceClass(entity.deviceClass, state: state)
+    }
 
+    public func stateForDeviceClass(_ deviceClass: DeviceClass, state: Domain.State) -> String {
+        let baseState = localizedState(for: state.rawValue).leadingCapitalized
         // Provide context-aware descriptions for binary sensors with device classes
         if self == .binarySensor {
             switch deviceClass {
@@ -109,7 +112,7 @@ public enum Domain: String, CaseIterable {
                 return state == .on ?
                     CoreStrings.componentBinarySensorEntityComponentWindowStateOn :
                     CoreStrings.componentBinarySensorEntityComponentWindowStateOff
-            case .garage:
+            case .garage, .garageDoor:
                 return state == .on ?
                     CoreStrings.componentBinarySensorEntityComponentGarageDoorStateOn :
                     CoreStrings.componentBinarySensorEntityComponentGarageDoorStateOff
@@ -178,7 +181,6 @@ public enum Domain: String, CaseIterable {
                 break
             }
         }
-
         return baseState
     }
 
@@ -225,7 +227,7 @@ public enum Domain: String, CaseIterable {
     private func imageForCover(deviceClass: DeviceClass, state: State) -> MaterialDesignIcons {
         if state == .closed {
             switch deviceClass {
-            case .garage:
+            case .garage, .garageDoor:
                 return MaterialDesignIcons.garageIcon
             case .gate:
                 return MaterialDesignIcons.gateIcon
@@ -240,7 +242,7 @@ public enum Domain: String, CaseIterable {
             }
         } else {
             switch deviceClass {
-            case .garage:
+            case .garage, .garageDoor:
                 return MaterialDesignIcons.garageOpenIcon
             case .gate:
                 return MaterialDesignIcons.gateOpenIcon
