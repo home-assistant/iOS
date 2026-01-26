@@ -96,8 +96,11 @@ public enum Domain: String, CaseIterable {
             return baseState
         }
 
-        let deviceClass = entity.deviceClass
+        return stateForDeviceClass(entity.deviceClass, state: state)
+    }
 
+    public func stateForDeviceClass(_ deviceClass: DeviceClass, state: Domain.State) -> String {
+        let baseState = localizedState(for: state.rawValue).leadingCapitalized
         // Provide context-aware descriptions for binary sensors with device classes
         if self == .binarySensor {
             switch deviceClass {
@@ -178,7 +181,6 @@ public enum Domain: String, CaseIterable {
                 break
             }
         }
-
         return baseState
     }
 
