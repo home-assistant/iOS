@@ -58,7 +58,7 @@ final class CoverControlsViewModel {
             return .fanDesk
         case .door:
             return .doorLeftHandClosed
-        case .garage:
+        case .garage, .garageDoor:
             return .doorGarageClosed
         case .gate:
             return .figureWalk
