@@ -112,7 +112,7 @@ public enum Domain: String, CaseIterable {
                 return state == .on ?
                     CoreStrings.componentBinarySensorEntityComponentWindowStateOn :
                     CoreStrings.componentBinarySensorEntityComponentWindowStateOff
-            case .garage:
+            case .garage, .garageDoor:
                 return state == .on ?
                     CoreStrings.componentBinarySensorEntityComponentGarageDoorStateOn :
                     CoreStrings.componentBinarySensorEntityComponentGarageDoorStateOff
@@ -227,7 +227,7 @@ public enum Domain: String, CaseIterable {
     private func imageForCover(deviceClass: DeviceClass, state: State) -> MaterialDesignIcons {
         if state == .closed {
             switch deviceClass {
-            case .garage:
+            case .garage, .garageDoor:
                 return MaterialDesignIcons.garageIcon
             case .gate:
                 return MaterialDesignIcons.gateIcon
@@ -242,7 +242,7 @@ public enum Domain: String, CaseIterable {
             }
         } else {
             switch deviceClass {
-            case .garage:
+            case .garage, .garageDoor:
                 return MaterialDesignIcons.garageOpenIcon
             case .gate:
                 return MaterialDesignIcons.gateOpenIcon
