@@ -117,6 +117,7 @@
 "lxHlyQ" = "Uruchom zdarzenie";
 "mAibJP" = "Nie udało się, Home Assistant jest obecnie niedostępny";
 "mJ6CrP" = "Nie udało się wysłać ${eventName} : ${error}";
+"mrwamX" = "Assist In App";
 "mZnRHS" = "${eventName} fired";
 "mi6B62" = "Jakie dane chcesz wysłać ze zdarzeniem?";
 "ni0OSe" = "Dla potwierdzenia, czy chciałeś '${server}'?";

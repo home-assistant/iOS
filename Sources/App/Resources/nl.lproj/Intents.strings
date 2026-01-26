@@ -117,6 +117,7 @@
 "lxHlyQ" = "Gebeurtenis uitvoeren";
 "mAibJP" = "Mislukt: Home Assistant is momenteel niet bereikbaar";
 "mJ6CrP" = "Kon ${eventName} niet naar Home Assistant sturen, fout: ${error}";
+"mrwamX" = "Assist in App";
 "mZnRHS" = "${eventName} verzonden";
 "mi6B62" = "Welke gegevens wilt u met de gebeurtenis verzenden?";
 "ni0OSe" = "Even ter bevestiging, je wilde '${server}'?";

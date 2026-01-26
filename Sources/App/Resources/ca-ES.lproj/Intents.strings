@@ -117,6 +117,7 @@
 "lxHlyQ" = "Dispara un esdeveniment";
 "mAibJP" = "Ha Fallat: Home Assistant no està accessible actualment";
 "mJ6CrP" = "No s'ha pogut enviar ${eventName}: ${error}";
+"mrwamX" = "Assist In App";
 "mZnRHS" = "${eventName} disparat";
 "mi6B62" = "Quines dades voleu enviar amb l’esdeveniment?";
 "ni0OSe" = "Només per confirmar, volies ‘${server}’?";

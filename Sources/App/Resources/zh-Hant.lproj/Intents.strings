@@ -117,6 +117,7 @@
 "lxHlyQ" = "觸發事件";
 "mAibJP" = "失敗：目前無法連線至 Home Assistant";
 "mJ6CrP" = "傳送 ${eventName} 失敗：${error}";
+"mrwamX" = "App 中的助理";
 "mZnRHS" = "${eventName} 已觸發";
 "mi6B62" = "所要傳送事件的資料？";
 "ni0OSe" = "確認要 ‘${server}’？";

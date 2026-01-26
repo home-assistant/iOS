@@ -117,6 +117,7 @@
 "lxHlyQ" = "Fire event";
 "mAibJP" = "失敗しました: Home Assistantにアクセスできません";
 "mJ6CrP" = "${eventName} の送信に失敗しました: ${error}";
+"mrwamX" = "アプリでアシスト";
 "mZnRHS" = "${eventName} が発生しました";
 "mi6B62" = "イベントでどのようなデータを送信しますか？";
 "ni0OSe" = "確認のために、‘${server}’ が必要ですか？";

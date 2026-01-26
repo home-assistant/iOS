@@ -117,6 +117,7 @@
 "lxHlyQ" = "Utlös händelse";
 "mAibJP" = "Misslyckades: Home Assistant är för närvarande inte tillgänglig";
 "mJ6CrP" = "Misslyckades med att skicka ${eventName}: ${error}";
+"mrwamX" = "Assistent i appen";
 "mZnRHS" = "${eventName} startad";
 "mi6B62" = "Vilka data vill du skicka med händelsen?";
 "ni0OSe" = "För att bekräfta, du valde ‘${server}’?";

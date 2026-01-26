@@ -117,6 +117,7 @@
 "lxHlyQ" = "触发事件";
 "mAibJP" = "失败：Home Assistant 当前不可达";
 "mJ6CrP" = "发送 ${eventName} 失败：${error}";
+"mrwamX" = "应用中语音助手";
 "mZnRHS" = "事件${eventName}已触发";
 "mi6B62" = "您想发送此事件的什么数据 ？";
 "ni0OSe" = "确认一下，你希望是“${server}” ？";
