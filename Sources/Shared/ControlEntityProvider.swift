@@ -137,6 +137,35 @@ public final class ControlEntityProvider {
             return nil
         }
 
+        // Try to decode as HAEntity to get proper contextual state description
+        if let entity: HAEntity = try? data.decode() {
+            var stateValue = entity.state
+            stateValue = StatePrecision.adjustPrecision(
+                serverId: server.identifier.rawValue,
+                entityId: entityId,
+                stateValue: stateValue
+            )
+
+            // Use domain's contextual state description to respect device class
+            let contextualState: String = {
+                if let domain = Domain(entityId: entityId) {
+                    return domain.contextualStateDescription(for: entity)
+                } else {
+                    // Fallback to capitalized state for unknown domains
+                    return stateValue.capitalizedFirst
+                }
+            }()
+
+            let unitOfMeasurement = entity.attributes.dictionary["unit_of_measurement"] as? String
+
+            return .init(
+                value: contextualState,
+                unitOfMeasurement: unitOfMeasurement,
+                domainState: .init(rawValue: stateValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
+            )
+        }
+
+        // Fallback to old behavior if HAEntity decode fails
         var state: [String: Any]?
         switch data {
         case let .dictionary(response):
