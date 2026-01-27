@@ -28,6 +28,8 @@ public enum AppConstants {
             URL(string: "https://companion.home-assistant.io/docs/getting_started/connection-security-level")!
         public static var companionLocalPush =
             URL(string: "https://companion.home-assistant.io/app/ios/local-push")!
+        public static var nfcDocs =
+            URL(string: "https://companion.home-assistant.io/app/ios/nfc")!
     }
 
     public enum QueryItems: String, CaseIterable {
