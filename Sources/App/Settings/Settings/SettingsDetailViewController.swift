@@ -280,9 +280,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         }
             <<< InfoLabelRow {
                 $0.title = L10n.LegacyActions.disclaimer
-                $0.cellUpdate { cell, _ in
-                    cell.textLabel?.numberOfLines = 0
-                }
             }
 
         form +++ manualActionsSection()
