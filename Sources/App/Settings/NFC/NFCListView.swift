@@ -95,6 +95,10 @@ struct NFCListView: View {
             }
 
             Button(L10n.Nfc.Write.IdentifierChoice.manual) {
+                // Pre-populate with last manual identifier before showing alert
+                if let lastValue = lastManualIdentifier {
+                    manualIdentifier = lastValue
+                }
                 showManualInput = true
             }
 
@@ -124,11 +128,6 @@ struct NFCListView: View {
                 title: Text(errorMessage ?? L10n.errorLabel),
                 dismissButton: .default(Text(L10n.okLabel))
             )
-        }
-        .onAppear {
-            if let lastValue = lastManualIdentifier {
-                manualIdentifier = lastValue
-            }
         }
     }
 
