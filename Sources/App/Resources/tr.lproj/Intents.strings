@@ -117,6 +117,8 @@
 "lxHlyQ" = "Olayı Çalıştır";
 "mAibJP" = "Başarısız: Ev Asistanı'na şu anda ulaşılamıyor";
 "mJ6CrP" = "Home Assistant'a ${eventName} gönderilemedi: ${error}";
+"mrwamX" = "Uygulamada Asistan";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} tetiklendi";
 "mi6B62" = "Olay ile beraber ne verisi göndermek istiyorsunuz?";
 "ni0OSe" = "Onaylamak için '${server}' istediniz mi?";

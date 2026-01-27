@@ -117,6 +117,8 @@
 "lxHlyQ" = "Lancia evento";
 "mAibJP" = "Fallito: Home Assistant non è attualmente raggiungibile";
 "mJ6CrP" = "Invio di ${eventName} fallito: ${error}";
+"mrwamX" = "Assist nell'app";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} attivato";
 "mi6B62" = "Quali dati vuoi inviare con l'evento?";
 "ni0OSe" = "Solo per confermare, volevi '${server}'?";

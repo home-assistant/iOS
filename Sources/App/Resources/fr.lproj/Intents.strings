@@ -117,6 +117,8 @@
 "lxHlyQ" = "Déclencher l'événement";
 "mAibJP" = "Échec du déclenchement de l'événement, Home Assistant n'est actuellement pas accessible.";
 "mJ6CrP" = "Échec de l'envoi de ${eventName} : ${error}";
+"mrwamX" = "Assist In App";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "Envoi avec succès de ${eventName} à Home Assistant";
 "mi6B62" = "Quelles données voulez-vous envoyer avec l'événement ?";
 "ni0OSe" = "Juste pour confirmer, vous vouliez « ${server} » ?";

@@ -117,6 +117,8 @@
 "lxHlyQ" = "Utfør hendelse";
 "mAibJP" = "Mislyktes: Home Assistant er ikke tilgjengelig nå";
 "mJ6CrP" = "Kunne ikke sende ${eventName} : ${error}";
+"mrwamX" = "Assist In App";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} utført";
 "mi6B62" = "Hvilke data ønsker du å sende med hendelsen?";
 "ni0OSe" = "Bare for å bekrefte, ville du ha ' ${server} '?";

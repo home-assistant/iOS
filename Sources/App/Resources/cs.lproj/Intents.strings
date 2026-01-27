@@ -117,6 +117,8 @@
 "lxHlyQ" = "Spustit událost";
 "mAibJP" = "Selhání: Home Assistant není aktuálně dostupný";
 "mJ6CrP" = "Selhalo odeslání ${eventName}: ${error}";
+"mrwamX" = "Assist v aplikaci";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} spuštěno";
 "mi6B62" = "Jaká data chcete s událostí odeslat?";
 "ni0OSe" = "Jen pro potvrzení, chtěli jste \"${server}\"?";
