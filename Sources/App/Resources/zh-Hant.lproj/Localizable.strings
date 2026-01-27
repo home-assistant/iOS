@@ -781,7 +781,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_details.actions.actions_synced.header" = "同步觸發";
 "settings_details.actions.carPlay.available.title" = "顯示於 CarPlay";
 "settings_details.actions.footer" = "觸發動作將使用於 Apple Watch 程式、 App 圖示動作以及今日小工具及 CarPlay。";
-"settings_details.actions.footer_mac" = "動作可用於應用程式選單及 Widget。";
+
 "settings_details.actions.learn.button.title" = "介紹 iOS 觸發動作";
 "settings_details.actions.scenes.customize_action" = "自訂";
 "settings_details.actions.scenes.empty" = "沒有場景";

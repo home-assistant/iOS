@@ -781,7 +781,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.actions.actions_synced.header" = "동기화된 동작";
 "settings_details.actions.carPlay.available.title" = "CarPlay에 표시";
 "settings_details.actions.footer" = "동작은 Apple Watch 앱, 앱 아이콘 동작, 오늘 위젯 및 CarPlay에서 사용됩니다.";
-"settings_details.actions.footer_mac" = "동작은 애플리케이션 메뉴와 위젯에서 사용됩니다.";
+
 "settings_details.actions.learn.button.title" = "iOS 동작 소개";
 "settings_details.actions.scenes.customize_action" = "사용자 지정";
 "settings_details.actions.scenes.empty" = "장면 없음";

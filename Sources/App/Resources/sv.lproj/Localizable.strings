@@ -780,7 +780,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.actions.actions_synced.header" = "Synkade åtgärder";
 "settings_details.actions.carPlay.available.title" = "Visa i CarPlay";
 "settings_details.actions.footer" = "Åtgärder används i Apple Watch-appen, åtgärder för appikoner, widgeten Idag och CarPlay.";
-"settings_details.actions.footer_mac" = "Åtgärder används i program-menyn och widgetar.";
+
 "settings_details.actions.learn.button.title" = "Introduktion till iOS-åtgärder";
 "settings_details.actions.scenes.customize_action" = "Anpassa";
 "settings_details.actions.scenes.empty" = "Inga scener";

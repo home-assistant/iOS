@@ -798,7 +798,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.actions.actions_synced.header" = "Synced Actions";
 "settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
-"settings_details.actions.footer_mac" = "Actions are used in the application menu and widgets.";
+
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Customize";
 "settings_details.actions.scenes.empty" = "No Scenes";
@@ -1468,3 +1468,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "connectivity.check.running" = "Checking...";
 "connectivity.check.skipped" = "Skipped due to previous failure";
 "settings.connection_section.refresh_server" = "Update server information";
+"legacy_actions.disclaimer" = "Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.";

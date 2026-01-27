@@ -781,7 +781,7 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "settings_details.actions.actions_synced.header" = "Synkroniserede handlinger";
 "settings_details.actions.carPlay.available.title" = "Vis i CarPlay";
 "settings_details.actions.footer" = "Handlinger bruges i Apple Watch-appen, app-icon-handlinger, Idag-widgetten og CarPlay.";
-"settings_details.actions.footer_mac" = "Handlinger bruges i applikationsmenuen og widgets.";
+
 "settings_details.actions.learn.button.title" = "Introduktion til iOS-handlinger";
 "settings_details.actions.scenes.customize_action" = "Tilpas";
 "settings_details.actions.scenes.empty" = "Ingen scener";
