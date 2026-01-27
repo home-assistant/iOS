@@ -366,6 +366,8 @@ public extension Version {
     static let canNavigateThroughFrontend: Version = .init(major: 2025, minor: 6, prerelease: "any0")
     /// Allows app to ask frontend to navigate to a more info dialog
     static let canNavigateMoreInfoDialogThroughFrontend: Version = .init(major: 2026, minor: 1, prerelease: "any0")
+    /// Frontend introduces the quickbar with Ctrl+K keyboard shortcut in 2026.2
+    static let quickSearchKeyboardShortcut: Version = .init(major: 2026, minor: 2, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

@@ -23,6 +23,21 @@ struct WebViewJavascriptCommandsTests {
         """)
     }
 
+    @Test func testWebViewJavascriptCommandsQuickSearch() async throws {
+        assert(WebViewJavascriptCommands.quickSearchKeyEvent == """
+        var event = new KeyboardEvent('keydown', {
+            key: 'k',
+            code: 'KeyK',
+            keyCode: 75,
+            which: 75,
+            ctrlKey: true,
+            bubbles: true,
+            cancelable: true
+        });
+        document.dispatchEvent(event);
+        """)
+    }
+
     @Test func testWebViewJavascriptCommandsSearchDevices() async throws {
         assert(WebViewJavascriptCommands.searchDevicesKeyEvent == """
         var event = new KeyboardEvent('keydown', {
