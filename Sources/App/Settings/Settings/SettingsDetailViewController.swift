@@ -274,6 +274,17 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
     private func setupActionsSettings() {
         title = L10n.SettingsDetails.LegacyActions.title
 
+        // Disclaimer placeholder shown before actions content
+        form +++ Section {
+            $0.tag = "actions_disclaimer"
+        }
+            <<< InfoLabelRow {
+                $0.title = L10n.LegacyActions.disclaimer
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.numberOfLines = 0
+                }
+            }
+
         form +++ manualActionsSection()
         form +++ serverControlledActionsSection()
         form +++ serverActionsUpdateButton()

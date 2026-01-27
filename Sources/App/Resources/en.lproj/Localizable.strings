@@ -1468,3 +1468,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "connectivity.check.running" = "Checking...";
 "connectivity.check.skipped" = "Skipped due to previous failure";
 "settings.connection_section.refresh_server" = "Update server information";
+"legacy_actions.disclaimer" = "Legacy iOS Actions is not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.";
