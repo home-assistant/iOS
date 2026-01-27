@@ -1391,6 +1391,8 @@ public enum L10n {
         public static var openDebug: String { return L10n.tr("Localizable", "gestures.value.option.open_debug") }
         /// Previous server
         public static var previousServer: String { return L10n.tr("Localizable", "gestures.value.option.previous_server") }
+        /// Quick search
+        public static var quickSearch: String { return L10n.tr("Localizable", "gestures.value.option.quick_search") }
         /// Search commands
         public static var searchCommands: String { return L10n.tr("Localizable", "gestures.value.option.search_commands") }
         /// Search devices
@@ -1404,6 +1406,8 @@ public enum L10n {
         /// Show sidebar
         public static var showSidebar: String { return L10n.tr("Localizable", "gestures.value.option.show_sidebar") }
         public enum MoreInfo {
+          /// Quick search
+          public static var quickSearch: String { return L10n.tr("Localizable", "gestures.value.option.more_info.quick_search") }
           /// Search commands
           public static var searchCommands: String { return L10n.tr("Localizable", "gestures.value.option.more_info.search_commands") }
           /// Search devices
