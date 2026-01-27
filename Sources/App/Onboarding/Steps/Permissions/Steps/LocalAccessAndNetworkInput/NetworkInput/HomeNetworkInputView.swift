@@ -141,8 +141,9 @@ struct HomeNetworkInputView: View {
     }
 
     private func loadCurrentNetworkInfo() {
-        Current.connectivity.syncNetworkInformation {
-            networkName = Current.connectivity.currentWiFiSSID() ?? ""
+        Task { @MainActor in
+            let networkInfo = await Current.connectivity.currentNetworkInfo()
+            networkName = networkInfo.ssid ?? ""
             hardwareAddress = Current.connectivity.currentNetworkHardwareAddress() ?? ""
         }
     }
