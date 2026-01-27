@@ -300,9 +300,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             header: ""
         ) { section in
             section.tag = "actions"
-            section.multivaluedRowToInsertAt = { [weak self] _ -> ButtonRowWithPresent<ActionConfigurator> in
-                self?.getActionRow(nil) ?? .init()
-            }
 
             for action in actions.filter("isServerControlled == false") {
                 section <<< getActionRow(action)
