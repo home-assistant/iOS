@@ -1,6 +1,7 @@
 import Foundation
 import MBProgressHUD
 import Shared
+import Version
 
 // MARK: - Gestures
 
@@ -27,6 +28,8 @@ final class WebViewGestureHandler {
             webView?.showSettingsViewController()
         case .openDebug:
             webView?.openDebug()
+        case .quickSearch:
+            showQuickSearch()
         case .searchEntities:
             showSearchEntities()
         case .searchDevices:
@@ -60,6 +63,24 @@ final class WebViewGestureHandler {
         Current.sceneManager.webViewWindowControllerPromise.done { controller in
             controller.selectServer(includeSettings: true) { server in
                 controller.open(server: server)
+            }
+        }
+    }
+
+    private func showQuickSearch() {
+        // Use Ctrl+K for HA 2026.2+, fallback to E key for older versions
+        let command: String
+        if let serverVersion = webView?.server.info.version,
+           serverVersion >= .quickSearchKeyboardShortcut {
+            command = WebViewJavascriptCommands.quickSearchKeyEvent
+        } else {
+            command = WebViewJavascriptCommands.searchEntitiesKeyEvent
+        }
+        webView?.evaluateJavaScript(command) { _, error in
+            if let error {
+                Current.Log.error("JavaScript error while trying to open quick search: \(error)")
+            } else {
+                Current.Log.info("Open quick search command sent to webview")
             }
         }
     }

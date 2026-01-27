@@ -315,6 +315,7 @@
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.assist" = "Open Assist";
 "gestures.value.option.back_page" = "Back to previous page";
+"gestures.value.option.more_info.quick_search" = "Quick search";
 "gestures.value.option.more_info.search_commands" = "Search commands";
 "gestures.value.option.more_info.search_devices" = "Search devices";
 "gestures.value.option.more_info.search_entities" = "Search entities";
@@ -323,6 +324,7 @@
 "gestures.value.option.none" = "None";
 "gestures.value.option.open_debug" = "Open debug";
 "gestures.value.option.previous_server" = "Previous server";
+"gestures.value.option.quick_search" = "Quick search";
 "gestures.value.option.search_commands" = "Search commands";
 "gestures.value.option.search_devices" = "Search devices";
 "gestures.value.option.search_entities" = "Search entities";
