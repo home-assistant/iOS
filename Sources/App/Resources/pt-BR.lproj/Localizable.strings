@@ -781,7 +781,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.actions.actions_synced.header" = "Ações sincronizadas";
 "settings_details.actions.carPlay.available.title" = "Mostrar no CarPlay";
 "settings_details.actions.footer" = "As ações são usadas no aplicativo Apple Watch, nas ações de ícones de aplicativos, no widget Hoje e no CarPlay.";
-"settings_details.actions.footer_mac" = "As ações são usadas no menu do aplicativo e nos widgets.";
+
 "settings_details.actions.learn.button.title" = "Introdução às ações do iOS";
 "settings_details.actions.scenes.customize_action" = "Personalizar";
 "settings_details.actions.scenes.empty" = "Nenhuma cena";

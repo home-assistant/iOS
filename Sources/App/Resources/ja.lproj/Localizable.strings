@@ -780,7 +780,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings_details.actions.actions_synced.header" = "同期アクション";
 "settings_details.actions.carPlay.available.title" = "CarPlayで表示";
 "settings_details.actions.footer" = "アクションは、Apple Watch アプリ、アプリアイコンアクション、Today ウィジェット、CarPlay で使用されます。";
-"settings_details.actions.footer_mac" = "アクションは、アプリケーション メニューとウィジェットで使用されます。";
+
 "settings_details.actions.learn.button.title" = "iOSアクションの概要";
 "settings_details.actions.scenes.customize_action" = "カスタマイズ";
 "settings_details.actions.scenes.empty" = "シーンなし";

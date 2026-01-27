@@ -1629,6 +1629,11 @@ public enum L10n {
     public static var serverRequiredForValue: String { return L10n.tr("Localizable", "intents.server_required_for_value") }
   }
 
+  public enum LegacyActions {
+    /// Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.
+    public static var disclaimer: String { return L10n.tr("Localizable", "legacy_actions.disclaimer") }
+  }
+
   public enum LocationChangeNotification {
     /// Location change
     public static var title: String { return L10n.tr("Localizable", "location_change_notification.title") }
@@ -3028,8 +3033,6 @@ public enum L10n {
     public enum Actions {
       /// Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.
       public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.footer") }
-      /// Actions are used in the application menu and widgets.
-      public static var footerMac: String { return L10n.tr("Localizable", "settings_details.actions.footer_mac") }
       /// Actions
       public static var title: String { return L10n.tr("Localizable", "settings_details.actions.title") }
       public enum ActionsSynced {
