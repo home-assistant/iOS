@@ -781,7 +781,7 @@
 "settings_details.actions.actions_synced.header" = "Συγχρονισμένες ενέργειες";
 "settings_details.actions.carPlay.available.title" = "Εμφάνιση στο CarPlay";
 "settings_details.actions.footer" = "Οι Ενέργειες χρησιμοποιούνται στην εφαρμογή Apple Watch, στις Ενέργειες Εικονιδίων Εφαρμογών, στο widget Today και στο CarPlay.";
-"settings_details.actions.footer_mac" = "Οι ενέργειες χρησιμοποιούνται στο μενού και τα widget της εφαρμογής.";
+
 "settings_details.actions.learn.button.title" = "Εισαγωγή στις ενέργειες του iOS";
 "settings_details.actions.scenes.customize_action" = "Προσαρμογή";
 "settings_details.actions.scenes.empty" = "Καμία σκηνή";

@@ -781,7 +781,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings_details.actions.actions_synced.header" = "Eşitlenen Eylemler";
 "settings_details.actions.carPlay.available.title" = "CarPlay'de göster";
 "settings_details.actions.footer" = "Eylemler, Apple Watch uygulamasında, Uygulama Simgesi Eylemlerinde, Bugün widget'ında ve CarPlay'de kullanılır.";
-"settings_details.actions.footer_mac" = "Eylemler uygulama menüsünde ve widget'larda kullanılır.";
+
 "settings_details.actions.learn.button.title" = "iOS Eylemlerine Giriş";
 "settings_details.actions.scenes.customize_action" = "Özelleştir";
 "settings_details.actions.scenes.empty" = "Sahne Yok";

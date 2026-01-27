@@ -781,7 +781,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.actions.actions_synced.header" = "Sünkroonitud toimingud";
 "settings_details.actions.carPlay.available.title" = "Kuva CarPlays";
 "settings_details.actions.footer" = "Toiminguid kasutatakse Apple Watchi rakenduses, rakenduse ikoonitoimingutes, vidinas Today ja CarPlays.";
-"settings_details.actions.footer_mac" = "Toiminguid kasutatakse rakenduse menüüs ja vidinates.";
+
 "settings_details.actions.learn.button.title" = "iOS-i toimingute tutvustus";
 "settings_details.actions.scenes.customize_action" = "Kohanda";
 "settings_details.actions.scenes.empty" = "Stseene pole";

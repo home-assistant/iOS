@@ -778,7 +778,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings_details.actions.actions_synced.header" = "已同步动作";
 "settings_details.actions.carPlay.available.title" = "在 CarPlay 中显示";
 "settings_details.actions.footer" = "动作可在 Apple 手表应用、应用图标动作、“今日”小组件和 CarPlay 中使用。";
-"settings_details.actions.footer_mac" = "在应用程序菜单和小组件中使用的动作。";
+
 "settings_details.actions.learn.button.title" = "iOS 动作简介";
 "settings_details.actions.scenes.customize_action" = "自定义";
 "settings_details.actions.scenes.empty" = "没有场景";

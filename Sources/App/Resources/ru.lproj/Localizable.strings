@@ -781,7 +781,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings_details.actions.actions_synced.header" = "Синхронизированные действия";
 "settings_details.actions.carPlay.available.title" = "Показывать в CarPlay";
 "settings_details.actions.footer" = "Действия используются в приложении на Apple Watch, при взаимодействии со значком приложения, в виджете \"Сегодня\" и CarPlay.";
-"settings_details.actions.footer_mac" = "Действия используются в меню приложения и виджетах.";
+
 "settings_details.actions.learn.button.title" = "Введение в действия iOS";
 "settings_details.actions.scenes.customize_action" = "Настроить";
 "settings_details.actions.scenes.empty" = "Нет сцен";

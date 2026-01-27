@@ -781,7 +781,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.actions.actions_synced.header" = "Azioni sincronizzate";
 "settings_details.actions.carPlay.available.title" = "Mostra in CarPlay";
 "settings_details.actions.footer" = "Le azioni vengono utilizzate nell'app Apple Watch, nelle azioni dell'icona dell'app, nel widget Oggi e CarPlay.";
-"settings_details.actions.footer_mac" = "Le azioni vengono utilizzate nel menu dell'applicazione e nei widget.";
+
 "settings_details.actions.learn.button.title" = "Introduzione alle azioni di iOS";
 "settings_details.actions.scenes.customize_action" = "Personalizza";
 "settings_details.actions.scenes.empty" = "Nessuna scena";

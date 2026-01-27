@@ -780,7 +780,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "settings_details.actions.actions_synced.header" = "Aksi yang Disinkronkan";
 "settings_details.actions.carPlay.available.title" = "Tampilkan di CarPlay";
 "settings_details.actions.footer" = "Aksi digunakan dalam aplikasi Apple Watch, Aksi Ikon App, widget Hari Ini, dan CarPlay.";
-"settings_details.actions.footer_mac" = "Aksi digunakan dalam menu aplikasi dan widget.";
+
 "settings_details.actions.learn.button.title" = "Pengantar Aksi iOS";
 "settings_details.actions.scenes.customize_action" = "Sesuaikan";
 "settings_details.actions.scenes.empty" = "Tidak Ada Skenario";

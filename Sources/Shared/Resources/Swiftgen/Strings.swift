@@ -3029,8 +3029,6 @@ public enum L10n {
     public enum Actions {
       /// Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.
       public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.footer") }
-      /// Actions are used in the application menu and widgets.
-      public static var footerMac: String { return L10n.tr("Localizable", "settings_details.actions.footer_mac") }
       /// Actions
       public static var title: String { return L10n.tr("Localizable", "settings_details.actions.title") }
       public enum ActionsSynced {
