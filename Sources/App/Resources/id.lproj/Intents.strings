@@ -118,6 +118,7 @@
 "mAibJP" = "Gagal: Home Assistant tidak dapat dijangkau saat ini";
 "mJ6CrP" = "Gagal mengirim ${eventName}: ${error}";
 "mrwamX" = "Assist Dalam Aplikasi";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} dijalankan";
 "mi6B62" = "Data apa yang ingin dikirim dengan event tersebut?";
 "ni0OSe" = "Sekadar konfirmasi, benar Anda menginginkan ‘${server}’?";

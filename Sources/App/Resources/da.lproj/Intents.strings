@@ -118,6 +118,7 @@
 "mAibJP" = "Mislykkedes: Home Assistant er ikke tilgængelig i øjeblikket";
 "mJ6CrP" = "Kunne ikke sende ${eventName} til Home Assistant. Fejl: ${error}";
 "mrwamX" = "Assist i App";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} blev sendt til Home Assistant";
 "mi6B62" = "Hvilke data vil du sende med hændelsen?";
 "ni0OSe" = "Bare for at bekræfte - ønskede du ‘${server}’?";

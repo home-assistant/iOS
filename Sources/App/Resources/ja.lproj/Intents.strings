@@ -118,6 +118,7 @@
 "mAibJP" = "失敗しました: Home Assistantにアクセスできません";
 "mJ6CrP" = "${eventName} の送信に失敗しました: ${error}";
 "mrwamX" = "アプリでアシスト";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} が発生しました";
 "mi6B62" = "イベントでどのようなデータを送信しますか？";
 "ni0OSe" = "確認のために、‘${server}’ が必要ですか？";

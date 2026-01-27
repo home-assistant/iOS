@@ -118,6 +118,7 @@
 "mAibJP" = "Ошибка: Home Assistant в настоящее время недоступен";
 "mJ6CrP" = "Не удалось отправить ${eventName}: ${error}";
 "mrwamX" = "Assist в приложении";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} запущено";
 "mi6B62" = "Какие данные вы хотите отправить вместе с событием?";
 "ni0OSe" = "Просто, чтобы подтвердить, вы хотели ‘${server}’?";

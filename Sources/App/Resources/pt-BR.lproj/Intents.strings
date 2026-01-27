@@ -118,6 +118,7 @@
 "mAibJP" = "Falha: o Home Assistant não está acessível no momento";
 "mJ6CrP" = "Falha ao enviar ${eventName} : ${error}";
 "mrwamX" = "Assistência no aplicativo";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} disparado";
 "mi6B62" = "Quais dados você deseja enviar com o evento?";
 "ni0OSe" = "Só para confirmar, você queria '${server}'?";

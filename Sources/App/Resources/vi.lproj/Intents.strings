@@ -118,6 +118,7 @@
 "mAibJP" = "Failed: Home Assistant is not currently reachable";
 "mJ6CrP" = "Failed to send ${eventName}: ${error}";
 "mrwamX" = "Assist In App";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} fired";
 "mi6B62" = "What data do you want to send with the event?";
 "ni0OSe" = "Chỉ để xác nhận, bạn muốn ‘${server}’?";

@@ -118,6 +118,7 @@
 "mAibJP" = "Sikertelen: A Home Assistant jelenleg nem érhető el";
 "mJ6CrP" = "Nem sikerült elküldeni, ${eventName}: ${error}";
 "mrwamX" = "Assist az alkalmazásban";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} aktiválva";
 "mi6B62" = "Milyen adatokat szeretne küldeni az eseménnyel?";
 "ni0OSe" = "Kérem, erősítse meg: '${server}'?";

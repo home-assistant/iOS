@@ -118,6 +118,7 @@
 "mAibJP" = "Ha Fallado: Hombre Assistant no está accesible actualmente";
 "mJ6CrP" = "No se ha podido enviar ${eventName}: ${error}";
 "mrwamX" = "Assist en la App";
+"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} fired";
 "mi6B62" = "What data do you want to send with the event?";
 "ni0OSe" = "Just to confirm, you wanted ‘${server}’?";
