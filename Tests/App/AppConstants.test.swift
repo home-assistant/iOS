@@ -43,6 +43,10 @@ struct AppConstantsTests {
             AppConstants.WebURLs.companionLocalPush
                 .absoluteString == "https://companion.home-assistant.io/app/ios/local-push"
         )
+        assert(
+            AppConstants.WebURLs.nfcDocs
+                .absoluteString == "https://companion.home-assistant.io/app/ios/nfc"
+        )
     }
 
     @Test func testQueryItemsRawValues() async throws {
