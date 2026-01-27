@@ -303,6 +303,8 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.reset.confirmation.message" = "This will reset all gestures to their default values.";
+"gestures.reset.confirmation.title" = "Reset Gestures?";
 "gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
