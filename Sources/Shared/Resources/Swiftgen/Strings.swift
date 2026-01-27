@@ -1626,7 +1626,7 @@ public enum L10n {
   }
 
   public enum LegacyActions {
-    /// Legacy iOS Actions is not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.
+    /// Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.
     public static var disclaimer: String { return L10n.tr("Localizable", "legacy_actions.disclaimer") }
   }
 
