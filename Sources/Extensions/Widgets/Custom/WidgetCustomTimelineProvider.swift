@@ -1,6 +1,7 @@
 import AppIntents
 import GRDB
 import Shared
+import SwiftUI
 import WidgetKit
 
 struct WidgetCustomEntry: TimelineEntry {
@@ -14,6 +15,12 @@ struct WidgetCustomEntry: TimelineEntry {
     struct ItemState: Codable {
         let value: String
         let domainState: Domain.State?
+        let hexColor: String?
+
+        var color: Color? {
+            guard let hexColor else { return nil }
+            return Color(hex: hexColor)
+        }
     }
 }
 
@@ -157,7 +164,8 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
                 states[item] =
                     .init(
                         value: "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")",
-                        domainState: state.domainState
+                        domainState: state.domainState,
+                        hexColor: state.color?.hex()
                     )
             } else {
                 Current.Log

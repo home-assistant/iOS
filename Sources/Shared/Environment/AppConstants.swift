@@ -173,6 +173,10 @@ public enum AppConstants {
         )?.withWidgetAuthenticity()
     }
 
+    public static var createCustomWidgetURL: URL {
+        URL(string: "\(AppConstants.deeplinkURL.absoluteString)createCustomWidget")!
+    }
+
     /// The App Group ID used by the app and extensions for sharing data.
     public static var AppGroupID: String {
         "group." + BundleID.lowercased()
