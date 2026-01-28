@@ -89,7 +89,7 @@ struct WidgetCustom: Widget {
                     return Color.gray
                 } else if showStates, [.light, .switch, .inputBoolean, .cover, .fan].contains(magicItem.domain) {
                     if state?.domainState?.isActive ?? false {
-                        return magicItemIconColor
+                        return state?.color ?? magicItemIconColor
                     } else {
                         return Color.gray
                     }

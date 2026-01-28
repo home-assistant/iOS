@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 import HAKit
+import SwiftUI
 
 public final class ControlEntityProvider {
     public enum States: String {
@@ -16,11 +17,13 @@ public final class ControlEntityProvider {
         public let value: String
         public let unitOfMeasurement: String?
         public let domainState: Domain.State?
+        public let color: Color?
 
-        public init(value: String, unitOfMeasurement: String?, domainState: Domain.State?) {
+        public init(value: String, unitOfMeasurement: String?, domainState: Domain.State?, color: Color? = nil) {
             self.value = value
             self.unitOfMeasurement = unitOfMeasurement
             self.domainState = domainState
+            self.color = color
         }
     }
 
@@ -152,27 +155,75 @@ public final class ControlEntityProvider {
             entityId: entityId,
             stateValue: stateValue
         )
-        let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
         stateValue = stateValue.capitalizedFirst
+
+        // Extract attributes and compute icon color
+        let attributes = state?["attributes"] as? [String: Any]
+        // Parse color_mode as String if present
+        let colorMode: String? = {
+            if let mode = attributes?["color_mode"] as? String { return mode }
+            return nil
+        }()
+        // Parse rgb_color as array of Ints if present (expecting [R, G, B])
+        let rgbColor: [Int]? = {
+            if let rgb = attributes?["rgb_color"] as? [Int] { return rgb }
+            if let rgbAny = attributes?["rgb_color"] as? [Any] {
+                let ints = rgbAny.compactMap { $0 as? Int }
+                return ints.count == 3 ? ints : nil
+            }
+            return nil
+        }()
+        // Parse hs_color as array of Doubles if present (expecting [H, S])
+        let hsColor: [Double]? = {
+            if let hs = attributes?["hs_color"] as? [Double] { return hs }
+            if let hsAny = attributes?["hs_color"] as? [Any] {
+                let doubles = hsAny.compactMap { value -> Double? in
+                    if let d = value as? Double { return d }
+                    if let n = value as? NSNumber { return n.doubleValue }
+                    if let s = value as? String, let d = Double(s) { return d }
+                    return nil
+                }
+                return doubles.count >= 2 ? Array(doubles.prefix(2)) : nil
+            }
+            return nil
+        }()
+
+        let unitOfMeasurement = attributes?["unit_of_measurement"] as? String
 
         let domain = Domain(entityId: entityId)
         if let deviceClass = {
-            let rawDeviceClass = (state?["attributes"] as? [String: Any])?["device_class"] as? String
+            let rawDeviceClass = attributes?["device_class"] as? String
             return DeviceClass(rawValue: rawDeviceClass ?? "")
         }(),
             let domainState = Domain.State(rawValue: stateValue.lowercased()),
             unitOfMeasurement == nil,
             let stateForDeviceClass = domain?.stateForDeviceClass(deviceClass, state: domainState) {
+            let computedColor = EntityIconColorProvider.iconColor(
+                domain: Domain(entityId: entityId) ?? .switch,
+                state: stateValue.lowercased(),
+                colorMode: colorMode,
+                rgbColor: rgbColor,
+                hsColor: hsColor
+            )
             return .init(
                 value: stateForDeviceClass,
                 unitOfMeasurement: nil,
-                domainState: domainState
+                domainState: domainState,
+                color: computedColor
             )
         } else {
+            let computedColor = EntityIconColorProvider.iconColor(
+                domain: Domain(entityId: entityId) ?? .switch,
+                state: stateValue.lowercased(),
+                colorMode: colorMode,
+                rgbColor: rgbColor,
+                hsColor: hsColor
+            )
             return .init(
                 value: stateValue,
                 unitOfMeasurement: unitOfMeasurement,
-                domainState: Domain.State(rawValue: stateValue.lowercased())
+                domainState: Domain.State(rawValue: stateValue.lowercased()),
+                color: computedColor
             )
         }
     }
