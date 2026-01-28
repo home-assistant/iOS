@@ -10,7 +10,12 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var urlHandler: IncomingURLHandler?
 
     private var updateDatabaseTask: Task<Void, Never>?
-    private var backgroundTimestamp: Date?
+    
+    /// Stores the timestamp when the app enters background, used to determine if auto-refresh is needed on reactivation
+    internal var backgroundTimestamp: Date?
+    
+    /// Time threshold (in seconds) after which WebViewController should refresh when returning from background
+    private let backgroundRefreshThreshold: TimeInterval = 5 * 60
 
     // swiftlint:disable cyclomatic_complexity
     func scene(
@@ -136,9 +141,8 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         // Check if app was in background for 5 minutes or more
         if let backgroundTimestamp = backgroundTimestamp {
             let timeInterval = Date().timeIntervalSince(backgroundTimestamp)
-            let fiveMinutesInSeconds: TimeInterval = 5 * 60
             
-            if timeInterval >= fiveMinutesInSeconds {
+            if timeInterval >= backgroundRefreshThreshold {
                 // Refresh WebViewController if it exists
                 windowController?.webViewControllerPromise.done { webViewController in
                     webViewController.refresh()

@@ -32,9 +32,8 @@ final class WebViewSceneDelegateTests: XCTestCase {
         sut.sceneDidEnterBackground(firstScene)
 
         // Then
-        let backgroundTimestamp = sut.value(forKey: "backgroundTimestamp") as? Date
-        XCTAssertNotNil(backgroundTimestamp)
-        XCTAssertGreaterThanOrEqual(backgroundTimestamp ?? Date.distantPast, beforeTimestamp)
+        XCTAssertNotNil(sut.backgroundTimestamp)
+        XCTAssertGreaterThanOrEqual(sut.backgroundTimestamp ?? Date.distantPast, beforeTimestamp)
     }
 
     func testSceneDidBecomeActiveWithNoBackgroundTimestampDoesNotRefresh() {
@@ -67,7 +66,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
         // Set background timestamp to 1 minute ago
         let oneMinuteAgo = Date().addingTimeInterval(-60)
-        sut.setValue(oneMinuteAgo, forKey: "backgroundTimestamp")
+        sut.backgroundTimestamp = oneMinuteAgo
 
         // When
         sut.sceneDidBecomeActive(firstScene)
@@ -92,7 +91,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
         // Set background timestamp to 6 minutes ago
         let sixMinutesAgo = Date().addingTimeInterval(-360)
-        sut.setValue(sixMinutesAgo, forKey: "backgroundTimestamp")
+        sut.backgroundTimestamp = sixMinutesAgo
 
         // When
         sut.sceneDidBecomeActive(firstScene)
@@ -115,9 +114,9 @@ final class WebViewSceneDelegateTests: XCTestCase {
             return
         }
 
-        // Set background timestamp
-        let fiveMinutesAgo = Date().addingTimeInterval(-300)
-        sut.setValue(fiveMinutesAgo, forKey: "backgroundTimestamp")
+        // Set background timestamp to 6 minutes ago (more than 5 to ensure it would trigger refresh)
+        let sixMinutesAgo = Date().addingTimeInterval(-360)
+        sut.backgroundTimestamp = sixMinutesAgo
 
         // When
         sut.sceneDidBecomeActive(firstScene)
@@ -130,8 +129,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
 
         // Then
-        let backgroundTimestamp = sut.value(forKey: "backgroundTimestamp") as? Date
-        XCTAssertNil(backgroundTimestamp)
+        XCTAssertNil(sut.backgroundTimestamp)
     }
 }
 
