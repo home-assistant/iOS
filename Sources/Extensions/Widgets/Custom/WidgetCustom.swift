@@ -33,8 +33,7 @@ struct WidgetCustom: Widget {
     }
 
     private var emptyView: some View {
-        let url = URL(string: "\(AppConstants.deeplinkURL.absoluteString)createCustomWidget")!
-        return Link(destination: url.withWidgetAuthenticity()) {
+        Link(destination: AppConstants.createCustomWidgetURL.withWidgetAuthenticity()) {
             VStack(spacing: DesignSystem.Spaces.two) {
                 Image(systemSymbol: .squareBadgePlusFill)
                     .foregroundStyle(Color.haPrimary)
@@ -88,11 +87,11 @@ struct WidgetCustom: Widget {
 
                 if !widget.itemsStates.isEmpty {
                     return Color.gray
-                } else if showStates, [.light, .switch, .inputBoolean].contains(magicItem.domain) {
-                    if state?.domainState == Domain.State.off {
-                        return Color.gray
-                    } else {
+                } else if showStates, [.light, .switch, .inputBoolean, .cover, .fan].contains(magicItem.domain) {
+                    if state?.domainState?.isActive ?? false {
                         return magicItemIconColor
+                    } else {
+                        return Color.gray
                     }
                 } else {
                     return magicItemIconColor

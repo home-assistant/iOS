@@ -172,7 +172,7 @@ public final class ControlEntityProvider {
             return .init(
                 value: stateValue,
                 unitOfMeasurement: unitOfMeasurement,
-                domainState: Domain.State(rawValue: stateValue)
+                domainState: Domain.State(rawValue: stateValue.lowercased())
             )
         }
     }
