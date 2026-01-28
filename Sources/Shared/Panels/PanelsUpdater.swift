@@ -62,16 +62,18 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
             )
         }
 
-        do {
-            try Current.database().write { db in
-                try AppPanel.filter(Column(DatabaseTables.AppPanel.serverId.rawValue) == server.identifier.rawValue)
-                    .deleteAll(db)
-                for panel in appPanels {
-                    try panel.save(db)
+        DispatchQueue.global(qos: .utility).async {
+            do {
+                try Current.database().write { db in
+                    try AppPanel.filter(Column(DatabaseTables.AppPanel.serverId.rawValue) == server.identifier.rawValue)
+                        .deleteAll(db)
+                    for panel in appPanels {
+                        try panel.save(db)
+                    }
                 }
+            } catch {
+                Current.Log.error("Error saving panels in database: \(error)")
             }
-        } catch {
-            Current.Log.error("Error saving panels in database: \(error)")
         }
     }
 }
