@@ -65,7 +65,7 @@ custom_rules:
     severity: error
     excluded:
       - "Tests"
-  sf_safe_symbol:
+  explicit_safe_symbol_usage:
     name: "Safe SFSymbol"
     message: "Use `SFSafeSymbols` via `systemSymbol` parameters for type safety."
     regex: >
