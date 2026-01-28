@@ -9,11 +9,13 @@ enum WidgetType: String {
 }
 
 struct WidgetBasicView: View {
+    @Environment(\.widgetFamily) private var widgetFamily
     let type: WidgetType
     let rows: [[WidgetBasicViewModel]]
     let sizeStyle: WidgetBasicSizeStyle
 
     private let opacityWhenDisabled: CGFloat = 0.3
+    private let maxTileHeightWhenCompact: CGFloat = 68
 
     var body: some View {
         let spacing = sizeStyle == .compressed ? .zero : DesignSystem.Spaces.one
@@ -22,35 +24,44 @@ struct WidgetBasicView: View {
                 HStack(spacing: spacing) {
                     ForEach(column) { model in
                         itemContent(model: model)
+                            .frame(maxWidth: .infinity)
+                    }
+                    // Constraint item to single column
+                    if column.count == 1, widgetFamily != .systemSmall, sizeStyle == .compact {
+                        Spacer()
+                            .frame(maxWidth: .infinity)
                     }
                 }
             }
         }
-        .padding([.single, .compressed].contains(sizeStyle) ? 0 : DesignSystem.Spaces.one)
+        .frame(maxHeight: .infinity, alignment: .top)
+        .padding([.single, .compressed].contains(sizeStyle) ? .zero : DesignSystem.Spaces.one)
     }
 
-    @ViewBuilder
     private func itemContent(model: WidgetBasicViewModel) -> some View {
-        if #available(iOS 17, *) {
-            if model.showConfirmation {
-                confirmationContent(model: model)
-            } else if case .widgetURL = model.interactionType {
-                if model.requiresConfirmation {
-                    linkThatRequiresConfirmation(model: model)
+        Group {
+            if #available(iOS 17, *) {
+                if model.showConfirmation {
+                    confirmationContent(model: model)
+                } else if case .widgetURL = model.interactionType {
+                    if model.requiresConfirmation {
+                        linkThatRequiresConfirmation(model: model)
+                    } else {
+                        legacyLinkContent(model: model)
+                    }
+                } else if let intent = intent(for: model, isConfirmationDone: false) {
+                    Button(intent: intent) {
+                        tintedWrapperView(model: model, sizeStyle: sizeStyle)
+                    }
+                    .buttonStyle(.plain)
                 } else {
-                    legacyLinkContent(model: model)
+                    Text("Unknown widget configuration (2)")
                 }
-            } else if let intent = intent(for: model, isConfirmationDone: false) {
-                Button(intent: intent) {
-                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
-                }
-                .buttonStyle(.plain)
             } else {
-                Text("Unknown widget configuration (2)")
+                legacyLinkContent(model: model)
             }
-        } else {
-            legacyLinkContent(model: model)
         }
+        .frame(maxHeight: (sizeStyle == .compact && widgetFamily != .systemSmall) ? maxTileHeightWhenCompact : nil)
     }
 
     @available(iOS 16.0, *)
@@ -234,7 +245,7 @@ struct WidgetBasicView: View {
                         // Mimic default widget button style
                         .frame(height: 30)
                         .background(sizeStyle == .compressed ? nil : Color.haPrimary.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.twoAndHalf))
                 )
             }
         }()
