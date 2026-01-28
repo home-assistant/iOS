@@ -177,7 +177,7 @@ public final class ControlEntityProvider {
     }
 
     private func parseRGBColor(from value: Any?) -> [Int]? {
-        if let rgb = value as? [Int], rgb.count == 3 {
+        if let rgb = value as? [Int] {
             return rgb
         }
         if let rgbAny = value as? [Any] {
@@ -188,8 +188,8 @@ public final class ControlEntityProvider {
     }
 
     private func parseHSColor(from value: Any?) -> [Double]? {
-        if let hs = value as? [Double], hs.count >= 2 {
-            return Array(hs.prefix(2))
+        if let hs = value as? [Double] {
+            return hs
         }
         if let hsAny = value as? [Any] {
             let doubles = hsAny.compactMap { value -> Double? in
