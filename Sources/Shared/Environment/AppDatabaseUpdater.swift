@@ -492,8 +492,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     /// Persists areas and their entity relationships for a server.
-    /// Uses a single asyncWrite transaction for batching, replaces existing rows, and deletes stale ones.
-    /// For simplicity and speed, we upsert via `save(onConflict: .replace)`; deeper diffing can be added if needed.
+    /// Deletes all existing areas for the server and inserts fresh data in a single transaction.
     private func saveAreasToDatabase(
         areas: [HAAreasRegistryResponse],
         areasAndEntities: [String: Set<String>],
@@ -519,33 +518,18 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             return result
         }.value
 
-        // Nothing to persist; keep going (delete pass below might still remove stale rows).
-        if appAreas.isEmpty {
-            Current.Log.verbose("No areas to save for server \(serverId)")
-        }
-
         do {
             let dbTimer = ProfilingTimer("Step 5.2.2: Database write transaction")
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                // Database writes are already async and happen on GRDB's background queue
                 Current.database().asyncWrite { db in
-                    let existingAreaIds = try AppArea
+                    // Delete all existing areas for this server
+                    try AppArea
                         .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
-                        .fetchAll(db).map(\.id)
+                        .deleteAll(db)
 
-                    // Insert or update new areas
+                    // Insert fresh areas
                     for area in appAreas {
-                        try area.save(db, onConflict: .replace)
-                    }
-
-                    // Delete areas that no longer exist
-                    let newAreaIds = areas.map { "\(serverId)-\($0.areaId)" }
-                    let areaIdsToDelete = existingAreaIds.filter { !newAreaIds.contains($0) }
-
-                    if !areaIdsToDelete.isEmpty {
-                        try AppArea
-                            .filter(areaIdsToDelete.contains(Column(DatabaseTables.AppArea.id.rawValue)))
-                            .deleteAll(db)
+                        try area.insert(db)
                     }
                 } completion: { _, result in
                     switch result {
@@ -573,8 +557,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    /// Persists the entity registry list-for-display for a server with batched writes and stale deletions.
-    /// Builds the payload with a streaming loop to reduce intermediate allocations vs filter+map.
+    /// Persists the entity registry list-for-display for a server.
+    /// Deletes all existing records for the server and inserts fresh data in a single transaction.
     private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) async {
         // Check for cancellation before starting database work
         guard !isUpdateCancelled() else {
@@ -606,28 +590,15 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                // Note: we batch entities into memory before this write. This is a trade-off for simpler, atomic
-                // updates;
-                // if memory usage becomes an issue for very large datasets, consider a streaming or chunked approach.
                 Current.database().asyncWrite { [entitiesListForDisplay] db in
-                    // Get existing IDs for this server
-                    let existingIds = try AppEntityRegistryListForDisplay
+                    // Delete all existing records for this server
+                    try AppEntityRegistryListForDisplay
                         .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
-                        .fetchAll(db)
-                        .map(\.id)
+                        .deleteAll(db)
 
-                    // Insert or update new records
+                    // Insert fresh records
                     for record in entitiesListForDisplay {
-                        try record.save(db, onConflict: .replace)
-                    }
-
-                    // Delete records that no longer exist
-                    let newIds = entitiesListForDisplay.map(\.id)
-                    let idsToDelete = existingIds.filter { !newIds.contains($0) }
-
-                    if !idsToDelete.isEmpty {
-                        try AppEntityRegistryListForDisplay
-                            .deleteAll(db, keys: idsToDelete)
+                        try record.insert(db)
                     }
                 } completion: { _, result in
                     switch result {
@@ -654,7 +625,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    /// Persists the entity registry for a server using a single transaction and differential deletes.
+    /// Persists the entity registry for a server.
+    /// Deletes all existing records for the server and inserts fresh data in a single transaction.
     private func saveEntityRegistry(_ registryEntries: [EntityRegistryEntry], serverId: String) async {
         // If cancelled before touching the DB, bail out early to avoid unnecessary work.
         guard !isUpdateCancelled() else {
@@ -677,24 +649,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     return
                 }
                 Current.database().asyncWrite { db in
-                    // Get existing unique IDs for this server
-                    let existingIds = try AppEntityRegistry
+                    // Delete all existing registry entries for this server
+                    try AppEntityRegistry
                         .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                        .fetchAll(db)
-                        .map(\.id)
+                        .deleteAll(db)
 
-                    // Insert or update new registry entries
+                    // Insert fresh registry entries
                     for registry in appEntityRegistries {
-                        try registry.save(db, onConflict: .replace)
-                    }
-
-                    // Delete registry entries that no longer exist
-                    let newIds = appEntityRegistries.map(\.id)
-                    let idsToDelete = existingIds.filter { !newIds.contains($0) }
-
-                    if !idsToDelete.isEmpty {
-                        try AppEntityRegistry
-                            .deleteAll(db, keys: idsToDelete)
+                        try registry.insert(db)
                     }
                 } completion: { _, result in
                     switch result {
@@ -724,7 +686,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    /// Persists the device registry for a server using a single transaction and differential deletes.
+    /// Persists the device registry for a server.
+    /// Deletes all existing records for the server and inserts fresh data in a single transaction.
     private func saveDeviceRegistry(_ registryEntries: [DeviceRegistryEntry], serverId: String) async {
         // If cancelled before touching the DB, bail out early to avoid unnecessary work.
         guard !isUpdateCancelled() else {
@@ -747,24 +710,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     return
                 }
                 Current.database().asyncWrite { db in
-                    // Get existing device IDs for this server
-                    let existingIds = try AppDeviceRegistry
+                    // Delete all existing device registry entries for this server
+                    try AppDeviceRegistry
                         .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
-                        .fetchAll(db)
-                        .map(\.id)
+                        .deleteAll(db)
 
-                    // Insert or update new registry entries
+                    // Insert fresh registry entries
                     for registry in appDeviceRegistries {
-                        try registry.save(db, onConflict: .replace)
-                    }
-
-                    // Delete registry entries that no longer exist
-                    let newIds = appDeviceRegistries.map(\.id)
-                    let idsToDelete = existingIds.filter { !newIds.contains($0) }
-
-                    if !idsToDelete.isEmpty {
-                        try AppDeviceRegistry
-                            .deleteAll(db, keys: idsToDelete)
+                        try registry.insert(db)
                     }
                 } completion: { _, result in
                     switch result {
