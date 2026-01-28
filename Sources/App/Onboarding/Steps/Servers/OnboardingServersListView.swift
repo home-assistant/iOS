@@ -1,6 +1,7 @@
 import Combine
 import Shared
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct OnboardingServersListView: View {
     enum Constants {
@@ -17,6 +18,13 @@ struct OnboardingServersListView: View {
 
     @State private var showDocumentation = false
     @State private var showManualInput = false
+    @State private var showCertificateImport = false
+    @State private var certificateImportData: Data?
+    @State private var certificateImportName = ""
+    @State private var certificateImportPassword = ""
+    @State private var certificateImportError: String?
+    @State private var certificateImportSuccessMessage: String?
+    @State private var showCertificatePasswordSheet = false
     @State private var screenLoaded = false
     @State private var autoConnectWorkItem: DispatchWorkItem?
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
@@ -96,6 +104,26 @@ struct OnboardingServersListView: View {
                 viewModel.manualInputLoading = true
                 viewModel.selectInstance(.init(manualURL: connectURL), presentingController: presentingViewController)
             }
+        }
+        .fileImporter(
+            isPresented: $showCertificateImport,
+            allowedContentTypes: [.pkcs12],
+            onCompletion: handleCertificateFileImport
+        )
+        .sheet(isPresented: $showCertificatePasswordSheet) {
+            certificatePasswordSheet
+        }
+        .alert(
+            item: Binding<AlertItem?>(
+                get: {
+                    certificateImportSuccessMessage.map { AlertItem(id: $0, title: $0) }
+                },
+                set: {
+                    certificateImportSuccessMessage = $0?.title
+                }
+            )
+        ) { item in
+            Alert(title: Text(item.title), dismissButton: .default(Text(L10n.okLabel)))
         }
         .fullScreenCover(isPresented: .init(get: {
             viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
@@ -182,7 +210,16 @@ struct OnboardingServersListView: View {
         }
     }
 
+    @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                showCertificateImport = true
+            } label: {
+                Image(systemSymbol: .lock)
+            }
+            .accessibilityLabel(L10n.Settings.ConnectionSection.ClientCertificate.title)
+        }
         ToolbarItem(placement: .topBarTrailing) {
             if prefillURL != nil {
                 CloseButton {
@@ -389,10 +426,100 @@ struct OnboardingServersListView: View {
             .frame(height: 1)
             .foregroundStyle(Color(uiColor: .secondaryLabel))
     }
+
+    // MARK: - Certificate Import
+
+    private var certificatePasswordSheet: some View {
+        NavigationView {
+            Form {
+                Section {
+                    TextField(
+                        L10n.Settings.ConnectionSection.ClientCertificate.Import.name,
+                        text: $certificateImportName
+                    )
+                    SecureField(
+                        L10n.Settings.ConnectionSection.ClientCertificate.Import.password,
+                        text: $certificateImportPassword
+                    )
+                } footer: {
+                    if let error = certificateImportError {
+                        Text(error)
+                            .foregroundStyle(.red)
+                    }
+                }
+
+                Section {
+                    Button(L10n.Settings.ConnectionSection.ClientCertificate.Import.importButton) {
+                        performCertificateImport()
+                    }
+                    .disabled(certificateImportName.isEmpty)
+                }
+            }
+            .navigationTitle(L10n.Settings.ConnectionSection.ClientCertificate.Import.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(L10n.Settings.ConnectionSection.ClientCertificate.Import.cancel) {
+                        resetCertificateImportState()
+                    }
+                }
+            }
+        }
+    }
+
+    private func handleCertificateFileImport(_ result: Result<URL, Error>) {
+        do {
+            let selectedFile = try result.get()
+            guard selectedFile.startAccessingSecurityScopedResource() else {
+                Current.Log.error("Cannot access security scoped resource for certificate")
+                return
+            }
+            defer { selectedFile.stopAccessingSecurityScopedResource() }
+
+            certificateImportData = try Data(contentsOf: selectedFile)
+            certificateImportName = selectedFile.deletingPathExtension().lastPathComponent
+            certificateImportPassword = ""
+            certificateImportError = nil
+            showCertificatePasswordSheet = true
+        } catch {
+            Current.Log.error("Error importing certificate file: \(error)")
+        }
+    }
+
+    private func performCertificateImport() {
+        guard let data = certificateImportData else { return }
+
+        do {
+            try ClientCertificateManager.shared.importP12(
+                data: data,
+                password: certificateImportPassword,
+                name: certificateImportName
+            )
+            resetCertificateImportState()
+            certificateImportSuccessMessage = "Imported \(certificateImportName)"
+        } catch let error as ClientCertificateError {
+            certificateImportError = error.localizedDescription
+        } catch {
+            certificateImportError = error.localizedDescription
+        }
+    }
+
+    private func resetCertificateImportState() {
+        showCertificatePasswordSheet = false
+        certificateImportData = nil
+        certificateImportName = ""
+        certificateImportPassword = ""
+        certificateImportError = nil
+    }
 }
 
 #Preview {
     NavigationView {
         OnboardingServersListView(prefillURL: nil, onboardingStyle: .secondary)
     }
+}
+
+struct AlertItem: Identifiable {
+    var id: String
+    var title: String
 }

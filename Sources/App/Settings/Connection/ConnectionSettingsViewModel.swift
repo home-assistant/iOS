@@ -47,6 +47,13 @@ final class ConnectionSettingsViewModel: ObservableObject {
         server.info.version <= .updateLocationGPSOptional
     }
 
+    var clientCertificateStatus: String {
+        if let cert = server.info.connection.clientCertificate {
+            return cert.name
+        }
+        return L10n.Settings.ConnectionSection.ClientCertificate.none
+    }
+
     // MARK: - Initialization
 
     init(server: Server) {

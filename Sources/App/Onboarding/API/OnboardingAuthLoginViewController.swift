@@ -84,6 +84,14 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            if let cert = authDetails.clientCertificate,
+               let credential = ClientCertificateManager.shared.credential(for: cert) {
+                completionHandler(.useCredential, credential)
+                return
+            }
+        }
+
         let result = authDetails.exceptions.evaluate(challenge)
         completionHandler(result.0, result.1)
     }
