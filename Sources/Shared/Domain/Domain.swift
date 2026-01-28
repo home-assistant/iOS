@@ -43,6 +43,11 @@ public enum Domain: String, CaseIterable {
 
         case unknown
         case unavailable
+
+        /// States that represent an "active" condition
+        public var isActive: Bool {
+            Domain.activeStates.contains(self)
+        }
     }
 
     /// States that represent an "active" condition
