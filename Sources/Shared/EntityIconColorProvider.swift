@@ -1,9 +1,8 @@
 import Foundation
-import Shared
 import SwiftUI
 
-enum EntityIconColorProvider {
-    static func iconColor(
+public enum EntityIconColorProvider {
+    public static func iconColor(
         domain: Domain,
         state: String,
         colorMode: String?,
@@ -61,5 +60,22 @@ enum EntityIconColorProvider {
         }
 
         return domain.accentColor
+    }
+}
+
+public extension Domain {
+    var accentColor: Color {
+        switch self {
+        case .light:
+            Color.Domain.light
+        case .switch:
+            Color.Domain.switch
+        case .fan:
+            Color.Domain.fan
+        case .cover:
+            Color.Domain.cover
+        default:
+            Color.haPrimary
+        }
     }
 }

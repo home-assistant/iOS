@@ -673,7 +673,6 @@
 		423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
-		423622A02F05587800391BD0 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
 		4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4237E6382E5333370023B673 /* ZIPFoundation */; };
 		42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
@@ -847,6 +846,8 @@
 		428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */; };
 		428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */; };
 		4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */; };
+		4286A2EF2F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
+		4286A2F02F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
 		42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42881BD32DDF12340079BDCB /* SwiftUI+SafeArea.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
@@ -882,7 +883,6 @@
 		428DC00D2F0D8BD5003B08D5 /* FanControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC00C2F0D8BD5003B08D5 /* FanControlsViewModel.swift */; };
 		428DC00F2F0D8BF5003B08D5 /* FanControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */; };
 		428DC0112F0D8C96003B08D5 /* FanControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */; };
-		428DC0142F0D921F003B08D5 /* Domain+AccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */; };
 		428DC0162F0DE882003B08D5 /* EntityConfigurationWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0152F0DE882003B08D5 /* EntityConfigurationWebView.swift */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
@@ -2547,7 +2547,6 @@
 		428DC00C2F0D8BD5003B08D5 /* FanControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlsViewModel.swift; sourceTree = "<group>"; };
 		428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlsView.swift; sourceTree = "<group>"; };
 		428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlIntents.swift; sourceTree = "<group>"; };
-		428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Domain+AccentColor.swift"; sourceTree = "<group>"; };
 		428DC0152F0DE882003B08D5 /* EntityConfigurationWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityConfigurationWebView.swift; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModelTests.swift; sourceTree = "<group>"; };
@@ -5824,7 +5823,6 @@
 			children = (
 				42DFE8772EFB08C80058DADB /* HomeView.swift */,
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
-				428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
 				4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */,
 				420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */,
@@ -5838,7 +5836,6 @@
 			isa = PBXGroup;
 			children = (
 				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
-				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
 				42C60F902F07FB0F0071A6F6 /* MoreInfoDialog */,
 				426D2F022F17E8530062C359 /* HomeEntityTileView.swift */,
 			);
@@ -7076,6 +7073,7 @@
 			isa = PBXGroup;
 			children = (
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
+				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
 				429C33C02F17A6CF0033EF5E /* Models */,
 				4245DC022EBA42C3005E0E04 /* AreasService.swift */,
 				420CFC612D3F9C15009A94F3 /* Database */,
@@ -9433,7 +9431,6 @@
 				42C60FA22F0811AE0071A6F6 /* SwitchControlIntents.swift in Sources */,
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
-				428DC0142F0D921F003B08D5 /* Domain+AccentColor.swift in Sources */,
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,
@@ -9479,7 +9476,6 @@
 				42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */,
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
-				423622A02F05587800391BD0 /* EntityIconColorProvider.swift in Sources */,
 				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
@@ -9701,6 +9697,7 @@
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
 				42462E6E2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */,
 				424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
+				4286A2F02F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */,
 				42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */,
 				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				42DC8B7A2E169FA300D9999E /* Color+Hex.swift in Sources */,
@@ -9986,6 +9983,7 @@
 				11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */,
 				46C62BA12D8A3799002C0001 /* SnapshottablePreviewConfigurations.swift in Sources */,
 				42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
+				4286A2EF2F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
