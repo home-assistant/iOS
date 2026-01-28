@@ -20,8 +20,6 @@ final class HAppEntityTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.AppEntity.name.rawValue, .text).notNull()
                     t.column(DatabaseTables.AppEntity.icon.rawValue, .text)
                     t.column(DatabaseTables.AppEntity.rawDeviceClass.rawValue, .text)
-                    t.column(DatabaseTables.AppEntity.hiddenBy.rawValue, .text)
-                    t.column(DatabaseTables.AppEntity.disabledBy.rawValue, .text)
                 }
             }
         } else {

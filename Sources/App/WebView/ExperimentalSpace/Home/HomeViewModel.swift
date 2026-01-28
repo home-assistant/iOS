@@ -288,8 +288,6 @@ final class HomeViewModel: ObservableObject {
         let serverId = server.identifier.rawValue
         let observation = ValueObservation.tracking { db in
             try HAAppEntity
-                .filter(Column(DatabaseTables.AppEntity.hiddenBy.rawValue) == nil)
-                .filter(Column(DatabaseTables.AppEntity.disabledBy.rawValue) == nil)
                 .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
                 .fetchAll(db)
         }
