@@ -15,6 +15,11 @@ struct WidgetBasicView: View {
     let sizeStyle: WidgetBasicSizeStyle
 
     private let opacityWhenDisabled: CGFloat = 0.3
+    /// Maximum tile height used for compact layouts in non-small widget families.
+    /// This value was measured to keep a single row tile (icon + title + subtitle)
+    /// visually balanced within the widget's vertical constraints, accounting for
+    /// default padding and text styles from the design system. If typography or
+    /// vertical paddings change in `DesignSystem`, this value should be revisited.
     private let maxTileHeightWhenCompact: CGFloat = 68
 
     var body: some View {
