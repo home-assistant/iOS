@@ -127,29 +127,19 @@ public final class ControlEntityProvider {
             }
         }
 
-        var data: HAData?
-        switch result {
-        case let .success(resultData):
-            data = resultData
-        case let .failure(error):
-            Current.Log.error("Failed to get state: \(error)")
+        guard let data = try? result.get() else {
+            if case let .failure(error) = result {
+                Current.Log.error("Failed to get state: \(error)")
+            }
             return nil
         }
 
-        guard let data else {
-            return nil
-        }
-
-        var state: [String: Any]?
-        switch data {
-        case let .dictionary(response):
-            state = response
-        default:
+        guard case let .dictionary(state) = data else {
             Current.Log.error("Failed to get state bad response data")
             return nil
         }
 
-        var stateValue = (state?["state"] as? String) ?? "N/A"
+        var stateValue = (state["state"] as? String) ?? "N/A"
         stateValue = StatePrecision.adjustPrecision(
             serverId: server.identifier.rawValue,
             entityId: entityId,
@@ -157,53 +147,80 @@ public final class ControlEntityProvider {
         )
         stateValue = stateValue.capitalizedFirst
 
-        // Extract attributes and compute icon color
-        let attributes = state?["attributes"] as? [String: Any]
-        // Parse color_mode as String if present
-        let colorMode: String? = {
-            if let mode = attributes?["color_mode"] as? String { return mode }
-            return nil
-        }()
-        // Parse rgb_color as array of Ints if present (expecting [R, G, B])
-        let rgbColor: [Int]? = {
-            if let rgb = attributes?["rgb_color"] as? [Int] { return rgb }
-            if let rgbAny = attributes?["rgb_color"] as? [Any] {
-                let ints = rgbAny.compactMap { $0 as? Int }
-                return ints.count == 3 ? ints : nil
-            }
-            return nil
-        }()
-        // Parse hs_color as array of Doubles if present (expecting [H, S])
-        let hsColor: [Double]? = {
-            if let hs = attributes?["hs_color"] as? [Double] { return hs }
-            if let hsAny = attributes?["hs_color"] as? [Any] {
-                let doubles = hsAny.compactMap { value -> Double? in
-                    if let d = value as? Double { return d }
-                    if let n = value as? NSNumber { return n.doubleValue }
-                    if let s = value as? String, let d = Double(s) { return d }
-                    return nil
-                }
-                return doubles.count >= 2 ? Array(doubles.prefix(2)) : nil
-            }
-            return nil
-        }()
-
+        let attributes = state["attributes"] as? [String: Any]
+        let colorAttributes = parseColorAttributes(from: attributes)
         let unitOfMeasurement = attributes?["unit_of_measurement"] as? String
 
+        return buildState(
+            entityId: entityId,
+            stateValue: stateValue,
+            attributes: attributes,
+            colorAttributes: colorAttributes,
+            unitOfMeasurement: unitOfMeasurement
+        )
+    }
+
+    private func parseColorAttributes(from attributes: [String: Any]?) -> (
+        colorMode: String?,
+        rgbColor: [Int]?,
+        hsColor: [Double]?
+    ) {
+        guard let attributes else {
+            return (nil, nil, nil)
+        }
+
+        let colorMode = attributes["color_mode"] as? String
+        let rgbColor = parseRGBColor(from: attributes["rgb_color"])
+        let hsColor = parseHSColor(from: attributes["hs_color"])
+
+        return (colorMode, rgbColor, hsColor)
+    }
+
+    private func parseRGBColor(from value: Any?) -> [Int]? {
+        if let rgb = value as? [Int], rgb.count == 3 {
+            return rgb
+        }
+        if let rgbAny = value as? [Any] {
+            let ints = rgbAny.compactMap { $0 as? Int }
+            return ints.count == 3 ? ints : nil
+        }
+        return nil
+    }
+
+    private func parseHSColor(from value: Any?) -> [Double]? {
+        if let hs = value as? [Double], hs.count >= 2 {
+            return Array(hs.prefix(2))
+        }
+        if let hsAny = value as? [Any] {
+            let doubles = hsAny.compactMap { value -> Double? in
+                if let d = value as? Double { return d }
+                if let n = value as? NSNumber { return n.doubleValue }
+                if let s = value as? String, let d = Double(s) { return d }
+                return nil
+            }
+            return doubles.count >= 2 ? Array(doubles.prefix(2)) : nil
+        }
+        return nil
+    }
+
+    private func buildState(
+        entityId: String,
+        stateValue: String,
+        attributes: [String: Any]?,
+        colorAttributes: (colorMode: String?, rgbColor: [Int]?, hsColor: [Double]?),
+        unitOfMeasurement: String?
+    ) -> State {
         let domain = Domain(entityId: entityId)
-        if let deviceClass = {
-            let rawDeviceClass = attributes?["device_class"] as? String
-            return DeviceClass(rawValue: rawDeviceClass ?? "")
-        }(),
-            let domainState = Domain.State(rawValue: stateValue.lowercased()),
-            unitOfMeasurement == nil,
-            let stateForDeviceClass = domain?.stateForDeviceClass(deviceClass, state: domainState) {
-            let computedColor = EntityIconColorProvider.iconColor(
-                domain: Domain(entityId: entityId) ?? .switch,
-                state: stateValue.lowercased(),
-                colorMode: colorMode,
-                rgbColor: rgbColor,
-                hsColor: hsColor
+        let domainState = Domain.State(rawValue: stateValue.lowercased())
+
+        if let deviceClass = extractDeviceClass(from: attributes),
+           let domainState,
+           unitOfMeasurement == nil,
+           let stateForDeviceClass = domain?.stateForDeviceClass(deviceClass, state: domainState) {
+            let computedColor = computeIconColor(
+                entityId: entityId,
+                stateValue: stateValue,
+                colorAttributes: colorAttributes
             )
             return .init(
                 value: stateForDeviceClass,
@@ -212,19 +229,38 @@ public final class ControlEntityProvider {
                 color: computedColor
             )
         } else {
-            let computedColor = EntityIconColorProvider.iconColor(
-                domain: Domain(entityId: entityId) ?? .switch,
-                state: stateValue.lowercased(),
-                colorMode: colorMode,
-                rgbColor: rgbColor,
-                hsColor: hsColor
+            let computedColor = computeIconColor(
+                entityId: entityId,
+                stateValue: stateValue,
+                colorAttributes: colorAttributes
             )
             return .init(
                 value: stateValue,
                 unitOfMeasurement: unitOfMeasurement,
-                domainState: Domain.State(rawValue: stateValue.lowercased()),
+                domainState: domainState,
                 color: computedColor
             )
         }
+    }
+
+    private func extractDeviceClass(from attributes: [String: Any]?) -> DeviceClass? {
+        guard let rawDeviceClass = attributes?["device_class"] as? String else {
+            return nil
+        }
+        return DeviceClass(rawValue: rawDeviceClass)
+    }
+
+    private func computeIconColor(
+        entityId: String,
+        stateValue: String,
+        colorAttributes: (colorMode: String?, rgbColor: [Int]?, hsColor: [Double]?)
+    ) -> Color? {
+        EntityIconColorProvider.iconColor(
+            domain: Domain(entityId: entityId) ?? .switch,
+            state: stateValue.lowercased(),
+            colorMode: colorAttributes.colorMode,
+            rgbColor: colorAttributes.rgbColor,
+            hsColor: colorAttributes.hsColor
+        )
     }
 }
