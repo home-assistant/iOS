@@ -44,6 +44,7 @@ struct GeneralSettingsView: View {
                 pageZoomPicker
                 pinchZoom
                 fullScreen
+                refreshAfterInactive
             }
         }
         .id(redrawHelper)
@@ -169,6 +170,18 @@ struct GeneralSettingsView: View {
             })) {
                 Text(L10n.SettingsDetails.General.FullScreen.title)
             }
+        }
+    }
+
+    @ViewBuilder
+    private var refreshAfterInactive: some View {
+        Toggle(isOn: .init(get: {
+            Current.settingsStore.refreshWebViewAfterInactive
+        }, set: { newValue in
+            Current.settingsStore.refreshWebViewAfterInactive = newValue
+            redrawView()
+        })) {
+            Text(L10n.SettingsDetails.General.RefreshAfterInactive.title)
         }
     }
 

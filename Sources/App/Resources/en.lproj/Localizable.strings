@@ -844,6 +844,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Device Name";
 "settings_details.general.full_screen.title" = "Full Screen";
+"settings_details.general.refresh_after_inactive.title" = "Refresh After 5 Min Inactive";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Menu Bar Text";

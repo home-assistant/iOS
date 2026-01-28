@@ -3169,6 +3169,10 @@ public enum L10n {
         /// Full Screen
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.full_screen.title") }
       }
+      public enum RefreshAfterInactive {
+        /// Refresh After 5 Min Inactive
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.refresh_after_inactive.title") }
+      }
       public enum LaunchOnLogin {
         /// Launch App on Login
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.launch_on_login.title") }
