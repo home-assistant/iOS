@@ -52,7 +52,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
         sut.sceneDidBecomeActive(firstScene)
 
         // Wait briefly to ensure any async operations complete
-        let expectation = self.expectation(description: "Wait for potential refresh")
+        let expectation = expectation(description: "Wait for potential refresh")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             expectation.fulfill()
         }
@@ -77,7 +77,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
         sut.sceneDidBecomeActive(firstScene)
 
         // Wait briefly to ensure any async operations complete
-        let expectation = self.expectation(description: "Wait for potential refresh")
+        let expectation = expectation(description: "Wait for potential refresh")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             expectation.fulfill()
         }
@@ -96,7 +96,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
         // Ensure setting is enabled (default is ON)
         Current.settingsStore.refreshWebViewAfterInactive = true
-        
+
         // Set background timestamp to 6 minutes ago
         let sixMinutesAgo = Date().addingTimeInterval(-360)
         sut.backgroundTimestamp = sixMinutesAgo
@@ -105,7 +105,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
         sut.sceneDidBecomeActive(firstScene)
 
         // Wait for async refresh to be triggered
-        let expectation = self.expectation(description: "Wait for refresh")
+        let expectation = expectation(description: "Wait for refresh")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             expectation.fulfill()
         }
@@ -124,7 +124,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
         // Disable the setting
         Current.settingsStore.refreshWebViewAfterInactive = false
-        
+
         // Set background timestamp to 6 minutes ago
         let sixMinutesAgo = Date().addingTimeInterval(-360)
         sut.backgroundTimestamp = sixMinutesAgo
@@ -133,7 +133,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
         sut.sceneDidBecomeActive(firstScene)
 
         // Wait for async operation
-        let expectation = self.expectation(description: "Wait for potential refresh")
+        let expectation = expectation(description: "Wait for potential refresh")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             expectation.fulfill()
         }
@@ -152,7 +152,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
         // Ensure setting is enabled to test full refresh code path
         Current.settingsStore.refreshWebViewAfterInactive = true
-        
+
         // Set background timestamp to 6 minutes ago (more than 5 to ensure it would trigger refresh)
         let sixMinutesAgo = Date().addingTimeInterval(-360)
         sut.backgroundTimestamp = sixMinutesAgo
@@ -161,7 +161,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
         sut.sceneDidBecomeActive(firstScene)
 
         // Wait briefly to ensure timestamp is cleared
-        let expectation = self.expectation(description: "Wait for timestamp clear")
+        let expectation = expectation(description: "Wait for timestamp clear")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             expectation.fulfill()
         }
@@ -180,7 +180,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
         // Ensure setting is enabled
         Current.settingsStore.refreshWebViewAfterInactive = true
-        
+
         // Set background timestamp to exactly 5 minutes ago (boundary condition)
         let fiveMinutesAgo = Date().addingTimeInterval(-300)
         sut.backgroundTimestamp = fiveMinutesAgo
@@ -189,7 +189,7 @@ final class WebViewSceneDelegateTests: XCTestCase {
         sut.sceneDidBecomeActive(firstScene)
 
         // Wait for async refresh to be triggered
-        let expectation = self.expectation(description: "Wait for refresh")
+        let expectation = expectation(description: "Wait for refresh")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             expectation.fulfill()
         }

@@ -10,10 +10,10 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var urlHandler: IncomingURLHandler?
 
     private var updateDatabaseTask: Task<Void, Never>?
-    
+
     /// Stores the timestamp when the app enters background, used to determine if auto-refresh is needed on reactivation
-    internal var backgroundTimestamp: Date?
-    
+    var backgroundTimestamp: Date?
+
     /// Time threshold (in seconds) after which WebViewController should refresh when returning from background
     private let backgroundRefreshThreshold: TimeInterval = 5 * 60
 
@@ -125,7 +125,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         DataWidgetsUpdater.update()
         Current.modelManager.unsubscribe()
         Current.appDatabaseUpdater.stop()
-        
+
         // Record timestamp when app enters background
         backgroundTimestamp = Date()
     }
@@ -137,11 +137,11 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         cleanWidgetsCache()
         updateLocation()
-        
+
         // Check if app was in background for 5 minutes or more
-        if let backgroundTimestamp = backgroundTimestamp {
+        if let backgroundTimestamp {
             let timeInterval = Date().timeIntervalSince(backgroundTimestamp)
-            
+
             if timeInterval >= backgroundRefreshThreshold, Current.settingsStore.refreshWebViewAfterInactive {
                 // Refresh WebViewController if it exists
                 // Note: webViewControllerPromise is a Guarantee, which cannot fail in PromiseKit
@@ -149,7 +149,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
                     webViewController.refresh()
                 }
             }
-            
+
             // Clear the timestamp
             self.backgroundTimestamp = nil
         }
