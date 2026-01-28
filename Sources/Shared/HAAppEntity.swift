@@ -67,11 +67,12 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
             let appEntityRegistry = try AppEntityRegistry.fetchAll(db)
             let allEntities = try HAAppEntity.fetchAll(db)
 
-            // Build a dictionary for O(1) registry lookups keyed by (serverId, entityId)
+            // Build a dictionary for O(1) registry lookups keyed by "serverId-entityId"
             let registryDict = Dictionary(
-                appEntityRegistry.compactMap { registry -> ((String, String), AppEntityRegistry)? in
+                appEntityRegistry.compactMap { registry -> (String, AppEntityRegistry)? in
                     guard let entityId = registry.entityId else { return nil }
-                    return ((registry.serverId, entityId), registry)
+                    let key = "\(registry.serverId)-\(entityId)"
+                    return (key, registry)
                 },
                 uniquingKeysWith: { first, _ in first }
             )
@@ -81,7 +82,8 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
 
             // Filter entities based on registry hiddenBy and disabledBy values
             return allEntities.filter { entity in
-                guard let registry = registryDict[(entity.serverId, entity.entityId)] else {
+                let key = "\(entity.serverId)-\(entity.entityId)"
+                guard let registry = registryDict[key] else {
                     // No registry entry found, include the entity
                     return true
                 }
