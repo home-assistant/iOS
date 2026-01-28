@@ -10,8 +10,6 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
     public let name: String
     public let icon: String?
     public let rawDeviceClass: String?
-    public var hiddenBy: String?
-    public var disabledBy: String?
 
     public init(
         id: String,
@@ -21,8 +19,6 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         name: String,
         icon: String?,
         rawDeviceClass: String?,
-        hiddenBy: String? = nil,
-        disabledBy: String? = nil
     ) {
         self.id = id
         self.entityId = entityId
@@ -31,8 +27,6 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         self.name = name
         self.icon = icon
         self.rawDeviceClass = rawDeviceClass
-        self.hiddenBy = hiddenBy
-        self.disabledBy = disabledBy
     }
 
     public var deviceClass: DeviceClass {
@@ -40,11 +34,17 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
     }
 
     public var isHidden: Bool {
-        hiddenBy != nil
+        (
+            try? AppEntityRegistry.config(serverId: serverId).first(where: { $0.entityId == entityId })?.hiddenBy != nil
+        ) ??
+            false
     }
 
     public var isDisabled: Bool {
-        disabledBy != nil
+        (
+            try? AppEntityRegistry.config(serverId: serverId).first(where: { $0.entityId == entityId })?
+                .disabledBy != nil
+        ) ?? false
     }
 
     public enum ConfigInclude {
@@ -64,21 +64,35 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
                 return try HAAppEntity.fetchAll(db)
             }
 
-            // Build query based on what should be included
-            var query = HAAppEntity.all()
+            let appEntityRegistry = try AppEntityRegistry.fetchAll(db)
+            let allEntities = try HAAppEntity.fetchAll(db)
 
             let includeHidden = include.contains(.hidden)
             let includeDisabled = include.contains(.disabled)
 
-            // If neither hidden nor disabled are explicitly included, filter them out
-            if !includeHidden {
-                query = query.filter(Column(DatabaseTables.AppEntity.hiddenBy.rawValue) == nil)
-            }
-            if !includeDisabled {
-                query = query.filter(Column(DatabaseTables.AppEntity.disabledBy.rawValue) == nil)
-            }
+            // Filter entities based on registry hiddenBy and disabledBy values
+            return allEntities.filter { entity in
+                guard let registry = appEntityRegistry
+                    .first(where: { $0.entityId == entity.entityId && $0.serverId == entity.serverId }) else {
+                    // No registry entry found, include the entity
+                    return true
+                }
 
-            return try query.fetchAll(db)
+                let isHidden = registry.hiddenBy != nil
+                let isDisabled = registry.disabledBy != nil
+
+                // Exclude hidden entities unless includeHidden is set
+                if isHidden, !includeHidden {
+                    return false
+                }
+
+                // Exclude disabled entities unless includeDisabled is set
+                if isDisabled, !includeDisabled {
+                    return false
+                }
+
+                return true
+            }
         })
     }
 }

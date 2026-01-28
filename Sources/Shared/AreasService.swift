@@ -49,7 +49,6 @@ final class AreasService: AreasServiceProtocol {
         } else {
             // Read entity and device registries from database instead of making API calls
             let entitiesForAreas = fetchEntitiesFromDatabase(serverId: server.identifier.rawValue)
-            updatePropertiesInEntitiesDatabase(entitiesForAreas, serverId: server.identifier.rawValue)
             let deviceForAreas = fetchDevicesFromDatabase(serverId: server.identifier.rawValue)
             let allEntitiesPerArea = getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
@@ -57,46 +56,6 @@ final class AreasService: AreasServiceProtocol {
             )
 
             return allEntitiesPerArea
-        }
-    }
-
-    /// Updates the `hiddenBy` and `disabledBy` properties for entities in the local database based on the registry
-    /// response.
-    ///
-    /// This method synchronizes the hidden and disabled states of entities from Home Assistant's entity registry
-    /// with the local database. It fetches all entities (including hidden and disabled ones) from the database,
-    /// matches them with the provided registry responses, and updates their `hiddenBy` and `disabledBy` properties
-    /// to reflect the current state from the server.
-    ///
-    /// - Parameters:
-    ///   - entitiesRegistryResponse: An array of entity registry entries from the database
-    ///     containing the current `hiddenBy` and `disabledBy` states for each entity.
-    ///   - serverId: The server identifier to filter entities by.
-    ///
-    /// - Note: This method includes hidden and disabled entities when fetching from the database to ensure
-    ///   all entities can have their states updated.
-    ///
-    /// - Important: If the database write operation fails, an error will be logged but the method
-    ///   will continue processing remaining entities.
-    private func updatePropertiesInEntitiesDatabase(
-        _ entitiesRegistryResponse: [AppEntityRegistry],
-        serverId: String
-    ) {
-        do {
-            let entities = try HAAppEntity.config(include: [.all]).filter({ $0.serverId == serverId })
-
-            for entity in entities {
-                if let entityRegistry = entitiesRegistryResponse.first(where: { $0.entityId == entity.entityId }) {
-                    var updatedEntity = entity
-                    updatedEntity.hiddenBy = entityRegistry.hiddenBy
-                    updatedEntity.disabledBy = entityRegistry.disabledBy
-                    try Current.database().write { db in
-                        try updatedEntity.update(db)
-                    }
-                }
-            }
-        } catch {
-            Current.Log.error("Failed to update hiddenBy property in entities database: \(error.localizedDescription)")
         }
     }
 
