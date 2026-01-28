@@ -188,6 +188,19 @@ public class SettingsStore {
         }
     }
 
+    public var refreshWebViewAfterInactive: Bool {
+        get {
+            if let value = prefs.object(forKey: "refreshWebViewAfterInactive") as? NSNumber {
+                return value.boolValue
+            } else {
+                return true // Default to ON
+            }
+        }
+        set {
+            prefs.set(newValue, forKey: "refreshWebViewAfterInactive")
+        }
+    }
+
     public var macNativeFeaturesOnly: Bool {
         get {
             prefs.bool(forKey: "macNativeFeaturesOnly")

@@ -89,6 +89,9 @@ final class WebViewSceneDelegateTests: XCTestCase {
             return
         }
 
+        // Ensure setting is enabled (default is ON)
+        Current.settingsStore.refreshWebViewAfterInactive = true
+        
         // Set background timestamp to 6 minutes ago
         let sixMinutesAgo = Date().addingTimeInterval(-360)
         sut.backgroundTimestamp = sixMinutesAgo
@@ -105,6 +108,34 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockWindowController.mockWebViewController.refreshCalled)
+    }
+
+    func testSceneDidBecomeActiveWithSettingDisabledDoesNotRefresh() {
+        // Given
+        guard let firstScene = UIApplication.shared.connectedScenes.first else {
+            XCTFail("No connected scene available")
+            return
+        }
+
+        // Disable the setting
+        Current.settingsStore.refreshWebViewAfterInactive = false
+        
+        // Set background timestamp to 6 minutes ago
+        let sixMinutesAgo = Date().addingTimeInterval(-360)
+        sut.backgroundTimestamp = sixMinutesAgo
+
+        // When
+        sut.sceneDidBecomeActive(firstScene)
+
+        // Wait for async operation
+        let expectation = self.expectation(description: "Wait for potential refresh")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1.0)
+
+        // Then
+        XCTAssertFalse(mockWindowController.mockWebViewController.refreshCalled)
     }
 
     func testSceneDidBecomeActiveClearsBackgroundTimestamp() {

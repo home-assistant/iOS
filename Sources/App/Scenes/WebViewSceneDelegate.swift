@@ -142,7 +142,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         if let backgroundTimestamp = backgroundTimestamp {
             let timeInterval = Date().timeIntervalSince(backgroundTimestamp)
             
-            if timeInterval >= backgroundRefreshThreshold {
+            if timeInterval >= backgroundRefreshThreshold, Current.settingsStore.refreshWebViewAfterInactive {
                 // Refresh WebViewController if it exists
                 windowController?.webViewControllerPromise.done { webViewController in
                     webViewController.refresh()
