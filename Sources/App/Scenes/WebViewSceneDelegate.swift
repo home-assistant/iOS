@@ -144,6 +144,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             
             if timeInterval >= backgroundRefreshThreshold, Current.settingsStore.refreshWebViewAfterInactive {
                 // Refresh WebViewController if it exists
+                // Note: webViewControllerPromise is a Guarantee, which cannot fail in PromiseKit
                 windowController?.webViewControllerPromise.done { webViewController in
                     webViewController.refresh()
                 }

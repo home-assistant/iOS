@@ -6,9 +6,12 @@ import XCTest
 final class WebViewSceneDelegateTests: XCTestCase {
     private var sut: WebViewSceneDelegate!
     private var mockWindowController: MockWebViewWindowControllerForSceneDelegate!
+    private var originalRefreshSetting: Bool!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        // Save original setting value
+        originalRefreshSetting = Current.settingsStore.refreshWebViewAfterInactive
         sut = WebViewSceneDelegate()
         mockWindowController = MockWebViewWindowControllerForSceneDelegate()
         sut.windowController = mockWindowController
@@ -16,6 +19,8 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
     override func tearDownWithError() throws {
         try super.tearDownWithError()
+        // Restore original setting to prevent test pollution
+        Current.settingsStore.refreshWebViewAfterInactive = originalRefreshSetting
         sut = nil
         mockWindowController = nil
     }
@@ -145,6 +150,9 @@ final class WebViewSceneDelegateTests: XCTestCase {
             return
         }
 
+        // Ensure setting is enabled to test full refresh code path
+        Current.settingsStore.refreshWebViewAfterInactive = true
+        
         // Set background timestamp to 6 minutes ago (more than 5 to ensure it would trigger refresh)
         let sixMinutesAgo = Date().addingTimeInterval(-360)
         sut.backgroundTimestamp = sixMinutesAgo
@@ -161,6 +169,34 @@ final class WebViewSceneDelegateTests: XCTestCase {
 
         // Then
         XCTAssertNil(sut.backgroundTimestamp)
+    }
+
+    func testSceneDidBecomeActiveWithExactly5MinutesTriggersRefresh() {
+        // Given
+        guard let firstScene = UIApplication.shared.connectedScenes.first else {
+            XCTFail("No connected scene available")
+            return
+        }
+
+        // Ensure setting is enabled
+        Current.settingsStore.refreshWebViewAfterInactive = true
+        
+        // Set background timestamp to exactly 5 minutes ago (boundary condition)
+        let fiveMinutesAgo = Date().addingTimeInterval(-300)
+        sut.backgroundTimestamp = fiveMinutesAgo
+
+        // When
+        sut.sceneDidBecomeActive(firstScene)
+
+        // Wait for async refresh to be triggered
+        let expectation = self.expectation(description: "Wait for refresh")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1.0)
+
+        // Then
+        XCTAssertTrue(mockWindowController.mockWebViewController.refreshCalled)
     }
 }
 
