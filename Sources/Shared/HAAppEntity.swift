@@ -69,10 +69,11 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
 
             // Build a dictionary for O(1) registry lookups keyed by (serverId, entityId)
             let registryDict = Dictionary(
-                uniqueKeysWithValues: appEntityRegistry.compactMap { registry -> ((String, String), AppEntityRegistry)? in
+                appEntityRegistry.compactMap { registry -> ((String, String), AppEntityRegistry)? in
                     guard let entityId = registry.entityId else { return nil }
                     return ((registry.serverId, entityId), registry)
-                }
+                },
+                uniquingKeysWith: { first, _ in first }
             )
 
             let includeHidden = include.contains(.hidden)
