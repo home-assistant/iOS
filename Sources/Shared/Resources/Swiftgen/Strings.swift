@@ -1338,6 +1338,12 @@ public enum L10n {
     public enum Reset {
       /// Reset
       public static var title: String { return L10n.tr("Localizable", "gestures.reset.title") }
+      public enum Confirmation {
+        /// This will reset all gestures to their default values.
+        public static var message: String { return L10n.tr("Localizable", "gestures.reset.confirmation.message") }
+        /// Reset Gestures?
+        public static var title: String { return L10n.tr("Localizable", "gestures.reset.confirmation.title") }
+      }
     }
     public enum Screen {
       /// Gestures below will be applied whenever you are using Home Assistant main UI.
