@@ -10,6 +10,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var urlHandler: IncomingURLHandler?
 
     private var updateDatabaseTask: Task<Void, Never>?
+    private var backgroundTimestamp: Date?
 
     // swiftlint:disable cyclomatic_complexity
     func scene(
@@ -119,6 +120,9 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         DataWidgetsUpdater.update()
         Current.modelManager.unsubscribe()
         Current.appDatabaseUpdater.stop()
+        
+        // Record timestamp when app enters background
+        backgroundTimestamp = Date()
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -128,6 +132,22 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         cleanWidgetsCache()
         updateLocation()
+        
+        // Check if app was in background for 5 minutes or more
+        if let backgroundTimestamp = backgroundTimestamp {
+            let timeInterval = Date().timeIntervalSince(backgroundTimestamp)
+            let fiveMinutesInSeconds: TimeInterval = 5 * 60
+            
+            if timeInterval >= fiveMinutesInSeconds {
+                // Refresh WebViewController if it exists
+                windowController?.webViewControllerPromise.done { webViewController in
+                    webViewController.refresh()
+                }
+            }
+            
+            // Clear the timestamp
+            self.backgroundTimestamp = nil
+        }
     }
 
     func windowScene(
