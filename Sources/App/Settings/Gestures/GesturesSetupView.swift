@@ -71,19 +71,19 @@ struct GesturesSetupView: View {
                 } label: {
                     Text(L10n.Gestures.Reset.title)
                 }
+                .confirmationDialog(
+                    L10n.Gestures.Reset.Confirmation.title,
+                    isPresented: $showResetConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(L10n.yesLabel, role: .destructive) {
+                        viewModel.resetGestures()
+                    }
+                    Button(L10n.noLabel, role: .cancel) {}
+                } message: {
+                    Text(L10n.Gestures.Reset.Confirmation.message)
+                }
             }
-        }
-        .confirmationDialog(
-            L10n.Gestures.Reset.Confirmation.title,
-            isPresented: $showResetConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button(L10n.Gestures.Reset.title, role: .destructive) {
-                viewModel.resetGestures()
-            }
-            Button(L10n.cancelLabel, role: .cancel) {}
-        } message: {
-            Text(L10n.Gestures.Reset.Confirmation.message)
         }
     }
 
