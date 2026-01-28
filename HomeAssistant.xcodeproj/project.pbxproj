@@ -478,6 +478,13 @@
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		20226C5AB77E1229852ADDC8 /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27653D385E4CEB58E52A350 /* Pods_iOS_Extensions_Widgets.framework */; };
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
+		292306192F296D8D0063FEEE /* ClientCertificateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292306182F296D8D0063FEEE /* ClientCertificateManager.swift */; };
+		2923061A2F296D8D0063FEEE /* ClientCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292306172F296D8D0063FEEE /* ClientCertificate.swift */; };
+		2923061B2F296D8D0063FEEE /* ClientCertificateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292306182F296D8D0063FEEE /* ClientCertificateManager.swift */; };
+		2923061C2F296D8D0063FEEE /* ClientCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292306172F296D8D0063FEEE /* ClientCertificate.swift */; };
+		2923061E2F296EF90063FEEE /* ClientCertificateSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2923061D2F296EF90063FEEE /* ClientCertificateSettingsView.swift */; };
+		29E6AAA52F298B790087DB45 /* ClientCertificateNativeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E6AAA42F298B790087DB45 /* ClientCertificateNativeEngine.swift */; };
+		29E6AAA62F298B790087DB45 /* ClientCertificateNativeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E6AAA42F298B790087DB45 /* ClientCertificateNativeEngine.swift */; };
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
@@ -2200,6 +2207,10 @@
 		207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Share-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Share-metadata.plist"; sourceTree = "<group>"; };
 		213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		287FA864ED0E47B2BB71E1C8 /* Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig"; sourceTree = "<group>"; };
+		292306172F296D8D0063FEEE /* ClientCertificate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificate.swift; sourceTree = "<group>"; };
+		292306182F296D8D0063FEEE /* ClientCertificateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificateManager.swift; sourceTree = "<group>"; };
+		2923061D2F296EF90063FEEE /* ClientCertificateSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificateSettingsView.swift; sourceTree = "<group>"; };
+		29E6AAA42F298B790087DB45 /* ClientCertificateNativeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificateNativeEngine.swift; sourceTree = "<group>"; };
 		29FC93E25AB875716E2F35D4 /* Pods_iOS_Extensions_Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Intents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		38BD687E2E320F27D6D576B5 /* Pods-iOS-SharedTesting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-SharedTesting.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-SharedTesting/Pods-iOS-SharedTesting.release.xcconfig"; sourceTree = "<group>"; };
@@ -4031,6 +4042,7 @@
 				42BF8DB32EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift */,
 				1178C4E424D5CEB200FDEC3E /* ConnectionURLView.swift */,
 				42AAEE892EC4C57F0049E1F3 /* ConnectionURLViewModel.swift */,
+				2923061D2F296EF90063FEEE /* ClientCertificateSettingsView.swift */,
 			);
 			path = Connection;
 			sourceTree = "<group>";
@@ -7047,6 +7059,7 @@
 		D014EEAA212928EC008EA6F5 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				29E6AAA42F298B790087DB45 /* ClientCertificateNativeEngine.swift */,
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
 				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
 				D0BE440B2104224A00C74314 /* Authentication */,
@@ -7068,6 +7081,8 @@
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
 				11B6774C28303D35006E9B1A /* SecurityExceptions.swift */,
+				292306172F296D8D0063FEEE /* ClientCertificate.swift */,
+				292306182F296D8D0063FEEE /* ClientCertificateManager.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -9296,6 +9311,7 @@
 				426E02992EF98F5F008237D4 /* CameraListRow.swift in Sources */,
 				B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */,
 				115EF6A72549152F0048597B /* AccountRow.swift in Sources */,
+				2923061E2F296EF90063FEEE /* ClientCertificateSettingsView.swift in Sources */,
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				42FCCFE22B9B1B610057783F /* BarcodeScannerCamera.swift in Sources */,
@@ -9674,6 +9690,7 @@
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				4298587F2EB1025E00E33710 /* LocationManager.swift in Sources */,
 				420CFC6A2D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */,
+				29E6AAA62F298B790087DB45 /* ClientCertificateNativeEngine.swift in Sources */,
 				1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */,
 				426D9C752C9C60B000F278AF /* ControlEntityProvider.swift in Sources */,
@@ -9715,6 +9732,8 @@
 				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
 				4278C9C22C8F226500A7B5F4 /* GuaranteedMessages.swift in Sources */,
 				4238DCA42DD1F1E300126434 /* AppSessionValues.swift in Sources */,
+				292306192F296D8D0063FEEE /* ClientCertificateManager.swift in Sources */,
+				2923061A2F296D8D0063FEEE /* ClientCertificate.swift in Sources */,
 				11CFD785273662DF0082D557 /* Server.swift in Sources */,
 				116C0C30267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
@@ -9993,6 +10012,7 @@
 				42D3E49C2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
+				29E6AAA52F298B790087DB45 /* ClientCertificateNativeEngine.swift in Sources */,
 				11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */,
 				42196ACE2DA5A49600BD501E /* Bonjour.swift in Sources */,
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
@@ -10112,6 +10132,8 @@
 				4206DE5A2E25055E00142E85 /* WebsiteDataStoreHandler.swift in Sources */,
 				11B38EE8275C54A200205C7B /* WidgetActionsIntentHandler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
+				2923061B2F296D8D0063FEEE /* ClientCertificateManager.swift in Sources */,
+				2923061C2F296D8D0063FEEE /* ClientCertificate.swift in Sources */,
 				11B38EEE275C54A200205C7B /* FocusStatusIntentHandler.swift in Sources */,
 				427A7CD92EBDFB1700D17841 /* AppArea.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,

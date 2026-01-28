@@ -33,6 +33,7 @@ public struct ConnectionInfo: Codable, Equatable {
     public var webhookSecret: String?
     public var useCloud: Bool = false
     public var cloudhookURL: URL?
+    public var clientCertificate: ClientCertificate?
     public var connectionAccessSecurityLevel: ConnectionSecurityLevel = .undefined
     public var internalSSIDs: [String]? {
         didSet {
@@ -84,7 +85,23 @@ public struct ConnectionInfo: Codable, Equatable {
     public var securityExceptions: SecurityExceptions = .init()
     public func evaluate(_ challenge: URLAuthenticationChallenge)
         -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-        securityExceptions.evaluate(challenge)
+        Current.Log.verbose("evaluate challenge: \(challenge.protectionSpace.authenticationMethod)")
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            Current.Log.info("Client certificate challenge received, clientCertificate: \(String(describing: clientCertificate))")
+            if let cert = clientCertificate {
+                Current.Log.info("Using client certificate: \(cert.name)")
+                if let credential = ClientCertificateManager.shared.credential(for: cert) {
+                    Current.Log.info("Created credential for certificate: \(cert.name)")
+                    return (.useCredential, credential)
+                } else {
+                    Current.Log.error("Failed to create credential for certificate: \(cert.name)")
+                }
+            } else {
+                Current.Log.error("No client certificate configured for this connection")
+            }
+            return (.performDefaultHandling, nil)
+        }
+        return securityExceptions.evaluate(challenge)
     }
 
     public init(
@@ -98,7 +115,8 @@ public struct ConnectionInfo: Codable, Equatable {
         internalHardwareAddresses: [String]?,
         isLocalPushEnabled: Bool,
         securityExceptions: SecurityExceptions,
-        connectionAccessSecurityLevel: ConnectionSecurityLevel
+        connectionAccessSecurityLevel: ConnectionSecurityLevel,
+        clientCertificate: ClientCertificate? = nil
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -111,6 +129,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.isLocalPushEnabled = isLocalPushEnabled
         self.securityExceptions = securityExceptions
         self.connectionAccessSecurityLevel = connectionAccessSecurityLevel
+        self.clientCertificate = clientCertificate
     }
 
     public init(from decoder: Decoder) throws {
@@ -134,6 +153,10 @@ public struct ConnectionInfo: Codable, Equatable {
             SecurityExceptions.self,
             forKey: .securityExceptions
         ) ?? .init()
+        self.clientCertificate = try container.decodeIfPresent(
+            ClientCertificate.self,
+            forKey: .clientCertificate
+        )
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {

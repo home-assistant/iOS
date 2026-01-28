@@ -122,6 +122,9 @@ class OnboardingAuth {
             promise = promise.recover { [self] originalError -> Promise<HomeAssistantAPI> in
                 let authDetails = try OnboardingAuthDetails(baseURL: url)
 
+                // Note: Certificate selection happens during mTLS challenge handling
+                // User must explicitly import and select certificates in settings
+
                 return firstly {
                     performPreSteps(checkPoint: .beforeAuth, authDetails: authDetails, sender: sender)
                 }.then { [self] in
@@ -200,7 +203,8 @@ private extension ConnectionInfo {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
-            connectionAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined,
+            clientCertificate: authDetails.clientCertificate
         )
 
         // default cloud to on

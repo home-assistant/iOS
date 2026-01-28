@@ -80,9 +80,17 @@ public class AuthenticationAPI {
     public static func fetchToken(
         authorizationCode: String,
         baseURL: URL,
-        exceptions: SecurityExceptions
+        exceptions: SecurityExceptions,
+        clientCertificate: ClientCertificate? = nil
     ) -> Promise<TokenInfo> {
-        let session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
+        let delegate = AuthenticationSessionDelegate(
+            exceptions: exceptions,
+            clientCertificate: clientCertificate
+        )
+        let session = Session(
+            delegate: delegate,
+            serverTrustManager: CustomServerTrustManager(exceptions: exceptions)
+        )
 
         return Promise { seal in
             let routeInfo = RouteInfo(
@@ -103,6 +111,39 @@ public class AuthenticationAPI {
             withExtendedLifetime(session) {
                 // keeping session around until we're done
             }
+        }
+    }
+}
+
+private final class AuthenticationSessionDelegate: SessionDelegate, @unchecked Sendable {
+    private let exceptions: SecurityExceptions
+    private let clientCertificate: ClientCertificate?
+
+    init(exceptions: SecurityExceptions, clientCertificate: ClientCertificate?) {
+        self.exceptions = exceptions
+        self.clientCertificate = clientCertificate
+        super.init()
+    }
+
+    override func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            Current.Log.verbose("AuthenticationAPI: Client certificate challenge received")
+            if let cert = clientCertificate,
+               let credential = ClientCertificateManager.shared.credential(for: cert) {
+                Current.Log.info("AuthenticationAPI: Using client certificate: \(cert.name)")
+                completionHandler(.useCredential, credential)
+                return
+            } else {
+                Current.Log.warning("AuthenticationAPI: No client certificate available")
+            }
+            completionHandler(.performDefaultHandling, nil)
+        } else {
+            super.urlSession(session, task: task, didReceive: challenge, completionHandler: completionHandler)
         }
     }
 }

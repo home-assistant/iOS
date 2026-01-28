@@ -2162,7 +2162,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "onboarding.connection_test_result.certificate_error.title") }
       }
       public enum ClientCertificate {
-        /// Client Certificate Authentication is not supported.
+        /// This server requires a client certificate. Select a certificate installed on this device in Settings.
         public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.client_certificate.description") }
       }
       public enum LocalNetworkPermission {
@@ -2610,6 +2610,36 @@ public enum L10n {
           public static var message: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.confirmation.message") }
           /// Are you sure?
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.confirmation.title") }
+        }
+      }
+      public enum ClientCertificate {
+        /// Configured
+        public static var configured: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.configured") }
+        /// Tap + to import a .p12 certificate file
+        public static var importInstructions: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import_instructions") }
+        /// No certificates imported
+        public static var noCertificates: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.no_certificates") }
+        /// None
+        public static var `none`: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.none") }
+        /// Client Certificate
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.title") }
+        public enum Details {
+          /// Selected Certificate
+          public static var header: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.details.header") }
+          /// Name
+          public static var name: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.details.name") }
+        }
+        public enum Import {
+          /// Cancel
+          public static var cancel: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import.cancel") }
+          /// Import
+          public static var importButton: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import.import_button") }
+          /// Name
+          public static var name: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import.name") }
+          /// Password
+          public static var password: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import.password") }
+          /// Import Certificate
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import.title") }
         }
       }
       public enum ConnectionAccessSecurityLevel {

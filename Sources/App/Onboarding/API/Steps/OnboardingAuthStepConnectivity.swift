@@ -145,7 +145,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
         _ session: URLSession,
         task: URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge,
-        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+        completionHandler: @escaping @Sendable (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
         guard let pendingResolver = taskIdentifierToResolver[task.taskIdentifier] else {
             completionHandler(.cancelAuthenticationChallenge, nil)
@@ -164,8 +164,13 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             pendingResolver.reject(OnboardingAuthError(kind: .basicAuth))
             completionHandler(.cancelAuthenticationChallenge, nil)
         case NSURLAuthenticationMethodClientCertificate:
-            clientCertificateErrorOccurred[task.taskIdentifier] = true
-            completionHandler(.performDefaultHandling, nil)
+            if let cert = authDetails.clientCertificate,
+               let credential = ClientCertificateManager.shared.credential(for: cert) {
+                completionHandler(.useCredential, credential)
+            } else {
+                clientCertificateErrorOccurred[task.taskIdentifier] = true
+                completionHandler(.performDefaultHandling, nil)
+            }
         default:
             pendingResolver
                 .reject(OnboardingAuthError(kind: .authenticationUnsupported(

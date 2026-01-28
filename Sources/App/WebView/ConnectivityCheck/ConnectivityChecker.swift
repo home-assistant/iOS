@@ -140,10 +140,10 @@ class ConnectivityChecker {
                 using: .tcp
             )
 
-            var completed = false
+            let isCompleted = AtomicBool(false)
+            
             let timeoutTask = DispatchWorkItem {
-                if !completed {
-                    completed = true
+                if !isCompleted.getAndSet(true) {
                     connection.cancel()
                     continuation.resume(throwing: NSError(
                         domain: "ConnectivityChecker",
@@ -154,24 +154,27 @@ class ConnectivityChecker {
             }
 
             connection.stateUpdateHandler = { state in
-                guard !completed else { return }
+                if isCompleted.value { return }
 
                 switch state {
                 case .ready:
-                    completed = true
-                    timeoutTask.cancel()
-                    connection.cancel()
-                    continuation.resume()
+                    if !isCompleted.getAndSet(true) {
+                        timeoutTask.cancel()
+                        connection.cancel()
+                        continuation.resume()
+                    }
                 case let .failed(error):
-                    completed = true
-                    timeoutTask.cancel()
-                    connection.cancel()
-                    continuation.resume(throwing: error)
+                    if !isCompleted.getAndSet(true) {
+                        timeoutTask.cancel()
+                        connection.cancel()
+                        continuation.resume(throwing: error)
+                    }
                 case let .waiting(error):
-                    completed = true
-                    timeoutTask.cancel()
-                    connection.cancel()
-                    continuation.resume(throwing: error)
+                    if !isCompleted.getAndSet(true) {
+                        timeoutTask.cancel()
+                        connection.cancel()
+                        continuation.resume(throwing: error)
+                    }
                 default:
                     break
                 }
@@ -179,6 +182,32 @@ class ConnectivityChecker {
 
             connection.start(queue: queue)
             queue.asyncAfter(deadline: .now() + timeout, execute: timeoutTask)
+        }
+    }
+
+    /// Thread-safe boolean wrapper for NWConnection state handling.
+    /// NWConnection callbacks can fire from different threads, and we need to ensure
+    /// that continuation is only resumed once (timeout vs state change race condition).
+    private class AtomicBool: @unchecked Sendable {
+        private var _value: Bool
+        private let lock = NSLock()
+
+        init(_ value: Bool) {
+            self._value = value
+        }
+
+        var value: Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            return _value
+        }
+
+        func getAndSet(_ newValue: Bool) -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            let oldValue = _value
+            _value = newValue
+            return oldValue
         }
     }
 
