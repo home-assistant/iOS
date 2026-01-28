@@ -112,7 +112,7 @@ struct WidgetBasicView: View {
 
     @available(iOS 17.0, *)
     private func intent(for model: WidgetBasicViewModel, isConfirmationDone: Bool = true) -> (any AppIntent)? {
-        switch model.interactionType {
+        switch model.iconInteractionType {
         case .widgetURL:
             return nil
         case let .appIntent(widgetIntentType):
@@ -176,7 +176,7 @@ struct WidgetBasicView: View {
             isConfirmationDone: true
         )
         let confirmationURL: URL? = {
-            if case let .widgetURL(url) = model.interactionType {
+            if case let .widgetURL(url) = model.iconInteractionType {
                 return url
             } else {
                 return nil
@@ -213,7 +213,7 @@ struct WidgetBasicView: View {
     @ViewBuilder
     // This is the only widget we can present prior to iOS 17, because it doesn't support AppIntents
     private func legacyLinkContent(model: WidgetBasicViewModel) -> some View {
-        if case let .widgetURL(url) = model.interactionType {
+        if case let .widgetURL(url) = model.iconInteractionType {
             Link(destination: url.withWidgetAuthenticity()) {
                 if #available(iOS 18.0, *) {
                     tintedWrapperView(model: model, sizeStyle: sizeStyle)
@@ -413,7 +413,7 @@ struct WidgetBasicView: View {
                 id: "1",
                 title: "Title",
                 subtitle: "Subtitle",
-                interactionType: .appIntent(.refresh),
+                interactionType: .appIntent(.refresh), iconInteractionType: .appIntent(.refresh),
                 icon: .abTestingIcon,
                 disabled: true
             ),
@@ -421,7 +421,7 @@ struct WidgetBasicView: View {
                 id: "2",
                 title: "Title",
                 subtitle: "Subtitle",
-                interactionType: .appIntent(.refresh),
+                interactionType: .appIntent(.refresh), iconInteractionType: .appIntent(.refresh),
                 icon: .abTestingIcon,
                 disabled: true
             ),
@@ -429,7 +429,7 @@ struct WidgetBasicView: View {
                 id: "3",
                 title: "Title",
                 subtitle: "Subtitle",
-                interactionType: .appIntent(.refresh),
+                interactionType: .appIntent(.refresh), iconInteractionType: .appIntent(.refresh),
                 icon: .abTestingIcon,
                 disabled: true
             ),

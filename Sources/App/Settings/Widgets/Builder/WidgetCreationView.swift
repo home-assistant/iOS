@@ -182,9 +182,9 @@ struct WidgetCreationView: View {
             let textColor = Color(hex: magicItem.customization?.textColor)
             let iconColor = Color(hex: magicItem.customization?.iconColor)
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
-            let interactionType = magicItem.widgetInteractionType
+            let iconInteractionType = magicItem.widgetIconInteractionType
             let showIconBackground = {
-                switch interactionType {
+                switch iconInteractionType {
                 case .widgetURL:
                     return true
                 case let .appIntent(widgetIntentType):
@@ -213,6 +213,7 @@ struct WidgetCreationView: View {
                 title: title,
                 subtitle: nil,
                 interactionType: .appIntent(.refresh),
+                iconInteractionType: iconInteractionType,
                 icon: icon,
                 showIconBackground: showIconBackground,
                 textColor: textColor,

@@ -23,6 +23,7 @@ struct WidgetOpenPage: Widget {
                                 title: panel.displayString,
                                 subtitle: showSubtitle ? Current.servers.server(for: panel)?.info.name : nil,
                                 interactionType: .widgetURL(panel.widgetURL),
+                                iconInteractionType: .widgetURL(panel.widgetURL),
                                 icon: panel.materialDesignIcon,
                                 iconColor: Color(AppConstants.darkerTintColor)
                             )

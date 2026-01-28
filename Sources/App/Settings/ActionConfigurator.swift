@@ -355,6 +355,7 @@ struct WidgetPreviewView: View {
                     title: action.Text,
                     subtitle: nil,
                     interactionType: .widgetURL(URL(string: "https://google.com")!),
+                    iconInteractionType: .widgetURL(URL(string: "https://google.com")!),
                     icon: MaterialDesignIcons(named: action.IconName),
                     textColor: Color(uiColor: .init(hex: action.TextColor)),
                     iconColor: Color(uiColor: .init(hex: action.IconColor)),

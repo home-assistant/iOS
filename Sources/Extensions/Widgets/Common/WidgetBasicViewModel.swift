@@ -8,6 +8,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         title: String,
         subtitle: String?,
         interactionType: WidgetInteractionType,
+        iconInteractionType: WidgetInteractionType,
         icon: MaterialDesignIcons,
         showIconBackground: Bool = true,
         textColor: Color = Color(uiColor: .label),
@@ -23,6 +24,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.title = title
         self.subtitle = subtitle
         self.interactionType = interactionType
+        self.iconInteractionType = iconInteractionType
         self.textColor = textColor
         self.icon = icon
         self.showIconBackground = showIconBackground
@@ -40,6 +42,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     var title: String
     var subtitle: String?
     var interactionType: WidgetInteractionType
+    var iconInteractionType: WidgetInteractionType
 
     var icon: MaterialDesignIcons
     /// When item has no tap icon, icon background is hidden

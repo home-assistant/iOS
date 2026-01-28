@@ -21,7 +21,8 @@ struct WidgetSensors: Widget {
                         id: sensor.id,
                         title: appendUnitOfMeasurementToValue(sensor: sensor),
                         subtitle: sensor.key,
-                        interactionType: .appIntent(.refresh),
+                        interactionType: .widgetURL(AppConstants.openEntityDeeplinkURL(entityId: sensor.entityId, serverId: sensor.serverId)!),
+                        iconInteractionType: .widgetURL(AppConstants.openEntityDeeplinkURL(entityId: sensor.entityId, serverId: sensor.serverId)!),
                         icon: MaterialDesignIcons(
                             serversideValueNamed: sensor.icon ?? "",
                             fallback: .dotsGridIcon

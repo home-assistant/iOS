@@ -116,9 +116,9 @@ struct WidgetCustom: Widget {
                 }
             }()
 
-            let interactionType = magicItem.widgetInteractionType
+            let iconInteractionType = magicItem.widgetIconInteractionType
             let showIconBackground = {
-                switch interactionType {
+                switch iconInteractionType {
                 case .widgetURL:
                     return true
                 case let .appIntent(widgetIntentType):
@@ -130,7 +130,8 @@ struct WidgetCustom: Widget {
                 id: magicItem.serverUniqueId,
                 title: title,
                 subtitle: state?.value,
-                interactionType: interactionType,
+                interactionType: .appIntent(.refresh),
+                iconInteractionType: iconInteractionType,
                 icon: icon,
                 showIconBackground: showIconBackground,
                 textColor: textColor ?? Color(uiColor: .label),

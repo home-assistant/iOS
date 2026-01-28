@@ -195,6 +195,7 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                 title: "Title \(index)",
                 subtitle: withSubtitle ? "Subtitle \(index)" : nil,
                 interactionType: .appIntent(.refresh),
+                iconInteractionType: .appIntent(.refresh),
                 icon: .abTestingIcon,
                 showIconBackground: withIconBackgroundColor
             )

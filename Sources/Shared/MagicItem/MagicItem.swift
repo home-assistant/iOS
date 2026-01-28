@@ -127,7 +127,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         displayText ?? info.name
     }
 
-    public var widgetInteractionType: WidgetInteractionType {
+    public var widgetIconInteractionType: WidgetInteractionType {
         let magicItem = self
         guard let domain = magicItem.domain else { return .appIntent(.refresh) }
 

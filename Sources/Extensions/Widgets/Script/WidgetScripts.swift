@@ -20,7 +20,8 @@ struct WidgetScripts: Widget {
                         id: script.id,
                         title: script.name,
                         subtitle: timelineEntry.showServerName ? script.serverName : nil,
-                        interactionType: .appIntent(.script(
+                        interactionType: .appIntent(.refresh),
+                        iconInteractionType: .appIntent(.script(
                             id: script.id,
                             entityId: script.entityId,
                             serverId: script.serverId,

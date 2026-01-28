@@ -60,7 +60,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> WidgetSensorsEntry {
         let count = WidgetFamilySizes.size(for: context.family)
         let sensors = stride(from: 0, to: count, by: 1).map { index in
-            WidgetSensorsEntry.SensorData(id: String(index), key: "?", value: "?")
+            WidgetSensorsEntry.SensorData(id: String(index), serverId: "", entityId: "", key: "?", value: "?")
         }
 
         return WidgetSensorsEntry(
@@ -93,6 +93,8 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         ) ?? ControlEntityProvider.State(value: "", unitOfMeasurement: nil, domainState: nil)
         return WidgetSensorsEntry.SensorData(
             id: sensor.id,
+            serverId: server.identifier.rawValue,
+            entityId: sensor.entityId,
             key: sensor.displayString,
             value: state.value,
             unitOfMeasurement: state.unitOfMeasurement,
@@ -123,6 +125,8 @@ struct WidgetSensorsEntry: TimelineEntry {
 
     struct SensorData {
         var id: String
+        var serverId: String
+        var entityId: String
         var key: String
         var value: String
         var unitOfMeasurement: String?
