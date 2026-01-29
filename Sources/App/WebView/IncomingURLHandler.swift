@@ -92,7 +92,7 @@ class IncomingURLHandler {
                 }
                 Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
                     .done { webViewController in
-                        let view = WebRTCVideoPlayerView(
+                        let view = CameraPlayerView(
                             server: server,
                             cameraEntityId: entityId
                         ).embeddedInHostingController()
