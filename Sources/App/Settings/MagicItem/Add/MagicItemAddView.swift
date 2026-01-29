@@ -84,13 +84,24 @@ struct MagicItemAddView: View {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
             }
+#if targetEnvironment(macCatalyst)
             .toolbar(content: {
                 CloseButton {
                     dismiss()
                 }
             })
+            #endif
         }
         .navigationViewStyle(.stack)
+        .modify { view in
+            if #available(iOS 16.0, *) {
+                view
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            } else {
+                view
+            }
+        }
     }
 
     @ViewBuilder

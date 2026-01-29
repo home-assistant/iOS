@@ -61,6 +61,7 @@ struct EntityPicker: View {
     private var fullscreen: some View {
         NavigationView {
             content
+            #if targetEnvironment(macCatalyst)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         CloseButton {
@@ -72,8 +73,18 @@ struct EntityPicker: View {
                         }
                     }
                 }
+            #endif
         }
         .navigationViewStyle(.stack)
+        .modify { view in
+            if #available(iOS 16.0, *) {
+                view
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            } else {
+                view
+            }
+        }
     }
 
     private var content: some View {
@@ -102,7 +113,7 @@ struct EntityPicker: View {
                 }
             }
         }
-        .searchable(text: $viewModel.searchTerm)
+        .searchable(text: $viewModel.searchTerm, placement: .navigationBarDrawer(displayMode: .always))
         .modify { view in
             if #available(iOS 26.0, *) {
                 view.safeAreaBar(edge: .bottom) {
@@ -151,9 +162,9 @@ struct EntityPicker: View {
                     id: "",
                     title: L10n.EntityPicker.Filter.Domain.All.title
                 )] +
-                    viewModel.entitiesByDomain.keys.sorted().map {
-                        EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
-                    },
+                viewModel.entitiesByDomain.keys.sorted().map {
+                    EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
+                },
                 selectedItemId: Binding(
                     get: { viewModel.selectedDomainFilter ?? "" },
                     set: { viewModel.selectedDomainFilter = ($0?.isEmpty ?? true) ? nil : $0 }
@@ -171,9 +182,9 @@ struct EntityPicker: View {
                     id: "",
                     title: L10n.EntityPicker.Filter.Area.All.title
                 )] +
-                    viewModel.areaData.sorted(by: { $0.name < $1.name }).map {
-                        EntityFilterPickerView.PickerItem(id: $0.areaId, title: $0.name)
-                    },
+                viewModel.areaData.sorted(by: { $0.name < $1.name }).map {
+                    EntityFilterPickerView.PickerItem(id: $0.areaId, title: $0.name)
+                },
                 selectedItemId: Binding(
                     get: { viewModel.selectedAreaFilter ?? "" },
                     set: { viewModel.selectedAreaFilter = ($0?.isEmpty ?? true) ? nil : $0 }
