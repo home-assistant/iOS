@@ -30,7 +30,7 @@ struct WebViewJavascriptCommandsTests {
             code: 'KeyK',
             keyCode: 75,
             which: 75,
-            ctrlKey: true,
+            metaKey: true,
             bubbles: true,
             cancelable: true
         });
