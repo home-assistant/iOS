@@ -46,6 +46,7 @@ struct GeneralSettingsView: View {
                 fullScreen
                 refreshAfterInactive
             }
+            edgeToEdge
         }
         .id(redrawHelper)
     }
@@ -171,6 +172,27 @@ struct GeneralSettingsView: View {
                 Text(L10n.SettingsDetails.General.FullScreen.title)
             }
         }
+    }
+
+    @ViewBuilder
+    private var edgeToEdge: some View {
+        Section {
+            if !Current.isCatalyst {
+                Toggle(isOn: .init(get: {
+                    Current.settingsStore.edgeToEdge
+                }, set: { newValue in
+                    Current.settingsStore.edgeToEdge = newValue
+                    redrawView()
+                })) {
+                    Text("Edge to edge display")
+                }
+            }
+        } header: {
+            Text("Experimental")
+        } footer: {
+            Text("Display Home Asistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.")
+        }
+
     }
 
     @ViewBuilder

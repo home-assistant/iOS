@@ -33,6 +33,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var emptyStateView: UIView?
     private let emptyStateTransitionDuration: TimeInterval = 0.3
 
+    private var statusBarView: UIView?
+    private var webViewTopConstraint: NSLayoutConstraint?
+
     private var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
     private var lastNavigationWasServerError = false
@@ -454,9 +457,21 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         webView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor).isActive = true
         webView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        // Create the top constraint based on edge-to-edge setting
+        // On iOS (not Catalyst), edge-to-edge mode pins the webview to the top of the view
+        // On Catalyst, we always show the status bar buttons, so we pin to statusBarView
+        let edgeToEdge = Current.settingsStore.edgeToEdge && !Current.isCatalyst
+        if edgeToEdge {
+            webViewTopConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
+            statusBarView.isHidden = true
+        } else {
+            webViewTopConstraint = webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor)
+            statusBarView.isHidden = false
+        }
+        webViewTopConstraint?.isActive = true
     }
 
     private func setupURLObserver() {
@@ -516,6 +531,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private func setupStatusBarView() -> UIView {
         let statusBarView = UIView()
         statusBarView.tag = 111
+        self.statusBarView = statusBarView
 
         view.addSubview(statusBarView)
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
@@ -744,6 +760,32 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if reason == .settingChange {
             setNeedsStatusBarAppearanceUpdate()
             setNeedsUpdateOfHomeIndicatorAutoHidden()
+            updateEdgeToEdgeLayout()
+        }
+    }
+
+    private func updateEdgeToEdgeLayout() {
+        guard let statusBarView else { return }
+
+        // Edge-to-edge mode only applies to iOS (not Catalyst)
+        let edgeToEdge = Current.settingsStore.edgeToEdge && !Current.isCatalyst
+
+        // Deactivate the current constraint
+        webViewTopConstraint?.isActive = false
+
+        // Create the new constraint based on edge-to-edge setting
+        if edgeToEdge {
+            webViewTopConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
+            statusBarView.isHidden = true
+        } else {
+            webViewTopConstraint = webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor)
+            statusBarView.isHidden = false
+        }
+        webViewTopConstraint?.isActive = true
+
+        // Animate the layout change
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
         }
     }
 
