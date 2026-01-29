@@ -268,21 +268,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         if response.notification.request.identifier == NotificationIdentifier.carPlayIntro.rawValue {
             Current.Log.info("Launching CarPlay configuration screen")
             Current.sceneManager.webViewWindowControllerPromise.done {
-                let carPlayView = UIHostingController(
-                    rootView:
-                    Group {
-                        if #available(iOS 16.0, *) {
-                            NavigationStack {
-                                CarPlayConfigurationView()
-                            }
-                        } else {
-                            NavigationView {
-                                CarPlayConfigurationView()
-                                    .navigationViewStyle(.stack)
-                            }
-                        }
-                    }
-                )
+                let carPlayView = CarPlayConfigurationView().embeddedInHostingController()
                 $0.present(carPlayView)
             }
         }

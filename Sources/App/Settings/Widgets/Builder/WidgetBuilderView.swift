@@ -89,7 +89,7 @@ struct WidgetBuilderView: View {
         ForEach(viewModel.widgets, id: \.id) { widget in
             HStack {
                 NavigationLink {
-                    WidgetCreationView(widget: widget) {
+                    WidgetCreationView(needsNavigationController: false, widget: widget) {
                         viewModel.loadWidgets()
                     }
                 } label: {

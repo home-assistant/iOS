@@ -1474,3 +1474,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "connectivity.check.skipped" = "Skipped due to previous failure";
 "settings.connection_section.refresh_server" = "Update server information";
 "legacy_actions.disclaimer" = "Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.";
+"web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.Widget.title" = "Widget";
+"web_view.add_to.option.AppleWatch.title" = "Apple Watch";
+"settings.widgets.select.title" = "Add to Widget";
+"settings.widgets.select.empty.title" = "No Widgets Yet";
+"settings.widgets.select.empty.subtitle" = "Create your first widget to add this entity.";
+"settings.widgets.select.item_count.title" = "%d items";
+"settings.widgets.select.footer.title" = "Select a widget to add this entity to.";

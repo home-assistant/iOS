@@ -8,15 +8,36 @@ struct WidgetCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: WidgetCreationViewModel
     private let dismissAction: () -> Void
+
+    private let needsNavigationController: Bool
+
     init(
+        needsNavigationController: Bool = true,
         widget: CustomWidget = CustomWidget(id: UUID().uuidString, name: "", items: []),
         dismissAction: @escaping () -> Void
     ) {
+        self.needsNavigationController = needsNavigationController
         self._viewModel = .init(wrappedValue: .init(widget: widget))
         self.dismissAction = dismissAction
     }
 
     var body: some View {
+        if needsNavigationController {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    content
+                }
+            } else {
+                NavigationView {
+                    content
+                }
+            }
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         List {
             widgetPreview
             nameField
