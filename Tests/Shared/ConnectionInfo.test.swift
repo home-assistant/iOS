@@ -701,4 +701,128 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
     }
+
+    // MARK: - Async API Tests
+
+    func testAsyncActiveURLWithInternalNetwork() async {
+        let internalURL = URL(string: "http://internal.example.com:8123")
+        let externalURL = URL(string: "http://external.example.com:8123")
+        var info = ConnectionInfo(
+            externalURL: externalURL,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: ["unit_tests"],
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        // Mock the async currentNetworkInfo to return the internal network SSID
+        Current.connectivity.currentNetworkInfo = {
+            NetworkInfo(ssid: "unit_tests", bssid: nil)
+        }
+
+        let url = await info.activeURL()
+        XCTAssertEqual(url, internalURL)
+        XCTAssertEqual(info.activeURLType, .internal)
+    }
+
+    func testAsyncActiveURLWithExternalNetwork() async {
+        let internalURL = URL(string: "http://internal.example.com:8123")
+        let externalURL = URL(string: "http://external.example.com:8123")
+        var info = ConnectionInfo(
+            externalURL: externalURL,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: ["home_network"],
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        // Mock the async currentNetworkInfo to return a different network
+        Current.connectivity.currentNetworkInfo = {
+            NetworkInfo(ssid: "coffee_shop", bssid: nil)
+        }
+
+        let url = await info.activeURL()
+        XCTAssertEqual(url, externalURL)
+        XCTAssertEqual(info.activeURLType, .external)
+    }
+
+    func testAsyncIsOnInternalNetwork() async {
+        var info = ConnectionInfo(
+            externalURL: URL(string: "http://external.example.com:8123"),
+            internalURL: URL(string: "http://internal.example.com:8123"),
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: ["home_wifi"],
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        // Test when on internal network
+        Current.connectivity.currentNetworkInfo = {
+            NetworkInfo(ssid: "home_wifi", bssid: nil)
+        }
+
+        let onInternal = await info.isOnInternalNetwork()
+        XCTAssertTrue(onInternal)
+
+        // Test when on external network
+        Current.connectivity.currentNetworkInfo = {
+            NetworkInfo(ssid: "other_wifi", bssid: nil)
+        }
+
+        let onExternal = await info.isOnInternalNetwork()
+        XCTAssertFalse(onExternal)
+    }
+
+    func testAsyncWebhookURL() async {
+        let internalURL = URL(string: "http://internal.example.com:8123")
+        let externalURL = URL(string: "http://external.example.com:8123")
+        let cloudhookURL = URL(string: "http://cloudhook.example.com")
+
+        var info = ConnectionInfo(
+            externalURL: externalURL,
+            internalURL: internalURL,
+            cloudhookURL: cloudhookURL,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: ["home_wifi"],
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        // Test when on internal network - should return internal URL webhook
+        Current.connectivity.currentNetworkInfo = {
+            NetworkInfo(ssid: "home_wifi", bssid: nil)
+        }
+
+        let internalWebhookURL = await info.webhookURL()
+        XCTAssertEqual(internalWebhookURL, internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+
+        // Test when on external network - should return cloudhook URL
+        Current.connectivity.currentNetworkInfo = {
+            NetworkInfo(ssid: "coffee_shop", bssid: nil)
+        }
+
+        let externalWebhookURL = await info.webhookURL()
+        XCTAssertEqual(externalWebhookURL, cloudhookURL)
+    }
 }
