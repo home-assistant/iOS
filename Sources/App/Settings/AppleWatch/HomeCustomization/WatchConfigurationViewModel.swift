@@ -125,13 +125,10 @@ final class WatchConfigurationViewModel: ObservableObject {
             MagicItem(id: action.ID, serverId: action.serverIdentifier, type: .action)
         }
         newWatchConfig.items = newWatchActionItems
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            watchConfig = newWatchConfig
-            let success = save()
-            if !success {
-                Current.Log.error("Failed to migrate actions to watch config, failed to save config.")
-            }
+        watchConfig = newWatchConfig
+        let success = save()
+        if !success {
+            Current.Log.error("Failed to migrate actions to watch config, failed to save config.")
         }
     }
 
