@@ -4674,6 +4674,22 @@ public enum L10n {
   }
 
   public enum WebView {
+    public enum AddTo {
+      public enum Option {
+        public enum AppleWatch {
+          /// Apple Watch
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.AppleWatch.title") }
+        }
+        public enum CarPlay {
+          /// CarPlay
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.CarPlay.title") }
+        }
+        public enum Widget {
+          /// Widget
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.Widget.title") }
+        }
+      }
+    }
     public enum EmptyState {
       /// Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.
       public static var body: String { return L10n.tr("Localizable", "web_view.empty_state.body") }

@@ -3,6 +3,14 @@ import Shared
 import StoreKit
 import SwiftUI
 
+enum WatchSupportedDomains {
+    static var all: [Domain] = [
+        .script,
+        .scene,
+    ]
+}
+
+
 struct WatchConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = WatchConfigurationViewModel()
