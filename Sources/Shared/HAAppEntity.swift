@@ -105,6 +105,20 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
             }
         })
     }
+
+    public static func entity(id: String, serverId: String) -> HAAppEntity? {
+        do {
+            return try Current.database().read { db in
+                try HAAppEntity
+                    .filter(Column(DatabaseTables.AppEntity.entityId.rawValue) == id)
+                    .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
+                    .fetchOne(db)
+            }
+        } catch {
+            Current.Log.error("Error fetching entity \(id) for server \(serverId): \(error)")
+        }
+        return nil
+    }
 }
 
 public enum ServerEntity {

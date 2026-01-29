@@ -4,7 +4,6 @@ import SwiftUI
 
 @available(iOS 16.0, *)
 struct WebRTCVideoPlayerViewControls: View {
-    let cameraName: String?
     let close: () -> Void
     let isMuted: Bool
     let toggleMute: () -> Void
@@ -14,17 +13,6 @@ struct WebRTCVideoPlayerViewControls: View {
     var body: some View {
         ZStack {
             VStack {
-                HStack {
-                    if let cameraName {
-                        Text(cameraName)
-                            .font(DesignSystem.Font.body.weight(.semibold))
-                            .foregroundStyle(.white)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                    }
-                    Spacer()
-                    topButtons
-                }
                 Spacer()
                 knownIssuesButton
             }
@@ -70,31 +58,6 @@ struct WebRTCVideoPlayerViewControls: View {
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-
-    @ViewBuilder
-    private var topButtons: some View {
-        Button(action: toggleMute) {
-            Image(systemSymbol: isMuted ? .speakerSlashFill : .speakerWave3)
-                .resizable()
-                .frame(width: 16, height: 16)
-                .foregroundStyle(.white)
-                .padding(DesignSystem.Spaces.oneAndHalf)
-                .modify { view in
-                    if #available(iOS 26.0, *) {
-                        view.glassEffect(.clear.interactive(), in: .circle)
-                    } else {
-                        view
-                            .background(Color.black.opacity(0.5))
-                            .clipShape(Circle())
-                    }
-                }
-        }
-        .buttonStyle(.plain)
-        ModalCloseButton(tint: .white) {
-            close()
-        }
-        .padding(16)
-    }
 }
 
 @available(iOS 16.0, *)
@@ -130,7 +93,6 @@ private struct KnownIssuesSheet: View {
 @available(iOS 16.0, *)
 #Preview {
     WebRTCVideoPlayerViewControls(
-        cameraName: "Living Room Camera",
         close: {},
         isMuted: false,
         toggleMute: {}
