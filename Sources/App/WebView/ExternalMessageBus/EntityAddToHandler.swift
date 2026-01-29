@@ -108,11 +108,10 @@ final class EntityAddToHandler {
 
     private func addToCarPlayQuickAccess(entityId: String, webViewController: WebViewControllerProtocol) {
         // Navigate to CarPlay configuration screen
-        // TODO: Pre-select the entity when CarPlayConfigurationView supports it
         Current.Log.info("Adding entity \(entityId) to CarPlay quick access")
-        let carPlaySettingsView = CarPlayConfigurationView()
-            .embeddedInHostingController()
-        webViewController.presentOverlayController(controller: carPlaySettingsView, animated: true)
+        let viewModel = CarPlayConfigurationViewModel(prefilledItem: .init(id: entityId, serverId: webViewController.server.identifier.rawValue, type: .entity))
+        let carPlaySettingsView = CarPlayConfigurationView(needsNavigationController: true, viewModel: viewModel)
+        webViewController.presentOverlayController(controller: carPlaySettingsView.embeddedInHostingController(), animated: true)
     }
 
     private func addToWatchItems(entityId: String, webViewController: WebViewControllerProtocol) {

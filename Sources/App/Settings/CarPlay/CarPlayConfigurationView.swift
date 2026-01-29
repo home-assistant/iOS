@@ -6,48 +6,32 @@ import SwiftUI
 
 struct CarPlayConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = CarPlayConfigurationViewModel()
+    @StateObject private var viewModel: CarPlayConfigurationViewModel
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
 
+    private let needsNavigationController: Bool
+
+    init(needsNavigationController: Bool = false, viewModel: CarPlayConfigurationViewModel? = nil) {
+        self.needsNavigationController = needsNavigationController
+        self._viewModel = .init(wrappedValue: viewModel ?? CarPlayConfigurationViewModel())
+    }
+
     var body: some View {
-        content
-            .navigationTitle("CarPlay")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        viewModel.save { success in
-                            if success {
-                                // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
-                                // private var requestReview`
-                                SKStoreReviewController.requestReview()
-                                dismiss()
-                            }
-                        }
-                    }, label: {
-                        Text(verbatim: L10n.Watch.Configuration.Save.title)
-                    })
+        if needsNavigationController {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    content
                 }
-            })
-            .onAppear {
-                // Prevent trigger when popping nav controller
-                guard !isLoaded else { return }
-                viewModel.loadConfig()
-                isLoaded = true
-            }
-            .sheet(isPresented: $viewModel.showAddItem, content: {
-                MagicItemAddView(context: .carPlay) { itemToAdd in
-                    guard let itemToAdd else { return }
-                    viewModel.addItem(itemToAdd)
+            } else {
+                NavigationView {
+                    content
                 }
-            })
-            .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
-                Button(action: {}, label: {
-                    Text(verbatim: L10n.okLabel)
-                })
             }
+        } else {
+            content
+        }
     }
 
     private var content: some View {
@@ -56,6 +40,38 @@ struct CarPlayConfigurationView: View {
             tabsSection
             itemsSection
             resetView
+        }
+        .navigationTitle("CarPlay")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {
+                    let success = viewModel.save()
+                    if success {
+                        SKStoreReviewController.requestReview()
+                        dismiss()
+                    }
+                }, label: {
+                    Text(verbatim: L10n.Watch.Configuration.Save.title)
+                })
+            }
+        })
+        .onAppear {
+            // Prevent trigger when popping nav controller
+            guard !isLoaded else { return }
+            viewModel.loadConfig()
+            isLoaded = true
+        }
+        .sheet(isPresented: $viewModel.showAddItem, content: {
+            MagicItemAddView(context: .carPlay) { itemToAdd in
+                guard let itemToAdd else { return }
+                viewModel.addItem(itemToAdd)
+            }
+        })
+        .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
+            Button(action: {}, label: {
+                Text(verbatim: L10n.okLabel)
+            })
         }
     }
 
