@@ -13,7 +13,7 @@ struct CarPlayConfigurationView: View {
 
     private let needsNavigationController: Bool
 
-    init(needsNavigationController: Bool = false, viewModel: CarPlayConfigurationViewModel? = nil) {
+    init(needsNavigationController: Bool = true, viewModel: CarPlayConfigurationViewModel? = nil) {
         self.needsNavigationController = needsNavigationController
         self._viewModel = .init(wrappedValue: viewModel ?? CarPlayConfigurationViewModel())
     }
