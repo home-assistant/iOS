@@ -34,6 +34,17 @@ struct WidgetBasicContainerView: View {
     }
 }
 
+extension WidgetFamily: @retroactive EnvironmentKey {
+    public static var defaultValue: WidgetFamily = .systemMedium
+}
+
+extension EnvironmentValues {
+    var widgetFamily: WidgetFamily {
+        get { self[WidgetFamily.self] }
+        set { self[WidgetFamily.self] = newValue }
+    }
+}
+
 @available(iOS 18, *)
 struct WidgetBasicContainerView_Previews: PreviewProvider {
     struct WidgetBasicContainerViewPreviewData {
@@ -59,6 +70,7 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                 familySize: .systemSmall
             )
             .previewContext(WidgetPreviewContext(family: WidgetFamily.systemSmall))
+            .environment(\.widgetFamily, .systemSmall)
         }
 
     static var systemMediumConfigurations: SnapshottablePreviewConfigurations<WidgetBasicContainerViewPreviewData> =
@@ -72,6 +84,7 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                 familySize: .systemMedium
             )
             .previewContext(WidgetPreviewContext(family: WidgetFamily.systemMedium))
+            .environment(\.widgetFamily, .systemMedium)
         }
 
     static var systemLargeConfigurations: SnapshottablePreviewConfigurations<WidgetBasicContainerViewPreviewData> =
@@ -85,6 +98,7 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                 familySize: .systemLarge
             )
             .previewContext(WidgetPreviewContext(family: WidgetFamily.systemLarge))
+            .environment(\.widgetFamily, .systemLarge)
         }
 
     private static func maxTiles(for familySize: WidgetFamily) -> Int {
