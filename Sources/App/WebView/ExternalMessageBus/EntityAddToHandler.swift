@@ -109,15 +109,31 @@ final class EntityAddToHandler {
     private func addToCarPlayQuickAccess(entityId: String, webViewController: WebViewControllerProtocol) {
         // Navigate to CarPlay configuration screen
         Current.Log.info("Adding entity \(entityId) to CarPlay quick access")
-        let viewModel = CarPlayConfigurationViewModel(prefilledItem: .init(id: entityId, serverId: webViewController.server.identifier.rawValue, type: .entity))
+        let viewModel = CarPlayConfigurationViewModel(prefilledItem: .init(
+            id: entityId,
+            serverId: webViewController.server.identifier.rawValue,
+            type: .entity
+        ))
         let carPlaySettingsView = CarPlayConfigurationView(needsNavigationController: true, viewModel: viewModel)
-        webViewController.presentOverlayController(controller: carPlaySettingsView.embeddedInHostingController(), animated: true)
+        webViewController.presentOverlayController(
+            controller: carPlaySettingsView.embeddedInHostingController(),
+            animated: true
+        )
     }
 
     private func addToWatchItems(entityId: String, webViewController: WebViewControllerProtocol) {
         // Navigate to Watch configuration screen
-        // TODO: Create a Watch configuration view and pre-select the entity
-        Current.Log.info("Adding entity \(entityId) to Watch - navigation to be implemented")
+        Current.Log.info("Adding entity \(entityId) to Watch")
+        let viewModel = WatchConfigurationViewModel(prefilledItem: .init(
+            id: entityId,
+            serverId: webViewController.server.identifier.rawValue,
+            type: .entity
+        ))
+        let watchSettingsView = WatchConfigurationView(needsNavigationController: true, viewModel: viewModel)
+            .preferredColorScheme(.dark)
+        let viewController = watchSettingsView.embeddedInHostingController()
+        viewController.overrideUserInterfaceStyle = .dark
+        webViewController.presentOverlayController(controller: viewController, animated: true)
     }
 
     private func openWidgetBuilder(

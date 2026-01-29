@@ -78,6 +78,7 @@ struct CustomWidgetAction: EntityAddToAction {
         L10n.WebView.AddTo.Option.Widget.title
     }
 }
+
 // MARK: - External Representation
 
 /// External representation of an action for communication with the frontend
@@ -201,4 +202,3 @@ enum EntityAddToError: Error {
     case encodingFailed
     case decodingFailed
 }
-
