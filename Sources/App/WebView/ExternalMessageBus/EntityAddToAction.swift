@@ -88,6 +88,25 @@ struct ExternalEntityAddToAction: Codable {
     let details: String?
     let mdiIcon: String
 
+    enum CodingKeys: String, CodingKey {
+        case appPayload = "app_payload"
+        case enabled
+        case name
+        case details
+        case mdiIcon = "mdi_icon"
+    }
+
+    /// Converts the action to a dictionary suitable for the external bus response
+    func toDictionary() -> [String: Any] {
+        [
+            CodingKeys.appPayload.rawValue: appPayload,
+            CodingKeys.enabled.rawValue: enabled,
+            CodingKeys.name.rawValue: name,
+            CodingKeys.details.rawValue: details as Any,
+            CodingKeys.mdiIcon.rawValue: mdiIcon,
+        ]
+    }
+
     /// Creates an external representation from an action
     static func from(action: any EntityAddToAction) throws -> ExternalEntityAddToAction {
         // Encode the action to JSON

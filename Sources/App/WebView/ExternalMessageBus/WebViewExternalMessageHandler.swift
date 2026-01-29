@@ -556,6 +556,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     // MARK: - Entity Add To Handlers
 
+    private enum EntityAddToResponseKey: String {
+        case actions
+    }
+
     private func handleGetEntityAddToActions(entityId: String, messageId: Int?) -> Guarantee<WebSocketMessage> {
         Guarantee { seal in
             entityAddToHandler.actionsForEntity(entityId: entityId).done { actions in
@@ -567,22 +571,14 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     seal(WebSocketMessage(
                         id: messageId ?? -1,
                         type: "result",
-                        result: ["actions": externalActions.map { action in
-                            [
-                                "appPayload": action.appPayload,
-                                "enabled": action.enabled,
-                                "name": action.name,
-                                "details": action.details as Any,
-                                "mdiIcon": action.mdiIcon,
-                            ]
-                        }]
+                        result: [EntityAddToResponseKey.actions.rawValue: externalActions.map { $0.toDictionary() }]
                     ))
                 } catch {
                     Current.Log.error("Failed to encode entity add to actions: \(error)")
                     seal(WebSocketMessage(
                         id: messageId ?? -1,
                         type: "result",
-                        result: ["actions": []]
+                        result: [EntityAddToResponseKey.actions.rawValue: []]
                     ))
                 }
             }.catch { error in
@@ -590,7 +586,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 seal(WebSocketMessage(
                     id: messageId ?? -1,
                     type: "result",
-                    result: ["actions": []]
+                    result: [EntityAddToResponseKey.actions.rawValue: []]
                 ))
             }
         }
