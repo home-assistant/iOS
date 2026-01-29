@@ -3239,6 +3239,10 @@ public enum L10n {
         /// Pinch to Zoom
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.pinch_to_zoom.title") }
       }
+      public enum RefreshAfterInactive {
+        /// Refresh After 5 Min Inactive
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.refresh_after_inactive.title") }
+      }
       public enum Restoration {
         /// Remember Last Page
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.restoration.title") }
