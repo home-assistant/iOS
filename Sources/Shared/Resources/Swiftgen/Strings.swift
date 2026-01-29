@@ -3026,6 +3026,26 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.widgets.custom.delete_all.title") }
         }
       }
+      public enum Select {
+        /// Add to Widget
+        public static var title: String { return L10n.tr("Localizable", "settings.widgets.select.title") }
+        public enum Empty {
+          /// Create your first widget to add this entity.
+          public static var subtitle: String { return L10n.tr("Localizable", "settings.widgets.select.empty.subtitle") }
+          /// No Widgets Yet
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.select.empty.title") }
+        }
+        public enum Footer {
+          /// Select a widget to add this entity to.
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.select.footer.title") }
+        }
+        public enum ItemCount {
+          /// %d items
+          public static func title(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings.widgets.select.item_count.title", p1)
+          }
+        }
+      }
       public enum YourWidgets {
         /// Your widgets
         public static var title: String { return L10n.tr("Localizable", "settings.widgets.your_widgets.title") }
@@ -4678,6 +4698,22 @@ public enum L10n {
   }
 
   public enum WebView {
+    public enum AddTo {
+      public enum Option {
+        public enum AppleWatch {
+          /// Apple Watch
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.AppleWatch.title") }
+        }
+        public enum CarPlay {
+          /// CarPlay
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.CarPlay.title") }
+        }
+        public enum Widget {
+          /// Widget
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.Widget.title") }
+        }
+      }
+    }
     public enum EmptyState {
       /// Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.
       public static var body: String { return L10n.tr("Localizable", "web_view.empty_state.body") }

@@ -23,6 +23,7 @@ protocol WebViewExternalMessageHandlerProtocol {
 final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
+    private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
 
@@ -163,6 +164,20 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 hideToast(id: toastPayload.id)
+            case .entityAddToGetActions:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log
+                        .error("Received entity/add_to/get_actions but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                response = handleGetEntityAddToActions(entityId: entityId, messageId: incomingMessage.ID)
+            case .entityAddTo:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String,
+                      let appPayload = incomingMessage.Payload?["app_payload"] as? String else {
+                    Current.Log.error("Received entity/add_to but missing entity_id or app_payload! \(incomingMessage)")
+                    return
+                }
+                handleEntityAddTo(entityId: entityId, appPayload: appPayload)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -536,6 +551,57 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     func stopImprovScanIfNeeded() {
         if improvManager.scanInProgress {
             improvManager.stopScan()
+        }
+    }
+
+    // MARK: - Entity Add To Handlers
+
+    private enum EntityAddToResponseKey: String {
+        case actions
+    }
+
+    private func handleGetEntityAddToActions(entityId: String, messageId: Int?) -> Guarantee<WebSocketMessage> {
+        Guarantee { seal in
+            entityAddToHandler.actionsForEntity(entityId: entityId).done { actions in
+                do {
+                    let externalActions = try actions.map { action in
+                        try ExternalEntityAddToAction.from(action: action)
+                    }
+
+                    seal(WebSocketMessage(
+                        id: messageId ?? -1,
+                        type: "result",
+                        result: [EntityAddToResponseKey.actions.rawValue: externalActions.map { $0.toDictionary() }]
+                    ))
+                } catch {
+                    Current.Log.error("Failed to encode entity add to actions: \(error)")
+                    seal(WebSocketMessage(
+                        id: messageId ?? -1,
+                        type: "result",
+                        result: [EntityAddToResponseKey.actions.rawValue: []]
+                    ))
+                }
+            }.catch { error in
+                Current.Log.error("Failed to get entity add to actions: \(error)")
+                seal(WebSocketMessage(
+                    id: messageId ?? -1,
+                    type: "result",
+                    result: [EntityAddToResponseKey.actions.rawValue: []]
+                ))
+            }
+        }
+    }
+
+    private func handleEntityAddTo(entityId: String, appPayload: String) {
+        do {
+            let action = try ExternalEntityAddToAction.toAction(from: appPayload)
+            entityAddToHandler.execute(action: action, entityId: entityId).done {
+                Current.Log.info("Successfully executed entity add to action for \(entityId)")
+            }.catch { error in
+                Current.Log.error("Failed to execute entity add to action for \(entityId): \(error)")
+            }
+        } catch {
+            Current.Log.error("Failed to decode entity add to action: \(error)")
         }
     }
 }

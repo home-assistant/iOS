@@ -10,6 +10,14 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @Published var servers: [Server] = []
     private let magicItemProvider = Current.magicItemProvider()
 
+    // An item that should be added as soon as screen finishes loading
+    // like when using frontend "Add to" functionality from more-info dialog
+    private let prefilledItem: MagicItem?
+
+    init(prefilledItem: MagicItem? = nil) {
+        self.prefilledItem = prefilledItem
+    }
+
     @MainActor
     func loadConfig() {
         servers = Current.servers.all
@@ -21,6 +29,11 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     @MainActor
     private func loadDatabase() {
+        defer {
+            if let prefilledItem {
+                addItem(prefilledItem)
+            }
+        }
         do {
             if let config: CarPlayConfig = try Current.database().read({ db in
                 do {
@@ -42,10 +55,9 @@ final class CarPlayConfigurationViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     private func setConfig(_ config: CarPlayConfig) {
-        DispatchQueue.main.async { [weak self] in
-            self?.config = config
-        }
+        self.config = config
     }
 
     @MainActor
@@ -61,27 +73,22 @@ final class CarPlayConfigurationViewModel: ObservableObject {
         }
         newConfig.quickAccessItems = newActionItems
         setConfig(newConfig)
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            save { success in
-                if !success {
-                    Current.Log.error("Failed to migrate actions to CarPlay config, failed to save config.")
-                }
-            }
-        }
+        save()
     }
 
+    @discardableResult
     @MainActor
-    func save(completion: (Bool) -> Void) {
+    // Returns success boolean
+    func save() -> Bool {
         do {
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
-                completion(true)
             }
+            return true
         } catch {
             Current.Log.error("Failed to save new CarPlay config, error: \(error.localizedDescription)")
             showError(message: L10n.Grdb.Config.MigrationError.failedToSave(error.localizedDescription))
-            completion(false)
+            return false
         }
     }
 

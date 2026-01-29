@@ -14,6 +14,14 @@ final class WatchConfigurationViewModel: ObservableObject {
 
     private let magicItemProvider = Current.magicItemProvider()
 
+    // An item that should be added as soon as screen finishes loading
+    // like when using frontend "Add to" functionality from more-info dialog
+    private let prefilledItem: MagicItem?
+
+    init(prefilledItem: MagicItem? = nil) {
+        self.prefilledItem = prefilledItem
+    }
+
     @MainActor
     func loadWatchConfig() {
         servers = Current.servers.all
@@ -59,7 +67,8 @@ final class WatchConfigurationViewModel: ObservableObject {
     }
 
     @MainActor
-    func save(completion: (Bool) -> Void) {
+    // Returns success boolean
+    func save() -> Bool {
         do {
             try Current.database().write { db in
                 if watchConfig.id != WatchConfig.watchConfigId {
@@ -69,17 +78,22 @@ final class WatchConfigurationViewModel: ObservableObject {
                     watchConfig.id = WatchConfig.watchConfigId
                 }
                 try watchConfig.insert(db, onConflict: .replace)
-                completion(true)
             }
+            return true
         } catch {
             Current.Log.error("Failed to save new Watch config, error: \(error.localizedDescription)")
             showError(message: L10n.Grdb.Config.MigrationError.failedToSave(error.localizedDescription))
-            completion(false)
+            return false
         }
     }
 
     @MainActor
     private func loadDatabase() {
+        defer {
+            if let prefilledItem {
+                addItem(prefilledItem)
+            }
+        }
         do {
             if let config = try WatchConfig.config() {
                 setConfig(config)
@@ -94,10 +108,9 @@ final class WatchConfigurationViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     private func setConfig(_ config: WatchConfig) {
-        DispatchQueue.main.async { [weak self] in
-            self?.watchConfig = config
-        }
+        watchConfig = config
     }
 
     @MainActor
@@ -112,14 +125,10 @@ final class WatchConfigurationViewModel: ObservableObject {
             MagicItem(id: action.ID, serverId: action.serverIdentifier, type: .action)
         }
         newWatchConfig.items = newWatchActionItems
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            watchConfig = newWatchConfig
-            save { success in
-                if !success {
-                    Current.Log.error("Failed to migrate actions to watch config, failed to save config.")
-                }
-            }
+        watchConfig = newWatchConfig
+        let success = save()
+        if !success {
+            Current.Log.error("Failed to migrate actions to watch config, failed to save config.")
         }
     }
 

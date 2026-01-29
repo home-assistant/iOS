@@ -959,6 +959,9 @@
 		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
 		42A818E72BBEAAE80083D045 /* MockAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E62BBEAAE80083D045 /* MockAssistService.swift */; };
 		42A935A22C7FEBA100FCF504 /* ControlScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A935A12C7FEBA100FCF504 /* ControlScript.swift */; };
+		42A9E0F22F2B58FF00D22154 /* EntityAddToAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9E0F02F2B58FF00D22154 /* EntityAddToAction.swift */; };
+		42A9E0F32F2B58FF00D22154 /* EntityAddToHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9E0F12F2B58FF00D22154 /* EntityAddToHandler.swift */; };
+		42A9E1012F2B979900D22154 /* WidgetSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9E1002F2B979900D22154 /* WidgetSelectionView.swift */; };
 		42AA4C842C2DACAD00EA2E99 /* UIImage+Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */; };
 		42AAEE882EC4B9880049E1F3 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AAEE862EC4B7CC0049E1F3 /* URLOpener.swift */; };
 		42AAEE8A2EC4C57F0049E1F3 /* ConnectionURLViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AAEE892EC4C57F0049E1F3 /* ConnectionURLViewModel.swift */; };
@@ -2771,6 +2774,9 @@
 		42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlayer.swift; sourceTree = "<group>"; };
 		42A818E62BBEAAE80083D045 /* MockAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAssistService.swift; sourceTree = "<group>"; };
 		42A935A12C7FEBA100FCF504 /* ControlScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScript.swift; sourceTree = "<group>"; };
+		42A9E0F02F2B58FF00D22154 /* EntityAddToAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAddToAction.swift; sourceTree = "<group>"; };
+		42A9E0F12F2B58FF00D22154 /* EntityAddToHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAddToHandler.swift; sourceTree = "<group>"; };
+		42A9E1002F2B979900D22154 /* WidgetSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSelectionView.swift; sourceTree = "<group>"; };
 		42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Circle.swift"; sourceTree = "<group>"; };
 		42AAEE862EC4B7CC0049E1F3 /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		42AAEE892EC4C57F0049E1F3 /* ConnectionURLViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewModel.swift; sourceTree = "<group>"; };
@@ -6203,8 +6209,11 @@
 		42D6EABC2F0FF98F00FA249B /* ExternalMessageBus */ = {
 			isa = PBXGroup;
 			children = (
+				42A9E0F02F2B58FF00D22154 /* EntityAddToAction.swift */,
+				42A9E0F12F2B58FF00D22154 /* EntityAddToHandler.swift */,
 				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
+				42A9E1002F2B979900D22154 /* WidgetSelectionView.swift */,
 			);
 			path = ExternalMessageBus;
 			sourceTree = "<group>";
@@ -9243,6 +9252,8 @@
 				42D5ACDB2C64C82600D9C4E2 /* MagicItemAddViewModel.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
+				42A9E0F22F2B58FF00D22154 /* EntityAddToAction.swift in Sources */,
+				42A9E0F32F2B58FF00D22154 /* EntityAddToHandler.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
@@ -9497,6 +9508,7 @@
 				421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */,
 				4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */,
 				42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */,
+				42A9E1012F2B979900D22154 /* WidgetSelectionView.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
 				42B74A642D36B17000C37304 /* ReloadWidgetsAppIntent.swift in Sources */,
 				42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */,
