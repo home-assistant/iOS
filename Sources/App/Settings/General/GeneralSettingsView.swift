@@ -190,9 +190,10 @@ struct GeneralSettingsView: View {
         } header: {
             Text("Experimental")
         } footer: {
-            Text("Display Home Asistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.")
+            Text(
+                "Display Home Asistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues."
+            )
         }
-
     }
 
     @ViewBuilder

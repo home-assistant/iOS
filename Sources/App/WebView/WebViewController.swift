@@ -463,7 +463,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         // Create the top constraint based on edge-to-edge setting
         // On iOS (not Catalyst), edge-to-edge mode pins the webview to the top of the view
         // On Catalyst, we always show the status bar buttons, so we pin to statusBarView
-        let edgeToEdge = Current.settingsStore.edgeToEdge && !Current.isCatalyst
+        // Also use edge-to-edge behavior when fullScreen is enabled (status bar hidden)
+        let edgeToEdge = (Current.settingsStore.edgeToEdge || Current.settingsStore.fullScreen) && !Current.isCatalyst
         if edgeToEdge {
             webViewTopConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
             statusBarView.isHidden = true
@@ -546,7 +547,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if Current.isCatalyst {
             setupStatusBarButtons(in: statusBarView)
         }
-
         return statusBarView
     }
 
@@ -696,15 +696,17 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         let cachedColors = ThemeColors.cachedThemeColors(for: traitCollection)
 
+        view.backgroundColor = cachedColors[.primaryBackgroundColor]
         webView?.backgroundColor = cachedColors[.primaryBackgroundColor]
         webView?.scrollView.backgroundColor = cachedColors[.primaryBackgroundColor]
 
-        if let statusBarView = view.viewWithTag(111) {
-            if server.info.version < .canUseAppThemeForStatusBar {
-                statusBarView.backgroundColor = cachedColors[.appHeaderBackgroundColor]
-            } else {
-                statusBarView.backgroundColor = cachedColors[.appThemeColor]
-            }
+        // Use the stored reference instead of searching by tag
+        if let statusBarView {
+            let backgroundColor = server.info.version < .canUseAppThemeForStatusBar
+                ? cachedColors[.appHeaderBackgroundColor]
+                : cachedColors[.appThemeColor]
+            statusBarView.backgroundColor = backgroundColor
+            statusBarView.isOpaque = true
         }
 
         refreshControl.tintColor = cachedColors[.primaryColor]
@@ -768,7 +770,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         guard let statusBarView else { return }
 
         // Edge-to-edge mode only applies to iOS (not Catalyst)
-        let edgeToEdge = Current.settingsStore.edgeToEdge && !Current.isCatalyst
+        // Also use edge-to-edge behavior when fullScreen is enabled (status bar hidden)
+        let edgeToEdge = (Current.settingsStore.edgeToEdge || Current.settingsStore.fullScreen) && !Current.isCatalyst
 
         // Deactivate the current constraint
         webViewTopConstraint?.isActive = false
@@ -782,6 +785,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             statusBarView.isHidden = false
         }
         webViewTopConstraint?.isActive = true
+
+        // Force layout update
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+
+        // Refresh styling to ensure statusBarView has proper background color
+        styleUI()
 
         // Animate the layout change
         UIView.animate(withDuration: 0.25) {
