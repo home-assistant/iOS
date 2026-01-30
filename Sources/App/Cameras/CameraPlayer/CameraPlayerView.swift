@@ -8,7 +8,6 @@ import SwiftUI
 @available(iOS 16.0, *)
 struct CameraPlayerView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.openURL) private var openURL
     private let server: Server
     private let cameraEntityId: String
     private let cameraName: String?
