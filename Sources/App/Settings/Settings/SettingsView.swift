@@ -115,14 +115,8 @@ struct SettingsView: View {
             // General section
             Section {
                 ForEach(SettingsItem.generalItems, id: \.self) { item in
-                    if #available(iOS 26.0, *) {
-                        NavigationLink(value: item) {
-                            settingsItemLabel(item)
-                        }
-                    } else {
-                        NavigationLink(destination: item.destinationView) {
-                            settingsItemLabel(item)
-                        }
+                    NavigationLink(destination: item.destinationView) {
+                        settingsItemLabel(item)
                     }
                 }
             }
@@ -140,14 +134,8 @@ struct SettingsView: View {
             if shouldShowWatchSection {
                 Section(header: Text("Apple Watch")) {
                     ForEach(SettingsItem.watchItems, id: \.self) { item in
-                        if #available(iOS 26.0, *) {
-                            NavigationLink(value: item) {
-                                settingsItemLabel(item)
-                            }
-                        } else {
-                            NavigationLink(destination: item.destinationView) {
-                                settingsItemLabel(item)
-                            }
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
                         }
                     }
                 }
@@ -157,14 +145,8 @@ struct SettingsView: View {
             if UIDevice.current.userInterfaceIdiom == .phone {
                 Section {
                     ForEach(SettingsItem.carPlayItems, id: \.self) { item in
-                        if #available(iOS 26.0, *) {
-                            NavigationLink(value: item) {
-                                settingsItemLabel(item)
-                            }
-                        } else {
-                            NavigationLink(destination: item.destinationView) {
-                                settingsItemLabel(item)
-                            }
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
                         }
                     }
                 }
@@ -173,14 +155,8 @@ struct SettingsView: View {
             // Legacy section
             Section {
                 ForEach(SettingsItem.legacyItems, id: \.self) { item in
-                    if #available(iOS 26.0, *) {
-                        NavigationLink(value: item) {
-                            settingsItemLabel(item)
-                        }
-                    } else {
-                        NavigationLink(destination: item.destinationView) {
-                            settingsItemLabel(item)
-                        }
+                    NavigationLink(destination: item.destinationView) {
+                        settingsItemLabel(item)
                     }
                 }
             }
@@ -201,14 +177,8 @@ struct SettingsView: View {
                             }
                         }
                     } else {
-                        if #available(iOS 26.0, *) {
-                            NavigationLink(value: item) {
-                                settingsItemLabel(item)
-                            }
-                        } else {
-                            NavigationLink(destination: item.destinationView) {
-                                settingsItemLabel(item)
-                            }
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
                         }
                     }
                 }
