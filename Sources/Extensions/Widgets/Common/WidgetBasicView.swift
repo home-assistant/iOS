@@ -1,6 +1,7 @@
 import AppIntents
 import Shared
 import SwiftUI
+import WidgetKit
 
 enum WidgetType: String {
     case button

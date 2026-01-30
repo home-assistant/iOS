@@ -254,6 +254,7 @@ struct WidgetCreationView: View {
                 rowsCount: rows.count
             )
         )
+        .environment(\.widgetFamily, widgetFamilyPreview())
     }
 
     private func widgetFamilyPreview() -> WidgetFamily {
