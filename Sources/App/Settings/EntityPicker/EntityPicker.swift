@@ -140,6 +140,7 @@ struct EntityPicker: View {
             HStack(spacing: DesignSystem.Spaces.one) {
                 if viewModel.hasActiveFilters {
                     resetFiltersButton
+                        .transition(.move(edge: .leading).combined(with: .opacity))
                 }
                 serverPicker
                 groupByPicker
@@ -173,7 +174,6 @@ struct EntityPicker: View {
                 view
             }
         }
-
     }
 
     @ViewBuilder
