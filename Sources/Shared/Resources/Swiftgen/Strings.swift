@@ -1218,6 +1218,10 @@ public enum L10n {
         /// Group by
         public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.title") }
       }
+      public enum Server {
+        /// Servers
+        public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.server.title") }
+      }
     }
     public enum List {
       public enum Area {
@@ -1226,6 +1230,10 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "entity_picker.list.area.no_area.title") }
         }
       }
+    }
+    public enum Search {
+      /// Entity name, ID, area name, device name...
+      public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.search.placeholder") }
     }
   }
 

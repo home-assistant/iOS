@@ -40,6 +40,22 @@ final class EntityPickerViewModel: ObservableObject {
     private var filterTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
 
+    /// Returns true if any filter (excluding server) has a non-default value
+    var hasActiveFilters: Bool {
+        let defaultDomainFilter = domainFilter?.rawValue
+        let isDomainFilterActive = selectedDomainFilter != defaultDomainFilter
+        let isAreaFilterActive = selectedAreaFilter != nil
+        let isGroupingFilterActive = selectedGrouping != .area
+        return isDomainFilterActive || isAreaFilterActive || isGroupingFilterActive
+    }
+
+    /// Resets all filters (except server) to their default values
+    func resetFilters() {
+        selectedDomainFilter = domainFilter?.rawValue
+        selectedAreaFilter = nil
+        selectedGrouping = .area
+    }
+
     init(domainFilter: Domain?, selectedServerId: String?) {
         self.domainFilter = domainFilter
         self.selectedServerId = selectedServerId
