@@ -276,6 +276,16 @@ struct ConnectionSettingsView: View {
             }
             .buttonStyle(.plain)
 
+            NavigationLink {
+                ClientCertificateSettingsView(server: viewModel.server)
+            } label: {
+                NavigationRow(
+                    title: L10n.Settings.ConnectionSection.ClientCertificate.title,
+                    value: viewModel.clientCertificateStatus,
+                    valueColor: .secondary
+                )
+            }
+
             Button {
                 viewModel.updateAppDatabase()
             } label: {
