@@ -154,7 +154,8 @@ struct CameraPlayerView: View {
     }
 
     private func openMoreInfo() {
-        if let url = AppConstants.openEntityDeeplinkURL(entityId: cameraEntityId, serverId: server.identifier.rawValue) {
+        if let url = AppConstants
+            .openEntityDeeplinkURL(entityId: cameraEntityId, serverId: server.identifier.rawValue) {
             URLOpener.shared.open(url, options: [:], completionHandler: nil)
         }
     }
