@@ -130,14 +130,8 @@ struct SettingsView: View {
             // Integrations section
             Section {
                 ForEach(SettingsItem.integrationItems, id: \.self) { item in
-                    if #available(iOS 26.0, *) {
-                        NavigationLink(value: item) {
-                            settingsItemLabel(item)
-                        }
-                    } else {
-                        NavigationLink(destination: item.destinationView) {
-                            settingsItemLabel(item)
-                        }
+                    NavigationLink(destination: item.destinationView) {
+                        settingsItemLabel(item)
                     }
                 }
             }
