@@ -84,7 +84,7 @@ struct MagicItemAddView: View {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
             }
-#if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst)
             .toolbar(content: {
                 CloseButton {
                     dismiss()
