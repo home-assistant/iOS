@@ -1,4 +1,5 @@
 import GRDB
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -37,9 +38,19 @@ struct CameraPlayerView: View {
                         .toolbar {
                             ToolbarItem(placement: .primaryAction) {
                                 if controlsVisible {
-                                    CloseButton {
-                                        dismiss()
+                                    HStack(spacing: DesignSystem.Spaces.one) {
+                                        Button {
+                                            openMoreInfo()
+                                        } label: {
+                                            Image(systemSymbol: .safari)
+                                        }
                                     }
+                                }
+                            }
+
+                            ToolbarItem(placement: .primaryAction) {
+                                CloseButton {
+                                    dismiss()
                                 }
                             }
                         }
@@ -139,6 +150,13 @@ struct CameraPlayerView: View {
         Current.Log.info("Camera \(cameraEntityId) does not support HLS, falling back to MJPEG")
         withAnimation {
             playerType = .mjpeg
+        }
+    }
+
+    private func openMoreInfo() {
+        if let url = AppConstants
+            .openEntityDeeplinkURL(entityId: cameraEntityId, serverId: server.identifier.rawValue) {
+            URLOpener.shared.open(url, options: [:], completionHandler: nil)
         }
     }
 }
