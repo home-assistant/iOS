@@ -250,6 +250,7 @@
 "connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Open settings";
 "connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
+"connection_security_level_block.tip" = "Tip: Double check your device settings and app permissions. Make sure the app is allowed local network access and location access is set to 'Always' (so it also works in background) and 'Full' (so the app can identify which network you are using and detect your home network).";
 "connection_security_level_block.change_preference.title" = "Change connection preference";
 "connection_security_level_block.open_settings.title" = "Open settings";
 "connection_security_level_block.requirement.home_network_missing.title" = "Configure local network";

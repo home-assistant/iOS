@@ -1054,6 +1054,8 @@ public enum L10n {
   public enum ConnectionSecurityLevelBlock {
     /// Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.
     public static var body: String { return L10n.tr("Localizable", "connection_security_level_block.body") }
+    /// Tip: Double check your device settings and app permissions, make sure it is allowing local network access and location access set to 'Always' (so it also works in background) and 'Full' (so the app can identify which network you are using and detect your home network).
+    public static var tip: String { return L10n.tr("Localizable", "connection_security_level_block.tip") }
     /// You're disconnected
     public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.title") }
     public enum ChangePreference {
