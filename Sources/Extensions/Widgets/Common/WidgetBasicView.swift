@@ -76,8 +76,8 @@ struct WidgetBasicView: View {
     @available(iOS 17.0, *)
     @ViewBuilder
     private func customWidgetContent(model: WidgetBasicViewModel) -> some View {
-        // For custom widgets with requires confirmation, we need special handling
-        // The icon tap should trigger the icon's interaction, but we still need confirmation flow for the card
+        // When confirmation is required, both icon and card trigger the confirmation dialog.
+        // The actual icon/card interaction is executed only after confirmation is granted.
         if model.requiresConfirmation {
             // Use a button that triggers confirmation state for the card area
             Button(intent: {
@@ -167,59 +167,12 @@ struct WidgetBasicView: View {
         model: WidgetBasicViewModel,
         isConfirmationDone: Bool = true
     ) -> (any AppIntent)? {
-        switch interactionType {
-        case .widgetURL, .noAction:
-            return nil
-        case let .appIntent(widgetIntentType):
-            // When confirmation is required and this method wasn't called from confirmation button
-            if model.requiresConfirmation, !isConfirmationDone {
-                let intent = UpdateWidgetItemConfirmationStateAppIntent()
-                intent.widgetId = model.widgetId
-                intent.serverUniqueId = model.id
-                return intent
-            }
-            switch widgetIntentType {
-            case .action:
-                let intent = PerformAction()
-                intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
-                intent.hapticConfirmation = true
-                return intent
-            case let .script(id, entityId, serverId, name, showConfirmationNotification):
-                let intent = ScriptAppIntent()
-                intent.script = .init(
-                    id: id,
-                    entityId: entityId,
-                    serverId: serverId,
-                    serverName: "", // not used in this context
-                    displayString: name,
-                    iconName: "" // not used in this context
-                )
-                intent.hapticConfirmation = true
-                intent.showConfirmationNotification = showConfirmationNotification
-                return intent
-            case .refresh:
-                return ReloadWidgetsAppIntent()
-            case let .toggle(entityId, domain, serverId):
-                let intent = CustomWidgetToggleAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                intent.widgetShowingStates = model.subtitle != nil
-                return intent
-            case let .activate(entityId, domain, serverId):
-                let intent = CustomWidgetActivateAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                return intent
-            case let .press(entityId, domain, serverId):
-                let intent = CustomWidgetPressButtonAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                return intent
-            }
-        }
+        // Delegate to the shared factory, checking confirmation when not done
+        WidgetInteractionIntentFactory.intent(
+            for: interactionType,
+            model: model,
+            checkConfirmation: !isConfirmationDone
+        )
     }
 
     @available(iOS 17.0, *)

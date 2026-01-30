@@ -78,7 +78,10 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
                 iconView
             }
             .buttonStyle(.plain)
-        } else if let iconIntent = WidgetInteractionHelpers.intent(for: model.interactionType, model: model) {
+        } else if let iconIntent = WidgetInteractionIntentFactory.intent(
+            for: model.interactionType,
+            model: model
+        ) {
             Button(intent: iconIntent) {
                 iconView
             }
@@ -138,55 +141,80 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
     }
 }
 
-/// Helper struct for creating intents from interaction types
+/// Factory for creating intents from interaction types
 @available(iOS 17.0, *)
-enum WidgetInteractionHelpers {
-    static func intent(for interactionType: WidgetInteractionType, model: WidgetBasicViewModel) -> (any AppIntent)? {
+enum WidgetInteractionIntentFactory {
+    /// Creates an AppIntent for the given interaction type
+    /// - Parameters:
+    ///   - interactionType: The type of interaction
+    ///   - model: The view model containing widget item data
+    ///   - checkConfirmation: If true, returns confirmation intent when model.requiresConfirmation is true
+    /// - Returns: An AppIntent if one can be created, nil otherwise
+    static func intent(
+        for interactionType: WidgetInteractionType,
+        model: WidgetBasicViewModel,
+        checkConfirmation: Bool = false
+    ) -> (any AppIntent)? {
         switch interactionType {
         case .widgetURL, .noAction:
             return nil
         case let .appIntent(widgetIntentType):
-            switch widgetIntentType {
-            case .action:
-                let intent = PerformAction()
-                intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
-                intent.hapticConfirmation = true
-                return intent
-            case let .script(id, entityId, serverId, name, showConfirmationNotification):
-                let intent = ScriptAppIntent()
-                intent.script = .init(
-                    id: id,
-                    entityId: entityId,
-                    serverId: serverId,
-                    serverName: "", // not used in this context
-                    displayString: name,
-                    iconName: "" // not used in this context
-                )
-                intent.hapticConfirmation = true
-                intent.showConfirmationNotification = showConfirmationNotification
-                return intent
-            case .refresh:
-                return ReloadWidgetsAppIntent()
-            case let .toggle(entityId, domain, serverId):
-                let intent = CustomWidgetToggleAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                intent.widgetShowingStates = model.subtitle != nil
-                return intent
-            case let .activate(entityId, domain, serverId):
-                let intent = CustomWidgetActivateAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                return intent
-            case let .press(entityId, domain, serverId):
-                let intent = CustomWidgetPressButtonAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
+            // When confirmation is required and caller wants to check for it
+            if checkConfirmation, model.requiresConfirmation {
+                let intent = UpdateWidgetItemConfirmationStateAppIntent()
+                intent.widgetId = model.widgetId
+                intent.serverUniqueId = model.id
                 return intent
             }
+            return intentForWidgetType(widgetIntentType, model: model)
+        }
+    }
+
+    /// Creates an AppIntent for the specific widget intent type
+    private static func intentForWidgetType(
+        _ widgetIntentType: WidgetIntentType,
+        model: WidgetBasicViewModel
+    ) -> (any AppIntent)? {
+        switch widgetIntentType {
+        case .action:
+            let intent = PerformAction()
+            intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
+            intent.hapticConfirmation = true
+            return intent
+        case let .script(id, entityId, serverId, name, showConfirmationNotification):
+            let intent = ScriptAppIntent()
+            intent.script = .init(
+                id: id,
+                entityId: entityId,
+                serverId: serverId,
+                serverName: "", // not used in this context
+                displayString: name,
+                iconName: "" // not used in this context
+            )
+            intent.hapticConfirmation = true
+            intent.showConfirmationNotification = showConfirmationNotification
+            return intent
+        case .refresh:
+            return ReloadWidgetsAppIntent()
+        case let .toggle(entityId, domain, serverId):
+            let intent = CustomWidgetToggleAppIntent()
+            intent.domain = domain
+            intent.entityId = entityId
+            intent.serverId = serverId
+            intent.widgetShowingStates = model.subtitle != nil
+            return intent
+        case let .activate(entityId, domain, serverId):
+            let intent = CustomWidgetActivateAppIntent()
+            intent.domain = domain
+            intent.entityId = entityId
+            intent.serverId = serverId
+            return intent
+        case let .press(entityId, domain, serverId):
+            let intent = CustomWidgetPressButtonAppIntent()
+            intent.domain = domain
+            intent.entityId = entityId
+            intent.serverId = serverId
+            return intent
         }
     }
 }
