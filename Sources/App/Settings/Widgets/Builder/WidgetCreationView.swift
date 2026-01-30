@@ -210,6 +210,8 @@ struct WidgetCreationView: View {
                     return true
                 case let .appIntent(widgetIntentType):
                     return widgetIntentType != .refresh
+                case .noAction:
+                    return false
                 }
             }()
 
