@@ -1231,6 +1231,10 @@ public enum L10n {
         }
       }
     }
+    public enum Search {
+      /// Entity name, ID, area name, device name...
+      public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.search.placeholder") }
+    }
   }
 
   public enum Extensions {
