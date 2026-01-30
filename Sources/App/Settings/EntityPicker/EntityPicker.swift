@@ -88,7 +88,7 @@ struct EntityPicker: View {
     private var content: some View {
         List {
             Section {
-                TextField("Entity name, ID, area name, device name...", text: $viewModel.searchTerm)
+                TextField(L10n.EntityPicker.Search.placeholder, text: $viewModel.searchTerm)
                     .textFieldStyle(.plain)
                     .padding()
                     .modify { view in

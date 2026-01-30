@@ -1483,3 +1483,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.widgets.select.item_count.title" = "%d items";
 "settings.widgets.select.footer.title" = "Select a widget to add this entity to.";
 "entity_picker.filter.server.title" = "Servers";
+"entity_picker.search.placeholder" = "Entity name, ID, area name, device name...";
