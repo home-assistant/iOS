@@ -51,6 +51,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                     controls
                 }
                 HAProgressView(style: .large)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .opacity(viewModel.showLoader ? 1.0 : 0.0)
                 errorView
             }
