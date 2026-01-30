@@ -5,6 +5,7 @@ import WebRTC
 
 protocol AppCameraView {
     var controlsVisible: Binding<Bool> { get set }
+    var showLoader: Binding<Bool> { get set }
 }
 
 @available(iOS 16.0, *)
@@ -21,6 +22,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
     @State private var isPlaying: Bool = false
     @State private var isVideoPlaying: Bool = false
     var controlsVisible: Binding<Bool>
+    var showLoader: Binding<Bool>
     @State var hideControlsWorkItem: DispatchWorkItem?
 
     private let server: Server
@@ -33,6 +35,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         cameraEntityId: String,
         cameraName: String? = nil,
         controlsVisible: Binding<Bool>,
+        showLoader: Binding<Bool>,
         onWebRTCUnsupported: (() -> Void)? = nil
     ) {
         self.server = server
@@ -40,6 +43,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         self.cameraName = cameraName
         self.onWebRTCUnsupported = onWebRTCUnsupported
         self.controlsVisible = controlsVisible
+        self.showLoader = showLoader
         self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(server: server, cameraEntityId: cameraEntityId))
     }
 
@@ -50,8 +54,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                     player
                     controls
                 }
-                HAProgressView(style: .large)
-                    .opacity(viewModel.showLoader ? 1.0 : 0.0)
                 errorView
             }
             .background(.black)
@@ -75,6 +77,9 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                 if isUnsupported {
                     onWebRTCUnsupported?()
                 }
+            }
+            .onChange(of: viewModel.showLoader) { showLoader in
+                self.showLoader.wrappedValue = showLoader
             }
         }
         .toolbar {
