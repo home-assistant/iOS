@@ -15,6 +15,7 @@ struct CameraPlayerView: View {
     @State private var appEntity: HAAppEntity?
     @State private var name: String?
     @State private var controlsVisible = true
+    @State private var showLoader = true
 
     enum PlayerType {
         case webRTC
@@ -29,28 +30,33 @@ struct CameraPlayerView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            NavigationStack {
-                content
-                    .toolbar {
-                        ToolbarItem(placement: .primaryAction) {
-                            if controlsVisible {
-                                CloseButton {
-                                    dismiss()
+        ZStack {
+            ZStack(alignment: .topLeading) {
+                NavigationStack {
+                    content
+                        .toolbar {
+                            ToolbarItem(placement: .primaryAction) {
+                                if controlsVisible {
+                                    CloseButton {
+                                        dismiss()
+                                    }
                                 }
                             }
                         }
-                    }
-                    .modify { view in
-                        if #available(iOS 18.0, *) {
-                            view.toolbarVisibility(controlsVisible ? .automatic : .hidden, for: .navigationBar)
-                        } else {
-                            view
+                        .modify { view in
+                            if #available(iOS 18.0, *) {
+                                view.toolbarVisibility(controlsVisible ? .automatic : .hidden, for: .navigationBar)
+                            } else {
+                                view
+                            }
                         }
-                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                nameBadge
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            nameBadge
+            if showLoader {
+                HAProgressView(style: .extraLarge)
+            }
         }
         .onAppear {
             appEntity = HAAppEntity.entity(id: cameraEntityId, serverId: server.identifier.rawValue)
@@ -98,6 +104,7 @@ struct CameraPlayerView: View {
                     cameraEntityId: cameraEntityId,
                     cameraName: cameraName,
                     controlsVisible: $controlsVisible,
+                    showLoader: $showLoader,
                     onWebRTCUnsupported: {
                         fallbackToHLS()
                     }

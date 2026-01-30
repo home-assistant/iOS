@@ -1,6 +1,7 @@
 import Foundation
 import HAKit
 import Shared
+import SwiftUI
 import WebRTC
 
 enum WebRTCSignalType: String {
