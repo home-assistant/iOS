@@ -138,6 +138,9 @@ struct EntityPicker: View {
     private var filtersView: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: DesignSystem.Spaces.one) {
+                if viewModel.hasActiveFilters {
+                    resetFiltersButton
+                }
                 serverPicker
                 groupByPicker
                 domainPicker
@@ -154,6 +157,23 @@ struct EntityPicker: View {
                 view
             }
         }
+    }
+
+    private var resetFiltersButton: some View {
+        Button {
+            viewModel.resetFilters()
+        } label: {
+            Image(systemSymbol: .arrowUturnLeftCircleFill)
+        }
+        .tint(.haPrimary)
+        .modify { view in
+            if #available(iOS 26.0, *) {
+                view.buttonStyle(.bordered)
+            } else {
+                view
+            }
+        }
+
     }
 
     @ViewBuilder
