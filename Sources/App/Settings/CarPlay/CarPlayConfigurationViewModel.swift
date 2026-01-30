@@ -47,7 +47,6 @@ final class CarPlayConfigurationViewModel: ObservableObject {
                 Current.Log.info("CarPlay configuration exists")
             } else {
                 Current.Log.error("No CarPlay config found")
-                convertLegacyActionsToCarPlayConfig()
             }
         } catch {
             Current.Log.error("Failed to access database (GRDB), error: \(error.localizedDescription)")
@@ -58,22 +57,6 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     private func setConfig(_ config: CarPlayConfig) {
         self.config = config
-    }
-
-    @MainActor
-    private func convertLegacyActionsToCarPlayConfig() {
-        var newConfig = CarPlayConfig()
-        let actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
-            .filter(\.showInCarPlay)
-
-        guard !actions.isEmpty else { return }
-
-        let newActionItems = actions.map { action in
-            MagicItem(id: action.ID, serverId: action.serverIdentifier, type: .action)
-        }
-        newConfig.quickAccessItems = newActionItems
-        setConfig(newConfig)
-        save()
     }
 
     @discardableResult
