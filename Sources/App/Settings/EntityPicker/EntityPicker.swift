@@ -10,6 +10,7 @@ struct EntityPicker: View {
     }
 
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var isSearchFocused: Bool
     @StateObject private var viewModel: EntityPickerViewModel
 
     /// Returns entityId
@@ -89,6 +90,7 @@ struct EntityPicker: View {
         List {
             Section {
                 TextField(L10n.EntityPicker.Search.placeholder, text: $viewModel.searchTerm)
+                    .focused($isSearchFocused)
                     .textFieldStyle(.plain)
                     .padding()
                     .modify { view in
@@ -131,6 +133,7 @@ struct EntityPicker: View {
             if viewModel.selectedServerId == nil {
                 viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
             }
+            isSearchFocused = true
         }
     }
 
