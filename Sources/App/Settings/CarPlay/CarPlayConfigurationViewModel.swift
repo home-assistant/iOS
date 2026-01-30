@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Shared
 
@@ -14,8 +15,24 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     // like when using frontend "Add to" functionality from more-info dialog
     private let prefilledItem: MagicItem?
 
+    private var cancellables = Set<AnyCancellable>()
+    private var isInitialLoad = true
+
     init(prefilledItem: MagicItem? = nil) {
         self.prefilledItem = prefilledItem
+        setupAutoSave()
+    }
+
+    private func setupAutoSave() {
+        $config
+            .dropFirst() // Skip the initial value
+            .sink { [weak self] _ in
+                guard let self, !self.isInitialLoad else { return }
+                Task { @MainActor in
+                    self.save()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor
@@ -58,6 +75,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     private func setConfig(_ config: CarPlayConfig) {
         self.config = config
+        isInitialLoad = false
     }
 
     @MainActor
