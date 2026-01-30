@@ -17,6 +17,13 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     /// Time threshold (in seconds) after which WebViewController should refresh when returning from background
     private let backgroundRefreshThreshold: TimeInterval = 5 * 60
 
+    /// iPadOS 26+ windowing control style - using unified style ensures proper safe area insets
+    /// when the window controls (close, minimize, maximize buttons) are visible in windowed mode
+    @available(iOS 26.0, *)
+    var preferredWindowingControlStyle: UIWindowScene.WindowingControlStyle {
+        .unified
+    }
+
     // swiftlint:disable cyclomatic_complexity
     func scene(
         _ scene: UIScene,

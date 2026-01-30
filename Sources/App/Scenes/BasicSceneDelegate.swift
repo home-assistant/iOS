@@ -11,6 +11,13 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         var rootViewController: UIViewController
     }
 
+    /// iPadOS 26+ windowing control style - using unified style ensures proper safe area insets
+    /// when the window controls (close, minimize, maximize buttons) are visible in windowed mode
+    @available(iOS 26.0, *)
+    var preferredWindowingControlStyle: UIWindowScene.WindowingControlStyle {
+        .unified
+    }
+
     func basicConfig(in traitCollection: UITraitCollection) -> BasicConfig {
         fatalError("must override")
     }
