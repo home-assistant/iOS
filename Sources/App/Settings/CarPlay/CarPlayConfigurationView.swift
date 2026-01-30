@@ -46,13 +46,10 @@ struct CarPlayConfigurationView: View {
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    let success = viewModel.save()
-                    if success {
-                        SKStoreReviewController.requestReview()
-                        dismiss()
-                    }
+                    SKStoreReviewController.requestReview()
+                    dismiss()
                 }, label: {
-                    Text(verbatim: L10n.Watch.Configuration.Save.title)
+                    Text(L10n.doneLabel)
                 })
             }
         })

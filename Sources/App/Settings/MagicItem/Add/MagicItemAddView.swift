@@ -84,13 +84,24 @@ struct MagicItemAddView: View {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
             }
+            #if targetEnvironment(macCatalyst)
             .toolbar(content: {
                 CloseButton {
                     dismiss()
                 }
             })
+            #endif
         }
         .navigationViewStyle(.stack)
+        .modify { view in
+            if #available(iOS 16.0, *) {
+                view
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            } else {
+                view
+            }
+        }
     }
 
     @ViewBuilder
@@ -118,6 +129,7 @@ struct MagicItemAddView: View {
             .pickerStyle(.segmented)
             .listRowBackground(Color.clear)
             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .padding(.top)
         }
     }
 

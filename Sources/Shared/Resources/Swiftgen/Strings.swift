@@ -1054,6 +1054,8 @@ public enum L10n {
   public enum ConnectionSecurityLevelBlock {
     /// Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.
     public static var body: String { return L10n.tr("Localizable", "connection_security_level_block.body") }
+    /// Tip: Double check your device settings and app permissions, make sure it is allowing local network access and location access set to 'Always' (so it also works in background) and 'Full' (so the app can identify which network you are using and detect your home network).
+    public static var tip: String { return L10n.tr("Localizable", "connection_security_level_block.tip") }
     /// You're disconnected
     public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.title") }
     public enum ChangePreference {
@@ -1218,6 +1220,10 @@ public enum L10n {
         /// Group by
         public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.title") }
       }
+      public enum Server {
+        /// Servers
+        public static var title: String { return L10n.tr("Localizable", "entity_picker.filter.server.title") }
+      }
     }
     public enum List {
       public enum Area {
@@ -1226,6 +1232,10 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "entity_picker.list.area.no_area.title") }
         }
       }
+    }
+    public enum Search {
+      /// Entity name, ID, area name, device name...
+      public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.search.placeholder") }
     }
   }
 

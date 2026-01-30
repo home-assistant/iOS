@@ -144,10 +144,20 @@ struct ConnectionSecurityLevelBlockView: View {
                 .frame(maxWidth: DesignSystem.Button.maxWidth)
                 .padding(.top)
             }
+            tipView
         }
         .padding(DesignSystem.Spaces.three)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: .systemBackground))
+    }
+
+    private var tipView: some View {
+        Text(L10n.ConnectionSecurityLevelBlock.tip)
+            .font(.caption)
+            .foregroundStyle(.tertiary)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .padding(.top, DesignSystem.Spaces.two)
     }
 
     private func openSettings() {

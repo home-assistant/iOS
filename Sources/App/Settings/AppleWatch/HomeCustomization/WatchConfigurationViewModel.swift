@@ -100,7 +100,6 @@ final class WatchConfigurationViewModel: ObservableObject {
                 Current.Log.info("Watch configuration exists")
             } else {
                 Current.Log.error("No watch config found")
-                convertLegacyActionsToWatchConfig()
             }
         } catch {
             Current.Log.error("Failed to access database (GRDB), error: \(error.localizedDescription)")
@@ -111,25 +110,6 @@ final class WatchConfigurationViewModel: ObservableObject {
     @MainActor
     private func setConfig(_ config: WatchConfig) {
         watchConfig = config
-    }
-
-    @MainActor
-    private func convertLegacyActionsToWatchConfig() {
-        var newWatchConfig = WatchConfig()
-        let actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
-            .filter(\.showInWatch)
-
-        guard !actions.isEmpty else { return }
-
-        let newWatchActionItems = actions.map { action in
-            MagicItem(id: action.ID, serverId: action.serverIdentifier, type: .action)
-        }
-        newWatchConfig.items = newWatchActionItems
-        watchConfig = newWatchConfig
-        let success = save()
-        if !success {
-            Current.Log.error("Failed to migrate actions to watch config, failed to save config.")
-        }
     }
 
     private func showError(message: String) {
