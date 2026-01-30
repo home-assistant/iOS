@@ -49,6 +49,9 @@ struct WidgetBasicView: View {
             if #available(iOS 17, *) {
                 if model.showConfirmation {
                     confirmationContent(model: model)
+                } else if type == .custom {
+                    // For custom widgets, use cardInteractionType for card wrapper (icon handles its own interaction)
+                    customWidgetContent(model: model)
                 } else if case .widgetURL = model.interactionType {
                     if model.requiresConfirmation {
                         linkThatRequiresConfirmation(model: model)
@@ -68,6 +71,48 @@ struct WidgetBasicView: View {
             }
         }
         .frame(maxHeight: (sizeStyle == .compact && widgetFamily != .systemSmall) ? maxTileHeightWhenCompact : nil)
+    }
+
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    private func customWidgetContent(model: WidgetBasicViewModel) -> some View {
+        // For custom widgets with requires confirmation, we need special handling
+        // The icon tap should trigger the icon's interaction, but we still need confirmation flow for the card
+        if model.requiresConfirmation {
+            // Use a button that triggers confirmation state for the card area
+            Button(intent: {
+                let intent = UpdateWidgetItemConfirmationStateAppIntent()
+                intent.serverUniqueId = model.id
+                intent.widgetId = model.widgetId
+                return intent
+            }()) {
+                tintedWrapperView(model: model, sizeStyle: sizeStyle)
+            }
+            .buttonStyle(.plain)
+        } else {
+            // Card interaction type wraps the tile (icon has its own separate interaction)
+            switch model.cardInteractionType {
+            case let .widgetURL(url):
+                Link(destination: url.withWidgetAuthenticity()) {
+                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
+                }
+            case let .appIntent(widgetIntentType):
+                if let cardIntent = intentFor(
+                    interactionType: .appIntent(widgetIntentType),
+                    model: model,
+                    isConfirmationDone: false
+                ) {
+                    Button(intent: cardIntent) {
+                        tintedWrapperView(model: model, sizeStyle: sizeStyle)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
+                }
+            case .noAction:
+                tintedWrapperView(model: model, sizeStyle: sizeStyle)
+            }
+        }
     }
 
     @available(iOS 16.0, *)
@@ -113,8 +158,17 @@ struct WidgetBasicView: View {
 
     @available(iOS 17.0, *)
     private func intent(for model: WidgetBasicViewModel, isConfirmationDone: Bool = true) -> (any AppIntent)? {
-        switch model.interactionType {
-        case .widgetURL:
+        intentFor(interactionType: model.interactionType, model: model, isConfirmationDone: isConfirmationDone)
+    }
+
+    @available(iOS 17.0, *)
+    private func intentFor(
+        interactionType: WidgetInteractionType,
+        model: WidgetBasicViewModel,
+        isConfirmationDone: Bool = true
+    ) -> (any AppIntent)? {
+        switch interactionType {
+        case .widgetURL, .noAction:
             return nil
         case let .appIntent(widgetIntentType):
             // When confirmation is required and this method wasn't called from confirmation button

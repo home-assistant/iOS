@@ -17,7 +17,8 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         showConfirmation: Bool = false,
         requiresConfirmation: Bool = false,
         widgetId: String? = nil,
-        disabled: Bool = false
+        disabled: Bool = false,
+        cardInteractionType: WidgetInteractionType = .noAction
     ) {
         self.id = id
         self.title = title
@@ -33,12 +34,14 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.requiresConfirmation = requiresConfirmation
         self.widgetId = widgetId
         self.disabled = disabled
+        self.cardInteractionType = cardInteractionType
     }
 
     var id: String
 
     var title: String
     var subtitle: String?
+    /// Interaction type for the icon button tap
     var interactionType: WidgetInteractionType
 
     var icon: MaterialDesignIcons
@@ -61,4 +64,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     var widgetId: String?
     /// When one item confirmation is pending, the rest of the items should be blurred
     var disabled: Bool
+
+    /// Interaction type for the rest of the card (excluding icon), defaults to opening entity more info dialog
+    var cardInteractionType: WidgetInteractionType
 }

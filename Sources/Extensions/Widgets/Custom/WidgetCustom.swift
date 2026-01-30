@@ -119,10 +119,22 @@ struct WidgetCustom: Widget {
             let interactionType = magicItem.widgetInteractionType
             let showIconBackground = {
                 switch interactionType {
-                case .widgetURL:
+                case .widgetURL, .noAction:
                     return true
                 case let .appIntent(widgetIntentType):
                     return widgetIntentType != .refresh
+                }
+            }()
+
+            // Card interaction type defaults to opening entity more info dialog
+            let cardInteractionType: WidgetInteractionType = {
+                if let url = AppConstants.openEntityDeeplinkURL(
+                    entityId: magicItem.id,
+                    serverId: magicItem.serverId
+                ) {
+                    return .widgetURL(url)
+                } else {
+                    return .noAction
                 }
             }()
 
@@ -140,7 +152,8 @@ struct WidgetCustom: Widget {
                 showConfirmation: showConfirmation,
                 requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,
                 widgetId: widget.id,
-                disabled: !widget.itemsStates.isEmpty
+                disabled: !widget.itemsStates.isEmpty,
+                cardInteractionType: cardInteractionType
             )
         }
     }

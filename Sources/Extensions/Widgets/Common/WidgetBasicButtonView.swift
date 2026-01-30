@@ -51,7 +51,7 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
         }
     }
 
-    private var icon: some View {
+    private var iconView: some View {
         VStack {
             Text(verbatim: model.icon.unicode)
                 .font(sizeStyle.iconFont)
@@ -63,13 +63,46 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
         .clipShape(Circle())
     }
 
+    /// Icon wrapped with its own interaction type (used for separate icon tap)
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    private var interactiveIcon: some View {
+        if model.requiresConfirmation {
+            // When confirmation is required, trigger confirmation flow
+            Button(intent: {
+                let intent = UpdateWidgetItemConfirmationStateAppIntent()
+                intent.serverUniqueId = model.id
+                intent.widgetId = model.widgetId
+                return intent
+            }()) {
+                iconView
+            }
+            .buttonStyle(.plain)
+        } else if let iconIntent = WidgetInteractionHelpers.intent(for: model.interactionType, model: model) {
+            Button(intent: iconIntent) {
+                iconView
+            }
+            .buttonStyle(.plain)
+        } else if case let .widgetURL(url) = model.interactionType {
+            Link(destination: url.withWidgetAuthenticity()) {
+                iconView
+            }
+        } else {
+            iconView
+        }
+    }
+
     private var tileView: some View {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
                 case .regular, .compact, .compressed:
                     HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
-                        icon
+                        if #available(iOS 17.0, *) {
+                            interactiveIcon
+                        } else {
+                            iconView
+                        }
                         VStack(alignment: .leading, spacing: .zero) {
                             text
                             subtext
@@ -79,7 +112,11 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
                     .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
-                        icon
+                        if #available(iOS 17.0, *) {
+                            interactiveIcon
+                        } else {
+                            iconView
+                        }
                         Spacer()
                         text
                         subtext
@@ -98,5 +135,58 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
             }
         }
         .tileCardStyle(sizeStyle: sizeStyle, model: model, tinted: tinted)
+    }
+}
+
+/// Helper struct for creating intents from interaction types
+@available(iOS 17.0, *)
+enum WidgetInteractionHelpers {
+    static func intent(for interactionType: WidgetInteractionType, model: WidgetBasicViewModel) -> (any AppIntent)? {
+        switch interactionType {
+        case .widgetURL, .noAction:
+            return nil
+        case let .appIntent(widgetIntentType):
+            switch widgetIntentType {
+            case .action:
+                let intent = PerformAction()
+                intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
+                intent.hapticConfirmation = true
+                return intent
+            case let .script(id, entityId, serverId, name, showConfirmationNotification):
+                let intent = ScriptAppIntent()
+                intent.script = .init(
+                    id: id,
+                    entityId: entityId,
+                    serverId: serverId,
+                    serverName: "", // not used in this context
+                    displayString: name,
+                    iconName: "" // not used in this context
+                )
+                intent.hapticConfirmation = true
+                intent.showConfirmationNotification = showConfirmationNotification
+                return intent
+            case .refresh:
+                return ReloadWidgetsAppIntent()
+            case let .toggle(entityId, domain, serverId):
+                let intent = CustomWidgetToggleAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                intent.widgetShowingStates = model.subtitle != nil
+                return intent
+            case let .activate(entityId, domain, serverId):
+                let intent = CustomWidgetActivateAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                return intent
+            case let .press(entityId, domain, serverId):
+                let intent = CustomWidgetPressButtonAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                return intent
+            }
+        }
     }
 }
