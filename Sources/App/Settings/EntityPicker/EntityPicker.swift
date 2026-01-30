@@ -60,29 +60,29 @@ struct EntityPicker: View {
 
     private var fullscreen: some View {
         content
-#if targetEnvironment(macCatalyst)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton {
-                        if mode == .button {
-                            viewModel.showList = false
-                        } else {
-                            dismiss()
-                        }
+        #if targetEnvironment(macCatalyst)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                CloseButton {
+                    if mode == .button {
+                        viewModel.showList = false
+                    } else {
+                        dismiss()
                     }
                 }
             }
-#endif
-            .navigationViewStyle(.stack)
-            .modify { view in
-                if #available(iOS 16.0, *) {
-                    view
-                        .presentationDetents([.medium, .large])
-                        .presentationDragIndicator(.visible)
-                } else {
-                    view
-                }
+        }
+        #endif
+        .navigationViewStyle(.stack)
+        .modify { view in
+            if #available(iOS 16.0, *) {
+                view
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            } else {
+                view
             }
+        }
     }
 
     private var content: some View {
@@ -104,7 +104,6 @@ struct EntityPicker: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
             }
-            ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
             filtersView
             ForEach(
                 viewModel.filteredEntitiesByGroup.sorted(by: { $0.key < $1.key }),
@@ -139,6 +138,7 @@ struct EntityPicker: View {
     private var filtersView: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: DesignSystem.Spaces.one) {
+                serverPicker
                 groupByPicker
                 domainPicker
                 areaPicker
@@ -153,6 +153,20 @@ struct EntityPicker: View {
             } else {
                 view
             }
+        }
+    }
+
+    @ViewBuilder
+    private var serverPicker: some View {
+        let servers = Current.servers.all
+        if servers.count > 1 {
+            EntityFilterPickerView(
+                title: L10n.EntityPicker.Filter.Server.title,
+                pickerItems: servers.sorted(by: { $0.info.sortOrder < $1.info.sortOrder }).map {
+                    EntityFilterPickerView.PickerItem(id: $0.identifier.rawValue, title: $0.info.name)
+                },
+                selectedItemId: $viewModel.selectedServerId
+            )
         }
     }
 
