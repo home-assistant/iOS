@@ -59,9 +59,8 @@ struct EntityPicker: View {
     }
 
     private var fullscreen: some View {
-        NavigationView {
-            content
-            #if targetEnvironment(macCatalyst)
+        content
+#if targetEnvironment(macCatalyst)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
@@ -73,26 +72,40 @@ struct EntityPicker: View {
                     }
                 }
             }
-            #endif
-        }
-        .navigationViewStyle(.stack)
-        .modify { view in
-            if #available(iOS 16.0, *) {
-                view
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            } else {
-                view
+#endif
+            .navigationViewStyle(.stack)
+            .modify { view in
+                if #available(iOS 16.0, *) {
+                    view
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
+                } else {
+                    view
+                }
             }
-        }
     }
 
     private var content: some View {
         List {
-            ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
-            if #unavailable(iOS 26.0) {
-                filtersView
+            Section {
+                TextField("Entity name, ID, area name, device name...", text: $viewModel.searchTerm)
+                    .textFieldStyle(.plain)
+                    .padding()
+                    .modify { view in
+                        if #available(iOS 26.0, *) {
+                            view.glassEffect(.regular.interactive(), in: .capsule)
+
+                        } else {
+                            view
+                                .background(.tileBackground)
+                                .clipShape(.capsule)
+                        }
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
             }
+            ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
+            filtersView
             ForEach(
                 viewModel.filteredEntitiesByGroup.sorted(by: { $0.key < $1.key }),
                 id: \.key
@@ -113,17 +126,7 @@ struct EntityPicker: View {
                 }
             }
         }
-        .searchable(text: $viewModel.searchTerm, placement: .navigationBarDrawer(displayMode: .always))
-        .modify { view in
-            if #available(iOS 26.0, *) {
-                view.safeAreaBar(edge: .bottom) {
-                    filtersView
-                        .padding(.horizontal)
-                }
-            } else {
-                view
-            }
-        }
+        .listStyle(.plain)
         .onAppear {
             viewModel.fetchEntities()
             if viewModel.selectedServerId == nil {
@@ -210,4 +213,8 @@ struct EntityPicker: View {
             )
         }
     }
+}
+
+#Preview {
+    EntityPicker(selectedServerId: nil, selectedEntity: .constant(nil), domainFilter: nil, mode: .list)
 }
