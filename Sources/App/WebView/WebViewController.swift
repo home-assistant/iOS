@@ -886,6 +886,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                let initialURL, initialURL.baseIsEqual(to: webviewURL) {
                 Current.Log.info("restoring initial url path: \(initialURL.path)")
                 request = URLRequest(url: initialURL)
+            } else if let currentURL = webView.url, currentURL.path.count > 1 {
+                // Preserve the current path when the base URL changes (e.g., switching between internal/external)
+                let newURL = webviewURL.adapting(url: currentURL)
+                Current.Log.info("preserving current path on base URL change: \(newURL.path)")
+                request = URLRequest(url: newURL)
             } else {
                 Current.Log.info("loading default url path: \(webviewURL.path)")
                 request = URLRequest(url: webviewURL)
