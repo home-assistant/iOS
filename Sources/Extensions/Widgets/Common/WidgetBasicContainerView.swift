@@ -34,6 +34,9 @@ struct WidgetBasicContainerView: View {
     }
 }
 
+// Only define custom widgetFamily environment when not compiling for the widget extension,
+// as WidgetKit already provides the native \.widgetFamily environment variable.
+#if !WIDGET_EXTENSION
 extension WidgetFamily: @retroactive EnvironmentKey {
     public static var defaultValue: WidgetFamily = .systemMedium
 }
@@ -44,6 +47,7 @@ extension EnvironmentValues {
         set { self[WidgetFamily.self] = newValue }
     }
 }
+#endif
 
 @available(iOS 18, *)
 struct WidgetBasicContainerView_Previews: PreviewProvider {
