@@ -886,6 +886,24 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                let initialURL, initialURL.baseIsEqual(to: webviewURL) {
                 Current.Log.info("restoring initial url path: \(initialURL.path)")
                 request = URLRequest(url: initialURL)
+            } else if let currentURL = webView.url, currentURL.path.count > 1 {
+                // Preserve the current path when the base URL changes (e.g., switching between internal/external)
+                var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
+                components?.path = currentURL.path
+                if let query = currentURL.query {
+                    // Preserve external_auth if present, add other query items
+                    var queryItems = components?.queryItems ?? []
+                    let currentQueryItems = URLComponents(url: currentURL, resolvingAgainstBaseURL: false)?
+                        .queryItems ?? []
+                    for item in currentQueryItems where item.name != "external_auth" {
+                        queryItems.append(item)
+                    }
+                    components?.queryItems = queryItems
+                }
+                components?.fragment = currentURL.fragment
+                let newURL = components?.url ?? webviewURL
+                Current.Log.info("preserving current path on base URL change: \(newURL.path)")
+                request = URLRequest(url: newURL)
             } else {
                 Current.Log.info("loading default url path: \(webviewURL.path)")
                 request = URLRequest(url: webviewURL)
