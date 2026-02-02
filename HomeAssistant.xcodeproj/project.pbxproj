@@ -677,6 +677,7 @@
 		4238DCA52DD1F1E300126434 /* AppSessionValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238DCA32DD1F1E300126434 /* AppSessionValues.swift */; };
 		4238E8532EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238E8522EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift */; };
 		4238E8572EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238E8562EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift */; };
+		42392EAC2F30A7870051D155 /* WidgetFamily+AppPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42392EAA2F30A7870051D155 /* WidgetFamily+AppPreview.swift */; };
 		4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */; };
 		423B5E092D67781A0000CB95 /* WidgetBasicContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */; };
 		423B5E0A2D6778370000CB95 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
@@ -2352,6 +2353,7 @@
 		4238DCA32DD1F1E300126434 /* AppSessionValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionValues.swift; sourceTree = "<group>"; };
 		4238E8522EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSecurityLevelBlockView.swift; sourceTree = "<group>"; };
 		4238E8562EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSecurityLevelBlockViewModel.swift; sourceTree = "<group>"; };
+		42392EAA2F30A7870051D155 /* WidgetFamily+AppPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetFamily+AppPreview.swift"; sourceTree = "<group>"; };
 		4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchUserDefaults.swift; sourceTree = "<group>"; };
 		423F44EF2C17238200766A99 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 		423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
@@ -3700,6 +3702,7 @@
 			isa = PBXGroup;
 			children = (
 				115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */,
+				42392EAA2F30A7870051D155 /* WidgetFamily+AppPreview.swift */,
 				42B74A612D36B08600C37304 /* WidgetBasicView.swift */,
 				428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */,
 				1165705527018C4E003906A7 /* WidgetEmptyView.swift */,
@@ -9336,6 +9339,7 @@
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
 				427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
+				42392EAC2F30A7870051D155 /* WidgetFamily+AppPreview.swift in Sources */,
 				426D2F032F17E8530062C359 /* HomeEntityTileView.swift in Sources */,
 				42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
