@@ -7,8 +7,12 @@ import Testing
 struct MagicItemAddViewModelTests {
     private var realm: Realm!
     private var sut: MagicItemAddViewModel!
+    private let originalRealm: () -> Realm
 
     init() async throws {
+        // Store original realm configuration to restore later
+        self.originalRealm = Current.realm
+
         // Setup in-memory Realm for testing
         var configuration = Realm.Configuration.defaultConfiguration
         configuration.inMemoryIdentifier = UUID().uuidString
@@ -19,6 +23,11 @@ struct MagicItemAddViewModelTests {
         Current.realm = { testRealm }
 
         self.sut = MagicItemAddViewModel()
+    }
+
+    deinit {
+        // Restore original realm configuration to avoid side effects on other tests
+        Current.realm = originalRealm
     }
 
     // MARK: - Initial State Tests
