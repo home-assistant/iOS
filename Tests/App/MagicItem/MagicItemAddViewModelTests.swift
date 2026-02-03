@@ -11,7 +11,7 @@ struct MagicItemAddViewModelTests {
     init() async throws {
         // Setup in-memory Realm for testing
         var configuration = Realm.Configuration.defaultConfiguration
-        configuration.inMemoryIdentifier = UUID().uuidString
+        configuration.inMemoryIdentifier = "MagicItemAddViewModelTests"
         self.realm = try Realm(configuration: configuration)
 
         // Setup Current.realm to use our test realm
