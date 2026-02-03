@@ -467,15 +467,17 @@ private extension MobileAppConfigPushCategory.Action {
         url: String?,
         icon: String?
     ) {
-        self.title = title
-        self.identifier = identifier
-        self.authenticationRequired = authenticationRequired
-        self.behavior = behavior
-        self.activationMode = activationMode
-        self.destructive = destructive
-        self.textInputButtonTitle = textInputButtonTitle
-        self.textInputPlaceholder = textInputPlaceholder
-        self.url = url
-        self.icon = icon
+        self = createMockPushAction(
+            title: title,
+            identifier: identifier,
+            authenticationRequired: authenticationRequired,
+            behavior: behavior,
+            activationMode: activationMode,
+            destructive: destructive,
+            textInputButtonTitle: textInputButtonTitle,
+            textInputPlaceholder: textInputPlaceholder,
+            url: url,
+            icon: icon
+        )
     }
 }
