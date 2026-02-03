@@ -117,10 +117,9 @@
 "lxHlyQ" = "触发事件";
 "mAibJP" = "失败：Home Assistant 当前不可达";
 "mJ6CrP" = "发送 ${eventName} 失败：${error}";
-"mrwamX" = "应用中语音助手";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "事件${eventName}已触发";
 "mi6B62" = "您想发送此事件的什么数据 ？";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "确认一下，你希望是“${server}” ？";
 "ns9RRU" = "打开页面";
 "nzqmFA" = "完成";
@@ -149,6 +148,7 @@
 "vAIAF2" = "发送传感器更新到 Home Assistant";
 "vebd70" = "服务器";
 "wfPQQQ" = "将事件发送到Home Assistant事件总线";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "结果";
 "xfXG6b" = "哪个服务器 ？";
 "xhwpj4" = "完成";

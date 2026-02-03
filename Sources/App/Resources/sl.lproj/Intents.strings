@@ -117,10 +117,9 @@
 "lxHlyQ" = "Fire Event";
 "mAibJP" = "Failed: Home Assistant is not currently reachable";
 "mJ6CrP" = "Failed to send ${eventName}: ${error}";
-"mrwamX" = "Assist In App";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} fired";
 "mi6B62" = "What data do you want to send with the event?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Just to confirm, you wanted ‘${server}’?";
 "ns9RRU" = "Open Page";
 "nzqmFA" = "Done";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Send a sensor update to Home Assistant";
 "vebd70" = "Strežnik";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Result";
 "xfXG6b" = "Kateri strežnik?";
 "xhwpj4" = "Done";

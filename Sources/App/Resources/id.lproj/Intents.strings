@@ -117,10 +117,9 @@
 "lxHlyQ" = "Jalankan Peristiwa";
 "mAibJP" = "Gagal: Home Assistant tidak dapat dijangkau saat ini";
 "mJ6CrP" = "Gagal mengirim ${eventName}: ${error}";
-"mrwamX" = "Assist Dalam Aplikasi";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} dijalankan";
 "mi6B62" = "Data apa yang ingin dikirim dengan event tersebut?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Sekadar konfirmasi, benar Anda menginginkan ‘${server}’?";
 "ns9RRU" = "Buka Halaman";
 "nzqmFA" = "Selesai";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Kirim pembaruan sensor ke Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Jalankan event di bus event Home Assistant.";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Hasil";
 "xfXG6b" = "Server yang mana?";
 "xhwpj4" = "Selesai";

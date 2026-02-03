@@ -117,10 +117,9 @@
 "lxHlyQ" = "Uruchom zdarzenie";
 "mAibJP" = "Nie udało się, Home Assistant jest obecnie niedostępny";
 "mJ6CrP" = "Nie udało się wysłać ${eventName} : ${error}";
-"mrwamX" = "Assist In App";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} fired";
 "mi6B62" = "Jakie dane chcesz wysłać ze zdarzeniem?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Dla potwierdzenia, czy chciałeś '${server}'?";
 "ns9RRU" = "Otwórz stronę";
 "nzqmFA" = "Gotowe";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Wyślij aktualizację sensora do Home Assistant";
 "vebd70" = "Serwer";
 "wfPQQQ" = "Uruchom zdarzenie na magistrali zdarzeń Home Assistant'a";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Wynik";
 "xfXG6b" = "Który serwer?";
 "xhwpj4" = "Gotowe";

@@ -117,10 +117,9 @@
 "lxHlyQ" = "Olayı Çalıştır";
 "mAibJP" = "Başarısız: Ev Asistanı'na şu anda ulaşılamıyor";
 "mJ6CrP" = "Home Assistant'a ${eventName} gönderilemedi: ${error}";
-"mrwamX" = "Uygulamada Asistan";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} tetiklendi";
 "mi6B62" = "Olay ile beraber ne verisi göndermek istiyorsunuz?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Onaylamak için '${server}' istediniz mi?";
 "ns9RRU" = "Sayfayı Aç";
 "nzqmFA" = "Bitti";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Home Assistant'a bir sensör güncellemesi gönderin";
 "vebd70" = "Sunucu";
 "wfPQQQ" = "Home Assistant olay veriyoluna bir olay tetikleyin";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Sonuç";
 "xfXG6b" = "Hangi sunucu?";
 "xhwpj4" = "Bitti";
