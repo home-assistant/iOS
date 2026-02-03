@@ -18,7 +18,10 @@ jobs:
           ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
 
       - name: Install Brews
-        run: brew bundle
+        run: |
+          brew update
+          brew tap lokalise/cli-2
+          brew bundle
 
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
