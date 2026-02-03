@@ -7,7 +7,7 @@ struct DictionaryExtensionsTests {
     // MARK: - mapKeys Tests
 
     @Test("Given dictionary with string keys when mapping to uppercase then transforms all keys")
-    func mapKeysTransformsAllKeys() async throws {
+    func mapKeysTransformsAllKeys() {
         let dict = ["hello": 1, "world": 2, "test": 3]
         let result = dict.mapKeys { $0.uppercased() }
 
@@ -18,7 +18,7 @@ struct DictionaryExtensionsTests {
     }
 
     @Test("Given dictionary when mapping keys to different type then changes key type")
-    func mapKeysChangesKeyType() async throws {
+    func mapKeysChangesKeyType() {
         let dict = ["1": "one", "2": "two", "3": "three"]
         let result = dict.mapKeys { Int($0) ?? 0 }
 
@@ -29,7 +29,7 @@ struct DictionaryExtensionsTests {
     }
 
     @Test("Given dictionary with duplicate mapped keys when mapping then last value wins")
-    func mapKeysWithDuplicateKeysLastValueWins() async throws {
+    func mapKeysWithDuplicateKeysLastValueWins() {
         let dict = ["hello": 1, "HELLO": 2, "HeLLo": 3]
         let result = dict.mapKeys { $0.uppercased() }
 
@@ -42,7 +42,7 @@ struct DictionaryExtensionsTests {
     // MARK: - compactMapKeys Tests
 
     @Test("Given dictionary when compact mapping keys then filters out nil results")
-    func compactMapKeysFiltersNilResults() async throws {
+    func compactMapKeysFiltersNilResults() {
         let dict = ["1": "one", "2": "two", "invalid": "three", "3": "four"]
         let result = dict.compactMapKeys { Int($0) }
 
@@ -53,7 +53,7 @@ struct DictionaryExtensionsTests {
     }
 
     @Test("Given dictionary when all keys map to nil then returns empty dictionary")
-    func compactMapKeysAllNilReturnsEmpty() async throws {
+    func compactMapKeysAllNilReturnsEmpty() {
         let dict = ["a": 1, "b": 2, "c": 3]
         let result = dict.compactMapKeys { _ -> Int? in nil }
 
@@ -62,7 +62,7 @@ struct DictionaryExtensionsTests {
     }
 
     @Test("Given dictionary with mixed valid and invalid keys when compact mapping then keeps only valid")
-    func compactMapKeysMixedValidInvalid() async throws {
+    func compactMapKeysMixedValidInvalid() {
         let dict = [
             "user_1": "Alice",
             "user_2": "Bob",
@@ -84,7 +84,7 @@ struct DictionaryExtensionsTests {
     }
 
     @Test("Given dictionary with duplicate mapped keys when compact mapping then last value wins")
-    func compactMapKeysWithDuplicatesLastValueWins() async throws {
+    func compactMapKeysWithDuplicatesLastValueWins() {
         let dict = ["a1": 1, "a2": 2, "b1": 3]
         let result = dict.compactMapKeys { key -> String? in
             String(key.first!)
