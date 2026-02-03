@@ -183,5 +183,9 @@ struct MagicItemAddViewModelTests {
         #expect(sut.actions.count == 3)
         // All should have same position
         #expect(sut.actions.allSatisfy { $0.Position == 5 })
+        // Swift's stable sort should preserve insertion order for equal positions
+        #expect(sut.actions[0].ID == "action-1")
+        #expect(sut.actions[1].ID == "action-2")
+        #expect(sut.actions[2].ID == "action-3")
     }
 }
