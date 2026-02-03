@@ -117,10 +117,9 @@
 "lxHlyQ" = "Стартирай събитие";
 "mAibJP" = "Неуспешно: Home Assistant в момента не е достъпен";
 "mJ6CrP" = "Не успя да изпрати ${eventName}: ${error}";
-"mrwamX" = "Assist In App";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} беше активиран";
 "mi6B62" = "Какви данни искате да изпратите със събитието?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Само за потвърждение, искахте „${server}“?";
 "ns9RRU" = "Отворете страницата";
 "nzqmFA" = "Готово";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Изпратете актуализация на сензора към Home Assistant";
 "vebd70" = "Сървър";
 "wfPQQQ" = "Задействайте събитие към шината за събития на Home Assistant";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Резултат";
 "xfXG6b" = "Кой сървър?";
 "xhwpj4" = "Готово";

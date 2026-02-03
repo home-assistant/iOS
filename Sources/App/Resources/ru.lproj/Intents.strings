@@ -117,10 +117,9 @@
 "lxHlyQ" = "Запустить событие";
 "mAibJP" = "Ошибка: Home Assistant в настоящее время недоступен";
 "mJ6CrP" = "Не удалось отправить ${eventName}: ${error}";
-"mrwamX" = "Assist в приложении";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} запущено";
 "mi6B62" = "Какие данные вы хотите отправить вместе с событием?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Просто, чтобы подтвердить, вы хотели ‘${server}’?";
 "ns9RRU" = "Открыть страницу";
 "nzqmFA" = "Готово";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Отправляет обновление датчика в Home Assistant";
 "vebd70" = "Сервер";
 "wfPQQQ" = "Запуск события в шину событий Home Assistant";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Результат";
 "xfXG6b" = "Какой сервер?";
 "xhwpj4" = "Готово";

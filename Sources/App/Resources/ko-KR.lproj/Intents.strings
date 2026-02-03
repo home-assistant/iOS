@@ -117,10 +117,9 @@
 "lxHlyQ" = "이벤트 발행";
 "mAibJP" = "실패: 현재 Home Assistant에 연결할 수 없습니다.";
 "mJ6CrP" = "${eventName}: ${error}을(를) 보내지 못했습니다.";
-"mrwamX" = "앱에서 Assist";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} 실행됨";
 "mi6B62" = "이벤트와 함께 어떤 데이터를 보내시겠습니까?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "확인을 위해 '${server}'를 원하십니까?";
 "ns9RRU" = "페이지 열기";
 "nzqmFA" = "완료";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Home Assistant에 센서 업데이트 보내기";
 "vebd70" = "섬기는 사람";
 "wfPQQQ" = "Home Assistant 이벤트 버스에 이벤트 발생";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "결과";
 "xfXG6b" = "어떤 서버?";
 "xhwpj4" = "완료";

@@ -236,6 +236,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "alerts.deprecations.notification_category.title") }
       }
     }
+    public enum NavigationError {
+      /// This page cannot be displayed because it's outside your Home Assistant server or the page was not found.
+      public static var message: String { return L10n.tr("Localizable", "alerts.navigation_error.message") }
+      /// Navigation Error
+      public static var title: String { return L10n.tr("Localizable", "alerts.navigation_error.title") }
+    }
     public enum OpenUrlFromDeepLink {
       /// Open URL (%@) from deep link?
       public static func message(_ p1: Any) -> String {
@@ -1144,7 +1150,7 @@ public enum L10n {
     public enum Toast {
       /// Syncing server data...
       public static var syncing: String { return L10n.tr("Localizable", "database_updater.toast.syncing") }
-      /// Syncing server data... (%d/%d)
+      /// Syncing server data... (%li/%li)
       public static func syncingWithProgress(_ p1: Int, _ p2: Int) -> String {
         return L10n.tr("Localizable", "database_updater.toast.syncing_with_progress", p1, p2)
       }
@@ -1554,7 +1560,7 @@ public enum L10n {
       }
     }
     public enum Summaries {
-      /// %d active
+      /// %li active
       public static func countActive(_ p1: Int) -> String {
         return L10n.tr("Localizable", "home_view.summaries.count_active", p1)
       }
@@ -1563,7 +1569,7 @@ public enum L10n {
       public enum Covers {
         /// All closed
         public static var allClosed: String { return L10n.tr("Localizable", "home_view.summaries.covers.all_closed") }
-        /// %d open
+        /// %li open
         public static func countOpen(_ p1: Int) -> String {
           return L10n.tr("Localizable", "home_view.summaries.covers.count_open", p1)
         }
@@ -1573,7 +1579,7 @@ public enum L10n {
       public enum Lights {
         /// All off
         public static var allOff: String { return L10n.tr("Localizable", "home_view.summaries.lights.all_off") }
-        /// %d on
+        /// %li on
         public static func countOn(_ p1: Int) -> String {
           return L10n.tr("Localizable", "home_view.summaries.lights.count_on", p1)
         }
@@ -3050,7 +3056,7 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.widgets.select.footer.title") }
         }
         public enum ItemCount {
-          /// %d items
+          /// %li items
           public static func title(_ p1: Int) -> String {
             return L10n.tr("Localizable", "settings.widgets.select.item_count.title", p1)
           }

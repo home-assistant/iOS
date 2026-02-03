@@ -117,10 +117,9 @@
 "lxHlyQ" = "Utlös händelse";
 "mAibJP" = "Misslyckades: Home Assistant är för närvarande inte tillgänglig";
 "mJ6CrP" = "Misslyckades med att skicka ${eventName}: ${error}";
-"mrwamX" = "Assistent i appen";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} startad";
 "mi6B62" = "Vilka data vill du skicka med händelsen?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "För att bekräfta, du valde ‘${server}’?";
 "ns9RRU" = "Öppna sida";
 "nzqmFA" = "Klart";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Skicka sensoruppdatering till Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Skicka en händelse till Home Assistant händelse-anslutning";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Resultat";
 "xfXG6b" = "Vilken server?";
 "xhwpj4" = "Klar";

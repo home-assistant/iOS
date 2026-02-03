@@ -117,10 +117,9 @@
 "lxHlyQ" = "Esemény meghívása";
 "mAibJP" = "Sikertelen: A Home Assistant jelenleg nem érhető el";
 "mJ6CrP" = "Nem sikerült elküldeni, ${eventName}: ${error}";
-"mrwamX" = "Assist az alkalmazásban";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} aktiválva";
 "mi6B62" = "Milyen adatokat szeretne küldeni az eseménnyel?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Kérem, erősítse meg: '${server}'?";
 "ns9RRU" = "Oldal megnyitása";
 "nzqmFA" = "Kész";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Érzékelőfrissítés küldése a Home Assistantnek";
 "vebd70" = "Szerver";
 "wfPQQQ" = "Esemény aktiválása a Home Assistant eseménybuszra";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Eredmény";
 "xfXG6b" = "Melyik szerver?";
 "xhwpj4" = "Kész";

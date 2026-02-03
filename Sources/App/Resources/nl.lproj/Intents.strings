@@ -117,10 +117,9 @@
 "lxHlyQ" = "Gebeurtenis uitvoeren";
 "mAibJP" = "Mislukt: Home Assistant is momenteel niet bereikbaar";
 "mJ6CrP" = "Kon ${eventName} niet naar Home Assistant sturen, fout: ${error}";
-"mrwamX" = "Assist in App";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} verzonden";
 "mi6B62" = "Welke gegevens wilt u met de gebeurtenis verzenden?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Even ter bevestiging, je wilde '${server}'?";
 "ns9RRU" = "Open pagina";
 "nzqmFA" = "Klaar";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Stuur een sensorupdate naar Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Start een evenement op de Home Assistant-gebeurtenisbus";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Resultaat";
 "xfXG6b" = "Welke server?";
 "xhwpj4" = "Klaar";

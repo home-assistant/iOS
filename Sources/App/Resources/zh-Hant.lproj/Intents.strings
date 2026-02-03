@@ -117,10 +117,9 @@
 "lxHlyQ" = "觸發事件";
 "mAibJP" = "失敗：目前無法連線至 Home Assistant";
 "mJ6CrP" = "傳送 ${eventName} 失敗：${error}";
-"mrwamX" = "App 中的助理";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} 已觸發";
 "mi6B62" = "所要傳送事件的資料？";
+"mrwamX" = "App 中的助理";
 "ni0OSe" = "確認要 ‘${server}’？";
 "ns9RRU" = "開啟頁面";
 "nzqmFA" = "完成";
@@ -149,6 +148,7 @@
 "vAIAF2" = "傳送感測器更新至 Home Assistant";
 "vebd70" = "伺服器";
 "wfPQQQ" = "於 Home Assistant 事件系統匯流排中執行事件";
+"x7FAm9" = "App 中的助理（舊版）";
 "xN51te" = "結果";
 "xfXG6b" = "選擇伺服器";
 "xhwpj4" = "完成";

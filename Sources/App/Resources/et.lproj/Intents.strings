@@ -117,10 +117,9 @@
 "lxHlyQ" = "Käivita sündmus";
 "mAibJP" = "Nurjus: Home Assistant pole praegu kättesaadav";
 "mJ6CrP" = "${eventName}: ${error} saatmine nurjus";
-"mrwamX" = "Assist rakenduses";
-"x7FAm9" = "(Legacy) Assist In App";
 "mZnRHS" = "${eventName} vallandus";
 "mi6B62" = "Milliseid andmeid soovid koos sündmusega saata?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Kinnitus, kas soovid '${server} '?";
 "ns9RRU" = "Ava lehekülg";
 "nzqmFA" = "Valmis";
@@ -149,6 +148,7 @@
 "vAIAF2" = "Sensori värskenduse saatmine Home Assistantile";
 "vebd70" = "Server";
 "wfPQQQ" = "Sündmuse vallandamine Home Assistanti sündmuste siinil";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Tulemus";
 "xfXG6b" = "Milline server?";
 "xhwpj4" = "Valmis";
