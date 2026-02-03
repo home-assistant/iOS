@@ -19,6 +19,7 @@ class NotificationCategoryTests: XCTestCase {
     }
 
     override func tearDown() {
+        Current.realm = Realm.live
         super.tearDown()
     }
 
