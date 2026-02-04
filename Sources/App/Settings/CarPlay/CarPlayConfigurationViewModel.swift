@@ -63,7 +63,8 @@ final class CarPlayConfigurationViewModel: ObservableObject {
                 setConfig(config)
                 Current.Log.info("CarPlay configuration exists")
             } else {
-                Current.Log.error("No CarPlay config found")
+                Current.Log.info("No CarPlay config found, initializing default configuration")
+                setConfig(CarPlayConfig())
             }
         } catch {
             Current.Log.error("Failed to access database (GRDB), error: \(error.localizedDescription)")
