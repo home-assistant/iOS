@@ -119,7 +119,7 @@
 "mJ6CrP" = "Selhalo odeslání ${eventName}: ${error}";
 "mZnRHS" = "${eventName} spuštěno";
 "mi6B62" = "Jaká data chcete s událostí odeslat?";
-"mrwamX" = "Assist In App";
+"mrwamX" = "Assist v aplikaci";
 "ni0OSe" = "Jen pro potvrzení, chtěli jste \"${server}\"?";
 "ns9RRU" = "Otevřít stránku";
 "nzqmFA" = "Hotovo";
@@ -148,7 +148,7 @@
 "vAIAF2" = "Odeslat aktualizaci senzoru do Home Assistanta";
 "vebd70" = "Server";
 "wfPQQQ" = "Poslat událost do sběrnice událostí Home Assistanta";
-"x7FAm9" = "(Legacy) Assist In App";
+"x7FAm9" = "(Starší) Assist v aplikaci";
 "xN51te" = "Výsledek";
 "xfXG6b" = "Který server?";
 "xhwpj4" = "Hotovo";
