@@ -758,6 +758,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Shows a toast notification indicating a server update is in progress.
     @MainActor
     private func showUpdateToast(for server: Server, step: UpdateStep? = nil) {
+        #if DEBUG
         if #available(iOS 18, *) {
             let message: String
             if let step {
@@ -774,20 +775,26 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 message: message
             )
         }
+        #endif
     }
 
     /// Updates the toast notification with the current step.
     @MainActor
     private func updateToastStep(for server: Server, step: UpdateStep) {
+        #if DEBUG
         showUpdateToast(for: server, step: step)
+        #endif
     }
 
     /// Hides the toast notification for a completed server update.
     @MainActor
     private func hideUpdateToast(for server: Server) {
+        #if DEBUG
+
         if #available(iOS 18, *) {
             ToastManager.shared.hide(id: toastId(for: server))
         }
+        #endif
     }
 }
 
