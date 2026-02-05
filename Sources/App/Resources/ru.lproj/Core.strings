@@ -57,7 +57,7 @@
 "component::counter::entity_component::_::state_attributes::editable::state::true" = "Да";
 "component::cover::entity_component::_::state::closed" = "Закрыто";
 "component::cover::entity_component::_::state::open" = "Открыто";
-"component::cover::title" = "Заслон";
+"component::cover::title" = "Преграда";
 "component::deluge::entity::sensor::status::state::idle" = "Бездействие";
 "component::demo::entity::climate::ubercool::state_attributes::swing_mode::state::off" = "Выключено";
 "component::demo::entity::sensor::thermostat_mode::state::away" = "Не дома";
