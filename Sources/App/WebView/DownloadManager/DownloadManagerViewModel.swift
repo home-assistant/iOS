@@ -33,10 +33,11 @@ final class DownloadManagerViewModel: NSObject, ObservableObject {
         backgroundTaskHelper = nil
     }
     
+    // Updates UI to show download failure. Note: does not cancel download or clean up background task.
+    // Caller is responsible for those actions as appropriate for their context.
     private func handleDownloadFailure(reason: String) {
         errorMessage = L10n.DownloadManager.Failed.title(reason)
         failed = true
-        lastDownload?.cancel()
     }
 
     private func bytesToMBString(_ bytes: Int64) -> String {
@@ -74,11 +75,12 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
             backgroundTaskHelper = helper
             
             helper.beginBackgroundTask { [weak self] in
-                // Background time expired - handle failure
+                // Background time expired - cancel download and update UI
                 guard let self else { return }
                 Current.Log.warning("Background time expired, canceling download: \(self.fileName)")
+                self.lastDownload?.cancel()
                 self.handleDownloadFailure(reason: "Background time expired")
-                // Note: background task will be cleaned up by the helper's expiration handler
+                // Note: background task cleanup is handled by the helper's expiration handler
             }
             
             progressObservation?.invalidate()

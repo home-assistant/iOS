@@ -48,14 +48,4 @@ final class DownloadBackgroundTaskHelper {
         taskIdentifier = .invalid
         UIApplication.shared.endBackgroundTask(identifier)
     }
-    
-    nonisolated deinit {
-        // Schedule cleanup on main actor if task is still active
-        let currentIdentifier = taskIdentifier
-        if currentIdentifier != .invalid {
-            Task { @MainActor in
-                UIApplication.shared.endBackgroundTask(currentIdentifier)
-            }
-        }
-    }
 }
