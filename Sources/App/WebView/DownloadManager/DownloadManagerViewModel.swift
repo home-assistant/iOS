@@ -63,7 +63,10 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
             backgroundTaskHelper?.endBackgroundTask()
             
             // Enable background task BEFORE starting download to prevent race condition
+            // Assign helper first to avoid race condition with expiration handler
             let helper = DownloadBackgroundTaskHelper()
+            backgroundTaskHelper = helper
+            
             helper.beginBackgroundTask { [weak self] in
                 // Background time expired - clean up and update UI
                 guard let self else { return }
@@ -71,9 +74,8 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
                 self.lastDownload?.cancel()
                 self.errorMessage = L10n.DownloadManager.Failed.title("Background time expired")
                 self.failed = true
-                self.backgroundTaskHelper = nil
+                // Note: background task will be cleaned up by the helper's expiration handler
             }
-            backgroundTaskHelper = helper
             
             progressObservation?.invalidate()
             progressObservation = download.progress.observe(\.completedUnitCount) { [weak self] progress, _ in

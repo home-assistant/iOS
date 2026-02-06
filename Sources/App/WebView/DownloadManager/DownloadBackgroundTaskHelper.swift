@@ -19,9 +19,15 @@ final class DownloadBackgroundTaskHelper {
         taskIdentifier = UIApplication.shared.beginBackgroundTask(withName: taskName) { [weak self] in
             guard let self else { return }
             Current.Log.warning("Background task expiring for download")
+            
+            // Call user expiration handler first
             self.expirationHandler?()
-            // Task will be automatically invalidated by iOS, just clear our reference
-            self.taskIdentifier = .invalid
+            
+            // Must call endBackgroundTask to properly end the task per Apple documentation
+            if self.taskIdentifier != .invalid {
+                UIApplication.shared.endBackgroundTask(self.taskIdentifier)
+                self.taskIdentifier = .invalid
+            }
         }
         
         if taskIdentifier != .invalid {
