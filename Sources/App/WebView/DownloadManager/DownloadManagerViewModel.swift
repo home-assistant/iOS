@@ -102,8 +102,7 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
     }
 
     func download(_ download: WKDownload, didFailWithError error: any Error, resumeData: Data?) {
-        errorMessage = L10n.DownloadManager.Failed.title(error.localizedDescription)
-        failed = true
+        handleDownloadFailure(reason: error.localizedDescription)
         // Clean up background task on failure
         backgroundTaskHelper?.endBackgroundTask()
         backgroundTaskHelper = nil
