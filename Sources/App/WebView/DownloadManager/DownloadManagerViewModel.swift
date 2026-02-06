@@ -13,6 +13,7 @@ final class DownloadManagerViewModel: NSObject, ObservableObject {
 
     private var progressObservation: NSKeyValueObservation?
     private var lastDownload: WKDownload?
+    private var backgroundTaskHelper: DownloadBackgroundTaskHelper?
 
     func deleteFile() {
         if let url = lastURLCreated {
@@ -28,6 +29,8 @@ final class DownloadManagerViewModel: NSObject, ObservableObject {
     func cancelDownload() {
         progressObservation?.invalidate()
         lastDownload?.cancel()
+        backgroundTaskHelper?.endBackgroundTask()
+        backgroundTaskHelper = nil
     }
 
     private func bytesToMBString(_ bytes: Int64) -> String {
@@ -55,6 +58,11 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
             } catch {
                 Current.Log.error("Failed to remove file for download manager at \(url), error: \(error)")
             }
+            
+            // Enable background task to allow download continuation when app enters background
+            backgroundTaskHelper = DownloadBackgroundTaskHelper()
+            backgroundTaskHelper?.beginBackgroundTask()
+            
             progressObservation?.invalidate()
             progressObservation = download.progress.observe(\.completedUnitCount) { [weak self] progress, _ in
                 guard let self else { return }
@@ -68,10 +76,16 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
 
     func downloadDidFinish(_ download: WKDownload) {
         finished = true
+        // Clean up background task when download completes
+        backgroundTaskHelper?.endBackgroundTask()
+        backgroundTaskHelper = nil
     }
 
     func download(_ download: WKDownload, didFailWithError error: any Error, resumeData: Data?) {
         errorMessage = L10n.DownloadManager.Failed.title(error.localizedDescription)
         failed = true
+        // Clean up background task on failure
+        backgroundTaskHelper?.endBackgroundTask()
+        backgroundTaskHelper = nil
     }
 }
