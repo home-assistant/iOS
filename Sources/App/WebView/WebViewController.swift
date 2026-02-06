@@ -1392,6 +1392,13 @@ extension WebViewController {
             let viewModel = DownloadManagerViewModel()
             let downloadManager = DownloadManagerView(viewModel: viewModel)
             let downloadController = UIHostingController(rootView: downloadManager)
+
+            // Configure sheet presentation with medium detent and drag indicator
+            if let sheet = downloadController.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+            }
+
             presentOverlayController(controller: downloadController, animated: true)
             download.delegate = viewModel
         }

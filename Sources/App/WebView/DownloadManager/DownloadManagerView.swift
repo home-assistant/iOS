@@ -14,7 +14,6 @@ struct DownloadManagerView: View {
 
     var body: some View {
         VStack(spacing: .zero) {
-            closeButton
             content
             Spacer()
         }
@@ -48,24 +47,6 @@ struct DownloadManagerView: View {
             fileCard
             Text(viewModel.progress)
                 .animation(.easeInOut(duration: 1), value: viewModel.progress)
-        }
-    }
-
-    private var closeButton: some View {
-        HStack {
-            Button(action: {
-                dismiss()
-            }, label: {
-                Image(systemSymbol: .xmarkCircleFill)
-                    .font(.title)
-                    .foregroundStyle(
-                        Color(uiColor: .systemBackground),
-                        .gray.opacity(0.5)
-                    )
-            })
-            .buttonStyle(.plain)
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            .padding()
         }
     }
 
