@@ -63,8 +63,14 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
             backgroundTaskHelper?.endBackgroundTask()
             
             // Enable background task BEFORE starting download to prevent race condition
-            backgroundTaskHelper = DownloadBackgroundTaskHelper()
-            backgroundTaskHelper?.beginBackgroundTask()
+            let helper = DownloadBackgroundTaskHelper()
+            helper.beginBackgroundTask { [weak self] in
+                // Background time expired - cancel the download
+                guard let self else { return }
+                Current.Log.warning("Background time expired, canceling download: \(self.fileName)")
+                self.lastDownload?.cancel()
+            }
+            backgroundTaskHelper = helper
             
             progressObservation?.invalidate()
             progressObservation = download.progress.observe(\.completedUnitCount) { [weak self] progress, _ in

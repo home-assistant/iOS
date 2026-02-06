@@ -6,19 +6,27 @@ import Shared
 final class DownloadBackgroundTaskHelper {
     private var taskIdentifier: UIBackgroundTaskIdentifier = .invalid
     private let taskName = "DownloadInBackground"
+    private var expirationHandler: (() -> Void)?
     
-    func beginBackgroundTask() {
+    func beginBackgroundTask(onExpiration: (() -> Void)? = nil) {
         guard taskIdentifier == .invalid else {
             Current.Log.info("Background task already active for download")
             return
         }
         
+        expirationHandler = onExpiration
+        
         taskIdentifier = UIApplication.shared.beginBackgroundTask(withName: taskName) { [weak self] in
-            self?.endBackgroundTask()
+            guard let self else { return }
+            Current.Log.warning("Background task expiring for download")
+            self.expirationHandler?()
+            self.endBackgroundTask()
         }
         
         if taskIdentifier != .invalid {
             Current.Log.info("Started background task for download continuation")
+        } else {
+            Current.Log.warning("Failed to start background task for download")
         }
     }
     
