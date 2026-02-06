@@ -59,7 +59,10 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
                 Current.Log.error("Failed to remove file for download manager at \(url), error: \(error)")
             }
             
-            // Enable background task to allow download continuation when app enters background
+            // Clean up any existing background task before starting a new one
+            backgroundTaskHelper?.endBackgroundTask()
+            
+            // Enable background task BEFORE starting download to prevent race condition
             backgroundTaskHelper = DownloadBackgroundTaskHelper()
             backgroundTaskHelper?.beginBackgroundTask()
             
