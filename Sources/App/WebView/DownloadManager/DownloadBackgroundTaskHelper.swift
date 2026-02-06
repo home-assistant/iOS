@@ -3,6 +3,7 @@ import UIKit
 import Shared
 
 /// Helper to manage background task assertions for downloads
+@MainActor
 final class DownloadBackgroundTaskHelper {
     private var taskIdentifier: UIBackgroundTaskIdentifier = .invalid
     private let taskName = "DownloadInBackground"
@@ -17,16 +18,18 @@ final class DownloadBackgroundTaskHelper {
         expirationHandler = onExpiration
         
         taskIdentifier = UIApplication.shared.beginBackgroundTask(withName: taskName) { [weak self] in
-            guard let self else { return }
-            Current.Log.warning("Background task expiring for download")
-            
-            // Call user expiration handler first
-            self.expirationHandler?()
-            
-            // Must call endBackgroundTask to properly end the task per Apple documentation
-            if self.taskIdentifier != .invalid {
-                UIApplication.shared.endBackgroundTask(self.taskIdentifier)
+            Task { @MainActor in
+                guard let self, self.taskIdentifier != .invalid else { return }
+                
+                Current.Log.warning("Background task expiring for download")
+                
+                // Call user expiration handler first
+                self.expirationHandler?()
+                
+                // Must call endBackgroundTask to properly end the task per Apple documentation
+                let identifier = self.taskIdentifier
                 self.taskIdentifier = .invalid
+                UIApplication.shared.endBackgroundTask(identifier)
             }
         }
         
@@ -41,8 +44,9 @@ final class DownloadBackgroundTaskHelper {
         guard taskIdentifier != .invalid else { return }
         
         Current.Log.info("Ending background task for download")
-        UIApplication.shared.endBackgroundTask(taskIdentifier)
+        let identifier = taskIdentifier
         taskIdentifier = .invalid
+        UIApplication.shared.endBackgroundTask(identifier)
     }
     
     deinit {
