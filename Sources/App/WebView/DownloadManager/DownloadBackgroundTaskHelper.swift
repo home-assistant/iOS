@@ -20,7 +20,8 @@ final class DownloadBackgroundTaskHelper {
             guard let self else { return }
             Current.Log.warning("Background task expiring for download")
             self.expirationHandler?()
-            self.endBackgroundTask()
+            // Task will be automatically invalidated by iOS, just clear our reference
+            self.taskIdentifier = .invalid
         }
         
         if taskIdentifier != .invalid {
