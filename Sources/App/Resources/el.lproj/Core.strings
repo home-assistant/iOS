@@ -97,9 +97,9 @@
 "component::improv_ble::config::abort::characteristic_missing" = "Η συσκευή είτε είναι ήδη συνδεδεμένη στο Wi-Fi είτε δεν μπορεί πλέον να συνδεθεί στο Wi-Fi. Αν θέλετε να τη συνδέσετε σε άλλο δίκτυο, δοκιμάστε πρώτα την επαναφορά εργοστασιακών ρυθμίσεων.";
 "component::improv_ble::config::abort::no_devices_found" = "Δεν βρέθηκαν συσκευές στο δίκτυο";
 "component::improv_ble::config::abort::provision_successful" = "Η συσκευή έχει συνδεθεί επιτυχώς στο δίκτυο Wi-Fi.";
-"component::improv_ble::config::abort::provision_successful_url" = "Η συσκευή έχει συνδεθεί επιτυχώς στο δίκτυο Wi-Fi.\
-\
-Παρακαλώ επισκεφθείτε το {url} για να ολοκληρώσετε τη ρύθμιση.";
+"component::improv_ble::config::abort::provision_successful_url" = "Η συσκευή έχει συνδεθεί με επιτυχία στο δίκτυο Wi-Fi. \
+ \
+Ολοκληρώστε τη ρύθμιση ακολουθώντας τις [οδηγίες εγκατάστασης]({url}).";
 "component::improv_ble::config::abort::unknown" = "Μη αναμενόμενο σφάλμα";
 "component::improv_ble::config::error::unable_to_connect" = "Η συσκευή δεν μπόρεσε να συνδεθεί στο δίκτυο Wi-Fi. Ελέγξτε ότι το SSID και ο κωδικός πρόσβασης είναι σωστά και δοκιμάστε ξανά.";
 "component::improv_ble::config::flow_title" = "{name}";

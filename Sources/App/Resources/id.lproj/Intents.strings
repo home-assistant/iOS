@@ -119,7 +119,7 @@
 "mJ6CrP" = "Gagal mengirim ${eventName}: ${error}";
 "mZnRHS" = "${eventName} dijalankan";
 "mi6B62" = "Data apa yang ingin dikirim dengan event tersebut?";
-"mrwamX" = "Assist In App";
+"mrwamX" = "Assist Dalam Aplikasi";
 "ni0OSe" = "Sekadar konfirmasi, benar Anda menginginkan ‘${server}’?";
 "ns9RRU" = "Buka Halaman";
 "nzqmFA" = "Selesai";
@@ -148,7 +148,7 @@
 "vAIAF2" = "Kirim pembaruan sensor ke Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Jalankan event di bus event Home Assistant.";
-"x7FAm9" = "(Legacy) Assist In App";
+"x7FAm9" = "Assist Dalam Aplikasi (Lawas)";
 "xN51te" = "Hasil";
 "xfXG6b" = "Server yang mana?";
 "xhwpj4" = "Selesai";
