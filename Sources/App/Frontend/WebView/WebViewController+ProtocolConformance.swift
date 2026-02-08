@@ -85,7 +85,7 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     @objc func refresh() {
-        Current.connectivity.syncNetworkInformation { [weak self] in
+        let refreshBlock: () -> Void = { [weak self] in
             guard let self else { return }
             // called via menu/keyboard shortcut too
             if let webviewURL = server.info.connection.webviewURL() {
@@ -97,6 +97,14 @@ extension WebViewController: WebViewControllerProtocol {
                 hideNoActiveURLError()
             } else {
                 showNoActiveURLError()
+            }
+        }
+
+        if Current.isCatalyst {
+            refreshBlock()
+        } else {
+            Current.connectivity.syncNetworkInformation {
+                refreshBlock()
             }
         }
         updateDatabaseAndPanels()

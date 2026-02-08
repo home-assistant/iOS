@@ -854,7 +854,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         loadActiveURLIfNeededInProgress = true
         Current.Log.info("loadActiveURLIfNeeded called")
 
-        Current.connectivity.syncNetworkInformation { [weak self] in
+        let loadBlock: () -> Void = { [weak self] in
             defer {
                 self?.loadActiveURLIfNeededInProgress = false
             }
@@ -910,6 +910,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             }
 
             load(request: request)
+        }
+
+        if Current.isCatalyst {
+            loadBlock()
+        } else {
+            Current.connectivity.syncNetworkInformation {
+                loadBlock()
+            }
         }
     }
 
