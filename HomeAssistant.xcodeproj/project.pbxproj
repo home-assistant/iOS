@@ -3995,32 +3995,18 @@
 			path = Eureka;
 			sourceTree = "<group>";
 		};
-		11AD2E2A2528FDB700FBC437 /* WebView */ = {
+		11AD2E2A2528FDB700FBC437 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
+				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
+				42B18FD42F38C11F00A1537A /* WebView */,
 				42955C392F20E2E800E398E8 /* ConnectivityCheck */,
 				42D6EABC2F0FF98F00FA249B /* ExternalMessageBus */,
-				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
-				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				42AF759C2DDB5AC000ACDF45 /* Extensions */,
 				42E6C0882CE4F4EC007CA622 /* DownloadManager */,
-				42B942F42CAA1E4400E36E02 /* Payload */,
-				42BE698B2C4691E000745ECA /* Views */,
-				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
-				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
-				429858872EB13FD300E33710 /* WebViewControllerOverlayedViewTags.swift */,
-				42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */,
-				42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */,
-				429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */,
-				42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */,
-				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
-				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
-				42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */,
 				42DFE8792EFB08C80058DADB /* ExperimentalSpace */,
-				4261EA9F2F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift */,
-				4261EAA12F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift */,
 			);
-			path = WebView;
+			path = Frontend;
 			sourceTree = "<group>";
 		};
 		11AD2E2B2528FDEB00FBC437 /* Observation */ = {
@@ -5869,6 +5855,27 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		42B18FD42F38C11F00A1537A /* WebView */ = {
+			isa = PBXGroup;
+			children = (
+				42F73F582E264A7A00B704A9 /* StatusBar */,
+				4298587C2EB0F84000E33710 /* ConnectionSecurityLevelBlock */,
+				42BE698B2C4691E000745ECA /* Views */,
+				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
+				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				4261EA9F2F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift */,
+				4261EAA12F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift */,
+				429858872EB13FD300E33710 /* WebViewControllerOverlayedViewTags.swift */,
+				42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */,
+				42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */,
+				429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */,
+				42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */,
+				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
+				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
+			);
+			path = WebView;
+			sourceTree = "<group>";
+		};
 		42B7BFE92E97A7070056BADC /* Location */ = {
 			isa = PBXGroup;
 			children = (
@@ -5979,8 +5986,6 @@
 		42BE698B2C4691E000745ECA /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4298587C2EB0F84000E33710 /* ConnectionSecurityLevelBlock */,
-				42F73F582E264A7A00B704A9 /* StatusBarViews */,
 				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
 				42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */,
 				42E5542C2E128AE4008A160D /* ServerPickerView.swift */,
@@ -6209,11 +6214,13 @@
 		42D6EABC2F0FF98F00FA249B /* ExternalMessageBus */ = {
 			isa = PBXGroup;
 			children = (
+				42B942F42CAA1E4400E36E02 /* Payload */,
 				42A9E0F02F2B58FF00D22154 /* EntityAddToAction.swift */,
 				42A9E0F12F2B58FF00D22154 /* EntityAddToHandler.swift */,
 				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
 				42A9E1002F2B979900D22154 /* WidgetSelectionView.swift */,
+				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
 			);
 			path = ExternalMessageBus;
 			sourceTree = "<group>";
@@ -6298,12 +6305,13 @@
 			path = Fixtures;
 			sourceTree = "<group>";
 		};
-		42F73F582E264A7A00B704A9 /* StatusBarViews */ = {
+		42F73F582E264A7A00B704A9 /* StatusBar */ = {
 			isa = PBXGroup;
 			children = (
 				42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */,
+				42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */,
 			);
-			path = StatusBarViews;
+			path = StatusBar;
 			sourceTree = "<group>";
 		};
 		42F958962BB4680100497981 /* Assist */ = {
@@ -6769,7 +6777,7 @@
 				422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */,
 				11EFCDD424F5FA7E00314D85 /* Scenes */,
 				11AF1ED82528FBAA00AAE364 /* Onboarding */,
-				11AD2E2A2528FDB700FBC437 /* WebView */,
+				11AD2E2A2528FDB700FBC437 /* Frontend */,
 				42462E6B2DA3D05500ECC8A7 /* PermissionScreen */,
 				42B94BD92B9606CD00DEE060 /* Assist */,
 				42FCCFDD2B9B1AB00057783F /* BarcodeScanner */,
