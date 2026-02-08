@@ -60,7 +60,8 @@ public class TokenManager {
         return AuthenticationAPI.fetchToken(
             authorizationCode: code,
             baseURL: url,
-            exceptions: connectionInfo.securityExceptions
+            exceptions: connectionInfo.securityExceptions,
+            clientCertificate: connectionInfo.clientCertificate
         )
     }
 

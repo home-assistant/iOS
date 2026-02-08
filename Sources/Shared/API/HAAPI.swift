@@ -70,6 +70,17 @@ public class HomeAssistantAPI {
             connectionInfo: {
                 do {
                     if let activeURL = server.info.connection.activeURL() {
+                        // Create custom engine for mTLS if client certificate is configured
+                        let engine: ClientCertificateNativeEngine? = {
+                            if server.info.connection.clientCertificate != nil {
+                                return ClientCertificateNativeEngine(
+                                    clientCertificate: server.info.connection.clientCertificate,
+                                    securityExceptions: server.info.connection.securityExceptions
+                                )
+                            }
+                            return nil
+                        }()
+                        
                         return try .init(
                             url: activeURL,
                             userAgent: HomeAssistantAPI.userAgent,
@@ -79,7 +90,8 @@ public class HomeAssistantAPI {
                                         try server.info.connection.securityExceptions.evaluate(secTrust)
                                     }
                                 )
-                            }
+                            },
+                            engine: engine
                         )
                     } else {
                         Current.clientEventStore.addEvent(.init(
@@ -105,6 +117,7 @@ public class HomeAssistantAPI {
 
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
+            delegate: HAAPISessionDelegate(server: server),
             interceptor: newInterceptor(),
             trustManager: newServerTrustManager()
         )
@@ -113,6 +126,43 @@ public class HomeAssistantAPI {
         removeOldDownloadDirectory()
 
         Current.sensors.register(observer: self)
+    }
+
+    private final class HAAPISessionDelegate: SessionDelegate, @unchecked Sendable {
+        private let server: Server
+        init(server: Server) {
+            self.server = server
+            super.init()
+        }
+
+        override func urlSession(
+            _ session: URLSession,
+            task: URLSessionTask,
+            didReceive challenge: URLAuthenticationChallenge,
+            completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+        ) {
+            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+                Current.Log.verbose("Client certificate challenge received for task \(task.taskIdentifier)")
+                let (disposition, credential) = server.info.connection.evaluate(challenge)
+                completionHandler(disposition, credential)
+            } else {
+                super.urlSession(session, task: task, didReceive: challenge, completionHandler: completionHandler)
+            }
+        }
+
+        func urlSession(
+            _ session: URLSession,
+            didReceive challenge: URLAuthenticationChallenge,
+            completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+        ) {
+            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+                Current.Log.verbose("Client certificate challenge received for session")
+                let (disposition, credential) = server.info.connection.evaluate(challenge)
+                completionHandler(disposition, credential)
+            } else {
+                completionHandler(.performDefaultHandling, nil)
+            }
+        }
     }
 
     convenience init?() {
