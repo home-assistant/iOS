@@ -20,13 +20,13 @@ enum FrontEndConnectionState: String {
 }
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
-    private var webView: WKWebView!
+    var webView: WKWebView!
     let server: Server
 
     private var urlObserver: NSKeyValueObservation?
     private var tokens = [HACancellable]()
 
-    private let refreshControl = UIRefreshControl()
+    let refreshControl = UIRefreshControl()
     private let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     private let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
@@ -36,9 +36,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var statusBarView: UIView?
     private var webViewTopConstraint: NSLayoutConstraint?
 
-    private var initialURL: URL?
+    var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
-    private var lastNavigationWasServerError = false
+    var lastNavigationWasServerError = false
     private var reconnectBackgroundTimer: Timer? {
         willSet {
             if reconnectBackgroundTimer != newValue {
@@ -63,13 +63,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Handler for script messages sent from the webview to the app
     private let webViewScriptMessageHandler = WebViewScriptMessageHandler()
 
-    /// Defer showing the empty state until disconnected for 4 seconds (var used in
-    /// WebViewControllerProtocol+Implementation )
-    private var emptyStateTimer: Timer?
+    /// Defer showing the empty state until disconnected for 10 seconds (used by
+    /// updateFrontendConnectionState in WebViewController+ProtocolConformance.swift)
+    var emptyStateTimer: Timer?
 
     /// Frontend notifies when connection is established or not
     /// Each navigation resets this to false so we can show the empty state
-    private var isConnected = false
+    var isConnected = false
 
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
@@ -743,7 +743,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         present(alert, animated: true)
     }
 
-    private func updateWebViewSettings(reason: WebViewSettingsUpdateReason) {
+    func updateWebViewSettings(reason: WebViewSettingsUpdateReason) {
         Current.Log.info("updating web view settings for \(reason)")
 
         // iOS 14's `pageZoom` property is almost this, but not quite - it breaks the layout as well
@@ -809,13 +809,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Updates the app database and panels for the current server
     /// Called after view appears and on pull to refresh to avoid blocking app launch
-    private func updateDatabaseAndPanels() {
+    func updateDatabaseAndPanels() {
         // Update runs in background automatically, returns immediately
         Current.appDatabaseUpdater.update(server: server, forceUpdate: false)
         Current.panelsUpdater.update()
     }
 
-    private func showNoActiveURLError() {
+    func showNoActiveURLError() {
         // Load about:blank in webview to prevent any current connections
         load(request: URLRequest(url: URL(string: "about:blank")!))
         Current.Log.info("Loading about:blank in webview due to no activeURL")
@@ -839,7 +839,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         presentOverlayController(controller: controller, animated: true)
     }
 
-    private func hideNoActiveURLError() {
+    func hideNoActiveURLError() {
         if presentedViewController?.view.tag == WebViewControllerOverlayedViewTags.noActiveURLError.rawValue {
             presentedViewController?.dismiss(animated: true)
         }
@@ -1264,7 +1264,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`
-    private func reload() {
+    func reload() {
         Current.Log.verbose("Reload webView requested")
         webView.reload()
     }
@@ -1302,368 +1302,5 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 ],
             ]
         ))
-    }
-}
-
-// MARK: - WebView
-
-extension WebViewController {
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
-        webViewExternalMessageHandler.stopImprovScanIfNeeded()
-    }
-
-    func webView(
-        _ webView: WKWebView,
-        didReceive challenge: URLAuthenticationChallenge,
-        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
-    ) {
-        let result = server.info.connection.evaluate(challenge)
-        completionHandler(result.0, result.1)
-    }
-
-    func webView(
-        _ webView: WKWebView,
-        createWebViewWith configuration: WKWebViewConfiguration,
-        for navigationAction: WKNavigationAction,
-        windowFeatures: WKWindowFeatures
-    ) -> WKWebView? {
-        if navigationAction.targetFrame == nil {
-            openURLInBrowser(navigationAction.request.url!, self)
-        }
-        return nil
-    }
-
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        refreshControl.endRefreshing()
-        if let err = error as? URLError {
-            if err.code != .cancelled {
-                Current.Log.error("Failure during nav: \(err)")
-            }
-
-            if !error.isCancelled {
-                showEmptyState()
-                showSwiftMessage(error: error)
-            }
-        }
-    }
-
-    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        refreshControl.endRefreshing()
-
-        let nsError = error as NSError
-        let shouldShowError: Bool
-
-        // Handle URLError
-        if let urlError = error as? URLError {
-            shouldShowError = urlError.code != .cancelled
-            if shouldShowError {
-                Current.Log.error("Failure during content load: \(error)")
-            }
-        }
-        // Handle WebKitErrorDomain errors (e.g., Code 101 - invalid URL)
-        else if nsError.domain == "WebKitErrorDomain" {
-            shouldShowError = !nsError.isCancelled
-            Current.Log.error("WebKit error during content load: \(error)")
-        } else {
-            shouldShowError = !error.isCancelled
-            if shouldShowError {
-                Current.Log.error("Failure during content load: \(error)")
-            }
-        }
-
-        if shouldShowError {
-            showEmptyState()
-            showSwiftMessage(error: error)
-        }
-    }
-
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        refreshControl.endRefreshing()
-
-        // in case the view appears again, don't reload
-        initialURL = nil
-
-        updateWebViewSettings(reason: .load)
-    }
-
-    func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
-        if #available(iOS 17.0, *) {
-            let viewModel = DownloadManagerViewModel()
-            let downloadManager = DownloadManagerView(viewModel: viewModel)
-            let downloadController = UIHostingController(rootView: downloadManager)
-
-            // Configure sheet presentation with medium detent and drag indicator
-            if let sheet = downloadController.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-
-            presentOverlayController(controller: downloadController, animated: true)
-            download.delegate = viewModel
-        }
-    }
-
-    func webView(
-        _ webView: WKWebView,
-        decidePolicyFor navigationResponse: WKNavigationResponse,
-        decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
-    ) {
-        lastNavigationWasServerError = false
-
-        guard navigationResponse.isForMainFrame else {
-            // we don't need to modify the response if it's for a sub-frame
-            decisionHandler(.allow)
-            return
-        }
-
-        guard let httpResponse = navigationResponse.response as? HTTPURLResponse, httpResponse.statusCode >= 400 else {
-            // not an error response, we don't need to inspect at all
-            decisionHandler(.allow)
-            return
-        }
-
-        lastNavigationWasServerError = true
-
-        // error response, let's inspect if it's restoring a page or normal navigation
-        if navigationResponse.response.url != initialURL {
-            // just a normal loading error
-            decisionHandler(.allow)
-        } else {
-            // first: clear that saved url, it's bad
-            initialURL = nil
-
-            // it's for the restored page, let's load the default url
-
-            if let webviewURL = server.info.connection.webviewURL() {
-                decisionHandler(.cancel)
-                load(request: URLRequest(url: webviewURL))
-            } else {
-                // we don't have anything we can do about this
-                decisionHandler(.allow)
-            }
-        }
-    }
-
-    // WKUIDelegate
-    func webView(
-        _ webView: WKWebView,
-        runJavaScriptConfirmPanelWithMessage message: String,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping (Bool) -> Void
-    ) {
-        let style: UIAlertController.Style = {
-            switch webView.traitCollection.userInterfaceIdiom {
-            case .carPlay, .phone, .tv:
-                return .actionSheet
-            case .mac:
-                return .alert
-            case .pad, .unspecified, .vision:
-                // without a touch to tell us where, an action sheet in the middle of the screen isn't great
-                return .alert
-            @unknown default:
-                return .alert
-            }
-        }()
-
-        let alertController = UIAlertController(title: nil, message: message, preferredStyle: style)
-
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { _ in
-            completionHandler(true)
-        }))
-
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { _ in
-            completionHandler(false)
-        }))
-
-        if presentedViewController != nil {
-            Current.Log.error("attempted to present an alert when already presenting, bailing")
-            completionHandler(false)
-        } else {
-            present(alertController, animated: true, completion: nil)
-        }
-    }
-
-    func webView(
-        _ webView: WKWebView,
-        runJavaScriptTextInputPanelWithPrompt prompt: String,
-        defaultText: String?,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping (String?) -> Void
-    ) {
-        let alertController = UIAlertController(title: nil, message: prompt, preferredStyle: .alert)
-
-        alertController.addTextField { textField in
-            textField.text = defaultText
-        }
-
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Prompt.ok, style: .default, handler: { _ in
-            if let text = alertController.textFields?.first?.text {
-                completionHandler(text)
-            } else {
-                completionHandler(defaultText)
-            }
-        }))
-
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Prompt.cancel, style: .cancel, handler: { _ in
-            completionHandler(nil)
-        }))
-
-        if presentedViewController != nil {
-            Current.Log.error("attempted to present an alert when already presenting, bailing")
-            completionHandler(nil)
-        } else {
-            present(alertController, animated: true, completion: nil)
-        }
-    }
-
-    func webView(
-        _ webView: WKWebView,
-        runJavaScriptAlertPanelWithMessage message: String,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping () -> Void
-    ) {
-        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Alert.ok, style: .default, handler: { _ in
-            completionHandler()
-        }))
-
-        alertController.popoverPresentationController?.sourceView = self.webView
-
-        if presentedViewController != nil {
-            Current.Log.error("attempted to present an alert when already presenting, bailing")
-            completionHandler()
-        } else {
-            present(alertController, animated: true, completion: nil)
-        }
-    }
-
-    func webView(
-        _ webView: WKWebView,
-        requestMediaCapturePermissionFor origin: WKSecurityOrigin,
-        initiatedByFrame frame: WKFrameInfo,
-        type: WKMediaCaptureType,
-        decisionHandler: @escaping (WKPermissionDecision) -> Void
-    ) {
-        decisionHandler(.grant)
-    }
-}
-
-extension WebViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Prevent scrollView from scrolling past the top or bottom
-        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height {
-            scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
-        }
-    }
-}
-
-extension WebViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(
-        _ gestureRecognizer: UIGestureRecognizer,
-        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
-    ) -> Bool {
-        true
-    }
-}
-
-extension WebViewController: WebViewControllerProtocol {
-    var canGoBack: Bool {
-        webView.canGoBack
-    }
-
-    var canGoForward: Bool {
-        webView.canGoForward
-    }
-
-    @objc func goBack() {
-        webView.goBack()
-    }
-
-    @objc func goForward() {
-        webView.goForward()
-    }
-
-    var overlayedController: UIViewController? {
-        presentedViewController
-    }
-
-    func presentOverlayController(controller: UIViewController, animated: Bool) {
-        DispatchQueue.main.async { [weak self] in
-            self?.dismissOverlayController(animated: false, completion: { [weak self] in
-                self?.present(controller, animated: animated, completion: nil)
-            })
-        }
-    }
-
-    func presentAlertController(controller: UIViewController, animated: Bool) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            if let overlayedController {
-                overlayedController.present(controller, animated: animated, completion: nil)
-            } else {
-                present(controller, animated: animated, completion: nil)
-            }
-        }
-    }
-
-    func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {
-        webView.evaluateJavaScript(script, completionHandler: completion)
-    }
-
-    func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
-        dismissAllViewControllersAbove(completion: completion)
-    }
-
-    func dismissControllerAboveOverlayController() {
-        overlayedController?.dismissAllViewControllersAbove()
-    }
-
-    func updateFrontendConnectionState(state: String) {
-        emptyStateTimer?.invalidate()
-        emptyStateTimer = nil
-
-        let state = FrontEndConnectionState(rawValue: state) ?? .unknown
-        isConnected = state == .connected
-
-        // Possible values: connected, disconnected, auth-invalid
-        if state == .connected {
-            hideEmptyState()
-        } else {
-            // Start a 10-second timer. If not interrupted by a 'connected' state, set alpha to 1.
-            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
-                self?.showEmptyState()
-            }
-        }
-    }
-
-    func navigateToPath(path: String) {
-        if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
-            load(request: URLRequest(url: url))
-        }
-    }
-
-    func load(request: URLRequest) {
-        Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
-        webView.load(request)
-    }
-
-    @objc func refresh() {
-        Current.connectivity.syncNetworkInformation { [weak self] in
-            guard let self else { return }
-            // called via menu/keyboard shortcut too
-            if let webviewURL = server.info.connection.webviewURL() {
-                if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
-                    reload()
-                } else {
-                    load(request: URLRequest(url: webviewURL))
-                }
-                hideNoActiveURLError()
-            } else {
-                showNoActiveURLError()
-            }
-        }
-        updateDatabaseAndPanels()
     }
 }

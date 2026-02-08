@@ -736,6 +736,8 @@
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
+		4261EAA02F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4261EA9F2F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift */; };
+		4261EAA22F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4261EAA12F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift */; };
 		426266412C11A63A0081A818 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
@@ -2427,6 +2429,8 @@
 		425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneDelegate.swift; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
+		4261EA9F2F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+WebKitDelegates.swift"; sourceTree = "<group>"; };
+		4261EAA12F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+ProtocolConformance.swift"; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
 		4263A6682EFB2F670089C338 /* ModernAssistBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernAssistBackgroundView.swift; sourceTree = "<group>"; };
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
@@ -4013,6 +4017,8 @@
 				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
 				42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */,
 				42DFE8792EFB08C80058DADB /* ExperimentalSpace */,
+				4261EA9F2F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift */,
+				4261EAA12F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -9263,6 +9269,7 @@
 				42DFE87D2EFB128B0058DADB /* EntityTileView.swift in Sources */,
 				4201FD992F0E930900C3EF1C /* CameraListConfiguration.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
+				4261EAA02F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift in Sources */,
 				42B129452F0565E900B957AF /* EntityDisplayComponents.swift in Sources */,
 				42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
 				42F5C0832F02B6DB00C50310 /* HomeSectionsReorderView.swift in Sources */,
@@ -9433,6 +9440,7 @@
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
 				42C60FA22F0811AE0071A6F6 /* SwitchControlIntents.swift in Sources */,
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
+				4261EAA22F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
