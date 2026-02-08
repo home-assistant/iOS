@@ -27,7 +27,11 @@ extension WebViewController {
         windowFeatures: WKWindowFeatures
     ) -> WKWebView? {
         if navigationAction.targetFrame == nil {
-            openURLInBrowser(navigationAction.request.url!, self)
+            guard let url = navigationAction.request.url else {
+                Current.Log.error("Received navigation action without URL for new window")
+                return nil
+            }
+            openURLInBrowser(url, self)
         }
         return nil
     }
