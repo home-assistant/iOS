@@ -63,8 +63,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Handler for script messages sent from the webview to the app
     private let webViewScriptMessageHandler = WebViewScriptMessageHandler()
 
-    /// Defer showing the empty state until disconnected for 4 seconds (var used in
-    /// WebViewControllerProtocol+Implementation )
+    /// Defer showing the empty state until disconnected for 10 seconds (used by
+    /// updateFrontendConnectionState in WebViewController+ProtocolConformance.swift)
     var emptyStateTimer: Timer?
 
     /// Frontend notifies when connection is established or not
