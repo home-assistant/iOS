@@ -149,7 +149,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         )
         webRTCClient?.set(remoteCandidate: candidate) { error in
             if let error {
-                print("Failed to add remote candidate: \(error)")
+                Current.Log.verbose("Failed to add remote candidate: \(error)")
             }
         }
     }

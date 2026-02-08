@@ -131,7 +131,7 @@ struct HomeNetworkInputView: View {
     NavigationView {
         HomeNetworkInputView(
             onNext: { context in
-                print("Next tapped with network: \(context.networkName ?? "nil")")
+                // Next tapped with network: \(context.networkName ?? "nil")
             }
         )
         .navigationBarTitleDisplayMode(.inline)

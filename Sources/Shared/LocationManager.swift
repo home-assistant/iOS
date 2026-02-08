@@ -321,6 +321,6 @@ extension LocationManager: CLLocationManagerDelegate {
      */
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         // Handle location errors if needed
-        print("Location manager failed with error: \(error.localizedDescription)")
+        Current.Log.verbose("Location manager failed with error: \(error.localizedDescription)")
     }
 }

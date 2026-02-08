@@ -74,7 +74,7 @@ struct DomainSummariesSection: View {
     ]
 
     DomainSummariesSection(summaries: summaries) { summary in
-        print("Tapped: \(summary.displayName)")
+        // Tapped: \(summary.displayName)
     }
     .padding()
     .background(Color(UIColor.systemGroupedBackground))

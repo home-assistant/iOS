@@ -577,20 +577,20 @@ extension ModernAssistTheme {
         selectedPipeline: $selectedPipeline,
         pipelines: pipelines,
         onClose: {
-            print("Close tapped")
+            // Close tapped
         },
         onSettings: {
-            print("Settings tapped")
+            // Settings tapped
         },
         onSendMessage: {
-            print("Send message tapped")
+            // Send message tapped
         },
         onStartRecording: {
-            print("Start recording tapped")
+            // Start recording tapped
             isRecording = true
         },
         onStopRecording: {
-            print("Stop recording tapped")
+            // Stop recording tapped
             isRecording = false
         }
     )
@@ -624,20 +624,20 @@ extension ModernAssistTheme {
         selectedPipeline: $selectedPipeline,
         pipelines: pipelines,
         onClose: {
-            print("Close tapped")
+            // Close tapped
         },
         onSettings: {
-            print("Settings tapped")
+            // Settings tapped
         },
         onSendMessage: {
-            print("Send message tapped")
+            // Send message tapped
         },
         onStartRecording: {
-            print("Start recording tapped")
+            // Start recording tapped
             isRecording = true
         },
         onStopRecording: {
-            print("Stop recording tapped")
+            // Stop recording tapped
             isRecording = false
         }
     )

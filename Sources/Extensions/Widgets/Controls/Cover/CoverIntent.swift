@@ -35,7 +35,7 @@ struct CoverIntent: SetValueIntent {
                     "entity_id": entity.entityId,
                 ]
             )).promise.pipe { result in
-                print(result)
+                Current.Log.verbose("Cover service result: \(result)")
                 continuation.resume()
             }
         }

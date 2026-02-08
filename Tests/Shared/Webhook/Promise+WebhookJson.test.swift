@@ -28,8 +28,6 @@ class PromiseWebhookJsonTests: XCTestCase {
             "encrypted_data": encryptedData.flatMap { sodium.utils.bin2base64($0, variant: .ORIGINAL) } ?? "",
         ]
 
-        print("json: \(json)")
-
         let data = try JSONSerialization.data(withJSONObject: json)
 
         return data

@@ -5,28 +5,28 @@ class LauncherAppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ note: Notification) {
         let bundleIdentifier = Bundle.main.bundleIdentifier!
         let appIdentifier = String(bundleIdentifier[..<bundleIdentifier.lastIndex(of: ".")!])
-        print("launcher identifier: \(bundleIdentifier)")
-        print("app identifier: \(appIdentifier)")
-        print("running from \(Bundle.main.bundlePath)")
+        Current.Log.verbose("launcher identifier: \(bundleIdentifier)")
+        Current.Log.verbose("app identifier: \(appIdentifier)")
+        Current.Log.verbose("running from \(Bundle.main.bundlePath)")
 
         guard NSRunningApplication.runningApplications(withBundleIdentifier: appIdentifier).isEmpty else {
-            print("app already launching, not doing anything")
+            Current.Log.verbose("app already launching, not doing anything")
             didFinishLaunchingMainApp()
             return
         }
 
         // we're in HA.app/Contents/Library/LoginItems/Launcher.app, and we want to get our container app
         let appURL = Bundle.main.bundleURL.appendingPathComponent("../../../../").resolvingSymlinksInPath()
-        print("launching app at \(appURL.path)")
+        Current.Log.verbose("launching app at \(appURL.path)")
 
         let openConfiguration = NSWorkspace.OpenConfiguration()
         openConfiguration.activates = false
 
         NSWorkspace.shared.openApplication(at: appURL, configuration: openConfiguration) { [self] app, error in
             if let app {
-                print("launched app: \(app)")
+                Current.Log.verbose("launched app: \(app)")
             } else if let error {
-                print("failed to launch app: \(error)")
+                Current.Log.verbose("failed to launch app: \(error)")
             }
 
             DispatchQueue.main.async { [self] in

@@ -156,6 +156,6 @@ final class WidgetSelectionViewModel: ObservableObject {
 
 #Preview {
     WidgetSelectionView(entityId: "light.living_room", serverId: "server-1") { widget in
-        print("Selected: \(widget?.name ?? "Create new")")
+        // Selected: \(widget?.name ?? "Create new")
     }
 }
