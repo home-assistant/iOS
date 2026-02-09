@@ -1,16 +1,16 @@
+import Combine
 import HAKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 @available(iOS 26.0, *)
-@Observable
-final class SwitchControlsViewModel {
+final class SwitchControlsViewModel: ObservableObject {
     // MARK: - Published State
 
-    var isOn: Bool = false
-    var isUpdating: Bool = false
-    var deviceClass: String?
+    @Published var isOn: Bool = false
+    @Published var isUpdating: Bool = false
+    @Published var deviceClass: String?
 
     // MARK: - Dependencies
 

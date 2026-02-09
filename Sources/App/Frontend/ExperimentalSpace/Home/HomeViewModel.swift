@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import GRDB
 import HAKit
@@ -5,7 +6,6 @@ import Shared
 import SwiftUI
 
 @available(iOS 26.0, *)
-@Observable
 @MainActor
 final class HomeViewModel: ObservableObject {
     struct RoomSection: Identifiable, Equatable {
@@ -36,7 +36,7 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Core Dependencies
 
-    var server: Server {
+    @Published var server: Server {
         didSet {
             if oldValue.identifier != server.identifier {
                 handleServerChange()
@@ -44,7 +44,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    var configuration: HomeViewConfiguration {
+    @Published var configuration: HomeViewConfiguration {
         didSet {
             saveCachedData()
         }
@@ -54,14 +54,14 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - UI State
 
-    var isLoading = false
-    var errorMessage: String?
+    @Published var isLoading = false
+    @Published var errorMessage: String?
 
     // MARK: - Entity Data
 
-    var entityStates: [String: HAEntity] = [:]
-    var appEntities: [HAAppEntity]?
-    var registryEntities: [AppEntityRegistryListForDisplay]?
+    @Published var entityStates: [String: HAEntity] = [:]
+    @Published var appEntities: [HAAppEntity]?
+    @Published var registryEntities: [AppEntityRegistryListForDisplay]?
 
     private var areas: [AppArea]? {
         didSet {
@@ -71,8 +71,8 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Sections & Summaries
 
-    var groupedEntities: [RoomSection] = []
-    var domainSummaries: [DomainSummary] = []
+    @Published var groupedEntities: [RoomSection] = []
+    @Published var domainSummaries: [DomainSummary] = []
 
     var orderedSectionsForMenu: [RoomSection] {
         // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
@@ -91,7 +91,7 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Usage Prediction
 
-    var usagePredictionCommonControl: HAUsagePredictionCommonControl? {
+    @Published var usagePredictionCommonControl: HAUsagePredictionCommonControl? {
         didSet {
             buildRoomsIfNeeded()
         }
@@ -114,7 +114,7 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - User Data
 
-    var cachedUserName: String = ""
+    @Published var cachedUserName: String = ""
 
     // MARK: - Database Observations
 
