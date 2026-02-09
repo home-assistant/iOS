@@ -97,9 +97,9 @@
 "component::improv_ble::config::abort::characteristic_missing" = "Az eszköz vagy már csatlakozik a Wi-Fi-hez vagy már nem tud csatlakozni a Wi-Fi-hez. Ha másik hálózathoz szeretné csatlakoztatni, először próbálja meg visszaállítani a gyári beállításokat.";
 "component::improv_ble::config::abort::no_devices_found" = "Nem található eszköz a hálózaton";
 "component::improv_ble::config::abort::provision_successful" = "Az eszköz sikeresen csatlakozott a Wi-Fi hálózathoz.";
-"component::improv_ble::config::abort::provision_successful_url" = "Az eszköz sikeresen csatlakozott a Wi-Fi hálózathoz. \
+"component::improv_ble::config::abort::provision_successful_url" = "Az eszköz sikeresen csatlakozott a Wi-Fi hálózathoz.\
 \
- Kérjük, látogasson el a {url} címre a beállítás befejezéséhez.";
+Kérjük, fejezze be a beállítást a [beállítási útmutató]({url}) követésével.";
 "component::improv_ble::config::abort::unknown" = "Váratlan hiba";
 "component::improv_ble::config::error::unable_to_connect" = "A készülék nem tudott csatlakozni a Wi-Fi hálózathoz. Ellenőrizze, hogy az SSID és a jelszó helyes-e, és próbálja meg újra.";
 "component::improv_ble::config::flow_title" = "{name}";
