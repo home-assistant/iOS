@@ -1,20 +1,20 @@
+import Combine
 import HAKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 @available(iOS 26.0, *)
-@Observable
-final class CoverControlsViewModel {
+final class CoverControlsViewModel: ObservableObject {
     // MARK: - Published State
 
-    var currentPosition: Double = 0 // 0-100
-    var isUpdating: Bool = false
-    var deviceClass: DeviceClass = .unknown
-    var supportsTilt: Bool = false
-    var currentTilt: Double = 0 // 0-100
-    var isOpening: Bool = false
-    var isClosing: Bool = false
+    @Published var currentPosition: Double = 0 // 0-100
+    @Published var isUpdating: Bool = false
+    @Published var deviceClass: DeviceClass = .unknown
+    @Published var supportsTilt: Bool = false
+    @Published var currentTilt: Double = 0 // 0-100
+    @Published var isOpening: Bool = false
+    @Published var isClosing: Bool = false
 
     // MARK: - Dependencies
 
