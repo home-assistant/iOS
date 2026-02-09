@@ -1,7 +1,7 @@
 import Shared
 import SwiftUI
 
-struct WidgetBuilderView: View {
+struct CustomWidgetsListView: View {
     @StateObject private var viewModel = WidgetBuilderViewModel()
     @State private var showDeleteConfirmation = false
     var body: some View {
@@ -132,6 +132,6 @@ struct WidgetBuilderView: View {
 
 #Preview {
     NavigationView {
-        WidgetBuilderView()
+        CustomWidgetsListView()
     }
 }

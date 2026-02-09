@@ -77,14 +77,14 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var iOSView: some View {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 16.0, *) {
             iOSViewModern
         } else {
             iOSViewLegacy
         }
     }
 
-    @available(iOS 26.0, *)
+    @available(iOS 16.0, *)
     private var iOSViewModern: some View {
         NavigationStack {
             iOSListContent
