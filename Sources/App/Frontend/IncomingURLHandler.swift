@@ -181,19 +181,28 @@ class IncomingURLHandler {
             case .createCustomWidget:
                 Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
                     .done { webViewController in
-                        let controller = UIHostingController(rootView: AnyView(
-                            NavigationView {
-                                WidgetBuilderView()
-                                    .toolbar {
-                                        ToolbarItem(placement: .topBarTrailing) {
-                                            CloseButton {
-                                                webViewController.dismissOverlayController(
-                                                    animated: true,
-                                                    completion: nil
-                                                )
-                                            }
-                                        }
+                        let mainView = CustomWidgetsListView()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    CloseButton {
+                                        webViewController.dismissOverlayController(
+                                            animated: true,
+                                            completion: nil
+                                        )
                                     }
+                                }
+                            }
+                        let controller = UIHostingController(rootView: AnyView(
+                            Group {
+                                if #available(iOS 16.0, *) {
+                                    NavigationStack {
+                                        mainView
+                                    }
+                                } else {
+                                    NavigationView {
+                                        mainView
+                                    }
+                                }
                             }
                         ))
                         webViewController.presentOverlayController(controller: controller, animated: true)

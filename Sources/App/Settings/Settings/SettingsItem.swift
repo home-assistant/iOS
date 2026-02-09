@@ -106,7 +106,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .nfc:
             NFCListView()
         case .widgets:
-            WidgetBuilderView()
+            CustomWidgetsListView()
         case .watch:
             WatchConfigurationView()
                 .environment(\.colorScheme, .dark)
