@@ -229,7 +229,7 @@ struct SettingsView: View {
             }
         }
         .sheet(isPresented: $showAbout) {
-            if #available(iOS 26.0, *) {
+            if #available(iOS 16.0, *) {
                 NavigationStack {
                     aboutViewContent
                 }
