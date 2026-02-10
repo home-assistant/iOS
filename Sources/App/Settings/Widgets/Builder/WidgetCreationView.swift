@@ -63,6 +63,12 @@ struct WidgetCreationView: View {
                 dismissAction()
             }
         }
+        .sheet(isPresented: $viewModel.showAddItem) {
+            MagicItemAddView(context: .widget) { magicItem in
+                guard let magicItem else { return }
+                viewModel.addItem(magicItem)
+            }
+        }
         .alert("", isPresented: $viewModel.showError, actions: {
             Button(action: {
                 /* no-op */
@@ -72,12 +78,6 @@ struct WidgetCreationView: View {
         }, message: {
             Text(viewModel.errorMessage)
         })
-        .sheet(isPresented: $viewModel.showAddItem) {
-            MagicItemAddView(context: .widget) { magicItem in
-                guard let magicItem else { return }
-                viewModel.addItem(magicItem)
-            }
-        }
     }
 
     private var widgetPreview: some View {

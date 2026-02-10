@@ -1,21 +1,21 @@
+import Combine
 import HAKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 @available(iOS 26.0, *)
-@Observable
-final class FanControlsViewModel {
+final class FanControlsViewModel: ObservableObject {
     // MARK: - Published State
 
-    var isOn: Bool = false
-    var isUpdating: Bool = false
-    var speed: Double = 0 // Percentage 0-100
-    var oscillating: Bool = false
-    var direction: String = "forward"
-    var supportsOscillation: Bool = false
-    var supportsDirection: Bool = false
-    var supportsSpeedPercentage: Bool = false
+    @Published var isOn: Bool = false
+    @Published var isUpdating: Bool = false
+    @Published var speed: Double = 0 // Percentage 0-100
+    @Published var oscillating: Bool = false
+    @Published var direction: String = "forward"
+    @Published var supportsOscillation: Bool = false
+    @Published var supportsDirection: Bool = false
+    @Published var supportsSpeedPercentage: Bool = false
 
     // MARK: - Dependencies
 

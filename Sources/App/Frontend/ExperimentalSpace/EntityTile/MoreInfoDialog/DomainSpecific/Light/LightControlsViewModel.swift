@@ -1,11 +1,11 @@
 import AppIntents
+import Combine
 import HAKit
 import Shared
 import SwiftUI
 
 @available(iOS 26.0, *)
-@Observable
-final class LightControlsViewModel {
+final class LightControlsViewModel: ObservableObject {
     enum ColorMode {
         case color
         case temperature
@@ -13,18 +13,18 @@ final class LightControlsViewModel {
 
     // MARK: - Published State
 
-    var brightness: Double = 0
-    var selectedColor: Color = .white
-    var pickerColor: Color = .white
-    var isOn: Bool = false
-    var iconColor: Color = .secondary
-    var colorTemperature: Double = 250 // mireds
-    var currentColorMode: ColorMode = .color
-    var minMireds: Double = LightControlsView.Constants.minMireds
-    var maxMireds: Double = LightControlsView.Constants.maxMireds
-    var recentColors: [StoredColor] = []
-    var recentTemperatures: [Double] = []
-    var hasInitialized: Bool = false
+    @Published var brightness: Double = 0
+    @Published var selectedColor: Color = .white
+    @Published var pickerColor: Color = .white
+    @Published var isOn: Bool = false
+    @Published var iconColor: Color = .secondary
+    @Published var colorTemperature: Double = 250 // mireds
+    @Published var currentColorMode: ColorMode = .color
+    @Published var minMireds: Double = LightControlsView.Constants.minMireds
+    @Published var maxMireds: Double = LightControlsView.Constants.maxMireds
+    @Published var recentColors: [StoredColor] = []
+    @Published var recentTemperatures: [Double] = []
+    @Published var hasInitialized: Bool = false
 
     // MARK: - Dependencies
 
