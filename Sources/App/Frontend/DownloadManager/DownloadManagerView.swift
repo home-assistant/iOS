@@ -87,6 +87,7 @@ struct DownloadManagerView: View {
                 }
             }
         }
+        .padding()
     }
 
     private var fileCard: some View {
