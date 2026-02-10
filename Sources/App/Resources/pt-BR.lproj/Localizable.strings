@@ -307,10 +307,10 @@
 "entity_picker.filter.domain.all.title" = "All domains";
 "entity_picker.filter.domain.title" = "Domain";
 "entity_picker.filter.group_by.title" = "Group by";
-"entity_picker.filter.server.title" = "Servers";
+"entity_picker.filter.server.title" = "Servidores";
 "entity_picker.list.area.no_area.title" = "No area";
 "entity_picker.placeholder" = "Escolher entidade";
-"entity_picker.search.placeholder" = "Entity name, ID, area name, device name...";
+"entity_picker.search.placeholder" = "Nome da entidade, ID, nome da área, nome do dispositivo...";
 "error_label" = "Erro";
 "extensions.map.location.new" = "Nova localização";
 "extensions.map.location.original" = "Localização original";
@@ -834,8 +834,8 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.widgets.custom.delete_all.title" = "Redefinir todos os widgets personalizados";
 "settings.widgets.select.empty.subtitle" = "Create your first widget to add this entity.";
 "settings.widgets.select.empty.title" = "No Widgets Yet";
-"settings.widgets.select.footer.title" = "Select a widget to add this entity to.";
-"settings.widgets.select.item_count.title" = "%li items";
+"settings.widgets.select.footer.title" = "Selecione um widget para adicionar esta entidade.";
+"settings.widgets.select.item_count.title" = "%li itens";
 "settings.widgets.select.title" = "Add to Widget";
 "settings.widgets.title" = "Widgets";
 "settings.widgets.your_widgets.title" = "Seus widgets";
