@@ -130,7 +130,7 @@
 "assist.settings.on_device_stt.footer" = "Используйте встроенное распознавание речи Apple для повышения конфиденциальности. Ваш голос будет обработан локально и преобразован в текст перед отправкой на ваш сервер. Поддерживаются не все языки.";
 "assist.settings.on_device_stt.toggle" = "Включить распознавание речи на устройстве";
 "assist.settings.title" = "Настройки Assist";
-"assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
+"assist.settings.tts_mute.footer" = "Если эта функция включена, Assist не будет воспроизводить аудио ответы, даже если в конвейере настроена функция преобразования текста в речь. Вы по-прежнему будете видеть текстовые ответы.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";
 "assist.watch.mic_button.title" = "Нажмите, чтобы";
 "assist.watch.not_reachable.title" = "Assist требует подключения к iPhone. В данный момент ваш iPhone недоступен.";
@@ -278,7 +278,7 @@
 "connectivity.check.server" = "Подключение к серверу";
 "connectivity.check.server.description" = "Тестирование подключения к серверу";
 "connectivity.check.skipped" = "Skipped due to previous failure";
-"connectivity.check.tls" = "TLS Certificate";
+"connectivity.check.tls" = "TLS Сертификат";
 "connectivity.check.tls.description" = "Validating TLS certificate";
 "connectivity.diagnostics.run_checks" = "Run checks";
 "connectivity.diagnostics.start" = "Start diagnostics";
@@ -310,7 +310,7 @@
 "entity_picker.filter.server.title" = "Серверы";
 "entity_picker.list.area.no_area.title" = "No area";
 "entity_picker.placeholder" = "Выбрать объект";
-"entity_picker.search.placeholder" = "Entity name, ID, area name, device name...";
+"entity_picker.search.placeholder" = "Имя объекта, ID, имя области, имя устройства...";
 "error_label" = "Ошибка";
 "extensions.map.location.new" = "Новое местоположение";
 "extensions.map.location.original" = "Исходное местоположение";
@@ -430,7 +430,7 @@
 "improv.wifi.alert.ssid_placeholder" = "Имя сети";
 "improv.wifi.alert.title" = "Подключение к WiFi";
 "intents.server_required_for_value" = "Выберите сервер, прежде чем задать значение.";
-"legacy_actions.disclaimer" = "Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.";
+"legacy_actions.disclaimer" = "Устаревшие действия для iOS больше не рекомендуются для взаимодействия с Home Assistant. Используйте скрипты, сцены и автоматизации непосредственно в виджетах, на Apple Watch и в CarPlay.";
 "location_change_notification.app_shortcut.body" = "Геопозиция обновлена командой приложения";
 "location_change_notification.background_fetch.body" = "Обновление геопозиции происходит в фоне";
 "location_change_notification.beacon_region_enter.body" = "Вход в %@ через iBeacon";
@@ -747,7 +747,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.location_send_type.title" = "Отправка местоположения";
 "settings.connection_section.logged_in_as" = "Вы вошли как";
 "settings.connection_section.no_base_url.title" = "Нет URL-адреса";
-"settings.connection_section.refresh_server" = "Update server information";
+"settings.connection_section.refresh_server" = "Обновить информацию о сервере";
 "settings.connection_section.remote_ui_url.title" = "URL внешнего интерфейса";
 "settings.connection_section.sensor_send_type.setting.all" = "Все";
 "settings.connection_section.sensor_send_type.setting.none" = "Нет";
@@ -902,7 +902,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings_details.general.page_zoom.default" = "%@ (По умолчанию)";
 "settings_details.general.page_zoom.title" = "Масштаб страницы";
 "settings_details.general.pinch_to_zoom.title" = "Жест масштабирования";
-"settings_details.general.refresh_after_inactive.title" = "Refresh After 5 Min Inactive";
+"settings_details.general.refresh_after_inactive.title" = "Обновить через 5 минут бездействия";
 "settings_details.general.restoration.title" = "Запомнить последнюю страницу";
 "settings_details.general.title" = "Общие";
 "settings_details.general.visibility.options.dock" = "Панель Dock";
