@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'release/*/*/*'
+      - 'release/*/*'
 
 permissions:
   contents: write
