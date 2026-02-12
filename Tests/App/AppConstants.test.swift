@@ -75,4 +75,22 @@ struct AppConstantsTests {
             "URL should contain isComingFromAppIntent=true"
         )
     }
+
+    @available(iOS 16.0, *)
+    @Test func testTodoListAddItemURL() async throws {
+        let listId = "todo.shopping_list"
+        let serverId = "server123"
+        let url = AppConstants.todoListAddItemURL(listId: listId, serverId: serverId)
+        assert(url != nil, "Expected URL to be created for valid listId and serverId")
+
+        let components = URLComponents(url: url!, resolvingAgainstBaseURL: false)
+        assert(components?.scheme == AppConstants.deeplinkURL.scheme, "URL should use the app deeplink scheme")
+        assert(components?.host == "navigate", "URL host should be navigate")
+        assert(components?.path == "/todo", "URL path should be /todo")
+
+        let queryItems = components?.queryItems ?? []
+        let queryValues = Dictionary(uniqueKeysWithValues: queryItems.map { ($0.name, $0.value) })
+        assert(queryValues["entity_id"] == listId, "URL should include entity_id query item")
+        assert(queryValues["serverId"] == serverId, "URL should include serverId query item")
+    }
 }
