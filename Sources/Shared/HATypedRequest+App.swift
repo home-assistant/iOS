@@ -144,4 +144,36 @@ public extension HATypedRequest {
             type: .webSocket("usage_prediction/common_control")
         ))
     }
+
+    static func getItemFromTodoList(listId: String) -> HATypedRequest<TodoListRawResponse> {
+        HATypedRequest<TodoListRawResponse>(
+            request:
+            .init(
+                type: .rest(
+                    .post, "services/todo/get_items"
+                ), data: [
+                    "entity_id": listId,
+                ],
+                queryItems: [
+                    .init(name: "return_response", value: "true"),
+                ],
+                shouldRetry: true
+            )
+        )
+    }
+
+    static func completeTodoItem(listId: String, itemId: String) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(
+            request:
+            .init(
+                type: .rest(
+                    .post, "services/todo/update_item"
+                ), data: [
+                    "entity_id": listId,
+                    "item": itemId,
+                    "status": "completed",
+                ]
+            )
+        )
+    }
 }

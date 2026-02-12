@@ -55,6 +55,8 @@ public extension HAEntity {
                 image = .fanIcon
             case .automation:
                 image = .homeAutomationIcon
+            case .todo:
+                image = .checkboxMarkedOutlineIcon
             }
         }
 
@@ -116,6 +118,8 @@ public extension HAEntity {
                 image = .fanIcon
             case .automation:
                 image = .homeAutomationIcon
+            case .todo:
+                image = .checkboxMarkedOutlineIcon
             }
         }
 

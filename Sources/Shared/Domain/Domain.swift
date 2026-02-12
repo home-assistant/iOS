@@ -19,6 +19,7 @@ public enum Domain: String, CaseIterable {
     case zone
     case person
     case camera
+    case todo
     // TODO: Map more domains
 
     public init?(entityId: String) {
@@ -225,6 +226,8 @@ public enum Domain: String, CaseIterable {
             image = .accountIcon
         case .camera:
             image = .cameraIcon
+        case .todo:
+            image = .checkboxMarkedOutlineIcon
         }
         return image
     }

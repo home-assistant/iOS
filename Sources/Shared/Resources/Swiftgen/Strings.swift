@@ -5234,6 +5234,32 @@ public enum L10n {
       /// Sensors
       public static var title: String { return L10n.tr("Localizable", "widgets.sensors.title") }
     }
+    public enum TodoList {
+      /// All done! 🎉
+      public static var allDone: String { return L10n.tr("Localizable", "widgets.todo_list.all_done") }
+      /// Complete To-do Item
+      public static var completeItemTitle: String { return L10n.tr("Localizable", "widgets.todo_list.complete_item_title") }
+      /// Check your lists and add items
+      public static var description: String { return L10n.tr("Localizable", "widgets.todo_list.description") }
+      /// Refresh To-do List
+      public static var refreshTitle: String { return L10n.tr("Localizable", "widgets.todo_list.refresh_title") }
+      /// Edit widget to select list.
+      public static var selectList: String { return L10n.tr("Localizable", "widgets.todo_list.select_list") }
+      /// To-do List
+      public static var title: String { return L10n.tr("Localizable", "widgets.todo_list.title") }
+      public enum Parameter {
+        /// Item ID
+        public static var itemId: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.item_id") }
+        /// List
+        public static var list: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.list") }
+        /// List ID
+        public static var listId: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.list_id") }
+        /// Server
+        public static var server: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.server") }
+        /// Server ID
+        public static var serverId: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.server_id") }
+      }
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

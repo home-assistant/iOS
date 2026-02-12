@@ -10,6 +10,7 @@ public enum WidgetsKind: String, CaseIterable {
     case sensors
     case custom
     case controlAutomation
+    case todoList
     case controlScript
     case controlScene
     case controlAssist
