@@ -12,6 +12,8 @@ struct WidgetTodoList: Widget {
             provider: WidgetTodoListAppIntentTimelineProvider()
         ) { timelineEntry in
             WidgetTodoListView(
+                serverId: timelineEntry.serverId,
+                listId: timelineEntry.listId,
                 title: timelineEntry.listTitle,
                 items: timelineEntry.items,
                 isEmpty: timelineEntry.listId.isEmpty
@@ -34,6 +36,7 @@ struct WidgetTodoList: Widget {
 }, timeline: {
     WidgetTodoListEntry(
         date: Date(),
+        serverId: "server-id",
         listId: "todo.shopping",
         listTitle: "Shopping List",
         items: [
@@ -47,9 +50,22 @@ struct WidgetTodoList: Widget {
 
 @available(iOS 17, *)
 struct WidgetTodoListView: View {
+    let serverId: String
+    let listId: String
     let title: String
     let items: [TodoListItem]
     let isEmpty: Bool
+
+    private var addItemURL: URL? {
+        guard !serverId.isEmpty, !listId.isEmpty,
+              let server = Current.servers.server(for: .init(rawValue: serverId)),
+              let activeURL = server.info.connection.activeURL() else {
+            return nil
+        }
+        return activeURL.appendingPathComponent("todo").appending(queryItems: [
+            URLQueryItem(name: "entity_id", value: listId)
+        ])
+    }
 
     var body: some View {
         if isEmpty {
@@ -103,9 +119,17 @@ struct WidgetTodoListView: View {
                         .font(DesignSystem.Font.title)
                 }
                 .buttonStyle(.plain)
-                Image(systemSymbol: .plusCircleFill)
-                    .foregroundStyle(.haPrimary)
-                    .font(DesignSystem.Font.title)
+                if let addItemURL {
+                    Link(destination: addItemURL.withWidgetAuthenticity()) {
+                        Image(systemSymbol: .plusCircleFill)
+                            .foregroundStyle(.haPrimary)
+                            .font(DesignSystem.Font.title)
+                    }
+                } else {
+                    Image(systemSymbol: .plusCircleFill)
+                        .foregroundStyle(.haPrimary)
+                        .font(DesignSystem.Font.title)
+                }
             }
         }
         .padding(.bottom, DesignSystem.Spaces.half)

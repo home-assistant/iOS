@@ -7,6 +7,7 @@ import WidgetKit
 
 struct WidgetTodoListEntry: TimelineEntry {
     let date: Date
+    let serverId: String
     let listId: String
     let listTitle: String
     let items: [TodoListItem]
@@ -27,6 +28,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
     func snapshot(for configuration: WidgetTodoListAppIntent, in context: Context) async -> WidgetTodoListEntry {
         .init(
             date: Date(),
+            serverId: "",
             listId: "",
             listTitle: "Select a to-do list",
             items: [],
@@ -39,6 +41,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             return Timeline(
                 entries: [.init(
                     date: Date(),
+                    serverId: "",
                     listId: "",
                     listTitle: "Select a to-do list",
                     items: [],
@@ -54,6 +57,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             return Timeline(
                 entries: [.init(
                     date: Date(),
+                    serverId: list.serverId,
                     listId: list.entityId,
                     listTitle: list.displayString,
                     items: [],
@@ -84,6 +88,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             return Timeline(
                 entries: [.init(
                     date: Date(),
+                    serverId: list.serverId,
                     listId: list.entityId,
                     listTitle: list.displayString,
                     items: Array(activeItems),
@@ -96,6 +101,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             return Timeline(
                 entries: [.init(
                     date: Date(),
+                    serverId: list.serverId,
                     listId: list.entityId,
                     listTitle: list.displayString,
                     items: [],
@@ -109,6 +115,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> Entry {
         .init(
             date: Date(),
+            serverId: "",
             listId: "",
             listTitle: "Shopping List",
             items: [
