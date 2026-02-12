@@ -11,7 +11,7 @@ public struct TodoListItem: HADataDecodable {
         self.summary = try data.decode("summary")
         self.uid = try data.decode("uid")
         self.status = try data.decode("status")
-        self.description = data.decode("description") as String?
+        self.description = try? data.decode("description") as String?
     }
 
     public init(summary: String, uid: String, status: String, description: String?) {
