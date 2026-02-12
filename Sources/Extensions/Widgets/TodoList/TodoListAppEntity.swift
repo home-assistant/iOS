@@ -59,11 +59,7 @@ struct TodoListAppEntityQuery: EntityQuery, EntityStringQuery {
         var todoEntities: [TodoListAppEntity] = []
 
         // Get the selected server from the dependency
-        guard let serverId = requirement?.server?.id else {
-            return []
-        }
-
-        guard let server = Current.servers.server(for: .init(rawValue: serverId)) else {
+        guard let serverId = requirement?.server.id else {
             return []
         }
 
