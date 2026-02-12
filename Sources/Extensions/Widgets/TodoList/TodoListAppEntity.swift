@@ -10,12 +10,10 @@ struct TodoListAppEntity: AppEntity {
 
     static let defaultQuery = TodoListAppEntityQuery()
 
-    // UniqueID: serverId-entityId
     var id: String
     var entityId: String
     var serverId: String
     var displayString: String
-    var iconName: String
 
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(title: "\(displayString)")
@@ -25,65 +23,77 @@ struct TodoListAppEntity: AppEntity {
         id: String,
         entityId: String,
         serverId: String,
-        displayString: String,
-        iconName: String
+        displayString: String
     ) {
         self.id = id
         self.entityId = entityId
         self.serverId = serverId
         self.displayString = displayString
-        self.iconName = iconName
     }
 }
 
 @available(iOS 17.0, *)
 struct TodoListAppEntityQuery: EntityQuery, EntityStringQuery {
     @IntentParameterDependency<WidgetTodoListAppIntent>(\.$server)
-    var requirement
+    var serverDependency
 
     func entities(for identifiers: [String]) async throws -> [TodoListAppEntity] {
-        getTodoListEntities().filter { identifiers.contains($0.id) }
+        await getTodoListEntities().filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<TodoListAppEntity> {
-        let lists = getTodoListEntities(matching: string)
+        let lists = await getTodoListEntities(matching: string)
         return .init(items: lists)
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<TodoListAppEntity> {
-        let lists = getTodoListEntities()
+        let lists = await getTodoListEntities()
         return .init(items: lists)
     }
 
-    private func getTodoListEntities(matching string: String? = nil) -> [TodoListAppEntity] {
-        var todoEntities: [TodoListAppEntity] = []
-
-        // Get the selected server from the dependency
-        guard let serverId = requirement?.server?.id else {
+    private func getTodoListEntities(matching string: String? = nil) async -> [TodoListAppEntity] {
+        guard let serverId = serverDependency?.server?.id,
+              let server = Current.servers.server(for: .init(rawValue: serverId)),
+              let api = Current.api(for: server) else {
             return []
         }
 
-        guard let server = Current.servers.server(for: .init(rawValue: serverId)) else {
+        // Fetch todo entities from the API
+        do {
+            let states = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[HAEntity], Error>) in
+                api.connection.send(.init(type: .rest(.get, "states"))).promise.done { data in
+                    guard case let .array(statesArray) = data else {
+                        continuation.resume(returning: [])
+                        return
+                    }
+                    let entities = statesArray.compactMap { try? HAEntity(data: $0) }
+                    continuation.resume(returning: entities)
+                }.catch { error in
+                    continuation.resume(throwing: error)
+                }
+            }
+
+            let todoEntities = states
+                .filter { $0.domain == "todo" }
+                .filter { entity in
+                    if let string, !string.isEmpty {
+                        return entity.attributes.friendlyName?.localizedCaseInsensitiveContains(string) ?? false
+                    }
+                    return true
+                }
+                .map { entity in
+                    TodoListAppEntity(
+                        id: "\(serverId)-\(entity.entityId)",
+                        entityId: entity.entityId,
+                        serverId: serverId,
+                        displayString: entity.attributes.friendlyName ?? entity.entityId
+                    )
+                }
+
+            return todoEntities
+        } catch {
+            Current.Log.error("Failed to fetch todo entities: \(error)")
             return []
         }
-
-        let entities = ControlEntityProvider(domains: [.todo]).getEntities(matching: string)
-
-        for (entityServer, values) in entities {
-            // Only include entities from the selected server
-            guard entityServer.identifier.rawValue == serverId else { continue }
-
-            todoEntities.append(contentsOf: values.map { entity in
-                TodoListAppEntity(
-                    id: entity.id,
-                    entityId: entity.entityId,
-                    serverId: entity.serverId,
-                    displayString: entity.name,
-                    iconName: entity.icon ?? SFSymbol.checklistChecked.rawValue
-                )
-            })
-        }
-
-        return todoEntities
     }
 }
