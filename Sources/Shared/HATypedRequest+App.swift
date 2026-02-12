@@ -161,4 +161,19 @@ public extension HATypedRequest {
             )
         )
     }
+
+    static func completeTodoItem(listId: String, itemId: String) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(
+            request:
+            .init(
+                type: .rest(
+                    .post, "services/todo/update_item"
+                ), data: [
+                    "entity_id": listId,
+                    "item": itemId,
+                    "status": "completed",
+                ]
+            )
+        )
+    }
 }

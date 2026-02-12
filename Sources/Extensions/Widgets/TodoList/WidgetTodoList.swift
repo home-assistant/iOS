@@ -143,15 +143,23 @@ struct WidgetTodoListView: View {
                     .frame(height: 40)
             } else {
                 ForEach(items, id: \.uid) { item in
-                    HStack {
-                        Image(systemSymbol: .circle)
-                            .font(DesignSystem.Font.body)
-                            .foregroundStyle(.haPrimary)
-                        Text(item.summary)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
+                    Button(intent: TodoItemCompleteAppIntent(
+                        serverId: serverId,
+                        listId: listId,
+                        itemId: item.uid
+                    )) {
+                        HStack {
+                            Image(systemSymbol: .circle)
+                                .font(DesignSystem.Font.body)
+                                .foregroundStyle(.haPrimary)
+                            Text(item.summary)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(height: 32)
                     }
-                    .frame(height: 32)
+                    .buttonStyle(.plain)
                 }
             }
         }

@@ -1217,6 +1217,8 @@
 		JARVIS0001000000000003 /* TodoListAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0001000000000001 /* TodoListAppEntity.swift */; };
 		JARVIS0002000000000002 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
 		JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
+		JARVIS0002000000000005 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
+		JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
 		42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E992E22F84600BDF5EF /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
@@ -3009,6 +3011,7 @@
 		42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListProvider.swift; sourceTree = "<group>"; };
 		JARVIS0001000000000001 /* TodoListAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListAppEntity.swift; sourceTree = "<group>"; };
 		JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListRefreshAppIntent.swift; sourceTree = "<group>"; };
+		JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemCompleteAppIntent.swift; sourceTree = "<group>"; };
 		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -6450,6 +6453,7 @@
 				42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */,
 				JARVIS0001000000000001 /* TodoListAppEntity.swift */,
 				JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */,
+				JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */,
 			);
 			path = TodoList;
 			sourceTree = "<group>";
@@ -9022,6 +9026,7 @@
 				42FF5E952E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */,
 				JARVIS0001000000000002 /* TodoListAppEntity.swift in Sources */,
 				JARVIS0002000000000002 /* TodoListRefreshAppIntent.swift in Sources */,
+				JARVIS0002000000000005 /* TodoItemCompleteAppIntent.swift in Sources */,
 				422F88132D42806400706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
@@ -9518,6 +9523,7 @@
 				42FF5E942E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */,
 				JARVIS0001000000000003 /* TodoListAppEntity.swift in Sources */,
 				JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */,
+				JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */,
 				42E5542D2E128AE4008A160D /* ServerPickerView.swift in Sources */,
 				42C60F892F0576CA0071A6F6 /* LightControlsView.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
