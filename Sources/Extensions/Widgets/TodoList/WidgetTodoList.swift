@@ -53,17 +53,24 @@ struct WidgetTodoListView: View {
 
     var body: some View {
         if isEmpty {
-            ZStack {
-                Color(UIColor.systemBackground)
-                Text("Select a to-do list")
-                    .multilineTextAlignment(.center)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-                    .padding()
-            }
+            emptyStateView
         } else {
             contentView
         }
+    }
+
+    private var emptyStateView: some View {
+        VStack(spacing: DesignSystem.Spaces.one) {
+            Image(systemSymbol: .checklistChecked)
+                .font(.system(size: 32))
+                .foregroundStyle(.haPrimary)
+            Text("To-do List")
+                .font(DesignSystem.Font.callout.bold())
+            Text("Select a list to display")
+                .font(DesignSystem.Font.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var contentView: some View {
