@@ -53,7 +53,14 @@ struct WidgetTodoListView: View {
 
     var body: some View {
         if isEmpty {
-            WidgetEmptyView(message: "Select a to-do list")
+            ZStack {
+                Color(UIColor.systemBackground)
+                Text("Select a to-do list")
+                    .multilineTextAlignment(.center)
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                    .padding()
+            }
         } else {
             contentView
         }
