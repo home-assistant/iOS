@@ -128,12 +128,20 @@ struct WidgetTodoListAppIntent: AppIntent, WidgetConfigurationIntent {
     static var isDiscoverable: Bool = false
 
     @Parameter(
+        title: "Server"
+    )
+    var server: IntentServerAppEntity?
+
+    @Parameter(
         title: "List"
     )
     var list: TodoListAppEntity?
 
     static var parameterSummary: some ParameterSummary {
-        Summary()
+        Summary {
+            \.$server
+            \.$list
+        }
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
