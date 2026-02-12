@@ -83,9 +83,12 @@ struct WidgetTodoListView: View {
                 .lineLimit(1)
                 .truncationMode(.tail)
             HStack(spacing: DesignSystem.Spaces.half) {
-                Image(systemSymbol: .arrowClockwiseCircle)
-                    .foregroundStyle(.secondary)
-                    .font(DesignSystem.Font.title)
+                Button(intent: TodoListRefreshAppIntent()) {
+                    Image(systemSymbol: .arrowClockwiseCircle)
+                        .foregroundStyle(.secondary)
+                        .font(DesignSystem.Font.title)
+                }
+                .buttonStyle(.plain)
                 Image(systemSymbol: .plusCircleFill)
                     .foregroundStyle(.haPrimary)
                     .font(DesignSystem.Font.title)
