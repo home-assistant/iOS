@@ -14,6 +14,12 @@ public struct TodoListItem: HADataDecodable {
         self.description = try data.decode("description")
     }
 
+    public init(summary: String, uid: String, status: String, description: String) {
+        self.summary = summary
+        self.uid = uid
+        self.status = status
+        self.description = description
+    }
 }
 
 public struct TodoListService: HADataDecodable {

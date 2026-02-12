@@ -19,6 +19,7 @@ public enum Domain: String, CaseIterable {
     case zone
     case person
     case camera
+    case todo
     // TODO: Map more domains
 
     public init?(entityId: String) {

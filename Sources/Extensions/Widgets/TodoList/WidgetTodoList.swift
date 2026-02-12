@@ -9,21 +9,16 @@ struct WidgetTodoList: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
             kind: WidgetsKind.todoList.rawValue,
-            provider: WidgetTodoListAppIntentTimelineProvider(),
+            provider: WidgetTodoListAppIntentTimelineProvider()
         ) { timelineEntry in
-            WidgetTodoListView(context: .init(
+            WidgetTodoListView(
                 title: timelineEntry.listTitle,
-                items: timelineEntry.items.map({ item in
-                    WidgetTodoListView.Context.Item(
-                        id: item,
-                        text: item
-                    )
-                }))
+                items: timelineEntry.items,
+                isEmpty: timelineEntry.listId.isEmpty
             )
-            .frame(alignment: .topLeading)
             .widgetBackground(.primaryBackground)
         }
-        .configurationDisplayName("To do list")
+        .configurationDisplayName("To-do List")
         .description("Check your lists and add items")
         .supportedFamilies(supportedFamilies)
     }
@@ -37,78 +32,88 @@ struct WidgetTodoList: Widget {
 #Preview(as: .systemMedium, widget: {
     WidgetTodoList()
 }, timeline: {
-    let date = Date()
-    WidgetTodoListEntry(date: date, listTitle: "Supermercado", items: [
-        "Coca-cola",
-        "Bread",
-        "Eggs"
-    ], family: .systemMedium)
+    WidgetTodoListEntry(
+        date: Date(),
+        listId: "todo.shopping",
+        listTitle: "Shopping List",
+        items: [
+            TodoListItem(summary: "Milk", uid: "1", status: "needs_action", description: ""),
+            TodoListItem(summary: "Bread", uid: "2", status: "needs_action", description: ""),
+            TodoListItem(summary: "Eggs", uid: "3", status: "needs_action", description: ""),
+        ],
+        family: .systemMedium
+    )
 })
 
+@available(iOS 17, *)
 struct WidgetTodoListView: View {
+    let title: String
+    let items: [TodoListItem]
+    let isEmpty: Bool
 
-    struct Context {
-        let title: String
-        let items: [Item]
-
-        struct Item {
-            let id: String
-            let text: String
+    var body: some View {
+        if isEmpty {
+            WidgetEmptyView(message: "Select a to-do list")
+        } else {
+            contentView
         }
     }
 
-    let context: Context
-    var body: some View {
-        ZStack(alignment: .topTrailing) {
-            ZStack(alignment: .bottomTrailing) {
-                VStack(alignment: .leading, spacing: .zero) {
-                    HStack {
-                        Text(context.title)
-                            .font(DesignSystem.Font.title3.bold())
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                        HStack {
-                            Image(systemSymbol: .arrowClockwiseCircle)
-                                .foregroundStyle(.secondary)
-                                .font(DesignSystem.Font.title)
-                            Image(systemSymbol: .plusCircleFill)
-                                .foregroundStyle(.haPrimary)
-                                .font(DesignSystem.Font.title)
-                        }
-                        .offset(y: DesignSystem.Spaces.half)
-                    }
-                    VStack(alignment: .leading, spacing: .zero) {
-                        ForEach(context.items, id: \.id) { item in
-                            HStack {
-                                Image(systemSymbol: .circle)
-                                    .font(DesignSystem.Font.body)
-                                    .foregroundStyle(.haPrimary)
-                                Text(item.text)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                            }
-                            .frame(height: 40)
-                        }
-                    }
-                }
+    private var contentView: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            headerView
+            itemsListView
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .overlay(alignment: .bottomTrailing) {
+            Image(.logo)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 20, height: 20)
+                .padding(DesignSystem.Spaces.half)
+        }
+    }
+
+    private var headerView: some View {
+        HStack {
+            Text(title)
+                .font(DesignSystem.Font.title3.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Image(.logo)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 20, height: 20)
-                    .padding(DesignSystem.Spaces.half)
+                .lineLimit(1)
+                .truncationMode(.tail)
+            HStack(spacing: DesignSystem.Spaces.half) {
+                Image(systemSymbol: .arrowClockwiseCircle)
+                    .foregroundStyle(.secondary)
+                    .font(DesignSystem.Font.title)
+                Image(systemSymbol: .plusCircleFill)
+                    .foregroundStyle(.haPrimary)
+                    .font(DesignSystem.Font.title)
             }
         }
-        .widgetBackground(.primaryBackground)
+        .padding(.bottom, DesignSystem.Spaces.half)
+    }
+
+    private var itemsListView: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            if items.isEmpty {
+                Text("All done! 🎉")
+                    .font(DesignSystem.Font.body)
+                    .foregroundStyle(.secondary)
+                    .frame(height: 40)
+            } else {
+                ForEach(items, id: \.uid) { item in
+                    HStack {
+                        Image(systemSymbol: .circle)
+                            .font(DesignSystem.Font.body)
+                            .foregroundStyle(.haPrimary)
+                        Text(item.summary)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                    }
+                    .frame(height: 32)
+                }
+            }
+        }
     }
 }
-
-//#Preview {
-//    WidgetTodoListView(context: .init(title: "List title", items: [
-//        .init(id: "1", text: "Coca-cola"),
-//        .init(id: "2", text: "Bread"),
-//        .init(id: "3", text: "Eggs"),
-//        .init(id: "4", text: "Toilet paper")
-//    ]))
-//}
