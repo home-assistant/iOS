@@ -226,6 +226,8 @@ public enum Domain: String, CaseIterable {
             image = .accountIcon
         case .camera:
             image = .cameraIcon
+        case .todo:
+            image = .checkboxMarkedOutlineIcon
         }
         return image
     }
