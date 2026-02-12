@@ -152,7 +152,7 @@ public extension HATypedRequest {
                 type: .rest(
                     .post, "services/todo/get_items"
                 ), data: [
-                    "entity_id": "todo.supermercado",
+                    "entity_id": listId,
                 ],
                 queryItems: [
                     .init(name: "return_response", value: "true"),
