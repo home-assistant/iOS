@@ -110,7 +110,8 @@ class IncomingURLHandler {
                 let queryParameters = components.queryItems
                 let isFromWidget = components.popWidgetAuthenticity()
                 let serverId = components.queryItems?.first(where: { $0.name == "serverId" })?.value as? String
-                let server = components.popWidgetServer(isFromWidget: isFromWidget) ?? Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
+                let server = components.popWidgetServer(isFromWidget: isFromWidget) ?? Current.servers.all
+                    .first(where: { $0.identifier.rawValue == serverId })
                 let isComingFromAppIntent: Bool = {
                     if let value = queryParameters?
                         .first(where: { $0.name == AppConstants.QueryItems.isComingFromAppIntent.rawValue })?.value {

@@ -708,6 +708,10 @@
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayQuickAccessTemplate.swift */; };
+		42514C1A2F3E217E008EB858 /* WidgetTodoListAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42514C192F3E217E008EB858 /* WidgetTodoListAppIntent.swift */; };
+		42514C1B2F3E217E008EB858 /* WidgetTodoListAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42514C192F3E217E008EB858 /* WidgetTodoListAppIntent.swift */; };
+		42514C1D2F3E21B0008EB858 /* WidgetTodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42514C1C2F3E21B0008EB858 /* WidgetTodoListView.swift */; };
+		42514C1E2F3E21B0008EB858 /* WidgetTodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42514C1C2F3E21B0008EB858 /* WidgetTodoListView.swift */; };
 		4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */; };
 		4251AA9B2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA9A2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift */; };
 		4251AABC2C6CE224004CCC9D /* MagicItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AABA2C6CE1D0004CCC9D /* MagicItemProvider.swift */; };
@@ -1213,12 +1217,6 @@
 		42FF5E922E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */; };
 		42FF5E942E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */; };
 		42FF5E952E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */; };
-		JARVIS0001000000000002 /* TodoListAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0001000000000001 /* TodoListAppEntity.swift */; };
-		JARVIS0001000000000003 /* TodoListAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0001000000000001 /* TodoListAppEntity.swift */; };
-		JARVIS0002000000000002 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
-		JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
-		JARVIS0002000000000005 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
-		JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
 		42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E992E22F84600BDF5EF /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
@@ -1553,6 +1551,12 @@
 		FD3BC66C29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */; };
 		FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */; };
 		FD5FEB304713F1E6BFE498DC /* Pods_iOS_Extensions_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE950A9D74B3E7FF5665CB38 /* Pods_iOS_Extensions_NotificationService.framework */; };
+		JARVIS0001000000000002 /* TodoListAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0001000000000001 /* TodoListAppEntity.swift */; };
+		JARVIS0001000000000003 /* TodoListAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0001000000000001 /* TodoListAppEntity.swift */; };
+		JARVIS0002000000000002 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
+		JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
+		JARVIS0002000000000005 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
+		JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2421,6 +2425,8 @@
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
 		424DD0592B3509170057E456 /* CarPlayQuickAccessTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayQuickAccessTemplate.swift; sourceTree = "<group>"; };
+		42514C192F3E217E008EB858 /* WidgetTodoListAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListAppIntent.swift; sourceTree = "<group>"; };
+		42514C1C2F3E21B0008EB858 /* WidgetTodoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListView.swift; sourceTree = "<group>"; };
 		4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemCustomizationView.swift; sourceTree = "<group>"; };
 		4251AA9A2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemCustomizationViewModel.swift; sourceTree = "<group>"; };
 		4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.swift; sourceTree = "<group>"; };
@@ -3009,9 +3015,6 @@
 		42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryTable.swift; sourceTree = "<group>"; };
 		42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoList.swift; sourceTree = "<group>"; };
 		42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListProvider.swift; sourceTree = "<group>"; };
-		JARVIS0001000000000001 /* TodoListAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListAppEntity.swift; sourceTree = "<group>"; };
-		JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListRefreshAppIntent.swift; sourceTree = "<group>"; };
-		JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemCompleteAppIntent.swift; sourceTree = "<group>"; };
 		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -3439,6 +3442,9 @@
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 		FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListTemplate.swift; sourceTree = "<group>"; };
 		FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListTemplate.swift; sourceTree = "<group>"; };
+		JARVIS0001000000000001 /* TodoListAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListAppEntity.swift; sourceTree = "<group>"; };
+		JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListRefreshAppIntent.swift; sourceTree = "<group>"; };
+		JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemCompleteAppIntent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6450,7 +6456,9 @@
 			isa = PBXGroup;
 			children = (
 				42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */,
+				42514C1C2F3E21B0008EB858 /* WidgetTodoListView.swift */,
 				42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */,
+				42514C192F3E217E008EB858 /* WidgetTodoListAppIntent.swift */,
 				JARVIS0001000000000001 /* TodoListAppEntity.swift */,
 				JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */,
 				JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */,
@@ -9016,6 +9024,7 @@
 				422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */,
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
 				4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */,
+				42514C1A2F3E217E008EB858 /* WidgetTodoListAppIntent.swift in Sources */,
 				42F958992BB4684700497981 /* WidgetAssist.swift in Sources */,
 				421F2B9A2EF8479400F21FE5 /* ControlAutomation.swift in Sources */,
 				421F2B9B2EF8479400F21FE5 /* ControlAutomationsValueProvider.swift in Sources */,
@@ -9052,6 +9061,7 @@
 				4203963D2EF16A4700C9DF74 /* ControlOpenEntity.swift in Sources */,
 				4203963E2EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift in Sources */,
 				4203963F2EF16A4700C9DF74 /* OpenEntityAppIntent.swift in Sources */,
+				42514C1D2F3E21B0008EB858 /* WidgetTodoListView.swift in Sources */,
 				420396402EF16A4700C9DF74 /* ControlOpenInputBoolean.swift in Sources */,
 				420396412EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift in Sources */,
 				420396422EF16A4700C9DF74 /* ControlOpenLight.swift in Sources */,
@@ -9323,6 +9333,7 @@
 				4201FD992F0E930900C3EF1C /* CameraListConfiguration.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
 				4261EAA02F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift in Sources */,
+				42514C1B2F3E217E008EB858 /* WidgetTodoListAppIntent.swift in Sources */,
 				42B129452F0565E900B957AF /* EntityDisplayComponents.swift in Sources */,
 				42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
 				42F5C0832F02B6DB00C50310 /* HomeSectionsReorderView.swift in Sources */,
@@ -9517,6 +9528,7 @@
 				4291CD962DBA70930024F891 /* ActivityViewController.swift in Sources */,
 				427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */,
 				42014B182E9683040019031C /* SelectionOptionView.swift in Sources */,
+				42514C1E2F3E21B0008EB858 /* WidgetTodoListView.swift in Sources */,
 				429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				429D51C52EFA0E750014AD0D /* ModernAssistView.swift in Sources */,

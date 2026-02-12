@@ -1,7 +1,5 @@
 import AppIntents
 import GRDB
-import PromiseKit
-import RealmSwift
 import Shared
 import WidgetKit
 
@@ -125,33 +123,5 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             ],
             family: context.family
         )
-    }
-}
-
-@available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
-struct WidgetTodoListAppIntent: AppIntent, WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = "To-do List"
-
-    static var isDiscoverable: Bool = false
-
-    @Parameter(
-        title: "Server"
-    )
-    var server: IntentServerAppEntity?
-
-    @Parameter(
-        title: "List"
-    )
-    var list: TodoListAppEntity?
-
-    static var parameterSummary: some ParameterSummary {
-        Summary {
-            \.$server
-            \.$list
-        }
-    }
-
-    func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        .result(value: true)
     }
 }

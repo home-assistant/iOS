@@ -158,6 +158,17 @@ public enum AppConstants {
         return URL(string: urlString)
     }
 
+    @available(iOS 16.0, watchOS 9.0, *)
+    public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
+        guard !serverId.isEmpty, !listId.isEmpty else {
+            return nil
+        }
+        return URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/todo")?.appending(queryItems: [
+            URLQueryItem(name: "entity_id", value: listId),
+            URLQueryItem(name: "serverId", value: serverId),
+        ])
+    }
+
     public static func openExperimentalDashboardDeeplinkURL(serverId: String? = nil) -> URL? {
         var urlString = "\(AppConstants.deeplinkURL.absoluteString)experimental-dashboard/?"
         if let serverId {

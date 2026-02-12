@@ -6,7 +6,7 @@ import Shared
 
 @available(iOS 17.0, *)
 struct TodoListAppEntity: AppEntity {
-    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "To-do List")
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widgets.todo_list.title")
 
     static let defaultQuery = TodoListAppEntityQuery()
 

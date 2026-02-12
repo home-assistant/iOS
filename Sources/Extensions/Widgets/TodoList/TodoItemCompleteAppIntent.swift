@@ -5,16 +5,16 @@ import WidgetKit
 
 @available(iOS 17.0, *)
 struct TodoItemCompleteAppIntent: AppIntent {
-    static var title: LocalizedStringResource = "Complete To-do Item"
+    static var title: LocalizedStringResource = "widgets.todo_list.complete_item_title"
     static var isDiscoverable: Bool = false
 
-    @Parameter(title: "Server ID")
+    @Parameter(title: "widgets.todo_list.parameter.server_id")
     var serverId: String
 
-    @Parameter(title: "List ID")
+    @Parameter(title: "widgets.todo_list.parameter.list_id")
     var listId: String
 
-    @Parameter(title: "Item ID")
+    @Parameter(title: "widgets.todo_list.parameter.item_id")
     var itemId: String
 
     init() {
