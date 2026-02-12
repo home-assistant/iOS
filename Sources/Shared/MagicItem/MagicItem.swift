@@ -379,7 +379,7 @@ public extension MagicItem {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person, .camera:
+        case .sensor, .binarySensor, .zone, .person, .camera, .todo:
             break
         case .automation:
             request = .trigger(entityId: entityId)
