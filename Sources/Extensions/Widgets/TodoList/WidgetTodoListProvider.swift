@@ -67,9 +67,9 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             let rawItems = try await withCheckedThrowingContinuation { continuation in
                 api.connection.send(.getItemFromTodoList(listId: list.entityId)).promise.pipe { result in
                     switch result {
-                    case .fulfilled(let todoListRawResponse):
+                    case let .fulfilled(todoListRawResponse):
                         continuation.resume(returning: todoListRawResponse.serviceResponse.first?.value.items ?? [])
-                    case .rejected(let error):
+                    case let .rejected(error):
                         Current.Log.error("Failed to fetch todo items for list \(list.entityId): \(error)")
                         continuation.resume(throwing: WidgetTodoListAppIntentTimelineProviderError.failedToFetchItems)
                     }

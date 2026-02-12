@@ -1,8 +1,8 @@
+import AppIntents
 import Intents
 import Shared
 import SwiftUI
 import WidgetKit
-import AppIntents
 
 @available(iOS 17, *)
 struct WidgetTodoList: Widget {

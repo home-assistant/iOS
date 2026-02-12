@@ -146,18 +146,19 @@ public extension HATypedRequest {
     }
 
     static func getItemFromTodoList(listId: String) -> HATypedRequest<TodoListRawResponse> {
-        HATypedRequest<TodoListRawResponse>(request:
-                .init(
-                    type: .rest(
-                        .post, "services/todo/get_items"
-                    ), data: [
-                        "entity_id": "todo.supermercado"
-                    ],
-                    queryItems: [
-                        .init(name: "return_response", value: "true")
-                    ],
-                    shouldRetry: true
-                )
+        HATypedRequest<TodoListRawResponse>(
+            request:
+            .init(
+                type: .rest(
+                    .post, "services/todo/get_items"
+                ), data: [
+                    "entity_id": "todo.supermercado",
+                ],
+                queryItems: [
+                    .init(name: "return_response", value: "true"),
+                ],
+                shouldRetry: true
+            )
         )
     }
 }
