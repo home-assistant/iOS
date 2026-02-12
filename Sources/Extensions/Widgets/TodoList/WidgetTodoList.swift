@@ -57,13 +57,12 @@ struct WidgetTodoListView: View {
     let isEmpty: Bool
 
     private var addItemURL: URL? {
-        guard !serverId.isEmpty, !listId.isEmpty,
-              let server = Current.servers.server(for: .init(rawValue: serverId)),
-              let activeURL = server.info.connection.activeURL() else {
+        guard !serverId.isEmpty, !listId.isEmpty else {
             return nil
         }
-        return activeURL.appendingPathComponent("todo").appending(queryItems: [
-            URLQueryItem(name: "entity_id", value: listId)
+        return URL(string: "homeassistant://navigate/todo")?.appending(queryItems: [
+            URLQueryItem(name: "entity_id", value: listId),
+            URLQueryItem(name: "serverId", value: serverId)
         ])
     }
 
