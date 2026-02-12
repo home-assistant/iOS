@@ -5,16 +5,16 @@ public struct TodoListItem: HADataDecodable {
     public let summary: String
     public let uid: String
     public let status: String
-    public let description: String
+    public let description: String?
 
     public init(data: HAData) throws {
         self.summary = try data.decode("summary")
         self.uid = try data.decode("uid")
         self.status = try data.decode("status")
-        self.description = try data.decode("description")
+        self.description = data.decode("description") as String?
     }
 
-    public init(summary: String, uid: String, status: String, description: String) {
+    public init(summary: String, uid: String, status: String, description: String?) {
         self.summary = summary
         self.uid = uid
         self.status = status
