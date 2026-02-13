@@ -10,12 +10,12 @@ struct WidgetTodoListAppIntent: AppIntent, WidgetConfigurationIntent {
     static var isDiscoverable: Bool = false
 
     @Parameter(
-        title: "widgets.todo_list.parameter.server"
+        title: .init("widgets.todo_list.parameter.server", defaultValue: "Server")
     )
     var server: IntentServerAppEntity?
 
     @Parameter(
-        title: "widgets.todo_list.parameter.list"
+        title: .init("widgets.todo_list.parameter.list", defaultValue: "List")
     )
     var list: TodoListAppEntity?
 

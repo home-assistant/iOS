@@ -90,6 +90,7 @@ class LifecycleManager {
         }.cauterize()
 
         periodicUpdateManager.invalidatePeriodicUpdateTimer(forBackground: true)
+        DataWidgetsUpdater.update()
     }
 
     private var hasTriggeredWarm = false
