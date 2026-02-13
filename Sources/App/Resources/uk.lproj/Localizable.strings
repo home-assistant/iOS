@@ -1484,4 +1484,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
+"widgets.todo_list.all_done" = "All done! 🎉";
+"widgets.todo_list.complete_item_title" = "Complete To-do Item";
+"widgets.todo_list.description" = "Check your lists and add items";
+"widgets.todo_list.parameter.item_id" = "Item ID";
+"widgets.todo_list.parameter.list" = "List";
+"widgets.todo_list.parameter.list_id" = "List ID";
+"widgets.todo_list.parameter.server" = "Server";
+"widgets.todo_list.parameter.server_id" = "Server ID";
+"widgets.todo_list.refresh_title" = "Refresh To-do List";
+"widgets.todo_list.select_list" = "Edit widget to select list.";
+"widgets.todo_list.title" = "To-do List";
 "yes_label" = "Так";

@@ -73,7 +73,7 @@
 "YNQXwq" = "Fout";
 "YxAau3" = "Er zijn ${count} opties die overeenkomen met ' ${server} '.";
 "ZApPxB" = "Servicenaam";
-"ZG5nuL" = "Assist in App";
+"ZG5nuL" = "Assist in app";
 "ZRPVYO" = "Open een pagina in de frontend";
 "ZT9Mld" = "Gebeurtenisnaam";
 "ZmUm9Q" = "Welk sjabloon wilt u weergeven?";
@@ -119,7 +119,7 @@
 "mJ6CrP" = "Kon ${eventName} niet naar Home Assistant sturen, fout: ${error}";
 "mZnRHS" = "${eventName} verzonden";
 "mi6B62" = "Welke gegevens wilt u met de gebeurtenis verzenden?";
-"mrwamX" = "Assist In App";
+"mrwamX" = "Assist in app";
 "ni0OSe" = "Even ter bevestiging, je wilde '${server}'?";
 "ns9RRU" = "Open pagina";
 "nzqmFA" = "Klaar";
@@ -136,7 +136,7 @@
 "rFSNpu" = "Klaar";
 "rOlW1x" = "Welke locatie wilt u verzenden?";
 "rU3vhT" = "Serveridentiteit";
-"s9Gk3c" = "Assist in App";
+"s9Gk3c" = "Assist in app";
 "sNFoWe" = "Welke camera?";
 "sQJAJS" = "Fout";
 "sbjA6e" = "Vraag om assistentie in App";
@@ -148,7 +148,7 @@
 "vAIAF2" = "Stuur een sensorupdate naar Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Start een evenement op de Home Assistant-gebeurtenisbus";
-"x7FAm9" = "(Legacy) Assist In App";
+"x7FAm9" = "(Legacy) Assist in app";
 "xN51te" = "Resultaat";
 "xfXG6b" = "Welke server?";
 "xhwpj4" = "Klaar";
