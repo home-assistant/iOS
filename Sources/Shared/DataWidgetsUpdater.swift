@@ -3,7 +3,6 @@ import WidgetKit
 
 #if os(iOS) || os(macOS)
 public enum DataWidgetsUpdater {
-
     /// Updates widgets and control center controls
     public static func update() {
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.gauge.rawValue)
