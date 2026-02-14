@@ -17,16 +17,27 @@ struct TodoItemCompleteAppIntent: AppIntent {
     @Parameter(title: "widgets.todo_list.parameter.item_id")
     var itemId: String
 
+    @Parameter(
+        title: LocalizedStringResource(
+            "app_intents.haptic_confirmation.title",
+            defaultValue: "Haptic confirmation"
+        ),
+        default: true
+    )
+    var hapticConfirmation: Bool
+
     init() {
         self.serverId = ""
         self.listId = ""
         self.itemId = ""
+        self.hapticConfirmation = true
     }
 
     init(serverId: String, listId: String, itemId: String) {
         self.serverId = serverId
         self.listId = listId
         self.itemId = itemId
+        self.hapticConfirmation = true
     }
 
     func perform() async throws -> some IntentResult {
@@ -34,6 +45,10 @@ struct TodoItemCompleteAppIntent: AppIntent {
               let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No server found for completing todo item, serverId: \(serverId)")
             return .result()
+        }
+
+        if hapticConfirmation {
+            AppIntentHaptics.notify()
         }
 
         await withCheckedContinuation { continuation in

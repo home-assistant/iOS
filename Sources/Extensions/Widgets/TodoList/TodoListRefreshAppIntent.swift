@@ -9,6 +9,7 @@ struct TodoListRefreshAppIntent: AppIntent {
     static var isDiscoverable: Bool = false
 
     func perform() async throws -> some IntentResult {
+        AppIntentHaptics.notify()
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.todoList.rawValue)
         return .result()
     }
