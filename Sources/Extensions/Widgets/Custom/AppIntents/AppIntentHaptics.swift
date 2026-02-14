@@ -2,6 +2,7 @@ import AudioToolbox
 import Foundation
 
 enum AppIntentHaptics {
+    // System sound 1520 is the iOS "Peek" sound, providing subtle haptic and audio feedback
     private static let peekSystemSound: SystemSoundID = 1520
 
     static func notify() {
