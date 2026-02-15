@@ -101,16 +101,25 @@ struct WidgetTodoListView: View {
                         listId: listId,
                         itemId: item.uid
                     )) {
-                        HStack {
+                        HStack(alignment: item.formattedDue != nil ? .top : .center) {
                             Image(systemSymbol: .circle)
                                 .font(DesignSystem.Font.body)
                                 .foregroundStyle(.haPrimary)
-                            Text(item.summary)
-                                .lineLimit(1)
-                                .truncationMode(.tail)
+                                .padding(.top, item.formattedDue != nil ? 2 : 0)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(item.summary)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                if let dueText = item.formattedDue {
+                                    Text(dueText)
+                                        .font(DesignSystem.Font.caption)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
+                                }
+                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .frame(height: 32)
+                        .frame(minHeight: 32)
                     }
                     .buttonStyle(.plain)
                 }
