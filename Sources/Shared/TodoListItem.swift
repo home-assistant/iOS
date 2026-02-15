@@ -6,43 +6,55 @@ public struct TodoListItem: HADataDecodable {
     public let uid: String
     public let status: String
     public let description: String?
+    /// Raw due string from API - can be "YYYY-MM-DD" or "YYYY-MM-DDTHH:MM:SS"
+    public let dueRaw: String?
+    /// Parsed due date
     public let due: Date?
-    public let hasDueTime: Bool
+    /// Whether the due field includes time (contains "T")
+    public var hasDueTime: Bool {
+        dueRaw?.contains("T") ?? false
+    }
 
     public init(data: HAData) throws {
         self.summary = try data.decode("summary")
         self.uid = try data.decode("uid")
         self.status = try data.decode("status")
         self.description = try? data.decode("description") as String?
+        self.dueRaw = try? data.decode("due") as String?
 
-        // Parse due date - can be date only (YYYY-MM-DD) or datetime (YYYY-MM-DDTHH:MM:SS)
-        if let dueString: String = try? data.decode("due") {
-            let dateFormatter = ISO8601DateFormatter()
-            dateFormatter.formatOptions = [.withFullDate, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
-
-            if let dateTime = dateFormatter.date(from: dueString) {
-                self.due = dateTime
-                self.hasDueTime = true
+        // Parse due date - can be date only (YYYY-MM-DD) or datetime (YYYY-MM-DDTHH:MM:SS+TZ)
+        if let dueString = dueRaw {
+            if dueString.contains("T") {
+                // DateTime format - try ISO8601
+                let dateFormatter = ISO8601DateFormatter()
+                dateFormatter.formatOptions = [.withFullDate, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
+                // Try with timezone first
+                if let date = dateFormatter.date(from: dueString) {
+                    self.due = date
+                } else {
+                    // Try with fractional seconds
+                    dateFormatter.formatOptions.insert(.withFractionalSeconds)
+                    self.due = dateFormatter.date(from: dueString)
+                }
             } else {
-                // Try date-only format
+                // Date-only format (YYYY-MM-DD)
                 let dateOnlyFormatter = DateFormatter()
                 dateOnlyFormatter.dateFormat = "yyyy-MM-dd"
+                dateOnlyFormatter.timeZone = .current
                 self.due = dateOnlyFormatter.date(from: dueString)
-                self.hasDueTime = false
             }
         } else {
             self.due = nil
-            self.hasDueTime = false
         }
     }
 
-    public init(summary: String, uid: String, status: String, description: String?, due: Date? = nil, hasDueTime: Bool = false) {
+    public init(summary: String, uid: String, status: String, description: String?, dueRaw: String? = nil, due: Date? = nil) {
         self.summary = summary
         self.uid = uid
         self.status = status
         self.description = description
+        self.dueRaw = dueRaw
         self.due = due
-        self.hasDueTime = hasDueTime
     }
 
     /// Formatted due date string for display
