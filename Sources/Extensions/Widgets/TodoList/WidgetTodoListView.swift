@@ -116,6 +116,7 @@ struct WidgetTodoListView: View {
         let isPastDateOnly: Bool
     }
 
+    // Internal for testing purposes
     func dueDisplay(for item: TodoListItem) -> DueDisplay? {
         guard let due = item.due else { return nil }
         let now = Date()
