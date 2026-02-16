@@ -17,9 +17,10 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
     }
     
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        testConnection().then { [self] requiresClientCert -> Promise<Void> in
+        Current.Log.info("[mTLS] OnboardingAuthStepClientCertificate starting")
+        return testConnection().then { [self] requiresClientCert -> Promise<Void> in
+            Current.Log.info("[mTLS] Test result: requiresClientCert = \(requiresClientCert)")
             if requiresClientCert {
-                Current.Log.info("Server requires client certificate (mTLS)")
                 return promptForCertificate()
             } else {
                 return .value(())
@@ -29,58 +30,67 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
     
     private func testConnection() -> Promise<Bool> {
         Promise { seal in
-            // Get base URL (strip /auth/authorize path)
+            // Get base URL
             var components = URLComponents(url: authDetails.url, resolvingAgainstBaseURL: false)
             components?.path = "/"
             components?.queryItems = nil
             
             guard let baseURL = components?.url else {
+                Current.Log.error("[mTLS] Failed to construct base URL")
                 seal.fulfill(false)
                 return
             }
             
-            Current.Log.info("Testing mTLS requirement for: \(baseURL)")
+            Current.Log.info("[mTLS] Testing connection to: \(baseURL.absoluteString)")
             
             var request = URLRequest(url: baseURL)
             request.httpMethod = "GET"
-            request.timeoutInterval = 10
+            request.timeoutInterval = 15
             
             let delegate = ClientCertTestDelegate()
-            let session = URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+            let config = URLSessionConfiguration.ephemeral
+            config.timeoutIntervalForRequest = 15
+            config.timeoutIntervalForResource = 15
+            let session = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
             
             let task = session.dataTask(with: request) { data, response, error in
-                Current.Log.info("mTLS test - clientCertRequested: \(delegate.clientCertificateRequested), response: \(String(describing: response)), error: \(String(describing: error))")
+                Current.Log.info("[mTLS] Response received - error: \(String(describing: error)), statusCode: \((response as? HTTPURLResponse)?.statusCode ?? -1)")
                 
-                // Check if delegate detected client cert request
+                // Check HTTP 400 with nginx SSL certificate message
+                if let httpResponse = response as? HTTPURLResponse {
+                    Current.Log.info("[mTLS] HTTP status: \(httpResponse.statusCode)")
+                    if httpResponse.statusCode == 400 {
+                        if let data = data, let body = String(data: data, encoding: .utf8) {
+                            Current.Log.info("[mTLS] Response body: \(body.prefix(200))")
+                            if body.contains("SSL certificate") || body.contains("client certificate") {
+                                Current.Log.info("[mTLS] Detected mTLS requirement via 400 response")
+                                seal.fulfill(true)
+                                return
+                            }
+                        }
+                        // Even without the specific message, 400 on root might indicate mTLS
+                        Current.Log.info("[mTLS] Got 400 but no SSL certificate message")
+                    }
+                }
+                
+                // Check for SSL errors
+                if let error = error as? URLError {
+                    Current.Log.info("[mTLS] URLError code: \(error.errorCode)")
+                    if error.errorCode == -1206 || error.errorCode == -1205 {
+                        Current.Log.info("[mTLS] Detected mTLS via error code")
+                        seal.fulfill(true)
+                        return
+                    }
+                }
+                
+                // Check delegate
                 if delegate.clientCertificateRequested {
-                    Current.Log.info("mTLS detected via delegate")
+                    Current.Log.info("[mTLS] Detected via delegate")
                     seal.fulfill(true)
                     return
                 }
                 
-                // Check for HTTP 400 with "SSL certificate" message (nginx response)
-                if let httpResponse = response as? HTTPURLResponse, 
-                   httpResponse.statusCode == 400 {
-                    if let data = data, 
-                       let body = String(data: data, encoding: .utf8),
-                       body.contains("SSL certificate") {
-                        Current.Log.info("mTLS detected via 400 response")
-                        seal.fulfill(true)
-                        return
-                    }
-                }
-                
-                // Check for specific SSL errors
-                if let error = error as? URLError {
-                    // NSURLErrorClientCertificateRequired = -1206
-                    // NSURLErrorClientCertificateRejected = -1205
-                    if error.errorCode == -1206 || error.errorCode == -1205 {
-                        Current.Log.info("mTLS detected via URLError: \(error.errorCode)")
-                        seal.fulfill(true)
-                        return
-                    }
-                }
-                
+                Current.Log.info("[mTLS] No mTLS requirement detected")
                 seal.fulfill(false)
             }
             task.resume()
@@ -88,7 +98,8 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
     }
     
     private func promptForCertificate() -> Promise<Void> {
-        Promise { [weak self] seal in
+        Current.Log.info("[mTLS] Showing certificate import prompt")
+        return Promise { [weak self] seal in
             guard let self = self, let sender = self.sender else {
                 seal.reject(OnboardingAuthError(kind: .clientCertificateRequired))
                 return
@@ -97,12 +108,14 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
             DispatchQueue.main.async {
                 let view = ClientCertificateOnboardingView(
                     onImport: { [weak self] certificate in
+                        Current.Log.info("[mTLS] Certificate imported: \(certificate.displayName)")
                         self?.authDetails.clientCertificate = certificate
                         sender.dismiss(animated: true) {
                             seal.fulfill(())
                         }
                     },
                     onCancel: {
+                        Current.Log.info("[mTLS] Certificate import cancelled")
                         sender.dismiss(animated: true) {
                             seal.reject(OnboardingAuthError(kind: .clientCertificateRequired))
                         }
@@ -123,8 +136,6 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
     }
 }
 
-// Delegate to detect client certificate requirement
-// Accepts ANY server certificate to allow the connection to proceed
 private class ClientCertTestDelegate: NSObject, URLSessionDelegate {
     var clientCertificateRequested = false
     
@@ -134,15 +145,15 @@ private class ClientCertTestDelegate: NSObject, URLSessionDelegate {
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
         let method = challenge.protectionSpace.authenticationMethod
-        Current.Log.info("mTLS test received challenge: \(method)")
+        Current.Log.info("[mTLS] Delegate received challenge: \(method)")
         
         if method == NSURLAuthenticationMethodClientCertificate {
             clientCertificateRequested = true
-            // Cancel - we just needed to detect it
             completionHandler(.cancelAuthenticationChallenge, nil)
         } else if method == NSURLAuthenticationMethodServerTrust {
-            // Accept ANY server certificate for this test
+            // Accept any server certificate for this test
             if let trust = challenge.protectionSpace.serverTrust {
+                Current.Log.info("[mTLS] Accepting server trust")
                 completionHandler(.useCredential, URLCredential(trust: trust))
             } else {
                 completionHandler(.performDefaultHandling, nil)
