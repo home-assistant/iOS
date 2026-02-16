@@ -26,7 +26,19 @@ public class AuthenticationAPI {
 
     init(server: Server) {
         self.server = server
+        #if !os(watchOS)
+        // Use custom delegate that supports client certificates (mTLS)
+        if server.info.connection.clientCertificate != nil {
+            self.session = Session(
+                delegate: ClientCertificateSessionDelegate(server: server),
+                serverTrustManager: CustomServerTrustManager(server: server)
+            )
+        } else {
+            self.session = Session(serverTrustManager: CustomServerTrustManager(server: server))
+        }
+        #else
         self.session = Session(serverTrustManager: CustomServerTrustManager(server: server))
+        #endif
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
@@ -68,10 +80,6 @@ public class AuthenticationAPI {
             let request = session.request(routeInfo)
 
             request.validateAuth().response { _ in
-                // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
-                //
-                // The request will always respond with an empty body and HTTP status 200,
-                // regardless if the request was successful.
                 seal.fulfill(true)
             }
         }
@@ -80,9 +88,25 @@ public class AuthenticationAPI {
     public static func fetchToken(
         authorizationCode: String,
         baseURL: URL,
-        exceptions: SecurityExceptions
+        exceptions: SecurityExceptions,
+        clientCertificate: ClientCertificate? = nil
     ) -> Promise<TokenInfo> {
-        let session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
+        let session: Session
+        
+        #if !os(watchOS)
+        if let clientCert = clientCertificate {
+            // Create a session delegate that handles client certificate challenges
+            let delegate = OnboardingClientCertificateDelegate(certificate: clientCert)
+            session = Session(
+                delegate: delegate,
+                serverTrustManager: CustomServerTrustManager(exceptions: exceptions)
+            )
+        } else {
+            session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
+        }
+        #else
+        session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
+        #endif
 
         return Promise { seal in
             let routeInfo = RouteInfo(
@@ -106,6 +130,38 @@ public class AuthenticationAPI {
         }
     }
 }
+
+#if !os(watchOS)
+/// Session delegate for fetching initial token during onboarding (before server exists)
+private class OnboardingClientCertificateDelegate: SessionDelegate {
+    private let certificate: ClientCertificate
+    
+    init(certificate: ClientCertificate) {
+        self.certificate = certificate
+        super.init()
+    }
+    
+    override func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            do {
+                let credential = try ClientCertificateManager.shared.urlCredential(for: certificate)
+                Current.Log.info("[mTLS] Using client certificate for token exchange: \(certificate.displayName)")
+                completionHandler(.useCredential, credential)
+                return
+            } catch {
+                Current.Log.error("[mTLS] Failed to get credential for token exchange: \(error)")
+            }
+        }
+        
+        super.urlSession(session, task: task, didReceive: challenge, completionHandler: completionHandler)
+    }
+}
+#endif
 
 extension DataRequest {
     @discardableResult
