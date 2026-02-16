@@ -5,6 +5,7 @@ class OnboardingAuthDetails: Equatable {
     var url: URL
     var scheme: String
     var exceptions: SecurityExceptions = .init()
+    var clientCertificate: ClientCertificate?
 
     init(baseURL: URL) throws {
         guard var components = URLComponents(url: baseURL.sanitized(), resolvingAgainstBaseURL: false) else {
@@ -47,6 +48,9 @@ class OnboardingAuthDetails: Equatable {
     }
 
     static func == (lhs: OnboardingAuthDetails, rhs: OnboardingAuthDetails) -> Bool {
-        lhs.url == rhs.url && lhs.scheme == rhs.scheme && lhs.exceptions == rhs.exceptions
+        lhs.url == rhs.url && 
+        lhs.scheme == rhs.scheme && 
+        lhs.exceptions == rhs.exceptions &&
+        lhs.clientCertificate == rhs.clientCertificate
     }
 }

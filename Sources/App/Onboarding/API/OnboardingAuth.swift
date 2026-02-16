@@ -13,6 +13,7 @@ class OnboardingAuth {
     var login: OnboardingAuthLogin = OnboardingAuthLoginImpl()
     var tokenExchange: OnboardingAuthTokenExchange = OnboardingAuthTokenExchangeImpl()
     var preSteps: [OnboardingAuthPreStep.Type] = [
+        OnboardingAuthStepClientCertificate.self,
         OnboardingAuthStepConnectivity.self,
     ]
     var postSteps: [OnboardingAuthPostStep.Type] = [
