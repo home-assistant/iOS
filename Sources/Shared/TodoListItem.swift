@@ -27,7 +27,12 @@ public struct TodoListItem: HADataDecodable {
             if dueString.contains("T") {
                 // DateTime format - try ISO8601
                 let dateFormatter = ISO8601DateFormatter()
-                dateFormatter.formatOptions = [.withFullDate, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
+                dateFormatter.formatOptions = [
+                    .withFullDate,
+                    .withTime,
+                    .withDashSeparatorInDate,
+                    .withColonSeparatorInTime,
+                ]
                 // Try with timezone first
                 if let date = dateFormatter.date(from: dueString) {
                     self.due = date
@@ -48,7 +53,14 @@ public struct TodoListItem: HADataDecodable {
         }
     }
 
-    public init(summary: String, uid: String, status: String, description: String?, dueRaw: String? = nil, due: Date? = nil) {
+    public init(
+        summary: String,
+        uid: String,
+        status: String,
+        description: String?,
+        dueRaw: String? = nil,
+        due: Date? = nil
+    ) {
         self.summary = summary
         self.uid = uid
         self.status = status
