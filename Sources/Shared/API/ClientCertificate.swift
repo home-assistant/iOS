@@ -85,6 +85,7 @@ public final class ClientCertificateManager {
         }
         
         // Extract certificate from identity to get info
+        // swiftlint:disable:next force_cast
         let secIdentity = identity as! SecIdentity
         var certificate: SecCertificate?
         SecIdentityCopyCertificate(secIdentity, &certificate)
@@ -153,6 +154,7 @@ public final class ClientCertificateManager {
             throw ClientCertificateError.certificateNotFound
         }
         
+        // swiftlint:disable:next force_cast
         return identity as! SecIdentity
     }
     
