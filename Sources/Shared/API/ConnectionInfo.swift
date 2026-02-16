@@ -86,7 +86,27 @@ public struct ConnectionInfo: Codable, Equatable {
     public var securityExceptions: SecurityExceptions = .init()
     public func evaluate(_ challenge: URLAuthenticationChallenge)
         -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-        securityExceptions.evaluate(challenge)
+        #if !os(watchOS)
+        // Handle client certificate challenge for mTLS
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            if let cert = clientCertificate {
+                do {
+                    let credential = try ClientCertificateManager.shared.urlCredential(for: cert)
+                    Current.Log.info("[mTLS] Using client certificate for webhook: \(cert.displayName)")
+                    return (.useCredential, credential)
+                } catch {
+                    Current.Log.error("[mTLS] Failed to get credential: \(error)")
+                    return (.cancelAuthenticationChallenge, nil)
+                }
+            } else {
+                Current.Log.warning("[mTLS] Client certificate requested but none configured")
+                return (.performDefaultHandling, nil)
+            }
+        }
+        #endif
+        
+        // Handle server trust and other challenges
+        return securityExceptions.evaluate(challenge)
     }
 
     public init(
