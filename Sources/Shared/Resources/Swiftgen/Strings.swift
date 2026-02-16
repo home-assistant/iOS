@@ -5247,6 +5247,10 @@ public enum L10n {
       public static var selectList: String { return L10n.tr("Localizable", "widgets.todo_list.select_list") }
       /// To-do List
       public static var title: String { return L10n.tr("Localizable", "widgets.todo_list.title") }
+      public enum DueDate {
+        /// Today
+        public static var today: String { return L10n.tr("Localizable", "widgets.todo_list.due_date.today") }
+      }
       public enum Parameter {
         /// Item ID
         public static var itemId: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.item_id") }

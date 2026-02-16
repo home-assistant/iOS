@@ -31,6 +31,7 @@ public enum DesignSystem {
     }
 
     public enum Spaces {
+        public static let micro: CGFloat = 2
         public static let half: CGFloat = 4
         public static let one: CGFloat = 8
         public static let oneAndHalf: CGFloat = 12

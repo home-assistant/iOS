@@ -1,9 +1,24 @@
+import Foundation
 import Shared
 import SwiftUI
 
 @available(iOS 17, *)
 struct WidgetTodoListView: View {
     @Environment(\.widgetFamily) private var widgetFamily
+    private static let namedRelativeFormatter: RelativeDateTimeFormatter = {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        formatter.dateTimeStyle = .named
+        return formatter
+    }()
+
+    private static let numericRelativeFormatter: RelativeDateTimeFormatter = {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        formatter.dateTimeStyle = .numeric
+        return formatter
+    }()
+
     let serverId: String
     let listId: String
     let title: String
@@ -40,11 +55,13 @@ struct WidgetTodoListView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .overlay(alignment: .bottomTrailing) {
-            Image(.logo)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 20)
-                .padding(DesignSystem.Spaces.half)
+            if widgetFamily != .systemSmall {
+                Image(.logo)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 20, height: 20)
+                    .padding(DesignSystem.Spaces.half)
+            }
         }
     }
 
@@ -87,8 +104,47 @@ struct WidgetTodoListView: View {
         .padding(.bottom, DesignSystem.Spaces.half)
     }
 
+    private struct DueDisplay {
+        let text: String
+        let isPastDateOnly: Bool
+    }
+
+    private func dueDisplay(for item: TodoListItem) -> DueDisplay? {
+        guard let due = item.due else { return nil }
+        let now = Date()
+        if item.hasDueTime {
+            let text = Self.numericRelativeFormatter.localizedString(for: due, relativeTo: now)
+            return DueDisplay(text: capitalizeLeadingCharacter(in: text), isPastDateOnly: false)
+        }
+
+        let calendar = Current.calendar()
+        if calendar.isDateInToday(due) {
+            return DueDisplay(text: L10n.Widgets.TodoList.DueDate.today, isPastDateOnly: false)
+        }
+
+        let dueAtNoon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: due) ?? due
+        let nowAtNoon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: now) ?? now
+        let text = Self.namedRelativeFormatter.localizedString(for: dueAtNoon, relativeTo: nowAtNoon)
+        let isPastDateOnly = dueAtNoon < nowAtNoon
+        return DueDisplay(text: capitalizeLeadingCharacter(in: text), isPastDateOnly: isPastDateOnly)
+    }
+
+    private func capitalizeLeadingCharacter(in text: String) -> String {
+        guard let first = text.first else { return text }
+        return String(first).uppercased() + text.dropFirst()
+    }
+
+    private var widgetFamilyItemRowSpacing: CGFloat {
+        switch widgetFamily {
+        case .systemLarge, .systemExtraLarge:
+            return DesignSystem.Spaces.one
+        default:
+            return DesignSystem.Spaces.micro
+        }
+    }
+
     private var itemsListView: some View {
-        VStack(alignment: .leading, spacing: .zero) {
+        VStack(alignment: .leading, spacing: widgetFamilyItemRowSpacing) {
             if items.isEmpty {
                 Text(verbatim: L10n.Widgets.TodoList.allDone)
                     .font(DesignSystem.Font.body)
@@ -96,32 +152,40 @@ struct WidgetTodoListView: View {
                     .frame(height: 40)
             } else {
                 ForEach(items, id: \.uid) { item in
-                    Button(intent: TodoItemCompleteAppIntent(
-                        serverId: serverId,
-                        listId: listId,
-                        itemId: item.uid
-                    )) {
-                        HStack(alignment: item.formattedDue != nil ? .top : .center) {
+                    HStack(alignment: item.due != nil ? .top : .center) {
+                        Button(intent: TodoItemCompleteAppIntent(
+                            serverId: serverId,
+                            listId: listId,
+                            itemId: item.uid
+                        )) {
                             Image(systemSymbol: .circle)
                                 .font(DesignSystem.Font.body)
                                 .foregroundStyle(.haPrimary)
-                                .padding(.top, item.formattedDue != nil ? 2 : 0)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(item.summary)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                if let dueText = item.formattedDue {
-                                    Text(dueText)
+                                .padding(.top, item.due != nil ? DesignSystem.Spaces.micro : 0)
+                        }
+                        .buttonStyle(.plain)
+
+                        VStack(alignment: .leading, spacing: .zero) {
+                            Text(item.summary)
+                                .font(DesignSystem.Font.callout)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                            if let dueDisplay = dueDisplay(for: item) {
+                                HStack(spacing: DesignSystem.Spaces.half) {
+                                    Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
+                                        ofSize: .init(width: 12, height: 12),
+                                        color: dueDisplay.isPastDateOnly ? UIColor.orange : UIColor.secondaryLabel
+                                    ))
+                                    Text(dueDisplay.text)
                                         .font(DesignSystem.Font.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(dueDisplay.isPastDateOnly ? Color.orange : .secondary)
                                         .lineLimit(1)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .frame(minHeight: 32)
                     }
-                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
