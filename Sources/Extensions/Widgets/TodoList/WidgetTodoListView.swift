@@ -5,6 +5,13 @@ import SwiftUI
 @available(iOS 17, *)
 struct WidgetTodoListView: View {
     @Environment(\.widgetFamily) private var widgetFamily
+    private static let minuteFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute]
+        formatter.unitsStyle = .full
+        return formatter
+    }()
+
     private static let namedRelativeFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
@@ -109,10 +116,38 @@ struct WidgetTodoListView: View {
         let isPastDateOnly: Bool
     }
 
-    private func dueDisplay(for item: TodoListItem) -> DueDisplay? {
+    func dueDisplay(for item: TodoListItem) -> DueDisplay? {
         guard let due = item.due else { return nil }
         let now = Date()
         if item.hasDueTime {
+            // Check if the time difference is less than 1 hour
+            let timeInterval = due.timeIntervalSince(now)
+            let hourInSeconds: TimeInterval = 3600
+            
+            if abs(timeInterval) < hourInSeconds {
+                // Calculate minutes for times within 1 hour
+                let minutes = Int(round(timeInterval / 60))
+                let text: String
+                
+                if minutes == 0 {
+                    text = "Now"
+                } else {
+                    // Use DateComponentsFormatter for proper localization
+                    let absMinutes = abs(minutes)
+                    if let formattedMinutes = Self.minuteFormatter.string(from: TimeInterval(absMinutes * 60)) {
+                        if minutes > 0 {
+                            text = "In \(formattedMinutes)"
+                        } else {
+                            text = "\(capitalizeLeadingCharacter(in: formattedMinutes)) ago"
+                        }
+                    } else {
+                        // Fallback if formatter fails
+                        text = minutes > 0 ? "In \(absMinutes) minutes" : "\(absMinutes) minutes ago"
+                    }
+                }
+                return DueDisplay(text: text, isPastDateOnly: false)
+            }
+            
             let text = Self.numericRelativeFormatter.localizedString(for: due, relativeTo: now)
             return DueDisplay(text: capitalizeLeadingCharacter(in: text), isPastDateOnly: false)
         }
