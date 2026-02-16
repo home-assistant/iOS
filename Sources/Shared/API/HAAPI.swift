@@ -70,9 +70,9 @@ public class HomeAssistantAPI {
             connectionInfo: {
                 do {
                     if let activeURL = server.info.connection.activeURL() {
+                        #if !os(watchOS)
                         // Prepare client identity (SecIdentity) for mTLS if configured
                         let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
-                        #if !os(watchOS)
                         if let clientCert = server.info.connection.clientCertificate {
                             clientIdentityProvider = {
                                 try? ClientCertificateManager.shared.retrieveIdentity(for: clientCert)
@@ -80,9 +80,6 @@ public class HomeAssistantAPI {
                         } else {
                             clientIdentityProvider = nil
                         }
-                        #else
-                        clientIdentityProvider = nil
-                        #endif
                         
                         return try .init(
                             url: activeURL,
@@ -96,6 +93,19 @@ public class HomeAssistantAPI {
                             },
                             clientIdentity: clientIdentityProvider
                         )
+                        #else
+                        return try .init(
+                            url: activeURL,
+                            userAgent: HomeAssistantAPI.userAgent,
+                            evaluateCertificate: { secTrust, completion in
+                                completion(
+                                    Swift.Result<Void, Error> {
+                                        try server.info.connection.securityExceptions.evaluate(secTrust)
+                                    }
+                                )
+                            }
+                        )
+                        #endif
                     } else {
                         Current.clientEventStore.addEvent(.init(
                             text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
