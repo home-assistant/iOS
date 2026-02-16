@@ -70,6 +70,20 @@ public class HomeAssistantAPI {
             connectionInfo: {
                 do {
                     if let activeURL = server.info.connection.activeURL() {
+                        // Prepare client certificate credential for mTLS if configured
+                        let clientCertCredential: HAConnectionInfo.ClientCertificateCredential?
+                        #if !os(watchOS)
+                        if let clientCert = server.info.connection.clientCertificate {
+                            clientCertCredential = {
+                                try? ClientCertificateManager.shared.urlCredential(for: clientCert)
+                            }
+                        } else {
+                            clientCertCredential = nil
+                        }
+                        #else
+                        clientCertCredential = nil
+                        #endif
+                        
                         return try .init(
                             url: activeURL,
                             userAgent: HomeAssistantAPI.userAgent,
@@ -79,7 +93,8 @@ public class HomeAssistantAPI {
                                         try server.info.connection.securityExceptions.evaluate(secTrust)
                                     }
                                 )
-                            }
+                            },
+                            clientCertificateCredential: clientCertCredential
                         )
                     } else {
                         Current.clientEventStore.addEvent(.init(
