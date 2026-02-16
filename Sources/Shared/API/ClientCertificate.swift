@@ -135,6 +135,25 @@ public final class ClientCertificateManager {
         ]
         
         let status = SecItemAdd(addQuery as CFDictionary, nil)
+        
+        // Handle duplicate - the identity might already exist with different label
+        if status == errSecDuplicateItem {
+            // Try to update instead
+            let updateQuery: [String: Any] = [
+                kSecValueRef as String: identity
+            ]
+            let updateAttrs: [String: Any] = [
+                kSecAttrLabel as String: identifier,
+                kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
+            ]
+            let updateStatus = SecItemUpdate(updateQuery as CFDictionary, updateAttrs as CFDictionary)
+            // If update also fails, the item exists which is fine for our purposes
+            if updateStatus != errSecSuccess && updateStatus != errSecItemNotFound {
+                Current.Log.warning("Keychain update returned \(updateStatus), but certificate may still work")
+            }
+            return
+        }
+        
         guard status == errSecSuccess else {
             throw ClientCertificateError.keychainError(status)
         }
