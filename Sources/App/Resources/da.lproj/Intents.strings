@@ -119,7 +119,7 @@
 "mJ6CrP" = "Kunne ikke sende ${eventName} til Home Assistant. Fejl: ${error}";
 "mZnRHS" = "${eventName} blev sendt til Home Assistant";
 "mi6B62" = "Hvilke data vil du sende med hændelsen?";
-"mrwamX" = "Assist In App";
+"mrwamX" = "Assist i app";
 "ni0OSe" = "Bare for at bekræfte - ønskede du ‘${server}’?";
 "ns9RRU" = "Åbn side";
 "nzqmFA" = "Udført";
@@ -148,7 +148,7 @@
 "vAIAF2" = "Send en sensoropdatering til Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Affyr en begivenhed til Home Assistant-begivenhedsbussen";
-"x7FAm9" = "(Legacy) Assist In App";
+"x7FAm9" = "(Forældet) Assist i app";
 "xN51te" = "Resultat";
 "xfXG6b" = "Hvilken server?";
 "xhwpj4" = "Udført";
