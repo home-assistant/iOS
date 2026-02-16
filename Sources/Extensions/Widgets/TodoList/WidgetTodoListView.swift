@@ -164,23 +164,27 @@ struct WidgetTodoListView: View {
                                 .padding(.top, item.due != nil ? DesignSystem.Spaces.micro : 0)
                         }
                         .buttonStyle(.plain)
-
-                        VStack(alignment: .leading, spacing: .zero) {
-                            Text(item.summary)
-                                .font(DesignSystem.Font.callout)
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                            if let dueDisplay = dueDisplay(for: item) {
-                                HStack(spacing: DesignSystem.Spaces.half) {
-                                    Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
-                                        ofSize: .init(width: 12, height: 12),
-                                        color: dueDisplay.isPastDateOnly ? UIColor.orange : UIColor.secondaryLabel
-                                    ))
-                                    Text(dueDisplay.text)
-                                        .font(DesignSystem.Font.caption)
-                                        .foregroundStyle(dueDisplay.isPastDateOnly ? Color.orange : .secondary)
+                        if let addItemURL = AppConstants.todoListAddItemURL(listId: listId, serverId: serverId) {
+                            Link(destination: addItemURL.withWidgetAuthenticity()) {
+                                VStack(alignment: .leading, spacing: .zero) {
+                                    Text(item.summary)
+                                        .font(DesignSystem.Font.callout)
                                         .lineLimit(1)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .truncationMode(.tail)
+                                    if let dueDisplay = dueDisplay(for: item) {
+                                        HStack(spacing: DesignSystem.Spaces.half) {
+                                            Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
+                                                ofSize: .init(width: 12, height: 12),
+                                                color: dueDisplay.isPastDateOnly ? UIColor.orange : UIColor
+                                                    .secondaryLabel
+                                            ))
+                                            Text(dueDisplay.text)
+                                                .font(DesignSystem.Font.caption)
+                                                .foregroundStyle(dueDisplay.isPastDateOnly ? Color.orange : .secondary)
+                                                .lineLimit(1)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                        }
+                                    }
                                 }
                             }
                         }
