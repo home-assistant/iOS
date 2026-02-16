@@ -66,7 +66,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 }
 
                 if clientCertificateErrorOccurred[task.taskIdentifier] == true {
-                    kind = .clientCertificateRequired(error)
+                    kind = .clientCertificateError(error)
                 } else if let error = error as? URLError {
                     switch error.code {
                     case .serverCertificateUntrusted, .serverCertificateHasUnknownRoot, .serverCertificateHasBadDate,
