@@ -81,9 +81,9 @@ DEPENDENCIES:
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v7.8.0`)
-  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.9`)
-  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.9`)
-  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.9`)
+  - HAKit (from `https://github.com/bgoncal/HAKit.git`, branch `mtls`)
+  - HAKit/Mocks (from `https://github.com/bgoncal/HAKit.git`, branch `mtls`)
+  - HAKit/PromiseKit (from `https://github.com/bgoncal/HAKit.git`, branch `mtls`)
   - Improv-iOS (~> 0.0.6)
   - KeychainAccess
   - MBProgressHUD (~> 1.2.0)
@@ -144,8 +144,8 @@ EXTERNAL SOURCES:
     :git: https://github.com/groue/GRDB.swift.git
     :tag: v7.8.0
   HAKit:
-    :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.9
+    :branch: mtls
+    :git: https://github.com/bgoncal/HAKit.git
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -179,8 +179,8 @@ CHECKOUT OPTIONS:
     :git: https://github.com/groue/GRDB.swift.git
     :tag: v7.8.0
   HAKit:
-    :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.9
+    :commit: 34ee36599aeb46f8859f5ec83e231cc90410b187
+    :git: https://github.com/bgoncal/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -225,6 +225,6 @@ SPEC CHECKSUMS:
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 4e98e76c5198159e1291eb551b129c0a38fd0c43
+PODFILE CHECKSUM: b1edeab7263a74a25277a419345edec52224d794
 
 COCOAPODS: 1.15.2
