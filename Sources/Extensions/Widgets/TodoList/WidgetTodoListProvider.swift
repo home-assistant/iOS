@@ -23,25 +23,68 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetTodoListEntry
     typealias Intent = WidgetTodoListAppIntent
 
+    private struct SelectedList {
+        let serverId: String
+        let entityId: String
+        let displayString: String
+    }
+
+    private func selectedList(for configuration: Intent) -> SelectedList? {
+        if let list = configuration.list {
+            return SelectedList(
+                serverId: list.serverId,
+                entityId: list.entityId,
+                displayString: list.displayString
+            )
+        }
+
+        let preferredServerId = configuration.server?.id
+        let entities = ControlEntityProvider(domains: [.todo]).getEntities()
+
+        if let preferredServerId {
+            for (server, values) in entities where server.identifier.rawValue == preferredServerId {
+                if let entity = values.first {
+                    return SelectedList(
+                        serverId: entity.serverId,
+                        entityId: entity.entityId,
+                        displayString: entity.name
+                    )
+                }
+            }
+        }
+
+        for (_, values) in entities {
+            if let entity = values.first {
+                return SelectedList(
+                    serverId: entity.serverId,
+                    entityId: entity.entityId,
+                    displayString: entity.name
+                )
+            }
+        }
+
+        return nil
+    }
+
     func snapshot(for configuration: WidgetTodoListAppIntent, in context: Context) async -> WidgetTodoListEntry {
         .init(
             date: Date(),
             serverId: "",
             listId: "",
-            listTitle: "Select a to-do list",
+            listTitle: "",
             items: [],
             family: context.family
         )
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
-        guard let list = configuration.list else {
+        guard let selectedList = selectedList(for: configuration) else {
             return Timeline(
                 entries: [.init(
                     date: Date(),
                     serverId: "",
                     listId: "",
-                    listTitle: "Select a to-do list",
+                    listTitle: "",
                     items: [],
                     family: context.family
                 )],
@@ -49,15 +92,15 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             )
         }
 
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == list.serverId }),
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == selectedList.serverId }),
               let api = Current.api(for: server) else {
             Current.Log.error("No server available for todo list widget")
             return Timeline(
                 entries: [.init(
                     date: Date(),
-                    serverId: list.serverId,
-                    listId: list.entityId,
-                    listTitle: list.displayString,
+                    serverId: selectedList.serverId,
+                    listId: selectedList.entityId,
+                    listTitle: selectedList.displayString,
                     items: [],
                     family: context.family
                 )],
@@ -67,12 +110,12 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
 
         do {
             let rawItems = try await withCheckedThrowingContinuation { continuation in
-                api.connection.send(.getItemFromTodoList(listId: list.entityId)).promise.pipe { result in
+                api.connection.send(.getItemFromTodoList(listId: selectedList.entityId)).promise.pipe { result in
                     switch result {
                     case let .fulfilled(todoListRawResponse):
                         continuation.resume(returning: todoListRawResponse.serviceResponse.first?.value.items ?? [])
                     case let .rejected(error):
-                        Current.Log.error("Failed to fetch todo items for list \(list.entityId): \(error)")
+                        Current.Log.error("Failed to fetch todo items for list \(selectedList.entityId): \(error)")
                         continuation.resume(throwing: WidgetTodoListAppIntentTimelineProviderError.failedToFetchItems)
                     }
                 }
@@ -86,9 +129,9 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             return Timeline(
                 entries: [.init(
                     date: Date(),
-                    serverId: list.serverId,
-                    listId: list.entityId,
-                    listTitle: list.displayString,
+                    serverId: selectedList.serverId,
+                    listId: selectedList.entityId,
+                    listTitle: selectedList.displayString,
                     items: Array(activeItems),
                     family: context.family
                 )],
@@ -99,9 +142,9 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
             return Timeline(
                 entries: [.init(
                     date: Date(),
-                    serverId: list.serverId,
-                    listId: list.entityId,
-                    listTitle: list.displayString,
+                    serverId: selectedList.serverId,
+                    listId: selectedList.entityId,
+                    listTitle: selectedList.displayString,
                     items: [],
                     family: context.family
                 )],
