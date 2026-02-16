@@ -1067,6 +1067,8 @@
 		42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
 		42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
 		42CE8FBB2B46DB6200C707F9 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		42D086972F43659100DD730C /* ClientCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D086962F43659100DD730C /* ClientCertificate.swift */; };
+		42D086982F43659100DD730C /* ClientCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D086962F43659100DD730C /* ClientCertificate.swift */; };
 		42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D0AE442D88259000D9715A /* WidgetDocumentationLink.swift */; };
 		42D334272D105990008D8E78 /* AppPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D334262D105990008D8E78 /* AppPanel.swift */; };
 		42D334282D105990008D8E78 /* AppPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D334262D105990008D8E78 /* AppPanel.swift */; };
@@ -2889,6 +2891,7 @@
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
 		42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreStrings+Values.swift"; sourceTree = "<group>"; };
 		42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrontendStrings+Values.swift"; sourceTree = "<group>"; };
+		42D086962F43659100DD730C /* ClientCertificate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificate.swift; sourceTree = "<group>"; };
 		42D0AE442D88259000D9715A /* WidgetDocumentationLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDocumentationLink.swift; sourceTree = "<group>"; };
 		42D334262D105990008D8E78 /* AppPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPanel.swift; sourceTree = "<group>"; };
 		42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBatterySensor.swift; sourceTree = "<group>"; };
@@ -7105,6 +7108,7 @@
 		D014EEAA212928EC008EA6F5 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				42D086962F43659100DD730C /* ClientCertificate.swift */,
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
 				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
 				D0BE440B2104224A00C74314 /* Authentication */,
@@ -9743,6 +9747,7 @@
 				B6872E672226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				11482AD72505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */,
 				4289FCBD2F0C0168005189AA /* HomeViewConfigurationTable.swift in Sources */,
+				42D086982F43659100DD730C /* ClientCertificate.swift in Sources */,
 				11F8A53F25A6ADA400BF1D97 /* Reachability+NetworkType.swift in Sources */,
 				110ED59025A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
 				428EDB682DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */,
@@ -10012,6 +10017,7 @@
 				420CFC702D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */,
 				42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */,
 				42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */,
+				42D086972F43659100DD730C /* ClientCertificate.swift in Sources */,
 				42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */,
 				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
 				4251AAC02C6CE376004CCC9D /* MagicItem.swift in Sources */,
