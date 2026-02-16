@@ -30,8 +30,9 @@ struct ClientCertificateOnboardingView: View {
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal)
-            
+
             if let error = errorMessage {
                 Text(error)
                     .font(.callout)
@@ -53,19 +54,17 @@ struct ClientCertificateOnboardingView: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.primaryButton)
                 .disabled(isImporting)
                 
                 Button("Cancel", role: .cancel) {
                     onCancel()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.secondaryButton)
             }
             .padding(.horizontal)
             .padding(.bottom, 32)
         }
-        .navigationTitle("Certificate Required")
-        .navigationBarTitleDisplayMode(.inline)
         .fileImporter(
             isPresented: $showFilePicker,
             allowedContentTypes: [
