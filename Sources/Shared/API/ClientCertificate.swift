@@ -1,7 +1,5 @@
 import Foundation
-#if !os(watchOS)
 import Security
-#endif
 
 /// Represents a client certificate stored in the Keychain for mTLS authentication
 public struct ClientCertificate: Codable, Equatable {
