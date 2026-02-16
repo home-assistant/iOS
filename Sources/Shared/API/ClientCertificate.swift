@@ -1,5 +1,7 @@
 import Foundation
+#if !os(watchOS)
 import Security
+#endif
 
 /// Represents a client certificate stored in the Keychain for mTLS authentication
 public struct ClientCertificate: Codable, Equatable {
@@ -26,6 +28,7 @@ public struct ClientCertificate: Codable, Equatable {
     }
 }
 
+#if !os(watchOS)
 // MARK: - Keychain Operations
 
 public enum ClientCertificateError: LocalizedError {
@@ -208,3 +211,4 @@ public extension ClientCertificateManager {
         }
     }
 }
+#endif

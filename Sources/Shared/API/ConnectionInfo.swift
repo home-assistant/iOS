@@ -34,8 +34,10 @@ public struct ConnectionInfo: Codable, Equatable {
     public var useCloud: Bool = false
     public var cloudhookURL: URL?
     public var connectionAccessSecurityLevel: ConnectionSecurityLevel = .undefined
+    #if !os(watchOS)
     /// Client certificate for mTLS authentication (optional)
     public var clientCertificate: ClientCertificate?
+    #endif
     public var internalSSIDs: [String]? {
         didSet {
             overrideActiveURLType = nil
@@ -100,8 +102,10 @@ public struct ConnectionInfo: Codable, Equatable {
         internalHardwareAddresses: [String]?,
         isLocalPushEnabled: Bool,
         securityExceptions: SecurityExceptions,
-        connectionAccessSecurityLevel: ConnectionSecurityLevel,
-        clientCertificate: ClientCertificate? = nil
+        connectionAccessSecurityLevel: ConnectionSecurityLevel
+        #if !os(watchOS)
+        , clientCertificate: ClientCertificate? = nil
+        #endif
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -114,7 +118,9 @@ public struct ConnectionInfo: Codable, Equatable {
         self.isLocalPushEnabled = isLocalPushEnabled
         self.securityExceptions = securityExceptions
         self.connectionAccessSecurityLevel = connectionAccessSecurityLevel
+        #if !os(watchOS)
         self.clientCertificate = clientCertificate
+        #endif
     }
 
     public init(from decoder: Decoder) throws {
@@ -138,10 +144,12 @@ public struct ConnectionInfo: Codable, Equatable {
             SecurityExceptions.self,
             forKey: .securityExceptions
         ) ?? .init()
+        #if !os(watchOS)
         self.clientCertificate = try container.decodeIfPresent(
             ClientCertificate.self,
             forKey: .clientCertificate
         )
+        #endif
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
