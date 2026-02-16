@@ -101,15 +101,9 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             errors.append(error)
 
             if let underlying = (error as NSError).userInfo[NSUnderlyingErrorKey] as? Error {
-                // higher-level error is like:
-                // > “fake.example.com” certificate is not trusted
-                // underlying error is like:
-                // > “fake.example.com” has errors: SSL hostname does not match name(s) in certificate,
-                // > Extended key usage does not match certificate usage, Root is not trusted;
                 errors.append(underlying)
             }
 
-            // swift compiler crashes with \.localizedDescription below, xcode 13.3
             // swiftformat:disable:next preferKeyPath
             let alertMessage = errors.map { $0.localizedDescription }.joined(separator: "\n\n")
 
@@ -164,6 +158,21 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             pendingResolver.reject(OnboardingAuthError(kind: .basicAuth))
             completionHandler(.cancelAuthenticationChallenge, nil)
         case NSURLAuthenticationMethodClientCertificate:
+            // Use imported client certificate if available
+            #if !os(watchOS)
+            if let clientCert = authDetails.clientCertificate {
+                Current.Log.info("[mTLS] Using client certificate: \(clientCert.displayName)")
+                do {
+                    let credential = try ClientCertificateManager.shared.urlCredential(for: clientCert)
+                    completionHandler(.useCredential, credential)
+                    return
+                } catch {
+                    Current.Log.error("[mTLS] Failed to get credential: \(error)")
+                }
+            }
+            #endif
+            // No certificate available or failed to retrieve
+            Current.Log.warning("[mTLS] Client certificate requested but none available")
             clientCertificateErrorOccurred[task.taskIdentifier] = true
             completionHandler(.performDefaultHandling, nil)
         default:
