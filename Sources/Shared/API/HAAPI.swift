@@ -103,8 +103,18 @@ public class HomeAssistantAPI {
             }
         ))
 
+        #if !os(watchOS)
+        // Use custom delegate that supports client certificates (mTLS)
+        let sessionDelegate: SessionDelegate = server.info.connection.clientCertificate != nil
+            ? ClientCertificateSessionDelegate(server: server)
+            : SessionDelegate()
+        #else
+        let sessionDelegate = SessionDelegate()
+        #endif
+        
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
+            delegate: sessionDelegate,
             interceptor: newInterceptor(),
             trustManager: newServerTrustManager()
         )

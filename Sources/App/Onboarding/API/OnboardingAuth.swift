@@ -204,6 +204,7 @@ private extension ConnectionInfo {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
+            clientCertificate: authDetails.clientCertificate,
             connectionAccessSecurityLevel: .undefined
         )
 
