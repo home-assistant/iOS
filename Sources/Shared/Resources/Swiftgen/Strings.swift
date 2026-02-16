@@ -2796,6 +2796,46 @@ public enum L10n {
           }
         }
       }
+      public enum ClientCertificate {
+        /// Client Certificate
+        public static var header: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.header") }
+        /// Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.footer") }
+        /// Import Certificate
+        public static var `import`: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import") }
+        /// Importing...
+        public static var importing: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.importing") }
+        /// Remove Certificate
+        public static var remove: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove") }
+        /// Certificate expired
+        public static var expired: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.expired") }
+        /// Expires %@
+        public static func expiresAt(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.connection_section.client_certificate.expires_at", String(describing: p1))
+        }
+        public enum PasswordPrompt {
+          /// Certificate Password
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.password_prompt.title") }
+          /// Enter the password for the certificate file
+          public static var message: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.password_prompt.message") }
+          /// Password
+          public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.password_prompt.placeholder") }
+          /// Import
+          public static var importButton: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.password_prompt.import_button") }
+        }
+        public enum ImportError {
+          /// Import Failed
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import_error.title") }
+        }
+        public enum RemoveConfirmation {
+          /// Remove Certificate?
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove_confirmation.title") }
+          /// The certificate will be removed from the device. You will need to import it again to use mTLS authentication.
+          public static var message: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove_confirmation.message") }
+          /// Remove
+          public static var remove: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove_confirmation.remove") }
+        }
+      }
     }
     public enum DatabaseExplorer {
       /// +%li more fields

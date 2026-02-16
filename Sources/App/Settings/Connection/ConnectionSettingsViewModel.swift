@@ -25,6 +25,9 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var sensorPrivacy: ServerSensorPrivacy = .none
     @Published var showDeleteConfirmation = false
     @Published var isDeleting = false
+    @Published var clientCertificate: ClientCertificate?
+    @Published var isImportingCertificate = false
+    @Published var certificateError: Error?
 
     // MARK: - Properties
 
@@ -112,6 +115,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     private func loadInitialData() {
         updateFromServerInfo(server.info)
         updateURLs()
+        clientCertificate = server.info.connection.clientCertificate
     }
 
     private func updateFromServerInfo(_ info: ServerInfo) {
@@ -236,5 +240,59 @@ final class ConnectionSettingsViewModel: ObservableObject {
         Current.api(for: server)?.connection.disconnect()
         Current.servers.remove(identifier: server.identifier)
         Current.onboardingObservation.needed(.logout)
+    }
+
+    // MARK: - Client Certificate
+
+    /// Import a PKCS#12 certificate file
+    func importCertificate(from url: URL, password: String) async {
+        isImportingCertificate = true
+        certificateError = nil
+
+        do {
+            // Read the file data
+            let data = try Data(contentsOf: url)
+
+            // Generate unique identifier for this server's certificate
+            let identifier = server.identifier.rawValue
+
+            // Import into Keychain
+            let certificate = try ClientCertificateManager.shared.importP12(
+                data: data,
+                password: password,
+                identifier: identifier
+            )
+
+            // Update server connection info
+            server.update { info in
+                info.connection.clientCertificate = certificate
+            }
+
+            clientCertificate = certificate
+            Current.Log.info("Successfully imported client certificate: \(certificate.displayName)")
+        } catch {
+            Current.Log.error("Failed to import certificate: \(error)")
+            certificateError = error
+        }
+
+        isImportingCertificate = false
+    }
+
+    /// Remove the current client certificate
+    func removeCertificate() {
+        guard let certificate = clientCertificate else { return }
+
+        do {
+            try ClientCertificateManager.shared.delete(certificate: certificate)
+        } catch {
+            Current.Log.error("Failed to delete certificate from Keychain: \(error)")
+        }
+
+        server.update { info in
+            info.connection.clientCertificate = nil
+        }
+
+        clientCertificate = nil
+        Current.Log.info("Removed client certificate")
     }
 }

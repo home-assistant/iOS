@@ -34,6 +34,8 @@ public struct ConnectionInfo: Codable, Equatable {
     public var useCloud: Bool = false
     public var cloudhookURL: URL?
     public var connectionAccessSecurityLevel: ConnectionSecurityLevel = .undefined
+    /// Client certificate for mTLS authentication (optional)
+    public var clientCertificate: ClientCertificate?
     public var internalSSIDs: [String]? {
         didSet {
             overrideActiveURLType = nil
@@ -98,7 +100,8 @@ public struct ConnectionInfo: Codable, Equatable {
         internalHardwareAddresses: [String]?,
         isLocalPushEnabled: Bool,
         securityExceptions: SecurityExceptions,
-        connectionAccessSecurityLevel: ConnectionSecurityLevel
+        connectionAccessSecurityLevel: ConnectionSecurityLevel,
+        clientCertificate: ClientCertificate? = nil
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -111,6 +114,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.isLocalPushEnabled = isLocalPushEnabled
         self.securityExceptions = securityExceptions
         self.connectionAccessSecurityLevel = connectionAccessSecurityLevel
+        self.clientCertificate = clientCertificate
     }
 
     public init(from decoder: Decoder) throws {
@@ -134,6 +138,10 @@ public struct ConnectionInfo: Codable, Equatable {
             SecurityExceptions.self,
             forKey: .securityExceptions
         ) ?? .init()
+        self.clientCertificate = try container.decodeIfPresent(
+            ClientCertificate.self,
+            forKey: .clientCertificate
+        )
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
