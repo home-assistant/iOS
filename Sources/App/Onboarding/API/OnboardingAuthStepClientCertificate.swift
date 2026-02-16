@@ -39,23 +39,43 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
                 return
             }
             
+            Current.Log.info("Testing mTLS requirement for: \(baseURL)")
+            
             var request = URLRequest(url: baseURL)
             request.httpMethod = "GET"
             request.timeoutInterval = 10
             
-            let delegate = ClientCertTestDelegate(exceptions: authDetails.exceptions)
+            let delegate = ClientCertTestDelegate()
             let session = URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
             
-            let task = session.dataTask(with: request) { _, _, error in
+            let task = session.dataTask(with: request) { data, response, error in
+                Current.Log.info("mTLS test - clientCertRequested: \(delegate.clientCertificateRequested), response: \(String(describing: response)), error: \(String(describing: error))")
+                
+                // Check if delegate detected client cert request
                 if delegate.clientCertificateRequested {
+                    Current.Log.info("mTLS detected via delegate")
                     seal.fulfill(true)
                     return
                 }
                 
+                // Check for HTTP 400 with "SSL certificate" message (nginx response)
+                if let httpResponse = response as? HTTPURLResponse, 
+                   httpResponse.statusCode == 400 {
+                    if let data = data, 
+                       let body = String(data: data, encoding: .utf8),
+                       body.contains("SSL certificate") {
+                        Current.Log.info("mTLS detected via 400 response")
+                        seal.fulfill(true)
+                        return
+                    }
+                }
+                
+                // Check for specific SSL errors
                 if let error = error as? URLError {
                     // NSURLErrorClientCertificateRequired = -1206
                     // NSURLErrorClientCertificateRejected = -1205
                     if error.errorCode == -1206 || error.errorCode == -1205 {
+                        Current.Log.info("mTLS detected via URLError: \(error.errorCode)")
                         seal.fulfill(true)
                         return
                     }
@@ -104,25 +124,29 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
 }
 
 // Delegate to detect client certificate requirement
+// Accepts ANY server certificate to allow the connection to proceed
 private class ClientCertTestDelegate: NSObject, URLSessionDelegate {
-    let exceptions: SecurityExceptions
     var clientCertificateRequested = false
-    
-    init(exceptions: SecurityExceptions) {
-        self.exceptions = exceptions
-    }
     
     func urlSession(
         _ session: URLSession,
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+        let method = challenge.protectionSpace.authenticationMethod
+        Current.Log.info("mTLS test received challenge: \(method)")
+        
+        if method == NSURLAuthenticationMethodClientCertificate {
             clientCertificateRequested = true
+            // Cancel - we just needed to detect it
             completionHandler(.cancelAuthenticationChallenge, nil)
-        } else if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
-            let result = exceptions.evaluate(challenge)
-            completionHandler(result.0, result.1)
+        } else if method == NSURLAuthenticationMethodServerTrust {
+            // Accept ANY server certificate for this test
+            if let trust = challenge.protectionSpace.serverTrust {
+                completionHandler(.useCredential, URLCredential(trust: trust))
+            } else {
+                completionHandler(.performDefaultHandling, nil)
+            }
         } else {
             completionHandler(.performDefaultHandling, nil)
         }
