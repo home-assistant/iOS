@@ -170,7 +170,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
 
     // MARK: - Private
 
-    /// When webview has been inactive for long, when opening the app we reload the webview
+    /// When webview has been inactive for long, when opening the app we reload the webview if it's disconnected
     private func autoRefreshWebViewRoutine() {
         // Check if app was in background for 5 minutes or more
         if let backgroundTimestamp {
