@@ -574,6 +574,14 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connection_test_result.client_certificate.description" = "Client Certificate Authentication is not supported.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
 "onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";
+"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
+"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
+"onboarding.client_certificate.password_prompt.import_button" = "Import";
+"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
+"onboarding.client_certificate.password_prompt.placeholder" = "Password";
+"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
+"onboarding.client_certificate.select_file_button" = "Select Certificate File";
+"onboarding.client_certificate.title" = "Client Certificate Required";
 "onboarding.device_name_check.error.prompt" = "What device name should be used instead?";
 "onboarding.device_name_check.error.title" = "A device already exists with the name '%1$@'";
 "onboarding.invitation.accept_button" = "Accept";
@@ -1514,3 +1522,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.title" = "To-do List";
 "widgets.todo_list.due_date.today" = "Today";
 "yes_label" = "Yes";
+"experimental.badge.title" = "Experimental feature";
+"experimental.badge.report_issue_button.title" = "Report issue";
+"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";

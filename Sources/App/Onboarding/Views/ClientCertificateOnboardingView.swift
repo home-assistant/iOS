@@ -15,56 +15,16 @@ struct ClientCertificateOnboardingView: View {
     @State private var errorMessage: String?
     
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: DesignSystem.Spaces.two) {
             Spacer()
-            
-            Image(systemName: "lock.shield")
-                .font(.system(size: 64))
-                .foregroundColor(.accentColor)
-            
-            Text("Client Certificate Required")
-                .font(.title)
-                .fontWeight(.bold)
-            
-            Text("This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).")
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal)
-
-            if let error = errorMessage {
-                Text(error)
-                    .font(.callout)
-                    .foregroundColor(.red)
-                    .padding()
-                    .background(Color.red.opacity(0.1))
-                    .cornerRadius(8)
-            }
-            
+            headerView
+            ExperimentalBadge()
             Spacer()
-            
-            VStack(spacing: 12) {
-                Button {
-                    showFilePicker = true
-                } label: {
-                    HStack {
-                        Image(systemName: "doc.badge.plus")
-                        Text("Select Certificate File")
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.primaryButton)
-                .disabled(isImporting)
-                
-                Button("Cancel", role: .cancel) {
-                    onCancel()
-                }
-                .buttonStyle(.secondaryButton)
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 32)
         }
+        .safeAreaInset(edge: .bottom, content: {
+
+            buttons
+        })
         .fileImporter(
             isPresented: $showFilePicker,
             allowedContentTypes: [
@@ -84,20 +44,69 @@ struct ClientCertificateOnboardingView: View {
                 errorMessage = error.localizedDescription
             }
         }
-        .alert("Certificate Password", isPresented: $showPasswordPrompt) {
-            SecureField("Password", text: $password)
-            Button("Import") {
+        .alert(L10n.Onboarding.ClientCertificate.PasswordPrompt.title, isPresented: $showPasswordPrompt) {
+            SecureField(L10n.Onboarding.ClientCertificate.PasswordPrompt.placeholder, text: $password)
+            Button(L10n.Onboarding.ClientCertificate.PasswordPrompt.importButton) {
                 importCertificate()
             }
-            Button("Cancel", role: .cancel) {
+            Button(L10n.cancelLabel, role: .cancel) {
                 password = ""
                 pendingFileURL = nil
             }
         } message: {
-            Text("Enter the password for this certificate")
+            Text(L10n.Onboarding.ClientCertificate.PasswordPrompt.message)
         }
     }
-    
+
+    private var buttons: some View {
+        VStack(spacing: DesignSystem.Spaces.oneAndHalf) {
+            Button {
+                showFilePicker = true
+            } label: {
+                HStack {
+                    Image(systemSymbol: .docBadgePlus)
+                    Text(L10n.Onboarding.ClientCertificate.selectFileButton)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.primaryButton)
+            .disabled(isImporting)
+
+            Button(L10n.cancelLabel, role: .cancel) {
+                onCancel()
+            }
+            .buttonStyle(.secondaryButton)
+        }
+        .padding(.horizontal)
+    }
+
+    @ViewBuilder
+    private var headerView: some View {
+        Image(systemSymbol:.lockShield)
+            .font(.system(size: 64))
+            .foregroundColor(.accentColor)
+
+        Text(L10n.Onboarding.ClientCertificate.title)
+            .font(.title)
+            .fontWeight(.bold)
+
+        Text(L10n.Onboarding.ClientCertificate.description)
+            .font(.body)
+            .foregroundColor(.secondary)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal)
+
+        if let error = errorMessage {
+            Text(error)
+                .font(.callout)
+                .foregroundColor(.red)
+                .padding()
+                .background(Color.red.opacity(0.1))
+                .cornerRadius(8)
+        }
+    }
+
     private func importCertificate() {
         guard let fileURL = pendingFileURL else { return }
         
@@ -106,7 +115,7 @@ struct ClientCertificateOnboardingView: View {
         
         // Access security-scoped resource
         guard fileURL.startAccessingSecurityScopedResource() else {
-            errorMessage = "Unable to access the selected file"
+            errorMessage = L10n.Onboarding.ClientCertificate.Error.fileAccess
             isImporting = false
             return
         }
@@ -140,4 +149,17 @@ struct ClientCertificateOnboardingView: View {
             }
         }
     }
+}
+
+@available(iOS 16.0, *)
+#Preview {
+    VStack {}
+        .sheet(isPresented: .constant(true)) {
+            ClientCertificateOnboardingView(onImport: { cert in
+                print("Imported certificate: \(cert)")
+            }, onCancel: {
+                print("Import cancelled")
+            })
+            .presentationDetents([.medium])
+        }
 }

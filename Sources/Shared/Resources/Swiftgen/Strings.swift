@@ -1245,6 +1245,19 @@ public enum L10n {
     }
   }
 
+  public enum Experimental {
+    public enum Badge {
+      /// This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.
+      public static var body: String { return L10n.tr("Localizable", "experimental.badge.body") }
+      /// Experimental feature
+      public static var title: String { return L10n.tr("Localizable", "experimental.badge.title") }
+      public enum ReportIssueButton {
+        /// Report issue
+        public static var title: String { return L10n.tr("Localizable", "experimental.badge.report_issue_button.title") }
+      }
+    }
+  }
+
   public enum Extensions {
     public enum Map {
       public enum Location {
@@ -2144,6 +2157,28 @@ public enum L10n {
   }
 
   public enum Onboarding {
+    public enum ClientCertificate {
+      /// This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).
+      public static var description: String { return L10n.tr("Localizable", "onboarding.client_certificate.description") }
+      /// Select Certificate File
+      public static var selectFileButton: String { return L10n.tr("Localizable", "onboarding.client_certificate.select_file_button") }
+      /// Client Certificate Required
+      public static var title: String { return L10n.tr("Localizable", "onboarding.client_certificate.title") }
+      public enum Error {
+        /// Unable to access the selected file
+        public static var fileAccess: String { return L10n.tr("Localizable", "onboarding.client_certificate.error.file_access") }
+      }
+      public enum PasswordPrompt {
+        /// Import
+        public static var importButton: String { return L10n.tr("Localizable", "onboarding.client_certificate.password_prompt.import_button") }
+        /// Enter the password for this certificate
+        public static var message: String { return L10n.tr("Localizable", "onboarding.client_certificate.password_prompt.message") }
+        /// Password
+        public static var placeholder: String { return L10n.tr("Localizable", "onboarding.client_certificate.password_prompt.placeholder") }
+        /// Certificate Password
+        public static var title: String { return L10n.tr("Localizable", "onboarding.client_certificate.password_prompt.title") }
+      }
+    }
     public enum Connect {
       /// Connecting to %@
       public static func title(_ p1: Any) -> String {
