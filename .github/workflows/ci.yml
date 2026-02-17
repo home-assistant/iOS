@@ -64,7 +64,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Comment on PR if `swiftlint:disable` is found
-        if: steps.scan.outputs.disable_lines != ''
+        if: steps.scan.outputs.disable_lines != '' && github.event.pull_request.head.repo.full_name == github.repository
         uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405  # v2.9.4
         with:
           header: swiftlint-disable-check
@@ -105,7 +105,9 @@ jobs:
           fi
 
       - name: Comment on PR if unused strings are found
-        if: steps.detect.outputs.has_unused == 'true'
+        if: |
+          steps.detect.outputs.has_unused == 'true' &&
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405  # v2.9.4
         with:
           header: unused-strings-check

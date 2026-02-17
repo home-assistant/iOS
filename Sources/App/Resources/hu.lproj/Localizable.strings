@@ -1495,4 +1495,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "widgets.todo_list.refresh_title" = "Teendőlista frissítése";
 "widgets.todo_list.select_list" = "Szerkessze a widgetet a lista kiválasztásához.";
 "widgets.todo_list.title" = "Teendőlista";
+"widgets.todo_list.due_date.now" = "Now";
+"widgets.todo_list.due_date.in_format" = "In %@";
+"widgets.todo_list.due_date.ago_format" = "%@ ago";
 "yes_label" = "Igen";
