@@ -1486,6 +1486,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "widgets.todo_list.all_done" = "Minden kész! 🎉";
 "widgets.todo_list.complete_item_title" = "Teendő elem befejezése";
 "widgets.todo_list.description" = "Ellenőrizze a listáit és adjon hozzá elemeket";
+"widgets.todo_list.due_date.today" = "Today";
 "widgets.todo_list.parameter.item_id" = "Elem azonosító";
 "widgets.todo_list.parameter.list" = "Lista";
 "widgets.todo_list.parameter.list_id" = "Lista azonosító";

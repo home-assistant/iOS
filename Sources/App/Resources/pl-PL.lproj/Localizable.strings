@@ -1485,6 +1485,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.all_done" = "All done! 🎉";
 "widgets.todo_list.complete_item_title" = "Complete To-do Item";
 "widgets.todo_list.description" = "Check your lists and add items";
+"widgets.todo_list.due_date.today" = "Today";
 "widgets.todo_list.parameter.item_id" = "Item ID";
 "widgets.todo_list.parameter.list" = "List";
 "widgets.todo_list.parameter.list_id" = "List ID";

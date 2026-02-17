@@ -1487,6 +1487,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.todo_list.all_done" = "Kõik tehtud! 🎉";
 "widgets.todo_list.complete_item_title" = "Lõpeta ülesanne";
 "widgets.todo_list.description" = "Kontrolli oma nimekirju ja lisa üksusi";
+"widgets.todo_list.due_date.today" = "Today";
 "widgets.todo_list.parameter.item_id" = "Artikli ID";
 "widgets.todo_list.parameter.list" = "Nimekiri";
 "widgets.todo_list.parameter.list_id" = "Nimekirja ID";
