@@ -111,7 +111,7 @@ struct WidgetTodoListView: View {
         .padding(.bottom, DesignSystem.Spaces.half)
     }
 
-    private struct DueDisplay {
+    struct DueDisplay {
         let text: String
         let isPastDateOnly: Bool
     }
