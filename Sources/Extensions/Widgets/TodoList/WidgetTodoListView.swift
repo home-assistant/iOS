@@ -117,7 +117,7 @@ struct WidgetTodoListView: View {
     }
 
     // Internal for testing purposes
-    private func dueDisplay(for item: TodoListItem) -> DueDisplay? {
+    func dueDisplay(for item: TodoListItem) -> DueDisplay? {
         guard let due = item.due else { return nil }
         let now = Date()
         if item.hasDueTime {
@@ -125,28 +125,28 @@ struct WidgetTodoListView: View {
             let timeInterval = due.timeIntervalSince(now)
             let hourInSeconds: TimeInterval = 3600
 
+            // Use "Now" for times within 1 minute
+            if abs(timeInterval) < 60 {
+                return DueDisplay(text: L10n.Widgets.TodoList.DueDate.now, isPastDateOnly: false)
+            }
+
             if abs(timeInterval) < hourInSeconds {
                 // Calculate minutes for times within 1 hour
-                let minutes = Int(round(timeInterval / 60))
-                let text: String
-
-                if minutes == 0 {
-                    text = "Now"
+                let minutes: Int
+                if timeInterval > 0 {
+                    minutes = Int(ceil(timeInterval / 60))
                 } else {
-                    // Use DateComponentsFormatter for proper localization
-                    let absMinutes = abs(minutes)
-                    if let formattedMinutes = Self.minuteFormatter.string(from: TimeInterval(absMinutes * 60)) {
-                        if minutes > 0 {
-                            text = "In \(formattedMinutes)"
-                        } else {
-                            text = "\(capitalizeLeadingCharacter(in: formattedMinutes)) ago"
-                        }
-                    } else {
-                        // Fallback if formatter fails
-                        text = minutes > 0 ? "In \(absMinutes) minutes" : "\(absMinutes) minutes ago"
-                    }
+                    minutes = Int(floor(timeInterval / 60))
                 }
-                return DueDisplay(text: text, isPastDateOnly: false)
+
+                // Use DateComponentsFormatter for proper localization
+                let absMinutes = abs(minutes)
+                if let formattedMinutes = Self.minuteFormatter.string(from: TimeInterval(absMinutes * 60)) {
+                    let text = minutes > 0 
+                        ? L10n.Widgets.TodoList.DueDate.inFormat(formattedMinutes)
+                        : L10n.Widgets.TodoList.DueDate.agoFormat(capitalizeLeadingCharacter(in: formattedMinutes))
+                    return DueDisplay(text: text, isPastDateOnly: false)
+                }
             }
 
             let text = Self.numericRelativeFormatter.localizedString(for: due, relativeTo: now)
@@ -170,8 +170,17 @@ struct WidgetTodoListView: View {
         return String(first).uppercased() + text.dropFirst()
     }
 
+    private var widgetFamilyItemRowSpacing: CGFloat {
+        switch widgetFamily {
+        case .systemLarge, .systemExtraLarge:
+            return DesignSystem.Spaces.one
+        default:
+            return DesignSystem.Spaces.micro
+        }
+    }
+
     private var itemsListView: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
+        VStack(alignment: .leading, spacing: widgetFamilyItemRowSpacing) {
             if items.isEmpty {
                 Text(verbatim: L10n.Widgets.TodoList.allDone)
                     .font(DesignSystem.Font.body)
@@ -179,7 +188,7 @@ struct WidgetTodoListView: View {
                     .frame(height: 40)
             } else {
                 ForEach(items, id: \.uid) { item in
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(alignment: item.due != nil ? .top : .center) {
                         Button(intent: TodoItemCompleteAppIntent(
                             serverId: serverId,
                             listId: listId,
@@ -188,6 +197,7 @@ struct WidgetTodoListView: View {
                             Image(systemSymbol: .circle)
                                 .font(DesignSystem.Font.body)
                                 .foregroundStyle(.haPrimary)
+                                .padding(.top, item.due != nil ? DesignSystem.Spaces.micro : 0)
                         }
                         .buttonStyle(.plain)
                         if let openListURL = AppConstants.todoListOpenURL(listId: listId, serverId: serverId) {
@@ -197,38 +207,19 @@ struct WidgetTodoListView: View {
                                         .font(DesignSystem.Font.callout)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
-                                    let dueRow = HStack(spacing: DesignSystem.Spaces.half) {
-                                        Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
-                                            ofSize: .init(width: 12, height: 12),
-                                            color: UIColor.secondaryLabel
-                                        ))
-                                        Text(" ")
-                                            .font(DesignSystem.Font.caption)
-                                            .lineLimit(1)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                    }
-
                                     if let dueDisplay = dueDisplay(for: item) {
-                                        dueRow
-                                            .overlay(
-                                                HStack(spacing: DesignSystem.Spaces.half) {
-                                                    Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
-                                                        ofSize: .init(width: 12, height: 12),
-                                                        color: dueDisplay.isPastDateOnly ? UIColor.orange : UIColor
-                                                            .secondaryLabel
-                                                    ))
-                                                    Text(dueDisplay.text)
-                                                        .font(DesignSystem.Font.caption)
-                                                        .foregroundStyle(
-                                                            dueDisplay.isPastDateOnly ? Color
-                                                                .orange : .secondary
-                                                        )
-                                                        .lineLimit(1)
-                                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                                }
-                                            )
-                                    } else {
-                                        dueRow.hidden()
+                                        HStack(spacing: DesignSystem.Spaces.half) {
+                                            Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
+                                                ofSize: .init(width: 12, height: 12),
+                                                color: dueDisplay.isPastDateOnly ? UIColor.orange : UIColor
+                                                    .secondaryLabel
+                                            ))
+                                            Text(dueDisplay.text)
+                                                .font(DesignSystem.Font.caption)
+                                                .foregroundStyle(dueDisplay.isPastDateOnly ? Color.orange : .secondary)
+                                                .lineLimit(1)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                        }
                                     }
                                 }
                             }

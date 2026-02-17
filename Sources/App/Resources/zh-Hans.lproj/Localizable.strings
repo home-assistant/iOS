@@ -1493,4 +1493,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.todo_list.refresh_title" = "刷新待办事项清单";
 "widgets.todo_list.select_list" = "编辑控件可选择列表。";
 "widgets.todo_list.title" = "待办事项清单";
+"widgets.todo_list.due_date.now" = "Now";
+"widgets.todo_list.due_date.in_format" = "In %@";
+"widgets.todo_list.due_date.ago_format" = "%@ ago";
 "yes_label" = "是";
