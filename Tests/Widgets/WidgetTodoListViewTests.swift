@@ -9,7 +9,7 @@ class WidgetTodoListViewTests: XCTestCase {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.minute]
         formatter.unitsStyle = .full
-        
+
         if let formattedMinutes = formatter.string(from: TimeInterval(abs(minutes) * 60)) {
             if minutes > 0 {
                 return L10n.Widgets.TodoList.DueDate.inFormat(formattedMinutes)
@@ -23,7 +23,7 @@ class WidgetTodoListViewTests: XCTestCase {
         }
         return ""
     }
-    
+
     func testDueDisplayForItemsDueInMinutes() {
         let view = WidgetTodoListView(
             serverId: "test-server",
@@ -217,132 +217,5 @@ class WidgetTodoListViewTests: XCTestCase {
         XCTAssertNotNil(displayDateOnly)
         // Should use named formatter for date-only items, not minute-based
         XCTAssertFalse(displayDateOnly?.text.isEmpty ?? true)
-    }
-}
-
-
-    func testDueDisplayForItemsDueLessThanOneMinute() {
-        let view = WidgetTodoListView(
-            serverId: "test-server",
-            listId: "test-list",
-            title: "Test List",
-            items: [],
-            isEmpty: false
-        )
-
-        // Test: Item due in 30 seconds (should show "Now")
-        let dueIn30Seconds = Date().addingTimeInterval(30)
-        let itemNow = TodoListItem(
-            summary: "Task now",
-            uid: "uid-now",
-            status: "needs_action",
-            description: nil,
-            dueRaw: "2024-01-01T12:00:30",
-            due: dueIn30Seconds
-        )
-
-        let displayNow = view.dueDisplay(for: itemNow)
-        XCTAssertNotNil(displayNow)
-        XCTAssertEqual(displayNow?.text, "Now")
-        XCTAssertFalse(displayNow?.isPastDateOnly ?? true)
-    }
-
-    func testDueDisplayForPastItemsInMinutes() {
-        let view = WidgetTodoListView(
-            serverId: "test-server",
-            listId: "test-list",
-            title: "Test List",
-            items: [],
-            isEmpty: false
-        )
-
-        // Test: Item overdue by 15 minutes
-        let overdue15Minutes = Date().addingTimeInterval(-15 * 60)
-        let itemOverdue = TodoListItem(
-            summary: "Task overdue",
-            uid: "uid-overdue",
-            status: "needs_action",
-            description: nil,
-            dueRaw: "2024-01-01T11:45:00",
-            due: overdue15Minutes
-        )
-
-        let displayOverdue = view.dueDisplay(for: itemOverdue)
-        XCTAssertNotNil(displayOverdue)
-        XCTAssertTrue(displayOverdue?.text.contains("15") ?? false)
-        XCTAssertTrue(displayOverdue?.text.contains("minute") ?? false)
-        XCTAssertTrue(displayOverdue?.text.contains("ago") ?? false)
-        XCTAssertFalse(displayOverdue?.isPastDateOnly ?? true)
-
-        // Test: Item overdue by 1 minute
-        let overdue1Minute = Date().addingTimeInterval(-60)
-        let itemOverdue1 = TodoListItem(
-            summary: "Task overdue 1 min",
-            uid: "uid-overdue-1",
-            status: "needs_action",
-            description: nil,
-            dueRaw: "2024-01-01T11:59:00",
-            due: overdue1Minute
-        )
-
-        let displayOverdue1 = view.dueDisplay(for: itemOverdue1)
-        XCTAssertNotNil(displayOverdue1)
-        XCTAssertTrue(displayOverdue1?.text.contains("1") ?? false)
-        XCTAssertTrue(displayOverdue1?.text.contains("minute") ?? false)
-        XCTAssertTrue(displayOverdue1?.text.contains("ago") ?? false)
-        XCTAssertFalse(displayOverdue1?.isPastDateOnly ?? true)
-    }
-
-    func testDueDisplayForItemsDueMoreThanOneHour() {
-        let view = WidgetTodoListView(
-            serverId: "test-server",
-            listId: "test-list",
-            title: "Test List",
-            items: [],
-            isEmpty: false
-        )
-
-        // Test: Item due in 2 hours (should use RelativeDateTimeFormatter)
-        let dueIn2Hours = Date().addingTimeInterval(2 * 60 * 60)
-        let item2Hours = TodoListItem(
-            summary: "Task in 2 hours",
-            uid: "uid-2h",
-            status: "needs_action",
-            description: nil,
-            dueRaw: "2024-01-01T14:00:00",
-            due: dueIn2Hours
-        )
-
-        let display2Hours = view.dueDisplay(for: item2Hours)
-        XCTAssertNotNil(display2Hours)
-        // The formatter should produce something like "In 2 hours" (capitalized)
-        XCTAssertTrue(display2Hours?.text.contains("hour") ?? false)
-        XCTAssertFalse(display2Hours?.isPastDateOnly ?? true)
-    }
-
-    func testDueDisplayForItemsWithoutDueTime() {
-        let view = WidgetTodoListView(
-            serverId: "test-server",
-            listId: "test-list",
-            title: "Test List",
-            items: [],
-            isEmpty: false
-        )
-
-        // Test: Item with date-only due (no time component)
-        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
-        let itemDateOnly = TodoListItem(
-            summary: "Task tomorrow",
-            uid: "uid-tomorrow",
-            status: "needs_action",
-            description: nil,
-            dueRaw: "2024-01-02", // Date only, no "T"
-            due: tomorrow
-        )
-
-        let displayDateOnly = view.dueDisplay(for: itemDateOnly)
-        XCTAssertNotNil(displayDateOnly)
-        // Should use named formatter for date-only items
-        XCTAssertFalse(displayDateOnly?.text.contains("minute") ?? false)
     }
 }
