@@ -190,8 +190,8 @@ struct WidgetTodoListView: View {
                                 .foregroundStyle(.haPrimary)
                         }
                         .buttonStyle(.plain)
-                        if let addItemURL = AppConstants.todoListOpenURL(listId: listId, serverId: serverId) {
-                            Link(destination: addItemURL.withWidgetAuthenticity()) {
+                        if let openListURL = AppConstants.todoListOpenURL(listId: listId, serverId: serverId) {
+                            Link(destination: openListURL.withWidgetAuthenticity()) {
                                 VStack(alignment: .leading, spacing: .zero) {
                                     Text(item.summary)
                                         .font(DesignSystem.Font.callout)
