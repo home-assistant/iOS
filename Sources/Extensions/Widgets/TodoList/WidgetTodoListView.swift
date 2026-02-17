@@ -117,7 +117,7 @@ struct WidgetTodoListView: View {
     }
 
     // Internal for testing purposes
-    func dueDisplay(for item: TodoListItem) -> DueDisplay? {
+    private func dueDisplay(for item: TodoListItem) -> DueDisplay? {
         guard let due = item.due else { return nil }
         let now = Date()
         if item.hasDueTime {
@@ -170,17 +170,8 @@ struct WidgetTodoListView: View {
         return String(first).uppercased() + text.dropFirst()
     }
 
-    private var widgetFamilyItemRowSpacing: CGFloat {
-        switch widgetFamily {
-        case .systemLarge, .systemExtraLarge:
-            return DesignSystem.Spaces.one
-        default:
-            return DesignSystem.Spaces.micro
-        }
-    }
-
     private var itemsListView: some View {
-        VStack(alignment: .leading, spacing: widgetFamilyItemRowSpacing) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
             if items.isEmpty {
                 Text(verbatim: L10n.Widgets.TodoList.allDone)
                     .font(DesignSystem.Font.body)
@@ -188,7 +179,7 @@ struct WidgetTodoListView: View {
                     .frame(height: 40)
             } else {
                 ForEach(items, id: \.uid) { item in
-                    HStack(alignment: item.due != nil ? .top : .center) {
+                    HStack(alignment: .firstTextBaseline) {
                         Button(intent: TodoItemCompleteAppIntent(
                             serverId: serverId,
                             listId: listId,
@@ -197,29 +188,47 @@ struct WidgetTodoListView: View {
                             Image(systemSymbol: .circle)
                                 .font(DesignSystem.Font.body)
                                 .foregroundStyle(.haPrimary)
-                                .padding(.top, item.due != nil ? DesignSystem.Spaces.micro : 0)
                         }
                         .buttonStyle(.plain)
-                        if let addItemURL = AppConstants.todoListAddItemURL(listId: listId, serverId: serverId) {
+                        if let addItemURL = AppConstants.todoListOpenURL(listId: listId, serverId: serverId) {
                             Link(destination: addItemURL.withWidgetAuthenticity()) {
                                 VStack(alignment: .leading, spacing: .zero) {
                                     Text(item.summary)
                                         .font(DesignSystem.Font.callout)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
+                                    let dueRow = HStack(spacing: DesignSystem.Spaces.half) {
+                                        Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
+                                            ofSize: .init(width: 12, height: 12),
+                                            color: UIColor.secondaryLabel
+                                        ))
+                                        Text(" ")
+                                            .font(DesignSystem.Font.caption)
+                                            .lineLimit(1)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+
                                     if let dueDisplay = dueDisplay(for: item) {
-                                        HStack(spacing: DesignSystem.Spaces.half) {
-                                            Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
-                                                ofSize: .init(width: 12, height: 12),
-                                                color: dueDisplay.isPastDateOnly ? UIColor.orange : UIColor
-                                                    .secondaryLabel
-                                            ))
-                                            Text(dueDisplay.text)
-                                                .font(DesignSystem.Font.caption)
-                                                .foregroundStyle(dueDisplay.isPastDateOnly ? Color.orange : .secondary)
-                                                .lineLimit(1)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                        }
+                                        dueRow
+                                            .overlay(
+                                                HStack(spacing: DesignSystem.Spaces.half) {
+                                                    Image(uiImage: MaterialDesignIcons.clockTimeTwoIcon.image(
+                                                        ofSize: .init(width: 12, height: 12),
+                                                        color: dueDisplay.isPastDateOnly ? UIColor.orange : UIColor
+                                                            .secondaryLabel
+                                                    ))
+                                                    Text(dueDisplay.text)
+                                                        .font(DesignSystem.Font.caption)
+                                                        .foregroundStyle(
+                                                            dueDisplay.isPastDateOnly ? Color
+                                                                .orange : .secondary
+                                                        )
+                                                        .lineLimit(1)
+                                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                                }
+                                            )
+                                    } else {
+                                        dueRow.hidden()
                                     }
                                 }
                             }
