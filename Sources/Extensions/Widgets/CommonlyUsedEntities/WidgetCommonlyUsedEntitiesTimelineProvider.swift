@@ -237,7 +237,7 @@ enum WidgetCommonlyUsedEntitiesConstants {
 struct WidgetCommonlyUsedEntitiesAppIntent: AppIntent, WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init(
         "widgets.commonly_used_entities.title",
-        defaultValue: "Commonly Used Entities"
+        defaultValue: "Common Controls"
     )
 
     static var isDiscoverable: Bool = false

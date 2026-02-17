@@ -1443,7 +1443,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.custom.title" = "Custom widgets";
 "widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
 "widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
-"widgets.commonly_used_entities.title" = "Commonly Used";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Action";

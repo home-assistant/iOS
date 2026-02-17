@@ -5111,7 +5111,7 @@ public enum L10n {
     public enum CommonlyUsedEntities {
       /// Display your commonly used entities based on your usage patterns.
       public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.description") }
-      /// Commonly Used
+      /// Common Controls
       public static var title: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.title") }
       public enum Empty {
         /// No commonly used entities found. Use Home Assistant to build your usage history.
