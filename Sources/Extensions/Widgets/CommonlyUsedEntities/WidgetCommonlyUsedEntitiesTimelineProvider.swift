@@ -34,7 +34,12 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetCommonlyUsedEntitiesEntry
     typealias Intent = WidgetCommonlyUsedEntitiesAppIntent
 
-    private static let supportedDomains: [Domain] = [.light, .switch, .cover, .fan, .climate, .lock]
+    /// Domains supported by this widget for entity filtering and display
+    static let supportedDomains: [Domain] = [.light, .switch, .cover, .fan, .climate, .lock]
+
+    /// Cache is considered valid for 1 second to handle iOS widget reload bug
+    /// that triggers multiple timeline refreshes
+    private static let cacheValiditySeconds: TimeInterval = 1
 
     func placeholder(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         .init(
@@ -138,7 +143,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
             return [:]
         }
 
-        if let cache = getStatesCache(), cache.cacheCreatedDate.timeIntervalSinceNow > -1 {
+        if let cache = getStatesCache(), cache.cacheCreatedDate.timeIntervalSinceNow > -Self.cacheValiditySeconds {
             Current.Log.verbose("Commonly used entities widget states cache is still valid, returning cached states")
             return cache.states
         }
@@ -157,8 +162,14 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
                 server: server,
                 entityId: entityId
             ) {
+                let adjustedValue = StatePrecision.adjustPrecision(
+                    serverId: serverId,
+                    entityId: entityId,
+                    stateValue: state.value
+                )
+                let valueWithUnit = state.unitOfMeasurement.map { "\(adjustedValue) \($0)" } ?? adjustedValue
                 states[item] = .init(
-                    value: "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")",
+                    value: valueWithUnit,
                     domainState: state.domainState,
                     hexColor: state.color?.hex()
                 )
