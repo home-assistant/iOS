@@ -70,6 +70,30 @@ public class HomeAssistantAPI {
             connectionInfo: {
                 do {
                     if let activeURL = server.info.connection.activeURL() {
+                        #if !os(watchOS)
+                        // Prepare client identity (SecIdentity) for mTLS if configured
+                        let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
+                        if let clientCert = server.info.connection.clientCertificate {
+                            clientIdentityProvider = {
+                                try? ClientCertificateManager.shared.retrieveIdentity(for: clientCert)
+                            }
+                        } else {
+                            clientIdentityProvider = nil
+                        }
+
+                        return try .init(
+                            url: activeURL,
+                            userAgent: HomeAssistantAPI.userAgent,
+                            evaluateCertificate: { secTrust, completion in
+                                completion(
+                                    Swift.Result<Void, Error> {
+                                        try server.info.connection.securityExceptions.evaluate(secTrust)
+                                    }
+                                )
+                            },
+                            clientIdentity: clientIdentityProvider
+                        )
+                        #else
                         return try .init(
                             url: activeURL,
                             userAgent: HomeAssistantAPI.userAgent,
@@ -81,6 +105,7 @@ public class HomeAssistantAPI {
                                 )
                             }
                         )
+                        #endif
                     } else {
                         Current.clientEventStore.addEvent(.init(
                             text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
@@ -103,8 +128,18 @@ public class HomeAssistantAPI {
             }
         ))
 
+        #if !os(watchOS)
+        // Use custom delegate that supports client certificates (mTLS)
+        let sessionDelegate: SessionDelegate = server.info.connection.clientCertificate != nil
+            ? ClientCertificateSessionDelegate(server: server)
+            : SessionDelegate()
+        #else
+        let sessionDelegate = SessionDelegate()
+        #endif
+
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
+            delegate: sessionDelegate,
             interceptor: newInterceptor(),
             trustManager: newServerTrustManager()
         )
