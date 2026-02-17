@@ -5108,6 +5108,16 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_update_time.title") }
       }
     }
+    public enum CommonlyUsedEntities {
+      /// Display your commonly used entities based on your usage patterns.
+      public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.description") }
+      /// Commonly Used
+      public static var title: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.title") }
+      public enum Empty {
+        /// No commonly used entities found. Use Home Assistant to build your usage history.
+        public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.empty.description") }
+      }
+    }
     public enum Details {
       /// Display states using from Home Assistant in text
       public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }

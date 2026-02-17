@@ -1220,6 +1220,10 @@
 		42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E992E22F84600BDF5EF /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
+		54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */; };
+		0149F5A822A444B99F0540CD /* WidgetCommonlyUsedEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */; };
+		37414CBA81F74D6AADCFE442 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */; };
+		539088C4A94144C9A9502070 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
@@ -3016,6 +3020,8 @@
 		42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoList.swift; sourceTree = "<group>"; };
 		42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListProvider.swift; sourceTree = "<group>"; };
 		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
+		DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntities.swift; sourceTree = "<group>"; };
+		EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntitiesTimelineProvider.swift; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingHelper.swift; sourceTree = "<group>"; };
@@ -3871,6 +3877,7 @@
 			isa = PBXGroup;
 			children = (
 				428863582EF9641400319CF4 /* CameraList */,
+				95A32294D4A340198B769AAB /* CommonlyUsedEntities */,
 				42FF5E8F2E22D7DA00BDF5EF /* TodoList */,
 				42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */,
 				422368892D40F980005911E4 /* Lockscreen */,
@@ -3888,6 +3895,15 @@
 				42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */,
 			);
 			path = Widgets;
+			sourceTree = "<group>";
+		};
+		95A32294D4A340198B769AAB /* CommonlyUsedEntities */ = {
+			isa = PBXGroup;
+			children = (
+				DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */,
+				EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */,
+			);
+			path = CommonlyUsedEntities;
 			sourceTree = "<group>";
 		};
 		1171508324DFCF960065E874 /* Resources */ = {
@@ -9105,6 +9121,8 @@
 				42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */,
 				428D31A62D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				42FF5E912E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */,
+				54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */,
+				37414CBA81F74D6AADCFE442 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift in Sources */,
 				4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */,
 				428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */,
@@ -9475,6 +9493,8 @@
 				42DC44372E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift in Sources */,
 				4278CB812D01E61D00CFAAC9 /* GesturesSetupView.swift in Sources */,
 				42FF5E922E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */,
+				0149F5A822A444B99F0540CD /* WidgetCommonlyUsedEntities.swift in Sources */,
+				539088C4A94144C9A9502070 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,
 				42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,

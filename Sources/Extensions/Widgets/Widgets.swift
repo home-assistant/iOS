@@ -35,6 +35,7 @@ struct WidgetsBundle17: WidgetBundle {
 
     var body: some Widget {
         WidgetCustom()
+        WidgetCommonlyUsedEntities()
         WidgetAssist()
         WidgetScripts()
         WidgetTodoList()
@@ -79,6 +80,7 @@ struct WidgetsBundle18: WidgetBundle {
 
         // Widgets
         WidgetCustom()
+        WidgetCommonlyUsedEntities()
         WidgetAssist()
         WidgetScripts()
         WidgetTodoList()
