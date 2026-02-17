@@ -2,6 +2,14 @@ import Shared
 import SwiftUI
 import UniformTypeIdentifiers
 
+enum ClientCertificateFile {
+    static var allowedFormats: [UTType] = [
+        UTType(filenameExtension: "p12") ?? .data,
+        UTType(filenameExtension: "pfx") ?? .data,
+        .pkcs12,
+    ]
+}
+
 /// View for importing client certificate during onboarding
 struct ClientCertificateOnboardingView: View {
     let onImport: (ClientCertificate) -> Void
@@ -26,11 +34,7 @@ struct ClientCertificateOnboardingView: View {
         })
         .fileImporter(
             isPresented: $showFilePicker,
-            allowedContentTypes: [
-                UTType(filenameExtension: "p12") ?? .data,
-                UTType(filenameExtension: "pfx") ?? .data,
-                .pkcs12,
-            ],
+            allowedContentTypes: ClientCertificateFile.allowedFormats,
             allowsMultipleSelection: false
         ) { result in
             switch result {
