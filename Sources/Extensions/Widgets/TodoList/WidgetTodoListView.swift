@@ -124,12 +124,12 @@ struct WidgetTodoListView: View {
             // Check if the time difference is less than 1 hour
             let timeInterval = due.timeIntervalSince(now)
             let hourInSeconds: TimeInterval = 3600
-            
+
             if abs(timeInterval) < hourInSeconds {
                 // Calculate minutes for times within 1 hour
                 let minutes = Int(round(timeInterval / 60))
                 let text: String
-                
+
                 if minutes == 0 {
                     text = "Now"
                 } else {
@@ -148,7 +148,7 @@ struct WidgetTodoListView: View {
                 }
                 return DueDisplay(text: text, isPastDateOnly: false)
             }
-            
+
             let text = Self.numericRelativeFormatter.localizedString(for: due, relativeTo: now)
             return DueDisplay(text: capitalizeLeadingCharacter(in: text), isPastDateOnly: false)
         }
