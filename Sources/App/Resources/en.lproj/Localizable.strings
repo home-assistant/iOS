@@ -1495,5 +1495,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.refresh_title" = "Refresh To-do List";
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
+"widgets.todo_list.due_date.now" = "Now";
 "widgets.todo_list.due_date.today" = "Today";
+"widgets.todo_list.due_date.in_format" = "In %@";
+"widgets.todo_list.due_date.ago_format" = "%@ ago";
 "yes_label" = "Yes";

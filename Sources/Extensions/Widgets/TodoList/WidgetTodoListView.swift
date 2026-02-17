@@ -5,6 +5,13 @@ import SwiftUI
 @available(iOS 17, *)
 struct WidgetTodoListView: View {
     @Environment(\.widgetFamily) private var widgetFamily
+    private static let minuteFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute]
+        formatter.unitsStyle = .full
+        return formatter
+    }()
+
     private static let namedRelativeFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
@@ -104,15 +111,44 @@ struct WidgetTodoListView: View {
         .padding(.bottom, DesignSystem.Spaces.half)
     }
 
-    private struct DueDisplay {
+    struct DueDisplay {
         let text: String
         let isPastDateOnly: Bool
     }
 
-    private func dueDisplay(for item: TodoListItem) -> DueDisplay? {
+    // Internal for testing purposes
+    func dueDisplay(for item: TodoListItem) -> DueDisplay? {
         guard let due = item.due else { return nil }
         let now = Date()
         if item.hasDueTime {
+            // Check if the time difference is less than 1 hour
+            let timeInterval = due.timeIntervalSince(now)
+            let hourInSeconds: TimeInterval = 3600
+
+            // Use "Now" for times within 1 minute
+            if abs(timeInterval) < 60 {
+                return DueDisplay(text: L10n.Widgets.TodoList.DueDate.now, isPastDateOnly: false)
+            }
+
+            if abs(timeInterval) < hourInSeconds {
+                // Calculate minutes for times within 1 hour
+                let minutes: Int
+                if timeInterval > 0 {
+                    minutes = Int(ceil(timeInterval / 60))
+                } else {
+                    minutes = Int(floor(timeInterval / 60))
+                }
+
+                // Use DateComponentsFormatter for proper localization
+                let absMinutes = abs(minutes)
+                if let formattedMinutes = Self.minuteFormatter.string(from: TimeInterval(absMinutes * 60)) {
+                    let text = minutes > 0
+                        ? L10n.Widgets.TodoList.DueDate.inFormat(formattedMinutes)
+                        : L10n.Widgets.TodoList.DueDate.agoFormat(capitalizeLeadingCharacter(in: formattedMinutes))
+                    return DueDisplay(text: text, isPastDateOnly: false)
+                }
+            }
+
             let text = Self.numericRelativeFormatter.localizedString(for: due, relativeTo: now)
             return DueDisplay(text: capitalizeLeadingCharacter(in: text), isPastDateOnly: false)
         }
@@ -164,8 +200,8 @@ struct WidgetTodoListView: View {
                                 .padding(.top, item.due != nil ? DesignSystem.Spaces.micro : 0)
                         }
                         .buttonStyle(.plain)
-                        if let addItemURL = AppConstants.todoListAddItemURL(listId: listId, serverId: serverId) {
-                            Link(destination: addItemURL.withWidgetAuthenticity()) {
+                        if let openListURL = AppConstants.todoListOpenURL(listId: listId, serverId: serverId) {
+                            Link(destination: openListURL.withWidgetAuthenticity()) {
                                 VStack(alignment: .leading, spacing: .zero) {
                                     Text(item.summary)
                                         .font(DesignSystem.Font.callout)
