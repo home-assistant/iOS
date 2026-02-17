@@ -205,18 +205,6 @@ struct ConnectionSettingsView: View {
         } message: { error in
             Text(error.localizedDescription)
         }
-        .confirmationDialog(
-            L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.title,
-            isPresented: $showRemoveCertificateConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button(L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.remove, role: .destructive) {
-                viewModel.removeCertificate()
-            }
-            Button(L10n.cancelLabel, role: .cancel) {}
-        } message: {
-            Text(L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.message)
-        }
         .onDisappear {
             onDismiss?()
         }
@@ -369,14 +357,23 @@ struct ConnectionSettingsView: View {
                         }
                     }
                     Spacer()
-                    Image(systemSymbol: .checkmarkShield)
-                        .foregroundColor(.green)
-                }
-
-                Button(role: .destructive) {
-                    showRemoveCertificateConfirmation = true
-                } label: {
-                    Label(L10n.Settings.ConnectionSection.ClientCertificate.remove, systemSymbol: .trash)
+                    Button(role: .destructive) {
+                        showRemoveCertificateConfirmation = true
+                    } label: {
+                        Image(systemSymbol: .trash)
+                    }
+                    .confirmationDialog(
+                        L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.title,
+                        isPresented: $showRemoveCertificateConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.remove, role: .destructive) {
+                            viewModel.removeCertificate()
+                        }
+                        Button(L10n.cancelLabel, role: .cancel) {}
+                    } message: {
+                        Text(L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.message)
+                    }
                 }
             } else {
                 // No certificate configured
