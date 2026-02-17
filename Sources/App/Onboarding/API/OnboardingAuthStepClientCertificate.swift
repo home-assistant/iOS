@@ -129,8 +129,8 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
                 hostingController.modalPresentationStyle = .pageSheet
 
                 if let sheet = hostingController.sheetPresentationController {
-                    sheet.detents = [.medium(), .large()]
-                    sheet.prefersGrabberVisible = true
+                    sheet.detents = [.medium()]
+                    sheet.prefersGrabberVisible = false
                 }
 
                 sender.present(hostingController, animated: true)

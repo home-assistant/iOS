@@ -29,6 +29,7 @@ struct ClientCertificateOnboardingView: View {
             ExperimentalBadge()
             Spacer()
         }
+        .interactiveDismissDisabled()
         .safeAreaInset(edge: .bottom, content: {
             buttons
         })

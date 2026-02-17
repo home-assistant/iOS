@@ -1525,3 +1525,5 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "experimental.badge.title" = "Experimental feature";
 "experimental.badge.report_issue_button.title" = "Report issue";
 "experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
+"error.client_certificate.flow_cancelled" =  "Client Certificate Authentication required.\n\nThis server requires a client certificate (mTLS) but the operation was cancelled.";
+"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\n\n %@";

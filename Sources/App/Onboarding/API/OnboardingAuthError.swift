@@ -77,9 +77,9 @@ struct OnboardingAuthError: LocalizedError {
         case let .authenticationUnsupported(method):
             return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(" " + method)
         case .clientCertificateRequired:
-            return "Client Certificate Authentication is not supported.\n\nThis server requires a client certificate (mTLS) but the operation was cancelled."
+            return L10n.Error.ClientCertificate.flowCancelled
         case let .clientCertificateError(underlying):
-            return "Client Certificate Authentication failed.\n\n" + underlying.localizedDescription
+            return L10n.Error.ClientCertificate.flowFailed(underlying.localizedDescription)
         case let .sslUntrusted(errors):
             // swift compiler crashes with \.localizedDescription below, xcode 13.3
             // swiftformat:disable:next preferKeyPath

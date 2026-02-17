@@ -1245,6 +1245,21 @@ public enum L10n {
     }
   }
 
+  public enum Error {
+    public enum ClientCertificate {
+      /// Client Certificate Authentication required.
+      /// 
+      /// This server requires a client certificate (mTLS) but the operation was cancelled.
+      public static var flowCancelled: String { return L10n.tr("Localizable", "error.client_certificate.flow_cancelled") }
+      /// Client Certificate Authentication failed.
+      /// 
+      ///  %@
+      public static func flowFailed(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "error.client_certificate.flow_failed", String(describing: p1))
+      }
+    }
+  }
+
   public enum Experimental {
     public enum Badge {
       /// This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.
