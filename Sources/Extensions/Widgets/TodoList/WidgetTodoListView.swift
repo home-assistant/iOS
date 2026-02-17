@@ -142,7 +142,7 @@ struct WidgetTodoListView: View {
                 // Use DateComponentsFormatter for proper localization
                 let absMinutes = abs(minutes)
                 if let formattedMinutes = Self.minuteFormatter.string(from: TimeInterval(absMinutes * 60)) {
-                    let text = minutes > 0 
+                    let text = minutes > 0
                         ? L10n.Widgets.TodoList.DueDate.inFormat(formattedMinutes)
                         : L10n.Widgets.TodoList.DueDate.agoFormat(capitalizeLeadingCharacter(in: formattedMinutes))
                     return DueDisplay(text: text, isPastDateOnly: false)
