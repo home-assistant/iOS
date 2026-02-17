@@ -221,14 +221,6 @@ class WidgetTodoListViewTests: XCTestCase {
 }
 
 
-        let display1 = view.dueDisplay(for: item1)
-        XCTAssertNotNil(display1)
-        XCTAssertTrue(display1?.text.contains("1") ?? false)
-        XCTAssertTrue(display1?.text.contains("minute") ?? false)
-        XCTAssertTrue(display1?.text.starts(with: "In") ?? false)
-        XCTAssertFalse(display1?.isPastDateOnly ?? true)
-    }
-
     func testDueDisplayForItemsDueLessThanOneMinute() {
         let view = WidgetTodoListView(
             serverId: "test-server",
