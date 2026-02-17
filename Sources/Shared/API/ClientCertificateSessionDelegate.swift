@@ -5,13 +5,13 @@ import Foundation
 /// Custom SessionDelegate that handles client certificate authentication (mTLS)
 public class ClientCertificateSessionDelegate: SessionDelegate {
     private let server: Server
-    
+
     public init(server: Server) {
         self.server = server
         super.init()
     }
-    
-    public override func urlSession(
+
+    override public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge,
@@ -22,11 +22,11 @@ public class ClientCertificateSessionDelegate: SessionDelegate {
             handleClientCertificateChallenge(challenge, completionHandler: completionHandler)
             return
         }
-        
+
         // Let parent handle other challenges (server trust, etc.)
         super.urlSession(session, task: task, didReceive: challenge, completionHandler: completionHandler)
     }
-    
+
     private func handleClientCertificateChallenge(
         _ challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
@@ -36,7 +36,7 @@ public class ClientCertificateSessionDelegate: SessionDelegate {
             completionHandler(.performDefaultHandling, nil)
             return
         }
-        
+
         do {
             let credential = try ClientCertificateManager.shared.urlCredential(for: clientCertificate)
             Current.Log.info("[mTLS] Using client certificate: \(clientCertificate.displayName)")

@@ -92,7 +92,7 @@ public class AuthenticationAPI {
         clientCertificate: ClientCertificate? = nil
     ) -> Promise<TokenInfo> {
         let session: Session
-        
+
         #if !os(watchOS)
         if let clientCert = clientCertificate {
             // Create a session delegate that handles client certificate challenges
@@ -135,12 +135,12 @@ public class AuthenticationAPI {
 /// Session delegate for fetching initial token during onboarding (before server exists)
 private class OnboardingClientCertificateDelegate: SessionDelegate {
     private let certificate: ClientCertificate
-    
+
     init(certificate: ClientCertificate) {
         self.certificate = certificate
         super.init()
     }
-    
+
     override func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
@@ -157,7 +157,7 @@ private class OnboardingClientCertificateDelegate: SessionDelegate {
                 Current.Log.error("[mTLS] Failed to get credential for token exchange: \(error)")
             }
         }
-        
+
         super.urlSession(session, task: task, didReceive: challenge, completionHandler: completionHandler)
     }
 }

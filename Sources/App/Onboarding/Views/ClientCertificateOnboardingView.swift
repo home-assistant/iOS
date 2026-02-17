@@ -6,14 +6,14 @@ import UniformTypeIdentifiers
 struct ClientCertificateOnboardingView: View {
     let onImport: (ClientCertificate) -> Void
     let onCancel: () -> Void
-    
+
     @State private var showFilePicker = false
     @State private var showPasswordPrompt = false
     @State private var password = ""
     @State private var pendingFileURL: URL?
     @State private var isImporting = false
     @State private var errorMessage: String?
-    
+
     var body: some View {
         VStack(spacing: DesignSystem.Spaces.two) {
             Spacer()
@@ -22,7 +22,6 @@ struct ClientCertificateOnboardingView: View {
             Spacer()
         }
         .safeAreaInset(edge: .bottom, content: {
-
             buttons
         })
         .fileImporter(
@@ -30,17 +29,17 @@ struct ClientCertificateOnboardingView: View {
             allowedContentTypes: [
                 UTType(filenameExtension: "p12") ?? .data,
                 UTType(filenameExtension: "pfx") ?? .data,
-                .pkcs12
+                .pkcs12,
             ],
             allowsMultipleSelection: false
         ) { result in
             switch result {
-            case .success(let urls):
+            case let .success(urls):
                 if let url = urls.first {
                     pendingFileURL = url
                     showPasswordPrompt = true
                 }
-            case .failure(let error):
+            case let .failure(error):
                 errorMessage = error.localizedDescription
             }
         }
@@ -82,7 +81,7 @@ struct ClientCertificateOnboardingView: View {
 
     @ViewBuilder
     private var headerView: some View {
-        Image(systemSymbol:.lockShield)
+        Image(systemSymbol: .lockShield)
             .font(.system(size: 64))
             .foregroundColor(.accentColor)
 
@@ -109,21 +108,21 @@ struct ClientCertificateOnboardingView: View {
 
     private func importCertificate() {
         guard let fileURL = pendingFileURL else { return }
-        
+
         isImporting = true
         errorMessage = nil
-        
+
         // Access security-scoped resource
         guard fileURL.startAccessingSecurityScopedResource() else {
             errorMessage = L10n.Onboarding.ClientCertificate.Error.fileAccess
             isImporting = false
             return
         }
-        
+
         defer {
             fileURL.stopAccessingSecurityScopedResource()
         }
-        
+
         do {
             let data = try Data(contentsOf: fileURL)
             let identifier = UUID().uuidString
@@ -132,16 +131,16 @@ struct ClientCertificateOnboardingView: View {
                 password: password,
                 identifier: identifier
             )
-            
+
             password = ""
             pendingFileURL = nil
             isImporting = false
-            
+
             onImport(certificate)
         } catch {
             password = ""
             isImporting = false
-            
+
             if let certError = error as? ClientCertificateError {
                 errorMessage = certError.localizedDescription
             } else {

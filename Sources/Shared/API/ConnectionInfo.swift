@@ -104,7 +104,7 @@ public struct ConnectionInfo: Codable, Equatable {
             }
         }
         #endif
-        
+
         // Handle server trust and other challenges
         return securityExceptions.evaluate(challenge)
     }

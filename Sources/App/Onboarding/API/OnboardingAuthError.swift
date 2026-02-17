@@ -24,7 +24,10 @@ struct OnboardingAuthError: LocalizedError {
 
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
-            case (.invalidURL, .invalidURL), (.basicAuth, .basicAuth), (.clientCertificateRequired, .clientCertificateRequired):
+            case (.invalidURL, .invalidURL), (.basicAuth, .basicAuth), (
+                .clientCertificateRequired,
+                .clientCertificateRequired
+            ):
                 return true
             case let (.authenticationUnsupported(lhsMethod), .authenticationUnsupported(rhsMethod)):
                 return lhsMethod == rhsMethod

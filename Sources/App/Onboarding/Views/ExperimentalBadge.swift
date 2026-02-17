@@ -1,5 +1,5 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct ExperimentalBadge: View {
     @State private var showExplanation = false

@@ -48,9 +48,9 @@ class OnboardingAuthDetails: Equatable {
     }
 
     static func == (lhs: OnboardingAuthDetails, rhs: OnboardingAuthDetails) -> Bool {
-        lhs.url == rhs.url && 
-        lhs.scheme == rhs.scheme && 
-        lhs.exceptions == rhs.exceptions &&
-        lhs.clientCertificate == rhs.clientCertificate
+        lhs.url == rhs.url &&
+            lhs.scheme == rhs.scheme &&
+            lhs.exceptions == rhs.exceptions &&
+            lhs.clientCertificate == rhs.clientCertificate
     }
 }

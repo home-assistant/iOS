@@ -80,7 +80,7 @@ public class HomeAssistantAPI {
                         } else {
                             clientIdentityProvider = nil
                         }
-                        
+
                         return try .init(
                             url: activeURL,
                             userAgent: HomeAssistantAPI.userAgent,
@@ -136,7 +136,7 @@ public class HomeAssistantAPI {
         #else
         let sessionDelegate = SessionDelegate()
         #endif
-        
+
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
             delegate: sessionDelegate,

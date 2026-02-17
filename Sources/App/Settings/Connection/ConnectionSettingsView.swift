@@ -166,17 +166,23 @@ struct ConnectionSettingsView: View {
             allowsMultipleSelection: false
         ) { result in
             switch result {
-            case .success(let urls):
+            case let .success(urls):
                 if let url = urls.first {
                     pendingCertificateURL = url
                     showCertificatePasswordPrompt = true
                 }
-            case .failure(let error):
+            case let .failure(error):
                 Current.Log.error("Failed to select certificate file: \(error)")
             }
         }
-        .alert(L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.title, isPresented: $showCertificatePasswordPrompt) {
-            SecureField(L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.placeholder, text: $certificatePassword)
+        .alert(
+            L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.title,
+            isPresented: $showCertificatePasswordPrompt
+        ) {
+            SecureField(
+                L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.placeholder,
+                text: $certificatePassword
+            )
             Button(L10n.cancelLabel, role: .cancel) {
                 certificatePassword = ""
                 pendingCertificateURL = nil
@@ -351,9 +357,12 @@ struct ConnectionSettingsView: View {
                                 .font(.caption)
                                 .foregroundColor(.red)
                         } else if let expiresAt = certificate.expiresAt {
-                            Text(L10n.Settings.ConnectionSection.ClientCertificate.expiresAt(expiresAt.formatted(date: .abbreviated, time: .omitted)))
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            Text(L10n.Settings.ConnectionSection.ClientCertificate.expiresAt(expiresAt.formatted(
+                                date: .abbreviated,
+                                time: .omitted
+                            )))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                         }
                     }
                     Spacer()
@@ -367,7 +376,10 @@ struct ConnectionSettingsView: View {
                         isPresented: $showRemoveCertificateConfirmation,
                         titleVisibility: .visible
                     ) {
-                        Button(L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.remove, role: .destructive) {
+                        Button(
+                            L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.remove,
+                            role: .destructive
+                        ) {
                             viewModel.removeCertificate()
                         }
                         Button(L10n.cancelLabel, role: .cancel) {}
