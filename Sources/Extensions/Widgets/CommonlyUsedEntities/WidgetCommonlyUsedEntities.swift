@@ -64,7 +64,7 @@ struct WidgetCommonlyUsedEntities: Widget {
             }()
 
             let iconColor: Color = {
-                if showStates, [.light, .switch, .inputBoolean, .cover, .fan].contains(magicItem.domain) {
+                if showStates, [.light, .switch, .inputBoolean, .cover, .fan, .climate].contains(magicItem.domain) {
                     if state?.domainState?.isActive ?? false {
                         return state?.color ?? Color.haPrimary
                     } else {

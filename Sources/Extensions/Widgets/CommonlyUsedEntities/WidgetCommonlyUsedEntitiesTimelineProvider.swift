@@ -34,7 +34,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetCommonlyUsedEntitiesEntry
     typealias Intent = WidgetCommonlyUsedEntitiesAppIntent
 
-    private static let supportedDomains: [Domain] = [.light, .switch, .cover, .fan, .lock]
+    private static let supportedDomains: [Domain] = [.light, .switch, .cover, .fan, .climate, .lock]
 
     func placeholder(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         .init(

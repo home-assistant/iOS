@@ -180,6 +180,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     entityId: magicItem.id,
                     serverId: magicItem.serverId
                 ))
+            case .climate:
+                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                    entityId: magicItem.id,
+                    serverId: magicItem.serverId
+                ))
             case .scene, .script:
                 interactionType = .appIntent(.activate(
                     entityId: magicItem.id,

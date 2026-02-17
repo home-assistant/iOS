@@ -5,6 +5,7 @@ import UIKit
 public enum Domain: String, CaseIterable {
     case automation
     case button
+    case climate
     case cover
     case fan
     case inputBoolean = "input_boolean"
@@ -198,6 +199,8 @@ public enum Domain: String, CaseIterable {
             image = .robotIcon
         case .button:
             image = MaterialDesignIcons.gestureTapButtonIcon
+        case .climate:
+            image = .thermostatIcon
         case .cover:
             image = imageForCover(deviceClass: deviceClass ?? .unknown, state: state ?? .unknown)
         case .fan:
