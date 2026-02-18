@@ -1488,6 +1488,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.todo_list.all_done" = "Alles erledigt! 🎉";
 "widgets.todo_list.complete_item_title" = "Erledigung des To-Do-Eintrags";
 "widgets.todo_list.description" = "Prüfe deine Listen und füge Einträge hinzu";
+"widgets.todo_list.due_date.today" = "Today";
 "widgets.todo_list.parameter.item_id" = "Eintrag-ID";
 "widgets.todo_list.parameter.list" = "Liste";
 "widgets.todo_list.parameter.list_id" = "Listen-ID";
@@ -1496,4 +1497,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.todo_list.refresh_title" = "To-do-Liste aktualisieren";
 "widgets.todo_list.select_list" = "Widget bearbeiten, um Liste auszuwählen.";
 "widgets.todo_list.title" = "To-do-Liste";
+"widgets.todo_list.due_date.now" = "Now";
+"widgets.todo_list.due_date.in_format" = "In %@";
+"widgets.todo_list.due_date.ago_format" = "%@ ago";
 "yes_label" = "Ja";

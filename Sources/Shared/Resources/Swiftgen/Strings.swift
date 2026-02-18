@@ -5264,6 +5264,16 @@ public enum L10n {
       /// To-do List
       public static var title: String { return L10n.tr("Localizable", "widgets.todo_list.title") }
       public enum DueDate {
+        /// %@ ago
+        public static func agoFormat(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "widgets.todo_list.due_date.ago_format", String(describing: p1))
+        }
+        /// In %@
+        public static func inFormat(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "widgets.todo_list.due_date.in_format", String(describing: p1))
+        }
+        /// Now
+        public static var now: String { return L10n.tr("Localizable", "widgets.todo_list.due_date.now") }
         /// Today
         public static var today: String { return L10n.tr("Localizable", "widgets.todo_list.due_date.today") }
       }

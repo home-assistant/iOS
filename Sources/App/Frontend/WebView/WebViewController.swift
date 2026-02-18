@@ -47,6 +47,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
+    var connectionState: FrontEndConnectionState = .unknown
+
     private var loadActiveURLIfNeededInProgress = false
 
     /// Track the timestamp of the last pull-to-refresh action
