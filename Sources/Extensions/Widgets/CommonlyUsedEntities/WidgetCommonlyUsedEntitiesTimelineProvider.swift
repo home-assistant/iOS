@@ -122,7 +122,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         let stateProvider = WidgetEntityStateProvider(
             logPrefix: "Commonly used entities",
             cacheValiditySeconds: Self.cacheValiditySeconds,
-            cacheURL: { commonlyUsedEntitiesCacheURL() },
+            cacheURL: { commonlyUsedEntitiesCacheURL(serverId: configuration.server.getServer()?.identifier.rawValue) },
             shouldFetchStates: { true },
             skipFetchLogMessage: nil,
             itemFilter: { _ in true },
@@ -139,7 +139,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         return await stateProvider.states(showStates: configuration.showStates, items: items)
     }
 
-    private func commonlyUsedEntitiesCacheURL() -> URL {
+    private func commonlyUsedEntitiesCacheURL(serverId: String?) -> URL {
         let fileManager = FileManager.default
         let directoryURL = AppConstants.widgetsCacheURL
         if !fileManager.fileExists(atPath: directoryURL.path) {
@@ -149,7 +149,13 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
                 Current.Log.error("Failed to create commonly used entities cache directory")
             }
         }
-        return directoryURL.appendingPathComponent("commonly-used-entities.json")
+        let cacheFileName: String
+        if let serverId, !serverId.isEmpty {
+            cacheFileName = "commonly-used-entities-\(serverId).json"
+        } else {
+            cacheFileName = "commonly-used-entities.json"
+        }
+        return directoryURL.appendingPathComponent(cacheFileName)
     }
 }
 
