@@ -54,7 +54,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.script.rawValue,
             name: "Test Script",
-            icon: "mdi:script"
+            icon: "mdi:script",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server1": [scriptEntity]
@@ -81,7 +82,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.scene.rawValue,
             name: "Movie Night",
-            icon: "mdi:movie"
+            icon: "mdi:movie",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server1": [sceneEntity]
@@ -108,7 +110,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.light.rawValue,
             name: "Bedroom Light",
-            icon: "mdi:lightbulb"
+            icon: "mdi:lightbulb",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server1": [lightEntity]
@@ -135,7 +138,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.light.rawValue,
             name: "Bedroom Light",
-            icon: nil
+            icon: nil,
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server1": [lightEntity]
@@ -179,7 +183,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.script.rawValue,
             name: "Test Script",
-            icon: "mdi:script"
+            icon: "mdi:script",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server1": [scriptEntity]
@@ -204,7 +209,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.script.rawValue,
             name: "Test Script",
-            icon: "mdi:script"
+            icon: "mdi:script",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server1": [scriptEntity]
@@ -238,7 +244,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.script.rawValue,
             name: "Test Script",
-            icon: "mdi:script"
+            icon: "mdi:script",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server1": [scriptEntity]
@@ -263,7 +270,8 @@ struct MagicItemProviderTests {
             serverId: "server2",
             domain: Domain.script.rawValue,
             name: "Test Script",
-            icon: "mdi:script"
+            icon: "mdi:script",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server2": [scriptEntity]
@@ -330,7 +338,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.script.rawValue,
             name: "Test Script 1",
-            icon: "mdi:script"
+            icon: "mdi:script",
+            rawDeviceClass: nil
         )
         let scriptEntity2 = HAAppEntity(
             id: "server2-script.test2",
@@ -338,7 +347,8 @@ struct MagicItemProviderTests {
             serverId: "server2",
             domain: Domain.script.rawValue,
             name: "Test Script 2",
-            icon: "mdi:script"
+            icon: "mdi:script",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server1": [scriptEntity1],
@@ -367,7 +377,8 @@ struct MagicItemProviderTests {
             serverId: "server2",
             domain: Domain.script.rawValue,
             name: "Test Script",
-            icon: "mdi:script"
+            icon: "mdi:script",
+            rawDeviceClass: nil
         )
         provider.entitiesPerServer = [
             "server2": [scriptEntity]
@@ -432,7 +443,8 @@ struct MagicItemProviderTests {
             serverId: "server1",
             domain: Domain.light.rawValue,
             name: "Test Light",
-            icon: nil
+            icon: nil,
+            rawDeviceClass: nil
         )
         
         provider.entitiesPerServer = ["server1": [entity]]
