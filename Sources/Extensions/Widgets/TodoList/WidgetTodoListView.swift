@@ -170,17 +170,8 @@ struct WidgetTodoListView: View {
         return String(first).uppercased() + text.dropFirst()
     }
 
-    private var widgetFamilyItemRowSpacing: CGFloat {
-        switch widgetFamily {
-        case .systemLarge, .systemExtraLarge:
-            return DesignSystem.Spaces.one
-        default:
-            return DesignSystem.Spaces.micro
-        }
-    }
-
     private var itemsListView: some View {
-        VStack(alignment: .leading, spacing: widgetFamilyItemRowSpacing) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             if items.isEmpty {
                 Text(verbatim: L10n.Widgets.TodoList.allDone)
                     .font(DesignSystem.Font.body)
@@ -188,23 +179,23 @@ struct WidgetTodoListView: View {
                     .frame(height: 40)
             } else {
                 ForEach(items, id: \.uid) { item in
-                    HStack(alignment: item.due != nil ? .top : .center) {
+                    HStack(alignment: .top) {
                         Button(intent: TodoItemCompleteAppIntent(
                             serverId: serverId,
                             listId: listId,
                             itemId: item.uid
                         )) {
                             Image(systemSymbol: .circle)
-                                .font(DesignSystem.Font.body)
+                                .font(DesignSystem.Font.title3)
                                 .foregroundStyle(.haPrimary)
                                 .padding(.top, item.due != nil ? DesignSystem.Spaces.micro : 0)
                         }
                         .buttonStyle(.plain)
                         if let openListURL = AppConstants.todoListOpenURL(listId: listId, serverId: serverId) {
                             Link(destination: openListURL.withWidgetAuthenticity()) {
-                                VStack(alignment: .leading, spacing: .zero) {
+                                VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
                                     Text(item.summary)
-                                        .font(DesignSystem.Font.callout)
+                                        .font(DesignSystem.Font.body)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                     if let dueDisplay = dueDisplay(for: item) {
@@ -215,7 +206,7 @@ struct WidgetTodoListView: View {
                                                     .secondaryLabel
                                             ))
                                             Text(dueDisplay.text)
-                                                .font(DesignSystem.Font.caption)
+                                                .font(DesignSystem.Font.caption2)
                                                 .foregroundStyle(dueDisplay.isPastDateOnly ? Color.orange : .secondary)
                                                 .lineLimit(1)
                                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -225,7 +216,7 @@ struct WidgetTodoListView: View {
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .topLeading)
                 }
             }
         }
