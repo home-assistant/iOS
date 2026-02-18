@@ -384,10 +384,10 @@ public extension MagicItem {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person, .camera, .todo:
-            break
         case .automation:
             request = .trigger(entityId: entityId)
+        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate:
+            break
         }
         if let request, let connection = Current.api(for: server)?.connection {
             return connection.send(request).promise

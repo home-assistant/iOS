@@ -20,7 +20,7 @@ struct WidgetCommonlyUsedEntities: Widget {
                     infoProvider: timelineEntry.magicItemInfoProvider,
                     states: timelineEntry.entitiesState,
                     showStates: timelineEntry.showStates
-                ), type: .custom, showLastUpdate: timelineEntry.showLastUpdateTime)
+                ), type: .custom, showLastUpdate: timelineEntry.showLastUpdateTime, showServerName: timelineEntry.serverName != nil, serverName: timelineEntry.serverName)
             } else {
                 emptyView
                     .widgetBackground(Color.clear)

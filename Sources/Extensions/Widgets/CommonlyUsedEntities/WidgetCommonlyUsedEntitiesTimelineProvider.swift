@@ -11,6 +11,7 @@ struct WidgetCommonlyUsedEntitiesEntry: TimelineEntry {
     var entitiesState: [MagicItem: ItemState]
     var showLastUpdateTime: Bool
     var showStates: Bool
+    var serverName: String?
 
     struct ItemState: Codable {
         let value: String
@@ -48,7 +49,8 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
             magicItemInfoProvider: Current.magicItemProvider(),
             entitiesState: [:],
             showLastUpdateTime: false,
-            showStates: false
+            showStates: false,
+            serverName: nil
         )
     }
 
@@ -56,14 +58,15 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
         for configuration: WidgetCommonlyUsedEntitiesAppIntent,
         in context: Context
     ) async -> WidgetCommonlyUsedEntitiesEntry {
-        let items = await fetchItems(context: context)
+        let items = await fetchItems(context: context, configuration: configuration)
         return await .init(
             date: .now,
             items: items,
             magicItemInfoProvider: infoProvider(),
             entitiesState: [:],
             showLastUpdateTime: configuration.showLastUpdateTime,
-            showStates: configuration.showStates
+            showStates: configuration.showStates,
+            serverName: configuration.server.getServer()?.info.name
         )
     }
 
@@ -71,7 +74,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
         for configuration: WidgetCommonlyUsedEntitiesAppIntent,
         in context: Context
     ) async -> Timeline<WidgetCommonlyUsedEntitiesEntry> {
-        let items = await fetchItems(context: context)
+        let items = await fetchItems(context: context, configuration: configuration)
         let entitiesState = await entitiesState(configuration: configuration, items: items)
 
         return await .init(
@@ -82,7 +85,8 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
                     magicItemInfoProvider: infoProvider(),
                     entitiesState: entitiesState,
                     showLastUpdateTime: configuration.showLastUpdateTime,
-                    showStates: configuration.showStates
+                    showStates: configuration.showStates,
+                    serverName: configuration.server.getServer()?.info.name
                 ),
             ], policy: .after(
                 Current.date()
@@ -91,41 +95,43 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
-    private func fetchItems(context: Context) async -> [MagicItem] {
-        var allItems: [MagicItem] = []
-
-        for server in Current.servers.all {
-            guard let connection = Current.api(for: server)?.connection else { continue }
-
-            let entities = await withCheckedContinuation { continuation in
-                connection.send(.usagePredictionCommonControl()) { result in
-                    switch result {
-                    case let .success(response):
-                        continuation.resume(returning: response.entities)
-                    case let .failure(error):
-                        Current.Log.error("Failed to fetch usage prediction: \(error)")
-                        continuation.resume(returning: [])
-                    }
-                }
-            }
-
-            let filteredEntities = entities.filter { entityId in
-                guard let domain = Domain(entityId: entityId) else { return false }
-                return Self.supportedDomains.contains(domain)
-            }
-
-            let magicItems = filteredEntities.map { entityId in
-                MagicItem(
-                    id: entityId,
-                    serverId: server.identifier.rawValue,
-                    type: .entity
-                )
-            }
-
-            allItems.append(contentsOf: magicItems)
+    private func fetchItems(context: Context, configuration: WidgetCommonlyUsedEntitiesAppIntent) async -> [MagicItem] {
+        guard let server = configuration.server.getServer() ??  Current.servers.all.first else {
+            Current.Log.info("No server found for commonly used entities widget, returning empty items")
+            return []
         }
 
-        return Array(allItems.prefix(WidgetFamilySizes.size(for: context.family)))
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("Failed to fetch usage prediction: no API available for server")
+            return []
+        }
+
+        let entities: [String] = await withCheckedContinuation { (continuation: CheckedContinuation<[String], Never>) in
+            api.connection.send(.usagePredictionCommonControl()) { result in
+                switch result {
+                case let .success(response):
+                    continuation.resume(returning: response.entities)
+                case let .failure(error):
+                    Current.Log.error("Failed to fetch usage prediction: \(error)")
+                    continuation.resume(returning: [])
+                }
+            }
+        }
+
+        let filteredEntities = entities.filter { entityId in
+            guard let domain = Domain(entityId: entityId) else { return false }
+            return Self.supportedDomains.contains(domain)
+        }
+
+        let magicItems = filteredEntities.map { entityId in
+            MagicItem(
+                id: entityId,
+                serverId: server.identifier.rawValue,
+                type: .entity
+            )
+        }
+
+        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family)))
     }
 
     private func infoProvider() async -> MagicItemProviderProtocol {
@@ -243,8 +249,13 @@ struct WidgetCommonlyUsedEntitiesAppIntent: AppIntent, WidgetConfigurationIntent
     static var isDiscoverable: Bool = false
 
     @Parameter(
+        title: .init("widgets.param.server.title", defaultValue: "Server")
+    )
+    var server: IntentServerAppEntity
+
+    @Parameter(
         title: .init("widgets.custom.show_last_update_time.param.title", defaultValue: "Show last update time"),
-        default: false
+        default: true
     )
     var showLastUpdateTime: Bool
 
@@ -254,7 +265,7 @@ struct WidgetCommonlyUsedEntitiesAppIntent: AppIntent, WidgetConfigurationIntent
             "widgets.custom.show_states.description",
             defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
         ),
-        default: false
+        default: true
     )
     var showStates: Bool
 

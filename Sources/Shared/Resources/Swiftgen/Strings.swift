@@ -4822,6 +4822,16 @@ public enum L10n {
       /// Reload all widgets
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
     }
+    public enum CommonlyUsedEntities {
+      /// Display your commonly used entities based on your usage patterns.
+      public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.description") }
+      /// Common Controls
+      public static var title: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.title") }
+      public enum Empty {
+        /// No commonly used entities found. Use Home Assistant to build your usage history.
+        public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.empty.description") }
+      }
+    }
     public enum Controls {
       public enum Assist {
         /// Open Assist in Home Assistant app
@@ -5108,16 +5118,6 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_update_time.title") }
       }
     }
-    public enum CommonlyUsedEntities {
-      /// Display your commonly used entities based on your usage patterns.
-      public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.description") }
-      /// Common Controls
-      public static var title: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.title") }
-      public enum Empty {
-        /// No commonly used entities found. Use Home Assistant to build your usage history.
-        public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.empty.description") }
-      }
-    }
     public enum Details {
       /// Display states using from Home Assistant in text
       public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }
@@ -5195,6 +5195,12 @@ public enum L10n {
       public static var notConfigured: String { return L10n.tr("Localizable", "widgets.open_page.not_configured") }
       /// Open Page
       public static var title: String { return L10n.tr("Localizable", "widgets.open_page.title") }
+    }
+    public enum Param {
+      public enum Server {
+        /// Server
+        public static var title: String { return L10n.tr("Localizable", "widgets.param.server.title") }
+      }
     }
     public enum Preview {
       public enum Custom {

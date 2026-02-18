@@ -1500,3 +1500,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.title" = "To-do List";
 "widgets.todo_list.due_date.today" = "Today";
 "yes_label" = "Yes";
+"widgets.param.server.title" = "Server";
