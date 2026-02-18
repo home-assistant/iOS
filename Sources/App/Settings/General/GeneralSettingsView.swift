@@ -226,6 +226,15 @@ struct GeneralSettingsView: View {
             })) {
                 Text(L10n.SettingsDetails.General.LaunchOnLogin.title)
             }
+            
+            Toggle(isOn: .init(get: {
+                Current.settingsStore.launchInBackground
+            }, set: { newValue in
+                Current.settingsStore.launchInBackground = newValue
+                redrawView()
+            })) {
+                Text(L10n.SettingsDetails.General.LaunchInBackground.title)
+            }
         }
     }
 
