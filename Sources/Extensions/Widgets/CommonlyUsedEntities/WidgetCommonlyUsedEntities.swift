@@ -1,5 +1,4 @@
 import AppIntents
-import Intents
 import SFSafeSymbols
 import Shared
 import SwiftUI

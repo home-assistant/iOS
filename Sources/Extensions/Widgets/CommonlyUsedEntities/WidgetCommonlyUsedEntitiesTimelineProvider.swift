@@ -1,7 +1,5 @@
 import AppIntents
-import GRDB
 import Shared
-import SwiftUI
 import WidgetKit
 
 struct WidgetCommonlyUsedEntitiesEntry: TimelineEntry {
