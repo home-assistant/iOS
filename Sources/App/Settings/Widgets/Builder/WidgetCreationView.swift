@@ -27,10 +27,12 @@ struct WidgetCreationView: View {
                 NavigationStack {
                     content
                 }
+                .navigationViewStyle(.stack)
             } else {
                 NavigationView {
                     content
                 }
+                .navigationViewStyle(.stack)
             }
         } else {
             content
