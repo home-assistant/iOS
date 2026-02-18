@@ -12,7 +12,6 @@ struct WidgetCommonlyUsedEntitiesEntry: TimelineEntry {
     var showLastUpdateTime: Bool
     var showStates: Bool
     var serverName: String?
-
 }
 
 @available(iOS 17, *)

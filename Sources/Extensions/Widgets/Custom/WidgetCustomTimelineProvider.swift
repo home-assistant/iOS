@@ -11,7 +11,6 @@ struct WidgetCustomEntry: TimelineEntry {
     var entitiesState: [MagicItem: WidgetEntityState]
     var showLastUpdateTime: Bool
     var showStates: Bool
-
 }
 
 @available(iOS 17, *)

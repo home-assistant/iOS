@@ -121,7 +121,8 @@ struct WidgetEntityStateProvider {
             let data = try Data(contentsOf: fileURL)
             return try JSONDecoder().decode(WidgetEntitiesStateCache.self, from: data)
         } catch {
-            Current.Log.error("Failed to load states cache in \(logPrefix) widget, error: \(error.localizedDescription)")
+            Current.Log
+                .error("Failed to load states cache in \(logPrefix) widget, error: \(error.localizedDescription)")
             return nil
         }
     }
