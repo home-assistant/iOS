@@ -130,7 +130,7 @@ struct WidgetEntityStateProvider {
     private func writeCache(_ states: [MagicItem: WidgetEntityState]) {
         do {
             let cache = WidgetEntitiesStateCache(
-                cacheCreatedDate: Date(),
+                cacheCreatedDate: Current.date(),
                 states: states
             )
             let fileURL = cacheURL()
