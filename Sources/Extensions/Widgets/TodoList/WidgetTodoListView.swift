@@ -216,8 +216,7 @@ struct WidgetTodoListView: View {
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .frame(minHeight: 30)
+                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .topLeading)
                 }
             }
         }
