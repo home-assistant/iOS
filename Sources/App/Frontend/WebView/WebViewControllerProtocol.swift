@@ -3,6 +3,7 @@ import Shared
 
 protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
+    var connectionState: FrontEndConnectionState { get }
     var overlayedController: UIViewController? { get }
     var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
@@ -17,6 +18,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func updateFrontendConnectionState(state: String)
     func navigateToPath(path: String)
     func refresh()
+    func refreshIfDisconnected()
     func load(request: URLRequest)
     func showSettingsViewController()
     func openDebug()
