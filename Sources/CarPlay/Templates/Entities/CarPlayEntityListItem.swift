@@ -69,7 +69,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
                     entityState: entity.state,
                     customColor: customIconColor
                 )
-                image = entity.getIconWithoutColor().carPlayIcon(color: iconColor)
+                image = entity.getMDI().carPlayIcon(color: iconColor)
             }
         }
 

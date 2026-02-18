@@ -12,6 +12,7 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.scripts.rawValue, "WidgetScripts")
         XCTAssertEqual(WidgetsKind.sensors.rawValue, "sensors")
         XCTAssertEqual(WidgetsKind.custom.rawValue, "custom")
+        XCTAssertEqual(WidgetsKind.commonlyUsedEntities.rawValue, "commonlyUsedEntities")
 
         // Controls
         XCTAssertEqual(WidgetsKind.controlAutomation.rawValue, "controlAutomation")
@@ -35,6 +36,6 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlFan.rawValue, "controlFan")
         XCTAssertEqual(WidgetsKind.controlOpenExperimentalDashboard.rawValue, "controlOpenExperimentalDashboard")
         XCTAssertEqual(WidgetsKind.todoList.rawValue, "todoList")
-        XCTAssertEqual(WidgetsKind.allCases.count, 29)
+        XCTAssertEqual(WidgetsKind.allCases.count, 30)
     }
 }

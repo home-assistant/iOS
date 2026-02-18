@@ -180,6 +180,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     entityId: magicItem.id,
                     serverId: magicItem.serverId
                 ))
+            case .climate:
+                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                    entityId: magicItem.id,
+                    serverId: magicItem.serverId
+                ))
             case .scene, .script:
                 interactionType = .appIntent(.activate(
                     entityId: magicItem.id,
@@ -379,10 +384,10 @@ public extension MagicItem {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person, .camera, .todo:
-            break
         case .automation:
             request = .trigger(entityId: entityId)
+        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate:
+            break
         }
         if let request, let connection = Current.api(for: server)?.connection {
             return connection.send(request).promise
