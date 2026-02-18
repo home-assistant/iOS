@@ -40,9 +40,81 @@ struct WidgetTodoList: Widget {
         listId: "todo.shopping",
         listTitle: "Shopping List",
         items: [
-            TodoListItem(summary: "Milk", uid: "1", status: "needs_action", description: ""),
+            TodoListItem(
+                summary: "Milk",
+                uid: "1",
+                status: "needs_action",
+                description: "",
+                due: Date()
+            ),
             TodoListItem(summary: "Bread", uid: "2", status: "needs_action", description: ""),
-            TodoListItem(summary: "Eggs", uid: "3", status: "needs_action", description: ""),
+            TodoListItem(
+                summary: "Eggs",
+                uid: "3",
+                status: "needs_action",
+                description: "",
+                due: Date()
+            ),
+        ],
+        family: .systemMedium
+    )
+})
+
+@available(iOS 17, *)
+#Preview(as: .systemSmall, widget: {
+    WidgetTodoList()
+}, timeline: {
+    WidgetTodoListEntry(
+        date: Date(),
+        serverId: "server-id",
+        listId: "todo.shopping",
+        listTitle: "Shopping List",
+        items: [
+            TodoListItem(
+                summary: "Milk",
+                uid: "1",
+                status: "needs_action",
+                description: "",
+                due: Date()
+            ),
+            TodoListItem(summary: "Bread", uid: "2", status: "needs_action", description: ""),
+            TodoListItem(
+                summary: "Eggs",
+                uid: "3",
+                status: "needs_action",
+                description: "",
+                due: Date()
+            ),
+        ],
+        family: .systemMedium
+    )
+})
+
+@available(iOS 17, *)
+#Preview(as: .systemLarge, widget: {
+    WidgetTodoList()
+}, timeline: {
+    WidgetTodoListEntry(
+        date: Date(),
+        serverId: "server-id",
+        listId: "todo.shopping",
+        listTitle: "Shopping List",
+        items: [
+            TodoListItem(
+                summary: "Milk",
+                uid: "1",
+                status: "needs_action",
+                description: "",
+                due: Date()
+            ),
+            TodoListItem(summary: "Bread", uid: "2", status: "needs_action", description: ""),
+            TodoListItem(
+                summary: "Eggs",
+                uid: "3",
+                status: "needs_action",
+                description: "",
+                due: Date()
+            ),
         ],
         family: .systemMedium
     )
