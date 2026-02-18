@@ -127,7 +127,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         Current.appDatabaseUpdater.stop()
 
         // Record timestamp when app enters background
-        backgroundTimestamp = Date()
+        backgroundTimestamp = Current.date()
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -138,21 +138,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         cleanWidgetsCache()
         updateLocation()
 
-        // Check if app was in background for 5 minutes or more
-        if let backgroundTimestamp {
-            let timeInterval = Date().timeIntervalSince(backgroundTimestamp)
-
-            if timeInterval >= backgroundRefreshThreshold, Current.settingsStore.refreshWebViewAfterInactive {
-                // Refresh WebViewController if it exists
-                // Note: webViewControllerPromise is a Guarantee, which cannot fail in PromiseKit
-                windowController?.webViewControllerPromise.done { webViewController in
-                    webViewController.refresh()
-                }
-            }
-
-            // Clear the timestamp
-            self.backgroundTimestamp = nil
-        }
+        autoRefreshWebViewRoutine()
     }
 
     func windowScene(
@@ -183,6 +169,25 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     // MARK: - Private
+
+    /// When webview has been inactive for long, when opening the app we reload the webview if it's disconnected
+    private func autoRefreshWebViewRoutine() {
+        // Check if app was in background for 5 minutes or more
+        if let backgroundTimestamp {
+            let timeInterval = Current.date().timeIntervalSince(backgroundTimestamp)
+
+            if timeInterval >= backgroundRefreshThreshold, Current.settingsStore.refreshWebViewAfterInactive {
+                // Refresh WebViewController if it exists
+                // Note: webViewControllerPromise is a Guarantee, which cannot fail in PromiseKit
+                windowController?.webViewControllerPromise.done { webViewController in
+                    webViewController.refreshIfDisconnected()
+                }
+            }
+
+            // Clear the timestamp
+            self.backgroundTimestamp = nil
+        }
+    }
 
     /// Whenever a custom widget is executed it can create cache files to hold it state,
     /// this clears it
