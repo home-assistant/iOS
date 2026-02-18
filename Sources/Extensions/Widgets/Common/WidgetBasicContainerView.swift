@@ -256,7 +256,8 @@ struct WidgetBasicContainerWrapperView: View {
                 content(for: Array(contents.prefix(WidgetFamilySizes.size(for: family))))
             }
             if showLastUpdate, !contents.isEmpty {
-                let lastUpdatedTextView = Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") + Text(Date.now, style: .time)
+                let lastUpdatedTextView = Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") +
+                    Text(Date.now, style: .time)
                 Group {
                     if showServerName, let serverName {
                         Text(serverName) + Text(" · ") + lastUpdatedTextView

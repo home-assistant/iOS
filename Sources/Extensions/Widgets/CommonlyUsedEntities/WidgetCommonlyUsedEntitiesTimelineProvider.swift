@@ -96,7 +96,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func fetchItems(context: Context, configuration: WidgetCommonlyUsedEntitiesAppIntent) async -> [MagicItem] {
-        guard let server = configuration.server.getServer() ??  Current.servers.all.first else {
+        guard let server = configuration.server.getServer() ?? Current.servers.all.first else {
             Current.Log.info("No server found for commonly used entities widget, returning empty items")
             return []
         }

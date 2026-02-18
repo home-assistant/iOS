@@ -13,14 +13,21 @@ struct WidgetCommonlyUsedEntities: Widget {
             provider: WidgetCommonlyUsedEntitiesTimelineProvider()
         ) { timelineEntry in
             if !timelineEntry.items.isEmpty {
-                WidgetBasicContainerView(emptyViewGenerator: {
-                    AnyView(emptyView)
-                }, contents: modelsForWidget(
-                    items: timelineEntry.items,
-                    infoProvider: timelineEntry.magicItemInfoProvider,
-                    states: timelineEntry.entitiesState,
-                    showStates: timelineEntry.showStates
-                ), type: .custom, showLastUpdate: timelineEntry.showLastUpdateTime, showServerName: timelineEntry.serverName != nil, serverName: timelineEntry.serverName)
+                WidgetBasicContainerView(
+                    emptyViewGenerator: {
+                        AnyView(emptyView)
+                    },
+                    contents: modelsForWidget(
+                        items: timelineEntry.items,
+                        infoProvider: timelineEntry.magicItemInfoProvider,
+                        states: timelineEntry.entitiesState,
+                        showStates: timelineEntry.showStates
+                    ),
+                    type: .custom,
+                    showLastUpdate: timelineEntry.showLastUpdateTime,
+                    showServerName: timelineEntry.serverName != nil,
+                    serverName: timelineEntry.serverName
+                )
             } else {
                 emptyView
                     .widgetBackground(Color.clear)
