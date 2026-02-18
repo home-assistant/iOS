@@ -92,11 +92,18 @@ struct WidgetCommonlyUsedEntities: Widget {
             }()
 
             let interactionType = magicItem.widgetInteractionType
-
+            let areaName = infoProvider.getAreaName(for: magicItem)
+            let subtitle: String? = {
+                if let areaName, let state = state?.value {
+                    return state + " · " + areaName
+                } else {
+                    return state?.value
+                }
+            }()
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: title,
-                subtitle: state?.value,
+                subtitle: subtitle,
                 interactionType: interactionType,
                 icon: icon,
                 showIconBackground: true,

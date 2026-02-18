@@ -6,6 +6,7 @@ public protocol MagicItemProviderProtocol {
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void)
     func loadInformation() async -> [String: [HAAppEntity]]
     func getInfo(for item: MagicItem) -> MagicItem.Info?
+    func getAreaName(for item: MagicItem) -> String?
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
@@ -207,5 +208,19 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 customization: item.customization
             )
         }
+    }
+
+    func getAreaName(for item: MagicItem) -> String? {
+        guard item.type != .action,
+              let entitiesForServer = entitiesPerServer[item.serverId] else {
+            return nil
+        }
+
+        let areaName = entitiesForServer.areasMap(for: item.serverId)[item.id]?.name
+        if let areaName, !areaName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return areaName
+        }
+
+        return nil
     }
 }

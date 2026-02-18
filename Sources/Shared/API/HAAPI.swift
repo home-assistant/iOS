@@ -796,7 +796,7 @@ public class HomeAssistantAPI {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person, .camera, .todo:
+        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate:
             break
         case .automation:
             request = .trigger(entityId: entityId)

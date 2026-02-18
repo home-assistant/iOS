@@ -379,5 +379,9 @@ final class MockMagicItemProvider: MagicItemProviderProtocol {
             return .init(id: "2", name: "Cba", iconName: "heart", customization: .init(iconColor: "#FFFFFF"))
         }
     }
+
+    func getAreaName(for item: Shared.MagicItem) -> String? {
+        nil
+    }
 }
 #endif
