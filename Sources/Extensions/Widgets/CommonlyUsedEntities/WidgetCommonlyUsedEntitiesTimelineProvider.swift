@@ -8,32 +8,21 @@ struct WidgetCommonlyUsedEntitiesEntry: TimelineEntry {
     var date: Date
     var items: [MagicItem]
     var magicItemInfoProvider: MagicItemProviderProtocol
-    var entitiesState: [MagicItem: ItemState]
+    var entitiesState: [MagicItem: WidgetEntityState]
     var showLastUpdateTime: Bool
     var showStates: Bool
     var serverName: String?
 
-    struct ItemState: Codable {
-        let value: String
-        let domainState: Domain.State?
-        let hexColor: String?
-
-        var color: Color? {
-            guard let hexColor else { return nil }
-            return Color(hex: hexColor)
-        }
-    }
-}
-
-struct WidgetCommonlyUsedEntitiesItemStatesCache: Codable {
-    let cacheCreatedDate: Date
-    let states: [MagicItem: WidgetCommonlyUsedEntitiesEntry.ItemState]
 }
 
 @available(iOS 17, *)
-struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
+struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProvider {
     typealias Entry = WidgetCommonlyUsedEntitiesEntry
     typealias Intent = WidgetCommonlyUsedEntitiesAppIntent
+
+    var expiration: Measurement<UnitDuration> {
+        WidgetCommonlyUsedEntitiesConstants.expiration
+    }
 
     /// Domains supported by this widget for entity filtering and display
     static let supportedDomains: [Domain] = [.light, .switch, .cover, .fan, .climate, .lock]
@@ -42,7 +31,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
     /// that triggers multiple timeline refreshes
     private static let cacheValiditySeconds: TimeInterval = 1
 
-    func placeholder(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
+    func makePlaceholder(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         .init(
             date: .now,
             items: [],
@@ -54,7 +43,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
-    func snapshot(
+    func makeSnapshotEntry(
         for configuration: WidgetCommonlyUsedEntitiesAppIntent,
         in context: Context
     ) async -> WidgetCommonlyUsedEntitiesEntry {
@@ -62,7 +51,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
         return await .init(
             date: .now,
             items: items,
-            magicItemInfoProvider: infoProvider(),
+            magicItemInfoProvider: WidgetMagicItemInfoProvider.load(),
             entitiesState: [:],
             showLastUpdateTime: configuration.showLastUpdateTime,
             showStates: configuration.showStates,
@@ -70,28 +59,21 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
-    func timeline(
+    func makeTimelineEntry(
         for configuration: WidgetCommonlyUsedEntitiesAppIntent,
         in context: Context
-    ) async -> Timeline<WidgetCommonlyUsedEntitiesEntry> {
+    ) async -> WidgetCommonlyUsedEntitiesEntry {
         let items = await fetchItems(context: context, configuration: configuration)
         let entitiesState = await entitiesState(configuration: configuration, items: items)
 
         return await .init(
-            entries: [
-                .init(
-                    date: .now,
-                    items: items,
-                    magicItemInfoProvider: infoProvider(),
-                    entitiesState: entitiesState,
-                    showLastUpdateTime: configuration.showLastUpdateTime,
-                    showStates: configuration.showStates,
-                    serverName: configuration.server.getServer()?.info.name
-                ),
-            ], policy: .after(
-                Current.date()
-                    .addingTimeInterval(WidgetCommonlyUsedEntitiesConstants.expiration.converted(to: .seconds).value)
-            )
+            date: .now,
+            items: items,
+            magicItemInfoProvider: WidgetMagicItemInfoProvider.load(),
+            entitiesState: entitiesState,
+            showLastUpdateTime: configuration.showLastUpdateTime,
+            showStates: configuration.showStates,
+            serverName: configuration.server.getServer()?.info.name
         )
     }
 
@@ -134,89 +116,28 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: AppIntentTimelineProvider {
         return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family)))
     }
 
-    private func infoProvider() async -> MagicItemProviderProtocol {
-        let infoProvider = Current.magicItemProvider()
-        _ = await infoProvider.loadInformation()
-        return infoProvider
-    }
-
     private func entitiesState(
         configuration: WidgetCommonlyUsedEntitiesAppIntent,
         items: [MagicItem]
-    ) async -> [MagicItem: WidgetCommonlyUsedEntitiesEntry.ItemState] {
-        guard configuration.showStates else {
-            Current.Log.verbose("States are disabled in commonly used entities widget configuration")
-            return [:]
-        }
-
-        if let cache = getStatesCache(), cache.cacheCreatedDate.timeIntervalSinceNow > -Self.cacheValiditySeconds {
-            Current.Log.verbose("Commonly used entities widget states cache is still valid, returning cached states")
-            return cache.states
-        }
-
-        Current.Log.verbose("Commonly used entities widget has no valid cache, fetching states")
-
-        var states: [MagicItem: WidgetCommonlyUsedEntitiesEntry.ItemState] = [:]
-
-        for item in items {
-            let serverId = item.serverId
-            let entityId = item.id
-            guard let domain = item.domain,
-                  let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { continue }
-
-            if let state: ControlEntityProvider.State = await ControlEntityProvider(domains: [domain]).state(
-                server: server,
-                entityId: entityId
-            ) {
+    ) async -> [MagicItem: WidgetEntityState] {
+        let stateProvider = WidgetEntityStateProvider(
+            logPrefix: "Commonly used entities",
+            cacheValiditySeconds: Self.cacheValiditySeconds,
+            cacheURL: { commonlyUsedEntitiesCacheURL() },
+            shouldFetchStates: { true },
+            skipFetchLogMessage: nil,
+            itemFilter: { _ in true },
+            stateValueFormatter: { state, serverId, entityId in
                 let adjustedValue = StatePrecision.adjustPrecision(
                     serverId: serverId,
                     entityId: entityId,
                     stateValue: state.value
                 )
-                let valueWithUnit = state.unitOfMeasurement.map { "\(adjustedValue) \($0)" } ?? adjustedValue
-                states[item] = .init(
-                    value: valueWithUnit,
-                    domainState: state.domainState,
-                    hexColor: state.color?.hex()
-                )
-            } else {
-                Current.Log.error(
-                    "Failed to get state for entity in commonly used entities widget, entityId: \(entityId), serverId: \(serverId)"
-                )
+                return state.unitOfMeasurement.map { "\(adjustedValue) \($0)" } ?? adjustedValue
             }
-        }
+        )
 
-        do {
-            let cache = WidgetCommonlyUsedEntitiesItemStatesCache(
-                cacheCreatedDate: Date(),
-                states: states
-            )
-            let fileURL = commonlyUsedEntitiesCacheURL()
-            let encodedStates = try JSONEncoder().encode(cache)
-            try encodedStates.write(to: fileURL)
-            Current.Log.verbose(
-                "JSON saved successfully for commonly used entities widget cached states, file URL: \(fileURL.absoluteString)"
-            )
-        } catch {
-            Current.Log.error(
-                "Failed to cache states in WidgetCommonlyUsedEntitiesTimelineProvider, error: \(error.localizedDescription)"
-            )
-        }
-
-        return states
-    }
-
-    private func getStatesCache() -> WidgetCommonlyUsedEntitiesItemStatesCache? {
-        let fileURL = commonlyUsedEntitiesCacheURL()
-        do {
-            let data = try Data(contentsOf: fileURL)
-            return try JSONDecoder().decode(WidgetCommonlyUsedEntitiesItemStatesCache.self, from: data)
-        } catch {
-            Current.Log.error(
-                "Failed to load states cache in WidgetCommonlyUsedEntitiesTimelineProvider, error: \(error.localizedDescription)"
-            )
-            return nil
-        }
+        return await stateProvider.states(showStates: configuration.showStates, items: items)
     }
 
     private func commonlyUsedEntitiesCacheURL() -> URL {

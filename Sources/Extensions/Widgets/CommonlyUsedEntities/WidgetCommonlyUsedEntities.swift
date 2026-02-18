@@ -55,12 +55,12 @@ struct WidgetCommonlyUsedEntities: Widget {
     private func modelsForWidget(
         items: [MagicItem],
         infoProvider: MagicItemProviderProtocol,
-        states: [MagicItem: WidgetCommonlyUsedEntitiesEntry.ItemState],
+        states: [MagicItem: WidgetEntityState],
         showStates: Bool
     ) -> [WidgetBasicViewModel] {
         items.map { magicItem in
             let info = infoProvider.getInfo(for: magicItem)
-            let state: WidgetCommonlyUsedEntitiesEntry.ItemState? = states[magicItem]
+            let state: WidgetEntityState? = states[magicItem]
 
             let icon: MaterialDesignIcons = {
                 if let info {
