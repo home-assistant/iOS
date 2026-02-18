@@ -887,6 +887,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings_details.general.device_name.title" = "Название устройства";
 "settings_details.general.full_screen.title" = "Полноэкранный режим";
 "settings_details.general.launch_on_login.title" = "Запустить приложение при логине";
+"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "Ссылки";
 "settings_details.general.menu_bar_text.title" = "Текст панели меню";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

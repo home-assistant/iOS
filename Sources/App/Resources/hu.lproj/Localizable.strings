@@ -886,6 +886,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings_details.general.device_name.title" = "Eszköznév";
 "settings_details.general.full_screen.title" = "Teljes képernyő";
 "settings_details.general.launch_on_login.title" = "Alkalmazás indítása bejelentkezéskor";
+"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "Linkek";
 "settings_details.general.menu_bar_text.title" = "Menüsor szövege";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

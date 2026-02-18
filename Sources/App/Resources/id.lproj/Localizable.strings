@@ -886,6 +886,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "settings_details.general.device_name.title" = "Nama Perangkat";
 "settings_details.general.full_screen.title" = "Layar Penuh";
 "settings_details.general.launch_on_login.title" = "Luncurkan Aplikasi saat Masuk";
+"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "Tautan";
 "settings_details.general.menu_bar_text.title" = "Teks Bar Menu";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

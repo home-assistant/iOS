@@ -887,6 +887,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_details.general.device_name.title" = "裝置名稱";
 "settings_details.general.full_screen.title" = "全螢幕";
 "settings_details.general.launch_on_login.title" = "登入時啟動 App";
+"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "連結";
 "settings_details.general.menu_bar_text.title" = "選單列文字";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

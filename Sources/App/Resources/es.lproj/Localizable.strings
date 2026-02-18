@@ -887,6 +887,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.device_name.title" = "Nombre del dispositivo";
 "settings_details.general.full_screen.title" = "Pantalla completa";
 "settings_details.general.launch_on_login.title" = "Iniciar aplicación al iniciar sesión";
+"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Texto de la barra de menús";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

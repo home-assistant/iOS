@@ -884,6 +884,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings_details.general.device_name.title" = "设备名称";
 "settings_details.general.full_screen.title" = "全屏";
 "settings_details.general.launch_on_login.title" = "登录时启动应用程序";
+"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "链接";
 "settings_details.general.menu_bar_text.title" = "菜单栏文本";
 "settings_details.general.open_in_browser.chrome" = "谷歌浏览器";
