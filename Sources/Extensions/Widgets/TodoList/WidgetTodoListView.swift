@@ -211,8 +211,6 @@ struct WidgetTodoListView: View {
                                                 .lineLimit(1)
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
-                                    } else {
-                                        Spacer()
                                     }
                                 }
                             }
