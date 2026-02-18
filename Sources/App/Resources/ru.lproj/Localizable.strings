@@ -1487,6 +1487,9 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.todo_list.all_done" = "Всё готов! 🎉";
 "widgets.todo_list.complete_item_title" = "Complete To-do Item";
 "widgets.todo_list.description" = "Check your lists and add items";
+"widgets.todo_list.due_date.ago_format" = "%@ ago";
+"widgets.todo_list.due_date.in_format" = "In %@";
+"widgets.todo_list.due_date.now" = "Now";
 "widgets.todo_list.due_date.today" = "Today";
 "widgets.todo_list.parameter.item_id" = "Item ID";
 "widgets.todo_list.parameter.list" = "Список";
@@ -1496,7 +1499,4 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.todo_list.refresh_title" = "Обновить список задач";
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "Список задач";
-"widgets.todo_list.due_date.now" = "Now";
-"widgets.todo_list.due_date.in_format" = "In %@";
-"widgets.todo_list.due_date.ago_format" = "%@ ago";
 "yes_label" = "Да";
