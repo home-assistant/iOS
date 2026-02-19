@@ -214,9 +214,10 @@ struct GeneralSettingsView: View {
     @ViewBuilder
     private var launchOnLogin: some View {
         let launcherIdentifier = AppConstants.BundleID.appending(".Launcher")
+        let isLoginItemEnabled = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
         Section {
             Toggle(isOn: .init(get: {
-                Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
+                isLoginItemEnabled
             }, set: { newValue in
                 _ = Current.macBridge.setLoginItem(
                     forBundleIdentifier: launcherIdentifier,
@@ -235,6 +236,7 @@ struct GeneralSettingsView: View {
             })) {
                 Text(L10n.SettingsDetails.General.LaunchInBackground.title)
             }
+            .disabled(!isLoginItemEnabled)
         }
     }
 
