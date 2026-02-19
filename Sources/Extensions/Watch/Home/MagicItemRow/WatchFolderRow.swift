@@ -46,10 +46,10 @@ struct WatchFolderRow: View {
     }
 
     private var iconColor: UIColor {
-        if let hex = itemInfo.customization?.iconColor {
+        if let hex = item.customization?.iconColor {
             .init(hex: hex)
         } else {
-            .white
+            UIColor(Color.haPrimary)
         }
     }
 
@@ -81,7 +81,7 @@ struct WatchFolderRow: View {
     }
 
     private var textColor: Color {
-        if let textColor = itemInfo.customization?.textColor {
+        if let textColor = item.customization?.textColor {
             .init(uiColor: .init(hex: textColor))
         } else {
             .white
@@ -89,7 +89,7 @@ struct WatchFolderRow: View {
     }
 
     private var backgroundForWatchItem: Color? {
-        if let backgroundColor = itemInfo.customization?.backgroundColor {
+        if let backgroundColor = item.customization?.backgroundColor {
             Color(uiColor: .init(hex: backgroundColor))
         } else {
             nil
