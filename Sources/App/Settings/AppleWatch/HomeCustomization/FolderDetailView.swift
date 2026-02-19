@@ -41,7 +41,7 @@ struct FolderDetailView: View {
                 Button {
                     showEditFolder = true
                 } label: {
-                    Image(systemSymbol: .pencil)
+                    Image(systemSymbol: .gearshape)
                 }
             }
         }
