@@ -49,7 +49,7 @@ struct WatchFolderRow: View {
         if let hex = item.customization?.iconColor {
             .init(hex: hex)
         } else {
-            UIColor(Color.haPrimary)
+            .white
         }
     }
 
