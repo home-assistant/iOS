@@ -4016,13 +4016,29 @@ public enum L10n {
       }
     }
     public enum Configuration {
+      public enum AddFolder {
+        /// Add Folder
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.add_folder.title") }
+      }
       public enum AddItem {
         /// Add item
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.add_item.title") }
       }
+      public enum Folder {
+        /// Folder
+        public static var defaultName: String { return L10n.tr("Localizable", "watch.configuration.folder.default_name") }
+      }
+      public enum FolderName {
+        /// Folder Name
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.folder_name.title") }
+      }
       public enum Items {
         /// Items
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.items.title") }
+      }
+      public enum NewFolder {
+        /// New Folder
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.new_folder.title") }
       }
       public enum Save {
         /// Save

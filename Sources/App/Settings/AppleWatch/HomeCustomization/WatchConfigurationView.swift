@@ -128,10 +128,10 @@ struct WatchConfigurationView: View {
                 Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
             }
             Button {
-                newFolderName = "Folder"
+                newFolderName = L10n.Watch.Configuration.Folder.defaultName
                 showAddFolderSheet = true
             } label: {
-                Label("Add Folder", systemSymbol: .folder)
+                Label(L10n.Watch.Configuration.AddFolder.title, systemSymbol: .folder)
             }
         }
     }
@@ -153,12 +153,12 @@ struct WatchConfigurationView: View {
 
     private var addFolderForm: some View {
         Form {
-            Section("Folder Name") {
-                TextField("Folder", text: $newFolderName)
+            Section(L10n.Watch.Configuration.FolderName.title) {
+                TextField(L10n.Watch.Configuration.Folder.defaultName, text: $newFolderName)
                     .textInputAutocapitalization(.words)
             }
         }
-        .navigationTitle("New Folder")
+        .navigationTitle(L10n.Watch.Configuration.NewFolder.title)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(action: { showAddFolderSheet = false }) {
@@ -168,8 +168,7 @@ struct WatchConfigurationView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     let name = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
-                    let finalName = name.isEmpty ? "Folder" : name
-                    viewModel.addFolder(named: finalName)
+                    viewModel.addFolder(named: name)
                     showAddFolderSheet = false
                 }) {
                     Text(L10n.Watch.Configuration.AddItem.title)
