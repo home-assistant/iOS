@@ -20,6 +20,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var showError = false
     @Published var focusOnInput = false
     @Published var errorMessage = ""
+    @Published var configuration: AssistConfiguration
 
     private var server: Server
     private var audioRecorder: AudioRecorderProtocol
@@ -28,6 +29,10 @@ final class AssistViewModel: NSObject, ObservableObject {
     private(set) var autoStartRecording: Bool
 
     private(set) var canSendAudioData = false
+    private var configObservationCancellable: AnyDatabaseCancellable?
+
+    // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
+    static let ttsMuteKey = "assistMuteTTS"
 
     init(
         server: Server,
@@ -43,6 +48,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioPlayer = audioPlayer
         self.assistService = assistService
         self.autoStartRecording = autoStartRecording
+        self.configuration = AssistConfiguration.config
         super.init()
 
         self.audioRecorder.delegate = self
@@ -99,11 +105,32 @@ final class AssistViewModel: NSObject, ObservableObject {
         // Wait until green light from recorder delegate 'didStartRecording'
     }
 
+    func subscribeForConfigChanges() {
+        let observation = ValueObservation.tracking { db in
+            try AssistConfiguration.fetchOne(db, key: AssistConfiguration.singletonID)
+        }
+
+        configObservationCancellable = observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("Failed to observe AssistConfiguration changes: \(error)")
+            },
+            onChange: { [weak self] newConfiguration in
+                guard let self else { return }
+                if let newConfiguration {
+                    configuration = newConfiguration
+                    Current.Log.info("AssistConfiguration updated: \(newConfiguration)")
+                }
+            }
+        )
+    }
+
     private func startAssistAudioPipeline(audioSampleRate: Double) {
         assistService.assist(
             source: .audio(
                 pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
-                audioSampleRate: audioSampleRate
+                audioSampleRate: audioSampleRate,
+                tts: !configuration.muteTTS
             )
         )
     }
@@ -280,6 +307,16 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
+        // Check if TTS is muted in settings
+        let muteTTS = UserDefaults.standard.bool(forKey: Self.ttsMuteKey)
+
+        if muteTTS {
+            Current.Log.info("TTS is muted by user setting, skipping audio playback")
+            // Check if we should continue the conversation (e.g., for follow-up questions)
+            startRecordingAgainIfNeeded()
+            return
+        }
+
         audioPlayer.delegate = self
         audioPlayer.play(url: mediaUrl)
     }

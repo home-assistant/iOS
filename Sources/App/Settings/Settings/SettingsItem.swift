@@ -104,14 +104,14 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .sensors:
             SensorListView()
         case .nfc:
-            SettingsNFCView()
+            NFCListView()
         case .widgets:
-            WidgetBuilderView()
+            CustomWidgetsListView()
         case .watch:
             WatchConfigurationView()
                 .environment(\.colorScheme, .dark)
         case .carPlay:
-            CarPlayConfigurationView()
+            CarPlayConfigurationView(needsNavigationController: false)
         case .complications:
             SettingsComplicationsView()
         case .actions:
@@ -207,13 +207,6 @@ struct SettingsNotificationsView: View {
     var body: some View {
         embed(NotificationSettingsViewController())
             .navigationTitle(L10n.Settings.DetailsSection.NotificationSettingsRow.title)
-    }
-}
-
-struct SettingsNFCView: View {
-    var body: some View {
-        embed(NFCListViewController())
-            .navigationTitle(L10n.Nfc.List.title)
     }
 }
 

@@ -49,7 +49,6 @@ final class AreasService: AreasServiceProtocol {
         } else {
             // Read entity and device registries from database instead of making API calls
             let entitiesForAreas = fetchEntitiesFromDatabase(serverId: server.identifier.rawValue)
-            updatePropertiesInEntitiesDatabase(entitiesForAreas, serverId: server.identifier.rawValue)
             let deviceForAreas = fetchDevicesFromDatabase(serverId: server.identifier.rawValue)
             let allEntitiesPerArea = getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
@@ -57,46 +56,6 @@ final class AreasService: AreasServiceProtocol {
             )
 
             return allEntitiesPerArea
-        }
-    }
-
-    /// Updates the `hiddenBy` and `disabledBy` properties for entities in the local database based on the registry
-    /// response.
-    ///
-    /// This method synchronizes the hidden and disabled states of entities from Home Assistant's entity registry
-    /// with the local database. It fetches all entities (including hidden and disabled ones) from the database,
-    /// matches them with the provided registry responses, and updates their `hiddenBy` and `disabledBy` properties
-    /// to reflect the current state from the server.
-    ///
-    /// - Parameters:
-    ///   - entitiesRegistryResponse: An array of entity registry entries from the database
-    ///     containing the current `hiddenBy` and `disabledBy` states for each entity.
-    ///   - serverId: The server identifier to filter entities by.
-    ///
-    /// - Note: This method includes hidden and disabled entities when fetching from the database to ensure
-    ///   all entities can have their states updated.
-    ///
-    /// - Important: If the database write operation fails, an error will be logged but the method
-    ///   will continue processing remaining entities.
-    private func updatePropertiesInEntitiesDatabase(
-        _ entitiesRegistryResponse: [AppEntityRegistry],
-        serverId: String
-    ) {
-        do {
-            let entities = try HAAppEntity.config(include: [.all]).filter({ $0.serverId == serverId })
-
-            for entity in entities {
-                if let entityRegistry = entitiesRegistryResponse.first(where: { $0.entityId == entity.entityId }) {
-                    var updatedEntity = entity
-                    updatedEntity.hiddenBy = entityRegistry.hiddenBy
-                    updatedEntity.disabledBy = entityRegistry.disabledBy
-                    try Current.database().write { db in
-                        try updatedEntity.update(db)
-                    }
-                }
-            }
-        } catch {
-            Current.Log.error("Failed to update hiddenBy property in entities database: \(error.localizedDescription)")
         }
     }
 
@@ -122,59 +81,43 @@ final class AreasService: AreasServiceProtocol {
         devicesAndAreas: [AppDeviceRegistry],
         entitiesAndAreas: [AppEntityRegistry]
     ) -> [String: Set<String>] {
-        /// area_id : [device_id]
-        var areasAndDevicesDict: [String: [String]] = [:]
+        /// area_id : Set<device_id>
+        var areasAndDevicesDict: [String: Set<String>] = [:]
+        /// device_id : area_id (reverse lookup for O(1) access)
+        var deviceToAreaMap: [String: String] = [:]
 
-        // Get all devices from an area
+        // Build area->devices mapping and device->area reverse lookup
         for device in devicesAndAreas {
-            let deviceId = device.deviceId
             if let areaId = device.areaId {
-                if var deviceIds = areasAndDevicesDict[areaId] {
-                    deviceIds.append(deviceId)
-                    areasAndDevicesDict[areaId] = deviceIds
-                } else {
-                    areasAndDevicesDict[areaId] = [deviceId]
-                }
+                areasAndDevicesDict[areaId, default: []].insert(device.deviceId)
+                deviceToAreaMap[device.deviceId] = areaId
             }
         }
 
-        /// area_id : [entity_id]
+        /// area_id : Set<entity_id>
         var areasAndEntitiesDict: [String: Set<String>] = [:]
+        /// device_id : Set<entity_id> (built in one pass)
+        var deviceChildrenEntities: [String: Set<String>] = [:]
 
-        // Get all entities from an area
+        // Single pass through entities: add to areas and build device->entities mapping
         for entity in entitiesAndAreas {
-            if let areaId = entity.areaId, let entityId = entity.entityId {
-                if var entityIds = areasAndEntitiesDict[areaId] {
-                    entityIds.insert(entityId)
-                    areasAndEntitiesDict[areaId] = entityIds
-                } else {
-                    areasAndEntitiesDict[areaId] = [entityId]
-                }
+            guard let entityId = entity.entityId else { continue }
+
+            // Add entity directly to its area
+            if let areaId = entity.areaId {
+                areasAndEntitiesDict[areaId, default: []].insert(entityId)
+            }
+
+            // Build device->entities mapping for later
+            if let deviceId = entity.deviceId {
+                deviceChildrenEntities[deviceId, default: []].insert(entityId)
             }
         }
 
-        /// device_id : [entity_id]
-        var deviceChildrenEntities: [String: [String]] = [:]
-
-        // Get entities from a device
-        for areaAndDevices in areasAndDevicesDict {
-            for deviceId in areaAndDevices.value {
-                deviceChildrenEntities[deviceId] = entitiesAndAreas.filter { $0.deviceId == deviceId }
-                    .compactMap(\.entityId)
-            }
-        }
-
-        // Add device children entities to dictionary of areas and entities
-        deviceChildrenEntities.forEach { deviceAndChildren in
-            guard let areaOfDevice = areasAndDevicesDict.first(where: { areaAndDevices in
-                areaAndDevices.value.contains(deviceAndChildren.key)
-            })?.key else { return }
-
-            if var entityIds = areasAndEntitiesDict[areaOfDevice] {
-                deviceAndChildren.value.forEach { entityIds.insert($0) }
-                areasAndEntitiesDict[areaOfDevice] = entityIds
-            } else {
-                areasAndEntitiesDict[areaOfDevice] = Set(deviceAndChildren.value)
+        // Add device children entities to their areas (using reverse lookup)
+        for (deviceId, entityIds) in deviceChildrenEntities {
+            if let areaId = deviceToAreaMap[deviceId] {
+                areasAndEntitiesDict[areaId, default: []].formUnion(entityIds)
             }
         }
 

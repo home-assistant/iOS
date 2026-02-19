@@ -8,15 +8,38 @@ struct WidgetCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: WidgetCreationViewModel
     private let dismissAction: () -> Void
+
+    private let needsNavigationController: Bool
+
     init(
+        needsNavigationController: Bool = true,
         widget: CustomWidget = CustomWidget(id: UUID().uuidString, name: "", items: []),
         dismissAction: @escaping () -> Void
     ) {
+        self.needsNavigationController = needsNavigationController
         self._viewModel = .init(wrappedValue: .init(widget: widget))
         self.dismissAction = dismissAction
     }
 
     var body: some View {
+        if needsNavigationController {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    content
+                }
+                .navigationViewStyle(.stack)
+            } else {
+                NavigationView {
+                    content
+                }
+                .navigationViewStyle(.stack)
+            }
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         List {
             widgetPreview
             nameField
@@ -42,6 +65,12 @@ struct WidgetCreationView: View {
                 dismissAction()
             }
         }
+        .sheet(isPresented: $viewModel.showAddItem) {
+            MagicItemAddView(context: .widget) { magicItem in
+                guard let magicItem else { return }
+                viewModel.addItem(magicItem)
+            }
+        }
         .alert("", isPresented: $viewModel.showError, actions: {
             Button(action: {
                 /* no-op */
@@ -51,12 +80,6 @@ struct WidgetCreationView: View {
         }, message: {
             Text(viewModel.errorMessage)
         })
-        .sheet(isPresented: $viewModel.showAddItem) {
-            MagicItemAddView(context: .widget) { magicItem in
-                guard let magicItem else { return }
-                viewModel.addItem(magicItem)
-            }
-        }
     }
 
     private var widgetPreview: some View {
@@ -233,6 +256,7 @@ struct WidgetCreationView: View {
                 rowsCount: rows.count
             )
         )
+        .environment(\.widgetFamily, widgetFamilyPreview())
     }
 
     private func widgetFamilyPreview() -> WidgetFamily {

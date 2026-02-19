@@ -119,6 +119,7 @@
 "mJ6CrP" = "Falha ao enviar ${eventName} : ${error}";
 "mZnRHS" = "${eventName} disparado";
 "mi6B62" = "Quais dados você deseja enviar com o evento?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Só para confirmar, você queria '${server}'?";
 "ns9RRU" = "Abrir página";
 "nzqmFA" = "Feito";
@@ -147,6 +148,7 @@
 "vAIAF2" = "Envie uma atualização do sensor para o Home Assistant";
 "vebd70" = "Servidor";
 "wfPQQQ" = "Disparar um evento no barramento de eventos do Home Assistant";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Resultado";
 "xfXG6b" = "Qual servidor?";
 "xhwpj4" = "Feito";

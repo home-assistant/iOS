@@ -26,14 +26,14 @@ public protocol AssistServiceDelegate: AnyObject {
 
 public enum AssistSource: Equatable {
     case text(input: String, pipelineId: String?)
-    case audio(pipelineId: String?, audioSampleRate: Double)
+    case audio(pipelineId: String?, audioSampleRate: Double, tts: Bool)
 
     public static func == (lhs: AssistSource, rhs: AssistSource) -> Bool {
         switch (lhs, rhs) {
         case let (.text(lhsInput, lhsPipelineId), .text(rhsInput, rhsPipelineId)):
             return lhsInput == rhsInput && lhsPipelineId == rhsPipelineId
-        case let (.audio(lhsPipelineId, lhsSampleRate), .audio(rhsPipelineId, rhsSampleRate)):
-            return lhsPipelineId == rhsPipelineId && lhsSampleRate == rhsSampleRate
+        case let (.audio(lhsPipelineId, lhsSampleRate, lhsTTS), .audio(rhsPipelineId, rhsSampleRate, rhsTTS)):
+            return lhsPipelineId == rhsPipelineId && lhsSampleRate == rhsSampleRate && lhsTTS == rhsTTS
         default:
             return false
         }
@@ -77,8 +77,8 @@ public final class AssistService: AssistServiceProtocol {
         switch source {
         case let .text(input, pipelineId):
             assistWithText(input: input, pipelineId: pipelineId)
-        case let .audio(pipelineId, audioSampleRate):
-            assistWithAudio(pipelineId: pipelineId, audioSampleRate: audioSampleRate)
+        case let .audio(pipelineId, audioSampleRate, tts):
+            assistWithAudio(pipelineId: pipelineId, audioSampleRate: audioSampleRate, tts: tts)
         }
     }
 
@@ -122,13 +122,14 @@ public final class AssistService: AssistServiceProtocol {
         }
     }
 
-    private func assistWithAudio(pipelineId: String?, audioSampleRate: Double) {
+    private func assistWithAudio(pipelineId: String?, audioSampleRate: Double, tts: Bool) {
         lastPipelineIdUsed = pipelineId
         Current.api(for: server)?.connection.subscribe(to: AssistRequests.assistByVoiceTypedSubscription(
             preferredPipelineId: pipelineId,
             audioSampleRate: audioSampleRate,
             conversationId: conversationId,
-            hassDeviceId: server.info.hassDeviceId
+            hassDeviceId: server.info.hassDeviceId,
+            tts: tts
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable

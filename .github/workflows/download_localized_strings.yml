@@ -13,12 +13,15 @@ jobs:
   update_strings:
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
 
       - name: Install Brews
-        run: brew bundle
+        run: |
+          brew update
+          brew tap lokalise/cli-2
+          brew bundle
 
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
@@ -52,7 +55,7 @@ jobs:
           git clean -xfd
           echo ::set-output name=pr_title::"$(git log -1 --pretty='%s')"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725  # v8.0.0
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0
         with:
           base: main
           branch: create-pull-request/download_strings

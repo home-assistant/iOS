@@ -10,7 +10,4 @@
    <FileRef
       location = "group:SpeechTranscriber.swift">
    </FileRef>
-   <FileRef
-      location = "group:FolderDetailView.swift">
-   </FileRef>
 </Workspace>

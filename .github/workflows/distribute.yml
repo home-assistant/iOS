@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
@@ -22,7 +22,7 @@ jobs:
       matrix:
         kind: [mac, ios]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
 

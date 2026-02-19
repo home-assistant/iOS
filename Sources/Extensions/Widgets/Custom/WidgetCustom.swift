@@ -33,8 +33,7 @@ struct WidgetCustom: Widget {
     }
 
     private var emptyView: some View {
-        let url = URL(string: "\(AppConstants.deeplinkURL.absoluteString)createCustomWidget")!
-        return Link(destination: url.withWidgetAuthenticity()) {
+        Link(destination: AppConstants.createCustomWidgetURL.withWidgetAuthenticity()) {
             VStack(spacing: DesignSystem.Spaces.two) {
                 Image(systemSymbol: .squareBadgePlusFill)
                     .foregroundStyle(Color.haPrimary)
@@ -49,14 +48,14 @@ struct WidgetCustom: Widget {
     private func modelsForWidget(
         _ widget: CustomWidget?,
         infoProvider: MagicItemProviderProtocol,
-        states: [MagicItem: WidgetCustomEntry.ItemState],
+        states: [MagicItem: WidgetEntityState],
         showStates: Bool
     ) -> [WidgetBasicViewModel] {
         guard let widget else { return [] }
 
         return widget.items.map { magicItem in
             let info = infoProvider.getInfo(for: magicItem)
-            let state: WidgetCustomEntry.ItemState? = states[magicItem]
+            let state: WidgetEntityState? = states[magicItem]
 
             var backgroundColor: Color? = nil
             var textColor: Color? = nil
@@ -88,11 +87,11 @@ struct WidgetCustom: Widget {
 
                 if !widget.itemsStates.isEmpty {
                     return Color.gray
-                } else if showStates, [.light, .switch, .inputBoolean].contains(magicItem.domain) {
-                    if state?.domainState == Domain.State.off {
-                        return Color.gray
+                } else if showStates, [.light, .switch, .inputBoolean, .cover, .fan].contains(magicItem.domain) {
+                    if state?.domainState?.isActive ?? false {
+                        return state?.color ?? magicItemIconColor
                     } else {
-                        return magicItemIconColor
+                        return Color.gray
                     }
                 } else {
                     return magicItemIconColor
@@ -379,6 +378,10 @@ final class MockMagicItemProvider: MagicItemProviderProtocol {
         } else {
             return .init(id: "2", name: "Cba", iconName: "heart", customization: .init(iconColor: "#FFFFFF"))
         }
+    }
+
+    func getAreaName(for item: Shared.MagicItem) -> String? {
+        nil
     }
 }
 #endif

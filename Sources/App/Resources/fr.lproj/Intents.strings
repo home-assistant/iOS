@@ -119,6 +119,7 @@
 "mJ6CrP" = "Échec de l'envoi de ${eventName} : ${error}";
 "mZnRHS" = "Envoi avec succès de ${eventName} à Home Assistant";
 "mi6B62" = "Quelles données voulez-vous envoyer avec l'événement ?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Juste pour confirmer, vous vouliez « ${server} » ?";
 "ns9RRU" = "Ouvrir la page";
 "nzqmFA" = "Fait";
@@ -147,6 +148,7 @@
 "vAIAF2" = "Envoyer une mise à jour du capteur à Home Assistant";
 "vebd70" = "Serveur";
 "wfPQQQ" = "Déclencher un événement dans le bus d'événement d'Home Assistant";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Résultat";
 "xfXG6b" = "Quel serveur ?";
 "xhwpj4" = "Terminé !";

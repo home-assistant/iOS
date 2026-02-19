@@ -34,9 +34,11 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
+        WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
         WidgetScripts()
+        WidgetTodoList()
         WidgetGauge()
         WidgetDetails()
         WidgetActions()
@@ -64,7 +66,6 @@ struct WidgetsBundle18: WidgetBundle {
         ControlButton()
         ControlOpenPage()
         ControlOpenEntity()
-        ControlOpenCamerasList()
         ControlOpenCamera()
         ControlOpenCoverEntity()
         ControlOpenInputBoolean()
@@ -73,13 +74,16 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenSensor()
         ControlOpenSwitch()
         #if DEBUG
+        ControlOpenCamerasList()
         ControlOpenExperimentalDashboard()
         #endif
 
         // Widgets
+        WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
         WidgetScripts()
+        WidgetTodoList()
         WidgetGauge()
         WidgetDetails()
         WidgetSensors()

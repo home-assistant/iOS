@@ -73,10 +73,6 @@ abstract_target 'iOS' do
                           commit: 'fde095843bb8c08e8818097c51ed140373180790'
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
     pod 'Eureka', git: 'https://github.com/xmartlabs/Eureka', branch: 'master'
-
-    pod 'FirebaseMessaging'
-
-    pod 'SwiftMessages', '~> 10.0.1'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
 
     support_modules

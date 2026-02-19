@@ -9,20 +9,12 @@ struct SettingsView: View {
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
     @StateObject private var serversObserver = ServersObserver()
 
-    @State private var appDatabaseUpdaterTask: Task<Void, Never>?
-
     var body: some View {
         Group {
             if Current.isCatalyst {
                 macOSView
             } else {
                 iOSView
-            }
-        }
-        .onAppear {
-            appDatabaseUpdaterTask?.cancel()
-            appDatabaseUpdaterTask = Task {
-                await Current.appDatabaseUpdater.update()
             }
         }
     }
@@ -85,14 +77,14 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var iOSView: some View {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 16.0, *) {
             iOSViewModern
         } else {
             iOSViewLegacy
         }
     }
 
-    @available(iOS 26.0, *)
+    @available(iOS 16.0, *)
     private var iOSViewModern: some View {
         NavigationStack {
             iOSListContent
@@ -123,14 +115,8 @@ struct SettingsView: View {
             // General section
             Section {
                 ForEach(SettingsItem.generalItems, id: \.self) { item in
-                    if #available(iOS 26.0, *) {
-                        NavigationLink(value: item) {
-                            settingsItemLabel(item)
-                        }
-                    } else {
-                        NavigationLink(destination: item.destinationView) {
-                            settingsItemLabel(item)
-                        }
+                    NavigationLink(destination: item.destinationView) {
+                        settingsItemLabel(item)
                     }
                 }
             }
@@ -138,14 +124,8 @@ struct SettingsView: View {
             // Integrations section
             Section {
                 ForEach(SettingsItem.integrationItems, id: \.self) { item in
-                    if #available(iOS 26.0, *) {
-                        NavigationLink(value: item) {
-                            settingsItemLabel(item)
-                        }
-                    } else {
-                        NavigationLink(destination: item.destinationView) {
-                            settingsItemLabel(item)
-                        }
+                    NavigationLink(destination: item.destinationView) {
+                        settingsItemLabel(item)
                     }
                 }
             }
@@ -154,14 +134,8 @@ struct SettingsView: View {
             if shouldShowWatchSection {
                 Section(header: Text("Apple Watch")) {
                     ForEach(SettingsItem.watchItems, id: \.self) { item in
-                        if #available(iOS 26.0, *) {
-                            NavigationLink(value: item) {
-                                settingsItemLabel(item)
-                            }
-                        } else {
-                            NavigationLink(destination: item.destinationView) {
-                                settingsItemLabel(item)
-                            }
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
                         }
                     }
                 }
@@ -171,14 +145,8 @@ struct SettingsView: View {
             if UIDevice.current.userInterfaceIdiom == .phone {
                 Section {
                     ForEach(SettingsItem.carPlayItems, id: \.self) { item in
-                        if #available(iOS 26.0, *) {
-                            NavigationLink(value: item) {
-                                settingsItemLabel(item)
-                            }
-                        } else {
-                            NavigationLink(destination: item.destinationView) {
-                                settingsItemLabel(item)
-                            }
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
                         }
                     }
                 }
@@ -187,14 +155,8 @@ struct SettingsView: View {
             // Legacy section
             Section {
                 ForEach(SettingsItem.legacyItems, id: \.self) { item in
-                    if #available(iOS 26.0, *) {
-                        NavigationLink(value: item) {
-                            settingsItemLabel(item)
-                        }
-                    } else {
-                        NavigationLink(destination: item.destinationView) {
-                            settingsItemLabel(item)
-                        }
+                    NavigationLink(destination: item.destinationView) {
+                        settingsItemLabel(item)
                     }
                 }
             }
@@ -215,14 +177,8 @@ struct SettingsView: View {
                             }
                         }
                     } else {
-                        if #available(iOS 26.0, *) {
-                            NavigationLink(value: item) {
-                                settingsItemLabel(item)
-                            }
-                        } else {
-                            NavigationLink(destination: item.destinationView) {
-                                settingsItemLabel(item)
-                            }
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
                         }
                     }
                 }
@@ -273,7 +229,7 @@ struct SettingsView: View {
             }
         }
         .sheet(isPresented: $showAbout) {
-            if #available(iOS 26.0, *) {
+            if #available(iOS 16.0, *) {
                 NavigationStack {
                     aboutViewContent
                 }
