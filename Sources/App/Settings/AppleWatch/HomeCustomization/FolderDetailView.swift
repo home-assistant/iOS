@@ -16,7 +16,7 @@ struct FolderDetailView: View {
 
     var body: some View {
         List {
-            Section(folderName) {
+            Section {
                 ForEach(folderItems, id: \.serverUniqueId) { item in
                     row(for: item)
                 }
@@ -83,6 +83,7 @@ struct FolderDetailView: View {
         if item.type == .action {
             HStack {
                 Image(uiImage: image(for: item, itemInfo: itemInfo))
+                    .renderingMode(.original)
                 Text(item.name(info: itemInfo))
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemSymbol: .line3Horizontal)
@@ -96,6 +97,7 @@ struct FolderDetailView: View {
             } label: {
                 HStack {
                     Image(uiImage: image(for: item, itemInfo: itemInfo))
+                        .renderingMode(.original)
                     Text(item.name(info: itemInfo))
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Image(systemSymbol: .line3Horizontal)
@@ -107,7 +109,12 @@ struct FolderDetailView: View {
 
     private func image(for item: MagicItem, itemInfo: MagicItem.Info) -> UIImage {
         let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-        return icon.image(ofSize: .init(width: 18, height: 18), color: .white)
+        let color: UIColor = if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
+            .init(hex: iconColor)
+        } else {
+            .haPrimary
+        }
+        return icon.image(ofSize: .init(width: 18, height: 18), color: color)
     }
 }
 
