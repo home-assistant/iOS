@@ -68,7 +68,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         /// Override icon, MaterialDesignIcons name
         public var icon: String?
         /// True only when the user explicitly picked a custom icon via the icon picker
-        public var iconIsCustomized: Bool
+        public var iconIsCustomized: Bool?
 
         public var useCustomColors: Bool {
             textColor != nil || backgroundColor != nil
