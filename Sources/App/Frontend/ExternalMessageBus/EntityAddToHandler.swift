@@ -157,17 +157,34 @@ final class EntityAddToHandler {
                 webViewController: webViewController
             )
         }
+        .modify { view in
+            if Current.isCatalyst {
+                view.toolbar(content: {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton {
+                            webViewController.dismissOverlayController(animated: true, completion: nil)
+                        }
+                    }
+                })
+            } else {
+                view
+            }
+        }
 
         let hostingController = selectionView.embeddedInHostingController()
 
-        // Present as a bottom sheet
-        if let sheet = hostingController.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
-            sheet.prefersGrabberVisible = true
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        if Current.isCatalyst {
+            let navigationController = UINavigationController(rootViewController: hostingController)
+            webViewController.presentOverlayController(controller: navigationController, animated: true)
+        } else {
+            // Present as a bottom sheet
+            if let sheet = hostingController.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+                sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+            }
+            webViewController.presentOverlayController(controller: hostingController, animated: true)
         }
-
-        webViewController.presentOverlayController(controller: hostingController, animated: true)
     }
 
     private func handleWidgetSelection(
