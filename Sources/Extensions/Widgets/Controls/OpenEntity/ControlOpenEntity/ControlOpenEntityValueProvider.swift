@@ -32,7 +32,7 @@ struct ControlOpenEntityValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenEntity.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenEntityValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenEntityItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenEntity.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.rectangleAndPaperclip.rawValue),
             displayText: nil
         )

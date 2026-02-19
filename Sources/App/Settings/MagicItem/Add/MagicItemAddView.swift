@@ -18,6 +18,7 @@ struct MagicItemAddView: View {
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = MagicItemAddViewModel()
+    @State private var selectedEntity: HAAppEntity?
     private let visiblePickerOptions: [PickerOption]
 
     let context: Context
@@ -47,20 +48,34 @@ struct MagicItemAddView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                pickerView
+            Group {
                 switch viewModel.selectedItemType {
                 case .actions:
-                    actionsList
-                case .scripts:
-                    scriptsPerServerList
-                case .scenes:
-                    scenesPerServerList
+                    List {
+                        pickerView
+                        actionsList
+                    }
+                    .searchable(text: $viewModel.searchText)
                 case .entities:
-                    entitiesPerServerList
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        entitiesPerServerList()
+                    }
+                case .scripts:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        entitiesPerServerList(domainFilter: .script)
+                    }
+                case .scenes:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        entitiesPerServerList(domainFilter: .scene)
+                    }
                 }
             }
-            .searchable(text: $viewModel.searchText)
             .onAppear {
                 autoSelectItemType()
                 viewModel.loadContent()
@@ -69,13 +84,24 @@ struct MagicItemAddView: View {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
             }
+            #if targetEnvironment(macCatalyst)
             .toolbar(content: {
                 CloseButton {
                     dismiss()
                 }
             })
+            #endif
         }
         .navigationViewStyle(.stack)
+        .modify { view in
+            if #available(iOS 16.0, *) {
+                view
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
+            } else {
+                view
+            }
+        }
     }
 
     @ViewBuilder
@@ -103,6 +129,7 @@ struct MagicItemAddView: View {
             .pickerStyle(.segmented)
             .listRowBackground(Color.clear)
             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .padding(.top)
         }
     }
 
@@ -124,7 +151,7 @@ struct MagicItemAddView: View {
                     itemToAdd(.init(id: action.ID, serverId: action.serverIdentifier, type: .action))
                     dismiss()
                 }, label: {
-                    MagicItemRow(title: action.Text, imageSystemSymbol: .plusCircleFill)
+                    EntityRowView(optionalTitle: action.Text, accessoryImageSystemSymbol: .plusCircleFill)
                 })
                 .tint(Color(uiColor: .label))
             }
@@ -145,129 +172,42 @@ struct MagicItemAddView: View {
     }
 
     @ViewBuilder
-    private var scriptsPerServerList: some View {
-        ForEach(Array(viewModel.scripts.keys), id: \.identifier) { server in
-            Section(server.info.name) {
-                list(entities: viewModel.scripts[server] ?? [], serverId: server.identifier.rawValue, type: .script)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var scenesPerServerList: some View {
-        ForEach(Array(viewModel.scenes.keys), id: \.identifier) { server in
-            Section(server.info.name) {
-                list(entities: viewModel.scenes[server] ?? [], serverId: server.identifier.rawValue, type: .scene)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var entitiesPerServerList: some View {
-        ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
-        if let server = Current.servers.all
-            .first(where: { $0.identifier.rawValue == viewModel.selectedServerId }) ?? Current.servers.all.first {
-            list(entities: viewModel.entities[server] ?? [], serverId: server.identifier.rawValue, type: .entity)
-        }
-    }
-
-    @ViewBuilder
-    private func list(entities: [HAAppEntity], serverId: String, type: MagicItem.ItemType) -> some View {
-        ForEach(entities.filter({ entity in
-            visibleForSearch(title: entity.name, entityId: entity.entityId)
-        }), id: \.id) { entity in
-            NavigationLink {
-                MagicItemCustomizationView(
-                    mode: .add,
-                    context: context,
-                    item: .init(
-                        id: entity.entityId,
-                        serverId: serverId,
-                        type: type
-                    )
-                ) { itemToAdd in
-                    self.itemToAdd(itemToAdd)
-                    dismiss()
+    private func entitiesPerServerList(domainFilter: Domain? = nil) -> some View {
+        EntityPicker(
+            selectedServerId: Current.servers.all
+                .first(where: { $0.identifier.rawValue == viewModel.selectedServerId })?.identifier.rawValue,
+            selectedEntity: $selectedEntity,
+            domainFilter: domainFilter,
+            mode: .inline
+        )
+        .background(
+            NavigationLink("", isActive: .init(get: {
+                selectedEntity != nil
+            }, set: { _ in
+                selectedEntity = nil
+            })) {
+                if let selectedEntity {
+                    MagicItemCustomizationView(
+                        mode: .add,
+                        context: context,
+                        item: .init(
+                            id: selectedEntity.entityId,
+                            serverId: selectedEntity.serverId,
+                            type: .entity
+                        )
+                    ) { itemToAdd in
+                        self.itemToAdd(itemToAdd)
+                        dismiss()
+                    }
                 }
-            } label: {
-                MagicItemRow(
-                    title: entity.name,
-                    subtitle: viewModel.subtitleForEntity(entity: entity, serverId: serverId),
-                    entityIcon: {
-                        if let entityIconName = entity.icon {
-                            return MaterialDesignIcons(serversideValueNamed: entityIconName, fallback: .dotsGridIcon)
-                        } else {
-                            return Domain(rawValue: entity.domain)?
-                                .icon(deviceClass: entity.deviceClass.rawValue) ?? .dotsGridIcon
-                        }
-                    }()
-                )
             }
-        }
+        )
     }
 
     private func visibleForSearch(title: String, entityId: String) -> Bool {
         viewModel.searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
             title.lowercased().contains(viewModel.searchText.lowercased()) ||
             entityId.lowercased().contains(viewModel.searchText.lowercased())
-    }
-}
-
-struct MagicItemRow: View {
-    // This avoids lag while loading a screen with several rows
-    @State private var showIcon = false
-
-    private let title: String
-    private let subtitle: String?
-    private let imageSystemSymbol: SFSymbol?
-    private let entityIcon: MaterialDesignIcons?
-
-    init(
-        title: String,
-        subtitle: String? = nil,
-        imageSystemSymbol: SFSymbol? = nil,
-        entityIcon: MaterialDesignIcons? = nil
-    ) {
-        self.title = title
-        self.subtitle = subtitle
-        self.imageSystemSymbol = imageSystemSymbol
-        self.entityIcon = entityIcon
-    }
-
-    var body: some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
-            HStack {
-                if showIcon, let entityIcon {
-                    Image(uiImage: entityIcon.image(
-                        ofSize: .init(width: 24, height: 24),
-                        color: UIColor(Color.haPrimary)
-                    ))
-                }
-            }
-            .frame(width: 24, height: 24)
-            VStack {
-                Text(title)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                if let subtitle {
-                    Text(subtitle)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.footnote)
-                        .foregroundStyle(Color.secondary)
-                }
-            }
-            if let imageSystemSymbol {
-                Image(systemSymbol: imageSystemSymbol)
-                    .foregroundStyle(.white, .green)
-                    .font(.title3)
-            }
-        }
-        .animation(.easeInOut, value: showIcon)
-        .onAppear {
-            showIcon = true
-        }
-        .onDisappear {
-            showIcon = false
-        }
     }
 }
 

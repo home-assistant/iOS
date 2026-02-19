@@ -11,7 +11,7 @@ on:
       - main
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 80
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
@@ -26,8 +26,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-      - uses: ruby/setup-ruby@675dd7ba1b06c8786a1480d89c384f5620a42647  # v1.281.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd  # v1.288.0
         with:
           ruby-version: "3.1"
           bundler-cache: true
@@ -51,7 +51,9 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0  # Fetch all history for proper git diff
 
       - name: Scan for `swiftlint:disable` in PR diff
         id: scan
@@ -64,7 +66,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Comment on PR if `swiftlint:disable` is found
-        if: steps.scan.outputs.disable_lines != ''
+        if: steps.scan.outputs.disable_lines != '' && github.event.pull_request.head.repo.full_name == github.repository
         uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405  # v2.9.4
         with:
           header: swiftlint-disable-check
@@ -78,10 +80,12 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0  # Fetch all history for comparison with main branch
 
       - name: Set up Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548  # v5.3.0
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v5.3.0
         with:
           python-version: '3.x'
 
@@ -105,7 +109,9 @@ jobs:
           fi
 
       - name: Comment on PR if unused strings are found
-        if: steps.detect.outputs.has_unused == 'true'
+        if: |
+          steps.detect.outputs.has_unused == 'true' &&
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405  # v2.9.4
         with:
           header: unused-strings-check
@@ -131,9 +137,9 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v5.0.1
+      - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
         name: "Cache: Pods"
         id: cache_pods
         with:
@@ -145,7 +151,7 @@ jobs:
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
             ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v5.0.1
+      - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
         name: "Cache: Gems"
         id: cache_gems
         with:
@@ -199,8 +205,8 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v4.6.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v4.6.2
         name: "Cache: Pods"
         id: cache_pods
         with:
@@ -212,7 +218,7 @@ jobs:
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
             ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v5.0.1
+      - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
         name: "Cache: Gems"
         id: cache_gems
         with:

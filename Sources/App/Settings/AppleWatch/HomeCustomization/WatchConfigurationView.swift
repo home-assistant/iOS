@@ -3,50 +3,46 @@ import Shared
 import StoreKit
 import SwiftUI
 
+enum WatchSupportedDomains {
+    static var all: [Domain] = [
+        .script,
+        .scene,
+    ]
+}
+
 struct WatchConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = WatchConfigurationViewModel()
+    @StateObject private var viewModel: WatchConfigurationViewModel
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
     @State private var showAddFolderSheet = false
     @State private var newFolderName: String = "Folder"
 
+    private let needsNavigationController: Bool
+
+    init(needsNavigationController: Bool = false, viewModel: WatchConfigurationViewModel? = nil) {
+        self.needsNavigationController = needsNavigationController
+        self._viewModel = .init(wrappedValue: viewModel ?? WatchConfigurationViewModel())
+    }
+
     var body: some View {
-        content
-            .navigationTitle("Apple Watch")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        viewModel.save { success in
-                            if success {
-                                // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
-                                // private var requestReview`
-                                SKStoreReviewController.requestReview()
-                                dismiss()
-                            }
-                        }
-                    }, label: {
-                        Text(verbatim: L10n.Watch.Configuration.Save.title)
-                    })
+        if needsNavigationController {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    content
                 }
-            })
-            .sheet(isPresented: $viewModel.showAddItem, content: {
-                MagicItemAddView(context: .watch) { itemToAdd in
-                    guard let itemToAdd else { return }
-                    viewModel.addItem(itemToAdd)
+            } else {
+                NavigationView {
+                    content
                 }
-                .preferredColorScheme(.dark)
-            })
-            .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
-                Button(action: {}, label: {
-                    Text(verbatim: L10n.okLabel)
-                })
             }
             .sheet(isPresented: $showAddFolderSheet) {
                 addFolderSheet
             }
+        } else {
+            content
+        }
     }
 
     private var content: some View {
@@ -64,6 +60,35 @@ struct WatchConfigurationView: View {
             resetView
         }
         .preferredColorScheme(.dark)
+        .navigationTitle("Apple Watch")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {
+                    let success = viewModel.save()
+                    if success {
+                        // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
+                        // private var requestReview`
+                        SKStoreReviewController.requestReview()
+                        dismiss()
+                    }
+                }, label: {
+                    Text(verbatim: L10n.Watch.Configuration.Save.title)
+                })
+            }
+        })
+        .sheet(isPresented: $viewModel.showAddItem, content: {
+            MagicItemAddView(context: .watch) { itemToAdd in
+                guard let itemToAdd else { return }
+                viewModel.addItem(itemToAdd)
+            }
+            .preferredColorScheme(.dark)
+        })
+        .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
+            Button(action: {}, label: {
+                Text(verbatim: L10n.okLabel)
+            })
+        }
     }
 
     private var resetView: some View {

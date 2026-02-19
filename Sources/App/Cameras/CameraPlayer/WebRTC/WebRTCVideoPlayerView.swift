@@ -3,8 +3,13 @@ import Shared
 import SwiftUI
 import WebRTC
 
+protocol AppCameraView {
+    var controlsVisible: Binding<Bool> { get set }
+    var showLoader: Binding<Bool> { get set }
+}
+
 @available(iOS 16.0, *)
-struct WebRTCVideoPlayerView: View {
+struct WebRTCVideoPlayerView: View, AppCameraView {
     @Environment(\.dismiss) var dismiss
 
     @StateObject private var viewModel: WebRTCViewPlayerViewModel
@@ -16,6 +21,9 @@ struct WebRTCVideoPlayerView: View {
 
     @State private var isPlaying: Bool = false
     @State private var isVideoPlaying: Bool = false
+    var controlsVisible: Binding<Bool>
+    var showLoader: Binding<Bool>
+    @State var hideControlsWorkItem: DispatchWorkItem?
 
     private let server: Server
     private let cameraEntityId: String
@@ -26,12 +34,16 @@ struct WebRTCVideoPlayerView: View {
         server: Server,
         cameraEntityId: String,
         cameraName: String? = nil,
+        controlsVisible: Binding<Bool>,
+        showLoader: Binding<Bool>,
         onWebRTCUnsupported: (() -> Void)? = nil
     ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
         self.onWebRTCUnsupported = onWebRTCUnsupported
+        self.controlsVisible = controlsVisible
+        self.showLoader = showLoader
         self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(server: server, cameraEntityId: cameraEntityId))
     }
 
@@ -42,18 +54,15 @@ struct WebRTCVideoPlayerView: View {
                     player
                     controls
                 }
-                HAProgressView(style: .large)
-                    .opacity(viewModel.showLoader ? 1.0 : 0.0)
                 errorView
             }
             .background(.black)
-            .statusBarHidden(true)
             .onAppear {
-                viewModel.showControlsTemporarily()
+                showControlsTemporarily()
             }
             .onDisappear {
-                viewModel.hideControlsWorkItem?.cancel()
-                viewModel.hideControlsWorkItem = nil
+                hideControlsWorkItem?.cancel()
+                hideControlsWorkItem = nil
             }
             .gesture(
                 magnificationGesture(geometry: geometry)
@@ -69,12 +78,19 @@ struct WebRTCVideoPlayerView: View {
                     onWebRTCUnsupported?()
                 }
             }
+            .onChange(of: viewModel.showLoader) { showLoader in
+                self.showLoader.wrappedValue = showLoader
+            }
         }
-        .modify { view in
-            if #available(iOS 16.0, *) {
-                view.persistentSystemOverlays(.hidden)
-            } else {
-                view
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if controlsVisible.wrappedValue {
+                    Button(action: {
+                        viewModel.toggleMute()
+                    }) {
+                        Image(systemSymbol: viewModel.isMuted ? .speakerSlashFill : .speakerWave3)
+                    }
+                }
             }
         }
     }
@@ -98,11 +114,11 @@ struct WebRTCVideoPlayerView: View {
         MagnificationGesture()
             .onChanged { value in
                 scale = lastScale * value
-                viewModel.showControlsTemporarily()
+                showControlsTemporarily()
             }
             .onEnded { _ in
                 lastScale = scale
-                viewModel.showControlsTemporarily()
+                showControlsTemporarily()
                 if scale <= 1.0 {
                     withAnimation {
                         offset = .zero
@@ -126,7 +142,7 @@ struct WebRTCVideoPlayerView: View {
                     height: lastOffset.height + value.translation.height
                 )
                 offset = clampedOffset(for: newOffset, in: geometry.size)
-                viewModel.showControlsTemporarily()
+                showControlsTemporarily()
             }
             .onEnded { value in
                 // If user is not zoomed in, allow dismissing the view with a swipe down
@@ -140,7 +156,7 @@ struct WebRTCVideoPlayerView: View {
                     offset = clampedOffset(for: offset, in: geometry.size)
                     lastOffset = offset
                 }
-                viewModel.showControlsTemporarily()
+                showControlsTemporarily()
             }
     }
 
@@ -156,7 +172,7 @@ struct WebRTCVideoPlayerView: View {
                     scale = 2.0
                     lastScale = 2.0
                 }
-                viewModel.showControlsTemporarily()
+                showControlsTemporarily()
             }
         }
     }
@@ -171,20 +187,29 @@ struct WebRTCVideoPlayerView: View {
         .offset(offset)
         .contentShape(Rectangle())
         .onTapGesture {
-            viewModel.showControlsTemporarily()
+            showControlsTemporarily()
         }
     }
 
     private var controls: some View {
         WebRTCVideoPlayerViewControls(
-            cameraName: cameraName,
             close: { dismiss() },
             isMuted: viewModel.isMuted,
             toggleMute: { viewModel.toggleMute() }
         )
         .transition(.opacity)
-        .animation(.easeInOut, value: viewModel.controlsVisible)
-        .opacity(viewModel.controlsVisible || !isVideoPlaying ? 1.0 : 0.0)
+        .animation(.easeInOut, value: controlsVisible.wrappedValue)
+        .opacity(controlsVisible.wrappedValue || !isVideoPlaying ? 1.0 : 0.0)
+    }
+
+    private func showControlsTemporarily() {
+        controlsVisible.wrappedValue = true
+        hideControlsWorkItem?.cancel()
+        let workItem = DispatchWorkItem {
+            controlsVisible.wrappedValue = false
+        }
+        hideControlsWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: workItem)
     }
 
     /// Clamps the dragging offset to prevent the zoomed content from being moved

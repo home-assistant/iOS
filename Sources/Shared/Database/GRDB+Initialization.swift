@@ -56,6 +56,7 @@ public extension DatabaseQueue {
             AppAreaTable(),
             HomeViewConfigurationTable(),
             CameraListConfigurationTable(),
+            AssistConfigurationTable(),
         ]
     }
 
@@ -78,5 +79,39 @@ public extension DatabaseQueue {
 }
 
 protocol DatabaseTableProtocol {
+    /// The name of the database table
+    var tableName: String { get }
+
+    /// The list of column names defined for this table
+    var definedColumns: [String] { get }
+
+    /// Creates the table if it doesn't exist, or migrates it if it does
     func createIfNeeded(database: DatabaseQueue) throws
+}
+
+extension DatabaseTableProtocol {
+    /// Migrates the table by adding new columns and removing obsolete columns
+    func migrateColumns(database: DatabaseQueue) throws {
+        try database.write { db in
+            let existingColumns = try db.columns(in: tableName)
+            let definedColumnSet = Set(definedColumns)
+
+            // Add new columns that don't exist yet
+            for columnName in definedColumns {
+                let shouldCreateColumn = !existingColumns.contains { $0.name == columnName }
+                if shouldCreateColumn {
+                    try db.alter(table: tableName) { tableAlteration in
+                        tableAlteration.add(column: columnName)
+                    }
+                }
+            }
+
+            // Remove columns that are no longer defined
+            for existingColumn in existingColumns where !definedColumnSet.contains(existingColumn.name) {
+                try db.alter(table: tableName) { tableAlteration in
+                    tableAlteration.drop(column: existingColumn.name)
+                }
+            }
+        }
+    }
 }

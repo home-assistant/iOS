@@ -81,6 +81,9 @@ class MenuManager {
             return existing
         }
 
+        // Cancel the old subscription before creating a new one
+        existing?.cancel()
+
         // if we know it's going to change, reset it for now so it doesn't show the old value
         update("")
 

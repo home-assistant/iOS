@@ -32,7 +32,7 @@ struct ControlOpenLightValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenLight.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenLightValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenLightItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenLight.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.lightbulb.rawValue),
             displayText: nil
         )

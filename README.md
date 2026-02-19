@@ -31,6 +31,12 @@ brew install rbenv ruby-build
 rbenv install
 bundle install
 bundle exec pod install --repo-update
+
+## install ruby via mise, use that
+brew install mise
+mise install
+bundle install
+bundle exec pod install --repo-update
 ```
 
 Once this completes, you can launch  `HomeAssistant.xcworkspace` and run the `App-Debug` scheme onto your simulator or iOS device.

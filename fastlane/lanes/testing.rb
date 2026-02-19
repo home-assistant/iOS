@@ -39,6 +39,6 @@ lane :test do
     scheme: 'Tests-Unit',
     result_bundle: true,
     skip_package_dependencies_resolution: true,
-    destination: 'platform=iOS Simulator,name=iPhone 17,OS=26.0.1'
+    destination: 'platform=iOS Simulator,name=iPhone 17,OS=26.2'
   )
 end

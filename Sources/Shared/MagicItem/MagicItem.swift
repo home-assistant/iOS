@@ -69,8 +69,10 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public var backgroundColor: String?
         /// If true, execution will request confirmation before running
         public var requiresConfirmation: Bool
-        /// Override icon, MaterislDesignIcons name
+        /// Override icon, MaterialDesignIcons name
         public var icon: String?
+        /// True only when the user explicitly picked a custom icon via the icon picker
+        public var iconIsCustomized: Bool?
 
         public var useCustomColors: Bool {
             textColor != nil || backgroundColor != nil
@@ -81,13 +83,15 @@ public struct MagicItem: Codable, Equatable, Hashable {
             textColor: String? = nil,
             backgroundColor: String? = nil,
             requiresConfirmation: Bool = false,
-            icon: String? = nil
+            icon: String? = nil,
+            iconIsCustomized: Bool = false
         ) {
             self.iconColor = iconColor
             self.textColor = textColor
             self.backgroundColor = backgroundColor
             self.requiresConfirmation = requiresConfirmation
             self.icon = icon
+            self.iconIsCustomized = iconIsCustomized
         }
     }
 
@@ -182,6 +186,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     serverId: magicItem.serverId
                 ))
             case .lock:
+                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                    entityId: magicItem.id,
+                    serverId: magicItem.serverId
+                ))
+            case .climate:
                 interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
                     entityId: magicItem.id,
                     serverId: magicItem.serverId
@@ -388,10 +397,10 @@ public extension MagicItem {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person, .camera:
-            break
         case .automation:
             request = .trigger(entityId: entityId)
+        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate:
+            break
         }
         if let request, let connection = Current.api(for: server)?.connection {
             return connection.send(request).promise

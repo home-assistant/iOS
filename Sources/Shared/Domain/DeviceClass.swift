@@ -6,6 +6,7 @@ public enum DeviceClass: String, CaseIterable {
     case connectivity
     case door
     case garage
+    case garageDoor = "garage_door"
     case gas
     case heat
     case humidity

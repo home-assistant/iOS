@@ -119,6 +119,7 @@
 "mJ6CrP" = "Fehler beim Senden von ${eventName}. Fehler: ${error}";
 "mZnRHS" = "${eventName} ausgelöst";
 "mi6B62" = "Welche Daten möchtest du mit dem Ereignis senden?";
+"mrwamX" = "Assist In-App";
 "ni0OSe" = "Nur zur Bestätigung: Du wolltest ‘${server}’?";
 "ns9RRU" = "Seite öffnen";
 "nzqmFA" = "Fertig";
@@ -147,6 +148,7 @@
 "vAIAF2" = "Eine Sensoraktualisierung an Home Assistant senden";
 "vebd70" = "Server";
 "wfPQQQ" = "Sende ein Ereignis an den Home Assistant Event Bus";
+"x7FAm9" = "(Veraltetes) Assist In-App";
 "xN51te" = "Ergebnis";
 "xfXG6b" = "Welcher Server?";
 "xhwpj4" = "Erledigt";

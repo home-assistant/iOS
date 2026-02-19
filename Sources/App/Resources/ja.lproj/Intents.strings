@@ -119,6 +119,7 @@
 "mJ6CrP" = "${eventName} の送信に失敗しました: ${error}";
 "mZnRHS" = "${eventName} が発生しました";
 "mi6B62" = "イベントでどのようなデータを送信しますか？";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "確認のために、‘${server}’ が必要ですか？";
 "ns9RRU" = "ページを開く";
 "nzqmFA" = "完了";
@@ -147,6 +148,7 @@
 "vAIAF2" = "センサーの更新をHome Assistantに送信する";
 "vebd70" = "サーバー";
 "wfPQQQ" = "Home Assistantのイベントバスにイベントを発生させる";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "結果";
 "xfXG6b" = "どのサーバーですか？";
 "xhwpj4" = "完了";

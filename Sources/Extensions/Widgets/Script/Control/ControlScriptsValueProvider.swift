@@ -46,7 +46,7 @@ struct ControlScriptsValueProvider: AppIntentControlValueProvider {
             entityId: "",
             serverId: "",
             serverName: "",
-            displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Scripts.pendingConfiguration,
             iconName: "applescript.fill"
         )
     }

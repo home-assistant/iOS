@@ -188,6 +188,29 @@ public class SettingsStore {
         }
     }
 
+    public var edgeToEdge: Bool {
+        get {
+            prefs.bool(forKey: "edgeToEdge_experimental")
+        }
+        set {
+            prefs.set(newValue, forKey: "edgeToEdge_experimental")
+            NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
+        }
+    }
+
+    public var refreshWebViewAfterInactive: Bool {
+        get {
+            if let value = prefs.object(forKey: "refreshWebViewAfterInactive") as? NSNumber {
+                return value.boolValue
+            } else {
+                return true // Default to ON
+            }
+        }
+        set {
+            prefs.set(newValue, forKey: "refreshWebViewAfterInactive")
+        }
+    }
+
     public var macNativeFeaturesOnly: Bool {
         get {
             prefs.bool(forKey: "macNativeFeaturesOnly")

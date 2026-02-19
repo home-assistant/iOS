@@ -28,6 +28,8 @@ public enum AppConstants {
             URL(string: "https://companion.home-assistant.io/docs/getting_started/connection-security-level")!
         public static var companionLocalPush =
             URL(string: "https://companion.home-assistant.io/app/ios/local-push")!
+        public static var nfcDocs =
+            URL(string: "https://companion.home-assistant.io/app/ios/nfc")!
     }
 
     public enum QueryItems: String, CaseIterable {
@@ -156,6 +158,29 @@ public enum AppConstants {
         return URL(string: urlString)
     }
 
+    @available(iOS 16.0, watchOS 9.0, *)
+    public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
+        guard !serverId.isEmpty, !listId.isEmpty else {
+            return nil
+        }
+        return URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/todo")?.appending(queryItems: [
+            URLQueryItem(name: "entity_id", value: listId),
+            URLQueryItem(name: "serverId", value: serverId),
+            URLQueryItem(name: "add_item", value: "true"),
+        ])
+    }
+
+    @available(iOS 16.0, watchOS 9.0, *)
+    public static func todoListOpenURL(listId: String, serverId: String) -> URL? {
+        guard !serverId.isEmpty, !listId.isEmpty else {
+            return nil
+        }
+        return URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/todo")?.appending(queryItems: [
+            URLQueryItem(name: "entity_id", value: listId),
+            URLQueryItem(name: "serverId", value: serverId),
+        ])
+    }
+
     public static func openExperimentalDashboardDeeplinkURL(serverId: String? = nil) -> URL? {
         var urlString = "\(AppConstants.deeplinkURL.absoluteString)experimental-dashboard/?"
         if let serverId {
@@ -169,6 +194,10 @@ public enum AppConstants {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"
         )?.withWidgetAuthenticity()
+    }
+
+    public static var createCustomWidgetURL: URL {
+        URL(string: "\(AppConstants.deeplinkURL.absoluteString)createCustomWidget")!
     }
 
     /// The App Group ID used by the app and extensions for sharing data.
@@ -364,6 +393,8 @@ public extension Version {
     static let canNavigateThroughFrontend: Version = .init(major: 2025, minor: 6, prerelease: "any0")
     /// Allows app to ask frontend to navigate to a more info dialog
     static let canNavigateMoreInfoDialogThroughFrontend: Version = .init(major: 2026, minor: 1, prerelease: "any0")
+    /// Frontend introduces the quickbar with Ctrl+K keyboard shortcut in 2026.2
+    static let quickSearchKeyboardShortcut: Version = .init(major: 2026, minor: 2, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

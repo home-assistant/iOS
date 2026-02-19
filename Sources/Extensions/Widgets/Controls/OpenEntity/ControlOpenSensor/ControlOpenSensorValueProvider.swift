@@ -32,7 +32,7 @@ struct ControlOpenSensorValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenSensor.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenSensorValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenSensorItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenSensor.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.eye.rawValue), displayText: nil
         )
     }

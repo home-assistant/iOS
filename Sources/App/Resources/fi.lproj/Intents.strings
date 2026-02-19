@@ -119,6 +119,7 @@
 "mJ6CrP" = "Failed to send ${eventName}: ${error}";
 "mZnRHS" = "${eventName} fired";
 "mi6B62" = "What data do you want to send with the event?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Varmistuksena, halusithan ‘${server}’?";
 "ns9RRU" = "Avaa sivu";
 "nzqmFA" = "Tehty";
@@ -147,6 +148,7 @@
 "vAIAF2" = "Lähetä anturin päivitys Home Assistantille";
 "vebd70" = "Palvelin";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Tulos";
 "xfXG6b" = "Mikä palvelin?";
 "xhwpj4" = "Valmis";

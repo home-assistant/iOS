@@ -11,6 +11,12 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
 
     private var updateDatabaseTask: Task<Void, Never>?
 
+    /// Stores the timestamp when the app enters background, used to determine if auto-refresh is needed on reactivation
+    var backgroundTimestamp: Date?
+
+    /// Time threshold (in seconds) after which WebViewController should refresh when returning from background
+    private let backgroundRefreshThreshold: TimeInterval = 5 * 60
+
     // swiftlint:disable cyclomatic_complexity
     func scene(
         _ scene: UIScene,
@@ -119,6 +125,9 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         DataWidgetsUpdater.update()
         Current.modelManager.unsubscribe()
         Current.appDatabaseUpdater.stop()
+
+        // Record timestamp when app enters background
+        backgroundTimestamp = Current.date()
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -128,6 +137,8 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         cleanWidgetsCache()
         updateLocation()
+
+        autoRefreshWebViewRoutine()
     }
 
     func windowScene(
@@ -159,6 +170,25 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
 
     // MARK: - Private
 
+    /// When webview has been inactive for long, when opening the app we reload the webview if it's disconnected
+    private func autoRefreshWebViewRoutine() {
+        // Check if app was in background for 5 minutes or more
+        if let backgroundTimestamp {
+            let timeInterval = Current.date().timeIntervalSince(backgroundTimestamp)
+
+            if timeInterval >= backgroundRefreshThreshold, Current.settingsStore.refreshWebViewAfterInactive {
+                // Refresh WebViewController if it exists
+                // Note: webViewControllerPromise is a Guarantee, which cannot fail in PromiseKit
+                windowController?.webViewControllerPromise.done { webViewController in
+                    webViewController.refreshIfDisconnected()
+                }
+            }
+
+            // Clear the timestamp
+            self.backgroundTimestamp = nil
+        }
+    }
+
     /// Whenever a custom widget is executed it can create cache files to hold it state,
     /// this clears it
     private func cleanWidgetsCache() {
@@ -178,9 +208,6 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         Current.modelManager.subscribe(isAppInForeground: {
             UIApplication.shared.applicationState == .active
         })
-
-        await Current.appDatabaseUpdater.update()
-        Current.panelsUpdater.update()
     }
 
     /// Force update location when user opens the app

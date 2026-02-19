@@ -50,6 +50,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    private var shouldRefreshTitleSubscription = false
+
     private var watchCommunicatorService: WatchCommunicatorService?
 
     func application(
@@ -67,16 +69,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // swiftlint:disable prohibit_environment_assignment
         Current.backgroundTask = ApplicationBackgroundTaskRunner()
 
+        // Initialize UIApplication wrapper for shared framework
+        Current.application = {
+            UIApplication.shared
+        }
+
         Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
             if Current.isCatalyst {
                 return false
             } else {
                 return lifecycleManager.isActive
             }
-        }
-
-        Current.isForegroundApp = { [lifecycleManager] in
-            lifecycleManager.isActive
         }
 
         #if targetEnvironment(simulator)
@@ -133,9 +136,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             #if targetEnvironment(macCatalyst)
             titleSubscription = manager.subscribeStatusItemTitle(
-                existing: titleSubscription,
+                existing: shouldRefreshTitleSubscription ? nil : titleSubscription,
                 update: Current.macBridge.configureStatusItem(title:)
             )
+            shouldRefreshTitleSubscription = false
             #endif
         }
     }
@@ -400,9 +404,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             name: SettingsStore.menuRelatedSettingDidChange,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(apiDidConnect(_:)),
+            name: HomeAssistantAPI.didConnectNotification,
+            object: nil
+        )
     }
 
     @objc private func menuRelatedSettingDidChange(_ note: Notification) {
+        UIMenuSystem.main.setNeedsRebuild()
+    }
+
+    @objc private func apiDidConnect(_ note: Notification) {
+        // When API reconnects, rebuild the menu to refresh the status item title subscription
+        // Force refresh by setting the flag that will cause the subscription to be recreated
+        #if targetEnvironment(macCatalyst)
+        shouldRefreshTitleSubscription = true
+        #endif
         UIMenuSystem.main.setNeedsRebuild()
     }
 

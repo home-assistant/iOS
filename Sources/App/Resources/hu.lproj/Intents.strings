@@ -119,6 +119,7 @@
 "mJ6CrP" = "Nem sikerült elküldeni, ${eventName}: ${error}";
 "mZnRHS" = "${eventName} aktiválva";
 "mi6B62" = "Milyen adatokat szeretne küldeni az eseménnyel?";
+"mrwamX" = "Assist az alkalmazásban";
 "ni0OSe" = "Kérem, erősítse meg: '${server}'?";
 "ns9RRU" = "Oldal megnyitása";
 "nzqmFA" = "Kész";
@@ -147,6 +148,7 @@
 "vAIAF2" = "Érzékelőfrissítés küldése a Home Assistantnek";
 "vebd70" = "Szerver";
 "wfPQQQ" = "Esemény aktiválása a Home Assistant eseménybuszra";
+"x7FAm9" = "(Örökölt) Assist az alkalmazásban";
 "xN51te" = "Eredmény";
 "xfXG6b" = "Melyik szerver?";
 "xhwpj4" = "Kész";
