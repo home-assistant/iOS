@@ -45,13 +45,21 @@ struct WatchFolderRow: View {
         }
     }
 
+    private var iconColor: UIColor {
+        if let hex = itemInfo.customization?.iconColor {
+            .init(hex: hex)
+        } else {
+            .white
+        }
+    }
+
     private var iconView: some View {
         VStack {
             Image(uiImage: item.icon(info: itemInfo).image(
                 ofSize: .init(width: 24, height: 24),
-                color: .init(hex: itemInfo.customization?.iconColor)
+                color: iconColor
             ))
-            .foregroundStyle(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)))
+            .foregroundStyle(Color(uiColor: iconColor))
             .padding()
         }
         .frame(width: 38, height: 38)
@@ -60,12 +68,12 @@ struct WatchFolderRow: View {
                 view
                     .glassEffect(
                         .clear
-                            .tint(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3)),
+                            .tint(Color(uiColor: iconColor).opacity(0.3)),
                         in: .circle
                     )
             } else {
                 view
-                    .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
+                    .background(Color(uiColor: iconColor).opacity(0.3))
                     .clipShape(Circle())
             }
         }

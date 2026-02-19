@@ -208,7 +208,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             )
         case .folder:
             return .init(
-                id: item.id,
+                id: item.serverUniqueId,
                 name: item.displayText ?? "Folder",
                 iconName: MaterialDesignIcons.folderIcon.name,
                 customization: item.customization
