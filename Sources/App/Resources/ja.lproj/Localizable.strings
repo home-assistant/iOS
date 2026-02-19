@@ -886,7 +886,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings_details.general.device_name.title" = "デバイス名";
 "settings_details.general.full_screen.title" = "フルスクリーン";
 "settings_details.general.launch_on_login.title" = "ログイン時にアプリを起動する";
-"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "Lenker";
 "settings_details.general.menu_bar_text.title" = "メニューバーのテキスト";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

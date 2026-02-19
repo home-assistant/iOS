@@ -886,7 +886,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.general.device_name.title" = "Enhetsnamn";
 "settings_details.general.full_screen.title" = "Helskärm";
 "settings_details.general.launch_on_login.title" = "Starta appen när du loggar in";
-"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "Länkar";
 "settings_details.general.menu_bar_text.title" = "Text i menyraden";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

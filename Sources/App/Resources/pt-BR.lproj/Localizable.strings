@@ -887,7 +887,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.general.device_name.title" = "Nome do dispositivo";
 "settings_details.general.full_screen.title" = "Tela cheia";
 "settings_details.general.launch_on_login.title" = "Inicie o aplicativo no login";
-"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Texto da barra de menus";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

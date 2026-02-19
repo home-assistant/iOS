@@ -887,7 +887,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings_details.general.device_name.title" = "Apparaatnaam";
 "settings_details.general.full_screen.title" = "Volledig scherm";
 "settings_details.general.launch_on_login.title" = "Start de app bij het inloggen";
-"settings_details.general.launch_in_background.title" = "Launch in Background";
 "settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Menubalk Tekst";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
