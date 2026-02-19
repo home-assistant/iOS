@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -5,6 +6,7 @@ struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
+    @State private var currentFolder: MagicItem?
 
     var body: some View {
         content
@@ -82,7 +84,11 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var listHeader: some View {
         HStack {
-            navReloadButton
+            if currentFolder != nil {
+                backButton
+            } else {
+                navReloadButton
+            }
             toolbarLoadingState
             assistHeaderButton
         }
@@ -104,12 +110,39 @@ struct WatchHomeView: View {
 
     @ViewBuilder
     private var mainContent: some View {
-        ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
-            WatchMagicViewRow(
-                item: item,
-                itemInfo: viewModel.info(for: item)
-            )
+        if let folder = currentFolder {
+            // Show folder contents
+            ForEach(folder.items ?? [], id: \.serverUniqueId) { item in
+                WatchMagicViewRow(
+                    item: item,
+                    itemInfo: viewModel.info(for: item)
+                )
+            }
+        } else {
+            // Show root items
+            ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
+                if item.type == .folder {
+                    WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
+                        currentFolder = item
+                    }
+                } else {
+                    WatchMagicViewRow(
+                        item: item,
+                        itemInfo: viewModel.info(for: item)
+                    )
+                }
+            }
         }
+    }
+
+    private var backButton: some View {
+        Button {
+            currentFolder = nil
+        } label: {
+            Image(systemSymbol: .chevronLeft)
+        }
+        .buttonStyle(.plain)
+        .circularGlassOrLegacyBackground()
     }
 
     @ViewBuilder

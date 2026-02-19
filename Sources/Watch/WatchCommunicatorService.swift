@@ -138,9 +138,23 @@ final class WatchCommunicatorService {
         let responseIdentifier = InteractiveImmediateResponses.watchConfigResponse.rawValue
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { _ in
-            let magicItemsInfo: [MagicItem.Info] = watchConfig.items.compactMap { magicItem in
-                magicItemProvider.getInfo(for: magicItem)
+            var magicItemsInfo: [MagicItem.Info] = []
+
+            // Collect info for all items, including those inside folders
+            for magicItem in watchConfig.items {
+                if let info = magicItemProvider.getInfo(for: magicItem) {
+                    magicItemsInfo.append(info)
+                }
+                // If this is a folder, also get info for its children
+                if magicItem.type == .folder, let folderItems = magicItem.items {
+                    for folderItem in folderItems {
+                        if let info = magicItemProvider.getInfo(for: folderItem) {
+                            magicItemsInfo.append(info)
+                        }
+                    }
+                }
             }
+
             message.reply(.init(identifier: responseIdentifier, content: [
                 "config": watchConfig.encodeForWatch(),
                 "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() }),

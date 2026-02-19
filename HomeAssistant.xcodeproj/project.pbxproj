@@ -1117,6 +1117,7 @@
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
+		C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */; };
 		42EEEFE22E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE32E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
@@ -2894,6 +2895,7 @@
 		42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareActivityView.swift; sourceTree = "<group>"; };
 		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
+		9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFolderRow.swift; sourceTree = "<group>"; };
 		42EEEFE12E2791430080E973 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
 		42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetAllCustomWidgetConfirmationAppIntent.swift; sourceTree = "<group>"; };
@@ -4583,6 +4585,7 @@
 			isa = PBXGroup;
 			children = (
 				42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */,
+				9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */,
 				4207EB752C8754BF00286A2D /* WatchMagicViewRowViewModel.swift */,
 			);
 			path = MagicItemRow;
@@ -9797,6 +9800,7 @@
 				428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */,
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
 				42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */,
+				C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */,
 				42752DF12D50F94C00FC2F37 /* AssistTypingIndicator.swift in Sources */,
 				42DF986B2E93A1F300837EA2 /* NotificationSubController.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
