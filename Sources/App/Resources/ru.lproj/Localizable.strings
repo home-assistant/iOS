@@ -1355,6 +1355,9 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.automation.trigger.title" = "Запустить автоматизацию";
 "widgets.automations.description" = "Запуск автоматизации";
 "widgets.button.reload_timeline" = "Перезагрузить все виджеты";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Открыть Assist в приложении Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Выберите пайплайн";
 "widgets.controls.assist.title" = "Assist";
@@ -1471,6 +1474,7 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.open_page.description" = "Открыть страницу интерфейса в Home Assistant.";
 "widgets.open_page.not_configured" = "Нет доступных страниц";
 "widgets.open_page.title" = "Открыть страницу";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Создайте свой собственный виджет внутри приложения, а затем отобразите его здесь.";
 "widgets.preview.custom.title" = "Пользовательский виджет";
 "widgets.preview.empty.create.button" = "Создать виджет";

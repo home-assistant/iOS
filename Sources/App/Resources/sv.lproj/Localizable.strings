@@ -1354,6 +1354,9 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.automation.trigger.title" = "Utlös automatisering";
 "widgets.automations.description" = "Kör automatisering";
 "widgets.button.reload_timeline" = "Ladda om alla widgets";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Öppna Assist i Home Assistant-appen";
 "widgets.controls.assist.pipeline.placeholder" = "Välj en pipeline";
 "widgets.controls.assist.title" = "Assistent";
@@ -1470,6 +1473,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.open_page.description" = "Öppna en frontend-sida i Home Assistant.";
 "widgets.open_page.not_configured" = "Inga sidor tillgängliga";
 "widgets.open_page.title" = "Öppna sida";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Skapa din egen widget i appen och visa den sedan här.";
 "widgets.preview.custom.title" = "Anpassad widget";
 "widgets.preview.empty.create.button" = "Skapa widget";

@@ -1353,6 +1353,9 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.automation.trigger.title" = "触发自动化";
 "widgets.automations.description" = "运行自动化";
 "widgets.button.reload_timeline" = "重新加载所有小组件";
+"widgets.commonly_used_entities.description" = "根据您的使用习惯显示常用实体。";
+"widgets.commonly_used_entities.empty.description" = "未找到常用实体。使用 Home Assistant 可构建您的使用历史记录。";
+"widgets.commonly_used_entities.title" = "通用控制";
 "widgets.controls.assist.description" = "打开 Home Assistant 应用中的语音助手";
 "widgets.controls.assist.pipeline.placeholder" = "选择管道";
 "widgets.controls.assist.title" = "语音助手";
@@ -1469,6 +1472,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.open_page.description" = "在 Home Assistant 中打开前端页面。";
 "widgets.open_page.not_configured" = "无可用页面";
 "widgets.open_page.title" = "打开页面";
+"widgets.param.server.title" = "服务器";
 "widgets.preview.custom.description" = "在应用程序内部创建您自己的小部件，然后在此处显示它。";
 "widgets.preview.custom.title" = "自定义小部件";
 "widgets.preview.empty.create.button" = "创建小部件";
@@ -1485,9 +1489,9 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.todo_list.all_done" = "全部完成！🎉";
 "widgets.todo_list.complete_item_title" = "完成待办事项";
 "widgets.todo_list.description" = "检查您的清单并添加事项";
-"widgets.todo_list.due_date.ago_format" = "%@ ago";
-"widgets.todo_list.due_date.in_format" = "In %@";
-"widgets.todo_list.due_date.now" = "Now";
+"widgets.todo_list.due_date.ago_format" = "%@ 之前";
+"widgets.todo_list.due_date.in_format" = "于 %@";
+"widgets.todo_list.due_date.now" = "现在";
 "widgets.todo_list.due_date.today" = "今天";
 "widgets.todo_list.parameter.item_id" = "事项标识符";
 "widgets.todo_list.parameter.list" = "清单";

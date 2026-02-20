@@ -1355,6 +1355,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.automation.trigger.title" = "Trigger automation";
 "widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Reload all widgets";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
@@ -1471,6 +1474,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.open_page.description" = "Mở một trang giao diện người dùng trong Home Assistant.";
 "widgets.open_page.not_configured" = "Không có trang nào";
 "widgets.open_page.title" = "Mở trang";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";
 "widgets.preview.custom.title" = "Custom widget";
 "widgets.preview.empty.create.button" = "Create widget";

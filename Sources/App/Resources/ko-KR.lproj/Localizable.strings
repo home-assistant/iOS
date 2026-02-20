@@ -1355,6 +1355,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.automation.trigger.title" = "Trigger automation";
 "widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "모든 위젯 새로고침";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Home Assistant 앱에서 Assist 열기";
 "widgets.controls.assist.pipeline.placeholder" = "파이프라인을 선택하세요";
 "widgets.controls.assist.title" = "Assist";
@@ -1471,6 +1474,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.open_page.description" = "Home Assistant에서 프론트엔드 페이지를 엽니다.";
 "widgets.open_page.not_configured" = "해당 페이지가 없습니다";
 "widgets.open_page.title" = "페이지 열기";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "앱 내에서 나만의 위젯을 만든 다음 여기에 표시하세요.";
 "widgets.preview.custom.title" = "사용자 정의 위젯";
 "widgets.preview.empty.create.button" = "위젯 만들기";
