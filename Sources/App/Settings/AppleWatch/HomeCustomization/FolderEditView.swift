@@ -40,7 +40,7 @@ struct FolderEditView: View {
                     onSave(folder)
                     dismiss()
                 } label: {
-                    Text(L10n.MagicItem.edit)
+                    Text(L10n.saveLabel)
                 }
             }
             ToolbarItem(placement: .topBarLeading) {
