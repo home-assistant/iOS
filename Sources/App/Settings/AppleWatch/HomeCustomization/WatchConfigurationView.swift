@@ -17,7 +17,7 @@ struct WatchConfigurationView: View {
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
     @State private var showAddFolderSheet = false
-    @State private var newFolderName: String = "Folder"
+    @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
 
     private let needsNavigationController: Bool
 
