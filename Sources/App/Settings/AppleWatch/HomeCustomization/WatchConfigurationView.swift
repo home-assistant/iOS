@@ -270,7 +270,7 @@ struct WatchConfigurationView: View {
 
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
-            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
+            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .haPrimary))
             Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemSymbol: .line3Horizontal)
@@ -285,14 +285,15 @@ struct WatchConfigurationView: View {
             iconName: "",
             customization: nil
         )
+        let iconColor = iconColorForItem(item: item, itemInfo: itemInfo)
 
         return HStack(spacing: DesignSystem.Spaces.one) {
             VStack {
                 Image(uiImage: image(for: item, itemInfo: itemInfo, watchPreview: true))
-                    .foregroundColor(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)))
+                    .foregroundColor(iconColor)
                     .padding(DesignSystem.Spaces.one)
             }
-            .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
+            .background(iconColor.opacity(0.3))
             .clipShape(Circle())
             Text(item.name(info: itemInfo))
                 .font(.system(size: 16))
@@ -323,6 +324,14 @@ struct WatchConfigurationView: View {
         }
     }
 
+    private func iconColorForItem(item: MagicItem, itemInfo: MagicItem.Info) -> Color {
+        if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
+            Color(uiColor: .init(hex: iconColor))
+        } else {
+            Color.haPrimary
+        }
+    }
+
     private func image(
         for item: MagicItem,
         itemInfo: MagicItem.Info,
@@ -330,10 +339,17 @@ struct WatchConfigurationView: View {
         color: UIColor? = nil
     ) -> UIImage {
         let icon: MaterialDesignIcons = item.icon(info: itemInfo)
+        let resolvedColor: UIColor = if let color {
+            color
+        } else if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
+            .init(hex: iconColor)
+        } else {
+            .haPrimary
+        }
 
         return icon.image(
             ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
-            color: color ?? .init(hex: itemInfo.customization?.iconColor)
+            color: resolvedColor
         )
     }
 

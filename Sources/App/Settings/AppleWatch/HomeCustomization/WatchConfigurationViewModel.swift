@@ -44,7 +44,7 @@ final class WatchConfigurationViewModel: ObservableObject {
             id: UUID().uuidString,
             serverId: "",
             type: .folder,
-            customization: .init(),
+            customization: .init(iconColor: UIColor.haPrimary.hexString()),
             action: .default,
             displayText: name,
             items: []
