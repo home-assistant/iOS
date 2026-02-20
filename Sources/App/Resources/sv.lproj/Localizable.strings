@@ -1114,7 +1114,11 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.config.migration_error.failed_create_new_config" = "Misslyckades med att spara initial klockkonfiguration, fel: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Misslyckades med att migrera åtgärder till klockans konfiguration, fel: %@";
 "watch.config.migration_error.failed_to_save" = "Misslyckades med att spara ny klockkonfiguration, fel: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Lägg till objekt";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Objekt";
 "watch.configuration.save.title" = "Spara";
 "watch.configuration.show_assist.title" = "Visa Assistent";

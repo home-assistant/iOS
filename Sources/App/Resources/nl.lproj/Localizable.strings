@@ -1115,7 +1115,11 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "watch.config.migration_error.failed_create_new_config" = "Het is niet gelukt om de initiële Watch-configuratie op te slaan, fout: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Het is niet gelukt om acties naar de Watch-configuratie te migreren, fout: %@";
 "watch.config.migration_error.failed_to_save" = "Het is niet gelukt om de nieuwe Watch-configuratie op te slaan, fout: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Voeg item toe";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Items";
 "watch.configuration.save.title" = "Opslaan";
 "watch.configuration.show_assist.title" = "Assist weergeven";

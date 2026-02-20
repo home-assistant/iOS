@@ -8,6 +8,11 @@ struct WatchHomeView: View {
     @State private var showAssist = false
     @State private var currentFolderId: String?
 
+    private var currentFolder: MagicItem? {
+        guard let currentFolderId else { return nil }
+        return viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == currentFolderId })
+    }
+
     var body: some View {
         content
             ._statusBarHidden(true)
@@ -123,7 +128,7 @@ struct WatchHomeView: View {
             ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 if item.type == .folder {
                     WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
-                        currentFolder = item
+                        currentFolderId = item.id
                     }
                 } else {
                     WatchMagicViewRow(
@@ -137,7 +142,7 @@ struct WatchHomeView: View {
 
     private var backButton: some View {
         Button {
-            currentFolder = nil
+            currentFolderId = nil
         } label: {
             Image(systemSymbol: .chevronLeft)
         }

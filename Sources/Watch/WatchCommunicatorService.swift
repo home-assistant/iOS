@@ -171,10 +171,22 @@ final class WatchCommunicatorService {
         let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
         guard let itemType = message.content["itemType"] as? String,
               let itemId = message.content["itemId"] as? String,
-              let serverId = message.content["serverId"] as? String,
-              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
-              let type = MagicItem.ItemType(rawValue: itemType), let api = Current.api(for: server) else {
+              let type = MagicItem.ItemType(rawValue: itemType) else {
             Current.Log.warning("Magic item press did not provide item type or item id")
+            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            return
+        }
+
+        // Folders don't execute actions, they are containers
+        if type == .folder {
+            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            return
+        }
+
+        guard let serverId = message.content["serverId"] as? String,
+              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
+              let api = Current.api(for: server) else {
+            Current.Log.warning("Magic item press did not provide valid server info")
             message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             return
         }
@@ -222,8 +234,8 @@ final class WatchCommunicatorService {
                 responseIdentifier: responseIdentifier
             )
         case .folder:
-            // Folders don't execute actions, they are containers
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            // Already handled above, before server resolution
+            break
         }
     }
 

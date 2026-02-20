@@ -1115,7 +1115,11 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "watch.config.migration_error.failed_create_new_config" = "İlk izleme yapılandırması kaydedilemedi, hata: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Eylemleri izleme yapılandırmasına geçirme başarısız oldu, hata: %@";
 "watch.config.migration_error.failed_to_save" = "Yeni Watch yapılandırması kaydedilemedi, hata: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Öğe ekle";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Öğeler";
 "watch.configuration.save.title" = "Kaydet";
 "watch.configuration.show_assist.title" = "Asistanı Göster";

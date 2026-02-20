@@ -1115,7 +1115,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.config.migration_error.failed_create_new_config" = "Failed to save initial watch config, error: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Failed to migrate actions to watch config, error: %@";
 "watch.config.migration_error.failed_to_save" = "Failed to save new Watch config, error: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Lisää kohde";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Kohteet";
 "watch.configuration.save.title" = "Tallenna";
 "watch.configuration.show_assist.title" = "Näytä Assist";

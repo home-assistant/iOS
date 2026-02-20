@@ -1114,7 +1114,11 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "watch.config.migration_error.failed_create_new_config" = "无法保存初始手表配置，错误：%@";
 "watch.config.migration_error.failed_migrate_actions" = "无法将操作迁移到手表配置，错误：%@";
 "watch.config.migration_error.failed_to_save" = "无法保存新的 Watch 配置，错误：%@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "添加项目";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "项目";
 "watch.configuration.save.title" = "保存";
 "watch.configuration.show_assist.title" = "显示语音助手";

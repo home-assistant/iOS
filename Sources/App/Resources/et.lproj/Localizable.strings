@@ -1115,7 +1115,11 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.config.migration_error.failed_create_new_config" = "Kella algse konfiguratsiooni salvestamine ebaõnnestus, tõrge: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Tegevuste migreerimine kella config'ile ebaõnnestus, viga: %@";
 "watch.config.migration_error.failed_to_save" = "Kella uue konfiguratsiooni salvestamine ebaõnnestus, viga: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Lisa üksus";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Üksused";
 "watch.configuration.save.title" = "Salvesta";
 "watch.configuration.show_assist.title" = "Kiuva Assisti";

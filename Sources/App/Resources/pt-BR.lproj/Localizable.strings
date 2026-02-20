@@ -1115,7 +1115,11 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "watch.config.migration_error.failed_create_new_config" = "Falha ao salvar a configuração inicial do relógio, erro: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Falha ao migrar ações para a configuração de observação, erro: %@";
 "watch.config.migration_error.failed_to_save" = "Falha ao salvar nova configuração do Watch, erro: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Adicionar Item";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Itens";
 "watch.configuration.save.title" = "Salvar";
 "watch.configuration.show_assist.title" = "Mostrar Assist";

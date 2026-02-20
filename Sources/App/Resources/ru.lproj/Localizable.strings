@@ -1115,7 +1115,11 @@ Home Assistant — это приложение с открытым исходн�
 "watch.config.migration_error.failed_create_new_config" = "Не удалось сохранить начальную конфигурацию часов, ошибка: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Не удалось перенести действия в конфигурацию часов, ошибка: %@";
 "watch.config.migration_error.failed_to_save" = "Не удалось сохранить новую конфигурацию часов, ошибка: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Добавить элемент";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Элементы";
 "watch.configuration.save.title" = "Сохранить";
 "watch.configuration.show_assist.title" = "Показывать Assist";

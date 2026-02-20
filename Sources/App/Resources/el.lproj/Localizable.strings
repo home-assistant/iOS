@@ -1115,7 +1115,11 @@
 "watch.config.migration_error.failed_create_new_config" = "Αποτυχία αποθήκευσης της αρχικής διαμόρφωσης ρολογιού, σφάλμα: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Αποτυχία μετεγκατάστασης ενεργειών στη διαμόρφωση ρολογιού, σφάλμα: %@";
 "watch.config.migration_error.failed_to_save" = "Αποτυχία αποθήκευσης της νέας διαμόρφωσης ρολογιού, σφάλμα: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Προσθήκη στοιχείου";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Στοιχεία";
 "watch.configuration.save.title" = "Αποθήκευση";
 "watch.configuration.show_assist.title" = "Εμφάνιση Βοηθού";

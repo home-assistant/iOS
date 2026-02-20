@@ -4,7 +4,6 @@ import SwiftUI
 
 struct FolderDetailView: View {
     let folderId: String
-    let folderName: String
     @ObservedObject var viewModel: WatchConfigurationViewModel
 
     @State private var showAddItem = false
@@ -34,7 +33,7 @@ struct FolderDetailView: View {
             }
         }
         .preferredColorScheme(.dark)
-        .navigationTitle(folderName)
+        .navigationTitle(folder?.displayText ?? L10n.Watch.Configuration.Folder.defaultName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -134,5 +133,5 @@ struct FolderDetailView: View {
             ]
         ),
     ]
-    return NavigationView { FolderDetailView(folderId: "folder1", folderName: "My Folder", viewModel: vm) }
+    return NavigationView { FolderDetailView(folderId: "folder1", viewModel: vm) }
 }

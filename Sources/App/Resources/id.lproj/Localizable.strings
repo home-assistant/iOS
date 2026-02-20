@@ -1114,7 +1114,11 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "watch.config.migration_error.failed_create_new_config" = "Gagal menyimpan konfigurasi awal Watch, kesalahan: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Gagal memigrasikan tindakan untuk konfigurasi Watch, kesalahan: %@";
 "watch.config.migration_error.failed_to_save" = "Gagal menyimpan konfigurasi Watch baru, kesalahan: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Tambahkan item";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Item";
 "watch.configuration.save.title" = "Simpan";
 "watch.configuration.show_assist.title" = "Tampilkan Assist";

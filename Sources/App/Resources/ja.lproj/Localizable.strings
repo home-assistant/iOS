@@ -1114,7 +1114,11 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "watch.config.migration_error.failed_create_new_config" = "初期ウォッチ設定の保存に失敗しました。エラー: %@";
 "watch.config.migration_error.failed_migrate_actions" = "アクションをウォッチ設定に移行できませんでした。エラー: %@";
 "watch.config.migration_error.failed_to_save" = "新しいウォッチ設定を保存できませんでした。エラー: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "アイテムを追加";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "アイテム";
 "watch.configuration.save.title" = "保存";
 "watch.configuration.show_assist.title" = "アシスト表示";

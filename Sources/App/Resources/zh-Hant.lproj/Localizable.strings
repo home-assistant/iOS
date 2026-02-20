@@ -1115,7 +1115,11 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.config.migration_error.failed_create_new_config" = "儲存起始手錶設定失敗，錯誤：%@";
 "watch.config.migration_error.failed_migrate_actions" = "遷移動作至手錶設定失敗，錯誤：%@";
 "watch.config.migration_error.failed_to_save" = "儲存新手錶設定失敗，錯誤：%@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "新增項目";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "項目";
 "watch.configuration.save.title" = "儲存";
 "watch.configuration.show_assist.title" = "顯示助理";

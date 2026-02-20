@@ -1115,7 +1115,11 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "watch.config.migration_error.failed_create_new_config" = "Kunne ikke gemme den oprindelige watch konfiguration, fejl: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Kunne ikke migrere handlinger til watch konfiguration, fejl: %@";
 "watch.config.migration_error.failed_to_save" = "Kunne ikke gemme den nye watch konfiguration, fejl: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Tilføj element";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Elementer";
 "watch.configuration.save.title" = "Gem";
 "watch.configuration.show_assist.title" = "Vis Assist";

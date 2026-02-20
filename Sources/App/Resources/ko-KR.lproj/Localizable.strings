@@ -1115,7 +1115,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.config.migration_error.failed_create_new_config" = "초기 감시 구성을 저장하지 못했습니다, 오류: %@";
 "watch.config.migration_error.failed_migrate_actions" = "시계 설정으로 작업을 마이그레이션하지 못했습니다(오류 발생): %@";
 "watch.config.migration_error.failed_to_save" = "새 Watch 구성을 저장하지 못했습니다, 오류 : %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "항목 추가";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "항목";
 "watch.configuration.save.title" = "저장하기";
 "watch.configuration.show_assist.title" = "Assist 표시";

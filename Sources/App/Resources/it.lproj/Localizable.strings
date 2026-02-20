@@ -1115,7 +1115,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.config.migration_error.failed_create_new_config" = "Impossibile salvare la configurazione iniziale dell'orologio, errore: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Impossibile migrare le azioni nella configurazione dell'orologio, errore: %@";
 "watch.config.migration_error.failed_to_save" = "Impossibile salvare la nuova configurazione di Watch, errore: %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Aggiungi elemento";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "Elementi";
 "watch.configuration.save.title" = "Salva";
 "watch.configuration.show_assist.title" = "Mostra Assist";

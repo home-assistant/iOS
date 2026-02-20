@@ -1115,7 +1115,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.config.migration_error.failed_create_new_config" = "Échec de l'enregistrement de la configuration initiale de la montre, erreur : %@";
 "watch.config.migration_error.failed_migrate_actions" = "Échec de la migration des actions vers la configuration de surveillance, erreur : %@";
 "watch.config.migration_error.failed_to_save" = "Échec de l'enregistrement de la nouvelle configuration de la montre, erreur : %@";
+"watch.configuration.add_folder.title" = "Add Folder";
 "watch.configuration.add_item.title" = "Ajouter un élément";
+"watch.configuration.folder.default_name" = "Folder";
+"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.items.title" = "élément";
 "watch.configuration.save.title" = "Sauvegarder";
 "watch.configuration.show_assist.title" = "Afficher l'assistance";

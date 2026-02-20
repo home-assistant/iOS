@@ -37,9 +37,6 @@ struct WatchConfigurationView: View {
                     content
                 }
             }
-            .sheet(isPresented: $showAddFolderSheet) {
-                addFolderSheet
-            }
         } else {
             content
         }
@@ -88,6 +85,9 @@ struct WatchConfigurationView: View {
             Button(action: {}, label: {
                 Text(verbatim: L10n.okLabel)
             })
+        }
+        .sheet(isPresented: $showAddFolderSheet) {
+            addFolderSheet
         }
     }
 
@@ -252,7 +252,6 @@ struct WatchConfigurationView: View {
             NavigationLink {
                 FolderDetailView(
                     folderId: item.id,
-                    folderName: item.displayText ?? "Folder",
                     viewModel: viewModel
                 )
             } label: {
