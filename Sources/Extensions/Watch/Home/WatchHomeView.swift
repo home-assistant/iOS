@@ -6,7 +6,7 @@ struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
-    @State private var currentFolder: MagicItem?
+    @State private var currentFolderId: String?
 
     var body: some View {
         content
