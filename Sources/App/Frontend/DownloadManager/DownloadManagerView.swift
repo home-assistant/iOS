@@ -30,6 +30,19 @@ struct DownloadManagerView: View {
                 URLOpener.shared.open(AppConstants.DownloadsDirectory, options: [:], completionHandler: nil)
             }
         }
+        .modify { view in
+            if Current.isCatalyst {
+                view.toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton {
+                            dismiss()
+                        }
+                    }
+                }
+            } else {
+                view
+            }
+        }
     }
 
     @ViewBuilder

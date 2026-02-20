@@ -94,7 +94,12 @@ extension WebViewController {
             let viewModel = DownloadManagerViewModel()
             let downloadManager = DownloadManagerView(viewModel: viewModel)
             let downloadController = UIHostingController(rootView: downloadManager)
-            presentOverlayController(controller: downloadController, animated: true)
+            if Current.isCatalyst {
+                let navigationController = UINavigationController(rootViewController: downloadController)
+                presentOverlayController(controller: navigationController, animated: true)
+            } else {
+                presentOverlayController(controller: downloadController, animated: true)
+            }
             download.delegate = viewModel
         }
     }
