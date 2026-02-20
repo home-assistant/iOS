@@ -171,7 +171,7 @@ struct WatchConfigurationView: View {
                     viewModel.addFolder(named: name)
                     showAddFolderSheet = false
                 }) {
-                    Text(L10n.Watch.Configuration.AddItem.title)
+                    Text(L10n.Watch.Configuration.AddFolder.title)
                 }
                 .disabled(newFolderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
