@@ -39,6 +39,7 @@ final class SpeechTranscriber: SpeechTranscriberProtocol {
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private var lastTranscription: String = ""
+    private var isActive = false
 
     func startTranscribing(locale: Locale) {
         // Stop any existing transcription
@@ -60,9 +61,10 @@ final class SpeechTranscriber: SpeechTranscriberProtocol {
         recognitionRequest = request
 
         lastTranscription = ""
+        isActive = true
 
         recognitionTask = recognizer.recognitionTask(with: request) { [weak self] result, error in
-            guard let self else { return }
+            guard let self, self.isActive else { return }
 
             if let result {
                 let text = result.bestTranscription.formattedString
@@ -75,7 +77,7 @@ final class SpeechTranscriber: SpeechTranscriberProtocol {
                 }
             }
 
-            if let error, self.recognitionTask != nil {
+            if let error {
                 Current.Log.error("Speech recognition error: \(error.localizedDescription)")
                 delegate?.speechTranscriberDidFail(error: error)
                 cleanUp()
@@ -99,6 +101,7 @@ final class SpeechTranscriber: SpeechTranscriberProtocol {
     }
 
     private func cleanUp() {
+        isActive = false
         recognitionRequest = nil
         recognitionTask = nil
         speechRecognizer = nil
