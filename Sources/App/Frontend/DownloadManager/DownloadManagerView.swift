@@ -13,36 +13,33 @@ struct DownloadManagerView: View {
     }
 
     var body: some View {
-        VStack(spacing: .zero) {
-            content
-            Spacer()
-        }
-        .onDisappear {
-            viewModel.cancelDownload()
+        NavigationView {
+            VStack(spacing: .zero) {
+                content
+                Spacer()
+            }
+            .onDisappear {
+                viewModel.cancelDownload()
 
-            // For mac the file should remain in the download folder to keep expected behavior
-            if !Current.isCatalyst {
-                viewModel.deleteFile()
+                // For mac the file should remain in the download folder to keep expected behavior
+                if !Current.isCatalyst {
+                    viewModel.deleteFile()
+                }
             }
-        }
-        .onChange(of: viewModel.finished) { _, newValue in
-            if newValue, Current.isCatalyst {
-                URLOpener.shared.open(AppConstants.DownloadsDirectory, options: [:], completionHandler: nil)
+            .onChange(of: viewModel.finished) { _, newValue in
+                if newValue, Current.isCatalyst {
+                    URLOpener.shared.open(AppConstants.DownloadsDirectory, options: [:], completionHandler: nil)
+                }
             }
-        }
-        .modify { view in
-            if Current.isCatalyst {
-                view.toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton {
-                            dismiss()
-                        }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButton {
+                        dismiss()
                     }
                 }
-            } else {
-                view
             }
         }
+        .navigationViewStyle(.stack)
     }
 
     @ViewBuilder
