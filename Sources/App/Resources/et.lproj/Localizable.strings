@@ -1355,9 +1355,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.automation.trigger.title" = "Vallanda automatiseerimine";
 "widgets.automations.description" = "Käivita automatiseerimine";
 "widgets.button.reload_timeline" = "Taaslae kõik paanid";
-"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
-"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
-"widgets.commonly_used_entities.title" = "Common Controls";
+"widgets.commonly_used_entities.description" = "Kuva sagedamini kasutatavaid üksusi vastavalt kasutusmustritele.";
+"widgets.commonly_used_entities.empty.description" = "Ühtegi sageli kasutatavat üksust ei leitud. Kasuta oma kasutusajaloo loomiseks Home Assistantit.";
+"widgets.commonly_used_entities.title" = "Tüüpilised juhtseaded";
 "widgets.controls.assist.description" = "Ava Assist rakenduses Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Vali voog";
 "widgets.controls.assist.title" = "Abiline";
