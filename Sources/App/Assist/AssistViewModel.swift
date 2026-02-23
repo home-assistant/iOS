@@ -342,12 +342,13 @@ extension AssistViewModel: AudioRecorderDelegate {
         }
 
         let frameCount = CMSampleBufferGetNumSamples(sampleBuffer)
+        let isInterleaved = streamDescription.pointee.mFormatFlags & kAudioFormatFlagIsNonInterleaved == 0
         guard let pcmBuffer = AVAudioPCMBuffer(
             pcmFormat: AVAudioFormat(
                 commonFormat: .pcmFormatFloat32,
                 sampleRate: streamDescription.pointee.mSampleRate,
                 channels: AVAudioChannelCount(streamDescription.pointee.mChannelsPerFrame),
-                interleaved: streamDescription.pointee.mFormatFlags & kAudioFormatFlagIsNonInterleaved == 0
+                interleaved: isInterleaved
             ),
             frameCapacity: AVAudioFrameCount(frameCount)
         ) else { return }
