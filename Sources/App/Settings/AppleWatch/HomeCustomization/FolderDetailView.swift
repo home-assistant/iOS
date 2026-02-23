@@ -129,7 +129,7 @@ struct FolderDetailView: View {
             displayText: "My Folder",
             items: [
                 MagicItem(id: "script.turn_on", serverId: "s1", type: .script),
-                MagicItem(id: "scene.night", serverId: "s1", type: .scene)
+                MagicItem(id: "scene.night", serverId: "s1", type: .scene),
             ]
         ),
     ]

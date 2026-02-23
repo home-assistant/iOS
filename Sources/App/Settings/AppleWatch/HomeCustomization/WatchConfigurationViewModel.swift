@@ -64,14 +64,16 @@ final class WatchConfigurationViewModel: ObservableObject {
 
     func updateItem(_ item: MagicItem) {
         // Try root level first
-        if let indexToUpdate = watchConfig.items.firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+        if let indexToUpdate = watchConfig.items
+            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
             watchConfig.items.remove(at: indexToUpdate)
             watchConfig.items.insert(item, at: indexToUpdate)
             return
         }
         // Try inside folders
         for (folderIndex, folder) in watchConfig.items.enumerated() where folder.type == .folder {
-            if let items = folder.items, let index = items.firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+            if let items = folder.items,
+               let index = items.firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
                 var updatedFolder = folder
                 var updatedItems = items
                 updatedItems.remove(at: index)
@@ -120,7 +122,8 @@ final class WatchConfigurationViewModel: ObservableObject {
         }
         // Remove from any folder if present
         for (folderIndex, folder) in watchConfig.items.enumerated() where folder.type == .folder {
-            if var items = folder.items, let index = items.firstIndex(where: { $0.id == itemId && $0.serverId == serverId }) {
+            if var items = folder.items,
+               let index = items.firstIndex(where: { $0.id == itemId && $0.serverId == serverId }) {
                 let item = items.remove(at: index)
                 var updatedFolder = folder
                 updatedFolder.items = items
