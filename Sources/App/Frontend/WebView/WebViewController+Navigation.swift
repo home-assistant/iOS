@@ -6,7 +6,7 @@ import UIKit
 
 // MARK: - Public Navigation API
 
-public extension WebViewController {
+extension WebViewController {
     /// avoidUnecessaryReload Avoids reloading when the URL is the same as the current one
     func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
         loadViewIfNeeded()
@@ -87,7 +87,7 @@ public extension WebViewController {
     }
 
     /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`
-    internal func reload() {
+    func reload() {
         Current.Log.verbose("Reload webView requested")
         webView.reload()
     }
@@ -127,7 +127,7 @@ public extension WebViewController {
         ))
     }
 
-    internal func getLatestConfig() {
+    func getLatestConfig() {
         _ = Current.api(for: server)?.getConfig()
     }
 }
