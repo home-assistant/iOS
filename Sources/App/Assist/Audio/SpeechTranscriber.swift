@@ -1,12 +1,10 @@
-import AVFoundation
 import Shared
-import Speech
+import SpeechTranscriber
 
 protocol SpeechTranscriberProtocol: AnyObject {
     var delegate: SpeechTranscriberDelegate? { get set }
     func startTranscribing(locale: Locale)
     func stopTranscribing()
-    func sendAudioBuffer(_ buffer: AVAudioPCMBuffer)
 }
 
 protocol SpeechTranscriberDelegate: AnyObject {
@@ -15,95 +13,62 @@ protocol SpeechTranscriberDelegate: AnyObject {
     func speechTranscriberDidFail(error: Error)
 }
 
-enum SpeechTranscriberError: LocalizedError {
-    case notAuthorized
-    case recognizerUnavailable
-    case audioEngineFailure
+/// Adapter that wraps the SPM `SpeechTranscriber` package and conforms to `SpeechTranscriberProtocol`.
+/// The SPM package manages its own audio engine internally, so no external audio buffer forwarding is needed.
+@MainActor
+final class SpeechTranscriberAdapter: SpeechTranscriberProtocol {
+    nonisolated weak var delegate: SpeechTranscriberDelegate?
 
-    var errorDescription: String? {
-        switch self {
-        case .notAuthorized:
-            "Speech recognition is not authorized. Please enable it in Settings."
-        case .recognizerUnavailable:
-            "Speech recognizer is not available for the selected language."
-        case .audioEngineFailure:
-            "Failed to start audio engine."
+    private var transcriber: SpeechTranscriber?
+
+    nonisolated func startTranscribing(locale: Locale) {
+        Task { @MainActor in
+            await performStartTranscribing(locale: locale)
         }
     }
-}
 
-final class SpeechTranscriber: SpeechTranscriberProtocol {
-    weak var delegate: SpeechTranscriberDelegate?
-
-    private var speechRecognizer: SFSpeechRecognizer?
-    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
-    private var recognitionTask: SFSpeechRecognitionTask?
-    private var lastTranscription: String = ""
-    private var isActive = false
-
-    func startTranscribing(locale: Locale) {
-        // Stop any existing transcription
-        stopTranscribing()
-
-        let recognizer = SFSpeechRecognizer(locale: locale)
-        speechRecognizer = recognizer
-
-        guard let recognizer, recognizer.isAvailable else {
-            delegate?.speechTranscriberDidFail(error: SpeechTranscriberError.recognizerUnavailable)
-            return
+    nonisolated func stopTranscribing() {
+        Task { @MainActor in
+            performStopTranscribing()
         }
+    }
 
-        let request = SFSpeechAudioBufferRecognitionRequest()
-        request.shouldReportPartialResults = true
-        if recognizer.supportsOnDeviceRecognition {
-            request.requiresOnDeviceRecognition = true
-        }
-        recognitionRequest = request
+    private func performStartTranscribing(locale: Locale) async {
+        let newTranscriber = SpeechTranscriber(locale: locale)
+        transcriber = newTranscriber
 
-        lastTranscription = ""
-        isActive = true
-
-        recognitionTask = recognizer.recognitionTask(with: request) { [weak self] result, error in
-            guard let self, self.isActive else { return }
-
-            if let result {
-                let text = result.bestTranscription.formattedString
-                lastTranscription = text
-                delegate?.speechTranscriberDidTranscribe(text)
-
-                if result.isFinal {
-                    delegate?.speechTranscriberDidFinish(finalText: text)
-                    cleanUp()
-                }
-            }
-
-            if let error {
-                Current.Log.error("Speech recognition error: \(error.localizedDescription)")
-                delegate?.speechTranscriberDidFail(error: error)
-                cleanUp()
+        newTranscriber.onTranscriptUpdate = { [weak self] text, isFinal in
+            guard let self else { return }
+            delegate?.speechTranscriberDidTranscribe(text)
+            if isFinal {
+                delegate?.speechTranscriberDidFinish(finalText: text)
+                transcriber = nil
             }
         }
-    }
 
-    func stopTranscribing() {
-        recognitionRequest?.endAudio()
-        recognitionTask?.finish()
-
-        if !lastTranscription.isEmpty {
-            delegate?.speechTranscriberDidFinish(finalText: lastTranscription)
+        newTranscriber.onError = { [weak self] error in
+            guard let self else { return }
+            delegate?.speechTranscriberDidFail(error: error)
+            transcriber = nil
         }
 
-        cleanUp()
+        do {
+            try await newTranscriber.startListening()
+        } catch {
+            Current.Log.error("Failed to start on-device speech transcription: \(error.localizedDescription)")
+            delegate?.speechTranscriberDidFail(error: error)
+            transcriber = nil
+        }
     }
 
-    func sendAudioBuffer(_ buffer: AVAudioPCMBuffer) {
-        recognitionRequest?.append(buffer)
-    }
+    private func performStopTranscribing() {
+        guard let transcriber else { return }
+        let finalText = transcriber.transcript
+        transcriber.stopListening()
+        self.transcriber = nil
 
-    private func cleanUp() {
-        isActive = false
-        recognitionRequest = nil
-        recognitionTask = nil
-        speechRecognizer = nil
+        if !finalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            delegate?.speechTranscriberDidFinish(finalText: finalText)
+        }
     }
 }

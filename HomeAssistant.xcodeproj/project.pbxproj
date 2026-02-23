@@ -989,6 +989,7 @@
 		42B129452F0565E900B957AF /* EntityDisplayComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B129442F0565E900B957AF /* EntityDisplayComponents.swift */; };
 		42B129512F056DAC00B957AF /* EntityMoreInfoDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */; };
 		42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 42B18FD62F38CA2300A1537A /* FirebaseMessaging */; };
+		42F1A1012F3A000000A00001 /* SpeechTranscriber in Frameworks */ = {isa = PBXBuildFile; productRef = 42F1A1002F3A000000A00001 /* SpeechTranscriber */; };
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
@@ -3547,6 +3548,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */,
+				42F1A1012F3A000000A00001 /* SpeechTranscriber in Frameworks */,
 				1148A44E24E8B59100345050 /* WidgetKit.framework in Frameworks */,
 				42E00D112E1E7487006D140D /* SharedPush in Frameworks */,
 				110EC9FD251708D5009C9A1B /* Shared.framework in Frameworks */,
@@ -7660,6 +7662,9 @@
 				11B6B5812948F8E100B8B552 /* PBXTargetDependency */,
 			);
 			name = App;
+			packageProductDependencies = (
+				42F1A1002F3A000000A00001 /* SpeechTranscriber */,
+			);
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
 			productType = "com.apple.product-type.application";
@@ -8080,6 +8085,7 @@
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				42E5E2E42F38CEA30030BBEB /* XCRemoteSwiftPackageReference "SwiftMessages" */,
+				42F1A0FF2F3A000000A00001 /* XCRemoteSwiftPackageReference "SpeechTranscriber" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -12238,6 +12244,14 @@
 				version = 10.0.2;
 			};
 		};
+		42F1A0FF2F3A000000A00001 /* XCRemoteSwiftPackageReference "SpeechTranscriber" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bgoncal/SpeechTranscriber";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -12292,6 +12306,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 42E5E2E42F38CEA30030BBEB /* XCRemoteSwiftPackageReference "SwiftMessages" */;
 			productName = SwiftMessages;
+		};
+		42F1A1002F3A000000A00001 /* SpeechTranscriber */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42F1A0FF2F3A000000A00001 /* XCRemoteSwiftPackageReference "SpeechTranscriber" */;
+			productName = SpeechTranscriber;
 		};
 		46C62B952D8A3730002C0001 /* InlineSnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;

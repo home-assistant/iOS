@@ -3,7 +3,6 @@ import Foundation
 import GRDB
 import HAKit
 import Shared
-import Speech
 
 final class AssistViewModel: NSObject, ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
@@ -43,7 +42,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder: AudioRecorderProtocol,
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
-        speechTranscriber: SpeechTranscriberProtocol = SpeechTranscriber(),
+        speechTranscriber: SpeechTranscriberProtocol = SpeechTranscriberAdapter(),
         autoStartRecording: Bool
     ) {
         self.server = server
@@ -108,8 +107,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         // Remove text from input to make animation look better
         inputText = ""
 
-        audioRecorder.startRecording()
-        // Wait until green light from recorder delegate 'didStartRecording'
+        if configuration.enableOnDeviceSTT {
+            // On-device STT: the SPM SpeechTranscriber manages its own audio engine
+            isRecording = true
+            startOnDeviceTranscription()
+        } else {
+            audioRecorder.startRecording()
+            // Wait until green light from recorder delegate 'didStartRecording'
+        }
     }
 
     func subscribeForConfigChanges() {
@@ -326,57 +331,7 @@ extension AssistViewModel: AudioRecorderDelegate {
             self?.appendToChat(.init(content: "didStartRecording(with sampleRate: \(sampleRate)", itemType: .info))
             #endif
         }
-
-        if configuration.enableOnDeviceSTT {
-            startOnDeviceTranscription()
-        } else {
-            startAssistAudioPipeline(audioSampleRate: sampleRate)
-        }
-    }
-
-    func didOutputSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard isUsingOnDeviceSTT else { return }
-        guard let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer),
-              let streamDescription = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription) else {
-            return
-        }
-
-        let frameCount = CMSampleBufferGetNumSamples(sampleBuffer)
-        let isInterleaved = streamDescription.pointee.mFormatFlags & kAudioFormatFlagIsNonInterleaved == 0
-        guard let pcmBuffer = AVAudioPCMBuffer(
-            pcmFormat: AVAudioFormat(
-                commonFormat: .pcmFormatFloat32,
-                sampleRate: streamDescription.pointee.mSampleRate,
-                channels: AVAudioChannelCount(streamDescription.pointee.mChannelsPerFrame),
-                interleaved: isInterleaved
-            ),
-            frameCapacity: AVAudioFrameCount(frameCount)
-        ) else { return }
-
-        pcmBuffer.frameLength = AVAudioFrameCount(frameCount)
-
-        if let blockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer) {
-            var lengthAtOffset = 0
-            var totalLength = 0
-            var dataPointer: UnsafeMutablePointer<Int8>?
-            CMBlockBufferGetDataPointer(
-                blockBuffer,
-                atOffset: 0,
-                lengthAtOffsetOut: &lengthAtOffset,
-                totalLengthOut: &totalLength,
-                dataPointerOut: &dataPointer
-            )
-
-            if let dataPointer, let floatChannelData = pcmBuffer.floatChannelData {
-                let byteCount = min(
-                    totalLength,
-                    Int(pcmBuffer.frameCapacity) * MemoryLayout<Float>.size
-                )
-                memcpy(floatChannelData[0], dataPointer, byteCount)
-            }
-        }
-
-        speechTranscriber.sendAudioBuffer(pcmBuffer)
+        startAssistAudioPipeline(audioSampleRate: sampleRate)
     }
 
     func didStopRecording() {

@@ -154,38 +154,42 @@ final class AssistViewModelTests: XCTestCase {
 
     // MARK: - On-Device STT Tests
 
-    func testDidStartRecordingWithOnDeviceSTTEnabled() {
+    @MainActor
+    func testAssistWithAudioOnDeviceSTTEnabled() {
         sut.configuration.enableOnDeviceSTT = true
-        sut.didStartRecording(with: 16000)
+        sut.assistWithAudio()
 
+        XCTAssertTrue(sut.isRecording)
         XCTAssertTrue(sut.isUsingOnDeviceSTT)
         XCTAssertTrue(mockSpeechTranscriber.startTranscribingCalled)
-        XCTAssertNil(mockAssistService.assistSource)
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
     }
 
-    func testDidStartRecordingWithOnDeviceSTTDisabled() {
+    @MainActor
+    func testAssistWithAudioOnDeviceSTTDisabled() {
         sut.configuration.enableOnDeviceSTT = false
-        sut.preferredPipelineId = "2"
-        sut.didStartRecording(with: 16000)
+        sut.assistWithAudio()
 
         XCTAssertFalse(sut.isUsingOnDeviceSTT)
         XCTAssertFalse(mockSpeechTranscriber.startTranscribingCalled)
-        XCTAssertEqual(mockAssistService.assistSource, .audio(pipelineId: "2", audioSampleRate: 16000.0, tts: true))
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
     }
 
+    @MainActor
     func testOnDeviceSTTUsesConfiguredLanguage() {
         sut.configuration.enableOnDeviceSTT = true
         sut.configuration.sttLanguage = "fr-FR"
-        sut.didStartRecording(with: 16000)
+        sut.assistWithAudio()
 
         XCTAssertTrue(mockSpeechTranscriber.startTranscribingCalled)
         XCTAssertEqual(mockSpeechTranscriber.startLocale, Locale(identifier: "fr-FR"))
     }
 
+    @MainActor
     func testOnDeviceSTTUsesDeviceDefaultWhenLanguageEmpty() {
         sut.configuration.enableOnDeviceSTT = true
         sut.configuration.sttLanguage = ""
-        sut.didStartRecording(with: 16000)
+        sut.assistWithAudio()
 
         XCTAssertTrue(mockSpeechTranscriber.startTranscribingCalled)
         XCTAssertEqual(mockSpeechTranscriber.startLocale, .current)
@@ -196,7 +200,7 @@ final class AssistViewModelTests: XCTestCase {
         sut.configuration.enableOnDeviceSTT = true
         sut.preferredPipelineId = "1"
         sut.pipelines = [.init(id: "1", name: "Pipeline")]
-        sut.didStartRecording(with: 16000)
+        sut.assistWithAudio()
 
         sut.speechTranscriberDidFinish(finalText: "Turn on the lights")
 
@@ -209,7 +213,7 @@ final class AssistViewModelTests: XCTestCase {
     @MainActor
     func testSpeechTranscriberDidFinishIgnoresEmptyText() {
         sut.configuration.enableOnDeviceSTT = true
-        sut.didStartRecording(with: 16000)
+        sut.assistWithAudio()
 
         sut.speechTranscriberDidFinish(finalText: "   ")
 
@@ -219,19 +223,20 @@ final class AssistViewModelTests: XCTestCase {
     @MainActor
     func testSpeechTranscriberDidFailFallsBackToServer() {
         sut.configuration.enableOnDeviceSTT = true
-        sut.didStartRecording(with: 16000)
+        sut.assistWithAudio()
 
         XCTAssertTrue(sut.isUsingOnDeviceSTT)
 
-        sut.speechTranscriberDidFail(error: SpeechTranscriberError.recognizerUnavailable)
+        sut.speechTranscriberDidFail(error: NSError(domain: "test", code: -1))
 
         XCTAssertFalse(sut.isUsingOnDeviceSTT)
         XCTAssertNotNil(mockAssistService.assistSource)
     }
 
+    @MainActor
     func testStopStreamingWithOnDeviceSTT() {
         sut.configuration.enableOnDeviceSTT = true
-        sut.didStartRecording(with: 16000)
+        sut.assistWithAudio()
         XCTAssertTrue(sut.isUsingOnDeviceSTT)
 
         sut.stopStreaming()
