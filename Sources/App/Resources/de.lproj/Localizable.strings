@@ -1356,6 +1356,9 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.automation.trigger.title" = "Automation auslösen";
 "widgets.automations.description" = "Automation ausführen";
 "widgets.button.reload_timeline" = "Alle Widgets neu laden";
+"widgets.commonly_used_entities.description" = "Deine häufig verwendeten Entitäten basierend auf deinem Nutzungsverhalten anzeigen.";
+"widgets.commonly_used_entities.empty.description" = "Keine häufig verwendeten Entitäten gefunden. Verwende Home Assistant, um deinen Nutzungsverlauf aufzubauen.";
+"widgets.commonly_used_entities.title" = "Häufig genutzte Steuerelemente";
 "widgets.controls.assist.description" = "Assist in der Home Assistant-App öffnen";
 "widgets.controls.assist.pipeline.placeholder" = "Eine Pipeline auswählen";
 "widgets.controls.assist.title" = "Assist";
@@ -1472,6 +1475,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.open_page.description" = "Öffnen einer Frontend-Seite in Home Assistant.";
 "widgets.open_page.not_configured" = "Keine Seiten verfügbar";
 "widgets.open_page.title" = "Seite öffnen";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Erstelle dein eigenes Widget innerhalb der App und lasse es dann hier anzeigen.";
 "widgets.preview.custom.title" = "Benutzerdefiniertes Widget";
 "widgets.preview.empty.create.button" = "Widget erstellen";
@@ -1488,9 +1492,9 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.todo_list.all_done" = "Alles erledigt! 🎉";
 "widgets.todo_list.complete_item_title" = "Erledigung des To-Do-Eintrags";
 "widgets.todo_list.description" = "Prüfe deine Listen und füge Einträge hinzu";
-"widgets.todo_list.due_date.ago_format" = "%@ ago";
+"widgets.todo_list.due_date.ago_format" = "Vor %@";
 "widgets.todo_list.due_date.in_format" = "In %@";
-"widgets.todo_list.due_date.now" = "Now";
+"widgets.todo_list.due_date.now" = "Jetzt";
 "widgets.todo_list.due_date.today" = "Heute";
 "widgets.todo_list.parameter.item_id" = "Eintrag-ID";
 "widgets.todo_list.parameter.list" = "Liste";

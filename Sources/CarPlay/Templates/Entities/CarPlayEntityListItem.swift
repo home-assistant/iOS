@@ -60,11 +60,12 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
                 return nil
             }()
 
-            if !entityHasDynamicIcon {
-                // Non-dynamic icons: use custom icon with custom color
+            let userHasCustomizedIcon = magicItem.customization?.iconIsCustomized == true
+            if !entityHasDynamicIcon || userHasCustomizedIcon {
+                // Use the configured icon, respecting any explicit user customization
                 image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: customIconColor)
             } else {
-                // Dynamic icons: use state-based icon with smart coloring
+                // No custom icon set: use state-based icon with smart coloring
                 let iconColor = determineIconColor(
                     entityState: entity.state,
                     customColor: customIconColor
