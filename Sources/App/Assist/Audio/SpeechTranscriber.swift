@@ -20,15 +20,21 @@ final class SpeechTranscriberAdapter: SpeechTranscriberProtocol {
     nonisolated weak var delegate: SpeechTranscriberDelegate?
 
     private var transcriber: SpeechTranscriber?
+    private var activeTask: Task<Void, Never>?
 
     nonisolated func startTranscribing(locale: Locale) {
         Task { @MainActor in
-            await performStartTranscribing(locale: locale)
+            activeTask?.cancel()
+            activeTask = Task {
+                await performStartTranscribing(locale: locale)
+            }
         }
     }
 
     nonisolated func stopTranscribing() {
         Task { @MainActor in
+            activeTask?.cancel()
+            activeTask = nil
             performStopTranscribing()
         }
     }
