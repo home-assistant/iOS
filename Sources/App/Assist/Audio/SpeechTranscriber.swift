@@ -1,20 +1,9 @@
 import Shared
 import SpeechTranscriber
 
-protocol SpeechTranscriberProtocol: AnyObject {
-    var delegate: SpeechTranscriberDelegate? { get set }
-    func startTranscribing(locale: Locale)
-    func stopTranscribing()
-}
-
-protocol SpeechTranscriberDelegate: AnyObject {
-    func speechTranscriberDidTranscribe(_ text: String)
-    func speechTranscriberDidFinish(finalText: String)
-    func speechTranscriberDidFail(error: Error)
-}
-
 /// Adapter that wraps the SPM `SpeechTranscriber` package and conforms to `SpeechTranscriberProtocol`.
 /// The SPM package manages its own audio engine internally, so no external audio buffer forwarding is needed.
+@available(iOS 17, *)
 @MainActor
 final class SpeechTranscriberAdapter: SpeechTranscriberProtocol {
     nonisolated weak var delegate: SpeechTranscriberDelegate?
