@@ -1,4 +1,3 @@
-import AVFoundation
 @testable import HomeAssistant
 
 final class MockSpeechTranscriber: SpeechTranscriberProtocol {
@@ -6,7 +5,6 @@ final class MockSpeechTranscriber: SpeechTranscriberProtocol {
 
     var startTranscribingCalled = false
     var stopTranscribingCalled = false
-    var sendAudioBufferCalled = false
     var startLocale: Locale?
 
     func startTranscribing(locale: Locale) {
@@ -16,9 +14,5 @@ final class MockSpeechTranscriber: SpeechTranscriberProtocol {
 
     func stopTranscribing() {
         stopTranscribingCalled = true
-    }
-
-    func sendAudioBuffer(_ buffer: AVAudioPCMBuffer) {
-        sendAudioBufferCalled = true
     }
 }
