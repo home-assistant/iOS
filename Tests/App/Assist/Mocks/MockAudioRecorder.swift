@@ -2,7 +2,7 @@
 
 final class MockAudioRecorder: AudioRecorderProtocol {
     weak var delegate: AudioRecorderDelegate?
-    var audioSampleRate: Double?
+    var audioSampleRate: Double? = 16000.0
 
     var startRecordingCalled = false
     var stopRecordingCalled = false

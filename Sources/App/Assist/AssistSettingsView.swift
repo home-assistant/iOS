@@ -1,5 +1,6 @@
 import Foundation
 import Shared
+import Speech
 import SwiftUI
 
 // MARK: - Settings View
@@ -16,6 +17,38 @@ struct AssistSettingsView: View {
                     Toggle(L10n.Assist.Settings.TtsMute.toggle, isOn: $viewModel.configuration.muteTTS)
                 } footer: {
                     Text(L10n.Assist.Settings.TtsMute.footer)
+                }
+
+                Section {
+                    Toggle(
+                        L10n.Assist.Settings.OnDeviceStt.toggle,
+                        isOn: $viewModel.configuration.enableOnDeviceSTT
+                    )
+
+                    if viewModel.configuration.enableOnDeviceSTT {
+                        Picker(
+                            L10n.Assist.Settings.OnDeviceStt.Language.label,
+                            selection: $viewModel.configuration.sttLanguage
+                        ) {
+                            Text(L10n.Assist.Settings.OnDeviceStt.Language.deviceDefault)
+                                .tag("")
+                            ForEach(viewModel.availableLanguages, id: \.self) { localeId in
+                                Text(viewModel.displayName(for: localeId))
+                                    .tag(localeId)
+                            }
+                        }
+
+                        if !viewModel.isSelectedLanguageSupported {
+                            Label(
+                                L10n.Assist.Settings.OnDeviceStt.Language.notSupported,
+                                systemSymbol: .exclamationmarkTriangleFill
+                            )
+                            .font(.footnote)
+                            .foregroundStyle(.orange)
+                        }
+                    }
+                } footer: {
+                    Text(L10n.Assist.Settings.OnDeviceStt.footer)
                 }
 
                 Section {

@@ -540,6 +540,8 @@ public enum L10n {
       }
     }
     public enum Error {
+      /// On-device speech recognition failed, falling back to server transcription.
+      public static var onDeviceSttFailed: String { return L10n.tr("Localizable", "assist.error.on_device_stt_failed") }
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
     }
@@ -585,6 +587,14 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.footer") }
         /// Enable on-device Speech-to-Text
         public static var toggle: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.toggle") }
+        public enum Language {
+          /// Device Default
+          public static var deviceDefault: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.language.device_default") }
+          /// Language
+          public static var label: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.language.label") }
+          /// Selected language may not be available on this device. The device default will be used as a fallback.
+          public static var notSupported: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.language.not_supported") }
+        }
       }
       public enum TtsMute {
         /// When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.
