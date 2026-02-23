@@ -130,6 +130,25 @@ class RealmZoneTests: XCTestCase {
                 $0.Longitude = -122.41263128786335
                 $0.Radius = 90.0
             },
+            with(RLMZone()) {
+                $0.entityId = "zone_passive"
+                $0.serverIdentifier = "fake1"
+                // fort mason, sf
+                $0.Latitude = 37.80535
+                $0.Longitude = -122.43194
+                $0.Radius = 100.0
+                $0.isPassive = true
+                $0.TrackingEnabled = true
+            },
+            with(RLMZone()) {
+                $0.entityId = "zone_disabled"
+                $0.serverIdentifier = "fake1"
+                // crissy field, sf
+                $0.Latitude = 37.80290
+                $0.Longitude = -122.45290
+                $0.Radius = 100.0
+                $0.TrackingEnabled = false
+            },
         ]
 
         try realm.write {
@@ -162,5 +181,17 @@ class RealmZoneTests: XCTestCase {
             in: server2
         )
         XCTAssertEqual(inside3?.entityId, "zone3")
+
+        let insidePassive = RLMZone.zone(
+            of: CLLocation(latitude: 37.80535, longitude: -122.43194),
+            in: server1
+        )
+        XCTAssertEqual(insidePassive?.entityId, "zone_passive", "passive zone with TrackingEnabled should be returned")
+
+        let insideDisabled = RLMZone.zone(
+            of: CLLocation(latitude: 37.80290, longitude: -122.45290),
+            in: server1
+        )
+        XCTAssertNil(insideDisabled, "zone with TrackingEnabled = false should be excluded")
     }
 }
