@@ -42,7 +42,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder: AudioRecorderProtocol,
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
-        speechTranscriber: SpeechTranscriberProtocol = SpeechTranscriberAdapter(),
+        speechTranscriber: SpeechTranscriberProtocol,
         autoStartRecording: Bool
     ) {
         self.server = server

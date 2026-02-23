@@ -899,6 +899,9 @@
 		42905D852E12B00900250728 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
 		42905D872E12B01200250728 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
+		42F1A1022F3B000000A00001 /* SpeechTranscriberProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1A1052F3B000000A00001 /* SpeechTranscriberProtocol.swift */; };
+		42F1A1032F3B000000A00001 /* SpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1A1062F3B000000A00001 /* SpeechTranscriber.swift */; };
+		42F1A1042F3B000000A00001 /* MockSpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1A1072F3B000000A00001 /* MockSpeechTranscriber.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
 		4291CD962DBA70930024F891 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291CD952DBA70930024F891 /* ActivityViewController.swift */; };
@@ -2593,6 +2596,9 @@
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
 		42905D842E12B00900250728 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		429106862BA9D22500D452F9 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		42F1A1052F3B000000A00001 /* SpeechTranscriberProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriberProtocol.swift; sourceTree = "<group>"; };
+		42F1A1062F3B000000A00001 /* SpeechTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriber.swift; sourceTree = "<group>"; };
+		42F1A1072F3B000000A00001 /* MockSpeechTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSpeechTranscriber.swift; sourceTree = "<group>"; };
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		4291068D2BA9D93500D452F9 /* AssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistService.swift; sourceTree = "<group>"; };
@@ -5392,6 +5398,8 @@
 				4291068B2BA9D79500D452F9 /* AudioPlayer.swift */,
 				429106862BA9D22500D452F9 /* AudioRecorder.swift */,
 				42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */,
+				42F1A1052F3B000000A00001 /* SpeechTranscriberProtocol.swift */,
+				42F1A1062F3B000000A00001 /* SpeechTranscriber.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -5845,6 +5853,7 @@
 				42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */,
 				42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */,
 				42A818E62BBEAAE80083D045 /* MockAssistService.swift */,
+				42F1A1072F3B000000A00001 /* MockSpeechTranscriber.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -9637,6 +9646,8 @@
 				4206FFB42DAD58140087626C /* WebViewController+PostOnboarding.swift in Sources */,
 				42FCCFFF2B9B1C310057783F /* ThreadCredentialsSharingView.swift in Sources */,
 				429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */,
+				42F1A1022F3B000000A00001 /* SpeechTranscriberProtocol.swift in Sources */,
+				42F1A1032F3B000000A00001 /* SpeechTranscriber.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
 				421D89A22EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
@@ -9700,6 +9711,7 @@
 				42ACC29F2E9E7BBB0045A3FD /* OnboardingScanningInstanceRow.test.swift in Sources */,
 				428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
+				42F1A1042F3B000000A00001 /* MockSpeechTranscriber.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				429C33BF2F17989F0033EF5E /* EntityPickerViewModel.test.swift in Sources */,
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
