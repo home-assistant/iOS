@@ -1358,6 +1358,9 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "widgets.automation.trigger.title" = "Trigger automation";
 "widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Muat ulang semua widget";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Buka Assist di aplikasi Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Pilih saluran";
 "widgets.controls.assist.title" = "Assist";
@@ -1474,6 +1477,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "widgets.open_page.description" = "Buka halaman antarmuka di Home Assistant.";
 "widgets.open_page.not_configured" = "Tidak Ada Halaman yang Tersedia";
 "widgets.open_page.title" = "Buka Halaman";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Buat widget Anda sendiri di dalam aplikasi dan tampilkan di sini.";
 "widgets.preview.custom.title" = "Widget khusus";
 "widgets.preview.empty.create.button" = "Buat widget";

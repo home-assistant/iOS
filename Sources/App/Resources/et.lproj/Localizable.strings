@@ -1359,6 +1359,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.automation.trigger.title" = "Vallanda automatiseerimine";
 "widgets.automations.description" = "Käivita automatiseerimine";
 "widgets.button.reload_timeline" = "Taaslae kõik paanid";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Ava Assist rakenduses Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Vali voog";
 "widgets.controls.assist.title" = "Abiline";
@@ -1475,6 +1478,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.open_page.description" = "AvaHome Assistantis esileht.";
 "widgets.open_page.not_configured" = "Lehekülgi pole saadaval";
 "widgets.open_page.title" = "Ava lehekülg";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Loo rakenduses oma vidin ja kuva see siis siin.";
 "widgets.preview.custom.title" = "Kohandatud vidin";
 "widgets.preview.empty.create.button" = "Loo vidin";
@@ -1491,9 +1495,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.todo_list.all_done" = "Kõik tehtud! 🎉";
 "widgets.todo_list.complete_item_title" = "Lõpeta ülesanne";
 "widgets.todo_list.description" = "Kontrolli oma nimekirju ja lisa üksusi";
-"widgets.todo_list.due_date.ago_format" = "%@ ago";
-"widgets.todo_list.due_date.in_format" = "In %@";
-"widgets.todo_list.due_date.now" = "Now";
+"widgets.todo_list.due_date.ago_format" = "%@ tagasi";
+"widgets.todo_list.due_date.in_format" = "%@ pärast";
+"widgets.todo_list.due_date.now" = "Nüüd";
 "widgets.todo_list.due_date.today" = "Täna";
 "widgets.todo_list.parameter.item_id" = "Artikli ID";
 "widgets.todo_list.parameter.list" = "Nimekiri";

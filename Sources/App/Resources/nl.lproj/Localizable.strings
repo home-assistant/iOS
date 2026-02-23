@@ -1359,6 +1359,9 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "widgets.automation.trigger.title" = "Automatisering triggeren";
 "widgets.automations.description" = "Automatisering uitvoeren";
 "widgets.button.reload_timeline" = "Alle widgets opnieuw laden";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Open Assist in de Home Assistant-app";
 "widgets.controls.assist.pipeline.placeholder" = "Kies een pijplijn";
 "widgets.controls.assist.title" = "Assist";
@@ -1475,6 +1478,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "widgets.open_page.description" = "Open een frontend-pagina in Home Assistant";
 "widgets.open_page.not_configured" = "Geen pagina's beschikbaar";
 "widgets.open_page.title" = "Open pagina";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Maak je eigen widget in de app en toon hem hier.";
 "widgets.preview.custom.title" = "Aangepaste widget";
 "widgets.preview.empty.create.button" = "Widget maken";

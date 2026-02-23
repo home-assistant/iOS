@@ -1359,6 +1359,9 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.automation.trigger.title" = "Trigger automation";
 "widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Recarregar todos os widgets";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Abrir Assist no aplicativo Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Escolha um pipeline";
 "widgets.controls.assist.title" = "Assist";
@@ -1475,6 +1478,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.open_page.description" = "Abra uma página de frontend no Home Assistant.";
 "widgets.open_page.not_configured" = "Nenhuma página disponível";
 "widgets.open_page.title" = "Abrir página";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Crie seu próprio widget dentro do aplicativo e exiba-o aqui.";
 "widgets.preview.custom.title" = "Widget personalizado";
 "widgets.preview.empty.create.button" = "Criar widget";

@@ -1359,6 +1359,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.automation.trigger.title" = "Trigger automation";
 "widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Reload all widgets";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
@@ -1445,9 +1448,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
-"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
-"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
-"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Action";
@@ -1478,6 +1478,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.open_page.description" = "Open a frontend page in Home Assistant.";
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";
 "widgets.preview.custom.title" = "Custom widget";
 "widgets.preview.empty.create.button" = "Create widget";
@@ -1506,9 +1507,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.refresh_title" = "Refresh To-do List";
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
-"widgets.todo_list.due_date.now" = "Now";
-"widgets.todo_list.due_date.today" = "Today";
-"widgets.todo_list.due_date.in_format" = "In %@";
-"widgets.todo_list.due_date.ago_format" = "%@ ago";
-"widgets.param.server.title" = "Server";
 "yes_label" = "Yes";

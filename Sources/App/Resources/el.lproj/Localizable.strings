@@ -1359,6 +1359,9 @@
 "widgets.automation.trigger.title" = "Πυροδότηση αυτοματισμού";
 "widgets.automations.description" = "Εκτέλεση αυτοματισμού";
 "widgets.button.reload_timeline" = "Επαναφόρτωση όλων των γραφικών στοιχείων";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Ανοίξτε τον βοηθό στην εφαρμογή Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Επιλέξτε ένα pipeline";
 "widgets.controls.assist.title" = "Βοηθός";
@@ -1475,6 +1478,7 @@
 "widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";
 "widgets.open_page.not_configured" = "Δεν υπάρχουν διαθέσιμες σελίδες";
 "widgets.open_page.title" = "Άνοιγμα σελίδας";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Δημιουργήστε το δικό σας γραφικό στοιχείο μέσα στην Εφαρμογή και στη συνέχεια εμφανίστε το εδώ.";
 "widgets.preview.custom.title" = "Προσαρμοσμένο γραφικό στοιχείο";
 "widgets.preview.empty.create.button" = "Δημιουργία γραφικού στοιχείου";

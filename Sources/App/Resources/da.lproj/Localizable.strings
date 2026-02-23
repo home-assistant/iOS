@@ -1359,6 +1359,9 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "widgets.automation.trigger.title" = "Udløs automatisering";
 "widgets.automations.description" = "Kør automatisering";
 "widgets.button.reload_timeline" = "Genindlæs alle widgets";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Åbn Assist i Home Assistant-appen";
 "widgets.controls.assist.pipeline.placeholder" = "Vælg en pipeline";
 "widgets.controls.assist.title" = "Assist";
@@ -1475,6 +1478,7 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "widgets.open_page.description" = "Åbn en brugerflade-side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgængelig";
 "widgets.open_page.title" = "Åbn side";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Opret din egen widget i appen, og vis den her.";
 "widgets.preview.custom.title" = "Brugerdefineret widget";
 "widgets.preview.empty.create.button" = "Opret widget";

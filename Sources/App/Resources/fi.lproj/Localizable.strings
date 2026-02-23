@@ -1359,6 +1359,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.automation.trigger.title" = "Laukaise automaatio";
 "widgets.automations.description" = "Suorita automaatio";
 "widgets.button.reload_timeline" = "Lataa widgetit uudelleen";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Avaa Assist Home Assistant -sovelluksessa";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
@@ -1475,6 +1478,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.open_page.description" = "Avaa käyttöliittymäsivu Home Assistantissa.";
 "widgets.open_page.not_configured" = "Sivuja ei saatavilla";
 "widgets.open_page.title" = "Avaa sivu";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Luo oma widget sovelluksen sisällä ja näytä se sitten täällä.";
 "widgets.preview.custom.title" = "Mukautettu widget";
 "widgets.preview.empty.create.button" = "Luo widget";
