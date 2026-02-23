@@ -11,6 +11,7 @@ protocol AudioRecorderProtocol {
 
 protocol AudioRecorderDelegate: AnyObject {
     func didOutputSample(data: Data)
+    func didOutputSampleBuffer(_ sampleBuffer: CMSampleBuffer)
     func didStartRecording(with sampleRate: Double)
     func didStopRecording()
     func didFailToRecord(error: Error)
@@ -126,6 +127,8 @@ extension AudioRecorder: AVCaptureAudioDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
+        delegate?.didOutputSampleBuffer(sampleBuffer)
+
         guard let data = sampleBuffer.audioSamples() else {
             Current.Log.error("Failed to extract audio samples from CMSampleBuffer")
             return

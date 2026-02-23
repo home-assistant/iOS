@@ -3,6 +3,7 @@ import Foundation
 import GRDB
 import HAKit
 import Shared
+import Speech
 
 final class AssistViewModel: NSObject, ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
@@ -26,9 +27,11 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var audioRecorder: AudioRecorderProtocol
     private var audioPlayer: AudioPlayerProtocol
     private var assistService: AssistServiceProtocol
+    private var speechTranscriber: SpeechTranscriberProtocol
     private(set) var autoStartRecording: Bool
 
     private(set) var canSendAudioData = false
+    private(set) var isUsingOnDeviceSTT = false
     private var configObservationCancellable: AnyDatabaseCancellable?
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
@@ -40,6 +43,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder: AudioRecorderProtocol,
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
+        speechTranscriber: SpeechTranscriberProtocol = SpeechTranscriber(),
         autoStartRecording: Bool
     ) {
         self.server = server
@@ -47,12 +51,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioRecorder = audioRecorder
         self.audioPlayer = audioPlayer
         self.assistService = assistService
+        self.speechTranscriber = speechTranscriber
         self.autoStartRecording = autoStartRecording
         self.configuration = AssistConfiguration.config
         super.init()
 
         self.audioRecorder.delegate = self
         self.assistService.delegate = self
+        self.speechTranscriber.delegate = self
 
         if ["last_used", "preferred"].contains(preferredPipelineId) {
             self.preferredPipelineId = ""
@@ -76,6 +82,7 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     func onDisappear() {
         audioRecorder.stopRecording()
+        speechTranscriber.stopTranscribing()
         audioPlayer.pause()
     }
 
@@ -204,7 +211,13 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         // Stop traditional audio recording
         audioRecorder.stopRecording()
-        assistService.finishSendingAudio()
+
+        if isUsingOnDeviceSTT {
+            speechTranscriber.stopTranscribing()
+            isUsingOnDeviceSTT = false
+        } else {
+            assistService.finishSendingAudio()
+        }
 
         Current.Log.info("Stop recording audio for Assist")
     }
@@ -249,6 +262,51 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - On-Device Transcription Methods
+
+    private func startOnDeviceTranscription() {
+        isUsingOnDeviceSTT = true
+        let sttLanguage = configuration.sttLanguage
+        let locale: Locale = sttLanguage.isEmpty ? .current : Locale(identifier: sttLanguage)
+        speechTranscriber.startTranscribing(locale: locale)
+        Current.Log.info("Started on-device speech transcription with locale: \(locale.identifier)")
+    }
+
+    private func fallbackToServerTranscription() {
+        Current.Log.warning("On-device STT failed, falling back to server transcription")
+        isUsingOnDeviceSTT = false
+        appendToChat(.init(content: L10n.Assist.Error.onDeviceSttFailed, itemType: .info))
+
+        if let sampleRate = audioRecorder.audioSampleRate {
+            startAssistAudioPipeline(audioSampleRate: sampleRate)
+        }
+    }
+}
+
+extension AssistViewModel: SpeechTranscriberDelegate {
+    func speechTranscriberDidTranscribe(_ text: String) {
+        // Partial transcription updates are shown in real-time
+    }
+
+    func speechTranscriberDidFinish(finalText: String) {
+        guard !finalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            isUsingOnDeviceSTT = false
+            stopStreaming()
+
+            // Send the transcribed text via the text pipeline
+            appendToChat(.init(content: finalText, itemType: .input))
+            assistService.assist(source: .text(input: finalText, pipelineId: preferredPipelineId))
+        }
+    }
+
+    func speechTranscriberDidFail(error: any Error) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            fallbackToServerTranscription()
+        }
+    }
 }
 
 extension AssistViewModel: AudioRecorderDelegate {
@@ -268,7 +326,56 @@ extension AssistViewModel: AudioRecorderDelegate {
             self?.appendToChat(.init(content: "didStartRecording(with sampleRate: \(sampleRate)", itemType: .info))
             #endif
         }
-        startAssistAudioPipeline(audioSampleRate: sampleRate)
+
+        if configuration.enableOnDeviceSTT {
+            startOnDeviceTranscription()
+        } else {
+            startAssistAudioPipeline(audioSampleRate: sampleRate)
+        }
+    }
+
+    func didOutputSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        guard isUsingOnDeviceSTT else { return }
+        guard let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer),
+              let streamDescription = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription) else {
+            return
+        }
+
+        let frameCount = CMSampleBufferGetNumSamples(sampleBuffer)
+        guard let pcmBuffer = AVAudioPCMBuffer(
+            pcmFormat: AVAudioFormat(
+                commonFormat: .pcmFormatFloat32,
+                sampleRate: streamDescription.pointee.mSampleRate,
+                channels: AVAudioChannelCount(streamDescription.pointee.mChannelsPerFrame),
+                interleaved: streamDescription.pointee.mFormatFlags & kAudioFormatFlagIsNonInterleaved == 0
+            ),
+            frameCapacity: AVAudioFrameCount(frameCount)
+        ) else { return }
+
+        pcmBuffer.frameLength = AVAudioFrameCount(frameCount)
+
+        if let blockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer) {
+            var lengthAtOffset = 0
+            var totalLength = 0
+            var dataPointer: UnsafeMutablePointer<Int8>?
+            CMBlockBufferGetDataPointer(
+                blockBuffer,
+                atOffset: 0,
+                lengthAtOffsetOut: &lengthAtOffset,
+                totalLengthOut: &totalLength,
+                dataPointerOut: &dataPointer
+            )
+
+            if let dataPointer, let floatChannelData = pcmBuffer.floatChannelData {
+                let byteCount = min(
+                    totalLength,
+                    Int(pcmBuffer.frameCapacity) * MemoryLayout<Float>.size
+                )
+                memcpy(floatChannelData[0], dataPointer, byteCount)
+            }
+        }
+
+        speechTranscriber.sendAudioBuffer(pcmBuffer)
     }
 
     func didStopRecording() {

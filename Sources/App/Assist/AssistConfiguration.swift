@@ -9,6 +9,9 @@ struct AssistConfiguration: Codable, Identifiable, Equatable, FetchableRecord, P
 
     var id: String = AssistConfiguration.singletonID
     var enableOnDeviceSTT: Bool = false
+    var sttLanguage: String = ""
+    var enableModernUI: Bool = false
+    var theme: ModernAssistTheme = .homeAssistant
     var muteTTS: Bool = false
 
     static var config: AssistConfiguration {
