@@ -1,9 +1,9 @@
 import AppIntents
 import Foundation
+import HAKit
 import Shared
 import SwiftUI
 import WidgetKit
-import HAKit
 
 @available(iOS 16.4, *)
 struct CustomWidgetToggleAppIntent: AppIntent {
