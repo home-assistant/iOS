@@ -64,10 +64,7 @@ struct FolderDetailView: View {
     }
 
     private var folderItems: [MagicItem] {
-        if let folder = viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == folderId }) {
-            return folder.items ?? []
-        }
-        return []
+        folder?.items ?? []
     }
 
     @ViewBuilder
