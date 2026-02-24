@@ -194,7 +194,8 @@ final class WatchCommunicatorService {
                 responseIdentifier: responseIdentifier
             )
         case .entity:
-            guard let domain = MagicItem(id: itemId, serverId: "", type: .entity).domain else {
+            guard let domain = MagicItem(id: itemId, serverId: serverId, type: .entity).domain,
+                  let mainAction = domain.mainAction else {
                 message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
                 return
             }
@@ -203,7 +204,7 @@ final class WatchCommunicatorService {
                 message: message,
                 magicItemId: itemId,
                 domain: domain,
-                serviceName: Service.toggle.rawValue,
+                serviceName: mainAction.rawValue,
                 serviceData: ["entity_id": itemId],
                 responseIdentifier: responseIdentifier
             )
