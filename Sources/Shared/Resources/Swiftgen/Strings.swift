@@ -1253,7 +1253,7 @@ public enum L10n {
       public static var flowCancelled: String { return L10n.tr("Localizable", "error.client_certificate.flow_cancelled") }
       /// Client Certificate Authentication failed.
       /// 
-      ///  %@
+      /// %@
       public static func flowFailed(_ p1: Any) -> String {
         return L10n.tr("Localizable", "error.client_certificate.flow_failed", String(describing: p1))
       }

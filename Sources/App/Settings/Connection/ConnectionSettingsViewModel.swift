@@ -250,10 +250,11 @@ final class ConnectionSettingsViewModel: ObservableObject {
         certificateError = nil
 
         // Perform file I/O and Keychain work off the main actor
-        let result: Result<ClientCertificate, Error> = await Task.detached {
+        let serverIdentifier = server.identifier.rawValue
+        let resultTask = Task.detached(priority: .utility) { () -> Result<ClientCertificate> in
             // Access security-scoped resource for file-importer URLs
             guard url.startAccessingSecurityScopedResource() else {
-                return .failure(ClientCertificateError.invalidP12Data)
+                return .rejected(ClientCertificateError.invalidP12Data)
             }
             defer { url.stopAccessingSecurityScopedResource() }
 
@@ -261,23 +262,21 @@ final class ConnectionSettingsViewModel: ObservableObject {
                 // Read the file data
                 let data = try Data(contentsOf: url)
 
-                // Generate unique identifier for this server's certificate
-                let identifier = await self.server.identifier.rawValue
-
                 // Import into Keychain
                 let certificate = try ClientCertificateManager.shared.importP12(
                     data: data,
                     password: password,
-                    identifier: identifier
+                    identifier: serverIdentifier
                 )
-                return .success(certificate)
+                return .fulfilled(certificate)
             } catch {
-                return .failure(error)
+                return .rejected(error)
             }
-        }.value
+        }
+        let result = await resultTask.value
 
         switch result {
-        case let .success(certificate):
+        case let .fulfilled(certificate):
             // Update server connection info
             server.update { info in
                 info.connection.clientCertificate = certificate
@@ -285,7 +284,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
             clientCertificate = certificate
             Current.Log.info("Successfully imported client certificate: \(certificate.displayName)")
-        case let .failure(error):
+        case let .rejected(error):
             Current.Log.error("Failed to import certificate: \(error)")
             certificateError = error
         }
