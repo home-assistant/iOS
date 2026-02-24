@@ -15,7 +15,10 @@ struct OnboardingAuthErrorTests {
             (OnboardingAuthError.ErrorKind.authenticationUnsupported("digest"), "authentication_unsupported"),
             (OnboardingAuthError.ErrorKind.sslUntrusted([]), "ssl_untrusted"),
             (OnboardingAuthError.ErrorKind.clientCertificateRequired, "client_certificate"),
-            (OnboardingAuthError.ErrorKind.clientCertificateError(NSError(domain: "test", code: 1)), "client_certificate"),
+            (
+                OnboardingAuthError.ErrorKind.clientCertificateError(NSError(domain: "test", code: 1)),
+                "client_certificate"
+            ),
             (OnboardingAuthError.ErrorKind.other(NSError(domain: "test", code: 1)), "unknown_error"),
         ]
     )
