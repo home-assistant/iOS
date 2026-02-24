@@ -1583,6 +1583,8 @@
 		JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
 		JARVIS0002000000000005 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
 		JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
+		BB77559927344584B2C0E987 /* OnboardingAuthError.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */; };
+		1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3486,6 +3488,8 @@
 		JARVIS0001000000000001 /* TodoListAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListAppEntity.swift; sourceTree = "<group>"; };
 		JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListRefreshAppIntent.swift; sourceTree = "<group>"; };
 		JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemCompleteAppIntent.swift; sourceTree = "<group>"; };
+		A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthError.test.swift; sourceTree = "<group>"; };
+		480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificate.test.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3902,6 +3906,7 @@
 			isa = PBXGroup;
 			children = (
 				116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */,
+				A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */,
 				116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */,
 				11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift */,
 				11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift */,
@@ -7293,6 +7298,7 @@
 				1130A5752751BA1800640E38 /* Server.test.swift */,
 				1130A5772751BDD900640E38 /* ServerManager.test.swift */,
 				11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */,
+				480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */,
 				114CBAEA2839FC2500A9BAFF /* SecurityExceptions.test.swift */,
 				114CBAEC283AB92D00A9BAFF /* SecTrust+TestAdditions.swift */,
 				42EEEFE42E2792B20080E973 /* Service.test.swift */,
@@ -9725,6 +9731,7 @@
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				42B980DC2DC256A300BC5C08 /* SensorRow.test.swift in Sources */,
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
+				BB77559927344584B2C0E987 /* OnboardingAuthError.test.swift in Sources */,
 				420F53EE2C4EA025003C8415 /* WidgetsKindTests.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
 				11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */,
@@ -10365,6 +10372,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11B38EDF275BE29F00205C7B /* ConnectionInfo.test.swift in Sources */,
+				1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */,
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */,
 				119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */,
