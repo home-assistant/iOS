@@ -48,14 +48,14 @@ struct WidgetCustom: Widget {
     private func modelsForWidget(
         _ widget: CustomWidget?,
         infoProvider: MagicItemProviderProtocol,
-        states: [MagicItem: WidgetCustomEntry.ItemState],
+        states: [MagicItem: WidgetEntityState],
         showStates: Bool
     ) -> [WidgetBasicViewModel] {
         guard let widget else { return [] }
 
         return widget.items.map { magicItem in
             let info = infoProvider.getInfo(for: magicItem)
-            let state: WidgetCustomEntry.ItemState? = states[magicItem]
+            let state: WidgetEntityState? = states[magicItem]
 
             var backgroundColor: Color? = nil
             var textColor: Color? = nil
@@ -378,6 +378,10 @@ final class MockMagicItemProvider: MagicItemProviderProtocol {
         } else {
             return .init(id: "2", name: "Cba", iconName: "heart", customization: .init(iconColor: "#FFFFFF"))
         }
+    }
+
+    func getAreaName(for item: Shared.MagicItem) -> String? {
+        nil
     }
 }
 #endif

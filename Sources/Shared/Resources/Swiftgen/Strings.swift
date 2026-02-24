@@ -4912,6 +4912,16 @@ public enum L10n {
       /// Reload all widgets
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
     }
+    public enum CommonlyUsedEntities {
+      /// Display your commonly used entities based on your usage patterns.
+      public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.description") }
+      /// Common Controls
+      public static var title: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.title") }
+      public enum Empty {
+        /// No commonly used entities found. Use Home Assistant to build your usage history.
+        public static var description: String { return L10n.tr("Localizable", "widgets.commonly_used_entities.empty.description") }
+      }
+    }
     public enum Controls {
       public enum Assist {
         /// Open Assist in Home Assistant app
@@ -5276,6 +5286,12 @@ public enum L10n {
       /// Open Page
       public static var title: String { return L10n.tr("Localizable", "widgets.open_page.title") }
     }
+    public enum Param {
+      public enum Server {
+        /// Server
+        public static var title: String { return L10n.tr("Localizable", "widgets.param.server.title") }
+      }
+    }
     public enum Preview {
       public enum Custom {
         /// Create your own widget inside the App and then display it here.
@@ -5338,6 +5354,16 @@ public enum L10n {
       /// To-do List
       public static var title: String { return L10n.tr("Localizable", "widgets.todo_list.title") }
       public enum DueDate {
+        /// %@ ago
+        public static func agoFormat(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "widgets.todo_list.due_date.ago_format", String(describing: p1))
+        }
+        /// In %@
+        public static func inFormat(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "widgets.todo_list.due_date.in_format", String(describing: p1))
+        }
+        /// Now
+        public static var now: String { return L10n.tr("Localizable", "widgets.todo_list.due_date.now") }
         /// Today
         public static var today: String { return L10n.tr("Localizable", "widgets.todo_list.due_date.today") }
       }

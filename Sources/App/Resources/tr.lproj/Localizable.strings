@@ -1355,6 +1355,9 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "widgets.automation.trigger.title" = "Otomasyonu tetikle";
 "widgets.automations.description" = "Otomasyonu Çalıştır";
 "widgets.button.reload_timeline" = "Tüm widget'ları yeniden yükle";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Home Assistant uygulamasında Assist'i açın";
 "widgets.controls.assist.pipeline.placeholder" = "Bir işlem hattı seçin";
 "widgets.controls.assist.title" = "Asistan";
@@ -1471,6 +1474,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "widgets.open_page.description" = "Home Assistant'ta bir ön sayfası açın.";
 "widgets.open_page.not_configured" = "Kullanılabilir Sayfa Yok";
 "widgets.open_page.title" = "Sayfayı Aç";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Uygulama içerisinde kendi widget'ınızı yaratın ve burada görüntüleyin.";
 "widgets.preview.custom.title" = "Kişiselleştirilmiş widget";
 "widgets.preview.empty.create.button" = "Widget oluştur";
@@ -1487,6 +1491,10 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "widgets.todo_list.all_done" = "All done! 🎉";
 "widgets.todo_list.complete_item_title" = "Complete To-do Item";
 "widgets.todo_list.description" = "Check your lists and add items";
+"widgets.todo_list.due_date.ago_format" = "%@ ago";
+"widgets.todo_list.due_date.in_format" = "In %@";
+"widgets.todo_list.due_date.now" = "Now";
+"widgets.todo_list.due_date.today" = "Today";
 "widgets.todo_list.parameter.item_id" = "Item ID";
 "widgets.todo_list.parameter.list" = "List";
 "widgets.todo_list.parameter.list_id" = "List ID";

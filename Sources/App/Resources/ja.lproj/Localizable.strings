@@ -1354,6 +1354,9 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.automation.trigger.title" = "トリガーオートメーション";
 "widgets.automations.description" = "オートメーションの実行";
 "widgets.button.reload_timeline" = "すべてのウィジェットを再読み込み";
+"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
+"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Home Assistantアプリでアシストを開く";
 "widgets.controls.assist.pipeline.placeholder" = "パイプラインを選択";
 "widgets.controls.assist.title" = "アシスト";
@@ -1470,6 +1473,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.open_page.description" = "Home Assistantでフロントエンドページを開きます。";
 "widgets.open_page.not_configured" = "利用できるページがありません";
 "widgets.open_page.title" = "ページを開く";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "アプリ内に独自のウィジェットを作成し、ここに表示します。";
 "widgets.preview.custom.title" = "カスタムウィジェット";
 "widgets.preview.empty.create.button" = "ウィジェットを作成";
@@ -1486,6 +1490,10 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.todo_list.all_done" = "All done! 🎉";
 "widgets.todo_list.complete_item_title" = "Complete To-do Item";
 "widgets.todo_list.description" = "Check your lists and add items";
+"widgets.todo_list.due_date.ago_format" = "%@ ago";
+"widgets.todo_list.due_date.in_format" = "In %@";
+"widgets.todo_list.due_date.now" = "Now";
+"widgets.todo_list.due_date.today" = "Today";
 "widgets.todo_list.parameter.item_id" = "Item ID";
 "widgets.todo_list.parameter.list" = "List";
 "widgets.todo_list.parameter.list_id" = "List ID";

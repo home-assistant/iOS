@@ -1355,6 +1355,9 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.automation.trigger.title" = "Spustit automatizaci";
 "widgets.automations.description" = "Spustí automatizaci.";
 "widgets.button.reload_timeline" = "Znovu načíst všechny widgety";
+"widgets.commonly_used_entities.description" = "Zobrazí běžně používané entity na základě vašich vzorců používání.";
+"widgets.commonly_used_entities.empty.description" = "Nebyly nalezeny žádné běžně používané entity. Použijte Home Assistanta k vytvoření historie používání.";
+"widgets.commonly_used_entities.title" = "Běžně používáno";
 "widgets.controls.assist.description" = "Otevře Assist v aplikaci Home Assistant.";
 "widgets.controls.assist.pipeline.placeholder" = "Vybrat pipeline";
 "widgets.controls.assist.title" = "Assist";
@@ -1471,6 +1474,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.open_page.description" = "Otevřete frontendovou stránku v Home Assistantovi.";
 "widgets.open_page.not_configured" = "Nejsou dostupné žádné stránky";
 "widgets.open_page.title" = "Otevřít stránku";
+"widgets.param.server.title" = "Server";
 "widgets.preview.custom.description" = "Vytvořte si vlastní widget v aplikaci a poté jej zde zobrazte.";
 "widgets.preview.custom.title" = "Vlastní widget";
 "widgets.preview.empty.create.button" = "Vytvořit widget";
@@ -1487,6 +1491,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.todo_list.all_done" = "Vše hotovo! 🎉";
 "widgets.todo_list.complete_item_title" = "Dokončit položku úkolu";
 "widgets.todo_list.description" = "Zkontrolujte seznamy a přidejte položky";
+"widgets.todo_list.due_date.ago_format" = "Před %@";
+"widgets.todo_list.due_date.in_format" = "V %@";
+"widgets.todo_list.due_date.now" = "Nyní";
+"widgets.todo_list.due_date.today" = "Dnes";
 "widgets.todo_list.parameter.item_id" = "ID položky";
 "widgets.todo_list.parameter.list" = "Seznam";
 "widgets.todo_list.parameter.list_id" = "ID seznamu";

@@ -1354,6 +1354,9 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "widgets.automation.trigger.title" = "Automatizálás indítása";
 "widgets.automations.description" = "Automatizálás futtatása";
 "widgets.button.reload_timeline" = "Minden widget újratöltése";
+"widgets.commonly_used_entities.description" = "Megjeleníti a gyakran használt entitásokat a használati szokások alapján.";
+"widgets.commonly_used_entities.empty.description" = "Nem találhatók gyakran használt entitások. Használja a Home Assistant-ot a használati előzmények kialakításához.";
+"widgets.commonly_used_entities.title" = "Gyakori vezérlők";
 "widgets.controls.assist.description" = "Az Assist funkció megnyitása a Home Assistant alkalmazásban";
 "widgets.controls.assist.pipeline.placeholder" = "Válasszon egy csatornát";
 "widgets.controls.assist.title" = "Assist";
@@ -1470,6 +1473,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "widgets.open_page.description" = "Nyisson meg egy kezelőfelületet a Home Assistant alkalmazásban.";
 "widgets.open_page.not_configured" = "Nincsenek elérhető oldalak";
 "widgets.open_page.title" = "Oldal megnyitása";
+"widgets.param.server.title" = "Szerver";
 "widgets.preview.custom.description" = "Hozzon létre saját widgetet az alkalmazáson belül, majd jelenítse meg itt.";
 "widgets.preview.custom.title" = "Egyéni widget";
 "widgets.preview.empty.create.button" = "Widget létrehozása";
@@ -1486,6 +1490,10 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "widgets.todo_list.all_done" = "Minden kész! 🎉";
 "widgets.todo_list.complete_item_title" = "Teendő elem befejezése";
 "widgets.todo_list.description" = "Ellenőrizze a listáit és adjon hozzá elemeket";
+"widgets.todo_list.due_date.ago_format" = "%@ ezelőtt";
+"widgets.todo_list.due_date.in_format" = "%@ múlva";
+"widgets.todo_list.due_date.now" = "Most";
+"widgets.todo_list.due_date.today" = "Ma";
 "widgets.todo_list.parameter.item_id" = "Elem azonosító";
 "widgets.todo_list.parameter.list" = "Lista";
 "widgets.todo_list.parameter.list_id" = "Lista azonosító";

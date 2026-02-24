@@ -8,34 +8,21 @@ struct WidgetCustomEntry: TimelineEntry {
     var date: Date
     var widget: CustomWidget?
     var magicItemInfoProvider: MagicItemProviderProtocol
-    var entitiesState: [MagicItem: ItemState]
+    var entitiesState: [MagicItem: WidgetEntityState]
     var showLastUpdateTime: Bool
     var showStates: Bool
-
-    struct ItemState: Codable {
-        let value: String
-        let domainState: Domain.State?
-        let hexColor: String?
-
-        var color: Color? {
-            guard let hexColor else { return nil }
-            return Color(hex: hexColor)
-        }
-    }
-}
-
-struct WidgetCustomItemStatesCache: Codable {
-    let widgetId: String
-    let cacheCreatedDate: Date
-    let states: [MagicItem: WidgetCustomEntry.ItemState]
 }
 
 @available(iOS 17, *)
-struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
+struct WidgetCustomTimelineProvider: WidgetSingleEntryTimelineProvider {
     typealias Entry = WidgetCustomEntry
     typealias Intent = WidgetCustomAppIntent
 
-    func placeholder(in context: Context) -> WidgetCustomEntry {
+    var expiration: Measurement<UnitDuration> {
+        WidgetCustomConstants.expiration
+    }
+
+    func makePlaceholder(in context: Context) -> WidgetCustomEntry {
         .init(
             date: .now,
             magicItemInfoProvider: Current.magicItemProvider(),
@@ -45,36 +32,29 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
-    func snapshot(for configuration: WidgetCustomAppIntent, in context: Context) async -> WidgetCustomEntry {
+    func makeSnapshotEntry(for configuration: WidgetCustomAppIntent, in context: Context) async -> WidgetCustomEntry {
         let widget = widget(configuration: configuration, context: context)
         return await .init(
             date: .now,
             widget: widget,
-            magicItemInfoProvider: infoProvider(),
+            magicItemInfoProvider: WidgetMagicItemInfoProvider.load(),
             entitiesState: [:],
             showLastUpdateTime: configuration.showLastUpdateTime,
             showStates: configuration.showStates
         )
     }
 
-    func timeline(for configuration: WidgetCustomAppIntent, in context: Context) async -> Timeline<WidgetCustomEntry> {
+    func makeTimelineEntry(for configuration: WidgetCustomAppIntent, in context: Context) async -> WidgetCustomEntry {
         let widget = widget(configuration: configuration, context: context)
         let entitiesState = await entitiesState(configuration: configuration, widget: widget)
 
         return await .init(
-            entries: [
-                .init(
-                    date: .now,
-                    widget: widget,
-                    magicItemInfoProvider: infoProvider(),
-                    entitiesState: entitiesState,
-                    showLastUpdateTime: configuration.showLastUpdateTime,
-                    showStates: configuration.showStates
-                ),
-            ], policy: .after(
-                Current.date()
-                    .addingTimeInterval(WidgetCustomConstants.expiration.converted(to: .seconds).value)
-            )
+            date: .now,
+            widget: widget,
+            magicItemInfoProvider: WidgetMagicItemInfoProvider.load(),
+            entitiesState: entitiesState,
+            showLastUpdateTime: configuration.showLastUpdateTime,
+            showStates: configuration.showStates
         )
     }
 
@@ -109,22 +89,11 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
-    private func infoProvider() async -> MagicItemProviderProtocol {
-        let infoProvider = Current.magicItemProvider()
-        _ = await infoProvider.loadInformation()
-        return infoProvider
-    }
-
     private func entitiesState(
         configuration: WidgetCustomAppIntent,
         widget: CustomWidget?
-    ) async -> [MagicItem: WidgetCustomEntry.ItemState] {
+    ) async -> [MagicItem: WidgetEntityState] {
         guard let widget else { return [:] }
-
-        guard configuration.showStates else {
-            Current.Log.verbose("States are disabled in widget configuration")
-            return [:]
-        }
 
         guard widget.itemsStates.isEmpty else {
             Current.Log
@@ -134,81 +103,22 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
             return [:]
         }
 
-        /* Cache states in local json
-         Necessary because there is a long term bug in widgets which triggers a reload of the timeline provider
-         several times instead of just once */
-        if let cache = getStatesCache(widgetId: widget.id), cache.cacheCreatedDate.timeIntervalSinceNow > -1 {
-            Current.Log.verbose("Widget custom states cache is still valid, returning cached states")
-            return cache.states
-        }
-
-        Current.Log.verbose("Widget custom has no valid cache, fetching states")
-
-        let items = widget.items.filter {
-            // No state needed for those domains
-            ![.script, .scene, .inputButton].contains($0.domain)
-        }
-
-        var states: [MagicItem: WidgetCustomEntry.ItemState] = [:]
-
-        for item in items {
-            let serverId = item.serverId
-            let entityId = item.id
-            guard let domain = item.domain,
-                  let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { break }
-
-            if let state: ControlEntityProvider.State = await ControlEntityProvider(domains: [domain]).state(
-                server: server,
-                entityId: entityId
-            ) {
-                states[item] =
-                    .init(
-                        value: "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")",
-                        domainState: state.domainState,
-                        hexColor: state.color?.hex()
-                    )
-            } else {
-                Current.Log
-                    .error(
-                        "Failed to get state for entity in custom widget, entityId: \(entityId), serverId: \(serverId)"
-                    )
+        let stateProvider = WidgetEntityStateProvider(
+            logPrefix: "Widget custom",
+            cacheValiditySeconds: 1,
+            cacheURL: { AppConstants.widgetCachedStates(widgetId: widget.id) },
+            shouldFetchStates: { true },
+            skipFetchLogMessage: nil,
+            itemFilter: { item in
+                // No state needed for those domains
+                ![.script, .scene, .inputButton].contains(item.domain)
+            },
+            stateValueFormatter: { state, serverId, entityId in
+                "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")"
             }
-        }
+        )
 
-        /* Cache states in local json
-         Necessary because there is a long term bug in widgets which triggers a reload of the timeline provider
-         several times instead of just once */
-        do {
-            let cache = WidgetCustomItemStatesCache(
-                widgetId: widget.id,
-                cacheCreatedDate: Date(),
-                states: states
-            )
-            let fileURL = AppConstants.widgetCachedStates(widgetId: widget.id)
-            let encodedStates = try JSONEncoder().encode(cache)
-            try encodedStates.write(to: fileURL)
-            Current.Log
-                .verbose("JSON saved successfully for widget custom cached states, file URL: \(fileURL.absoluteString)")
-        } catch {
-            Current.Log
-                .error("Failed to cache states in WidgetCustomTimelineProvider, error: \(error.localizedDescription)")
-        }
-
-        return states
-    }
-
-    private func getStatesCache(widgetId: String) -> WidgetCustomItemStatesCache? {
-        let fileURL = AppConstants.widgetCachedStates(widgetId: widgetId)
-        do {
-            let data = try Data(contentsOf: fileURL)
-            return try JSONDecoder().decode(WidgetCustomItemStatesCache.self, from: data)
-        } catch {
-            Current.Log
-                .error(
-                    "Failed to load states cache in WidgetCustomTimelineProvider, error: \(error.localizedDescription)"
-                )
-            return nil
-        }
+        return await stateProvider.states(showStates: configuration.showStates, items: widget.items)
     }
 }
 

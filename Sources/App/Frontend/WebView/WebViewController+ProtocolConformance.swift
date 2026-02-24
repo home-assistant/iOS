@@ -61,6 +61,7 @@ extension WebViewController: WebViewControllerProtocol {
 
         let state = FrontEndConnectionState(rawValue: state) ?? .unknown
         isConnected = state == .connected
+        connectionState = state
 
         // Possible values: connected, disconnected, auth-invalid
         if state == .connected {
@@ -108,5 +109,10 @@ extension WebViewController: WebViewControllerProtocol {
             }
         }
         updateDatabaseAndPanels()
+    }
+
+    @objc func refreshIfDisconnected() {
+        guard connectionState != .connected else { return }
+        refresh()
     }
 }

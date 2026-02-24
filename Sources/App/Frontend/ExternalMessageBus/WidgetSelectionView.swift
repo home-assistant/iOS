@@ -49,6 +49,7 @@ struct WidgetSelectionView: View {
                 viewModel.loadWidgets()
             }
         }
+        .navigationViewStyle(.stack)
     }
 
     private var emptyStateView: some View {

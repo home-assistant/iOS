@@ -10,17 +10,23 @@ struct WidgetBasicContainerView: View {
     let contents: [WidgetBasicViewModel]
     let type: WidgetType
     let showLastUpdate: Bool
+    let showServerName: Bool
+    let serverName: String?
 
     init(
         emptyViewGenerator: @escaping () -> AnyView,
         contents: [WidgetBasicViewModel],
         type: WidgetType,
-        showLastUpdate: Bool = false
+        showLastUpdate: Bool = false,
+        showServerName: Bool = false,
+        serverName: String? = nil
     ) {
         self.emptyViewGenerator = emptyViewGenerator
         self.contents = contents
         self.type = type
         self.showLastUpdate = showLastUpdate
+        self.showServerName = showServerName
+        self.serverName = serverName
     }
 
     var body: some View {
@@ -29,6 +35,8 @@ struct WidgetBasicContainerView: View {
             contents: contents,
             type: type,
             showLastUpdate: showLastUpdate,
+            showServerName: showServerName,
+            serverName: serverName,
             family: family
         )
     }
@@ -219,12 +227,16 @@ struct WidgetBasicContainerWrapperView: View {
     let type: WidgetType
     let showLastUpdate: Bool
     let family: WidgetFamily
+    let showServerName: Bool
+    let serverName: String?
 
     init(
         emptyViewGenerator: @escaping () -> AnyView,
         contents: [WidgetBasicViewModel],
         type: WidgetType,
         showLastUpdate: Bool = false,
+        showServerName: Bool = false,
+        serverName: String? = nil,
         family: WidgetFamily
     ) {
         self.emptyViewGenerator = emptyViewGenerator
@@ -232,6 +244,8 @@ struct WidgetBasicContainerWrapperView: View {
         self.type = type
         self.showLastUpdate = showLastUpdate
         self.family = family
+        self.showServerName = showServerName
+        self.serverName = serverName
     }
 
     var body: some View {
@@ -242,8 +256,14 @@ struct WidgetBasicContainerWrapperView: View {
                 content(for: Array(contents.prefix(WidgetFamilySizes.size(for: family))))
             }
             if showLastUpdate, !contents.isEmpty {
+                let lastUpdatedTextView = Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") +
+                    Text(Current.date(), style: .time)
                 Group {
-                    Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") + Text(Date.now, style: .time)
+                    if showServerName, let serverName {
+                        Text(serverName) + Text(" · ") + lastUpdatedTextView
+                    } else {
+                        lastUpdatedTextView
+                    }
                 }
                 .font(.system(size: 10).bold())
                 .frame(maxWidth: .infinity, alignment: .center)

@@ -480,6 +480,8 @@
 		21316D8EAC0226B0CD48FF30 /* Pods_iOS_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22F619E232C3F0E98A9346D /* Pods_iOS_App.framework */; };
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
+		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
+		37414CBA81F74D6AADCFE442 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
 		3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */; };
 		3997926B2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */; };
@@ -657,6 +659,8 @@
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
 		4228CFFF2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228CFFE2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift */; };
 		4228D0012DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */; };
+		422C95E72F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C95E62F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift */; };
+		422C95E82F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C95E62F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift */; };
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreasService.test.swift */; };
@@ -1193,6 +1197,16 @@
 		42F958992BB4684700497981 /* WidgetAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F958972BB4681E00497981 /* WidgetAssist.swift */; };
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
 		42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589D2BB4705E00497981 /* WidgetAssistView.swift */; };
+		42FA83392F4722A30050095A /* FrontEndConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA83382F4722A30050095A /* FrontEndConnectionState.swift */; };
+		42FA833B2F4722C40050095A /* WebViewController+StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA833A2F4722C40050095A /* WebViewController+StatusBar.swift */; };
+		42FA833D2F4722D00050095A /* WebViewController+EmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA833C2F4722D00050095A /* WebViewController+EmptyState.swift */; };
+		42FA833F2F4722F40050095A /* WebViewController+URLLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA833E2F4722F40050095A /* WebViewController+URLLoading.swift */; };
+		42FA83412F47230D0050095A /* WebViewController+Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA83402F47230D0050095A /* WebViewController+Navigation.swift */; };
+		42FA83432F4723260050095A /* WebViewController+Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA83422F4723260050095A /* WebViewController+Alerts.swift */; };
+		42FA83452F4723450050095A /* WebViewController+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA83442F4723450050095A /* WebViewController+Settings.swift */; };
+		42FA83472F4731F80050095A /* WebViewController+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA83462F4731F80050095A /* WebViewController+Gestures.swift */; };
+		42FA83492F4731F80050095A /* WebViewController+WebViewSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA83482F4731F80050095A /* WebViewController+WebViewSetup.swift */; };
+		42FA834B2F4731F80050095A /* WebViewController+Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA834A2F4731F80050095A /* WebViewController+Onboarding.swift */; };
 		42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */; };
 		42FCCFA82B9A05400057783F /* View+RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */; };
 		42FCCFD62B9B195D0057783F /* Image+SharedAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */; };
@@ -1246,7 +1260,8 @@
 		46F103262D721516002BC586 /* LocationHistoryListViewSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F103252D721504002BC586 /* LocationHistoryListViewSnapshot.test.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
-		54FD9D9A39DA7E03E9A1E877 /* Pods_iOS_SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4D7ACB53EB0136FE288F674 /* Pods_iOS_SharedTesting.framework */; };
+		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
+		54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */; };
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
 		61495A70232316478717CF27 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FF3A67FB1C2B548C6C7730C /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
 		65286F3B745551AD4090EE6B /* Pods-iOS-SharedTesting-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4053903E4C54A6803204286E /* Pods-iOS-SharedTesting-metadata.plist */; };
@@ -2371,6 +2386,7 @@
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
 		4228CFFE2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewScriptMessageHandler.swift; sourceTree = "<group>"; };
 		4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKUserContentControllerMessageTests.swift; sourceTree = "<group>"; };
+		422C95E62F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTimelineProviderSupport.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
 		422E626B2CDCF00A00987BD0 /* AreasService.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.test.swift; sourceTree = "<group>"; };
 		422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetToggleAppIntent.swift; sourceTree = "<group>"; };
@@ -3004,6 +3020,16 @@
 		42F958972BB4681E00497981 /* WidgetAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssist.swift; sourceTree = "<group>"; };
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
 		42F9589D2BB4705E00497981 /* WidgetAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistView.swift; sourceTree = "<group>"; };
+		42FA83382F4722A30050095A /* FrontEndConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontEndConnectionState.swift; sourceTree = "<group>"; };
+		42FA833A2F4722C40050095A /* WebViewController+StatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+StatusBar.swift"; sourceTree = "<group>"; };
+		42FA833C2F4722D00050095A /* WebViewController+EmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+EmptyState.swift"; sourceTree = "<group>"; };
+		42FA833E2F4722F40050095A /* WebViewController+URLLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+URLLoading.swift"; sourceTree = "<group>"; };
+		42FA83402F47230D0050095A /* WebViewController+Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Navigation.swift"; sourceTree = "<group>"; };
+		42FA83422F4723260050095A /* WebViewController+Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Alerts.swift"; sourceTree = "<group>"; };
+		42FA83442F4723450050095A /* WebViewController+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Settings.swift"; sourceTree = "<group>"; };
+		42FA83462F4731F80050095A /* WebViewController+Gestures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Gestures.swift"; sourceTree = "<group>"; };
+		42FA83482F4731F80050095A /* WebViewController+WebViewSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+WebViewSetup.swift"; sourceTree = "<group>"; };
+		42FA834A2F4731F80050095A /* WebViewController+Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Onboarding.swift"; sourceTree = "<group>"; };
 		42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistTypingIndicator.swift; sourceTree = "<group>"; };
 		42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+RoundedCorner.swift"; sourceTree = "<group>"; };
 		42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Image+SharedAssets.swift"; sourceTree = "<group>"; };
@@ -3428,25 +3454,20 @@
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D72C761F65606EF882E2A7B1 /* Pods-iOS-Extensions-Today-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Today-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Today-metadata.plist"; sourceTree = "<group>"; };
-		D8AAB329DE164DE26024DCCD /* Pods_watchOS_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA095714C34A271EE447EF7B /* Pods_iOS_Extensions_PushProvider.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_PushProvider.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DCCD54F3B26BC1619637762A /* Pods-iOS-Extensions-Share.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Share.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Share/Pods-iOS-Extensions-Share.debug.xcconfig"; sourceTree = "<group>"; };
-		E1ED1B4AA1E7857FCA395856 /* Pods-iOS-Shared-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		DA2CE827B2DBBDBFB11559DF /* Pods-iOS-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.beta.xcconfig"; sourceTree = "<group>"; };
+		DD90A8F251D0671EFAC931ED /* Pods_iOS_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntities.swift; sourceTree = "<group>"; };
+		DFE9B91096F09C0E2A124B76 /* Pods-iOS-Extensions-Widgets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.release.xcconfig"; sourceTree = "<group>"; };
+		E1A08868E5F1AEA7C24FAAAE /* Pods-iOS-Extensions-NotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.release.xcconfig"; sourceTree = "<group>"; };
 		E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-PushProvider-metadata.plist"; path = "Pods/Pods-iOS-Extensions-PushProvider-metadata.plist"; sourceTree = "<group>"; };
 		E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Intents-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Intents-metadata.plist"; sourceTree = "<group>"; };
-		E4D72751BCF80DBC6F7A0D13 /* Pods-iOS-Extensions-Intents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.debug.xcconfig"; sourceTree = "<group>"; };
-		E57FCBEAF754F5854EC24DE8 /* Pods-iOS-Shared-iOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.beta.xcconfig"; sourceTree = "<group>"; };
-		E58792D94630ECA1A94EF9A1 /* Pods-Tests-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.release.xcconfig"; sourceTree = "<group>"; };
-		E600CB70C55D2DA9BE5ABE20 /* Pods-iOS-Extensions-NotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.debug.xcconfig"; sourceTree = "<group>"; };
-		E828C65FF9994D69798B58B1 /* Pods-iOS-Extensions-NotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.release.xcconfig"; sourceTree = "<group>"; };
-		E85E92A5E041750033D4202C /* Pods_iOS_Extensions_Matter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Matter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EE6E1D022928865F7FF1721C /* Pods-iOS-Extensions-Intents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.release.xcconfig"; sourceTree = "<group>"; };
-		F4897CFFD8E8CDBF0123928A /* Pods-iOS-Extensions-NotificationContent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.release.xcconfig"; sourceTree = "<group>"; };
-		F4D7ACB53EB0136FE288F674 /* Pods_iOS_SharedTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_SharedTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F69F26ED6E64F19F94664856 /* Pods_iOS_Extensions_Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Intents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F70D9EBDDE2BE5EC918FE88B /* Pods-iOS-Extensions-Widgets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.release.xcconfig"; sourceTree = "<group>"; };
-		FA9CD3443A3CFF2E0190FEB8 /* Pods_iOS_Extensions_NotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_NotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FB05A29E4A1C6D215ECF3541 /* Pods-iOS-Extensions-Matter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Matter.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Matter/Pods-iOS-Extensions-Matter.release.xcconfig"; sourceTree = "<group>"; };
+		E805474FB6E532B5C40E83B4 /* Pods-iOS-Extensions-NotificationContent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.debug.xcconfig"; sourceTree = "<group>"; };
+		E81F5CF42E9F5D95BD0E6019 /* Pods-iOS-SharedTesting.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-SharedTesting.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-SharedTesting/Pods-iOS-SharedTesting.beta.xcconfig"; sourceTree = "<group>"; };
+		EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntitiesTimelineProvider.swift; sourceTree = "<group>"; };
+		F0954F3919DBD03AC16B0391 /* Pods-iOS-Extensions-PushProvider.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-PushProvider.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-PushProvider/Pods-iOS-Extensions-PushProvider.beta.xcconfig"; sourceTree = "<group>"; };
+		F3A0FB3BD04C582E655168D0 /* Pods-Tests-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.release.xcconfig"; sourceTree = "<group>"; };
+		F3E55AA06795782F04D0B261 /* Pods-iOS-Extensions-Intents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.release.xcconfig"; sourceTree = "<group>"; };
+		F534C18A6FD4884F258341C9 /* Pods-iOS-Shared-iOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.beta.xcconfig"; sourceTree = "<group>"; };
 		FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 		FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListTemplate.swift; sourceTree = "<group>"; };
@@ -3758,6 +3779,7 @@
 				424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */,
 				4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */,
 				42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */,
+				422C95E62F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -3881,6 +3903,7 @@
 			isa = PBXGroup;
 			children = (
 				428863582EF9641400319CF4 /* CameraList */,
+				95A32294D4A340198B769AAB /* CommonlyUsedEntities */,
 				42FF5E8F2E22D7DA00BDF5EF /* TodoList */,
 				42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */,
 				422368892D40F980005911E4 /* Lockscreen */,
@@ -5912,6 +5935,16 @@
 				42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */,
 				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
+				42FA83382F4722A30050095A /* FrontEndConnectionState.swift */,
+				42FA833A2F4722C40050095A /* WebViewController+StatusBar.swift */,
+				42FA833C2F4722D00050095A /* WebViewController+EmptyState.swift */,
+				42FA833E2F4722F40050095A /* WebViewController+URLLoading.swift */,
+				42FA83402F47230D0050095A /* WebViewController+Navigation.swift */,
+				42FA83422F4723260050095A /* WebViewController+Alerts.swift */,
+				42FA83442F4723450050095A /* WebViewController+Settings.swift */,
+				42FA83462F4731F80050095A /* WebViewController+Gestures.swift */,
+				42FA83482F4731F80050095A /* WebViewController+WebViewSetup.swift */,
+				42FA834A2F4731F80050095A /* WebViewController+Onboarding.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -6523,6 +6556,15 @@
 				8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */,
 			);
 			path = Fan;
+			sourceTree = "<group>";
+		};
+		95A32294D4A340198B769AAB /* CommonlyUsedEntities */ = {
+			isa = PBXGroup;
+			children = (
+				DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */,
+				EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */,
+			);
+			path = CommonlyUsedEntities;
 			sourceTree = "<group>";
 		};
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
@@ -9029,6 +9071,7 @@
 				42D3E4B52C5D2BC200444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
 				4273C48A2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
+				422C95E72F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift in Sources */,
 				4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */,
 				42C101242CD3D7700012BA78 /* ControlRefreshDelay.swift in Sources */,
 				42F5C0942F02D57E00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */,
@@ -9116,6 +9159,8 @@
 				42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */,
 				428D31A62D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				42FF5E912E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */,
+				54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */,
+				37414CBA81F74D6AADCFE442 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift in Sources */,
 				4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */,
 				428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */,
@@ -9191,6 +9236,8 @@
 				427AE07E2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
 				42F5C0972F02E61300C50310 /* OpenExperimentalDashboardIntent.swift in Sources */,
+				42FA83472F4731F80050095A /* WebViewController+Gestures.swift in Sources */,
+				42FA83452F4723450050095A /* WebViewController+Settings.swift in Sources */,
 				4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
@@ -9291,6 +9338,7 @@
 				42F5C0892F02BCDE00C50310 /* IntentFanEntity.swift in Sources */,
 				426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
+				42FA83392F4722A30050095A /* FrontEndConnectionState.swift in Sources */,
 				422FB62F2F17E33800243A68 /* DomainSummaryCard.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
@@ -9306,6 +9354,7 @@
 				42C0F7CC2D47B47F00BD5C76 /* IconPicker.swift in Sources */,
 				42DFE86F2EFA26D50058DADB /* AssistSettingsView.swift in Sources */,
 				421155232D354F3F00A71630 /* AppIcon.swift in Sources */,
+				42FA833B2F4722C40050095A /* WebViewController+StatusBar.swift in Sources */,
 				42FCD0142B9B29740057783F /* ThreadCredentialDetailsView.swift in Sources */,
 				42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */,
 				42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */,
@@ -9355,6 +9404,7 @@
 				423B5E092D67781A0000CB95 /* WidgetBasicContainerView.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				42EFFAEC2C8882DD002F10FC /* CarPlayConfigurationView.swift in Sources */,
+				42FA833D2F4722D00050095A /* WebViewController+EmptyState.swift in Sources */,
 				420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */,
 				420E2AE92C474729004921D8 /* WidgetCircularView.swift in Sources */,
 				11B92AF2266F23DA00786588 /* NotificationManagerLocalPushInterfaceExtension.swift in Sources */,
@@ -9390,6 +9440,7 @@
 				42B7BFEC2E97AF070056BADC /* LocalAccessPermissionViewModel.swift in Sources */,
 				42DFE87A2EFB08C80058DADB /* HomeViewModel.swift in Sources */,
 				42DFE87B2EFB08C80058DADB /* HomeView.swift in Sources */,
+				42FA83412F47230D0050095A /* WebViewController+Navigation.swift in Sources */,
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
@@ -9417,6 +9468,7 @@
 				426E029B2EF98F65008237D4 /* CameraSectionReorderView.swift in Sources */,
 				42F5C0962F02E5C800C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
+				42FA833F2F4722F40050095A /* WebViewController+URLLoading.swift in Sources */,
 				42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
@@ -9462,11 +9514,13 @@
 				429858882EB13FD300E33710 /* WebViewControllerOverlayedViewTags.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutView.swift in Sources */,
 				42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */,
+				42FA83492F4731F80050095A /* WebViewController+WebViewSetup.swift in Sources */,
 				420A80992E9D14C800D30A6B /* OnboardingPermissionsNavigationViewModel.swift in Sources */,
 				4201FD932F0E73C900C3EF1C /* CameraCardViewModel.swift in Sources */,
 				4206FFB62DAD58520087626C /* WebViewGestureHandler.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */,
+				422C95E82F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				42B7BFF12E97D1540056BADC /* HomeNetworkInputViewModel.swift in Sources */,
@@ -9501,6 +9555,7 @@
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
 				4210CCF32F1532C400B71FB9 /* CameraMJPEGPlayerView.swift in Sources */,
 				42B129512F056DAC00B957AF /* EntityMoreInfoDialogView.swift in Sources */,
+				42FA834B2F4731F80050095A /* WebViewController+Onboarding.swift in Sources */,
 				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,
 				42FCCFE32B9B1B610057783F /* BarcodeScannerCameraView.swift in Sources */,
 				42BF8DB42EC4E73700DCB7E7 /* ConnectionSettingsView.swift in Sources */,
@@ -9528,6 +9583,7 @@
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift in Sources */,
 				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
+				42FA83432F4723260050095A /* WebViewController+Alerts.swift in Sources */,
 				423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
 				42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */,
 				4289FCB12F0BFC07005189AA /* RoomIdentifier.swift in Sources */,
