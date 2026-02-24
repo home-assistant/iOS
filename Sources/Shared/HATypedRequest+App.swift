@@ -2,6 +2,25 @@ import Foundation
 import HAKit
 
 public extension HATypedRequest {
+    /// Executes the domain's main action (e.g., toggle for lights, turn_on for scenes).
+    /// Returns nil if the domain doesn't have a main action.
+    static func executeMainAction(
+        domain: Domain,
+        entityId: String
+    ) -> HATypedRequest<HAResponseVoid>? {
+        guard let action = domain.mainAction else { return nil }
+        return HATypedRequest<HAResponseVoid>(request: .init(
+            type: "call_service",
+            data: [
+                "domain": domain.rawValue,
+                "service": action.rawValue,
+                "target": [
+                    "entity_id": entityId,
+                ],
+            ]
+        ))
+    }
+
     static func toggleDomain(
         domain: Domain,
         entityId: String

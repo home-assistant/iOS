@@ -777,16 +777,9 @@ public class HomeAssistantAPI {
 
     public func executeActionForDomainType(domain: Domain, entityId: String, state: String) -> Promise<Void> {
         var request: HATypedRequest<HAResponseVoid>?
-        switch domain {
-        case .button, .inputButton:
-            request = .pressButton(domain: domain, entityId: entityId)
-        case .cover, .inputBoolean, .light, .switch, .fan:
-            request = .toggleDomain(domain: domain, entityId: entityId)
-        case .scene:
-            request = .applyScene(entityId: entityId)
-        case .script:
-            request = .runScript(entityId: entityId)
-        case .lock:
+
+        // Lock requires state-aware action
+        if domain == .lock {
             guard let state = Domain.State(rawValue: state) else { return .value }
             switch state {
             case .unlocking, .unlocked, .opening:
@@ -796,11 +789,11 @@ public class HomeAssistantAPI {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate:
-            break
-        case .automation:
-            request = .trigger(entityId: entityId)
+        } else {
+            // Use domain's main action for all other domains
+            request = .executeMainAction(domain: domain, entityId: entityId)
         }
+
         if let request {
             return connection.send(request).promise
                 .map { _ in () }

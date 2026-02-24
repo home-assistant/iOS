@@ -321,3 +321,26 @@ public extension Domain {
         ]
     }
 }
+
+// MARK: - Main Action
+
+public extension Domain {
+    /// The primary service to call when activating this domain.
+    /// Returns nil for domains that don't have a single main action (e.g., sensors).
+    public var mainAction: Service? {
+        switch self {
+        case .automation:
+            return .trigger
+        case .button, .inputButton:
+            return .press
+        case .scene, .script:
+            return .turnOn
+        case .cover, .fan, .inputBoolean, .light, .switch:
+            return .toggle
+        case .lock:
+            return nil // Lock requires state-aware action (lock/unlock)
+        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate:
+            return nil // Read-only or complex domains
+        }
+    }
+}

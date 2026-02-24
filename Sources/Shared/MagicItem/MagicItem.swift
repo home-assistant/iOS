@@ -369,16 +369,9 @@ public extension MagicItem {
         state: String
     ) -> Promise<Void> {
         var request: HATypedRequest<HAResponseVoid>?
-        switch domain {
-        case .button, .inputButton:
-            request = .pressButton(domain: domain, entityId: entityId)
-        case .cover, .inputBoolean, .light, .switch, .fan:
-            request = .toggleDomain(domain: domain, entityId: entityId)
-        case .scene:
-            request = .applyScene(entityId: entityId)
-        case .script:
-            request = .runScript(entityId: entityId)
-        case .lock:
+
+        // Lock requires state-aware action
+        if domain == .lock {
             guard let state = Domain.State(rawValue: state) else { return .value }
             switch state {
             case .unlocking, .unlocked, .opening:
@@ -388,11 +381,11 @@ public extension MagicItem {
             default:
                 break
             }
-        case .automation:
-            request = .trigger(entityId: entityId)
-        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate:
-            break
+        } else {
+            // Use domain's main action for all other domains
+            request = .executeMainAction(domain: domain, entityId: entityId)
         }
+
         if let request, let connection = Current.api(for: server)?.connection {
             return connection.send(request).promise
                 .map { _ in () }
