@@ -93,6 +93,7 @@ struct FolderDetailView: View {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
+                .environment(\.colorScheme, .dark)
             } label: {
                 HStack {
                     Image(uiImage: image(for: item, itemInfo: itemInfo))

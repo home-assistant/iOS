@@ -143,11 +143,13 @@ struct WatchConfigurationView: View {
                 addFolderForm
             }
             .presentationDetents([.medium])
+            .preferredColorScheme(.dark)
         } else {
             NavigationView {
                 addFolderForm
             }
             .navigationViewStyle(.stack)
+            .preferredColorScheme(.dark)
         }
     }
 
@@ -254,6 +256,7 @@ struct WatchConfigurationView: View {
                     folderId: item.id,
                     viewModel: viewModel
                 )
+                .environment(\.colorScheme, .dark)
             } label: {
                 itemRow(item: item, info: info)
             }
