@@ -22,7 +22,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
     }
 
     /// Domains supported by this widget for entity filtering and display
-    static let supportedDomains: [Domain] = [.light, .switch, .cover, .fan, .climate, .lock]
+    static let supportedDomains: [Domain] = [.light, .switch, .cover, .fan]
 
     /// Cache is considered valid for 1 second to handle iOS widget reload bug
     /// that triggers multiple timeline refreshes
