@@ -65,7 +65,9 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                     data = nil
                 }
 
-                if clientCertificateErrorOccurred[task.taskIdentifier] == true {
+                if clientCertificateRequiredOccurred[task.taskIdentifier] == true {
+                    kind = .clientCertificateRequired
+                } else if clientCertificateErrorOccurred[task.taskIdentifier] == true {
                     kind = .clientCertificateError(error)
                 } else if let error = error as? URLError {
                     switch error.code {
@@ -85,6 +87,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
     }
 
     private var clientCertificateErrorOccurred = [Int: Bool]()
+    private var clientCertificateRequiredOccurred = [Int: Bool]()
 
     private func confirm(
         secTrust: SecTrust,
@@ -168,12 +171,15 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                     return
                 } catch {
                     Current.Log.error("[mTLS] Failed to get credential: \(error)")
+                    clientCertificateErrorOccurred[task.taskIdentifier] = true
+                    completionHandler(.performDefaultHandling, nil)
+                    return
                 }
             }
             #endif
-            // No certificate available or failed to retrieve
+            // No certificate available - server requires one
             Current.Log.warning("[mTLS] Client certificate requested but none available")
-            clientCertificateErrorOccurred[task.taskIdentifier] = true
+            clientCertificateRequiredOccurred[task.taskIdentifier] = true
             completionHandler(.performDefaultHandling, nil)
         default:
             pendingResolver
