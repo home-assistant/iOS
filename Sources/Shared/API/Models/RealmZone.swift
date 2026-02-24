@@ -251,7 +251,7 @@ public final class RLMZone: Object, UpdatableModel {
         Current.realm()
             .objects(Self.self)
             .filter("%K == %@", #keyPath(serverIdentifier), server.identifier.rawValue)
-            .filter(trackablePredicate)
+            .filter("TrackingEnabled == true")
             .filter { $0.circularRegion.containsWithAccuracy(location) }
             .sorted { zoneA, zoneB in
                 // match the smaller zone over the larger

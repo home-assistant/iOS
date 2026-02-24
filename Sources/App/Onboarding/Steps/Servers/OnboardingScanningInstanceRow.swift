@@ -23,6 +23,7 @@ struct OnboardingScanningInstanceRow: View {
                     .font(DesignSystem.Font.caption)
                     .foregroundColor(.secondary)
                     .privacySensitive()
+                    .screenCaptureProtected()
                 if let externalURLString {
                     Text(externalURLString)
                         .font(.caption2)
@@ -30,6 +31,7 @@ struct OnboardingScanningInstanceRow: View {
                         .lineLimit(1)
                         .truncationMode(.middle)
                         .privacySensitive()
+                        .screenCaptureProtected()
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
