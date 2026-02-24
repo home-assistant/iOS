@@ -146,6 +146,7 @@ struct OnboardingServersListView: View {
             Text(instance?.internalOrExternalURL.absoluteString ?? "--")
                 .font(DesignSystem.Font.body.weight(.light))
                 .foregroundStyle(.secondary)
+                .screenCaptureProtected()
             Button {
                 autoConnectInstance = nil
                 guard let instance else { return }

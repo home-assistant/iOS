@@ -13,6 +13,7 @@ class OnboardingAuth {
     var login: OnboardingAuthLogin = OnboardingAuthLoginImpl()
     var tokenExchange: OnboardingAuthTokenExchange = OnboardingAuthTokenExchangeImpl()
     var preSteps: [OnboardingAuthPreStep.Type] = [
+        OnboardingAuthStepClientCertificate.self,
         OnboardingAuthStepConnectivity.self,
     ]
     var postSteps: [OnboardingAuthPostStep.Type] = [
@@ -62,11 +63,14 @@ class OnboardingAuth {
     }
 
     private func perform(checkPoint: OnboardingAuthStepPoint, checks: [OnboardingAuthStep]) -> Promise<Void> {
-        when(fulfilled: checks.compactMap { check in
-            check.perform(point: checkPoint).tap { result in
-                Current.Log.info("\(type(of: check)): \(result)")
+        // Execute steps sequentially to allow ClientCertificate to complete before Connectivity
+        checks.reduce(Promise.value(())) { promise, check in
+            promise.then {
+                check.perform(point: checkPoint).tap { result in
+                    Current.Log.info("\(type(of: check)): \(result)")
+                }.asVoid()
             }
-        }).asVoid()
+        }
     }
 
     private func performPreSteps(
@@ -200,7 +204,8 @@ private extension ConnectionInfo {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
-            connectionAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined,
+            clientCertificate: authDetails.clientCertificate
         )
 
         // default cloud to on

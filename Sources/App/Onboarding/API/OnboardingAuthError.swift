@@ -7,7 +7,8 @@ struct OnboardingAuthError: LocalizedError {
         case basicAuth
         case authenticationUnsupported(String)
         case sslUntrusted([Error])
-        case clientCertificateRequired(Error)
+        case clientCertificateRequired
+        case clientCertificateError(Error)
         case other(Error)
 
         var documentationAnchor: String {
@@ -16,20 +17,23 @@ struct OnboardingAuthError: LocalizedError {
             case .invalidURL: return "invalid_url"
             case .authenticationUnsupported: return "authentication_unsupported"
             case .sslUntrusted: return "ssl_untrusted"
-            case .clientCertificateRequired: return "client_certificate"
+            case .clientCertificateRequired, .clientCertificateError: return "client_certificate"
             case .other: return "unknown_error"
             }
         }
 
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
-            case (.invalidURL, .invalidURL), (.basicAuth, .basicAuth):
+            case (.invalidURL, .invalidURL), (.basicAuth, .basicAuth), (
+                .clientCertificateRequired,
+                .clientCertificateRequired
+            ):
                 return true
             case let (.authenticationUnsupported(lhsMethod), .authenticationUnsupported(rhsMethod)):
                 return lhsMethod == rhsMethod
             case let (.sslUntrusted(lhsErrors as [NSError]), .sslUntrusted(rhsError as [NSError])):
                 return lhsErrors.map(\.code) == rhsError.map(\.code)
-            case let (.clientCertificateRequired(lhsError as NSError), .clientCertificateRequired(rhsError as NSError)),
+            case let (.clientCertificateError(lhsError as NSError), .clientCertificateError(rhsError as NSError)),
                  let (.other(lhsError as NSError), .other(rhsError as NSError)):
                 return lhsError.domain == rhsError.domain &&
                     lhsError.code == rhsError.code
@@ -55,9 +59,10 @@ struct OnboardingAuthError: LocalizedError {
         case .basicAuth: return nil
         case .authenticationUnsupported: return nil
         case .invalidURL: return nil
+        case .clientCertificateRequired: return nil
         case let .sslUntrusted(underlying as [NSError]):
             return Set(underlying.map { code(from: $0) }).joined(separator: "; ")
-        case let .clientCertificateRequired(underlying as NSError),
+        case let .clientCertificateError(underlying as NSError),
              let .other(underlying as NSError):
             return code(from: underlying)
         }
@@ -71,9 +76,10 @@ struct OnboardingAuthError: LocalizedError {
             return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
         case let .authenticationUnsupported(method):
             return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(" " + method)
-        case let .clientCertificateRequired(underlying):
-            return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
-                + "\n\n" + underlying.localizedDescription
+        case .clientCertificateRequired:
+            return L10n.Error.ClientCertificate.flowCancelled
+        case let .clientCertificateError(underlying):
+            return L10n.Error.ClientCertificate.flowFailed(underlying.localizedDescription)
         case let .sslUntrusted(errors):
             // swift compiler crashes with \.localizedDescription below, xcode 13.3
             // swiftformat:disable:next preferKeyPath
