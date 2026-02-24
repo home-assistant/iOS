@@ -327,7 +327,7 @@ public extension Domain {
 public extension Domain {
     /// The primary service to call when activating this domain.
     /// Returns nil for domains that don't have a single main action (e.g., sensors).
-    public var mainAction: Service? {
+    var mainAction: Service? {
         switch self {
         case .automation:
             return .trigger
