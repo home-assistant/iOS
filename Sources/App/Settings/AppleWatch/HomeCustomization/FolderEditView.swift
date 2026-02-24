@@ -51,6 +51,7 @@ struct FolderEditView: View {
                 }
             }
         }
+        .preferredColorScheme(.dark)
         .onAppear {
             preventNilCustomization()
         }
