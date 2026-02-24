@@ -130,6 +130,7 @@ public final class ClientCertificateManager {
 
         // Add the new identity
         let addQuery: [String: Any] = [
+            kSecClass as String: kSecClassIdentity,
             kSecValueRef as String: identity,
             kSecAttrLabel as String: identifier,
             kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,

@@ -162,7 +162,7 @@ struct ConnectionSettingsView: View {
         }
         .fileImporter(
             isPresented: $showCertificateImporter,
-            allowedContentTypes: [UTType(filenameExtension: "p12")!, UTType(filenameExtension: "pfx")!],
+            allowedContentTypes: ClientCertificateFile.allowedFormats,
             allowsMultipleSelection: false
         ) { result in
             switch result {
