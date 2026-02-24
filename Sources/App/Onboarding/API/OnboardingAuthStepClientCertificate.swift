@@ -125,7 +125,7 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
                     }
                 )
 
-                let hostingController = UIHostingController(rootView: NavigationView { view })
+                let hostingController = UIHostingController(rootView: NavigationView { view }.navigationViewStyle(.stack))
                 hostingController.modalPresentationStyle = .pageSheet
 
                 if let sheet = hostingController.sheetPresentationController {
