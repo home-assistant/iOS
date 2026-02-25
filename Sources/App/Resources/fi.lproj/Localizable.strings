@@ -311,7 +311,16 @@
 "entity_picker.list.area.no_area.title" = "No area";
 "entity_picker.placeholder" = "Valitse entiteetti";
 "entity_picker.search.placeholder" = "Entity name, ID, area name, device name...";
+"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
+\
+This server requires a client certificate (mTLS) but the operation was cancelled.";
+"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+\
+%@";
 "error_label" = "Virhe";
+"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
+"experimental.badge.report_issue_button.title" = "Report issue";
+"experimental.badge.title" = "Experimental feature";
 "extensions.map.location.new" = "Uusi sijainti";
 "extensions.map.location.original" = "Alkuperäinen sijainti";
 "extensions.map.payload_missing_homeassistant.message" = "Hyötykuorma ei sisältänyt homeassistant-sanakirjaa!";
@@ -561,6 +570,14 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "notifications_configurator.settings.footer.id_set" = "Tunnusta ei voi muuttaa luomisen jälkeen. Sinun on poistettava toiminto ja luotava se uudelleen, tunnisteen muuttaamiseksi.";
 "notifications_configurator.settings.header" = "Asetukset";
 "ok_label" = "OK";
+"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
+"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
+"onboarding.client_certificate.password_prompt.import_button" = "Import";
+"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
+"onboarding.client_certificate.password_prompt.placeholder" = "Password";
+"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
+"onboarding.client_certificate.select_file_button" = "Select Certificate File";
+"onboarding.client_certificate.title" = "Client Certificate Required";
 "onboarding.connect.mac_safari_warning.message" = "Yritä käynnistää Safari uudelleen, jos kirjautumislomake ei avaudu.";
 "onboarding.connect.mac_safari_warning.title" = "Käynnistetään Safaria";
 "onboarding.connect.title" = "Muodostetaan yhteyttä kohteeseen %@";
@@ -708,6 +725,21 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Oletko varma?";
 "settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
 "settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
+"settings.connection_section.client_certificate.expired" = "Certificate expired";
+"settings.connection_section.client_certificate.expires_at" = "Expires %@";
+"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
+"settings.connection_section.client_certificate.header" = "Client Certificate";
+"settings.connection_section.client_certificate.import" = "Import Certificate";
+"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
+"settings.connection_section.client_certificate.importing" = "Importing...";
+"settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
+"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
+"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
+"settings.connection_section.client_certificate.remove" = "Remove Certificate";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
 "settings.connection_section.cloud_overrides_external" = "Kun yhteys muodostetaan Cloudin kautta, Ulkoista URL-osoitetta ei käytetä. Sinun ei tarvitse määrittää sitä, ellet halua poistaa Cloudia käytöstä.";
 "settings.connection_section.connecting_via" = "Yhdistetty kautta";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Vähemmän turvallinen";

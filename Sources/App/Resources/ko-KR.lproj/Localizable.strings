@@ -311,7 +311,16 @@
 "entity_picker.list.area.no_area.title" = "No area";
 "entity_picker.placeholder" = "구성요소 선택하기";
 "entity_picker.search.placeholder" = "Entity name, ID, area name, device name...";
+"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
+\
+This server requires a client certificate (mTLS) but the operation was cancelled.";
+"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+\
+%@";
 "error_label" = "오류";
+"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
+"experimental.badge.report_issue_button.title" = "Report issue";
+"experimental.badge.title" = "Experimental feature";
 "extensions.map.location.new" = "새 위치";
 "extensions.map.location.original" = "원래 위치";
 "extensions.map.payload_missing_homeassistant.message" = "페이로드에 Home Assistant 사전이 포함되어 있지 않습니다!";
@@ -561,6 +570,14 @@
 "notifications_configurator.settings.footer.id_set" = "식별자는 생성 후 변경할 수 없습니다. 식별자를 변경하려면 작업을 삭제하고 다시 만들어야 합니다.";
 "notifications_configurator.settings.header" = "설정";
 "ok_label" = "OK";
+"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
+"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
+"onboarding.client_certificate.password_prompt.import_button" = "Import";
+"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
+"onboarding.client_certificate.password_prompt.placeholder" = "Password";
+"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
+"onboarding.client_certificate.select_file_button" = "Select Certificate File";
+"onboarding.client_certificate.title" = "Client Certificate Required";
 "onboarding.connect.mac_safari_warning.message" = "로그인 양식이 열리지 않으면 Safari를 다시 시작해 보십시오.";
 "onboarding.connect.mac_safari_warning.title" = "사파리 시작";
 "onboarding.connect.title" = "%@에 연결 중";
@@ -708,6 +725,21 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.always_fallback_internal.confirmation.title" = "확실한가요?";
 "settings.connection_section.always_fallback_internal.footer" = "안전하지 않은 URL(http)로 이 기능을 활성화하면 공용 네트워크의 보안이 손상될 수 있습니다.";
 "settings.connection_section.always_fallback_internal.title" = "항상 내부 URL로 폴백";
+"settings.connection_section.client_certificate.expired" = "Certificate expired";
+"settings.connection_section.client_certificate.expires_at" = "Expires %@";
+"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
+"settings.connection_section.client_certificate.header" = "Client Certificate";
+"settings.connection_section.client_certificate.import" = "Import Certificate";
+"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
+"settings.connection_section.client_certificate.importing" = "Importing...";
+"settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
+"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
+"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
+"settings.connection_section.client_certificate.remove" = "Remove Certificate";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
 "settings.connection_section.cloud_overrides_external" = "Cloud를 통해 연결할 때 외부 URL은 사용되지 않습니다. Cloud를 비활성화하려는 경우가 아니면 구성할 필요가 없습니다.";
 "settings.connection_section.connecting_via" = "다음을 통해 연결됨";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
