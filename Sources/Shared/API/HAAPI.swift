@@ -75,9 +75,10 @@ public class HomeAssistantAPI {
         
         let hakitURLSession: URLSession
         if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
-            // Use custom delegate for mTLS and/or self-signed certificates
-            Current.Log.info("[mTLS] Using custom URLSession delegate for HAKit")
-            let delegate = HAKitURLSessionDelegate(server: server)
+            // Use HAKit's certificate provider protocol
+            Current.Log.info("[mTLS] Using HAKit certificate provider")
+            let certificateProvider = HomeAssistantCertificateProvider(server: server)
+            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
             let configuration = URLSessionConfiguration.ephemeral
             hakitURLSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
         } else {
@@ -1019,37 +1020,20 @@ public class HomeAssistantAPI {
 }
 
 #if !os(watchOS)
-/// URLSession delegate for HAKit REST API calls that handles mTLS and self-signed certificates
-private class HAKitURLSessionDelegate: NSObject, URLSessionDelegate {
+/// Certificate provider implementation for Home Assistant servers
+private class HomeAssistantCertificateProvider: HACertificateProvider {
     private let server: Server
     
     init(server: Server) {
         self.server = server
-        super.init()
     }
     
-    func urlSession(
-        _ session: URLSession,
-        didReceive challenge: URLAuthenticationChallenge,
+    func provideClientCertificate(
+        for challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        Current.Log.info("[mTLS HAKit] Received authentication challenge: \(challenge.protectionSpace.authenticationMethod)")
+        Current.Log.info("[mTLS HAKit] Client certificate requested")
         
-        switch challenge.protectionSpace.authenticationMethod {
-        case NSURLAuthenticationMethodClientCertificate:
-            handleClientCertificateChallenge(challenge, completionHandler: completionHandler)
-        case NSURLAuthenticationMethodServerTrust:
-            handleServerTrustChallenge(challenge, completionHandler: completionHandler)
-        default:
-            Current.Log.info("[mTLS HAKit] Using default handling for: \(challenge.protectionSpace.authenticationMethod)")
-            completionHandler(.performDefaultHandling, nil)
-        }
-    }
-    
-    private func handleClientCertificateChallenge(
-        _ challenge: URLAuthenticationChallenge,
-        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
-    ) {
         guard let clientCertificate = server.info.connection.clientCertificate else {
             Current.Log.warning("[mTLS HAKit] Client certificate requested but none configured")
             completionHandler(.performDefaultHandling, nil)
@@ -1066,17 +1050,12 @@ private class HAKitURLSessionDelegate: NSObject, URLSessionDelegate {
         }
     }
     
-    private func handleServerTrustChallenge(
-        _ challenge: URLAuthenticationChallenge,
+    func evaluateServerTrust(
+        _ serverTrust: SecTrust,
+        forHost host: String,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        guard let serverTrust = challenge.protectionSpace.serverTrust else {
-            Current.Log.warning("[mTLS HAKit] Server trust challenge but no server trust available")
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-        
-        Current.Log.info("[mTLS HAKit] Evaluating server trust for: \(challenge.protectionSpace.host)")
+        Current.Log.info("[mTLS HAKit] Evaluating server trust for: \(host)")
         
         do {
             try server.info.connection.securityExceptions.evaluate(serverTrust)
