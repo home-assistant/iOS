@@ -311,7 +311,16 @@
 "entity_picker.list.area.no_area.title" = "Geen ruimte";
 "entity_picker.placeholder" = "Kies entiteit";
 "entity_picker.search.placeholder" = "Entiteitnaam, ID, ruimenaam, apparaatnaam...";
+"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
+\
+This server requires a client certificate (mTLS) but the operation was cancelled.";
+"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+\
+%@";
 "error_label" = "Fout";
+"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
+"experimental.badge.report_issue_button.title" = "Report issue";
+"experimental.badge.title" = "Experimental feature";
 "extensions.map.location.new" = "Nieuwe locatie";
 "extensions.map.location.original" = "Oorspronkelijke locatie";
 "extensions.map.payload_missing_homeassistant.message" = "Payload bevatte geen homeassistent woordenboek!";
@@ -561,6 +570,14 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "notifications_configurator.settings.footer.id_set" = "Identifier kan na het maken niet worden gewijzigd. U moet de actie verwijderen en opnieuw maken om de ID te wijzigen.";
 "notifications_configurator.settings.header" = "Instellingen";
 "ok_label" = "OK";
+"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
+"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
+"onboarding.client_certificate.password_prompt.import_button" = "Import";
+"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
+"onboarding.client_certificate.password_prompt.placeholder" = "Password";
+"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
+"onboarding.client_certificate.select_file_button" = "Select Certificate File";
+"onboarding.client_certificate.title" = "Client Certificate Required";
 "onboarding.connect.mac_safari_warning.message" = "Probeer Safari opnieuw te starten als het aanmeldscherm niet wordt geopend.";
 "onboarding.connect.mac_safari_warning.title" = "Safari starten";
 "onboarding.connect.title" = "Verbinden met %@";
@@ -708,6 +725,21 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Weet je het zeker?";
 "settings.connection_section.always_fallback_internal.footer" = "Als je dit inschakelt met een onbeveiligde URL (http), kan dit je beveiliging op openbare netwerken in gevaar brengen.";
 "settings.connection_section.always_fallback_internal.title" = "Altijd terugvallen op interne URL";
+"settings.connection_section.client_certificate.expired" = "Certificate expired";
+"settings.connection_section.client_certificate.expires_at" = "Expires %@";
+"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
+"settings.connection_section.client_certificate.header" = "Client Certificate";
+"settings.connection_section.client_certificate.import" = "Import Certificate";
+"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
+"settings.connection_section.client_certificate.importing" = "Importing...";
+"settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
+"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
+"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
+"settings.connection_section.client_certificate.remove" = "Remove Certificate";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
 "settings.connection_section.cloud_overrides_external" = "Als je verbinding maakt via Cloud, wordt de externe URL niet gebruikt. Je hoeft die dan niet in te stellen, tenzij je Cloud wilt uitschakelen.";
 "settings.connection_section.connecting_via" = "Verbonden via";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Minder veilig";
