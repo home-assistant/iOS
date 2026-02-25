@@ -311,7 +311,16 @@
 "entity_picker.list.area.no_area.title" = "No area";
 "entity_picker.placeholder" = "Выбрать объект";
 "entity_picker.search.placeholder" = "Имя объекта, ID, имя области, имя устройства...";
+"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
+\
+This server requires a client certificate (mTLS) but the operation was cancelled.";
+"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+\
+%@";
 "error_label" = "Ошибка";
+"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
+"experimental.badge.report_issue_button.title" = "Report issue";
+"experimental.badge.title" = "Experimental feature";
 "extensions.map.location.new" = "Новое местоположение";
 "extensions.map.location.original" = "Исходное местоположение";
 "extensions.map.payload_missing_homeassistant.message" = "В данных не было словаря homeassistant!";
@@ -561,6 +570,14 @@
 "notifications_configurator.settings.footer.id_set" = "Идентификатор не может быть изменен после создания. Вы должны удалить и повторно выполнить действие, чтобы изменить идентификатор.";
 "notifications_configurator.settings.header" = "Настройки";
 "ok_label" = "ОК";
+"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
+"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
+"onboarding.client_certificate.password_prompt.import_button" = "Import";
+"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
+"onboarding.client_certificate.password_prompt.placeholder" = "Password";
+"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
+"onboarding.client_certificate.select_file_button" = "Select Certificate File";
+"onboarding.client_certificate.title" = "Client Certificate Required";
 "onboarding.connect.mac_safari_warning.message" = "Попробуйте перезапустить Safari, если форма входа в систему не открывается.";
 "onboarding.connect.mac_safari_warning.title" = "Запуск Safari";
 "onboarding.connect.title" = "Подключение к %@";
@@ -708,6 +725,21 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Вы уверены?";
 "settings.connection_section.always_fallback_internal.footer" = "Включение этого параметра с использованием незащищенного URL-адреса (http) может поставить под угрозу вашу безопасность в общедоступных сетях.";
 "settings.connection_section.always_fallback_internal.title" = "Всегда обращаться к внутреннему URL";
+"settings.connection_section.client_certificate.expired" = "Certificate expired";
+"settings.connection_section.client_certificate.expires_at" = "Expires %@";
+"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
+"settings.connection_section.client_certificate.header" = "Client Certificate";
+"settings.connection_section.client_certificate.import" = "Import Certificate";
+"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
+"settings.connection_section.client_certificate.importing" = "Importing...";
+"settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
+"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
+"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
+"settings.connection_section.client_certificate.remove" = "Remove Certificate";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
 "settings.connection_section.cloud_overrides_external" = "При подключении через облако внешний URL-адрес использоваться не будет. Вам не нужно настраивать его, если вы не хотите отключить облако.";
 "settings.connection_section.connecting_via" = "Подключен через";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Менее безопасный";
@@ -1355,8 +1387,8 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.automation.trigger.title" = "Запустить автоматизацию";
 "widgets.automations.description" = "Запуск автоматизации";
 "widgets.button.reload_timeline" = "Перезагрузить все виджеты";
-"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
-"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
+"widgets.commonly_used_entities.description" = "Отображайте часто используемые объекты на основе частоты использования.";
+"widgets.commonly_used_entities.empty.description" = "Часто используемые объекты не найдены. Используйте Home Assistant для формирования истории использования.";
 "widgets.commonly_used_entities.title" = "Common Controls";
 "widgets.controls.assist.description" = "Открыть Assist в приложении Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Выберите пайплайн";
@@ -1474,7 +1506,7 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.open_page.description" = "Открыть страницу интерфейса в Home Assistant.";
 "widgets.open_page.not_configured" = "Нет доступных страниц";
 "widgets.open_page.title" = "Открыть страницу";
-"widgets.param.server.title" = "Server";
+"widgets.param.server.title" = "Сервер";
 "widgets.preview.custom.description" = "Создайте свой собственный виджет внутри приложения, а затем отобразите его здесь.";
 "widgets.preview.custom.title" = "Пользовательский виджет";
 "widgets.preview.empty.create.button" = "Создать виджет";
@@ -1491,10 +1523,10 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.todo_list.all_done" = "Всё готов! 🎉";
 "widgets.todo_list.complete_item_title" = "Complete To-do Item";
 "widgets.todo_list.description" = "Check your lists and add items";
-"widgets.todo_list.due_date.ago_format" = "%@ ago";
-"widgets.todo_list.due_date.in_format" = "In %@";
-"widgets.todo_list.due_date.now" = "Now";
-"widgets.todo_list.due_date.today" = "Today";
+"widgets.todo_list.due_date.ago_format" = "%@ назад";
+"widgets.todo_list.due_date.in_format" = "В %@";
+"widgets.todo_list.due_date.now" = "Сейчас";
+"widgets.todo_list.due_date.today" = "Сегодня";
 "widgets.todo_list.parameter.item_id" = "Item ID";
 "widgets.todo_list.parameter.list" = "Список";
 "widgets.todo_list.parameter.list_id" = "Список ID";
