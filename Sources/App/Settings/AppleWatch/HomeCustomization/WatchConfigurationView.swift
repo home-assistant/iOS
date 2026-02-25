@@ -303,6 +303,12 @@ struct WatchConfigurationView: View {
                 .font(.system(size: 16))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(textColorForWatchItem(itemInfo: itemInfo))
+            if item.type == .folder {
+                Image(systemSymbol: .chevronRight)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.trailing, DesignSystem.Spaces.half)
+            }
         }
         .padding(DesignSystem.Spaces.one)
         .frame(width: 190, height: 55)
