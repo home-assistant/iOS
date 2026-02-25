@@ -179,7 +179,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/groue/GRDB.swift.git
     :tag: v7.8.0
   HAKit:
-    :commit: f206a0dccb78b7706855967ea008190f5c962833
+    :commit: a7d2576c4e745acfc3597d8bd0b5e1a64886c45d
     :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
