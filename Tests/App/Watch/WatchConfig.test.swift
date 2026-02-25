@@ -204,4 +204,61 @@ struct WatchConfigurationViewModel_test {
         let itemIds = folder.items?.map(\.id) ?? []
         #expect(itemIds == ["script.two", "script.three", "script.one"])
     }
+
+    @Test func moveItemToFolderFromRoot() async throws {
+        let viewModel = WatchConfigurationViewModel()
+
+        // Add a root item and a folder
+        let item = MagicItem(id: "script.moveme", serverId: "s1", type: .script)
+        viewModel.addItem(item)
+        viewModel.addFolder(named: "Target Folder")
+        let folderId = viewModel.watchConfig.items[1].id
+
+        #expect(viewModel.watchConfig.items.count == 2, "Root should have the item and the folder")
+
+        // Move item from root into folder
+        viewModel.moveItemToFolder(itemId: "script.moveme", serverId: "s1", toFolderId: folderId)
+
+        // Root should now only have the folder
+        #expect(viewModel.watchConfig.items.count == 1, "Root should only have the folder after move")
+        #expect(viewModel.watchConfig.items[0].type == .folder)
+
+        // Folder should contain the moved item
+        let folder = viewModel.watchConfig.items[0]
+        #expect(folder.items?.count == 1, "Folder should contain the moved item")
+        #expect(folder.items?.first?.id == "script.moveme")
+        #expect(folder.items?.first?.serverId == "s1")
+    }
+
+    @Test func moveItemToFolderFromAnotherFolder() async throws {
+        let viewModel = WatchConfigurationViewModel()
+
+        // Create two folders
+        viewModel.addFolder(named: "Source Folder")
+        viewModel.addFolder(named: "Destination Folder")
+        let sourceFolderId = viewModel.watchConfig.items[0].id
+        let destFolderId = viewModel.watchConfig.items[1].id
+
+        // Add an item to the source folder
+        let item = MagicItem(id: "scene.transfer", serverId: "s1", type: .scene)
+        viewModel.addItemToFolder(folderId: sourceFolderId, item: item)
+
+        #expect(viewModel.watchConfig.items[0].items?.count == 1, "Source folder should have the item")
+        #expect(viewModel.watchConfig.items[1].items?.isEmpty == true, "Destination folder should be empty")
+
+        // Move item from source folder to destination folder
+        viewModel.moveItemToFolder(itemId: "scene.transfer", serverId: "s1", toFolderId: destFolderId)
+
+        // Source folder should be empty
+        let sourceFolder = viewModel.watchConfig.items.first(where: { $0.id == sourceFolderId })
+        #expect(sourceFolder?.items?.isEmpty == true, "Source folder should be empty after move")
+
+        // Destination folder should contain the item
+        let destFolder = viewModel.watchConfig.items.first(where: { $0.id == destFolderId })
+        #expect(destFolder?.items?.count == 1, "Destination folder should contain the moved item")
+        #expect(destFolder?.items?.first?.id == "scene.transfer")
+
+        // Root should still have exactly 2 folders
+        #expect(viewModel.watchConfig.items.count == 2, "Root should still have exactly 2 folders")
+    }
 }
