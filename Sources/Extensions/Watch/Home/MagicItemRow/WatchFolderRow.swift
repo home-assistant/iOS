@@ -7,8 +7,12 @@ struct WatchFolderRow<Destination: View>: View {
     let itemInfo: MagicItem.Info
     let destination: () -> Destination
 
+    @State private var isActive = false
+
     var body: some View {
-        NavigationLink(destination: destination) {
+        Button {
+            isActive = true
+        } label: {
             HStack(spacing: DesignSystem.Spaces.one) {
                 iconView
                 Text(item.name(info: itemInfo))
@@ -17,11 +21,25 @@ struct WatchFolderRow<Destination: View>: View {
                     .lineLimit(3)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
-                    .padding(.trailing)
+                Image(systemSymbol: .chevronRight)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.trailing, DesignSystem.Spaces.half)
             }
             .frame(maxWidth: .infinity)
         }
         .frame(maxWidth: .infinity)
+        .background(
+            NavigationLink(isActive: $isActive, destination: {
+                destination()
+                    .onDisappear {
+                        isActive = false
+                    }
+            }) {
+                EmptyView()
+            }
+            .hidden()
+        )
         .modify { view in
             if #available(watchOS 26.0, *) {
                 if let backgroundForWatchItem {
