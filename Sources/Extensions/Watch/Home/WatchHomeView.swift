@@ -55,19 +55,8 @@ struct WatchHomeView: View {
         }
         // Removing the safe area so our fake navigation bar buttons (header) can be place correctly
         .ignoresSafeArea([.all], edges: .top)
-        .id(viewModel.refreshListID)
         .navigationTitle("")
-        .modify { view in
-            if #available(watchOS 11.0, *) {
-                view.toolbarVisibility(.hidden, for: .navigationBar)
-            } else if #available(watchOS 9.0, *) {
-                view
-                    .toolbar(.hidden, for: .navigationBar)
-            } else {
-                view
-                    .navigationBarHidden(true)
-            }
-        }
+        .navigationBarBackButtonHidden(true)
     }
 
     @ViewBuilder
@@ -105,7 +94,7 @@ struct WatchHomeView: View {
 
     @ViewBuilder
     private var mainContent: some View {
-        ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
+        ForEach(viewModel.watchConfig.items, id: \.viewIdentity) { item in
             if item.type == .folder {
                 WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
                     WatchFolderContentView(folder: item, viewModel: viewModel)

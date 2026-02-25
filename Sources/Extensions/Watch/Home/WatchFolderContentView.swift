@@ -15,14 +15,5 @@ struct WatchFolderContentView: View {
             }
         }
         .navigationTitle(folder.displayText ?? L10n.Watch.Configuration.Folder.defaultName)
-        .modify { view in
-            if #available(watchOS 11.0, *) {
-                view.toolbarVisibility(.visible, for: .navigationBar)
-            } else if #available(watchOS 9.0, *) {
-                view.toolbar(.visible, for: .navigationBar)
-            } else {
-                view.navigationBarHidden(false)
-            }
-        }
     }
 }

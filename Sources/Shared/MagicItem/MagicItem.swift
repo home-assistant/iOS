@@ -27,6 +27,20 @@ public struct MagicItem: Codable, Equatable, Hashable {
         "\(serverId)-\(id)"
     }
 
+    /// Identity string that includes customization so SwiftUI re-renders when visual properties change.
+    /// ``serverUniqueId`` alone is not enough because ``Equatable`` only compares id+serverId.
+    public var viewIdentity: String {
+        var parts = [serverUniqueId]
+        if let c = customization {
+            parts.append(c.iconColor ?? "")
+            parts.append(c.textColor ?? "")
+            parts.append(c.backgroundColor ?? "")
+            parts.append(c.icon ?? "")
+        }
+        parts.append(displayText ?? "")
+        return parts.joined(separator: "|")
+    }
+
     /// Domain retrieved from id when item is entity else nil
     public var domain: Domain? {
         if let domainString = id.split(separator: ".").first, let domain = Domain(rawValue: String(domainString)) {
