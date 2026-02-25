@@ -3,9 +3,9 @@ import Shared
 import SwiftUI
 
 struct WatchFolderContentView: View {
-    @Environment(\.dismiss) private var dismiss
     let folderId: String
     @ObservedObject var viewModel: WatchHomeViewModel
+    let onBack: () -> Void
 
     private var folder: MagicItem? {
         viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == folderId })
@@ -22,24 +22,12 @@ struct WatchFolderContentView: View {
             }
         }
         .ignoresSafeArea([.all], edges: .top)
-        ._statusBarHidden(true)
-        .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .modify { view in
-            if #available(watchOS 11.0, *) {
-                view.toolbarVisibility(.hidden, for: .navigationBar)
-            } else if #available(watchOS 9.0, *) {
-                view.toolbar(.hidden, for: .navigationBar)
-            } else {
-                view.navigationBarHidden(true)
-            }
-        }
     }
 
     private var header: some View {
         HStack {
             Button {
-                dismiss()
+                onBack()
             } label: {
                 Image(systemSymbol: .chevronLeft)
             }

@@ -6,10 +6,23 @@ struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
+    @State private var openFolderId: String?
 
     var body: some View {
-        content
-            ._statusBarHidden(true)
+        Group {
+            if let folderId = openFolderId {
+                WatchFolderContentView(folderId: folderId, viewModel: viewModel) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        openFolderId = nil
+                    }
+                }
+                .transition(.move(edge: .trailing))
+            } else {
+                content
+                    .transition(.move(edge: .leading))
+            }
+        }
+        ._statusBarHidden(true)
             .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
                 showAssist = true
             }
@@ -106,7 +119,9 @@ struct WatchHomeView: View {
         ForEach(viewModel.watchConfig.items, id: \.viewIdentity) { item in
             if item.type == .folder {
                 WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
-                    WatchFolderContentView(folderId: item.id, viewModel: viewModel)
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        openFolderId = item.id
+                    }
                 }
             } else {
                 WatchMagicViewRow(

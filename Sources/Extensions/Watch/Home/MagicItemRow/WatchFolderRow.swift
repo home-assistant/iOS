@@ -2,16 +2,14 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-struct WatchFolderRow<Destination: View>: View {
+struct WatchFolderRow: View {
     let item: MagicItem
     let itemInfo: MagicItem.Info
-    let destination: () -> Destination
-
-    @State private var isActive = false
+    let onTap: () -> Void
 
     var body: some View {
         Button {
-            isActive = true
+            onTap()
         } label: {
             HStack(spacing: DesignSystem.Spaces.one) {
                 iconView
@@ -29,17 +27,6 @@ struct WatchFolderRow<Destination: View>: View {
             .frame(maxWidth: .infinity)
         }
         .frame(maxWidth: .infinity)
-        .background(
-            NavigationLink(isActive: $isActive, destination: {
-                destination()
-                    .onDisappear {
-                        isActive = false
-                    }
-            }) {
-                EmptyView()
-            }
-            .hidden()
-        )
         .modify { view in
             if #available(watchOS 26.0, *) {
                 if let backgroundForWatchItem {
@@ -128,8 +115,6 @@ struct WatchFolderRow<Destination: View>: View {
                 iconName: "mdi:folder",
                 customization: .init(iconColor: "#03A9F4")
             )
-        ) {
-            Text("Folder Contents")
-        }
+        ) {}
     }
 }
