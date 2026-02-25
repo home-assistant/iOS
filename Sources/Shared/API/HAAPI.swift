@@ -66,7 +66,30 @@ public class HomeAssistantAPI {
         self.server = server
         let tokenManager = TokenManager(server: server)
         self.tokenManager = tokenManager
-        self.connection = HAKit.connection(configuration: .init(
+        
+        #if !os(watchOS)
+        // Create URLSession for HAKit REST API calls with certificate handling
+        Current.Log.info("[mTLS] Creating HAKit URLSession for server: \(server.info.name)")
+        Current.Log.info("[mTLS] Has client certificate: \(server.info.connection.clientCertificate != nil)")
+        Current.Log.info("[mTLS] Has security exceptions: \(server.info.connection.securityExceptions.hasExceptions)")
+        
+        let hakitURLSession: URLSession
+        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
+            // Use custom delegate for mTLS and/or self-signed certificates
+            Current.Log.info("[mTLS] Using custom URLSession delegate for HAKit")
+            let delegate = HAKitURLSessionDelegate(server: server)
+            let configuration = URLSessionConfiguration.ephemeral
+            hakitURLSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        } else {
+            Current.Log.info("[mTLS] Using default URLSession for HAKit")
+            hakitURLSession = URLSession(configuration: .ephemeral)
+        }
+        #else
+        let hakitURLSession = URLSession(configuration: .ephemeral)
+        #endif
+        
+        self.connection = HAKit.connection(
+            configuration: .init(
             connectionInfo: {
                 do {
                     if let activeURL = server.info.connection.activeURL() {
@@ -126,7 +149,9 @@ public class HomeAssistantAPI {
                     completion(.failure($0))
                 }
             }
-        ))
+        ),
+        urlSession: hakitURLSession
+        )
 
         #if !os(watchOS)
         // Use custom delegate that supports client certificates (mTLS)
@@ -992,6 +1017,79 @@ public class HomeAssistantAPI {
         }
     }
 }
+
+#if !os(watchOS)
+/// URLSession delegate for HAKit REST API calls that handles mTLS and self-signed certificates
+private class HAKitURLSessionDelegate: NSObject, URLSessionDelegate {
+    private let server: Server
+    
+    init(server: Server) {
+        self.server = server
+        super.init()
+    }
+    
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        Current.Log.info("[mTLS HAKit] Received authentication challenge: \(challenge.protectionSpace.authenticationMethod)")
+        
+        switch challenge.protectionSpace.authenticationMethod {
+        case NSURLAuthenticationMethodClientCertificate:
+            handleClientCertificateChallenge(challenge, completionHandler: completionHandler)
+        case NSURLAuthenticationMethodServerTrust:
+            handleServerTrustChallenge(challenge, completionHandler: completionHandler)
+        default:
+            Current.Log.info("[mTLS HAKit] Using default handling for: \(challenge.protectionSpace.authenticationMethod)")
+            completionHandler(.performDefaultHandling, nil)
+        }
+    }
+    
+    private func handleClientCertificateChallenge(
+        _ challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard let clientCertificate = server.info.connection.clientCertificate else {
+            Current.Log.warning("[mTLS HAKit] Client certificate requested but none configured")
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        
+        do {
+            let credential = try ClientCertificateManager.shared.urlCredential(for: clientCertificate)
+            Current.Log.info("[mTLS HAKit] Using client certificate: \(clientCertificate.displayName)")
+            completionHandler(.useCredential, credential)
+        } catch {
+            Current.Log.error("[mTLS HAKit] Failed to get credential: \(error)")
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
+    }
+    
+    private func handleServerTrustChallenge(
+        _ challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard let serverTrust = challenge.protectionSpace.serverTrust else {
+            Current.Log.warning("[mTLS HAKit] Server trust challenge but no server trust available")
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        
+        Current.Log.info("[mTLS HAKit] Evaluating server trust for: \(challenge.protectionSpace.host)")
+        
+        do {
+            try server.info.connection.securityExceptions.evaluate(serverTrust)
+            Current.Log.info("[mTLS HAKit] Server trust validation successful")
+            let credential = URLCredential(trust: serverTrust)
+            completionHandler(.useCredential, credential)
+        } catch {
+            Current.Log.error("[mTLS HAKit] Server trust validation failed: \(error)")
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
+    }
+}
+#endif
 
 extension HomeAssistantAPI.APIError: LocalizedError {
     public var errorDescription: String? {
