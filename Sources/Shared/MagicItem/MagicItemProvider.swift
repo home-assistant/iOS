@@ -210,7 +210,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         case .folder:
             return .init(
                 id: item.serverUniqueId,
-                name: item.displayText ?? NSLocalizedString("Folder", comment: "Fallback name for magic item folder"),
+                name: item.displayText ?? L10n.Watch.Configuration.Folder.defaultName,
                 iconName: MaterialDesignIcons.folderIcon.name,
                 customization: item.customization
             )
