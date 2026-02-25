@@ -2,15 +2,13 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-struct WatchFolderRow: View {
+struct WatchFolderRow<Destination: View>: View {
     let item: MagicItem
     let itemInfo: MagicItem.Info
-    let onTap: () -> Void
+    let destination: () -> Destination
 
     var body: some View {
-        Button {
-            onTap()
-        } label: {
+        NavigationLink(destination: destination) {
             HStack(spacing: DesignSystem.Spaces.one) {
                 iconView
                 Text(item.name(info: itemInfo))
@@ -19,9 +17,6 @@ struct WatchFolderRow: View {
                     .lineLimit(3)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
-                Image(systemSymbol: .chevronRight)
-                    .foregroundStyle(.secondary)
-                    .padding(.trailing, DesignSystem.Spaces.half)
             }
             .frame(maxWidth: .infinity)
         }
@@ -115,7 +110,7 @@ struct WatchFolderRow: View {
                 customization: .init(iconColor: "#03A9F4")
             )
         ) {
-            print("Folder tapped")
+            Text("Folder Contents")
         }
     }
 }

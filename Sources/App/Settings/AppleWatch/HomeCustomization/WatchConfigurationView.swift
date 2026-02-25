@@ -265,6 +265,7 @@ struct WatchConfigurationView: View {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
+                .environment(\.colorScheme, .dark)
             } label: {
                 itemRow(item: item, info: info)
             }

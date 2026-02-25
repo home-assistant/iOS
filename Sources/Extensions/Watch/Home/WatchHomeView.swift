@@ -6,12 +6,6 @@ struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
-    @State private var currentFolderId: String?
-
-    private var currentFolder: MagicItem? {
-        guard let currentFolderId else { return nil }
-        return viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == currentFolderId })
-    }
 
     var body: some View {
         content
@@ -89,11 +83,7 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var listHeader: some View {
         HStack {
-            if currentFolder != nil {
-                backButton
-            } else {
-                navReloadButton
-            }
+            navReloadButton
             toolbarLoadingState
             assistHeaderButton
         }
@@ -115,39 +105,18 @@ struct WatchHomeView: View {
 
     @ViewBuilder
     private var mainContent: some View {
-        if let folder = currentFolder {
-            // Show folder contents
-            ForEach(folder.items ?? [], id: \.serverUniqueId) { item in
+        ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
+            if item.type == .folder {
+                WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
+                    WatchFolderContentView(folder: item, viewModel: viewModel)
+                }
+            } else {
                 WatchMagicViewRow(
                     item: item,
                     itemInfo: viewModel.info(for: item)
                 )
             }
-        } else {
-            // Show root items
-            ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
-                if item.type == .folder {
-                    WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
-                        currentFolderId = item.id
-                    }
-                } else {
-                    WatchMagicViewRow(
-                        item: item,
-                        itemInfo: viewModel.info(for: item)
-                    )
-                }
-            }
         }
-    }
-
-    private var backButton: some View {
-        Button {
-            currentFolderId = nil
-        } label: {
-            Image(systemSymbol: .chevronLeft)
-        }
-        .buttonStyle(.plain)
-        .circularGlassOrLegacyBackground()
     }
 
     @ViewBuilder
