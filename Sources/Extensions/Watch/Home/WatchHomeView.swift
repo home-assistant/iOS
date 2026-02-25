@@ -95,18 +95,15 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var mainContent: some View {
         ForEach(viewModel.watchConfig.items, id: \.viewIdentity) { item in
-            let itemInfo = viewModel.info(for: item)
-
             if item.type == .folder {
-                WatchFolderRow(item: item, itemInfo: itemInfo) {
-                    WatchFolderContentView(folder: item, viewModel: viewModel)
+                WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
+                    WatchFolderContentView(folderId: item.id, viewModel: viewModel)
                 }
             } else {
                 WatchMagicViewRow(
                     item: item,
-                    itemInfo: itemInfo
+                    itemInfo: viewModel.info(for: item)
                 )
-                .id((item.viewIdentity, itemInfo.customization))
             }
         }
     }
