@@ -1064,7 +1064,7 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
             completionHandler(.useCredential, credential)
         } catch {
             Current.Log.error("[mTLS HAKit] Server trust validation failed: \(error)")
-            completionHandler(.cancelAuthenticationChallenge, nil)
+            completionHandler(.rejectProtectionSpace, nil)
         }
     }
 }
