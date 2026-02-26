@@ -27,6 +27,9 @@ public enum StatePrecision {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             numberFormatter.locale = Locale.current
+            // Grouping separators (e.g. 2,448 / 2.448) make compact widget subtitles
+            // truncate to a misleading value like "2…W". Keep values ungrouped.
+            numberFormatter.usesGroupingSeparator = false
             numberFormatter.maximumFractionDigits = decimalPlacesForEntityId
             numberFormatter.minimumFractionDigits = decimalPlacesForEntityId
             return numberFormatter.string(from: NSNumber(value: stateValueFloat)) ?? stateValue
