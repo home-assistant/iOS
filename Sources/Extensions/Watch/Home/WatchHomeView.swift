@@ -23,40 +23,40 @@ struct WatchHomeView: View {
             }
         }
         ._statusBarHidden(true)
-            .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
-                showAssist = true
+        .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+            showAssist = true
+        }
+        .fullScreenCover(isPresented: $showAssist, content: {
+            if let serverId = viewModel.watchConfig.assist.serverId,
+               let pipelineId = viewModel.watchConfig.assist.pipelineId {
+                WatchAssistView.build(
+                    serverId: serverId,
+                    pipelineId: pipelineId
+                )
+            } else {
+                fatalError("Assist launched without serverId or pipelineId")
             }
-            .fullScreenCover(isPresented: $showAssist, content: {
-                if let serverId = viewModel.watchConfig.assist.serverId,
-                   let pipelineId = viewModel.watchConfig.assist.pipelineId {
-                    WatchAssistView.build(
-                        serverId: serverId,
-                        pipelineId: pipelineId
-                    )
-                } else {
-                    fatalError("Assist launched without serverId or pipelineId")
-                }
-            })
-            .onAppear {
+        })
+        .onAppear {
+            Task {
+                await viewModel.fetchNetworkInfo()
+                viewModel.initialRoutine()
+            }
+        }
+        .onChange(of: scenePhase) { newValue in
+            switch newValue {
+            case .active:
                 Task {
                     await viewModel.fetchNetworkInfo()
-                    viewModel.initialRoutine()
                 }
+            case .background:
+                break
+            case .inactive:
+                break
+            @unknown default:
+                break
             }
-            .onChange(of: scenePhase) { newValue in
-                switch newValue {
-                case .active:
-                    Task {
-                        await viewModel.fetchNetworkInfo()
-                    }
-                case .background:
-                    break
-                case .inactive:
-                    break
-                @unknown default:
-                    break
-                }
-            }
+        }
     }
 
     @ViewBuilder
