@@ -66,6 +66,7 @@ struct WatchHomeView: View {
             listContent
             footer
         }
+        .id(viewModel.configVersion)
         // Removing the safe area so our fake navigation bar buttons (header) can be place correctly
         .ignoresSafeArea([.all], edges: .top)
         .navigationTitle("")
@@ -116,7 +117,7 @@ struct WatchHomeView: View {
 
     @ViewBuilder
     private var mainContent: some View {
-        ForEach(viewModel.watchConfig.items, id: \.viewIdentity) { item in
+        ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
             if item.type == .folder {
                 WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
                     withAnimation(.easeInOut(duration: 0.25)) {

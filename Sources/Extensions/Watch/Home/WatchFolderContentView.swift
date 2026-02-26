@@ -14,13 +14,14 @@ struct WatchFolderContentView: View {
     var body: some View {
         List {
             header
-            ForEach(folder?.items ?? [], id: \.viewIdentity) { item in
+            ForEach(folder?.items ?? [], id: \.serverUniqueId) { item in
                 WatchMagicViewRow(
                     item: item,
                     itemInfo: viewModel.info(for: item)
                 )
             }
         }
+        .id(viewModel.configVersion)
         .ignoresSafeArea([.all], edges: .top)
     }
 

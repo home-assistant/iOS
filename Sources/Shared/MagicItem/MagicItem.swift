@@ -20,25 +20,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
     public var customization: Customization?
     public var action: ItemAction?
     public var displayText: String?
-    public var items: [MagicItem]?
+    public var items: [MagicItem]? /// Only for folder type, represents items inside the folder
 
     /// Server unique ID - e.g. "EB1364-script.open_gate"
     public var serverUniqueId: String {
         "\(serverId)-\(id)"
-    }
-
-    /// Identity string that includes customization so SwiftUI re-renders when visual properties change.
-    /// ``serverUniqueId`` alone is not enough because ``Equatable`` only compares id+serverId.
-    public var viewIdentity: String {
-        var parts = [serverUniqueId]
-        if let c = customization {
-            parts.append(c.iconColor ?? "")
-            parts.append(c.textColor ?? "")
-            parts.append(c.backgroundColor ?? "")
-            parts.append(c.icon ?? "")
-        }
-        parts.append(displayText ?? "")
-        return parts.joined(separator: "|")
     }
 
     /// Domain retrieved from id when item is entity else nil
