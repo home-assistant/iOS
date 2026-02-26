@@ -66,67 +66,93 @@ public class HomeAssistantAPI {
         self.server = server
         let tokenManager = TokenManager(server: server)
         self.tokenManager = tokenManager
-        self.connection = HAKit.connection(configuration: .init(
-            connectionInfo: {
-                do {
-                    if let activeURL = server.info.connection.activeURL() {
-                        #if !os(watchOS)
-                        // Prepare client identity (SecIdentity) for mTLS if configured
-                        let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
-                        if let clientCert = server.info.connection.clientCertificate {
-                            clientIdentityProvider = {
-                                try? ClientCertificateManager.shared.retrieveIdentity(for: clientCert)
-                            }
-                        } else {
-                            clientIdentityProvider = nil
-                        }
 
-                        return try .init(
-                            url: activeURL,
-                            userAgent: HomeAssistantAPI.userAgent,
-                            evaluateCertificate: { secTrust, completion in
-                                completion(
-                                    Swift.Result<Void, Error> {
-                                        try server.info.connection.securityExceptions.evaluate(secTrust)
-                                    }
-                                )
-                            },
-                            clientIdentity: clientIdentityProvider
-                        )
-                        #else
-                        return try .init(
-                            url: activeURL,
-                            userAgent: HomeAssistantAPI.userAgent,
-                            evaluateCertificate: { secTrust, completion in
-                                completion(
-                                    Swift.Result<Void, Error> {
-                                        try server.info.connection.securityExceptions.evaluate(secTrust)
-                                    }
-                                )
+        #if !os(watchOS)
+        // Create URLSession for HAKit REST API calls with certificate handling
+        Current.Log.info("[mTLS] Creating HAKit URLSession for server: \(server.info.name)")
+        Current.Log.info("[mTLS] Has client certificate: \(server.info.connection.clientCertificate != nil)")
+        Current.Log.info("[mTLS] Has security exceptions: \(server.info.connection.securityExceptions.hasExceptions)")
+
+        let hakitURLSession: URLSession
+        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
+            // Use HAKit's certificate provider protocol
+            Current.Log.info("[mTLS] Using HAKit certificate provider")
+            let certificateProvider = HomeAssistantCertificateProvider(server: server)
+            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
+            let configuration = URLSessionConfiguration.ephemeral
+            hakitURLSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        } else {
+            Current.Log.info("[mTLS] Using default URLSession for HAKit")
+            hakitURLSession = URLSession(configuration: .ephemeral)
+        }
+        #else
+        let hakitURLSession = URLSession(configuration: .ephemeral)
+        #endif
+
+        self.connection = HAKit.connection(
+            configuration: .init(
+                connectionInfo: {
+                    do {
+                        if let activeURL = server.info.connection.activeURL() {
+                            #if !os(watchOS)
+                            // Prepare client identity (SecIdentity) for mTLS if configured
+                            let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
+                            if let clientCert = server.info.connection.clientCertificate {
+                                clientIdentityProvider = {
+                                    try? ClientCertificateManager.shared.retrieveIdentity(for: clientCert)
+                                }
+                            } else {
+                                clientIdentityProvider = nil
                             }
-                        )
-                        #endif
-                    } else {
-                        Current.clientEventStore.addEvent(.init(
-                            text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
-                            type: .networkRequest
-                        ))
-                        Current.Log.error("activeURL was not available when HAAPI called initializer")
+
+                            return try .init(
+                                url: activeURL,
+                                userAgent: HomeAssistantAPI.userAgent,
+                                evaluateCertificate: { secTrust, completion in
+                                    completion(
+                                        Swift.Result<Void, Error> {
+                                            try server.info.connection.securityExceptions.evaluate(secTrust)
+                                        }
+                                    )
+                                },
+                                clientIdentity: clientIdentityProvider
+                            )
+                            #else
+                            return try .init(
+                                url: activeURL,
+                                userAgent: HomeAssistantAPI.userAgent,
+                                evaluateCertificate: { secTrust, completion in
+                                    completion(
+                                        Swift.Result<Void, Error> {
+                                            try server.info.connection.securityExceptions.evaluate(secTrust)
+                                        }
+                                    )
+                                }
+                            )
+                            #endif
+                        } else {
+                            Current.clientEventStore.addEvent(.init(
+                                text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
+                                type: .networkRequest
+                            ))
+                            Current.Log.error("activeURL was not available when HAAPI called initializer")
+                            return nil
+                        }
+                    } catch {
+                        Current.Log.error("couldn't create connection info: \(error)")
                         return nil
                     }
-                } catch {
-                    Current.Log.error("couldn't create connection info: \(error)")
-                    return nil
+                },
+                fetchAuthToken: { completion in
+                    tokenManager.bearerToken.done {
+                        completion(.success($0.0))
+                    }.catch {
+                        completion(.failure($0))
+                    }
                 }
-            },
-            fetchAuthToken: { completion in
-                tokenManager.bearerToken.done {
-                    completion(.success($0.0))
-                }.catch {
-                    completion(.failure($0))
-                }
-            }
-        ))
+            ),
+            urlSession: hakitURLSession
+        )
 
         #if !os(watchOS)
         // Use custom delegate that supports client certificates (mTLS)
@@ -992,6 +1018,57 @@ public class HomeAssistantAPI {
         }
     }
 }
+
+#if !os(watchOS)
+/// Certificate provider implementation for Home Assistant servers
+private class HomeAssistantCertificateProvider: HACertificateProvider {
+    private let server: Server
+
+    init(server: Server) {
+        self.server = server
+    }
+
+    func provideClientCertificate(
+        for challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        Current.Log.info("[mTLS HAKit] Client certificate requested")
+
+        guard let clientCertificate = server.info.connection.clientCertificate else {
+            Current.Log.warning("[mTLS HAKit] Client certificate requested but none configured")
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        do {
+            let credential = try ClientCertificateManager.shared.urlCredential(for: clientCertificate)
+            Current.Log.info("[mTLS HAKit] Using client certificate: \(clientCertificate.displayName)")
+            completionHandler(.useCredential, credential)
+        } catch {
+            Current.Log.error("[mTLS HAKit] Failed to get credential: \(error)")
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
+    }
+
+    func evaluateServerTrust(
+        _ serverTrust: SecTrust,
+        forHost host: String,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        Current.Log.info("[mTLS HAKit] Evaluating server trust for: \(host)")
+
+        do {
+            try server.info.connection.securityExceptions.evaluate(serverTrust)
+            Current.Log.info("[mTLS HAKit] Server trust validation successful")
+            let credential = URLCredential(trust: serverTrust)
+            completionHandler(.useCredential, credential)
+        } catch {
+            Current.Log.error("[mTLS HAKit] Server trust validation failed: \(error)")
+            completionHandler(.rejectProtectionSpace, nil)
+        }
+    }
+}
+#endif
 
 extension HomeAssistantAPI.APIError: LocalizedError {
     public var errorDescription: String? {
