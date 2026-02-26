@@ -4980,6 +4980,15 @@
 			path = AppIntents;
 			sourceTree = "<group>";
 		};
+		42382DA22F4F1FFB0010476F /* mTLS */ = {
+			isa = PBXGroup;
+			children = (
+				42D086962F43659100DD730C /* ClientCertificate.swift */,
+				42175EC22F436E7E001073AF /* ClientCertificateSessionDelegate.swift */,
+			);
+			path = mTLS;
+			sourceTree = "<group>";
+		};
 		423F44EC2C17232600766A99 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -7177,8 +7186,6 @@
 		D014EEAA212928EC008EA6F5 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				42175EC22F436E7E001073AF /* ClientCertificateSessionDelegate.swift */,
-				42D086962F43659100DD730C /* ClientCertificate.swift */,
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
 				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
 				D0BE440B2104224A00C74314 /* Authentication */,
@@ -7200,6 +7207,7 @@
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
 				11B6774C28303D35006E9B1A /* SecurityExceptions.swift */,
+				42382DA22F4F1FFB0010476F /* mTLS */,
 			);
 			path = API;
 			sourceTree = "<group>";
