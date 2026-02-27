@@ -75,11 +75,11 @@ public enum StatePrecision {
         let normalized = sign + unsignedValue
             .replacingOccurrences(of: ".", with: "")
             .replacingOccurrences(of: ",", with: "")
-        guard let value = Double(normalized) else {
+        guard let decimal = Decimal(string: normalized, locale: Locale(identifier: "en_US_POSIX")) else {
             return nil
         }
 
-        return NSNumber(value: value)
+        return NSDecimalNumber(decimal: decimal)
     }
 
     private static func format(number: NSNumber, decimalPlaces: Int, locale: Locale) -> String? {
