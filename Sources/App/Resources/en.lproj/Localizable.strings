@@ -117,6 +117,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "assist.button.finish_recording.title" = "Tap to finish recording...";
 "assist.button.listening.title" = "Listening...";
+"assist.error.on_device_stt_failed" = "On-device speech recognition failed, falling back to server transcription.";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -128,6 +129,9 @@
 "assist.settings.modern_ui.theme.label" = "Theme";
 "assist.settings.modern_ui.toggle" = "Experimental UI";
 "assist.settings.on_device_stt.footer" = "Use Apple's on-device speech recognition for improved privacy. Your voice will be processed locally and transcribed to text before being sent to your server. Not all languages are supported.";
+"assist.settings.on_device_stt.language.device_default" = "Device Default";
+"assist.settings.on_device_stt.language.label" = "Language";
+"assist.settings.on_device_stt.language.not_supported" = "Selected language may not be available on this device. The device default will be used as a fallback.";
 "assist.settings.on_device_stt.toggle" = "Enable on-device Speech-to-Text";
 "assist.settings.title" = "Assist Settings";
 "assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";

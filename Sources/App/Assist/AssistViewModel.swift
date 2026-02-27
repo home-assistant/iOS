@@ -26,9 +26,11 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var audioRecorder: AudioRecorderProtocol
     private var audioPlayer: AudioPlayerProtocol
     private var assistService: AssistServiceProtocol
+    private var speechTranscriber: SpeechTranscriberProtocol
     private(set) var autoStartRecording: Bool
 
     private(set) var canSendAudioData = false
+    private(set) var isUsingOnDeviceSTT = false
     private var configObservationCancellable: AnyDatabaseCancellable?
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
@@ -40,6 +42,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder: AudioRecorderProtocol,
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
+        speechTranscriber: SpeechTranscriberProtocol,
         autoStartRecording: Bool
     ) {
         self.server = server
@@ -47,12 +50,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioRecorder = audioRecorder
         self.audioPlayer = audioPlayer
         self.assistService = assistService
+        self.speechTranscriber = speechTranscriber
         self.autoStartRecording = autoStartRecording
         self.configuration = AssistConfiguration.config
         super.init()
 
         self.audioRecorder.delegate = self
         self.assistService.delegate = self
+        self.speechTranscriber.delegate = self
 
         if ["last_used", "preferred"].contains(preferredPipelineId) {
             self.preferredPipelineId = ""
@@ -76,6 +81,7 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     func onDisappear() {
         audioRecorder.stopRecording()
+        speechTranscriber.stopTranscribing()
         audioPlayer.pause()
     }
 
@@ -101,8 +107,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         // Remove text from input to make animation look better
         inputText = ""
 
-        audioRecorder.startRecording()
-        // Wait until green light from recorder delegate 'didStartRecording'
+        if configuration.enableOnDeviceSTT {
+            // On-device STT: the SPM SpeechTranscriber manages its own audio engine
+            isRecording = true
+            startOnDeviceTranscription()
+        } else {
+            audioRecorder.startRecording()
+            // Wait until green light from recorder delegate 'didStartRecording'
+        }
     }
 
     func subscribeForConfigChanges() {
@@ -204,7 +216,13 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         // Stop traditional audio recording
         audioRecorder.stopRecording()
-        assistService.finishSendingAudio()
+
+        if isUsingOnDeviceSTT {
+            speechTranscriber.stopTranscribing()
+            isUsingOnDeviceSTT = false
+        } else {
+            assistService.finishSendingAudio()
+        }
 
         Current.Log.info("Stop recording audio for Assist")
     }
@@ -249,6 +267,51 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - On-Device Transcription Methods
+
+    private func startOnDeviceTranscription() {
+        isUsingOnDeviceSTT = true
+        let sttLanguage = configuration.sttLanguage
+        let locale: Locale = sttLanguage.isEmpty ? .current : Locale(identifier: sttLanguage)
+        speechTranscriber.startTranscribing(locale: locale)
+        Current.Log.info("Started on-device speech transcription with locale: \(locale.identifier)")
+    }
+
+    private func fallbackToServerTranscription() {
+        Current.Log.warning("On-device STT failed, falling back to server transcription")
+        isUsingOnDeviceSTT = false
+        appendToChat(.init(content: L10n.Assist.Error.onDeviceSttFailed, itemType: .info))
+
+        if let sampleRate = audioRecorder.audioSampleRate {
+            startAssistAudioPipeline(audioSampleRate: sampleRate)
+        }
+    }
+}
+
+extension AssistViewModel: SpeechTranscriberDelegate {
+    func speechTranscriberDidTranscribe(_ text: String) {
+        // Partial transcription updates are shown in real-time
+    }
+
+    func speechTranscriberDidFinish(finalText: String) {
+        guard !finalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            isUsingOnDeviceSTT = false
+            stopStreaming()
+
+            // Send the transcribed text via the text pipeline
+            appendToChat(.init(content: finalText, itemType: .input))
+            assistService.assist(source: .text(input: finalText, pipelineId: preferredPipelineId))
+        }
+    }
+
+    func speechTranscriberDidFail(error: any Error) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            fallbackToServerTranscription()
+        }
+    }
 }
 
 extension AssistViewModel: AudioRecorderDelegate {
