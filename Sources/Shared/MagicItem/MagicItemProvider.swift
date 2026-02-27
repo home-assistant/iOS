@@ -207,13 +207,6 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                     MaterialDesignIcons.dotsGridIcon.name,
                 customization: item.customization
             )
-        case .folder:
-            return .init(
-                id: item.serverUniqueId,
-                name: item.displayText ?? L10n.Watch.Configuration.Folder.defaultName,
-                iconName: MaterialDesignIcons.folderIcon.name,
-                customization: item.customization
-            )
         }
     }
 
