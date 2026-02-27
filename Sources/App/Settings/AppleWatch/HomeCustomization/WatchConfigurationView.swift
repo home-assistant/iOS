@@ -16,8 +16,6 @@ struct WatchConfigurationView: View {
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
-    @State private var showAddFolderSheet = false
-    @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
 
     private let needsNavigationController: Bool
 
@@ -86,9 +84,6 @@ struct WatchConfigurationView: View {
                 Text(verbatim: L10n.okLabel)
             })
         }
-        .sheet(isPresented: $showAddFolderSheet) {
-            addFolderSheet
-        }
     }
 
     private var resetView: some View {
@@ -126,56 +121,6 @@ struct WatchConfigurationView: View {
                 viewModel.showAddItem = true
             } label: {
                 Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
-            }
-            Button {
-                newFolderName = L10n.Watch.Configuration.Folder.defaultName
-                showAddFolderSheet = true
-            } label: {
-                Label(L10n.Watch.Configuration.AddFolder.title, systemSymbol: .folder)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var addFolderSheet: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                addFolderForm
-            }
-            .presentationDetents([.medium])
-            .preferredColorScheme(.dark)
-        } else {
-            NavigationView {
-                addFolderForm
-            }
-            .navigationViewStyle(.stack)
-            .preferredColorScheme(.dark)
-        }
-    }
-
-    private var addFolderForm: some View {
-        Form {
-            Section(L10n.Watch.Configuration.FolderName.title) {
-                TextField(L10n.Watch.Configuration.Folder.defaultName, text: $newFolderName)
-                    .textInputAutocapitalization(.words)
-            }
-        }
-        .navigationTitle(L10n.Watch.Configuration.NewFolder.title)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(action: { showAddFolderSheet = false }) {
-                    Text(L10n.cancelLabel)
-                }
-            }
-            ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    let name = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
-                    viewModel.addFolder(named: name)
-                    showAddFolderSheet = false
-                }) {
-                    Text(L10n.Watch.Configuration.AddFolder.title)
-                }
-                .disabled(newFolderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
     }
@@ -250,22 +195,11 @@ struct WatchConfigurationView: View {
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         if item.type == .action {
             itemRow(item: item, info: info)
-        } else if item.type == .folder {
-            NavigationLink {
-                FolderDetailView(
-                    folderId: item.id,
-                    viewModel: viewModel
-                )
-                .environment(\.colorScheme, .dark)
-            } label: {
-                itemRow(item: item, info: info)
-            }
         } else {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
-                .environment(\.colorScheme, .dark)
             } label: {
                 itemRow(item: item, info: info)
             }
@@ -274,7 +208,7 @@ struct WatchConfigurationView: View {
 
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
-            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .haPrimary))
+            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
             Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemSymbol: .line3Horizontal)
@@ -289,26 +223,19 @@ struct WatchConfigurationView: View {
             iconName: "",
             customization: nil
         )
-        let iconColor = iconColorForItem(item: item, itemInfo: itemInfo)
 
         return HStack(spacing: DesignSystem.Spaces.one) {
             VStack {
                 Image(uiImage: image(for: item, itemInfo: itemInfo, watchPreview: true))
-                    .foregroundColor(iconColor)
+                    .foregroundColor(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)))
                     .padding(DesignSystem.Spaces.one)
             }
-            .background(iconColor.opacity(0.3))
+            .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
             .clipShape(Circle())
             Text(item.name(info: itemInfo))
                 .font(.system(size: 16))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(textColorForWatchItem(itemInfo: itemInfo))
-            if item.type == .folder {
-                Image(systemSymbol: .chevronRight)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(.trailing, DesignSystem.Spaces.half)
-            }
         }
         .padding(DesignSystem.Spaces.one)
         .frame(width: 190, height: 55)
@@ -334,14 +261,6 @@ struct WatchConfigurationView: View {
         }
     }
 
-    private func iconColorForItem(item: MagicItem, itemInfo: MagicItem.Info) -> Color {
-        if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
-            Color(uiColor: .init(hex: iconColor))
-        } else {
-            Color.haPrimary
-        }
-    }
-
     private func image(
         for item: MagicItem,
         itemInfo: MagicItem.Info,
@@ -349,17 +268,10 @@ struct WatchConfigurationView: View {
         color: UIColor? = nil
     ) -> UIImage {
         let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-        let resolvedColor: UIColor = if let color {
-            color
-        } else if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
-            .init(hex: iconColor)
-        } else {
-            .haPrimary
-        }
 
         return icon.image(
             ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
-            color: resolvedColor
+            color: color ?? .init(hex: itemInfo.customization?.iconColor)
         )
     }
 
