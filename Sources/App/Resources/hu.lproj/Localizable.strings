@@ -311,16 +311,16 @@
 "entity_picker.list.area.no_area.title" = "Nincs terület";
 "entity_picker.placeholder" = "Válasszon entitást";
 "entity_picker.search.placeholder" = "Entitás neve, azonosító, terület neve, eszköz neve...";
-"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
+"error.client_certificate.flow_cancelled" = "Kliens tanúsítvány hitelesítés szükséges.\
 \
-This server requires a client certificate (mTLS) but the operation was cancelled.";
-"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.";
+"error.client_certificate.flow_failed" = "Kliens tanúsítvány hitelesítés sikertelen.\
 \
 %@";
 "error_label" = "Hiba";
-"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
-"experimental.badge.report_issue_button.title" = "Report issue";
-"experimental.badge.title" = "Experimental feature";
+"experimental.badge.body" = "Ez egy kísérleti funkció, váratlan viselkedést tapasztalhat. Kérjük, jelentse az esetlegesen felmerülő problémákat.";
+"experimental.badge.report_issue_button.title" = "Probléma jelentése";
+"experimental.badge.title" = "Kísérleti funkció";
 "extensions.map.location.new" = "Új helyszín";
 "extensions.map.location.original" = "Eredeti helyszín";
 "extensions.map.payload_missing_homeassistant.message" = "Az adatcsomag nem tartalmazott homeassistant szótárt!";
@@ -570,14 +570,14 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "notifications_configurator.settings.footer.id_set" = "Az azonosító a létrehozás után nem módosítható. Az azonosító megváltoztatásához törölni és újra létrehozni kell a műveletet.";
 "notifications_configurator.settings.header" = "Beállítások";
 "ok_label" = "OK";
-"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
-"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
-"onboarding.client_certificate.password_prompt.import_button" = "Import";
-"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
-"onboarding.client_certificate.password_prompt.placeholder" = "Password";
-"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
-"onboarding.client_certificate.select_file_button" = "Select Certificate File";
-"onboarding.client_certificate.title" = "Client Certificate Required";
+"onboarding.client_certificate.description" = "Ez a szerver kliens tanúsítványt (mTLS) igényel a hitelesítéshez. Kérjük, importálja a tanúsítványfájlt (.p12 vagy .pfx).";
+"onboarding.client_certificate.error.file_access" = "A kiválasztott fájl nem érhető el";
+"onboarding.client_certificate.password_prompt.import_button" = "Importálás";
+"onboarding.client_certificate.password_prompt.message" = "Adja meg a tanúsítvány jelszavát";
+"onboarding.client_certificate.password_prompt.placeholder" = "Jelszó";
+"onboarding.client_certificate.password_prompt.title" = "Tanúsítvány jelszó";
+"onboarding.client_certificate.select_file_button" = "Tanúsítványfájl kiválasztása";
+"onboarding.client_certificate.title" = "Kliens tanúsítvány szükséges";
 "onboarding.connect.mac_safari_warning.message" = "Próbálja meg újraindítani a Safarit, ha a bejelentkezési űrlap nem nyílik meg.";
 "onboarding.connect.mac_safari_warning.title" = "A Safari elindítása";
 "onboarding.connect.title" = "Csatlakozás a következőhöz: %@";
@@ -724,21 +724,21 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Biztos benne?";
 "settings.connection_section.always_fallback_internal.footer" = "Ha ezt egy nem biztonságos URL-lel (http) engedélyezi, az veszélyeztetheti az Ön biztonságát nyilvános hálózatokon.";
 "settings.connection_section.always_fallback_internal.title" = "Mindig térjen vissza a belső URL-re";
-"settings.connection_section.client_certificate.expired" = "Certificate expired";
-"settings.connection_section.client_certificate.expires_at" = "Expires %@";
-"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
-"settings.connection_section.client_certificate.header" = "Client Certificate";
-"settings.connection_section.client_certificate.import" = "Import Certificate";
-"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
-"settings.connection_section.client_certificate.importing" = "Importing...";
-"settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
-"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
-"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
-"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
-"settings.connection_section.client_certificate.remove" = "Remove Certificate";
-"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
-"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
-"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
+"settings.connection_section.client_certificate.expired" = "A tanúsítvány lejárt";
+"settings.connection_section.client_certificate.expires_at" = "Lejár: %@";
+"settings.connection_section.client_certificate.footer" = "PKCS#12 (.p12) tanúsítvány importálása kölcsönös TLS hitelesítéshez. Szükséges, ha a Home Assistant szerver kliens tanúsítványokat igényel.";
+"settings.connection_section.client_certificate.header" = "Kliens tanúsítvány";
+"settings.connection_section.client_certificate.import" = "Tanúsítvány importálása";
+"settings.connection_section.client_certificate.import_error.title" = "Importálás sikertelen";
+"settings.connection_section.client_certificate.importing" = "Importálás...";
+"settings.connection_section.client_certificate.password_prompt.import_button" = "Importálás";
+"settings.connection_section.client_certificate.password_prompt.message" = "Adja meg a tanúsítványfájl jelszavát";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "Jelszó";
+"settings.connection_section.client_certificate.password_prompt.title" = "Tanúsítvány jelszó";
+"settings.connection_section.client_certificate.remove" = "Tanúsítvány eltávolítása";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "A tanúsítvány el lesz távolítva az eszközről. Az mTLS hitelesítés használatához újra importálnia kell.";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "Eltávolítás";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "Eltávolítja a tanúsítványt?";
 "settings.connection_section.cloud_overrides_external" = "Felhőn keresztüli csatlakozáskor a külső URL nem kerül felhasználásra. Nem kell konfigurálnia, hacsak nem szeretné letiltani a Cloud szolgáltatást.";
 "settings.connection_section.connecting_via" = "Csatlakoztatva";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Kevésbé biztonságos";

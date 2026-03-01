@@ -311,16 +311,16 @@
 "entity_picker.list.area.no_area.title" = "Ala puudub";
 "entity_picker.placeholder" = "Vali olem";
 "entity_picker.search.placeholder" = "Üksuse nimi, ID, ala nimi, seadme nimi...";
-"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
-\
-This server requires a client certificate (mTLS) but the operation was cancelled.";
-"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+"error.client_certificate.flow_cancelled" = "Kliendi sertifikaadi autentimine on nõutav. \
+ \
+ See server nõuab kliendi sertifikaati (mTLS),kuid toiming tühistati.";
+"error.client_certificate.flow_failed" = "Kliendi sertifikaadi autentimine nurjus.\
 \
 %@";
 "error_label" = "Viga";
-"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
-"experimental.badge.report_issue_button.title" = "Report issue";
-"experimental.badge.title" = "Experimental feature";
+"experimental.badge.body" = "See on eksperimentaalne funktsioon, seega võib esineda ootamatuid probleeme. Teavita meid kõigist võimalikest probleemidest.";
+"experimental.badge.report_issue_button.title" = "Teata probleemist";
+"experimental.badge.title" = "Eksperimentaalne funktsioon";
 "extensions.map.location.new" = "Uus asukoht";
 "extensions.map.location.original" = "Algne asukoht";
 "extensions.map.payload_missing_homeassistant.message" = "Payload ei sisaldanud homeassistanti andmeid!";
@@ -570,14 +570,14 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "notifications_configurator.settings.footer.id_set" = "Identifikaatorit ei saa pärast loomist muuta. Identifikaatori muutmiseks pead toimingu kustutama ja uuesti looma.";
 "notifications_configurator.settings.header" = "Seaded";
 "ok_label" = "Sobib";
-"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
-"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
+"onboarding.client_certificate.description" = "See server nõuab autentimiseks kliendisertifikaati (mTLS). Impordi oma sertifikaadifail (.p12 või .pfx).";
+"onboarding.client_certificate.error.file_access" = "Valitud failile pole juurdepääsu";
 "onboarding.client_certificate.password_prompt.import_button" = "Import";
-"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
-"onboarding.client_certificate.password_prompt.placeholder" = "Password";
-"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
-"onboarding.client_certificate.select_file_button" = "Select Certificate File";
-"onboarding.client_certificate.title" = "Client Certificate Required";
+"onboarding.client_certificate.password_prompt.message" = "Sisesta selle sertifikaadi salasõna";
+"onboarding.client_certificate.password_prompt.placeholder" = "Salasõna";
+"onboarding.client_certificate.password_prompt.title" = "Sertifikaadi salasõna";
+"onboarding.client_certificate.select_file_button" = "Vali sertifikaadi fail";
+"onboarding.client_certificate.title" = "Kliendi sertifikaat on nõutav";
 "onboarding.connect.mac_safari_warning.message" = "Proovi Safari taaskäivitada kui sisselogimisvorm ei avane.";
 "onboarding.connect.mac_safari_warning.title" = "Safari käivitamine";
 "onboarding.connect.title" = "Ühendun %@";
@@ -725,21 +725,21 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Kas oled kindel?";
 "settings.connection_section.always_fallback_internal.footer" = "Selle lubamine ebaturvalise URL-iga (http) võib kahjustada teie turvalisust avalikes võrkudes.";
 "settings.connection_section.always_fallback_internal.title" = "Alati tagasipöördumine sisemise URL-i juurde";
-"settings.connection_section.client_certificate.expired" = "Certificate expired";
-"settings.connection_section.client_certificate.expires_at" = "Expires %@";
-"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
-"settings.connection_section.client_certificate.header" = "Client Certificate";
-"settings.connection_section.client_certificate.import" = "Import Certificate";
-"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
-"settings.connection_section.client_certificate.importing" = "Importing...";
+"settings.connection_section.client_certificate.expired" = "Sertifikaat on aegunud";
+"settings.connection_section.client_certificate.expires_at" = "Aegub %@";
+"settings.connection_section.client_certificate.footer" = "Impordi PKCS#12 (.p12) sertifikaat vastastikuse TLS-autentimise jaoks. Vajalik kui Home Assistant server nõuab kliendisertifikaate.";
+"settings.connection_section.client_certificate.header" = "Kliendi sertifikaat";
+"settings.connection_section.client_certificate.import" = "Impordi sertifikaat";
+"settings.connection_section.client_certificate.import_error.title" = "Import nurjus";
+"settings.connection_section.client_certificate.importing" = "Importimine...";
 "settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
-"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
-"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
-"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
-"settings.connection_section.client_certificate.remove" = "Remove Certificate";
-"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
-"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
-"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
+"settings.connection_section.client_certificate.password_prompt.message" = "Sisesta sertifikaadifaili salasõna";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "Salasõna";
+"settings.connection_section.client_certificate.password_prompt.title" = "Sertifikaadi salasõna";
+"settings.connection_section.client_certificate.remove" = "Eemalda sertifikaat";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "Sertifikaat eemaldatakse seadmest. mTLS-autentimise kasutamiseks pead selle uuesti importima.";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "Eemalda";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "Kas eemaldada sertifikaat?";
 "settings.connection_section.cloud_overrides_external" = "Pilve kaudu ühenduse loomisel välist URL-i ei kasutata. Seda ei pea konfigureerima, välja arvatud juhul, kui soovid pilve keelata.";
 "settings.connection_section.connecting_via" = "Ühendatud läbi";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Vähem turvaline";

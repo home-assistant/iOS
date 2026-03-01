@@ -311,16 +311,16 @@
 "entity_picker.list.area.no_area.title" = "无区域";
 "entity_picker.placeholder" = "选取实体";
 "entity_picker.search.placeholder" = "实体名称、标识符、区域名称、设备名称…";
-"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
+"error.client_certificate.flow_cancelled" = "需要客户端证书验证。 \
 \
-This server requires a client certificate (mTLS) but the operation was cancelled.";
-"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+该服务器需要客户端证书 (mTLS) ，但操作被取消。";
+"error.client_certificate.flow_failed" = "客户端证书验证失败。\
 \
 %@";
 "error_label" = "错误";
-"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
-"experimental.badge.report_issue_button.title" = "Report issue";
-"experimental.badge.title" = "Experimental feature";
+"experimental.badge.body" = "这是一项实验性功能，可能会出现意外情况，请报告您遇到的任何问题。";
+"experimental.badge.report_issue_button.title" = "报告问题";
+"experimental.badge.title" = "实验性功能";
 "extensions.map.location.new" = "新位置";
 "extensions.map.location.original" = "原位置";
 "extensions.map.payload_missing_homeassistant.message" = "有效载荷不包含 homeassistant 字典 ！";
@@ -570,14 +570,14 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "notifications_configurator.settings.footer.id_set" = "创建后不能更改标识符。如需更改，您必须删除并重新创建动作。";
 "notifications_configurator.settings.header" = "设置";
 "ok_label" = "确定";
-"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
-"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
-"onboarding.client_certificate.password_prompt.import_button" = "Import";
-"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
-"onboarding.client_certificate.password_prompt.placeholder" = "Password";
-"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
-"onboarding.client_certificate.select_file_button" = "Select Certificate File";
-"onboarding.client_certificate.title" = "Client Certificate Required";
+"onboarding.client_certificate.description" = "此服务器需要客户端证书（mTLS）进行身份验证。请导入您的证书文件（.p12 或 .pfx）。";
+"onboarding.client_certificate.error.file_access" = "无法访问所选文件";
+"onboarding.client_certificate.password_prompt.import_button" = "导入";
+"onboarding.client_certificate.password_prompt.message" = "请输入此证书的密码";
+"onboarding.client_certificate.password_prompt.placeholder" = "密码";
+"onboarding.client_certificate.password_prompt.title" = "证书密码";
+"onboarding.client_certificate.select_file_button" = "选择证书文件";
+"onboarding.client_certificate.title" = "需要客户端证书";
 "onboarding.connect.mac_safari_warning.message" = "如果登录表单未打开，请尝试重新启动 Safari 浏览器。";
 "onboarding.connect.mac_safari_warning.title" = "正在启动 Safari";
 "onboarding.connect.title" = "连接到%@";
@@ -722,21 +722,21 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.always_fallback_internal.confirmation.title" = "您确定吗 ？";
 "settings.connection_section.always_fallback_internal.footer" = "使用不安全的网址（http）启用此功能可能会危及您在公共网络上的安全。";
 "settings.connection_section.always_fallback_internal.title" = "始终回退到内部网址";
-"settings.connection_section.client_certificate.expired" = "Certificate expired";
-"settings.connection_section.client_certificate.expires_at" = "Expires %@";
-"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
-"settings.connection_section.client_certificate.header" = "Client Certificate";
-"settings.connection_section.client_certificate.import" = "Import Certificate";
-"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
-"settings.connection_section.client_certificate.importing" = "Importing...";
-"settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
-"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
-"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
-"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
-"settings.connection_section.client_certificate.remove" = "Remove Certificate";
-"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
-"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
-"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
+"settings.connection_section.client_certificate.expired" = "证书已过期";
+"settings.connection_section.client_certificate.expires_at" = "到期 %@";
+"settings.connection_section.client_certificate.footer" = "导入用于双向 TLS 身份验证的 PKCS#12 (.p12) 证书。当您的 Home Assistant 服务器需要客户端证书时，此步骤是必需的。";
+"settings.connection_section.client_certificate.header" = "客户端证书";
+"settings.connection_section.client_certificate.import" = "导入证书";
+"settings.connection_section.client_certificate.import_error.title" = "导入失败";
+"settings.connection_section.client_certificate.importing" = "正在导入 ...";
+"settings.connection_section.client_certificate.password_prompt.import_button" = "导入";
+"settings.connection_section.client_certificate.password_prompt.message" = "请输入证书文件的密码";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "密码";
+"settings.connection_section.client_certificate.password_prompt.title" = "证书密码";
+"settings.connection_section.client_certificate.remove" = "移除证书";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "将从设备中移除证书。您需要重新导入该证书才能使用 mTLS 身份验证。";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "移除";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "移除证书 ？";
 "settings.connection_section.cloud_overrides_external" = "通过云连接时，不会使用外部 URL。除非您想禁用云，否则您不需要配置一个。";
 "settings.connection_section.connecting_via" = "链接方式";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "低安全";
