@@ -311,16 +311,16 @@
 "entity_picker.list.area.no_area.title" = "Kein Bereich";
 "entity_picker.placeholder" = "Entität auswählen";
 "entity_picker.search.placeholder" = "Entitätsname, ID, Bereichsname, Gerätename …";
-"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
+"error.client_certificate.flow_cancelled" = "Clientzertifikat-Authentifizierung erforderlich.\
 \
-This server requires a client certificate (mTLS) but the operation was cancelled.";
-"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abgebrochen.";
+"error.client_certificate.flow_failed" = "Clientzertifikat-Authentifizierung fehlgeschlagen.\
 \
 %@";
 "error_label" = "Fehler";
-"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
-"experimental.badge.report_issue_button.title" = "Report issue";
-"experimental.badge.title" = "Experimental feature";
+"experimental.badge.body" = "Dies ist eine experimentelle Funktion. Es kann zu unerwartetem Verhalten kommen. Bitte melde alle auftretenden Probleme.";
+"experimental.badge.report_issue_button.title" = "Problem melden";
+"experimental.badge.title" = "Experimentelle Funktion";
 "extensions.map.location.new" = "Neuer Standort";
 "extensions.map.location.original" = "Ursprünglicher Standort";
 "extensions.map.payload_missing_homeassistant.message" = "Payload enthielt kein Home Assistant Dictionary!";
@@ -570,14 +570,14 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "notifications_configurator.settings.footer.id_set" = "Die ID kann nach der Erstellung nicht mehr geändert werden. Du musst die Aktion zum Ändern der ID löschen und neu erstellen.";
 "notifications_configurator.settings.header" = "Einstellungen";
 "ok_label" = "OK";
-"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
-"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
-"onboarding.client_certificate.password_prompt.import_button" = "Import";
-"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
-"onboarding.client_certificate.password_prompt.placeholder" = "Password";
-"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
-"onboarding.client_certificate.select_file_button" = "Select Certificate File";
-"onboarding.client_certificate.title" = "Client Certificate Required";
+"onboarding.client_certificate.description" = "Dieser Server benötigt ein Clientzertifikat (mTLS) zur Authentifizierung. Bitte importiere deine Zertifikatsdatei (.p12 oder .pfx).";
+"onboarding.client_certificate.error.file_access" = "Auf die ausgewählte Datei kann nicht zugegriffen werden";
+"onboarding.client_certificate.password_prompt.import_button" = "Importieren";
+"onboarding.client_certificate.password_prompt.message" = "Gib das Passwort für dieses Zertifikat ein";
+"onboarding.client_certificate.password_prompt.placeholder" = "Passwort";
+"onboarding.client_certificate.password_prompt.title" = "Zertifikatspasswort";
+"onboarding.client_certificate.select_file_button" = "Zertifikatsdatei auswählen";
+"onboarding.client_certificate.title" = "Clientzertifikat erforderlich";
 "onboarding.connect.mac_safari_warning.message" = "Versuche Safari neu zu starten, wenn sich das Anmeldeformular nicht öffnet.";
 "onboarding.connect.mac_safari_warning.title" = "Safari wird geöffnet";
 "onboarding.connect.title" = "Verbinde zu %@";
@@ -725,21 +725,21 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Bist du sicher?";
 "settings.connection_section.always_fallback_internal.footer" = "Wenn du dies mit einer unsicheren URL (http) aktivierst, kann das die Sicherheit in öffentlichen Netzwerken gefährden.";
 "settings.connection_section.always_fallback_internal.title" = "Immer auf interne URL zurückgreifen";
-"settings.connection_section.client_certificate.expired" = "Certificate expired";
-"settings.connection_section.client_certificate.expires_at" = "Expires %@";
-"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
-"settings.connection_section.client_certificate.header" = "Client Certificate";
-"settings.connection_section.client_certificate.import" = "Import Certificate";
-"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
-"settings.connection_section.client_certificate.importing" = "Importing...";
-"settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
-"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
-"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
-"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
-"settings.connection_section.client_certificate.remove" = "Remove Certificate";
-"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
-"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
-"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
+"settings.connection_section.client_certificate.expired" = "Zertifikat abgelaufen";
+"settings.connection_section.client_certificate.expires_at" = "Läuft ab %@";
+"settings.connection_section.client_certificate.footer" = "Importiere ein PKCS#12-Zertifikat (.p12) für die gegenseitige TLS-Authentifizierung. Dies ist erforderlich, wenn dein Home Assistant-Server Clientzertifikate benötigt.";
+"settings.connection_section.client_certificate.header" = "Clientzertifikat";
+"settings.connection_section.client_certificate.import" = "Zertifikat importieren";
+"settings.connection_section.client_certificate.import_error.title" = "Import fehlgeschlagen";
+"settings.connection_section.client_certificate.importing" = "Wird importiert …";
+"settings.connection_section.client_certificate.password_prompt.import_button" = "Importieren";
+"settings.connection_section.client_certificate.password_prompt.message" = "Gib das Passwort für die Zertifikatsdatei ein";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "Passwort";
+"settings.connection_section.client_certificate.password_prompt.title" = "Zertifikatspasswort";
+"settings.connection_section.client_certificate.remove" = "Zertifikat entfernen";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "Das Zertifikat wird vom Gerät entfernt. Du musst es erneut importieren, um die mTLS-Authentifizierung nutzen zu können.";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "Entfernen";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "Zertifikat entfernen?";
 "settings.connection_section.cloud_overrides_external" = "Bei Verbindung über die Cloud wird die externe URL nicht verwendet. Du musst keine URL einrichten, außer du möchtest die Cloud deaktivieren.";
 "settings.connection_section.connecting_via" = "Verbunden über";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Weniger sicher";

@@ -311,16 +311,16 @@
 "entity_picker.list.area.no_area.title" = "Žádná oblast";
 "entity_picker.placeholder" = "Vyberte entitu";
 "entity_picker.search.placeholder" = "Název entity, ID, název oblasti, název zařízení...";
-"error.client_certificate.flow_cancelled" = "Client Certificate Authentication required.\
-\
-This server requires a client certificate (mTLS) but the operation was cancelled.";
-"error.client_certificate.flow_failed" = "Client Certificate Authentication failed.\
+"error.client_certificate.flow_cancelled" = "Je vyžadováno ověření klientského certifikátu.\
+ \
+Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.";
+"error.client_certificate.flow_failed" = "Ověření klientského certifikátu selhalo.\
 \
 %@";
 "error_label" = "Chyba";
-"experimental.badge.body" = "This is an experimental feature, you may experience unexpected behavior, please report any issues you may encounter.";
-"experimental.badge.report_issue_button.title" = "Report issue";
-"experimental.badge.title" = "Experimental feature";
+"experimental.badge.body" = "Toto je experimentální funkce a proto můžete zaznamenat neočekávané chování. Nahlaste jakékoli problémy, se kterými se můžete setkat.";
+"experimental.badge.report_issue_button.title" = "Nahlásit problém";
+"experimental.badge.title" = "Experimentální funkce";
 "extensions.map.location.new" = "Nová poloha";
 "extensions.map.location.original" = "Původní poloha";
 "extensions.map.payload_missing_homeassistant.message" = "Datová část neobsahovala slovník Home Assistanta!";
@@ -570,14 +570,14 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "notifications_configurator.settings.footer.id_set" = "Identifikátor nelze po vytvoření změnit. Chcete-li změnit identifikátor, musíte akci smazat a znovu vytvořit.";
 "notifications_configurator.settings.header" = "Nastavení";
 "ok_label" = "OK";
-"onboarding.client_certificate.description" = "This server requires a client certificate (mTLS) for authentication. Please import your certificate file (.p12 or .pfx).";
-"onboarding.client_certificate.error.file_access" = "Unable to access the selected file";
-"onboarding.client_certificate.password_prompt.import_button" = "Import";
-"onboarding.client_certificate.password_prompt.message" = "Enter the password for this certificate";
-"onboarding.client_certificate.password_prompt.placeholder" = "Password";
-"onboarding.client_certificate.password_prompt.title" = "Certificate Password";
-"onboarding.client_certificate.select_file_button" = "Select Certificate File";
-"onboarding.client_certificate.title" = "Client Certificate Required";
+"onboarding.client_certificate.description" = "Tento server vyžaduje pro ověření klientský certifikát (mTLS). Importujte soubor certifikátu (.p12 nebo .pfx).";
+"onboarding.client_certificate.error.file_access" = "Nelze získat přístup k vybranému souboru";
+"onboarding.client_certificate.password_prompt.import_button" = "Importovat";
+"onboarding.client_certificate.password_prompt.message" = "Zadejte heslo pro tento certifikát";
+"onboarding.client_certificate.password_prompt.placeholder" = "Heslo";
+"onboarding.client_certificate.password_prompt.title" = "Heslo certifikátu";
+"onboarding.client_certificate.select_file_button" = "Vyberte soubor certifikátu";
+"onboarding.client_certificate.title" = "Vyžadován klientský certifikát";
 "onboarding.connect.mac_safari_warning.message" = "Pokud se přihlašovací formulář neotevře, zkuste Safari restartovat.";
 "onboarding.connect.mac_safari_warning.title" = "Spouštění Safari";
 "onboarding.connect.title" = "Připojování k %@";
@@ -725,21 +725,21 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Jste si jisti?";
 "settings.connection_section.always_fallback_internal.footer" = "Povolení v nezabezpečené adrese URL (http) může ohrozit vaši bezpečnost ve veřejných sítích.";
 "settings.connection_section.always_fallback_internal.title" = "Vždy se vrátit na interní adresu URL";
-"settings.connection_section.client_certificate.expired" = "Certificate expired";
-"settings.connection_section.client_certificate.expires_at" = "Expires %@";
-"settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
-"settings.connection_section.client_certificate.header" = "Client Certificate";
-"settings.connection_section.client_certificate.import" = "Import Certificate";
-"settings.connection_section.client_certificate.import_error.title" = "Import Failed";
-"settings.connection_section.client_certificate.importing" = "Importing...";
-"settings.connection_section.client_certificate.password_prompt.import_button" = "Import";
-"settings.connection_section.client_certificate.password_prompt.message" = "Enter the password for the certificate file";
-"settings.connection_section.client_certificate.password_prompt.placeholder" = "Password";
-"settings.connection_section.client_certificate.password_prompt.title" = "Certificate Password";
-"settings.connection_section.client_certificate.remove" = "Remove Certificate";
-"settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
-"settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
-"settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
+"settings.connection_section.client_certificate.expired" = "Certifikát vypršel";
+"settings.connection_section.client_certificate.expires_at" = "Platnost vyprší %@";
+"settings.connection_section.client_certificate.footer" = "Importujte certifikát PKCS#12 (.p12) pro vzájemné ověřování TLS. Vyžadováno, pokud váš Home Assistant vyžaduje klientské certifikáty.";
+"settings.connection_section.client_certificate.header" = "Klientský certifikát";
+"settings.connection_section.client_certificate.import" = "Importovat certifikát";
+"settings.connection_section.client_certificate.import_error.title" = "Import se nezdařil";
+"settings.connection_section.client_certificate.importing" = "Importování...";
+"settings.connection_section.client_certificate.password_prompt.import_button" = "Importovat";
+"settings.connection_section.client_certificate.password_prompt.message" = "Zadejte heslo k souboru certifikátu";
+"settings.connection_section.client_certificate.password_prompt.placeholder" = "Heslo";
+"settings.connection_section.client_certificate.password_prompt.title" = "Heslo certifikátu";
+"settings.connection_section.client_certificate.remove" = "Odebrat certifikát";
+"settings.connection_section.client_certificate.remove_confirmation.message" = "Certifikát bude ze zařízení odebrán. Pro použití ověřování mTLS jej budete muset znovu importovat.";
+"settings.connection_section.client_certificate.remove_confirmation.remove" = "Odebrat";
+"settings.connection_section.client_certificate.remove_confirmation.title" = "Odebrat certifikát?";
 "settings.connection_section.cloud_overrides_external" = "Při připojování přes Cloud se externí URL nepoužívá. Není nutné ji nastavovat, pokud nechcete používat Cloud.";
 "settings.connection_section.connecting_via" = "Připojeno přes";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Méně bezpečné";
