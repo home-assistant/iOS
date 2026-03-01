@@ -220,6 +220,15 @@ public class SettingsStore {
         }
     }
 
+    public var launchInBackground: Bool {
+        get {
+            prefs.bool(forKey: "launchInBackground")
+        }
+        set {
+            prefs.set(newValue, forKey: "launchInBackground")
+        }
+    }
+
     /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it
     public var migratedOptInLocalPush: Bool {
         get {
