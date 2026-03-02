@@ -245,7 +245,18 @@ public class AppEnvironment {
     public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
-    public var isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    public var isTestFlight = {
+        #if DEBUG
+        print("⚠️ isTestFlight returns TRUE while debugging")
+        return true
+        #else
+        return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        #endif
+    }()
+
+    /// Centralized gate for importing custom mTLS client certificates.
+    /// TestFlight-only for now; update this in one place if rollout rules change.
+    public var allowsCustomMTLSCertificateImport: Bool { isTestFlight }
     #if os(iOS)
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
     #elseif os(watchOS)

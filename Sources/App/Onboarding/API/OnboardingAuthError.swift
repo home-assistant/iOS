@@ -7,6 +7,7 @@ struct OnboardingAuthError: LocalizedError {
         case basicAuth
         case authenticationUnsupported(String)
         case sslUntrusted([Error])
+        case clientCertificateUnsupported
         case clientCertificateRequired
         case clientCertificateError(Error)
         case other(Error)
@@ -17,7 +18,8 @@ struct OnboardingAuthError: LocalizedError {
             case .invalidURL: return "invalid_url"
             case .authenticationUnsupported: return "authentication_unsupported"
             case .sslUntrusted: return "ssl_untrusted"
-            case .clientCertificateRequired, .clientCertificateError: return "client_certificate"
+            case .clientCertificateUnsupported, .clientCertificateRequired, .clientCertificateError:
+                return "client_certificate"
             case .other: return "unknown_error"
             }
         }
@@ -25,6 +27,9 @@ struct OnboardingAuthError: LocalizedError {
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
             case (.invalidURL, .invalidURL), (.basicAuth, .basicAuth), (
+                .clientCertificateUnsupported,
+                .clientCertificateUnsupported
+            ), (
                 .clientCertificateRequired,
                 .clientCertificateRequired
             ):
@@ -59,7 +64,7 @@ struct OnboardingAuthError: LocalizedError {
         case .basicAuth: return nil
         case .authenticationUnsupported: return nil
         case .invalidURL: return nil
-        case .clientCertificateRequired: return nil
+        case .clientCertificateUnsupported, .clientCertificateRequired: return nil
         case let .sslUntrusted(underlying as [NSError]):
             return Set(underlying.map { code(from: $0) }).joined(separator: "; ")
         case let .clientCertificateError(underlying as NSError),
@@ -76,6 +81,8 @@ struct OnboardingAuthError: LocalizedError {
             return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
         case let .authenticationUnsupported(method):
             return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(" " + method)
+        case .clientCertificateUnsupported:
+            return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
         case .clientCertificateRequired:
             return L10n.Error.ClientCertificate.flowCancelled
         case let .clientCertificateError(underlying):
