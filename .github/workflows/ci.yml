@@ -181,7 +181,7 @@ jobs:
           xcode: true
           xcode_archive_path: fastlane/test_output/Tests-Unit.xcresult
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         name: "Upload Test Logs"
         if: ${{ always() }}
         with:
@@ -191,7 +191,7 @@ jobs:
             ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
             ~/Library/Logs/scan
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         name: "Upload Simulator App"
         with:
           name: ios-simulator
