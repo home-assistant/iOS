@@ -65,7 +65,9 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                     data = nil
                 }
 
-                if clientCertificateRequiredOccurred[task.taskIdentifier] == true {
+                if clientCertificateUnsupportedOccurred[task.taskIdentifier] == true {
+                    kind = .clientCertificateUnsupported
+                } else if clientCertificateRequiredOccurred[task.taskIdentifier] == true {
                     kind = .clientCertificateRequired
                 } else if clientCertificateErrorOccurred[task.taskIdentifier] == true {
                     kind = .clientCertificateError(error)
@@ -88,6 +90,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
 
     private var clientCertificateErrorOccurred = [Int: Bool]()
     private var clientCertificateRequiredOccurred = [Int: Bool]()
+    private var clientCertificateUnsupportedOccurred = [Int: Bool]()
 
     private func confirm(
         secTrust: SecTrust,
@@ -161,6 +164,13 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             pendingResolver.reject(OnboardingAuthError(kind: .basicAuth))
             completionHandler(.cancelAuthenticationChallenge, nil)
         case NSURLAuthenticationMethodClientCertificate:
+            if !Current.allowsCustomMTLSCertificateImport {
+                Current.Log.warning("[mTLS] Client certificate requested but feature is disabled for this build")
+                clientCertificateUnsupportedOccurred[task.taskIdentifier] = true
+                completionHandler(.cancelAuthenticationChallenge, nil)
+                return
+            }
+
             // Use imported client certificate if available
             #if !os(watchOS)
             if let clientCert = authDetails.clientCertificate {

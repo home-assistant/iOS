@@ -34,7 +34,9 @@ struct ConnectionSettingsView: View {
     var body: some View {
         List {
             detailsSection
-            clientCertificateSection
+            if Current.allowsCustomMTLSCertificateImport {
+                clientCertificateSection
+            }
             privacySection
             statusSection
             deleteSection
