@@ -288,7 +288,6 @@
 "database.problem.delete" = "Delete Database & Quit App";
 "database.problem.quit" = "Zapri aplikacijo";
 "database.problem.title" = "Napaka zbirke podatkov";
-"database_updater.toast.syncing" = "Syncing server data...";
 "database_updater.toast.syncing_with_progress" = "Syncing server data... (%li/%li)";
 "database_updater.toast.title" = "Updating %@";
 "debug.reset.entities_database.title" = "Reset app entities database";

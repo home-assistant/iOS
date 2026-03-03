@@ -288,7 +288,6 @@
 "database.problem.delete" = "Hapus Basis Data dan Keluar dari Aplikasi";
 "database.problem.quit" = "Keluar dari Aplikasi";
 "database.problem.title" = "Kesalahan Basis Data";
-"database_updater.toast.syncing" = "Menyinkronkan data server…";
 "database_updater.toast.syncing_with_progress" = "Menyinkronkan data server… (%li/%li)";
 "database_updater.toast.title" = "Memperbarui %@";
 "debug.reset.entities_database.title" = "Setel ulang database entitas aplikasi";

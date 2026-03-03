@@ -288,7 +288,6 @@
 "database.problem.delete" = "删除数据库并退出应用程序";
 "database.problem.quit" = "退出应用";
 "database.problem.title" = "数据库错误";
-"database_updater.toast.syncing" = "正在同步服务器数据...";
 "database_updater.toast.syncing_with_progress" = "正在同步服务器数据...（%li/%li）";
 "database_updater.toast.title" = "正在更新 %@";
 "debug.reset.entities_database.title" = "重置应用实体数据库";

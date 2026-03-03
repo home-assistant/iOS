@@ -288,7 +288,6 @@
 "database.problem.delete" = "Adatbázis törlése és kilépés az alkalmazásból";
 "database.problem.quit" = "Kilépés az alkalmazásból";
 "database.problem.title" = "Adatbázis hiba";
-"database_updater.toast.syncing" = "Szerver adatok szinkronizálása...";
 "database_updater.toast.syncing_with_progress" = "Szerver adatok szinkronizálása... (%li/%li)";
 "database_updater.toast.title" = "%@ frissítése";
 "debug.reset.entities_database.title" = "Alkalmazás entitások adatbázisának visszaállítása";

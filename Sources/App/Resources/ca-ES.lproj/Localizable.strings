@@ -288,7 +288,6 @@
 "database.problem.delete" = "Eliminar la base de dades i sortir de l'aplicació";
 "database.problem.quit" = "Surt de l'aplicació";
 "database.problem.title" = "Error de base de dades";
-"database_updater.toast.syncing" = "Syncing server data...";
 "database_updater.toast.syncing_with_progress" = "Syncing server data... (%li/%li)";
 "database_updater.toast.title" = "Updating %@";
 "debug.reset.entities_database.title" = "Reset app entities database";

@@ -288,7 +288,6 @@
 "database.problem.delete" = "Eliminar la base de datos y salir de la aplicación";
 "database.problem.quit" = "Sal de la aplicación";
 "database.problem.title" = "Error de base de datos";
-"database_updater.toast.syncing" = "Syncing server data...";
 "database_updater.toast.syncing_with_progress" = "Syncing server data... (%li/%li)";
 "database_updater.toast.title" = "Updating %@";
 "debug.reset.entities_database.title" = "Reset app entities database";

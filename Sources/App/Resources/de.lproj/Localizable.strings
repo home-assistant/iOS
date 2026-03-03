@@ -288,7 +288,6 @@
 "database.problem.delete" = "Datenbank löschen & App beenden";
 "database.problem.quit" = "App schließen";
 "database.problem.title" = "Datenbankfehler";
-"database_updater.toast.syncing" = "Serverdaten werden synchronisiert …";
 "database_updater.toast.syncing_with_progress" = "Serverdaten werden synchronisiert … (%li/%li)";
 "database_updater.toast.title" = "%@ wird aktualisiert";
 "debug.reset.entities_database.title" = "Datenbank für App-Entitäten zurücksetzen";

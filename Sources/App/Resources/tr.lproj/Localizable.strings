@@ -288,7 +288,6 @@
 "database.problem.delete" = "Veritabanını Sil ve Uygulamadan Çık";
 "database.problem.quit" = "Uygulamadan Çık";
 "database.problem.title" = "Veri tabanı hatası";
-"database_updater.toast.syncing" = "Sunucu verileri senkronize ediliyor...";
 "database_updater.toast.syncing_with_progress" = "Sunucu verileri senkronize ediliyor... (%li/%li)";
 "database_updater.toast.title" = "Güncelleniyor %@";
 "debug.reset.entities_database.title" = "Uygulama varlıkları veritabanını sıfırla";

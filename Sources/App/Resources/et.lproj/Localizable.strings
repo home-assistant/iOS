@@ -288,7 +288,6 @@
 "database.problem.delete" = "Kustuta andmebaas ja sulge rakendus";
 "database.problem.quit" = "Sulge rakendus";
 "database.problem.title" = "Andmebaasi viga";
-"database_updater.toast.syncing" = "Serveri andmete sünkroonimine...";
 "database_updater.toast.syncing_with_progress" = "Serveri andmete sünkroonimine... (%li/%li)";
 "database_updater.toast.title" = "Värskendamine %@";
 "debug.reset.entities_database.title" = "Rakenduse olemite andmebaasi lähtestamine";
