@@ -26,36 +26,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         Task.isCancelled || !Current.isForegroundApp()
     }
 
-    /// Represents each step in the server update process
-    enum UpdateStep: Int, CaseIterable {
-        case entities = 1
-        case entitiesRegistryListForDisplay = 2
-        case entitiesRegistry = 3
-        case devicesRegistry = 4
-        case areas = 5
-
-        /// The total number of update steps
-        static var totalSteps: Int {
-            allCases.count
-        }
-
-        /// Human-readable description of the step
-        var description: String {
-            switch self {
-            case .entities:
-                return "Fetching entities"
-            case .entitiesRegistryListForDisplay:
-                return "Fetching entity display data"
-            case .entitiesRegistry:
-                return "Fetching entity registry"
-            case .devicesRegistry:
-                return "Fetching device registry"
-            case .areas:
-                return "Fetching areas"
-            }
-        }
-    }
-
     // Actor for thread-safe task management and queuing
     private actor TaskCoordinator {
         private var currentUpdateTasks: [String: Task<Void, Never>] = [:]
@@ -172,16 +142,12 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
                 Current.Log.verbose("Updating database for server \(server.info.name)\(forceUpdate ? " (forced)" : "")")
 
-                // Show toast indicating update has started
-                await showUpdateToast(for: server)
-
                 // Launch the server-specific update task
                 let updateTask = Task { [weak self] in
                     guard let self else { return }
                     defer {
-                        // Hide toast and clean up task reference when complete
+                        // Clean up task reference when complete
                         Task {
-                            await self.hideUpdateToast(for: server)
                             await self.taskCoordinator.removeTask(for: serverId)
                         }
                     }
@@ -256,7 +222,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         let totalTimer = ProfilingTimer("Starting full update for server: \(server.info.name)")
 
         // Step 1: Entities (fetch_states)
-        await updateToastStep(for: server, step: .entities)
         do {
             let timer = ProfilingTimer("Step 1 (Entities)")
             await updateEntitiesDatabase(server: server)
@@ -265,7 +230,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         if isUpdateCancelled() { return }
 
         // Step 2: Entities registry list for display
-        await updateToastStep(for: server, step: .entitiesRegistryListForDisplay)
         do {
             let timer = ProfilingTimer("Step 2 (Entities Registry List For Display)")
             await updateEntitiesRegistryListForDisplay(server: server)
@@ -274,7 +238,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         if isUpdateCancelled() { return }
 
         // Step 3: Entities registry
-        await updateToastStep(for: server, step: .entitiesRegistry)
         do {
             let timer = ProfilingTimer("Step 3 (Entities Registry)")
             await updateEntitiesRegistry(server: server)
@@ -283,7 +246,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         if isUpdateCancelled() { return }
 
         // Step 4: Devices registry
-        await updateToastStep(for: server, step: .devicesRegistry)
         do {
             let timer = ProfilingTimer("Step 4 (Devices Registry)")
             await updateDevicesRegistry(server: server)
@@ -294,7 +256,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         // Step 5: Areas with their entities
         // IMPORTANT: This must be executed after entities and device registry
         // since we rely on that data to map entities to areas
-        await updateToastStep(for: server, step: .areas)
         do {
             let timer = ProfilingTimer("Step 5 (Areas)")
             await updateAreasDatabase(server: server)
@@ -745,56 +706,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             ))
             assertionFailure("Failed to save device registry in database: \(error)")
         }
-    }
-
-    // MARK: - Toast Management
-
-    /// Generates a unique toast identifier for a server update.
-    @MainActor
-    private func toastId(for server: Server) -> String {
-        "server-update-\(server.identifier.rawValue)"
-    }
-
-    /// Shows a toast notification indicating a server update is in progress.
-    @MainActor
-    private func showUpdateToast(for server: Server, step: UpdateStep? = nil) {
-        #if DEBUG
-        if #available(iOS 18, *) {
-            let message: String
-            if let step {
-                message = L10n.DatabaseUpdater.Toast.syncingWithProgress(step.rawValue, UpdateStep.totalSteps)
-            } else {
-                message = L10n.DatabaseUpdater.Toast.syncing
-            }
-
-            ToastManager.shared.show(
-                id: toastId(for: server),
-                symbol: "arrow.triangle.2.circlepath.circle.fill",
-                symbolForegroundStyle: (.white, .blue),
-                title: L10n.DatabaseUpdater.Toast.title(server.info.name),
-                message: message
-            )
-        }
-        #endif
-    }
-
-    /// Updates the toast notification with the current step.
-    @MainActor
-    private func updateToastStep(for server: Server, step: UpdateStep) {
-        #if DEBUG
-        showUpdateToast(for: server, step: step)
-        #endif
-    }
-
-    /// Hides the toast notification for a completed server update.
-    @MainActor
-    private func hideUpdateToast(for server: Server) {
-        #if DEBUG
-
-        if #available(iOS 18, *) {
-            ToastManager.shared.hide(id: toastId(for: server))
-        }
-        #endif
     }
 }
 
