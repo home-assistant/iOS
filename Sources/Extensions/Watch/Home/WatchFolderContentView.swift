@@ -23,6 +23,17 @@ struct WatchFolderContentView: View {
         }
         .id(viewModel.configVersion)
         .ignoresSafeArea([.all], edges: .top)
+        .navigationTitle("")
+        .navigationBarBackButtonHidden(true)
+        .modify { view in
+            if #available(watchOS 11.0, *) {
+                view.toolbarVisibility(.hidden, for: .navigationBar)
+            } else if #available(watchOS 9.0, *) {
+                view.toolbar(.hidden, for: .navigationBar)
+            } else {
+                view.navigationBarHidden(true)
+            }
+        }
     }
 
     private var header: some View {
