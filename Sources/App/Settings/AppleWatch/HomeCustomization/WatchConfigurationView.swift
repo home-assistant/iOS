@@ -227,7 +227,7 @@ struct WatchConfigurationView: View {
                 .listRowSeparator(.hidden)
                 .listRowSpacing(DesignSystem.Spaces.half)
             }
-            .animation(.default, value: viewModel.watchConfig.items)
+            .animation(.default, value: viewModel.watchConfig.items.map(\.contentHash))
             .listStyle(.plain)
             .frame(width: 200, height: 265)
             .offset(x: 5, y: 10)

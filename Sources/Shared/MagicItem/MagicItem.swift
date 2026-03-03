@@ -5,19 +5,31 @@ import PromiseKit
 
 /// Object that represents iOS item that can be displayed in Watch, Widgets, CarPlay and perform different action types
 public struct MagicItem: Codable, Equatable, Hashable {
+    /// Identity-based equality for use in sets/dictionaries and caching.
+    /// Compares only stable identity fields, not mutable content.
     public static func == (lhs: MagicItem, rhs: MagicItem) -> Bool {
         lhs.id == rhs.id
             && lhs.serverId == rhs.serverId
             && lhs.type == rhs.type
-            && lhs.customization == rhs.customization
-            && lhs.action == rhs.action
-            && lhs.displayText == rhs.displayText
-            && lhs.items == rhs.items
     }
 
+    /// Identity-based hashing consistent with `==`.
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
         hasher.combine(serverId)
+        hasher.combine(type)
+    }
+
+    /// Content-based equality for UI/change detection.
+    /// Unlike `==`, this includes mutable fields.
+    public func contentEquals(_ other: MagicItem) -> Bool {
+        id == other.id
+            && serverId == other.serverId
+            && type == other.type
+            && customization == other.customization
+            && action == other.action
+            && displayText == other.displayText
+            && items == other.items
     }
 
     /// Id match it's type Id, e.g. "script.open_gate"
@@ -32,6 +44,19 @@ public struct MagicItem: Codable, Equatable, Hashable {
     /// Server unique ID - e.g. "EB1364-script.open_gate"
     public var serverUniqueId: String {
         "\(serverId)-\(id)"
+    }
+
+    /// A hash value that includes mutable content fields, for use as a SwiftUI animation/change detection value.
+    public var contentHash: Int {
+        var hasher = Hasher()
+        hasher.combine(id)
+        hasher.combine(serverId)
+        hasher.combine(type)
+        hasher.combine(customization)
+        hasher.combine(action)
+        hasher.combine(displayText)
+        hasher.combine(items?.map(\.contentHash))
+        return hasher.finalize()
     }
 
     /// Domain retrieved from id when item is entity else nil
@@ -70,7 +95,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case folder
     }
 
-    public struct Customization: Codable, Equatable {
+    public struct Customization: Codable, Equatable, Hashable {
         public var iconColor: String?
         public var textColor: String?
         public var backgroundColor: String?
@@ -257,7 +282,7 @@ public enum MagicItemError: Error {
     case unknownDomain
 }
 
-public enum ItemAction: Codable, CaseIterable, Equatable {
+public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,

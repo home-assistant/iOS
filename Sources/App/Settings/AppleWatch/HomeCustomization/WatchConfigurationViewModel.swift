@@ -95,6 +95,19 @@ final class WatchConfigurationViewModel: ObservableObject {
         }
     }
 
+    func updateItemInFolder(folderId: String, item: MagicItem) {
+        guard let folderIndex = watchConfig.items
+            .firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = watchConfig.items[folderIndex]
+        var folderItems = folder.items ?? []
+        if let itemIndex = folderItems
+            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+            folderItems[itemIndex] = item
+            folder.items = folderItems
+            watchConfig.items[folderIndex] = folder
+        }
+    }
+
     func deleteItemInFolder(folderId: String, at offsets: IndexSet) {
         guard let index = watchConfig.items.firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
         var folder = watchConfig.items[index]

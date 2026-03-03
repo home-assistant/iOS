@@ -88,7 +88,7 @@ struct FolderDetailView: View {
         } else {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
-                    viewModel.updateItem(updatedMagicItem)
+                    viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
                 }
                 .environment(\.colorScheme, .dark)
             } label: {
