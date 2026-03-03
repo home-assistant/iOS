@@ -288,7 +288,6 @@
 "database.problem.delete" = "Διαγραφή βάσης δεδομένων και έξοδος από την εφαρμογή";
 "database.problem.quit" = "Έξοδος εφαρμογής";
 "database.problem.title" = "Σφάλμα βάσης δεδομένων";
-"database_updater.toast.syncing" = "Συγχρονισμός δεδομένων server...";
 "database_updater.toast.syncing_with_progress" = "Συγχρονισμός δεδομένων server... (%li/%li)";
 "database_updater.toast.title" = "Ενημέρωση %@";
 "debug.reset.entities_database.title" = "Επαναφορά βάσης δεδομένων οντοτήτων εφαρμογής";

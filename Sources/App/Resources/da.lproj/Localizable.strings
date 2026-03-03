@@ -288,7 +288,6 @@
 "database.problem.delete" = "Slet database og afslut app";
 "database.problem.quit" = "Afslut app";
 "database.problem.title" = "Fejl i database";
-"database_updater.toast.syncing" = "Synkroniserer serverdata...";
 "database_updater.toast.syncing_with_progress" = "Synkroniserer serverdata... (%li/%li)";
 "database_updater.toast.title" = "Opdaterer %@";
 "debug.reset.entities_database.title" = "Nulstil appens entitetsdatabase";

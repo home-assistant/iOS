@@ -288,7 +288,6 @@
 "database.problem.delete" = "刪除資料數據並退出 App";
 "database.problem.quit" = "退出 App";
 "database.problem.title" = "資料數據錯誤";
-"database_updater.toast.syncing" = "正在同步伺服器資料...";
 "database_updater.toast.syncing_with_progress" = "正在同步伺服器資料... (%li/%li)";
 "database_updater.toast.title" = "正在更新 %@";
 "debug.reset.entities_database.title" = "重置應用程式實體資料庫";

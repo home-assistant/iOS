@@ -288,7 +288,6 @@
 "database.problem.delete" = "Poista tietokanta ja sulje sovellus";
 "database.problem.quit" = "Sulje sovellus";
 "database.problem.title" = "Tietokantavirhe";
-"database_updater.toast.syncing" = "Syncing server data...";
 "database_updater.toast.syncing_with_progress" = "Syncing server data... (%li/%li)";
 "database_updater.toast.title" = "Updating %@";
 "debug.reset.entities_database.title" = "Reset app entities database";
