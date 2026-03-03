@@ -128,7 +128,7 @@ struct WatchConfigurationView: View {
                 Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
             }
             Button {
-                newFolderName = L10n.Watch.Configuration.Folder.defaultName
+                newFolderName = ""
                 showAddFolderSheet = true
             } label: {
                 Label(L10n.Watch.Configuration.AddFolder.title, systemSymbol: .folder)
@@ -170,12 +170,13 @@ struct WatchConfigurationView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     let name = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
-                    viewModel.addFolder(named: name)
+                    viewModel.addFolder(
+                        named: name.isEmpty ? L10n.Watch.Configuration.Folder.defaultName : name
+                    )
                     showAddFolderSheet = false
                 }) {
                     Text(L10n.Watch.Configuration.AddFolder.title)
                 }
-                .disabled(newFolderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
     }
