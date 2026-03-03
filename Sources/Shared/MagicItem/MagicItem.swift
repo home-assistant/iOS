@@ -6,11 +6,18 @@ import PromiseKit
 /// Object that represents iOS item that can be displayed in Watch, Widgets, CarPlay and perform different action types
 public struct MagicItem: Codable, Equatable, Hashable {
     public static func == (lhs: MagicItem, rhs: MagicItem) -> Bool {
-        lhs.id == rhs.id && lhs.serverId == rhs.serverId
+        lhs.id == rhs.id
+            && lhs.serverId == rhs.serverId
+            && lhs.type == rhs.type
+            && lhs.customization == rhs.customization
+            && lhs.action == rhs.action
+            && lhs.displayText == rhs.displayText
+            && lhs.items == rhs.items
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(serverId)
     }
 
     /// Id match it's type Id, e.g. "script.open_gate"
