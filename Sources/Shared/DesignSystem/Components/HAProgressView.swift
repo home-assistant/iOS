@@ -110,16 +110,19 @@ public struct HAProgressView: View {
         HAProgressView(style: .small)
     }
 }
+
 #Preview("In Navigation view medium") {
     NavigationView {
         HAProgressView(style: .medium)
     }
 }
+
 #Preview("In Navigation view large") {
     NavigationView {
         HAProgressView(style: .large)
     }
 }
+
 #Preview("In Navigation view extra lar") {
     NavigationView {
         HAProgressView(style: .extraLarge)
