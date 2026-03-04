@@ -191,7 +191,10 @@ public final class ClientCertificateManager {
             return URLCredential(identity: identity, certificates: [leafCertificate], persistence: .forSession)
         }
 
-        Current.Log.warning("Failed to copy client certificate from identity (\(status)); falling back to identity-only credential")
+        Current.Log
+            .warning(
+                "Failed to copy client certificate from identity (\(status)); falling back to identity-only credential"
+            )
         return URLCredential(identity: identity, certificates: nil, persistence: .forSession)
     }
 
