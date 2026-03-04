@@ -203,7 +203,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     }
 
     @MainActor
-    func showAssistSettingsViewController() {
+    private func showAssistSettingsViewController() {
         guard #available(iOS 26.0, *), !Current.isCatalyst else {
             showSettingsViewController()
             return
