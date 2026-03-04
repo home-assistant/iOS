@@ -152,7 +152,7 @@
 "camera_list.unavailable.title" = "Inte tillgänglig på Mac";
 "camera_player.errors.no_stream_available" = "No stream available";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
-"camera_player.errors.unknown" = "Unknown error";
+"camera_player.errors.unknown" = "Okänt fel";
 "cameras.drag_to_reorder" = "Dra och släpp för att ändra ordning";
 "cameras.no_server_found" = "Ingen server hittades för kamera: %@";
 "cancel_label" = "Avbryt";
@@ -274,10 +274,10 @@
 "connectivity.check.port" = "Port Reachability";
 "connectivity.check.port.description" = "Checking if port is reachable";
 "connectivity.check.running" = "Checking...";
-"connectivity.check.server" = "Server Connection";
+"connectivity.check.server" = "Serveranslutning";
 "connectivity.check.server.description" = "Testing server connection";
 "connectivity.check.skipped" = "Skipped due to previous failure";
-"connectivity.check.tls" = "TLS Certificate";
+"connectivity.check.tls" = "TLS-certifikat";
 "connectivity.check.tls.description" = "Validating TLS certificate";
 "connectivity.diagnostics.run_checks" = "Run checks";
 "connectivity.diagnostics.start" = "Start diagnostics";
@@ -288,7 +288,7 @@
 "database.problem.quit" = "Stäng appen";
 "database.problem.title" = "Databasfel";
 "database_updater.toast.syncing_with_progress" = "Syncing server data... (%li/%li)";
-"database_updater.toast.title" = "Updating %@";
+"database_updater.toast.title" = "Uppdaterar %@";
 "debug.reset.entities_database.title" = "Återställ databasen för app-entiteter";
 "debug_section_label" = "Felsökning";
 "delete" = "Ta bort";
@@ -302,8 +302,8 @@
 "download_manager.finished.title" = "Nedladdning klar";
 "entity_picker.filter.area.all.title" = "All areas";
 "entity_picker.filter.area.title" = "Area";
-"entity_picker.filter.domain.all.title" = "All domains";
-"entity_picker.filter.domain.title" = "Domain";
+"entity_picker.filter.domain.all.title" = "Alla domäner";
+"entity_picker.filter.domain.title" = "Domän";
 "entity_picker.filter.group_by.title" = "Group by";
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "No area";
@@ -393,7 +393,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "home_sections_reorder_view.done" = "Klar";
 "home_sections_reorder_view.title" = "Ändra ordning på rum";
 "home_view.areas.title" = "Areas";
-"home_view.common_controls.title" = "Welcome %@";
+"home_view.common_controls.title" = "Välkommen %@";
 "home_view.context_menu.hide" = "Dölj";
 "home_view.customization.areas_layout.grid.title" = "Grid";
 "home_view.customization.areas_layout.list.title" = "List";
@@ -1135,12 +1135,12 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.config.migration_error.failed_create_new_config" = "Misslyckades med att spara initial klockkonfiguration, fel: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Misslyckades med att migrera åtgärder till klockans konfiguration, fel: %@";
 "watch.config.migration_error.failed_to_save" = "Misslyckades med att spara ny klockkonfiguration, fel: %@";
-"watch.configuration.add_folder.title" = "Add Folder";
+"watch.configuration.add_folder.title" = "Lägg till mapp";
 "watch.configuration.add_item.title" = "Lägg till objekt";
-"watch.configuration.folder.default_name" = "Folder";
-"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.folder.default_name" = "Mapp";
+"watch.configuration.folder_name.title" = "Mappnamn";
 "watch.configuration.items.title" = "Objekt";
-"watch.configuration.new_folder.title" = "New Folder";
+"watch.configuration.new_folder.title" = "Ny mapp";
 "watch.configuration.save.title" = "Spara";
 "watch.configuration.show_assist.title" = "Visa Assistent";
 "watch.configurator.delete.button" = "Radera komplikation";
@@ -1361,7 +1361,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "web_view.no_url_available.title" = "Vi kan inte ansluta till Home Assistant";
 "web_view.server_selection.title" = "Välj server";
 "web_view.unique_server_selection.title" = "Välj en server";
-"webrtc_player.known_issues.title" = "Known Issues";
+"webrtc_player.known_issues.title" = "Kända problem";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
 "widgets.action.name.moreInfoDialog" = "Mer information";
@@ -1515,7 +1515,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.todo_list.all_done" = "All done! 🎉";
 "widgets.todo_list.complete_item_title" = "Complete To-do Item";
 "widgets.todo_list.description" = "Check your lists and add items";
-"widgets.todo_list.due_date.ago_format" = "%@ ago";
+"widgets.todo_list.due_date.ago_format" = "%@ sedan";
 "widgets.todo_list.due_date.in_format" = "In %@";
 "widgets.todo_list.due_date.now" = "Nu";
 "widgets.todo_list.due_date.today" = "Idag";

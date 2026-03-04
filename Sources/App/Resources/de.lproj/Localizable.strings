@@ -1137,12 +1137,12 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.config.migration_error.failed_create_new_config" = "Speichern der initialen Watch-Konfiguration fehlgeschlagen, Fehler: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Migration von Aktionen in die Watch-Konfiguration fehlgeschlagen, Fehler: %@";
 "watch.config.migration_error.failed_to_save" = "Speichern der neuen Watch-Konfiguration fehlgeschlagen, Fehler: %@";
-"watch.configuration.add_folder.title" = "Add Folder";
+"watch.configuration.add_folder.title" = "Ordner hinzufügen";
 "watch.configuration.add_item.title" = "Eintrag hinzufügen";
-"watch.configuration.folder.default_name" = "Folder";
-"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.folder.default_name" = "Ordner";
+"watch.configuration.folder_name.title" = "Ordnername";
 "watch.configuration.items.title" = "Einträge";
-"watch.configuration.new_folder.title" = "New Folder";
+"watch.configuration.new_folder.title" = "Neuer Ordner";
 "watch.configuration.save.title" = "Speichern";
 "watch.configuration.show_assist.title" = "Assist anzeigen";
 "watch.configurator.delete.button" = "Komplikation löschen";
