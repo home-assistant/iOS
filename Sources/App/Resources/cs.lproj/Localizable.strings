@@ -1136,12 +1136,12 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.config.migration_error.failed_create_new_config" = "Nepodařilo se uložit počáteční nastavení hodinek, chyba: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Nepodařilo se migrovat akce do nastavení hodinek, chyba: %@";
 "watch.config.migration_error.failed_to_save" = "Nepodařilo se uložit nové nastavení hodinek, chyba: %@";
-"watch.configuration.add_folder.title" = "Add Folder";
+"watch.configuration.add_folder.title" = "Přidat složku";
 "watch.configuration.add_item.title" = "Přidat položku";
-"watch.configuration.folder.default_name" = "Folder";
-"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.folder.default_name" = "Složka";
+"watch.configuration.folder_name.title" = "Název složky";
 "watch.configuration.items.title" = "Položky";
-"watch.configuration.new_folder.title" = "New Folder";
+"watch.configuration.new_folder.title" = "Nová složka";
 "watch.configuration.save.title" = "Uložit";
 "watch.configuration.show_assist.title" = "Zobrazit Assist";
 "watch.configurator.delete.button" = "Smazat komplikaci";
