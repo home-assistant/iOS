@@ -325,16 +325,18 @@ struct ConnectionSettingsView: View {
                 .buttonStyle(.plain)
             }
 
-            Button {
-                showSecurityLevelPicker = true
-            } label: {
-                NavigationRow(
-                    title: L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title,
-                    value: viewModel.securityLevel.description
-                )
-                .contentShape(Rectangle())
+            if viewModel.shouldShowSecurityLevelPicker {
+                Button {
+                    showSecurityLevelPicker = true
+                } label: {
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title,
+                        value: viewModel.securityLevel.description
+                    )
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
 
             Button {
                 viewModel.updateAppDatabase()

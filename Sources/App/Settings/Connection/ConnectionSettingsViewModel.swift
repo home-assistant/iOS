@@ -50,6 +50,14 @@ final class ConnectionSettingsViewModel: ObservableObject {
         server.info.version <= .updateLocationGPSOptional
     }
 
+    var shouldShowSecurityLevelPicker: Bool {
+        guard let internalURL = server.info.connection.address(for: .internal) else {
+            return false
+        }
+
+        return internalURL.scheme?.lowercased() == "http"
+    }
+
     // MARK: - Initialization
 
     init(server: Server) {
