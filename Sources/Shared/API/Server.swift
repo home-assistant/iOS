@@ -216,6 +216,7 @@ public struct ServerInfo: Codable, Equatable {
         return lhs.remoteName == rhs.remoteName
             && lhs.connection == rhs.connection
             && lhs.token == rhs.token
+            && lhs.hassDeviceId == rhs.hassDeviceId
             && lhs.version == rhs.version
             && lhs.sortOrder == rhs.sortOrder
             && areEqualSettings(lhs.settings, rhs.settings)
