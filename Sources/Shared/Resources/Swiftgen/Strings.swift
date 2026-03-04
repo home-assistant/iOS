@@ -59,13 +59,6 @@ public enum L10n {
   /// Yes
   public static var yesLabel: String { return L10n.tr("Localizable", "yes_label") }
 
-  public enum WebRTCPlayer {
-    public enum Experimental {
-      /// Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.
-      public static var disclaimer: String { return L10n.tr("Localizable", "WebRTC_player.experimental.disclaimer") }
-    }
-  }
-
   public enum About {
     /// About
     public static var title: String { return L10n.tr("Localizable", "about.title") }
@@ -1559,8 +1552,6 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "home_view.customization.summaries.title") }
       }
     }
-    public enum EmptyState {
-    }
     public enum Menu {
       /// Allow multiple selection
       public static var allowMultipleSelection: String { return L10n.tr("Localizable", "home_view.menu.allow_multiple_selection") }
@@ -1570,10 +1561,6 @@ public enum L10n {
       public static var reorder: String { return L10n.tr("Localizable", "home_view.menu.reorder") }
       /// Settings
       public static var settings: String { return L10n.tr("Localizable", "home_view.menu.settings") }
-    }
-    public enum Navigation {
-      public enum Subtitle {
-      }
     }
     public enum Summaries {
       /// %li active
@@ -2590,10 +2577,6 @@ public enum L10n {
   }
 
   public enum RoomView {
-    public enum ContextMenu {
-    }
-    public enum EmptyState {
-    }
     public enum Section {
       /// Hidden
       public static var hidden: String { return L10n.tr("Localizable", "room_view.section.hidden") }

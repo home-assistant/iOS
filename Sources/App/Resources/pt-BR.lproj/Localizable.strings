@@ -1,4 +1,3 @@
-"WebRTC_player.experimental.disclaimer" = "Observação: O player de vídeo WebRTC nativo é atualmente um recurso experimental. O áudio pode não funcionar e a permissão e o uso do microfone podem ser solicitados mesmo quando não estiverem em uso. Use a interface do player web para opções avançadas e reprodução confiável.";
 "about.acknowledgements.title" = "Agradecimentos";
 "about.beta.title" = "Inscreva-se no Beta";
 "about.chat.title" = "Chat";

@@ -102,7 +102,7 @@ struct CameraPlayerView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, DesignSystem.Spaces.two)
-                .padding(.top, DesignSystem.Spaces.one)
+                .padding(.top, DesignSystem.Spaces.half)
         }
     }
 

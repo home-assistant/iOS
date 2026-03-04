@@ -1,4 +1,3 @@
-"WebRTC_player.experimental.disclaimer" = "Bemærk: Den indbyggede WebRTC-videoafspiller er i øjeblikket en eksperimentel funktion. Lyden fungerer muligvis ikke, og der kan blive bedt om tilladelse til at bruge mikrofonen, selv om den ikke bruges. Brug venligst webafspillerens interface til avancerede indstillinger og pålidelig afspilning.";
 "about.acknowledgements.title" = "Anerkendelser";
 "about.beta.title" = "Deltag i beta";
 "about.chat.title" = "Chat";

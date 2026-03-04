@@ -1,4 +1,3 @@
-"WebRTC_player.experimental.disclaimer" = "Let op: de native WebRTC-videospeler is momenteel een experimentele functie. Audio werkt mogelijk niet en toestemming voor microfoongebruik kan worden gevraagd, ook al is de speler niet in gebruik. Gebruik de webplayerinterface voor geavanceerde opties en betrouwbare weergave.";
 "about.acknowledgements.title" = "Met dank aan";
 "about.beta.title" = "Deelnemen aan bèta";
 "about.chat.title" = "Chat";

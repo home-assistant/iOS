@@ -50,10 +50,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                ZStack(alignment: .topTrailing) {
-                    player
-                    controls
-                }
+                player
                 errorView
             }
             .background(.black)
@@ -189,17 +186,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         .onTapGesture {
             showControlsTemporarily()
         }
-    }
-
-    private var controls: some View {
-        WebRTCVideoPlayerViewControls(
-            close: { dismiss() },
-            isMuted: viewModel.isMuted,
-            toggleMute: { viewModel.toggleMute() }
-        )
-        .transition(.opacity)
-        .animation(.easeInOut, value: controlsVisible.wrappedValue)
-        .opacity(controlsVisible.wrappedValue || !isVideoPlaying ? 1.0 : 0.0)
     }
 
     private func showControlsTemporarily() {

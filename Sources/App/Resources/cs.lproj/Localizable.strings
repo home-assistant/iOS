@@ -1,4 +1,3 @@
-"WebRTC_player.experimental.disclaimer" = "Poznámka: Nativní přehrávač videa s WebRTC je v současné době experimentální funkcí, zvuk nemusí fungovat a může být vyžadováno povolení k používání mikrofonu, i když se nepoužívá. Pro pokročilé volby a spolehlivé přehrávání použijte rozhraní webového přehrávače.";
 "about.acknowledgements.title" = "Poděkování";
 "about.beta.title" = "Připojte se k beta verzi";
 "about.chat.title" = "Chat";
