@@ -75,7 +75,6 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenSwitch()
         #if DEBUG
         ControlOpenCamerasList()
-        ControlOpenExperimentalDashboard()
         #endif
 
         // Widgets
