@@ -48,6 +48,7 @@ final class PlaybackOnlyRTCAudioDevice: NSObject, RTCAudioDevice {
     func terminateDevice() -> Bool {
         _ = stopPlayout()
         disposeAudioUnit()
+        try? AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
         delegateRef = nil
         isInitialized = false
         return true
