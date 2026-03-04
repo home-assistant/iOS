@@ -1017,6 +1017,25 @@ public class HomeAssistantAPI {
             }
         }
     }
+
+    public func profilePicture(completion: @escaping (UIImage?) -> Void) {
+        profilePictureURL { [weak self] url in
+            guard let self, let url else {
+                completion(nil)
+                return
+            }
+
+            manager.download(url).validate().responseData { response in
+                switch response.result {
+                case let .success(data):
+                    completion(UIImage(data: data))
+                case let .failure(error):
+                    Current.Log.error("Failed to download profile picture: \(error)")
+                    completion(nil)
+                }
+            }
+        }
+    }
 }
 
 #if !os(watchOS)
