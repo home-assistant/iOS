@@ -1560,29 +1560,19 @@ public enum L10n {
       }
     }
     public enum EmptyState {
-      /// No entities found
-      public static var noEntities: String { return L10n.tr("Localizable", "home_view.empty_state.no_entities") }
     }
     public enum Menu {
       /// Allow multiple selection
       public static var allowMultipleSelection: String { return L10n.tr("Localizable", "home_view.menu.allow_multiple_selection") }
       /// Customize
       public static var customize: String { return L10n.tr("Localizable", "home_view.menu.customize") }
-      /// No sections available
-      public static var noSectionsAvailable: String { return L10n.tr("Localizable", "home_view.menu.no_sections_available") }
-      /// Open web UI
-      public static var openWebUi: String { return L10n.tr("Localizable", "home_view.menu.open_web_ui") }
       /// Reorder
       public static var reorder: String { return L10n.tr("Localizable", "home_view.menu.reorder") }
       /// Settings
       public static var settings: String { return L10n.tr("Localizable", "home_view.menu.settings") }
-      /// Show All
-      public static var showAll: String { return L10n.tr("Localizable", "home_view.menu.show_all") }
     }
     public enum Navigation {
       public enum Subtitle {
-        /// Experimental feature
-        public static var experimental: String { return L10n.tr("Localizable", "home_view.navigation.subtitle.experimental") }
       }
     }
     public enum Summaries {
@@ -1593,8 +1583,6 @@ public enum L10n {
       /// Summaries
       public static var title: String { return L10n.tr("Localizable", "home_view.summaries.title") }
       public enum Covers {
-        /// All closed
-        public static var allClosed: String { return L10n.tr("Localizable", "home_view.summaries.covers.all_closed") }
         /// %li open
         public static func countOpen(_ p1: Int) -> String {
           return L10n.tr("Localizable", "home_view.summaries.covers.count_open", p1)
@@ -1603,8 +1591,6 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "home_view.summaries.covers.title") }
       }
       public enum Lights {
-        /// All off
-        public static var allOff: String { return L10n.tr("Localizable", "home_view.summaries.lights.all_off") }
         /// %li on
         public static func countOn(_ p1: Int) -> String {
           return L10n.tr("Localizable", "home_view.summaries.lights.count_on", p1)
@@ -2605,12 +2591,8 @@ public enum L10n {
 
   public enum RoomView {
     public enum ContextMenu {
-      /// Unhide
-      public static var unhide: String { return L10n.tr("Localizable", "room_view.context_menu.unhide") }
     }
     public enum EmptyState {
-      /// No entities in this room
-      public static var noEntities: String { return L10n.tr("Localizable", "room_view.empty_state.no_entities") }
     }
     public enum Section {
       /// Hidden
