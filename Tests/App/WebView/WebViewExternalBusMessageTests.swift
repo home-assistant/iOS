@@ -23,6 +23,10 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             WebViewExternalBusMessage.assistShow.rawValue,
             "assist/show"
         )
+        XCTAssertEqual(
+            WebViewExternalBusMessage.voiceDeviceSettingsShow.rawValue,
+            "voice_device_settings/show"
+        )
         XCTAssertEqual(WebViewExternalBusMessage.scanForImprov.rawValue, "improv/scan")
         XCTAssertEqual(WebViewExternalBusMessage.improvConfigureDevice.rawValue, "improv/configure_device")
         XCTAssertEqual(WebViewExternalBusMessage.focusElement.rawValue, "focus_element")
@@ -31,7 +35,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.entityAddToGetActions.rawValue, "entity/add_to/get_actions")
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 21)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 22)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -64,6 +68,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasBarCodeScanner",
             "canTransferThreadCredentialsToKeychain",
             "hasAssist",
+            "hasVoiceDeviceSettings",
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",

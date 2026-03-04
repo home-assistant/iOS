@@ -170,4 +170,17 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         XCTAssertTrue(mockWebViewController.overlayedController is UIHostingController<AssistView>)
     }
+
+    @MainActor func testHandleExternalMessageOpenVoiceDeviceSettingsShowsSettings() {
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "voice_device_settings/show",
+        ]
+
+        sut.handleExternalMessage(dictionary)
+
+        XCTAssertNotNil(mockWebViewController.overlayedController)
+    }
 }

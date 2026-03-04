@@ -20,6 +20,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case barCodeScannerClose = "bar_code/close"
     case barCodeScannerNotify = "bar_code/notify"
     case assistShow = "assist/show"
+    case voiceDeviceSettingsShow = "voice_device_settings/show"
     case scanForImprov = "improv/scan"
     case improvConfigureDevice = "improv/configure_device"
     case focusElement = "focus_element"
@@ -38,6 +39,12 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canTransferThreadCredentialsToKeychain": Current.matter
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
+            "hasVoiceDeviceSettings": {
+                if #available(iOS 26.0, *) {
+                    return !Current.isCatalyst
+                }
+                return false
+            }(),
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
