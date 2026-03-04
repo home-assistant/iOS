@@ -1,4 +1,3 @@
-"WebRTC_player.experimental.disclaimer" = "Hinweis: Der native WebRTC-Videoplayer ist derzeit eine experimentelle Funktion. Die Audiowiedergabe funktioniert möglicherweise nicht, und es kann sein, dass die Berechtigung zur Nutzung des Mikrofons angefordert wird, auch wenn es nicht verwendet wird. Bitte verwende die Webplayer-Schnittstelle für erweiterte Optionen und eine zuverlässige Wiedergabe.";
 "about.acknowledgements.title" = "Danksagungen";
 "about.beta.title" = "Beta beitreten";
 "about.chat.title" = "Chat";

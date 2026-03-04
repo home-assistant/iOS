@@ -1,4 +1,3 @@
-"WebRTC_player.experimental.disclaimer" = "注：ネイティブWebRTCビデオプレーヤーは現在試験的な機能です。音声が機能しない場合があります。また、マイクを使用していない場合でも、マイクの許可と使用許可を求められる場合があります。高度なオプションや安定した再生には、ウェブプレーヤーインターフェースをご利用ください。";
 "about.acknowledgements.title" = "謝辞";
 "about.beta.title" = "ベータ版に参加";
 "about.chat.title" = "チャット";

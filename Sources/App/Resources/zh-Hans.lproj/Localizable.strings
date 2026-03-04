@@ -1,4 +1,3 @@
-"WebRTC_player.experimental.disclaimer" = "注意：原生 WebRTC 视频播放器目前处于实验性功能，音频可能无法正常工作，并且即使未使用麦克风也可能会请求麦克风权限和使用权限。请使用网页播放器界面来获取高级选项并获得可靠的播放效果。";
 "about.acknowledgements.title" = "致谢";
 "about.beta.title" = "加入测试";
 "about.chat.title" = "聊天";

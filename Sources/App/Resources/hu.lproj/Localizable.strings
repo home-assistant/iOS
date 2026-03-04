@@ -1,4 +1,3 @@
-"WebRTC_player.experimental.disclaimer" = "Megjegyzés: A beépített WebRTC videólejátszó jelenleg kísérleti funkció, előfordulhat, hogy a hang nem működik, illetve a mikrofon engedélyezését is kérheti akkor is, ha az nincs használatban. Használja a webes lejátszót a részletes beállításokhoz és a megbízható lejátszáshoz.";
 "about.acknowledgements.title" = "Köszönetnyilvánítás";
 "about.beta.title" = "Csatlakozás bétához";
 "about.chat.title" = "Csevegés";
