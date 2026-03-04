@@ -183,6 +183,15 @@ public final class ClientCertificateManager {
     /// Create a URLCredential from a stored certificate
     public func urlCredential(for certificate: ClientCertificate) throws -> URLCredential {
         let identity = try retrieveIdentity(for: certificate)
+        var leafCertificate: SecCertificate?
+        let status = SecIdentityCopyCertificate(identity, &leafCertificate)
+
+        if status == errSecSuccess, let leafCertificate {
+            // Include the leaf certificate so TLS client-auth always sends a non-empty certificate list.
+            return URLCredential(identity: identity, certificates: [leafCertificate], persistence: .forSession)
+        }
+
+        Current.Log.warning("Failed to copy client certificate from identity (\(status)); falling back to identity-only credential")
         return URLCredential(identity: identity, certificates: nil, persistence: .forSession)
     }
 
