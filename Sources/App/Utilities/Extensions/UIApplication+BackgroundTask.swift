@@ -21,7 +21,13 @@ private extension UIApplication {
             withName: name,
             beginBackgroundTask: { name, expirationHandler in
                 let identifier = beginBackgroundTask(withName: name, expirationHandler: expirationHandler)
-                let remaining = backgroundTimeRemaining < 100 ? backgroundTimeRemaining : nil
+                let remaining: TimeInterval?
+                if Thread.isMainThread {
+                    let timeRemaining = backgroundTimeRemaining
+                    remaining = timeRemaining < 100 ? timeRemaining : nil
+                } else {
+                    remaining = nil
+                }
                 return (identifier == .invalid ? nil : identifier, remaining)
             }, endBackgroundTask: { identifier in
                 self.endBackgroundTask(identifier)
