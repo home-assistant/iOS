@@ -156,8 +156,10 @@ public class HomeAssistantAPI {
                         completion(.success($0.0))
                     }.catch { error in
                         let errorType = String(reflecting: type(of: error))
-                        Current.Log.error("HAKit token fetch failed with error type: \(errorType)")
-                        completion(.failure(TokenFetchFailure(underlyingType: errorType)))
+                        let errorDescription = String(describing: error)
+                        Current.Log.error("HAKit token fetch failed with error type: \(errorType), error: \(errorDescription)")
+                        let underlyingInfo = "\(errorType): \(errorDescription)"
+                        completion(.failure(TokenFetchFailure(underlyingType: underlyingInfo)))
                     }
                 }
             ),
