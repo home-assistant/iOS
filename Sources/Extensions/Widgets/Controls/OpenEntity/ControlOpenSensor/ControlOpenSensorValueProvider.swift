@@ -82,21 +82,9 @@ struct ControlOpenSensorConfiguration: ControlConfigurationIntent {
 struct SensorEntityOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
         let entities = ControlEntityProvider(domains: [.sensor, .binarySensor]).getEntities()
-
-        return .init(sections: entities.map { (key: Server, value: [HAAppEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value.map { entity in
-                    HAAppEntityAppIntentEntity(
-                        id: entity.id,
-                        entityId: entity.entityId,
-                        serverId: entity.serverId,
-                        serverName: key.info.name,
-                        displayString: entity.name,
-                        iconName: entity.icon ?? SFSymbol.eye.rawValue
-                    )
-                }
-            )
-        })
+        return makeHAEntityIntentItemCollection(
+            entities: entities,
+            defaultIconName: SFSymbol.eye.rawValue
+        )
     }
 }
