@@ -178,6 +178,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 handleEntityAddTo(entityId: entityId, appPayload: appPayload)
+            case .cameraPlayerShow:
+                guard #available(iOS 16.0, *) else { return }
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received camera/show but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -603,6 +610,22 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         } catch {
             Current.Log.error("Failed to decode entity add to action: \(error)")
         }
+    }
+
+    @available(iOS 16.0, *)
+    private func showCameraPlayer(entityId: String, cameraName: String?) {
+        guard let webViewController else {
+            Current.Log.error("WebViewController not available while opening camera player")
+            return
+        }
+
+        let view = CameraPlayerView(
+            server: webViewController.server,
+            cameraEntityId: entityId,
+            cameraName: cameraName
+        ).embeddedInHostingController()
+        view.modalPresentationStyle = .overFullScreen
+        webViewController.presentOverlayController(controller: view, animated: true)
     }
 }
 

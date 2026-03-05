@@ -27,6 +27,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case toastHide = "toast/hide"
     case entityAddToGetActions = "entity/add_to/get_actions"
     case entityAddTo = "entity/add_to"
+    case cameraPlayerShow = "camera/show"
 
     @MainActor static var configResult: [String: Any] {
         [
@@ -38,6 +39,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canTransferThreadCredentialsToKeychain": Current.matter
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
+            "hasCameraPlayer": true,
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
