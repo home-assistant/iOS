@@ -24,8 +24,8 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "assist/show"
         )
         XCTAssertEqual(
-            WebViewExternalBusMessage.voiceDeviceSettingsShow.rawValue,
-            "voice_device_settings/show"
+            WebViewExternalBusMessage.assistSettings.rawValue,
+            "assist/settings"
         )
         XCTAssertEqual(WebViewExternalBusMessage.scanForImprov.rawValue, "improv/scan")
         XCTAssertEqual(WebViewExternalBusMessage.improvConfigureDevice.rawValue, "improv/configure_device")

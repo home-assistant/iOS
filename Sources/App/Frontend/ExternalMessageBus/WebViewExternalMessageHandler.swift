@@ -139,7 +139,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     pipeline: pipelineId ?? "",
                     autoStartRecording: startListening ?? false
                 )
-            case .voiceDeviceSettingsShow:
+            case .assistSettings:
                 showAssistSettingsViewController()
             case .scanForImprov:
                 scanImprov()
@@ -204,10 +204,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     @MainActor
     private func showAssistSettingsViewController() {
-        guard #available(iOS 26.0, *), !Current.isCatalyst else {
-            showSettingsViewController()
-            return
-        }
         let assistSettingsView = AssistSettingsView().embeddedInHostingController()
         webViewController?.presentOverlayController(controller: assistSettingsView, animated: true)
     }

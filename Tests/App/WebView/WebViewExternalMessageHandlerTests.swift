@@ -176,7 +176,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "id": 1,
             "message": "",
             "command": "",
-            "type": "voice_device_settings/show",
+            "type": "assist/settings",
         ]
 
         sut.handleExternalMessage(dictionary)

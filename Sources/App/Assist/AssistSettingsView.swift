@@ -4,7 +4,6 @@ import SwiftUI
 
 // MARK: - Settings View
 
-@available(iOS 26.0, *)
 struct AssistSettingsView: View {
     @StateObject private var viewModel = AssistSettingsViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -30,7 +29,7 @@ struct AssistSettingsView: View {
                         }
                     }
                 } header: {
-                    Label(L10n.Assist.Settings.Labs.header, systemSymbol: .flaskFill)
+                    Label(L10n.Assist.Settings.Labs.header, systemSymbol: .exclamationmarkTriangle)
                 } footer: {
                     Text(L10n.Assist.Settings.ModernUi.footer)
                 }
