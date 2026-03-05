@@ -1135,12 +1135,12 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "watch.config.migration_error.failed_create_new_config" = "Nem sikerült elmenteni a kezdő watch konfigurációt, hiba: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Nem sikerült a műveletek migrálása a watch konfigurációba, hiba: %@";
 "watch.config.migration_error.failed_to_save" = "Nem sikerült elmenteni az új Watch konfigurációt, hiba: %@";
-"watch.configuration.add_folder.title" = "Add Folder";
+"watch.configuration.add_folder.title" = "Mappa hozzáadása";
 "watch.configuration.add_item.title" = "Elem hozzáadása";
-"watch.configuration.folder.default_name" = "Folder";
-"watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.folder.default_name" = "Mappa";
+"watch.configuration.folder_name.title" = "Mappa neve";
 "watch.configuration.items.title" = "Tételek";
-"watch.configuration.new_folder.title" = "New Folder";
+"watch.configuration.new_folder.title" = "Új mappa";
 "watch.configuration.save.title" = "Mentés";
 "watch.configuration.show_assist.title" = "Assist megjelenítése";
 "watch.configurator.delete.button" = "Modul törlése";
