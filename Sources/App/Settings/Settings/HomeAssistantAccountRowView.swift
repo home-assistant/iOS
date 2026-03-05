@@ -7,7 +7,7 @@ struct HomeAssistantAccountRowView: View {
 
     @State private var serverName: String = ""
     @State private var userName: String = ""
-    @State private var profilePictureURL: URL?
+    @State private var profilePicture: UIImage?
     @State private var serverObserver: HACancellable?
 
     private var imageSize: CGFloat = 40
@@ -18,20 +18,21 @@ struct HomeAssistantAccountRowView: View {
 
     var body: some View {
         HStack {
-            AsyncImage(url: profilePictureURL) { image in
-                image
-                    .resizable()
-                    .frame(width: imageSize, height: imageSize)
-                    .clipShape(Circle())
-            } placeholder: {
-                Circle()
-                    .fill(.haPrimary)
-                    .frame(width: imageSize, height: imageSize)
-                    .overlay(
-                        Text(serverName.prefix(1).uppercased())
-                            .foregroundColor(.white)
-                    )
+            Group {
+                if let profilePicture {
+                    Image(uiImage: profilePicture)
+                        .resizable()
+                } else {
+                    Circle()
+                        .fill(.haPrimary)
+                        .overlay(
+                            Text(serverName.prefix(1).uppercased())
+                                .foregroundColor(.white)
+                        )
+                }
             }
+            .frame(width: imageSize, height: imageSize)
+            .clipShape(Circle())
 
             VStack(alignment: .leading) {
                 Text(serverName)
@@ -65,8 +66,8 @@ struct HomeAssistantAccountRowView: View {
             userName = user.name.orEmpty
         }
 
-        Current.api(for: server)?.profilePictureURL { url in
-            profilePictureURL = url
+        Current.api(for: server)?.profilePicture { image in
+            profilePicture = image
         }
     }
 }

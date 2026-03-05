@@ -76,7 +76,7 @@ struct ServerSelectView: View {
 
 struct ServerSelectViewRow: View {
     @State private var userName: String = ""
-    @State private var profilePictureURL: URL?
+    @State private var profilePictureImage: UIImage?
     @State private var selected = false
 
     let server: Server
@@ -111,16 +111,18 @@ struct ServerSelectViewRow: View {
     }
 
     private var profilePicture: some View {
-        AsyncImage(url: profilePictureURL) { image in
-            image
-                .resizable()
-        } placeholder: {
-            ZStack {
-                Image(systemSymbol: .circleFill)
+        Group {
+            if let profilePictureImage {
+                Image(uiImage: profilePictureImage)
                     .resizable()
-                Text(String(userName.first ?? Character(" ")))
-                    .foregroundStyle(.white)
-                    .font(.body.bold())
+            } else {
+                ZStack {
+                    Image(systemSymbol: .circleFill)
+                        .resizable()
+                    Text(String(userName.first ?? Character(" ")))
+                        .foregroundStyle(.white)
+                        .font(.body.bold())
+                }
             }
         }
         .frame(width: 40, height: 40)
@@ -142,8 +144,8 @@ struct ServerSelectViewRow: View {
             userName = user.name.orEmpty
         }
 
-        Current.api(for: server)?.profilePictureURL { url in
-            profilePictureURL = url
+        Current.api(for: server)?.profilePicture { image in
+            profilePictureImage = image
         }
     }
 }

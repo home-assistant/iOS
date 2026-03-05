@@ -25,6 +25,14 @@ public class HomeAssistantAPI {
         case unknown
     }
 
+    private struct TokenFetchFailure: LocalizedError {
+        let underlyingType: String
+
+        var errorDescription: String? {
+            "Token fetch failed (\(underlyingType))"
+        }
+    }
+
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
 
     public private(set) var manager: Alamofire.Session!
@@ -146,8 +154,13 @@ public class HomeAssistantAPI {
                 fetchAuthToken: { completion in
                     tokenManager.bearerToken.done {
                         completion(.success($0.0))
-                    }.catch {
-                        completion(.failure($0))
+                    }.catch { error in
+                        let errorType = String(reflecting: type(of: error))
+                        let errorDescription = String(describing: error)
+                        Current.Log
+                            .error("HAKit token fetch failed with error type: \(errorType), error: \(errorDescription)")
+                        let underlyingInfo = "\(errorType): \(errorDescription)"
+                        completion(.failure(TokenFetchFailure(underlyingType: underlyingInfo)))
                     }
                 }
             ),
@@ -1014,6 +1027,25 @@ public class HomeAssistantAPI {
                 }
 
                 completion(url)
+            }
+        }
+    }
+
+    public func profilePicture(completion: @escaping (UIImage?) -> Void) {
+        profilePictureURL { [weak self] url in
+            guard let self, let url else {
+                completion(nil)
+                return
+            }
+
+            manager.download(url).validate().responseData { response in
+                switch response.result {
+                case let .success(data):
+                    completion(UIImage(data: data))
+                case let .failure(error):
+                    Current.Log.error("Failed to download profile picture: \(error)")
+                    completion(nil)
+                }
             }
         }
     }
