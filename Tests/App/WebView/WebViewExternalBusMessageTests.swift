@@ -68,7 +68,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasBarCodeScanner",
             "canTransferThreadCredentialsToKeychain",
             "hasAssist",
-            "hasVoiceDeviceSettings",
+            "hasAssistSettings",
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",
