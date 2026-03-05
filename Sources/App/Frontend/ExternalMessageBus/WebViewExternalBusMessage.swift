@@ -39,7 +39,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canTransferThreadCredentialsToKeychain": Current.matter
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
-            "hasVoiceDeviceSettings": true,
+            "hasAssistSettings": true,
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
