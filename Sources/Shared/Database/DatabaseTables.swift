@@ -170,8 +170,6 @@ public enum DatabaseTables {
     public enum AssistConfiguration: String, CaseIterable {
         case id
         case enableOnDeviceSTT
-        case enableModernUI
-        case theme
         case muteTTS
     }
 }
