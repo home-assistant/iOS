@@ -20,6 +20,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case barCodeScannerClose = "bar_code/close"
     case barCodeScannerNotify = "bar_code/notify"
     case assistShow = "assist/show"
+    case assistSettings = "assist/settings"
     case scanForImprov = "improv/scan"
     case improvConfigureDevice = "improv/configure_device"
     case focusElement = "focus_element"
@@ -38,6 +39,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canTransferThreadCredentialsToKeychain": Current.matter
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
+            "hasAssistSettings": true,
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,

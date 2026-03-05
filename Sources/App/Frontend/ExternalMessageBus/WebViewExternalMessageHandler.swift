@@ -139,6 +139,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     pipeline: pipelineId ?? "",
                     autoStartRecording: startListening ?? false
                 )
+            case .assistSettings:
+                showAssistSettingsViewController()
             case .scanForImprov:
                 scanImprov()
             case .improvConfigureDevice:
@@ -198,6 +200,12 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             let settingsView = SettingsView().embeddedInHostingController()
             webViewController?.presentOverlayController(controller: settingsView, animated: true)
         }
+    }
+
+    @MainActor
+    private func showAssistSettingsViewController() {
+        let assistSettingsView = AssistSettingsView().embeddedInHostingController()
+        webViewController?.presentOverlayController(controller: assistSettingsView, animated: true)
     }
 
     func handleHaptic(_ hapticType: String) {
