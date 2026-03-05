@@ -758,7 +758,6 @@
 		426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
 		4263A6662EFB291D0089C338 /* LightIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427647212C8F36DB0027B21F /* LightIntent.swift */; };
 		4263A6672EFB29620089C338 /* IntentLightEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4276471D2C8F2F100027B21F /* IntentLightEntity.swift */; };
-		4263A6692EFB2F670089C338 /* ModernAssistBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4263A6682EFB2F670089C338 /* ModernAssistBackgroundView.swift */; };
 		42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */; };
 		426490682C0F1A49002155CC /* WatchAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490672C0F1A41002155CC /* WatchAssistView.swift */; };
 		4264906B2C0F1B5F002155CC /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
@@ -944,7 +943,6 @@
 		429C33C32F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
-		429D51C52EFA0E750014AD0D /* ModernAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51C42EFA0E750014AD0D /* ModernAssistView.swift */; };
 		42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */; };
 		42A1860A2E1D310D004B729A /* HATextField.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A186092E1D310D004B729A /* HATextField.test.swift */; };
 		42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2AB7F2C80751E00C5608D /* ControlAssist.swift */; };
@@ -2457,7 +2455,6 @@
 		4261EA9F2F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+WebKitDelegates.swift"; sourceTree = "<group>"; };
 		4261EAA12F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+ProtocolConformance.swift"; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
-		4263A6682EFB2F670089C338 /* ModernAssistBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernAssistBackgroundView.swift; sourceTree = "<group>"; };
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		426490672C0F1A41002155CC /* WatchAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistView.swift; sourceTree = "<group>"; };
 		4264906D2C0F1B8B002155CC /* WatchAssistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistViewModel.swift; sourceTree = "<group>"; };
@@ -2604,7 +2601,6 @@
 		429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPickerViewModel.test.swift; sourceTree = "<group>"; };
 		429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAUsagePredictionCommonControl.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
-		429D51C42EFA0E750014AD0D /* ModernAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernAssistView.swift; sourceTree = "<group>"; };
 		42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarButtonsConfigurator.swift; sourceTree = "<group>"; };
 		42A186092E1D310D004B729A /* HATextField.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.test.swift; sourceTree = "<group>"; };
 		42A2AB7F2C80751E00C5608D /* ControlAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAssist.swift; sourceTree = "<group>"; };
@@ -5903,8 +5899,6 @@
 				42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */,
 				429106882BA9D5F700D452F9 /* AssistView+Build.swift */,
 				42070EE72BAC43240031E96F /* AssistSession.swift */,
-				429D51C42EFA0E750014AD0D /* ModernAssistView.swift */,
-				4263A6682EFB2F670089C338 /* ModernAssistBackgroundView.swift */,
 			);
 			path = Assist;
 			sourceTree = "<group>";
@@ -9296,7 +9290,6 @@
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLView.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
-				4263A6692EFB2F670089C338 /* ModernAssistBackgroundView.swift in Sources */,
 				42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
@@ -9384,7 +9377,6 @@
 				42514C1E2F3E21B0008EB858 /* WidgetTodoListView.swift in Sources */,
 				429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
-				429D51C52EFA0E750014AD0D /* ModernAssistView.swift in Sources */,
 				42FF5E942E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */,
 				JARVIS0001000000000003 /* TodoListAppEntity.swift in Sources */,
 				JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */,
