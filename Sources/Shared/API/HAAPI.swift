@@ -549,7 +549,7 @@ public class HomeAssistantAPI {
         with(MobileAppRegistrationRequest()) {
             if let pushID = Current.settingsStore.pushID {
                 $0.AppData = [
-                    "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                    "push_url": "http://10.1.64.41:8090/push/send",
                     "push_token": pushID,
                 ]
             }

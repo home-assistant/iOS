@@ -80,6 +80,9 @@ dSYMs/
 # Local configuration overrides
 Configuration/HomeAssistant.overrides.xcconfig
 
+# APNs keys and Firebase configs (sensitive)
+keys_and_files/
+
 *.profraw
 Brewfile.lock.json
 vendor/bundle
