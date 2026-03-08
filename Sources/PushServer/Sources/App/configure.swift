@@ -8,9 +8,18 @@ import Vapor
 public func configure(_ app: Application) throws {
     if app.environment == .testing {
     } else {
+        let keyContents: String
+        if let keyPath = Environment.get("APNS_KEY_PATH") {
+            keyContents = try String(contentsOfFile: keyPath, encoding: .utf8)
+        } else if let envKey = Environment.get("APNS_KEY_CONTENTS") {
+            keyContents = envKey
+        } else {
+            fatalError("Either APNS_KEY_PATH or APNS_KEY_CONTENTS must be set")
+        }
+
         app.apns.configuration = try .init(
             authenticationMethod: .jwt(
-                key: .private(pem: Environment.get("APNS_KEY_CONTENTS")!),
+                key: .private(pem: keyContents),
                 keyIdentifier: .init(string: Environment.get("APNS_KEY_IDENTIFIER")!),
                 teamIdentifier: Environment.get("APNS_KEY_TEAM_IDENTIFIER")!
             ),
