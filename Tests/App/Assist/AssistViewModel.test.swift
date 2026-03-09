@@ -316,11 +316,27 @@ final class AssistViewModelTests: XCTestCase {
         sut = makeSut(speechSynthesizer: mockSynthesizer)
         sut.configuration.enableOnDeviceTTS = true
         sut.configuration.muteTTS = false
+        sut.inputText = "Turn on the lights"
+        sut.assistWithText(expectingTTS: true) // simulates voice-initiated (STT)
 
         sut.didReceiveIntentEndContent("Lights are on")
 
         XCTAssertTrue(mockSynthesizer.speakCalled)
         XCTAssertEqual(mockSynthesizer.lastSpokenText, "Lights are on")
+    }
+
+    @MainActor
+    func testOnDeviceTTS_doesNotSpeakWhenKeyboardInitiated() {
+        let mockSynthesizer = MockSpeechSynthesizer()
+        sut = makeSut(speechSynthesizer: mockSynthesizer)
+        sut.configuration.enableOnDeviceTTS = true
+        sut.configuration.muteTTS = false
+        sut.inputText = "Turn on the lights"
+        sut.assistWithText() // keyboard — expectingTTS defaults to false
+
+        sut.didReceiveIntentEndContent("Lights are on")
+
+        XCTAssertFalse(mockSynthesizer.speakCalled)
     }
 
     @MainActor

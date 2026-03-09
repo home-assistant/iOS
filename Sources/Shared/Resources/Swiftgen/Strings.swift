@@ -584,10 +584,20 @@ public enum L10n {
         public static var toggle: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.toggle") }
       }
       public enum OnDeviceTts {
+        /// Default
+        public static var defaultVoice: String { return L10n.tr("Localizable", "assist.settings.on_device_tts.default_voice") }
         /// Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.
         public static var footer: String { return L10n.tr("Localizable", "assist.settings.on_device_tts.footer") }
         /// On-device TTS
         public static var title: String { return L10n.tr("Localizable", "assist.settings.on_device_tts.title") }
+        /// Voice
+        public static var voice: String { return L10n.tr("Localizable", "assist.settings.on_device_tts.voice") }
+        public enum Quality {
+          /// Enhanced
+          public static var enhanced: String { return L10n.tr("Localizable", "assist.settings.on_device_tts.quality.enhanced") }
+          /// Premium
+          public static var premium: String { return L10n.tr("Localizable", "assist.settings.on_device_tts.quality.premium") }
+        }
       }
       public enum Section {
         public enum Experimental {

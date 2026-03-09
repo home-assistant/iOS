@@ -173,5 +173,6 @@ public enum DatabaseTables {
         case onDeviceSTTLocaleIdentifier
         case muteTTS
         case enableOnDeviceTTS
+        case onDeviceTTSVoiceIdentifier
     }
 }

@@ -12,6 +12,7 @@ struct AssistConfiguration: Codable, Identifiable, Equatable, PersistableRecord,
     var onDeviceSTTLocaleIdentifier: String? = nil
     var muteTTS: Bool = false
     var enableOnDeviceTTS: Bool = false
+    var onDeviceTTSVoiceIdentifier: String? = nil
 
     /// Custom row initializer to handle NULL values from migrated columns.
     init(row: Row) throws {
@@ -20,6 +21,7 @@ struct AssistConfiguration: Codable, Identifiable, Equatable, PersistableRecord,
         self.onDeviceSTTLocaleIdentifier = row[DatabaseTables.AssistConfiguration.onDeviceSTTLocaleIdentifier.rawValue]
         self.muteTTS = row[DatabaseTables.AssistConfiguration.muteTTS.rawValue] ?? false
         self.enableOnDeviceTTS = row[DatabaseTables.AssistConfiguration.enableOnDeviceTTS.rawValue] ?? false
+        self.onDeviceTTSVoiceIdentifier = row[DatabaseTables.AssistConfiguration.onDeviceTTSVoiceIdentifier.rawValue]
     }
 
     init(
@@ -27,13 +29,15 @@ struct AssistConfiguration: Codable, Identifiable, Equatable, PersistableRecord,
         enableOnDeviceSTT: Bool = false,
         onDeviceSTTLocaleIdentifier: String? = nil,
         muteTTS: Bool = false,
-        enableOnDeviceTTS: Bool = false
+        enableOnDeviceTTS: Bool = false,
+        onDeviceTTSVoiceIdentifier: String? = nil
     ) {
         self.id = id
         self.enableOnDeviceSTT = enableOnDeviceSTT
         self.onDeviceSTTLocaleIdentifier = onDeviceSTTLocaleIdentifier
         self.muteTTS = muteTTS
         self.enableOnDeviceTTS = enableOnDeviceTTS
+        self.onDeviceTTSVoiceIdentifier = onDeviceTTSVoiceIdentifier
     }
 
     static var config: AssistConfiguration {

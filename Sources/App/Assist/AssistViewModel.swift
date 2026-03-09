@@ -32,6 +32,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var configObservationCancellable: AnyDatabaseCancellable?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
+    private var voiceInitiatedRequest = false
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -92,6 +93,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
         audioPlayer.pause()
         stopStreaming()
+        voiceInitiatedRequest = expectingTTS
         let requestServerTTS = expectingTTS && !configuration.muteTTS && !configuration.enableOnDeviceTTS
         assistService.assist(source: .text(
             input: inputText,
@@ -147,6 +149,12 @@ final class AssistViewModel: NSObject, ObservableObject {
             onChange: { [weak self] newConfiguration in
                 guard let self else { return }
                 if let newConfiguration {
+                    if newConfiguration.onDeviceSTTLocaleIdentifier != configuration.onDeviceSTTLocaleIdentifier {
+                        speechTranscriber = nil
+                    }
+                    if newConfiguration.onDeviceTTSVoiceIdentifier != configuration.onDeviceTTSVoiceIdentifier {
+                        speechSynthesizer = nil
+                    }
                     configuration = newConfiguration
                     Current.Log.info("AssistConfiguration updated: \(newConfiguration)")
                 }
@@ -258,7 +266,8 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     private func speakWithOnDeviceTTS(_ text: String) {
         if speechSynthesizer == nil {
-            speechSynthesizer = SpeechSynthesizer()
+            let voiceIdentifier = configuration.onDeviceTTSVoiceIdentifier
+            speechSynthesizer = voiceIdentifier.map { SpeechSynthesizer(voiceIdentifier: $0) } ?? SpeechSynthesizer()
         }
 
         speechSynthesizer?.onFinished = { [weak self] in
@@ -370,6 +379,7 @@ extension AssistViewModel: AudioRecorderDelegate {
     func didStartRecording(with sampleRate: Double) {
         DispatchQueue.main.async { [weak self] in
             self?.isRecording = true
+            self?.voiceInitiatedRequest = true
             #if DEBUG
             self?.appendToChat(.init(content: "didStartRecording(with sampleRate: \(sampleRate)", itemType: .info))
             #endif
@@ -406,7 +416,7 @@ extension AssistViewModel: AssistServiceDelegate {
 
     func didReceiveIntentEndContent(_ content: String) {
         appendToChat(.init(content: content, itemType: .output))
-        if configuration.enableOnDeviceTTS, !configuration.muteTTS {
+        if configuration.enableOnDeviceTTS, !configuration.muteTTS, voiceInitiatedRequest {
             speakWithOnDeviceTTS(content)
         }
     }
