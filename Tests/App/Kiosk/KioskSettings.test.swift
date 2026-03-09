@@ -270,4 +270,3 @@ struct EnumDisplayNameTests {
         #expect(fullScreen.maxWidth == 1200)
     }
 }
-
