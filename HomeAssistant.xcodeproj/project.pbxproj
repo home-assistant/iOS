@@ -744,6 +744,7 @@
 		425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.test.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
+		4256A70D2F5ECBB3003D464F /* SpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */; };
 		425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425762742E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */; };
@@ -2448,6 +2449,7 @@
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
+		4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriber.swift; sourceTree = "<group>"; };
 		425762722E71A8B800AE5083 /* ModalCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalCloseButton.swift; sourceTree = "<group>"; };
 		425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneDelegate.swift; sourceTree = "<group>"; };
 		425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ScreenCaptureProtection.swift"; sourceTree = "<group>"; };
@@ -5047,6 +5049,14 @@
 			path = Domains;
 			sourceTree = "<group>";
 		};
+		4256A70B2F5ECBA9003D464F /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
 		4257EA912F1790DE00D81506 /* EntityPicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -5891,6 +5901,7 @@
 		42B94BD92B9606CD00DEE060 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				4256A70B2F5ECBA9003D464F /* Local */,
 				425C5A052CF756CF00206B5B /* Views */,
 				4291068A2BA9D77600D452F9 /* Audio */,
 				42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */,
@@ -7943,7 +7954,6 @@
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				42E5E2E42F38CEA30030BBEB /* XCRemoteSwiftPackageReference "SwiftMessages" */,
-				42465E7C2F5EC4ED0057C9A1 /* XCRemoteSwiftPackageReference "SpeechTranscriber" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -9209,6 +9219,7 @@
 				422F881A2D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
+				4256A70D2F5ECBB3003D464F /* SpeechTranscriber.swift in Sources */,
 				42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */,
 				119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */,
 				4210CD052F155D2600B71FB9 /* AssistSettingsViewModel.swift in Sources */,

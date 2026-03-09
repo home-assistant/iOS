@@ -9,6 +9,7 @@ struct AssistConfiguration: Codable, Identifiable, Equatable, FetchableRecord, P
 
     var id: String = AssistConfiguration.singletonID
     var enableOnDeviceSTT: Bool = false
+    var onDeviceSTTLocaleIdentifier: String? = nil
     var muteTTS: Bool = false
 
     static var config: AssistConfiguration {

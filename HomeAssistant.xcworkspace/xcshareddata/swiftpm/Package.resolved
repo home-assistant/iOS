@@ -1,5 +1,5 @@
 {
-  "originHash" : "10349b73f2d387d1d759f21cf5728e2317ca0f773da5910886881486bb828567",
+  "originHash" : "1ee0c6b9e2c94ac5f37c3886febf9000aea9b07c91a41ed586f43fd4122b5102",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -116,15 +116,6 @@
       "state" : {
         "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
         "version" : "2.4.0"
-      }
-    },
-    {
-      "identity" : "speechtranscriber",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/bgoncal/SpeechTranscriber",
-      "state" : {
-        "revision" : "71b22a15384c5f62b4b75d096aa012fb60254571",
-        "version" : "1.0.0"
       }
     },
     {
