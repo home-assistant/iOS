@@ -30,6 +30,9 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     private(set) var canSendAudioData = false
     private var configObservationCancellable: AnyDatabaseCancellable?
+    private var speechTranscriber: (any SpeechTranscriberProtocol)?
+    private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
+    private var voiceInitiatedRequest = false
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -40,7 +43,9 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder: AudioRecorderProtocol,
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
-        autoStartRecording: Bool
+        autoStartRecording: Bool,
+        speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
+        speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
     ) {
         self.server = server
         self.preferredPipelineId = preferredPipelineId
@@ -48,6 +53,8 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioPlayer = audioPlayer
         self.assistService = assistService
         self.autoStartRecording = autoStartRecording
+        self.speechTranscriber = speechTranscriber
+        self.speechSynthesizer = speechSynthesizer
         self.configuration = AssistConfiguration.config
         super.init()
 
@@ -59,14 +66,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
     }
 
-    func initialRoutine() {
+    @MainActor func initialRoutine() {
         AssistSession.shared.delegate = self
 
         loadCachedPipelines()
 
         if pipelines.isEmpty {
             fetchPipelines { [weak self] in
-                self?.checkForAutoRecordingAndStart()
+                Task { @MainActor in self?.checkForAutoRecordingAndStart() }
             }
         } else {
             checkForAutoRecordingAndStart()
@@ -77,32 +84,57 @@ final class AssistViewModel: NSObject, ObservableObject {
     func onDisappear() {
         audioRecorder.stopRecording()
         audioPlayer.pause()
+        speechSynthesizer?.stop()
     }
 
-    func assistWithText() {
+    @MainActor func assistWithText(expectingTTS: Bool = false) {
         guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return
         }
         audioPlayer.pause()
         stopStreaming()
-        assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId))
+        voiceInitiatedRequest = expectingTTS
+        let requestServerTTS = expectingTTS && !configuration.muteTTS && !configuration.enableOnDeviceTTS
+        assistService.assist(source: .text(
+            input: inputText,
+            pipelineId: preferredPipelineId,
+            expectTTS: requestServerTTS
+        ))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
     }
 
-    func assistWithAudio() {
-        audioPlayer.pause()
+    @MainActor func assistWithTextExpectingTTS() {
+        assistWithText(expectingTTS: true)
+    }
 
-        if isRecording {
-            stopStreaming()
-            return
+    @MainActor func assistWithAudio() {
+        if configuration.enableOnDeviceSTT {
+            if isRecording {
+                if !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    assistWithText()
+                } else {
+                    stopStreaming()
+                }
+                return
+            }
+            audioPlayer.pause()
+            inputText = ""
+            startOnDeviceTranscription()
+        } else {
+            audioPlayer.pause()
+
+            if isRecording {
+                stopStreaming()
+                return
+            }
+
+            // Remove text from input to make animation look better
+            inputText = ""
+
+            audioRecorder.startRecording()
+            // Wait until green light from recorder delegate 'didStartRecording'
         }
-
-        // Remove text from input to make animation look better
-        inputText = ""
-
-        audioRecorder.startRecording()
-        // Wait until green light from recorder delegate 'didStartRecording'
     }
 
     func subscribeForConfigChanges() {
@@ -118,6 +150,12 @@ final class AssistViewModel: NSObject, ObservableObject {
             onChange: { [weak self] newConfiguration in
                 guard let self else { return }
                 if let newConfiguration {
+                    if newConfiguration.onDeviceSTTLocaleIdentifier != configuration.onDeviceSTTLocaleIdentifier {
+                        speechTranscriber = nil
+                    }
+                    if newConfiguration.onDeviceTTSVoiceIdentifier != configuration.onDeviceTTSVoiceIdentifier {
+                        speechSynthesizer = nil
+                    }
                     configuration = newConfiguration
                     Current.Log.info("AssistConfiguration updated: \(newConfiguration)")
                 }
@@ -130,7 +168,7 @@ final class AssistViewModel: NSObject, ObservableObject {
             source: .audio(
                 pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
                 audioSampleRate: audioSampleRate,
-                tts: !configuration.muteTTS
+                tts: !configuration.muteTTS && !configuration.enableOnDeviceTTS
             )
         )
     }
@@ -150,7 +188,7 @@ final class AssistViewModel: NSObject, ObservableObject {
                 chatItems.removeLast()
             }
         } else {
-            if chatItems.last?.itemType == .typing {
+            if [.typing, .pending].contains(chatItems.last?.itemType) {
                 chatItems.removeLast()
             }
         }
@@ -198,7 +236,16 @@ final class AssistViewModel: NSObject, ObservableObject {
         preferredPipelineId = pipelineId
     }
 
-    func stopStreaming() {
+    @MainActor private func updatePendingTranscription(_ text: String) {
+        if chatItems.last?.itemType == .pending {
+            chatItems.removeLast()
+        }
+        if !text.isEmpty {
+            chatItems.append(.init(content: text, itemType: .pending))
+        }
+    }
+
+    @MainActor func stopStreaming() {
         isRecording = false
         canSendAudioData = false
 
@@ -206,10 +253,31 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
 
+        speechTranscriber?.stopListening()
+
+        // Remove pending transcription bubble if recording stopped without submitting
+        if chatItems.last?.itemType == .pending {
+            chatItems.removeLast()
+        }
+
         Current.Log.info("Stop recording audio for Assist")
     }
 
-    private func checkForAutoRecordingAndStart() {
+    // MARK: - On-Device TTS Methods
+
+    private func speakWithOnDeviceTTS(_ text: String) {
+        if speechSynthesizer == nil {
+            let voiceIdentifier = configuration.onDeviceTTSVoiceIdentifier
+            speechSynthesizer = voiceIdentifier.map { SpeechSynthesizer(voiceIdentifier: $0) } ?? SpeechSynthesizer()
+        }
+
+        speechSynthesizer?.onFinished = { [weak self] in
+            Task { @MainActor in self?.startRecordingAgainIfNeeded() }
+        }
+        speechSynthesizer?.speak(text)
+    }
+
+    @MainActor private func checkForAutoRecordingAndStart() {
         if autoStartRecording {
             Current.Log.info("Auto start recording triggered in Assist")
             autoStartRecording = false
@@ -233,7 +301,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         return prefixData + data
     }
 
-    private func startRecordingAgainIfNeeded() {
+    @MainActor private func startRecordingAgainIfNeeded() {
         if assistService.shouldStartListeningAgainAfterPlaybackEnd {
             assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
             assistWithAudio()
@@ -249,6 +317,54 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - On-Device Transcription Methods
+
+    @MainActor private func startOnDeviceTranscription() {
+        // Use a pre-injected transcriber (e.g. from tests) or create a production one.
+        if speechTranscriber == nil {
+            guard #available(iOS 17.0, *) else { return }
+            let localeIdentifier = configuration.onDeviceSTTLocaleIdentifier
+            speechTranscriber = localeIdentifier.map { SpeechTranscriber(localeIdentifier: $0) } ?? SpeechTranscriber()
+        }
+
+        guard let transcriber = speechTranscriber else { return }
+
+        transcriber.onTranscriptUpdate = { [weak self] text, isFinal in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.inputText = text
+                self.updatePendingTranscription(text)
+                if isFinal {
+                    self.assistWithTextExpectingTTS()
+                }
+            }
+        }
+
+        transcriber.onError = { [weak self] error in
+            Task { @MainActor [weak self] in
+                guard let self, self.isRecording else { return }
+                self.showError(message: error.localizedDescription)
+                self.stopStreaming()
+            }
+        }
+
+        transcriber.onListeningStateChange = { [weak self] listening in
+            Task { @MainActor [weak self] in
+                guard let self, !listening else { return }
+                self.isRecording = false
+            }
+        }
+
+        isRecording = true
+
+        Task { @MainActor in
+            do {
+                try await transcriber.startListening()
+            } catch {
+                self.showError(message: error.localizedDescription)
+                self.isRecording = false
+            }
+        }
+    }
 }
 
 extension AssistViewModel: AudioRecorderDelegate {
@@ -264,6 +380,7 @@ extension AssistViewModel: AudioRecorderDelegate {
     func didStartRecording(with sampleRate: Double) {
         DispatchQueue.main.async { [weak self] in
             self?.isRecording = true
+            self?.voiceInitiatedRequest = true
             #if DEBUG
             self?.appendToChat(.init(content: "didStartRecording(with sampleRate: \(sampleRate)", itemType: .info))
             #endif
@@ -290,7 +407,7 @@ extension AssistViewModel: AssistServiceDelegate {
 
     func didReceiveEvent(_ event: AssistEvent) {
         if [.sttEnd, .runEnd].contains(event), isRecording {
-            stopStreaming()
+            Task { @MainActor in self.stopStreaming() }
         }
     }
 
@@ -300,6 +417,9 @@ extension AssistViewModel: AssistServiceDelegate {
 
     func didReceiveIntentEndContent(_ content: String) {
         appendToChat(.init(content: content, itemType: .output))
+        if configuration.enableOnDeviceTTS, !configuration.muteTTS, voiceInitiatedRequest {
+            speakWithOnDeviceTTS(content)
+        }
     }
 
     func didReceiveGreenLightForAudioInput() {
@@ -307,13 +427,10 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
-        // Check if TTS is muted in settings
-        let muteTTS = UserDefaults.standard.bool(forKey: Self.ttsMuteKey)
-
-        if muteTTS {
+        if configuration.muteTTS {
             Current.Log.info("TTS is muted by user setting, skipping audio playback")
             // Check if we should continue the conversation (e.g., for follow-up questions)
-            startRecordingAgainIfNeeded()
+            Task { @MainActor in self.startRecordingAgainIfNeeded() }
             return
         }
 
@@ -329,10 +446,10 @@ extension AssistViewModel: AssistServiceDelegate {
 
 extension AssistViewModel: AssistSessionDelegate {
     func didRequestNewSession(_ context: AssistSessionContext) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             if context.server != server {
-                server = server
+                server = context.server
                 replaceAssistService(server: context.server)
             }
             preferredPipelineId = context.pipelineId
@@ -344,10 +461,10 @@ extension AssistViewModel: AssistSessionDelegate {
 
 extension AssistViewModel: AudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AudioPlayer) {
-        startRecordingAgainIfNeeded()
+        Task { @MainActor in startRecordingAgainIfNeeded() }
     }
 
     func volumeIsZero() {
-        startRecordingAgainIfNeeded()
+        Task { @MainActor in startRecordingAgainIfNeeded() }
     }
 }

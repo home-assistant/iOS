@@ -32,5 +32,6 @@ public struct AssistChatItem: Equatable, Identifiable {
         case typing
         case error
         case info
+        case pending
     }
 }

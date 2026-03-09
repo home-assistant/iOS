@@ -44,7 +44,11 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         intentCompletion = completion
         assistService = AssistService(server: server)
         assistService?.delegate = self
-        assistService?.assist(source: .text(input: intent.text ?? "", pipelineId: intent.pipeline?.identifier ?? nil))
+        assistService?.assist(source: .text(
+            input: intent.text ?? "",
+            pipelineId: intent.pipeline?.identifier ?? nil,
+            expectTTS: false
+        ))
     }
 
     func resolvePipeline(

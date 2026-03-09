@@ -26,7 +26,7 @@ struct ChatBubbleView: View {
 
     private func backgroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
         switch itemType {
-        case .input:
+        case .input, .pending:
             .haPrimary
         case .output, .typing:
             .secondaryBackground
@@ -59,7 +59,7 @@ struct ChatBubbleView: View {
 
     private func alignmentForChatItemType(_ itemType: AssistChatItem.ItemType) -> Alignment {
         switch itemType {
-        case .input:
+        case .input, .pending:
             .trailing
         case .output, .typing:
             .leading
@@ -70,7 +70,7 @@ struct ChatBubbleView: View {
 
     private func roundedCornersForChatItemType(_ itemType: AssistChatItem.ItemType) -> UIRectCorner {
         switch itemType {
-        case .input:
+        case .input, .pending:
             [.topLeft, .topRight, .bottomLeft]
         case .output, .typing:
             [.topLeft, .topRight, .bottomRight]

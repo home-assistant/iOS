@@ -16,7 +16,10 @@ struct AssistConfigurationTable: DatabaseTableProtocol {
                 try db.create(table: tableName) { table in
                     table.primaryKey(DatabaseTables.AssistConfiguration.id.rawValue, .text)
                     table.column(DatabaseTables.AssistConfiguration.enableOnDeviceSTT.rawValue, .boolean)
+                    table.column(DatabaseTables.AssistConfiguration.onDeviceSTTLocaleIdentifier.rawValue, .text)
                     table.column(DatabaseTables.AssistConfiguration.muteTTS.rawValue, .boolean)
+                    table.column(DatabaseTables.AssistConfiguration.enableOnDeviceTTS.rawValue, .boolean)
+                    table.column(DatabaseTables.AssistConfiguration.onDeviceTTSVoiceIdentifier.rawValue, .text)
                 }
             }
         } else {
