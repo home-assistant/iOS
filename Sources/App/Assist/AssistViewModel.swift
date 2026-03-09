@@ -30,7 +30,7 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     private(set) var canSendAudioData = false
     private var configObservationCancellable: AnyDatabaseCancellable?
-    private var speechTranscriber: Any?
+    private var speechTranscriber: (any SpeechTranscriberProtocol)?
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -87,7 +87,11 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer.pause()
         stopStreaming()
         if expectingTTS {
-            assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: !configuration.muteTTS))
+            assistService.assist(source: .text(
+                input: inputText,
+                pipelineId: preferredPipelineId,
+                expectTTS: !configuration.muteTTS
+            ))
         } else {
             assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: false))
         }
@@ -237,9 +241,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
 
-        if #available(iOS 17.0, *) {
-            (speechTranscriber as? SpeechTranscriber)?.stopListening()
-        }
+        speechTranscriber?.stopListening()
 
         // Remove pending transcription bubble if recording stopped without submitting
         if chatItems.last?.itemType == .pending {
@@ -325,12 +327,12 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         isRecording = true
 
-        Task {
+        Task { @MainActor in
             do {
                 try await transcriber.startListening()
             } catch {
-                showError(message: error.localizedDescription)
-                isRecording = false
+                self.showError(message: error.localizedDescription)
+                self.isRecording = false
             }
         }
     }
@@ -392,10 +394,7 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
-        // Check if TTS is muted in settings
-        let muteTTS = UserDefaults.standard.bool(forKey: Self.ttsMuteKey)
-
-        if muteTTS {
+        if configuration.muteTTS {
             Current.Log.info("TTS is muted by user setting, skipping audio playback")
             // Check if we should continue the conversation (e.g., for follow-up questions)
             Task { @MainActor in self.startRecordingAgainIfNeeded() }
@@ -417,7 +416,7 @@ extension AssistViewModel: AssistSessionDelegate {
         Task { @MainActor [weak self] in
             guard let self else { return }
             if context.server != server {
-                server = server
+                server = context.server
                 replaceAssistService(server: context.server)
             }
             preferredPipelineId = context.pipelineId

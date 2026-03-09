@@ -2,22 +2,35 @@ import AVFoundation
 import Foundation
 import Speech
 
+/// Abstraction over the on-device speech transcriber so the view model can hold a
+/// strongly-typed reference without an `@available` guard on the stored property.
+@MainActor
+protocol SpeechTranscriberProtocol: AnyObject {
+    var onTranscriptUpdate: ((String, Bool) -> Void)? { get set }
+    var onError: ((Error) -> Void)? { get set }
+    var onListeningStateChange: ((Bool) -> Void)? { get set }
+    func startListening() async throws
+    func stopListening()
+}
+
 /// A speech-to-text transcriber using Apple's Speech framework.
 /// Supports real-time transcription with partial results.
 @available(iOS 17.0, *)
 @MainActor
-public final class SpeechTranscriber: ObservableObject {
+public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtocol {
     // MARK: - Types
 
     public enum TranscriberError: Error, LocalizedError {
-        case notAuthorized
+        case microphoneNotAuthorized
+        case speechRecognitionNotAuthorized
         case notAvailable
         case audioEngineError
         case recognizerError(String)
 
         public var errorDescription: String? {
             switch self {
-            case .notAuthorized: return "Microphone permission denied"
+            case .microphoneNotAuthorized: return "Microphone permission denied"
+            case .speechRecognitionNotAuthorized: return "Speech recognition permission denied"
             case .notAvailable: return "Speech recognition not available"
             case .audioEngineError: return "Audio engine error"
             case let .recognizerError(msg): return msg
@@ -49,13 +62,13 @@ public final class SpeechTranscriber: ObservableObject {
     }
 
     /// Called when transcription updates (partial or final)
-    @Published public var onTranscriptUpdate: ((String, Bool) -> Void)?
+    public var onTranscriptUpdate: ((String, Bool) -> Void)?
 
     /// Called when an error occurs
-    @Published public var onError: ((Error) -> Void)?
+    public var onError: ((Error) -> Void)?
 
     /// Called when listening state changes
-    @Published public var onListeningStateChange: ((Bool) -> Void)?
+    public var onListeningStateChange: ((Bool) -> Void)?
 
     // MARK: - Private Properties
 
@@ -110,9 +123,8 @@ public final class SpeechTranscriber: ObservableObject {
     }
 
     /// Request permission for microphone and speech recognition
-    /// - Returns: True if both permissions are granted
-    @discardableResult
-    public func requestPermission() async -> Bool {
+    /// - Throws: TranscriberError if a required permission is denied
+    public func requestPermission() async throws {
         // Request microphone permission
         let micStatus = await withCheckedContinuation { continuation in
             AVAudioApplication.requestRecordPermission { granted in
@@ -122,7 +134,7 @@ public final class SpeechTranscriber: ObservableObject {
 
         guard micStatus else {
             errorMessage = "Microphone permission required"
-            return false
+            throw TranscriberError.microphoneNotAuthorized
         }
 
         // Request speech recognition permission
@@ -134,9 +146,8 @@ public final class SpeechTranscriber: ObservableObject {
 
         if !speechStatus {
             errorMessage = "Speech recognition permission required"
+            throw TranscriberError.speechRecognitionNotAuthorized
         }
-
-        return speechStatus
     }
 
     /// Start listening and transcribing speech
@@ -147,9 +158,7 @@ public final class SpeechTranscriber: ObservableObject {
         }
 
         // Check permissions
-        guard await requestPermission() else {
-            throw TranscriberError.notAuthorized
-        }
+        try await requestPermission()
 
         // Stop any existing session
         stopListening()
@@ -178,15 +187,19 @@ public final class SpeechTranscriber: ObservableObject {
 
         recognitionRequest.shouldReportPartialResults = true
         recognitionRequest.addsPunctuation = true
-        recognitionRequest.requiresOnDeviceRecognition = true
+        if speechRecognizer.supportsOnDeviceRecognition {
+            recognitionRequest.requiresOnDeviceRecognition = true
+        }
 
         // Get input node
         let inputNode = audioEngine.inputNode
         let recordingFormat = inputNode.outputFormat(forBus: 0)
 
-        // Install tap on input node
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
-            self?.recognitionRequest?.append(buffer)
+        // Capture recognitionRequest locally so the tap closure does not access a @MainActor property
+        // from a background thread.
+        let capturedRequest = recognitionRequest
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+            capturedRequest.append(buffer)
         }
 
         // Start recognition task
@@ -218,9 +231,14 @@ public final class SpeechTranscriber: ObservableObject {
             }
         }
 
-        // Start audio engine
+        // Start audio engine — clean up on failure so isListening/audio session stay consistent
         audioEngine.prepare()
-        try audioEngine.start()
+        do {
+            try audioEngine.start()
+        } catch {
+            stopListening()
+            throw TranscriberError.audioEngineError
+        }
     }
 
     /// Stop listening and finalize transcription
@@ -248,21 +266,21 @@ public final class SpeechTranscriber: ObservableObject {
         }
     }
 
-    /// Get list of available locales for speech recognition
+    /// Get list of locales that support on-device speech recognition
     public static var supportedLocales: [Locale] {
-        SFSpeechRecognizer.supportedLocales().sorted {
-            $0.identifier < $1.identifier
-        }
+        SFSpeechRecognizer.supportedLocales()
+            .filter { SFSpeechRecognizer(locale: $0)?.supportsOnDeviceRecognition == true }
+            .sorted { $0.identifier < $1.identifier }
     }
 
     // MARK: - Private Methods
 
     private func scheduleSilenceDetection() {
         silenceDetectionTask?.cancel()
-        silenceDetectionTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(1_500_000_000))
+        silenceDetectionTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64((self?.silenceTimeout ?? 1.5) * 1_000_000_000))
             guard !Task.isCancelled, let self else { return }
-            recognitionRequest?.endAudio()
+            self.recognitionRequest?.endAudio()
         }
     }
 
