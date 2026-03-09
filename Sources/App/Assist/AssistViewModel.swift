@@ -118,6 +118,7 @@ final class AssistViewModel: NSObject, ObservableObject {
                 }
                 return
             }
+            audioPlayer.pause()
             inputText = ""
             startOnDeviceTranscription()
         } else {
@@ -328,7 +329,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         guard let transcriber = speechTranscriber else { return }
 
         transcriber.onTranscriptUpdate = { [weak self] text, isFinal in
-            MainActor.assumeIsolated {
+            Task { @MainActor [weak self] in
                 guard let self else { return }
                 self.inputText = text
                 self.updatePendingTranscription(text)
@@ -339,7 +340,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
 
         transcriber.onError = { [weak self] error in
-            MainActor.assumeIsolated {
+            Task { @MainActor [weak self] in
                 guard let self, self.isRecording else { return }
                 self.showError(message: error.localizedDescription)
                 self.stopStreaming()
@@ -347,7 +348,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
 
         transcriber.onListeningStateChange = { [weak self] listening in
-            MainActor.assumeIsolated {
+            Task { @MainActor [weak self] in
                 guard let self, !listening else { return }
                 self.isRecording = false
             }

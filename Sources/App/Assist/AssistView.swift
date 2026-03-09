@@ -160,7 +160,7 @@ struct AssistView: View {
             if item.itemType == .pending {
                 RoundedCorner(
                     radius: DesignSystem.CornerRadius.oneAndMicro,
-                    corners: [.topLeft, .topRight, .bottomLeft]
+                    corners: roundedCornersForChatItemType(item.itemType)
                 )
                 .stroke(Color.haPrimary, style: StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
             }

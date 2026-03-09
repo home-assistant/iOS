@@ -220,6 +220,7 @@ final class AssistViewModelTests: XCTestCase {
         await Task.yield()
 
         mockTranscriber.simulateTranscriptUpdate("Turn on", isFinal: false)
+        await Task.yield()
 
         XCTAssertEqual(sut.inputText, "Turn on")
         XCTAssertEqual(sut.chatItems.last?.itemType, .pending)
@@ -236,6 +237,7 @@ final class AssistViewModelTests: XCTestCase {
         await Task.yield()
 
         mockTranscriber.simulateTranscriptUpdate("Turn on the lights", isFinal: true)
+        await Task.yield()
 
         XCTAssertNotNil(mockAssistService.assistSource)
     }
@@ -253,6 +255,7 @@ final class AssistViewModelTests: XCTestCase {
             var errorDescription: String? { "Test error" }
         }
         mockTranscriber.simulateError(TestError())
+        await Task.yield()
 
         XCTAssertFalse(sut.isRecording)
     }
@@ -267,6 +270,7 @@ final class AssistViewModelTests: XCTestCase {
         await Task.yield()
 
         mockTranscriber.simulateListeningStateChange(false)
+        await Task.yield()
 
         XCTAssertFalse(sut.isRecording)
     }
@@ -307,6 +311,7 @@ final class AssistViewModelTests: XCTestCase {
         await Task.yield()
 
         mockTranscriber.simulateTranscriptUpdate("Hel", isFinal: false)
+        await Task.yield()
         XCTAssertEqual(sut.chatItems.last?.itemType, .pending)
 
         sut.stopStreaming()

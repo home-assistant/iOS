@@ -187,9 +187,10 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
 
         recognitionRequest.shouldReportPartialResults = true
         recognitionRequest.addsPunctuation = true
-        if speechRecognizer.supportsOnDeviceRecognition {
-            recognitionRequest.requiresOnDeviceRecognition = true
+        guard speechRecognizer.supportsOnDeviceRecognition else {
+            throw TranscriberError.notAvailable
         }
+        recognitionRequest.requiresOnDeviceRecognition = true
 
         // Get input node
         let inputNode = audioEngine.inputNode
@@ -287,19 +288,10 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     }
 
     private func createRecognizer(locale: Locale?) -> SFSpeechRecognizer? {
-        let recognizer: SFSpeechRecognizer?
-
         if let locale {
-            recognizer = SFSpeechRecognizer(locale: locale)
+            return SFSpeechRecognizer(locale: locale)
         } else {
-            recognizer = SFSpeechRecognizer(locale: Locale.current)
-        }
-
-        // Fallback if selected locale not available
-        if let r = recognizer, r.isAvailable {
-            return r
-        } else {
-            return SFSpeechRecognizer()
+            return SFSpeechRecognizer(locale: Locale.current)
         }
     }
 }
