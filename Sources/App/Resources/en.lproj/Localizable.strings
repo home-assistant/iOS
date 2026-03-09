@@ -1529,3 +1529,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
 "yes_label" = "Yes";
+"assist.settings.section.experimental.title" = "Experimental";
+"assist.settings.on_device_stt.title" = "On-device STT";
+"assist.settings.on_device_stt.language" = "Language";

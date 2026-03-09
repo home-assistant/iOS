@@ -576,8 +576,18 @@ public enum L10n {
       public enum OnDeviceStt {
         /// Use Apple's on-device speech recognition for improved privacy. Your voice will be processed locally and transcribed to text before being sent to your server. Not all languages are supported.
         public static var footer: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.footer") }
+        /// Language
+        public static var language: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.language") }
+        /// On-device STT
+        public static var title: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.title") }
         /// Enable on-device Speech-to-Text
         public static var toggle: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.toggle") }
+      }
+      public enum Section {
+        public enum Experimental {
+          /// Experimental
+          public static var title: String { return L10n.tr("Localizable", "assist.settings.section.experimental.title") }
+        }
       }
       public enum TtsMute {
         /// When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.

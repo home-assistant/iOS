@@ -1,11 +1,6 @@
 import Foundation
 import Shared
 import SwiftUI
-
-#if canImport(SpeechTranscriber)
-import SpeechTranscriber
-#endif
-
 // MARK: - Settings View
 
 @available(iOS 26.0, *)
@@ -14,19 +9,19 @@ struct AssistSettingsView: View {
     @Environment(\.dismiss) private var dismiss
 
     private var supportedLocales: [Locale] {
-        #if canImport(SpeechTranscriber)
-        SpeechTranscriber.supportedLocales
-        #else
-        []
-        #endif
+        if #available(iOS 17.0, *) {
+            return SpeechTranscriber.supportedLocales
+        } else {
+            return []
+        }
     }
 
     private var onDeviceSTTLocaleBinding: Binding<String> {
         Binding(
             get: {
                 viewModel.configuration.onDeviceSTTLocaleIdentifier
-                    ?? supportedLocales.first?.identifier
-                    ?? Locale.current.identifier
+                ?? supportedLocales.first?.identifier
+                ?? Locale.current.identifier
             },
             set: { newValue in
                 viewModel.configuration.onDeviceSTTLocaleIdentifier = newValue
@@ -41,24 +36,8 @@ struct AssistSettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section {
-                    Toggle(L10n.Assist.Settings.TtsMute.toggle, isOn: $viewModel.configuration.muteTTS)
-                } footer: {
-                    Text(L10n.Assist.Settings.TtsMute.footer)
-                }
-
-                Section("Experimental") {
-                    Toggle("On-device STT", isOn: $viewModel.configuration.enableOnDeviceSTT)
-
-                    if viewModel.configuration.enableOnDeviceSTT, !supportedLocales.isEmpty {
-                        Picker("Language", selection: onDeviceSTTLocaleBinding) {
-                            ForEach(supportedLocales, id: \.identifier) { locale in
-                                Text(localeDisplayName(locale))
-                                    .tag(locale.identifier)
-                            }
-                        }
-                    }
-                }
+                muteToggle
+                experimental
             }
             .onChange(of: viewModel.configuration.enableOnDeviceSTT) { isEnabled in
                 guard isEnabled, !supportedLocales.isEmpty else { return }
@@ -74,6 +53,32 @@ struct AssistSettingsView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     CloseButton {
                         dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private var muteToggle: some View {
+        Section {
+            Toggle(L10n.Assist.Settings.TtsMute.toggle, isOn: $viewModel.configuration.muteTTS)
+        } footer: {
+            Text(L10n.Assist.Settings.TtsMute.footer)
+        }
+    }
+
+    @ViewBuilder
+    private var experimental: some View {
+        if #available(iOS 17.0, *) {
+            Section(L10n.Assist.Settings.Section.Experimental.title) {
+                Toggle(L10n.Assist.Settings.OnDeviceStt.title, isOn: $viewModel.configuration.enableOnDeviceSTT)
+
+                if viewModel.configuration.enableOnDeviceSTT, !supportedLocales.isEmpty {
+                    Picker(L10n.Assist.Settings.OnDeviceStt.language, selection: onDeviceSTTLocaleBinding) {
+                        ForEach(supportedLocales, id: \.identifier) { locale in
+                            Text(localeDisplayName(locale).capitalizedFirst)
+                                .tag(locale.identifier)
+                        }
                     }
                 }
             }
