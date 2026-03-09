@@ -18,6 +18,7 @@ struct AssistConfigurationTable: DatabaseTableProtocol {
                     table.column(DatabaseTables.AssistConfiguration.enableOnDeviceSTT.rawValue, .boolean)
                     table.column(DatabaseTables.AssistConfiguration.onDeviceSTTLocaleIdentifier.rawValue, .text)
                     table.column(DatabaseTables.AssistConfiguration.muteTTS.rawValue, .boolean)
+                    table.column(DatabaseTables.AssistConfiguration.enableOnDeviceTTS.rawValue, .boolean)
                 }
             }
         } else {

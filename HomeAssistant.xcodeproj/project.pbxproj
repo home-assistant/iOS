@@ -649,6 +649,7 @@
 		421F2B9B2EF8479400F21FE5 /* ControlAutomationsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B972EF8479400F21FE5 /* ControlAutomationsValueProvider.swift */; };
 		421F2B9C2EF8479400F21FE5 /* IntentAutomationEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B982EF8479400F21FE5 /* IntentAutomationEntity.swift */; };
 		421F2BA12EF847AA00F21FE5 /* AutomationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2BA02EF847AA00F21FE5 /* AutomationAppIntent.swift */; };
+		421FC34D2F5EFD3C0027DB31 /* SpeechSynthesizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421FC34C2F5EFD3C0027DB31 /* SpeechSynthesizer.swift */; };
 		4221ED352D009EF700BAE3EB /* AppDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */; };
 		4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688A2D40F9B7005911E4 /* WidgetCustom.swift */; };
 		4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */; };
@@ -2347,6 +2348,7 @@
 		421F2B972EF8479400F21FE5 /* ControlAutomationsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAutomationsValueProvider.swift; sourceTree = "<group>"; };
 		421F2B982EF8479400F21FE5 /* IntentAutomationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentAutomationEntity.swift; sourceTree = "<group>"; };
 		421F2BA02EF847AA00F21FE5 /* AutomationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomationAppIntent.swift; sourceTree = "<group>"; };
+		421FC34C2F5EFD3C0027DB31 /* SpeechSynthesizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechSynthesizer.swift; sourceTree = "<group>"; };
 		4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseUpdater.swift; sourceTree = "<group>"; };
 		4223688A2D40F9B7005911E4 /* WidgetCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCustom.swift; sourceTree = "<group>"; };
 		4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCustomTimelineProvider.swift; sourceTree = "<group>"; };
@@ -5040,6 +5042,7 @@
 		4256A70B2F5ECBA9003D464F /* Local */ = {
 			isa = PBXGroup;
 			children = (
+				421FC34C2F5EFD3C0027DB31 /* SpeechSynthesizer.swift */,
 				4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */,
 			);
 			path = Local;
@@ -9424,6 +9427,7 @@
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
 				403AE90E2C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
 				4206FFB42DAD58140087626C /* WebViewController+PostOnboarding.swift in Sources */,
+				421FC34D2F5EFD3C0027DB31 /* SpeechSynthesizer.swift in Sources */,
 				42FCCFFF2B9B1C310057783F /* ThreadCredentialsSharingView.swift in Sources */,
 				429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,

@@ -20,7 +20,8 @@ final class AssistViewModelTests: XCTestCase {
 
     private func makeSut(
         autoStartRecording: Bool = false,
-        speechTranscriber: (any SpeechTranscriberProtocol)? = nil
+        speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
+        speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
     ) -> AssistViewModel {
         AssistViewModel(
             server: ServerFixture.standard,
@@ -28,7 +29,8 @@ final class AssistViewModelTests: XCTestCase {
             audioPlayer: mockAudioPlayer,
             assistService: mockAssistService,
             autoStartRecording: autoStartRecording,
-            speechTranscriber: speechTranscriber
+            speechTranscriber: speechTranscriber,
+            speechSynthesizer: speechSynthesizer
         )
     }
 
@@ -75,7 +77,10 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
         XCTAssertTrue(mockAssistService.finishSendingAudioCalled)
 
-        XCTAssertEqual(mockAssistService.assistSource, .text(input: "How many lights are on?", pipelineId: "1"))
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "How many lights are on?", pipelineId: "1", expectTTS: false)
+        )
         XCTAssertEqual(sut.inputText, "")
         XCTAssertEqual(sut.chatItems.first?.itemType, .input)
         XCTAssertEqual(sut.chatItems.first?.content, "How many lights are on?")
@@ -178,7 +183,10 @@ final class AssistViewModelTests: XCTestCase {
 
         sut.assistWithAudio()
 
-        XCTAssertEqual(mockAssistService.assistSource, .text(input: "Turn on the lights", pipelineId: ""))
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "Turn on the lights", pipelineId: "", expectTTS: false)
+        )
     }
 
     @MainActor
@@ -298,5 +306,84 @@ final class AssistViewModelTests: XCTestCase {
 
         XCTAssertNil(sut.chatItems.last.map { $0.itemType == .pending ? $0 : nil })
         XCTAssertNotEqual(sut.chatItems.last?.itemType, .pending)
+    }
+
+    // MARK: - On-Device TTS
+
+    @MainActor
+    func testOnDeviceTTS_didReceiveIntentEndContent_speaksWhenEnabled() {
+        let mockSynthesizer = MockSpeechSynthesizer()
+        sut = makeSut(speechSynthesizer: mockSynthesizer)
+        sut.configuration.enableOnDeviceTTS = true
+        sut.configuration.muteTTS = false
+
+        sut.didReceiveIntentEndContent("Lights are on")
+
+        XCTAssertTrue(mockSynthesizer.speakCalled)
+        XCTAssertEqual(mockSynthesizer.lastSpokenText, "Lights are on")
+    }
+
+    @MainActor
+    func testOnDeviceTTS_didReceiveIntentEndContent_doesNotSpeakWhenDisabled() {
+        let mockSynthesizer = MockSpeechSynthesizer()
+        sut = makeSut(speechSynthesizer: mockSynthesizer)
+        sut.configuration.enableOnDeviceTTS = false
+
+        sut.didReceiveIntentEndContent("Lights are on")
+
+        XCTAssertFalse(mockSynthesizer.speakCalled)
+    }
+
+    @MainActor
+    func testOnDeviceTTS_didReceiveIntentEndContent_doesNotSpeakWhenMuted() {
+        let mockSynthesizer = MockSpeechSynthesizer()
+        sut = makeSut(speechSynthesizer: mockSynthesizer)
+        sut.configuration.enableOnDeviceTTS = true
+        sut.configuration.muteTTS = true
+
+        sut.didReceiveIntentEndContent("Lights are on")
+
+        XCTAssertFalse(mockSynthesizer.speakCalled)
+    }
+
+    @MainActor
+    func testOnDeviceTTS_assistWithText_doesNotRequestServerTTS() {
+        let mockSynthesizer = MockSpeechSynthesizer()
+        sut = makeSut(speechSynthesizer: mockSynthesizer)
+        sut.configuration.enableOnDeviceTTS = true
+        sut.configuration.muteTTS = false
+        sut.inputText = "Turn on the lights"
+        sut.preferredPipelineId = "1"
+
+        sut.assistWithText(expectingTTS: true)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "Turn on the lights", pipelineId: "1", expectTTS: false)
+        )
+    }
+
+    @MainActor
+    func testOnDeviceTTS_onDisappear_stopsSynthesizer() {
+        let mockSynthesizer = MockSpeechSynthesizer()
+        sut = makeSut(speechSynthesizer: mockSynthesizer)
+
+        sut.onDisappear()
+
+        XCTAssertTrue(mockSynthesizer.stopCalled)
+    }
+
+    @MainActor
+    func testOnDeviceTTS_onFinished_triggersRecordingAgainWhenNeeded() {
+        let mockSynthesizer = MockSpeechSynthesizer()
+        sut = makeSut(speechSynthesizer: mockSynthesizer)
+        sut.configuration.enableOnDeviceTTS = true
+        sut.configuration.muteTTS = false
+        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
+
+        sut.didReceiveIntentEndContent("Done")
+        mockSynthesizer.simulateFinished()
+
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
     }
 }

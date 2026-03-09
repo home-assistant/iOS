@@ -71,7 +71,7 @@ struct AssistSettingsView: View {
     @ViewBuilder
     private var experimental: some View {
         if #available(iOS 17.0, *) {
-            Section(L10n.Assist.Settings.Section.Experimental.title) {
+            Section {
                 Toggle(L10n.Assist.Settings.OnDeviceStt.title, isOn: $viewModel.configuration.enableOnDeviceSTT)
 
                 if viewModel.configuration.enableOnDeviceSTT, !supportedLocales.isEmpty {
@@ -81,6 +81,14 @@ struct AssistSettingsView: View {
                                 .tag(locale.identifier)
                         }
                     }
+                }
+
+                Toggle(L10n.Assist.Settings.OnDeviceTts.title, isOn: $viewModel.configuration.enableOnDeviceTTS)
+            } header: {
+                Text(L10n.Assist.Settings.Section.Experimental.title)
+            } footer: {
+                if viewModel.configuration.enableOnDeviceTTS {
+                    Text(L10n.Assist.Settings.OnDeviceTts.footer)
                 }
             }
         }

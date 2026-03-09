@@ -31,6 +31,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     private(set) var canSendAudioData = false
     private var configObservationCancellable: AnyDatabaseCancellable?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
+    private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -42,7 +43,8 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
         autoStartRecording: Bool,
-        speechTranscriber: (any SpeechTranscriberProtocol)? = nil
+        speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
+        speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
     ) {
         self.server = server
         self.preferredPipelineId = preferredPipelineId
@@ -51,6 +53,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.assistService = assistService
         self.autoStartRecording = autoStartRecording
         self.speechTranscriber = speechTranscriber
+        self.speechSynthesizer = speechSynthesizer
         self.configuration = AssistConfiguration.config
         super.init()
 
@@ -80,6 +83,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     func onDisappear() {
         audioRecorder.stopRecording()
         audioPlayer.pause()
+        speechSynthesizer?.stop()
     }
 
     @MainActor func assistWithText(expectingTTS: Bool = false) {
@@ -88,15 +92,12 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
         audioPlayer.pause()
         stopStreaming()
-        if expectingTTS {
-            assistService.assist(source: .text(
-                input: inputText,
-                pipelineId: preferredPipelineId,
-                expectTTS: !configuration.muteTTS
-            ))
-        } else {
-            assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: false))
-        }
+        let requestServerTTS = expectingTTS && !configuration.muteTTS && !configuration.enableOnDeviceTTS
+        assistService.assist(source: .text(
+            input: inputText,
+            pipelineId: preferredPipelineId,
+            expectTTS: requestServerTTS
+        ))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
     }
@@ -158,7 +159,7 @@ final class AssistViewModel: NSObject, ObservableObject {
             source: .audio(
                 pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
                 audioSampleRate: audioSampleRate,
-                tts: !configuration.muteTTS
+                tts: !configuration.muteTTS && !configuration.enableOnDeviceTTS
             )
         )
     }
@@ -251,6 +252,19 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
 
         Current.Log.info("Stop recording audio for Assist")
+    }
+
+    // MARK: - On-Device TTS Methods
+
+    private func speakWithOnDeviceTTS(_ text: String) {
+        if speechSynthesizer == nil {
+            speechSynthesizer = SpeechSynthesizer()
+        }
+
+        speechSynthesizer?.onFinished = { [weak self] in
+            Task { @MainActor in self?.startRecordingAgainIfNeeded() }
+        }
+        speechSynthesizer?.speak(text)
     }
 
     @MainActor private func checkForAutoRecordingAndStart() {
@@ -392,6 +406,9 @@ extension AssistViewModel: AssistServiceDelegate {
 
     func didReceiveIntentEndContent(_ content: String) {
         appendToChat(.init(content: content, itemType: .output))
+        if configuration.enableOnDeviceTTS, !configuration.muteTTS {
+            speakWithOnDeviceTTS(content)
+        }
     }
 
     func didReceiveGreenLightForAudioInput() {

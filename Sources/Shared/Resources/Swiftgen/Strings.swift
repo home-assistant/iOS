@@ -583,6 +583,12 @@ public enum L10n {
         /// Enable on-device Speech-to-Text
         public static var toggle: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.toggle") }
       }
+      public enum OnDeviceTts {
+        /// Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.
+        public static var footer: String { return L10n.tr("Localizable", "assist.settings.on_device_tts.footer") }
+        /// On-device TTS
+        public static var title: String { return L10n.tr("Localizable", "assist.settings.on_device_tts.title") }
+      }
       public enum Section {
         public enum Experimental {
           /// Experimental
