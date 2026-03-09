@@ -48,6 +48,7 @@ final class AssistViewModelTests: XCTestCase {
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
 
         sut.initialRoutine()
+        await Task.yield()
         XCTAssertTrue(mockAudioPlayer.pauseCalled)
         XCTAssertFalse(sut.autoStartRecording)
         XCTAssertEqual(sut.inputText, "")
@@ -97,9 +98,11 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isRecording)
     }
 
-    func testDidReceiveRunEndEventWhenRecording() {
+    @MainActor
+    func testDidReceiveRunEndEventWhenRecording() async {
         sut.isRecording = true
         sut.didReceiveEvent(.runEnd)
+        await Task.yield()
 
         XCTAssertFalse(sut.isRecording)
         XCTAssertFalse(sut.canSendAudioData)
@@ -128,9 +131,11 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertTrue(mockAudioPlayer.playCalled)
     }
 
-    func testAudioPlayerDidFinishPlayingStartRecordingAgain() {
+    @MainActor
+    func testAudioPlayerDidFinishPlayingStartRecordingAgain() async {
         mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
         sut.audioPlayerDidFinishPlaying(AudioPlayer())
+        await Task.yield()
 
         XCTAssertEqual(sut.inputText, "")
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
@@ -144,9 +149,11 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
     }
 
-    func testVolumeIsZeroTriggersRecording() {
+    @MainActor
+    func testVolumeIsZeroTriggersRecording() async {
         mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
         sut.volumeIsZero()
+        await Task.yield()
 
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
     }
@@ -390,15 +397,18 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func testOnDeviceTTS_onFinished_triggersRecordingAgainWhenNeeded() {
+    func testOnDeviceTTS_onFinished_triggersRecordingAgainWhenNeeded() async {
         let mockSynthesizer = MockSpeechSynthesizer()
         sut = makeSut(speechSynthesizer: mockSynthesizer)
         sut.configuration.enableOnDeviceTTS = true
         sut.configuration.muteTTS = false
         mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
+        sut.inputText = "Turn on the lights"
+        sut.assistWithText(expectingTTS: true)
 
         sut.didReceiveIntentEndContent("Done")
         mockSynthesizer.simulateFinished()
+        await Task.yield()
 
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
     }

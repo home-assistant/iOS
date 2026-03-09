@@ -748,6 +748,8 @@
 		4259959A2F44708F0023D6A6 /* View+ScreenCaptureProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */; };
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425EB4FD2F5F0ACB0067A678 /* TTSVoicePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425EB4FC2F5F0ACB0067A678 /* TTSVoicePickerView.swift */; };
+		425EB5002F5F0EDF0067A678 /* MockSpeechSynthesizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425EB4FE2F5F0EDF0067A678 /* MockSpeechSynthesizer.swift */; };
+		425EB5012F5F0EDF0067A678 /* MockSpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425EB4FF2F5F0EDF0067A678 /* MockSpeechTranscriber.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
 		4261EAA02F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4261EA9F2F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift */; };
@@ -2452,6 +2454,8 @@
 		425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ScreenCaptureProtection.swift"; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425EB4FC2F5F0ACB0067A678 /* TTSVoicePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSVoicePickerView.swift; sourceTree = "<group>"; };
+		425EB4FE2F5F0EDF0067A678 /* MockSpeechSynthesizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSpeechSynthesizer.swift; sourceTree = "<group>"; };
+		425EB4FF2F5F0EDF0067A678 /* MockSpeechTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSpeechTranscriber.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
 		4261EA9F2F34F8BA002A7C85 /* WebViewController+WebKitDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+WebKitDelegates.swift"; sourceTree = "<group>"; };
 		4261EAA12F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+ProtocolConformance.swift"; sourceTree = "<group>"; };
@@ -5787,6 +5791,8 @@
 		42A818E12BBEA9650083D045 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				425EB4FE2F5F0EDF0067A678 /* MockSpeechSynthesizer.swift */,
+				425EB4FF2F5F0EDF0067A678 /* MockSpeechTranscriber.swift */,
 				42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */,
 				42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */,
 				42A818E62BBEAAE80083D045 /* MockAssistService.swift */,
@@ -9496,6 +9502,8 @@
 				428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */,
 				42ACC29F2E9E7BBB0045A3FD /* OnboardingScanningInstanceRow.test.swift in Sources */,
 				428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */,
+				425EB5002F5F0EDF0067A678 /* MockSpeechSynthesizer.swift in Sources */,
+				425EB5012F5F0EDF0067A678 /* MockSpeechTranscriber.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				429C33BF2F17989F0033EF5E /* EntityPickerViewModel.test.swift in Sources */,
