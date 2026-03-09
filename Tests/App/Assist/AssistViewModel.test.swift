@@ -18,13 +18,17 @@ final class AssistViewModelTests: XCTestCase {
         AssistSession.shared.inProgress = false
     }
 
-    private func makeSut(autoStartRecording: Bool = false) -> AssistViewModel {
+    private func makeSut(
+        autoStartRecording: Bool = false,
+        speechTranscriber: (any SpeechTranscriberProtocol)? = nil
+    ) -> AssistViewModel {
         AssistViewModel(
             server: ServerFixture.standard,
             audioRecorder: mockAudioRecorder,
             audioPlayer: mockAudioPlayer,
             assistService: mockAssistService,
-            autoStartRecording: autoStartRecording
+            autoStartRecording: autoStartRecording,
+            speechTranscriber: speechTranscriber
         )
     }
 
@@ -147,5 +151,152 @@ final class AssistViewModelTests: XCTestCase {
         sut.volumeIsZero()
 
         XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
+    }
+
+    // MARK: - On-Device STT
+
+    @MainActor
+    func testOnDeviceSTT_assistWithAudio_setsIsRecordingAndCallsStartListening() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        XCTAssertTrue(sut.isRecording)
+        XCTAssertTrue(mockTranscriber.startListeningCalled)
+    }
+
+    @MainActor
+    func testOnDeviceSTT_assistWithAudio_whenRecordingWithText_submitsToAssist() {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+        sut.isRecording = true
+        sut.inputText = "Turn on the lights"
+
+        sut.assistWithAudio()
+
+        XCTAssertEqual(mockAssistService.assistSource, .text(input: "Turn on the lights", pipelineId: ""))
+    }
+
+    @MainActor
+    func testOnDeviceSTT_assistWithAudio_whenRecordingWithEmptyText_stopsStreaming() {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+        sut.isRecording = true
+        sut.inputText = ""
+
+        sut.assistWithAudio()
+
+        XCTAssertFalse(sut.isRecording)
+        XCTAssertTrue(mockTranscriber.stopListeningCalled)
+    }
+
+    @MainActor
+    func testOnDeviceSTT_partialTranscript_updatesChatItemAndInputText() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        mockTranscriber.simulateTranscriptUpdate("Turn on", isFinal: false)
+
+        XCTAssertEqual(sut.inputText, "Turn on")
+        XCTAssertEqual(sut.chatItems.last?.itemType, .pending)
+        XCTAssertEqual(sut.chatItems.last?.content, "Turn on")
+    }
+
+    @MainActor
+    func testOnDeviceSTT_finalTranscript_submitsToAssistService() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        mockTranscriber.simulateTranscriptUpdate("Turn on the lights", isFinal: true)
+
+        XCTAssertNotNil(mockAssistService.assistSource)
+    }
+
+    @MainActor
+    func testOnDeviceSTT_transcribeError_stopsRecording() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        struct TestError: LocalizedError {
+            var errorDescription: String? { "Test error" }
+        }
+        mockTranscriber.simulateError(TestError())
+
+        XCTAssertFalse(sut.isRecording)
+    }
+
+    @MainActor
+    func testOnDeviceSTT_listeningStateChangeFalse_setsIsRecordingFalse() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        mockTranscriber.simulateListeningStateChange(false)
+
+        XCTAssertFalse(sut.isRecording)
+    }
+
+    @MainActor
+    func testOnDeviceSTT_stopStreaming_callsStopListeningOnTranscriber() {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+
+        sut.stopStreaming()
+
+        XCTAssertTrue(mockTranscriber.stopListeningCalled)
+    }
+
+    @MainActor
+    func testOnDeviceSTT_startListeningThrows_setsIsRecordingFalse() async throws {
+        struct TestError: LocalizedError {
+            var errorDescription: String? { "Permission denied" }
+        }
+        let mockTranscriber = MockSpeechTranscriber()
+        mockTranscriber.startListeningError = TestError()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        XCTAssertFalse(sut.isRecording)
+    }
+
+    @MainActor
+    func testOnDeviceSTT_pendingBubble_removedWhenStopStreamingCalled() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        mockTranscriber.simulateTranscriptUpdate("Hel", isFinal: false)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .pending)
+
+        sut.stopStreaming()
+
+        XCTAssertNil(sut.chatItems.last.map { $0.itemType == .pending ? $0 : nil })
+        XCTAssertNotEqual(sut.chatItems.last?.itemType, .pending)
     }
 }

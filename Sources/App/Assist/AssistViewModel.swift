@@ -41,7 +41,8 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder: AudioRecorderProtocol,
         audioPlayer: AudioPlayerProtocol,
         assistService: AssistServiceProtocol,
-        autoStartRecording: Bool
+        autoStartRecording: Bool,
+        speechTranscriber: (any SpeechTranscriberProtocol)? = nil
     ) {
         self.server = server
         self.preferredPipelineId = preferredPipelineId
@@ -49,6 +50,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioPlayer = audioPlayer
         self.assistService = assistService
         self.autoStartRecording = autoStartRecording
+        self.speechTranscriber = speechTranscriber
         self.configuration = AssistConfiguration.config
         super.init()
 
@@ -293,11 +295,14 @@ final class AssistViewModel: NSObject, ObservableObject {
     // MARK: - On-Device Transcription Methods
 
     @MainActor private func startOnDeviceTranscription() {
-        guard #available(iOS 17.0, *) else { return }
+        // Use a pre-injected transcriber (e.g. from tests) or create a production one.
+        if speechTranscriber == nil {
+            guard #available(iOS 17.0, *) else { return }
+            let localeIdentifier = configuration.onDeviceSTTLocaleIdentifier
+            speechTranscriber = localeIdentifier.map { SpeechTranscriber(localeIdentifier: $0) } ?? SpeechTranscriber()
+        }
 
-        let localeIdentifier = configuration.onDeviceSTTLocaleIdentifier
-        let transcriber = localeIdentifier.map { SpeechTranscriber(localeIdentifier: $0) } ?? SpeechTranscriber()
-        speechTranscriber = transcriber
+        guard let transcriber = speechTranscriber else { return }
 
         transcriber.onTranscriptUpdate = { [weak self] text, isFinal in
             MainActor.assumeIsolated {
