@@ -1,13 +1,12 @@
+import AVFoundation
 import Foundation
 import Speech
-import AVFoundation
 
 /// A speech-to-text transcriber using Apple's Speech framework.
 /// Supports real-time transcription with partial results.
 @available(iOS 17.0, *)
 @MainActor
 public final class SpeechTranscriber: ObservableObject {
-
     // MARK: - Types
 
     public enum TranscriberError: Error, LocalizedError {
@@ -21,7 +20,7 @@ public final class SpeechTranscriber: ObservableObject {
             case .notAuthorized: return "Microphone permission denied"
             case .notAvailable: return "Speech recognition not available"
             case .audioEngineError: return "Audio engine error"
-            case .recognizerError(let msg): return msg
+            case let .recognizerError(msg): return msg
             }
         }
     }
@@ -65,6 +64,8 @@ public final class SpeechTranscriber: ObservableObject {
     private var recognitionTask: SFSpeechRecognitionTask?
     private var speechRecognizer: SFSpeechRecognizer?
     private let preferredLocale: Locale?
+    private var silenceDetectionTask: Task<Void, Never>?
+    private let silenceTimeout: TimeInterval = 1.5
 
     // MARK: - Initialization
 
@@ -141,7 +142,7 @@ public final class SpeechTranscriber: ObservableObject {
     /// Start listening and transcribing speech
     /// - Throws: TranscriberError if unable to start
     public func startListening() async throws {
-        guard let speechRecognizer = speechRecognizer, speechRecognizer.isAvailable else {
+        guard let speechRecognizer, speechRecognizer.isAvailable else {
             throw TranscriberError.notAvailable
         }
 
@@ -165,18 +166,19 @@ public final class SpeechTranscriber: ObservableObject {
 
         // Create audio engine
         audioEngine = AVAudioEngine()
-        guard let audioEngine = audioEngine else {
+        guard let audioEngine else {
             throw TranscriberError.audioEngineError
         }
 
         // Create recognition request
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-        guard let recognitionRequest = recognitionRequest else {
+        guard let recognitionRequest else {
             throw TranscriberError.audioEngineError
         }
 
         recognitionRequest.shouldReportPartialResults = true
         recognitionRequest.addsPunctuation = true
+        recognitionRequest.requiresOnDeviceRecognition = true
 
         // Get input node
         let inputNode = audioEngine.inputNode
@@ -190,17 +192,20 @@ public final class SpeechTranscriber: ObservableObject {
         // Start recognition task
         recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { [weak self] result, error in
             Task { @MainActor in
-                guard let self = self else { return }
+                guard let self else { return }
 
-                if let result = result {
+                if let result {
                     self.transcript = result.bestTranscription.formattedString
                     self.onTranscriptUpdate?(self.transcript, result.isFinal)
+                    if !result.isFinal {
+                        self.scheduleSilenceDetection()
+                    }
                 }
 
-                if let error = error {
+                if let error {
                     // Ignore cancellation errors
                     let nsError = error as NSError
-                    if nsError.code != 216 && nsError.code != 1 { // cancellation codes
+                    if nsError.code != 216, nsError.code != 1 { // cancellation codes
                         self.errorMessage = error.localizedDescription
                         self.onError?(error)
                     }
@@ -221,6 +226,9 @@ public final class SpeechTranscriber: ObservableObject {
     /// Stop listening and finalize transcription
     public func stopListening() {
         let wasListening = isListening
+
+        silenceDetectionTask?.cancel()
+        silenceDetectionTask = nil
 
         audioEngine?.stop()
         audioEngine?.inputNode.removeTap(onBus: 0)
@@ -249,10 +257,19 @@ public final class SpeechTranscriber: ObservableObject {
 
     // MARK: - Private Methods
 
+    private func scheduleSilenceDetection() {
+        silenceDetectionTask?.cancel()
+        silenceDetectionTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(1_500_000_000))
+            guard !Task.isCancelled, let self else { return }
+            recognitionRequest?.endAudio()
+        }
+    }
+
     private func createRecognizer(locale: Locale?) -> SFSpeechRecognizer? {
         let recognizer: SFSpeechRecognizer?
 
-        if let locale = locale {
+        if let locale {
             recognizer = SFSpeechRecognizer(locale: locale)
         } else {
             recognizer = SFSpeechRecognizer(locale: Locale.current)

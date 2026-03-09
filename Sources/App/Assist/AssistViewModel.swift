@@ -30,6 +30,7 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     private(set) var canSendAudioData = false
     private var configObservationCancellable: AnyDatabaseCancellable?
+    private var speechTranscriber: Any?
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -59,14 +60,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
     }
 
-    func initialRoutine() {
+    @MainActor func initialRoutine() {
         AssistSession.shared.delegate = self
 
         loadCachedPipelines()
 
         if pipelines.isEmpty {
             fetchPipelines { [weak self] in
-                self?.checkForAutoRecordingAndStart()
+                Task { @MainActor in self?.checkForAutoRecordingAndStart() }
             }
         } else {
             checkForAutoRecordingAndStart()
@@ -79,7 +80,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer.pause()
     }
 
-    func assistWithText() {
+    @MainActor func assistWithText() {
         guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return
         }
@@ -90,19 +91,32 @@ final class AssistViewModel: NSObject, ObservableObject {
         inputText = ""
     }
 
-    func assistWithAudio() {
-        audioPlayer.pause()
+    @MainActor func assistWithAudio() {
+        if configuration.enableOnDeviceSTT {
+            if isRecording {
+                if !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    assistWithText()
+                } else {
+                    stopStreaming()
+                }
+                return
+            }
+            inputText = ""
+            startOnDeviceTranscription()
+        } else {
+            audioPlayer.pause()
 
-        if isRecording {
-            stopStreaming()
-            return
+            if isRecording {
+                stopStreaming()
+                return
+            }
+
+            // Remove text from input to make animation look better
+            inputText = ""
+
+            audioRecorder.startRecording()
+            // Wait until green light from recorder delegate 'didStartRecording'
         }
-
-        // Remove text from input to make animation look better
-        inputText = ""
-
-        audioRecorder.startRecording()
-        // Wait until green light from recorder delegate 'didStartRecording'
     }
 
     func subscribeForConfigChanges() {
@@ -150,7 +164,7 @@ final class AssistViewModel: NSObject, ObservableObject {
                 chatItems.removeLast()
             }
         } else {
-            if chatItems.last?.itemType == .typing {
+            if [.typing, .pending].contains(chatItems.last?.itemType) {
                 chatItems.removeLast()
             }
         }
@@ -198,7 +212,16 @@ final class AssistViewModel: NSObject, ObservableObject {
         preferredPipelineId = pipelineId
     }
 
-    func stopStreaming() {
+    @MainActor private func updatePendingTranscription(_ text: String) {
+        if chatItems.last?.itemType == .pending {
+            chatItems.removeLast()
+        }
+        if !text.isEmpty {
+            chatItems.append(.init(content: text, itemType: .pending))
+        }
+    }
+
+    @MainActor func stopStreaming() {
         isRecording = false
         canSendAudioData = false
 
@@ -206,10 +229,19 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
 
+        if #available(iOS 17.0, *) {
+            (speechTranscriber as? SpeechTranscriber)?.stopListening()
+        }
+
+        // Remove pending transcription bubble if recording stopped without submitting
+        if chatItems.last?.itemType == .pending {
+            chatItems.removeLast()
+        }
+
         Current.Log.info("Stop recording audio for Assist")
     }
 
-    private func checkForAutoRecordingAndStart() {
+    @MainActor private func checkForAutoRecordingAndStart() {
         if autoStartRecording {
             Current.Log.info("Auto start recording triggered in Assist")
             autoStartRecording = false
@@ -233,7 +265,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         return prefixData + data
     }
 
-    private func startRecordingAgainIfNeeded() {
+    @MainActor private func startRecordingAgainIfNeeded() {
         if assistService.shouldStartListeningAgainAfterPlaybackEnd {
             assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
             assistWithAudio()
@@ -249,6 +281,51 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - On-Device Transcription Methods
+
+    @MainActor private func startOnDeviceTranscription() {
+        guard #available(iOS 17.0, *) else { return }
+
+        let localeIdentifier = configuration.onDeviceSTTLocaleIdentifier
+        let transcriber = localeIdentifier.map { SpeechTranscriber(localeIdentifier: $0) } ?? SpeechTranscriber()
+        speechTranscriber = transcriber
+
+        transcriber.onTranscriptUpdate = { [weak self] text, isFinal in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.inputText = text
+                self.updatePendingTranscription(text)
+                if isFinal {
+                    self.assistWithText()
+                }
+            }
+        }
+
+        transcriber.onError = { [weak self] error in
+            MainActor.assumeIsolated {
+                guard let self, self.isRecording else { return }
+                self.showError(message: error.localizedDescription)
+                self.stopStreaming()
+            }
+        }
+
+        transcriber.onListeningStateChange = { [weak self] listening in
+            MainActor.assumeIsolated {
+                guard let self, !listening else { return }
+                self.isRecording = false
+            }
+        }
+
+        isRecording = true
+
+        Task {
+            do {
+                try await transcriber.startListening()
+            } catch {
+                showError(message: error.localizedDescription)
+                isRecording = false
+            }
+        }
+    }
 }
 
 extension AssistViewModel: AudioRecorderDelegate {
@@ -290,7 +367,7 @@ extension AssistViewModel: AssistServiceDelegate {
 
     func didReceiveEvent(_ event: AssistEvent) {
         if [.sttEnd, .runEnd].contains(event), isRecording {
-            stopStreaming()
+            Task { @MainActor in self.stopStreaming() }
         }
     }
 
@@ -313,7 +390,7 @@ extension AssistViewModel: AssistServiceDelegate {
         if muteTTS {
             Current.Log.info("TTS is muted by user setting, skipping audio playback")
             // Check if we should continue the conversation (e.g., for follow-up questions)
-            startRecordingAgainIfNeeded()
+            Task { @MainActor in self.startRecordingAgainIfNeeded() }
             return
         }
 
@@ -329,7 +406,7 @@ extension AssistViewModel: AssistServiceDelegate {
 
 extension AssistViewModel: AssistSessionDelegate {
     func didRequestNewSession(_ context: AssistSessionContext) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             if context.server != server {
                 server = server
@@ -344,10 +421,10 @@ extension AssistViewModel: AssistSessionDelegate {
 
 extension AssistViewModel: AudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AudioPlayer) {
-        startRecordingAgainIfNeeded()
+        Task { @MainActor in startRecordingAgainIfNeeded() }
     }
 
     func volumeIsZero() {
-        startRecordingAgainIfNeeded()
+        Task { @MainActor in startRecordingAgainIfNeeded() }
     }
 }

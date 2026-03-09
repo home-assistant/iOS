@@ -1,6 +1,7 @@
 import Foundation
 import Shared
 import SwiftUI
+
 // MARK: - Settings View
 
 @available(iOS 26.0, *)
@@ -20,8 +21,8 @@ struct AssistSettingsView: View {
         Binding(
             get: {
                 viewModel.configuration.onDeviceSTTLocaleIdentifier
-                ?? supportedLocales.first?.identifier
-                ?? Locale.current.identifier
+                    ?? supportedLocales.first?.identifier
+                    ?? Locale.current.identifier
             },
             set: { newValue in
                 viewModel.configuration.onDeviceSTTLocaleIdentifier = newValue

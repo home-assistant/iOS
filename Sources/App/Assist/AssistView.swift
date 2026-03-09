@@ -152,10 +152,16 @@ struct AssistView: View {
                 Text(item.markdown)
             }
         }
-        .padding(8)
-        .padding(.horizontal, 8)
+        .padding(DesignSystem.Spaces.one)
+        .padding(.horizontal, DesignSystem.Spaces.one)
         .background(backgroundForChatItemType(item.itemType))
-        .roundedCorner(10, corners: roundedCornersForChatItemType(item.itemType))
+        .roundedCorner(DesignSystem.CornerRadius.oneAndMicro, corners: roundedCornersForChatItemType(item.itemType))
+        .overlay {
+            if item.itemType == .pending {
+                RoundedCorner(radius: DesignSystem.CornerRadius.oneAndMicro, corners: [.topLeft, .topRight, .bottomLeft])
+                    .stroke(Color.haPrimary, style: StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
+            }
+        }
         .foregroundColor(foregroundForChatItemType(item.itemType))
         .tint(tintForChatItemType(item.itemType))
         .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
@@ -233,7 +239,7 @@ struct AssistView: View {
     private var microphoneIcon: some View {
         Button {
             feedbackGenerator.notificationOccurred(.warning)
-            viewModel.stopStreaming()
+            viewModel.assistWithAudio()
         } label: {
             AssistMicAnimationView()
                 .frame(maxWidth: viewModel.isRecording ? .infinity : 0)
@@ -294,6 +300,8 @@ struct AssistView: View {
             .red
         case .info:
             .gray.opacity(0.5)
+        case .pending:
+            .clear
         }
     }
 
@@ -319,7 +327,7 @@ struct AssistView: View {
 
     private func alignmentForChatItemType(_ itemType: AssistChatItem.ItemType) -> Alignment {
         switch itemType {
-        case .input:
+        case .input, .pending:
             .trailing
         case .output, .typing:
             .leading
@@ -330,7 +338,7 @@ struct AssistView: View {
 
     private func roundedCornersForChatItemType(_ itemType: AssistChatItem.ItemType) -> UIRectCorner {
         switch itemType {
-        case .input:
+        case .input, .pending:
             [.topLeft, .topRight, .bottomLeft]
         case .output, .typing:
             [.topLeft, .topRight, .bottomRight]
