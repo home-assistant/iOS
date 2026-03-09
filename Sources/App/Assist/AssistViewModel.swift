@@ -80,26 +80,23 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer.pause()
     }
 
-    @MainActor func assistWithText() {
+    @MainActor func assistWithText(expectingTTS: Bool = false) {
         guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return
         }
         audioPlayer.pause()
         stopStreaming()
-        assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: false))
+        if expectingTTS {
+            assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: !configuration.muteTTS))
+        } else {
+            assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: false))
+        }
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
     }
 
     @MainActor func assistWithTextExpectingTTS() {
-        guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            return
-        }
-        audioPlayer.pause()
-        stopStreaming()
-        assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: !configuration.muteTTS))
-        appendToChat(.init(content: inputText, itemType: .input))
-        inputText = ""
+        assistWithText(expectingTTS: true)
     }
 
     @MainActor func assistWithAudio() {
