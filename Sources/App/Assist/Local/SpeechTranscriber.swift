@@ -205,29 +205,7 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         // Start recognition task
         recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { [weak self] result, error in
             Task { @MainActor in
-                guard let self else { return }
-
-                if let result {
-                    self.transcript = result.bestTranscription.formattedString
-                    self.onTranscriptUpdate?(self.transcript, result.isFinal)
-                    if !result.isFinal {
-                        self.scheduleSilenceDetection()
-                    }
-                }
-
-                if let error {
-                    // Ignore cancellation errors
-                    let nsError = error as NSError
-                    if nsError.code != 216, nsError.code != 1 { // cancellation codes
-                        self.errorMessage = error.localizedDescription
-                        self.onError?(error)
-                    }
-                    self.stopListening()
-                }
-
-                if result?.isFinal == true {
-                    self.stopListening()
-                }
+                self?.handleRecognitionResult(result, error: error)
             }
         }
 
@@ -274,6 +252,30 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     }
 
     // MARK: - Private Methods
+
+    private func handleRecognitionResult(_ result: SFSpeechRecognitionResult?, error: Error?) {
+        if let result {
+            transcript = result.bestTranscription.formattedString
+            onTranscriptUpdate?(transcript, result.isFinal)
+            if !result.isFinal {
+                scheduleSilenceDetection()
+            }
+        }
+
+        if let error {
+            // Ignore cancellation errors
+            let nsError = error as NSError
+            if nsError.code != 216, nsError.code != 1 { // cancellation codes
+                errorMessage = error.localizedDescription
+                onError?(error)
+            }
+            stopListening()
+        }
+
+        if result?.isFinal == true {
+            stopListening()
+        }
+    }
 
     private func scheduleSilenceDetection() {
         silenceDetectionTask?.cancel()
