@@ -27,6 +27,7 @@ public enum HAGestureActionCategory: String, CaseIterable {
 public enum HAGestureAction: String, Codable, CaseIterable {
     // Home Assistant
     case showSidebar
+    case quickSearch
     case searchEntities
     case searchDevices
     case searchCommands
@@ -46,7 +47,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
 
     public var category: HAGestureActionCategory {
         switch self {
-        case .showSidebar, .searchEntities, .searchDevices, .searchCommands, .assist:
+        case .showSidebar, .quickSearch, .searchEntities, .searchDevices, .searchCommands, .assist:
             .homeAssistant
         case .backPage, .nextPage:
             .page
@@ -67,6 +68,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.backPage
         case .nextPage:
             L10n.Gestures.Value.Option.nextPage
+        case .quickSearch:
+            L10n.Gestures.Value.Option.quickSearch
         case .searchEntities:
             L10n.Gestures.Value.Option.searchEntities
         case .showServersList:
@@ -98,6 +101,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             nil
         case .nextPage:
             nil
+        case .quickSearch:
+            L10n.Gestures.Value.Option.MoreInfo.quickSearch
         case .searchEntities:
             L10n.Gestures.Value.Option.MoreInfo.searchEntities
         case .searchCommands:

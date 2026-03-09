@@ -119,6 +119,7 @@
 "mJ6CrP" = "No s'ha pogut enviar ${eventName}: ${error}";
 "mZnRHS" = "${eventName} disparat";
 "mi6B62" = "Quines dades voleu enviar amb l’esdeveniment?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Només per confirmar, volies ‘${server}’?";
 "ns9RRU" = "Obre la pàgina";
 "nzqmFA" = "Fet!";
@@ -147,6 +148,7 @@
 "vAIAF2" = "Envia una actualització del sensor a Home Assistant";
 "vebd70" = "Servidor";
 "wfPQQQ" = "Dispara un esdeveniment al bus d’esdeveniments del Home Assistant";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Resultat";
 "xfXG6b" = "Quin servidor?";
 "xhwpj4" = "Fet!";

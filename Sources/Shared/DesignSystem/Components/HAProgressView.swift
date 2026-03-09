@@ -2,6 +2,7 @@ import SwiftUI
 
 final class HAProgressViewModel: ObservableObject {
     @Published var isAnimating = false
+    @Published var rotationDegrees: CGFloat = 0
     @Published var trimEnd: CGFloat = 0.1
 }
 
@@ -61,26 +62,69 @@ public struct HAProgressView: View {
                     style: StrokeStyle(lineWidth: style.lineWidth, lineCap: .round)
                 )
                 .frame(width: style.size.width, height: style.size.height)
-                .rotationEffect(Angle(degrees: viewModel.isAnimating ? 360 : 0))
-                .animation(
-                    Animation.linear(duration: 1).repeatForever(autoreverses: false),
-                    value: viewModel.isAnimating
-                )
+                .rotationEffect(Angle(degrees: viewModel.rotationDegrees))
                 .onAppear {
+                    guard !viewModel.isAnimating else { return }
                     viewModel.isAnimating = true
+                    withAnimation(Animation.linear(duration: 1).repeatForever(autoreverses: false)) {
+                        viewModel.rotationDegrees = 360
+                    }
                     withAnimation(.easeInOut(duration: 1.75).repeatForever(autoreverses: true)) {
                         viewModel.trimEnd = 0.7
                     }
                 }
         }
+        .frame(width: style.size.width, height: style.size.height, alignment: .center)
     }
 }
 
-#Preview {
+#Preview("In HStack") {
     HStack(spacing: DesignSystem.Spaces.two) {
         HAProgressView(style: .small)
         HAProgressView(style: .medium)
         HAProgressView(style: .large)
+        HAProgressView(style: .extraLarge)
+    }
+}
+
+#Preview("In List") {
+    List {
+        HAProgressView(style: .small)
+        HAProgressView(style: .medium)
+        HAProgressView(style: .large)
+        HAProgressView(style: .extraLarge)
+    }
+}
+
+#Preview("In VStack") {
+    VStack {
+        HAProgressView(style: .small)
+        HAProgressView(style: .medium)
+        HAProgressView(style: .large)
+        HAProgressView(style: .extraLarge)
+    }
+}
+
+#Preview("In Navigation view small") {
+    NavigationView {
+        HAProgressView(style: .small)
+    }
+}
+
+#Preview("In Navigation view medium") {
+    NavigationView {
+        HAProgressView(style: .medium)
+    }
+}
+
+#Preview("In Navigation view large") {
+    NavigationView {
+        HAProgressView(style: .large)
+    }
+}
+
+#Preview("In Navigation view extra lar") {
+    NavigationView {
         HAProgressView(style: .extraLarge)
     }
 }

@@ -274,22 +274,17 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
     private func setupActionsSettings() {
         title = L10n.SettingsDetails.LegacyActions.title
 
-        form +++ learnAboutActionsButton()
+        // Disclaimer placeholder shown before actions content
+        form +++ Section {
+            $0.tag = "actions_disclaimer"
+        }
+            <<< InfoLabelRow {
+                $0.title = L10n.LegacyActions.disclaimer
+            }
+
         form +++ manualActionsSection()
         form +++ serverControlledActionsSection()
         form +++ serverActionsUpdateButton()
-    }
-
-    private func learnAboutActionsButton() -> SettingsButtonRow {
-        SettingsButtonRow {
-            $0.title = L10n.SettingsDetails.Actions.Learn.Button.title
-            $0.accessoryIcon = .openInNewIcon
-            $0.onCellSelection { _, row in
-                guard let url = URL(string: "https://companion.home-assistant.io/docs/core/actions/") else { return }
-                URLOpener.shared.open(url, options: [:], completionHandler: nil)
-                row.deselect(animated: true)
-            }
-        }
     }
 
     private func manualActionsSection() -> MultivaluedSection {
@@ -297,27 +292,11 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             .sorted(byKeyPath: "Position")
             .filter("Scene == nil")
 
-        let actionsFooter = Current.isCatalyst ?
-            L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
-
         let section = MultivaluedSection(
-            multivaluedOptions: [.Insert, .Delete, .Reorder],
-            header: "",
-            footer: actionsFooter
+            multivaluedOptions: [.Delete, .Reorder],
+            header: ""
         ) { section in
             section.tag = "actions"
-            section.multivaluedRowToInsertAt = { [weak self] _ -> ButtonRowWithPresent<ActionConfigurator> in
-                self?.getActionRow(nil) ?? .init()
-            }
-            section.addButtonProvider = { _ in
-                ButtonRow {
-                    $0.title = L10n.addButtonLabel
-                    $0.cellStyle = .value1
-                    $0.tag = "add_action"
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                }
-            }
 
             for action in actions.filter("isServerControlled == false") {
                 section <<< getActionRow(action)

@@ -32,7 +32,7 @@ struct ControlOpenLockValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenLock.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenLockValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenLockItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenLock.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.lock.rawValue),
             displayText: nil
         )
@@ -76,21 +83,9 @@ struct ControlOpenLockConfiguration: ControlConfigurationIntent {
 struct LockEntityOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
         let entities = ControlEntityProvider(domains: [.lock]).getEntities()
-
-        return .init(sections: entities.map { (key: Server, value: [HAAppEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value.map { entity in
-                    HAAppEntityAppIntentEntity(
-                        id: entity.id,
-                        entityId: entity.entityId,
-                        serverId: entity.serverId,
-                        serverName: key.info.name,
-                        displayString: entity.name,
-                        iconName: entity.icon ?? SFSymbol.lock.rawValue
-                    )
-                }
-            )
-        })
+        return makeHAEntityIntentItemCollection(
+            entities: entities,
+            defaultIconName: SFSymbol.lock.rawValue
+        )
     }
 }

@@ -47,7 +47,7 @@ struct ControlAutomationsValueProvider: AppIntentControlValueProvider {
             entityId: "",
             serverId: "",
             serverName: "",
-            displayString: L10n.Widgets.Controls.Automations.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Automations.pendingConfiguration,
             iconName: SFSymbol.flowchart.rawValue
         )
     }

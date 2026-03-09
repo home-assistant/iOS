@@ -75,15 +75,23 @@ struct WatchMagicViewRow: View {
         }
     }
 
+    private var iconColor: UIColor {
+        if let hex = viewModel.itemInfo.customization?.iconColor {
+            .init(hex: hex)
+        } else {
+            .white
+        }
+    }
+
     private var iconToDisplay: some View {
         VStack {
             switch viewModel.state {
             case .idle:
                 Image(uiImage: viewModel.item.icon(info: viewModel.itemInfo).image(
                     ofSize: .init(width: 24, height: 24),
-                    color: .init(hex: viewModel.itemInfo.customization?.iconColor)
+                    color: iconColor
                 ))
-                .foregroundStyle(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)))
+                .foregroundStyle(Color(uiColor: iconColor))
                 .padding()
             case .loading:
                 ProgressView()
@@ -103,12 +111,12 @@ struct WatchMagicViewRow: View {
                 view
                     .glassEffect(
                         .clear
-                            .tint(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3)),
+                            .tint(Color(uiColor: iconColor).opacity(0.3)),
                         in: .circle
                     )
             } else {
                 view
-                    .background(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3))
+                    .background(Color(uiColor: iconColor).opacity(0.3))
                     .clipShape(Circle())
             }
         })

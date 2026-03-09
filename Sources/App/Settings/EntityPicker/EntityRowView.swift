@@ -65,7 +65,7 @@ struct EntityRowView: View {
                     fallback: fallbackIcon ?? .dotsGridIcon
                 ).image(
                     ofSize: .init(width: iconSize.width, height: iconSize.height),
-                    color: UIColor(Color.haPrimary)
+                    color: UIColor(Color.gray)
                 )
             }
             showIcon = true

@@ -119,6 +119,7 @@
 "mJ6CrP" = "No se ha podido enviar ${eventName}: ${error}";
 "mZnRHS" = "${eventName} fired";
 "mi6B62" = "What data do you want to send with the event?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Just to confirm, you wanted ‘${server}’?";
 "ns9RRU" = "Abre la página";
 "nzqmFA" = "Hecho!";
@@ -147,6 +148,7 @@
 "vAIAF2" = "Envía una actualización del sensor a Home Assistant";
 "vebd70" = "Servidor";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Result";
 "xfXG6b" = "¿Qué servidor?";
 "xhwpj4" = "Hecho!";

@@ -21,10 +21,8 @@ final class WatchHomeViewModel: ObservableObject {
 
     @Published var watchConfig: WatchConfig = .init()
     @Published var magicItemsInfo: [MagicItem.Info] = []
-
-    // If the watchConfig items are the same but it's customization properties
-    // are different, the list won't refresh. This is a workaround to force a refresh
-    @Published var refreshListID: UUID = .init()
+    /// Changes every time a new config is fetched, used as a `.id()` modifier on lists to force re-render.
+    @Published var configVersion = UUID()
 
     @MainActor
     func fetchNetworkInfo() async {
@@ -203,6 +201,7 @@ final class WatchHomeViewModel: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.watchConfig = config
             self?.magicItemsInfo = magicItemsInfo
+            self?.configVersion = UUID()
 
             if config.assist.showAssist,
                config.assist.serverId != nil,
@@ -211,7 +210,6 @@ final class WatchHomeViewModel: ObservableObject {
             } else {
                 self?.showAssist = false
             }
-            self?.refreshListID = UUID()
         }
     }
 

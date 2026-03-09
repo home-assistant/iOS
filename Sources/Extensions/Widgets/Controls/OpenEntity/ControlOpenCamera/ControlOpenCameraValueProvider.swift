@@ -32,7 +32,7 @@ struct ControlOpenCameraValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenCamera.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenCameraValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenCameraItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenCamera.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.video.rawValue),
             displayText: nil
         )
@@ -76,21 +83,9 @@ struct ControlOpenCameraConfiguration: ControlConfigurationIntent {
 struct CameraEntityOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
         let entities = ControlEntityProvider(domains: [.camera]).getEntities()
-
-        return .init(sections: entities.map { (key: Server, value: [HAAppEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value.map { entity in
-                    HAAppEntityAppIntentEntity(
-                        id: entity.id,
-                        entityId: entity.entityId,
-                        serverId: entity.serverId,
-                        serverName: key.info.name,
-                        displayString: entity.name,
-                        iconName: entity.icon ?? SFSymbol.video.rawValue
-                    )
-                }
-            )
-        })
+        return makeHAEntityIntentItemCollection(
+            entities: entities,
+            defaultIconName: SFSymbol.video.rawValue
+        )
     }
 }

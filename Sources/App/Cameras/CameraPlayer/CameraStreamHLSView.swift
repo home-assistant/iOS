@@ -38,34 +38,6 @@ struct CameraStreamHLSView: View {
                     .edgesIgnoringSafeArea(.all)
             }
 
-            // Overlay controls
-            VStack {
-                HStack {
-                    if let cameraName {
-                        Text(cameraName)
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal)
-                            .padding(.vertical, 8)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Capsule())
-                    }
-                    Spacer()
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemSymbol: .xmark)
-                            .font(.body.weight(.semibold))
-                            .foregroundStyle(.white)
-                            .padding(12)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
-                    }
-                }
-                .padding()
-                Spacer()
-            }
-
             if isLoading {
                 ProgressView()
                     .progressViewStyle(.circular)

@@ -58,7 +58,6 @@ struct HomeNetworkInputView: View {
             if Current.isCatalyst {
                 hardwareAddressField
             }
-            networkDisclaimer
         }
         .frame(maxWidth: DesignSystem.List.rowMaxWidth)
         .padding(.top)
@@ -97,26 +96,6 @@ struct HomeNetworkInputView: View {
                 .textInputAutocapitalization(.never)
             }
         }
-    }
-
-    private var networkDisclaimer: some View {
-        HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
-            Image(systemSymbol: .infoCircleFill)
-                .foregroundStyle(.blue)
-                .font(.system(size: 20))
-
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                Text(L10n.Onboarding.NetworkInput.Disclaimer.title)
-                    .font(DesignSystem.Font.body.weight(.medium))
-
-                Text(L10n.Onboarding.NetworkInput.Disclaimer.body)
-                    .font(DesignSystem.Font.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(DesignSystem.Spaces.two)
-        .background(.blue.opacity(0.1))
-        .cornerRadius(DesignSystem.CornerRadius.three)
     }
 
     // MARK: - Actions

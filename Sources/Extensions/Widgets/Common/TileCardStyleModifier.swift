@@ -25,9 +25,9 @@ struct TileCardStyleModifier: ViewModifier {
                     return .tileBackground
                 }
             }())
-            .clipShape(RoundedRectangle(cornerRadius: sizeStyle == .compressed ? .zero : 14))
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .overlay {
-                RoundedRectangle(cornerRadius: sizeStyle == .compressed ? .zero : 14)
+                RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(Color.tileBorder, lineWidth: sizeStyle == .single ? 0 : 1)
                     .modify { view in
                         if #available(iOS 18, *) {
@@ -37,5 +37,9 @@ struct TileCardStyleModifier: ViewModifier {
                         }
                     }
             }
+    }
+
+    private var cornerRadius: CGFloat {
+        sizeStyle == .compressed ? .zero : 14
     }
 }

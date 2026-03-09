@@ -18,45 +18,7 @@ public extension HAEntity {
         var image = MaterialDesignIcons.bookmarkIcon
         var tint: UIColor?
 
-        if let icon = attributes.icon?.normalizingIconString {
-            image = MaterialDesignIcons(named: icon)
-        } else {
-            guard let domain = Domain(rawValue: domain) else { return nil }
-            switch domain {
-            case .button:
-                image = getButtonIcon()
-            case .cover:
-                image = getCoverIcon()
-            case .inputBoolean:
-                image = getInputBooleanIcon()
-            case .inputButton:
-                image = .gestureTapButtonIcon
-            case .light:
-                image = .lightbulbIcon
-            case .lock:
-                image = getLockIcon()
-            case .scene:
-                image = .paletteOutlineIcon
-            case .script:
-                image = .scriptTextOutlineIcon
-            case .switch:
-                image = getSwitchIcon()
-            case .sensor:
-                image = .eyeIcon
-            case .binarySensor:
-                image = .eyeIcon
-            case .zone:
-                image = .mapIcon
-            case .person:
-                image = .accountIcon
-            case .camera:
-                image = .cameraIcon
-            case .fan:
-                image = .fanIcon
-            case .automation:
-                image = .homeAutomationIcon
-            }
-        }
+        let icon = getMDI()
 
         if let state = Domain.State(rawValue: state) {
             if [.on, .open, .opening, .unlocked, .unlocking].contains(state) {
@@ -76,7 +38,7 @@ public extension HAEntity {
 
     /// Returns the appropriate icon for the entity based on its state, without applying color
     /// This is useful when you want to apply a custom color to a state-based icon
-    func getIconWithoutColor() -> MaterialDesignIcons {
+    func getMDI() -> MaterialDesignIcons {
         var image = MaterialDesignIcons.bookmarkIcon
 
         if let icon = attributes.icon?.normalizingIconString {
@@ -116,6 +78,10 @@ public extension HAEntity {
                 image = .fanIcon
             case .automation:
                 image = .homeAutomationIcon
+            case .todo:
+                image = .checkboxMarkedOutlineIcon
+            case .climate:
+                image = .homeThermometerOutlineIcon
             }
         }
 

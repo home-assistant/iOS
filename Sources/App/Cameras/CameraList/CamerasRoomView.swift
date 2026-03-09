@@ -76,10 +76,11 @@ struct CamerasRoomView: View {
                     }
                 }
             }
-            .onAppear {
-                // Hide instructions after 3 seconds
-                Task {
-                    try? await Task.sleep(nanoseconds: 3_000_000_000)
+            .task {
+                // Hide instructions after 3 seconds, cancel if view disappears
+                guard showInstructions else { return }
+                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                await MainActor.run {
                     withAnimation {
                         showInstructions = false
                     }

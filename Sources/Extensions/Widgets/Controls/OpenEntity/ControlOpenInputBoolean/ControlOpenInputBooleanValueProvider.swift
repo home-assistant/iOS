@@ -32,7 +32,7 @@ struct ControlOpenInputBooleanValueProvider: AppIntentControlValueProvider {
                 entityId: "",
                 serverId: "",
                 serverName: "",
-                displayString: "",
+                displayString: L10n.Widgets.Controls.OpenInputBoolean.pendingConfiguration,
                 iconName: ""
             ),
             icon: configuration.icon ?? placeholder().icon,
@@ -42,7 +42,14 @@ struct ControlOpenInputBooleanValueProvider: AppIntentControlValueProvider {
 
     private func placeholder() -> ControlOpenInputBooleanItem {
         .init(
-            entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
+            entity: .init(
+                id: "",
+                entityId: "",
+                serverId: "",
+                serverName: "",
+                displayString: L10n.Widgets.Controls.OpenInputBoolean.pendingConfiguration,
+                iconName: ""
+            ),
             icon: .init(id: SFSymbol.switchProgrammableFill.rawValue),
             displayText: nil
         )
@@ -79,21 +86,9 @@ struct ControlOpenInputBooleanConfiguration: ControlConfigurationIntent {
 struct InputBooleanEntityOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
         let entities = ControlEntityProvider(domains: [.inputBoolean]).getEntities()
-
-        return .init(sections: entities.map { (key: Server, value: [HAAppEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value.map { entity in
-                    HAAppEntityAppIntentEntity(
-                        id: entity.id,
-                        entityId: entity.entityId,
-                        serverId: entity.serverId,
-                        serverName: key.info.name,
-                        displayString: entity.name,
-                        iconName: entity.icon ?? SFSymbol.switchProgrammable.rawValue
-                    )
-                }
-            )
-        })
+        return makeHAEntityIntentItemCollection(
+            entities: entities,
+            defaultIconName: SFSymbol.switchProgrammable.rawValue
+        )
     }
 }

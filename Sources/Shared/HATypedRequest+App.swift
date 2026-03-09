@@ -2,6 +2,25 @@ import Foundation
 import HAKit
 
 public extension HATypedRequest {
+    /// Executes the domain's main action (e.g., toggle for lights, turn_on for scenes).
+    /// Returns nil if the domain doesn't have a main action.
+    static func executeMainAction(
+        domain: Domain,
+        entityId: String
+    ) -> HATypedRequest<HAResponseVoid>? {
+        guard let action = domain.mainAction else { return nil }
+        return HATypedRequest<HAResponseVoid>(request: .init(
+            type: "call_service",
+            data: [
+                "domain": domain.rawValue,
+                "service": action.rawValue,
+                "target": [
+                    "entity_id": entityId,
+                ],
+            ]
+        ))
+    }
+
     static func toggleDomain(
         domain: Domain,
         entityId: String
@@ -143,5 +162,37 @@ public extension HATypedRequest {
         HATypedRequest<HAUsagePredictionCommonControl>(request: .init(
             type: .webSocket("usage_prediction/common_control")
         ))
+    }
+
+    static func getItemFromTodoList(listId: String) -> HATypedRequest<TodoListRawResponse> {
+        HATypedRequest<TodoListRawResponse>(
+            request:
+            .init(
+                type: .rest(
+                    .post, "services/todo/get_items"
+                ), data: [
+                    "entity_id": listId,
+                ],
+                queryItems: [
+                    .init(name: "return_response", value: "true"),
+                ],
+                shouldRetry: true
+            )
+        )
+    }
+
+    static func completeTodoItem(listId: String, itemId: String) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(
+            request:
+            .init(
+                type: .rest(
+                    .post, "services/todo/update_item"
+                ), data: [
+                    "entity_id": listId,
+                    "item": itemId,
+                    "status": "completed",
+                ]
+            )
+        )
     }
 }

@@ -9,6 +9,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var canGoForward: Bool = false
     var traitCollection: UITraitCollection = .init()
     var server: Server = ServerFixture.standard
+    var connectionState: FrontEndConnectionState = .connected
     var overlayedController: UIViewController?
 
     var presentOverlayControllerCalled = false
@@ -95,6 +96,10 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func refresh() {
         refreshCalled = true
+    }
+
+    func refreshIfDisconnected() {
+        // Simulate conditional refresh
     }
 
     func presentAlertController(controller: UIViewController, animated: Bool) {

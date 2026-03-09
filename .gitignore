@@ -85,3 +85,4 @@ Brewfile.lock.json
 vendor/bundle
 .env.development
 .bundle/
+.claude/settings.local.json

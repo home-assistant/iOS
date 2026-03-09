@@ -4,6 +4,7 @@ import SwiftUI
 struct GesturesSetupView: View {
     @StateObject private var viewModel = GesturesSetupViewModel()
     @State private var swipeRightState = HAGestureAction.showSidebar
+    @State private var showResetConfirmation = false
 
     @State var directions: [UISwipeGestureRecognizer.Direction] = [
         .left, .right, .up,
@@ -66,9 +67,21 @@ struct GesturesSetupView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(role: .destructive) {
-                    viewModel.resetGestures()
+                    showResetConfirmation = true
                 } label: {
                     Text(L10n.Gestures.Reset.title)
+                }
+                .confirmationDialog(
+                    L10n.Gestures.Reset.Confirmation.title,
+                    isPresented: $showResetConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(L10n.yesLabel, role: .destructive) {
+                        viewModel.resetGestures()
+                    }
+                    Button(L10n.noLabel, role: .cancel) {}
+                } message: {
+                    Text(L10n.Gestures.Reset.Confirmation.message)
                 }
             }
         }

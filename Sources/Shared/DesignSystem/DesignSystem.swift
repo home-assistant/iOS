@@ -31,6 +31,7 @@ public enum DesignSystem {
     }
 
     public enum Spaces {
+        public static let micro: CGFloat = 2
         public static let half: CGFloat = 4
         public static let one: CGFloat = 8
         public static let oneAndHalf: CGFloat = 12
@@ -44,7 +45,6 @@ public enum DesignSystem {
     public enum CornerRadius {
         public static var half: CGFloat = 4
         public static var one: CGFloat = 8
-        public static var oneAndHalf: CGFloat = 12
         public static var two: CGFloat = 16
         public static var three: CGFloat = 24
         public static var four: CGFloat = 32
@@ -52,9 +52,16 @@ public enum DesignSystem {
         public static var six: CGFloat = 48
 
         // Out of system points
+        /// 2pt
         public static var micro: CGFloat = 2
+        /// 10pt
         public static var oneAndMicro: CGFloat = 10
+        /// 12pt
+        public static var oneAndHalf: CGFloat = 12
+        /// 18pt
         public static var twoAndMicro: CGFloat = 18
+        /// 20pt
+        public static var twoAndHalf: CGFloat = 20
     }
 
     public enum Border {

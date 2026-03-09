@@ -119,6 +119,7 @@
 "mJ6CrP" = "Invio di ${eventName} fallito: ${error}";
 "mZnRHS" = "${eventName} attivato";
 "mi6B62" = "Quali dati vuoi inviare con l'evento?";
+"mrwamX" = "Assist In App";
 "ni0OSe" = "Solo per confermare, volevi '${server}'?";
 "ns9RRU" = "Aprire la pagina";
 "nzqmFA" = "Completato";
@@ -147,6 +148,7 @@
 "vAIAF2" = "Invia un aggiornamento del sensore ad Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Lancia un evento sul bus eventi Home Assistant";
+"x7FAm9" = "(Legacy) Assist In App";
 "xN51te" = "Risultato";
 "xfXG6b" = "Quale server?";
 "xhwpj4" = "Fatto";

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Shared
 
@@ -10,6 +11,30 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @Published var servers: [Server] = []
     private let magicItemProvider = Current.magicItemProvider()
 
+    // An item that should be added as soon as screen finishes loading
+    // like when using frontend "Add to" functionality from more-info dialog
+    private let prefilledItem: MagicItem?
+
+    private var cancellables = Set<AnyCancellable>()
+    private var isInitialLoad = true
+
+    init(prefilledItem: MagicItem? = nil) {
+        self.prefilledItem = prefilledItem
+        setupAutoSave()
+    }
+
+    private func setupAutoSave() {
+        $config
+            .dropFirst() // Skip the initial value
+            .sink { [weak self] _ in
+                guard let self, !self.isInitialLoad else { return }
+                Task { @MainActor in
+                    self.save()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
     @MainActor
     func loadConfig() {
         servers = Current.servers.all
@@ -21,6 +46,11 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     @MainActor
     private func loadDatabase() {
+        defer {
+            if let prefilledItem {
+                addItem(prefilledItem)
+            }
+        }
         do {
             if let config: CarPlayConfig = try Current.database().read({ db in
                 do {
@@ -33,8 +63,8 @@ final class CarPlayConfigurationViewModel: ObservableObject {
                 setConfig(config)
                 Current.Log.info("CarPlay configuration exists")
             } else {
-                Current.Log.error("No CarPlay config found")
-                convertLegacyActionsToCarPlayConfig()
+                Current.Log.info("No CarPlay config found, initializing default configuration")
+                setConfig(CarPlayConfig())
             }
         } catch {
             Current.Log.error("Failed to access database (GRDB), error: \(error.localizedDescription)")
@@ -42,46 +72,25 @@ final class CarPlayConfigurationViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     private func setConfig(_ config: CarPlayConfig) {
-        DispatchQueue.main.async { [weak self] in
-            self?.config = config
-        }
+        self.config = config
+        isInitialLoad = false
     }
 
+    @discardableResult
     @MainActor
-    private func convertLegacyActionsToCarPlayConfig() {
-        var newConfig = CarPlayConfig()
-        let actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
-            .filter(\.showInCarPlay)
-
-        guard !actions.isEmpty else { return }
-
-        let newActionItems = actions.map { action in
-            MagicItem(id: action.ID, serverId: action.serverIdentifier, type: .action)
-        }
-        newConfig.quickAccessItems = newActionItems
-        setConfig(newConfig)
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            save { success in
-                if !success {
-                    Current.Log.error("Failed to migrate actions to CarPlay config, failed to save config.")
-                }
-            }
-        }
-    }
-
-    @MainActor
-    func save(completion: (Bool) -> Void) {
+    // Returns success boolean
+    func save() -> Bool {
         do {
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
-                completion(true)
             }
+            return true
         } catch {
             Current.Log.error("Failed to save new CarPlay config, error: \(error.localizedDescription)")
             showError(message: L10n.Grdb.Config.MigrationError.failedToSave(error.localizedDescription))
-            completion(false)
+            return false
         }
     }
 

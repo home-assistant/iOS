@@ -84,8 +84,39 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
+        // Handle client certificate challenge (mTLS)
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            handleClientCertificateChallenge(challenge, completionHandler: completionHandler)
+            return
+        }
+
+        // Handle server trust (including self-signed certs)
         let result = authDetails.exceptions.evaluate(challenge)
         completionHandler(result.0, result.1)
+    }
+
+    private func handleClientCertificateChallenge(
+        _ challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        #if !os(watchOS)
+        guard let clientCertificate = authDetails.clientCertificate else {
+            Current.Log.error("Client certificate required but none configured")
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+
+        do {
+            let credential = try ClientCertificateManager.shared.urlCredential(for: clientCertificate)
+            Current.Log.info("Using client certificate: \(clientCertificate.displayName)")
+            completionHandler(.useCredential, credential)
+        } catch {
+            Current.Log.error("Failed to get credential for client certificate: \(error)")
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
+        #else
+        completionHandler(.cancelAuthenticationChallenge, nil)
+        #endif
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {

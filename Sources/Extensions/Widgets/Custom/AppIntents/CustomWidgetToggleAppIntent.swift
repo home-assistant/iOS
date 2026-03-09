@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import HAKit
 import Shared
 import SwiftUI
 import WidgetKit
@@ -27,12 +28,13 @@ struct CustomWidgetToggleAppIntent: AppIntent {
               let widgetShowingStates,
               let server = Current.servers.all.first(where: { server in
                   server.identifier.rawValue == serverId
-              }), let connection = Current.api(for: server)?.connection else {
+              }), let connection = Current.api(for: server)?.connection,
+              let request = HATypedRequest<HAResponseVoid>.executeMainAction(domain: domain, entityId: entityId) else {
             return .result()
         }
         AppIntentHaptics.notify()
         await withCheckedContinuation { continuation in
-            connection.send(.toggleDomain(domain: domain, entityId: entityId)).promise.pipe { result in
+            connection.send(request).promise.pipe { result in
                 switch result {
                 case .fulfilled:
                     continuation.resume()

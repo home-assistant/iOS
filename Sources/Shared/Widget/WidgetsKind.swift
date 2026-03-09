@@ -9,7 +9,9 @@ public enum WidgetsKind: String, CaseIterable {
     case scripts = "WidgetScripts"
     case sensors
     case custom
+    case commonlyUsedEntities
     case controlAutomation
+    case todoList
     case controlScript
     case controlScene
     case controlAssist
@@ -28,5 +30,4 @@ public enum WidgetsKind: String, CaseIterable {
     case controlOpenSwitch
     case controlOpenSensor
     case controlButton
-    case controlOpenExperimentalDashboard
 }

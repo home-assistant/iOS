@@ -75,7 +75,7 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
             id: UUID().uuidString,
             entityId: "",
             serverId: "",
-            displayString: L10n.Widgets.Controls.Cover.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Cover.pendingConfiguration,
             iconName: (value ?? false) ? SFSymbol.blindsVerticalOpen.rawValue : SFSymbol.blindsVerticalClosed.rawValue
         )
     }

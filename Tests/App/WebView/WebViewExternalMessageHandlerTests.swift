@@ -170,4 +170,22 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         XCTAssertTrue(mockWebViewController.overlayedController is UIHostingController<AssistView>)
     }
+
+    @MainActor func testHandleExternalMessageCameraPlayerShowPresentsCameraPlayer() {
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "camera/show",
+            "payload": [
+                "entity_id": "camera.front_door",
+                "camera_name": "Front Door",
+            ],
+        ]
+
+        sut.handleExternalMessage(dictionary)
+
+        XCTAssertNotNil(mockWebViewController.overlayedController)
+        XCTAssertEqual(mockWebViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
+    }
 }

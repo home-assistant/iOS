@@ -11,6 +11,13 @@ struct ServersListView: View {
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
                 HomeAssistantAccountRowView(server: server)
             }
+            .contextMenu {
+                Button {
+                    server.refreshAppDatabase(forceUpdate: true)
+                } label: {
+                    Label(L10n.Settings.ConnectionSection.refreshServer, systemSymbol: .arrowClockwise)
+                }
+            }
         }
         .onMove { source, destination in
             observer.moveServers(from: source, to: destination)

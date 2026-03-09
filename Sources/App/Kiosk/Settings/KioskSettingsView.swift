@@ -9,7 +9,7 @@ import SwiftUI
 /// TODO: Add dashboard rotation, entity triggers, and camera settings
 public struct KioskSettingsView: View {
     @ObservedObject private var manager = KioskModeManager.shared
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) private var environmentDismiss
     @State private var settings: KioskSettings
     @State private var isAuthenticated = false
     @State private var showingAuthError = false
@@ -18,13 +18,31 @@ public struct KioskSettingsView: View {
     /// This is set once and doesn't change even if settings are modified during the session
     @State private var authRequired: Bool
 
-    public init() {
+    /// Explicit dismiss closure for UIKit interop (when presented via UINavigationController)
+    /// When nil, falls back to SwiftUI's @Environment(\.dismiss) for navigation contexts
+    private let onDismiss: (() -> Void)?
+
+    /// Initialize with optional explicit dismiss closure
+    /// - Parameter onDismiss: Closure called when the view should be dismissed.
+    ///   If nil, uses SwiftUI's environment dismiss (for NavigationLink contexts).
+    ///   Pass explicit closure when presenting via UIKit's UINavigationController.
+    public init(onDismiss: (() -> Void)? = nil) {
         let mgr = KioskModeManager.shared
         _settings = State(initialValue: mgr.settings)
         // Capture auth requirement at init time based on current kiosk state
         _authRequired = State(
             initialValue: mgr.isKioskModeActive && mgr.settings.requireDeviceAuthentication
         )
+        self.onDismiss = onDismiss
+    }
+
+    /// Dismiss the view using either the explicit closure or environment dismiss
+    private func dismissView() {
+        if let onDismiss {
+            onDismiss()
+        } else {
+            environmentDismiss()
+        }
     }
 
     public var body: some View {
@@ -39,7 +57,7 @@ public struct KioskSettingsView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(L10n.doneLabel) {
-                    dismiss()
+                    dismissView()
                 }
             }
         }
@@ -61,7 +79,7 @@ public struct KioskSettingsView: View {
 
                         HStack(spacing: 16) {
                             Button {
-                                dismiss()
+                                dismissView()
                             } label: {
                                 Text(L10n.cancelLabel)
                                     .frame(minWidth: 100)
@@ -109,7 +127,7 @@ public struct KioskSettingsView: View {
             Button(L10n.okLabel, role: .cancel) {
                 // Dismiss settings if auth failed while in kiosk mode
                 if manager.isKioskModeActive {
-                    dismiss()
+                    dismissView()
                 }
             }
         } message: {

@@ -19,47 +19,34 @@ struct AssistView: View {
 
     private let showCloseButton: Bool
 
-    private var shouldUseModernUI: Bool {
-        if #available(iOS 26.0, *) {
-            return !Current.isCatalyst && viewModel.configuration.enableModernUI
-        }
-        return false
-    }
-
     init(viewModel: AssistViewModel, showCloseButton: Bool = true) {
         self._viewModel = .init(wrappedValue: viewModel)
         self.showCloseButton = showCloseButton
     }
 
     var body: some View {
-        Group {
-            if #available(iOS 26.0, *), shouldUseModernUI {
-                modernUI
-            } else {
-                classicUI
+        classicUI
+            .onAppear {
+                assistSession.inProgress = true
+                viewModel.initialRoutine()
+                viewModel.subscribeForConfigChanges()
             }
-        }
-        .onAppear {
-            assistSession.inProgress = true
-            viewModel.initialRoutine()
-            viewModel.subscribeForConfigChanges()
-        }
-        .onChange(of: viewModel.focusOnInput) { newValue in
-            if newValue {
-                isFirstResponder = true
+            .onChange(of: viewModel.focusOnInput) { newValue in
+                if newValue {
+                    isFirstResponder = true
+                }
             }
-        }
-        .onDisappear {
-            assistSession.inProgress = false
-            viewModel.onDisappear()
-        }
-        .alert(isPresented: $viewModel.showError) {
-            .init(
-                title: Text(verbatim: L10n.errorLabel),
-                message: Text(viewModel.errorMessage),
-                dismissButton: .default(Text(verbatim: L10n.okLabel))
-            )
-        }
+            .onDisappear {
+                assistSession.inProgress = false
+                viewModel.onDisappear()
+            }
+            .alert(isPresented: $viewModel.showError) {
+                .init(
+                    title: Text(verbatim: L10n.errorLabel),
+                    message: Text(viewModel.errorMessage),
+                    dismissButton: .default(Text(verbatim: L10n.okLabel))
+                )
+            }
     }
 
     // MARK: - Configuration Persistence
@@ -102,46 +89,6 @@ struct AssistView: View {
             }
         }
         .navigationViewStyle(.stack)
-    }
-
-    @available(iOS 26.0, *)
-    private var modernUI: some View {
-        ModernAssistView(
-            messages: $viewModel.chatItems,
-            inputText: $viewModel.inputText,
-            isRecording: $viewModel.isRecording,
-            selectedTheme: $viewModel.configuration.theme,
-            selectedPipeline: .init(
-                get: {
-                    viewModel.pipelines.first(where: { $0.id == viewModel.preferredPipelineId })?.name ?? ""
-                },
-                set: { newValue in
-                    if let pipeline = viewModel.pipelines.first(where: { $0.name == newValue }) {
-                        viewModel.preferredPipelineId = pipeline.id
-                    }
-                }
-            ),
-            pipelines: viewModel.pipelines.map(\.name),
-            onClose: {
-                dismiss()
-            },
-            onSettings: {
-                showSettings = true
-            },
-            onSendMessage: {
-                viewModel.assistWithText()
-            },
-            onStartRecording: {
-                isFirstResponder = false
-                viewModel.assistWithAudio()
-            },
-            onStopRecording: {
-                viewModel.stopStreaming()
-            }
-        )
-        .sheet(isPresented: $showSettings) {
-            AssistSettingsView()
-        }
     }
 
     private var closeButton: some View {

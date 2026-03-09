@@ -6,6 +6,7 @@ public protocol MagicItemProviderProtocol {
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void)
     func loadInformation() async -> [String: [HAAppEntity]]
     func getInfo(for item: MagicItem) -> MagicItem.Info?
+    func getAreaName(for item: MagicItem) -> String?
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
@@ -206,6 +207,27 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                     MaterialDesignIcons.dotsGridIcon.name,
                 customization: item.customization
             )
+        case .folder:
+            return .init(
+                id: item.serverUniqueId,
+                name: item.displayText ?? L10n.Watch.Configuration.Folder.defaultName,
+                iconName: MaterialDesignIcons.folderIcon.name,
+                customization: item.customization
+            )
         }
+    }
+
+    func getAreaName(for item: MagicItem) -> String? {
+        guard item.type != .action,
+              let entitiesForServer = entitiesPerServer[item.serverId] else {
+            return nil
+        }
+
+        let areaName = entitiesForServer.areasMap(for: item.serverId)[item.id]?.name
+        if let areaName, !areaName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return areaName
+        }
+
+        return nil
     }
 }

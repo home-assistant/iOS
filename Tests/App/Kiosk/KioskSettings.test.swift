@@ -16,7 +16,7 @@ struct KioskSettingsCodableTests {
     @Test func customSettingsRoundtrip() async throws {
         var settings = KioskSettings()
         settings.isKioskModeEnabled = true
-        settings.allowBiometricExit = false
+        settings.requireDeviceAuthentication = true
         settings.hideStatusBar = true
         settings.preventAutoLock = true
         settings.screensaverTimeout = 600
@@ -33,7 +33,7 @@ struct KioskSettingsCodableTests {
 
         #expect(decoded == settings)
         #expect(decoded.isKioskModeEnabled == true)
-        #expect(decoded.allowBiometricExit == false)
+        #expect(decoded.requireDeviceAuthentication == true)
         #expect(decoded.screensaverMode == .clockWithEntities)
         #expect(decoded.clockStyle == .analog)
         #expect(decoded.secretExitGestureCorner == .bottomLeft)
@@ -187,7 +187,7 @@ struct TimeOfDayTests {
         #expect(beforeMidnight.isBefore(afterMidnight) == false)
     }
 
-    @Test func testAsDateComponents() async throws {
+    @Test func asDateComponents() async throws {
         let time = TimeOfDay(hour: 14, minute: 30)
         let components = time.asDateComponents
 
@@ -271,47 +271,3 @@ struct EnumDisplayNameTests {
     }
 }
 
-// MARK: - IconMapper Tests
-
-struct IconMapperTests {
-    @Test func commonMDIToSFSymbol() async throws {
-        #expect(IconMapper.sfSymbol(from: "mdi:home") == "house.fill")
-        #expect(IconMapper.sfSymbol(from: "mdi:lightbulb") == "lightbulb.fill")
-        #expect(IconMapper.sfSymbol(from: "mdi:thermometer") == "thermometer")
-        #expect(IconMapper.sfSymbol(from: "mdi:weather-sunny") == "sun.max")
-        #expect(IconMapper.sfSymbol(from: "mdi:lock") == "lock.fill")
-        #expect(IconMapper.sfSymbol(from: "mdi:lock-open") == "lock.open.fill")
-    }
-
-    @Test func mDIPrefixStripping() async throws {
-        // Should work with mdi: prefix - returns mapped value
-        let withPrefix = IconMapper.sfSymbol(from: "mdi:home")
-        #expect(withPrefix == "house.fill")
-
-        // Without prefix - still should work as it strips mdi: internally
-        // But if it doesn't match, it falls back
-        let directKey = IconMapper.sfSymbol(from: "home")
-        // The implementation may or may not handle this - just verify it returns something
-        #expect(!directKey.isEmpty)
-    }
-
-    @Test func unknownMDIReturnsFallback() async throws {
-        let unknown = IconMapper.sfSymbol(from: "mdi:some-unknown-icon-xyz")
-
-        // Should return a fallback symbol
-        #expect(unknown == "questionmark.circle")
-    }
-
-    @Test func weatherIcons() async throws {
-        #expect(IconMapper.sfSymbol(from: "mdi:weather-cloudy") == "cloud")
-        #expect(IconMapper.sfSymbol(from: "mdi:weather-rainy") == "cloud.rain")
-        #expect(IconMapper.sfSymbol(from: "mdi:weather-snowy") == "cloud.snow")
-        #expect(IconMapper.sfSymbol(from: "mdi:weather-sunny") == "sun.max")
-    }
-
-    @Test func deviceIcons() async throws {
-        #expect(IconMapper.sfSymbol(from: "mdi:television") == "tv")
-        #expect(IconMapper.sfSymbol(from: "mdi:speaker") == "speaker.wave.2")
-        #expect(IconMapper.sfSymbol(from: "mdi:fan") == "fan")
-    }
-}

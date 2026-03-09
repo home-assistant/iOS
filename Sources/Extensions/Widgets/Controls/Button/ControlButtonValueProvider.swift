@@ -50,7 +50,7 @@ struct ControlButtonValueProvider: AppIntentControlValueProvider {
             id: UUID().uuidString,
             entityId: "",
             serverId: "",
-            displayString: L10n.Widgets.Controls.Button.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Button.pendingConfiguration,
             iconName: SFSymbol.circleCircle.rawValue
         )
     }

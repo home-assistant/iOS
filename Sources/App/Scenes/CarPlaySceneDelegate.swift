@@ -11,17 +11,8 @@ public protocol EntitiesStateSubscription {
     func unsubscribe()
 }
 
-@available(iOS 16.0, *)
-class CarPlaySceneDelegate: UIResponder {
-    private var interfaceController: CPInterfaceController?
-    private var entitiesSubscriptionToken: HACancellable?
-    private var quickAccessEntitiesSubscriptionTokens: [HACancellable?] = []
-
-    private var domainsListTemplate: (any CarPlayTemplateProvider)?
-    private var serversListTemplate: (any CarPlayTemplateProvider)?
-    private var quickAccessListTemplate: (any CarPlayTemplateProvider)?
-    private var areasZonesListTemplate: (any CarPlayTemplateProvider)?
-    private var includedDomains: [Domain] = [
+enum CarPlaySupportedDomains {
+    static var all: [Domain] = [
         .light,
         .button,
         .cover,
@@ -32,6 +23,19 @@ class CarPlaySceneDelegate: UIResponder {
         .script,
         .switch,
     ]
+}
+
+@available(iOS 16.0, *)
+class CarPlaySceneDelegate: UIResponder {
+    private var interfaceController: CPInterfaceController?
+    private var entitiesSubscriptionToken: HACancellable?
+    private var quickAccessEntitiesSubscriptionTokens: [HACancellable?] = []
+
+    private var domainsListTemplate: (any CarPlayTemplateProvider)?
+    private var serversListTemplate: (any CarPlayTemplateProvider)?
+    private var quickAccessListTemplate: (any CarPlayTemplateProvider)?
+    private var areasZonesListTemplate: (any CarPlayTemplateProvider)?
+    private var includedDomains: [Domain] = CarPlaySupportedDomains.all
 
     private var allTemplates: [any CarPlayTemplateProvider] {
         [

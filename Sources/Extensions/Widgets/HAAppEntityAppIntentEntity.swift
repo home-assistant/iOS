@@ -111,3 +111,27 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         return allEntities
     }
 }
+
+@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+func makeHAEntityIntentItemCollection(
+    entities: [(Server, [HAAppEntity])],
+    defaultIconName: String
+) -> IntentItemCollection<HAAppEntityAppIntentEntity> {
+    .init(sections: entities.map { (server: Server, values: [HAAppEntity]) in
+        let areasMap = values.areasMap(for: server.identifier.rawValue)
+        return .init(
+            .init(stringLiteral: server.info.name),
+            items: values.map { entity in
+                HAAppEntityAppIntentEntity(
+                    id: entity.id,
+                    entityId: entity.entityId,
+                    serverId: entity.serverId,
+                    serverName: server.info.name,
+                    areaName: areasMap[entity.entityId]?.name,
+                    displayString: entity.name,
+                    iconName: entity.icon ?? defaultIconName
+                )
+            }
+        )
+    })
+}

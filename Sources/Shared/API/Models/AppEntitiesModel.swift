@@ -28,6 +28,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         Domain.lock,
         Domain.camera,
         Domain.fan,
+        Domain.todo,
     ].map(\.rawValue)
 
     public func updateModel(_ entities: Set<HAEntity>, server: Server) {

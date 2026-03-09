@@ -94,9 +94,6 @@ public struct KioskSettings: Codable, Equatable {
     /// Whether device authentication (Face ID, Touch ID, or passcode) is required to access settings
     public var requireDeviceAuthentication: Bool = false
 
-    /// Lock navigation (disable back gestures, pull-to-refresh, etc.)
-    public var navigationLockdown: Bool = true
-
     /// Hide iOS status bar for full immersion
     public var hideStatusBar: Bool = true
 

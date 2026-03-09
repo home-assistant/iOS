@@ -5,12 +5,31 @@ import PromiseKit
 
 /// Object that represents iOS item that can be displayed in Watch, Widgets, CarPlay and perform different action types
 public struct MagicItem: Codable, Equatable, Hashable {
+    /// Identity-based equality for use in sets/dictionaries and caching.
+    /// Compares only stable identity fields, not mutable content.
     public static func == (lhs: MagicItem, rhs: MagicItem) -> Bool {
-        lhs.id == rhs.id && lhs.serverId == rhs.serverId
+        lhs.id == rhs.id
+            && lhs.serverId == rhs.serverId
+            && lhs.type == rhs.type
     }
 
+    /// Identity-based hashing consistent with `==`.
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(serverId)
+        hasher.combine(type)
+    }
+
+    /// Content-based equality for UI/change detection.
+    /// Unlike `==`, this includes mutable fields.
+    public func contentEquals(_ other: MagicItem) -> Bool {
+        id == other.id
+            && serverId == other.serverId
+            && type == other.type
+            && customization == other.customization
+            && action == other.action
+            && displayText == other.displayText
+            && items == other.items
     }
 
     /// Id match it's type Id, e.g. "script.open_gate"
@@ -20,10 +39,24 @@ public struct MagicItem: Codable, Equatable, Hashable {
     public var customization: Customization?
     public var action: ItemAction?
     public var displayText: String?
+    public var items: [MagicItem]? /// Only for folder type, represents items inside the folder
 
     /// Server unique ID - e.g. "EB1364-script.open_gate"
     public var serverUniqueId: String {
         "\(serverId)-\(id)"
+    }
+
+    /// A hash value that includes mutable content fields, for use as a SwiftUI animation/change detection value.
+    public var contentHash: Int {
+        var hasher = Hasher()
+        hasher.combine(id)
+        hasher.combine(serverId)
+        hasher.combine(type)
+        hasher.combine(customization)
+        hasher.combine(action)
+        hasher.combine(displayText)
+        hasher.combine(items?.map(\.contentHash))
+        return hasher.finalize()
     }
 
     /// Domain retrieved from id when item is entity else nil
@@ -41,7 +74,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
         type: ItemType,
         customization: Customization? = .init(),
         action: ItemAction? = .default,
-        displayText: String? = nil
+        displayText: String? = nil,
+        items: [MagicItem]? = nil
     ) {
         self.id = id
         self.serverId = serverId
@@ -49,6 +83,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         self.customization = customization
         self.action = action
         self.displayText = displayText
+        self.items = items
     }
 
     public enum ItemType: String, Codable {
@@ -57,16 +92,19 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case script
         case scene
         case entity
+        case folder
     }
 
-    public struct Customization: Codable, Equatable {
+    public struct Customization: Codable, Equatable, Hashable {
         public var iconColor: String?
         public var textColor: String?
         public var backgroundColor: String?
         /// If true, execution will request confirmation before running
         public var requiresConfirmation: Bool
-        /// Override icon, MaterislDesignIcons name
+        /// Override icon, MaterialDesignIcons name
         public var icon: String?
+        /// True only when the user explicitly picked a custom icon via the icon picker
+        public var iconIsCustomized: Bool?
 
         public var useCustomColors: Bool {
             textColor != nil || backgroundColor != nil
@@ -77,13 +115,15 @@ public struct MagicItem: Codable, Equatable, Hashable {
             textColor: String? = nil,
             backgroundColor: String? = nil,
             requiresConfirmation: Bool = false,
-            icon: String? = nil
+            icon: String? = nil,
+            iconIsCustomized: Bool = false
         ) {
             self.iconColor = iconColor
             self.textColor = textColor
             self.backgroundColor = backgroundColor
             self.requiresConfirmation = requiresConfirmation
             self.icon = icon
+            self.iconIsCustomized = iconIsCustomized
         }
     }
 
@@ -116,6 +156,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     serversideValueNamed: info.iconName,
                     fallback: .dotsGridIcon
                 )
+            case .folder:
+                icon = .folderIcon
             }
         }
 
@@ -180,6 +222,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     entityId: magicItem.id,
                     serverId: magicItem.serverId
                 ))
+            case .climate:
+                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                    entityId: magicItem.id,
+                    serverId: magicItem.serverId
+                ))
             case .scene, .script:
                 interactionType = .appIntent(.activate(
                     entityId: magicItem.id,
@@ -235,7 +282,7 @@ public enum MagicItemError: Error {
     case unknownDomain
 }
 
-public enum ItemAction: Codable, CaseIterable, Equatable {
+public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,
@@ -332,6 +379,9 @@ public extension MagicItem {
                         entityId: id,
                         state: currentItemState
                     )
+                case .folder:
+                    // Folders don't execute actions
+                    return nil
                 }
             }() {
                 request.pipe(to: { result in
@@ -360,16 +410,9 @@ public extension MagicItem {
         state: String
     ) -> Promise<Void> {
         var request: HATypedRequest<HAResponseVoid>?
-        switch domain {
-        case .button, .inputButton:
-            request = .pressButton(domain: domain, entityId: entityId)
-        case .cover, .inputBoolean, .light, .switch, .fan:
-            request = .toggleDomain(domain: domain, entityId: entityId)
-        case .scene:
-            request = .applyScene(entityId: entityId)
-        case .script:
-            request = .runScript(entityId: entityId)
-        case .lock:
+
+        // Lock requires state-aware action
+        if domain == .lock {
             guard let state = Domain.State(rawValue: state) else { return .value }
             switch state {
             case .unlocking, .unlocked, .opening:
@@ -379,11 +422,11 @@ public extension MagicItem {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person, .camera:
-            break
-        case .automation:
-            request = .trigger(entityId: entityId)
+        } else {
+            // Use domain's main action for all other domains
+            request = .executeMainAction(domain: domain, entityId: entityId)
         }
+
         if let request, let connection = Current.api(for: server)?.connection {
             return connection.send(request).promise
                 .map { _ in () }

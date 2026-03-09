@@ -120,6 +120,7 @@ struct MagicItemCustomizationView: View {
                         viewModel.item.icon(info: info)
                     }, set: { newIcon in
                         viewModel.item.customization?.icon = newIcon?.name
+                        viewModel.item.customization?.iconIsCustomized = true
                     }),
                     selectedColor: .init(get: {
                         if let iconColorHex = viewModel.item.customization?.iconColor {

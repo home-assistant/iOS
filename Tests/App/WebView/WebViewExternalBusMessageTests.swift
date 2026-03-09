@@ -28,8 +28,11 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.focusElement.rawValue, "focus_element")
         XCTAssertEqual(WebViewExternalBusMessage.toastShow.rawValue, "toast/show")
         XCTAssertEqual(WebViewExternalBusMessage.toastHide.rawValue, "toast/hide")
+        XCTAssertEqual(WebViewExternalBusMessage.entityAddToGetActions.rawValue, "entity/add_to/get_actions")
+        XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
+        XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 19)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 22)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -62,9 +65,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasBarCodeScanner",
             "canTransferThreadCredentialsToKeychain",
             "hasAssist",
+            "hasCameraPlayer",
             "canSetupImprov",
             "downloadFileSupported",
+            "hasEntityAddTo",
             "appVersion",
+            "toastComponentVersion",
         ]
 
         let actualKeys = Set(result.keys)

@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -5,44 +6,57 @@ struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
+    @State private var openFolderId: String?
 
     var body: some View {
-        content
-            ._statusBarHidden(true)
-            .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
-                showAssist = true
-            }
-            .fullScreenCover(isPresented: $showAssist, content: {
-                if let serverId = viewModel.watchConfig.assist.serverId,
-                   let pipelineId = viewModel.watchConfig.assist.pipelineId {
-                    WatchAssistView.build(
-                        serverId: serverId,
-                        pipelineId: pipelineId
-                    )
-                } else {
-                    fatalError("Assist launched without serverId or pipelineId")
+        Group {
+            if let folderId = openFolderId {
+                WatchFolderContentView(folderId: folderId, viewModel: viewModel) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        openFolderId = nil
+                    }
                 }
-            })
-            .onAppear {
+                .transition(.move(edge: .trailing))
+            } else {
+                content
+                    .transition(.move(edge: .leading))
+            }
+        }
+        ._statusBarHidden(true)
+        .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+            showAssist = true
+        }
+        .fullScreenCover(isPresented: $showAssist, content: {
+            if let serverId = viewModel.watchConfig.assist.serverId,
+               let pipelineId = viewModel.watchConfig.assist.pipelineId {
+                WatchAssistView.build(
+                    serverId: serverId,
+                    pipelineId: pipelineId
+                )
+            } else {
+                fatalError("Assist launched without serverId or pipelineId")
+            }
+        })
+        .onAppear {
+            Task {
+                await viewModel.fetchNetworkInfo()
+                viewModel.initialRoutine()
+            }
+        }
+        .onChange(of: scenePhase) { newValue in
+            switch newValue {
+            case .active:
                 Task {
                     await viewModel.fetchNetworkInfo()
-                    viewModel.initialRoutine()
                 }
+            case .background:
+                break
+            case .inactive:
+                break
+            @unknown default:
+                break
             }
-            .onChange(of: scenePhase) { newValue in
-                switch newValue {
-                case .active:
-                    Task {
-                        await viewModel.fetchNetworkInfo()
-                    }
-                case .background:
-                    break
-                case .inactive:
-                    break
-                @unknown default:
-                    break
-                }
-            }
+        }
     }
 
     @ViewBuilder
@@ -52,19 +66,18 @@ struct WatchHomeView: View {
             listContent
             footer
         }
+        .id(viewModel.configVersion)
         // Removing the safe area so our fake navigation bar buttons (header) can be place correctly
         .ignoresSafeArea([.all], edges: .top)
-        .id(viewModel.refreshListID)
         .navigationTitle("")
+        .navigationBarBackButtonHidden(true)
         .modify { view in
             if #available(watchOS 11.0, *) {
                 view.toolbarVisibility(.hidden, for: .navigationBar)
             } else if #available(watchOS 9.0, *) {
-                view
-                    .toolbar(.hidden, for: .navigationBar)
+                view.toolbar(.hidden, for: .navigationBar)
             } else {
-                view
-                    .navigationBarHidden(true)
+                view.navigationBarHidden(true)
             }
         }
     }
@@ -105,10 +118,18 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var mainContent: some View {
         ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
-            WatchMagicViewRow(
-                item: item,
-                itemInfo: viewModel.info(for: item)
-            )
+            if item.type == .folder {
+                WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        openFolderId = item.id
+                    }
+                }
+            } else {
+                WatchMagicViewRow(
+                    item: item,
+                    itemInfo: viewModel.info(for: item)
+                )
+            }
         }
     }
 

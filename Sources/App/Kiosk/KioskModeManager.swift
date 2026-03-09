@@ -241,7 +241,7 @@ public final class KioskModeManager: ObservableObject {
 
     /// Record user activity (touch, motion, etc.)
     public func recordActivity(source: String = "touch") {
-        lastActivityTime = Date()
+        lastActivityTime = Current.date()
         lastWakeSource = source
 
         // Reset idle timer
@@ -289,7 +289,7 @@ public final class KioskModeManager: ObservableObject {
 
         Current.Log.info("Waking screen from source: \(source)")
         lastWakeSource = source
-        lastActivityTime = Date()
+        lastActivityTime = Current.date()
 
         hideScreensaver(source: source)
         applyBrightnessSchedule()
@@ -515,7 +515,7 @@ public final class KioskModeManager: ObservableObject {
     // MARK: - Time Utilities
 
     private func isNightTime() -> Bool {
-        let now = Calendar.current.dateComponents([.hour, .minute], from: Date())
+        let now = Calendar.current.dateComponents([.hour, .minute], from: Current.date())
         let currentTime = TimeOfDay(hour: now.hour ?? 0, minute: now.minute ?? 0)
 
         let dayStart = settings.dayStartTime
