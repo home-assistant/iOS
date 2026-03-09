@@ -74,6 +74,10 @@ private struct SecretTapArea: View {
             .onTapGesture {
                 handleTap()
             }
+            .onDisappear {
+                resetTimer?.invalidate()
+                resetTimer = nil
+            }
     }
 
     private func handleTap() {

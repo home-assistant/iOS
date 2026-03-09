@@ -87,6 +87,7 @@ public final class KioskModeManager: ObservableObject {
     private var brightnessTimer: Timer?
     private var pixelShiftTimer: Timer?
     private var originalBrightness: Float?
+    private var preScreensaverBrightness: CGFloat?
     private var isIdleTimerPaused = false
     private var saveDebounceTimer: Timer?
 
@@ -136,23 +137,32 @@ public final class KioskModeManager: ObservableObject {
         observers.removeAll { $0.observer === observer || $0.observer == nil }
     }
 
+    /// Remove observers whose weak references have become nil
+    private func pruneNilObservers() {
+        observers.removeAll { $0.observer == nil }
+    }
+
     /// Notify all observers of kiosk mode change
     private func notifyObserversOfModeChange() {
+        pruneNilObservers()
         observers.forEach { $0.observer?.kioskModeDidChange(isActive: isKioskModeActive) }
     }
 
     /// Notify all observers of settings change
     private func notifyObserversOfSettingsChange() {
+        pruneNilObservers()
         observers.forEach { $0.observer?.kioskSettingsDidChange(settings) }
     }
 
     /// Notify all observers of screen state change
     private func notifyObserversOfScreenStateChange() {
+        pruneNilObservers()
         observers.forEach { $0.observer?.kioskScreenStateDidChange(screenState) }
     }
 
     /// Notify all observers of pixel shift
     private func notifyObserversOfPixelShift() {
+        pruneNilObservers()
         let amount = settings.pixelShiftAmount
         observers.forEach { $0.observer?.kioskPixelShiftDidTrigger(amount: amount) }
     }
@@ -308,7 +318,14 @@ public final class KioskModeManager: ObservableObject {
         lastActivityTime = Current.date()
 
         hideScreensaver(source: source)
-        applyBrightnessSchedule()
+
+        // Restore brightness: use schedule if enabled, otherwise restore pre-screensaver level
+        if settings.brightnessControlEnabled {
+            applyBrightnessSchedule()
+        } else if let savedBrightness = preScreensaverBrightness {
+            UIScreen.main.brightness = savedBrightness
+        }
+        preScreensaverBrightness = nil
 
         screenState = .on
         notifyObserversOfScreenStateChange()
@@ -386,6 +403,9 @@ public final class KioskModeManager: ObservableObject {
 
     private func showScreensaver(mode: ScreensaverMode) {
         activeScreensaverMode = mode
+
+        // Save current brightness so wakeScreen can restore it
+        preScreensaverBrightness = UIScreen.main.brightness
 
         let dimLevel = screensaverDimLevel()
 

@@ -1,4 +1,3 @@
-import Combine
 import Shared
 import SwiftUI
 
@@ -9,8 +8,6 @@ import SwiftUI
 public struct KioskClockScreensaverView: View {
     @ObservedObject private var manager = KioskModeManager.shared
     @State private var currentTime = Current.date()
-    @State private var pixelShiftOffset: CGSize = .zero
-
     private let timeTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     // Cached formatters to avoid creating new ones every second
@@ -64,11 +61,9 @@ public struct KioskClockScreensaverView: View {
                     Spacer()
 
                     clockDisplay
-                        .offset(pixelShiftOffset)
 
                     if manager.settings.clockShowDate {
                         dateDisplay
-                            .offset(pixelShiftOffset)
                     }
 
                     Spacer()
@@ -79,9 +74,7 @@ public struct KioskClockScreensaverView: View {
         .onReceive(timeTimer) { _ in
             currentTime = Current.date()
         }
-        .onChange(of: manager.pixelShiftTrigger) { _ in
-            applyPixelShift()
-        }
+        // Pixel shift is handled by KioskScreensaverViewController (UIKit transform)
     }
 
     // MARK: - Clock Display
@@ -108,7 +101,7 @@ public struct KioskClockScreensaverView: View {
             .font(.system(size: KioskConstants.UI.largeClockFontSize, weight: .thin, design: .rounded))
             .foregroundColor(.white)
             .monospacedDigit()
-            .accessibilityLabel("Current time: \(accessibleTimeString)")
+            .accessibilityLabel(L10n.Kiosk.Clock.Accessibility.currentTime(accessibleTimeString))
     }
 
     private var minimalClockDisplay: some View {
@@ -116,7 +109,7 @@ public struct KioskClockScreensaverView: View {
             .font(.system(size: KioskConstants.UI.minimalClockFontSize, weight: .ultraLight, design: .default))
             .foregroundColor(.white.opacity(0.9))
             .monospacedDigit()
-            .accessibilityLabel("Current time: \(accessibleTimeString)")
+            .accessibilityLabel(L10n.Kiosk.Clock.Accessibility.currentTime(accessibleTimeString))
     }
 
     private var digitalClockDisplay: some View {
@@ -124,7 +117,7 @@ public struct KioskClockScreensaverView: View {
             .font(.system(size: KioskConstants.UI.digitalClockFontSize, weight: .medium, design: .monospaced))
             .foregroundColor(.green)
             .monospacedDigit()
-            .accessibilityLabel("Current time: \(accessibleTimeString)")
+            .accessibilityLabel(L10n.Kiosk.Clock.Accessibility.currentTime(accessibleTimeString))
     }
 
     private var analogClockDisplay: some View {
@@ -133,7 +126,7 @@ public struct KioskClockScreensaverView: View {
                 width: KioskConstants.UI.analogClockSize,
                 height: KioskConstants.UI.analogClockSize
             )
-            .accessibilityLabel("Analog clock showing \(accessibleTimeString)")
+            .accessibilityLabel(L10n.Kiosk.Clock.Accessibility.analogClock(accessibleTimeString))
     }
 
     private var timeString: String {
@@ -159,26 +152,11 @@ public struct KioskClockScreensaverView: View {
         Text(dateString)
             .font(.system(size: 28, weight: .light, design: .rounded))
             .foregroundColor(.white.opacity(0.7))
-            .accessibilityLabel("Date: \(dateString)")
+            .accessibilityLabel(L10n.Kiosk.Clock.Accessibility.date(dateString))
     }
 
     private var dateString: String {
         Self.dateDisplayFormatter.string(from: currentTime)
-    }
-
-    // MARK: - Pixel Shift
-
-    private func applyPixelShift() {
-        guard manager.settings.pixelShiftEnabled else { return }
-
-        let amount = manager.settings.pixelShiftAmount
-
-        withAnimation(.easeInOut(duration: KioskConstants.Animation.pixelShift)) {
-            pixelShiftOffset = CGSize(
-                width: CGFloat.random(in: -amount ... amount),
-                height: CGFloat.random(in: -amount ... amount)
-            )
-        }
     }
 }
 

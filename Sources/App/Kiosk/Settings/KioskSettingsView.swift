@@ -241,7 +241,7 @@ public struct KioskSettingsView: View {
             if settings.secretExitGestureEnabled {
                 Text(
                     L10n.Kiosk.Security.gestureFooter(
-                        settings.secretExitGestureCorner.displayName.lowercased(),
+                        settings.secretExitGestureCorner.displayName,
                         settings.secretExitGestureTaps
                     )
                 )

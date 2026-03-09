@@ -1599,6 +1599,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.clock.show_date" = "Show Date";
 "kiosk.clock.show_seconds" = "Show Seconds";
 "kiosk.clock.24hour" = "24-Hour Format";
+"kiosk.clock.accessibility.current_time" = "Current time: %@";
+"kiosk.clock.accessibility.analog_clock" = "Analog clock showing %@";
+"kiosk.clock.accessibility.date" = "Date: %@";
 
 "kiosk.corner.top_left" = "Top Left";
 "kiosk.corner.top_right" = "Top Right";
