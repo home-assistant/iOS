@@ -97,7 +97,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
         audioPlayer.pause()
         stopStreaming()
-        assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: true))
+        assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId, expectTTS: !configuration.muteTTS))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
     }
