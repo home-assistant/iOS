@@ -1,0 +1,88 @@
+import AVFoundation
+import Foundation
+import Shared
+import SwiftUI
+
+struct TTSVoicePickerView: View {
+    @Binding var selectedVoiceIdentifier: String?
+    @Environment(\.dismiss) private var dismiss
+
+    private struct VoiceGroup: Identifiable {
+        let language: String
+        let displayName: String
+        let voices: [AVSpeechSynthesisVoice]
+        var id: String { language }
+    }
+
+    private var voiceGroups: [VoiceGroup] {
+        let grouped = Dictionary(grouping: AVSpeechSynthesisVoice.speechVoices()) { $0.language }
+        return grouped
+            .map { language, voices in
+                VoiceGroup(
+                    language: language,
+                    displayName: Locale.current.localizedString(forIdentifier: language) ?? language,
+                    voices: voices.sorted { $0.name < $1.name }
+                )
+            }
+            .sorted { $0.displayName < $1.displayName }
+    }
+
+    var body: some View {
+        List {
+            Section {
+                Button {
+                    selectedVoiceIdentifier = nil
+                    dismiss()
+                } label: {
+                    HStack {
+                        Text(L10n.Assist.Settings.OnDeviceTts.defaultVoice)
+                            .foregroundStyle(Color.primary)
+                        Spacer()
+                        if selectedVoiceIdentifier == nil {
+                            Image(systemSymbol: .checkmark)
+                                .foregroundStyle(Color.haPrimary)
+                        }
+                    }
+                }
+            }
+
+            ForEach(voiceGroups) { group in
+                Section(group.displayName.capitalizedFirst) {
+                    ForEach(group.voices, id: \.identifier) { voice in
+                        Button {
+                            selectedVoiceIdentifier = voice.identifier
+                            dismiss()
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(voice.name)
+                                        .foregroundStyle(Color.primary)
+                                    if let qualityLabel = qualityLabel(for: voice) {
+                                        Text(qualityLabel)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                Spacer()
+                                if voice.identifier == selectedVoiceIdentifier {
+                                    Image(systemSymbol: .checkmark)
+                                        .foregroundStyle(Color.haPrimary)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle(L10n.Assist.Settings.OnDeviceTts.voice)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func qualityLabel(for voice: AVSpeechSynthesisVoice) -> String? {
+        switch voice.quality {
+        case .enhanced: return L10n.Assist.Settings.OnDeviceTts.Quality.enhanced
+        case .premium: return L10n.Assist.Settings.OnDeviceTts.Quality.premium
+        default: return nil
+        }
+    }
+}
