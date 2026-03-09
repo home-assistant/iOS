@@ -20,7 +20,7 @@ public struct KioskClockScreensaverView: View {
             ZStack {
                 // Background
                 Color.black
-                    .edgesIgnoringSafeArea(.all)
+                    .ignoresSafeArea()
 
                 // Clock content
                 VStack(spacing: 20) {
