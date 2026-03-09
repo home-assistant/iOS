@@ -82,9 +82,16 @@ struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentLightEntity> {
         let lightsPerServer = getLightEntities()
+        let smartStackIds = Set(WatchConfig.smartStackItems(for: .light).map { $0.serverUniqueId })
 
         return .init(sections: lightsPerServer.map { (key: Server, value: [IntentLightEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+            let sorted = value.sorted { a, b in
+                let aIsSmartStack = smartStackIds.contains(a.id)
+                let bIsSmartStack = smartStackIds.contains(b.id)
+                if aIsSmartStack != bIsSmartStack { return aIsSmartStack }
+                return false
+            }
+            return .init(.init(stringLiteral: key.info.name), items: sorted)
         })
     }
 

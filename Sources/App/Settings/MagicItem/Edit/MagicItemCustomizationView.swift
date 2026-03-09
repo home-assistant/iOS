@@ -221,6 +221,13 @@ struct MagicItemCustomizationView: View {
             }, set: { newValue in
                 viewModel.item.customization?.requiresConfirmation = newValue
             }))
+            if context == .watch {
+                Toggle("Show in Smart Stack", isOn: .init(get: {
+                    viewModel.item.customization?.showInSmartStack ?? false
+                }, set: { newValue in
+                    viewModel.item.customization?.showInSmartStack = newValue
+                }))
+            }
         } footer: {
             if context == .widget {
                 Text(verbatim: L10n.Widgets.Custom.RequireConfirmation.footer)

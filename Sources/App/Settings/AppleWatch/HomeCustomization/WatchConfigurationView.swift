@@ -7,6 +7,9 @@ enum WatchSupportedDomains {
     static var all: [Domain] = [
         .script,
         .scene,
+        .light,
+        .switch,
+        .inputBoolean,
     ]
 }
 

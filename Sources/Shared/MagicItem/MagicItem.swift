@@ -105,6 +105,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public var icon: String?
         /// True only when the user explicitly picked a custom icon via the icon picker
         public var iconIsCustomized: Bool?
+        /// If true, this item will appear as a suggested value in Watch Smart Stack widgets
+        public var showInSmartStack: Bool?
 
         public var useCustomColors: Bool {
             textColor != nil || backgroundColor != nil
@@ -116,7 +118,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
             backgroundColor: String? = nil,
             requiresConfirmation: Bool = false,
             icon: String? = nil,
-            iconIsCustomized: Bool = false
+            iconIsCustomized: Bool = false,
+            showInSmartStack: Bool = false
         ) {
             self.iconColor = iconColor
             self.textColor = textColor
@@ -124,6 +127,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.requiresConfirmation = requiresConfirmation
             self.icon = icon
             self.iconIsCustomized = iconIsCustomized
+            self.showInSmartStack = showInSmartStack
         }
     }
 

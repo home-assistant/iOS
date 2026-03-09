@@ -29,7 +29,7 @@ struct ControlSwitchValueProvider: AppIntentControlValueProvider {
 
     func placeholder(for configuration: ControlSwitchConfiguration) -> ControlEntityItem {
         item(
-            entity: configuration.entity,
+            entity: configuration.entity ?? smartStackSwitch(),
             value: nil,
             iconName: configuration.icon,
             displayText: configuration.displayText
@@ -38,7 +38,7 @@ struct ControlSwitchValueProvider: AppIntentControlValueProvider {
 
     func previewValue(configuration: ControlSwitchConfiguration) -> ControlEntityItem {
         item(
-            entity: configuration.entity,
+            entity: configuration.entity ?? smartStackSwitch(),
             value: nil,
             iconName: configuration.icon,
             displayText: configuration.displayText
@@ -71,6 +71,20 @@ struct ControlSwitchValueProvider: AppIntentControlValueProvider {
                 value: false
             )
         }
+    }
+
+    /// Returns the first Watch smart stack item for the switch domain, if available.
+    private func smartStackSwitch() -> IntentSwitchEntity? {
+        let items = WatchConfig.smartStackItems()
+            .filter { $0.domain == .switch || $0.domain == .inputBoolean }
+        guard let item = items.first else { return nil }
+        return IntentSwitchEntity(
+            id: item.serverUniqueId,
+            entityId: item.id,
+            serverId: item.serverId,
+            displayString: item.displayText ?? item.id,
+            iconName: item.customization?.icon ?? SFSymbol.lightswitchOnFill.rawValue
+        )
     }
 
     private func placeholder(value: Bool?) -> IntentLightEntity {

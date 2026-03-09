@@ -15,7 +15,7 @@ struct ControlSceneItem {
 struct ControlScenesValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlSceneConfiguration) async throws -> ControlSceneItem {
         .init(
-            intentSceneEntity: configuration.scene ?? placeholder(),
+            intentSceneEntity: configuration.scene ?? smartStackScene() ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
             showConfirmationNotification: configuration.showConfirmationDialog,
             displayText: configuration.displayText
@@ -24,7 +24,7 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
 
     func placeholder(for configuration: ControlSceneConfiguration) -> ControlSceneItem {
         .init(
-            intentSceneEntity: configuration.scene ?? placeholder(),
+            intentSceneEntity: configuration.scene ?? smartStackScene() ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
             showConfirmationNotification: configuration.showConfirmationDialog,
             displayText: configuration.displayText
@@ -33,10 +33,24 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
 
     func previewValue(configuration: ControlSceneConfiguration) -> ControlSceneItem {
         .init(
-            intentSceneEntity: configuration.scene ?? placeholder(),
+            intentSceneEntity: configuration.scene ?? smartStackScene() ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
             showConfirmationNotification: configuration.showConfirmationDialog,
             displayText: configuration.displayText
+        )
+    }
+
+    /// Returns the first Watch smart stack item for the scene domain, if available.
+    private func smartStackScene() -> IntentSceneEntity? {
+        guard let item = WatchConfig.smartStackItems(for: .scene).first else { return nil }
+        let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId })
+        return IntentSceneEntity(
+            id: item.serverUniqueId,
+            entityId: item.id,
+            serverId: item.serverId,
+            serverName: server?.info.name ?? "",
+            displayString: item.displayText ?? item.id,
+            iconName: item.customization?.icon ?? "moon.stars"
         )
     }
 

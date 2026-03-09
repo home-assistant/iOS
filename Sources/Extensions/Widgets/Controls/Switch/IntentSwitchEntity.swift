@@ -82,9 +82,20 @@ struct IntentSwitchAppEntityQuery: EntityQuery, EntityStringQuery {
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentSwitchEntity> {
         let switchesPerServer = await getSwitchEntities()
+        let smartStackIds = Set(
+            WatchConfig.smartStackItems()
+                .filter { $0.domain == .switch || $0.domain == .inputBoolean }
+                .map { $0.serverUniqueId }
+        )
 
         return .init(sections: switchesPerServer.map { (key: Server, value: [IntentSwitchEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+            let sorted = value.sorted { a, b in
+                let aIsSmartStack = smartStackIds.contains(a.id)
+                let bIsSmartStack = smartStackIds.contains(b.id)
+                if aIsSmartStack != bIsSmartStack { return aIsSmartStack }
+                return false
+            }
+            return .init(.init(stringLiteral: key.info.name), items: sorted)
         })
     }
 

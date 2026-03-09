@@ -54,9 +54,19 @@ struct IntentButtonAppEntityQuery: EntityQuery, EntityStringQuery {
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentButtonEntity> {
         let buttonsPerServer = await getButtonEntities()
+        let smartStackIds = Set(
+            WatchConfig.smartStackItems().filter { $0.domain == .button || $0.domain == .inputButton }
+                .map { $0.serverUniqueId }
+        )
 
         return .init(sections: buttonsPerServer.map { (key: Server, value: [IntentButtonEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+            let sorted = value.sorted { a, b in
+                let aIsSmartStack = smartStackIds.contains(a.id)
+                let bIsSmartStack = smartStackIds.contains(b.id)
+                if aIsSmartStack != bIsSmartStack { return aIsSmartStack }
+                return false
+            }
+            return .init(.init(stringLiteral: key.info.name), items: sorted)
         })
     }
 

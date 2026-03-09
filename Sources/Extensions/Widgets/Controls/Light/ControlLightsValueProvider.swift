@@ -38,7 +38,7 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
 
     func placeholder(for configuration: ControlLightsConfiguration) -> ControlEntityItem {
         item(
-            light: configuration.light,
+            light: configuration.light ?? smartStackLight(),
             value: nil,
             iconName: configuration.icon,
             displayText: configuration.displayText
@@ -47,7 +47,7 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
 
     func previewValue(configuration: ControlLightsConfiguration) -> ControlEntityItem {
         item(
-            light: configuration.light,
+            light: configuration.light ?? smartStackLight(),
             value: nil,
             iconName: configuration.icon,
             displayText: configuration.displayText
@@ -80,6 +80,18 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
                 value: false
             )
         }
+    }
+
+    /// Returns the first Watch smart stack item for the light domain, if available.
+    private func smartStackLight() -> IntentLightEntity? {
+        guard let item = WatchConfig.smartStackItems(for: .light).first else { return nil }
+        return IntentLightEntity(
+            id: item.serverUniqueId,
+            entityId: item.id,
+            serverId: item.serverId,
+            displayString: item.displayText ?? item.id,
+            iconName: item.customization?.icon ?? SFSymbol.lightbulbFill.rawValue
+        )
     }
 
     private func placeholder(value: Bool?) -> IntentLightEntity {

@@ -15,7 +15,7 @@ struct ControlScriptItem {
 struct ControlScriptsValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlScriptsConfiguration) async throws -> ControlScriptItem {
         .init(
-            intentScriptEntity: configuration.script ?? placeholder(),
+            intentScriptEntity: configuration.script ?? smartStackScript() ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
             showConfirmationNotification: configuration.showConfirmationDialog,
             displayText: configuration.displayText
@@ -24,7 +24,7 @@ struct ControlScriptsValueProvider: AppIntentControlValueProvider {
 
     func placeholder(for configuration: ControlScriptsConfiguration) -> ControlScriptItem {
         .init(
-            intentScriptEntity: configuration.script ?? placeholder(),
+            intentScriptEntity: configuration.script ?? smartStackScript() ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
             showConfirmationNotification: configuration.showConfirmationDialog,
             displayText: configuration.displayText
@@ -33,10 +33,24 @@ struct ControlScriptsValueProvider: AppIntentControlValueProvider {
 
     func previewValue(configuration: ControlScriptsConfiguration) -> ControlScriptItem {
         .init(
-            intentScriptEntity: configuration.script ?? placeholder(),
+            intentScriptEntity: configuration.script ?? smartStackScript() ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
             showConfirmationNotification: configuration.showConfirmationDialog,
             displayText: configuration.displayText
+        )
+    }
+
+    /// Returns the first Watch smart stack item for the script domain, if available.
+    private func smartStackScript() -> IntentScriptEntity? {
+        guard let item = WatchConfig.smartStackItems(for: .script).first else { return nil }
+        let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId })
+        return IntentScriptEntity(
+            id: item.serverUniqueId,
+            entityId: item.id,
+            serverId: item.serverId,
+            serverName: server?.info.name ?? "",
+            displayString: item.displayText ?? item.id,
+            iconName: item.customization?.icon ?? "applescript.fill"
         )
     }
 

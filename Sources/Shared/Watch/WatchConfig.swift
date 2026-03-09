@@ -34,6 +34,38 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
             try WatchConfig.fetchOne(db)
         })
     }
+
+    /// Returns all items (including items inside folders) that have `showInSmartStack` enabled.
+    public static func smartStackItems() -> [MagicItem] {
+        guard let config = try? config() else { return [] }
+        return config.allSmartStackItems()
+    }
+
+    /// Collects all items (including folder children) with `showInSmartStack` enabled.
+    public func allSmartStackItems() -> [MagicItem] {
+        var result: [MagicItem] = []
+        for item in items {
+            if item.customization?.showInSmartStack == true {
+                result.append(item)
+            }
+            if item.type == .folder, let children = item.items {
+                for child in children where child.customization?.showInSmartStack == true {
+                    result.append(child)
+                }
+            }
+        }
+        return result
+    }
+
+    /// Returns smart stack items filtered by domain (e.g. `.script`, `.scene`).
+    public static func smartStackItems(for domain: Domain) -> [MagicItem] {
+        smartStackItems().filter { $0.domain == domain }
+    }
+
+    /// Returns smart stack items filtered by item type.
+    public static func smartStackItems(for type: MagicItem.ItemType) -> [MagicItem] {
+        smartStackItems().filter { $0.type == type }
+    }
 }
 
 public protocol WatchCodable: Codable {

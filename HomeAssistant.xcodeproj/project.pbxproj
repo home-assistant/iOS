@@ -1013,6 +1013,7 @@
 		42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BB53302CAA09F300680ED8 /* WatchConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */; };
+		42CC88012F0E5A0100AABB01 /* SmartStack.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CC88002F0E5A0100AABB01 /* SmartStack.test.swift */; };
 		42BB53322CAA0B3C00680ED8 /* WatchConfigV1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */; };
 		42BF7F302DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
 		42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
@@ -2831,6 +2832,7 @@
 		42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPageAppIntent.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
 		42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.test.swift; sourceTree = "<group>"; };
+		42CC88002F0E5A0100AABB01 /* SmartStack.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartStack.test.swift; sourceTree = "<group>"; };
 		42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = WatchConfigV1.sqlite; sourceTree = "<group>"; };
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
@@ -6048,6 +6050,7 @@
 				42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */,
 				42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */,
 				42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */,
+				42CC88002F0E5A0100AABB01 /* SmartStack.test.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -9466,6 +9469,7 @@
 				42A42A6C2DC37F09000ABBAF /* AboutView.test.swift in Sources */,
 				4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */,
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
+				42CC88012F0E5A0100AABB01 /* SmartStack.test.swift in Sources */,
 				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,
 				428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */,
 				42ACC29F2E9E7BBB0045A3FD /* OnboardingScanningInstanceRow.test.swift in Sources */,

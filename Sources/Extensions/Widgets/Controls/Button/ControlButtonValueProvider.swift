@@ -33,6 +33,15 @@ struct ControlButtonValueProvider: AppIntentControlValueProvider {
                 icon: iconName ?? .init(id: entity.iconName),
                 value: false // Buttons are stateless
             )
+        } else if let smartStackEntity = smartStackButton() {
+            return .init(
+                id: smartStackEntity.id,
+                entityId: smartStackEntity.entityId,
+                serverId: smartStackEntity.serverId,
+                name: displayText ?? smartStackEntity.displayString,
+                icon: iconName ?? .init(id: smartStackEntity.iconName),
+                value: false
+            )
         } else {
             return .init(
                 id: placeholder.id,
@@ -43,6 +52,21 @@ struct ControlButtonValueProvider: AppIntentControlValueProvider {
                 value: false
             )
         }
+    }
+
+    /// Returns the first Watch smart stack item for button domains, if available.
+    private func smartStackButton() -> IntentButtonEntity? {
+        let items = WatchConfig.smartStackItems().filter {
+            $0.domain == .button || $0.domain == .inputButton
+        }
+        guard let item = items.first else { return nil }
+        return IntentButtonEntity(
+            id: item.serverUniqueId,
+            entityId: item.id,
+            serverId: item.serverId,
+            displayString: item.displayText ?? item.id,
+            iconName: item.customization?.icon ?? SFSymbol.circleCircle.rawValue
+        )
     }
 
     private func placeholder() -> IntentButtonEntity {

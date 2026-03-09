@@ -53,8 +53,16 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentSceneEntity> {
-        .init(sections: getSceneEntities().map { (key: Server, value: [IntentSceneEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+        let smartStackIds = Set(WatchConfig.smartStackItems(for: .scene).map { $0.serverUniqueId })
+
+        return .init(sections: getSceneEntities().map { (key: Server, value: [IntentSceneEntity]) in
+            let sorted = value.sorted { a, b in
+                let aIsSmartStack = smartStackIds.contains(a.id)
+                let bIsSmartStack = smartStackIds.contains(b.id)
+                if aIsSmartStack != bIsSmartStack { return aIsSmartStack }
+                return false
+            }
+            return .init(.init(stringLiteral: key.info.name), items: sorted)
         })
     }
 
