@@ -1212,7 +1212,6 @@
 		42KIOSK0002000000000007 /* KioskSecretExitGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000007 /* KioskSecretExitGestureView.swift */; };
 		42KIOSK0002000000000008 /* WebViewController+Kiosk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000008 /* WebViewController+Kiosk.swift */; };
 		42KIOSK0002000000000009 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000009 /* KioskSettingsTable.swift */; };
-		42KIOSK000200000000000A /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000009 /* KioskSettingsTable.swift */; };
 		42KIOSK000200000000000B /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK000100000000000A /* KioskSettings.test.swift */; };
 		42KIOSK000200000000000C /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000009 /* KioskSettingsTable.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
@@ -9099,7 +9098,6 @@
 				46C62BA72D8A387D002C0001 /* SnapshotTestingHelper.swift in Sources */,
 				46C62BA62D8A3841002C0001 /* SnapshottablePreviewConfigurations+SnapshotTesting.swift in Sources */,
 				42D4574B2EF1835D007934BC /* StringExtensions.test.swift in Sources */,
-				42KIOSK000200000000000A /* KioskSettingsTable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -34,7 +34,7 @@ struct DatabaseMigrationTests {
     }
 
     @Test("Add new columns to existing table")
-    func testAddNewColumns() throws {
+    func addNewColumns() throws {
         let database = try DatabaseQueue(path: ":memory:")
 
         // Create initial table with 2 columns
@@ -64,7 +64,7 @@ struct DatabaseMigrationTests {
     }
 
     @Test("Skip already existing columns")
-    func testSkipExistingColumns() throws {
+    func skipExistingColumns() throws {
         let database = try DatabaseQueue(path: ":memory:")
 
         // Create table with 2 columns
@@ -84,7 +84,7 @@ struct DatabaseMigrationTests {
     }
 
     @Test("Remove obsolete columns")
-    func testRemoveObsoleteColumns() throws {
+    func removeObsoleteColumns() throws {
         let database = try DatabaseQueue(path: ":memory:")
 
         // Create initial table with 3 columns
@@ -116,7 +116,7 @@ struct DatabaseMigrationTests {
     }
 
     @Test("Handle add and remove simultaneously")
-    func testAddAndRemoveSimultaneously() throws {
+    func addAndRemoveSimultaneously() throws {
         let database = try DatabaseQueue(path: ":memory:")
 
         // Create initial table with columns: column1, column2, obsoleteColumn
@@ -142,7 +142,7 @@ struct DatabaseMigrationTests {
     }
 
     @Test("Handle no changes needed")
-    func testNoChangesNeeded() throws {
+    func noChangesNeeded() throws {
         let database = try DatabaseQueue(path: ":memory:")
 
         // Create table with 2 columns
@@ -165,7 +165,7 @@ struct DatabaseMigrationTests {
     }
 
     @Test("Migration with actual table: HAppEntityTable")
-    func testRealTableMigration() throws {
+    func realTableMigration() throws {
         let database = try DatabaseQueue(path: ":memory:")
 
         // Create HAppEntityTable
