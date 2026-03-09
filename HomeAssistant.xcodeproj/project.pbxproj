@@ -712,6 +712,7 @@
 		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42465E7E2F5EC4ED0057C9A1 /* SpeechTranscriber in Frameworks */ = {isa = PBXBuildFile; productRef = 42465E7D2F5EC4ED0057C9A1 /* SpeechTranscriber */; };
 		424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
@@ -3522,6 +3523,7 @@
 				42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */,
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
+				42465E7E2F5EC4ED0057C9A1 /* SpeechTranscriber in Frameworks */,
 				21316D8EAC0226B0CD48FF30 /* Pods_iOS_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7941,6 +7943,7 @@
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				42E5E2E42F38CEA30030BBEB /* XCRemoteSwiftPackageReference "SwiftMessages" */,
+				42465E7C2F5EC4ED0057C9A1 /* XCRemoteSwiftPackageReference "SpeechTranscriber" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -12056,6 +12059,14 @@
 				minimumVersion = 0.9.19;
 			};
 		};
+		42465E7C2F5EC4ED0057C9A1 /* XCRemoteSwiftPackageReference "SpeechTranscriber" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bgoncal/SpeechTranscriber.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.0;
+			};
+		};
 		42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -12102,6 +12113,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
+		};
+		42465E7D2F5EC4ED0057C9A1 /* SpeechTranscriber */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42465E7C2F5EC4ED0057C9A1 /* XCRemoteSwiftPackageReference "SpeechTranscriber" */;
+			productName = SpeechTranscriber;
 		};
 		4273F7DF2E258827000629F7 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
