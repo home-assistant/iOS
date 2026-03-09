@@ -13,6 +13,43 @@ public struct KioskClockScreensaverView: View {
 
     private let timeTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
+    // Cached formatters to avoid creating new ones every second
+    private static let time24hFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm"
+        return f
+    }()
+
+    private static let time24hSecondsFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm:ss"
+        return f
+    }()
+
+    private static let time12hFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "h:mm a"
+        return f
+    }()
+
+    private static let time12hSecondsFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "h:mm:ss a"
+        return f
+    }()
+
+    private static let accessibilityFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.timeStyle = .short
+        return f
+    }()
+
+    private static let dateDisplayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "EEEE, MMMM d"
+        return f
+    }()
+
     public init() {}
 
     public var body: some View {
@@ -100,22 +137,20 @@ public struct KioskClockScreensaverView: View {
     }
 
     private var timeString: String {
-        let formatter = DateFormatter()
         let use24Hour = manager.settings.clockUse24HourFormat
         let showSeconds = manager.settings.clockShowSeconds
 
+        let formatter: DateFormatter
         if use24Hour {
-            formatter.dateFormat = showSeconds ? "HH:mm:ss" : "HH:mm"
+            formatter = showSeconds ? Self.time24hSecondsFormatter : Self.time24hFormatter
         } else {
-            formatter.dateFormat = showSeconds ? "h:mm:ss a" : "h:mm a"
+            formatter = showSeconds ? Self.time12hSecondsFormatter : Self.time12hFormatter
         }
         return formatter.string(from: currentTime)
     }
 
     private var accessibleTimeString: String {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        return formatter.string(from: currentTime)
+        Self.accessibilityFormatter.string(from: currentTime)
     }
 
     // MARK: - Date Display
@@ -128,9 +163,7 @@ public struct KioskClockScreensaverView: View {
     }
 
     private var dateString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d"
-        return formatter.string(from: currentTime)
+        Self.dateDisplayFormatter.string(from: currentTime)
     }
 
     // MARK: - Pixel Shift

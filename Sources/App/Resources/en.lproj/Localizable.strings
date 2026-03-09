@@ -1529,25 +1529,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
 "yes_label" = "Yes";
-"camera.server_not_found" = "Server not found";
-"camera.snapshot_failed" = "Failed to load camera snapshot";
-"cameras.drag_to_reorder" = "Drag and drop to reorder";
-"cameras.no_server_found" = "No server found for camera: %@";
-"camera_list.unavailable.title" = "Not Available on Mac";
-"camera_list.unavailable.message" = "Camera streaming is not available on Mac.";
-"webrtc_player.known_issues.title" = "Known Issues";
-"camera_player.errors.unknown" = "Unknown error";
-"camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
-"camera_player.errors.no_stream_available" = "No stream available";
-"entity_picker.filter.domain.title" = "Domain";
-"entity_picker.filter.domain.all.title" = "All domains";
-"entity_picker.filter.area.title" = "Area";
-"entity_picker.filter.area.all.title" = "All areas";
-"entity_picker.filter.group_by.title" = "Group by";
-"entity_picker.list.area.no_area.title" = "No area";
-"database_updater.toast.title" = "Updating %@";
-"database_updater.toast.syncing" = "Syncing server data...";
-"database_updater.toast.syncing_with_progress" = "Syncing server data... (%d/%d)";
 
 "kiosk.title" = "Kiosk Mode";
 "kiosk.active.title" = "Kiosk Mode Active";
@@ -1602,9 +1583,18 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 
 "kiosk.clock.section" = "Clock Display";
 "kiosk.clock.style" = "Clock Style";
+"kiosk.clock.style.large" = "Large";
+"kiosk.clock.style.minimal" = "Minimal";
+"kiosk.clock.style.analog" = "Analog";
+"kiosk.clock.style.digital" = "Digital";
 "kiosk.clock.show_date" = "Show Date";
 "kiosk.clock.show_seconds" = "Show Seconds";
 "kiosk.clock.24hour" = "24-Hour Format";
+
+"kiosk.corner.top_left" = "Top Left";
+"kiosk.corner.top_right" = "Top Right";
+"kiosk.corner.bottom_left" = "Bottom Left";
+"kiosk.corner.bottom_right" = "Bottom Right";
 
 "kiosk.time.hour" = "Hour";
 "kiosk.time.minute" = "Minute";

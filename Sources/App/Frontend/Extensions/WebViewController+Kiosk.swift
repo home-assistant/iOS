@@ -8,7 +8,7 @@ import UIKit
 extension WebViewController {
     /// Setup kiosk mode integration with KioskModeManager
     /// Call this from viewDidLoad
-    public func setupKioskMode() {
+    func setupKioskMode() {
         let manager = KioskModeManager.shared
 
         // Wire up callbacks from KioskModeManager
@@ -166,13 +166,13 @@ extension WebViewController {
     // MARK: - Status Bar & Home Indicator
 
     /// Override in WebViewController to check kiosk mode
-    public var kioskPrefersStatusBarHidden: Bool {
+    var kioskPrefersStatusBarHidden: Bool {
         let manager = KioskModeManager.shared
         return manager.isKioskModeActive && manager.settings.hideStatusBar
     }
 
     /// Override in WebViewController to check kiosk mode
-    public var kioskPrefersHomeIndicatorAutoHidden: Bool {
+    var kioskPrefersHomeIndicatorAutoHidden: Bool {
         KioskModeManager.shared.isKioskModeActive
     }
 
@@ -223,7 +223,7 @@ extension WebViewController {
     // MARK: - Touch Handling
 
     /// Call this when user touches the screen to record activity
-    public func recordKioskActivity() {
+    func recordKioskActivity() {
         KioskModeManager.shared.recordActivity(source: "touch")
     }
 }

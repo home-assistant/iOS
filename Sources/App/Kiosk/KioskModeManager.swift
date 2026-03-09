@@ -88,6 +88,7 @@ public final class KioskModeManager: ObservableObject {
     private var pixelShiftTimer: Timer?
     private var originalBrightness: Float?
     private var isIdleTimerPaused = false
+    private var saveDebounceTimer: Timer?
 
     /// Weak wrapper for observers to avoid retain cycles
     private class WeakObserver {
@@ -168,6 +169,7 @@ public final class KioskModeManager: ObservableObject {
         idleTimer?.invalidate()
         brightnessTimer?.invalidate()
         pixelShiftTimer?.invalidate()
+        saveDebounceTimer?.invalidate()
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
         NotificationCenter.default.removeObserver(self)
@@ -181,6 +183,13 @@ public final class KioskModeManager: ObservableObject {
 
         Current.Log.info("Enabling kiosk mode")
         isKioskModeActive = true
+
+        // Persist enabled state so it survives app restart
+        if !settings.isKioskModeEnabled {
+            var updated = settings
+            updated.isKioskModeEnabled = true
+            settings = updated
+        }
 
         // Store original brightness to restore later
         originalBrightness = Float(UIScreen.main.brightness)
@@ -205,6 +214,13 @@ public final class KioskModeManager: ObservableObject {
 
         Current.Log.info("Disabling kiosk mode")
         isKioskModeActive = false
+
+        // Persist disabled state
+        if settings.isKioskModeEnabled {
+            var updated = settings
+            updated.isKioskModeEnabled = false
+            settings = updated
+        }
 
         // Restore original brightness
         if let original = originalBrightness {
@@ -552,19 +568,17 @@ public final class KioskModeManager: ObservableObject {
     }
 
     private func saveSettings() {
-        KioskSettingsRecord.saveSettings(settings)
+        // Debounce database writes to avoid rapid persistence during slider drags
+        saveDebounceTimer?.invalidate()
+        saveDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                KioskSettingsRecord.saveSettings(settings)
+            }
+        }
     }
 
     private func settingsDidChange(from oldValue: KioskSettings, to newValue: KioskSettings) {
-        // Handle kiosk mode toggle
-        if oldValue.isKioskModeEnabled != newValue.isKioskModeEnabled {
-            if newValue.isKioskModeEnabled {
-                enableKioskMode()
-            } else {
-                disableKioskMode()
-            }
-        }
-
         // Reapply brightness if schedule settings changed
         if oldValue.brightnessScheduleEnabled != newValue.brightnessScheduleEnabled ||
             oldValue.dayBrightness != newValue.dayBrightness ||

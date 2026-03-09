@@ -825,10 +825,10 @@ public enum ClockStyle: String, Codable, CaseIterable {
 
     public var displayName: String {
         switch self {
-        case .large: return "Large"
-        case .minimal: return "Minimal"
-        case .analog: return "Analog"
-        case .digital: return "Digital"
+        case .large: return L10n.Kiosk.Clock.Style.large
+        case .minimal: return L10n.Kiosk.Clock.Style.minimal
+        case .analog: return L10n.Kiosk.Clock.Style.analog
+        case .digital: return L10n.Kiosk.Clock.Style.digital
         }
     }
 }
@@ -963,10 +963,10 @@ public enum ScreenCorner: String, Codable, CaseIterable {
 
     public var displayName: String {
         switch self {
-        case .topLeft: return "Top Left"
-        case .topRight: return "Top Right"
-        case .bottomLeft: return "Bottom Left"
-        case .bottomRight: return "Bottom Right"
+        case .topLeft: return L10n.Kiosk.Corner.topLeft
+        case .topRight: return L10n.Kiosk.Corner.topRight
+        case .bottomLeft: return L10n.Kiosk.Corner.bottomLeft
+        case .bottomRight: return L10n.Kiosk.Corner.bottomRight
         }
     }
 }

@@ -1,4 +1,3 @@
-import Combine
 import Shared
 import SwiftUI
 import UIKit
@@ -14,7 +13,6 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
     private var currentMode: ScreensaverMode?
     private var hostingController: UIHostingController<AnyView>?
     private var secretExitGestureController: KioskSecretExitGestureViewController?
-    private var cancellables = Set<AnyCancellable>()
     private var pixelShiftOffset: CGPoint = .zero
     private var wakeGesture: UITapGestureRecognizer?
 

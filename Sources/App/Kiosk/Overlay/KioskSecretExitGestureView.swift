@@ -1,4 +1,3 @@
-import Combine
 import SwiftUI
 import UIKit
 
@@ -145,7 +144,6 @@ private class CornerTapPassthroughView: UIView {
 /// A UIView wrapper for the secret exit gesture that can be added to UIKit view controllers
 public class KioskSecretExitGestureViewController: UIViewController, KioskModeObserver {
     private var hostingController: UIHostingController<KioskSecretExitGestureWrapper>?
-    private var cancellables = Set<AnyCancellable>()
     private var passthroughView: CornerTapPassthroughView?
 
     /// Callback when settings should be shown

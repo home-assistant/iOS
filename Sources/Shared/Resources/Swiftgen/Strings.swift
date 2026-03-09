@@ -1141,9 +1141,7 @@ public enum L10n {
 
   public enum DatabaseUpdater {
     public enum Toast {
-      /// Syncing server data...
-      public static var syncing: String { return L10n.tr("Localizable", "database_updater.toast.syncing") }
-      /// Syncing server data... (%d/%d)
+      /// Syncing server data... (%li/%li)
       public static func syncingWithProgress(_ p1: Int, _ p2: Int) -> String {
         return L10n.tr("Localizable", "database_updater.toast.syncing_with_progress", p1, p2)
       }
@@ -1720,6 +1718,26 @@ public enum L10n {
       public static var showSeconds: String { return L10n.tr("Localizable", "kiosk.clock.show_seconds") }
       /// Clock Style
       public static var style: String { return L10n.tr("Localizable", "kiosk.clock.style") }
+      public enum Style {
+        /// Analog
+        public static var analog: String { return L10n.tr("Localizable", "kiosk.clock.style.analog") }
+        /// Digital
+        public static var digital: String { return L10n.tr("Localizable", "kiosk.clock.style.digital") }
+        /// Large
+        public static var large: String { return L10n.tr("Localizable", "kiosk.clock.style.large") }
+        /// Minimal
+        public static var minimal: String { return L10n.tr("Localizable", "kiosk.clock.style.minimal") }
+      }
+    }
+    public enum Corner {
+      /// Bottom Left
+      public static var bottomLeft: String { return L10n.tr("Localizable", "kiosk.corner.bottom_left") }
+      /// Bottom Right
+      public static var bottomRight: String { return L10n.tr("Localizable", "kiosk.corner.bottom_right") }
+      /// Top Left
+      public static var topLeft: String { return L10n.tr("Localizable", "kiosk.corner.top_left") }
+      /// Top Right
+      public static var topRight: String { return L10n.tr("Localizable", "kiosk.corner.top_right") }
     }
     public enum Footer {
       /// When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.
