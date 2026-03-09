@@ -33,11 +33,12 @@ public enum AssistRequests {
         preferredPipelineId: String?,
         inputText: String,
         conversationId: String?,
-        hassDeviceId: String?
+        hassDeviceId: String?,
+        tts: Bool
     ) -> HATypedSubscription<AssistResponse> {
         var data: [String: Any] = [
             "start_stage": "intent",
-            "end_stage": "intent",
+            "end_stage": tts ? "tts" : "intent",
             "input": [
                 "text": inputText,
             ],
