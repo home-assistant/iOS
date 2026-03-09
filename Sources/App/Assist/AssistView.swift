@@ -158,8 +158,11 @@ struct AssistView: View {
         .roundedCorner(DesignSystem.CornerRadius.oneAndMicro, corners: roundedCornersForChatItemType(item.itemType))
         .overlay {
             if item.itemType == .pending {
-                RoundedCorner(radius: DesignSystem.CornerRadius.oneAndMicro, corners: [.topLeft, .topRight, .bottomLeft])
-                    .stroke(Color.haPrimary, style: StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
+                RoundedCorner(
+                    radius: DesignSystem.CornerRadius.oneAndMicro,
+                    corners: [.topLeft, .topRight, .bottomLeft]
+                )
+                .stroke(Color.haPrimary, style: StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
             }
         }
         .foregroundColor(foregroundForChatItemType(item.itemType))
