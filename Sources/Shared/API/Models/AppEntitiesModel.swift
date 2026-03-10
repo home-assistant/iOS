@@ -8,7 +8,7 @@ public protocol AppEntitiesModelProtocol {
 }
 
 public enum HAAppUsedContent {
-    public static var domains: [Domain] = [
+    public static let domains: [Domain] = [
         .automation,
         .scene,
         .script,
@@ -26,9 +26,9 @@ public enum HAAppUsedContent {
         .todo,
     ]
 
-    public static var rawValues: [String] {
+    public static var rawValues: [String] = {
         domains.map(\.rawValue)
-    }
+    }()
 }
 
 final class AppEntitiesModel: AppEntitiesModelProtocol {
