@@ -129,6 +129,17 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.iconIsCustomized = iconIsCustomized
             self.showInSmartStack = showInSmartStack
         }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            iconColor = try container.decodeIfPresent(String.self, forKey: .iconColor)
+            textColor = try container.decodeIfPresent(String.self, forKey: .textColor)
+            backgroundColor = try container.decodeIfPresent(String.self, forKey: .backgroundColor)
+            requiresConfirmation = try container.decodeIfPresent(Bool.self, forKey: .requiresConfirmation) ?? false
+            icon = try container.decodeIfPresent(String.self, forKey: .icon)
+            iconIsCustomized = try container.decodeIfPresent(Bool.self, forKey: .iconIsCustomized) ?? false
+            showInSmartStack = try container.decodeIfPresent(Bool.self, forKey: .showInSmartStack) ?? false
+        }
     }
 
     public struct Info: WatchCodable, Equatable {
