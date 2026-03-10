@@ -26,9 +26,7 @@ public enum HAAppUsedContent {
         .todo,
     ]
 
-    public static var rawValues: [String] = {
-        domains.map(\.rawValue)
-    }()
+    public static var rawValues: [String] = domains.map(\.rawValue)
 }
 
 final class AppEntitiesModel: AppEntitiesModelProtocol {
