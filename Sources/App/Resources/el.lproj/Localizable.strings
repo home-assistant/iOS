@@ -127,7 +127,16 @@
 "assist.settings.modern_ui.theme.label" = "Θέμα";
 "assist.settings.modern_ui.toggle" = "Πειραματική διεπαφή χρήστη";
 "assist.settings.on_device_stt.footer" = "Χρησιμοποιήστε την αναγνώριση ομιλίας της Apple εντός της συσκευής για βελτιωμένο απόρρητο. Η φωνή σας θα επεξεργαστεί τοπικά και θα μεταγραφεί σε κείμενο πριν σταλεί στον server σας. Δεν υποστηρίζονται όλες οι γλώσσες.";
+"assist.settings.on_device_stt.language" = "Language";
+"assist.settings.on_device_stt.title" = "On-device STT";
 "assist.settings.on_device_stt.toggle" = "Ενεργοποίηση μετατροπής ομιλίας σε κείμενο στη συσκευή";
+"assist.settings.on_device_tts.default_voice" = "Default";
+"assist.settings.on_device_tts.footer" = "Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.";
+"assist.settings.on_device_tts.quality.enhanced" = "Enhanced";
+"assist.settings.on_device_tts.quality.premium" = "Premium";
+"assist.settings.on_device_tts.title" = "On-device TTS";
+"assist.settings.on_device_tts.voice" = "Voice";
+"assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.title" = "Ρυθμίσεις Assist";
 "assist.settings.tts_mute.footer" = "Οταν είναι ενεργοποιημένο, το Assist δεν θα αναπαράγει απαντήσεις ήχου, ακόμη και αν το pipeline έχει διαμορφωμένη τη μετατροπή κειμένου σε ομιλία. Θα εξακολουθείτε να βλέπετε απαντήσεις κειμένου.";
 "assist.settings.tts_mute.toggle" = "Σίγαση φωνητικών απαντήσεων";
