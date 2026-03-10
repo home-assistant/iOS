@@ -51,7 +51,9 @@ final class EntityAddToHandler {
                 #endif
 
                 // Widgets are available on all platforms
-                actions.append(CustomWidgetAction())
+                if let domain = Domain(entityId: entityId), HAAppUsedContent.domains.contains(domain) {
+                    actions.append(CustomWidgetAction())
+                }
 
                 seal.fulfill(actions)
             }

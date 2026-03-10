@@ -7,29 +7,36 @@ public protocol AppEntitiesModelProtocol {
     func updateModel(_ entities: Set<HAEntity>, server: Server)
 }
 
+public enum HAAppUsedContent {
+    public static var domains: [Domain] = [
+        .automation,
+        .scene,
+        .script,
+        .light,
+        .switch,
+        .sensor,
+        .binarySensor,
+        .cover,
+        .button,
+        .inputBoolean,
+        .inputButton,
+        .lock,
+        .camera,
+        .fan,
+        .todo,
+    ]
+
+    public static var rawValues: [String] {
+        domains.map(\.rawValue)
+    }
+}
+
 final class AppEntitiesModel: AppEntitiesModelProtocol {
     static var shared = AppEntitiesModel()
     /// ServerId: Date
     private var lastDatabaseUpdate: [String: Date] = [:]
     /// ServerId: Int
     private var lastEntitiesCount: [String: Int] = [:]
-    private let domainsAppUse: [String] = [
-        Domain.automation,
-        Domain.scene,
-        Domain.script,
-        Domain.light,
-        Domain.switch,
-        Domain.sensor,
-        Domain.binarySensor,
-        Domain.cover,
-        Domain.button,
-        Domain.inputBoolean,
-        Domain.inputButton,
-        Domain.lock,
-        Domain.camera,
-        Domain.fan,
-        Domain.todo,
-    ].map(\.rawValue)
 
     public func updateModel(_ entities: Set<HAEntity>, server: Server) {
         // Only update database after a few seconds or if the entities count changed
@@ -61,7 +68,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
     }
 
     private func filterDomains(_ entities: Set<HAEntity>) -> Set<HAEntity> {
-        entities.filter { domainsAppUse.contains($0.domain) }
+        entities.filter { HAAppUsedContent.rawValues.contains($0.domain) }
     }
 
     // Avoid updating database too often
