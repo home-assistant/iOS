@@ -128,7 +128,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
         let scriptsPerServer = getScriptEntities()
 
         // Prioritize Watch smart stack items
-        let smartStackIds = Set(WatchConfig.smartStackItems(for: .script).map { $0.serverUniqueId })
+        let smartStackIds = Set(WatchConfig.smartStackItems(for: .script).map(\.serverUniqueId))
 
         return .init(sections: scriptsPerServer.map { (key: Server, value: [IntentScriptEntity]) in
             let sorted = value.sorted { a, b in

@@ -85,7 +85,7 @@ struct IntentSwitchAppEntityQuery: EntityQuery, EntityStringQuery {
         let smartStackIds = Set(
             WatchConfig.smartStackItems()
                 .filter { $0.domain == .switch || $0.domain == .inputBoolean }
-                .map { $0.serverUniqueId }
+                .map(\.serverUniqueId)
         )
 
         return .init(sections: switchesPerServer.map { (key: Server, value: [IntentSwitchEntity]) in

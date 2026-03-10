@@ -56,7 +56,7 @@ struct IntentButtonAppEntityQuery: EntityQuery, EntityStringQuery {
         let buttonsPerServer = await getButtonEntities()
         let smartStackIds = Set(
             WatchConfig.smartStackItems().filter { $0.domain == .button || $0.domain == .inputButton }
-                .map { $0.serverUniqueId }
+                .map(\.serverUniqueId)
         )
 
         return .init(sections: buttonsPerServer.map { (key: Server, value: [IntentButtonEntity]) in
