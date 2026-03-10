@@ -7,6 +7,7 @@ struct TTSVoicePickerView: View {
     @Binding var selectedVoiceIdentifier: String?
     @Environment(\.dismiss) private var dismiss
     @State private var searchTerm = ""
+    @State private var voiceGroups: [VoiceGroup]
 
     private struct VoiceGroup: Identifiable {
         let language: String
@@ -15,17 +16,9 @@ struct TTSVoicePickerView: View {
         var id: String { language }
     }
 
-    private var voiceGroups: [VoiceGroup] {
-        let grouped = Dictionary(grouping: AVSpeechSynthesisVoice.speechVoices()) { $0.language }
-        return grouped
-            .map { language, voices in
-                VoiceGroup(
-                    language: language,
-                    displayName: Locale.current.localizedString(forIdentifier: language) ?? language,
-                    voices: voices.sorted { $0.name < $1.name }
-                )
-            }
-            .sorted { $0.displayName < $1.displayName }
+    init(selectedVoiceIdentifier: Binding<String?>) {
+        self._selectedVoiceIdentifier = selectedVoiceIdentifier
+        self._voiceGroups = State(initialValue: Self.makeVoiceGroups())
     }
 
     private var filteredVoiceGroups: [VoiceGroup] {
@@ -114,5 +107,18 @@ struct TTSVoicePickerView: View {
         case .premium: return L10n.Assist.Settings.OnDeviceTts.Quality.premium
         default: return nil
         }
+    }
+
+    private static func makeVoiceGroups() -> [VoiceGroup] {
+        let grouped = Dictionary(grouping: AVSpeechSynthesisVoice.speechVoices()) { $0.language }
+        return grouped
+            .map { language, voices in
+                VoiceGroup(
+                    language: language,
+                    displayName: Locale.current.localizedString(forIdentifier: language) ?? language,
+                    voices: voices.sorted { $0.name < $1.name }
+                )
+            }
+            .sorted { $0.displayName < $1.displayName }
     }
 }
