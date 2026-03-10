@@ -127,7 +127,16 @@
 "assist.settings.modern_ui.theme.label" = "Teema";
 "assist.settings.modern_ui.toggle" = "Eksperimentaalne kasutajaliides";
 "assist.settings.on_device_stt.footer" = "Kasuta Apple'i seadme kõnetuvastust parema privaatsuse tagamiseks. Hääl töödeldakse kohapeal ja transkribeeritakse tekstiks, enne kui see saadetakse serverisse. Kõiki keeli ei toetata.";
+"assist.settings.on_device_stt.language" = "Language";
+"assist.settings.on_device_stt.title" = "On-device STT";
 "assist.settings.on_device_stt.toggle" = "Luba seadmes kõnest tekstiks muutmine";
+"assist.settings.on_device_tts.default_voice" = "Default";
+"assist.settings.on_device_tts.footer" = "Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.";
+"assist.settings.on_device_tts.quality.enhanced" = "Enhanced";
+"assist.settings.on_device_tts.quality.premium" = "Premium";
+"assist.settings.on_device_tts.title" = "On-device TTS";
+"assist.settings.on_device_tts.voice" = "Voice";
+"assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.title" = "Assisti sätted";
 "assist.settings.tts_mute.footer" = "Kui see on lubatud, ei esita Assist helivastuseid isegi siis, kui voos on tekstist kõneks teisendamine seadistatud. Tekstvastuseid näed ikkagi.";
 "assist.settings.tts_mute.toggle" = "Vaigista häälvastused";

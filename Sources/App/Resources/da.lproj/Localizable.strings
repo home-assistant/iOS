@@ -127,7 +127,16 @@
 "assist.settings.modern_ui.theme.label" = "Tema";
 "assist.settings.modern_ui.toggle" = "Eksperimentel brugerflade";
 "assist.settings.on_device_stt.footer" = "Brug Apples talegenkendelse lokalt på enheden for forbedret privatlivsbeskyttelse. Din stemme behandles lokalt og transskriberes til tekst, før den sendes til din server. Ikke alle sprog understøttes.";
+"assist.settings.on_device_stt.language" = "Language";
+"assist.settings.on_device_stt.title" = "On-device STT";
 "assist.settings.on_device_stt.toggle" = "Aktivér tale-til-tekst lokalt på enheden";
+"assist.settings.on_device_tts.default_voice" = "Default";
+"assist.settings.on_device_tts.footer" = "Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.";
+"assist.settings.on_device_tts.quality.enhanced" = "Enhanced";
+"assist.settings.on_device_tts.quality.premium" = "Premium";
+"assist.settings.on_device_tts.title" = "On-device TTS";
+"assist.settings.on_device_tts.voice" = "Voice";
+"assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.title" = "Assist-indstillinger";
 "assist.settings.tts_mute.footer" = "Når den er aktiveret, afspiller Assist ikke lydsvar, selv om pipelinen har tekst-til-tale konfigureret. Du vil stadig se tekstsvar.";
 "assist.settings.tts_mute.toggle" = "Slå stemmesvar fra";
