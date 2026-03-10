@@ -6,6 +6,7 @@ import SwiftUI
 struct TTSVoicePickerView: View {
     @Binding var selectedVoiceIdentifier: String?
     @Environment(\.dismiss) private var dismiss
+    @State private var searchTerm = ""
 
     private struct VoiceGroup: Identifiable {
         let language: String
@@ -27,6 +28,34 @@ struct TTSVoicePickerView: View {
             .sorted { $0.displayName < $1.displayName }
     }
 
+    private var filteredVoiceGroups: [VoiceGroup] {
+        let trimmedSearchTerm = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedSearchTerm.isEmpty else {
+            return voiceGroups
+        }
+
+        return voiceGroups.compactMap { group in
+            if group.displayName.localizedCaseInsensitiveContains(trimmedSearchTerm) {
+                return group
+            }
+
+            let matchingVoices = group.voices.filter { voice in
+                voice.name.localizedCaseInsensitiveContains(trimmedSearchTerm)
+                    || qualityLabel(for: voice)?.localizedCaseInsensitiveContains(trimmedSearchTerm) == true
+            }
+
+            guard !matchingVoices.isEmpty else {
+                return nil
+            }
+
+            return VoiceGroup(
+                language: group.language,
+                displayName: group.displayName,
+                voices: matchingVoices
+            )
+        }
+    }
+
     var body: some View {
         List {
             Section {
@@ -46,7 +75,7 @@ struct TTSVoicePickerView: View {
                 }
             }
 
-            ForEach(voiceGroups) { group in
+            ForEach(filteredVoiceGroups) { group in
                 Section(group.displayName.capitalizedFirst) {
                     ForEach(group.voices, id: \.identifier) { voice in
                         Button {
@@ -74,6 +103,7 @@ struct TTSVoicePickerView: View {
                 }
             }
         }
+        .searchable(text: $searchTerm)
         .navigationTitle(L10n.Assist.Settings.OnDeviceTts.voice)
         .navigationBarTitleDisplayMode(.inline)
     }
