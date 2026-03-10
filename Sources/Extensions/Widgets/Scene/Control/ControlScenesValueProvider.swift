@@ -42,7 +42,7 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
 
     /// Returns the first Watch smart stack item for the scene domain, if available.
     private func smartStackScene() -> IntentSceneEntity? {
-        guard let item = WatchConfig.smartStackItems(for: .scene).first else { return nil }
+        guard let item = WatchConfig.smartStackItems(for: MagicItem.ItemType.scene).first else { return nil }
         let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId })
         return IntentSceneEntity(
             id: item.serverUniqueId,
