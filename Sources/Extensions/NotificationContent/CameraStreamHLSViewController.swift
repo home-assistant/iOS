@@ -109,7 +109,9 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
         let asset: AVURLAsset
 
-        if !url.isFileURL, api.server.info.connection.securityExceptions.hasExceptions {
+        if !url.isFileURL,
+           api.server.info.connection.securityExceptions.hasExceptions
+           || api.server.info.connection.clientCertificate != nil {
             asset = .init(url: url, options: [
                 // from WebKit, which has the same behavioral requirements we have
                 // see

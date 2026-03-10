@@ -23,6 +23,25 @@ class MJPEGStreamerSessionDelegate: SessionDelegate {
     }
 }
 
+#if !os(watchOS)
+/// Combines MJPEG response-boundary notifications with mTLS client certificate handling.
+final class MJPEGCertificateSessionDelegate: ClientCertificateSessionDelegate {
+    override func urlSession(
+        _ session: URLSession,
+        dataTask: URLSessionDataTask,
+        didReceive response: URLResponse,
+        completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
+    ) {
+        NotificationCenter.default.post(
+            name: MJPEGStreamerSessionDelegate.didReceiveResponse,
+            object: self,
+            userInfo: [MJPEGStreamerSessionDelegate.taskUserInfoKey: dataTask]
+        )
+        completionHandler(.allow)
+    }
+}
+#endif
+
 enum MJPEGEvent: CustomStringConvertible {
     case data(Data)
     case endOfResponse
