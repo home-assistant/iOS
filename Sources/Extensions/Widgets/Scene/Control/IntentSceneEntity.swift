@@ -53,7 +53,7 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentSceneEntity> {
-        let smartStackIds = Set(WatchConfig.smartStackItems(for: .scene).map(\.serverUniqueId))
+        let smartStackIds = Set(WatchConfig.smartStackItems(for: MagicItem.ItemType.scene).map(\.serverUniqueId))
 
         return .init(sections: getSceneEntities().map { (key: Server, value: [IntentSceneEntity]) in
             let sorted = value.sorted { a, b in
