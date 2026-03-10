@@ -5,7 +5,7 @@
 "NSLocalNetworkUsageDescription" = "Zlokalizuj i komunikuj się z Twoją instancją Home Assistant'a.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Zalecamy wybranie opcji „Zawsze”, aby uzyskać najlepszą jakość lokalizacji. Wybranie opcji „Gdy używam aplikacji” spowoduje wyłączenie iBeacons, geofence, aktualizacji lokalizacji w tle i dokładnego raportowania.";
 "NSLocationAlwaysUsageDescription" = "Zawsze potrzebujemy dostępu do Twojej lokalizacji, aby korzystać z takich funkcji jak iBeacons, geofence, aktualizacje lokalizacji w tle i dokładne raportowanie lokalizacji.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"NSLocationUsageDescription" = "Po włączeniu tej funkcji lokalizacja Twojego urządzenia zostanie wysłana na serwer Home Assistant w celu śledzenia urządzenia.";
 "NSLocationWhenInUseUsageDescription" = "Zezwolenie na dostęp do lokalizacji tylko, gdy aplikacja jest włączona, spowoduje wyłączenie iBeacons, geofences, aktualizacje lokalizacji w tle i dokładne raportowania lokalizacji.";
 "NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
 "NSMotionUsageDescription" = "Wykrywanie ruchu służy do ulepszania lokalizacji, a także do dostarczania podstawowych danych krokomierza.";
