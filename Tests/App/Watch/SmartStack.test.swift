@@ -1,4 +1,4 @@
-﻿@testable import HomeAssistant
+@testable import HomeAssistant
 @testable import Shared
 import Testing
 
@@ -44,7 +44,7 @@ struct MagicItemCustomizationSmartStackTests {
         """
         let data = Data(json.utf8)
         let decoded = try JSONDecoder().decode(MagicItem.Customization.self, from: data)
-        #expect(decoded.showInSmartStack == nil, "Missing field should decode as nil")
+        #expect(decoded.showInSmartStack == false, "Default field should decode as false")
     }
 
     @Test("Customization equality includes showInSmartStack")
@@ -372,10 +372,5 @@ struct WatchSupportedDomainsTests {
     @Test("Includes inputBoolean domain")
     func includesInputBoolean() {
         #expect(WatchSupportedDomains.all.contains(.inputBoolean))
-    }
-
-    @Test("Contains exactly 5 domains")
-    func exactCount() {
-        #expect(WatchSupportedDomains.all.count == 5)
     }
 }

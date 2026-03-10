@@ -37,7 +37,7 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
 
     /// Returns all items (including items inside folders) that have `showInSmartStack` enabled.
     public static func smartStackItems() -> [MagicItem] {
-        guard let config = try? config() else { return [] }
+        guard let config = (try? config()) ?? nil else { return [] }
         return config.allSmartStackItems()
     }
 

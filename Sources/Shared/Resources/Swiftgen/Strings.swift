@@ -1876,6 +1876,10 @@ public enum L10n {
       /// Use custom colors
       public static var title: String { return L10n.tr("Localizable", "magic_item.use_custom_colors.title") }
     }
+    public enum ShowInSmartStack {
+      /// Show item in Watch Smart Stack
+      public static var title: String { return L10n.tr("Show in Smart Stack", "magic_item.show_in_smart_stack.title") }
+    }
   }
 
   public enum Menu {

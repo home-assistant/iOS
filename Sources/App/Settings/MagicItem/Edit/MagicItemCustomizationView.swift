@@ -222,7 +222,7 @@ struct MagicItemCustomizationView: View {
                 viewModel.item.customization?.requiresConfirmation = newValue
             }))
             if context == .watch {
-                Toggle("Show in Smart Stack", isOn: .init(get: {
+                Toggle(L10n.MagicItem.ShowInSmartStack.title, isOn: .init(get: {
                     viewModel.item.customization?.showInSmartStack ?? false
                 }, set: { newValue in
                     viewModel.item.customization?.showInSmartStack = newValue
