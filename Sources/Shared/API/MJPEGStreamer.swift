@@ -32,6 +32,7 @@ final class MJPEGCertificateSessionDelegate: ClientCertificateSessionDelegate {
         didReceive response: URLResponse,
         completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
     ) {
+        super.urlSession(session, dataTask: dataTask, didReceive: response, completionHandler: completionHandler)
         NotificationCenter.default.post(
             name: MJPEGStreamerSessionDelegate.didReceiveResponse,
             object: self,
