@@ -481,7 +481,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.require_confirmation.title" = "Require confirmation";
 "magic_item.text_color.title" = "Text color";
 "magic_item.use_custom_colors.title" = "Use custom colors";
-"magic_item.use_custom_colors.title" = "Show in Smart Stack";
+"magic_item.show_in_smart_stack.title" = "Show in Smart Stack";
 "menu.actions.configure" = "Configure…";
 "menu.actions.title" = "Actions";
 "menu.application.about" = "About %@";
