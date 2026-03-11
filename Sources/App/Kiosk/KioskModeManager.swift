@@ -77,7 +77,6 @@ public final class KioskModeManager: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
     private var idleTimer: Timer?
-    private var brightnessTimer: Timer?
     private var pixelShiftTimer: Timer?
     private var originalBrightness: Float?
     private var preScreensaverBrightness: CGFloat?
@@ -167,7 +166,6 @@ public final class KioskModeManager: ObservableObject {
 
     deinit {
         idleTimer?.invalidate()
-        brightnessTimer?.invalidate()
         pixelShiftTimer?.invalidate()
         saveDebounceTimer?.invalidate()
         cancellables.forEach { $0.cancel() }
@@ -200,8 +198,8 @@ public final class KioskModeManager: ObservableObject {
             Current.Log.info("Screen auto-lock disabled")
         }
 
-        // Apply settings
-        applyBrightnessSchedule()
+        // Apply brightness
+        applyBrightness()
         startIdleTimer()
 
         onKioskModeChange?(true)
@@ -233,7 +231,6 @@ public final class KioskModeManager: ObservableObject {
 
         // Stop timers
         stopIdleTimer()
-        stopBrightnessTimer()
         stopPixelShiftTimer()
 
         // Hide screensaver if active
@@ -299,9 +296,9 @@ public final class KioskModeManager: ObservableObject {
 
         hideScreensaver(source: source)
 
-        // Restore brightness: use schedule if enabled, otherwise restore pre-screensaver level
+        // Restore brightness: use managed level if enabled, otherwise restore pre-screensaver level
         if settings.brightnessControlEnabled {
-            applyBrightnessSchedule()
+            applyBrightness()
         } else if let savedBrightness = preScreensaverBrightness {
             UIScreen.main.brightness = savedBrightness
         }
@@ -422,44 +419,13 @@ public final class KioskModeManager: ObservableObject {
         sleepScreen()
     }
 
-    // MARK: - Brightness Schedule
+    // MARK: - Brightness
 
-    private func applyBrightnessSchedule() {
+    private func applyBrightness() {
         guard settings.brightnessControlEnabled else { return }
 
-        let brightness: Float
-        if settings.brightnessScheduleEnabled {
-            brightness = isNightTime() ? settings.nightBrightness : settings.dayBrightness
-        } else {
-            brightness = settings.manualBrightness
-        }
-
-        currentBrightness = brightness
-        UIScreen.main.brightness = CGFloat(brightness)
-
-        // Schedule next brightness change if schedule is enabled
-        if settings.brightnessScheduleEnabled {
-            scheduleBrightnessUpdate()
-        }
-    }
-
-    private func scheduleBrightnessUpdate() {
-        stopBrightnessTimer()
-
-        // Check every minute for schedule changes
-        brightnessTimer = Timer.scheduledTimer(
-            withTimeInterval: KioskConstants.Timing.scheduleCheckInterval,
-            repeats: true
-        ) { [weak self] _ in
-            Task { @MainActor [weak self] in
-                self?.applyBrightnessSchedule()
-            }
-        }
-    }
-
-    private func stopBrightnessTimer() {
-        brightnessTimer?.invalidate()
-        brightnessTimer = nil
+        currentBrightness = settings.manualBrightness
+        UIScreen.main.brightness = CGFloat(settings.manualBrightness)
     }
 
     // MARK: - Pixel Shift Timer
@@ -487,25 +453,6 @@ public final class KioskModeManager: ObservableObject {
         notifyObserversOfPixelShift()
     }
 
-    // MARK: - Time Utilities
-
-    private func isNightTime() -> Bool {
-        let now = Calendar.current.dateComponents([.hour, .minute], from: Current.date())
-        let currentTime = TimeOfDay(hour: now.hour ?? 0, minute: now.minute ?? 0)
-
-        let dayStart = settings.dayStartTime
-        let nightStart = settings.nightStartTime
-
-        // If day starts before night in 24h time (normal case: day 07:00, night 22:00)
-        if dayStart.isBefore(nightStart) {
-            // Night time is: before day start OR at/after night start
-            return currentTime.isBefore(dayStart) || !currentTime.isBefore(nightStart)
-        } else {
-            // If night starts before day in 24h time (e.g., night 02:00, day 06:00)
-            return !currentTime.isBefore(nightStart) && currentTime.isBefore(dayStart)
-        }
-    }
-
     // MARK: - Settings Persistence
 
     private static func loadSettings() -> KioskSettings {
@@ -524,13 +471,10 @@ public final class KioskModeManager: ObservableObject {
     }
 
     private func settingsDidChange(from oldValue: KioskSettings, to newValue: KioskSettings) {
-        // Reapply brightness if schedule settings changed
-        if oldValue.brightnessScheduleEnabled != newValue.brightnessScheduleEnabled ||
-            oldValue.dayBrightness != newValue.dayBrightness ||
-            oldValue.nightBrightness != newValue.nightBrightness ||
-            oldValue.manualBrightness != newValue.manualBrightness {
+        // Reapply brightness if setting changed
+        if oldValue.manualBrightness != newValue.manualBrightness {
             if isKioskModeActive {
-                applyBrightnessSchedule()
+                applyBrightness()
             }
         }
 

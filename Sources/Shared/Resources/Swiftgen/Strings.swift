@@ -1712,24 +1712,10 @@ public enum L10n {
     public enum Brightness {
       /// Brightness Control
       public static var control: String { return L10n.tr("Localizable", "kiosk.brightness.control") }
-      /// Day Brightness: %d%%
-      public static func day(_ p1: Int) -> String {
-        return L10n.tr("Localizable", "kiosk.brightness.day", p1)
-      }
-      /// Day starts
-      public static var dayStarts: String { return L10n.tr("Localizable", "kiosk.brightness.day_starts") }
       /// Manual Brightness: %d%%
       public static func manual(_ p1: Int) -> String {
         return L10n.tr("Localizable", "kiosk.brightness.manual", p1)
       }
-      /// Night Brightness: %d%%
-      public static func night(_ p1: Int) -> String {
-        return L10n.tr("Localizable", "kiosk.brightness.night", p1)
-      }
-      /// Night starts
-      public static var nightStarts: String { return L10n.tr("Localizable", "kiosk.brightness.night_starts") }
-      /// Day/Night Schedule
-      public static var schedule: String { return L10n.tr("Localizable", "kiosk.brightness.schedule") }
       /// Brightness
       public static var section: String { return L10n.tr("Localizable", "kiosk.brightness.section") }
     }
@@ -1852,12 +1838,6 @@ public enum L10n {
       }
       /// Wake on Touch
       public static var wakeOnTouch: String { return L10n.tr("Localizable", "kiosk.security.wake_on_touch") }
-    }
-    public enum Time {
-      /// Hour
-      public static var hour: String { return L10n.tr("Localizable", "kiosk.time.hour") }
-      /// Minute
-      public static var minute: String { return L10n.tr("Localizable", "kiosk.time.minute") }
     }
   }
 

@@ -73,21 +73,6 @@ public struct KioskSettings: Codable, Equatable {
     /// Manual brightness level (0.0 - 1.0)
     public var manualBrightness: Float = 0.8
 
-    /// Enable day/night brightness schedule
-    public var brightnessScheduleEnabled: Bool = false
-
-    /// Daytime brightness level (0.0 - 1.0)
-    public var dayBrightness: Float = 0.8
-
-    /// Nighttime brightness level (0.0 - 1.0)
-    public var nightBrightness: Float = 0.3
-
-    /// Time when day brightness starts (hour, minute)
-    public var dayStartTime: TimeOfDay = .init(hour: 7, minute: 0)
-
-    /// Time when night brightness starts (hour, minute)
-    public var nightStartTime: TimeOfDay = .init(hour: 22, minute: 0)
-
     // MARK: - Screensaver
 
     /// Enable screensaver
@@ -140,29 +125,6 @@ public struct KioskSettings: Codable, Equatable {
 
     /// Number of taps required for secret exit gesture
     public var secretExitGestureTaps: Int = 3
-}
-
-// MARK: - Supporting Types
-
-public struct TimeOfDay: Codable, Equatable {
-    public var hour: Int
-    public var minute: Int
-
-    public init(hour: Int, minute: Int) {
-        self.hour = hour
-        self.minute = minute
-    }
-
-    public var asDateComponents: DateComponents {
-        DateComponents(hour: hour, minute: minute)
-    }
-
-    public func isBefore(_ other: TimeOfDay) -> Bool {
-        if hour != other.hour {
-            return hour < other.hour
-        }
-        return minute < other.minute
-    }
 }
 
 // MARK: - Enums

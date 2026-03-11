@@ -50,7 +50,9 @@ public struct KioskSettingsView: View {
             coreSettingsSection
             brightnessSection
             screensaverSection
-            clockOptionsSection
+            if settings.screensaverEnabled, settings.screensaverMode == .clock {
+                clockOptionsSection
+            }
         }
         .navigationTitle(L10n.Kiosk.title)
         .toolbar {
@@ -262,36 +264,6 @@ public struct KioskSettingsView: View {
                         .font(.caption)
                     Slider(value: $settings.manualBrightness, in: 0.1 ... 1.0, step: 0.05)
                 }
-
-                Toggle(isOn: $settings.brightnessScheduleEnabled) {
-                    Label(L10n.Kiosk.Brightness.schedule, systemSymbol: .clock)
-                }
-
-                if settings.brightnessScheduleEnabled {
-                    VStack(alignment: .leading) {
-                        Text(L10n.Kiosk.Brightness.day(Int(settings.dayBrightness * 100)))
-                            .font(.caption)
-                        Slider(value: $settings.dayBrightness, in: 0.1 ... 1.0, step: 0.05)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text(L10n.Kiosk.Brightness.night(Int(settings.nightBrightness * 100)))
-                            .font(.caption)
-                        Slider(value: $settings.nightBrightness, in: 0.05 ... 1.0, step: 0.05)
-                    }
-
-                    HStack {
-                        Text(L10n.Kiosk.Brightness.dayStarts)
-                        Spacer()
-                        TimeOfDayPicker(time: $settings.dayStartTime)
-                    }
-
-                    HStack {
-                        Text(L10n.Kiosk.Brightness.nightStarts)
-                        Spacer()
-                        TimeOfDayPicker(time: $settings.nightStartTime)
-                    }
-                }
             }
         } header: {
             Text(L10n.Kiosk.Brightness.section)
@@ -411,37 +383,6 @@ public struct KioskSettingsView: View {
                 }
             }
         }
-    }
-}
-
-// MARK: - Time of Day Picker
-
-struct TimeOfDayPicker: View {
-    @Binding var time: TimeOfDay
-
-    var body: some View {
-        HStack {
-            Picker(L10n.Kiosk.Time.hour, selection: $time.hour) {
-                ForEach(0 ..< 24, id: \.self) { hour in
-                    Text(String(format: "%02d", hour)).tag(hour)
-                }
-            }
-            .pickerStyle(.wheel)
-            .frame(width: 60)
-            .clipped()
-
-            Text(":")
-
-            Picker(L10n.Kiosk.Time.minute, selection: $time.minute) {
-                ForEach([0, 15, 30, 45], id: \.self) { minute in
-                    Text(String(format: "%02d", minute)).tag(minute)
-                }
-            }
-            .pickerStyle(.wheel)
-            .frame(width: 60)
-            .clipped()
-        }
-        .frame(height: 100)
     }
 }
 

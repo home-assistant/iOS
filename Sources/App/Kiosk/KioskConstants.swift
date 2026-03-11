@@ -19,13 +19,6 @@ public enum KioskConstants {
         public static let pixelShift: TimeInterval = 1.0
     }
 
-    // MARK: - Timing Intervals
-
-    public enum Timing {
-        /// Schedule check interval for brightness changes
-        public static let scheduleCheckInterval: TimeInterval = 60
-    }
-
     // MARK: - UI Dimensions
 
     public enum UI {

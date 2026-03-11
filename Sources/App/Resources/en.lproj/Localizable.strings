@@ -1566,11 +1566,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.brightness.section" = "Brightness";
 "kiosk.brightness.control" = "Brightness Control";
 "kiosk.brightness.manual" = "Manual Brightness: %d%%";
-"kiosk.brightness.schedule" = "Day/Night Schedule";
-"kiosk.brightness.day" = "Day Brightness: %d%%";
-"kiosk.brightness.night" = "Night Brightness: %d%%";
-"kiosk.brightness.day_starts" = "Day starts";
-"kiosk.brightness.night_starts" = "Night starts";
 
 "kiosk.screensaver.section" = "Screensaver";
 "kiosk.screensaver.toggle" = "Screensaver";
@@ -1608,5 +1603,3 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.corner.bottom_left" = "Bottom Left";
 "kiosk.corner.bottom_right" = "Bottom Right";
 
-"kiosk.time.hour" = "Hour";
-"kiosk.time.minute" = "Minute";
