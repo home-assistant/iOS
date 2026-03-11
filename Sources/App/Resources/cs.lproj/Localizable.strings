@@ -127,7 +127,16 @@
 "assist.settings.modern_ui.theme.label" = "Motiv";
 "assist.settings.modern_ui.toggle" = "Experimentální uživatelské rozhraní";
 "assist.settings.on_device_stt.footer" = "Pro lepší soukromí použije rozpoznávání řeči v zařízení Apple. Váš hlas bude zpracován lokálně a před odesláním na server přepsán do textu. Nejsou podporovány všechny jazyky.";
+"assist.settings.on_device_stt.language" = "Language";
+"assist.settings.on_device_stt.title" = "On-device STT";
 "assist.settings.on_device_stt.toggle" = "Povolit převod řeči na text v zařízení";
+"assist.settings.on_device_tts.default_voice" = "Default";
+"assist.settings.on_device_tts.footer" = "Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.";
+"assist.settings.on_device_tts.quality.enhanced" = "Enhanced";
+"assist.settings.on_device_tts.quality.premium" = "Premium";
+"assist.settings.on_device_tts.title" = "On-device TTS";
+"assist.settings.on_device_tts.voice" = "Voice";
+"assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.title" = "Nastavení Assist";
 "assist.settings.tts_mute.footer" = "Pokud je tato povoleno, Assist nepřehrává zvukové odpovědi, a to ani v případě, že je v kanálu nastaven převod textu na řeč. Textové odpovědi se však budou zobrazovat i nadále.";
 "assist.settings.tts_mute.toggle" = "Ztlumit hlasové odpovědi";

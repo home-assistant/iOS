@@ -127,7 +127,16 @@
 "assist.settings.modern_ui.theme.label" = "Tema";
 "assist.settings.modern_ui.toggle" = "UI Sperimentale";
 "assist.settings.on_device_stt.footer" = "Utilizza il riconoscimento vocale integrato di Apple per una maggiore privacy. La tua voce verrà elaborata localmente e trascritta in un testo prima di essere inviata al tuo server. Non tutte le lingue sono supportate.";
+"assist.settings.on_device_stt.language" = "Language";
+"assist.settings.on_device_stt.title" = "On-device STT";
 "assist.settings.on_device_stt.toggle" = "Abilita Speech-to-Text locale (sul dispositivo)";
+"assist.settings.on_device_tts.default_voice" = "Default";
+"assist.settings.on_device_tts.footer" = "Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.";
+"assist.settings.on_device_tts.quality.enhanced" = "Enhanced";
+"assist.settings.on_device_tts.quality.premium" = "Premium";
+"assist.settings.on_device_tts.title" = "On-device TTS";
+"assist.settings.on_device_tts.voice" = "Voice";
+"assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.title" = "Impostazioni \"Assistente\"";
 "assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";

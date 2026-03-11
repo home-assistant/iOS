@@ -127,7 +127,16 @@
 "assist.settings.modern_ui.theme.label" = "Тема";
 "assist.settings.modern_ui.toggle" = "Экспериментальный интерфейс";
 "assist.settings.on_device_stt.footer" = "Используйте встроенное распознавание речи Apple для повышения конфиденциальности. Ваш голос будет обработан локально и преобразован в текст перед отправкой на ваш сервер. Поддерживаются не все языки.";
+"assist.settings.on_device_stt.language" = "Language";
+"assist.settings.on_device_stt.title" = "On-device STT";
 "assist.settings.on_device_stt.toggle" = "Включить распознавание речи на устройстве";
+"assist.settings.on_device_tts.default_voice" = "Default";
+"assist.settings.on_device_tts.footer" = "Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.";
+"assist.settings.on_device_tts.quality.enhanced" = "Enhanced";
+"assist.settings.on_device_tts.quality.premium" = "Premium";
+"assist.settings.on_device_tts.title" = "On-device TTS";
+"assist.settings.on_device_tts.voice" = "Voice";
+"assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.title" = "Настройки Assist";
 "assist.settings.tts_mute.footer" = "Если эта функция включена, Assist не будет воспроизводить аудио ответы, даже если в конвейере настроена функция преобразования текста в речь. Вы по-прежнему будете видеть текстовые ответы.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";

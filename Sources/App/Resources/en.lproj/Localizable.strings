@@ -127,6 +127,8 @@
 "assist.settings.modern_ui.theme.label" = "Theme";
 "assist.settings.modern_ui.toggle" = "Experimental UI";
 "assist.settings.on_device_stt.footer" = "Use Apple's on-device speech recognition for improved privacy. Your voice will be processed locally and transcribed to text before being sent to your server. Not all languages are supported.";
+"assist.settings.on_device_stt.language" = "Language";
+"assist.settings.on_device_stt.title" = "On-device STT";
 "assist.settings.on_device_stt.toggle" = "Enable on-device Speech-to-Text";
 "assist.settings.on_device_tts.default_voice" = "Default";
 "assist.settings.on_device_tts.footer" = "Use Apple's on-device speech synthesis for improved privacy. Text responses will be spoken locally without sending audio data to your server.";
@@ -134,6 +136,7 @@
 "assist.settings.on_device_tts.quality.premium" = "Premium";
 "assist.settings.on_device_tts.title" = "On-device TTS";
 "assist.settings.on_device_tts.voice" = "Voice";
+"assist.settings.section.experimental.title" = "Experimental";
 "assist.settings.title" = "Assist Settings";
 "assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";
@@ -1602,4 +1605,3 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.corner.top_right" = "Top Right";
 "kiosk.corner.bottom_left" = "Bottom Left";
 "kiosk.corner.bottom_right" = "Bottom Right";
-
