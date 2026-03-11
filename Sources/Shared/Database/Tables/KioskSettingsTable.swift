@@ -14,7 +14,7 @@ final class KioskSettingsTable: DatabaseTableProtocol {
             try database.write { db in
                 try db.create(table: tableName) { t in
                     t.primaryKey(DatabaseTables.KioskSettings.id.rawValue, .text).notNull()
-                    t.column(DatabaseTables.KioskSettings.settingsJSON.rawValue, .text).notNull()
+                    t.column(DatabaseTables.KioskSettings.settingsJSON.rawValue, .jsonText).notNull()
                 }
             }
         } else {

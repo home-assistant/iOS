@@ -31,7 +31,7 @@ public extension KioskModeObserver {
 
 // MARK: - Kiosk Mode Manager
 
-/// Central singleton managing kiosk mode functionality
+/// Central manager for kiosk mode functionality
 /// Coordinates screen state, screensaver, and brightness control
 @MainActor
 public final class KioskModeManager: ObservableObject {
@@ -61,9 +61,6 @@ public final class KioskModeManager: ObservableObject {
     /// Current brightness level (0.0 - 1.0)
     @Published public private(set) var currentBrightness: Float = 0.8
 
-    /// Current dashboard URL/path
-    @Published public private(set) var currentDashboard: String = ""
-
     /// App state (active or background)
     @Published public private(set) var appState: AppState = .active
 
@@ -73,11 +70,7 @@ public final class KioskModeManager: ObservableObject {
     /// Last user activity timestamp
     @Published public private(set) var lastActivityTime: Date = .init()
 
-    /// Whether connected to Home Assistant
-    @Published public private(set) var isConnectedToHA: Bool = false
-
     /// Pixel shift trigger counter - observe this in SwiftUI to trigger pixel shift
-    /// Increments each time pixel shift should occur
     @Published public private(set) var pixelShiftTrigger: Int = 0
 
     // MARK: - Private Properties
@@ -103,9 +96,6 @@ public final class KioskModeManager: ObservableObject {
     private var observers: [WeakObserver] = []
 
     // MARK: - Callbacks
-
-    /// Called when kiosk mode wants to navigate to a URL
-    public var onNavigate: ((String) -> Void)?
 
     /// Called when kiosk mode wants to refresh the current page
     public var onRefresh: (() -> Void)?
@@ -265,7 +255,7 @@ public final class KioskModeManager: ObservableObject {
         settings = newSettings
     }
 
-    /// Record user activity (touch, motion, etc.)
+    /// Record user activity (touch, etc.)
     public func recordActivity(source: String = "touch") {
         lastActivityTime = Current.date()
         lastWakeSource = source
@@ -275,8 +265,8 @@ public final class KioskModeManager: ObservableObject {
             startIdleTimer()
         }
 
-        // If screensaver is active and this is a wake trigger, hide it
-        if screenState != .on, shouldWakeForSource(source) {
+        // If screensaver is active and wake-on-touch is enabled, wake
+        if screenState != .on, source == "touch", settings.wakeOnTouch {
             wakeScreen(source: source)
         }
     }
@@ -295,16 +285,6 @@ public final class KioskModeManager: ObservableObject {
             startIdleTimer()
         }
         Current.Log.verbose("Idle timer resumed")
-    }
-
-    /// Set current dashboard URL
-    public func setCurrentDashboard(_ url: String) {
-        currentDashboard = url
-    }
-
-    /// Set HA connection status
-    public func setConnectionStatus(_ connected: Bool) {
-        isConnectedToHA = connected
     }
 
     // MARK: - Screen Control
@@ -330,11 +310,6 @@ public final class KioskModeManager: ObservableObject {
         screenState = .on
         notifyObserversOfScreenStateChange()
 
-        // Refresh if configured
-        if settings.refreshOnWake {
-            onRefresh?()
-        }
-
         startIdleTimer()
     }
 
@@ -358,40 +333,15 @@ public final class KioskModeManager: ObservableObject {
         UIScreen.main.brightness = CGFloat(brightness)
     }
 
-    /// Navigate to a URL/path
-    public func navigate(to path: String) {
-        Current.Log.info("Navigating to: \(path)")
-        currentDashboard = path
-
-        // Apply kiosk parameter if enabled
-        var finalPath = path
-        if settings.appendHACSKioskParameter, !path.contains("kiosk") {
-            if path.contains("?") {
-                finalPath = "\(path)&kiosk"
-            } else {
-                finalPath = "\(path)?kiosk"
-            }
-        }
-
-        onNavigate?(finalPath)
-        recordActivity(source: "navigate")
-    }
-
     /// Refresh current page
     public func refresh() {
         Current.Log.info("Refreshing current page")
         onRefresh?()
-        recordActivity(source: "refresh")
     }
 
     /// Called when app returns to foreground
     public func appDidBecomeActive() {
         appState = .active
-
-        // Refresh if needed
-        if isKioskModeActive, settings.refreshOnWake {
-            onRefresh?()
-        }
     }
 
     /// Called when app enters background
@@ -407,8 +357,6 @@ public final class KioskModeManager: ObservableObject {
         // Save current brightness so wakeScreen can restore it
         preScreensaverBrightness = UIScreen.main.brightness
 
-        let dimLevel = screensaverDimLevel()
-
         switch mode {
         case .blank:
             screenState = .off
@@ -416,12 +364,12 @@ public final class KioskModeManager: ObservableObject {
 
         case .dim:
             screenState = .dimmed
-            UIScreen.main.brightness = CGFloat(dimLevel)
+            UIScreen.main.brightness = CGFloat(settings.screensaverDimLevel)
 
-        case .clock, .clockWithEntities, .photos, .photosWithClock, .customURL:
+        case .clock:
             screenState = .screensaver
-            if dimLevel < currentBrightness {
-                UIScreen.main.brightness = CGFloat(dimLevel)
+            if settings.screensaverDimLevel < currentBrightness {
+                UIScreen.main.brightness = CGFloat(settings.screensaverDimLevel)
             }
         }
 
@@ -441,15 +389,6 @@ public final class KioskModeManager: ObservableObject {
         stopPixelShiftTimer()
 
         onHideScreensaver?()
-    }
-
-    /// Returns the appropriate screensaver dim level based on schedule settings
-    private func screensaverDimLevel() -> Float {
-        guard settings.screensaverBrightnessScheduleEnabled else {
-            return settings.screensaverDimLevel
-        }
-
-        return isNightTime() ? settings.screensaverNightDimLevel : settings.screensaverDayDimLevel
     }
 
     // MARK: - Idle Timer
@@ -563,21 +502,7 @@ public final class KioskModeManager: ObservableObject {
             return currentTime.isBefore(dayStart) || !currentTime.isBefore(nightStart)
         } else {
             // If night starts before day in 24h time (e.g., night 02:00, day 06:00)
-            // This handles edge cases where "night" represents early morning hours
             return !currentTime.isBefore(nightStart) && currentTime.isBefore(dayStart)
-        }
-    }
-
-    // MARK: - Wake Source
-
-    private func shouldWakeForSource(_ source: String) -> Bool {
-        switch source {
-        case "touch":
-            return settings.wakeOnTouch
-        case "motion", "presence":
-            return settings.wakeOnCameraMotion || settings.wakeOnCameraPresence
-        default:
-            return true
         }
     }
 

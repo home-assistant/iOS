@@ -6,7 +6,6 @@ import SwiftUI
 // MARK: - Main Kiosk Settings View
 
 /// Kiosk settings view
-/// TODO: Add dashboard rotation, entity triggers, and camera settings
 public struct KioskSettingsView: View {
     @ObservedObject private var manager = KioskModeManager.shared
     @Environment(\.dismiss) private var environmentDismiss
@@ -308,7 +307,6 @@ public struct KioskSettingsView: View {
             }
 
             if settings.screensaverEnabled {
-                // TODO: Add photo and custom URL screensaver modes
                 Picker(L10n.Kiosk.Screensaver.mode, selection: $settings.screensaverMode) {
                     Text(L10n.Kiosk.Screensaver.Mode.clock).tag(ScreensaverMode.clock)
                     Text(L10n.Kiosk.Screensaver.Mode.dim).tag(ScreensaverMode.dim)

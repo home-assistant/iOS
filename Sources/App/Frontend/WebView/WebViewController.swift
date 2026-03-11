@@ -69,9 +69,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     // MARK: - Kiosk Mode Properties
 
-    var screensaverController: KioskScreensaverViewController?
-    var secretExitGestureController: KioskSecretExitGestureViewController?
-    var kioskCancellables = Set<AnyCancellable>()
+    var kioskHandler: KioskModeHandler?
 
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 

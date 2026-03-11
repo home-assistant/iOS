@@ -6,7 +6,6 @@ import UIKit
 
 /// Main view controller that hosts and manages screensaver views
 /// Supports screensaver modes: blank, dim, clock
-/// TODO: Add photo and custom URL screensaver modes
 public final class KioskScreensaverViewController: UIViewController, UIGestureRecognizerDelegate, KioskModeObserver {
     // MARK: - Properties
 
@@ -106,9 +105,6 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
         view.bringSubviewToFront(controller.view)
     }
 
-    // Note: No need to explicitly remove observer in deinit - KioskModeManager uses weak references
-    // that automatically clean up when this object is deallocated
-
     override public var prefersStatusBarHidden: Bool {
         true
     }
@@ -139,24 +135,13 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
         case .dim:
             showDimScreensaver()
 
-        case .clock, .clockWithEntities:
-            // TODO: Add entity display support for clockWithEntities mode
-            showClockScreensaver()
-
-        case .photos, .photosWithClock:
-            // TODO: Implement photo screensaver
-            Current.Log.warning("Photo screensaver not yet implemented, falling back to clock")
-            showClockScreensaver()
-
-        case .customURL:
-            // TODO: Implement custom URL screensaver
-            Current.Log.warning("Custom URL screensaver not yet implemented, falling back to clock")
+        case .clock:
             showClockScreensaver()
         }
 
         // Fade in
         view.alpha = 0
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: KioskConstants.Animation.slow) {
             self.view.alpha = 1
         }
     }
@@ -165,7 +150,7 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
     public func hide() {
         Current.Log.info("Hiding screensaver")
 
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: KioskConstants.Animation.standard) {
             self.view.alpha = 0
         } completion: { _ in
             self.currentMode = nil
@@ -191,7 +176,7 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
         pixelShiftOffset = newOffset
 
         // Apply transform to hosting controller view
-        UIView.animate(withDuration: 1.0) {
+        UIView.animate(withDuration: KioskConstants.Animation.pixelShift) {
             self.hostingController?.view.transform = CGAffineTransform(
                 translationX: newOffset.x,
                 y: newOffset.y
@@ -202,7 +187,6 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
     // MARK: - Private Methods
 
     private func setupObservers() {
-        // Register as kiosk mode observer for pixel shift notifications
         KioskModeManager.shared.addObserver(self)
     }
 

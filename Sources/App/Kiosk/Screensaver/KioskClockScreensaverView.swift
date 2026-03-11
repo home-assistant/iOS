@@ -1,80 +1,76 @@
 import Shared
 import SwiftUI
 
-// MARK: - Kiosk Clock Screensaver View
+// MARK: - Kiosk Date Formatters
 
-/// A screensaver view displaying time with optional date
-/// TODO: Add entity display support
-public struct KioskClockScreensaverView: View {
-    @ObservedObject private var manager = KioskModeManager.shared
-    @State private var currentTime = Current.date()
-    private let timeTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
-    // Cached formatters to avoid creating new ones every second
-    private static let time24hFormatter: DateFormatter = {
+/// Cached date formatters for clock display, reusable across the app
+enum KioskDateFormatters {
+    static let time24h: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "HH:mm"
         return f
     }()
 
-    private static let time24hSecondsFormatter: DateFormatter = {
+    static let time24hSeconds: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "HH:mm:ss"
         return f
     }()
 
-    private static let time12hFormatter: DateFormatter = {
+    static let time12h: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "h:mm a"
         return f
     }()
 
-    private static let time12hSecondsFormatter: DateFormatter = {
+    static let time12hSeconds: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "h:mm:ss a"
         return f
     }()
 
-    private static let accessibilityFormatter: DateFormatter = {
+    static let accessibility: DateFormatter = {
         let f = DateFormatter()
         f.timeStyle = .short
         return f
     }()
 
-    private static let dateDisplayFormatter: DateFormatter = {
+    static let dateDisplay: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "EEEE, MMMM d"
         return f
     }()
+}
+
+// MARK: - Kiosk Clock Screensaver View
+
+/// A screensaver view displaying time with optional date
+public struct KioskClockScreensaverView: View {
+    @ObservedObject private var manager = KioskModeManager.shared
+    @State private var currentTime = Current.date()
+    private let timeTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     public init() {}
 
     public var body: some View {
         GeometryReader { _ in
-            ZStack {
-                // Background
-                Color.black
-                    .ignoresSafeArea()
+            VStack(spacing: DesignSystem.Spaces.two) {
+                Spacer()
 
-                // Clock content
-                VStack(spacing: 20) {
-                    Spacer()
+                clockDisplay
 
-                    clockDisplay
-
-                    if manager.settings.clockShowDate {
-                        dateDisplay
-                    }
-
-                    Spacer()
+                if manager.settings.clockShowDate {
+                    dateDisplay
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                Spacer()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .background(Color.black.ignoresSafeArea())
         .onReceive(timeTimer) { _ in
             currentTime = Current.date()
         }
-        // Pixel shift is handled by KioskScreensaverViewController (UIKit transform)
     }
 
     // MARK: - Clock Display
@@ -135,15 +131,15 @@ public struct KioskClockScreensaverView: View {
 
         let formatter: DateFormatter
         if use24Hour {
-            formatter = showSeconds ? Self.time24hSecondsFormatter : Self.time24hFormatter
+            formatter = showSeconds ? KioskDateFormatters.time24hSeconds : KioskDateFormatters.time24h
         } else {
-            formatter = showSeconds ? Self.time12hSecondsFormatter : Self.time12hFormatter
+            formatter = showSeconds ? KioskDateFormatters.time12hSeconds : KioskDateFormatters.time12h
         }
         return formatter.string(from: currentTime)
     }
 
     private var accessibleTimeString: String {
-        Self.accessibilityFormatter.string(from: currentTime)
+        KioskDateFormatters.accessibility.string(from: currentTime)
     }
 
     // MARK: - Date Display
@@ -156,7 +152,7 @@ public struct KioskClockScreensaverView: View {
     }
 
     private var dateString: String {
-        Self.dateDisplayFormatter.string(from: currentTime)
+        KioskDateFormatters.dateDisplay.string(from: currentTime)
     }
 }
 

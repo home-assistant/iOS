@@ -20,7 +20,7 @@ struct KioskSettingsCodableTests {
         settings.hideStatusBar = true
         settings.preventAutoLock = true
         settings.screensaverTimeout = 600
-        settings.screensaverMode = .clockWithEntities
+        settings.screensaverMode = .clock
         settings.clockStyle = .analog
         settings.dayBrightness = 0.9
         settings.nightBrightness = 0.2
@@ -34,121 +34,10 @@ struct KioskSettingsCodableTests {
         #expect(decoded == settings)
         #expect(decoded.isKioskModeEnabled == true)
         #expect(decoded.requireDeviceAuthentication == true)
-        #expect(decoded.screensaverMode == .clockWithEntities)
+        #expect(decoded.screensaverMode == .clock)
         #expect(decoded.clockStyle == .analog)
         #expect(decoded.secretExitGestureCorner == .bottomLeft)
         #expect(decoded.secretExitGestureTaps == 5)
-    }
-
-    @Test func dashboardConfigRoundtrip() async throws {
-        let config = DashboardConfig(
-            id: "test-id",
-            name: "Living Room",
-            url: "/lovelace/living-room",
-            icon: "mdi:sofa",
-            includeInRotation: true
-        )
-
-        let encoded = try JSONEncoder().encode(config)
-        let decoded = try JSONDecoder().decode(DashboardConfig.self, from: encoded)
-
-        #expect(decoded.id == config.id)
-        #expect(decoded.name == config.name)
-        #expect(decoded.url == config.url)
-        #expect(decoded.icon == config.icon)
-        #expect(decoded.includeInRotation == config.includeInRotation)
-    }
-
-    @Test func dashboardConfigDefaultsOnDecode() async throws {
-        // Simulate legacy data missing optional fields
-        let json = """
-        {"name": "Test", "url": "/test"}
-        """
-        let data = json.data(using: .utf8)!
-        let decoded = try JSONDecoder().decode(DashboardConfig.self, from: data)
-
-        #expect(decoded.name == "Test")
-        #expect(decoded.url == "/test")
-        #expect(decoded.icon == "mdi:view-dashboard") // Default
-        #expect(decoded.includeInRotation == true) // Default
-        #expect(!decoded.id.isEmpty) // Should generate UUID
-    }
-
-    @Test func entityTriggerRoundtrip() async throws {
-        let trigger = EntityTrigger(
-            entityId: "binary_sensor.motion",
-            triggerState: "on",
-            delay: 5.0,
-            enabled: true
-        )
-
-        let encoded = try JSONEncoder().encode(trigger)
-        let decoded = try JSONDecoder().decode(EntityTrigger.self, from: encoded)
-
-        #expect(decoded.entityId == trigger.entityId)
-        #expect(decoded.triggerState == trigger.triggerState)
-        #expect(decoded.delay == trigger.delay)
-        #expect(decoded.enabled == trigger.enabled)
-    }
-
-    @Test func clockEntityConfigRoundtrip() async throws {
-        let config = ClockEntityConfig(
-            entityId: "sensor.temperature",
-            label: "Outdoor",
-            icon: "mdi:thermometer",
-            showUnit: true,
-            displayFormat: .valueSpaceUnit,
-            decimalPlaces: 1,
-            prefix: nil,
-            suffix: "outside"
-        )
-
-        let encoded = try JSONEncoder().encode(config)
-        let decoded = try JSONDecoder().decode(ClockEntityConfig.self, from: encoded)
-
-        #expect(decoded.entityId == config.entityId)
-        #expect(decoded.label == config.label)
-        #expect(decoded.displayFormat == .valueSpaceUnit)
-        #expect(decoded.decimalPlaces == 1)
-        #expect(decoded.suffix == "outside")
-    }
-
-    @Test func quickActionRoundtrip() async throws {
-        let action = QuickAction(
-            name: "Movie Mode",
-            icon: "mdi:movie",
-            actionType: .scene(entityId: "scene.movie_mode")
-        )
-
-        let encoded = try JSONEncoder().encode(action)
-        let decoded = try JSONDecoder().decode(QuickAction.self, from: encoded)
-
-        #expect(decoded.name == action.name)
-        #expect(decoded.icon == action.icon)
-
-        if case let .scene(entityId) = decoded.actionType {
-            #expect(entityId == "scene.movie_mode")
-        } else {
-            Issue.record("Expected scene action type")
-        }
-    }
-
-    @Test func triggerActionRoundtrip() async throws {
-        let actions: [TriggerAction] = [
-            .navigate(url: "/lovelace/cameras"),
-            .setBrightness(level: 0.5),
-            .startScreensaver(mode: .clock),
-            .stopScreensaver,
-            .refresh,
-            .playSound(url: "https://example.com/alert.mp3"),
-            .tts(message: "Welcome home"),
-        ]
-
-        for action in actions {
-            let encoded = try JSONEncoder().encode(action)
-            let decoded = try JSONDecoder().decode(TriggerAction.self, from: encoded)
-            #expect(decoded == action)
-        }
     }
 }
 
@@ -196,54 +85,13 @@ struct TimeOfDayTests {
     }
 }
 
-// MARK: - DeviceOrientation Tests
-
-struct DeviceOrientationTests {
-    @Test func matchesExactSame() async throws {
-        #expect(DeviceOrientation.portrait.matches(.portrait) == true)
-        #expect(DeviceOrientation.landscapeLeft.matches(.landscapeLeft) == true)
-        #expect(DeviceOrientation.landscapeRight.matches(.landscapeRight) == true)
-    }
-
-    @Test func matchesLandscapeVariants() async throws {
-        // .landscape should match both landscapeLeft and landscapeRight
-        #expect(DeviceOrientation.landscape.matches(.landscapeLeft) == true)
-        #expect(DeviceOrientation.landscape.matches(.landscapeRight) == true)
-
-        // And vice versa
-        #expect(DeviceOrientation.landscapeLeft.matches(.landscape) == true)
-        #expect(DeviceOrientation.landscapeRight.matches(.landscape) == true)
-    }
-
-    @Test func matchesDifferentOrientations() async throws {
-        #expect(DeviceOrientation.portrait.matches(.landscape) == false)
-        #expect(DeviceOrientation.portrait.matches(.landscapeLeft) == false)
-        #expect(DeviceOrientation.landscapeLeft.matches(.portrait) == false)
-        #expect(DeviceOrientation.faceUp.matches(.faceDown) == false)
-    }
-
-    @Test func fromUIDeviceOrientation() async throws {
-        #expect(DeviceOrientation.from(.portrait) == .portrait)
-        #expect(DeviceOrientation.from(.portraitUpsideDown) == .portraitUpsideDown)
-        #expect(DeviceOrientation.from(.landscapeLeft) == .landscapeLeft)
-        #expect(DeviceOrientation.from(.landscapeRight) == .landscapeRight)
-        #expect(DeviceOrientation.from(.faceUp) == .faceUp)
-        #expect(DeviceOrientation.from(.faceDown) == .faceDown)
-        #expect(DeviceOrientation.from(.unknown) == .unknown)
-    }
-}
-
 // MARK: - Enum Display Name Tests
 
 struct EnumDisplayNameTests {
     @Test func screensaverModeDisplayNames() async throws {
-        #expect(ScreensaverMode.blank.displayName == "Blank (Black Screen)")
-        #expect(ScreensaverMode.dim.displayName == "Dim Dashboard")
+        #expect(ScreensaverMode.blank.displayName == "Blank")
+        #expect(ScreensaverMode.dim.displayName == "Dim")
         #expect(ScreensaverMode.clock.displayName == "Clock")
-        #expect(ScreensaverMode.clockWithEntities.displayName == "Clock + Sensors")
-        #expect(ScreensaverMode.photos.displayName == "Photo Frame")
-        #expect(ScreensaverMode.photosWithClock.displayName == "Photos + Clock")
-        #expect(ScreensaverMode.customURL.displayName == "Custom Dashboard")
     }
 
     @Test func clockStyleDisplayNames() async throws {
@@ -258,15 +106,5 @@ struct EnumDisplayNameTests {
         #expect(ScreenCorner.topRight.displayName == "Top Right")
         #expect(ScreenCorner.bottomLeft.displayName == "Bottom Left")
         #expect(ScreenCorner.bottomRight.displayName == "Bottom Right")
-    }
-
-    @Test func cameraPopupSizeParameters() async throws {
-        let small = CameraPopupSize.small.sizeParameters
-        #expect(small.widthPercent == 0.4)
-        #expect(small.maxWidth == 320)
-
-        let fullScreen = CameraPopupSize.fullScreen.sizeParameters
-        #expect(fullScreen.widthPercent == 0.95)
-        #expect(fullScreen.maxWidth == 1200)
     }
 }

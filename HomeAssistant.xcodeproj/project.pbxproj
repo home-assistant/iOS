@@ -1214,6 +1214,7 @@
 		42KIOSK0002000000000009 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000009 /* KioskSettingsTable.swift */; };
 		42KIOSK000200000000000B /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK000100000000000A /* KioskSettings.test.swift */; };
 		42KIOSK000200000000000C /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000009 /* KioskSettingsTable.swift */; };
+		42KIOSK000200000000000D /* KioskModeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK000100000000000D /* KioskModeHandler.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
@@ -3017,6 +3018,7 @@
 		42KIOSK0001000000000008 /* WebViewController+Kiosk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Kiosk.swift"; sourceTree = "<group>"; };
 		42KIOSK0001000000000009 /* KioskSettingsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsTable.swift; sourceTree = "<group>"; };
 		42KIOSK000100000000000A /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
+		42KIOSK000100000000000D /* KioskModeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeHandler.swift; sourceTree = "<group>"; };
 		442182FC55CEB695729D80CA /* Pods-watchOS-Shared-watchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-Shared-watchOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-Shared-watchOS/Pods-watchOS-Shared-watchOS.release.xcconfig"; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -6376,6 +6378,7 @@
 			isa = PBXGroup;
 			children = (
 				42KIOSK0001000000000003 /* KioskConstants.swift */,
+				42KIOSK000100000000000D /* KioskModeHandler.swift */,
 				42KIOSK0001000000000001 /* KioskModeManager.swift */,
 				42KIOSK0001000000000002 /* KioskSettings.swift */,
 				42KIOSK0003000000000004 /* Overlay */,
@@ -9523,6 +9526,7 @@
 				42KIOSK0002000000000006 /* KioskClockScreensaverView.swift in Sources */,
 				42KIOSK0002000000000007 /* KioskSecretExitGestureView.swift in Sources */,
 				42KIOSK0002000000000008 /* WebViewController+Kiosk.swift in Sources */,
+				42KIOSK000200000000000D /* KioskModeHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
