@@ -1207,6 +1207,7 @@
 		D46379541BA5FD96D6E7D328 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402432B9CC897C6278B08A79 /* KioskSettings.swift */; };
 		51B609B13F56C4F17CEF2BE4 /* KioskConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */; };
 		B6DDF8534A4176416CFAC79A /* KioskSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49767602CA2066683EC638F /* KioskSettingsView.swift */; };
+		D8B4F2A61E9C73058AF2D49E /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */; };
 		E92E09E3A93650D56E3C5093 /* KioskScreensaverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CDCFDB29D283A7902A3ABE /* KioskScreensaverViewController.swift */; };
 		19F4C1F65664780F4E721699 /* KioskClockScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D793A057CBFD32530A7193 /* KioskClockScreensaverView.swift */; };
 		CB4D44CC6DBA5176155E157E /* KioskSecretExitGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */; };
@@ -3011,6 +3012,7 @@
 		402432B9CC897C6278B08A79 /* KioskSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.swift; sourceTree = "<group>"; };
 		825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskConstants.swift; sourceTree = "<group>"; };
 		F49767602CA2066683EC638F /* KioskSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsView.swift; sourceTree = "<group>"; };
+		C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsViewModel.swift; sourceTree = "<group>"; };
 		62CDCFDB29D283A7902A3ABE /* KioskScreensaverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskScreensaverViewController.swift; sourceTree = "<group>"; };
 		38D793A057CBFD32530A7193 /* KioskClockScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskClockScreensaverView.swift; sourceTree = "<group>"; };
 		FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSecretExitGestureView.swift; sourceTree = "<group>"; };
@@ -6389,6 +6391,7 @@
 			isa = PBXGroup;
 			children = (
 				F49767602CA2066683EC638F /* KioskSettingsView.swift */,
+				C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -9519,6 +9522,7 @@
 				D46379541BA5FD96D6E7D328 /* KioskSettings.swift in Sources */,
 				51B609B13F56C4F17CEF2BE4 /* KioskConstants.swift in Sources */,
 				B6DDF8534A4176416CFAC79A /* KioskSettingsView.swift in Sources */,
+				D8B4F2A61E9C73058AF2D49E /* KioskSettingsViewModel.swift in Sources */,
 				E92E09E3A93650D56E3C5093 /* KioskScreensaverViewController.swift in Sources */,
 				19F4C1F65664780F4E721699 /* KioskClockScreensaverView.swift in Sources */,
 				CB4D44CC6DBA5176155E157E /* KioskSecretExitGestureView.swift in Sources */,

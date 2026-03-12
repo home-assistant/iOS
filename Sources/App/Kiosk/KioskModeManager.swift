@@ -210,11 +210,11 @@ public final class KioskModeManager: ObservableObject {
         }
 
         // Store original brightness to restore later
-        originalBrightness = Float(UIScreen.main.brightness)
+        originalBrightness = Float(Current.screenBrightness())
 
         // Prevent iOS from auto-locking the screen
         if settings.preventAutoLock {
-            UIApplication.shared.isIdleTimerDisabled = true
+            Current.application?().isIdleTimerDisabled = true
             Current.Log.info("Screen auto-lock disabled")
         }
 
@@ -242,12 +242,12 @@ public final class KioskModeManager: ObservableObject {
 
         // Restore original brightness
         if let original = originalBrightness {
-            UIScreen.main.brightness = CGFloat(original)
+            Current.setScreenBrightness(CGFloat(original))
         }
 
         // Re-enable iOS auto-lock if kiosk mode had disabled it
         if settings.preventAutoLock {
-            UIApplication.shared.isIdleTimerDisabled = false
+            Current.application?().isIdleTimerDisabled = false
             Current.Log.info("Screen auto-lock restored")
         }
 
@@ -284,8 +284,8 @@ public final class KioskModeManager: ObservableObject {
             startIdleTimer()
         }
 
-        // If screensaver is active and wake-on-touch is enabled, wake
-        if screenState != .on, source == "touch", settings.wakeOnTouch {
+        // If screensaver is active, wake on touch
+        if screenState != .on, source == "touch" {
             wakeScreen(source: source)
         }
     }
@@ -322,7 +322,7 @@ public final class KioskModeManager: ObservableObject {
         if settings.brightnessControlEnabled {
             applyBrightness()
         } else if let savedBrightness = preScreensaverBrightness {
-            UIScreen.main.brightness = savedBrightness
+            Current.setScreenBrightness(savedBrightness)
         }
         preScreensaverBrightness = nil
 
@@ -349,7 +349,7 @@ public final class KioskModeManager: ObservableObject {
 
         Current.Log.info("Setting brightness to \(clampedLevel)%")
         currentBrightness = brightness
-        UIScreen.main.brightness = CGFloat(brightness)
+        Current.setScreenBrightness(CGFloat(brightness))
     }
 
     /// Refresh current page
@@ -374,21 +374,21 @@ public final class KioskModeManager: ObservableObject {
         activeScreensaverMode = mode
 
         // Save current brightness so wakeScreen can restore it
-        preScreensaverBrightness = UIScreen.main.brightness
+        preScreensaverBrightness = Current.screenBrightness()
 
         switch mode {
         case .blank:
             screenState = .off
-            UIScreen.main.brightness = 0
+            Current.setScreenBrightness(0)
 
         case .dim:
             screenState = .dimmed
-            UIScreen.main.brightness = CGFloat(settings.screensaverDimLevel)
+            Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
 
         case .clock:
             screenState = .screensaver
             if settings.screensaverDimLevel < currentBrightness {
-                UIScreen.main.brightness = CGFloat(settings.screensaverDimLevel)
+                Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
             }
         }
 
@@ -566,7 +566,7 @@ public final class KioskModeManager: ObservableObject {
         guard settings.brightnessControlEnabled else { return }
 
         currentBrightness = settings.manualBrightness
-        UIScreen.main.brightness = CGFloat(settings.manualBrightness)
+        Current.setScreenBrightness(CGFloat(settings.manualBrightness))
     }
 
     // MARK: - Pixel Shift Timer
@@ -630,7 +630,7 @@ public final class KioskModeManager: ObservableObject {
 
         // Apply preventAutoLock changes immediately
         if oldValue.preventAutoLock != newValue.preventAutoLock {
-            UIApplication.shared.isIdleTimerDisabled = newValue.preventAutoLock
+            Current.application?().isIdleTimerDisabled = newValue.preventAutoLock
         }
 
         // Apply screensaver enabled/disabled changes immediately

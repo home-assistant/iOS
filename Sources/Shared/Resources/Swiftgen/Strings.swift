@@ -1844,8 +1844,6 @@ public enum L10n {
       public static func tapsRequired(_ p1: Int) -> String {
         return L10n.tr("Localizable", "kiosk.security.taps_required", p1)
       }
-      /// Wake on Touch
-      public static var wakeOnTouch: String { return L10n.tr("Localizable", "kiosk.security.wake_on_touch") }
     }
   }
 

@@ -1,4 +1,3 @@
-import LocalAuthentication
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -7,38 +6,15 @@ import SwiftUI
 
 /// Kiosk settings view
 public struct KioskSettingsView: View {
-    @ObservedObject private var manager = KioskModeManager.shared
+    @StateObject private var viewModel: KioskSettingsViewModel
     @Environment(\.dismiss) private var environmentDismiss
-    @State private var settings: KioskSettings
-    @State private var isAuthenticated = false
-    @State private var showingAuthError = false
-    @State private var authErrorMessage = ""
-
-    /// Explicit dismiss closure for UIKit interop (when presented via UINavigationController)
-    /// When nil, falls back to SwiftUI's @Environment(\.dismiss) for navigation contexts
-    private let onDismiss: (() -> Void)?
-
-    /// Whether authentication is required to access settings (derived dynamically)
-    private var authRequired: Bool {
-        manager.isKioskModeActive && manager.settings.requireDeviceAuthentication
-    }
 
     /// Initialize with optional explicit dismiss closure
     /// - Parameter onDismiss: Closure called when the view should be dismissed.
     ///   If nil, uses SwiftUI's environment dismiss (for NavigationLink contexts).
     ///   Pass explicit closure when presenting via UIKit's UINavigationController.
     public init(onDismiss: (() -> Void)? = nil) {
-        _settings = State(initialValue: KioskModeManager.shared.settings)
-        self.onDismiss = onDismiss
-    }
-
-    /// Dismiss the view using either the explicit closure or environment dismiss
-    private func dismissView() {
-        if let onDismiss {
-            onDismiss()
-        } else {
-            environmentDismiss()
-        }
+        _viewModel = StateObject(wrappedValue: KioskSettingsViewModel(onDismiss: onDismiss))
     }
 
     public var body: some View {
@@ -52,127 +28,75 @@ public struct KioskSettingsView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(L10n.doneLabel) {
-                    dismissView()
+                    viewModel.dismiss(using: environmentDismiss)
                 }
             }
         }
-        .disabled(authRequired && !isAuthenticated)
-        .overlay {
-            if authRequired, !isAuthenticated {
-                VStack(spacing: DesignSystem.Spaces.three) {
-                    Spacer()
-
-                    Image(systemSymbol: .lockFill)
-                        .font(.system(size: 64))
-                        .foregroundColor(.secondary)
-
-                    Text(L10n.Kiosk.Auth.gateTitle)
-                        .font(DesignSystem.Font.largeTitle.bold())
-                        .multilineTextAlignment(.center)
-
-                    Text(L10n.Kiosk.Auth.gateDescription)
-                        .font(DesignSystem.Font.body)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, DesignSystem.Spaces.two)
-
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .safeAreaInset(edge: .bottom) {
-                    VStack(spacing: DesignSystem.Spaces.one) {
-                        Button {
-                            authenticateForSettings()
-                        } label: {
-                            Text(L10n.Kiosk.Auth.authenticateButton)
-                        }
-                        .buttonStyle(.primaryButton)
-
-                        Button {
-                            dismissView()
-                        } label: {
-                            Text(L10n.Kiosk.Auth.goBackButton)
-                        }
-                        .buttonStyle(.secondaryButton)
-                        .tint(Color.haPrimary)
-                    }
-                    .padding([.horizontal, .top], DesignSystem.Spaces.two)
-                    .background(Color(uiColor: .systemBackground).opacity(0.95))
-                }
-                .background(Color(uiColor: .systemBackground))
-            }
-        }
+        .disabled(viewModel.authRequired && !viewModel.isAuthenticated)
+        .overlay { authGateOverlay }
         .onAppear {
-            // Pause screensaver idle timer while settings are open
-            manager.pauseIdleTimer()
-
-            if authRequired {
-                // Delay auth prompt slightly to let the modal fully present
-                // This prevents the auth dialog from dismissing the settings modal
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    authenticateForSettings()
-                }
-            } else {
-                isAuthenticated = true
-            }
+            viewModel.onAppear()
         }
         .onDisappear {
-            // Resume screensaver idle timer when settings are closed
-            manager.resumeIdleTimer()
+            viewModel.onDisappear()
         }
-        .onChange(of: settings) { newValue in
-            if isAuthenticated || !authRequired {
-                manager.updateSettings(newValue)
-            }
+        .onChange(of: viewModel.settings) { _ in
+            viewModel.settingsChanged()
         }
-        .alert(L10n.Kiosk.AuthError.title, isPresented: $showingAuthError) {
+        .alert(L10n.Kiosk.AuthError.title, isPresented: $viewModel.showingAuthError) {
             Button(L10n.okLabel, role: .cancel) {
-                // Dismiss settings if auth failed while in kiosk mode
-                if manager.isKioskModeActive {
-                    dismissView()
-                }
+                viewModel.handleAuthErrorDismissed(using: environmentDismiss)
             }
         } message: {
-            Text(authErrorMessage)
+            Text(viewModel.authErrorMessage)
         }
     }
 
-    // MARK: - Settings Authentication
+    // MARK: - Auth Gate Overlay
 
-    private func authenticateForSettings() {
-        let context = LAContext()
-        var error: NSError?
-        let authSettings = manager.settings
+    @ViewBuilder private var authGateOverlay: some View {
+        if viewModel.authRequired, !viewModel.isAuthenticated {
+            VStack(spacing: DesignSystem.Spaces.three) {
+                Spacer()
 
-        // No authentication required
-        guard authSettings.requireDeviceAuthentication else {
-            isAuthenticated = true
-            return
-        }
+                Image(systemSymbol: .lockFill)
+                    .font(.system(size: 64))
+                    .foregroundColor(.secondary)
 
-        // Use device owner authentication (Face ID/Touch ID with passcode fallback)
-        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
-            // No authentication available on device, allow access
-            isAuthenticated = true
-            return
-        }
+                Text(L10n.Kiosk.Auth.gateTitle)
+                    .font(DesignSystem.Font.largeTitle.bold())
+                    .multilineTextAlignment(.center)
 
-        let reason = L10n.Kiosk.AuthError.reason
-        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authError in
-            DispatchQueue.main.async {
-                if success {
-                    isAuthenticated = true
-                } else if let authError = authError as? LAError {
-                    switch authError.code {
-                    case .userCancel, .appCancel:
-                        // User cancelled - they can retry or close via overlay
-                        break
-                    default:
-                        authErrorMessage = authError.localizedDescription
-                        showingAuthError = true
-                    }
-                }
+                Text(L10n.Kiosk.Auth.gateDescription)
+                    .font(DesignSystem.Font.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, DesignSystem.Spaces.two)
+
+                Spacer()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: DesignSystem.Spaces.one) {
+                    Button {
+                        viewModel.authenticateForSettings()
+                    } label: {
+                        Text(L10n.Kiosk.Auth.authenticateButton)
+                    }
+                    .buttonStyle(.primaryButton)
+
+                    Button {
+                        viewModel.dismiss(using: environmentDismiss)
+                    } label: {
+                        Text(L10n.Kiosk.Auth.goBackButton)
+                    }
+                    .buttonStyle(.secondaryButton)
+                    .tint(Color.haPrimary)
+                }
+                .padding([.horizontal, .top], DesignSystem.Spaces.two)
+                .background(Color(uiColor: .systemBackground).opacity(0.95))
+            }
+            .background(Color(uiColor: .systemBackground))
         }
     }
 
@@ -181,12 +105,12 @@ public struct KioskSettingsView: View {
     private var kioskModeSection: some View {
         Section {
             Toggle(isOn: Binding(
-                get: { manager.isKioskModeActive },
+                get: { viewModel.isKioskModeActive },
                 set: { newValue in
                     if newValue {
-                        manager.enableKioskMode()
+                        viewModel.enableKioskMode()
                     } else {
-                        attemptKioskExit()
+                        viewModel.attemptKioskExit()
                     }
                 }
             )) {
@@ -195,7 +119,7 @@ public struct KioskSettingsView: View {
         } header: {
             Text(L10n.Kiosk.Section.title)
         } footer: {
-            if !manager.isKioskModeActive {
+            if !viewModel.isKioskModeActive {
                 Text(L10n.Kiosk.Footer.description)
             }
         }
@@ -205,46 +129,48 @@ public struct KioskSettingsView: View {
 
     private var coreSettingsSection: some View {
         Section {
-            Toggle(isOn: $settings.requireDeviceAuthentication) {
+            Toggle(isOn: $viewModel.settings.requireDeviceAuthentication) {
                 Label(L10n.Kiosk.Security.deviceAuth, systemSymbol: .lockShield)
             }
 
-            Toggle(isOn: $settings.hideStatusBar) {
+            Toggle(isOn: $viewModel.settings.hideStatusBar) {
                 Label(L10n.Kiosk.Security.hideStatusBar, systemSymbol: .rectangleExpandVertical)
             }
 
-            Toggle(isOn: $settings.preventAutoLock) {
+            Toggle(isOn: $viewModel.settings.preventAutoLock) {
                 Label(L10n.Kiosk.Security.preventAutolock, systemSymbol: .lockOpenDisplay)
             }
 
-            Toggle(isOn: $settings.wakeOnTouch) {
-                Label(L10n.Kiosk.Security.wakeOnTouch, systemSymbol: .handTap)
-            }
-
             // Secret Exit Gesture
-            Toggle(isOn: $settings.secretExitGestureEnabled) {
+            Toggle(isOn: $viewModel.settings.secretExitGestureEnabled) {
                 Label(L10n.Kiosk.Security.secretGesture, systemSymbol: .handTap)
             }
 
-            if settings.secretExitGestureEnabled {
-                Picker(L10n.Kiosk.Security.gestureCorner, selection: $settings.secretExitGestureCorner) {
+            if viewModel.settings.secretExitGestureEnabled {
+                Picker(L10n.Kiosk.Security.gestureCorner, selection: $viewModel.settings.secretExitGestureCorner) {
                     ForEach(ScreenCorner.allCases, id: \.self) { corner in
                         Text(corner.displayName).tag(corner)
                     }
                 }
 
-                Stepper(value: $settings.secretExitGestureTaps, in: 2 ... 5) {
-                    Label(L10n.Kiosk.Security.tapsRequired(settings.secretExitGestureTaps), systemSymbol: .number)
+                Stepper(
+                    value: $viewModel.settings.secretExitGestureTaps,
+                    in: 2 ... 5
+                ) {
+                    Label(
+                        L10n.Kiosk.Security.tapsRequired(viewModel.settings.secretExitGestureTaps),
+                        systemSymbol: .number
+                    )
                 }
             }
         } header: {
             Text(L10n.Kiosk.Security.section)
         } footer: {
-            if settings.secretExitGestureEnabled {
+            if viewModel.settings.secretExitGestureEnabled {
                 Text(
                     L10n.Kiosk.Security.gestureFooter(
-                        settings.secretExitGestureCorner.displayName,
-                        settings.secretExitGestureTaps
+                        viewModel.settings.secretExitGestureCorner.displayName,
+                        viewModel.settings.secretExitGestureTaps
                     )
                 )
             }
@@ -255,15 +181,15 @@ public struct KioskSettingsView: View {
 
     private var brightnessSection: some View {
         Section {
-            Toggle(isOn: $settings.brightnessControlEnabled) {
+            Toggle(isOn: $viewModel.settings.brightnessControlEnabled) {
                 Label(L10n.Kiosk.Brightness.control, systemSymbol: .sunMax)
             }
 
-            if settings.brightnessControlEnabled {
+            if viewModel.settings.brightnessControlEnabled {
                 VStack(alignment: .leading) {
-                    Text(L10n.Kiosk.Brightness.manual(Int(settings.manualBrightness * 100)))
+                    Text(L10n.Kiosk.Brightness.manual(Int(viewModel.settings.manualBrightness * 100)))
                         .font(.caption)
-                    Slider(value: $settings.manualBrightness, in: 0.1 ... 1.0, step: 0.05)
+                    Slider(value: $viewModel.settings.manualBrightness, in: 0.1 ... 1.0, step: 0.05)
                 }
             }
         } header: {
@@ -275,12 +201,12 @@ public struct KioskSettingsView: View {
 
     private var screensaverSection: some View {
         Section {
-            Toggle(isOn: $settings.screensaverEnabled) {
+            Toggle(isOn: $viewModel.settings.screensaverEnabled) {
                 Label(L10n.Kiosk.Screensaver.toggle, systemSymbol: .moonStars)
             }
 
-            if settings.screensaverEnabled {
-                Picker(L10n.Kiosk.Screensaver.mode, selection: $settings.screensaverMode) {
+            if viewModel.settings.screensaverEnabled {
+                Picker(L10n.Kiosk.Screensaver.mode, selection: $viewModel.settings.screensaverMode) {
                     Text(L10n.Kiosk.Screensaver.Mode.clock).tag(ScreensaverMode.clock)
                     Text(L10n.Kiosk.Screensaver.Mode.dim).tag(ScreensaverMode.dim)
                     Text(L10n.Kiosk.Screensaver.Mode.blank).tag(ScreensaverMode.blank)
@@ -289,44 +215,43 @@ public struct KioskSettingsView: View {
                 HStack {
                     Text(L10n.Kiosk.Screensaver.timeout)
                     Spacer()
-                    Picker("", selection: $settings.screensaverTimeout) {
-                        Text(L10n.Kiosk.Screensaver.Timeout._30sec).tag(TimeInterval(30))
-                        Text(L10n.Kiosk.Screensaver.Timeout._1min).tag(TimeInterval(60))
-                        Text(L10n.Kiosk.Screensaver.Timeout._2min).tag(TimeInterval(120))
-                        Text(L10n.Kiosk.Screensaver.Timeout._5min).tag(TimeInterval(300))
-                        Text(L10n.Kiosk.Screensaver.Timeout._10min).tag(TimeInterval(600))
-                        Text(L10n.Kiosk.Screensaver.Timeout._15min).tag(TimeInterval(900))
-                        Text(L10n.Kiosk.Screensaver.Timeout._30min).tag(TimeInterval(1800))
+                    Picker("", selection: Binding(
+                        get: { ScreensaverTimeout(from: viewModel.settings.screensaverTimeout) },
+                        set: { viewModel.settings.screensaverTimeout = $0.timeInterval }
+                    )) {
+                        ForEach(ScreensaverTimeout.allCases, id: \.self) { timeout in
+                            Text(timeout.displayName).tag(timeout)
+                        }
                     }
                     .labelsHidden()
                 }
 
                 VStack(alignment: .leading) {
-                    Text(L10n.Kiosk.Screensaver.dimLevel(Int(settings.screensaverDimLevel * 100)))
+                    Text(L10n.Kiosk.Screensaver.dimLevel(Int(viewModel.settings.screensaverDimLevel * 100)))
                         .font(.caption)
-                    Slider(value: $settings.screensaverDimLevel, in: 0.01 ... 0.5, step: 0.01)
+                    Slider(value: $viewModel.settings.screensaverDimLevel, in: 0.01 ... 0.5, step: 0.01)
                 }
 
-                Toggle(isOn: $settings.pixelShiftEnabled) {
+                Toggle(isOn: $viewModel.settings.pixelShiftEnabled) {
                     Label(L10n.Kiosk.Screensaver.pixelShift, systemSymbol: .arrowLeftArrowRight)
                 }
 
-                if settings.screensaverMode == .clock {
-                    Picker(L10n.Kiosk.Clock.style, selection: $settings.clockStyle) {
+                if viewModel.settings.screensaverMode == .clock {
+                    Picker(L10n.Kiosk.Clock.style, selection: $viewModel.settings.clockStyle) {
                         ForEach(ClockStyle.allCases, id: \.self) { style in
                             Text(style.displayName).tag(style)
                         }
                     }
 
-                    Toggle(isOn: $settings.clockShowDate) {
+                    Toggle(isOn: $viewModel.settings.clockShowDate) {
                         Label(L10n.Kiosk.Clock.showDate, systemSymbol: .calendar)
                     }
 
-                    Toggle(isOn: $settings.clockShowSeconds) {
+                    Toggle(isOn: $viewModel.settings.clockShowSeconds) {
                         Label(L10n.Kiosk.Clock.showSeconds, systemSymbol: .clock)
                     }
 
-                    Toggle(isOn: $settings.clockUse24HourFormat) {
+                    Toggle(isOn: $viewModel.settings.clockUse24HourFormat) {
                         Label(L10n.Kiosk.Clock._24hour, systemSymbol: .clock)
                     }
                 }
@@ -335,48 +260,6 @@ public struct KioskSettingsView: View {
             Text(L10n.Kiosk.Screensaver.section)
         } footer: {
             Text(L10n.Kiosk.Screensaver.pixelShiftFooter)
-        }
-    }
-
-    // MARK: - Authentication
-
-    private func attemptKioskExit() {
-        // Use persisted settings for auth checks, not local copy
-        // This prevents bypassing auth by disabling it in the form first
-        let authSettings = manager.settings
-
-        // If no authentication required, just exit
-        guard authSettings.requireDeviceAuthentication else {
-            manager.disableKioskMode()
-            return
-        }
-
-        let context = LAContext()
-        var error: NSError?
-
-        // Use device owner authentication (Face ID/Touch ID with passcode fallback)
-        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
-            // No authentication available on device, allow exit
-            manager.disableKioskMode()
-            return
-        }
-
-        let reason = L10n.Kiosk.AuthError.reason
-        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authError in
-            DispatchQueue.main.async {
-                if success {
-                    manager.disableKioskMode()
-                } else if let authError = authError as? LAError {
-                    switch authError.code {
-                    case .userCancel, .appCancel:
-                        // User cancelled, do nothing
-                        break
-                    default:
-                        authErrorMessage = authError.localizedDescription
-                        showingAuthError = true
-                    }
-                }
-            }
         }
     }
 }

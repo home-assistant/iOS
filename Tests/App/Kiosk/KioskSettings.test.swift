@@ -64,3 +64,38 @@ struct EnumDisplayNameTests {
         #expect(ScreenCorner.bottomRight.displayName == L10n.Kiosk.Corner.bottomRight)
     }
 }
+
+// MARK: - ScreensaverTimeout Tests
+
+struct ScreensaverTimeoutTests {
+    @Test func allCasesHaveCorrectIntervals() async throws {
+        #expect(ScreensaverTimeout.thirtySeconds.timeInterval == 30)
+        #expect(ScreensaverTimeout.oneMinute.timeInterval == 60)
+        #expect(ScreensaverTimeout.twoMinutes.timeInterval == 120)
+        #expect(ScreensaverTimeout.fiveMinutes.timeInterval == 300)
+        #expect(ScreensaverTimeout.tenMinutes.timeInterval == 600)
+        #expect(ScreensaverTimeout.fifteenMinutes.timeInterval == 900)
+        #expect(ScreensaverTimeout.thirtyMinutes.timeInterval == 1800)
+    }
+
+    @Test func allCasesHaveDisplayNames() async throws {
+        for timeout in ScreensaverTimeout.allCases {
+            #expect(!timeout.displayName.isEmpty)
+        }
+    }
+
+    @Test func caseCount() async throws {
+        #expect(ScreensaverTimeout.allCases.count == 7)
+    }
+
+    @Test func initFromValidInterval() async throws {
+        #expect(ScreensaverTimeout(from: 30) == .thirtySeconds)
+        #expect(ScreensaverTimeout(from: 300) == .fiveMinutes)
+        #expect(ScreensaverTimeout(from: 1800) == .thirtyMinutes)
+    }
+
+    @Test func initFromInvalidIntervalDefaultsToFiveMinutes() async throws {
+        #expect(ScreensaverTimeout(from: 999) == .fiveMinutes)
+        #expect(ScreensaverTimeout(from: 0) == .fiveMinutes)
+    }
+}

@@ -19,9 +19,10 @@ public struct KioskSettingsRecord: Codable, FetchableRecord, PersistableRecord {
             }
             if let record {
                 return record.settingsJSON
+            } else {
+                Current.Log.info("No saved kiosk settings found in GRDB, using defaults")
+                return KioskSettings()
             }
-            Current.Log.info("No saved kiosk settings found in GRDB, using defaults")
-            return KioskSettings()
         } catch {
             Current.Log.error("Failed to load kiosk settings from GRDB: \(error)")
             return KioskSettings()
@@ -106,11 +107,6 @@ public struct KioskSettings: Codable, Equatable {
     /// Clock style
     public var clockStyle: ClockStyle = .large
 
-    // MARK: - Wake Triggers
-
-    /// Wake screen on touch
-    public var wakeOnTouch: Bool = true
-
     // MARK: - Secret Exit Gesture
 
     /// Enable secret gesture to access kiosk settings (escape hatch)
@@ -126,9 +122,9 @@ public struct KioskSettings: Codable, Equatable {
 // MARK: - Enums
 
 public enum ScreensaverMode: String, Codable, CaseIterable {
-    case blank = "blank"
-    case dim = "dim"
-    case clock = "clock"
+    case blank
+    case dim
+    case clock
 
     public var displayName: String {
         switch self {
@@ -139,11 +135,50 @@ public enum ScreensaverMode: String, Codable, CaseIterable {
     }
 }
 
+public enum ScreensaverTimeout: CaseIterable {
+    case thirtySeconds
+    case oneMinute
+    case twoMinutes
+    case fiveMinutes
+    case tenMinutes
+    case fifteenMinutes
+    case thirtyMinutes
+
+    public var timeInterval: TimeInterval {
+        switch self {
+        case .thirtySeconds: return 30
+        case .oneMinute: return 60
+        case .twoMinutes: return 120
+        case .fiveMinutes: return 300
+        case .tenMinutes: return 600
+        case .fifteenMinutes: return 900
+        case .thirtyMinutes: return 1800
+        }
+    }
+
+    public var displayName: String {
+        switch self {
+        case .thirtySeconds: return L10n.Kiosk.Screensaver.Timeout._30sec
+        case .oneMinute: return L10n.Kiosk.Screensaver.Timeout._1min
+        case .twoMinutes: return L10n.Kiosk.Screensaver.Timeout._2min
+        case .fiveMinutes: return L10n.Kiosk.Screensaver.Timeout._5min
+        case .tenMinutes: return L10n.Kiosk.Screensaver.Timeout._10min
+        case .fifteenMinutes: return L10n.Kiosk.Screensaver.Timeout._15min
+        case .thirtyMinutes: return L10n.Kiosk.Screensaver.Timeout._30min
+        }
+    }
+
+    /// Initialize from a TimeInterval, defaulting to fiveMinutes if no match
+    public init(from interval: TimeInterval) {
+        self = Self.allCases.first { $0.timeInterval == interval } ?? .fiveMinutes
+    }
+}
+
 public enum ClockStyle: String, Codable, CaseIterable {
-    case large = "large"
-    case minimal = "minimal"
-    case analog = "analog"
-    case digital = "digital"
+    case large
+    case minimal
+    case analog
+    case digital
 
     public var displayName: String {
         switch self {

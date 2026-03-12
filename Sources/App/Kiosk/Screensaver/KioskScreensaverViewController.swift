@@ -178,17 +178,11 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
     }
 
     @objc private func handleTap() {
-        let manager = KioskModeManager.shared
-        if manager.settings.wakeOnTouch {
-            manager.wakeScreen(source: "touch")
-        }
+        KioskModeManager.shared.wakeScreen(source: "touch")
     }
 
     @objc private func handleSwipe() {
-        let manager = KioskModeManager.shared
-        if manager.settings.wakeOnTouch {
-            manager.wakeScreen(source: "swipe")
-        }
+        KioskModeManager.shared.wakeScreen(source: "swipe")
     }
 
     // MARK: - Screensaver Mode Views

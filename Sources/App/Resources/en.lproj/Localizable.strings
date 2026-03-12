@@ -1564,7 +1564,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.security.device_auth" = "Device Authentication";
 "kiosk.security.hide_status_bar" = "Hide Status Bar";
 "kiosk.security.prevent_autolock" = "Prevent Auto-Lock";
-"kiosk.security.wake_on_touch" = "Wake on Touch";
 "kiosk.security.secret_gesture" = "Secret Exit Gesture";
 "kiosk.security.gesture_corner" = "Exit Gesture Corner";
 "kiosk.security.taps_required" = "Taps Required: %d";
