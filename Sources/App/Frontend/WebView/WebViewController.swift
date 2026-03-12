@@ -67,10 +67,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Each navigation resets this to false so we can show the empty state
     var isConnected = false
 
-    // MARK: - Kiosk Mode Properties
-
-    var kioskHandler: KioskModeHandler?
-
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {

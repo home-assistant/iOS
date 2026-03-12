@@ -7,28 +7,24 @@ extension WebViewController {
     /// Setup kiosk mode integration with KioskModeManager
     /// Call this from viewDidLoad
     func setupKioskMode() {
-        let handler = KioskModeHandler(webViewController: self)
-        kioskHandler = handler
-        handler.setup()
+        KioskModeManager.shared.setup(using: self)
     }
 
     // MARK: - Status Bar & Home Indicator
 
-    /// Override in WebViewController to check kiosk mode
     var kioskPrefersStatusBarHidden: Bool {
-        kioskHandler?.prefersStatusBarHidden ?? false
+        KioskModeManager.shared.prefersStatusBarHidden
     }
 
-    /// Override in WebViewController to check kiosk mode
     var kioskPrefersHomeIndicatorAutoHidden: Bool {
-        kioskHandler?.prefersHomeIndicatorAutoHidden ?? false
+        KioskModeManager.shared.prefersHomeIndicatorAutoHidden
     }
 
     // MARK: - Touch Handling
 
-    /// Call this when user touches the screen to record activity
+    /// Record user touch activity to reset the screensaver idle timer
     /// Required because WKWebView consumes touch events before UIKit idle detection
     func recordKioskActivity() {
-        kioskHandler?.recordActivity()
+        KioskModeManager.shared.recordActivity(source: "touch")
     }
 }

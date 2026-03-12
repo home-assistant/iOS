@@ -1203,18 +1203,17 @@
 		42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E992E22F84600BDF5EF /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
-		42KIOSK0002000000000001 /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000001 /* KioskModeManager.swift */; };
-		42KIOSK0002000000000002 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000002 /* KioskSettings.swift */; };
-		42KIOSK0002000000000003 /* KioskConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000003 /* KioskConstants.swift */; };
-		42KIOSK0002000000000004 /* KioskSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000004 /* KioskSettingsView.swift */; };
-		42KIOSK0002000000000005 /* KioskScreensaverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000005 /* KioskScreensaverViewController.swift */; };
-		42KIOSK0002000000000006 /* KioskClockScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000006 /* KioskClockScreensaverView.swift */; };
-		42KIOSK0002000000000007 /* KioskSecretExitGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000007 /* KioskSecretExitGestureView.swift */; };
-		42KIOSK0002000000000008 /* WebViewController+Kiosk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000008 /* WebViewController+Kiosk.swift */; };
-		42KIOSK0002000000000009 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000009 /* KioskSettingsTable.swift */; };
-		42KIOSK000200000000000B /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK000100000000000A /* KioskSettings.test.swift */; };
-		42KIOSK000200000000000C /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK0001000000000009 /* KioskSettingsTable.swift */; };
-		42KIOSK000200000000000D /* KioskModeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK000100000000000D /* KioskModeHandler.swift */; };
+		2281600CB792D88059A71F4C /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00AE2FDC80CA2FFDFCA2B2B /* KioskModeManager.swift */; };
+		D46379541BA5FD96D6E7D328 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402432B9CC897C6278B08A79 /* KioskSettings.swift */; };
+		51B609B13F56C4F17CEF2BE4 /* KioskConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */; };
+		B6DDF8534A4176416CFAC79A /* KioskSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49767602CA2066683EC638F /* KioskSettingsView.swift */; };
+		E92E09E3A93650D56E3C5093 /* KioskScreensaverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CDCFDB29D283A7902A3ABE /* KioskScreensaverViewController.swift */; };
+		19F4C1F65664780F4E721699 /* KioskClockScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D793A057CBFD32530A7193 /* KioskClockScreensaverView.swift */; };
+		CB4D44CC6DBA5176155E157E /* KioskSecretExitGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */; };
+		12FC58D695EB7AF41673476E /* WebViewController+Kiosk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A39058730A6B3E876D8848 /* WebViewController+Kiosk.swift */; };
+		87ADC61008345747CABC2270 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
+		C574CE3276BCE901743FF8C9 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */; };
+		072BACCC5B2509E4AF06BFED /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
@@ -3008,17 +3007,16 @@
 		42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoList.swift; sourceTree = "<group>"; };
 		42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListProvider.swift; sourceTree = "<group>"; };
 		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
-		42KIOSK0001000000000001 /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
-		42KIOSK0001000000000002 /* KioskSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.swift; sourceTree = "<group>"; };
-		42KIOSK0001000000000003 /* KioskConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskConstants.swift; sourceTree = "<group>"; };
-		42KIOSK0001000000000004 /* KioskSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsView.swift; sourceTree = "<group>"; };
-		42KIOSK0001000000000005 /* KioskScreensaverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskScreensaverViewController.swift; sourceTree = "<group>"; };
-		42KIOSK0001000000000006 /* KioskClockScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskClockScreensaverView.swift; sourceTree = "<group>"; };
-		42KIOSK0001000000000007 /* KioskSecretExitGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSecretExitGestureView.swift; sourceTree = "<group>"; };
-		42KIOSK0001000000000008 /* WebViewController+Kiosk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Kiosk.swift"; sourceTree = "<group>"; };
-		42KIOSK0001000000000009 /* KioskSettingsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsTable.swift; sourceTree = "<group>"; };
-		42KIOSK000100000000000A /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
-		42KIOSK000100000000000D /* KioskModeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeHandler.swift; sourceTree = "<group>"; };
+		C00AE2FDC80CA2FFDFCA2B2B /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
+		402432B9CC897C6278B08A79 /* KioskSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.swift; sourceTree = "<group>"; };
+		825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskConstants.swift; sourceTree = "<group>"; };
+		F49767602CA2066683EC638F /* KioskSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsView.swift; sourceTree = "<group>"; };
+		62CDCFDB29D283A7902A3ABE /* KioskScreensaverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskScreensaverViewController.swift; sourceTree = "<group>"; };
+		38D793A057CBFD32530A7193 /* KioskClockScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskClockScreensaverView.swift; sourceTree = "<group>"; };
+		FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSecretExitGestureView.swift; sourceTree = "<group>"; };
+		09A39058730A6B3E876D8848 /* WebViewController+Kiosk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Kiosk.swift"; sourceTree = "<group>"; };
+		14444A34DA125693568C7035 /* KioskSettingsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsTable.swift; sourceTree = "<group>"; };
+		EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
 		442182FC55CEB695729D80CA /* Pods-watchOS-Shared-watchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-Shared-watchOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-Shared-watchOS/Pods-watchOS-Shared-watchOS.release.xcconfig"; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -4717,7 +4715,7 @@
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
 				4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */,
 				4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */,
-				42KIOSK0001000000000009 /* KioskSettingsTable.swift */,
+				14444A34DA125693568C7035 /* KioskSettingsTable.swift */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -5838,7 +5836,7 @@
 			children = (
 				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
 				4228CFFE2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift */,
-				42KIOSK0001000000000008 /* WebViewController+Kiosk.swift */,
+				09A39058730A6B3E876D8848 /* WebViewController+Kiosk.swift */,
 				4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */,
 				42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */,
 				4206FFB52DAD58520087626C /* WebViewGestureHandler.swift */,
@@ -6374,49 +6372,48 @@
 			path = TodoList;
 			sourceTree = "<group>";
 		};
-		42KIOSK0003000000000001 /* Kiosk */ = {
+		5F7F99C4E4A98B841C0969B6 /* Kiosk */ = {
 			isa = PBXGroup;
 			children = (
-				42KIOSK0001000000000003 /* KioskConstants.swift */,
-				42KIOSK000100000000000D /* KioskModeHandler.swift */,
-				42KIOSK0001000000000001 /* KioskModeManager.swift */,
-				42KIOSK0001000000000002 /* KioskSettings.swift */,
-				42KIOSK0003000000000004 /* Overlay */,
-				42KIOSK0003000000000003 /* Screensaver */,
-				42KIOSK0003000000000002 /* Settings */,
+				825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */,
+				C00AE2FDC80CA2FFDFCA2B2B /* KioskModeManager.swift */,
+				402432B9CC897C6278B08A79 /* KioskSettings.swift */,
+				82F2464E2BC5B4C6E667087B /* Overlay */,
+				4C1A049B16335C08AECDAAC2 /* Screensaver */,
+				D6500FB6C2035F49B7421ED9 /* Settings */,
 			);
 			path = Kiosk;
 			sourceTree = "<group>";
 		};
-		42KIOSK0003000000000002 /* Settings */ = {
+		D6500FB6C2035F49B7421ED9 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				42KIOSK0001000000000004 /* KioskSettingsView.swift */,
+				F49767602CA2066683EC638F /* KioskSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		42KIOSK0003000000000003 /* Screensaver */ = {
+		4C1A049B16335C08AECDAAC2 /* Screensaver */ = {
 			isa = PBXGroup;
 			children = (
-				42KIOSK0001000000000006 /* KioskClockScreensaverView.swift */,
-				42KIOSK0001000000000005 /* KioskScreensaverViewController.swift */,
+				38D793A057CBFD32530A7193 /* KioskClockScreensaverView.swift */,
+				62CDCFDB29D283A7902A3ABE /* KioskScreensaverViewController.swift */,
 			);
 			path = Screensaver;
 			sourceTree = "<group>";
 		};
-		42KIOSK0003000000000004 /* Overlay */ = {
+		82F2464E2BC5B4C6E667087B /* Overlay */ = {
 			isa = PBXGroup;
 			children = (
-				42KIOSK0001000000000007 /* KioskSecretExitGestureView.swift */,
+				FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */,
 			);
 			path = Overlay;
 			sourceTree = "<group>";
 		};
-		42KIOSK0003000000000005 /* Kiosk */ = {
+		06D62F8A8D381DAFB70C6B31 /* Kiosk */ = {
 			isa = PBXGroup;
 			children = (
-				42KIOSK000100000000000A /* KioskSettings.test.swift */,
+				EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */,
 			);
 			path = Kiosk;
 			sourceTree = "<group>";
@@ -6783,7 +6780,7 @@
 				11EFCDD424F5FA7E00314D85 /* Scenes */,
 				11AF1ED82528FBAA00AAE364 /* Onboarding */,
 				11AD2E2A2528FDB700FBC437 /* Frontend */,
-				42KIOSK0003000000000001 /* Kiosk */,
+				5F7F99C4E4A98B841C0969B6 /* Kiosk */,
 				42462E6B2DA3D05500ECC8A7 /* PermissionScreen */,
 				42B94BD92B9606CD00DEE060 /* Assist */,
 				42FCCFDD2B9B1AB00057783F /* BarcodeScanner */,
@@ -6811,7 +6808,7 @@
 				4272B9A72CDCE140008CC262 /* CarPlay */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 				42E3B8BB2D8ACDC100F5D084 /* Extensions */,
-				42KIOSK0003000000000005 /* Kiosk */,
+				06D62F8A8D381DAFB70C6B31 /* Kiosk */,
 				119C786625CF845800D41734 /* LocalizedStrings.test.swift */,
 				424151FE2CD90CA200D7A6F9 /* MagicItem */,
 				42196AD92DA5AF7A00BD501E /* Onboarding */,
@@ -9518,15 +9515,14 @@
 				42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */,
 				4206FFBA2DAD58DB0087626C /* ConnectionInfo+WebView.swift in Sources */,
 				42C0FD0A2DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift in Sources */,
-				42KIOSK0002000000000001 /* KioskModeManager.swift in Sources */,
-				42KIOSK0002000000000002 /* KioskSettings.swift in Sources */,
-				42KIOSK0002000000000003 /* KioskConstants.swift in Sources */,
-				42KIOSK0002000000000004 /* KioskSettingsView.swift in Sources */,
-				42KIOSK0002000000000005 /* KioskScreensaverViewController.swift in Sources */,
-				42KIOSK0002000000000006 /* KioskClockScreensaverView.swift in Sources */,
-				42KIOSK0002000000000007 /* KioskSecretExitGestureView.swift in Sources */,
-				42KIOSK0002000000000008 /* WebViewController+Kiosk.swift in Sources */,
-				42KIOSK000200000000000D /* KioskModeHandler.swift in Sources */,
+				2281600CB792D88059A71F4C /* KioskModeManager.swift in Sources */,
+				D46379541BA5FD96D6E7D328 /* KioskSettings.swift in Sources */,
+				51B609B13F56C4F17CEF2BE4 /* KioskConstants.swift in Sources */,
+				B6DDF8534A4176416CFAC79A /* KioskSettingsView.swift in Sources */,
+				E92E09E3A93650D56E3C5093 /* KioskScreensaverViewController.swift in Sources */,
+				19F4C1F65664780F4E721699 /* KioskClockScreensaverView.swift in Sources */,
+				CB4D44CC6DBA5176155E157E /* KioskSecretExitGestureView.swift in Sources */,
+				12FC58D695EB7AF41673476E /* WebViewController+Kiosk.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9606,7 +9602,7 @@
 				11A71C7324A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift in Sources */,
 				429481EB2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
-				42KIOSK000200000000000B /* KioskSettings.test.swift in Sources */,
+				C574CE3276BCE901743FF8C9 /* KioskSettings.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9695,7 +9691,7 @@
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				4298587F2EB1025E00E33710 /* LocationManager.swift in Sources */,
 				420CFC6A2D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */,
-				42KIOSK000200000000000C /* KioskSettingsTable.swift in Sources */,
+				072BACCC5B2509E4AF06BFED /* KioskSettingsTable.swift in Sources */,
 				1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */,
 				426D9C752C9C60B000F278AF /* ControlEntityProvider.swift in Sources */,
@@ -10232,7 +10228,7 @@
 				D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */,
 				118261F724F8D6B0000795C6 /* SensorProviderDependencies.swift in Sources */,
 				11C8E8AE24F3778E003E7F89 /* DeviceWrapper.swift in Sources */,
-				42KIOSK0002000000000009 /* KioskSettingsTable.swift in Sources */,
+				87ADC61008345747CABC2270 /* KioskSettingsTable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

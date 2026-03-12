@@ -1698,6 +1698,14 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "kiosk.active.title") }
     }
     public enum Auth {
+      /// Authenticate
+      public static var authenticateButton: String { return L10n.tr("Localizable", "kiosk.auth.authenticate_button") }
+      /// Authentication is required to access kiosk settings. Verify your identity to continue.
+      public static var gateDescription: String { return L10n.tr("Localizable", "kiosk.auth.gate_description") }
+      /// Kiosk Mode Active
+      public static var gateTitle: String { return L10n.tr("Localizable", "kiosk.auth.gate_title") }
+      /// Go Back
+      public static var goBackButton: String { return L10n.tr("Localizable", "kiosk.auth.go_back_button") }
       /// Authentication Required
       public static var `required`: String { return L10n.tr("Localizable", "kiosk.auth.required") }
       /// Try Again

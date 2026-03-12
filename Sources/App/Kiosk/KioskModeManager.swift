@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Shared
+import SwiftUI
 import UIKit
 
 // MARK: - Kiosk Mode Observer Protocol
@@ -32,7 +33,7 @@ public extension KioskModeObserver {
 // MARK: - Kiosk Mode Manager
 
 /// Central manager for kiosk mode functionality
-/// Coordinates screen state, screensaver, and brightness control
+/// Coordinates screen state, screensaver, brightness control, and WebViewController integration
 @MainActor
 public final class KioskModeManager: ObservableObject {
     // MARK: - Singleton
@@ -68,14 +69,19 @@ public final class KioskModeManager: ObservableObject {
     @Published public private(set) var lastWakeSource: String = "launch"
 
     /// Last user activity timestamp
-    @Published public private(set) var lastActivityTime: Date = .init()
+    @Published public private(set) var lastActivityTime: Date = Current.date()
 
     /// Pixel shift trigger counter - observe this in SwiftUI to trigger pixel shift
     @Published public private(set) var pixelShiftTrigger: Int = 0
 
+    // MARK: - WebViewController Integration
+
+    weak var webViewController: WebViewControllerProtocol?
+    private var screensaverController: KioskScreensaverViewController?
+    private var secretExitGestureController: KioskSecretExitGestureViewController?
+
     // MARK: - Private Properties
 
-    private var cancellables = Set<AnyCancellable>()
     private var idleTimer: Timer?
     private var pixelShiftTimer: Timer?
     private var originalBrightness: Float?
@@ -93,20 +99,6 @@ public final class KioskModeManager: ObservableObject {
 
     /// Registered observers
     private var observers: [WeakObserver] = []
-
-    // MARK: - Callbacks
-
-    /// Called when kiosk mode wants to refresh the current page
-    public var onRefresh: (() -> Void)?
-
-    /// Called when screensaver should be shown
-    public var onShowScreensaver: ((ScreensaverMode) -> Void)?
-
-    /// Called when screensaver should be hidden
-    public var onHideScreensaver: (() -> Void)?
-
-    /// Called when kiosk mode is enabled/disabled (for UI lockdown)
-    public var onKioskModeChange: ((Bool) -> Void)?
 
     // MARK: - Observer Management
 
@@ -160,7 +152,7 @@ public final class KioskModeManager: ObservableObject {
 
     private init() {
         self.settings = Self.loadSettings()
-        setupObservers()
+        setupAppLifecycleObservers()
         Current.Log.info("KioskModeManager initialized")
     }
 
@@ -168,9 +160,37 @@ public final class KioskModeManager: ObservableObject {
         idleTimer?.invalidate()
         pixelShiftTimer?.invalidate()
         saveDebounceTimer?.invalidate()
-        cancellables.forEach { $0.cancel() }
-        cancellables.removeAll()
         NotificationCenter.default.removeObserver(self)
+    }
+
+    // MARK: - WebViewController Setup
+
+    /// Setup kiosk mode integration with the WebViewController
+    /// Call this from WebViewController.viewDidLoad
+    func setup(using webViewController: WebViewControllerProtocol) {
+        self.webViewController = webViewController
+
+        guard let viewController = webViewController as? UIViewController else { return }
+
+        // Setup secret exit gesture overlay (always available when kiosk mode is active)
+        setupSecretExitGesture(in: viewController)
+
+        // Apply initial state if already in kiosk mode
+        if isKioskModeActive {
+            updateKioskModeLockdown(enabled: true)
+        }
+    }
+
+    // MARK: - Status Bar & Home Indicator
+
+    /// Whether kiosk mode wants the status bar hidden
+    var prefersStatusBarHidden: Bool {
+        isKioskModeActive && settings.hideStatusBar
+    }
+
+    /// Whether kiosk mode wants the home indicator hidden
+    var prefersHomeIndicatorAutoHidden: Bool {
+        isKioskModeActive
     }
 
     // MARK: - Public Methods
@@ -202,7 +222,7 @@ public final class KioskModeManager: ObservableObject {
         applyBrightness()
         startIdleTimer()
 
-        onKioskModeChange?(true)
+        updateKioskModeLockdown(enabled: true)
         notifyObserversOfModeChange()
     }
 
@@ -225,9 +245,11 @@ public final class KioskModeManager: ObservableObject {
             UIScreen.main.brightness = CGFloat(original)
         }
 
-        // Re-enable iOS auto-lock
-        UIApplication.shared.isIdleTimerDisabled = false
-        Current.Log.info("Screen auto-lock restored")
+        // Re-enable iOS auto-lock if kiosk mode had disabled it
+        if settings.preventAutoLock {
+            UIApplication.shared.isIdleTimerDisabled = false
+            Current.Log.info("Screen auto-lock restored")
+        }
 
         // Stop timers
         stopIdleTimer()
@@ -236,7 +258,7 @@ public final class KioskModeManager: ObservableObject {
         // Hide screensaver if active
         hideScreensaver(source: "kiosk_disabled")
 
-        onKioskModeChange?(false)
+        updateKioskModeLockdown(enabled: false)
         notifyObserversOfModeChange()
     }
 
@@ -333,7 +355,7 @@ public final class KioskModeManager: ObservableObject {
     /// Refresh current page
     public func refresh() {
         Current.Log.info("Refreshing current page")
-        onRefresh?()
+        webViewController?.refresh()
     }
 
     /// Called when app returns to foreground
@@ -346,7 +368,7 @@ public final class KioskModeManager: ObservableObject {
         appState = .background
     }
 
-    // MARK: - Screensaver
+    // MARK: - Screensaver State
 
     private func showScreensaver(mode: ScreensaverMode) {
         activeScreensaverMode = mode
@@ -374,7 +396,7 @@ public final class KioskModeManager: ObservableObject {
             startPixelShiftTimer()
         }
 
-        onShowScreensaver?(mode)
+        presentScreensaverViewController(mode: mode)
         notifyObserversOfScreenStateChange()
     }
 
@@ -385,7 +407,126 @@ public final class KioskModeManager: ObservableObject {
         activeScreensaverMode = nil
         stopPixelShiftTimer()
 
-        onHideScreensaver?()
+        dismissScreensaverViewController()
+    }
+
+    // MARK: - Screensaver View Controller
+
+    private func presentScreensaverViewController(mode: ScreensaverMode) {
+        guard let parentVC = webViewController as? UIViewController else { return }
+
+        // Dismiss any existing screensaver first
+        if let existing = screensaverController {
+            existing.dismiss(animated: false)
+            screensaverController = nil
+        }
+
+        Current.Log.info("Showing screensaver: \(mode.rawValue)")
+
+        let controller = KioskScreensaverViewController()
+        screensaverController = controller
+
+        controller.onShowSettings = { [weak self] in
+            self?.showKioskSettings()
+        }
+
+        controller.loadViewIfNeeded()
+        controller.configure(mode: mode)
+        controller.modalPresentationStyle = .overFullScreen
+        controller.modalTransitionStyle = .crossDissolve
+        parentVC.present(controller, animated: true)
+    }
+
+    private func dismissScreensaverViewController() {
+        guard let controller = screensaverController else { return }
+
+        Current.Log.info("Hiding screensaver")
+        controller.dismiss(animated: true) { [weak self] in
+            self?.screensaverController = nil
+        }
+    }
+
+    // MARK: - Secret Exit Gesture
+
+    private func setupSecretExitGesture(in parentController: UIViewController) {
+        let controller = KioskSecretExitGestureViewController()
+        secretExitGestureController = controller
+
+        controller.onShowSettings = { [weak self] in
+            self?.showKioskSettings()
+        }
+
+        parentController.addChild(controller)
+        parentController.view.addSubview(controller.view)
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            controller.view.topAnchor.constraint(equalTo: parentController.view.topAnchor),
+            controller.view.bottomAnchor.constraint(equalTo: parentController.view.bottomAnchor),
+            controller.view.leadingAnchor.constraint(equalTo: parentController.view.leadingAnchor),
+            controller.view.trailingAnchor.constraint(equalTo: parentController.view.trailingAnchor),
+        ])
+
+        controller.didMove(toParent: parentController)
+    }
+
+    // MARK: - UI Lockdown
+
+    private func updateKioskModeLockdown(enabled: Bool) {
+        guard let viewController = webViewController as? WebViewController else { return }
+
+        // Update iOS system status bar and home indicator visibility
+        if let navController = viewController.navigationController {
+            navController.setNeedsStatusBarAppearanceUpdate()
+            navController.setNeedsUpdateOfHomeIndicatorAutoHidden()
+        }
+        viewController.setNeedsStatusBarAppearanceUpdate()
+        viewController.setNeedsUpdateOfHomeIndicatorAutoHidden()
+
+        // Hide/show the custom status bar background view
+        if let statusBarView = viewController.statusBarView {
+            let shouldHide = enabled && settings.hideStatusBar
+            statusBarView.isHidden = shouldHide
+        }
+    }
+
+    // MARK: - Settings UI
+
+    private func showKioskSettings() {
+        guard webViewController != nil else { return }
+
+        // Dismiss screensaver first if it's showing (settings should appear over WebView)
+        if let screensaver = screensaverController {
+            screensaver.dismiss(animated: false) { [weak self] in
+                self?.screensaverController = nil
+                self?.presentSettingsModal()
+            }
+        } else {
+            presentSettingsModal()
+        }
+    }
+
+    private func presentSettingsModal() {
+        Current.Log.info("Showing kiosk settings")
+
+        let settingsView = KioskSettingsView(onDismiss: { [weak self] in
+            guard let webVC = self?.webViewController as? UIViewController else { return }
+            webVC.dismiss(animated: true) { [weak self] in
+                self?.refreshStatusBarAppearance()
+            }
+        })
+        let hostingController = UIHostingController(rootView: settingsView)
+        let navController = UINavigationController(rootViewController: hostingController)
+        webViewController?.presentOverlayController(controller: navController, animated: true)
+    }
+
+    /// Force a complete status bar appearance refresh after modal dismissal
+    private func refreshStatusBarAppearance() {
+        guard let viewController = webViewController as? WebViewController else { return }
+        viewController.navigationController?.setNeedsStatusBarAppearanceUpdate()
+        viewController.setNeedsStatusBarAppearanceUpdate()
+        viewController.navigationController?.setNeedsUpdateOfHomeIndicatorAutoHidden()
+        viewController.setNeedsUpdateOfHomeIndicatorAutoHidden()
     }
 
     // MARK: - Idle Timer
@@ -456,7 +597,7 @@ public final class KioskModeManager: ObservableObject {
     // MARK: - Settings Persistence
 
     private static func loadSettings() -> KioskSettings {
-        KioskSettingsRecord.loadSettings()
+        KioskSettingsRecord.settings()
     }
 
     private func saveSettings() {
@@ -465,33 +606,51 @@ public final class KioskModeManager: ObservableObject {
         saveDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
             Task { @MainActor [weak self] in
                 guard let self else { return }
-                KioskSettingsRecord.saveSettings(settings)
+                KioskSettingsRecord.save(settings)
             }
         }
     }
 
     private func settingsDidChange(from oldValue: KioskSettings, to newValue: KioskSettings) {
+        guard isKioskModeActive else {
+            notifyObserversOfSettingsChange()
+            return
+        }
+
         // Reapply brightness if setting changed
         if oldValue.manualBrightness != newValue.manualBrightness {
-            if isKioskModeActive {
-                applyBrightness()
-            }
+            applyBrightness()
         }
 
         // Restart idle timer if timeout changed
-        if oldValue.screensaverTimeout != newValue.screensaverTimeout {
-            if isKioskModeActive, screenState == .on {
-                startIdleTimer()
+        if oldValue.screensaverTimeout != newValue.screensaverTimeout,
+           screenState == .on {
+            startIdleTimer()
+        }
+
+        // Apply preventAutoLock changes immediately
+        if oldValue.preventAutoLock != newValue.preventAutoLock {
+            UIApplication.shared.isIdleTimerDisabled = newValue.preventAutoLock
+        }
+
+        // Apply screensaver enabled/disabled changes immediately
+        if oldValue.screensaverEnabled != newValue.screensaverEnabled {
+            if newValue.screensaverEnabled {
+                if screenState == .on {
+                    startIdleTimer()
+                }
+            } else {
+                stopIdleTimer()
             }
         }
 
+        updateKioskModeLockdown(enabled: true)
         notifyObserversOfSettingsChange()
     }
 
-    // MARK: - Observers
+    // MARK: - App Lifecycle Observers
 
-    private func setupObservers() {
-        // Observe app lifecycle
+    private func setupAppLifecycleObservers() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleAppDidBecomeActive),

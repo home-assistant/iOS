@@ -1555,6 +1555,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.auth_error.reason" = "Authenticate to exit kiosk mode";
 "kiosk.auth.required" = "Authentication Required";
 "kiosk.auth.try_again" = "Try Again";
+"kiosk.auth.gate_title" = "Kiosk Mode Active";
+"kiosk.auth.gate_description" = "Authentication is required to access kiosk settings. Verify your identity to continue.";
+"kiosk.auth.authenticate_button" = "Authenticate";
+"kiosk.auth.go_back_button" = "Go Back";
 
 "kiosk.security.section" = "Security & Display";
 "kiosk.security.device_auth" = "Device Authentication";

@@ -115,11 +115,12 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
 
     // MARK: - Public Methods
 
-    /// Show the screensaver with the specified mode
-    public func show(mode: ScreensaverMode) {
+    /// Configure the screensaver content for the specified mode
+    /// Call before presenting — the modal's crossDissolve transition handles fade-in
+    public func configure(mode: ScreensaverMode) {
         guard currentMode != mode else { return }
 
-        Current.Log.info("Showing screensaver: \(mode.rawValue)")
+        Current.Log.info("Configuring screensaver: \(mode.rawValue)")
         currentMode = mode
 
         // Remove existing content
@@ -137,26 +138,6 @@ public final class KioskScreensaverViewController: UIViewController, UIGestureRe
 
         case .clock:
             showClockScreensaver()
-        }
-
-        // Fade in
-        view.alpha = 0
-        UIView.animate(withDuration: KioskConstants.Animation.slow) {
-            self.view.alpha = 1
-        }
-    }
-
-    /// Hide the screensaver
-    public func hide() {
-        Current.Log.info("Hiding screensaver")
-
-        UIView.animate(withDuration: KioskConstants.Animation.standard) {
-            self.view.alpha = 0
-        } completion: { _ in
-            self.currentMode = nil
-            self.hostingController?.view.removeFromSuperview()
-            self.hostingController?.removeFromParent()
-            self.hostingController = nil
         }
     }
 

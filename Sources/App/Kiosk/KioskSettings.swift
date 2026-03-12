@@ -5,8 +5,6 @@ import UIKit
 
 // MARK: - GRDB Record Wrapper
 
-/// GRDB record wrapper for persisting KioskSettings
-/// Uses .jsonText column so GRDB handles Codable encoding/decoding automatically
 public struct KioskSettingsRecord: Codable, FetchableRecord, PersistableRecord {
     public static var databaseTableName: String { GRDBDatabaseTable.kioskSettings.rawValue }
     public static let recordId = "kiosk-settings"
@@ -14,11 +12,10 @@ public struct KioskSettingsRecord: Codable, FetchableRecord, PersistableRecord {
     public var id: String = KioskSettingsRecord.recordId
     public var settingsJSON: KioskSettings = .init()
 
-    /// Load settings from database
-    public static func loadSettings() -> KioskSettings {
+    public static func settings() -> KioskSettings {
         do {
             let record: KioskSettingsRecord? = try Current.database().read { db in
-                try KioskSettingsRecord.fetchOne(db)
+                try KioskSettingsRecord.fetchOne(db, key: KioskSettingsRecord.recordId)
             }
             if let record {
                 return record.settingsJSON
@@ -31,8 +28,7 @@ public struct KioskSettingsRecord: Codable, FetchableRecord, PersistableRecord {
         }
     }
 
-    /// Save settings to database
-    public static func saveSettings(_ settings: KioskSettings) {
+    public static func save(_ settings: KioskSettings) {
         do {
             var record = KioskSettingsRecord()
             record.settingsJSON = settings
@@ -121,7 +117,7 @@ public struct KioskSettings: Codable, Equatable {
     public var secretExitGestureEnabled: Bool = true
 
     /// Corner for secret exit gesture
-    public var secretExitGestureCorner: ScreenCorner = .topRight
+    public var secretExitGestureCorner: ScreenCorner = .bottomRight
 
     /// Number of taps required for secret exit gesture
     public var secretExitGestureTaps: Int = 3
@@ -162,22 +158,22 @@ public enum ClockStyle: String, Codable, CaseIterable {
 // MARK: - Screen State (for sensors)
 
 public enum ScreenState: String, Codable {
-    case on = "on"
-    case dimmed = "dimmed"
-    case screensaver = "screensaver"
-    case off = "off"
+    case on
+    case dimmed
+    case screensaver
+    case off
 }
 
 public enum AppState: String, Codable {
-    case active = "active"
-    case background = "background"
+    case active
+    case background
 }
 
 public enum ScreenCorner: String, Codable, CaseIterable {
-    case topLeft = "top_left"
-    case topRight = "top_right"
-    case bottomLeft = "bottom_left"
-    case bottomRight = "bottom_right"
+    case topLeft
+    case topRight
+    case bottomLeft
+    case bottomRight
 
     public var displayName: String {
         switch self {

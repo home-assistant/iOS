@@ -37,7 +37,7 @@ enum KioskDateFormatters {
 
     static let dateDisplay: DateFormatter = {
         let f = DateFormatter()
-        f.dateFormat = "EEEE, MMMM d"
+        f.setLocalizedDateFormatFromTemplate("EEEE MMMM d")
         return f
     }()
 }
@@ -67,7 +67,7 @@ public struct KioskClockScreensaverView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .background(Color.black.ignoresSafeArea())
+        .background(Color.black)
         .onReceive(timeTimer) { _ in
             currentTime = Current.date()
         }

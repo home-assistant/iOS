@@ -13,25 +13,22 @@ public struct KioskSettingsView: View {
     @State private var isAuthenticated = false
     @State private var showingAuthError = false
     @State private var authErrorMessage = ""
-    /// Captured at init time - whether auth is required to access settings
-    /// This is set once and doesn't change even if settings are modified during the session
-    @State private var authRequired: Bool
 
     /// Explicit dismiss closure for UIKit interop (when presented via UINavigationController)
     /// When nil, falls back to SwiftUI's @Environment(\.dismiss) for navigation contexts
     private let onDismiss: (() -> Void)?
+
+    /// Whether authentication is required to access settings (derived dynamically)
+    private var authRequired: Bool {
+        manager.isKioskModeActive && manager.settings.requireDeviceAuthentication
+    }
 
     /// Initialize with optional explicit dismiss closure
     /// - Parameter onDismiss: Closure called when the view should be dismissed.
     ///   If nil, uses SwiftUI's environment dismiss (for NavigationLink contexts).
     ///   Pass explicit closure when presenting via UIKit's UINavigationController.
     public init(onDismiss: (() -> Void)? = nil) {
-        let mgr = KioskModeManager.shared
-        _settings = State(initialValue: mgr.settings)
-        // Capture auth requirement at init time based on current kiosk state
-        _authRequired = State(
-            initialValue: mgr.isKioskModeActive && mgr.settings.requireDeviceAuthentication
-        )
+        _settings = State(initialValue: KioskModeManager.shared.settings)
         self.onDismiss = onDismiss
     }
 
@@ -50,9 +47,6 @@ public struct KioskSettingsView: View {
             coreSettingsSection
             brightnessSection
             screensaverSection
-            if settings.screensaverEnabled, settings.screensaverMode == .clock {
-                clockOptionsSection
-            }
         }
         .navigationTitle(L10n.Kiosk.title)
         .toolbar {
@@ -65,40 +59,47 @@ public struct KioskSettingsView: View {
         .disabled(authRequired && !isAuthenticated)
         .overlay {
             if authRequired, !isAuthenticated {
-                ZStack {
-                    Color.black.opacity(0.5)
-                        .ignoresSafeArea()
+                VStack(spacing: DesignSystem.Spaces.three) {
+                    Spacer()
 
-                    VStack(spacing: 20) {
-                        Image(systemSymbol: .lockFill)
-                            .font(.system(size: 48))
-                            .foregroundColor(.white)
+                    Image(systemSymbol: .lockFill)
+                        .font(.system(size: 64))
+                        .foregroundColor(.secondary)
 
-                        Text(L10n.Kiosk.Auth.required)
-                            .font(.headline)
-                            .foregroundColor(.white)
+                    Text(L10n.Kiosk.Auth.gateTitle)
+                        .font(DesignSystem.Font.largeTitle.bold())
+                        .multilineTextAlignment(.center)
 
-                        HStack(spacing: 16) {
-                            Button {
-                                dismissView()
-                            } label: {
-                                Text(L10n.cancelLabel)
-                                    .frame(minWidth: 100)
-                            }
-                            .buttonStyle(.bordered)
+                    Text(L10n.Kiosk.Auth.gateDescription)
+                        .font(DesignSystem.Font.body)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, DesignSystem.Spaces.two)
 
-                            Button {
-                                authenticateForSettings()
-                            } label: {
-                                Text(L10n.Kiosk.Auth.tryAgain)
-                                    .frame(minWidth: 100)
-                            }
-                            .buttonStyle(.borderedProminent)
-                        }
-                    }
-                    .padding(32)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                    Spacer()
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .safeAreaInset(edge: .bottom) {
+                    VStack(spacing: DesignSystem.Spaces.one) {
+                        Button {
+                            authenticateForSettings()
+                        } label: {
+                            Text(L10n.Kiosk.Auth.authenticateButton)
+                        }
+                        .buttonStyle(.primaryButton)
+
+                        Button {
+                            dismissView()
+                        } label: {
+                            Text(L10n.Kiosk.Auth.goBackButton)
+                        }
+                        .buttonStyle(.secondaryButton)
+                        .tint(Color.haPrimary)
+                    }
+                    .padding([.horizontal, .top], DesignSystem.Spaces.two)
+                    .background(Color(uiColor: .systemBackground).opacity(0.95))
+                }
+                .background(Color(uiColor: .systemBackground))
             }
         }
         .onAppear {
@@ -309,37 +310,31 @@ public struct KioskSettingsView: View {
                 Toggle(isOn: $settings.pixelShiftEnabled) {
                     Label(L10n.Kiosk.Screensaver.pixelShift, systemSymbol: .arrowLeftArrowRight)
                 }
+
+                if settings.screensaverMode == .clock {
+                    Picker(L10n.Kiosk.Clock.style, selection: $settings.clockStyle) {
+                        ForEach(ClockStyle.allCases, id: \.self) { style in
+                            Text(style.displayName).tag(style)
+                        }
+                    }
+
+                    Toggle(isOn: $settings.clockShowDate) {
+                        Label(L10n.Kiosk.Clock.showDate, systemSymbol: .calendar)
+                    }
+
+                    Toggle(isOn: $settings.clockShowSeconds) {
+                        Label(L10n.Kiosk.Clock.showSeconds, systemSymbol: .clock)
+                    }
+
+                    Toggle(isOn: $settings.clockUse24HourFormat) {
+                        Label(L10n.Kiosk.Clock._24hour, systemSymbol: .clock)
+                    }
+                }
             }
         } header: {
             Text(L10n.Kiosk.Screensaver.section)
         } footer: {
             Text(L10n.Kiosk.Screensaver.pixelShiftFooter)
-        }
-    }
-
-    // MARK: - Clock Options Section
-
-    private var clockOptionsSection: some View {
-        Section {
-            Picker(L10n.Kiosk.Clock.style, selection: $settings.clockStyle) {
-                ForEach(ClockStyle.allCases, id: \.self) { style in
-                    Text(style.displayName).tag(style)
-                }
-            }
-
-            Toggle(isOn: $settings.clockShowDate) {
-                Label(L10n.Kiosk.Clock.showDate, systemSymbol: .calendar)
-            }
-
-            Toggle(isOn: $settings.clockShowSeconds) {
-                Label(L10n.Kiosk.Clock.showSeconds, systemSymbol: .clock)
-            }
-
-            Toggle(isOn: $settings.clockUse24HourFormat) {
-                Label(L10n.Kiosk.Clock._24hour, systemSymbol: .clock)
-            }
-        } header: {
-            Text(L10n.Kiosk.Clock.section)
         }
     }
 

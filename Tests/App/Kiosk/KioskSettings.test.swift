@@ -1,5 +1,6 @@
 import Foundation
 @testable import HomeAssistant
+import Shared
 import Testing
 
 // MARK: - KioskSettings Codable Tests
@@ -44,22 +45,22 @@ struct KioskSettingsCodableTests {
 
 struct EnumDisplayNameTests {
     @Test func screensaverModeDisplayNames() async throws {
-        #expect(ScreensaverMode.blank.displayName == "Blank")
-        #expect(ScreensaverMode.dim.displayName == "Dim")
-        #expect(ScreensaverMode.clock.displayName == "Clock")
+        #expect(ScreensaverMode.blank.displayName == L10n.Kiosk.Screensaver.Mode.blank)
+        #expect(ScreensaverMode.dim.displayName == L10n.Kiosk.Screensaver.Mode.dim)
+        #expect(ScreensaverMode.clock.displayName == L10n.Kiosk.Screensaver.Mode.clock)
     }
 
     @Test func clockStyleDisplayNames() async throws {
-        #expect(ClockStyle.large.displayName == "Large")
-        #expect(ClockStyle.minimal.displayName == "Minimal")
-        #expect(ClockStyle.analog.displayName == "Analog")
-        #expect(ClockStyle.digital.displayName == "Digital")
+        #expect(ClockStyle.large.displayName == L10n.Kiosk.Clock.Style.large)
+        #expect(ClockStyle.minimal.displayName == L10n.Kiosk.Clock.Style.minimal)
+        #expect(ClockStyle.analog.displayName == L10n.Kiosk.Clock.Style.analog)
+        #expect(ClockStyle.digital.displayName == L10n.Kiosk.Clock.Style.digital)
     }
 
     @Test func screenCornerDisplayNames() async throws {
-        #expect(ScreenCorner.topLeft.displayName == "Top Left")
-        #expect(ScreenCorner.topRight.displayName == "Top Right")
-        #expect(ScreenCorner.bottomLeft.displayName == "Bottom Left")
-        #expect(ScreenCorner.bottomRight.displayName == "Bottom Right")
+        #expect(ScreenCorner.topLeft.displayName == L10n.Kiosk.Corner.topLeft)
+        #expect(ScreenCorner.topRight.displayName == L10n.Kiosk.Corner.topRight)
+        #expect(ScreenCorner.bottomLeft.displayName == L10n.Kiosk.Corner.bottomLeft)
+        #expect(ScreenCorner.bottomRight.displayName == L10n.Kiosk.Corner.bottomRight)
     }
 }
