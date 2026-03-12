@@ -17,7 +17,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     var gaugeType: GaugeTypeAppEnum
 
     @Parameter(title: .init("widgets.gauge.parameters.server", defaultValue: "Server"), default: nil)
-    var server: IntentServerAppEntity
+    var server: IntentServerAppEntity?
 
     @Parameter(
         title: .init("widgets.gauge.parameters.value_template", defaultValue: "Value Template (0-1)"),

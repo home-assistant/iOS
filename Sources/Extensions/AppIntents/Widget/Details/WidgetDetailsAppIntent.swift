@@ -14,7 +14,7 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     )
 
     @Parameter(title: .init("widgets.details.parameters.server", defaultValue: "Server"), default: nil)
-    var server: IntentServerAppEntity
+    var server: IntentServerAppEntity?
 
     @Parameter(
         title: .init("widgets.details.parameters.upper_template", defaultValue: "Upper Text Template"),

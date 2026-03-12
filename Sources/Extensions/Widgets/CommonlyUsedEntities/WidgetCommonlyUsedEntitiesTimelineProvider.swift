@@ -52,7 +52,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             entitiesState: [:],
             showLastUpdateTime: configuration.showLastUpdateTime,
             showStates: configuration.showStates,
-            serverName: configuration.server.getServer()?.info.name
+            serverName: configuration.server?.getServer()?.info.name
         )
     }
 
@@ -70,12 +70,12 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             entitiesState: entitiesState,
             showLastUpdateTime: configuration.showLastUpdateTime,
             showStates: configuration.showStates,
-            serverName: configuration.server.getServer()?.info.name
+            serverName: configuration.server?.getServer()?.info.name
         )
     }
 
     private func fetchItems(context: Context, configuration: WidgetCommonlyUsedEntitiesAppIntent) async -> [MagicItem] {
-        guard let server = configuration.server.getServer() ?? Current.servers.all.first else {
+        guard let server = configuration.server?.getServer() ?? Current.servers.all.first else {
             Current.Log.info("No server found for commonly used entities widget, returning empty items")
             return []
         }
@@ -120,7 +120,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         let stateProvider = WidgetEntityStateProvider(
             logPrefix: "Commonly used entities",
             cacheValiditySeconds: Self.cacheValiditySeconds,
-            cacheURL: { commonlyUsedEntitiesCacheURL(serverId: configuration.server.getServer()?.identifier.rawValue) },
+            cacheURL: { commonlyUsedEntitiesCacheURL(serverId: configuration.server?.getServer()?.identifier.rawValue) },
             shouldFetchStates: { true },
             skipFetchLogMessage: nil,
             itemFilter: { _ in true },
@@ -175,7 +175,7 @@ struct WidgetCommonlyUsedEntitiesAppIntent: AppIntent, WidgetConfigurationIntent
     @Parameter(
         title: .init("widgets.param.server.title", defaultValue: "Server")
     )
-    var server: IntentServerAppEntity
+    var server: IntentServerAppEntity?
 
     @Parameter(
         title: .init("widgets.custom.show_last_update_time.param.title", defaultValue: "Show last update time"),

@@ -48,7 +48,7 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: WidgetDetailsAppIntent, in context: Context) async throws -> Entry {
-        guard let server = configuration.server.getServer() ?? Current.servers.all.first,
+        guard let server = configuration.server?.getServer() ?? Current.servers.all.first,
               let connection = Current.api(for: server)?.connection else {
             Current.Log.error("Failed to fetch data for details widget: No servers exist")
             throw WidgetDetailsDataError.noServers
