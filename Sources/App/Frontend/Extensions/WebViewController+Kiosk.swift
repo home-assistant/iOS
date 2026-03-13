@@ -8,6 +8,7 @@ extension WebViewController {
     /// Call this from viewDidLoad
     func setupKioskMode() {
         KioskModeManager.shared.setup(using: self)
+        setupKioskTouchDetection()
     }
 
     // MARK: - Status Bar & Home Indicator
@@ -22,9 +23,22 @@ extension WebViewController {
 
     // MARK: - Touch Handling
 
+    /// Add a tap gesture recognizer to detect WebView touches for the idle timer.
+    /// WKWebView consumes touch events, so without this the idle timer never resets.
+    private func setupKioskTouchDetection() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(kioskTouchDetected))
+        tap.cancelsTouchesInView = false
+        tap.delegate = self
+        webView.addGestureRecognizer(tap)
+    }
+
+    @objc private func kioskTouchDetected() {
+        recordKioskActivity()
+    }
+
     /// Record user touch activity to reset the screensaver idle timer
-    /// Required because WKWebView consumes touch events before UIKit idle detection
     func recordKioskActivity() {
+        guard KioskModeManager.shared.isKioskModeActive else { return }
         KioskModeManager.shared.recordActivity(source: "touch")
     }
 }
