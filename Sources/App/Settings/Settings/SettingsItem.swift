@@ -143,12 +143,21 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 return false
             }
             #endif
+            // Kiosk mode is in beta — only show in TestFlight/debug builds
+            if item == .kiosk, !Current.isTestFlight {
+                return false
+            }
             return true
         }
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .kiosk, .location, .notifications]
+        [.general, .gestures, .kiosk, .location, .notifications].filter { item in
+            if item == .kiosk, !Current.isTestFlight {
+                return false
+            }
+            return true
+        }
     }
 
     static var integrationItems: [SettingsItem] {
