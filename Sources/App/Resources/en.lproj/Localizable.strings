@@ -1538,3 +1538,73 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
 "yes_label" = "Yes";
+"assist.settings.section.experimental.title" = "Experimental";
+"assist.settings.on_device_stt.title" = "On-device STT";
+"assist.settings.on_device_stt.language" = "Language";
+
+"kiosk.title" = "Kiosk Mode";
+"kiosk.active.title" = "Kiosk Mode Active";
+"kiosk.screen_label" = "Screen: %@";
+"kiosk.screensaver_label" = "Screensaver: %@";
+"kiosk.exit_button" = "Exit Kiosk Mode";
+"kiosk.exit_hint" = "Double-tap to exit kiosk mode. Authentication may be required.";
+"kiosk.enable_button" = "Enable Kiosk Mode";
+"kiosk.section.title" = "Kiosk Mode";
+"kiosk.footer.description" = "When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.";
+"kiosk.auth_error.title" = "Authentication Error";
+"kiosk.auth_error.reason" = "Authenticate to exit kiosk mode";
+"kiosk.auth.required" = "Authentication Required";
+"kiosk.auth.try_again" = "Try Again";
+"kiosk.auth.gate_title" = "Kiosk Mode Active";
+"kiosk.auth.gate_description" = "Authentication is required to access kiosk settings. Verify your identity to continue.";
+"kiosk.auth.authenticate_button" = "Authenticate";
+"kiosk.auth.go_back_button" = "Go Back";
+
+"kiosk.security.section" = "Security & Display";
+"kiosk.security.device_auth" = "Device Authentication";
+"kiosk.security.hide_status_bar" = "Hide Status Bar";
+"kiosk.security.prevent_autolock" = "Prevent Auto-Lock";
+"kiosk.security.secret_gesture" = "Secret Exit Gesture";
+"kiosk.security.gesture_corner" = "Exit Gesture Corner";
+"kiosk.security.taps_required" = "Taps Required: %d";
+"kiosk.security.gesture_footer" = "Tap the %@ corner %d times to access kiosk settings when locked.";
+
+"kiosk.brightness.section" = "Brightness";
+"kiosk.brightness.control" = "Brightness Control";
+"kiosk.brightness.manual" = "Manual Brightness: %d%%";
+
+"kiosk.screensaver.section" = "Screensaver";
+"kiosk.screensaver.toggle" = "Screensaver";
+"kiosk.screensaver.mode" = "Mode";
+"kiosk.screensaver.mode.clock" = "Clock";
+"kiosk.screensaver.mode.dim" = "Dim";
+"kiosk.screensaver.mode.blank" = "Blank";
+"kiosk.screensaver.timeout" = "Timeout";
+"kiosk.screensaver.timeout.30sec" = "30 seconds";
+"kiosk.screensaver.timeout.1min" = "1 minute";
+"kiosk.screensaver.timeout.2min" = "2 minutes";
+"kiosk.screensaver.timeout.5min" = "5 minutes";
+"kiosk.screensaver.timeout.10min" = "10 minutes";
+"kiosk.screensaver.timeout.15min" = "15 minutes";
+"kiosk.screensaver.timeout.30min" = "30 minutes";
+"kiosk.screensaver.dim_level" = "Dim Level: %d%%";
+"kiosk.screensaver.pixel_shift" = "Pixel Shift (OLED)";
+"kiosk.screensaver.pixel_shift_footer" = "Pixel shift helps prevent burn-in on OLED displays by slightly moving content periodically.";
+
+"kiosk.clock.section" = "Clock Display";
+"kiosk.clock.style" = "Clock Style";
+"kiosk.clock.style.large" = "Large";
+"kiosk.clock.style.minimal" = "Minimal";
+"kiosk.clock.style.analog" = "Analog";
+"kiosk.clock.style.digital" = "Digital";
+"kiosk.clock.show_date" = "Show Date";
+"kiosk.clock.show_seconds" = "Show Seconds";
+"kiosk.clock.24hour" = "24-Hour Format";
+"kiosk.clock.accessibility.current_time" = "Current time: %@";
+"kiosk.clock.accessibility.analog_clock" = "Analog clock showing %@";
+"kiosk.clock.accessibility.date" = "Date: %@";
+
+"kiosk.corner.top_left" = "Top Left";
+"kiosk.corner.top_right" = "Top Right";
+"kiosk.corner.bottom_left" = "Bottom Left";
+"kiosk.corner.bottom_right" = "Bottom Right";

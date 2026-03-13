@@ -5,6 +5,22 @@ import Shared
 import SwiftUI
 import UIKit
 
+/// Navigation controller that forwards status bar and home indicator preferences to its top view controller.
+/// This is needed for kiosk mode to properly hide the status bar when WebViewController is embedded.
+final class StatusBarForwardingNavigationController: UINavigationController {
+    override var childForStatusBarHidden: UIViewController? {
+        topViewController
+    }
+
+    override var childForStatusBarStyle: UIViewController? {
+        topViewController
+    }
+
+    override var childForHomeIndicatorAutoHidden: UIViewController? {
+        topViewController
+    }
+}
+
 final class WebViewWindowController {
     enum RootViewControllerType {
         case onboarding
@@ -55,7 +71,7 @@ final class WebViewWindowController {
     }
 
     private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
-        let navigationController = UINavigationController()
+        let navigationController = StatusBarForwardingNavigationController()
         navigationController.setNavigationBarHidden(true, animated: false)
 
         if let rootViewController {

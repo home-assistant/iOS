@@ -52,7 +52,7 @@ struct TableSchemaTests {
     }
 
     @Test("HAppEntityTable schema validation")
-    func testHAppEntityTableSchema() throws {
+    func hAppEntityTableSchema() throws {
         let table = HAppEntityTable()
         let expectedColumns = DatabaseTables.AppEntity.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -63,7 +63,7 @@ struct TableSchemaTests {
     }
 
     @Test("WatchConfigTable schema validation")
-    func testWatchConfigTableSchema() throws {
+    func watchConfigTableSchema() throws {
         let table = WatchConfigTable()
         let expectedColumns = DatabaseTables.WatchConfig.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -74,7 +74,7 @@ struct TableSchemaTests {
     }
 
     @Test("CarPlayConfigTable schema validation")
-    func testCarPlayConfigTableSchema() throws {
+    func carPlayConfigTableSchema() throws {
         let table = CarPlayConfigTable()
         let expectedColumns = DatabaseTables.CarPlayConfig.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -85,7 +85,7 @@ struct TableSchemaTests {
     }
 
     @Test("AssistPipelinesTable schema validation")
-    func testAssistPipelinesTableSchema() throws {
+    func assistPipelinesTableSchema() throws {
         let table = AssistPipelinesTable()
         let expectedColumns = DatabaseTables.AssistPipelines.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -96,7 +96,7 @@ struct TableSchemaTests {
     }
 
     @Test("AppEntityRegistryListForDisplayTable schema validation")
-    func testAppEntityRegistryListForDisplayTableSchema() throws {
+    func appEntityRegistryListForDisplayTableSchema() throws {
         let table = AppEntityRegistryListForDisplayTable()
         let expectedColumns = DatabaseTables.AppEntityRegistryListForDisplay.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -107,7 +107,7 @@ struct TableSchemaTests {
     }
 
     @Test("AppEntityRegistryTable schema validation")
-    func testAppEntityRegistryTableSchema() throws {
+    func appEntityRegistryTableSchema() throws {
         let table = AppEntityRegistryTable()
         // Note: AppEntityRegistryTable filters out .id from definedColumns
         let expectedColumns = DatabaseTables.EntityRegistry.allCases.map(\.rawValue)
@@ -120,7 +120,7 @@ struct TableSchemaTests {
     }
 
     @Test("AppDeviceRegistryTable schema validation")
-    func testAppDeviceRegistryTableSchema() throws {
+    func appDeviceRegistryTableSchema() throws {
         let table = AppDeviceRegistryTable()
         // Note: AppDeviceRegistryTable filters out .id from definedColumns
         let expectedColumns = DatabaseTables.DeviceRegistry.allCases.map(\.rawValue)
@@ -133,7 +133,7 @@ struct TableSchemaTests {
     }
 
     @Test("AppPanelTable schema validation")
-    func testAppPanelTableSchema() throws {
+    func appPanelTableSchema() throws {
         let table = AppPanelTable()
         let expectedColumns = DatabaseTables.AppPanel.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -144,7 +144,7 @@ struct TableSchemaTests {
     }
 
     @Test("CustomWidgetTable schema validation")
-    func testCustomWidgetTableSchema() throws {
+    func customWidgetTableSchema() throws {
         let table = CustomWidgetTable()
         let expectedColumns = DatabaseTables.CustomWidget.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -155,7 +155,7 @@ struct TableSchemaTests {
     }
 
     @Test("AppAreaTable schema validation")
-    func testAppAreaTableSchema() throws {
+    func appAreaTableSchema() throws {
         let table = AppAreaTable()
         let expectedColumns = DatabaseTables.AppArea.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -166,7 +166,7 @@ struct TableSchemaTests {
     }
 
     @Test("HomeViewConfigurationTable schema validation")
-    func testHomeViewConfigurationTableSchema() throws {
+    func homeViewConfigurationTableSchema() throws {
         let table = HomeViewConfigurationTable()
         let expectedColumns = DatabaseTables.HomeViewConfiguration.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -177,7 +177,7 @@ struct TableSchemaTests {
     }
 
     @Test("CameraListConfigurationTable schema validation")
-    func testCameraListConfigurationTableSchema() throws {
+    func cameraListConfigurationTableSchema() throws {
         let table = CameraListConfigurationTable()
         let expectedColumns = DatabaseTables.CameraListConfiguration.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -188,7 +188,7 @@ struct TableSchemaTests {
     }
 
     @Test("AssistConfigurationTable schema validation")
-    func testAssistConfigurationTableSchema() throws {
+    func assistConfigurationTableSchema() throws {
         let table = AssistConfigurationTable()
         let expectedColumns = DatabaseTables.AssistConfiguration.allCases.map(\.rawValue)
         try verifyTableSchema(
@@ -198,13 +198,13 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 13 tables create successfully together")
-    func testAllTablesCreateTogether() throws {
+    @Test("All 14 tables create successfully together")
+    func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 13 tables
-        #expect(tables.count == 13, "Should have exactly 13 tables, but found \(tables.count)")
+        // Verify we have exactly 14 tables
+        #expect(tables.count == 14, "Should have exactly 14 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

@@ -244,7 +244,18 @@ struct SettingsView: View {
 
     private func settingsItemLabel(_ item: SettingsItem) -> some View {
         Label {
-            Text(item.title)
+            HStack(spacing: 8) {
+                Text(item.title)
+                if item == .kiosk {
+                    Text("BETA")
+                        .font(.caption2.bold())
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.orange)
+                        .clipShape(Capsule())
+                }
+            }
         } icon: {
             item.icon
         }

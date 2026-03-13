@@ -1676,6 +1676,177 @@ public enum L10n {
     public static var serverRequiredForValue: String { return L10n.tr("Localizable", "intents.server_required_for_value") }
   }
 
+  public enum Kiosk {
+    /// Enable Kiosk Mode
+    public static var enableButton: String { return L10n.tr("Localizable", "kiosk.enable_button") }
+    /// Exit Kiosk Mode
+    public static var exitButton: String { return L10n.tr("Localizable", "kiosk.exit_button") }
+    /// Double-tap to exit kiosk mode. Authentication may be required.
+    public static var exitHint: String { return L10n.tr("Localizable", "kiosk.exit_hint") }
+    /// Screen: %@
+    public static func screenLabel(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "kiosk.screen_label", String(describing: p1))
+    }
+    /// Screensaver: %@
+    public static func screensaverLabel(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "kiosk.screensaver_label", String(describing: p1))
+    }
+    /// Kiosk Mode
+    public static var title: String { return L10n.tr("Localizable", "kiosk.title") }
+    public enum Active {
+      /// Kiosk Mode Active
+      public static var title: String { return L10n.tr("Localizable", "kiosk.active.title") }
+    }
+    public enum Auth {
+      /// Authenticate
+      public static var authenticateButton: String { return L10n.tr("Localizable", "kiosk.auth.authenticate_button") }
+      /// Authentication is required to access kiosk settings. Verify your identity to continue.
+      public static var gateDescription: String { return L10n.tr("Localizable", "kiosk.auth.gate_description") }
+      /// Kiosk Mode Active
+      public static var gateTitle: String { return L10n.tr("Localizable", "kiosk.auth.gate_title") }
+      /// Go Back
+      public static var goBackButton: String { return L10n.tr("Localizable", "kiosk.auth.go_back_button") }
+      /// Authentication Required
+      public static var `required`: String { return L10n.tr("Localizable", "kiosk.auth.required") }
+      /// Try Again
+      public static var tryAgain: String { return L10n.tr("Localizable", "kiosk.auth.try_again") }
+    }
+    public enum AuthError {
+      /// Authenticate to exit kiosk mode
+      public static var reason: String { return L10n.tr("Localizable", "kiosk.auth_error.reason") }
+      /// Authentication Error
+      public static var title: String { return L10n.tr("Localizable", "kiosk.auth_error.title") }
+    }
+    public enum Brightness {
+      /// Brightness Control
+      public static var control: String { return L10n.tr("Localizable", "kiosk.brightness.control") }
+      /// Manual Brightness: %d%%
+      public static func manual(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "kiosk.brightness.manual", p1)
+      }
+      /// Brightness
+      public static var section: String { return L10n.tr("Localizable", "kiosk.brightness.section") }
+    }
+    public enum Clock {
+      /// 24-Hour Format
+      public static var _24hour: String { return L10n.tr("Localizable", "kiosk.clock.24hour") }
+      /// Clock Display
+      public static var section: String { return L10n.tr("Localizable", "kiosk.clock.section") }
+      /// Show Date
+      public static var showDate: String { return L10n.tr("Localizable", "kiosk.clock.show_date") }
+      /// Show Seconds
+      public static var showSeconds: String { return L10n.tr("Localizable", "kiosk.clock.show_seconds") }
+      /// Clock Style
+      public static var style: String { return L10n.tr("Localizable", "kiosk.clock.style") }
+      public enum Accessibility {
+        /// Analog clock showing %@
+        public static func analogClock(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "kiosk.clock.accessibility.analog_clock", String(describing: p1))
+        }
+        /// Current time: %@
+        public static func currentTime(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "kiosk.clock.accessibility.current_time", String(describing: p1))
+        }
+        /// Date: %@
+        public static func date(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "kiosk.clock.accessibility.date", String(describing: p1))
+        }
+      }
+      public enum Style {
+        /// Analog
+        public static var analog: String { return L10n.tr("Localizable", "kiosk.clock.style.analog") }
+        /// Digital
+        public static var digital: String { return L10n.tr("Localizable", "kiosk.clock.style.digital") }
+        /// Large
+        public static var large: String { return L10n.tr("Localizable", "kiosk.clock.style.large") }
+        /// Minimal
+        public static var minimal: String { return L10n.tr("Localizable", "kiosk.clock.style.minimal") }
+      }
+    }
+    public enum Corner {
+      /// Bottom Left
+      public static var bottomLeft: String { return L10n.tr("Localizable", "kiosk.corner.bottom_left") }
+      /// Bottom Right
+      public static var bottomRight: String { return L10n.tr("Localizable", "kiosk.corner.bottom_right") }
+      /// Top Left
+      public static var topLeft: String { return L10n.tr("Localizable", "kiosk.corner.top_left") }
+      /// Top Right
+      public static var topRight: String { return L10n.tr("Localizable", "kiosk.corner.top_right") }
+    }
+    public enum Footer {
+      /// When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.
+      public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
+    }
+    public enum Screensaver {
+      /// Dim Level: %d%%
+      public static func dimLevel(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "kiosk.screensaver.dim_level", p1)
+      }
+      /// Mode
+      public static var mode: String { return L10n.tr("Localizable", "kiosk.screensaver.mode") }
+      /// Pixel Shift (OLED)
+      public static var pixelShift: String { return L10n.tr("Localizable", "kiosk.screensaver.pixel_shift") }
+      /// Pixel shift helps prevent burn-in on OLED displays by slightly moving content periodically.
+      public static var pixelShiftFooter: String { return L10n.tr("Localizable", "kiosk.screensaver.pixel_shift_footer") }
+      /// Screensaver
+      public static var section: String { return L10n.tr("Localizable", "kiosk.screensaver.section") }
+      /// Timeout
+      public static var timeout: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout") }
+      /// Screensaver
+      public static var toggle: String { return L10n.tr("Localizable", "kiosk.screensaver.toggle") }
+      public enum Mode {
+        /// Blank
+        public static var blank: String { return L10n.tr("Localizable", "kiosk.screensaver.mode.blank") }
+        /// Clock
+        public static var clock: String { return L10n.tr("Localizable", "kiosk.screensaver.mode.clock") }
+        /// Dim
+        public static var dim: String { return L10n.tr("Localizable", "kiosk.screensaver.mode.dim") }
+      }
+      public enum Timeout {
+        /// 10 minutes
+        public static var _10min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.10min") }
+        /// 15 minutes
+        public static var _15min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.15min") }
+        /// 1 minute
+        public static var _1min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.1min") }
+        /// 2 minutes
+        public static var _2min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.2min") }
+        /// 30 minutes
+        public static var _30min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.30min") }
+        /// 30 seconds
+        public static var _30sec: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.30sec") }
+        /// 5 minutes
+        public static var _5min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.5min") }
+      }
+    }
+    public enum Section {
+      /// Kiosk Mode
+      public static var title: String { return L10n.tr("Localizable", "kiosk.section.title") }
+    }
+    public enum Security {
+      /// Device Authentication
+      public static var deviceAuth: String { return L10n.tr("Localizable", "kiosk.security.device_auth") }
+      /// Exit Gesture Corner
+      public static var gestureCorner: String { return L10n.tr("Localizable", "kiosk.security.gesture_corner") }
+      /// Tap the %@ corner %d times to access kiosk settings when locked.
+      public static func gestureFooter(_ p1: Any, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "kiosk.security.gesture_footer", String(describing: p1), p2)
+      }
+      /// Hide Status Bar
+      public static var hideStatusBar: String { return L10n.tr("Localizable", "kiosk.security.hide_status_bar") }
+      /// Prevent Auto-Lock
+      public static var preventAutolock: String { return L10n.tr("Localizable", "kiosk.security.prevent_autolock") }
+      /// Secret Exit Gesture
+      public static var secretGesture: String { return L10n.tr("Localizable", "kiosk.security.secret_gesture") }
+      /// Security & Display
+      public static var section: String { return L10n.tr("Localizable", "kiosk.security.section") }
+      /// Taps Required: %d
+      public static func tapsRequired(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "kiosk.security.taps_required", p1)
+      }
+    }
+  }
+
   public enum LegacyActions {
     /// Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.
     public static var disclaimer: String { return L10n.tr("Localizable", "legacy_actions.disclaimer") }
