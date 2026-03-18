@@ -42,8 +42,20 @@ public class NotificationCommandManager {
     }
 
     public func handle(_ payload: [AnyHashable: Any]) -> Promise<Void> {
-        guard let hadict = payload["homeassistant"] as? [String: Any],
-              let command = hadict["command"] as? String else {
+        guard let hadict = payload["homeassistant"] as? [String: Any] else {
+            return .init(error: CommandError.notCommand)
+        }
+
+        // Support data.live_activity: true as an alternative to message: live_activity.
+        // This allows the notification body to be a real message instead of a command keyword,
+        // matching Android's data.live_update: true pattern.
+        #if canImport(ActivityKit)
+        if #available(iOS 16.1, *), hadict["live_activity"] as? Bool == true {
+            return HandlerStartOrUpdateLiveActivity().handle(hadict)
+        }
+        #endif
+
+        guard let command = hadict["command"] as? String else {
             return .init(error: CommandError.notCommand)
         }
 

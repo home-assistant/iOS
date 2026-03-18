@@ -170,21 +170,86 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         }
     }
 
-    // MARK: - Private
+    // MARK: - Private — Observation
 
     private func makeObservationTask(for activity: Activity<HALiveActivityAttributes>) -> Task<Void, Never> {
         Task {
-            for await state in activity.activityStateUpdates {
-                switch state {
-                case .dismissed, .ended:
-                    _ = await self.remove(id: activity.attributes.tag)
-                case .active, .stale:
-                    break
-                @unknown default:
-                    break
+            await withTaskGroup(of: Void.self) { group in
+                // Observe push token updates — report each new token to all HA servers
+                group.addTask {
+                    for await tokenData in activity.pushTokenUpdates {
+                        guard !Task.isCancelled else { break }
+                        let tokenHex = tokenData.map { String(format: "%02x", $0) }.joined()
+                        Current.Log.verbose(
+                            "LiveActivityRegistry: new push token for tag \(activity.attributes.tag)"
+                        )
+                        await self.reportPushToken(tokenHex, activityID: activity.id)
+                    }
+                }
+
+                // Observe activity lifecycle — clean up and notify HA when dismissed
+                group.addTask {
+                    for await state in activity.activityStateUpdates {
+                        switch state {
+                        case .dismissed, .ended:
+                            await self.reportActivityDismissed(
+                                activityID: activity.id,
+                                tag: activity.attributes.tag,
+                                reason: state == .dismissed ? "user_dismissed" : "ended"
+                            )
+                            _ = await self.remove(id: activity.attributes.tag)
+                            return
+                        case .active, .stale:
+                            break
+                        @unknown default:
+                            break
+                        }
+                    }
                 }
             }
         }
+    }
+
+    // MARK: - Private — Webhook Reporting
+
+    /// Report a new activity push token to all connected HA servers.
+    /// The token is used by the relay server to send APNs updates directly to this activity.
+    private func reportPushToken(_ tokenHex: String, activityID: String) async {
+        let request = WebhookRequest(
+            type: "mobile_app_live_activity_token",
+            data: [
+                "activity_id": activityID,
+                "push_token": tokenHex,
+                "apns_environment": apnsEnvironmentString(),
+            ]
+        )
+        for server in Current.servers.all {
+            Current.webhooks.sendEphemeral(server: server, request: request).cauterize()
+        }
+    }
+
+    /// Notify HA servers that the Live Activity was dismissed or ended externally.
+    /// This allows HA to stop sending APNs updates for this activity.
+    private func reportActivityDismissed(activityID: String, tag: String, reason: String) async {
+        let request = WebhookRequest(
+            type: "mobile_app_live_activity_dismissed",
+            data: [
+                "activity_id": activityID,
+                "tag": tag,
+                "reason": reason,
+            ]
+        )
+        for server in Current.servers.all {
+            Current.webhooks.sendEphemeral(server: server, request: request).cauterize()
+        }
+    }
+
+    private func apnsEnvironmentString() -> String {
+        #if DEBUG
+        return "sandbox"
+        #else
+        return Current.isTestFlight ? "sandbox" : "production"
+        #endif
     }
 }
 #endif

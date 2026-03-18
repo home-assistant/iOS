@@ -90,6 +90,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // swiftlint:enable prohibit_environment_assignment
 
         notificationManager.setupNotifications()
+        setupLiveActivityReattachment()
         setupFirebase()
         setupModels()
         setupLocalization()
@@ -370,6 +371,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return nil
             }
         })
+    }
+
+    private func setupLiveActivityReattachment() {
+        #if canImport(ActivityKit)
+        if #available(iOS 16.1, *) {
+            // Re-attach observation tasks (push token + lifecycle) to any Live Activities
+            // that survived the previous process termination. Must run before the first
+            // notification handler fires so no push token updates are missed.
+            Task {
+                await Current.liveActivityRegistry.reattach()
+            }
+        }
+        #endif
     }
 
     private func setupFirebase() {

@@ -555,10 +555,24 @@ public class HomeAssistantAPI {
     private func mobileAppRegistrationRequestModel() -> MobileAppRegistrationRequest {
         with(MobileAppRegistrationRequest()) {
             if let pushID = Current.settingsStore.pushID {
-                $0.AppData = [
+                var appData: [String: Any] = [
                     "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
                     "push_token": pushID,
                 ]
+
+                #if os(iOS) && canImport(ActivityKit)
+                if #available(iOS 16.1, *) {
+                    // Advertise Live Activity support so HA can gate the UI and send
+                    // activity push tokens back to the relay server.
+                    appData["supports_live_activities"] = true
+                }
+                if #available(iOS 17.2, *) {
+                    appData["supports_live_activities_frequent_updates"] =
+                        ActivityAuthorizationInfo().frequentPushesEnabled
+                }
+                #endif
+
+                $0.AppData = appData
             }
 
             $0.AppIdentifier = AppConstants.BundleID

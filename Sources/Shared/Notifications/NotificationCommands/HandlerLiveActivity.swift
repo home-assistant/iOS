@@ -7,25 +7,44 @@ import PromiseKit
 
 /// Handles `live_activity: true` notifications by starting or updating a Live Activity.
 ///
+/// Triggered two ways:
+///   1. `homeassistant.command == "live_activity"` (message: live_activity in YAML)
+///   2. `homeassistant.live_activity == true` (data.live_activity: true in YAML)
+///
 /// Notification payload fields mirror the Android companion app:
 ///   tag, title, message, critical_text, progress, progress_max,
 ///   chronometer, when, when_relative, notification_icon, notification_icon_color
 @available(iOS 16.1, *)
 struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
+    private enum ValidationError: Error {
+        case missingTag
+        case missingTitle
+        case invalidTag
+    }
+
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Promise { seal in
+        // PushProvider (NEAppPushProvider) runs in a separate OS process — ActivityKit is
+        // unavailable there. The same notification will be re-delivered to the main app via
+        // UNUserNotificationCenter, where it will be handled correctly.
+        guard !Current.isAppExtension else {
+            Current.Log.verbose("HandlerStartOrUpdateLiveActivity: skipping in app extension, will handle in main app")
+            return .value(())
+        }
+
+        return Promise { seal in
             Task {
                 do {
                     guard let tag = payload["tag"] as? String, !tag.isEmpty else {
-                        Current.Log.error("HandlerStartOrUpdateLiveActivity: missing required field 'tag'")
-                        seal.fulfill(())
-                        return
+                        throw ValidationError.missingTag
+                    }
+
+                    guard Self.isValidTag(tag) else {
+                        Current.Log.error("HandlerStartOrUpdateLiveActivity: invalid tag '\(tag)' — must be [a-zA-Z0-9_-], max 64 chars")
+                        throw ValidationError.invalidTag
                     }
 
                     guard let title = payload["title"] as? String, !title.isEmpty else {
-                        Current.Log.error("HandlerStartOrUpdateLiveActivity: missing required field 'title'")
-                        seal.fulfill(())
-                        return
+                        throw ValidationError.missingTitle
                     }
 
                     let state = Self.contentState(from: payload)
@@ -38,15 +57,32 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                     seal.fulfill(())
                 } catch {
                     Current.Log.error("HandlerStartOrUpdateLiveActivity: \(error)")
-                    seal.reject(error)
+                    // Fulfill rather than reject for known validation/auth errors so HA
+                    // doesn't treat them as transient failures and retry indefinitely.
+                    switch error {
+                    case ValidationError.missingTag, ValidationError.missingTitle, ValidationError.invalidTag:
+                        seal.fulfill(())
+                    default:
+                        seal.reject(error)
+                    }
                 }
             }
         }
     }
 
+    // MARK: - Validation
+
+    /// Tag must be alphanumeric with hyphens/underscores, max 64 characters.
+    /// Matches the safe subset of APNs collapse identifiers.
+    private static func isValidTag(_ tag: String) -> Bool {
+        guard tag.count <= 64 else { return false }
+        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_"))
+        return tag.unicodeScalars.allSatisfy { allowed.contains($0) }
+    }
+
     // MARK: - Payload Parsing
 
-    private static func contentState(from payload: [String: Any]) -> HALiveActivityAttributes.ContentState {
+    static func contentState(from payload: [String: Any]) -> HALiveActivityAttributes.ContentState {
         let message = payload["message"] as? String ?? ""
         let criticalText = payload["critical_text"] as? String
         let progress = payload["progress"] as? Int
@@ -86,7 +122,11 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
 @available(iOS 16.1, *)
 struct HandlerEndLiveActivity: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Promise { seal in
+        guard !Current.isAppExtension else {
+            return .value(())
+        }
+
+        return Promise { seal in
             Task {
                 guard let tag = payload["tag"] as? String, !tag.isEmpty else {
                     seal.fulfill(())
