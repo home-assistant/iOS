@@ -2,6 +2,7 @@
 import ActivityKit
 import Foundation
 import PromiseKit
+import UserNotifications
 
 // MARK: - HandlerStartOrUpdateLiveActivity
 
@@ -47,6 +48,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                         throw ValidationError.missingTitle
                     }
 
+                    Self.showPrivacyDisclosureIfNeeded()
+
                     let state = Self.contentState(from: payload)
 
                     try await Current.liveActivityRegistry.startOrUpdate(
@@ -66,6 +69,31 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                         seal.reject(error)
                     }
                 }
+            }
+        }
+    }
+
+    // MARK: - Privacy Disclosure
+
+    /// Shows a one-time local notification reminding the user that Live Activity
+    /// content is visible on the Lock Screen without authentication.
+    /// Runs at most once per device; subsequent calls are no-ops.
+    private static func showPrivacyDisclosureIfNeeded() {
+        guard !Current.settingsStore.hasSeenLiveActivityDisclosure else { return }
+        Current.settingsStore.hasSeenLiveActivityDisclosure = true
+
+        let content = UNMutableNotificationContent()
+        content.title = "Live Activity Privacy"
+        content.body = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully."
+
+        let request = UNNotificationRequest(
+            identifier: "live_activity_privacy_disclosure",
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error {
+                Current.Log.error("HandlerStartOrUpdateLiveActivity: failed to post privacy disclosure: \(error)")
             }
         }
     }
