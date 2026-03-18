@@ -1,12 +1,15 @@
 #if canImport(ActivityKit)
 import ActivityKit
 import Foundation
+import PromiseKit
 
 @available(iOS 16.1, *)
 public protocol LiveActivityRegistryProtocol: AnyObject {
     func startOrUpdate(tag: String, title: String, state: HALiveActivityAttributes.ContentState) async throws
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
     func reattach() async
+    @available(iOS 17.2, *)
+    func startObservingPushToStartToken() async
 }
 
 /// Thread-safe registry for active `Activity<HALiveActivityAttributes>` instances.
@@ -170,6 +173,42 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         }
     }
 
+    /// Observe the push-to-start token stream for `HALiveActivityAttributes`.
+    ///
+    /// Push-to-start (iOS 17.2+) allows HA to start a Live Activity entirely via APNs
+    /// without the app being in the foreground. This is best-effort (~50% success from
+    /// terminated state) — the primary flow remains notification command → app starts activity.
+    ///
+    /// The token is stored in Keychain and reported to HA via registration update so the
+    /// relay server can use it to send push-to-start APNs payloads.
+    ///
+    /// Call this once at app launch; the stream is infinite and self-managing.
+    @available(iOS 17.2, *)
+    public func startObservingPushToStartToken() async {
+        for await tokenData in Activity<HALiveActivityAttributes>.pushToStartTokenUpdates {
+            let tokenHex = tokenData.map { String(format: "%02x", $0) }.joined()
+            Current.Log.verbose("LiveActivityRegistry: new push-to-start token")
+
+            // Store in Keychain — this token is higher-value than a per-activity token
+            // (it can start any new activity) so UserDefaults is intentionally avoided.
+            AppConstants.Keychain[LiveActivityRegistry.pushToStartTokenKeychainKey] = tokenHex
+
+            // Report to all HA servers via registration update so the token is available
+            // in the HA device registry immediately.
+            await reportPushToStartToken(tokenHex)
+        }
+    }
+
+    // MARK: - Public Helpers
+
+    /// The stored push-to-start token for inclusion in registration payloads.
+    /// Returns nil if the device hasn't received a token yet (pre-iOS 17.2 or not yet issued).
+    public static var storedPushToStartToken: String? {
+        AppConstants.Keychain[pushToStartTokenKeychainKey]
+    }
+
+    static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
+
     // MARK: - Private — Observation
 
     private func makeObservationTask(for activity: Activity<HALiveActivityAttributes>) -> Task<Void, Never> {
@@ -241,6 +280,19 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         )
         for server in Current.servers.all {
             Current.webhooks.sendEphemeral(server: server, request: request).cauterize()
+        }
+    }
+
+    /// Report the push-to-start token to all HA servers via registration update.
+    /// HA stores this alongside the FCM push token in the device registry.
+    @available(iOS 17.2, *)
+    private func reportPushToStartToken(_ tokenHex: String) async {
+        for api in Current.apis {
+            firstly {
+                api.updateRegistration()
+            }.catch { error in
+                Current.Log.error("LiveActivityRegistry: failed to report push-to-start token: \(error)")
+            }
         }
     }
 

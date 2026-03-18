@@ -569,6 +569,14 @@ public class HomeAssistantAPI {
                 if #available(iOS 17.2, *) {
                     appData["supports_live_activities_frequent_updates"] =
                         ActivityAuthorizationInfo().frequentPushesEnabled
+
+                    // Push-to-start token (stored in Keychain at launch, updated via stream).
+                    // The relay server uses this token to start a Live Activity entirely via
+                    // APNs without the app being in the foreground (best-effort, iOS 17.2+).
+                    if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
+                        appData["live_activity_push_to_start_token"] = pushToStartToken
+                        appData["live_activity_push_to_start_apns_environment"] = apnsEnvironmentString()
+                    }
                 }
                 #endif
 
@@ -586,6 +594,14 @@ public class HomeAssistantAPI {
             $0.OSVersion = Current.device.systemVersion()
             $0.SupportsEncryption = true
         }
+    }
+
+    private func apnsEnvironmentString() -> String {
+        #if DEBUG
+        return "sandbox"
+        #else
+        return Current.isTestFlight ? "sandbox" : "production"
+        #endif
     }
 
     private func buildMobileAppUpdateRegistration() -> [String: Any] {
