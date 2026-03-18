@@ -22,6 +22,12 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
+        #if canImport(ActivityKit)
+        if #available(iOS 16.1, *) {
+            register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
+            register(command: "end_live_activity", handler: HandlerEndLiveActivity())
+        }
+        #endif
         #endif
 
         #if os(iOS) || os(macOS)
@@ -89,6 +95,16 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         if !keys.isEmpty {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
+
+        // Also end any Live Activity whose tag matches — same YAML works on both iOS and Android
+        #if os(iOS) && canImport(ActivityKit)
+        if #available(iOS 16.1, *), let tag = payload["tag"] as? String {
+            Task {
+                await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
+            }
+        }
+        #endif
+
         // https://stackoverflow.com/a/56657888/6324550
         return Promise<Void> { seal in
             DispatchQueue.main.async {

@@ -1,0 +1,190 @@
+#if canImport(ActivityKit)
+import ActivityKit
+import Foundation
+
+@available(iOS 16.1, *)
+public protocol LiveActivityRegistryProtocol: AnyObject {
+    func startOrUpdate(tag: String, title: String, state: HALiveActivityAttributes.ContentState) async throws
+    func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
+    func reattach() async
+}
+
+/// Thread-safe registry for active `Activity<HALiveActivityAttributes>` instances.
+///
+/// Uses Swift's actor isolation to protect the `[String: Entry]` dictionary from
+/// concurrent access by push handler queues, token observer tasks, and the main app.
+///
+/// The reservation pattern prevents TOCTOU races where two pushes with the same `tag`
+/// arrive back-to-back before the first `Activity.request(...)` completes.
+@available(iOS 16.1, *)
+public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
+
+    // MARK: - Types
+
+    struct Entry {
+        let activity: Activity<HALiveActivityAttributes>
+        let observationTask: Task<Void, Never>
+    }
+
+    // MARK: - State
+
+    /// Tags currently in-flight (reserved but not yet confirmed or cancelled).
+    private var reserved: Set<String> = []
+
+    /// Confirmed, running Live Activities keyed by tag.
+    private var entries: [String: Entry] = [:]
+
+    // MARK: - Init
+
+    public init() {}
+
+    // MARK: - Reservation (internal — called within actor context)
+
+    private func reserve(id: String) -> Bool {
+        guard entries[id] == nil, !reserved.contains(id) else { return false }
+        reserved.insert(id)
+        return true
+    }
+
+    private func confirmReservation(id: String, entry: Entry) {
+        reserved.remove(id)
+        entries[id] = entry
+    }
+
+    private func cancelReservation(id: String) {
+        reserved.remove(id)
+    }
+
+    private func remove(id: String) -> Entry? {
+        let entry = entries.removeValue(forKey: id)
+        entry?.observationTask.cancel()
+        return entry
+    }
+
+    // MARK: - Public API
+
+    /// Start a new Live Activity for `tag`, or update the existing one if already running.
+    public func startOrUpdate(
+        tag: String,
+        title: String,
+        state: HALiveActivityAttributes.ContentState
+    ) async throws {
+        // UPDATE path — activity already running with this tag
+        if let existing = entries[tag] {
+            if #available(iOS 16.2, *) {
+                let content = ActivityContent(
+                    state: state,
+                    staleDate: Date().addingTimeInterval(30 * 60)
+                )
+                await existing.activity.update(content)
+            } else {
+                await existing.activity.update(using: state)
+            }
+            return
+        }
+
+        // Also check system list in case we lost track after crash/relaunch
+        if let live = Activity<HALiveActivityAttributes>.activities
+            .first(where: { $0.attributes.tag == tag }) {
+            if #available(iOS 16.2, *) {
+                let content = ActivityContent(
+                    state: state,
+                    staleDate: Date().addingTimeInterval(30 * 60)
+                )
+                await live.update(content)
+            } else {
+                await live.update(using: state)
+            }
+            let observationTask = makeObservationTask(for: live)
+            entries[tag] = Entry(activity: live, observationTask: observationTask)
+            return
+        }
+
+        // START path — guard against duplicates with reservation
+        guard reserve(id: tag) else {
+            Current.Log.info("LiveActivityRegistry: duplicate start for tag \(tag), ignoring")
+            return
+        }
+
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+            cancelReservation(id: tag)
+            Current.Log.info("LiveActivityRegistry: activities disabled on this device, skipping start for tag \(tag)")
+            return
+        }
+
+        let attributes = HALiveActivityAttributes(tag: tag, title: title)
+        let activity: Activity<HALiveActivityAttributes>
+
+        do {
+            if #available(iOS 16.2, *) {
+                let content = ActivityContent(
+                    state: state,
+                    staleDate: Date().addingTimeInterval(30 * 60),
+                    relevanceScore: 0.5
+                )
+                activity = try Activity<HALiveActivityAttributes>.request(
+                    attributes: attributes,
+                    content: content,
+                    pushType: .token
+                )
+            } else {
+                activity = try Activity<HALiveActivityAttributes>.request(
+                    attributes: attributes,
+                    contentState: state,
+                    pushType: .token
+                )
+            }
+        } catch {
+            cancelReservation(id: tag)
+            throw error
+        }
+
+        let observationTask = makeObservationTask(for: activity)
+        confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
+        Current.Log.verbose("LiveActivityRegistry: started activity for tag \(tag), id=\(activity.id)")
+    }
+
+    /// End and dismiss the Live Activity for `tag`.
+    public func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy = .immediate) async {
+        if let existing = remove(id: tag) {
+            await existing.activity.end(nil, dismissalPolicy: dismissalPolicy)
+            Current.Log.verbose("LiveActivityRegistry: ended activity for tag \(tag)")
+            return
+        }
+        // Fallback: check system list in case we lost track
+        if let live = Activity<HALiveActivityAttributes>.activities
+            .first(where: { $0.attributes.tag == tag }) {
+            await live.end(nil, dismissalPolicy: dismissalPolicy)
+        }
+    }
+
+    /// Re-attach observation tasks to any Live Activities that survived process termination.
+    /// Call this at app launch before any notification handlers are invoked.
+    public func reattach() async {
+        for activity in Activity<HALiveActivityAttributes>.activities {
+            let tag = activity.attributes.tag
+            guard entries[tag] == nil else { continue }
+            let observationTask = makeObservationTask(for: activity)
+            entries[tag] = Entry(activity: activity, observationTask: observationTask)
+            Current.Log.verbose("LiveActivityRegistry: reattached activity for tag \(tag), id=\(activity.id)")
+        }
+    }
+
+    // MARK: - Private
+
+    private func makeObservationTask(for activity: Activity<HALiveActivityAttributes>) -> Task<Void, Never> {
+        Task {
+            for await state in activity.activityStateUpdates {
+                switch state {
+                case .dismissed, .ended:
+                    _ = await self.remove(id: activity.attributes.tag)
+                case .active, .stale:
+                    break
+                @unknown default:
+                    break
+                }
+            }
+        }
+    }
+}
+#endif

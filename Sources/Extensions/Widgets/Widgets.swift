@@ -54,6 +54,9 @@ struct WidgetsBundle18: WidgetBundle {
     }
 
     var body: some Widget {
+        // Live Activities (ActivityKit requires iOS 16.2+, this bundle requires iOS 18.0+)
+        HALiveActivityConfiguration()
+
         // Controls
         ControlAssist()
         ControlLight()

@@ -131,6 +131,27 @@ public class AppEnvironment {
     }
 
     #if os(iOS)
+    #if canImport(ActivityKit)
+    // Backing store uses Any? to work around Swift's @available stored property restriction.
+    // Access via the typed `liveActivityRegistry` computed property.
+    private var _liveActivityRegistryBacking: Any?
+
+    @available(iOS 16.1, *)
+    public var liveActivityRegistry: LiveActivityRegistryProtocol {
+        get {
+            if let existing = _liveActivityRegistryBacking as? LiveActivityRegistryProtocol {
+                return existing
+            }
+            let registry = LiveActivityRegistry()
+            _liveActivityRegistryBacking = registry
+            return registry
+        }
+        set {
+            _liveActivityRegistryBacking = newValue
+        }
+    }
+    #endif
+
     public var appDatabaseUpdater: AppDatabaseUpdaterProtocol = AppDatabaseUpdater.shared
 
     public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
