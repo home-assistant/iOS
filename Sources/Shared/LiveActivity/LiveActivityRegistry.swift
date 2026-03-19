@@ -1,7 +1,6 @@
 #if canImport(ActivityKit)
 import ActivityKit
 import Foundation
-import PromiseKit
 
 /// Stale date offset for all Live Activity content updates.
 /// Activities are marked stale after 30 minutes if no further updates arrive.
@@ -37,6 +36,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Tags currently in-flight (reserved but not yet confirmed or cancelled).
     private var reserved: Set<String> = []
 
+    /// Tags where `end()` arrived while still reserved — activity must be dismissed on confirm.
+    private var cancelledReservations: Set<String> = []
+
     /// Confirmed, running Live Activities keyed by tag.
     private var entries: [String: Entry] = [:]
 
@@ -52,13 +54,21 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         return true
     }
 
-    private func confirmReservation(id: String, entry: Entry) {
+    /// Confirm a reservation. If `end()` arrived while we were in-flight, immediately dismiss.
+    private func confirmReservation(id: String, entry: Entry) async {
         reserved.remove(id)
+        if cancelledReservations.remove(id) != nil {
+            // end() was called before Activity.request() completed — dismiss immediately.
+            entry.observationTask.cancel()
+            await entry.activity.end(nil, dismissalPolicy: .immediate)
+            return
+        }
         entries[id] = entry
     }
 
     private func cancelReservation(id: String) {
         reserved.remove(id)
+        cancelledReservations.remove(id)
     }
 
     private func remove(id: String) -> Entry? {
@@ -130,7 +140,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         }
 
         let observationTask = makeObservationTask(for: activity)
-        confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
+        await confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
         Current.Log.verbose("LiveActivityRegistry: started activity for tag \(tag), id=\(activity.id)")
     }
 
@@ -141,6 +151,15 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             Current.Log.verbose("LiveActivityRegistry: ended activity for tag \(tag)")
             return
         }
+
+        // Tag is still being started (Activity.request in-flight) — mark it so confirmReservation
+        // dismisses the activity immediately once the request completes.
+        if reserved.contains(tag) {
+            cancelledReservations.insert(tag)
+            Current.Log.verbose("LiveActivityRegistry: end() received for in-flight tag \(tag), will dismiss on confirm")
+            return
+        }
+
         // Fallback: check system list in case we lost track
         if let live = Activity<HALiveActivityAttributes>.activities
             .first(where: { $0.attributes.tag == tag }) {

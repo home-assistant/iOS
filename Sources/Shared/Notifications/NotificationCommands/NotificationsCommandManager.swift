@@ -112,8 +112,9 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         // Also end any Live Activity whose tag matches — same YAML works on both iOS and Android.
         // Bridged into the returned Promise so the background fetch window stays open until
         // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
+        // ActivityKit is unavailable in the PushProvider extension, so guard accordingly.
         #if os(iOS) && canImport(ActivityKit)
-        if #available(iOS 16.2, *), let tag = payload["tag"] as? String {
+        if #available(iOS 16.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
             return Promise<Void> { seal in
                 Task {
                     await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
