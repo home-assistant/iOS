@@ -85,9 +85,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
 
     // MARK: - Validation
 
-    /// Tag must be alphanumeric with hyphens/underscores, max 64 characters.
-    /// Matches the safe subset of APNs collapse identifiers.
-    private static func isValidTag(_ tag: String) -> Bool {
+    static func isValidTag(_ tag: String) -> Bool {
         guard tag.count <= 64 else { return false }
         let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_"))
         return tag.unicodeScalars.allSatisfy { allowed.contains($0) }
@@ -143,7 +141,8 @@ struct HandlerEndLiveActivity: NotificationCommandHandler {
 
         return Promise { seal in
             Task {
-                guard let tag = payload["tag"] as? String, !tag.isEmpty else {
+                guard let tag = payload["tag"] as? String, !tag.isEmpty,
+                      HandlerStartOrUpdateLiveActivity.isValidTag(tag) else {
                     seal.fulfill(())
                     return
                 }
@@ -162,7 +161,11 @@ struct HandlerEndLiveActivity: NotificationCommandHandler {
         case let str where str?.hasPrefix("after:") == true:
             if let timestampStr = str?.dropFirst(6),
                let timestamp = Double(timestampStr) {
-                return .after(Date(timeIntervalSince1970: timestamp))
+                // Cap to 24 hours — iOS enforces its own maximum, but this prevents
+                // a far-future date from lingering in the dismissed activities list
+                // longer than intended if Apple ever relaxes the OS limit.
+                let maxDate = Date().addingTimeInterval(24 * 60 * 60)
+                return .after(min(Date(timeIntervalSince1970: timestamp), maxDate))
             }
             return .immediate
         default:

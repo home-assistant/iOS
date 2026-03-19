@@ -154,8 +154,12 @@ struct LiveActivitySettingsView: View {
     private func endAllActivities() {
         Task {
             let tags = activities.map(\.tag)
-            for tag in tags {
-                await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
+            await withTaskGroup(of: Void.self) { group in
+                for tag in tags {
+                    group.addTask {
+                        await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
+                    }
+                }
             }
             await loadActivities()
         }
