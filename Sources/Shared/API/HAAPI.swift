@@ -563,7 +563,7 @@ public class HomeAssistantAPI {
                 ]
 
                 #if os(iOS) && canImport(ActivityKit)
-                if #available(iOS 16.1, *) {
+                if #available(iOS 16.2, *) {
                     // Advertise Live Activity support so HA can gate the UI and send
                     // activity push tokens back to the relay server.
                     appData["supports_live_activities"] = true

@@ -10,7 +10,7 @@ import SwiftUI
 /// ⚠️ NEVER rename this struct or its fields post-ship.
 /// The `attributes-type` string in APNs push-to-start payloads must exactly match
 /// the Swift struct name (case-sensitive). Renaming breaks all in-flight activities.
-@available(iOS 16.1, *)
+@available(iOS 16.2, *)
 public struct HALiveActivityAttributes: ActivityAttributes {
     // MARK: - Static Attributes (set once at creation, cannot change)
 

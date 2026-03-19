@@ -21,6 +21,9 @@ struct WidgetsBundleLegacy: WidgetBundle {
     }
 
     var body: some Widget {
+        if #available(iOSApplicationExtension 16.2, *) {
+            HALiveActivityConfiguration()
+        }
         WidgetAssist()
         LegacyWidgetActions()
         WidgetOpenPage()
@@ -34,6 +37,9 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
+        if #available(iOSApplicationExtension 16.2, *) {
+            HALiveActivityConfiguration()
+        }
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()

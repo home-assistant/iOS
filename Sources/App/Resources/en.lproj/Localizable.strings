@@ -506,6 +506,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.section.privacy" = "Privacy";
 "live_activity.empty_state" = "No active Live Activities";
 "live_activity.status.enabled" = "Enabled";
+"live_activity.status.not_supported" = "Not available on iPad";
 "live_activity.status.open_settings" = "Open Settings";
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.title" = "End all Live Activities?";

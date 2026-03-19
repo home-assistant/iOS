@@ -7,7 +7,7 @@ import PromiseKit
 /// Activities are marked stale after 30 minutes if no further updates arrive.
 private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
 
-@available(iOS 16.1, *)
+@available(iOS 16.2, *)
 public protocol LiveActivityRegistryProtocol: AnyObject {
     func startOrUpdate(tag: String, title: String, state: HALiveActivityAttributes.ContentState) async throws
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
@@ -23,7 +23,7 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
 ///
 /// The reservation pattern prevents TOCTOU races where two pushes with the same `tag`
 /// arrive back-to-back before the first `Activity.request(...)` completes.
-@available(iOS 16.1, *)
+@available(iOS 16.2, *)
 public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     // MARK: - Types
 
@@ -77,30 +77,22 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     ) async throws {
         // UPDATE path — activity already running with this tag
         if let existing = entries[tag] {
-            if #available(iOS 16.2, *) {
-                let content = ActivityContent(
-                    state: state,
-                    staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
-                )
-                await existing.activity.update(content)
-            } else {
-                await existing.activity.update(using: state)
-            }
+            let content = ActivityContent(
+                state: state,
+                staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
+            )
+            await existing.activity.update(content)
             return
         }
 
         // Also check system list in case we lost track after crash/relaunch
         if let live = Activity<HALiveActivityAttributes>.activities
             .first(where: { $0.attributes.tag == tag }) {
-            if #available(iOS 16.2, *) {
-                let content = ActivityContent(
-                    state: state,
-                    staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
-                )
-                await live.update(content)
-            } else {
-                await live.update(using: state)
-            }
+            let content = ActivityContent(
+                state: state,
+                staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
+            )
+            await live.update(content)
             let observationTask = makeObservationTask(for: live)
             entries[tag] = Entry(activity: live, observationTask: observationTask)
             return
@@ -122,24 +114,16 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let activity: Activity<HALiveActivityAttributes>
 
         do {
-            if #available(iOS 16.2, *) {
-                let content = ActivityContent(
-                    state: state,
-                    staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval),
-                    relevanceScore: 0.5
-                )
-                activity = try Activity<HALiveActivityAttributes>.request(
-                    attributes: attributes,
-                    content: content,
-                    pushType: .token
-                )
-            } else {
-                activity = try Activity<HALiveActivityAttributes>.request(
-                    attributes: attributes,
-                    contentState: state,
-                    pushType: .token
-                )
-            }
+            let content = ActivityContent(
+                state: state,
+                staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval),
+                relevanceScore: 0.5
+            )
+            activity = try Activity<HALiveActivityAttributes>.request(
+                attributes: attributes,
+                content: content,
+                pushType: .token
+            )
         } catch {
             cancelReservation(id: tag)
             throw error
@@ -153,22 +137,14 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// End and dismiss the Live Activity for `tag`.
     public func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy = .immediate) async {
         if let existing = remove(id: tag) {
-            if #available(iOS 16.2, *) {
-                await existing.activity.end(nil, dismissalPolicy: dismissalPolicy)
-            } else {
-                await existing.activity.end(using: nil, dismissalPolicy: dismissalPolicy)
-            }
+            await existing.activity.end(nil, dismissalPolicy: dismissalPolicy)
             Current.Log.verbose("LiveActivityRegistry: ended activity for tag \(tag)")
             return
         }
         // Fallback: check system list in case we lost track
         if let live = Activity<HALiveActivityAttributes>.activities
             .first(where: { $0.attributes.tag == tag }) {
-            if #available(iOS 16.2, *) {
-                await live.end(nil, dismissalPolicy: dismissalPolicy)
-            } else {
-                await live.end(using: nil, dismissalPolicy: dismissalPolicy)
-            }
+            await live.end(nil, dismissalPolicy: dismissalPolicy)
         }
     }
 

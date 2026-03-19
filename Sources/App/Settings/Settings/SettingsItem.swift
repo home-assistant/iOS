@@ -112,7 +112,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications:
             SettingsNotificationsView()
         case .liveActivities:
-            if #available(iOS 16.1, *) {
+            if #available(iOS 16.2, *) {
                 LiveActivitySettingsView()
             }
         case .sensors:
@@ -151,9 +151,9 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 return false
             }
             #endif
-            // Live Activities require iOS 16.1+
+            // Live Activities require iOS 16.2+ (ActivityContent API)
             if item == .liveActivities {
-                if #available(iOS 16.1, *) { return true }
+                if #available(iOS 16.2, *) { return true }
                 return false
             }
             return true
@@ -162,7 +162,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     static var generalItems: [SettingsItem] {
         var items: [SettingsItem] = [.general, .gestures, .kiosk, .location, .notifications]
-        if #available(iOS 16.1, *) {
+        if #available(iOS 16.2, *) {
             items.append(.liveActivities)
         }
         return items

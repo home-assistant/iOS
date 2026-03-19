@@ -375,7 +375,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupLiveActivityReattachment() {
         #if canImport(ActivityKit)
-        if #available(iOS 16.1, *) {
+        if #available(iOS 16.2, *) {
             // Pre-warm the registry on the main thread before spawning background Tasks.
             // This avoids a lazy-init race if a push notification handler accesses it
             // concurrently from a background thread.

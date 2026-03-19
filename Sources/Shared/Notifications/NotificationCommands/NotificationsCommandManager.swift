@@ -23,7 +23,7 @@ public class NotificationCommandManager {
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
         #if canImport(ActivityKit)
-        if #available(iOS 16.1, *) {
+        if #available(iOS 16.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
             register(command: "end_live_activity", handler: HandlerEndLiveActivity())
         }
@@ -50,7 +50,7 @@ public class NotificationCommandManager {
         // This allows the notification body to be a real message instead of a command keyword,
         // matching Android's data.live_update: true pattern.
         #if canImport(ActivityKit)
-        if #available(iOS 16.1, *), hadict["live_activity"] as? Bool == true,
+        if #available(iOS 16.2, *), hadict["live_activity"] as? Bool == true,
            let handler = commands["live_activity"] {
             return handler.handle(hadict)
         }
@@ -113,7 +113,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         // Bridged into the returned Promise so the background fetch window stays open until
         // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
         #if os(iOS) && canImport(ActivityKit)
-        if #available(iOS 16.1, *), let tag = payload["tag"] as? String {
+        if #available(iOS 16.2, *), let tag = payload["tag"] as? String {
             return Promise<Void> { seal in
                 Task {
                     await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)

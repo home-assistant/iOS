@@ -1235,13 +1235,16 @@
 		5D4737422F241342009A70EA /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4737412F241342009A70EA /* FolderDetailView.swift */; };
 		5F2ECF3C2CA505A59A1CFFAF /* Pods_iOS_SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65B4DC669522BB7A70C5EED0 /* Pods_iOS_SharedTesting.framework */; };
 		61495A70232316478717CF27 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FF3A67FB1C2B548C6C7730C /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
+		618FCE5CA6B34267BB2056F5 /* MockLiveActivityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E95733B72864AB3B9607B57 /* MockLiveActivityRegistry.swift */; };
 		65286F3B745551AD4090EE6B /* Pods-iOS-SharedTesting-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4053903E4C54A6803204286E /* Pods-iOS-SharedTesting-metadata.plist */; };
 		6596FA74E1A501276EA62D86 /* Pods_watchOS_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */; };
 		692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */; };
 		6FCEBAA2C8E9C5403055E73D /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
 		70BD8A8EA1ABC5DC1F0A0D6E /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C663B0750E0318469E7008C3 /* Pods_iOS_Shared_iOS.framework */; };
+		71E0BF803A854C3B9F0CB726 /* HandlerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */; };
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
 		87ADC61008345747CABC2270 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
+		897D7538631C46D4BD849CF5 /* NotificationsCommandManagerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D790D5FA5DBB4B5B9DBB2334 /* NotificationsCommandManagerLiveActivityTests.swift */; };
 		8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */; };
 		999549244371450BC98C700E /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 608CFDA223EBCDF01B946093 /* Pods_iOS_Extensions_PushProvider.framework */; };
 		A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */; };
@@ -3044,6 +3047,7 @@
 		592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-NotificationService-metadata.plist"; path = "Pods/Pods-iOS-Extensions-NotificationService-metadata.plist"; sourceTree = "<group>"; };
 		5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Database/GRDB+Initialization.test.swift"; sourceTree = "<group>"; };
 		5D4737412F241342009A70EA /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
+		5E95733B72864AB3B9607B57 /* MockLiveActivityRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLiveActivityRegistry.swift; sourceTree = "<group>"; };
 		608CFDA223EBCDF01B946093 /* Pods_iOS_Extensions_PushProvider.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_PushProvider.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		62CDCFDB29D283A7902A3ABE /* KioskScreensaverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskScreensaverViewController.swift; sourceTree = "<group>"; };
 		6563AFB7BDAF57478CA18D9B /* Pods-iOS-Extensions-PushProvider.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-PushProvider.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-PushProvider/Pods-iOS-Extensions-PushProvider.debug.xcconfig"; sourceTree = "<group>"; };
@@ -3088,6 +3092,7 @@
 		ADC769271BB34C474C2D1E24 /* Pods-iOS-Shared-iOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-metadata.plist"; sourceTree = "<group>"; };
 		B26248E8DEAC8C13210A6587 /* Pods-iOS-Extensions-Widgets.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.beta.xcconfig"; sourceTree = "<group>"; };
 		B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; sourceTree = "<group>"; };
+		B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerLiveActivityTests.swift; sourceTree = "<group>"; };
 		B6022212226DAC9D00E8DBFE /* ScaledFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaledFont.swift; sourceTree = "<group>"; };
 		B60247ED1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B60247FF1FBD343000998205 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -3445,6 +3450,7 @@
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D72C761F65606EF882E2A7B1 /* Pods-iOS-Extensions-Today-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Today-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Today-metadata.plist"; sourceTree = "<group>"; };
+		D790D5FA5DBB4B5B9DBB2334 /* NotificationsCommandManagerLiveActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsCommandManagerLiveActivityTests.swift; sourceTree = "<group>"; };
 		DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntities.swift; sourceTree = "<group>"; };
 		E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-PushProvider-metadata.plist"; path = "Pods/Pods-iOS-Extensions-PushProvider-metadata.plist"; sourceTree = "<group>"; };
 		E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Intents-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Intents-metadata.plist"; sourceTree = "<group>"; };
@@ -6479,6 +6485,16 @@
 			path = Overlay;
 			sourceTree = "<group>";
 		};
+		8881A40916A3424685660E6B /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				5E95733B72864AB3B9607B57 /* MockLiveActivityRegistry.swift */,
+				B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */,
+				D790D5FA5DBB4B5B9DBB2334 /* NotificationsCommandManagerLiveActivityTests.swift */,
+			);
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
 		95A32294D4A340198B769AAB /* CommonlyUsedEntities */ = {
 			isa = PBXGroup;
 			children = (
@@ -7202,6 +7218,7 @@
 				428626002DA5CC8400D58D13 /* DesignSystem */,
 				118511C024B25BDC00D18F60 /* Webhook */,
 				11AF4D28249D88B2006C74C0 /* Sensors */,
+				8881A40916A3424685660E6B /* LiveActivity */,
 				D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */,
 				11AD2EA8252900B500FBC437 /* Resources */,
 				11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */,
@@ -7871,7 +7888,6 @@
 					};
 					1171506824DFCDE60065E874 = {
 						CreatedOnToolsVersion = 12.0;
-						DevelopmentTeam = QMQYCKL255;
 					};
 					11B6B57A2948F8E100B8B552 = {
 						CreatedOnToolsVersion = 14.1;
@@ -10372,6 +10388,9 @@
 				421125C72F51DE9200971BAD /* StatePrecision.test.swift in Sources */,
 				114CBAED283AB92D00A9BAFF /* SecTrust+TestAdditions.swift in Sources */,
 				110ED58025A570F100489AF7 /* DisplaySensor.test.swift in Sources */,
+				618FCE5CA6B34267BB2056F5 /* MockLiveActivityRegistry.swift in Sources */,
+				71E0BF803A854C3B9F0CB726 /* HandlerLiveActivityTests.swift in Sources */,
+				897D7538631C46D4BD849CF5 /* NotificationsCommandManagerLiveActivityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10932,6 +10951,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
+				DEVELOPMENT_TEAM = 4Q9RHLUX47;
 				INFOPLIST_FILE = Sources/Extensions/Widgets/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

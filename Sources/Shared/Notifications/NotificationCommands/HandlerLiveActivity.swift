@@ -14,7 +14,7 @@ import PromiseKit
 /// Notification payload fields mirror the Android companion app:
 ///   tag, title, message, critical_text, progress, progress_max,
 ///   chronometer, when, when_relative, notification_icon, notification_icon_color
-@available(iOS 16.1, *)
+@available(iOS 16.2, *)
 struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     private enum ValidationError: Error {
         case missingTag
@@ -135,7 +135,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
 
 /// Handles explicit `end_live_activity` commands.
 /// Note: the `clear_notification` + `tag` dismiss flow is handled in `HandlerClearNotification`.
-@available(iOS 16.1, *)
+@available(iOS 16.2, *)
 struct HandlerEndLiveActivity: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
         guard !Current.isAppExtension else {
