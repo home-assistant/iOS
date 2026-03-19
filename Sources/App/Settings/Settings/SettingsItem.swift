@@ -29,7 +29,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
-        case .liveActivities: return "Live Activities"
+        case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
         case .nfc: return L10n.Nfc.List.title
         case .widgets: return L10n.Settings.Widgets.title
@@ -112,7 +112,9 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications:
             SettingsNotificationsView()
         case .liveActivities:
-            LiveActivitySettingsView()
+            if #available(iOS 16.1, *) {
+                LiveActivitySettingsView()
+            }
         case .sensors:
             SensorListView()
         case .nfc:

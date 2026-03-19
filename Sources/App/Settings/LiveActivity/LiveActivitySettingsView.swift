@@ -2,25 +2,12 @@ import ActivityKit
 import Shared
 import SwiftUI
 
-// MARK: - Entry point (availability wrapper)
+// MARK: - Entry point
 
-struct LiveActivitySettingsView: View {
-    var body: some View {
-        if #available(iOS 16.1, *) {
-            LiveActivitySettingsContentView()
-        } else {
-            // Unreachable in practice — the settings item is filtered out below iOS 16.1
-            Text("Live Activities require iOS 16.1 or later.")
-                .foregroundStyle(.secondary)
-                .padding()
-        }
-    }
-}
-
-// MARK: - Main content
-
+// Deployment target is iOS 15. The settings item is filtered from the list on < iOS 16.1
+// (see SettingsItem.allVisibleCases), so this view is only ever navigated to on iOS 16.1+.
 @available(iOS 16.1, *)
-private struct LiveActivitySettingsContentView: View {
+struct LiveActivitySettingsView: View {
 
     // MARK: State
 
@@ -35,22 +22,22 @@ private struct LiveActivitySettingsContentView: View {
         List {
             AppleLikeListTopRowHeader(
                 image: .playBoxOutlineIcon,
-                title: "Live Activities",
-                subtitle: "Real-time Home Assistant updates on your Lock Screen and Dynamic Island."
+                title: L10n.LiveActivity.title,
+                subtitle: L10n.LiveActivity.subtitle
             )
 
             statusSection
 
             if activities.isEmpty {
-                Section("Active Activities") {
+                Section(L10n.LiveActivity.Section.active) {
                     HStack {
-                        Text("No active Live Activities")
+                        Text(L10n.LiveActivity.emptyState)
                             .foregroundStyle(.secondary)
                         Spacer()
                     }
                 }
             } else {
-                Section("Active Activities") {
+                Section(L10n.LiveActivity.Section.active) {
                     ForEach(activities) { snapshot in
                         ActivityRow(snapshot: snapshot) {
                             endActivity(tag: snapshot.tag)
@@ -60,17 +47,17 @@ private struct LiveActivitySettingsContentView: View {
                     Button(role: .destructive) {
                         showEndAllConfirmation = true
                     } label: {
-                        Label("End All Activities", systemSymbol: .xmarkCircle)
+                        Label(L10n.LiveActivity.EndAll.button, systemSymbol: .xmarkCircle)
                     }
                     .confirmationDialog(
-                        "End all Live Activities?",
+                        L10n.LiveActivity.EndAll.confirmTitle,
                         isPresented: $showEndAllConfirmation,
                         titleVisibility: .visible
                     ) {
-                        Button("End All", role: .destructive) {
+                        Button(L10n.LiveActivity.EndAll.confirmButton, role: .destructive) {
                             endAllActivities()
                         }
-                        Button("Cancel", role: .cancel) {}
+                        Button(L10n.cancelLabel, role: .cancel) {}
                     }
                 }
             }
@@ -81,22 +68,22 @@ private struct LiveActivitySettingsContentView: View {
                 frequentUpdatesSection
             }
         }
-        .navigationTitle("Live Activities")
+        .navigationTitle(L10n.LiveActivity.title)
         .task { await loadActivities() }
     }
 
     // MARK: - Sections
 
     private var statusSection: some View {
-        Section("Status") {
+        Section(L10n.LiveActivity.Section.status) {
             HStack {
-                Label("Live Activities", systemSymbol: .livephotoIcon)
+                Label(L10n.LiveActivity.title, systemSymbol: .livephotoIcon)
                 Spacer()
                 if authorizationEnabled {
-                    Text("Enabled")
+                    Text(L10n.LiveActivity.Status.enabled)
                         .foregroundStyle(.green)
                 } else {
-                    Button("Open Settings") {
+                    Button(L10n.LiveActivity.Status.openSettings) {
                         if let url = URL(string: UIApplication.openSettingsURLString) {
                             UIApplication.shared.open(url)
                         }
@@ -109,28 +96,26 @@ private struct LiveActivitySettingsContentView: View {
 
     private var privacySection: some View {
         Section {
-            Label(
-                "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.",
-                systemSymbol: .lockShieldIcon
-            )
-            .font(.footnote)
-            .foregroundStyle(.secondary)
+            Label(L10n.LiveActivity.Privacy.message, systemSymbol: .lockShieldIcon)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         } header: {
-            Text("Privacy")
+            Text(L10n.LiveActivity.Section.privacy)
         }
     }
 
     @available(iOS 17.2, *)
     private var frequentUpdatesSection: some View {
-        Section {
+        let appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Home Assistant"
+        return Section {
             HStack {
-                Label("Frequent Updates", systemSymbol: .boltIcon)
+                Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .boltIcon)
                 Spacer()
                 if frequentUpdatesEnabled {
-                    Text("Enabled")
+                    Text(L10n.LiveActivity.Status.enabled)
                         .foregroundStyle(.green)
                 } else {
-                    Button("Open Settings") {
+                    Button(L10n.LiveActivity.Status.openSettings) {
                         if let url = URL(string: UIApplication.openSettingsURLString) {
                             UIApplication.shared.open(url)
                         }
@@ -139,11 +124,9 @@ private struct LiveActivitySettingsContentView: View {
                 }
             }
         } header: {
-            Text("Frequent Updates")
+            Text(L10n.LiveActivity.FrequentUpdates.title)
         } footer: {
-            Text(
-                "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings › \(Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Home Assistant") › Live Activities."
-            )
+            Text(L10n.LiveActivity.FrequentUpdates.footer(appName))
         }
     }
 
@@ -235,6 +218,8 @@ private struct ActivitySnapshot: Identifiable {
 
 #Preview {
     NavigationStack {
-        LiveActivitySettingsView()
+        if #available(iOS 16.1, *) {
+            LiveActivitySettingsView()
+        }
     }
 }
