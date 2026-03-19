@@ -159,7 +159,11 @@ struct HAExpandedBottomView: View {
 }
 
 @available(iOS 16.2, *)
-#Preview("Expanded", as: .dynamicIsland(.expanded), using: HALiveActivityAttributes(tag: "washer", title: "Washing Machine")) {
+#Preview(
+    "Expanded",
+    as: .dynamicIsland(.expanded),
+    using: HALiveActivityAttributes(tag: "washer", title: "Washing Machine")
+) {
     HALiveActivityConfiguration()
 } contentStates: {
     HALiveActivityAttributes.ContentState(

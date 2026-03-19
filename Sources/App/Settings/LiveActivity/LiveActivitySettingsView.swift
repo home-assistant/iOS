@@ -4,11 +4,10 @@ import SwiftUI
 
 // MARK: - Entry point
 
-// Deployment target is iOS 15. The settings item is filtered from the list on < iOS 16.1
-// (see SettingsItem.allVisibleCases), so this view is only ever navigated to on iOS 16.1+.
+/// Deployment target is iOS 15. The settings item is filtered from the list on < iOS 16.1
+/// (see SettingsItem.allVisibleCases), so this view is only ever navigated to on iOS 16.1+.
 @available(iOS 16.1, *)
 struct LiveActivitySettingsView: View {
-
     // MARK: State
 
     @State private var activities: [ActivitySnapshot] = []

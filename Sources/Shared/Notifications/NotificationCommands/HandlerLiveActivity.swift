@@ -39,7 +39,10 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                     }
 
                     guard Self.isValidTag(tag) else {
-                        Current.Log.error("HandlerStartOrUpdateLiveActivity: invalid tag '\(tag)' — must be [a-zA-Z0-9_-], max 64 chars")
+                        Current.Log
+                            .error(
+                                "HandlerStartOrUpdateLiveActivity: invalid tag '\(tag)' — must be [a-zA-Z0-9_-], max 64 chars"
+                            )
                         throw ValidationError.invalidTag
                     }
 
@@ -106,7 +109,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
         // `when` + `when_relative` → absolute countdown end date.
         // Parsed as Double to preserve sub-second Unix timestamps sent by HA.
         var countdownEnd: Date?
-        if let when = (payload["when"] as? NSNumber).map({ $0.doubleValue }) {
+        if let when = (payload["when"] as? NSNumber).map(\.doubleValue) {
             let whenRelative = payload["when_relative"] as? Bool ?? false
             if whenRelative {
                 countdownEnd = Date().addingTimeInterval(when)

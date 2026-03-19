@@ -3,8 +3,8 @@ import ActivityKit
 import Foundation
 import PromiseKit
 
-// Stale date offset for all Live Activity content updates.
-// Activities are marked stale after 30 minutes if no further updates arrive.
+/// Stale date offset for all Live Activity content updates.
+/// Activities are marked stale after 30 minutes if no further updates arrive.
 private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
 
 @available(iOS 16.1, *)
@@ -25,7 +25,6 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
 /// arrive back-to-back before the first `Activity.request(...)` completes.
 @available(iOS 16.1, *)
 public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
-
     // MARK: - Types
 
     struct Entry {

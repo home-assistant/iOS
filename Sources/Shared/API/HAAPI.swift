@@ -64,7 +64,7 @@ public class HomeAssistantAPI {
         return "Home Assistant/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
     }
 
-    // "Mobile/BUILD_NUMBER" is what CodeMirror sniffs for to decide iOS or not; other things likely look for Safari
+    /// "Mobile/BUILD_NUMBER" is what CodeMirror sniffs for to decide iOS or not; other things likely look for Safari
     public static var applicationNameForUserAgent: String {
         HomeAssistantAPI.userAgent + " Mobile/HomeAssistant, like Safari"
     }
@@ -358,7 +358,6 @@ public class HomeAssistantAPI {
 
     public func DownloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
         Promise { seal in
-
             var finalURL = url
 
             let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
@@ -676,11 +675,13 @@ public class HomeAssistantAPI {
         }.asVoid()
     }
 
-    public var sharedEventDeviceInfo: [String: String] { [
-        "sourceDevicePermanentID": AppConstants.PermanentID,
-        "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
-        "sourceDeviceID": Current.settingsStore.deviceID,
-    ] }
+    public var sharedEventDeviceInfo: [String: String] {
+        [
+            "sourceDevicePermanentID": AppConstants.PermanentID,
+            "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
+            "sourceDeviceID": Current.settingsStore.deviceID,
+        ]
+    }
 
     public func legacyNotificationActionEvent(
         identifier: String,

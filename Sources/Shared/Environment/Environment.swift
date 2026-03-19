@@ -141,10 +141,10 @@ public class AppEnvironment {
 
     #if os(iOS)
     #if canImport(ActivityKit)
-    // Backing store uses Any? to work around Swift's @available stored property restriction.
-    // Access via the typed `liveActivityRegistry` computed property.
-    // Call `_ = Current.liveActivityRegistry` on the main thread at launch (before any
-    // background thread can access it) to avoid a lazy-init race between concurrent callers.
+    /// Backing store uses Any? to work around Swift's @available stored property restriction.
+    /// Access via the typed `liveActivityRegistry` computed property.
+    /// Call `_ = Current.liveActivityRegistry` on the main thread at launch (before any
+    /// background thread can access it) to avoid a lazy-init race between concurrent callers.
     private var _liveActivityRegistryBacking: Any?
 
     @available(iOS 16.1, *)
@@ -188,7 +188,9 @@ public class AppEnvironment {
 
     public var cachedApis = [Identifier<Server>: HomeAssistantAPI]()
 
-    public var apis: [HomeAssistantAPI] { servers.all.compactMap(api(for:)) }
+    public var apis: [HomeAssistantAPI] {
+        servers.all.compactMap(api(for:))
+    }
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()
     public func api(for server: Server) -> HomeAssistantAPI? {
@@ -280,7 +282,7 @@ public class AppEnvironment {
 
     public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
 
-    // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
+    /// Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = {
         #if DEBUG
         print("⚠️ isTestFlight returns TRUE while debugging")
@@ -289,6 +291,13 @@ public class AppEnvironment {
         return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
         #endif
     }()
+
+    /// Centralized gate for importing custom mTLS client certificates.
+    /// TestFlight-only for now; update this in one place if rollout rules change.
+    public var allowsCustomMTLSCertificateImport: Bool {
+        isTestFlight
+    }
+
 
     #if os(iOS)
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
@@ -320,7 +329,7 @@ public class AppEnvironment {
 
     private let isFastlaneSnapshot = UserDefaults(suiteName: AppConstants.AppGroupID)!.bool(forKey: "FASTLANE_SNAPSHOT")
 
-    // This can be used to add debug statements.
+    /// This can be used to add debug statements.
     public var isDebug: Bool {
         #if DEBUG
         return true

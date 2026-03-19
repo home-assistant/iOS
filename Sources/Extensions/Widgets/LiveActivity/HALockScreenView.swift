@@ -80,7 +80,11 @@ let haBlueHex = "#03A9F4"
 
 #if DEBUG
 @available(iOS 16.2, *)
-#Preview("Lock Screen — Progress", as: .content, using: HALiveActivityAttributes(tag: "washer", title: "Washing Machine")) {
+#Preview(
+    "Lock Screen — Progress",
+    as: .content,
+    using: HALiveActivityAttributes(tag: "washer", title: "Washing Machine")
+) {
     HALiveActivityConfiguration()
 } contentStates: {
     HALiveActivityAttributes.ContentState(
@@ -101,7 +105,11 @@ let haBlueHex = "#03A9F4"
 }
 
 @available(iOS 16.2, *)
-#Preview("Lock Screen — Chronometer", as: .content, using: HALiveActivityAttributes(tag: "timer", title: "Kitchen Timer")) {
+#Preview(
+    "Lock Screen — Chronometer",
+    as: .content,
+    using: HALiveActivityAttributes(tag: "timer", title: "Kitchen Timer")
+) {
     HALiveActivityConfiguration()
 } contentStates: {
     HALiveActivityAttributes.ContentState(
