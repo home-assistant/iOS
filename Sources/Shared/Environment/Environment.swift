@@ -130,10 +130,21 @@ public class AppEnvironment {
         AreasService.shared
     }
 
+    /// APNs environment string for token reporting. "sandbox" in DEBUG/TestFlight, "production" otherwise.
+    public var apnsEnvironment: String {
+        #if DEBUG
+        return "sandbox"
+        #else
+        return isTestFlight ? "sandbox" : "production"
+        #endif
+    }
+
     #if os(iOS)
     #if canImport(ActivityKit)
     // Backing store uses Any? to work around Swift's @available stored property restriction.
     // Access via the typed `liveActivityRegistry` computed property.
+    // Call `_ = Current.liveActivityRegistry` on the main thread at launch (before any
+    // background thread can access it) to avoid a lazy-init race between concurrent callers.
     private var _liveActivityRegistryBacking: Any?
 
     @available(iOS 16.1, *)

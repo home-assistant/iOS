@@ -575,7 +575,7 @@ public class HomeAssistantAPI {
                     // APNs without the app being in the foreground (best-effort, iOS 17.2+).
                     if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
                         appData["live_activity_push_to_start_token"] = pushToStartToken
-                        appData["live_activity_push_to_start_apns_environment"] = apnsEnvironmentString()
+                        appData["live_activity_push_to_start_apns_environment"] = Current.apnsEnvironment
                     }
                 }
                 #endif
@@ -594,14 +594,6 @@ public class HomeAssistantAPI {
             $0.OSVersion = Current.device.systemVersion()
             $0.SupportsEncryption = true
         }
-    }
-
-    private func apnsEnvironmentString() -> String {
-        #if DEBUG
-        return "sandbox"
-        #else
-        return Current.isTestFlight ? "sandbox" : "production"
-        #endif
     }
 
     private func buildMobileAppUpdateRegistration() -> [String: Any] {

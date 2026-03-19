@@ -113,20 +113,22 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     static func contentState(from payload: [String: Any]) -> HALiveActivityAttributes.ContentState {
         let message = payload["message"] as? String ?? ""
         let criticalText = payload["critical_text"] as? String
-        let progress = payload["progress"] as? Int
-        let progressMax = payload["progress_max"] as? Int
+        // Use NSNumber coercion so both Int and Double JSON values (e.g. 50 vs 50.0) decode correctly.
+        let progress = (payload["progress"] as? NSNumber).map { Int(truncating: $0) }
+        let progressMax = (payload["progress_max"] as? NSNumber).map { Int(truncating: $0) }
         let chronometer = payload["chronometer"] as? Bool
         let icon = payload["notification_icon"] as? String
         let color = payload["notification_icon_color"] as? String
 
-        // `when` + `when_relative` → absolute countdown end date
+        // `when` + `when_relative` → absolute countdown end date.
+        // Parsed as Double to preserve sub-second Unix timestamps sent by HA.
         var countdownEnd: Date?
-        if let when = payload["when"] as? Int {
+        if let when = (payload["when"] as? NSNumber).map({ $0.doubleValue }) {
             let whenRelative = payload["when_relative"] as? Bool ?? false
             if whenRelative {
-                countdownEnd = Date().addingTimeInterval(Double(when))
+                countdownEnd = Date().addingTimeInterval(when)
             } else {
-                countdownEnd = Date(timeIntervalSince1970: Double(when))
+                countdownEnd = Date(timeIntervalSince1970: when)
             }
         }
 

@@ -3,6 +3,10 @@ import ActivityKit
 import Foundation
 import PromiseKit
 
+// Stale date offset for all Live Activity content updates.
+// Activities are marked stale after 30 minutes if no further updates arrive.
+private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
+
 @available(iOS 16.1, *)
 public protocol LiveActivityRegistryProtocol: AnyObject {
     func startOrUpdate(tag: String, title: String, state: HALiveActivityAttributes.ContentState) async throws
@@ -77,7 +81,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             if #available(iOS 16.2, *) {
                 let content = ActivityContent(
                     state: state,
-                    staleDate: Date().addingTimeInterval(30 * 60)
+                    staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
                 )
                 await existing.activity.update(content)
             } else {
@@ -92,7 +96,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             if #available(iOS 16.2, *) {
                 let content = ActivityContent(
                     state: state,
-                    staleDate: Date().addingTimeInterval(30 * 60)
+                    staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
                 )
                 await live.update(content)
             } else {
@@ -122,7 +126,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             if #available(iOS 16.2, *) {
                 let content = ActivityContent(
                     state: state,
-                    staleDate: Date().addingTimeInterval(30 * 60),
+                    staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval),
                     relevanceScore: 0.5
                 )
                 activity = try Activity<HALiveActivityAttributes>.request(
@@ -195,7 +199,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
             // Report to all HA servers via registration update so the token is available
             // in the HA device registry immediately.
-            await reportPushToStartToken(tokenHex)
+            reportPushToStartToken(tokenHex)
         }
     }
 
@@ -217,7 +221,6 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 // Observe push token updates — report each new token to all HA servers
                 group.addTask {
                     for await tokenData in activity.pushTokenUpdates {
-                        guard !Task.isCancelled else { break }
                         let tokenHex = tokenData.map { String(format: "%02x", $0) }.joined()
                         Current.Log.verbose(
                             "LiveActivityRegistry: new push token for tag \(activity.attributes.tag)"
@@ -259,7 +262,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             data: [
                 "activity_id": activityID,
                 "push_token": tokenHex,
-                "apns_environment": apnsEnvironmentString(),
+                "apns_environment": Current.apnsEnvironment,
             ]
         )
         for server in Current.servers.all {
@@ -285,23 +288,14 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     /// Report the push-to-start token to all HA servers via registration update.
     /// HA stores this alongside the FCM push token in the device registry.
+    /// Fire-and-forget: errors are logged but do not block the token observation loop.
     @available(iOS 17.2, *)
-    private func reportPushToStartToken(_ tokenHex: String) async {
+    private func reportPushToStartToken(_ tokenHex: String) {
         for api in Current.apis {
-            firstly {
-                api.updateRegistration()
-            }.catch { error in
+            api.updateRegistration().catch { error in
                 Current.Log.error("LiveActivityRegistry: failed to report push-to-start token: \(error)")
             }
         }
-    }
-
-    private func apnsEnvironmentString() -> String {
-        #if DEBUG
-        return "sandbox"
-        #else
-        return Current.isTestFlight ? "sandbox" : "production"
-        #endif
     }
 }
 #endif

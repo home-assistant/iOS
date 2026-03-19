@@ -53,7 +53,8 @@ struct HADynamicIslandIconView: View {
 
     var body: some View {
         if let slug, let mdiIcon = MaterialDesignIcons(serversideValueNamed: slug) {
-            let uiColor = color.flatMap { UIColor(hex: $0) } ?? UIColor(Color(hex: "#03A9F4"))
+            // UIColor(hex:) from Shared handles nil/CSS names/3-6-8 digit hex; non-failable.
+            let uiColor = UIColor(hex: color ?? haBlueHex)
             Image(uiImage: mdiIcon.image(
                 ofSize: .init(width: size, height: size),
                 color: uiColor
@@ -134,7 +135,7 @@ struct HAExpandedBottomView: View {
 
             if let fraction = state.progressFraction {
                 ProgressView(value: fraction)
-                    .tint(Color(hex: state.color ?? "#03A9F4"))
+                    .tint(Color(hex: state.color ?? haBlueHex))
             }
         }
     }

@@ -50,8 +50,9 @@ public class NotificationCommandManager {
         // This allows the notification body to be a real message instead of a command keyword,
         // matching Android's data.live_update: true pattern.
         #if canImport(ActivityKit)
-        if #available(iOS 16.1, *), hadict["live_activity"] as? Bool == true {
-            return HandlerStartOrUpdateLiveActivity().handle(hadict)
+        if #available(iOS 16.1, *), hadict["live_activity"] as? Bool == true,
+           let handler = commands["live_activity"] {
+            return handler.handle(hadict)
         }
         #endif
 
@@ -108,11 +109,17 @@ private struct HandlerClearNotification: NotificationCommandHandler {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
 
-        // Also end any Live Activity whose tag matches — same YAML works on both iOS and Android
+        // Also end any Live Activity whose tag matches — same YAML works on both iOS and Android.
+        // Bridged into the returned Promise so the background fetch window stays open until
+        // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
         #if os(iOS) && canImport(ActivityKit)
         if #available(iOS 16.1, *), let tag = payload["tag"] as? String {
-            Task {
-                await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
+            return Promise<Void> { seal in
+                Task {
+                    await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
+                    // https://stackoverflow.com/a/56657888/6324550
+                    DispatchQueue.main.async { seal.fulfill(()) }
+                }
             }
         }
         #endif

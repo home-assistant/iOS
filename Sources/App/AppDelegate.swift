@@ -376,18 +376,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func setupLiveActivityReattachment() {
         #if canImport(ActivityKit)
         if #available(iOS 16.1, *) {
+            // Pre-warm the registry on the main thread before spawning background Tasks.
+            // This avoids a lazy-init race if a push notification handler accesses it
+            // concurrently from a background thread.
+            let registry = Current.liveActivityRegistry
+
             Task {
                 // Re-attach observation tasks (push token + lifecycle) to any Live Activities
                 // that survived the previous process termination. Must run before the first
                 // notification handler fires so no push token updates are missed.
-                await Current.liveActivityRegistry.reattach()
+                await registry.reattach()
+            }
 
-                // Begin observing the push-to-start token stream (iOS 17.2+).
-                // This token allows HA to start a Live Activity entirely via APNs
-                // without the app being in the foreground. The stream is infinite;
-                // the Task is kept alive for the app's lifetime.
-                if #available(iOS 17.2, *) {
-                    await Current.liveActivityRegistry.startObservingPushToStartToken()
+            if #available(iOS 17.2, *) {
+                // Begin observing the push-to-start token stream on a separate Task.
+                // The stream is infinite; this Task is kept alive for the app's lifetime.
+                Task {
+                    await registry.startObservingPushToStartToken()
                 }
             }
         }
