@@ -243,7 +243,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
                 // Search through all elements with shadow roots
                 const allElements = root.querySelectorAll('*');
-                for (let el of allElements) {
+                for (const el of allElements) {
                     if (el.shadowRoot) {
                         element = findElementInShadowDOM(elementId, el.shadowRoot);
                         if (element) return element;
@@ -253,14 +253,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             }
 
             // Search for the element
-            var element = findElementInShadowDOM('\(elementId)');
+            const elementId = '\(elementId)';
+            const element = findElementInShadowDOM(elementId);
 
             if (element) {
                 element.focus();
                 return 'Element found and focused: ' + elementId;
-            } else {
-                return 'Element not found: ' + elementId;
             }
+
+            return 'Element not found: ' + elementId;
         })();
         """
 
