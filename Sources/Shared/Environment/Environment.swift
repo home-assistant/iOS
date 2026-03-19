@@ -130,12 +130,13 @@ public class AppEnvironment {
         AreasService.shared
     }
 
-    /// APNs environment string for token reporting. "sandbox" in DEBUG/TestFlight, "production" otherwise.
+    /// APNs environment string for token reporting. "sandbox" in DEBUG builds, "production" otherwise.
+    /// TestFlight uses distribution signing and routes through the production APNs endpoint.
     public var apnsEnvironment: String {
         #if DEBUG
         return "sandbox"
         #else
-        return isTestFlight ? "sandbox" : "production"
+        return "production"
         #endif
     }
 
