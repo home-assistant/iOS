@@ -11,6 +11,9 @@ import Version
 #if os(iOS)
 import Reachability
 #endif
+#if os(iOS) && canImport(ActivityKit)
+import ActivityKit
+#endif
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {

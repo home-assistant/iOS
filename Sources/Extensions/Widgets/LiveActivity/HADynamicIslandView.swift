@@ -52,9 +52,10 @@ struct HADynamicIslandIconView: View {
     let size: CGFloat
 
     var body: some View {
-        if let slug, let mdiIcon = MaterialDesignIcons(serversideValueNamed: slug) {
+        if let slug {
             // UIColor(hex:) from Shared handles nil/CSS names/3-6-8 digit hex; non-failable.
             let uiColor = UIColor(hex: color ?? haBlueHex)
+            let mdiIcon = MaterialDesignIcons(serversideValueNamed: slug)
             Image(uiImage: mdiIcon.image(
                 ofSize: .init(width: size, height: size),
                 color: uiColor
@@ -140,50 +141,3 @@ struct HAExpandedBottomView: View {
         }
     }
 }
-
-// MARK: - Previews
-
-#if DEBUG
-@available(iOS 16.2, *)
-#Preview("Compact", as: .dynamicIsland(.compact), using: HALiveActivityAttributes(tag: "washer", title: "Washer")) {
-    HALiveActivityConfiguration()
-} contentStates: {
-    HALiveActivityAttributes.ContentState(
-        message: "45 min remaining",
-        criticalText: "45 min",
-        progress: 2700,
-        progressMax: 3600,
-        icon: "mdi:washing-machine",
-        color: "#2196F3"
-    )
-}
-
-@available(iOS 16.2, *)
-#Preview(
-    "Expanded",
-    as: .dynamicIsland(.expanded),
-    using: HALiveActivityAttributes(tag: "washer", title: "Washing Machine")
-) {
-    HALiveActivityConfiguration()
-} contentStates: {
-    HALiveActivityAttributes.ContentState(
-        message: "Cycle in progress",
-        criticalText: "45 min",
-        progress: 2700,
-        progressMax: 3600,
-        icon: "mdi:washing-machine",
-        color: "#2196F3"
-    )
-}
-
-@available(iOS 16.2, *)
-#Preview("Minimal", as: .dynamicIsland(.minimal), using: HALiveActivityAttributes(tag: "washer", title: "Washer")) {
-    HALiveActivityConfiguration()
-} contentStates: {
-    HALiveActivityAttributes.ContentState(
-        message: "Running",
-        icon: "mdi:washing-machine",
-        color: "#2196F3"
-    )
-}
-#endif

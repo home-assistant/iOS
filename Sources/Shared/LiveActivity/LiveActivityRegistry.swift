@@ -153,14 +153,22 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// End and dismiss the Live Activity for `tag`.
     public func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy = .immediate) async {
         if let existing = remove(id: tag) {
-            await existing.activity.end(nil, dismissalPolicy: dismissalPolicy)
+            if #available(iOS 16.2, *) {
+                await existing.activity.end(nil, dismissalPolicy: dismissalPolicy)
+            } else {
+                await existing.activity.end(using: nil, dismissalPolicy: dismissalPolicy)
+            }
             Current.Log.verbose("LiveActivityRegistry: ended activity for tag \(tag)")
             return
         }
         // Fallback: check system list in case we lost track
         if let live = Activity<HALiveActivityAttributes>.activities
             .first(where: { $0.attributes.tag == tag }) {
-            await live.end(nil, dismissalPolicy: dismissalPolicy)
+            if #available(iOS 16.2, *) {
+                await live.end(nil, dismissalPolicy: dismissalPolicy)
+            } else {
+                await live.end(using: nil, dismissalPolicy: dismissalPolicy)
+            }
         }
     }
 

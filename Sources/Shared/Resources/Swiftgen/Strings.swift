@@ -1847,45 +1847,47 @@ public enum L10n {
   }
 
   public enum LiveActivity {
-    /// Live Activities
-    public static var title: String { return L10n.tr("Localizable", "live_activity.title") }
-    /// Real-time Home Assistant updates on your Lock Screen and Dynamic Island.
-    public static var subtitle: String { return L10n.tr("Localizable", "live_activity.subtitle") }
     /// No active Live Activities
     public static var emptyState: String { return L10n.tr("Localizable", "live_activity.empty_state") }
+    /// Real-time Home Assistant updates on your Lock Screen and Dynamic Island.
+    public static var subtitle: String { return L10n.tr("Localizable", "live_activity.subtitle") }
+    /// Live Activities
+    public static var title: String { return L10n.tr("Localizable", "live_activity.title") }
+    public enum EndAll {
+      /// End All Activities
+      public static var button: String { return L10n.tr("Localizable", "live_activity.end_all.button") }
+      public enum Confirm {
+        /// End All
+        public static var button: String { return L10n.tr("Localizable", "live_activity.end_all.confirm.button") }
+        /// End all Live Activities?
+        public static var title: String { return L10n.tr("Localizable", "live_activity.end_all.confirm.title") }
+      }
+    }
+    public enum FrequentUpdates {
+      /// Allows Home Assistant to update Live Activities up to once per second. Enable in Settings u203A %@ u203A Live Activities.
+      public static func footer(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "live_activity.frequent_updates.footer", String(describing: p1))
+      }
+      /// Frequent Updates
+      public static var title: String { return L10n.tr("Localizable", "live_activity.frequent_updates.title") }
+    }
+    public enum Privacy {
+      /// Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.
+      public static var message: String { return L10n.tr("Localizable", "live_activity.privacy.message") }
+    }
     public enum Section {
       /// Active Activities
       public static var active: String { return L10n.tr("Localizable", "live_activity.section.active") }
-      /// Status
-      public static var status: String { return L10n.tr("Localizable", "live_activity.section.status") }
       /// Privacy
       public static var privacy: String { return L10n.tr("Localizable", "live_activity.section.privacy") }
+      /// Status
+      public static var status: String { return L10n.tr("Localizable", "live_activity.section.status") }
     }
     public enum Status {
       /// Enabled
       public static var enabled: String { return L10n.tr("Localizable", "live_activity.status.enabled") }
       /// Open Settings
       public static var openSettings: String { return L10n.tr("Localizable", "live_activity.status.open_settings") }
-    }
-    public enum EndAll {
-      /// End All Activities
-      public static var button: String { return L10n.tr("Localizable", "live_activity.end_all.button") }
-      /// End all Live Activities?
-      public static var confirmTitle: String { return L10n.tr("Localizable", "live_activity.end_all.confirm.title") }
-      /// End All
-      public static var confirmButton: String { return L10n.tr("Localizable", "live_activity.end_all.confirm.button") }
-    }
-    public enum Privacy {
-      /// Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.
-      public static var message: String { return L10n.tr("Localizable", "live_activity.privacy.message") }
-    }
-    public enum FrequentUpdates {
-      /// Frequent Updates
-      public static var title: String { return L10n.tr("Localizable", "live_activity.frequent_updates.title") }
-      /// Allows Home Assistant to update Live Activities up to once per second. Enable in Settings › %@ › Live Activities.
-      public static func footer(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "live_activity.frequent_updates.footer", String(describing: p1))
-      }
     }
   }
 

@@ -49,11 +49,11 @@ struct LiveActivitySettingsView: View {
                         Label(L10n.LiveActivity.EndAll.button, systemSymbol: .xmarkCircle)
                     }
                     .confirmationDialog(
-                        L10n.LiveActivity.EndAll.confirmTitle,
+                        L10n.LiveActivity.EndAll.Confirm.title,
                         isPresented: $showEndAllConfirmation,
                         titleVisibility: .visible
                     ) {
-                        Button(L10n.LiveActivity.EndAll.confirmButton, role: .destructive) {
+                        Button(L10n.LiveActivity.EndAll.Confirm.button, role: .destructive) {
                             endAllActivities()
                         }
                         Button(L10n.cancelLabel, role: .cancel) {}
@@ -76,7 +76,7 @@ struct LiveActivitySettingsView: View {
     private var statusSection: some View {
         Section(L10n.LiveActivity.Section.status) {
             HStack {
-                Label(L10n.LiveActivity.title, systemSymbol: .livephotoIcon)
+                Label(L10n.LiveActivity.title, systemSymbol: .livephoto)
                 Spacer()
                 if authorizationEnabled {
                     Text(L10n.LiveActivity.Status.enabled)
@@ -95,7 +95,7 @@ struct LiveActivitySettingsView: View {
 
     private var privacySection: some View {
         Section {
-            Label(L10n.LiveActivity.Privacy.message, systemSymbol: .lockShieldIcon)
+            Label(L10n.LiveActivity.Privacy.message, systemSymbol: .lockShield)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         } header: {
@@ -108,7 +108,7 @@ struct LiveActivitySettingsView: View {
         let appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Home Assistant"
         return Section {
             HStack {
-                Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .boltIcon)
+                Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .bolt)
                 Spacer()
                 if frequentUpdatesEnabled {
                     Text(L10n.LiveActivity.Status.enabled)
@@ -213,16 +213,6 @@ private struct ActivitySnapshot: Identifiable {
             self.message = activity.content.state.message
         } else {
             self.message = activity.contentState.message
-        }
-    }
-}
-
-// MARK: - Preview
-
-#Preview {
-    NavigationStack {
-        if #available(iOS 16.1, *) {
-            LiveActivitySettingsView()
         }
     }
 }

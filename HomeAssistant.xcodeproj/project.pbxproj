@@ -1246,6 +1246,13 @@
 		999549244371450BC98C700E /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 608CFDA223EBCDF01B946093 /* Pods_iOS_Extensions_PushProvider.framework */; };
 		A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
+		A95FDD0C2F6B89C6008EF72F /* LiveActivityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD0A2F6B89C6008EF72F /* LiveActivityRegistry.swift */; };
+		A95FDD0D2F6B89C6008EF72F /* HALiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD092F6B89C6008EF72F /* HALiveActivityAttributes.swift */; };
+		A95FDD0F2F6B8A19008EF72F /* HandlerLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD0E2F6B8A19008EF72F /* HandlerLiveActivity.swift */; };
+		A95FDD142F6B8A3E008EF72F /* HADynamicIslandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD102F6B8A3E008EF72F /* HADynamicIslandView.swift */; };
+		A95FDD152F6B8A3E008EF72F /* HALiveActivityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */; };
+		A95FDD162F6B8A3E008EF72F /* HALockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */; };
+		A95FDD192F6B8A5B008EF72F /* LiveActivitySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */; };
 		AB3E076F146799C008ACB0EA /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7D8DAEFAD435091FDDD61E7 /* Pods_iOS_Extensions_NotificationContent.framework */; };
 		B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022212226DAC9D00E8DBFE /* ScaledFont.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
@@ -3069,6 +3076,13 @@
 		9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/TableSchemaTests.test.swift; sourceTree = "<group>"; };
 		9F9398CFD66E4C66DC39E1D3 /* Pods-iOS-Extensions-PushProvider.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-PushProvider.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-PushProvider/Pods-iOS-Extensions-PushProvider.beta.xcconfig"; sourceTree = "<group>"; };
 		A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthError.test.swift; sourceTree = "<group>"; };
+		A95FDD092F6B89C6008EF72F /* HALiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALiveActivityAttributes.swift; sourceTree = "<group>"; };
+		A95FDD0A2F6B89C6008EF72F /* LiveActivityRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityRegistry.swift; sourceTree = "<group>"; };
+		A95FDD0E2F6B8A19008EF72F /* HandlerLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerLiveActivity.swift; sourceTree = "<group>"; };
+		A95FDD102F6B8A3E008EF72F /* HADynamicIslandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HADynamicIslandView.swift; sourceTree = "<group>"; };
+		A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALiveActivityConfiguration.swift; sourceTree = "<group>"; };
+		A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALockScreenView.swift; sourceTree = "<group>"; };
+		A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivitySettingsView.swift; sourceTree = "<group>"; };
 		AA48C686F844D08C426A8D74 /* Pods_Tests_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC24B1CAB85767B8171BB850 /* Pods-iOS-Extensions-NotificationContent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.release.xcconfig"; sourceTree = "<group>"; };
 		ADC769271BB34C474C2D1E24 /* Pods-iOS-Shared-iOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-metadata.plist"; sourceTree = "<group>"; };
@@ -3884,6 +3898,7 @@
 		1171506E24DFCDE60065E874 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				A95FDD132F6B8A3E008EF72F /* LiveActivity */,
 				428863582EF9641400319CF4 /* CameraList */,
 				95A32294D4A340198B769AAB /* CommonlyUsedEntities */,
 				42FF5E8F2E22D7DA00BDF5EF /* TodoList */,
@@ -4141,6 +4156,7 @@
 		11ADF93D267D34A20040A7E3 /* NotificationCommands */ = {
 			isa = PBXGroup;
 			children = (
+				A95FDD0E2F6B8A19008EF72F /* HandlerLiveActivity.swift */,
 				11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */,
 			);
 			path = NotificationCommands;
@@ -6485,6 +6501,33 @@
 			path = Configuration;
 			sourceTree = "<group>";
 		};
+		A95FDD0B2F6B89C6008EF72F /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				A95FDD092F6B89C6008EF72F /* HALiveActivityAttributes.swift */,
+				A95FDD0A2F6B89C6008EF72F /* LiveActivityRegistry.swift */,
+			);
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+		A95FDD132F6B8A3E008EF72F /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				A95FDD102F6B8A3E008EF72F /* HADynamicIslandView.swift */,
+				A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */,
+				A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */,
+			);
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+		A95FDD182F6B8A5B008EF72F /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */,
+			);
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
 		AAB60FA4DE371AD957F6907B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -6839,6 +6882,7 @@
 		B661FB6B226BCC8500E541DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				A95FDD182F6B8A5B008EF72F /* LiveActivity */,
 				4257EA912F1790DE00D81506 /* EntityPicker */,
 				429AFE5A2DB7BE3200AF0836 /* General */,
 				4211551F2D3525E800A71630 /* AppIcon */,
@@ -7092,6 +7136,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A95FDD0B2F6B89C6008EF72F /* LiveActivity */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
 				429C33C02F17A6CF0033EF5E /* Models */,
@@ -8971,6 +9016,9 @@
 				42C1012A2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */,
 				426CBB6C2C9C550D003CA3AC /* IntentSwitchEntity.swift in Sources */,
 				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
+				A95FDD142F6B8A3E008EF72F /* HADynamicIslandView.swift in Sources */,
+				A95FDD152F6B8A3E008EF72F /* HALiveActivityConfiguration.swift in Sources */,
+				A95FDD162F6B8A3E008EF72F /* HALockScreenView.swift in Sources */,
 				42BA1BC82C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */,
 				421F2BA12EF847AA00F21FE5 /* AutomationAppIntent.swift in Sources */,
@@ -9154,6 +9202,7 @@
 				4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
+				A95FDD192F6B8A5B008EF72F /* LiveActivitySettingsView.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
 				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
 				42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */,
@@ -9985,6 +10034,8 @@
 				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
 				4251AAC02C6CE376004CCC9D /* MagicItem.swift in Sources */,
 				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,
+				A95FDD0C2F6B89C6008EF72F /* LiveActivityRegistry.swift in Sources */,
+				A95FDD0D2F6B89C6008EF72F /* HALiveActivityAttributes.swift in Sources */,
 				420CFC812D3F9D89009A94F3 /* DatabaseTables.swift in Sources */,
 				11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
@@ -10031,6 +10082,7 @@
 				11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */,
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
+				A95FDD0F2F6B8A19008EF72F /* HandlerLiveActivity.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */,
