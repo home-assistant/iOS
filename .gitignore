@@ -86,4 +86,3 @@ vendor/bundle
 .env.development
 .bundle/
 .claude/settings.local.json
-docs/plans/
