@@ -237,6 +237,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
+        webView.scrollView.delegate = self
 
         setupWebViewConstraints(statusBarView: statusBarView)
         setupPullToRefresh()
