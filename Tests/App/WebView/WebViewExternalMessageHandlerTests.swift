@@ -184,6 +184,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertNotNil(mockWebViewController.overlayedController)
         XCTAssertEqual(mockWebViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
     }
+
     @MainActor func testHandleExternalMessageCameraPlayerShowPresentsCameraPlayer() {
         let dictionary: [String: Any] = [
             "id": 1,
