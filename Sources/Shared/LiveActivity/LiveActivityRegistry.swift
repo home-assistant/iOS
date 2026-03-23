@@ -139,6 +139,21 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             throw error
         }
 
+        // Immediately update with an AlertConfiguration to trigger the expanded Dynamic Island
+        // presentation. Activity.request() only shows the compact view (small pill around the
+        // camera cutout). The expanded "bloom" animation requires an update with an alert config.
+        let alertContent = ActivityContent(
+            state: state,
+            staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval),
+            relevanceScore: 0.5
+        )
+        let alertConfig = AlertConfiguration(
+            title: LocalizedStringResource(stringLiteral: title),
+            body: LocalizedStringResource(stringLiteral: state.message),
+            sound: .default
+        )
+        await activity.update(alertContent, alertConfiguration: alertConfig)
+
         let observationTask = makeObservationTask(for: activity)
         await confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
         Current.Log.verbose("LiveActivityRegistry: started activity for tag \(tag), id=\(activity.id)")

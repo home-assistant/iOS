@@ -281,6 +281,20 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
     ) {
         Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
 
+        // Handle commands (including Live Activities) for foreground notifications.
+        // didReceiveRemoteNotification handles background pushes via Firebase/APNs,
+        // but willPresent fires when the app is in the foreground. Without this,
+        // notifications received while the app is open would never trigger the
+        // Live Activity handler.
+        // If a command is recognized, suppress the notification banner so the user
+        // sees only the Live Activity (not a duplicate standard notification).
+        if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
+           (hadict["command"] as? String) != nil || (hadict["live_activity"] as? Bool) == true {
+            commandManager.handle(notification.request.content.userInfo).cauterize()
+            completionHandler([])
+            return
+        }
+
         if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
            UIApplication.shared.applicationState != .background {
             completionHandler([])
