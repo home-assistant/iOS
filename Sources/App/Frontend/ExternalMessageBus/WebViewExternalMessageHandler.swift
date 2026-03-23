@@ -258,10 +258,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
             if (element) {
                 element.focus();
-                return 'Element found and focused: ' + elementId;
             }
-
-            return 'Element not found: ' + elementId;
         })();
         """
 
