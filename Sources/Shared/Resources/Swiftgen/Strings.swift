@@ -1720,7 +1720,7 @@ public enum L10n {
     public enum Brightness {
       /// Brightness Control
       public static var control: String { return L10n.tr("Localizable", "kiosk.brightness.control") }
-      /// Manual Brightness: %d%%
+      /// Manual Brightness: %li%%
       public static func manual(_ p1: Int) -> String {
         return L10n.tr("Localizable", "kiosk.brightness.manual", p1)
       }
@@ -1778,7 +1778,7 @@ public enum L10n {
       public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
     }
     public enum Screensaver {
-      /// Dim Level: %d%%
+      /// Dim Level: %li%%
       public static func dimLevel(_ p1: Int) -> String {
         return L10n.tr("Localizable", "kiosk.screensaver.dim_level", p1)
       }
@@ -1828,7 +1828,7 @@ public enum L10n {
       public static var deviceAuth: String { return L10n.tr("Localizable", "kiosk.security.device_auth") }
       /// Exit Gesture Corner
       public static var gestureCorner: String { return L10n.tr("Localizable", "kiosk.security.gesture_corner") }
-      /// Tap the %@ corner %d times to access kiosk settings when locked.
+      /// Tap the %@ corner %li times to access kiosk settings when locked.
       public static func gestureFooter(_ p1: Any, _ p2: Int) -> String {
         return L10n.tr("Localizable", "kiosk.security.gesture_footer", String(describing: p1), p2)
       }
@@ -1840,7 +1840,7 @@ public enum L10n {
       public static var secretGesture: String { return L10n.tr("Localizable", "kiosk.security.secret_gesture") }
       /// Security & Display
       public static var section: String { return L10n.tr("Localizable", "kiosk.security.section") }
-      /// Taps Required: %d
+      /// Taps Required: %li
       public static func tapsRequired(_ p1: Int) -> String {
         return L10n.tr("Localizable", "kiosk.security.taps_required", p1)
       }
