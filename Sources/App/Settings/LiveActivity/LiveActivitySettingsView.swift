@@ -101,6 +101,7 @@ struct LiveActivitySettingsView: View {
     }
 
     // MARK: - Debug (DEBUG builds only)
+
     //
     // Two sections: Static (fixed snapshots to verify layout) and Animated (multi-stage
     // self-updating sequences to simulate real HA automation behavior).

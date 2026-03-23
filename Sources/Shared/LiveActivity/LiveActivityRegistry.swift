@@ -156,7 +156,8 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         // dismisses the activity immediately once the request completes.
         if reserved.contains(tag) {
             cancelledReservations.insert(tag)
-            Current.Log.verbose("LiveActivityRegistry: end() received for in-flight tag \(tag), will dismiss on confirm")
+            Current.Log
+                .verbose("LiveActivityRegistry: end() received for in-flight tag \(tag), will dismiss on confirm")
             return
         }
 
