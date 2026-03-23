@@ -34,6 +34,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.toastHide.rawValue, "toast/hide")
         XCTAssertEqual(WebViewExternalBusMessage.entityAddToGetActions.rawValue, "entity/add_to/get_actions")
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
+        XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
 
         XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 22)
     }
@@ -69,6 +70,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "canTransferThreadCredentialsToKeychain",
             "hasAssist",
             "hasAssistSettings",
+            "hasCameraPlayer",
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",

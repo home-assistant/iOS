@@ -28,6 +28,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case toastHide = "toast/hide"
     case entityAddToGetActions = "entity/add_to/get_actions"
     case entityAddTo = "entity/add_to"
+    case cameraPlayerShow = "camera/show"
 
     @MainActor static var configResult: [String: Any] {
         [
@@ -40,6 +41,13 @@ enum WebViewExternalBusMessage: String, CaseIterable {
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
             "hasAssistSettings": true,
+            "hasCameraPlayer": {
+                if #available(iOS 16.0, *), !Current.isCatalyst {
+                    return true
+                } else {
+                    return false
+                }
+            }(),
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,

@@ -234,8 +234,15 @@ public class HomeAssistantAPI {
     }
 
     public func VideoStreamer() -> MJPEGStreamer {
-        MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
-            delegate: MJPEGStreamerSessionDelegate(),
+        #if !os(watchOS)
+        let delegate: SessionDelegate = server.info.connection.clientCertificate != nil
+            ? MJPEGCertificateSessionDelegate(server: server)
+            : MJPEGStreamerSessionDelegate()
+        #else
+        let delegate = MJPEGStreamerSessionDelegate()
+        #endif
+        return MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
+            delegate: delegate,
             interceptor: newInterceptor(),
             trustManager: newServerTrustManager()
         ))

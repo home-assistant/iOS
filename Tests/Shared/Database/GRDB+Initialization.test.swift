@@ -16,7 +16,7 @@ struct GRDBInitializationTests {
     }
 
     @Test("Database path in test environment")
-    func testDatabasePathInTestEnvironment() throws {
+    func databasePathInTestEnvironment() throws {
         // The test environment variable should already be set by the test framework
         let path = DatabaseQueue.databasePath()
 
@@ -27,14 +27,14 @@ struct GRDBInitializationTests {
         )
     }
 
-    @Test("Tables returns exactly 13 tables")
-    func testTablesReturns13Tables() throws {
+    @Test("Tables returns exactly 14 tables")
+    func tablesReturns14Tables() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 13, "DatabaseQueue.tables() should return exactly 13 tables")
+        #expect(tables.count == 14, "DatabaseQueue.tables() should return exactly 14 tables")
     }
 
     @Test("Tables contains all expected table names")
-    func testTablesContainsAllExpectedTables() throws {
+    func tablesContainsAllExpectedTables() throws {
         let tables = DatabaseQueue.tables()
         let tableNames = tables.map(\.tableName)
 
@@ -64,7 +64,7 @@ struct GRDBInitializationTests {
     }
 
     @Test("App database creates all tables")
-    func testAppDatabaseCreatesAllTables() throws {
+    func appDatabaseCreatesAllTables() throws {
         // Create a test database using the static method
         let testDatabasePath = makeTestDatabasePath()
         defer { cleanupDatabase(at: testDatabasePath) }
@@ -90,7 +90,7 @@ struct GRDBInitializationTests {
     }
 
     @Test("deleteOldTables removes clientEvent table")
-    func testDeleteOldTablesRemovesClientEventTable() throws {
+    func deleteOldTablesRemovesClientEventTable() throws {
         let testDatabasePath = makeTestDatabasePath()
         defer { cleanupDatabase(at: testDatabasePath) }
 
@@ -121,7 +121,7 @@ struct GRDBInitializationTests {
     }
 
     @Test("deleteOldTables handles missing table gracefully")
-    func testDeleteOldTablesHandlesMissingTableGracefully() throws {
+    func deleteOldTablesHandlesMissingTableGracefully() throws {
         let testDatabasePath = makeTestDatabasePath()
         defer { cleanupDatabase(at: testDatabasePath) }
 
@@ -138,7 +138,7 @@ struct GRDBInitializationTests {
     }
 
     @Test("Table creation error logs to ClientEventStore")
-    func testTableCreationErrorLogsToClientEventStore() throws {
+    func tableCreationErrorLogsToClientEventStore() throws {
         let testDatabasePath = makeTestDatabasePath()
         defer { cleanupDatabase(at: testDatabasePath) }
 
@@ -184,7 +184,7 @@ struct GRDBInitializationTests {
     }
 
     @Test("Multiple tables can coexist")
-    func testMultipleTablesCanCoexist() throws {
+    func multipleTablesCanCoexist() throws {
         let testDatabasePath = makeTestDatabasePath()
         defer { cleanupDatabase(at: testDatabasePath) }
 

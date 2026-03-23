@@ -1,5 +1,6 @@
 import AVFoundation
 import AVKit
+import Combine
 import CoreLocation
 import HAKit
 import Improv_iOS
@@ -69,11 +70,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || kioskPrefersStatusBarHidden
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || kioskPrefersHomeIndicatorAutoHidden
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -236,6 +237,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
+        webView.scrollView.delegate = self
 
         setupWebViewConstraints(statusBarView: statusBarView)
         setupPullToRefresh()
@@ -263,6 +265,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
+        setupKioskMode()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -282,6 +285,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
+
+        // Refresh kiosk status bar state when view appears (e.g., after settings modal dismisses)
+        if KioskModeManager.shared.isKioskModeActive {
+            setNeedsStatusBarAppearanceUpdate()
+            navigationController?.setNeedsStatusBarAppearanceUpdate()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

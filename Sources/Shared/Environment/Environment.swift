@@ -141,6 +141,10 @@ public class AppEnvironment {
     /// Wrapper around UIApplication for use in shared framework
     public var application: (() -> UIApplication)?
 
+    /// Wrapper around UIScreen.main.brightness for testability
+    public var screenBrightness: () -> CGFloat = { UIScreen.main.brightness }
+    public var setScreenBrightness: (CGFloat) -> Void = { UIScreen.main.brightness = $0 }
+
     public lazy var isForegroundApp = {
         self.application?().applicationState == .active
     }

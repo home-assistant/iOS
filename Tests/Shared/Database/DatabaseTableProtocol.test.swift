@@ -5,7 +5,7 @@ import Testing
 @Suite("Database Table Protocol Tests")
 struct DatabaseTableProtocolTests {
     @Test("HAppEntityTable conforms to DatabaseTableProtocol")
-    func testHAppEntityTableConformance() throws {
+    func hAppEntityTableConformance() throws {
         let table = HAppEntityTable()
         #expect(table.tableName == GRDBDatabaseTable.HAAppEntity.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -16,7 +16,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("WatchConfigTable conforms to DatabaseTableProtocol")
-    func testWatchConfigTableConformance() throws {
+    func watchConfigTableConformance() throws {
         let table = WatchConfigTable()
         #expect(table.tableName == GRDBDatabaseTable.watchConfig.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -26,7 +26,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("CarPlayConfigTable conforms to DatabaseTableProtocol")
-    func testCarPlayConfigTableConformance() throws {
+    func carPlayConfigTableConformance() throws {
         let table = CarPlayConfigTable()
         #expect(table.tableName == GRDBDatabaseTable.carPlayConfig.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -36,7 +36,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("AssistPipelinesTable conforms to DatabaseTableProtocol")
-    func testAssistPipelinesTableConformance() throws {
+    func assistPipelinesTableConformance() throws {
         let table = AssistPipelinesTable()
         #expect(table.tableName == GRDBDatabaseTable.assistPipelines.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -46,7 +46,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("AppEntityRegistryListForDisplayTable conforms to DatabaseTableProtocol")
-    func testAppEntityRegistryListForDisplayTableConformance() throws {
+    func appEntityRegistryListForDisplayTableConformance() throws {
         let table = AppEntityRegistryListForDisplayTable()
         #expect(table.tableName == GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -56,7 +56,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("AppEntityRegistryTable conforms to DatabaseTableProtocol")
-    func testAppEntityRegistryTableConformance() throws {
+    func appEntityRegistryTableConformance() throws {
         let table = AppEntityRegistryTable()
         #expect(table.tableName == GRDBDatabaseTable.entityRegistry.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -70,7 +70,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("AppDeviceRegistryTable conforms to DatabaseTableProtocol")
-    func testAppDeviceRegistryTableConformance() throws {
+    func appDeviceRegistryTableConformance() throws {
         let table = AppDeviceRegistryTable()
         #expect(table.tableName == GRDBDatabaseTable.deviceRegistry.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -84,7 +84,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("AppPanelTable conforms to DatabaseTableProtocol")
-    func testAppPanelTableConformance() throws {
+    func appPanelTableConformance() throws {
         let table = AppPanelTable()
         #expect(table.tableName == GRDBDatabaseTable.appPanel.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -94,7 +94,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("CustomWidgetTable conforms to DatabaseTableProtocol")
-    func testCustomWidgetTableConformance() throws {
+    func customWidgetTableConformance() throws {
         let table = CustomWidgetTable()
         #expect(table.tableName == GRDBDatabaseTable.customWidget.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -104,7 +104,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("AppAreaTable conforms to DatabaseTableProtocol")
-    func testAppAreaTableConformance() throws {
+    func appAreaTableConformance() throws {
         let table = AppAreaTable()
         #expect(table.tableName == GRDBDatabaseTable.appArea.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -114,7 +114,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("HomeViewConfigurationTable conforms to DatabaseTableProtocol")
-    func testHomeViewConfigurationTableConformance() throws {
+    func homeViewConfigurationTableConformance() throws {
         let table = HomeViewConfigurationTable()
         #expect(table.tableName == GRDBDatabaseTable.homeViewConfiguration.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -124,7 +124,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("CameraListConfigurationTable conforms to DatabaseTableProtocol")
-    func testCameraListConfigurationTableConformance() throws {
+    func cameraListConfigurationTableConformance() throws {
         let table = CameraListConfigurationTable()
         #expect(table.tableName == GRDBDatabaseTable.cameraListConfiguration.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -134,7 +134,7 @@ struct DatabaseTableProtocolTests {
     }
 
     @Test("AssistConfigurationTable conforms to DatabaseTableProtocol")
-    func testAssistConfigurationTableConformance() throws {
+    func assistConfigurationTableConformance() throws {
         let table = AssistConfigurationTable()
         #expect(table.tableName == GRDBDatabaseTable.assistConfiguration.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
@@ -143,10 +143,10 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 13 tables conform to DatabaseTableProtocol")
-    func testAllTablesConformToProtocol() throws {
+    @Test("All 14 tables conform to DatabaseTableProtocol")
+    func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 13, "Should have exactly 13 tables")
+        #expect(tables.count == 14, "Should have exactly 14 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName

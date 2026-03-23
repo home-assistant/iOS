@@ -14,6 +14,7 @@ public enum GRDBDatabaseTable: String {
     case homeViewConfiguration
     case cameraListConfiguration
     case assistConfiguration
+    case kioskSettings
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -170,6 +171,15 @@ public enum DatabaseTables {
     public enum AssistConfiguration: String, CaseIterable {
         case id
         case enableOnDeviceSTT
+        case onDeviceSTTLocaleIdentifier
         case muteTTS
+        case enableOnDeviceTTS
+        case onDeviceTTSVoiceIdentifier
+    }
+
+    // Kiosk mode settings (stored as JSON blob)
+    public enum KioskSettings: String, CaseIterable {
+        case id
+        case settingsJSON
     }
 }

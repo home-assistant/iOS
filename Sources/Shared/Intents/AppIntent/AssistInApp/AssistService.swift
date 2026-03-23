@@ -25,13 +25,13 @@ public protocol AssistServiceDelegate: AnyObject {
 }
 
 public enum AssistSource: Equatable {
-    case text(input: String, pipelineId: String?)
+    case text(input: String, pipelineId: String?, expectTTS: Bool)
     case audio(pipelineId: String?, audioSampleRate: Double, tts: Bool)
 
     public static func == (lhs: AssistSource, rhs: AssistSource) -> Bool {
         switch (lhs, rhs) {
-        case let (.text(lhsInput, lhsPipelineId), .text(rhsInput, rhsPipelineId)):
-            return lhsInput == rhsInput && lhsPipelineId == rhsPipelineId
+        case let (.text(lhsInput, lhsPipelineId, lhsExpectTTS), .text(rhsInput, rhsPipelineId, rhsExpectTTS)):
+            return lhsInput == rhsInput && lhsPipelineId == rhsPipelineId && lhsExpectTTS == rhsExpectTTS
         case let (.audio(lhsPipelineId, lhsSampleRate, lhsTTS), .audio(rhsPipelineId, rhsSampleRate, rhsTTS)):
             return lhsPipelineId == rhsPipelineId && lhsSampleRate == rhsSampleRate && lhsTTS == rhsTTS
         default:
@@ -75,8 +75,8 @@ public final class AssistService: AssistServiceProtocol {
 
     public func assist(source: AssistSource) {
         switch source {
-        case let .text(input, pipelineId):
-            assistWithText(input: input, pipelineId: pipelineId)
+        case let .text(input, pipelineId, expectTTS):
+            assistWithText(input: input, pipelineId: pipelineId, expectTTS: expectTTS)
         case let .audio(pipelineId, audioSampleRate, tts):
             assistWithAudio(pipelineId: pipelineId, audioSampleRate: audioSampleRate, tts: tts)
         }
@@ -137,13 +137,14 @@ public final class AssistService: AssistServiceProtocol {
         }
     }
 
-    private func assistWithText(input: String, pipelineId: String?) {
+    private func assistWithText(input: String, pipelineId: String?, expectTTS: Bool) {
         lastPipelineIdUsed = pipelineId
         Current.api(for: server)?.connection.subscribe(to: AssistRequests.assistByTextTypedSubscription(
             preferredPipelineId: pipelineId,
             inputText: input,
             conversationId: conversationId,
-            hassDeviceId: server.info.hassDeviceId
+            hassDeviceId: server.info.hassDeviceId,
+            tts: expectTTS
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable

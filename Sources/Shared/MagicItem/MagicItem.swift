@@ -234,7 +234,10 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     serverId: magicItem.serverId
                 ))
             default:
-                interactionType = .appIntent(.refresh)
+                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                    entityId: magicItem.id,
+                    serverId: magicItem.serverId
+                ))
             }
         }
 

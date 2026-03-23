@@ -252,6 +252,10 @@ extension WebViewController: UIScrollViewDelegate {
             scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
         }
     }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        recordKioskActivity()
+    }
 }
 
 extension WebViewController: UIGestureRecognizerDelegate {

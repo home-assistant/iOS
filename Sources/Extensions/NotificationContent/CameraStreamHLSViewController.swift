@@ -109,7 +109,11 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
         let asset: AVURLAsset
 
-        if !url.isFileURL, api.server.info.connection.securityExceptions.hasExceptions {
+        let hasSecurityExceptions = api.server.info.connection.securityExceptions.hasExceptions
+        let hasClientCertificate = api.server.info.connection.clientCertificate != nil
+        let needsCustomLoading = !url.isFileURL && (hasSecurityExceptions || hasClientCertificate)
+
+        if needsCustomLoading {
             asset = .init(url: url, options: [
                 // from WebKit, which has the same behavioral requirements we have
                 // see
