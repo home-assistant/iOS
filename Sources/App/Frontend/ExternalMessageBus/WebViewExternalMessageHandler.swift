@@ -258,18 +258,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
             if (element) {
                 element.focus();
-                return 'Element found and focused: ' + elementId;
             }
-
-            return 'Element not found: ' + elementId;
         })();
         """
 
-        webViewController?.evaluateJavaScript(script) { result, error in
+        webViewController?.evaluateJavaScript(script) { _, error in
             if let error {
                 Current.Log.error("Error focusing element \(elementId): \(error)")
-            } else if let result {
-                Current.Log.info("Focus element result: \(result)")
             }
         }
     }
