@@ -10,11 +10,15 @@ import XCGLogger
 
 class NotificationManager: NSObject, LocalPushManagerDelegate {
     lazy var localPushManager: NotificationManagerLocalPushInterface = {
+        #if targetEnvironment(simulator)
+        return NotificationManagerLocalPushInterfaceDirect(delegate: self)
+        #else
         if Current.isCatalyst {
             return NotificationManagerLocalPushInterfaceDirect(delegate: self)
         } else {
             return NotificationManagerLocalPushInterfaceExtension()
         }
+        #endif
     }()
 
     var commandManager = NotificationCommandManager()
