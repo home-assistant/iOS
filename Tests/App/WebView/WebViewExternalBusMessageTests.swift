@@ -36,7 +36,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
         XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 22)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 23)
     }
 
     func testExternalBusOutgoingMessageKeys() {

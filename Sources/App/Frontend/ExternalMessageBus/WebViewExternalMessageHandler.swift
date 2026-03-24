@@ -212,6 +212,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func showAssistSettingsViewController() {
         let assistSettingsView = AssistSettingsView().embeddedInHostingController()
+        assistSettingsView.modalPresentationStyle = .overFullScreen
         webViewController?.presentOverlayController(controller: assistSettingsView, animated: true)
     }
 
