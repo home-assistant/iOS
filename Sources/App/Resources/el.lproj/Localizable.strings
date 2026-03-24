@@ -445,7 +445,6 @@
 "kiosk.auth.gate_title" = "Λειτουργία κιόσκι ενεργή";
 "kiosk.auth.go_back_button" = "Πίσω";
 "kiosk.auth.required" = "Απαιτείται έλεγχος ταυτότητας";
-"kiosk.auth.try_again" = "Δοκιμάστε ξανά";
 "kiosk.auth_error.reason" = "Πραγματοποιήστε έλεγχο ταυτότητας για έξοδο από τη λειτουργία κιόσκι";
 "kiosk.auth_error.title" = "Σφάλμα ελέγχου ταυτότητας";
 "kiosk.brightness.control" = "Ελεγχος φωτεινότητας";
@@ -468,8 +467,6 @@
 "kiosk.corner.top_left" = "Επάνω αριστερά";
 "kiosk.corner.top_right" = "Επάνω δεξιά";
 "kiosk.enable_button" = "Ενεργοποίηση λειτουργίας κιόσκι";
-"kiosk.exit_button" = "Έξοδος από τη λειτουργία κιόσκι";
-"kiosk.exit_hint" = "Πατήστε δύο φορές για έξοδο από τη λειτουργία κιόσκι. Ενδέχεται να απαιτείται έλεγχος ταυτότητας.";
 "kiosk.footer.description" = "Οταν ενεργοποιηθεί, η οθόνη θα κλειδωθεί στο ταμπλό. Χρησιμοποιήστε το Face ID, το Touch ID ή τον κωδικό πρόσβασης της συσκευής για έξοδο.";
 "kiosk.screen_label" = "Οθόνη: %@";
 "kiosk.screensaver.dim_level" = "Επίπεδο αμυδρότητας: %li%%";

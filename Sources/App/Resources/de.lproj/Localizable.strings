@@ -445,7 +445,6 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "kiosk.auth.gate_title" = "Kiosk-Modus aktiv";
 "kiosk.auth.go_back_button" = "Zurückgehen";
 "kiosk.auth.required" = "Authentifizierung erforderlich";
-"kiosk.auth.try_again" = "Erneut versuchen";
 "kiosk.auth_error.reason" = "Authentifizieren, um den Kiosk-Modus zu verlassen.";
 "kiosk.auth_error.title" = "Authentifizierungsfehler";
 "kiosk.brightness.control" = "Helligkeitsregelung";
@@ -468,8 +467,6 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "kiosk.corner.top_left" = "oben links";
 "kiosk.corner.top_right" = "oben rechts";
 "kiosk.enable_button" = "Kiosk-Modus aktivieren";
-"kiosk.exit_button" = "Kiosk-Modus beenden";
-"kiosk.exit_hint" = "Doppeltippen, um den Kiosk-Modus zu verlassen. Möglicherweise ist eine Authentifizierung erforderlich.";
 "kiosk.footer.description" = "Wenn diese Funktion aktiviert ist, wird das Display mit dem Dashboard gesperrt. Zum Verlassen Face ID, Touch ID oder den Geräte-Passcode verwenden.";
 "kiosk.screen_label" = "Bildschirm: %@";
 "kiosk.screensaver.dim_level" = "Dimmstufe: %li%%";

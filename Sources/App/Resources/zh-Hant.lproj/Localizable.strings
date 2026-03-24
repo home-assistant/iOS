@@ -445,7 +445,6 @@
 "kiosk.auth.gate_title" = "Kiosk 模式啟動";
 "kiosk.auth.go_back_button" = "上一步";
 "kiosk.auth.required" = "需要驗證";
-"kiosk.auth.try_again" = "再試一次";
 "kiosk.auth_error.reason" = "驗證以退出 Kiosk 模式";
 "kiosk.auth_error.title" = "驗證失敗";
 "kiosk.brightness.control" = "亮度控制";
@@ -468,8 +467,6 @@
 "kiosk.corner.top_left" = "左上";
 "kiosk.corner.top_right" = "右上";
 "kiosk.enable_button" = "開啟 Kiosk 模式";
-"kiosk.exit_button" = "退出 Kiosk 模式";
-"kiosk.exit_hint" = "雙擊以退出 Kiosk 模式。可能需要進行身份驗證。";
 "kiosk.footer.description" = "開啟後，顯示畫面將鎖定於儀表板。使用 Face ID、Touch ID 或裝置密碼以退出。";
 "kiosk.screen_label" = "螢幕：%@";
 "kiosk.screensaver.dim_level" = "微光程度：%li%%";

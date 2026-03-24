@@ -445,7 +445,6 @@
 "kiosk.auth.gate_title" = "Kioskirežiim on aktiivne";
 "kiosk.auth.go_back_button" = "Mine tagasi";
 "kiosk.auth.required" = "Nõutav on tuvastamine";
-"kiosk.auth.try_again" = "Proovi uuesti";
 "kiosk.auth_error.reason" = "Tuvastamine kioskirežiimist väljumiseks";
 "kiosk.auth_error.title" = "Tuvastamine nurjus";
 "kiosk.brightness.control" = "Heleduse reguleerimine";
@@ -468,8 +467,6 @@
 "kiosk.corner.top_left" = "Üleval vasakul";
 "kiosk.corner.top_right" = "Üleval paremal";
 "kiosk.enable_button" = "Kioskirežiimi lubamine";
-"kiosk.exit_button" = "Kioskirežiimist väljumine";
-"kiosk.exit_hint" = "Kioskirežiimist väljumiseks topeltpuuduta. Vajalik võib olla autentimine.";
 "kiosk.footer.description" = "Kui see on lubatud, lukustatakse ekraan sellele vaatele. Väljumiseks kasuta Face ID-d, Touch ID-d või seadme pääsukoodi.";
 "kiosk.screen_label" = "Ekraan: %@";
 "kiosk.screensaver.dim_level" = "Hämardamise tase: %li%%";
