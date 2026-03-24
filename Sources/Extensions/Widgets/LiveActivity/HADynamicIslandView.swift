@@ -15,7 +15,7 @@ func makeHADynamicIsland(
     DynamicIsland {
         DynamicIslandExpandedRegion(.leading) {
             HADynamicIslandIconView(slug: state.icon, color: state.color, size: 24)
-                .padding(.leading, 4)
+                .padding(.leading, DesignSystem.Spaces.half)
         }
         DynamicIslandExpandedRegion(.center) {
             Text(attributes.title)
@@ -25,19 +25,19 @@ func makeHADynamicIsland(
         }
         DynamicIslandExpandedRegion(.trailing) {
             HAExpandedTrailingView(state: state)
-                .padding(.trailing, 4)
+                .padding(.trailing, DesignSystem.Spaces.half)
         }
         DynamicIslandExpandedRegion(.bottom) {
             HAExpandedBottomView(state: state)
-                .padding(.horizontal, 8)
-                .padding(.bottom, 4)
+                .padding(.horizontal, DesignSystem.Spaces.one)
+                .padding(.bottom, DesignSystem.Spaces.half)
         }
     } compactLeading: {
         HADynamicIslandIconView(slug: state.icon, color: state.color, size: 16)
-            .padding(.leading, 4)
+            .padding(.leading, DesignSystem.Spaces.half)
     } compactTrailing: {
         HACompactTrailingView(state: state)
-            .padding(.trailing, 4)
+            .padding(.trailing, DesignSystem.Spaces.half)
     } minimal: {
         HADynamicIslandIconView(slug: state.icon, color: state.color, size: 14)
     }
@@ -51,10 +51,13 @@ struct HADynamicIslandIconView: View {
     let color: String?
     let size: CGFloat
 
+    /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
+    private static let haBlueHex = "#03A9F4"
+
     var body: some View {
         if let slug {
             // UIColor(hex:) from Shared handles nil/CSS names/3-6-8 digit hex; non-failable.
-            let uiColor = UIColor(hex: color ?? haBlueHex)
+            let uiColor = UIColor(hex: color ?? Self.haBlueHex)
             let mdiIcon = MaterialDesignIcons(serversideValueNamed: slug)
             Image(uiImage: mdiIcon.image(
                 ofSize: .init(width: size, height: size),
@@ -72,19 +75,22 @@ struct HADynamicIslandIconView: View {
 struct HACompactTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
 
+    /// Maximum width for compact trailing text to prevent overflow in the Dynamic Island.
+    private static let compactTrailingMaxWidth: CGFloat = 50
+
     var body: some View {
         if state.chronometer == true, let end = state.countdownEnd {
             Text(timerInterval: Date.now ... end, countsDown: true)
                 .font(.caption2)
                 .foregroundStyle(.white)
                 .monospacedDigit()
-                .frame(maxWidth: 50)
+                .frame(maxWidth: Self.compactTrailingMaxWidth)
         } else if let critical = state.criticalText {
             Text(critical)
                 .font(.caption2)
                 .foregroundStyle(.white)
                 .lineLimit(1)
-                .frame(maxWidth: 50)
+                .frame(maxWidth: Self.compactTrailingMaxWidth)
         } else if let fraction = state.progressFraction {
             Text("\(Int(fraction * 100))%")
                 .font(.caption2)
@@ -122,7 +128,7 @@ struct HAExpandedBottomView: View {
     let state: HALiveActivityAttributes.ContentState
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: DesignSystem.Spaces.half) {
             if state.chronometer == true, let end = state.countdownEnd {
                 Text(timerInterval: Date.now ... end, countsDown: true)
                     .font(.body.monospacedDigit())
@@ -136,8 +142,16 @@ struct HAExpandedBottomView: View {
 
             if let fraction = state.progressFraction {
                 ProgressView(value: fraction)
-                    .tint(Color(hex: state.color ?? haBlueHex))
+                    .tint(accentColor)
             }
         }
+    }
+
+    /// Accent color from ContentState, fallback to Home Assistant primary blue.
+    private var accentColor: Color {
+        if let hex = state.color {
+            return Color(hex: hex)
+        }
+        return .haPrimary
     }
 }

@@ -12,10 +12,19 @@ struct HALockScreenView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
 
+    /// Icon size for the MDI icon in the header row.
+    private static let iconSize: CGFloat = 20
+
+    /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
+    private static let haBlueHex = "#03A9F4"
+
+    /// Subdued white for secondary text (timer/message body).
+    private static let secondaryWhite: Color = .white.opacity(0.85)
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
             // Header row: icon + title
-            HStack(spacing: 8) {
+            HStack(spacing: DesignSystem.Spaces.one) {
                 iconView
                 Text(attributes.title)
                     .font(.headline)
@@ -27,12 +36,12 @@ struct HALockScreenView: View {
             if state.chronometer == true, let end = state.countdownEnd {
                 Text(timerInterval: Date.now ... end, countsDown: true)
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.85))
+                    .foregroundStyle(Self.secondaryWhite)
                     .monospacedDigit()
             } else {
                 Text(state.message)
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.85))
+                    .foregroundStyle(Self.secondaryWhite)
                     .lineLimit(2)
             }
 
@@ -42,8 +51,8 @@ struct HALockScreenView: View {
                     .tint(accentColor)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .padding(.vertical, DesignSystem.Spaces.oneAndHalf)
     }
 
     // MARK: - Sub-views
@@ -52,26 +61,24 @@ struct HALockScreenView: View {
     private var iconView: some View {
         if let iconSlug = state.icon {
             // UIColor(hex:) from Shared handles CSS names and 3/6/8-digit hex; non-failable.
-            let uiColor = UIColor(hex: state.color ?? haBlueHex)
+            let uiColor = UIColor(hex: state.color ?? Self.haBlueHex)
             let mdiIcon = MaterialDesignIcons(serversideValueNamed: iconSlug)
             Image(uiImage: mdiIcon.image(
-                ofSize: .init(width: 20, height: 20),
+                ofSize: .init(width: Self.iconSize, height: Self.iconSize),
                 color: uiColor
             ))
             .resizable()
-            .frame(width: 20, height: 20)
+            .frame(width: Self.iconSize, height: Self.iconSize)
         }
     }
 
     // MARK: - Helpers
 
-    /// Parse hex color from ContentState, fallback to Home Assistant blue.
+    /// Accent color from ContentState, fallback to Home Assistant primary blue.
     private var accentColor: Color {
-        Color(hex: state.color ?? haBlueHex)
+        if let hex = state.color {
+            return Color(hex: hex)
+        }
+        return .haPrimary
     }
 }
-
-// MARK: - Constants
-
-/// Home Assistant brand blue — used as fallback for icon and progress bar tints.
-let haBlueHex = "#03A9F4"

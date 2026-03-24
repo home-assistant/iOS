@@ -88,6 +88,12 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
 
     // MARK: - Validation
 
+    /// Validates that a Live Activity tag contains only safe characters.
+    ///
+    /// Tags are used as ActivityKit push token topic identifiers and as keys in
+    /// the activity registry dictionary. Restricting to `[a-zA-Z0-9_-]` (max 64
+    /// characters) ensures they are safe for APNs payloads, UserDefaults keys,
+    /// and log output without escaping or truncation issues.
     static func isValidTag(_ tag: String) -> Bool {
         guard tag.count <= 64 else { return false }
         let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_"))

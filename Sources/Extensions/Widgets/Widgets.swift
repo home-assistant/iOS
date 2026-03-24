@@ -37,9 +37,7 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
-        if #available(iOSApplicationExtension 16.2, *) {
-            HALiveActivityConfiguration()
-        }
+        HALiveActivityConfiguration()
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
@@ -60,7 +58,6 @@ struct WidgetsBundle18: WidgetBundle {
     }
 
     var body: some Widget {
-        // Live Activities (ActivityKit requires iOS 16.2+, this bundle requires iOS 18.0+)
         HALiveActivityConfiguration()
 
         // Controls
