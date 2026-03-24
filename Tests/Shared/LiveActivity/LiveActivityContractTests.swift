@@ -75,13 +75,49 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertEqual(decoded, original)
     }
 
-    // MARK: - LiveActivityRegistry (webhook keys)
+    // MARK: - LiveActivityRegistry (webhook contracts)
 
     /// The Keychain key for the push-to-start token. Changing it would lose stored tokens.
     func testPushToStartTokenKeychainKey_isFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.pushToStartTokenKeychainKey,
             "live_activity_push_to_start_token"
+        )
+    }
+
+    /// Webhook type string for reporting a new per-activity push token.
+    /// Must match the HA core webhook handler name.
+    func testWebhookTypeToken_isFrozen() {
+        XCTAssertEqual(
+            LiveActivityRegistry.webhookTypeToken,
+            "mobile_app_live_activity_token"
+        )
+    }
+
+    /// Keys in the token webhook request data dictionary.
+    /// Must match what HA core's update_live_activity_token handler expects.
+    func testTokenWebhookKeys_areFrozen() {
+        XCTAssertEqual(
+            LiveActivityRegistry.tokenWebhookKeys,
+            ["activity_id", "push_token", "apns_environment"]
+        )
+    }
+
+    /// Webhook type string for reporting a dismissed activity.
+    /// Must match the HA core webhook handler name.
+    func testWebhookTypeDismissed_isFrozen() {
+        XCTAssertEqual(
+            LiveActivityRegistry.webhookTypeDismissed,
+            "mobile_app_live_activity_dismissed"
+        )
+    }
+
+    /// Keys in the dismissed webhook request data dictionary.
+    /// Must match what HA core's live_activity_dismissed handler expects.
+    func testDismissedWebhookKeys_areFrozen() {
+        XCTAssertEqual(
+            LiveActivityRegistry.dismissedWebhookKeys,
+            ["activity_id", "tag", "reason"]
         )
     }
 

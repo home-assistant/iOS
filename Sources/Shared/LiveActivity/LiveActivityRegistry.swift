@@ -31,6 +31,18 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let observationTask: Task<Void, Never>
     }
 
+    // MARK: - Webhook Constants (wire-format frozen — tested in LiveActivityContractTests)
+
+    /// Webhook type for reporting a new per-activity push token to HA.
+    static let webhookTypeToken = "mobile_app_live_activity_token"
+    /// Keys in the token webhook request data dictionary.
+    static let tokenWebhookKeys: Set<String> = ["activity_id", "push_token", "apns_environment"]
+
+    /// Webhook type for reporting that a Live Activity was dismissed.
+    static let webhookTypeDismissed = "mobile_app_live_activity_dismissed"
+    /// Keys in the dismissed webhook request data dictionary.
+    static let dismissedWebhookKeys: Set<String> = ["activity_id", "tag", "reason"]
+
     // MARK: - State
 
     /// Tags currently in-flight (reserved but not yet confirmed or cancelled).
@@ -276,7 +288,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// The token is used by the relay server to send APNs updates directly to this activity.
     private func reportPushToken(_ tokenHex: String, activityID: String) async {
         let request = WebhookRequest(
-            type: "mobile_app_live_activity_token",
+            type: Self.webhookTypeToken,
             data: [
                 "activity_id": activityID,
                 "push_token": tokenHex,
@@ -292,7 +304,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// This allows HA to stop sending APNs updates for this activity.
     private func reportActivityDismissed(activityID: String, tag: String, reason: String) async {
         let request = WebhookRequest(
-            type: "mobile_app_live_activity_dismissed",
+            type: Self.webhookTypeDismissed,
             data: [
                 "activity_id": activityID,
                 "tag": tag,
