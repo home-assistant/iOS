@@ -23,6 +23,10 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             WebViewExternalBusMessage.assistShow.rawValue,
             "assist/show"
         )
+        XCTAssertEqual(
+            WebViewExternalBusMessage.assistSettings.rawValue,
+            "assist/settings"
+        )
         XCTAssertEqual(WebViewExternalBusMessage.scanForImprov.rawValue, "improv/scan")
         XCTAssertEqual(WebViewExternalBusMessage.improvConfigureDevice.rawValue, "improv/configure_device")
         XCTAssertEqual(WebViewExternalBusMessage.focusElement.rawValue, "focus_element")
@@ -32,7 +36,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
         XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 22)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 23)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -65,6 +69,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasBarCodeScanner",
             "canTransferThreadCredentialsToKeychain",
             "hasAssist",
+            "hasAssistSettings",
             "hasCameraPlayer",
             "canSetupImprov",
             "downloadFileSupported",
