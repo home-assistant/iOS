@@ -6,7 +6,6 @@ import SwiftUI
 
 // MARK: - Settings View
 
-@available(iOS 26.0, *)
 struct AssistSettingsView: View {
     @StateObject private var viewModel = AssistSettingsViewModel()
     @Environment(\.dismiss) private var dismiss
