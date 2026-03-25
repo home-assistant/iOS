@@ -34,9 +34,7 @@ struct ConnectionSettingsView: View {
     var body: some View {
         List {
             detailsSection
-            if Current.allowsCustomMTLSCertificateImport {
-                clientCertificateSection
-            }
+            clientCertificateSection
             privacySection
             statusSection
             deleteSection
@@ -353,7 +351,7 @@ struct ConnectionSettingsView: View {
             if let certificate = viewModel.clientCertificate {
                 // Certificate is configured
                 HStack {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                         Text(certificate.displayName)
                             .font(.body)
                         if certificate.isExpired {
@@ -409,7 +407,10 @@ struct ConnectionSettingsView: View {
                 .disabled(viewModel.isImportingCertificate)
             }
         } header: {
-            Text(L10n.Settings.ConnectionSection.ClientCertificate.header)
+            HStack {
+                Text(L10n.Settings.ConnectionSection.ClientCertificate.header)
+                BetaLabel()
+            }
         } footer: {
             Text(L10n.Settings.ConnectionSection.ClientCertificate.footer)
         }
