@@ -51,6 +51,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Tags where `end()` arrived while still reserved — activity must be dismissed on confirm.
     private var cancelledReservations: Set<String> = []
 
+    /// Latest state received for a tag while it was still reserved (in-flight start).
+    /// Applied to the activity immediately after `confirmReservation` completes.
+    private var pendingState: [String: HALiveActivityAttributes.ContentState] = [:]
+
     /// Confirmed, running Live Activities keyed by tag.
     private var entries: [String: Entry] = [:]
 
@@ -67,8 +71,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     }
 
     /// Confirm a reservation. If `end()` arrived while we were in-flight, immediately dismiss.
+    /// If a newer state arrived while we were in-flight, apply it after confirming.
     private func confirmReservation(id: String, entry: Entry) async {
         reserved.remove(id)
+        let pending = pendingState.removeValue(forKey: id)
         if cancelledReservations.remove(id) != nil {
             // end() was called before Activity.request() completed — dismiss immediately.
             entry.observationTask.cancel()
@@ -76,11 +82,20 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return
         }
         entries[id] = entry
+        if let latestState = pending {
+            // A second push arrived while Activity.request() was in-flight — apply the newer state now.
+            let content = ActivityContent(
+                state: latestState,
+                staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
+            )
+            await entry.activity.update(content)
+        }
     }
 
     private func cancelReservation(id: String) {
         reserved.remove(id)
         cancelledReservations.remove(id)
+        pendingState.removeValue(forKey: id)
     }
 
     private func remove(id: String) -> Entry? {
@@ -122,7 +137,11 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
         // START path — guard against duplicates with reservation
         guard reserve(id: tag) else {
-            Current.Log.info("LiveActivityRegistry: duplicate start for tag \(tag), ignoring")
+            if reserved.contains(tag) {
+                // Activity.request() is in-flight — save this state so confirmReservation applies it.
+                pendingState[tag] = state
+                Current.Log.info("LiveActivityRegistry: duplicate start for tag \(tag), will apply latest state on confirm")
+            }
             return
         }
 
@@ -162,7 +181,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let alertConfig = AlertConfiguration(
             title: LocalizedStringResource(stringLiteral: title),
             body: LocalizedStringResource(stringLiteral: state.message),
-            sound: .default
+            sound: nil
         )
         await activity.update(alertContent, alertConfiguration: alertConfig)
 

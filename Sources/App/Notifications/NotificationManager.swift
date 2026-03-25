@@ -294,8 +294,16 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         // sees only the Live Activity (not a duplicate standard notification).
         if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
            (hadict["command"] as? String) != nil || (hadict["live_activity"] as? Bool) == true {
-            commandManager.handle(notification.request.content.userInfo).cauterize()
-            completionHandler([])
+            commandManager.handle(notification.request.content.userInfo).done {
+                completionHandler([])
+            }.catch { error in
+                // Unknown command — fall through to normal banner presentation so the user isn't silently swallowed.
+                if case NotificationsCommandManager.CommandError.unknownCommand = error {
+                    completionHandler([.badge, .sound, .list, .banner])
+                } else {
+                    completionHandler([])
+                }
+            }
             return
         }
 

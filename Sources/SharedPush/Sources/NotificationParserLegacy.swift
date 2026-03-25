@@ -230,7 +230,9 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             if let title = input["title"] as? String {
                 homeassistant["title"] = title
             }
-            homeassistant["message"] = input["message"]
+            if let message = input["message"] as? String {
+                homeassistant["message"] = message
+            }
             payload["homeassistant"] = homeassistant
         }
 
