@@ -148,9 +148,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .kiosk, .location, .notifications].filter { _ in
-            true
-        }
+        [.general, .gestures, .kiosk, .location, .notifications]
     }
 
     static var integrationItems: [SettingsItem] {
