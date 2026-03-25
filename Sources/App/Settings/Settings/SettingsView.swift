@@ -244,16 +244,10 @@ struct SettingsView: View {
 
     private func settingsItemLabel(_ item: SettingsItem) -> some View {
         Label {
-            HStack(spacing: 8) {
+            HStack(spacing: DesignSystem.Spaces.one) {
                 Text(item.title)
                 if item == .kiosk {
-                    Text("BETA")
-                        .font(.caption2.bold())
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(Color.orange)
-                        .clipShape(Capsule())
+                    BetaLabel()
                 }
             }
         } icon: {

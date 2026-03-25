@@ -164,13 +164,6 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             pendingResolver.reject(OnboardingAuthError(kind: .basicAuth))
             completionHandler(.cancelAuthenticationChallenge, nil)
         case NSURLAuthenticationMethodClientCertificate:
-            if !Current.allowsCustomMTLSCertificateImport {
-                Current.Log.warning("[mTLS] Client certificate requested but feature is disabled for this build")
-                clientCertificateUnsupportedOccurred[task.taskIdentifier] = true
-                completionHandler(.cancelAuthenticationChallenge, nil)
-                return
-            }
-
             // Use imported client certificate if available
             #if !os(watchOS)
             if let clientCert = authDetails.clientCertificate {

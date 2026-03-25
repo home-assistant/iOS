@@ -17,12 +17,6 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        guard Current.allowsCustomMTLSCertificateImport else {
-            Current.Log
-                .info("[mTLS] Custom certificate import disabled for this build; skipping onboarding import step")
-            return .value(())
-        }
-
         Current.Log.info("[mTLS] OnboardingAuthStepClientCertificate starting")
         return testConnection().then { [self] requiresClientCert -> Promise<Void> in
             Current.Log.info("[mTLS] Test result: requiresClientCert = \(requiresClientCert)")
