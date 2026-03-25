@@ -2110,6 +2110,14 @@ public enum L10n {
     }
   }
 
+  public enum Mtls {
+    public enum Beta {
+      /// This is a beta feature, if you experience any issues please report them using the button below. 
+      ///  Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.
+      public static var info: String { return L10n.tr("Localizable", "mtls.beta.info") }
+    }
+  }
+
   public enum NavBar {
     /// Close
     public static var close: String { return L10n.tr("Localizable", "navBar.close") }
