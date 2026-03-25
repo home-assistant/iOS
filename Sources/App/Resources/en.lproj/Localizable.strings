@@ -1596,4 +1596,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
 "yes_label" = "Yes";
-"mtls.beta.info" = "This is a beta feature, if you experience any issues please report them using the button below. \n\nCurrently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
+"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\n\nCurrently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
