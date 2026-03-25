@@ -445,7 +445,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "kiosk.auth.gate_title" = "Režim kiosku je aktivní";
 "kiosk.auth.go_back_button" = "Zpět";
 "kiosk.auth.required" = "Vyžadováno ověření";
-"kiosk.auth.try_again" = "Zkusit znovu";
 "kiosk.auth_error.reason" = "Ověření pro ukončení režimu kiosku";
 "kiosk.auth_error.title" = "Chyba ověření";
 "kiosk.brightness.control" = "Ovládání jasu";
@@ -468,8 +467,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "kiosk.corner.top_left" = "Nahoře vlevo";
 "kiosk.corner.top_right" = "Nahoře vpravo";
 "kiosk.enable_button" = "Povolit režim kiosku";
-"kiosk.exit_button" = "Ukončit režim kiosku";
-"kiosk.exit_hint" = "Dvojitým klepnutím ukončíte režim kiosku. Může být vyžadováno ověření.";
 "kiosk.footer.description" = "Pokud je povoleno, displej se uzamkne k ovládacímu panelu. Pro ukončení použijte Face ID, Touch ID nebo přístupový kód zařízení.";
 "kiosk.screen_label" = "Obrazovka: %@";
 "kiosk.screensaver.dim_level" = "Úroveň ztlumení: %li%%";

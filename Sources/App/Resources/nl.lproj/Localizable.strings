@@ -445,7 +445,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "kiosk.auth.gate_title" = "Kioskmodus actief";
 "kiosk.auth.go_back_button" = "Ga terug";
 "kiosk.auth.required" = "Authenticatie vereist";
-"kiosk.auth.try_again" = "Probeer het opnieuw";
 "kiosk.auth_error.reason" = "Authenticeer om de kioskmodus te verlaten";
 "kiosk.auth_error.title" = "Authenticatiefout";
 "kiosk.brightness.control" = "Helderheidsregeling";
@@ -468,8 +467,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "kiosk.corner.top_left" = "Linksboven";
 "kiosk.corner.top_right" = "Rechtsboven";
 "kiosk.enable_button" = "Kioskmodus inschakelen";
-"kiosk.exit_button" = "Kioskmodus verlaten";
-"kiosk.exit_hint" = "Dubbeltik om de kioskmodus te verlaten. Mogelijk is authenticatie vereist.";
 "kiosk.footer.description" = "Als dit is ingeschakeld, wordt het scherm vergrendeld op het dashboard. Gebruik Face ID, Touch ID of het apparaatwachtwoord om af te sluiten.";
 "kiosk.screen_label" = "Scherm: %@";
 "kiosk.screensaver.dim_level" = "Dimniveau: %li%%";

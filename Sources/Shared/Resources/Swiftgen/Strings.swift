@@ -1679,10 +1679,6 @@ public enum L10n {
   public enum Kiosk {
     /// Enable Kiosk Mode
     public static var enableButton: String { return L10n.tr("Localizable", "kiosk.enable_button") }
-    /// Exit Kiosk Mode
-    public static var exitButton: String { return L10n.tr("Localizable", "kiosk.exit_button") }
-    /// Double-tap to exit kiosk mode. Authentication may be required.
-    public static var exitHint: String { return L10n.tr("Localizable", "kiosk.exit_hint") }
     /// Screen: %@
     public static func screenLabel(_ p1: Any) -> String {
       return L10n.tr("Localizable", "kiosk.screen_label", String(describing: p1))
@@ -1708,8 +1704,6 @@ public enum L10n {
       public static var goBackButton: String { return L10n.tr("Localizable", "kiosk.auth.go_back_button") }
       /// Authentication Required
       public static var `required`: String { return L10n.tr("Localizable", "kiosk.auth.required") }
-      /// Try Again
-      public static var tryAgain: String { return L10n.tr("Localizable", "kiosk.auth.try_again") }
     }
     public enum AuthError {
       /// Authenticate to exit kiosk mode
