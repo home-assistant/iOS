@@ -445,7 +445,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.auth.gate_title" = "Kiosk Mode Active";
 "kiosk.auth.go_back_button" = "Go Back";
 "kiosk.auth.required" = "Authentication Required";
-"kiosk.auth.try_again" = "Try Again";
 "kiosk.auth_error.reason" = "Authenticate to exit kiosk mode";
 "kiosk.auth_error.title" = "Authentication Error";
 "kiosk.brightness.control" = "Brightness Control";
@@ -468,8 +467,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.corner.top_left" = "Top Left";
 "kiosk.corner.top_right" = "Top Right";
 "kiosk.enable_button" = "Enable Kiosk Mode";
-"kiosk.exit_button" = "Exit Kiosk Mode";
-"kiosk.exit_hint" = "Double-tap to exit kiosk mode. Authentication may be required.";
 "kiosk.footer.description" = "When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.";
 "kiosk.screen_label" = "Screen: %@";
 "kiosk.screensaver.dim_level" = "Dim Level: %li%%";

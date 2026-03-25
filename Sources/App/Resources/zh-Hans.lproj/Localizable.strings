@@ -445,7 +445,6 @@
 "kiosk.auth.gate_title" = "信息亭模式激活";
 "kiosk.auth.go_back_button" = "返回";
 "kiosk.auth.required" = "需要身份验证";
-"kiosk.auth.try_again" = "重试";
 "kiosk.auth_error.reason" = "验证身份以退出信息亭模式";
 "kiosk.auth_error.title" = "认证出错";
 "kiosk.brightness.control" = "亮度控制";
@@ -468,8 +467,6 @@
 "kiosk.corner.top_left" = "左上";
 "kiosk.corner.top_right" = "右上";
 "kiosk.enable_button" = "启用信息亭模式";
-"kiosk.exit_button" = "退出信息亭模式";
-"kiosk.exit_hint" = "双击退出信息亭模式。可能需要进行身份验证。";
 "kiosk.footer.description" = "启用后，显示屏将锁定在仪表盘上。使用面容 ID、触控 ID 或设备密码即可退出。";
 "kiosk.screen_label" = "屏幕：%@";
 "kiosk.screensaver.dim_level" = "减弱亮度：%li%%";

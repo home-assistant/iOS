@@ -445,7 +445,6 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "kiosk.auth.gate_title" = "Kioskmód aktív";
 "kiosk.auth.go_back_button" = "Vissza";
 "kiosk.auth.required" = "Hitelesítés szükséges";
-"kiosk.auth.try_again" = "Próbálja újra";
 "kiosk.auth_error.reason" = "Hitelesítsen a kioskmódból való kilépéshez";
 "kiosk.auth_error.title" = "Hitelesítési hiba";
 "kiosk.brightness.control" = "Fényerő-szabályozás";
@@ -468,8 +467,6 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "kiosk.corner.top_left" = "Bal felső";
 "kiosk.corner.top_right" = "Jobb felső";
 "kiosk.enable_button" = "Kioskmód engedélyezése";
-"kiosk.exit_button" = "Kilépés a kioskmódból";
-"kiosk.exit_hint" = "Dupla koppintás a kioskmódból való kilépéshez. Hitelesítés szükséges lehet.";
 "kiosk.footer.description" = "Ha engedélyezve van, a kijelző zárolva lesz az irányítópultra. A kilépéshez használja a Face ID-t, Touch ID-t vagy az eszköz jelkódját.";
 "kiosk.screen_label" = "Képernyő: %@";
 "kiosk.screensaver.dim_level" = "Elsötétítési szint: %li%%";
