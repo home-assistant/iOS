@@ -75,7 +75,11 @@ struct HADynamicIslandIconView: View {
 struct HACompactTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
 
-    /// Maximum width for compact trailing text to prevent overflow in the Dynamic Island.
+    /// Fixed width for the countdown timer text in compact trailing.
+    /// 44 pt fits "M:SS" at caption2 size and prevents the Dynamic Island from
+    /// squeezing the slot narrower than the text needs.
+    private static let compactTrailingTimerWidth: CGFloat = 44
+    /// Maximum width for non-timer compact trailing content (criticalText, progress %).
     private static let compactTrailingMaxWidth: CGFloat = 50
 
     var body: some View {
@@ -84,7 +88,8 @@ struct HACompactTrailingView: View {
                 .font(.caption2)
                 .foregroundStyle(.white)
                 .monospacedDigit()
-                .frame(maxWidth: Self.compactTrailingMaxWidth)
+                .contentTransition(.numericText(countsDown: true))
+                .frame(width: Self.compactTrailingTimerWidth)
         } else if let critical = state.criticalText {
             Text(critical)
                 .font(.caption2)
@@ -133,6 +138,7 @@ struct HAExpandedBottomView: View {
                 Text(timerInterval: Date.now ... end, countsDown: true)
                     .font(.body.monospacedDigit())
                     .foregroundStyle(.white)
+                    .contentTransition(.numericText(countsDown: true))
             } else {
                 Text(state.message)
                     .font(.subheadline)

@@ -298,7 +298,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                 completionHandler([])
             }.catch { error in
                 // Unknown command — fall through to normal banner presentation so the user isn't silently swallowed.
-                if case NotificationsCommandManager.CommandError.unknownCommand = error {
+                if case NotificationCommandManager.CommandError.unknownCommand = error {
                     completionHandler([.badge, .sound, .list, .banner])
                 } else {
                     completionHandler([])

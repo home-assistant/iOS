@@ -38,6 +38,7 @@ struct HALockScreenView: View {
                     .font(.subheadline)
                     .foregroundStyle(Self.secondaryWhite)
                     .monospacedDigit()
+                    .contentTransition(.numericText(countsDown: true))
             } else {
                 Text(state.message)
                     .font(.subheadline)

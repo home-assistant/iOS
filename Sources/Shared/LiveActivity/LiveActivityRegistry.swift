@@ -86,7 +86,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             // A second push arrived while Activity.request() was in-flight — apply the newer state now.
             let content = ActivityContent(
                 state: latestState,
-                staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
+                staleDate: computeStaleDate(for: latestState)
             )
             await entry.activity.update(content)
         }
@@ -116,7 +116,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         if let existing = entries[tag] {
             let content = ActivityContent(
                 state: state,
-                staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
+                staleDate: computeStaleDate(for: state)
             )
             await existing.activity.update(content)
             return
@@ -127,7 +127,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             .first(where: { $0.attributes.tag == tag }) {
             let content = ActivityContent(
                 state: state,
-                staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval)
+                staleDate: computeStaleDate(for: state)
             )
             await live.update(content)
             let observationTask = makeObservationTask(for: live)
@@ -157,7 +157,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         do {
             let content = ActivityContent(
                 state: state,
-                staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval),
+                staleDate: computeStaleDate(for: state),
                 relevanceScore: 0.5
             )
             activity = try Activity<HALiveActivityAttributes>.request(
@@ -175,13 +175,15 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         // camera cutout). The expanded "bloom" animation requires an update with an alert config.
         let alertContent = ActivityContent(
             state: state,
-            staleDate: Date().addingTimeInterval(kLiveActivityStaleInterval),
+            staleDate: computeStaleDate(for: state),
             relevanceScore: 0.5
         )
+        // iOS 26 SDK changed AlertConfiguration.sound from optional to non-optional.
+        // Use .default so the expanded Dynamic Island "bloom" has a subtle alert sound.
         let alertConfig = AlertConfiguration(
             title: LocalizedStringResource(stringLiteral: title),
             body: LocalizedStringResource(stringLiteral: state.message),
-            sound: nil
+            sound: .default
         )
         await activity.update(alertContent, alertConfiguration: alertConfig)
 
@@ -262,6 +264,26 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
 
+    // MARK: - Private — Stale Date
+
+    /// Compute the appropriate stale date for a Live Activity content update.
+    ///
+    /// When a countdown timer is active, set staleDate = countdownEnd + 2 s so that:
+    ///   1. The system marks the activity stale shortly after the timer reaches zero,
+    ///      prompting HA to send a follow-up update.
+    ///   2. staleDate is never exactly equal to countdownEnd — that causes the system
+    ///      to show a spinner overlay on the lock screen presentation.
+    ///
+    /// For non-timer activities, fall back to the standard 30-minute freshness window.
+    private func computeStaleDate(for state: HALiveActivityAttributes.ContentState) -> Date {
+        if state.chronometer == true, let end = state.countdownEnd {
+            // +2 s offset avoids staleDate == countdownEnd (system spinner bug).
+            // max(..., now + 2) guards against a countdownEnd that is already in the past.
+            return max(end.addingTimeInterval(2), Date().addingTimeInterval(2))
+        }
+        return Date().addingTimeInterval(kLiveActivityStaleInterval)
+    }
+
     // MARK: - Private — Observation
 
     private func makeObservationTask(for activity: Activity<HALiveActivityAttributes>) -> Task<Void, Never> {
@@ -291,6 +313,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                             _ = await self.remove(id: activity.attributes.tag)
                             return
                         case .active, .stale:
+                            break
+                        case .pending:
+                            // Activity has been requested but not yet displayed — no action needed.
                             break
                         @unknown default:
                             break
