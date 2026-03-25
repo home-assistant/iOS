@@ -52,6 +52,7 @@ public struct BetaLabel: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("BETA")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationViewStyle(.stack)
             .safeAreaInset(edge: .bottom) {
                 Button(action: {
                     openURL(AppConstants.WebURLs.issues)
