@@ -6,12 +6,11 @@ import Foundation
 /// Activities are marked stale after 30 minutes if no further updates arrive.
 private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 public protocol LiveActivityRegistryProtocol: AnyObject {
     func startOrUpdate(tag: String, title: String, state: HALiveActivityAttributes.ContentState) async throws
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
     func reattach() async
-    @available(iOS 17.2, *)
     func startObservingPushToStartToken() async
 }
 
@@ -22,7 +21,7 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
 ///
 /// The reservation pattern prevents TOCTOU races where two pushes with the same `tag`
 /// arrive back-to-back before the first `Activity.request(...)` completes.
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     // MARK: - Types
 
@@ -240,7 +239,6 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// relay server can use it to send push-to-start APNs payloads.
     ///
     /// Call this once at app launch; the stream is infinite and self-managing.
-    @available(iOS 17.2, *)
     public func startObservingPushToStartToken() async {
         for await tokenData in Activity<HALiveActivityAttributes>.pushToStartTokenUpdates {
             let tokenHex = tokenData.map { String(format: "%02x", $0) }.joined()
@@ -365,7 +363,6 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Report the push-to-start token to all HA servers via registration update.
     /// HA stores this alongside the FCM push token in the device registry.
     /// Fire-and-forget: errors are logged but do not block the token observation loop.
-    @available(iOS 17.2, *)
     private func reportPushToStartToken(_ tokenHex: String) {
         for api in Current.apis {
             api.updateRegistration().catch { error in

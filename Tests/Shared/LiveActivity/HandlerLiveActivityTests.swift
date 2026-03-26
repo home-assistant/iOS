@@ -6,7 +6,7 @@ import XCTest
 
 // MARK: - HandlerStartOrUpdateLiveActivity Tests
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
     private var sut: HandlerStartOrUpdateLiveActivity!
     private var mockRegistry: MockLiveActivityRegistry!
@@ -218,7 +218,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
 
 // MARK: - HandlerEndLiveActivity Tests
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 final class HandlerEndLiveActivityTests: XCTestCase {
     private var sut: HandlerEndLiveActivity!
     private var mockRegistry: MockLiveActivityRegistry!

@@ -4,9 +4,9 @@ import SwiftUI
 
 // MARK: - Entry point
 
-/// Deployment target is iOS 15. The settings item is filtered from the list on < iOS 16.2
-/// (see SettingsItem.allVisibleCases), so this view is only ever navigated to on iOS 16.2+.
-@available(iOS 16.2, *)
+/// Deployment target is iOS 15. The settings item is filtered from the list on < iOS 17.2
+/// (see SettingsItem.allVisibleCases), so this view is only ever navigated to on iOS 17.2+.
+@available(iOS 17.2, *)
 struct LiveActivitySettingsView: View {
     // MARK: State
 
@@ -640,7 +640,7 @@ struct LiveActivitySettingsView: View {
 
 // MARK: - Activity row
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 private struct ActivityRow: View {
     let snapshot: ActivitySnapshot
     let onEnd: () -> Void
@@ -671,7 +671,7 @@ private struct ActivityRow: View {
 
 // MARK: - Snapshot model
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 private struct ActivitySnapshot: Identifiable {
     let id: String
     let tag: String

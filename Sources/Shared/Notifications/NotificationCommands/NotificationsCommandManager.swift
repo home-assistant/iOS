@@ -23,7 +23,7 @@ public class NotificationCommandManager {
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
         #if canImport(ActivityKit)
-        if #available(iOS 16.2, *) {
+        if #available(iOS 17.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
             register(command: "end_live_activity", handler: HandlerEndLiveActivity())
         }
@@ -49,7 +49,7 @@ public class NotificationCommandManager {
         // Support data.live_update: true — the same field Android uses for Live Updates.
         // A single YAML automation can target both platforms with no platform-specific keys.
         #if canImport(ActivityKit)
-        if #available(iOS 16.2, *), hadict["live_update"] as? Bool == true,
+        if #available(iOS 17.2, *), hadict["live_update"] as? Bool == true,
            let handler = commands["live_activity"] {
             return handler.handle(hadict)
         }
@@ -113,7 +113,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
         // ActivityKit is unavailable in the PushProvider extension, so guard accordingly.
         #if os(iOS) && canImport(ActivityKit)
-        if #available(iOS 16.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
+        if #available(iOS 17.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
             return Promise<Void> { seal in
                 Task {
                     await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)

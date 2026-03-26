@@ -9,7 +9,7 @@ import XCTest
 ///   2. `homeassistant.live_activity == true` — data flag (Android-compat pattern)
 ///   3. `homeassistant.command == "end_live_activity"` — end command
 ///   4. `homeassistant.command == "clear_notification"` with a `tag` — dismisses live activity
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 final class NotificationsCommandManagerLiveActivityTests: XCTestCase {
     private var sut: NotificationCommandManager!
     private var mockRegistry: MockLiveActivityRegistry!

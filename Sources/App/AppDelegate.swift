@@ -375,7 +375,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupLiveActivityReattachment() {
         #if canImport(ActivityKit)
-        if #available(iOS 16.2, *) {
+        if #available(iOS 17.2, *) {
             // Pre-warm the registry on the main thread before spawning background Tasks.
             // This avoids a lazy-init race if a push notification handler accesses it
             // concurrently from a background thread.
@@ -388,12 +388,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 await registry.reattach()
             }
 
-            if #available(iOS 17.2, *) {
-                // Begin observing the push-to-start token stream on a separate Task.
-                // The stream is infinite; this Task is kept alive for the app's lifetime.
-                Task {
-                    await registry.startObservingPushToStartToken()
-                }
+            // Begin observing the push-to-start token stream on a separate Task.
+            // The stream is infinite; this Task is kept alive for the app's lifetime.
+            Task {
+                await registry.startObservingPushToStartToken()
             }
         }
         #endif

@@ -7,7 +7,7 @@ import WidgetKit
 
 /// Builds the `DynamicIsland` for a Home Assistant Live Activity.
 /// Used in `HALiveActivityConfiguration`'s `dynamicIsland:` closure.
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 func makeHADynamicIsland(
     attributes: HALiveActivityAttributes,
     state: HALiveActivityAttributes.ContentState
@@ -45,7 +45,7 @@ func makeHADynamicIsland(
 
 // MARK: - Icon view
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 struct HADynamicIslandIconView: View {
     let slug: String?
     let color: String?
@@ -71,7 +71,7 @@ struct HADynamicIslandIconView: View {
 
 // MARK: - Compact trailing
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 struct HACompactTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
 
@@ -107,7 +107,7 @@ struct HACompactTrailingView: View {
 
 // MARK: - Expanded trailing
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 struct HAExpandedTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
 
@@ -128,7 +128,7 @@ struct HAExpandedTrailingView: View {
 
 // MARK: - Expanded bottom
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 struct HAExpandedBottomView: View {
     let state: HALiveActivityAttributes.ContentState
 

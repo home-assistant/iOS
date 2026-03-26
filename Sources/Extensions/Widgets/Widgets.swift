@@ -21,7 +21,7 @@ struct WidgetsBundleLegacy: WidgetBundle {
     }
 
     var body: some Widget {
-        if #available(iOSApplicationExtension 16.2, *) {
+        if #available(iOSApplicationExtension 17.2, *) {
             HALiveActivityConfiguration()
         }
         WidgetAssist()

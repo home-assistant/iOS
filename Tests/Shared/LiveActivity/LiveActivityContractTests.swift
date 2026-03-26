@@ -9,7 +9,7 @@ import XCTest
 /// Changing them would break communication with the HA server, relay server, or APNs.
 /// If a test fails, it means a wire-format contract was broken — do not simply update
 /// the expected value without coordinating with all server-side consumers.
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 final class LiveActivityContractTests: XCTestCase {
     // MARK: - HALiveActivityAttributes (wire-format frozen struct)
 

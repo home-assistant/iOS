@@ -5,7 +5,7 @@ import Foundation
 
 /// Test double for `LiveActivityRegistryProtocol`.
 /// Records all calls so tests can assert on what was invoked.
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
     // MARK: - Recorded Calls
 
@@ -50,7 +50,6 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
         reattachCallCount += 1
     }
 
-    @available(iOS 17.2, *)
     func startObservingPushToStartToken() async {
         // No-op in tests — token observation requires a real device/simulator push environment.
     }
@@ -58,7 +57,7 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
 
 // MARK: - EndCall helpers
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 extension MockLiveActivityRegistry.EndCall {
     var policyIsImmediate: Bool { policy == .immediate }
     var policyIsDefault: Bool { policy == .default }

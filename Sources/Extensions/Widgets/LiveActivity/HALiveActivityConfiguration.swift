@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 16.2, *)
+@available(iOS 17.2, *)
 struct HALiveActivityConfiguration: Widget {
     /// Semi-transparent dark background for the Lock Screen presentation.
     private static let lockScreenBackground = Color.black.opacity(0.75)

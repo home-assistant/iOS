@@ -148,7 +148,7 @@ public class AppEnvironment {
     /// background thread can access it) to avoid a lazy-init race between concurrent callers.
     private var _liveActivityRegistryBacking: Any?
 
-    @available(iOS 16.2, *)
+    @available(iOS 17.2, *)
     public var liveActivityRegistry: LiveActivityRegistryProtocol {
         get {
             if let existing = _liveActivityRegistryBacking as? LiveActivityRegistryProtocol {

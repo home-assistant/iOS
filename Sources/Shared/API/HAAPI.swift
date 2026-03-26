@@ -563,20 +563,17 @@ public class HomeAssistantAPI {
                 ]
 
                 #if os(iOS) && canImport(ActivityKit)
-                if #available(iOS 16.2, *) {
+                if #available(iOS 17.2, *) {
                     // Advertise Live Activity support so HA can gate the UI and send
                     // activity push tokens back to the relay server.
                     // Use areActivitiesEnabled so iPad and users who disabled Live Activities
                     // in Settings correctly report false.
                     appData["supports_live_activities"] = ActivityAuthorizationInfo().areActivitiesEnabled
-                }
-                if #available(iOS 17.2, *) {
                     appData["supports_live_activities_frequent_updates"] =
                         ActivityAuthorizationInfo().frequentPushesEnabled
 
                     // Push-to-start token (stored in Keychain at launch, updated via stream).
-                    // The relay server uses this token to start a Live Activity entirely via
-                    // APNs without the app being in the foreground (best-effort, iOS 17.2+).
+                    // The relay server uses this token to start a Live Activity entirely via APNs.
                     if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
                         appData["live_activity_push_to_start_token"] = pushToStartToken
                         appData["live_activity_push_to_start_apns_environment"] = Current.apnsEnvironment
