@@ -299,7 +299,6 @@ public class AppEnvironment {
         isTestFlight
     }
 
-
     #if os(iOS)
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
     #elseif os(watchOS)

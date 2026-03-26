@@ -140,7 +140,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             if reserved.contains(tag) {
                 // Activity.request() is in-flight — save this state so confirmReservation applies it.
                 pendingState[tag] = state
-                Current.Log.info("LiveActivityRegistry: duplicate start for tag \(tag), will apply latest state on confirm")
+                Current.Log.info(
+                    "LiveActivityRegistry: duplicate start for tag \(tag), will apply latest state on confirm"
+                )
             }
             return
         }
