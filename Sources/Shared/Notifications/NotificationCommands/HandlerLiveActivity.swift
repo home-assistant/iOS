@@ -5,11 +5,11 @@ import PromiseKit
 
 // MARK: - HandlerStartOrUpdateLiveActivity
 
-/// Handles `live_activity: true` notifications by starting or updating a Live Activity.
+/// Handles `live_update: true` notifications by starting or updating a Live Activity.
 ///
 /// Triggered two ways:
 ///   1. `homeassistant.command == "live_activity"` (message: live_activity in YAML)
-///   2. `homeassistant.live_activity == true` (data.live_activity: true in YAML)
+///   2. `homeassistant.live_update == true` (data.live_update: true in YAML)
 ///
 /// Notification payload fields mirror the Android companion app:
 ///   tag, title, message, critical_text, progress, progress_max,

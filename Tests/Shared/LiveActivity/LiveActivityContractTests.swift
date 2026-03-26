@@ -149,12 +149,12 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertNoThrow(try hang(manager.handle(endPayload)))
     }
 
-    /// The `live_activity: true` data flag (Android-compat pattern) must be recognized.
-    func testLiveActivityDataFlag_isRecognized() {
+    /// The `live_update: true` data flag must be recognized (same field as Android Live Updates).
+    func testLiveUpdateDataFlag_isRecognized() {
         let manager = NotificationCommandManager()
         let payload: [AnyHashable: Any] = [
             "homeassistant": [
-                "live_activity": true,
+                "live_update": true,
                 "tag": "test",
                 "title": "Test",
                 "message": "Hello",

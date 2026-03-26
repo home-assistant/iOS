@@ -293,7 +293,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         // If a command is recognized, suppress the notification banner so the user
         // sees only the Live Activity (not a duplicate standard notification).
         if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
-           (hadict["command"] as? String) != nil || (hadict["live_activity"] as? Bool) == true {
+           (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
             commandManager.handle(notification.request.content.userInfo).done {
                 completionHandler([])
             }.catch { error in

@@ -46,11 +46,10 @@ public class NotificationCommandManager {
             return .init(error: CommandError.notCommand)
         }
 
-        // Support data.live_activity: true as an alternative to message: live_activity.
-        // This allows the notification body to be a real message instead of a command keyword,
-        // matching Android's data.live_update: true pattern.
+        // Support data.live_update: true — the same field Android uses for Live Updates.
+        // A single YAML automation can target both platforms with no platform-specific keys.
         #if canImport(ActivityKit)
-        if #available(iOS 16.2, *), hadict["live_activity"] as? Bool == true,
+        if #available(iOS 16.2, *), hadict["live_update"] as? Bool == true,
            let handler = commands["live_activity"] {
             return handler.handle(hadict)
         }
