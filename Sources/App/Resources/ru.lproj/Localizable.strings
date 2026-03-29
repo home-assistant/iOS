@@ -558,6 +558,9 @@
 "menu.status_item.toggle" = "Переключить %1$@";
 "menu.view.find" = "Найти";
 "menu.view.reload_page" = "Перезагрузить страницу";
+"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
+\
+Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
 "navBar.close" = "Закрыть";
 "network.error.no_active_url.body" = "Откройте настройки приложения-компаньона и проверьте настройки сервера. Внутренний URL-адрес будет использоваться только в том случае, если определена локальная сеть (SSID). Если вы используете VPN, попробуйте задать внешний URL-адрес таким же, как и внутренний URL-адрес.";
 "network.error.no_active_url.title" = "Нет доступного URL-адреса для загрузки";

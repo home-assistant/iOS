@@ -558,6 +558,9 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "menu.status_item.toggle" = "%1$@ kapcsolása";
 "menu.view.find" = "Keresés";
 "menu.view.reload_page" = "Oldal újratöltése";
+"mtls.beta.info" = "Ez egy béta funkció, ha bármilyen problémát tapasztal, kérjük, jelentse be az alábbi gomb használatával.\
+\
+Jelenleg az mTLS csak iOS 17+ rendszeren támogatott, problémákat okozhat az értesítési mellékletek megjelenítésében, az Assist TTS hanglejátszásában, és nem fog teljesen működni Apple Watch-on.";
 "navBar.close" = "Bezárás";
 "network.error.no_active_url.body" = "Nyissa meg a mobilalkalmazás beállításait és ellenőrizze a kiszolgáló beállításait! A belső URL csak akkor lesz használva, ha a helyi hálózat meg van határozva (SSID). Amennyiben VPN-t használ, állítsa a külső URL-t ugyanarra, mint a belső URL-t.";
 "network.error.no_active_url.title" = "Nincs betölthető URL";

@@ -558,6 +558,9 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.find" = "Vinden";
 "menu.view.reload_page" = "Herlaad pagina";
+"mtls.beta.info" = "Dit is een bètafunctie. Als je problemen ondervindt, meld ze dan via de knop hieronder. \
+\
+Momenteel wordt mTLS alleen ondersteund op iOS 17+, kunnen er problemen optreden met het weergeven van bijlagen in meldingen, Assist TTS-audio werkt niet volledig op Apple Watch.";
 "navBar.close" = "Sluiten";
 "network.error.no_active_url.body" = "Open de instellingen van de companion-app en controleer de serverinstellingen. De interne URL wordt alleen gebruikt als het lokale netwerk is gedefinieerd (SSID). Als je een VPN gebruikt, probeer dan de externe URL in te stellen op dezelfde waarde als de interne URL.";
 "network.error.no_active_url.title" = "Geen URL beschikbaar om te laden";
@@ -1447,9 +1450,9 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "widgets.automation.trigger.title" = "Automatisering triggeren";
 "widgets.automations.description" = "Automatisering uitvoeren";
 "widgets.button.reload_timeline" = "Alle widgets opnieuw laden";
-"widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
-"widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";
-"widgets.commonly_used_entities.title" = "Common Controls";
+"widgets.commonly_used_entities.description" = "Toon de entiteiten die je het meest gebruikt op basis van je gebruik.";
+"widgets.commonly_used_entities.empty.description" = "Geen veelgebruikte entiteiten gevonden. Gebruik Home Assistant om je gebruiksgeschiedenis op te bouwen.";
+"widgets.commonly_used_entities.title" = "Veelgebruikte entiteiten";
 "widgets.controls.assist.description" = "Open Assist in de Home Assistant-app";
 "widgets.controls.assist.pipeline.placeholder" = "Kies een pijplijn";
 "widgets.controls.assist.title" = "Assist";

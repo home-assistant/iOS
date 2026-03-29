@@ -558,6 +558,9 @@ Server ini memerlukan sertifikat klien (mTLS) tetapi operasi dibatalkan.";
 "menu.status_item.toggle" = "Aktifkan/Nonaktifkan %1$@";
 "menu.view.find" = "Temukan";
 "menu.view.reload_page" = "Muat Ulang Halaman";
+"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
+\
+Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
 "navBar.close" = "Tutup";
 "network.error.no_active_url.body" = "Buka pengaturan aplikasi pendamping dan periksa pengaturan server Anda, URL internal hanya akan digunakan jika jaringan lokal ditentukan (menggunakan pengenal SSID Wi-Fi),. Jika Anda menggunakan VPN, coba atur URL eksternal agar sama dengan URL internal.";
 "network.error.no_active_url.title" = "Tidak ada URL yang tersedia untuk dimuat";
