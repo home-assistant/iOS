@@ -6,7 +6,6 @@ import Shared
 @available(iOS 16.0, *)
 final class CarPlayAreasViewModel {
     private let condensedAreasPerRow = 6
-    private var request: HACancellable?
     weak var templateProvider: CarPlayAreasZonesTemplate?
 
     var entitiesListTemplate: CarPlayEntitiesListTemplate?
@@ -17,17 +16,13 @@ final class CarPlayAreasViewModel {
     }
 
     func cancelRequest() {
-        request?.cancel()
+        currentTask?.cancel()
+        currentTask = nil
     }
 
     func update() {
         guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else {
             templateProvider?.updateAreaItems(items: [])
-            return
-        }
-
-        guard Current.api(for: server)?.connection != nil else {
-            Current.Log.error("No API available to update CarPlayAreasViewModel")
             return
         }
 
@@ -41,6 +36,8 @@ final class CarPlayAreasViewModel {
                 Current.Log.error("Failed to fetch areas from database: \(error.localizedDescription)")
                 areas = []
             }
+
+            guard !Task.isCancelled else { return }
 
             await MainActor.run {
                 self.updateAreas(areas: areas, server: server)
@@ -68,8 +65,6 @@ final class CarPlayAreasViewModel {
             templateProvider?.updateAreaItems(items: listItems(areas: displayAreas, server: server))
         }
     }
-
-    // swiftlint:enable cyclomatic_complexity
 
     @available(iOS 26.0, *)
     private func condensedAreaItems(areas: [AppArea], server: Server) -> [any CPListTemplateItem] {
