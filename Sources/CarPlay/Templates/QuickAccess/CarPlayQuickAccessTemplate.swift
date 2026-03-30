@@ -7,6 +7,15 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
+    private struct RowDisplayItem {
+        let magicItem: MagicItem
+        let info: MagicItem.Info
+        let image: UIImage
+        let title: String
+        let subtitle: String?
+        let currentState: String
+    }
+
     private let viewModel: CarPlayQuickAccessViewModel
 
     private let paginatedList = CarPlayPaginatedListTemplate(
@@ -14,11 +23,14 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         items: [],
         paginationStyle: .inline
     )
+    private let quickAccessItemsPerRow = 6
     var template: CPListTemplate
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
     private var entityProviders: [CarPlayEntityListItem] = []
+    private var currentItems: [MagicItem] = []
+    private var currentLayout: CarPlayQuickAccessLayout = .grid
     private var entitiesPerServer: [String: HACachedStates] = [:]
 
     private var preferredServerId: String {
@@ -43,7 +55,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     init(viewModel: CarPlayQuickAccessViewModel) {
         self.viewModel = viewModel
 
-        self.template = paginatedList.template
+        guard let template = paginatedList.listTemplate else {
+            fatalError("Expected CarPlayPaginatedListTemplate to create a CPListTemplate")
+        }
+        self.template = template
         template.tabTitle = L10n.CarPlay.Navigation.Tab.quickAccess
         template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
         template.tabSystemItem = .more
@@ -66,6 +81,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
         entitiesPerServer[serverId] = entities
+        if #available(iOS 26.0, *), currentLayout == .grid, !currentItems.isEmpty {
+            paginatedList.updateItems(items: rowItems(items: currentItems))
+            return
+        }
         entityProviders.forEach { item in
             guard serverId == item.serverId else { return }
             guard let entity = entities.all.filter({ $0.entityId == item.entity.entityId }).first else { return }
@@ -79,89 +98,130 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
     }
 
-    func updateList(for items: [MagicItem]) {
+    func updateList(for items: [MagicItem], layout: CarPlayQuickAccessLayout) {
+        currentItems = items
+        currentLayout = layout
         guard !items.isEmpty else {
             presentIntroductionItem()
             return
         }
-        paginatedList.updateItems(items: listItems(items: items))
+        if #available(iOS 26.0, *), layout == .grid {
+            paginatedList.updateItems(items: rowItems(items: items))
+        } else {
+            paginatedList.updateItems(items: listItems(items: items))
+        }
     }
 
     private func presentIntroductionItem() {
+        template.trailingNavigationBarButtons = []
         template.updateSections([.init(items: [introduceQuickAccessListItem])])
     }
 
     private func listItems(items: [MagicItem]) -> [CPListItem] {
         entityProviders = []
-
-        // Build entity-to-area mapping for all servers
-        var entityToAreaMap: [String: String] = [:]
-        for server in Current.servers.all {
-            let areas: [AppArea]
-            do {
-                areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
-            } catch {
-                Current.Log.error("Failed to fetch areas for CarPlay quick access: \(error.localizedDescription)")
-                areas = []
-            }
-            for area in areas {
-                for entityId in area.entities {
-                    entityToAreaMap[entityId] = area.name
-                }
-            }
-        }
+        let entityToAreaMap = entityToAreaMap()
 
         let items: [CPListItem?] = items.compactMap { magicItem in
-            let info = magicItemProvider.getInfo(for: magicItem) ?? .init(
-                id: magicItem.id,
-                name: magicItem.id,
-                iconName: "",
-                customization: nil
-            )
+            let info = info(for: magicItem)
             switch magicItem.type {
             case .entity:
                 guard let placeholderItem = entitiesPerServer[magicItem.serverId]?.all
-                    .first(where: { $0.entityId == magicItem.id }) ?? placeholderEntity(id: magicItem.id) else {
-                    Current.Log.error("Failed to create placeholder entity for magic item id: \(magicItem.id)")
+                    .first(where: { $0.entityId == magicItem.id }) ?? placeholderEntity(id: magicItem.id),
+                    let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
                     return .init(text: "", detailText: "")
                 }
-                let area = entityToAreaMap[placeholderItem.entityId]
                 let entityProvider = CarPlayEntityListItem(
                     serverId: magicItem.serverId,
                     entity: placeholderItem,
                     magicItem: magicItem,
                     magicItemInfo: info,
-                    area: area
+                    area: entityToAreaMap[placeholderItem.entityId]
                 )
                 let listItem = entityProvider.template
                 listItem.handler = { [weak self] _, _ in
-                    // Get the current state at tap time, not when the handler was created
-                    let currentState = self?.entitiesPerServer[magicItem.serverId]?.all
-                        .first(where: { $0.entityId == magicItem.id })?.state ?? ""
                     self?.itemTap(
                         magicItem: magicItem,
                         info: info,
-                        item: listItem,
-                        currentItemState: currentState
+                        currentItemState: rowDisplayItem.currentState,
+                        resultHandler: { [weak self] success in
+                            self?.displayItemResultIcon(on: listItem, success: success)
+                        }
                     )
                 }
                 entityProviders.append(entityProvider)
                 return listItem
             default:
-                let icon = magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
                 let item = CPListItem(
-                    text: info.name,
-                    detailText: nil,
-                    image: icon
+                    text: magicItem.name(info: info),
+                    detailText: subtitle(for: magicItem),
+                    image: magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
                 )
                 item.handler = { [weak self] _, _ in
-                    self?.itemTap(magicItem: magicItem, info: info, item: item)
+                    self?.itemTap(
+                        magicItem: magicItem,
+                        info: info,
+                        resultHandler: { [weak self] success in
+                            self?.displayItemResultIcon(on: item, success: success)
+                        }
+                    )
                 }
                 return item
             }
         }
 
         return items.compactMap({ $0 })
+    }
+
+    @available(iOS 26.0, *)
+    private func rowItems(items: [MagicItem]) -> [any CPListTemplateItem] {
+        let entityToAreaMap = entityToAreaMap()
+        let displayItems = items.compactMap { rowDisplayItem(for: $0, entityToAreaMap: entityToAreaMap) }
+
+        return stride(from: 0, to: displayItems.count, by: quickAccessItemsPerRow).map { startIndex in
+            let pageItems = Array(displayItems[startIndex ..< min(
+                startIndex + quickAccessItemsPerRow,
+                displayItems.count
+            )])
+            let elements = pageItems.map { item in
+                CPListImageRowItemCondensedElement(
+                    image: item.image.scaledToSize(CPListImageRowItemCondensedElement.maximumImageSize),
+                    imageShape: .circular,
+                    title: item.title,
+                    subtitle: item.subtitle,
+                    accessorySymbolName: nil
+                )
+            }
+
+            let rowItem = CPListImageRowItem(
+                text: nil,
+                condensedElements: elements,
+                allowsMultipleLines: true
+            )
+            rowItem.listImageRowHandler = { [weak self] item, index, completion in
+                guard pageItems.indices.contains(index) else {
+                    completion()
+                    return
+                }
+
+                let selectedItem = pageItems[index]
+                self?.itemTap(
+                    magicItem: selectedItem.magicItem,
+                    info: selectedItem.info,
+                    currentItemState: selectedItem.currentState,
+                    resultHandler: { [weak self] success in
+                        self?.displayItemResultIcon(
+                            on: item,
+                            elementIndex: index,
+                            originalImage: selectedItem.image
+                                .scaledToSize(CPListImageRowItemCondensedElement.maximumImageSize),
+                            success: success
+                        )
+                    }
+                )
+                completion()
+            }
+            return rowItem
+        }
     }
 
     private func placeholderEntity(id: String) -> HAEntity? {
@@ -178,8 +238,8 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func itemTap(
         magicItem: MagicItem,
         info: MagicItem.Info,
-        item: CPListItem,
-        currentItemState: String = ""
+        currentItemState: String = "",
+        resultHandler: @escaping (Bool) -> Void
     ) {
         // Check if this is a lock entity - locks always require confirmation
         let isLockEntity = magicItem
@@ -188,43 +248,50 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         if isLockEntity {
             // For lock entities, show lock-specific confirmation
             showLockConfirmation(magicItem: magicItem, info: info, currentState: currentItemState) { [weak self] in
-                self?.executeLockEntity(magicItem, item: item, currentState: currentItemState)
+                self?.executeLockEntity(magicItem, currentState: currentItemState, resultHandler: resultHandler)
             }
         } else if info.customization?.requiresConfirmation ?? false {
             showConfirmationForRunningMagicItem(item: magicItem, info: info) { [weak self] in
-                self?.executeMagicItem(magicItem, item: item, currentItemState: currentItemState)
+                self?.executeMagicItem(magicItem, resultHandler: resultHandler)
             }
         } else {
-            executeMagicItem(magicItem, item: item, currentItemState: currentItemState)
+            executeMagicItem(magicItem, resultHandler: resultHandler)
         }
     }
 
-    private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem, currentItemState: String = "") {
+    private func executeMagicItem(
+        _ magicItem: MagicItem,
+        resultHandler: @escaping (Bool) -> Void
+    ) {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
             Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
-            displayItemResultIcon(on: item, success: false)
+            resultHandler(false)
             return
         }
-        magicItem.execute(on: server, source: .CarPlay) { [weak self] success in
-            self?.displayItemResultIcon(on: item, success: success)
+        magicItem.execute(on: server, source: .CarPlay) { success in
+            resultHandler(success)
         }
     }
 
     /// Execute a lock entity using the shared CarPlayLockConfirmation.execute method
-    private func executeLockEntity(_ magicItem: MagicItem, item: CPListItem, currentState: String) {
+    private func executeLockEntity(
+        _ magicItem: MagicItem,
+        currentState: String,
+        resultHandler: @escaping (Bool) -> Void
+    ) {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
             Current.Log.error("Failed to get server for lock magic item id: \(magicItem.id)")
-            displayItemResultIcon(on: item, success: false)
+            resultHandler(false)
             return
         }
 
         guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to execute lock entity")
-            displayItemResultIcon(on: item, success: false)
+            resultHandler(false)
             return
         }
 
@@ -233,8 +300,8 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             entityId: magicItem.id,
             currentState: currentState,
             api: api
-        ) { [weak self] success in
-            self?.displayItemResultIcon(on: item, success: success)
+        ) { success in
+            resultHandler(success)
         }
     }
 
@@ -284,5 +351,109 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             item.setImage(itemOriginalIcon)
         }
+    }
+
+    @available(iOS 26.0, *)
+    private func displayItemResultIcon(
+        on item: CPListImageRowItem,
+        elementIndex: Int,
+        originalImage: UIImage,
+        success: Bool
+    ) {
+        guard item.elements.indices.contains(elementIndex) else { return }
+
+        let updatedElements = item.elements
+        updatedElements[elementIndex].image = success
+            ? MaterialDesignIcons.checkIcon.image(
+                ofSize: CPListImageRowItemCondensedElement.maximumImageSize,
+                color: AppConstants.tintColor
+            )
+            : MaterialDesignIcons.closeIcon.image(
+                ofSize: CPListImageRowItemCondensedElement.maximumImageSize,
+                color: .red
+            )
+        item.elements = updatedElements
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            guard item.elements.indices.contains(elementIndex) else { return }
+            let restoredElements = item.elements
+            restoredElements[elementIndex].image = originalImage
+            item.elements = restoredElements
+        }
+    }
+
+    private func info(for magicItem: MagicItem) -> MagicItem.Info {
+        magicItemProvider.getInfo(for: magicItem) ?? .init(
+            id: magicItem.id,
+            name: magicItem.id,
+            iconName: "",
+            customization: nil
+        )
+    }
+
+    private func subtitle(for magicItem: MagicItem) -> String? {
+        Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
+    }
+
+    private func rowDisplayItem(
+        for magicItem: MagicItem,
+        entityToAreaMap: [String: String]
+    ) -> RowDisplayItem? {
+        let info = info(for: magicItem)
+
+        switch magicItem.type {
+        case .entity:
+            guard let placeholderItem = entitiesPerServer[magicItem.serverId]?.all
+                .first(where: { $0.entityId == magicItem.id }) ?? placeholderEntity(id: magicItem.id) else {
+                Current.Log.error("Failed to create placeholder entity for magic item id: \(magicItem.id)")
+                return nil
+            }
+
+            let area = entityToAreaMap[placeholderItem.entityId]
+            let entityProvider = CarPlayEntityListItem(
+                serverId: magicItem.serverId,
+                entity: placeholderItem,
+                magicItem: magicItem,
+                magicItemInfo: info,
+                area: area
+            )
+
+            return RowDisplayItem(
+                magicItem: magicItem,
+                info: info,
+                image: entityProvider.template.image ?? MaterialDesignIcons.bookmarkIcon.carPlayIcon(),
+                title: entityProvider.template.text ?? info.name,
+                subtitle: entityProvider.template.detailText,
+                currentState: placeholderItem.state
+            )
+        default:
+            return RowDisplayItem(
+                magicItem: magicItem,
+                info: info,
+                image: magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor)),
+                title: magicItem.name(info: info),
+                subtitle: subtitle(for: magicItem),
+                currentState: ""
+            )
+        }
+    }
+
+    private func entityToAreaMap() -> [String: String] {
+        var entityToAreaMap: [String: String] = [:]
+        for server in Current.servers.all {
+            let areas: [AppArea]
+            do {
+                areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+            } catch {
+                Current.Log.error("Failed to fetch areas for CarPlay quick access: \(error.localizedDescription)")
+                areas = []
+            }
+            for area in areas {
+                for entityId in area.entities {
+                    entityToAreaMap[entityId] = area.name
+                }
+            }
+        }
+        return entityToAreaMap
     }
 }

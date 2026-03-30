@@ -9,47 +9,107 @@ final class CarPlayPaginatedListTemplate {
         case navigation
     }
 
-    enum GridPage {
+    enum PageDirection {
         case next
         case previous
     }
 
-    private var items: [CPListItem]
+    private enum Content {
+        case list([any CPListTemplateItem], supportsInlinePagination: Bool)
+        case grid([CPGridButton])
+    }
+
+    private var content: Content
     private var currentPage: Int
     private let title: String
     private let paginationStyle: PaginationStyle
 
-    private(set) var template: CPListTemplate
+    private(set) var template: CPTemplate
+    var listTemplate: CPListTemplate? { template as? CPListTemplate }
+    var gridTemplate: CPGridTemplate? { template as? CPGridTemplate }
 
     init(title: String, items: [CPListItem], paginationStyle: PaginationStyle = .navigation) {
         self.title = title
-        self.items = items
+        self.content = .list(items, supportsInlinePagination: true)
         self.paginationStyle = paginationStyle
         self.currentPage = 0
         self.template = CPListTemplate(title: title, sections: [])
     }
 
+    init(
+        title: String,
+        templateItems: [any CPListTemplateItem],
+        paginationStyle: PaginationStyle = .navigation
+    ) {
+        self.title = title
+        self.content = .list(templateItems, supportsInlinePagination: false)
+        self.paginationStyle = paginationStyle
+        self.currentPage = 0
+        self.template = CPListTemplate(title: title, sections: [])
+    }
+
+    init(title: String, gridButtons: [CPGridButton], paginationStyle: PaginationStyle = .navigation) {
+        self.title = title
+        self.content = .grid(gridButtons)
+        self.paginationStyle = paginationStyle == .inline ? .navigation : paginationStyle
+        self.currentPage = 0
+        if #available(iOS 26.0, *) {
+            let template = CPListTemplate(title: title, sections: [])
+            template.headerGridButtons = []
+            self.template = template
+        } else {
+            self.template = CPGridTemplate(title: title, gridButtons: [])
+        }
+    }
+
     func updateItems(items: [CPListItem]) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            self.items = items
+            guard case .list = content else {
+                assertionFailure("Attempted to update list items on a grid-backed CarPlayPaginatedListTemplate")
+                return
+            }
+            content = .list(items, supportsInlinePagination: true)
+            updateTemplate()
+        }
+    }
+
+    func updateItems(items: [any CPListTemplateItem]) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            guard case .list = content else {
+                assertionFailure("Attempted to update list items on a grid-backed CarPlayPaginatedListTemplate")
+                return
+            }
+            content = .list(items, supportsInlinePagination: false)
+            updateTemplate()
+        }
+    }
+
+    func updateGridButtons(gridButtons: [CPGridButton]) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            guard case .grid = content else {
+                assertionFailure("Attempted to update grid buttons on a list-backed CarPlayPaginatedListTemplate")
+                return
+            }
+            content = .grid(gridButtons)
             updateTemplate()
         }
     }
 
     func updateTemplate() {
-        let totalItems = items.count
-        var itemsPerPage = CPListTemplate.maximumItemCount
+        let totalItems = itemsCount
+        let itemsPerPage = maximumItemsPerPage
+        let maxPage = totalItems > 0 ? (totalItems - 1) / itemsPerPage : 0
+        currentPage = min(currentPage, maxPage)
 
-        if paginationStyle == .inline, items.count > itemsPerPage {
-            itemsPerPage = CPListTemplate.maximumItemCount - 2
-        }
-
-        let startIndex = currentPage * itemsPerPage
+        let startIndex = min(currentPage * itemsPerPage, totalItems)
         let endIndex = min(startIndex + itemsPerPage, totalItems)
-        var pageItems = Array(items[startIndex ..< endIndex])
+        let shouldUseInlinePagination = paginationStyle == .inline && supportsInlinePagination
 
-        if paginationStyle == .inline {
+        if shouldUseInlinePagination {
+            var pageItems: [any CPListTemplateItem] = Array(listItems[startIndex ..< endIndex])
             if currentPage > 0 {
                 let previousItem = CPListItem(text: nil, detailText: nil)
                 previousItem.setImage(MaterialDesignIcons.arrowLeftIcon.carPlayIcon())
@@ -68,15 +128,87 @@ final class CarPlayPaginatedListTemplate {
                 }
                 pageItems.insert(nextItem, at: pageItems.endIndex)
             }
-        } else {
-            template.trailingNavigationBarButtons = getPageButtons(
-                endIndex: endIndex,
-                currentPage: currentPage,
-                totalCount: totalItems
-            )
+            listTemplate?.updateSections([CPListSection(items: pageItems)])
+            updateTrailingNavigationButtons([])
+            return
         }
-        let section = CPListSection(items: pageItems)
-        template.updateSections([section])
+
+        updateTrailingNavigationButtons(getPageButtons(
+            endIndex: endIndex,
+            currentPage: currentPage,
+            totalCount: totalItems
+        ))
+
+        switch content {
+        case .list:
+            let section = CPListSection(items: Array(listItems[startIndex ..< endIndex]))
+            listTemplate?.updateSections([section])
+        case .grid:
+            if #available(iOS 26.0, *), let listTemplate {
+                listTemplate.updateSections([])
+                listTemplate.headerGridButtons = Array(gridButtons[startIndex ..< endIndex])
+            } else {
+                gridTemplate?.updateGridButtons(Array(gridButtons[startIndex ..< endIndex]))
+            }
+        }
+    }
+
+    private var listItems: [any CPListTemplateItem] {
+        if case let .list(items, _) = content {
+            items
+        } else {
+            []
+        }
+    }
+
+    private var supportsInlinePagination: Bool {
+        if case let .list(items, supportsInlinePagination) = content {
+            supportsInlinePagination && items.allSatisfy { $0 is CPListItem }
+        } else {
+            false
+        }
+    }
+
+    private var gridButtons: [CPGridButton] {
+        if case let .grid(buttons) = content {
+            buttons
+        } else {
+            []
+        }
+    }
+
+    private var itemsCount: Int {
+        switch content {
+        case let .list(items, _):
+            items.count
+        case let .grid(buttons):
+            buttons.count
+        }
+    }
+
+    private var maximumItemsPerPage: Int {
+        switch content {
+        case let .list(items, supportsInlinePagination):
+            var itemsPerPage = Int(CPListTemplate.maximumItemCount)
+            if paginationStyle == .inline, supportsInlinePagination, items.count > itemsPerPage {
+                itemsPerPage -= 2
+            }
+            return itemsPerPage
+        case .grid:
+            if #available(iOS 26.0, *), listTemplate != nil {
+                return Int(CPListTemplate.maximumHeaderGridButtonCount)
+            } else {
+                return Int(CPGridTemplateMaximumItems)
+            }
+        }
+    }
+
+    private func updateTrailingNavigationButtons(_ buttons: [CPBarButton]) {
+        if let listTemplate {
+            listTemplate.trailingNavigationBarButtons = buttons
+        } else {
+            gridTemplate?.trailingNavigationBarButtons = buttons
+        }
     }
 
     private func getPageButtons(endIndex: Int, currentPage: Int, totalCount: Int) -> [CPBarButton] {
@@ -118,7 +250,7 @@ final class CarPlayPaginatedListTemplate {
         return barButtons
     }
 
-    private func changePage(to: GridPage) {
+    private func changePage(to: PageDirection) {
         var newCurrentPage = currentPage
         switch to {
         case .next:
