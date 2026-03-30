@@ -15,7 +15,7 @@ final class CarPlayPaginatedListTemplate {
     }
 
     private enum Content {
-        case list([CPListItem])
+        case list([any CPListTemplateItem], supportsInlinePagination: Bool)
         case grid([CPGridButton])
     }
 
@@ -30,7 +30,19 @@ final class CarPlayPaginatedListTemplate {
 
     init(title: String, items: [CPListItem], paginationStyle: PaginationStyle = .navigation) {
         self.title = title
-        self.content = .list(items)
+        self.content = .list(items, supportsInlinePagination: true)
+        self.paginationStyle = paginationStyle
+        self.currentPage = 0
+        self.template = CPListTemplate(title: title, sections: [])
+    }
+
+    init(
+        title: String,
+        templateItems: [any CPListTemplateItem],
+        paginationStyle: PaginationStyle = .navigation
+    ) {
+        self.title = title
+        self.content = .list(templateItems, supportsInlinePagination: false)
         self.paginationStyle = paginationStyle
         self.currentPage = 0
         self.template = CPListTemplate(title: title, sections: [])
@@ -57,7 +69,19 @@ final class CarPlayPaginatedListTemplate {
                 assertionFailure("Attempted to update list items on a grid-backed CarPlayPaginatedListTemplate")
                 return
             }
-            content = .list(items)
+            content = .list(items, supportsInlinePagination: true)
+            updateTemplate()
+        }
+    }
+
+    func updateItems(items: [any CPListTemplateItem]) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            guard case .list = content else {
+                assertionFailure("Attempted to update list items on a grid-backed CarPlayPaginatedListTemplate")
+                return
+            }
+            content = .list(items, supportsInlinePagination: false)
             updateTemplate()
         }
     }
@@ -82,10 +106,10 @@ final class CarPlayPaginatedListTemplate {
 
         let startIndex = min(currentPage * itemsPerPage, totalItems)
         let endIndex = min(startIndex + itemsPerPage, totalItems)
-        let shouldUseInlinePagination = paginationStyle == .inline && isListContent
+        let shouldUseInlinePagination = paginationStyle == .inline && supportsInlinePagination
 
         if shouldUseInlinePagination {
-            var pageItems = Array(listItems[startIndex ..< endIndex])
+            var pageItems: [any CPListTemplateItem] = Array(listItems[startIndex ..< endIndex])
             if currentPage > 0 {
                 let previousItem = CPListItem(text: nil, detailText: nil)
                 previousItem.setImage(MaterialDesignIcons.arrowLeftIcon.carPlayIcon())
@@ -129,19 +153,19 @@ final class CarPlayPaginatedListTemplate {
         }
     }
 
-    private var isListContent: Bool {
-        if case .list = content {
-            true
-        } else {
-            false
-        }
-    }
-
-    private var listItems: [CPListItem] {
-        if case let .list(items) = content {
+    private var listItems: [any CPListTemplateItem] {
+        if case let .list(items, _) = content {
             items
         } else {
             []
+        }
+    }
+
+    private var supportsInlinePagination: Bool {
+        if case let .list(items, supportsInlinePagination) = content {
+            supportsInlinePagination && items.allSatisfy { $0 is CPListItem }
+        } else {
+            false
         }
     }
 
@@ -155,7 +179,7 @@ final class CarPlayPaginatedListTemplate {
 
     private var itemsCount: Int {
         switch content {
-        case let .list(items):
+        case let .list(items, _):
             items.count
         case let .grid(buttons):
             buttons.count
@@ -164,9 +188,9 @@ final class CarPlayPaginatedListTemplate {
 
     private var maximumItemsPerPage: Int {
         switch content {
-        case let .list(items):
+        case let .list(items, supportsInlinePagination):
             var itemsPerPage = Int(CPListTemplate.maximumItemCount)
-            if paginationStyle == .inline, items.count > itemsPerPage {
+            if paginationStyle == .inline, supportsInlinePagination, items.count > itemsPerPage {
                 itemsPerPage -= 2
             }
             return itemsPerPage

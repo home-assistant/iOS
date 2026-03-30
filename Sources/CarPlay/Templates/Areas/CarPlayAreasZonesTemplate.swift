@@ -7,13 +7,20 @@ import Shared
 final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
     private var childTemplateProvider: (any CarPlayTemplateProvider)?
     private let viewModel: CarPlayAreasViewModel
+    private let paginatedList = CarPlayPaginatedListTemplate(
+        title: L10n.CarPlay.Navigation.Tab.areas,
+        templateItems: []
+    )
 
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
 
     init(viewModel: CarPlayAreasViewModel) {
         self.viewModel = viewModel
-        self.template = CPListTemplate(title: L10n.CarPlay.Navigation.Tab.areas, sections: [])
+        guard let template = paginatedList.listTemplate else {
+            fatalError("Expected CarPlayPaginatedListTemplate to create a CPListTemplate")
+        }
+        self.template = template
         template.tabImage = MaterialDesignIcons.sofaIcon.carPlayIcon()
         template.tabTitle = L10n.CarPlay.Navigation.Tab.areas
 
@@ -43,7 +50,7 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
     }
 
     func updateAreaItems(items: [any CPListTemplateItem]) {
-        template.updateSections([CPListSection(items: items)])
+        paginatedList.updateItems(items: items)
     }
 
     func presentEntitiesList(template: CarPlayEntitiesListTemplate) {
