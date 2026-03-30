@@ -1,6 +1,7 @@
 import CarPlay
 import Foundation
 import HAKit
+import SFSafeSymbols
 import Shared
 
 @available(iOS 16.0, *)
@@ -37,7 +38,7 @@ final class CarPlayDomainsListViewModel {
                 }
             })
 
-        // Prevent unecessary update and UI glitch for non-touch screen CarPlay
+        // Prevent unnecessary update and UI glitch for non-touch screen CarPlay
         guard domainsCurrentlyInList != domains else { return }
         domainsCurrentlyInList = domains
 
@@ -74,7 +75,7 @@ final class CarPlayDomainsListViewModel {
                     imageShape: .roundedRectangle,
                     title: domain.localizedDescription,
                     subtitle: nil,
-                    accessorySymbolName: "chevron.right"
+                    accessorySymbolName: SFSymbol.chevronRight.rawValue
                 )
             }
 
