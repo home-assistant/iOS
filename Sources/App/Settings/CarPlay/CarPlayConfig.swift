@@ -6,20 +6,38 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
     public var id = CarPlayConfig.carPlayConfigId
     public var tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings]
     public var quickAccessItems: [MagicItem] = []
+    public var quickAccessLayout: CarPlayQuickAccessLayout?
 
     public init(
         id: String = CarPlayConfig.carPlayConfigId,
         tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings],
-        quickAccessItems: [MagicItem] = []
+        quickAccessItems: [MagicItem] = [],
+        quickAccessLayout: CarPlayQuickAccessLayout? = nil
     ) {
+        self.id = id
         self.tabs = tabs
         self.quickAccessItems = quickAccessItems
+        self.quickAccessLayout = quickAccessLayout
     }
 
     public static func config() throws -> CarPlayConfig? {
         try Current.database().read({ db in
             try CarPlayConfig.fetchOne(db)
         })
+    }
+}
+
+public enum CarPlayQuickAccessLayout: String, Codable, CaseIterable, DatabaseValueConvertible, Equatable {
+    case grid
+    case list
+
+    public var name: String {
+        switch self {
+        case .grid:
+            return L10n.HomeView.Customization.AreasLayout.Grid.title
+        case .list:
+            return L10n.HomeView.Customization.AreasLayout.List.title
+        }
     }
 }
 

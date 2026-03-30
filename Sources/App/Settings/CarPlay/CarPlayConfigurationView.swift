@@ -74,6 +74,14 @@ struct CarPlayConfigurationView: View {
 
     private var itemsSection: some View {
         Section(L10n.CarPlay.Navigation.Tab.quickAccess) {
+            Picker(L10n.Carplay.Tab.QuickAccess.layout, selection: Binding(
+                get: { viewModel.quickAccessLayout },
+                set: { viewModel.quickAccessLayout = $0 }
+            )) {
+                ForEach(CarPlayQuickAccessLayout.allCases, id: \.rawValue) { layout in
+                    Text(layout.name).tag(layout)
+                }
+            }
             ForEach(viewModel.config.quickAccessItems, id: \.id) { item in
                 makeListItem(item: item)
             }

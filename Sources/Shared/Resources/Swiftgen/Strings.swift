@@ -893,6 +893,12 @@ public enum L10n {
         public static var previous: String { return L10n.tr("Localizable", "carplay.navigation.button.previous") }
       }
     }
+    public enum Tab {
+      public enum QuickAccess {
+        /// Layout
+        public static var layout: String { return L10n.tr("Localizable", "carplay.tab.quick_access.layout") }
+      }
+    }
     public enum Unlock {
       public enum Confirmation {
         /// Are you sure you want to perform unlock action on %@?
