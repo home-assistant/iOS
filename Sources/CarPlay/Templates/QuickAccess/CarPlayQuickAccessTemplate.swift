@@ -43,7 +43,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     init(viewModel: CarPlayQuickAccessViewModel) {
         self.viewModel = viewModel
 
-        self.template = paginatedList.template
+        guard let template = paginatedList.listTemplate else {
+            fatalError("Expected CarPlayPaginatedListTemplate to create a CPListTemplate")
+        }
+        self.template = template
         template.tabTitle = L10n.CarPlay.Navigation.Tab.quickAccess
         template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
         template.tabSystemItem = .more

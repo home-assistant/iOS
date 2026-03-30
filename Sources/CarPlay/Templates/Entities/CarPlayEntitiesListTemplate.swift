@@ -15,11 +15,14 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         title: String
     ) {
         self.paginatedListTemplate = CarPlayPaginatedListTemplate(title: title, items: [])
-        self.template = paginatedListTemplate.template
+        guard let template = paginatedListTemplate.listTemplate else {
+            fatalError("Expected CarPlayPaginatedListTemplate to create a CPListTemplate")
+        }
+        self.template = template
         self.viewModel = viewModel
 
         viewModel.templateProvider = self
-        paginatedListTemplate.template.emptyViewSubtitleVariants = [L10n.CarPlay.State.Loading.title]
+        paginatedListTemplate.listTemplate?.emptyViewSubtitleVariants = [L10n.CarPlay.State.Loading.title]
     }
 
     func templateWillDisappear(template: CPTemplate) {

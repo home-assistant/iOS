@@ -5,6 +5,7 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayAreasViewModel {
+    private let condensedAreasPerRow = 6
     private var request: HACancellable?
     weak var templateProvider: CarPlayAreasZonesTemplate?
 
@@ -21,7 +22,7 @@ final class CarPlayAreasViewModel {
 
     func update() {
         guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else {
-            templateProvider?.template.updateSections([])
+            templateProvider?.updateAreaItems(items: [])
             return
         }
 
@@ -54,12 +55,60 @@ final class CarPlayAreasViewModel {
 
     @MainActor
     private func updateAreas(areas: [AppArea], server: Server) {
-        let items = areas.sorted(by: { a1, a2 in
+        let displayAreas = areas.sorted(by: { a1, a2 in
             a1.name < a2.name
-        }).compactMap { area -> CPListItem? in
+        }).filter { area in
             // Skip areas with no entities
-            guard !area.entities.isEmpty else { return nil }
+            !area.entities.isEmpty
+        }
 
+        if #available(iOS 26.0, *) {
+            templateProvider?.updateAreaItems(items: condensedAreaItems(areas: displayAreas, server: server))
+        } else {
+            templateProvider?.updateAreaItems(items: listItems(areas: displayAreas, server: server))
+        }
+    }
+
+    // swiftlint:enable cyclomatic_complexity
+
+    @available(iOS 26.0, *)
+    private func condensedAreaItems(areas: [AppArea], server: Server) -> [any CPListTemplateItem] {
+        stride(from: 0, to: areas.count, by: condensedAreasPerRow).map { startIndex in
+            let pageAreas = Array(areas[startIndex ..< min(startIndex + condensedAreasPerRow, areas.count)])
+            let elements = pageAreas.map { area in
+                CPListImageRowItemCondensedElement(
+                    image: MaterialDesignIcons(
+                        serversideValueNamed: area.icon ?? "mdi:circle"
+                    ).image(
+                        ofSize: CPListImageRowItemCondensedElement.maximumImageSize,
+                        color: .haPrimary
+                    ),
+                    imageShape: .roundedRectangle,
+                    title: area.name,
+                    subtitle: nil,
+                    accessorySymbolName: "chevron.right"
+                )
+            }
+
+            let item = CPListImageRowItem(
+                text: nil,
+                condensedElements: elements,
+                allowsMultipleLines: true
+            )
+            item.listImageRowHandler = { [weak self] _, index, completion in
+                guard pageAreas.indices.contains(index) else {
+                    completion()
+                    return
+                }
+                self?.listItemHandler(area: pageAreas[index], server: server)
+                completion()
+            }
+            return item
+        }
+    }
+
+    private func listItems(areas: [AppArea], server: Server) -> [any CPListTemplateItem] {
+        areas.map { area in
             let icon = MaterialDesignIcons(
                 serversideValueNamed: area.icon ?? "mdi:circle"
             ).carPlayIcon()
@@ -71,11 +120,7 @@ final class CarPlayAreasViewModel {
             }
             return item
         }
-
-        templateProvider?.paginatedList.updateItems(items: items)
     }
-
-    // swiftlint:enable cyclomatic_complexity
 
     private func listItemHandler(area: AppArea, server: Server) {
         guard let entities else { return }
