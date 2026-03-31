@@ -417,15 +417,26 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 magicItemInfo: info,
                 area: area
             )
-
-            return RowDisplayItem(
-                magicItem: magicItem,
-                info: info,
-                image: entityProvider.template.image ?? MaterialDesignIcons.bookmarkIcon.carPlayIcon(),
-                title: entityProvider.template.text ?? info.name,
-                subtitle: entityProvider.template.detailText,
-                currentState: placeholderItem.state
-            )
+            if #available(iOS 26.0, *) {
+                let condensedElement = entityProvider.condensedElement()
+                return RowDisplayItem(
+                    magicItem: magicItem,
+                    info: info,
+                    image: condensedElement.image,
+                    title: condensedElement.title,
+                    subtitle: condensedElement.subtitle,
+                    currentState: entityProvider.entity.state
+                )
+            } else {
+                return RowDisplayItem(
+                    magicItem: magicItem,
+                    info: info,
+                    image: entityProvider.template.image ?? MaterialDesignIcons.bookmarkIcon.carPlayIcon(),
+                    title: entityProvider.template.text ?? info.name,
+                    subtitle: entityProvider.template.detailText,
+                    currentState: entityProvider.entity.state
+                )
+            }
         default:
             return RowDisplayItem(
                 magicItem: magicItem,

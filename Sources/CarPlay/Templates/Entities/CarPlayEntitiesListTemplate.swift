@@ -6,6 +6,7 @@ import Shared
 @available(iOS 16.0, *)
 final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayEntitiesListViewModel
+    private let condensedEntitiesPerRow = 3
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
@@ -46,13 +47,11 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     }
 
     func updateItems(entityProviders: [CarPlayEntityListItem]) {
-        for entityProvider in entityProviders {
-            entityProvider.template.handler = { [weak self] _, completion in
-                self?.viewModel.handleEntityTap(entity: entityProvider.entity, completion: completion)
-            }
+        if #available(iOS 26.0, *) {
+            paginatedListTemplate.updateItems(items: condensedItems(entityProviders: entityProviders))
+        } else {
+            paginatedListTemplate.updateItems(items: listItems(entityProviders: entityProviders))
         }
-
-        paginatedListTemplate.updateItems(items: entityProviders.map(\.template))
     }
 
     func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {
@@ -62,5 +61,37 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
             interfaceController: interfaceController,
             completion: completion
         )
+    }
+
+    private func listItems(entityProviders: [CarPlayEntityListItem]) -> [CPListItem] {
+        entityProviders.map { entityProvider in
+            entityProvider.template.handler = { [weak self] _, completion in
+                self?.viewModel.handleEntityTap(entity: entityProvider.entity, completion: completion)
+            }
+            return entityProvider.template
+        }
+    }
+
+    @available(iOS 26.0, *)
+    private func condensedItems(entityProviders: [CarPlayEntityListItem]) -> [any CPListTemplateItem] {
+        stride(from: 0, to: entityProviders.count, by: condensedEntitiesPerRow).map { startIndex in
+            let rowProviders = Array(entityProviders[startIndex ..< min(
+                startIndex + condensedEntitiesPerRow,
+                entityProviders.count
+            )])
+            let item = CPListImageRowItem(
+                text: nil,
+                condensedElements: rowProviders.map { $0.condensedElement() },
+                allowsMultipleLines: true
+            )
+            item.listImageRowHandler = { [weak self] _, index, completion in
+                guard rowProviders.indices.contains(index) else {
+                    completion()
+                    return
+                }
+                self?.viewModel.handleEntityTap(entity: rowProviders[index].entity, completion: completion)
+            }
+            return item
+        }
     }
 }

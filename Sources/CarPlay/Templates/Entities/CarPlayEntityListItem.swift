@@ -4,6 +4,12 @@ import HAKit
 import Shared
 
 final class CarPlayEntityListItem: CarPlayListItemProvider {
+    private struct DisplayContent {
+        let text: String
+        let detailText: String?
+        let image: UIImage
+    }
+
     var serverId: String
     var entity: HAEntity
     let magicItem: MagicItem?
@@ -46,6 +52,25 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         self.entity = entity
         self.serverId = serverId
 
+        let content = displayContent()
+        template.setText(content.text)
+        template.setDetailText(content.detailText)
+        template.setImage(content.image)
+    }
+
+    @available(iOS 26.0, *)
+    func condensedElement(accessorySymbolName: String? = nil) -> CPListImageRowItemCondensedElement {
+        let content = displayContent()
+        return CPListImageRowItemCondensedElement(
+            image: content.image.scaledToSize(CPListImageRowItemCondensedElement.maximumImageSize),
+            imageShape: .circular,
+            title: content.text,
+            subtitle: content.detailText,
+            accessorySymbolName: accessorySymbolName
+        )
+    }
+
+    private func displayContent() -> DisplayContent {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
         var image = entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon.carPlayIcon()
 
@@ -65,22 +90,27 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
                 // Use the configured icon, respecting any explicit user customization
                 image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: customIconColor)
             } else {
-                // Keep dynamic icons in sync with the entity's live server state color.
-                let iconColor = entity.carPlayIconColor(activeColorOverride: customIconColor)
+                // Dynamic entity icons should reflect the live server-provided color,
+                // matching the main entities/controls views instead of saved quick-access tint.
+                let iconColor = entity.carPlayIconColor()
                 image = entity.getMDI().carPlayIcon(color: iconColor)
             }
         }
 
-        template.setText(displayText)
+        var detailText: String?
         if !entityHasIrrelevantState {
-            var detailsText = ""
-            detailsText += getContextualStateDescription()
-            if let area, !detailsText.isEmpty {
-                detailsText += Self.detailTextSeparator + area
+            var renderedDetailText = getContextualStateDescription()
+            if let area, !renderedDetailText.isEmpty {
+                renderedDetailText += Self.detailTextSeparator + area
             }
-            template.setDetailText(detailsText)
+            detailText = renderedDetailText
         }
-        template.setImage(image)
+
+        return DisplayContent(
+            text: displayText,
+            detailText: detailText,
+            image: image
+        )
     }
 
     /// Returns a context-aware state description based on entity domain and device class
