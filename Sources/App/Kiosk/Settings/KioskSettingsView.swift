@@ -29,7 +29,6 @@ public struct KioskSettingsView: View {
             brightnessSection
             screensaverSection
         }
-        .navigationTitle(L10n.Kiosk.title)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(L10n.doneLabel) {
