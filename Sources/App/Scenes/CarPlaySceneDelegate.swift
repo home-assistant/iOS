@@ -49,6 +49,7 @@ class CarPlaySceneDelegate: UIResponder {
     private var cachedConfig: CarPlayConfig?
     private var configObservation: AnyDatabaseCancellable?
     private var latestStates: HACachedStates?
+    private var latestQuickAccessStatesPerServer: [String: HACachedStates] = [:]
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
@@ -102,6 +103,7 @@ class CarPlaySceneDelegate: UIResponder {
 
     private func buildQuickAccessTab() {
         quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+        replayQuickAccessStates()
     }
 
     private func buildServerTab() {
@@ -154,7 +156,8 @@ class CarPlaySceneDelegate: UIResponder {
             return
         }
 
-        let servers = entityItems.map(\.serverId)
+        let servers = Set(entityItems.map(\.serverId))
+        latestQuickAccessStatesPerServer = latestQuickAccessStatesPerServer.filter { servers.contains($0.key) }
 
         servers.forEach { serverId in
             guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { return }
@@ -170,12 +173,19 @@ class CarPlaySceneDelegate: UIResponder {
             quickAccessEntitiesSubscriptionTokens.append(
                 Current.api(for: server)?.connection.caches.states(filter)
                     .subscribe { [weak self] _, states in
+                        self?.latestQuickAccessStatesPerServer[serverId] = states
                         self?.quickAccessListTemplate?.entitiesStateChange(
                             serverId: serverId,
                             entities: states
                         )
                     }
             )
+        }
+    }
+
+    private func replayQuickAccessStates() {
+        for (serverId, states) in latestQuickAccessStatesPerServer {
+            quickAccessListTemplate?.entitiesStateChange(serverId: serverId, entities: states)
         }
     }
 
@@ -219,6 +229,9 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     }
 
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
+        if quickAccessListTemplate?.template == aTemplate {
+            replayQuickAccessStates()
+        }
         allTemplates.forEach { $0.templateWillAppear(template: aTemplate) }
     }
 }
