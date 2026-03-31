@@ -11,6 +11,7 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord {
     public let aliases: [String]
     public let picture: String?
     public let icon: String?
+    public let sortOrder: Int?
     /// Array containing entity Ids that belong to area
     public let entities: Set<String>
 
@@ -22,6 +23,7 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord {
         aliases: [String],
         picture: String?,
         icon: String?,
+        sortOrder: Int?,
         entities: Set<String>
     ) {
         self.id = id
@@ -31,10 +33,16 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord {
         self.aliases = aliases
         self.picture = picture
         self.icon = icon
+        self.sortOrder = sortOrder
         self.entities = entities
     }
 
-    public init(from area: HAAreasRegistryResponse, serverId: String, entities: Set<String>?) {
+    public init(
+        from area: HAAreasRegistryResponse,
+        serverId: String,
+        entities: Set<String>?,
+        sortOrder: Int?
+    ) {
         self.id = "\(serverId)-\(area.areaId)"
         self.serverId = serverId
         self.areaId = area.areaId
@@ -42,6 +50,7 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord {
         self.aliases = area.aliases
         self.picture = area.picture
         self.icon = area.icon
+        self.sortOrder = sortOrder
         self.entities = entities ?? []
     }
 }

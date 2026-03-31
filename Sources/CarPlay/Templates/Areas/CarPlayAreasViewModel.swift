@@ -52,9 +52,7 @@ final class CarPlayAreasViewModel {
 
     @MainActor
     private func updateAreas(areas: [AppArea], server: Server) {
-        let displayAreas = areas.sorted(by: { a1, a2 in
-            a1.name < a2.name
-        }).filter { area in
+        let displayAreas = areas.filter { area in
             // Skip areas with no entities
             !area.entities.isEmpty
         }

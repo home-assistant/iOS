@@ -20,6 +20,7 @@ final class AppAreaTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.AppArea.aliases.rawValue, .jsonText).notNull()
                     t.column(DatabaseTables.AppArea.picture.rawValue, .text)
                     t.column(DatabaseTables.AppArea.icon.rawValue, .text)
+                    t.column(DatabaseTables.AppArea.sortOrder.rawValue, .integer)
                     t.column(DatabaseTables.AppArea.entities.rawValue, .jsonText)
 
                     // Ensure unique combination of serverId and areaId
