@@ -558,6 +558,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.status_item.toggle" = "トグル %1$@";
 "menu.view.find" = "探す";
 "menu.view.reload_page" = "ページをリロード";
+"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
+\
+Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
 "navBar.close" = "閉じる";
 "network.error.no_active_url.body" = "コンパニオンアプリの設定を開き、サーバーの設定を確認してください。内部URLは、ローカルネットワークが定義されている場合にのみ使用されます（SSID）。VPNを使用している場合は、外部URLを内部URLと同じに設定してみてください。";
 "network.error.no_active_url.title" = "ロード可能なURLがありません";

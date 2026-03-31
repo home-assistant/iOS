@@ -558,6 +558,9 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "menu.status_item.toggle" = "Schalte %1$@ um";
 "menu.view.find" = "Suchen";
 "menu.view.reload_page" = "Seite neu laden";
+"mtls.beta.info" = "Dies ist eine Beta-Funktion. Solltest du Probleme feststellen, melde diese bitte über den Knopf unten. \
+\
+Aktuell wird mTLS nur unter iOS 17 und höher unterstützt. Es kann zu Problemen bei der Anzeige von Benachrichtigungsanhängen und der Assist-Sprachausgabe (TTS) kommen. Auf der Apple Watch ist die Funktion nicht vollständig verfügbar.";
 "navBar.close" = "Schließen";
 "network.error.no_active_url.body" = "Öffne die Einstellungen der Companion-App und überprüfe deine Servereinstellungen. Die interne URL wird nur verwendet, wenn ein lokales Netzwerk definiert ist (SSID). Wenn du ein VPN verwendest, versuche, deine externe URL auf den gleichen Wert wie die interne URL einzustellen.";
 "network.error.no_active_url.title" = "Keine URL zum Laden verfügbar";

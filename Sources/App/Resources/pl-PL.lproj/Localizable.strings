@@ -32,7 +32,7 @@
 "actions_configurator.visual_section.server_defined" = "Wygląd tej akcji jest kontrolowany przez konfigurację serwera.";
 "addButtonLabel" = "Dodaj";
 "alert.confirmation.delete_entities.message" = "This will clean your entities from database and it will only reload the next time you open the app from zero.";
-"alert.confirmation.generic.title" = "Are you sure?";
+"alert.confirmation.generic.title" = "Jesteś pewien?";
 "alerts.action_automation_editor.unavailable.body" = "Aby automatycznie utworzyć automatyzację dla akcji, zaktualizuj Home Assistant do wersji co najmniej 2024.2";
 "alerts.action_automation_editor.unavailable.title" = "Proszę zaktualizować Home Assistant";
 "alerts.alert.ok" = "OK";
@@ -263,7 +263,7 @@
 "connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
 "connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
 "connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
-"connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
+"connection.permission.internal_url.ignore.alert.title" = "Jesteś pewien?";
 "connection.permission.internal_url.title" = "Permission access";
 "connection_error.advanced_section.title" = "Zaawansowane";
 "connection_error.more_details_section.title" = "More details";
@@ -558,6 +558,9 @@
 "menu.status_item.toggle" = "Przełącz%1$@";
 "menu.view.find" = "Find";
 "menu.view.reload_page" = "Odśwież stronę";
+"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
+\
+Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
 "navBar.close" = "Zamknij";
 "network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
 "network.error.no_active_url.title" = "No URL available to load";
@@ -692,7 +695,7 @@ Remote when you're ready.";
 "onboarding.network_input.no_network.skip.alert.body" = "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.";
 "onboarding.network_input.no_network.skip.alert.primary_button.title" = "Cancel";
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Skip";
-"onboarding.network_input.no_network.skip.alert.title" = "Are you sure?";
+"onboarding.network_input.no_network.skip.alert.title" = "Jesteś pewien?";
 "onboarding.network_input.primary_button.title" = "Next";
 "onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
 "onboarding.network_input.secondary_button.title" = "Skip";
@@ -700,7 +703,7 @@ Remote when you're ready.";
 "onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
 "onboarding.permission.location.deny.alert.header" = "Informacja";
 "onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
-"onboarding.permission.location.deny.alert.title" = "Are you sure?";
+"onboarding.permission.location.deny.alert.title" = "Jesteś pewien?";
 "onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
 "onboarding.permissions.allow" = "Zezwól";
 "onboarding.permissions.allowed" = "Gotowe";
@@ -776,7 +779,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.add_server" = "Dodaj serwer";
 "settings.connection_section.all_servers" = "Wszystkie serwery";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
-"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Jesteś pewien?";
 "settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
 "settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.client_certificate.expired" = "Certyfikat wygasł";

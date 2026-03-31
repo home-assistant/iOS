@@ -558,6 +558,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.status_item.toggle" = "Växla %1$@";
 "menu.view.find" = "Hitta";
 "menu.view.reload_page" = "Ladda om sida";
+"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
+\
+Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
 "navBar.close" = "Stäng";
 "network.error.no_active_url.body" = "Öppna inställningarna för Companion-appen och kontrollera serverinställningarna. Den interna webbadressen används endast om lokalt nätverk är definierat (SSID). Om du använder VPN kan du försöka ställa in den externa webbadressen som samma som den interna webbadressen.";
 "network.error.no_active_url.title" = "Ingen URL tillgänglig att ladda";
