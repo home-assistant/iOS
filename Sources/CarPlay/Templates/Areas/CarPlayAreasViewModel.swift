@@ -5,7 +5,6 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayAreasViewModel {
-    private let condensedAreasPerRow = 6
     weak var templateProvider: CarPlayAreasZonesTemplate?
 
     var entitiesListTemplate: CarPlayEntitiesListTemplate?
@@ -68,8 +67,11 @@ final class CarPlayAreasViewModel {
 
     @available(iOS 26.0, *)
     private func condensedAreaItems(areas: [AppArea], server: Server) -> [any CPListTemplateItem] {
-        stride(from: 0, to: areas.count, by: condensedAreasPerRow).map { startIndex in
-            let pageAreas = Array(areas[startIndex ..< min(startIndex + condensedAreasPerRow, areas.count)])
+        stride(from: 0, to: areas.count, by: CarPlayCondensedEntitiesGroup.size).map { startIndex in
+            let pageAreas = Array(areas[startIndex ..< min(
+                startIndex + CarPlayCondensedEntitiesGroup.size,
+                areas.count
+            )])
             let elements = pageAreas.map { area in
                 CPListImageRowItemCondensedElement(
                     image: MaterialDesignIcons(

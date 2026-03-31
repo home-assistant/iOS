@@ -23,7 +23,6 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         items: [],
         paginationStyle: .inline
     )
-    private let quickAccessItemsPerRow = 6
     var template: CPListTemplate
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
@@ -177,9 +176,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let entityToAreaMap = entityToAreaMap()
         let displayItems = items.compactMap { rowDisplayItem(for: $0, entityToAreaMap: entityToAreaMap) }
 
-        return stride(from: 0, to: displayItems.count, by: quickAccessItemsPerRow).map { startIndex in
+        return stride(from: 0, to: displayItems.count, by: CarPlayCondensedEntitiesGroup.size).map { startIndex in
             let pageItems = Array(displayItems[startIndex ..< min(
-                startIndex + quickAccessItemsPerRow,
+                startIndex + CarPlayCondensedEntitiesGroup.size,
                 displayItems.count
             )])
             let elements = pageItems.map { item in

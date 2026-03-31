@@ -149,7 +149,7 @@ struct CarPlayConfigurationView: View {
     }
 
     private var carPlayLogo: some View {
-        Image("carplay-logo")
+        Image(.carplayLogo)
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity, alignment: .center)

@@ -3,10 +3,13 @@ import Foundation
 import HAKit
 import Shared
 
+enum CarPlayCondensedEntitiesGroup {
+    static var size = 6
+}
+
 @available(iOS 16.0, *)
 final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayEntitiesListViewModel
-    private let condensedEntitiesPerRow = 3
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
@@ -74,9 +77,9 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
 
     @available(iOS 26.0, *)
     private func condensedItems(entityProviders: [CarPlayEntityListItem]) -> [any CPListTemplateItem] {
-        stride(from: 0, to: entityProviders.count, by: condensedEntitiesPerRow).map { startIndex in
+        stride(from: 0, to: entityProviders.count, by: CarPlayCondensedEntitiesGroup.size).map { startIndex in
             let rowProviders = Array(entityProviders[startIndex ..< min(
-                startIndex + condensedEntitiesPerRow,
+                startIndex + CarPlayCondensedEntitiesGroup.size,
                 entityProviders.count
             )])
             let item = CPListImageRowItem(

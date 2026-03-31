@@ -6,7 +6,6 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayDomainsListViewModel {
-    private let condensedDomainsPerRow = 6
     private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
     private var entities: HACachedStates?
     private var domainsCurrentlyInList: [Domain] = []
@@ -64,8 +63,11 @@ final class CarPlayDomainsListViewModel {
 
     @available(iOS 26.0, *)
     private func condensedDomainItems(domains: [Domain]) -> [any CPListTemplateItem] {
-        stride(from: 0, to: domains.count, by: condensedDomainsPerRow).map { startIndex in
-            let pageDomains = Array(domains[startIndex ..< min(startIndex + condensedDomainsPerRow, domains.count)])
+        stride(from: 0, to: domains.count, by: CarPlayCondensedEntitiesGroup.size).map { startIndex in
+            let pageDomains = Array(domains[startIndex ..< min(
+                startIndex + CarPlayCondensedEntitiesGroup.size,
+                domains.count
+            )])
             let elements = pageDomains.map { domain in
                 CPListImageRowItemCondensedElement(
                     image: domainIcon(domain).carPlayCondensedElementImage(
