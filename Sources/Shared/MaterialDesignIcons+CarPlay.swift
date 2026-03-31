@@ -50,7 +50,7 @@ public extension UIImage {
                 $0.opaque = false
             }
         ).image { _ in
-            resolvedIconColor.withAlphaComponent(0.3).setFill()
+            resolvedIconColor.withAlphaComponent(0.2).setFill()
             UIBezierPath(
                 roundedRect: bounds,
                 cornerRadius: DesignSystem.CornerRadius.oneAndHalf
