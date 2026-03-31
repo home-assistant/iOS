@@ -74,11 +74,8 @@ final class CarPlayAreasViewModel {
                 CPListImageRowItemCondensedElement(
                     image: MaterialDesignIcons(
                         serversideValueNamed: area.icon ?? "mdi:circle"
-                    ).image(
-                        ofSize: CPListImageRowItemCondensedElement.maximumImageSize,
-                        color: .haPrimary
-                    ),
-                    imageShape: .roundedRectangle,
+                    ).carPlayCondensedElementImage(color: .haPrimary),
+                    imageShape: .circular,
                     title: area.name,
                     subtitle: nil,
                     accessorySymbolName: "chevron.right"

@@ -62,7 +62,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     func condensedElement(accessorySymbolName: String? = nil) -> CPListImageRowItemCondensedElement {
         let content = displayContent()
         return CPListImageRowItemCondensedElement(
-            image: content.image.scaledToSize(CPListImageRowItemCondensedElement.maximumImageSize),
+            image: content.image.carPlayCondensedElementImage(),
             imageShape: .circular,
             title: content.text,
             subtitle: content.detailText,

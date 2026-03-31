@@ -68,11 +68,10 @@ final class CarPlayDomainsListViewModel {
             let pageDomains = Array(domains[startIndex ..< min(startIndex + condensedDomainsPerRow, domains.count)])
             let elements = pageDomains.map { domain in
                 CPListImageRowItemCondensedElement(
-                    image: domainIcon(domain).image(
-                        ofSize: CPListImageRowItemCondensedElement.maximumImageSize,
+                    image: domainIcon(domain).carPlayCondensedElementImage(
                         color: .haPrimary
                     ),
-                    imageShape: .roundedRectangle,
+                    imageShape: .circular,
                     title: domain.localizedDescription,
                     subtitle: nil,
                     accessorySymbolName: SFSymbol.chevronRight.rawValue
