@@ -8,14 +8,19 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     private var childTemplateProvider: (any CarPlayTemplateProvider)?
 
     private let viewModel: CarPlayDomainsListViewModel
-    private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
+    private let paginatedList = CarPlayPaginatedListTemplate(
+        title: L10n.About.Logo.title,
+        templateItems: []
+    )
 
     weak var interfaceController: CPInterfaceController?
     var template: CPListTemplate
 
     init(viewModel: CarPlayDomainsListViewModel) {
         self.viewModel = viewModel
-        let listTemplate = CPListTemplate(title: L10n.About.Logo.title, sections: [])
+        guard let listTemplate = paginatedList.listTemplate else {
+            fatalError("Expected CarPlayPaginatedListTemplate to create a CPListTemplate")
+        }
         listTemplate.emptyViewSubtitleVariants = [L10n.CarPlay.Labels.emptyDomainList]
         self.template = listTemplate
         template.tabTitle = L10n.CarPlay.Navigation.Tab.domains
@@ -24,24 +29,8 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         viewModel.templateProvider = self
     }
 
-    func updateList(domains: [Domain]) {
-        let items: [CPListItem] = domains.map { domain in
-            let itemTitle = domain.localizedDescription
-            let listItem = CPListItem(
-                text: itemTitle,
-                detailText: nil,
-                image: domain == .cover ? overrideCoverIcon.carPlayIcon() : domain.icon().carPlayIcon()
-            )
-            listItem.accessoryType = .disclosureIndicator
-            listItem.handler = { [weak self] _, completion in
-                self?.viewModel.listItemHandler(domain: domain.rawValue)
-                completion()
-            }
-
-            return listItem
-        }
-
-        template.updateSections([CPListSection(items: items)])
+    func updateDomainItems(items: [any CPListTemplateItem]) {
+        paginatedList.updateItems(items: items)
     }
 
     func update() {

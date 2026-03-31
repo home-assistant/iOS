@@ -167,7 +167,7 @@ final class WebViewWindowController {
         return currentController
     }
 
-    func navigate(to url: URL, on server: Server, avoidUnecessaryReload: Bool = false, isComingFromAppIntent: Bool) {
+    func navigate(to url: URL, on server: Server, avoidUnnecessaryReload: Bool = false, isComingFromAppIntent: Bool) {
         open(server: server).pipe { result in
             switch result {
             case let .fulfilled(webViewController):
@@ -175,7 +175,7 @@ final class WebViewWindowController {
                 if isComingFromAppIntent {
                     webViewController.openPanel(url)
                 } else {
-                    webViewController.open(inline: url, avoidUnecessaryReload: avoidUnecessaryReload)
+                    webViewController.open(inline: url, avoidUnnecessaryReload: avoidUnnecessaryReload)
                 }
             case .rejected:
                 Current.Log.error("Failed to open WebViewController for server \(server.identifier)")
@@ -254,10 +254,10 @@ final class WebViewWindowController {
         isComingFromAppIntent: Bool
     ) {
         let serverNameOrId = queryParameters?.first(where: { $0.name == "server" })?.value
-        let avoidUnecessaryReload = {
-            if let avoidUnecessaryReloadString =
-                queryParameters?.first(where: { $0.name == "avoidUnecessaryReload" })?.value {
-                return Bool(avoidUnecessaryReloadString) ?? false
+        let avoidUnnecessaryReload = {
+            if let avoidUnnecessaryReloadString =
+                queryParameters?.first(where: { $0.name == "avoidUnnecessaryReload" })?.value {
+                return Bool(avoidUnnecessaryReloadString) ?? false
             } else {
                 return false
             }
@@ -283,7 +283,7 @@ final class WebViewWindowController {
                         server: selectedServer,
                         urlString: openUrlRaw,
                         skipConfirm: skipConfirm,
-                        avoidUnecessaryReload: avoidUnecessaryReload,
+                        avoidUnnecessaryReload: avoidUnnecessaryReload,
                         isComingFromAppIntent: isComingFromAppIntent
                     )
                 } else {
@@ -292,7 +292,7 @@ final class WebViewWindowController {
                         server: first,
                         urlString: openUrlRaw,
                         skipConfirm: skipConfirm,
-                        avoidUnecessaryReload: avoidUnecessaryReload,
+                        avoidUnnecessaryReload: avoidUnnecessaryReload,
                         isComingFromAppIntent: isComingFromAppIntent
                     )
                 }
@@ -323,7 +323,7 @@ final class WebViewWindowController {
         server: Server,
         urlString openUrlRaw: String,
         skipConfirm: Bool = false,
-        avoidUnecessaryReload: Bool = false,
+        avoidUnnecessaryReload: Bool = false,
         isComingFromAppIntent: Bool
     ) {
         let webviewURL = server.info.connection.webviewURL(from: openUrlRaw)
@@ -336,7 +336,7 @@ final class WebViewWindowController {
             webviewURL: webviewURL,
             externalURL: externalURL,
             skipConfirm: skipConfirm,
-            avoidUnecessaryReload: avoidUnecessaryReload,
+            avoidUnnecessaryReload: avoidUnnecessaryReload,
             isComingFromAppIntent: isComingFromAppIntent
         )
     }
@@ -352,7 +352,7 @@ final class WebViewWindowController {
         webviewURL: URL?,
         externalURL: URL?,
         skipConfirm: Bool,
-        avoidUnecessaryReload: Bool = false,
+        avoidUnnecessaryReload: Bool = false,
         isComingFromAppIntent: Bool
     ) {
         guard webviewURL != nil || externalURL != nil else {
@@ -364,7 +364,7 @@ final class WebViewWindowController {
                 navigate(
                     to: webviewURL,
                     on: server,
-                    avoidUnecessaryReload: avoidUnecessaryReload,
+                    avoidUnnecessaryReload: avoidUnnecessaryReload,
                     isComingFromAppIntent: isComingFromAppIntent
                 )
             } else if let externalURL {

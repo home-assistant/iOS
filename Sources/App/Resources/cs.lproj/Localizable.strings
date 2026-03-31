@@ -558,6 +558,9 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "menu.status_item.toggle" = "Přepnout %1$@";
 "menu.view.find" = "Najít";
 "menu.view.reload_page" = "Znovu načíst stránku";
+"mtls.beta.info" = "Toto je beta verze. Pokud narazíte na nějaké problémy, nahlaste je pomocí tlačítka níže.\
+ \
+Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat problémy se zobrazováním příloh oznámení, zvukem asistence TTS a nebude plně fungovat na Apple Watch.";
 "navBar.close" = "Zavřít";
 "network.error.no_active_url.body" = "Otevřete nastavení doprovodné aplikace a zkontrolujte nastavení serveru; interní URL se použije jen v případě, že je definována místní síť (SSID). Pokud používáte VPN, zkuste nastavit externí URL stejnou jako interní URL.";
 "network.error.no_active_url.title" = "Není dostupná žádná adresa URL k načtení";

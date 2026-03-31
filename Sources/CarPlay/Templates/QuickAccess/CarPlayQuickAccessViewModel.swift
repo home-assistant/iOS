@@ -10,13 +10,16 @@ final class CarPlayQuickAccessViewModel {
     func update() {
         do {
             if let config = try CarPlayConfig.config() {
-                templateProvider?.updateList(for: config.quickAccessItems)
+                templateProvider?.updateList(
+                    for: config.quickAccessItems,
+                    layout: config.quickAccessLayout ?? .grid
+                )
             } else {
-                templateProvider?.updateList(for: [])
+                templateProvider?.updateList(for: [], layout: .grid)
             }
         } catch {
             Current.Log.error("Failed to access CarPlay configuration, error: \(error.localizedDescription)")
-            templateProvider?.updateList(for: [])
+            templateProvider?.updateList(for: [], layout: .grid)
         }
     }
 

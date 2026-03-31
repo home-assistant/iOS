@@ -77,10 +77,10 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         template.setText(displayText)
         if !entityHasIrrelevantState {
             var detailsText = ""
-            if let area {
-                detailsText = area + Self.detailTextSeparator
-            }
             detailsText += getContextualStateDescription()
+            if let area, !detailsText.isEmpty {
+                detailsText += Self.detailTextSeparator + area
+            }
             template.setDetailText(detailsText)
         }
         template.setImage(image)

@@ -558,6 +558,9 @@
 "menu.status_item.toggle" = "Muuda %1$@ olekut";
 "menu.view.find" = "Otsi";
 "menu.view.reload_page" = "Taaslae vaade";
+"mtls.beta.info" = "See on beetafunktsioon, kui tekib probleeme, teata neist alloleva nupu abil. \
+ \
+ Praegu toetatakse mTLS-i ainult iOS 17+ versioonides ning see võib põhjustada probleeme teavitusmanuste kuvamise ja Assist TTS-heli kuvamisega ning see ei tööta täielikult Apple Watchis.";
 "navBar.close" = "Sulge";
 "network.error.no_active_url.body" = "Ava kaasrakenduse sätted ja kontrolli oma serveri sätteid, sisemist URL-i kasutatakse ainult siis kui kohalik võrk on määratletud (SSID). VPN-i kasutamisel proovi määrata oma väline URL sisemise URL-iga samaks.";
 "network.error.no_active_url.title" = "Laadimiseks pole URL-i saadaval";

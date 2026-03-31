@@ -7,8 +7,8 @@ import UIKit
 // MARK: - Public Navigation API
 
 extension WebViewController {
-    /// avoidUnecessaryReload Avoids reloading when the URL is the same as the current one
-    func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
+    /// avoidUnnecessaryReload Avoids reloading when the URL is the same as the current one
+    func open(inline url: URL, avoidUnnecessaryReload: Bool = false) {
         loadViewIfNeeded()
 
         // these paths do not show frontend pages, and so we don't want to display them in our webview
@@ -21,10 +21,10 @@ extension WebViewController {
         ]
 
         if ignoredPaths.allSatisfy({ !url.path.hasPrefix($0) }) {
-            if avoidUnecessaryReload, webView.url?.isEqualIgnoringQueryParams(to: url) == true {
+            if avoidUnnecessaryReload, webView.url?.isEqualIgnoringQueryParams(to: url) == true {
                 Current.Log
                     .info(
-                        "Not reloading WebView when open(inline) was requested, URL is the same as current and avoidUnecessaryReload is true"
+                        "Not reloading WebView when open(inline) was requested, URL is the same as current and avoidUnnecessaryReload is true"
                     )
                 return
             }

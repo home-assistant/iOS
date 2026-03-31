@@ -40,5 +40,6 @@ struct CarPlayConfigTests {
                 )
             ),
         ], "CarPlay config has wrong items config")
+        #expect(carPlayConfig?.quickAccessLayout == nil, "CarPlay config quick access layout should default to nil")
     }
 }

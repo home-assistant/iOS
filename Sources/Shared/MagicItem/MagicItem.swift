@@ -253,7 +253,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         if let url = AppConstants.navigateDeeplinkURL(
             path: path,
             serverId: magicItem.serverId,
-            avoidUnecessaryReload: true
+            avoidUnnecessaryReload: true
         ) {
             return .widgetURL(url)
         } else {

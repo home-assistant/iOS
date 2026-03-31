@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
-      - uses: ruby/setup-ruby@319994f95fa847cf3fb3cd3dbe89f6dcde9f178f  # v1.295.0
+      - uses: ruby/setup-ruby@3ff19f5e2baf30647122352b96108b1fbe250c64  # v1.299.0
         with:
           ruby-version: "3.1"
           bundler-cache: true
@@ -175,7 +175,7 @@ jobs:
       - name: Run tests
         run: bundle exec fastlane test
 
-      - uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad  # v5.5.3
+      - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2  # v6.0.0
         name: "Upload Code Coverage"
         with:
           xcode: true

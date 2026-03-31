@@ -15,10 +15,8 @@ public extension HAEntity {
     }
 
     func getIcon() -> UIImage? {
-        var image = MaterialDesignIcons.bookmarkIcon
+        let image = getMDI()
         var tint: UIColor?
-
-        let icon = getMDI()
 
         if let state = Domain.State(rawValue: state) {
             if [.on, .open, .opening, .unlocked, .unlocking].contains(state) {

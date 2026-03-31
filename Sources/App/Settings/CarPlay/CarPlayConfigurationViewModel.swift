@@ -155,4 +155,15 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     func moveItem(from source: IndexSet, to destination: Int) {
         config.quickAccessItems.move(fromOffsets: source, toOffset: destination)
     }
+
+    // MARK: - Quick access layout
+
+    var quickAccessLayout: CarPlayQuickAccessLayout {
+        get {
+            config.quickAccessLayout ?? .list
+        }
+        set {
+            config.quickAccessLayout = newValue
+        }
+    }
 }

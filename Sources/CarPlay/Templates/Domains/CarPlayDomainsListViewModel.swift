@@ -1,10 +1,13 @@
 import CarPlay
 import Foundation
 import HAKit
+import SFSafeSymbols
 import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayDomainsListViewModel {
+    private let condensedDomainsPerRow = 6
+    private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
     private var entities: HACachedStates?
     private var domainsCurrentlyInList: [Domain] = []
 
@@ -35,11 +38,15 @@ final class CarPlayDomainsListViewModel {
                 }
             })
 
-        // Prevent unecessary update and UI glitch for non-touch screen CarPlay
+        // Prevent unnecessary update and UI glitch for non-touch screen CarPlay
         guard domainsCurrentlyInList != domains else { return }
         domainsCurrentlyInList = domains
 
-        templateProvider?.updateList(domains: domains)
+        if #available(iOS 26.0, *) {
+            templateProvider?.updateDomainItems(items: condensedDomainItems(domains: domains))
+        } else {
+            templateProvider?.updateDomainItems(items: listItems(domains: domains))
+        }
     }
 
     func listItemHandler(domain: String) {
@@ -53,5 +60,59 @@ final class CarPlayDomainsListViewModel {
         )
         guard let entitiesListTemplate else { return }
         templateProvider?.presentEntitiesList(template: entitiesListTemplate)
+    }
+
+    @available(iOS 26.0, *)
+    private func condensedDomainItems(domains: [Domain]) -> [any CPListTemplateItem] {
+        stride(from: 0, to: domains.count, by: condensedDomainsPerRow).map { startIndex in
+            let pageDomains = Array(domains[startIndex ..< min(startIndex + condensedDomainsPerRow, domains.count)])
+            let elements = pageDomains.map { domain in
+                CPListImageRowItemCondensedElement(
+                    image: domainIcon(domain).image(
+                        ofSize: CPListImageRowItemCondensedElement.maximumImageSize,
+                        color: .haPrimary
+                    ),
+                    imageShape: .roundedRectangle,
+                    title: domain.localizedDescription,
+                    subtitle: nil,
+                    accessorySymbolName: SFSymbol.chevronRight.rawValue
+                )
+            }
+
+            let item = CPListImageRowItem(
+                text: nil,
+                condensedElements: elements,
+                allowsMultipleLines: true
+            )
+            item.listImageRowHandler = { [weak self] _, index, completion in
+                guard pageDomains.indices.contains(index) else {
+                    completion()
+                    return
+                }
+                self?.listItemHandler(domain: pageDomains[index].rawValue)
+                completion()
+            }
+            return item
+        }
+    }
+
+    private func listItems(domains: [Domain]) -> [any CPListTemplateItem] {
+        domains.map { domain in
+            let listItem = CPListItem(
+                text: domain.localizedDescription,
+                detailText: nil,
+                image: domainIcon(domain).carPlayIcon()
+            )
+            listItem.accessoryType = .disclosureIndicator
+            listItem.handler = { [weak self] _, completion in
+                self?.listItemHandler(domain: domain.rawValue)
+                completion()
+            }
+            return listItem
+        }
+    }
+
+    private func domainIcon(_ domain: Domain) -> MaterialDesignIcons {
+        domain == .cover ? overrideCoverIcon : domain.icon()
     }
 }

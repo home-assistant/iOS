@@ -50,6 +50,7 @@ public enum DatabaseTables {
         case id
         case tabs
         case quickAccessItems
+        case quickAccessLayout
     }
 
     // Table where it is store frontend related values such as

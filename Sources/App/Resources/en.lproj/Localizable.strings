@@ -209,6 +209,7 @@
 "carplay.navigation.button.next" = "Next";
 "carplay.navigation.button.previous" = "Previous";
 "carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
+"carplay.tab.quick_access.layout" = "Layout";
 "cl_error.description.deferred_accuracy_too_low" = "Deferred mode is not supported for the requested accuracy.";
 "cl_error.description.deferred_canceled" = "The request for deferred updates was canceled by your app or by the location manager.";
 "cl_error.description.deferred_distance_filtered" = "Deferred mode does not support distance filters.";
@@ -575,6 +576,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.find" = "Find";
 "menu.view.reload_page" = "Reload Page";
+"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
+\
+Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
 "navBar.close" = "Close";
 "network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
 "network.error.no_active_url.title" = "No URL available to load";
@@ -1613,4 +1617,3 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
 "yes_label" = "Yes";
-"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\n\nCurrently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";

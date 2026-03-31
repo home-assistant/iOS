@@ -247,7 +247,7 @@ struct SettingsView: View {
             HStack(spacing: DesignSystem.Spaces.one) {
                 Text(item.title)
                 if item == .kiosk || item == .liveActivities {
-                    BetaLabel()
+                    LabsLabel()
                 }
             }
         } icon: {

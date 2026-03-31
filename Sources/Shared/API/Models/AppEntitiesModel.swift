@@ -38,7 +38,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
 
     public func updateModel(_ entities: Set<HAEntity>, server: Server) {
         // Only update database after a few seconds or if the entities count changed
-        // First check for time to avoid unecessary filtering to check count
+        // First check for time to avoid unnecessary filtering to check count
         if !checkLastDatabaseUpdateRecently(server: server) {
             let appRelatedEntities = filterDomains(entities)
             Current.Log

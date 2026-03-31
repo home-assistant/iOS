@@ -67,8 +67,8 @@ struct AppConstantsTests {
         )
         assert(result?.contains("server=\(serverId)") == true, "URL should contain server query parameter")
         assert(
-            result?.contains("avoidUnecessaryReload=true") == true,
-            "URL should contain avoidUnecessaryReload=true"
+            result?.contains("avoidUnnecessaryReload=true") == true,
+            "URL should contain avoidUnnecessaryReload=true"
         )
         assert(
             result?.contains("isComingFromAppIntent=true") == true,

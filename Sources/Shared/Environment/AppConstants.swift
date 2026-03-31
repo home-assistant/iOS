@@ -116,10 +116,10 @@ public enum AppConstants {
         path: String,
         serverId: String,
         queryParams: String? = nil,
-        avoidUnecessaryReload: Bool
+        avoidUnnecessaryReload: Bool
     ) -> URL? {
         var url = URL(
-            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnecessaryReload=\(avoidUnecessaryReload)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnnecessaryReload=\(avoidUnnecessaryReload)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
         )
 
         if let queryParams, let newURL = URL(string: "\(url?.absoluteString ?? "")&\(queryParams)") {
@@ -130,7 +130,7 @@ public enum AppConstants {
     }
 
     public static func openPageDeeplinkURL(path: String, serverId: String) -> URL? {
-        AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
+        AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnnecessaryReload: true)?
             .withWidgetAuthenticity()
     }
 
@@ -139,7 +139,7 @@ public enum AppConstants {
             path: "",
             serverId: serverId,
             queryParams: "\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
-            avoidUnecessaryReload: true
+            avoidUnnecessaryReload: true
         )?.withWidgetAuthenticity()
     }
 

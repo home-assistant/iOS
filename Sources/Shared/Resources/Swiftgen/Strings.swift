@@ -893,6 +893,12 @@ public enum L10n {
         public static var previous: String { return L10n.tr("Localizable", "carplay.navigation.button.previous") }
       }
     }
+    public enum Tab {
+      public enum QuickAccess {
+        /// Layout
+        public static var layout: String { return L10n.tr("Localizable", "carplay.tab.quick_access.layout") }
+      }
+    }
     public enum Unlock {
       public enum Confirmation {
         /// Are you sure you want to perform unlock action on %@?
@@ -2159,8 +2165,9 @@ public enum L10n {
 
   public enum Mtls {
     public enum Beta {
-      /// This is a beta feature, if you experience any issues please report them using the button below. 
-      ///  Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.
+      /// This is a beta feature, if you experience any issues, please report them using the button below.
+      /// 
+      /// Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.
       public static var info: String { return L10n.tr("Localizable", "mtls.beta.info") }
     }
   }

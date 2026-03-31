@@ -16,6 +16,7 @@ final class CarPlayConfigTable: DatabaseTableProtocol {
                     t.primaryKey(DatabaseTables.CarPlayConfig.id.rawValue, .text).notNull()
                     t.column(DatabaseTables.CarPlayConfig.tabs.rawValue, .text).notNull()
                     t.column(DatabaseTables.CarPlayConfig.quickAccessItems.rawValue, .jsonText).notNull()
+                    t.column(DatabaseTables.CarPlayConfig.quickAccessLayout.rawValue, .text)
                 }
             }
         } else {

@@ -558,6 +558,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.status_item.toggle" = "Alternar %1$@";
 "menu.view.find" = "Find";
 "menu.view.reload_page" = "Recarregar página";
+"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
+\
+Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
 "navBar.close" = "Fechar";
 "network.error.no_active_url.body" = "Abra as configurações do aplicativo complementar e verifique as configurações do seu servidor. A URL interna só será usada se a rede local estiver definida (SSID). Se você estiver usando VPN, tente definir sua URL externa como a mesma que a URL interna.";
 "network.error.no_active_url.title" = "Nenhuma URL disponível para carregar";
