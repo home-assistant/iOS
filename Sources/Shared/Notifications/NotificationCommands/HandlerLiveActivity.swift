@@ -96,7 +96,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     /// and log output without escaping or truncation issues.
     static func isValidTag(_ tag: String) -> Bool {
         guard tag.count <= 64 else { return false }
-        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_"))
+        let allowed = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_")
         return tag.unicodeScalars.allSatisfy { allowed.contains($0) }
     }
 

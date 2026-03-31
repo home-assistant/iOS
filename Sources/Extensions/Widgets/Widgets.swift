@@ -37,7 +37,9 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
-        HALiveActivityConfiguration()
+        if #available(iOSApplicationExtension 17.2, *) {
+            HALiveActivityConfiguration()
+        }
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
