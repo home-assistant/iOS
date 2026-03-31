@@ -65,11 +65,8 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
                 // Use the configured icon, respecting any explicit user customization
                 image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: customIconColor)
             } else {
-                // No custom icon set: use state-based icon with smart coloring
-                let iconColor = determineIconColor(
-                    entityState: entity.state,
-                    customColor: customIconColor
-                )
+                // Keep dynamic icons in sync with the entity's live server state color.
+                let iconColor = entity.carPlayIconColor(activeColorOverride: customIconColor)
                 image = entity.getMDI().carPlayIcon(color: iconColor)
             }
         }
@@ -100,42 +97,5 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         }
 
         return baseState
-    }
-
-    /// Determines the icon color based on entity state and custom color preference
-    /// - Parameters:
-    ///   - entityState: The current state of the entity
-    ///   - customColor: Optional custom color set by the user
-    /// - Returns: The color to use for the icon
-    private func determineIconColor(entityState: String, customColor: UIColor?) -> UIColor? {
-        guard let state = Domain.State(rawValue: entityState) else {
-            // Unknown state: use custom color if available, otherwise light gray
-            return customColor ?? .lightGray
-        }
-
-        // Inactive states get neutral gray color regardless of custom color
-        let inactiveStates: [Domain.State] = [.locked, .off, .closed, .locking, .closing]
-        if inactiveStates.contains(state) {
-            return .lightGray
-        }
-
-        // Active states use custom color if available, otherwise default accent color
-        let activeStates: [Domain.State] = [.unlocked, .on, .open, .unlocking, .opening]
-        if activeStates.contains(state) {
-            return customColor ?? AppConstants.lighterTintColor
-        }
-
-        // Unavailable/unknown states get gray
-        if [.unavailable, .unknown].contains(state) {
-            return .gray
-        }
-
-        // Jammed state gets a warning color
-        if state == .jammed {
-            return .systemOrange
-        }
-
-        // Default fallback
-        return customColor ?? .lightGray
     }
 }

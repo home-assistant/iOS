@@ -16,22 +16,33 @@ public extension HAEntity {
 
     func getIcon() -> UIImage? {
         let image = getMDI()
-        var tint: UIColor?
-
-        if let state = Domain.State(rawValue: state) {
-            if [.on, .open, .opening, .unlocked, .unlocking].contains(state) {
-                tint = AppConstants.lighterTintColor
-            } else if [.unavailable, .unknown].contains(state) {
-                tint = .gray
-            } else {
-                tint = .lightGray
-            }
-        }
         #if os(iOS)
-        return image.carPlayIcon(color: tint)
+        return image.carPlayIcon(color: carPlayIconColor())
         #else
         return image.image(ofSize: .init(width: 50, height: 50), color: nil)
         #endif
+    }
+
+    func carPlayIconColor(activeColorOverride: UIColor? = nil) -> UIColor? {
+        guard let domain = Domain(rawValue: domain) else {
+            return nil
+        }
+
+        let normalizedState = state.lowercased()
+        if Domain.activeStates.map(\.rawValue).contains(normalizedState),
+           let activeColorOverride {
+            return activeColorOverride
+        }
+
+        return UIColor(
+            EntityIconColorProvider.iconColor(
+                domain: domain,
+                state: normalizedState,
+                colorMode: attributes.dictionary["color_mode"] as? String,
+                rgbColor: parseRGBColor(from: attributes.dictionary["rgb_color"]),
+                hsColor: parseHSColor(from: attributes.dictionary["hs_color"])
+            )
+        )
     }
 
     /// Returns the appropriate icon for the entity based on its state, without applying color
@@ -205,5 +216,38 @@ public extension HAEntity {
 
         return CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
             .getDefaultStateLocalizedTitle(state: state) ?? state
+    }
+
+    private func parseRGBColor(from value: Any?) -> [Int]? {
+        if let rgb = value as? [Int] {
+            return rgb
+        }
+        if let rgbAny = value as? [Any] {
+            let ints = rgbAny.compactMap { $0 as? Int }
+            return ints.count == 3 ? ints : nil
+        }
+        return nil
+    }
+
+    private func parseHSColor(from value: Any?) -> [Double]? {
+        if let hs = value as? [Double] {
+            return hs
+        }
+        if let hsAny = value as? [Any] {
+            let doubles = hsAny.compactMap { value -> Double? in
+                if let double = value as? Double {
+                    return double
+                }
+                if let number = value as? NSNumber {
+                    return number.doubleValue
+                }
+                if let string = value as? String {
+                    return Double(string)
+                }
+                return nil
+            }
+            return doubles.count >= 2 ? Array(doubles.prefix(2)) : nil
+        }
+        return nil
     }
 }
