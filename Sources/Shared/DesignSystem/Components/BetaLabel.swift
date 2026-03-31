@@ -11,9 +11,14 @@ public struct BetaLabel: View {
 
     public var body: some View {
         HStack(spacing: .zero) {
-            Text("BETA")
+            Image(uiImage: MaterialDesignIcons.testTubeIcon.image(
+                ofSize: .init(width: 15, height: 15),
+                color: .white
+            ))
+            .padding(.leading, DesignSystem.Spaces.one)
+            Text("Labs")
                 .font(.caption2.bold())
-                .padding(.horizontal, DesignSystem.Spaces.one)
+                .padding(.horizontal, DesignSystem.Spaces.half)
             if info != nil {
                 Image(systemSymbol: .infoCircle)
                     .resizable()
@@ -50,7 +55,7 @@ public struct BetaLabel: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("BETA")
+            .navigationTitle("Labs")
             .navigationBarTitleDisplayMode(.inline)
             .navigationViewStyle(.stack)
             .safeAreaInset(edge: .bottom) {
