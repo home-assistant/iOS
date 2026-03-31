@@ -291,12 +291,6 @@ public class AppEnvironment {
         #endif
     }()
 
-    /// Centralized gate for importing custom mTLS client certificates.
-    /// TestFlight-only for now; update this in one place if rollout rules change.
-    public var allowsCustomMTLSCertificateImport: Bool {
-        isTestFlight
-    }
-
     #if os(iOS)
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
     #elseif os(watchOS)
