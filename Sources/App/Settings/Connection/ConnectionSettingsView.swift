@@ -409,7 +409,7 @@ struct ConnectionSettingsView: View {
         } header: {
             HStack {
                 Text(L10n.Settings.ConnectionSection.ClientCertificate.header)
-                MTLSBetaLabel()
+                MTLSLabsLabel()
             }
         } footer: {
             Text(L10n.Settings.ConnectionSection.ClientCertificate.footer)
