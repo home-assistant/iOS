@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct BetaLabel: View {
+public struct LabsLabel: View {
     @Environment(\.openURL) private var openURL
     @State private var showInfo = false
     private let info: String?
@@ -18,7 +18,8 @@ public struct BetaLabel: View {
             .padding(.leading, DesignSystem.Spaces.one)
             Text("Labs")
                 .font(.caption2.bold())
-                .padding(.horizontal, DesignSystem.Spaces.half)
+                .padding(.leading, DesignSystem.Spaces.half)
+                .padding(.trailing, DesignSystem.Spaces.one)
             if info != nil {
                 Image(systemSymbol: .infoCircle)
                     .resizable()
@@ -79,11 +80,11 @@ public struct BetaLabel: View {
 }
 
 #Preview("Without info") {
-    BetaLabel()
+    LabsLabel()
 }
 
 #Preview("Info") {
-    BetaLabel(
+    LabsLabel(
         info: "This is an information that can be linked to a beta label to describe what are the limitations and or the current state of the feature."
     )
 }

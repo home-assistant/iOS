@@ -1,16 +1,16 @@
 import Shared
 import SwiftUI
 
-struct MTLSBetaLabel: View {
+struct MTLSLabsLabel: View {
     var body: some View {
-        BetaLabel(info: L10n.Mtls.Beta.info)
+        LabsLabel(info: L10n.Mtls.Beta.info)
     }
 }
 
 #Preview {
     NavigationView {
         List {
-            MTLSBetaLabel()
+            MTLSLabsLabel()
         }
     }
 }

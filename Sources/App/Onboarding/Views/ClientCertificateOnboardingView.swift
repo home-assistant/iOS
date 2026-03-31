@@ -26,7 +26,7 @@ struct ClientCertificateOnboardingView: View {
         VStack(spacing: DesignSystem.Spaces.two) {
             Spacer()
             headerView
-            MTLSBetaLabel()
+            MTLSLabsLabel()
             Spacer()
         }
         .interactiveDismissDisabled()
