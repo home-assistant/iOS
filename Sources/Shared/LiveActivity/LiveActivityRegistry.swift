@@ -6,11 +6,14 @@ import Foundation
 /// Activities are marked stale after 30 minutes if no further updates arrive.
 private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
 
-@available(iOS 17.2, *)
 public protocol LiveActivityRegistryProtocol: AnyObject {
+    @available(iOS 17.2, *)
     func startOrUpdate(tag: String, title: String, state: HALiveActivityAttributes.ContentState) async throws
+    @available(iOS 17.2, *)
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
+    @available(iOS 17.2, *)
     func reattach() async
+    @available(iOS 17.2, *)
     func startObservingPushToStartToken() async
 }
 

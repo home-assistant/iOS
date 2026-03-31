@@ -379,7 +379,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Pre-warm the registry on the main thread before spawning background Tasks.
             // This avoids a lazy-init race if a push notification handler accesses it
             // concurrently from a background thread.
-            let registry = Current.liveActivityRegistry
+            guard let registry = Current.liveActivityRegistry else { return }
 
             Task {
                 // Re-attach observation tasks (push token + lifecycle) to any Live Activities

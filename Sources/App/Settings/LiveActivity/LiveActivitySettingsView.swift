@@ -618,7 +618,7 @@ struct LiveActivitySettingsView: View {
 
     private func endActivity(tag: String) {
         Task {
-            await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
+            await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
             await loadActivities()
         }
     }
@@ -629,7 +629,7 @@ struct LiveActivitySettingsView: View {
             await withTaskGroup(of: Void.self) { group in
                 for tag in tags {
                     group.addTask {
-                        await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
+                        await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
                     }
                 }
             }

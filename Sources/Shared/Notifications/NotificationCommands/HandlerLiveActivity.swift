@@ -54,7 +54,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
 
                     let state = Self.contentState(from: payload)
 
-                    try await Current.liveActivityRegistry.startOrUpdate(
+                    try await Current.liveActivityRegistry?.startOrUpdate(
                         tag: tag,
                         title: title,
                         state: state
@@ -157,7 +157,7 @@ struct HandlerEndLiveActivity: NotificationCommandHandler {
                 }
 
                 let policy = Self.dismissalPolicy(from: payload)
-                await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: policy)
+                await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: policy)
                 seal.fulfill(())
             }
         }

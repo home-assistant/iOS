@@ -116,7 +116,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         if #available(iOS 17.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
             return Promise<Void> { seal in
                 Task {
-                    await Current.liveActivityRegistry.end(tag: tag, dismissalPolicy: .immediate)
+                    await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
                     // https://stackoverflow.com/a/56657888/6324550
                     DispatchQueue.main.async { seal.fulfill(()) }
                 }
