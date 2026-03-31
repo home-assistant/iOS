@@ -4,6 +4,9 @@ import HAKit
 import Shared
 
 final class CarPlayEntityListItem: CarPlayListItemProvider {
+    static let executingSubtitle = L10n.CarPlay.Action.Execute.inProgress
+    private static let minimumExecutingDuration: TimeInterval = 1.5
+
     private struct DisplayContent {
         let text: String
         let detailText: String?
@@ -17,6 +20,10 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     var template: CPListItem
     weak var interfaceController: CPInterfaceController?
     var area: String?
+    var onDeferredPresentationUpdate: (() -> Void)?
+    private var temporaryDetailText: String?
+    private var executingStartedAt: Date?
+    private var pendingExecutingClearWorkItem: DispatchWorkItem?
 
     private static let detailTextSeparator = " • "
 
@@ -52,6 +59,55 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         self.entity = entity
         self.serverId = serverId
 
+        // Keep the temporary executing subtitle visible long enough even if the server
+        // state updates immediately after the action is triggered.
+        if temporaryDetailText == Self.executingSubtitle {
+            scheduleExecutingClearIfNeeded()
+        }
+
+        refreshTemplate()
+    }
+
+    func setExecutingState(_ isExecuting: Bool) {
+        if isExecuting {
+            pendingExecutingClearWorkItem?.cancel()
+            pendingExecutingClearWorkItem = nil
+            executingStartedAt = Date()
+            temporaryDetailText = Self.executingSubtitle
+            refreshTemplate()
+        } else {
+            scheduleExecutingClearIfNeeded()
+        }
+    }
+
+    private func scheduleExecutingClearIfNeeded() {
+        guard temporaryDetailText == Self.executingSubtitle else { return }
+        guard let executingStartedAt else {
+            temporaryDetailText = nil
+            refreshTemplate()
+            return
+        }
+
+        pendingExecutingClearWorkItem?.cancel()
+        let delay = max(0, Self.minimumExecutingDuration - Date().timeIntervalSince(executingStartedAt))
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            pendingExecutingClearWorkItem = nil
+            self.executingStartedAt = nil
+            temporaryDetailText = nil
+            refreshTemplate()
+            onDeferredPresentationUpdate?()
+        }
+        pendingExecutingClearWorkItem = workItem
+
+        if delay == 0 {
+            workItem.perform()
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+        }
+    }
+
+    private func refreshTemplate() {
         let content = displayContent()
         template.setText(content.text)
         template.setDetailText(content.detailText)
@@ -104,6 +160,10 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
                 renderedDetailText += Self.detailTextSeparator + area
             }
             detailText = renderedDetailText
+        }
+
+        if let temporaryDetailText {
+            detailText = temporaryDetailText
         }
 
         return DisplayContent(

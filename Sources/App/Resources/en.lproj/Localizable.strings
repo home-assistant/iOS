@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "Drag and drop to reorder";
 "cameras.no_server_found" = "No server found for camera: %@";
 "cancel_label" = "Cancel";
+"carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.config.tabs.title" = "Tabs";

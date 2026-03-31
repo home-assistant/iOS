@@ -707,6 +707,10 @@ public enum L10n {
 
   public enum CarPlay {
     public enum Action {
+      public enum Execute {
+        /// Executing...
+        public static var inProgress: String { return L10n.tr("Localizable", "carPlay.action.execute.in_progress") }
+      }
       public enum Intro {
         public enum Item {
           /// Tap to continue on your iPhone

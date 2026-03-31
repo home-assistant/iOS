@@ -114,7 +114,16 @@ final class CarPlayEntitiesListViewModel {
 
         entityProviders = sortedEntities.map { entity in
             let area = entityToAreaMap[entity.entityId]
-            return CarPlayEntityListItem(serverId: server.identifier.rawValue, entity: entity, area: area)
+            let provider = CarPlayEntityListItem(
+                serverId: server.identifier.rawValue,
+                entity: entity,
+                area: area
+            )
+            provider.onDeferredPresentationUpdate = { [weak self] in
+                guard let self else { return }
+                templateProvider?.updateItems(entityProviders: entityProviders)
+            }
+            return provider
         }
 
         templateProvider?.updateItems(entityProviders: entityProviders)
@@ -137,7 +146,12 @@ final class CarPlayEntitiesListViewModel {
         }
     }
 
-    func handleEntityTap(entity: HAEntity, completion: @escaping () -> Void) {
+    func handleEntityTap(
+        entity: HAEntity,
+        executionStarted: @escaping () -> Void = {},
+        executionFinished: @escaping () -> Void = {},
+        completion: @escaping () -> Void
+    ) {
         guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to handle CarPlay entity tap")
             completion()
@@ -147,6 +161,7 @@ final class CarPlayEntitiesListViewModel {
         if let domain = Domain(rawValue: entity.domain), domain == .lock {
             // Show confirmation and use shared execution method
             templateProvider?.displayLockConfirmation(entity: entity, completion: {
+                executionStarted()
                 CarPlayLockConfirmation.execute(
                     entityId: entity.entityId,
                     currentState: entity.state,
@@ -155,17 +170,21 @@ final class CarPlayEntitiesListViewModel {
                     if !success {
                         Current.Log.error("Failed to execute lock action for entity: \(entity.entityId)")
                     }
+                    executionFinished()
                 }
             })
             completion()
         } else {
             // For non-lock entities, use entity.onPress directly
+            executionStarted()
             firstly {
                 entity.onPress(for: api)
             }.done {
+                executionFinished()
                 completion()
             }.catch { error in
                 Current.Log.error("Received error from callService during onPress call: \(error)")
+                executionFinished()
                 completion()
             }
         }

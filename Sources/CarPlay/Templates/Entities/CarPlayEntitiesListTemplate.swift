@@ -69,7 +69,24 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private func listItems(entityProviders: [CarPlayEntityListItem]) -> [CPListItem] {
         entityProviders.map { entityProvider in
             entityProvider.template.handler = { [weak self] _, completion in
-                self?.viewModel.handleEntityTap(entity: entityProvider.entity, completion: completion)
+                self?.viewModel.handleEntityTap(
+                    entity: entityProvider.entity,
+                    executionStarted: { [weak self] in
+                        self?.setExecutingState(
+                            for: entityProvider,
+                            isExecuting: true,
+                            entityProviders: entityProviders
+                        )
+                    },
+                    executionFinished: { [weak self] in
+                        self?.setExecutingState(
+                            for: entityProvider,
+                            isExecuting: false,
+                            entityProviders: entityProviders
+                        )
+                    },
+                    completion: completion
+                )
             }
             return entityProvider.template
         }
@@ -92,9 +109,36 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
                     completion()
                     return
                 }
-                self?.viewModel.handleEntityTap(entity: rowProviders[index].entity, completion: completion)
+                let selectedProvider = rowProviders[index]
+                self?.viewModel.handleEntityTap(
+                    entity: selectedProvider.entity,
+                    executionStarted: { [weak self] in
+                        self?.setExecutingState(
+                            for: selectedProvider,
+                            isExecuting: true,
+                            entityProviders: entityProviders
+                        )
+                    },
+                    executionFinished: { [weak self] in
+                        self?.setExecutingState(
+                            for: selectedProvider,
+                            isExecuting: false,
+                            entityProviders: entityProviders
+                        )
+                    },
+                    completion: completion
+                )
             }
             return item
         }
+    }
+
+    private func setExecutingState(
+        for entityProvider: CarPlayEntityListItem,
+        isExecuting: Bool,
+        entityProviders: [CarPlayEntityListItem]
+    ) {
+        entityProvider.setExecutingState(isExecuting)
+        updateItems(entityProviders: entityProviders)
     }
 }
