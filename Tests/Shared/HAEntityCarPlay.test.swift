@@ -3,6 +3,7 @@ import HAKit
 import Testing
 import UIKit
 
+@MainActor
 struct HAEntityCarPlayTests {
     @Test("Given an entity without a custom icon when requesting a CarPlay icon then it uses the domain/state icon")
     func usesDomainAndStateBasedIconWhenNoCustomIconExists() throws {
