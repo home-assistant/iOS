@@ -1,6 +1,7 @@
 import CarPlay
 import Foundation
 import HAKit
+import SFSafeSymbols
 import Shared
 
 @available(iOS 16.0, *)
@@ -80,7 +81,7 @@ final class CarPlayAreasViewModel {
                     imageShape: .circular,
                     title: area.name,
                     subtitle: nil,
-                    accessorySymbolName: "chevron.right"
+                    accessorySymbolName: SFSymbol.chevronRight.rawValue
                 )
             }
 

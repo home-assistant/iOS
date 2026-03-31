@@ -636,6 +636,7 @@
 		4214388D2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		42145A622DAFD49A00891E04 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */; };
+		42145A662F7F4CC000891E04 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
 		42153DC82EC5F88E00F26474 /* ServersObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42153DC72EC5F88E00F26474 /* ServersObserver.swift */; };
 		42175EBF2F436804001073AF /* OnboardingAuthStepClientCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42175EBE2F436804001073AF /* OnboardingAuthStepClientCertificate.swift */; };
 		42175EC12F436811001073AF /* ClientCertificateOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42175EC02F436811001073AF /* ClientCertificateOnboardingView.swift */; };
@@ -1041,6 +1042,7 @@
 		42C101302CD3DC0C0012BA78 /* ControlCoverValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C1012F2CD3DC0C0012BA78 /* ControlCoverValueProvider.swift */; };
 		42C131D02D66084C00AF48E6 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C131CF2D66084C00AF48E6 /* PillView.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
+		42C5E5AB2F7C20EA004797B5 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
@@ -2353,6 +2355,7 @@
 		421155202D3525F500A71630 /* AppIconSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectorView.swift; sourceTree = "<group>"; };
 		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		421155242D355C6700A71630 /* CustomWidgetsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetsListView.swift; sourceTree = "<group>"; };
+		42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityColorAttributesParser.swift; sourceTree = "<group>"; };
 		42153DC72EC5F88E00F26474 /* ServersObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersObserver.swift; sourceTree = "<group>"; };
 		42175EBE2F436804001073AF /* OnboardingAuthStepClientCertificate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepClientCertificate.swift; sourceTree = "<group>"; };
 		42175EC02F436811001073AF /* ClientCertificateOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificateOnboardingView.swift; sourceTree = "<group>"; };
@@ -7100,6 +7103,7 @@
 				424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */,
 				426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */,
 				42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */,
+				42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */,
 				427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */,
 				FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */,
 				428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */,
@@ -9816,6 +9820,7 @@
 				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11CFD78227364F450082D557 /* Identifier.swift in Sources */,
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
+				42C5E5AB2F7C20EA004797B5 /* EntityColorAttributesParser.swift in Sources */,
 				42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
 				1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
@@ -10120,6 +10125,7 @@
 				4214388C2CF5F1D700E2D44D /* ServerFixture.swift in Sources */,
 				11B38EE3275C54A200205C7B /* OpenPageIntentHandler.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
+				42145A662F7F4CC000891E04 /* EntityColorAttributesParser.swift in Sources */,
 				42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */,
 				429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */,
 				11ADF940267D34B10040A7E3 /* NotificationsCommandManager.swift in Sources */,

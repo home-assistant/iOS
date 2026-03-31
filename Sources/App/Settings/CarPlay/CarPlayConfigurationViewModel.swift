@@ -160,7 +160,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     var quickAccessLayout: CarPlayQuickAccessLayout {
         get {
-            config.quickAccessLayout ?? .grid
+            config.resolvedQuickAccessLayout
         }
         set {
             config.quickAccessLayout = newValue

@@ -21,7 +21,7 @@ struct HAEntityCarPlayTests {
         let actualData = try #require(entity.getIcon()?.pngData())
         let expectedData = try #require(
             MaterialDesignIcons.lightbulbIcon
-                .carPlayIcon(color: UIColor(.secondary))
+                .carPlayIcon(color: .gray)
                 .pngData()
         )
 
@@ -47,7 +47,7 @@ struct HAEntityCarPlayTests {
         let actualData = try #require(entity.getIcon()?.pngData())
         let expectedData = try #require(
             MaterialDesignIcons.thermometerIcon
-                .carPlayIcon(color: UIColor(.secondary))
+                .carPlayIcon(color: .gray)
                 .pngData()
         )
 

@@ -13,6 +13,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let magicItem: MagicItem
         let info: MagicItem.Info
         let image: UIImage
+        let iconColor: UIColor?
         let title: String
         let subtitle: String?
         let currentState: String
@@ -228,7 +229,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             )])
             let elements = pageItems.map { item in
                 CPListImageRowItemCondensedElement(
-                    image: item.image.carPlayCondensedElementImage(),
+                    image: item.image.carPlayCondensedElementImage(iconColor: item.iconColor),
                     imageShape: .circular,
                     title: item.title,
                     subtitle: item.subtitle,
@@ -425,19 +426,23 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 magicItemInfo: info,
                 area: area
             )
+            let content = entityProvider.currentDisplayContent()
             return RowDisplayItem(
                 magicItem: magicItem,
                 info: info,
-                image: entityProvider.template.image ?? MaterialDesignIcons.bookmarkIcon.carPlayIcon(),
-                title: entityProvider.template.text ?? info.name,
-                subtitle: renderedSubtitle(for: magicItem, defaultSubtitle: entityProvider.template.detailText),
+                image: content.image,
+                iconColor: content.iconColor,
+                title: content.title,
+                subtitle: renderedSubtitle(for: magicItem, defaultSubtitle: content.subtitle),
                 currentState: entityProvider.entity.state
             )
         default:
+            let iconColor = UIColor(hex: info.customization?.iconColor) ?? .haPrimary
             return RowDisplayItem(
                 magicItem: magicItem,
                 info: info,
-                image: magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor)),
+                image: magicItem.icon(info: info).carPlayIcon(color: iconColor),
+                iconColor: iconColor,
                 title: magicItem.name(info: info),
                 subtitle: renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)),
                 currentState: ""

@@ -136,7 +136,7 @@ final class CarPlayEntitiesListViewModel {
         var didUpdateItems = false
         entityProviders.forEach { item in
             guard let updatedEntity = sortedEntities.first(where: { $0.entityId == item.entity.entityId }),
-                  item.entity.state != updatedEntity.state else { return }
+                  shouldRefreshPresentation(for: item.entity, with: updatedEntity) else { return }
             item.update(serverId: server.identifier.rawValue, entity: updatedEntity)
             didUpdateItems = true
         }
@@ -144,6 +144,29 @@ final class CarPlayEntitiesListViewModel {
         if didUpdateItems {
             templateProvider?.updateItems(entityProviders: entityProviders)
         }
+    }
+
+    private func shouldRefreshPresentation(for currentEntity: HAEntity, with updatedEntity: HAEntity) -> Bool {
+        currentEntity.state != updatedEntity.state ||
+            currentEntity.lastUpdated != updatedEntity.lastUpdated ||
+            currentEntity.attributes.friendlyName != updatedEntity.attributes.friendlyName ||
+            currentEntity.attributes.icon != updatedEntity.attributes.icon ||
+            currentEntity.attributes.dictionary["unit_of_measurement"] as? String !=
+            updatedEntity.attributes.dictionary["unit_of_measurement"] as? String ||
+            currentEntity.attributes.dictionary["device_class"] as? String !=
+            updatedEntity.attributes.dictionary["device_class"] as? String ||
+            currentEntity.attributes.dictionary["color_mode"] as? String !=
+            updatedEntity.attributes.dictionary["color_mode"] as? String ||
+            EntityColorAttributesParser.parseRGBColor(
+                from: currentEntity.attributes.dictionary["rgb_color"]
+            ) != EntityColorAttributesParser.parseRGBColor(
+                from: updatedEntity.attributes.dictionary["rgb_color"]
+            ) ||
+            EntityColorAttributesParser.parseHSColor(
+                from: currentEntity.attributes.dictionary["hs_color"]
+            ) != EntityColorAttributesParser.parseHSColor(
+                from: updatedEntity.attributes.dictionary["hs_color"]
+            )
     }
 
     func handleEntityTap(

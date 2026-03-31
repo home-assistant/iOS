@@ -4,7 +4,7 @@ import HAKit
 import Shared
 
 enum CarPlayCondensedEntitiesGroup {
-    static var size = 6
+    static let size = 6
 }
 
 @available(iOS 16.0, *)

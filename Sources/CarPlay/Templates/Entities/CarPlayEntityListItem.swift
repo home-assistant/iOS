@@ -11,6 +11,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         let text: String
         let detailText: String?
         let image: UIImage
+        let iconColor: UIColor?
     }
 
     var serverId: String
@@ -118,7 +119,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     func condensedElement(accessorySymbolName: String? = nil) -> CPListImageRowItemCondensedElement {
         let content = displayContent()
         return CPListImageRowItemCondensedElement(
-            image: content.image.carPlayCondensedElementImage(),
+            image: content.image.carPlayCondensedElementImage(iconColor: content.iconColor),
             imageShape: .circular,
             title: content.text,
             subtitle: content.detailText,
@@ -126,9 +127,25 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         )
     }
 
+    func currentDisplayContent() -> (
+        image: UIImage,
+        title: String,
+        subtitle: String?,
+        iconColor: UIColor?
+    ) {
+        let content = displayContent()
+        return (
+            image: content.image,
+            title: content.text,
+            subtitle: content.detailText,
+            iconColor: content.iconColor
+        )
+    }
+
     private func displayContent() -> DisplayContent {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
-        var image = entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon.carPlayIcon()
+        var iconColor = entity.carPlayIconColor()
+        var image = entity.getMDI().carPlayIcon(color: iconColor)
 
         if let magicItem, let magicItemInfo {
             displayText = magicItem.name(info: magicItemInfo)
@@ -144,11 +161,12 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
             let userHasCustomizedIcon = magicItem.customization?.iconIsCustomized == true
             if !entityHasDynamicIcon || userHasCustomizedIcon {
                 // Use the configured icon, respecting any explicit user customization
-                image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: customIconColor)
+                iconColor = customIconColor ?? .haPrimary
+                image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: iconColor)
             } else {
                 // Dynamic entity icons should reflect the live server-provided color,
                 // matching the main entities/controls views instead of saved quick-access tint.
-                let iconColor = entity.carPlayIconColor()
+                iconColor = entity.carPlayIconColor()
                 image = entity.getMDI().carPlayIcon(color: iconColor)
             }
         }
@@ -169,7 +187,8 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         return DisplayContent(
             text: displayText,
             detailText: detailText,
-            image: image
+            image: image,
+            iconColor: iconColor
         )
     }
 
