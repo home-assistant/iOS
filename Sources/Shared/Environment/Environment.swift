@@ -189,9 +189,7 @@ public class AppEnvironment {
 
     public var cachedApis = [Identifier<Server>: HomeAssistantAPI]()
 
-    public var apis: [HomeAssistantAPI] {
-        servers.all.compactMap(api(for:))
-    }
+    public var apis: [HomeAssistantAPI] { servers.all.compactMap(api(for:)) }
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()
     public func api(for server: Server) -> HomeAssistantAPI? {
