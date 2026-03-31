@@ -19,12 +19,16 @@ public struct KioskSettingsView: View {
 
     public var body: some View {
         Form {
+            AppleLikeListTopRowHeader(
+                image: .tabletDashboardIcon,
+                title: L10n.Kiosk.title,
+                subtitle: L10n.Kiosk.Footer.description
+            )
             kioskModeSection
             coreSettingsSection
             brightnessSection
             screensaverSection
         }
-        .navigationTitle(L10n.Kiosk.title)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(L10n.doneLabel) {
@@ -115,12 +119,6 @@ public struct KioskSettingsView: View {
                 }
             )) {
                 Label(L10n.Kiosk.enableButton, systemSymbol: .lock)
-            }
-        } header: {
-            Text(L10n.Kiosk.Section.title)
-        } footer: {
-            if !viewModel.isKioskModeActive {
-                Text(L10n.Kiosk.Footer.description)
             }
         }
     }
