@@ -142,26 +142,14 @@ public class AppEnvironment {
 
     #if os(iOS)
     #if canImport(ActivityKit)
-    private var _liveActivityRegistryBacking: LiveActivityRegistryProtocol?
-
     /// Call `_ = Current.liveActivityRegistry` on the main thread at launch (before any
     /// background thread can access it) to avoid a lazy-init race between concurrent callers.
-    public var liveActivityRegistry: LiveActivityRegistryProtocol? {
-        get {
-            if let existing = _liveActivityRegistryBacking {
-                return existing
-            }
-            if #available(iOS 17.2, *) {
-                let registry = LiveActivityRegistry()
-                _liveActivityRegistryBacking = registry
-                return registry
-            }
-            return nil
+    public lazy var liveActivityRegistry: LiveActivityRegistryProtocol? = {
+        if #available(iOS 17.2, *) {
+            return LiveActivityRegistry()
         }
-        set {
-            _liveActivityRegistryBacking = newValue
-        }
-    }
+        return nil
+    }()
     #endif
 
     public var appDatabaseUpdater: AppDatabaseUpdaterProtocol = AppDatabaseUpdater.shared
