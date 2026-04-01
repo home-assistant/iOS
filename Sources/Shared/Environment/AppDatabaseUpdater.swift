@@ -468,11 +468,12 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         // Ensure model building happens off the main thread
         let appAreas = await Task.detached(priority: .utility) {
             let modelTimer = ProfilingTimer("Step 5.2.1: Building AppArea models (count: \(areas.count))")
-            let result = areas.map { area in
+            let result = areas.enumerated().map { index, area in
                 AppArea(
                     from: area,
                     serverId: serverId,
-                    entities: areasAndEntities[area.areaId]
+                    entities: areasAndEntities[area.areaId],
+                    sortOrder: index
                 )
             }
             modelTimer.end()

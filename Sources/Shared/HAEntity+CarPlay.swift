@@ -16,22 +16,37 @@ public extension HAEntity {
 
     func getIcon() -> UIImage? {
         let image = getMDI()
-        var tint: UIColor?
-
-        if let state = Domain.State(rawValue: state) {
-            if [.on, .open, .opening, .unlocked, .unlocking].contains(state) {
-                tint = AppConstants.lighterTintColor
-            } else if [.unavailable, .unknown].contains(state) {
-                tint = .gray
-            } else {
-                tint = .lightGray
-            }
-        }
         #if os(iOS)
-        return image.carPlayIcon(color: tint)
+        return image.carPlayIcon(color: carPlayIconColor())
         #else
         return image.image(ofSize: .init(width: 50, height: 50), color: nil)
         #endif
+    }
+
+    func carPlayIconColor(activeColorOverride: UIColor? = nil) -> UIColor? {
+        let normalizedState = state.lowercased()
+        if Domain.activeStates.map(\.rawValue).contains(normalizedState),
+           let activeColorOverride {
+            return activeColorOverride
+        }
+
+        let colorAttributes = EntityColorAttributesParser.parse(from: attributes.dictionary)
+        guard let domain = Domain(rawValue: domain) else {
+            return fallbackCarPlayIconColor(
+                for: normalizedState,
+                activeColorOverride: activeColorOverride
+            )
+        }
+
+        return UIColor(
+            EntityIconColorProvider.iconColor(
+                domain: domain,
+                state: normalizedState,
+                colorMode: colorAttributes.colorMode,
+                rgbColor: colorAttributes.rgbColor,
+                hsColor: colorAttributes.hsColor
+            )
+        )
     }
 
     /// Returns the appropriate icon for the entity based on its state, without applying color
@@ -205,5 +220,20 @@ public extension HAEntity {
 
         return CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
             .getDefaultStateLocalizedTitle(state: state) ?? state
+    }
+
+    private func fallbackCarPlayIconColor(
+        for normalizedState: String,
+        activeColorOverride: UIColor?
+    ) -> UIColor {
+        if Domain.problemStates.map(\.rawValue).contains(normalizedState) {
+            return .red
+        }
+
+        if Domain.activeStates.map(\.rawValue).contains(normalizedState) {
+            return activeColorOverride ?? AppConstants.lighterTintColor
+        }
+
+        return .gray
     }
 }

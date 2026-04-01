@@ -114,7 +114,16 @@ final class CarPlayEntitiesListViewModel {
 
         entityProviders = sortedEntities.map { entity in
             let area = entityToAreaMap[entity.entityId]
-            return CarPlayEntityListItem(serverId: server.identifier.rawValue, entity: entity, area: area)
+            let provider = CarPlayEntityListItem(
+                serverId: server.identifier.rawValue,
+                entity: entity,
+                area: area
+            )
+            provider.onDeferredPresentationUpdate = { [weak self] in
+                guard let self else { return }
+                templateProvider?.updateItems(entityProviders: entityProviders)
+            }
+            return provider
         }
 
         templateProvider?.updateItems(entityProviders: entityProviders)
@@ -124,14 +133,48 @@ final class CarPlayEntitiesListViewModel {
         entitiesCachedStates = entities
         // Avoid computing property several times
         let sortedEntities = sortedEntities
+        var didUpdateItems = false
         entityProviders.forEach { item in
             guard let updatedEntity = sortedEntities.first(where: { $0.entityId == item.entity.entityId }),
-                  item.entity.state != updatedEntity.state else { return }
+                  shouldRefreshPresentation(for: item.entity, with: updatedEntity) else { return }
             item.update(serverId: server.identifier.rawValue, entity: updatedEntity)
+            didUpdateItems = true
+        }
+
+        if didUpdateItems {
+            templateProvider?.updateItems(entityProviders: entityProviders)
         }
     }
 
-    func handleEntityTap(entity: HAEntity, completion: @escaping () -> Void) {
+    private func shouldRefreshPresentation(for currentEntity: HAEntity, with updatedEntity: HAEntity) -> Bool {
+        currentEntity.state != updatedEntity.state ||
+            currentEntity.lastUpdated != updatedEntity.lastUpdated ||
+            currentEntity.attributes.friendlyName != updatedEntity.attributes.friendlyName ||
+            currentEntity.attributes.icon != updatedEntity.attributes.icon ||
+            currentEntity.attributes.dictionary["unit_of_measurement"] as? String !=
+            updatedEntity.attributes.dictionary["unit_of_measurement"] as? String ||
+            currentEntity.attributes.dictionary["device_class"] as? String !=
+            updatedEntity.attributes.dictionary["device_class"] as? String ||
+            currentEntity.attributes.dictionary["color_mode"] as? String !=
+            updatedEntity.attributes.dictionary["color_mode"] as? String ||
+            EntityColorAttributesParser.parseRGBColor(
+                from: currentEntity.attributes.dictionary["rgb_color"]
+            ) != EntityColorAttributesParser.parseRGBColor(
+                from: updatedEntity.attributes.dictionary["rgb_color"]
+            ) ||
+            EntityColorAttributesParser.parseHSColor(
+                from: currentEntity.attributes.dictionary["hs_color"]
+            ) != EntityColorAttributesParser.parseHSColor(
+                from: updatedEntity.attributes.dictionary["hs_color"]
+            )
+    }
+
+    func handleEntityTap(
+        entity: HAEntity,
+        executionStarted: @escaping () -> Void = {},
+        executionFinished: @escaping () -> Void = {},
+        completion: @escaping () -> Void
+    ) {
         guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to handle CarPlay entity tap")
             completion()
@@ -141,6 +184,7 @@ final class CarPlayEntitiesListViewModel {
         if let domain = Domain(rawValue: entity.domain), domain == .lock {
             // Show confirmation and use shared execution method
             templateProvider?.displayLockConfirmation(entity: entity, completion: {
+                executionStarted()
                 CarPlayLockConfirmation.execute(
                     entityId: entity.entityId,
                     currentState: entity.state,
@@ -149,17 +193,21 @@ final class CarPlayEntitiesListViewModel {
                     if !success {
                         Current.Log.error("Failed to execute lock action for entity: \(entity.entityId)")
                     }
+                    executionFinished()
                 }
             })
             completion()
         } else {
             // For non-lock entities, use entity.onPress directly
+            executionStarted()
             firstly {
                 entity.onPress(for: api)
             }.done {
+                executionFinished()
                 completion()
             }.catch { error in
                 Current.Log.error("Received error from callService during onPress call: \(error)")
+                executionFinished()
                 completion()
             }
         }

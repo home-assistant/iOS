@@ -8,7 +8,6 @@ public struct HAAreasRegistryResponse: HADataDecodable {
     public let picture: String?
     // e.g. "mdi:sofa"
     public let icon: String?
-
     public init(data: HAData) throws {
         try self.init(
             aliases: data.decode("aliases"),

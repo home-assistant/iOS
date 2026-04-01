@@ -13,7 +13,7 @@ public enum EntityIconColorProvider {
             if Domain.problemStates.map(\.rawValue).contains(state) {
                 return .red
             } else {
-                return .secondary
+                return .gray
             }
         }
 

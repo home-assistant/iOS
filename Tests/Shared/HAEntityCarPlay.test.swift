@@ -21,7 +21,7 @@ struct HAEntityCarPlayTests {
         let actualData = try #require(entity.getIcon()?.pngData())
         let expectedData = try #require(
             MaterialDesignIcons.lightbulbIcon
-                .carPlayIcon(color: .lightGray)
+                .carPlayIcon(color: .gray)
                 .pngData()
         )
 
@@ -47,7 +47,32 @@ struct HAEntityCarPlayTests {
         let actualData = try #require(entity.getIcon()?.pngData())
         let expectedData = try #require(
             MaterialDesignIcons.thermometerIcon
-                .carPlayIcon()
+                .carPlayIcon(color: .gray)
+                .pngData()
+        )
+
+        #expect(actualData == expectedData)
+    }
+
+    @Test("Given an active light with server RGB color when requesting a CarPlay icon then it uses that live color")
+    func usesServerProvidedRGBColorForActiveLightIcon() throws {
+        let entity = try HAEntity(
+            entityId: "light.kitchen",
+            state: Domain.State.on.rawValue,
+            lastChanged: Date(),
+            lastUpdated: Date(),
+            attributes: [
+                "friendly_name": "Kitchen light",
+                "color_mode": "rgb",
+                "rgb_color": [255, 140, 0],
+            ],
+            context: .init(id: "context", userId: "user", parentId: nil)
+        )
+
+        let actualData = try #require(entity.getIcon()?.pngData())
+        let expectedData = try #require(
+            MaterialDesignIcons.lightbulbIcon
+                .carPlayIcon(color: UIColor(red: 1, green: 140.0 / 255.0, blue: 0, alpha: 1))
                 .pngData()
         )
 
