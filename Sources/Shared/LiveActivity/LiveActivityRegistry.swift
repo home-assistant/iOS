@@ -43,7 +43,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Webhook type for reporting that a Live Activity was dismissed.
     static let webhookTypeDismissed = "mobile_app_live_activity_dismissed"
     /// Keys in the dismissed webhook request data dictionary.
-    static let dismissedWebhookKeys: Set<String> = ["activity_id", "tag", "reason"]
+    static let dismissedWebhookKeys: Set<String> = ["activity_id", "live_activity_tag", "reason"]
 
     // MARK: - State
 
@@ -354,7 +354,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             type: Self.webhookTypeDismissed,
             data: [
                 "activity_id": activityID,
-                "tag": tag,
+                "live_activity_tag": tag,
                 "reason": reason,
             ]
         )
