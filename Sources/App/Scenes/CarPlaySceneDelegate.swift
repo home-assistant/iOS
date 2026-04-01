@@ -72,6 +72,23 @@ class CarPlaySceneDelegate: UIResponder {
             guard config != cachedConfig else { return }
             cachedConfig = config
             subscribeToQuickAccessEntitiesChanges(configEntities: cachedConfig?.quickAccessItems ?? [])
+
+            // Tabs can be removed from the configuration while their template instances are still
+            // cached on the scene delegate. Clear those references before rebuilding so hidden
+            // tabs stop receiving replays and state updates through `allTemplates`.
+            if !config.tabs.contains(.quickAccess) {
+                quickAccessListTemplate = nil
+            }
+            if !config.tabs.contains(.areas) {
+                areasZonesListTemplate = nil
+            }
+            if !config.tabs.contains(.domains) {
+                domainsListTemplate = nil
+            }
+            if !config.tabs.contains(.settings) {
+                serversListTemplate = nil
+            }
+
             visibleTemplates = config.tabs.compactMap {
                 switch $0 {
                 case .quickAccess:
