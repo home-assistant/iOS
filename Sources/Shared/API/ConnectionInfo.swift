@@ -73,6 +73,16 @@ public struct ConnectionInfo: Codable, Equatable {
         return false
     }
 
+    public var hasOnlyHTTPSURLOptions: Bool {
+        let configuredURLs = [externalURL, internalURL, remoteUIURL].compactMap(\.self)
+
+        guard !configuredURLs.isEmpty else {
+            return false
+        }
+
+        return configuredURLs.allSatisfy { $0.scheme?.lowercased() == "https" }
+    }
+
     public var overrideActiveURLType: URLType?
     public private(set) var activeURLType: URLType = .external
 
