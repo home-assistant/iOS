@@ -172,7 +172,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             switch magicItem.type {
             case .entity:
                 guard let entity = resolvedEntity(for: magicItem),
-                    let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
+                      let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
                     return .init(text: "", detailText: "")
                 }
                 let entityProvider = CarPlayEntityListItem(

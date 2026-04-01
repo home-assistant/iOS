@@ -49,6 +49,7 @@ class CarPlaySceneDelegate: UIResponder {
     private var cachedConfig: CarPlayConfig?
     private var configObservation: AnyDatabaseCancellable?
     private var latestStates: HACachedStates?
+    private var latestStatesServerId: String?
     private var latestQuickAccessStatesPerServer: [String: HACachedStates] = [:]
 
     private var preferredServerId: String {
@@ -99,10 +100,15 @@ class CarPlaySceneDelegate: UIResponder {
         setInterfaceControllerForChildren()
         interfaceController?.setRootTemplate(tabBar, animated: true, completion: nil)
         updateTemplates()
+        // The selected-server subscription may already have usable data when tabs are rebuilt.
+        // Replay it so controls/areas do not flash empty while waiting for the next cache event.
+        replaySelectedServerStates()
     }
 
     private func buildQuickAccessTab() {
         quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+        // Quick access keeps a separate per-server cache for its mixed-server entities,
+        // so restore that snapshot immediately when the template is recreated.
         replayQuickAccessStates()
     }
 
@@ -126,6 +132,8 @@ class CarPlaySceneDelegate: UIResponder {
     private func subscribeToEntitiesChanges() {
         guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else { return }
         entitiesSubscriptionToken?.cancel()
+        latestStates = nil
+        latestStatesServerId = nil
 
         var filter: [String: Any] = [:]
         if server.info.version > .canSubscribeEntitiesChangesWithFilter {
@@ -140,8 +148,9 @@ class CarPlaySceneDelegate: UIResponder {
         Current.api(for: server)?.connection.disconnect()
         entitiesSubscriptionToken = Current.api(for: server)?.connection.caches.states(filter)
             .subscribe { [weak self] _, states in
+                self?.latestStates = states
+                self?.latestStatesServerId = server.identifier.rawValue
                 self?.allTemplates.forEach {
-                    self?.latestStates = states
                     $0.entitiesStateChange(serverId: server.identifier.rawValue, entities: states)
                 }
             }
@@ -189,6 +198,18 @@ class CarPlaySceneDelegate: UIResponder {
         }
     }
 
+    private func replaySelectedServerStates() {
+        guard let latestStates, let latestStatesServerId else { return }
+
+        [
+            areasZonesListTemplate,
+            domainsListTemplate,
+            serversListTemplate,
+        ].compactMap({ $0 }).forEach {
+            $0.entitiesStateChange(serverId: latestStatesServerId, entities: latestStates)
+        }
+    }
+
     private func observeCarPlayConfigChanges() {
         configObservation?.cancel()
         let observation = ValueObservation.tracking(CarPlayConfig.fetchOne)
@@ -231,6 +252,11 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
         if quickAccessListTemplate?.template == aTemplate {
             replayQuickAccessStates()
+        }
+        if domainsListTemplate?.template == aTemplate || areasZonesListTemplate?.template == aTemplate {
+            // Navigating back to controls/areas does not guarantee a fresh websocket emission.
+            // Reusing the latest selected-server snapshot keeps those tabs populated.
+            replaySelectedServerStates()
         }
         allTemplates.forEach { $0.templateWillAppear(template: aTemplate) }
     }
