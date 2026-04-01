@@ -7,8 +7,8 @@ public extension AppArea {
         try Current.database().read { db in
             try AppArea
                 .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
-                .order(Column(DatabaseTables.AppArea.name.rawValue))
                 .fetchAll(db)
+                .sorted(by: sortForDisplay(_:_:))
         }
     }
 
@@ -36,7 +36,20 @@ public extension AppArea {
 
             return areas.filter { area in
                 area.entities.contains(entityId)
-            }
+            }.sorted(by: sortForDisplay(_:_:))
+        }
+    }
+
+    private static func sortForDisplay(_ lhs: AppArea, _ rhs: AppArea) -> Bool {
+        switch (lhs.sortOrder, rhs.sortOrder) {
+        case let (lhsSortOrder?, rhsSortOrder?) where lhsSortOrder != rhsSortOrder:
+            return lhsSortOrder < rhsSortOrder
+        case (_?, nil):
+            return true
+        case (nil, _?):
+            return false
+        default:
+            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
         }
     }
 }

@@ -4,6 +4,16 @@ import HAKit
 import Shared
 
 final class CarPlayEntityListItem: CarPlayListItemProvider {
+    static let executingSubtitle = L10n.CarPlay.Action.Execute.inProgress
+    private static let minimumExecutingDuration: TimeInterval = 1.5
+
+    private struct DisplayContent {
+        let text: String
+        let detailText: String?
+        let image: UIImage
+        let iconColor: UIColor?
+    }
+
     var serverId: String
     var entity: HAEntity
     let magicItem: MagicItem?
@@ -11,6 +21,10 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     var template: CPListItem
     weak var interfaceController: CPInterfaceController?
     var area: String?
+    var onDeferredPresentationUpdate: (() -> Void)?
+    private var temporaryDetailText: String?
+    private var executingStartedAt: Date?
+    private var pendingExecutingClearWorkItem: DispatchWorkItem?
 
     private static let detailTextSeparator = " • "
 
@@ -46,8 +60,92 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         self.entity = entity
         self.serverId = serverId
 
+        // Keep the temporary executing subtitle visible long enough even if the server
+        // state updates immediately after the action is triggered.
+        if temporaryDetailText == Self.executingSubtitle {
+            scheduleExecutingClearIfNeeded()
+        }
+
+        refreshTemplate()
+    }
+
+    func setExecutingState(_ isExecuting: Bool) {
+        if isExecuting {
+            pendingExecutingClearWorkItem?.cancel()
+            pendingExecutingClearWorkItem = nil
+            executingStartedAt = Date()
+            temporaryDetailText = Self.executingSubtitle
+            refreshTemplate()
+        } else {
+            scheduleExecutingClearIfNeeded()
+        }
+    }
+
+    private func scheduleExecutingClearIfNeeded() {
+        guard temporaryDetailText == Self.executingSubtitle else { return }
+        guard let executingStartedAt else {
+            temporaryDetailText = nil
+            refreshTemplate()
+            return
+        }
+
+        pendingExecutingClearWorkItem?.cancel()
+        let delay = max(0, Self.minimumExecutingDuration - Date().timeIntervalSince(executingStartedAt))
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            pendingExecutingClearWorkItem = nil
+            self.executingStartedAt = nil
+            temporaryDetailText = nil
+            refreshTemplate()
+            onDeferredPresentationUpdate?()
+        }
+        pendingExecutingClearWorkItem = workItem
+
+        if delay == 0 {
+            workItem.perform()
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+        }
+    }
+
+    private func refreshTemplate() {
+        let content = displayContent()
+        template.setText(content.text)
+        template.setDetailText(content.detailText)
+        template.setImage(content.image)
+    }
+
+    @available(iOS 26.0, *)
+    func condensedElement(accessorySymbolName: String? = nil) -> CPListImageRowItemCondensedElement {
+        let content = displayContent()
+        return CPListImageRowItemCondensedElement(
+            image: content.image.carPlayCondensedElementImage(iconColor: content.iconColor),
+            imageShape: .circular,
+            title: content.text,
+            subtitle: content.detailText,
+            accessorySymbolName: accessorySymbolName
+        )
+    }
+
+    func currentDisplayContent() -> (
+        image: UIImage,
+        title: String,
+        subtitle: String?,
+        iconColor: UIColor?
+    ) {
+        let content = displayContent()
+        return (
+            image: content.image,
+            title: content.text,
+            subtitle: content.detailText,
+            iconColor: content.iconColor
+        )
+    }
+
+    private func displayContent() -> DisplayContent {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
-        var image = entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon.carPlayIcon()
+        var iconColor = entity.carPlayIconColor()
+        var image = entity.getMDI().carPlayIcon(color: iconColor)
 
         if let magicItem, let magicItemInfo {
             displayText = magicItem.name(info: magicItemInfo)
@@ -63,27 +161,35 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
             let userHasCustomizedIcon = magicItem.customization?.iconIsCustomized == true
             if !entityHasDynamicIcon || userHasCustomizedIcon {
                 // Use the configured icon, respecting any explicit user customization
-                image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: customIconColor)
+                iconColor = customIconColor ?? .haPrimary
+                image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: iconColor)
             } else {
-                // No custom icon set: use state-based icon with smart coloring
-                let iconColor = determineIconColor(
-                    entityState: entity.state,
-                    customColor: customIconColor
-                )
+                // Dynamic entity icons should reflect the live server-provided color,
+                // matching the main entities/controls views instead of saved quick-access tint.
+                iconColor = entity.carPlayIconColor()
                 image = entity.getMDI().carPlayIcon(color: iconColor)
             }
         }
 
-        template.setText(displayText)
+        var detailText: String?
         if !entityHasIrrelevantState {
-            var detailsText = ""
-            detailsText += getContextualStateDescription()
-            if let area, !detailsText.isEmpty {
-                detailsText += Self.detailTextSeparator + area
+            var renderedDetailText = getContextualStateDescription()
+            if let area, !renderedDetailText.isEmpty {
+                renderedDetailText += Self.detailTextSeparator + area
             }
-            template.setDetailText(detailsText)
+            detailText = renderedDetailText
         }
-        template.setImage(image)
+
+        if let temporaryDetailText {
+            detailText = temporaryDetailText
+        }
+
+        return DisplayContent(
+            text: displayText,
+            detailText: detailText,
+            image: image,
+            iconColor: iconColor
+        )
     }
 
     /// Returns a context-aware state description based on entity domain and device class
@@ -100,42 +206,5 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         }
 
         return baseState
-    }
-
-    /// Determines the icon color based on entity state and custom color preference
-    /// - Parameters:
-    ///   - entityState: The current state of the entity
-    ///   - customColor: Optional custom color set by the user
-    /// - Returns: The color to use for the icon
-    private func determineIconColor(entityState: String, customColor: UIColor?) -> UIColor? {
-        guard let state = Domain.State(rawValue: entityState) else {
-            // Unknown state: use custom color if available, otherwise light gray
-            return customColor ?? .lightGray
-        }
-
-        // Inactive states get neutral gray color regardless of custom color
-        let inactiveStates: [Domain.State] = [.locked, .off, .closed, .locking, .closing]
-        if inactiveStates.contains(state) {
-            return .lightGray
-        }
-
-        // Active states use custom color if available, otherwise default accent color
-        let activeStates: [Domain.State] = [.unlocked, .on, .open, .unlocking, .opening]
-        if activeStates.contains(state) {
-            return customColor ?? AppConstants.lighterTintColor
-        }
-
-        // Unavailable/unknown states get gray
-        if [.unavailable, .unknown].contains(state) {
-            return .gray
-        }
-
-        // Jammed state gets a warning color
-        if state == .jammed {
-            return .systemOrange
-        }
-
-        // Default fallback
-        return customColor ?? .lightGray
     }
 }

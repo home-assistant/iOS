@@ -12,7 +12,7 @@ final class CarPlayQuickAccessViewModel {
             if let config = try CarPlayConfig.config() {
                 templateProvider?.updateList(
                     for: config.quickAccessItems,
-                    layout: config.quickAccessLayout ?? .grid
+                    layout: config.resolvedQuickAccessLayout
                 )
             } else {
                 templateProvider?.updateList(for: [], layout: .grid)

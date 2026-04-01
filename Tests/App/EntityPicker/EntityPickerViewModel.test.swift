@@ -36,6 +36,7 @@ private extension AppArea {
             aliases: [],
             picture: nil,
             icon: nil,
+            sortOrder: nil,
             entities: Set(entities)
         )
     }

@@ -89,6 +89,7 @@ public enum DatabaseTables {
         case aliases
         case picture
         case icon
+        case sortOrder
         case entities
     }
 

@@ -165,42 +165,7 @@ public final class ControlEntityProvider {
         rgbColor: [Int]?,
         hsColor: [Double]?
     ) {
-        guard let attributes else {
-            return (nil, nil, nil)
-        }
-
-        let colorMode = attributes["color_mode"] as? String
-        let rgbColor = parseRGBColor(from: attributes["rgb_color"])
-        let hsColor = parseHSColor(from: attributes["hs_color"])
-
-        return (colorMode, rgbColor, hsColor)
-    }
-
-    private func parseRGBColor(from value: Any?) -> [Int]? {
-        if let rgb = value as? [Int] {
-            return rgb
-        }
-        if let rgbAny = value as? [Any] {
-            let ints = rgbAny.compactMap { $0 as? Int }
-            return ints.count == 3 ? ints : nil
-        }
-        return nil
-    }
-
-    private func parseHSColor(from value: Any?) -> [Double]? {
-        if let hs = value as? [Double] {
-            return hs
-        }
-        if let hsAny = value as? [Any] {
-            let doubles = hsAny.compactMap { value -> Double? in
-                if let d = value as? Double { return d }
-                if let n = value as? NSNumber { return n.doubleValue }
-                if let s = value as? String, let d = Double(s) { return d }
-                return nil
-            }
-            return doubles.count >= 2 ? Array(doubles.prefix(2)) : nil
-        }
-        return nil
+        EntityColorAttributesParser.parse(from: attributes)
     }
 
     private func buildState(

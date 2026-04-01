@@ -1,11 +1,11 @@
 import CarPlay
 import Foundation
 import HAKit
+import SFSafeSymbols
 import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayAreasViewModel {
-    private let condensedAreasPerRow = 6
     weak var templateProvider: CarPlayAreasZonesTemplate?
 
     var entitiesListTemplate: CarPlayEntitiesListTemplate?
@@ -52,9 +52,7 @@ final class CarPlayAreasViewModel {
 
     @MainActor
     private func updateAreas(areas: [AppArea], server: Server) {
-        let displayAreas = areas.sorted(by: { a1, a2 in
-            a1.name < a2.name
-        }).filter { area in
+        let displayAreas = areas.filter { area in
             // Skip areas with no entities
             !area.entities.isEmpty
         }
@@ -68,20 +66,20 @@ final class CarPlayAreasViewModel {
 
     @available(iOS 26.0, *)
     private func condensedAreaItems(areas: [AppArea], server: Server) -> [any CPListTemplateItem] {
-        stride(from: 0, to: areas.count, by: condensedAreasPerRow).map { startIndex in
-            let pageAreas = Array(areas[startIndex ..< min(startIndex + condensedAreasPerRow, areas.count)])
+        stride(from: 0, to: areas.count, by: CarPlayCondensedEntitiesGroup.size).map { startIndex in
+            let pageAreas = Array(areas[startIndex ..< min(
+                startIndex + CarPlayCondensedEntitiesGroup.size,
+                areas.count
+            )])
             let elements = pageAreas.map { area in
                 CPListImageRowItemCondensedElement(
                     image: MaterialDesignIcons(
                         serversideValueNamed: area.icon ?? "mdi:circle"
-                    ).image(
-                        ofSize: CPListImageRowItemCondensedElement.maximumImageSize,
-                        color: .haPrimary
-                    ),
-                    imageShape: .roundedRectangle,
+                    ).carPlayCondensedElementImage(color: .haPrimary),
+                    imageShape: .circular,
                     title: area.name,
                     subtitle: nil,
-                    accessorySymbolName: "chevron.right"
+                    accessorySymbolName: SFSymbol.chevronRight.rawValue
                 )
             }
 

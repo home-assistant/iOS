@@ -20,6 +20,14 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
         self.quickAccessLayout = quickAccessLayout
     }
 
+    public var resolvedQuickAccessLayout: CarPlayQuickAccessLayout {
+        if let quickAccessLayout {
+            return quickAccessLayout
+        }
+
+        return quickAccessItems.isEmpty ? .grid : .list
+    }
+
     public static func config() throws -> CarPlayConfig? {
         try Current.database().read({ db in
             try CarPlayConfig.fetchOne(db)
