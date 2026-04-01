@@ -34,6 +34,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var currentItems: [MagicItem] = []
     private var currentLayout: CarPlayQuickAccessLayout = .grid
     private var entitiesPerServer: [String: HACachedStates] = [:]
+    private var lastKnownEntities: [String: HAEntity] = [:]
     private var executingItemIds: Set<String> = []
     private var executingStartedAt: [String: Date] = [:]
     private var pendingExecutingClearWorkItems: [String: DispatchWorkItem] = [:]
@@ -140,6 +141,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     func updateList(for items: [MagicItem], layout: CarPlayQuickAccessLayout) {
         currentItems = items
         currentLayout = layout
+        pruneLastKnownEntities(for: items)
         guard !items.isEmpty else {
             presentIntroductionItem()
             return
@@ -169,17 +171,16 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             let info = info(for: magicItem)
             switch magicItem.type {
             case .entity:
-                guard let placeholderItem = entitiesPerServer[magicItem.serverId]?.all
-                    .first(where: { $0.entityId == magicItem.id }) ?? placeholderEntity(id: magicItem.id),
-                    let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
+                guard let entity = resolvedEntity(for: magicItem),
+                      let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
                     return .init(text: "", detailText: "")
                 }
                 let entityProvider = CarPlayEntityListItem(
                     serverId: magicItem.serverId,
-                    entity: placeholderItem,
+                    entity: entity,
                     magicItem: magicItem,
                     magicItemInfo: info,
-                    area: entityToAreaMap[placeholderItem.entityId]
+                    area: entityToAreaMap[entity.entityId]
                 )
                 let listItem = entityProvider.template
                 if isExecuting(magicItem) {
@@ -404,6 +405,34 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         isExecuting(magicItem) ? CarPlayEntityListItem.executingSubtitle : defaultSubtitle
     }
 
+    private func entityCacheKey(serverId: String, entityId: String) -> String {
+        "\(serverId)::\(entityId)"
+    }
+
+    private func pruneLastKnownEntities(for items: [MagicItem]) {
+        let validKeys = Set(
+            items
+                .filter { $0.type == .entity }
+                .map { entityCacheKey(serverId: $0.serverId, entityId: $0.id) }
+        )
+        lastKnownEntities = lastKnownEntities.filter { validKeys.contains($0.key) }
+    }
+
+    private func resolvedEntity(for magicItem: MagicItem) -> HAEntity? {
+        let cacheKey = entityCacheKey(serverId: magicItem.serverId, entityId: magicItem.id)
+
+        if let entity = entitiesPerServer[magicItem.serverId]?[magicItem.id] {
+            lastKnownEntities[cacheKey] = entity
+            return entity
+        }
+
+        if let entity = lastKnownEntities[cacheKey] {
+            return entity
+        }
+
+        return placeholderEntity(id: magicItem.id)
+    }
+
     private func rowDisplayItem(
         for magicItem: MagicItem,
         entityToAreaMap: [String: String]
@@ -412,16 +441,15 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
         switch magicItem.type {
         case .entity:
-            guard let placeholderItem = entitiesPerServer[magicItem.serverId]?.all
-                .first(where: { $0.entityId == magicItem.id }) ?? placeholderEntity(id: magicItem.id) else {
+            guard let entity = resolvedEntity(for: magicItem) else {
                 Current.Log.error("Failed to create placeholder entity for magic item id: \(magicItem.id)")
                 return nil
             }
 
-            let area = entityToAreaMap[placeholderItem.entityId]
+            let area = entityToAreaMap[entity.entityId]
             let entityProvider = CarPlayEntityListItem(
                 serverId: magicItem.serverId,
-                entity: placeholderItem,
+                entity: entity,
                 magicItem: magicItem,
                 magicItemInfo: info,
                 area: area

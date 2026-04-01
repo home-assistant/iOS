@@ -4,13 +4,13 @@ import GRDB
 public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equatable {
     public static var carPlayConfigId = "carplay-config"
     public var id = CarPlayConfig.carPlayConfigId
-    public var tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings]
+    public var tabs: [CarPlayTab] = [.quickAccess, .areas, .settings]
     public var quickAccessItems: [MagicItem] = []
     public var quickAccessLayout: CarPlayQuickAccessLayout?
 
     public init(
         id: String = CarPlayConfig.carPlayConfigId,
-        tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings],
+        tabs: [CarPlayTab] = [.quickAccess, .areas, .settings],
         quickAccessItems: [MagicItem] = [],
         quickAccessLayout: CarPlayQuickAccessLayout? = nil
     ) {
