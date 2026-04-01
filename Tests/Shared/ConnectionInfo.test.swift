@@ -141,7 +141,7 @@ class ConnectionInfoTests: XCTestCase {
         )
 
         XCTAssertTrue(info.hasOnlyHTTPSURLOptions)
-        XCTAssertFalse(info.hasNonHTTPSURLOption)
+        XCTAssertFalse(info.hasNonHTTPSURLOptions)
     }
 
     func testHasOnlyHTTPSURLOptionsFalseWhenHTTPURLExists() {
@@ -160,7 +160,7 @@ class ConnectionInfoTests: XCTestCase {
         )
 
         XCTAssertFalse(info.hasOnlyHTTPSURLOptions)
-        XCTAssertTrue(info.hasNonHTTPSURLOption)
+        XCTAssertTrue(info.hasNonHTTPSURLOptions)
     }
 
     func testRemoteOnlyURLWithUseCloudOffAndNoSSIDNeitherInternalURLWithLocalAccessSecurityLevelMostSecure() {

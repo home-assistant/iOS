@@ -56,26 +56,15 @@ public struct ConnectionInfo: Codable, Equatable {
         externalURL != nil || remoteUIURL != nil
     }
 
-    public var hasNonHTTPSURLOption: Bool {
-        let https = "https"
-        if let externalURL, externalURL.scheme?.lowercased() != https {
-            return true
-        }
+    private var configuredURLs: [URL] {
+        [externalURL, internalURL, remoteUIURL].compactMap(\.self)
+    }
 
-        if let internalURL, internalURL.scheme?.lowercased() != https {
-            return true
-        }
-
-        if let remoteUIURL, remoteUIURL.scheme?.lowercased() != https {
-            return true
-        }
-
-        return false
+    public var hasNonHTTPSURLOptions: Bool {
+        configuredURLs.contains { $0.scheme?.lowercased() != "https" }
     }
 
     public var hasOnlyHTTPSURLOptions: Bool {
-        let configuredURLs = [externalURL, internalURL, remoteUIURL].compactMap(\.self)
-
         guard !configuredURLs.isEmpty else {
             return false
         }

@@ -9,7 +9,7 @@ extension WebViewController {
     func checkForLocalSecurityLevelDecisionNeeded() {
         let connection = server.info.connection
 
-        if Current.location.permissionStatus == .notDetermined, connection.hasNonHTTPSURLOption {
+        if Current.location.permissionStatus == .notDetermined, connection.hasNonHTTPSURLOptions {
             Current.Log.verbose("User has not decided location permission yet")
             showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
         } else if connection.connectionAccessSecurityLevel == .undefined, !connection.hasOnlyHTTPSURLOptions {
