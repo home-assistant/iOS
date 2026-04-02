@@ -5,6 +5,7 @@ public enum GRDBDatabaseTable: String {
     case watchConfig
     case assistPipelines
     case carPlayConfig
+    case serverInfoMirror
     case appEntityRegistryListForDisplay
     case entityRegistry
     case deviceRegistry
@@ -51,6 +52,11 @@ public enum DatabaseTables {
         case tabs
         case quickAccessItems
         case quickAccessLayout
+    }
+
+    public enum ServerInfoMirror: String, CaseIterable {
+        case id
+        case serverInfoJSON
     }
 
     // Table where it is store frontend related values such as

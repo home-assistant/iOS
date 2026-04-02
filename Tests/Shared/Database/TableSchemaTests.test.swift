@@ -84,6 +84,17 @@ struct TableSchemaTests {
         )
     }
 
+    @Test("ServerInfoMirrorTable schema validation")
+    func serverInfoMirrorTableSchema() throws {
+        let table = ServerInfoMirrorTable()
+        let expectedColumns = DatabaseTables.ServerInfoMirror.allCases.map(\.rawValue)
+        try verifyTableSchema(
+            table: table,
+            expectedTableName: GRDBDatabaseTable.serverInfoMirror.rawValue,
+            expectedColumns: expectedColumns
+        )
+    }
+
     @Test("AssistPipelinesTable schema validation")
     func assistPipelinesTableSchema() throws {
         let table = AssistPipelinesTable()
@@ -198,13 +209,13 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 14 tables create successfully together")
+    @Test("All 15 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 14 tables
-        #expect(tables.count == 14, "Should have exactly 14 tables, but found \(tables.count)")
+        // Verify we have exactly 15 tables
+        #expect(tables.count == 15, "Should have exactly 15 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

@@ -223,6 +223,26 @@ public struct ServerInfo: Codable, Equatable {
     }
 }
 
+extension ServerInfo {
+    // Used in the GRDB mirror so recovered servers have an explicit "no credentials"
+    // state instead of accidentally persisting real auth tokens outside Keychain.
+    static var mirrorPlaceholderToken: TokenInfo {
+        .init(accessToken: "", refreshToken: "", expiration: .distantPast)
+    }
+
+    var mirroredForPersistence: ServerInfo {
+        // Start from the full server info, then remove secrets before writing to GRDB.
+        var info = self
+        // The GRDB mirror is only for recovering non-secret server metadata if Keychain
+        // entries disappear during the developer-account migration.
+        info.token = Self.mirrorPlaceholderToken
+        info.connection.cloudhookURL = nil
+        info.connection.webhookSecret = nil
+        info.connection.clientCertificate = nil
+        return info
+    }
+}
+
 public final class Server: Hashable, Comparable, CustomStringConvertible {
     public static let historicId: Identifier<Server> = "historic"
 
