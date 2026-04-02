@@ -13,6 +13,10 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
         _ userContentController: WKUserContentController,
         didReceive message: WKScriptMessage
     ) {
+        guard message.frameInfo.isMainFrame else {
+            return
+        }
+
         delegate?.userContentController(
             userContentController, didReceive: message
         )
