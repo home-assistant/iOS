@@ -19,6 +19,7 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
         // Only the top-level document on an allowed server origin may talk to the native bridge.
         guard shouldAllowMessage(
             isMainFrame: message.frameInfo.isMainFrame,
+            scheme: message.frameInfo.securityOrigin.protocol,
             host: message.frameInfo.securityOrigin.host,
             port: message.frameInfo.securityOrigin.port
         ) else {
@@ -29,8 +30,8 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
         )
     }
 
-    func shouldAllowMessage(isMainFrame: Bool, host: String, port: Int) -> Bool {
-        isMainFrame && allowedOrigins.contains(originKey(host: host, port: port))
+    func shouldAllowMessage(isMainFrame: Bool, scheme: String, host: String, port: Int) -> Bool {
+        isMainFrame && allowedOrigins.contains(originKey(scheme: scheme, host: host, port: port))
     }
 
     private var allowedOrigins: Set<String> {
@@ -44,29 +45,15 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     private func originKey(url: URL?) -> String? {
-        guard let url, let host = url.host, let port = normalizedPort(for: url) else {
+        guard let url, let scheme = url.scheme?.lowercased(), let host = url.host,
+              let port = url.portWithFallback else {
             return nil
         }
 
-        return originKey(host: host, port: port)
+        return originKey(scheme: scheme, host: host, port: port)
     }
 
-    private func originKey(host: String, port: Int) -> String {
-        "\(host):\(port)"
-    }
-
-    private func normalizedPort(for url: URL) -> Int? {
-        if let port = url.port {
-            return port
-        }
-
-        switch url.scheme?.lowercased() {
-        case "http":
-            return 80
-        case "https":
-            return 443
-        default:
-            return nil
-        }
+    private func originKey(scheme: String, host: String, port: Int) -> String {
+        "\(scheme.lowercased())://\(host.lowercased()):\(port)"
     }
 }
