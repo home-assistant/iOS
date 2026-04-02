@@ -230,6 +230,10 @@ extension ServerInfo {
         .init(accessToken: "", refreshToken: "", expiration: .distantPast)
     }
 
+    // Webhook-based features must stay disabled for mirrored servers because the
+    // webhook path itself is effectively a credential.
+    static var mirrorPlaceholderWebhookID: String { "" }
+
     var mirroredForPersistence: ServerInfo {
         // Start from the full server info, then remove secrets before writing to GRDB.
         var info = self
@@ -237,6 +241,7 @@ extension ServerInfo {
         // entries disappear during the developer-account migration.
         info.token = Self.mirrorPlaceholderToken
         info.connection.cloudhookURL = nil
+        info.connection.webhookID = Self.mirrorPlaceholderWebhookID
         info.connection.webhookSecret = nil
         info.connection.clientCertificate = nil
         return info
