@@ -68,7 +68,7 @@ extension ServerManagerKeychain {
         do {
             try remove(key)
         } catch {
-            Current.Log.error("failed to get delete \(key): \(error)")
+            Current.Log.error("failed to delete server info for \(key): \(error.localizedDescription)")
         }
     }
 }
