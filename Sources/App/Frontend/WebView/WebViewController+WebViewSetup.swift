@@ -7,7 +7,7 @@ import UIKit
 extension WebViewController {
     func setupUserContentController() -> WKUserContentController {
         let userContentController = WKUserContentController()
-        let safeScriptMessageHandler = SafeScriptMessageHandler(delegate: webViewScriptMessageHandler)
+        let safeScriptMessageHandler = SafeScriptMessageHandler(server: server, delegate: webViewScriptMessageHandler)
         userContentController.add(safeScriptMessageHandler, name: "getExternalAuth")
         userContentController.add(safeScriptMessageHandler, name: "revokeExternalAuth")
         userContentController.add(safeScriptMessageHandler, name: "externalBus")

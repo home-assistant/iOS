@@ -204,7 +204,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         userContentController.addUserScript(WKUserScript(
             source: wsBridgeJS,
             injectionTime: .atDocumentEnd,
-            forMainFrameOnly: false
+            forMainFrameOnly: true
         ))
 
         userContentController.addUserScript(.init(
@@ -219,7 +219,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 });
             """,
             injectionTime: .atDocumentStart,
-            forMainFrameOnly: false
+            forMainFrameOnly: true
         ))
 
         config.userContentController = userContentController
