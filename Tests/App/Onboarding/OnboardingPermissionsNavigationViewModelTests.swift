@@ -31,6 +31,43 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.currentStep == .location)
     }
 
+    @Test("Initialization with HTTPS-only URLs skips local access step")
+    func initializationWithHTTPSOnlyURLsSkipsLocalAccessStep() async throws {
+        var info = ServerInfo(
+            name: "HTTPS Only Server",
+            connection: .init(
+                externalURL: URL(string: "https://external.example.com")!,
+                internalURL: URL(string: "https://internal.example.com")!,
+                cloudhookURL: nil,
+                remoteUIURL: nil,
+                webhookID: "webhook-id",
+                webhookSecret: nil,
+                internalSSIDs: nil,
+                internalHardwareAddresses: nil,
+                isLocalPushEnabled: false,
+                securityExceptions: .init(exceptions: []),
+                connectionAccessSecurityLevel: .undefined
+            ),
+            token: .init(
+                accessToken: "access-token",
+                refreshToken: "refresh-token",
+                expiration: Date()
+            ),
+            version: "2026.1.0"
+        )
+        let server = Server(identifier: "https-only", getter: {
+            info
+        }, setter: { newInfo in
+            info = newInfo
+            return true
+        })
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps == [.location, .homeNetwork, .completion])
+        #expect(viewModel.steps.contains(.localAccess) == false)
+        #expect(viewModel.currentStep == .location)
+    }
+
     @Test("Initialization with custom steps")
     func initializationWithCustomSteps() async throws {
         let server = ServerFixture.standard
