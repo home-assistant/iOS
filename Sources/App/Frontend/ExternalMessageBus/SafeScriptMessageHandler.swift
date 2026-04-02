@@ -17,13 +17,19 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
         didReceive message: WKScriptMessage
     ) {
         // Only the top-level document on an allowed server host may talk to the native bridge.
-        guard message.frameInfo.isMainFrame,
-              allowedHosts.contains(message.frameInfo.securityOrigin.host) else {
+        guard shouldAllowMessage(
+            isMainFrame: message.frameInfo.isMainFrame,
+            host: message.frameInfo.securityOrigin.host
+        ) else {
             return
         }
         delegate?.userContentController(
             userContentController, didReceive: message
         )
+    }
+
+    func shouldAllowMessage(isMainFrame: Bool, host: String) -> Bool {
+        isMainFrame && allowedHosts.contains(host)
     }
 
     private var allowedHosts: Set<String> {
