@@ -93,11 +93,16 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
             self.steps = customSteps
         } else {
             // Use default logic to determine steps
+            let connection = onboardingServer.info.connection
             var defaultSteps = StepID.default
 
             // No need to display local access only disclaimer when user already has remote connection setup
-            if onboardingServer.info.connection.hasRemoteConnectionSetup {
+            if connection.hasRemoteConnectionSetup {
                 defaultSteps = StepID.remoteConnectionCompatible
+            }
+
+            if connection.hasOnlyHTTPSURLOptions {
+                defaultSteps.removeAll { $0 == .localAccess }
             }
             self.steps = defaultSteps
         }

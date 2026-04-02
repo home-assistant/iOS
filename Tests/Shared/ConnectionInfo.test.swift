@@ -125,6 +125,44 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
     }
 
+    func testHasOnlyHTTPSURLOptions() {
+        let info = ConnectionInfo(
+            externalURL: URL(string: "https://external.example.com"),
+            internalURL: URL(string: "https://internal.example.com"),
+            cloudhookURL: nil,
+            remoteUIURL: URL(string: "https://remote.example.com"),
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        XCTAssertTrue(info.hasOnlyHTTPSURLOptions)
+        XCTAssertFalse(info.hasNonHTTPSURLOptions)
+    }
+
+    func testHasOnlyHTTPSURLOptionsFalseWhenHTTPURLExists() {
+        let info = ConnectionInfo(
+            externalURL: URL(string: "https://external.example.com"),
+            internalURL: URL(string: "http://internal.example.com"),
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        XCTAssertFalse(info.hasOnlyHTTPSURLOptions)
+        XCTAssertTrue(info.hasNonHTTPSURLOptions)
+    }
+
     func testRemoteOnlyURLWithUseCloudOffAndNoSSIDNeitherInternalURLWithLocalAccessSecurityLevelMostSecure() {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
