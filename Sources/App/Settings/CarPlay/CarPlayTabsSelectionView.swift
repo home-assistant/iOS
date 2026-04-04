@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -53,4 +54,8 @@ struct CarPlayTabsSelectionView: View {
             }
         }
     }
+}
+
+#Preview {
+    CarPlayTabsSelectionView(viewModel: CarPlayConfigurationViewModel())
 }
