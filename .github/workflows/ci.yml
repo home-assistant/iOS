@@ -67,7 +67,7 @@ jobs:
 
       - name: Comment on PR if `swiftlint:disable` is found
         if: steps.scan.outputs.disable_lines != '' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: marocchino/sticky-pull-request-comment@70d2764d1a7d5d9560b100cbea0077fc8f633987  # v3.0.2
+        uses: marocchino/sticky-pull-request-comment@d4d6b0936434b21bc8345ad45a440c5f7d2c40ff  # v3.0.3
         with:
           header: swiftlint-disable-check
           message: |
@@ -112,7 +112,7 @@ jobs:
         if: |
           steps.detect.outputs.has_unused == 'true' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: marocchino/sticky-pull-request-comment@70d2764d1a7d5d9560b100cbea0077fc8f633987  # v3.0.2
+        uses: marocchino/sticky-pull-request-comment@d4d6b0936434b21bc8345ad45a440c5f7d2c40ff  # v3.0.3
         with:
           header: unused-strings-check
           message: |
