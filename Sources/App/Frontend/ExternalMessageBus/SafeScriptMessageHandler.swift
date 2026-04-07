@@ -31,7 +31,11 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     func shouldAllowMessage(isMainFrame: Bool, scheme: String, host: String, port: Int) -> Bool {
-        isMainFrame && allowedOrigins.contains(originKey(scheme: scheme, host: host, port: port))
+        guard isMainFrame, let origin = originKey(scheme: scheme, host: host, port: port) else {
+            return false
+        }
+
+        return allowedOrigins.contains(origin)
     }
 
     private var allowedOrigins: Set<String> {
@@ -49,10 +53,26 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
             return nil
         }
 
-        return originKey(scheme: scheme, host: host, port: url.port ?? 0)
+        return originKey(scheme: scheme, host: host, port: url.port)
     }
 
-    private func originKey(scheme: String, host: String, port: Int) -> String {
-        "\(scheme.lowercased())://\(host.lowercased()):\(port)"
+    private func originKey(scheme: String, host: String, port: Int?) -> String? {
+        guard let normalizedPort = normalizedPort(for: scheme, port: port) else {
+            return nil
+        }
+
+        return "\(scheme.lowercased())://\(host.lowercased()):\(normalizedPort)"
+    }
+
+    private func normalizedPort(for scheme: String, port: Int?) -> Int? {
+        if let port, port != 0 {
+            return port
+        }
+
+        switch scheme.lowercased() {
+        case "http": return 80
+        case "https": return 443
+        default: return port
+        }
     }
 }

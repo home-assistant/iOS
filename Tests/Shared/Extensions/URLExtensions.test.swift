@@ -7,6 +7,29 @@ import Testing
 @Suite("URL Extensions Tests")
 struct URLExtensionsTests {
     @Test(
+        "Given URLs that differ only by implicit default ports when checking base equality then returns true",
+        arguments: [
+            ("https://example.com", "https://example.com:443"),
+            ("http://example.com", "http://example.com:80"),
+        ]
+    )
+    func baseIsEqualNormalizesDefaultPorts(lhs: String, rhs: String) throws {
+        let lhsURL = try #require(URL(string: lhs))
+        let rhsURL = try #require(URL(string: rhs))
+
+        #expect(lhsURL.baseIsEqual(to: rhsURL))
+        #expect(rhsURL.baseIsEqual(to: lhsURL))
+    }
+
+    @Test("Given URLs with different non-default ports when checking base equality then returns false")
+    func baseIsEqualKeepsNonDefaultPortsDistinct() throws {
+        let lhsURL = try #require(URL(string: "https://example.com"))
+        let rhsURL = try #require(URL(string: "https://example.com:444"))
+
+        #expect(!lhsURL.baseIsEqual(to: rhsURL))
+    }
+
+    @Test(
         "Given local URLs when checking isLocal then returns true",
         arguments: [
             "http://homeassistant.local:8123",
