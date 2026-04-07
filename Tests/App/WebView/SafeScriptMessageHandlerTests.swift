@@ -16,6 +16,18 @@ struct SafeScriptMessageHandlerTests {
         #expect(handler.shouldAllowMessage(isMainFrame: true, scheme: "https", host: "ui.nabu.casa", port: 443))
     }
 
+    @Test func allowsMainFrameMessageWhenImplicitPortsAreReportedAsZero() {
+        ServerFixture.reset()
+        let handler = SafeScriptMessageHandler(
+            server: ServerFixture.withRemoteConnection,
+            delegate: NoOpScriptMessageHandler()
+        )
+
+        #expect(handler.shouldAllowMessage(isMainFrame: true, scheme: "https", host: "external.example.com", port: 0))
+        #expect(handler.shouldAllowMessage(isMainFrame: true, scheme: "http", host: "internal.example.com", port: 0))
+        #expect(handler.shouldAllowMessage(isMainFrame: true, scheme: "https", host: "ui.nabu.casa", port: 0))
+    }
+
     @Test func rejectsMessageFromOriginOutsideConfiguredServerOrigins() {
         ServerFixture.reset()
         let handler = SafeScriptMessageHandler(

@@ -21,7 +21,7 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
             isMainFrame: message.frameInfo.isMainFrame,
             scheme: message.frameInfo.securityOrigin.protocol,
             host: message.frameInfo.securityOrigin.host,
-            port: message.frameInfo.securityOrigin.port
+            port: message.frameInfo.securityOrigin.port // Security origin port is 0 whenever not specified
         ) else {
             return
         }
@@ -31,7 +31,11 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     func shouldAllowMessage(isMainFrame: Bool, scheme: String, host: String, port: Int) -> Bool {
-        isMainFrame && allowedOrigins.contains(originKey(scheme: scheme, host: host, port: port))
+        guard isMainFrame, let origin = originKey(scheme: scheme, host: host, port: port) else {
+            return false
+        }
+
+        return allowedOrigins.contains(origin)
     }
 
     private var allowedOrigins: Set<String> {
@@ -45,15 +49,30 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     private func originKey(url: URL?) -> String? {
-        guard let url, let scheme = url.scheme?.lowercased(), let host = url.host,
-              let port = url.portWithFallback else {
+        guard let url, let scheme = url.scheme?.lowercased(), let host = url.host else {
             return nil
         }
 
-        return originKey(scheme: scheme, host: host, port: port)
+        return originKey(scheme: scheme, host: host, port: url.port)
     }
 
-    private func originKey(scheme: String, host: String, port: Int) -> String {
-        "\(scheme.lowercased())://\(host.lowercased()):\(port)"
+    private func originKey(scheme: String, host: String, port: Int?) -> String? {
+        guard let normalizedPort = normalizedPort(for: scheme, port: port) else {
+            return nil
+        }
+
+        return "\(scheme.lowercased())://\(host.lowercased()):\(normalizedPort)"
+    }
+
+    private func normalizedPort(for scheme: String, port: Int?) -> Int? {
+        if let port, port != 0 {
+            return port
+        }
+
+        switch scheme.lowercased() {
+        case "http": return 80
+        case "https": return 443
+        default: return port
+        }
     }
 }
