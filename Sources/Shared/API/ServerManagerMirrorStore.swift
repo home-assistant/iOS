@@ -8,8 +8,9 @@ private struct ServerInfoMirrorRecord: Codable, FetchableRecord, PersistableReco
     var serverInfoJSON: ServerInfo
 }
 
-// Stores a sanitized mirror of server metadata in GRDB so the app can recover the
-// server list even if Keychain data is lost during the developer-account migration.
+// Stores the sanitized startup snapshot of server metadata in GRDB so the app can
+// recover the server list even if Keychain data is lost during the developer-account
+// migration.
 final class ServerManagerGRDBMirrorStore: ServerManagerMirrorStore {
     func removeAll() {
         do {

@@ -124,8 +124,6 @@ class ServerManagerTests: XCTestCase {
         try XCTAssertEqual(keychain.getData("fake1")?.count, encoder.encode(server1.info).count)
         try XCTAssertEqual(keychain.getData("fake2")?.count, encoder.encode(server2.info).count)
         XCTAssertEqual(keychain.data.count, 2)
-        XCTAssertEqual(Set(mirrorStore.data.keys), Set(["fake1", "fake2"]))
-
         let stateS1S2 = servers.restorableState()
 
         expectingObserver {
@@ -138,7 +136,6 @@ class ServerManagerTests: XCTestCase {
             servers.remove(identifier: "fake1")
         }
         try XCTAssertNil(keychain.getData("fake1"))
-        XCTAssertNil(mirrorStore.data["fake1"])
 
         // grab it, which may also side-effect insert into cache, if buggy
         _ = server1.info
@@ -180,7 +177,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(servers.server(for: "fake2"))
         XCTAssertNil(servers.server(for: "fake3"))
         XCTAssertTrue(keychain.data.isEmpty)
-        XCTAssertTrue(mirrorStore.data.isEmpty)
 
         expectingObserver {
             servers.restoreState(stateS2S3)
@@ -481,6 +477,24 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(mirrored.connection.webhookSecret)
         XCTAssertEqual(mirrored.token, ServerInfo.mirrorPlaceholderToken)
         XCTAssertNil(mirrored.connection.clientCertificate)
+    }
+
+    func testSetupReplacesOutdatedMirrorSnapshot() throws {
+        let staleInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Stale"
+        }
+        let currentInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Current"
+        }
+
+        mirrorStore.set(staleInfo, key: "stale")
+        try keychain.set(encoder.encode(currentInfo), key: "fake1")
+
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        XCTAssertEqual(Set(mirrorStore.data.keys), Set(["fake1"]))
+        XCTAssertEqual(mirrorStore.data["fake1"]?.remoteName, "Current")
     }
 
     func testMirrorFallbackRestoresServersWithoutSecrets() throws {

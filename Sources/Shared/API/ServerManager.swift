@@ -186,8 +186,9 @@ final class ServerManagerImpl: ServerManager {
             Current.Log.error("failed to load historic server: \(error)")
         }
 
-        // Keep a sanitized copy of non-secret server metadata so the app can still
-        // recover server shells if the developer-account migration wipes Keychain data.
+        // Keep a sanitized startup snapshot of non-secret server metadata so the app
+        // can still recover server shells if the developer-account migration wipes
+        // Keychain data later on.
         syncMirrorStoreFromKeychain()
     }
 
@@ -264,7 +265,7 @@ final class ServerManagerImpl: ServerManager {
 
         let result = cache.mutate { cache -> Server in
             cache.deletedServers.remove(identifier)
-            persistServerInfo(setValue, for: identifier)
+            keychain.set(serverInfo: setValue, key: identifier.keychainKey, encoder: encoder)
             cache.info[identifier] = setValue
             cache.all = nil
 
@@ -279,7 +280,7 @@ final class ServerManagerImpl: ServerManager {
     public func remove(identifier: Identifier<Server>) {
         cache.mutate { cache in
             cache.deletedServers.insert(identifier)
-            deletePersistedServerInfo(for: identifier)
+            keychain.deleteServerInfo(key: identifier.keychainKey)
             cache.remove(identifier: identifier)
         }
 
@@ -292,7 +293,6 @@ final class ServerManagerImpl: ServerManager {
             cache.deletedServers.formUnion(Set(allKeys.map { Identifier<Server>(keychainKey: $0) }))
             cache.reset()
             _ = try? keychain.removeAll()
-            mirrorStore.removeAll()
         }
 
         notify()
@@ -324,8 +324,8 @@ final class ServerManagerImpl: ServerManager {
                 if !cache.restrictCaching, let info = cache.info[identifier] {
                     return info
                 } else {
-                    // Prefer live Keychain data, but fall back to the GRDB mirror when
-                    // the Keychain entry is gone and we still need to recover the server.
+                    // Prefer live Keychain data, but fall back to the last startup
+                    // snapshot in GRDB when the Keychain entry is gone.
                     let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder)
                         ?? self.mirrorStore.getServerInfo(identifier.keychainKey)
                         ?? fallback
@@ -364,7 +364,7 @@ final class ServerManagerImpl: ServerManager {
                     return false
                 }
 
-                self.persistServerInfo(serverInfo, for: identifier)
+                keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: encoder)
                 cache.info[identifier] = serverInfo
 
                 if old?.sortOrder != serverInfo.sortOrder {
@@ -404,25 +404,11 @@ final class ServerManagerImpl: ServerManager {
         return server
     }
 
-    // MARK: Mirror Persistence
-
-    private func persistServerInfo(_ serverInfo: ServerInfo, for identifier: Identifier<Server>) {
-        // Keychain remains the source of truth for the full record, while GRDB stores
-        // a sanitized mirror that can survive developer-account keychain changes.
-        keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: encoder)
-        mirrorStore.set(serverInfo, key: identifier.keychainKey)
-    }
-
-    private func deletePersistedServerInfo(for identifier: Identifier<Server>) {
-        keychain.deleteServerInfo(key: identifier.keychainKey)
-        mirrorStore.remove(identifier.keychainKey)
-    }
-
     // MARK: Mirror Reconciliation
 
     private func mergedServerInfo(deletedServers: Set<Identifier<Server>>) -> [(String, ServerInfo)] {
         // When both stores have a copy, prefer Keychain because it still contains the
-        // full record. The mirror only exists for non-secret recovery.
+        // full record. The mirror is only a best-effort recovery snapshot.
         let keychainValues = Dictionary(uniqueKeysWithValues: keychain.allServerInfo(decoder: decoder))
         let mirrorValues = Dictionary(uniqueKeysWithValues: mirrorStore.allServerInfo())
         return mirrorValues
@@ -434,6 +420,9 @@ final class ServerManagerImpl: ServerManager {
     }
 
     private func syncMirrorStoreFromKeychain() {
+        // The mirror is a best-effort startup snapshot, not a second source of truth.
+        // Rebuild it from the current Keychain contents whenever the app opens.
+        mirrorStore.removeAll()
         for (key, value) in keychain.allServerInfo(decoder: decoder) {
             mirrorStore.set(value, key: key)
         }
