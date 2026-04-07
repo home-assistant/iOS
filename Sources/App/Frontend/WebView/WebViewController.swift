@@ -180,6 +180,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         self.tokens.forEach { $0.cancel() }
     }
 
+    static func makeWebViewConfiguration() -> WKWebViewConfiguration {
+        let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        // Avoid interrupting background audio when the frontend loads media-capable elements.
+        config.mediaTypesRequiringUserActionForPlayback = .audio
+        return config
+    }
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -190,9 +198,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         let statusBarView = setupStatusBarView()
 
-        let config = WKWebViewConfiguration()
-        config.allowsInlineMediaPlayback = true
-        config.mediaTypesRequiringUserActionForPlayback = []
+        let config = Self.makeWebViewConfiguration()
 
         let userContentController = setupUserContentController()
 
