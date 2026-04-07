@@ -22,6 +22,12 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
+        #if canImport(ActivityKit)
+        if #available(iOS 17.2, *) {
+            register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
+            register(command: "end_live_activity", handler: HandlerEndLiveActivity())
+        }
+        #endif
         #endif
 
         #if os(iOS) || os(macOS)
@@ -36,8 +42,20 @@ public class NotificationCommandManager {
     }
 
     public func handle(_ payload: [AnyHashable: Any]) -> Promise<Void> {
-        guard let hadict = payload["homeassistant"] as? [String: Any],
-              let command = hadict["command"] as? String else {
+        guard let hadict = payload["homeassistant"] as? [String: Any] else {
+            return .init(error: CommandError.notCommand)
+        }
+
+        // Support data.live_update: true — the same field Android uses for Live Updates.
+        // A single YAML automation can target both platforms with no platform-specific keys.
+        #if canImport(ActivityKit)
+        if #available(iOS 17.2, *), hadict["live_update"] as? Bool == true,
+           let handler = commands["live_activity"] {
+            return handler.handle(hadict)
+        }
+        #endif
+
+        guard let command = hadict["command"] as? String else {
             return .init(error: CommandError.notCommand)
         }
 
@@ -89,6 +107,23 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         if !keys.isEmpty {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
+
+        // Also end any Live Activity whose tag matches — same YAML works on both iOS and Android.
+        // Bridged into the returned Promise so the background fetch window stays open until
+        // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
+        // ActivityKit is unavailable in the PushProvider extension, so guard accordingly.
+        #if os(iOS) && canImport(ActivityKit)
+        if #available(iOS 17.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
+            return Promise<Void> { seal in
+                Task {
+                    await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
+                    // https://stackoverflow.com/a/56657888/6324550
+                    DispatchQueue.main.async { seal.fulfill(()) }
+                }
+            }
+        }
+        #endif
+
         // https://stackoverflow.com/a/56657888/6324550
         return Promise<Void> { seal in
             DispatchQueue.main.async {

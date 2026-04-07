@@ -8,6 +8,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case kiosk
     case location
     case notifications
+    case liveActivities
     case sensors
     case nfc
     case widgets
@@ -28,6 +29,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
+        case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
         case .nfc: return L10n.Nfc.List.title
         case .widgets: return L10n.Settings.Widgets.title
@@ -57,6 +59,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: 24)
             case .notifications:
                 MaterialDesignIconsImage(icon: .bellOutlineIcon, size: 24)
+            case .liveActivities:
+                MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: 24)
             case .sensors:
                 MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: 24)
             case .nfc:
@@ -107,6 +111,10 @@ enum SettingsItem: String, Hashable, CaseIterable {
             SettingsLocationView()
         case .notifications:
             SettingsNotificationsView()
+        case .liveActivities:
+            if #available(iOS 17.2, *) {
+                LiveActivitySettingsView()
+            }
         case .sensors:
             SensorListView()
         case .nfc:
@@ -143,12 +151,21 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 return false
             }
             #endif
+            // Live Activities require iOS 17.2+ and TestFlight
+            if item == .liveActivities {
+                if #available(iOS 17.2, *) { return Current.isTestFlight }
+                return false
+            }
             return true
         }
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .kiosk, .location, .notifications]
+        var items: [SettingsItem] = [.general, .gestures, .kiosk, .location, .notifications]
+        if #available(iOS 17.2, *), Current.isTestFlight {
+            items.append(.liveActivities)
+        }
+        return items
     }
 
     static var integrationItems: [SettingsItem] {

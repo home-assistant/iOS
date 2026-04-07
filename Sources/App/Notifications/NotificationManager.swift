@@ -10,11 +10,15 @@ import XCGLogger
 
 class NotificationManager: NSObject, LocalPushManagerDelegate {
     lazy var localPushManager: NotificationManagerLocalPushInterface = {
+        #if targetEnvironment(simulator)
+        return NotificationManagerLocalPushInterfaceDirect(delegate: self)
+        #else
         if Current.isCatalyst {
             return NotificationManagerLocalPushInterfaceDirect(delegate: self)
         } else {
             return NotificationManagerLocalPushInterfaceExtension()
         }
+        #endif
     }()
 
     var commandManager = NotificationCommandManager()
@@ -280,6 +284,28 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+
+        // Handle commands (including Live Activities) for foreground notifications.
+        // didReceiveRemoteNotification handles background pushes via Firebase/APNs,
+        // but willPresent fires when the app is in the foreground. Without this,
+        // notifications received while the app is open would never trigger the
+        // Live Activity handler.
+        // If a command is recognized, suppress the notification banner so the user
+        // sees only the Live Activity (not a duplicate standard notification).
+        if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
+           (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
+            commandManager.handle(notification.request.content.userInfo).done {
+                completionHandler([])
+            }.catch { error in
+                // Unknown command — fall through to normal banner presentation so the user isn't silently swallowed.
+                if case NotificationCommandManager.CommandError.unknownCommand = error {
+                    completionHandler([.badge, .sound, .list, .banner])
+                } else {
+                    completionHandler([])
+                }
+            }
+            return
+        }
 
         if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
            UIApplication.shared.applicationState != .background {

@@ -130,7 +130,28 @@ public class AppEnvironment {
         AreasService.shared
     }
 
+    /// APNs environment string for token reporting. "sandbox" in DEBUG builds, "production" otherwise.
+    /// TestFlight uses distribution signing and routes through the production APNs endpoint.
+    public var apnsEnvironment: String {
+        #if DEBUG
+        return "sandbox"
+        #else
+        return "production"
+        #endif
+    }
+
     #if os(iOS)
+    #if canImport(ActivityKit)
+    /// Call `_ = Current.liveActivityRegistry` on the main thread at launch (before any
+    /// background thread can access it) to avoid a lazy-init race between concurrent callers.
+    public lazy var liveActivityRegistry: LiveActivityRegistryProtocol? = {
+        if #available(iOS 17.2, *) {
+            return LiveActivityRegistry()
+        }
+        return nil
+    }()
+    #endif
+
     public var appDatabaseUpdater: AppDatabaseUpdaterProtocol = AppDatabaseUpdater.shared
 
     public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
@@ -248,7 +269,7 @@ public class AppEnvironment {
 
     public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
 
-    // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
+    /// Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = {
         #if DEBUG
         print("⚠️ isTestFlight returns TRUE while debugging")
@@ -288,7 +309,7 @@ public class AppEnvironment {
 
     private let isFastlaneSnapshot = UserDefaults(suiteName: AppConstants.AppGroupID)!.bool(forKey: "FASTLANE_SNAPSHOT")
 
-    // This can be used to add debug statements.
+    /// This can be used to add debug statements.
     public var isDebug: Bool {
         #if DEBUG
         return true

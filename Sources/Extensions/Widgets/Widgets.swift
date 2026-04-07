@@ -21,6 +21,9 @@ struct WidgetsBundleLegacy: WidgetBundle {
     }
 
     var body: some Widget {
+        if #available(iOSApplicationExtension 17.2, *) {
+            HALiveActivityConfiguration()
+        }
         WidgetAssist()
         LegacyWidgetActions()
         WidgetOpenPage()
@@ -34,6 +37,9 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
+        if #available(iOSApplicationExtension 17.2, *) {
+            HALiveActivityConfiguration()
+        }
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
@@ -54,6 +60,8 @@ struct WidgetsBundle18: WidgetBundle {
     }
 
     var body: some Widget {
+        HALiveActivityConfiguration()
+
         // Controls
         ControlAssist()
         ControlLight()

@@ -90,6 +90,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // swiftlint:enable prohibit_environment_assignment
 
         notificationManager.setupNotifications()
+        setupLiveActivityReattachment()
         setupFirebase()
         setupModels()
         setupLocalization()
@@ -370,6 +371,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return nil
             }
         })
+    }
+
+    private func setupLiveActivityReattachment() {
+        #if canImport(ActivityKit)
+        if #available(iOS 17.2, *) {
+            // Pre-warm the registry on the main thread before spawning background Tasks.
+            // This avoids a lazy-init race if a push notification handler accesses it
+            // concurrently from a background thread.
+            guard let registry = Current.liveActivityRegistry else { return }
+
+            Task {
+                // Re-attach observation tasks (push token + lifecycle) to any Live Activities
+                // that survived the previous process termination. Must run before the first
+                // notification handler fires so no push token updates are missed.
+                await registry.reattach()
+            }
+
+            // Begin observing the push-to-start token stream on a separate Task.
+            // The stream is infinite; this Task is kept alive for the app's lifetime.
+            Task {
+                await registry.startObservingPushToStartToken()
+            }
+        }
+        #endif
     }
 
     private func setupFirebase() {
