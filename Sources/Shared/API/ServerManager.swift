@@ -211,7 +211,7 @@ final class ServerManagerImpl: ServerManager {
                 lhs.1.sortOrder < rhs.1.sortOrder
             })
 
-        if let cachedOrFreshServers = cache.mutate({ cache -> [Server]? in
+        if let cachedOrFreshServers = cache.mutate(using: { cache -> [Server]? in
             if !cache.restrictCaching, let cachedServers = cache.all {
                 return cachedServers
             }

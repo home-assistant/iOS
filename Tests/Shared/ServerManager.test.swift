@@ -682,54 +682,90 @@ class ServerManagerTests: XCTestCase {
 }
 
 class FakeServerManagerKeychain: ServerManagerKeychain {
-    var data = [String: Data]()
+    // The thread-safety tests hit this fake from many concurrent queues, so keep
+    // the backing dictionary serialized to avoid test-only memory corruption.
+    private let queue = DispatchQueue(label: "Tests.Shared.FakeServerManagerKeychain")
+    private var storage = [String: Data]()
+
+    var data: [String: Data] {
+        queue.sync { storage }
+    }
 
     func removeAll() throws {
-        data.removeAll()
+        queue.sync {
+            storage.removeAll()
+        }
     }
 
     func allKeys() -> [String] {
-        Array(data.keys)
+        queue.sync {
+            Array(storage.keys)
+        }
     }
 
     func getData(_ key: String) throws -> Data? {
-        data[key]
+        queue.sync {
+            storage[key]
+        }
     }
 
     func set(_ value: Data, key: String) throws {
-        data[key] = value
+        queue.sync {
+            storage[key] = value
+        }
     }
 
     func remove(_ key: String) throws {
-        data.removeValue(forKey: key)
+        queue.sync {
+            storage.removeValue(forKey: key)
+        }
     }
 }
 
 class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
-    var data = [String: ServerInfo]()
+    // Mirror reads and writes can happen concurrently during the thread-safety
+    // tests, so this fake also needs serialized storage.
+    private let queue = DispatchQueue(label: "Tests.Shared.FakeServerManagerMirrorStore")
+    private var storage = [String: ServerInfo]()
+
+    var data: [String: ServerInfo] {
+        queue.sync { storage }
+    }
 
     func removeAll() {
-        data.removeAll()
+        queue.sync {
+            storage.removeAll()
+        }
     }
 
     func allKeys() -> [String] {
-        Array(data.keys)
+        queue.sync {
+            Array(storage.keys)
+        }
     }
 
     func allServerInfo() -> [(String, ServerInfo)] {
-        Array(data)
+        queue.sync {
+            Array(storage)
+        }
     }
 
     func getServerInfo(_ key: String) -> ServerInfo? {
-        data[key]
+        queue.sync {
+            storage[key]
+        }
     }
 
     func set(_ serverInfo: ServerInfo, key: String) {
-        data[key] = serverInfo.mirroredForPersistence
+        queue.sync {
+            storage[key] = serverInfo.mirroredForPersistence
+        }
     }
 
     func remove(_ key: String) {
-        data.removeValue(forKey: key)
+        queue.sync {
+            storage.removeValue(forKey: key)
+        }
     }
 }
 
