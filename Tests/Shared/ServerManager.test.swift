@@ -6,6 +6,7 @@ class ServerManagerTests: XCTestCase {
     private var encoder: JSONEncoder!
     private var keychain: FakeServerManagerKeychain!
     private var historicKeychain: FakeServerManagerKeychain!
+    private var mirrorStore: FakeServerManagerMirrorStore!
     private var servers: ServerManagerImpl!
 
     override func setUp() {
@@ -14,6 +15,7 @@ class ServerManagerTests: XCTestCase {
         encoder = .init()
         keychain = .init()
         historicKeychain = .init()
+        mirrorStore = .init()
 
         Current.settingsStore.prefs.removeObject(forKey: "deletedServers")
     }
@@ -25,7 +27,7 @@ class ServerManagerTests: XCTestCase {
             try keychain.set(encoder.encode(value), key: key)
         }
 
-        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain)
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
         servers.setup()
     }
 
@@ -122,7 +124,6 @@ class ServerManagerTests: XCTestCase {
         try XCTAssertEqual(keychain.getData("fake1")?.count, encoder.encode(server1.info).count)
         try XCTAssertEqual(keychain.getData("fake2")?.count, encoder.encode(server2.info).count)
         XCTAssertEqual(keychain.data.count, 2)
-
         let stateS1S2 = servers.restorableState()
 
         expectingObserver {
@@ -454,6 +455,90 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(keychain.data[server1.identifier.rawValue]?.count, try encoder.encode(newInfo).count)
     }
 
+    func testSetupBackfillsMirrorForExistingKeychainServers() throws {
+        let info = with(ServerInfo.fake()) {
+            $0.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
+            $0.connection.clientCertificate = ClientCertificate(
+                keychainIdentifier: "client-cert-1",
+                displayName: "Client Certificate"
+            )
+        }
+
+        try keychain.set(encoder.encode(info), key: "fake1")
+
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let mirrored = try XCTUnwrap(mirrorStore.data["fake1"])
+        XCTAssertEqual(mirrored.remoteName, info.remoteName)
+        XCTAssertEqual(mirrored.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
+        XCTAssertEqual(mirrored.connection.isLocalPushEnabled, info.connection.isLocalPushEnabled)
+        XCTAssertNil(mirrored.connection.cloudhookURL)
+        XCTAssertNil(mirrored.connection.webhookSecret)
+        XCTAssertEqual(mirrored.token, ServerInfo.mirrorPlaceholderToken)
+        XCTAssertNil(mirrored.connection.clientCertificate)
+    }
+
+    func testSetupReplacesOutdatedMirrorSnapshot() throws {
+        let staleInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Stale"
+        }
+        let currentInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Current"
+        }
+
+        mirrorStore.set(staleInfo, key: "stale")
+        try keychain.set(encoder.encode(currentInfo), key: "fake1")
+
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        XCTAssertEqual(Set(mirrorStore.data.keys), Set(["fake1"]))
+        XCTAssertEqual(mirrorStore.data["fake1"]?.remoteName, "Current")
+    }
+
+    func testMirrorFallbackRestoresServersWithoutSecrets() throws {
+        let info = with(ServerInfo.fake()) {
+            $0.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
+            $0.connection.clientCertificate = ClientCertificate(
+                keychainIdentifier: "client-cert-1",
+                displayName: "Client Certificate"
+            )
+            $0.connection.webhookSecret = "webhook_secret"
+            $0.hassDeviceId = "device-1"
+        }
+
+        mirrorStore.set(info, key: "fake1")
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let restored = try XCTUnwrap(servers.server(for: "fake1"))
+        XCTAssertEqual(restored.info.remoteName, info.remoteName)
+        XCTAssertEqual(restored.info.hassDeviceId, info.hassDeviceId)
+        XCTAssertEqual(restored.info.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
+        XCTAssertEqual(restored.info.connection.isLocalPushEnabled, info.connection.isLocalPushEnabled)
+        XCTAssertNil(restored.info.connection.cloudhookURL)
+        XCTAssertNil(restored.info.connection.webhookSecret)
+        XCTAssertEqual(restored.info.token, ServerInfo.mirrorPlaceholderToken)
+        XCTAssertNil(restored.info.connection.clientCertificate)
+    }
+
+    func testKeychainInfoWinsOverMirrorFallback() throws {
+        let keychainInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Keychain"
+        }
+        let mirroredInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Mirror"
+        }
+
+        try keychain.set(encoder.encode(keychainInfo), key: "fake1")
+        mirrorStore.set(mirroredInfo, key: "fake1")
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        XCTAssertEqual(servers.server(for: "fake1")?.info.remoteName, "Keychain")
+    }
+
     func testThreadsafeChangesWithoutCaching() throws {
         Current.isAppExtension = true
         try base_testThreadsafeChanges()
@@ -552,7 +637,7 @@ class ServerManagerTests: XCTestCase {
         Current.settingsStore.prefs.set(overrideDeviceName, forKey: "override_device_name")
         Current.settingsStore.prefs.set(locationName, forKey: "location_name")
 
-        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain)
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
         servers.setup()
 
         return .init(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
@@ -611,26 +696,90 @@ class ServerManagerTests: XCTestCase {
 }
 
 class FakeServerManagerKeychain: ServerManagerKeychain {
-    var data = [String: Data]()
+    // The thread-safety tests hit this fake from many concurrent queues, so keep
+    // the backing dictionary serialized to avoid test-only memory corruption.
+    private let queue = DispatchQueue(label: "Tests.Shared.FakeServerManagerKeychain")
+    private var storage = [String: Data]()
+
+    var data: [String: Data] {
+        queue.sync { storage }
+    }
 
     func removeAll() throws {
-        data.removeAll()
+        queue.sync {
+            storage.removeAll()
+        }
     }
 
     func allKeys() -> [String] {
-        Array(data.keys)
+        queue.sync {
+            Array(storage.keys)
+        }
     }
 
     func getData(_ key: String) throws -> Data? {
-        data[key]
+        queue.sync {
+            storage[key]
+        }
     }
 
     func set(_ value: Data, key: String) throws {
-        data[key] = value
+        queue.sync {
+            storage[key] = value
+        }
     }
 
     func remove(_ key: String) throws {
-        data.removeValue(forKey: key)
+        queue.sync {
+            storage.removeValue(forKey: key)
+        }
+    }
+}
+
+class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
+    // Mirror reads and writes can happen concurrently during the thread-safety
+    // tests, so this fake also needs serialized storage.
+    private let queue = DispatchQueue(label: "Tests.Shared.FakeServerManagerMirrorStore")
+    private var storage = [String: ServerInfo]()
+
+    var data: [String: ServerInfo] {
+        queue.sync { storage }
+    }
+
+    func removeAll() {
+        queue.sync {
+            storage.removeAll()
+        }
+    }
+
+    func allKeys() -> [String] {
+        queue.sync {
+            Array(storage.keys)
+        }
+    }
+
+    func allServerInfo() -> [(String, ServerInfo)] {
+        queue.sync {
+            Array(storage)
+        }
+    }
+
+    func getServerInfo(_ key: String) -> ServerInfo? {
+        queue.sync {
+            storage[key]
+        }
+    }
+
+    func set(_ serverInfo: ServerInfo, key: String) {
+        queue.sync {
+            storage[key] = serverInfo.mirroredForPersistence
+        }
+    }
+
+    func remove(_ key: String) {
+        queue.sync {
+            storage.removeValue(forKey: key)
+        }
     }
 }
 

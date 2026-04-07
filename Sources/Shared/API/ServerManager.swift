@@ -1,6 +1,5 @@
 import HAKit
 import KeychainAccess
-import Sodium
 import UserNotifications
 import Version
 
@@ -82,13 +81,7 @@ public extension ServerManager {
     }
 }
 
-protocol ServerManagerKeychain {
-    func removeAll() throws
-    func allKeys() -> [String]
-    func getData(_ key: String) throws -> Data?
-    func set(_ value: Data, key: String) throws
-    func remove(_ key: String) throws
-}
+// MARK: - Cache Helpers
 
 private extension Identifier where ObjectType == Server {
     var keychainKey: String { rawValue }
@@ -139,23 +132,12 @@ private struct ServerCache {
     }
 }
 
-extension Keychain: ServerManagerKeychain {
-    public func set(_ value: Data, key: String) throws {
-        try set(value, key: key, ignoringAttributeSynchronizable: true)
-    }
-
-    public func getData(_ key: String) throws -> Data? {
-        try getData(key, ignoringAttributeSynchronizable: true)
-    }
-
-    public func remove(_ key: String) throws {
-        try remove(key, ignoringAttributeSynchronizable: true)
-    }
-}
+// MARK: - Server Manager
 
 final class ServerManagerImpl: ServerManager {
     private var keychain: ServerManagerKeychain
     private var historicKeychain: ServerManagerKeychain
+    private var mirrorStore: ServerManagerMirrorStore
     private var encoder: JSONEncoder
     private var decoder: JSONDecoder
 
@@ -173,12 +155,16 @@ final class ServerManagerImpl: ServerManager {
 
     private let cache = HAProtected<ServerCache>(value: .init())
 
+    // MARK: Lifecycle
+
     init(
         keychain: ServerManagerKeychain = Keychain(service: ServerManagerImpl.service),
-        historicKeychain: ServerManagerKeychain = Keychain(service: AppConstants.BundleID)
+        historicKeychain: ServerManagerKeychain = Keychain(service: AppConstants.BundleID),
+        mirrorStore: ServerManagerMirrorStore = ServerManagerGRDBMirrorStore()
     ) {
         self.keychain = keychain
         self.historicKeychain = historicKeychain
+        self.mirrorStore = mirrorStore
 
         let encoder = JSONEncoder()
         self.encoder = encoder
@@ -199,21 +185,62 @@ final class ServerManagerImpl: ServerManager {
         } catch {
             Current.Log.error("failed to load historic server: \(error)")
         }
+
+        // Keep a sanitized startup snapshot of non-secret server metadata so the app
+        // can still recover server shells if the developer-account migration wipes
+        // Keychain data later on.
+        syncMirrorStoreFromKeychain()
     }
 
     public var all: [Server] {
-        cache.mutate { cache -> [Server] in
+        let snapshot = cache.read { cache in
+            (
+                restrictCaching: cache.restrictCaching,
+                deletedServers: cache.deletedServers,
+                cachedServers: cache.all
+            )
+        }
+
+        if !snapshot.restrictCaching, let cachedServers = snapshot.cachedServers {
+            return cachedServers
+        }
+
+        // Read from Keychain and GRDB outside the cache lock so persistence I/O
+        // does not block unrelated server-manager operations.
+        let persistedServers = mergedServerInfo(deletedServers: snapshot.deletedServers)
+            .sorted(by: { lhs, rhs -> Bool in
+                lhs.1.sortOrder < rhs.1.sortOrder
+            })
+
+        if let cachedOrFreshServers = cache.mutate(using: { cache -> [Server]? in
             if !cache.restrictCaching, let cachedServers = cache.all {
                 return cachedServers
-            } else {
-                // we sort outside the Server because that will reenter our cache lock
-                let all = keychain.allServerInfo(decoder: decoder).sorted(by: { lhs, rhs -> Bool in
-                    lhs.1.sortOrder < rhs.1.sortOrder
-                }).map { key, value in
-                    server(key: key, value: value, currentCache: &cache)
-                }
-                cache.all = all
-                return all
+            }
+
+            guard cache.deletedServers == snapshot.deletedServers else {
+                return nil
+            }
+
+            let all = persistedServers.map { key, value in
+                server(key: key, value: value, currentCache: &cache)
+            }
+            cache.all = all
+            return all
+        }) {
+            return cachedOrFreshServers
+        }
+
+        // Avoid retrying forever when another thread keeps mutating the server set.
+        // In that case we return a best-effort fresh view and let a later access cache it.
+        let latestDeletedServers = cache.read(\.deletedServers)
+        let latestPersistedServers = mergedServerInfo(deletedServers: latestDeletedServers)
+            .sorted(by: { lhs, rhs -> Bool in
+                lhs.1.sortOrder < rhs.1.sortOrder
+            })
+
+        return cache.mutate { cache in
+            latestPersistedServers.map { key, value in
+                server(key: key, value: value, currentCache: &cache)
             }
         }
     }
@@ -225,6 +252,8 @@ final class ServerManagerImpl: ServerManager {
             return all.first(where: { $0.identifier == identifier })
         }
     }
+
+    // MARK: Mutations
 
     @discardableResult
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
@@ -260,13 +289,16 @@ final class ServerManagerImpl: ServerManager {
 
     public func removeAll() {
         cache.mutate { cache in
-            cache.deletedServers.formUnion(Set(keychain.allKeys().map { Identifier<Server>(keychainKey: $0) }))
+            let allKeys = Set(keychain.allKeys() + mirrorStore.allKeys())
+            cache.deletedServers.formUnion(Set(allKeys.map { Identifier<Server>(keychainKey: $0) }))
             cache.reset()
             _ = try? keychain.removeAll()
         }
 
         notify()
     }
+
+    // MARK: Cache and Observation
 
     private var suppressNotify = false
     private func notify() {
@@ -277,6 +309,8 @@ final class ServerManagerImpl: ServerManager {
             }
         }
     }
+
+    // MARK: Server Accessors
 
     private func serverInfoGetter(
         cache: HAProtected<ServerCache>,
@@ -290,7 +324,11 @@ final class ServerManagerImpl: ServerManager {
                 if !cache.restrictCaching, let info = cache.info[identifier] {
                     return info
                 } else {
-                    let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder) ?? fallback
+                    // Prefer live Keychain data, but fall back to the last startup
+                    // snapshot in GRDB when the Keychain entry is gone.
+                    let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder)
+                        ?? self.mirrorStore.getServerInfo(identifier.keychainKey)
+                        ?? fallback
                     if !cache.deletedServers.contains(identifier) {
                         cache.info[identifier] = info
                     }
@@ -326,7 +364,7 @@ final class ServerManagerImpl: ServerManager {
                     return false
                 }
 
-                keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
+                keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: encoder)
                 cache.info[identifier] = serverInfo
 
                 if old?.sortOrder != serverInfo.sortOrder {
@@ -366,6 +404,32 @@ final class ServerManagerImpl: ServerManager {
         return server
     }
 
+    // MARK: Mirror Reconciliation
+
+    private func mergedServerInfo(deletedServers: Set<Identifier<Server>>) -> [(String, ServerInfo)] {
+        // When both stores have a copy, prefer Keychain because it still contains the
+        // full record. The mirror is only a best-effort recovery snapshot.
+        let keychainValues = Dictionary(uniqueKeysWithValues: keychain.allServerInfo(decoder: decoder))
+        let mirrorValues = Dictionary(uniqueKeysWithValues: mirrorStore.allServerInfo())
+        return mirrorValues
+            .merging(keychainValues, uniquingKeysWith: { _, keychainInfo in keychainInfo })
+            .filter { key, _ in
+                !deletedServers.contains(.init(keychainKey: key))
+            }
+            .map { ($0.key, $0.value) }
+    }
+
+    private func syncMirrorStoreFromKeychain() {
+        // The mirror is a best-effort startup snapshot, not a second source of truth.
+        // Rebuild it from the current Keychain contents whenever the app opens.
+        mirrorStore.removeAll()
+        for (key, value) in keychain.allServerInfo(decoder: decoder) {
+            mirrorStore.set(value, key: key)
+        }
+    }
+
+    // MARK: Migration
+
     private func migrateIfNeeded() throws {
         guard all.isEmpty else { return }
 
@@ -396,10 +460,12 @@ final class ServerManagerImpl: ServerManager {
         }
     }
 
+    // MARK: State Restoration
+
     public func restorableState() -> Data {
         var state = [String: ServerInfo]()
 
-        for (id, info) in keychain.allServerInfo(decoder: decoder) {
+        for (id, info) in mergedServerInfo(deletedServers: cache.read({ $0.deletedServers })) {
             state[id] = info
         }
 
@@ -418,7 +484,7 @@ final class ServerManagerImpl: ServerManager {
             let state = try decoder.decode([String: ServerInfo].self, from: state)
 
             // delete servers that aren't present
-            for key in keychain.allKeys() where state[key] == nil {
+            for key in Set(keychain.allKeys() + mirrorStore.allKeys()) where state[key] == nil {
                 remove(identifier: .init(keychainKey: key))
             }
 
@@ -437,42 +503,5 @@ final class ServerManagerImpl: ServerManager {
 
         suppressNotify = false
         notify()
-    }
-}
-
-private extension ServerManagerKeychain {
-    func allServerInfo(decoder: JSONDecoder) -> [(String, ServerInfo)] {
-        allKeys().compactMap { key in
-            getServerInfo(key: key, decoder: decoder).map { (key, $0) }
-        }
-    }
-
-    func getServerInfo(key: String, decoder: JSONDecoder) -> ServerInfo? {
-        do {
-            guard let data = try getData(key) else {
-                return nil
-            }
-
-            return try decoder.decode(ServerInfo.self, from: data)
-        } catch {
-            Current.Log.error("failed to get server info for \(key): \(error)")
-            return nil
-        }
-    }
-
-    func set(serverInfo: ServerInfo, key: String, encoder: JSONEncoder) {
-        do {
-            try set(encoder.encode(serverInfo), key: key)
-        } catch {
-            Current.Log.error("failed to set server info for \(key): \(error)")
-        }
-    }
-
-    func deleteServerInfo(key: String) {
-        do {
-            try remove(key)
-        } catch {
-            Current.Log.error("failed to get delete \(key): \(error)")
-        }
     }
 }

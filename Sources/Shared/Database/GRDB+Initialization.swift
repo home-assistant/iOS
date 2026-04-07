@@ -48,6 +48,7 @@ public extension DatabaseQueue {
             WatchConfigTable(),
             CarPlayConfigTable(),
             AssistPipelinesTable(),
+            ServerInfoMirrorTable(),
             AppEntityRegistryListForDisplayTable(),
             AppEntityRegistryTable(),
             AppDeviceRegistryTable(),

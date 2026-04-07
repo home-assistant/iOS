@@ -143,10 +143,20 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 14 tables conform to DatabaseTableProtocol")
+    @Test("ServerInfoMirrorTable conforms to DatabaseTableProtocol")
+    func serverInfoMirrorTableConformance() throws {
+        let table = ServerInfoMirrorTable()
+        #expect(table.tableName == GRDBDatabaseTable.serverInfoMirror.rawValue)
+        #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
+
+        let expectedColumns = DatabaseTables.ServerInfoMirror.allCases.map(\.rawValue)
+        #expect(Set(table.definedColumns) == Set(expectedColumns))
+    }
+
+    @Test("All 15 tables conform to DatabaseTableProtocol")
     func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 14, "Should have exactly 14 tables")
+        #expect(tables.count == 15, "Should have exactly 15 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName
