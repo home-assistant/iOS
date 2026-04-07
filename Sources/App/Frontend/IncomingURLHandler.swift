@@ -46,7 +46,7 @@ class IncomingURLHandler {
                 confirmAction(
                     title: L10n.UrlHandler.CallService.Confirm.title,
                     message: L10n.UrlHandler.CallService.Confirm.message(callServiceTarget.fullServiceName),
-                    handler: { self.callServiceURLHandler(url, serviceData) }
+                    handler: { self.callServiceURLHandler(callServiceTarget, serviceData) }
                 )
             case .fireEvent:
                 confirmAction(
@@ -633,12 +633,11 @@ extension IncomingURLHandler {
         }
     }
 
-    private func callServiceURLHandler(_ url: URL, _ serviceData: [String: String]) {
+    private func callServiceURLHandler(
+        _ callServiceTarget: (fullServiceName: String, domain: String, service: String),
+        _ serviceData: [String: String]
+    ) {
         // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
-        guard let callServiceTarget = callServiceTarget(from: url) else {
-            return
-        }
-
         firstly { () -> Promise<Void> in
             if let api = Current.apis.first {
                 return api.CallService(
