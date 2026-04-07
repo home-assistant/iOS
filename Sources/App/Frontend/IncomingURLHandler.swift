@@ -40,9 +40,12 @@ class IncomingURLHandler {
             case .xCallbackURL:
                 return Manager.shared.handleOpen(url: url)
             case .callService:
+                guard let callServiceTarget = callServiceTarget(from: url) else {
+                    return true
+                }
                 confirmAction(
                     title: L10n.UrlHandler.CallService.Confirm.title,
-                    message: L10n.UrlHandler.CallService.Confirm.message(url.pathComponents[1]),
+                    message: L10n.UrlHandler.CallService.Confirm.message(callServiceTarget.fullServiceName),
                     handler: { self.callServiceURLHandler(url, serviceData) }
                 )
             case .fireEvent:
@@ -632,14 +635,15 @@ extension IncomingURLHandler {
 
     private func callServiceURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
-        let domain = url.pathComponents[1].components(separatedBy: ".")[0]
-        let service = url.pathComponents[1].components(separatedBy: ".")[1]
+        guard let callServiceTarget = callServiceTarget(from: url) else {
+            return
+        }
 
         firstly { () -> Promise<Void> in
             if let api = Current.apis.first {
                 return api.CallService(
-                    domain: domain,
-                    service: service,
+                    domain: callServiceTarget.domain,
+                    service: callServiceTarget.service,
                     serviceData: serviceData,
                     triggerSource: .URLHandler
                 )
@@ -649,17 +653,34 @@ extension IncomingURLHandler {
         }.done { _ in
             self.showAlert(
                 title: L10n.UrlHandler.CallService.Success.title,
-                message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1])
+                message: L10n.UrlHandler.CallService.Success.message(callServiceTarget.fullServiceName)
             )
         }.catch { error in
             self.showAlert(
                 title: L10n.errorLabel,
                 message: L10n.UrlHandler.CallService.Error.message(
-                    url.pathComponents[1],
+                    callServiceTarget.fullServiceName,
                     error.localizedDescription
                 )
             )
         }
+    }
+
+    private func callServiceTarget(from url: URL) -> (fullServiceName: String, domain: String, service: String)? {
+        guard url.pathComponents.count > 1 else {
+            Current.Log.error("not enough path components for call service handler")
+            return nil
+        }
+
+        let fullServiceName = url.pathComponents[1]
+        let components = fullServiceName.components(separatedBy: ".")
+
+        guard components.count == 2, !components[0].isEmpty, !components[1].isEmpty else {
+            Current.Log.error("invalid call service target in URL: \(url)")
+            return nil
+        }
+
+        return (fullServiceName, components[0], components[1])
     }
 
     private func sendLocationURLHandler() {
