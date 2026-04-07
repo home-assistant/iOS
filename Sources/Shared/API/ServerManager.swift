@@ -192,44 +192,54 @@ final class ServerManagerImpl: ServerManager {
     }
 
     public var all: [Server] {
-        while true {
-            let snapshot = cache.read { cache in
-                (
-                    restrictCaching: cache.restrictCaching,
-                    deletedServers: cache.deletedServers,
-                    cachedServers: cache.all
-                )
-            }
+        let snapshot = cache.read { cache in
+            (
+                restrictCaching: cache.restrictCaching,
+                deletedServers: cache.deletedServers,
+                cachedServers: cache.all
+            )
+        }
 
-            if !snapshot.restrictCaching, let cachedServers = snapshot.cachedServers {
+        if !snapshot.restrictCaching, let cachedServers = snapshot.cachedServers {
+            return cachedServers
+        }
+
+        // Read from Keychain and GRDB outside the cache lock so persistence I/O
+        // does not block unrelated server-manager operations.
+        let persistedServers = mergedServerInfo(deletedServers: snapshot.deletedServers)
+            .sorted(by: { lhs, rhs -> Bool in
+                lhs.1.sortOrder < rhs.1.sortOrder
+            })
+
+        if let cachedOrFreshServers = cache.mutate({ cache -> [Server]? in
+            if !cache.restrictCaching, let cachedServers = cache.all {
                 return cachedServers
             }
 
-            // Read from Keychain and GRDB outside the cache lock so persistence I/O
-            // does not block unrelated server-manager operations.
-            let persistedServers = mergedServerInfo(deletedServers: snapshot.deletedServers)
-                .sorted(by: { lhs, rhs -> Bool in
-                    lhs.1.sortOrder < rhs.1.sortOrder
-                })
-
-            let result = cache.mutate { cache -> [Server]? in
-                if !cache.restrictCaching, let cachedServers = cache.all {
-                    return cachedServers
-                }
-
-                guard cache.deletedServers == snapshot.deletedServers else {
-                    return nil
-                }
-
-                let all = persistedServers.map { key, value in
-                    server(key: key, value: value, currentCache: &cache)
-                }
-                cache.all = all
-                return all
+            guard cache.deletedServers == snapshot.deletedServers else {
+                return nil
             }
 
-            if let result {
-                return result
+            let all = persistedServers.map { key, value in
+                server(key: key, value: value, currentCache: &cache)
+            }
+            cache.all = all
+            return all
+        }) {
+            return cachedOrFreshServers
+        }
+
+        // Avoid retrying forever when another thread keeps mutating the server set.
+        // In that case we return a best-effort fresh view and let a later access cache it.
+        let latestDeletedServers = cache.read(\.deletedServers)
+        let latestPersistedServers = mergedServerInfo(deletedServers: latestDeletedServers)
+            .sorted(by: { lhs, rhs -> Bool in
+                lhs.1.sortOrder < rhs.1.sortOrder
+            })
+
+        return cache.mutate { cache in
+            latestPersistedServers.map { key, value in
+                server(key: key, value: value, currentCache: &cache)
             }
         }
     }
