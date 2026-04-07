@@ -11,6 +11,9 @@ import Version
 #if os(iOS)
 import Reachability
 #endif
+#if os(iOS) && canImport(ActivityKit)
+import ActivityKit
+#endif
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
@@ -64,7 +67,7 @@ public class HomeAssistantAPI {
         return "Home Assistant/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
     }
 
-    // "Mobile/BUILD_NUMBER" is what CodeMirror sniffs for to decide iOS or not; other things likely look for Safari
+    /// "Mobile/BUILD_NUMBER" is what CodeMirror sniffs for to decide iOS or not; other things likely look for Safari
     public static var applicationNameForUserAgent: String {
         HomeAssistantAPI.userAgent + " Mobile/HomeAssistant, like Safari"
     }
@@ -358,7 +361,6 @@ public class HomeAssistantAPI {
 
     public func DownloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
         Promise { seal in
-
             var finalURL = url
 
             let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
@@ -555,10 +557,31 @@ public class HomeAssistantAPI {
     private func mobileAppRegistrationRequestModel() -> MobileAppRegistrationRequest {
         with(MobileAppRegistrationRequest()) {
             if let pushID = Current.settingsStore.pushID {
-                $0.AppData = [
+                var appData: [String: Any] = [
                     "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
                     "push_token": pushID,
                 ]
+
+                #if os(iOS) && canImport(ActivityKit)
+                if #available(iOS 17.2, *) {
+                    // Advertise Live Activity support so HA can gate the UI and send
+                    // activity push tokens back to the relay server.
+                    // Use areActivitiesEnabled so iPad and users who disabled Live Activities
+                    // in Settings correctly report false.
+                    appData["supports_live_activities"] = ActivityAuthorizationInfo().areActivitiesEnabled
+                    appData["supports_live_activities_frequent_updates"] =
+                        ActivityAuthorizationInfo().frequentPushesEnabled
+
+                    // Push-to-start token (stored in Keychain at launch, updated via stream).
+                    // The relay server uses this token to start a Live Activity entirely via APNs.
+                    if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
+                        appData["live_activity_push_to_start_token"] = pushToStartToken
+                        appData["live_activity_push_to_start_apns_environment"] = Current.apnsEnvironment
+                    }
+                }
+                #endif
+
+                $0.AppData = appData
             }
 
             $0.AppIdentifier = AppConstants.BundleID
@@ -654,11 +677,13 @@ public class HomeAssistantAPI {
         }.asVoid()
     }
 
-    public var sharedEventDeviceInfo: [String: String] { [
-        "sourceDevicePermanentID": AppConstants.PermanentID,
-        "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
-        "sourceDeviceID": Current.settingsStore.deviceID,
-    ] }
+    public var sharedEventDeviceInfo: [String: String] {
+        [
+            "sourceDevicePermanentID": AppConstants.PermanentID,
+            "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
+            "sourceDeviceID": Current.settingsStore.deviceID,
+        ]
+    }
 
     public func legacyNotificationActionEvent(
         identifier: String,

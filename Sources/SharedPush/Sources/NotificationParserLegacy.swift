@@ -212,6 +212,30 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             headers["apns-collapse-id"] = tag
         }
 
+        // Promote live_update fields from `data` into `homeassistant` so that
+        // NotificationCommandManager can route to HandlerStartOrUpdateLiveActivity.
+        // This handles the WebSocket (local push) delivery path where the parser
+        // produces a flat payload — unlike APNs which already has a `homeassistant` key.
+        if data["live_update"] as? Bool == true {
+            var homeassistant = payload["homeassistant"] as? [String: Any] ?? [:]
+            homeassistant["live_update"] = true
+            for key in [
+                "tag", "critical_text", "progress", "progress_max", "chronometer",
+                "when", "when_relative", "notification_icon", "notification_icon_color",
+            ] {
+                if let value = data[key] {
+                    homeassistant[key] = value
+                }
+            }
+            if let title = input["title"] as? String {
+                homeassistant["title"] = title
+            }
+            if let message = input["message"] as? String {
+                homeassistant["message"] = message
+            }
+            payload["homeassistant"] = homeassistant
+        }
+
         if registrationInfo["os_version"]?.starts(with: "10.15") == true {
             payload.mutateInside("aps") { aps in
                 if let sound = aps["sound"] as? String {

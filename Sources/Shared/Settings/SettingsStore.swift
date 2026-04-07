@@ -220,6 +220,17 @@ public class SettingsStore {
         }
     }
 
+    /// Whether the one-time Live Activity lock screen privacy disclosure has been shown.
+    /// Set to true after the first Live Activity is started; never reset.
+    public var hasSeenLiveActivityDisclosure: Bool {
+        get {
+            prefs.bool(forKey: "hasSeenLiveActivityDisclosure")
+        }
+        set {
+            prefs.set(newValue, forKey: "hasSeenLiveActivityDisclosure")
+        }
+    }
+
     /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it
     public var migratedOptInLocalPush: Bool {
         get {
