@@ -5,7 +5,7 @@ public extension URL {
     /// Return true if receiver's host and scheme is equal to `otherURL`
     func baseIsEqual(to otherURL: URL) -> Bool {
         host?.lowercased() == otherURL.host?.lowercased()
-            && portWithFallback == otherURL.portWithFallback
+            && port == otherURL.port
             && scheme?.lowercased() == otherURL.scheme?.lowercased()
             && user == otherURL.user
             && password == otherURL.password
@@ -16,19 +16,6 @@ public extension URL {
         baseIsEqual(to: otherURL) &&
             (path == otherURL.path || path == "\(otherURL.path)/0")
         // Workaround for Home Assistant behavior where /0 is added to the end
-    }
-
-    // port will be removed if 80 or 443 by WKWebView, so we provide defaults for comparison
-    var portWithFallback: Int? {
-        if let port {
-            return port
-        }
-
-        switch scheme?.lowercased() {
-        case "http": return 80
-        case "https": return 443
-        default: return nil
-        }
     }
 
     func sanitized() -> URL {

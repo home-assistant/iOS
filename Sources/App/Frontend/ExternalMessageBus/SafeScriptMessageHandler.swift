@@ -21,7 +21,7 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
             isMainFrame: message.frameInfo.isMainFrame,
             scheme: message.frameInfo.securityOrigin.protocol,
             host: message.frameInfo.securityOrigin.host,
-            port: message.frameInfo.securityOrigin.port
+            port: message.frameInfo.securityOrigin.port // Security origin port is 0 whenever not specified
         ) else {
             return
         }
@@ -45,12 +45,11 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     private func originKey(url: URL?) -> String? {
-        guard let url, let scheme = url.scheme?.lowercased(), let host = url.host,
-              let port = url.portWithFallback else {
+        guard let url, let scheme = url.scheme?.lowercased(), let host = url.host else {
             return nil
         }
 
-        return originKey(scheme: scheme, host: host, port: port)
+        return originKey(scheme: scheme, host: host, port: url.port ?? 0)
     }
 
     private func originKey(scheme: String, host: String, port: Int) -> String {
