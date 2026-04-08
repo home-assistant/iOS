@@ -85,12 +85,13 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
 
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
-        webViewBottomConstraint = WebViewController.makeWebViewBottomConstraint(for: webView, in: view)
+        let bottomConstraint = WebViewController.makeWebViewBottomConstraint(for: webView, in: view)
+        webViewBottomConstraint = bottomConstraint
         NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webView.topAnchor.constraint(equalTo: view.topAnchor),
-            webViewBottomConstraint!,
+            bottomConstraint,
         ])
 
         setupKeyboardAvoidance()

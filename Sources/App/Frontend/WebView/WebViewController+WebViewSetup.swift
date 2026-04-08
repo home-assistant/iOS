@@ -72,11 +72,14 @@ extension WebViewController {
         scrollFocusedElementIntoView()
     }
 
-    private func scheduleFocusedElementScroll(using notification: Notification) {
+    func scheduleFocusedElementScroll(using notification: Notification) {
         let overlapHeight = WebViewKeyboardAvoidance.keyboardOverlapHeight(in: view, notification: notification)
         keyboardFocusedElementScrollWorkItem?.cancel()
 
-        guard overlapHeight > 0 else { return }
+        guard overlapHeight > 0 else {
+            keyboardFocusedElementScrollWorkItem = nil
+            return
+        }
 
         let workItem = DispatchWorkItem { [weak self] in
             self?.scrollFocusedElementIntoView()
@@ -87,7 +90,7 @@ extension WebViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
     }
 
-    private func updateWebViewBottomConstraint(using notification: Notification) {
+    func updateWebViewBottomConstraint(using notification: Notification) {
         let overlapHeight = WebViewKeyboardAvoidance.keyboardOverlapHeight(in: view, notification: notification)
         let duration = WebViewKeyboardAvoidance.keyboardAnimationDuration(from: notification)
         let options = WebViewKeyboardAvoidance.keyboardAnimationOptions(from: notification)
