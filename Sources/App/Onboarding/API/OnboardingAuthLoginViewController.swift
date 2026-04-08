@@ -12,6 +12,8 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
     let authDetails: OnboardingAuthDetails
     let promise: Promise<URL>
     private let resolver: Resolver<URL>
+    private var webViewBottomConstraint: NSLayoutConstraint?
+    private var keyboardScrollWorkItem: DispatchWorkItem?
     private let webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
@@ -49,6 +51,20 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
 
+    deinit {
+        keyboardScrollWorkItem?.cancel()
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillChangeFrameNotification,
+            object: nil
+        )
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardDidChangeFrameNotification,
+            object: nil
+        )
+    }
+
     @objc private func cancel() {
         resolver.reject(PMKError.cancelled)
     }
@@ -69,14 +85,57 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
 
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
+        webViewBottomConstraint = WebViewController.makeWebViewBottomConstraint(for: webView, in: view)
         NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webView.topAnchor.constraint(equalTo: view.topAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            webViewBottomConstraint!,
         ])
 
+        setupKeyboardAvoidance()
         refresh()
+    }
+
+    private func setupKeyboardAvoidance() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleKeyboardWillChangeFrame(_:)),
+            name: UIResponder.keyboardWillChangeFrameNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleKeyboardDidChangeFrame(_:)),
+            name: UIResponder.keyboardDidChangeFrameNotification,
+            object: nil
+        )
+    }
+
+    @objc private func handleKeyboardWillChangeFrame(_ notification: Notification) {
+        let overlapHeight = WebViewKeyboardAvoidance.keyboardOverlapHeight(in: view, notification: notification)
+        let duration = WebViewKeyboardAvoidance.keyboardAnimationDuration(from: notification)
+        let options = WebViewKeyboardAvoidance.keyboardAnimationOptions(from: notification)
+
+        webViewBottomConstraint?.constant = -overlapHeight
+
+        UIView.animate(withDuration: duration, delay: 0, options: [options, .beginFromCurrentState]) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+
+        keyboardScrollWorkItem?.cancel()
+        guard overlapHeight > 0 else { return }
+
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.webView.scrollFocusedElementIntoView()
+        }
+        keyboardScrollWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: workItem)
+    }
+
+    @objc private func handleKeyboardDidChangeFrame(_ notification: Notification) {
+        guard WebViewKeyboardAvoidance.keyboardOverlapHeight(in: view, notification: notification) > 0 else { return }
+        webView.scrollFocusedElementIntoView()
     }
 
     func webView(
