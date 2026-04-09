@@ -140,6 +140,7 @@ public class AppEnvironment {
         #endif
     }
 
+    #if os(iOS)
     #if os(iOS) && !targetEnvironment(macCatalyst)
     /// Call `_ = Current.liveActivityRegistry` on the main thread at launch (before any
     /// background thread can access it) to avoid a lazy-init race between concurrent callers.
