@@ -24,18 +24,30 @@ struct AssistAppIntent: AppIntent {
 
     func perform() async throws -> some IntentResult {
         #if !WIDGET_EXTENSION
-        DispatchQueue.main.async {
-            guard let server = Current.servers.all
-                .first(where: { $0.identifier.rawValue == pipeline.serverId }) ?? Current
-                .servers.all.first else { return }
-            Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                .done { webViewController in
-                    webViewController.webViewExternalMessageHandler.showAssist(
-                        server: server,
-                        pipeline: pipeline.id,
-                        autoStartRecording: withVoice
-                    )
-                }
+        if Current.sceneManager.existingScenes(for: .assist).isEmpty {
+            // Mobile context: This is what existing code was doing
+            DispatchQueue.main.async {
+                guard let server = Current.servers.all
+                    .first(where: { $0.identifier.rawValue == pipeline.serverId }) ?? Current
+                    .servers.all.first else { return }
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        webViewController.webViewExternalMessageHandler.showAssist(
+                            server: server,
+                            pipeline: pipeline.id,
+                            autoStartRecording: withVoice
+                        )
+                    }
+            }
+        } else {
+            // CarPlay context: Signal the CarPlay scene with the payload
+            let userInfo: [AnyHashable: Any] = [
+                "pipelineId": pipeline.id,
+                "serverId": pipeline.serverId,
+                "withVoice": withVoice
+            ]
+
+            Current.sceneManager.activateAnyScene(for: .assist, with: userInfo)
         }
         #endif
         return .result()
