@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "Per Drag & Drop neu anordnen";
 "cameras.no_server_found" = "Kein Server für Kamera gefunden: %@";
 "cancel_label" = "Abbrechen";
+"carPlay.action.execute.in_progress" = "Wird ausgeführt …";
 "carPlay.action.intro.item.body" = "Tippe, um auf deinem iPhone fortzufahren";
 "carPlay.action.intro.item.title" = "Erstelle deine erste Aktion";
 "carPlay.config.tabs.title" = "Tabs";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "Bist du sicher, dass du die Aktion Abschließen von %@ ausführen möchtest?";
 "carplay.navigation.button.next" = "Weiter";
 "carplay.navigation.button.previous" = "Zurück";
+"carplay.tab.quick_access.layout" = "Anordnung";
 "carplay.unlock.confirmation.title" = "Bist du sicher, dass du die Aktion Aufschließen von %@ ausführen möchtest?";
 "cl_error.description.deferred_accuracy_too_low" = "Der Aufschieben-Modus wird für die angeforderte Genauigkeit nicht unterstützt.";
 "cl_error.description.deferred_canceled" = "Die Anforderung für verzögerte Aktualisierungen wurde von deiner App oder vom Standortmanager abgebrochen.";
@@ -490,7 +492,7 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "kiosk.section.title" = "Kiosk-Modus";
 "kiosk.security.device_auth" = "Geräteauthentifizierung";
 "kiosk.security.gesture_corner" = "Ecke für Ausstiegsgeste";
-"kiosk.security.gesture_footer" = "Tippe %li-mal auf die Ecke %@, um im gesperrten Zustand auf die Kiosk-Einstellungen zuzugreifen.";
+"kiosk.security.gesture_footer" = "Tippe %2$@-mal auf die Ecke %1$@, um auf die gesperrten Kioskeinstellungen zuzugreifen.";
 "kiosk.security.hide_status_bar" = "Statusleiste ausblenden";
 "kiosk.security.prevent_autolock" = "Automatische Verriegelung verhindern";
 "kiosk.security.secret_gesture" = "Geheime Ausstiegsgeste";
@@ -498,6 +500,21 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "kiosk.security.taps_required" = "Erforderliche Tippvorgänge: %li";
 "kiosk.title" = "Kiosk-Modus";
 "legacy_actions.disclaimer" = "Die Verwendung älterer iOS-Aktionen wird nicht mehr empfohlen, um mit Home Assistant zu interagieren. Bitte verwende stattdessen Skripte, Szenen und Automationen direkt in deinen Widgets, deiner Apple Watch und CarPlay.";
+"live_activity.empty_state" = "Keine aktiven Live-Aktivitäten";
+"live_activity.end_all.button" = "Alle Aktivitäten beenden";
+"live_activity.end_all.confirm.button" = "Alle beenden";
+"live_activity.end_all.confirm.title" = "Alle Live-Aktivitäten beenden?";
+"live_activity.frequent_updates.footer" = "Ermöglicht es Home Assistant, Live-Aktivitäten bis zu einmal pro Sekunde zu aktualisieren. In Einstellungen \u203A %@ \u203A Live-Aktivitäten aktiveren.";
+"live_activity.frequent_updates.title" = "Häufige Aktualisierungen";
+"live_activity.privacy.message" = "Inhalte für Live-Aktivität sind auf deinem Sperrbildschirm und Dynamic Island auch ohne Face ID oder Touch ID sichtbar. Wähle die angezeigten Inhalte sorgfältig aus.";
+"live_activity.section.active" = "Aktive Aktivitäten";
+"live_activity.section.privacy" = "Datenschutz";
+"live_activity.section.status" = "Status";
+"live_activity.status.enabled" = "Aktiviert";
+"live_activity.status.not_supported" = "Auf dem iPad nicht verfügbar";
+"live_activity.status.open_settings" = "Einstellungen öffnen";
+"live_activity.subtitle" = "Home Assistant-Updates in Echtzeit auf deinem Sperrbildschirm und Dynamic Island.";
+"live_activity.title" = "Live-Aktivitäten";
 "location_change_notification.app_shortcut.body" = "Standort über App-Shortcut aktualisiert";
 "location_change_notification.background_fetch.body" = "Standortaktualisierung: Hintergrundaktualisierung";
 "location_change_notification.beacon_region_enter.body" = "%@ über iBeacon betreten";

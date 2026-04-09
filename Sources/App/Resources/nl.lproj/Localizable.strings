@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "Versleep om de volgorde te wijzigen";
 "cameras.no_server_found" = "Geen server gevonden voor camera: %@";
 "cancel_label" = "Annuleren";
+"carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Tik op om verder te gaan op je iPhone";
 "carPlay.action.intro.item.title" = "Maak je eerste actie";
 "carPlay.config.tabs.title" = "Tabbladen";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "Weet je zeker dat je de vergrendelingsactie wilt uitvoeren op %@?";
 "carplay.navigation.button.next" = "Volgende";
 "carplay.navigation.button.previous" = "Vorige";
+"carplay.tab.quick_access.layout" = "Layout";
 "carplay.unlock.confirmation.title" = "Weet je zeker dat je de ontgrendelingsactie wilt uitvoeren op %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Uitgestelde modus wordt niet ondersteund voor de gevraagde nauwkeurigheid.";
 "cl_error.description.deferred_canceled" = "Het verzoek voor uitgestelde updates is geannuleerd door je app of door de locatiebeheerder.";
@@ -490,7 +492,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "kiosk.section.title" = "Kioskmodus";
 "kiosk.security.device_auth" = "Apparaat authenticatie";
 "kiosk.security.gesture_corner" = "Hoek voor afsluit-gebaar";
-"kiosk.security.gesture_footer" = "Tik %li keer op de hoek %@ om de kiosk-instellingen te openen als deze vergrendeld zijn.";
+"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
 "kiosk.security.hide_status_bar" = "Statusbalk verbergen";
 "kiosk.security.prevent_autolock" = "Voorkom automatisch vergrendelen";
 "kiosk.security.secret_gesture" = "Geheim afsluit-gebaar";
@@ -498,6 +500,21 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "kiosk.security.taps_required" = "Aantal keer tikken: %li";
 "kiosk.title" = "Kioskmodus";
 "legacy_actions.disclaimer" = "Oude iOS-acties zijn niet langer de aanbevolen manier om wat met Home Assistant te doen. Gebruik Scripts, Scènes en Automatiseringen rechtstreeks in je Widgets, Apple Watch en CarPlay.";
+"live_activity.empty_state" = "No active Live Activities";
+"live_activity.end_all.button" = "End All Activities";
+"live_activity.end_all.confirm.button" = "End All";
+"live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
+"live_activity.frequent_updates.title" = "Frequent Updates";
+"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
+"live_activity.section.active" = "Active Activities";
+"live_activity.section.privacy" = "Privacy";
+"live_activity.section.status" = "Status";
+"live_activity.status.enabled" = "Enabled";
+"live_activity.status.not_supported" = "Not available on iPad";
+"live_activity.status.open_settings" = "Open Settings";
+"live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
+"live_activity.title" = "Live Activities";
 "location_change_notification.app_shortcut.body" = "Locatie bijgewerkt via App-snelkoppeling";
 "location_change_notification.background_fetch.body" = "Aflevering van huidige locatie geactiveerd via fetch op de achtergrond";
 "location_change_notification.beacon_region_enter.body" = "%@ betreden via iBeacon";

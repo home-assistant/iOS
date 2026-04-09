@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "Trascina e rilascia per riordinare";
 "cameras.no_server_found" = "Nessun server trovato per la fotocamera: %@";
 "cancel_label" = "Annulla";
+"carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Tocca per continuare sul tuo iPhone";
 "carPlay.action.intro.item.title" = "Crea la tua prima azione";
 "carPlay.config.tabs.title" = "Tabs";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "Siete sicuri di voler effettuare il blocco su %@?";
 "carplay.navigation.button.next" = "Avanti";
 "carplay.navigation.button.previous" = "Precedente";
+"carplay.tab.quick_access.layout" = "Layout";
 "carplay.unlock.confirmation.title" = "Siete sicuri di voler effettuare lo sblocco su %@?";
 "cl_error.description.deferred_accuracy_too_low" = "La modalità differita non è supportata per la precisione richiesta.";
 "cl_error.description.deferred_canceled" = "La richiesta di aggiornamenti differiti è stata annullata dalla vostra applicazione o dal gestore della località.";
@@ -490,7 +492,7 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "kiosk.section.title" = "Modalità Chiosco";
 "kiosk.security.device_auth" = "Autenticazione dispositivo";
 "kiosk.security.gesture_corner" = "Angolo Gesto di uscita";
-"kiosk.security.gesture_footer" = "Tocca l'angolo %@ %li volte per accedere alle impostazioni della modalità chiosco quando bloccato.";
+"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
 "kiosk.security.hide_status_bar" = "Nascondi la barra di stato";
 "kiosk.security.prevent_autolock" = "Disattiva il blocco automatico";
 "kiosk.security.secret_gesture" = "Secret Exit Gesture";
@@ -498,6 +500,21 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "kiosk.security.taps_required" = "Tocchi richiesti: %li";
 "kiosk.title" = "Modalità Chiosco";
 "legacy_actions.disclaimer" = "Le azioni legacy di iOS non sono più il metodo consigliato per interagire con Home Assistant; ti invitiamo a utilizzare script, scene e automazioni direttamente nei tuoi widget, su Apple Watch e su CarPlay.";
+"live_activity.empty_state" = "No active Live Activities";
+"live_activity.end_all.button" = "End All Activities";
+"live_activity.end_all.confirm.button" = "End All";
+"live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
+"live_activity.frequent_updates.title" = "Frequent Updates";
+"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
+"live_activity.section.active" = "Active Activities";
+"live_activity.section.privacy" = "Privacy";
+"live_activity.section.status" = "Status";
+"live_activity.status.enabled" = "Enabled";
+"live_activity.status.not_supported" = "Not available on iPad";
+"live_activity.status.open_settings" = "Open Settings";
+"live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
+"live_activity.title" = "Live Activities";
 "location_change_notification.app_shortcut.body" = "Posizione aggiornata tramite App Shortcut";
 "location_change_notification.background_fetch.body" = "Invio della posizione attuale attivata da recupero in background";
 "location_change_notification.beacon_region_enter.body" = "Entrato in %@ tramite iBeacon";

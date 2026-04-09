@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "ドラッグ＆ドロップで並び替え";
 "cameras.no_server_found" = "カメラ用のサーバーが見つかりません: %@";
 "cancel_label" = "キャンセル";
+"carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "iPhoneで続けるをタップ";
 "carPlay.action.intro.item.title" = "最初のアクションを作成する";
 "carPlay.config.tabs.title" = "タブ";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "%@にロック アクションを実行しますか?";
 "carplay.navigation.button.next" = "次";
 "carplay.navigation.button.previous" = "前";
+"carplay.tab.quick_access.layout" = "Layout";
 "carplay.unlock.confirmation.title" = "%@にロック解除アクションを実行しますか?";
 "cl_error.description.deferred_accuracy_too_low" = "要求された精度に対して延期(Deferred)モードはサポートされていません。";
 "cl_error.description.deferred_canceled" = "延期(deferred)されていたアップデートのリクエストが、アプリまたはロケーションマネージャーによってキャンセルされました。";
@@ -490,7 +492,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.section.title" = "Kiosk Mode";
 "kiosk.security.device_auth" = "Device Authentication";
 "kiosk.security.gesture_corner" = "Exit Gesture Corner";
-"kiosk.security.gesture_footer" = "Tap the %@ corner %li times to access kiosk settings when locked.";
+"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
 "kiosk.security.hide_status_bar" = "Hide Status Bar";
 "kiosk.security.prevent_autolock" = "Prevent Auto-Lock";
 "kiosk.security.secret_gesture" = "Secret Exit Gesture";
@@ -498,6 +500,21 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.security.taps_required" = "Taps Required: %li";
 "kiosk.title" = "Kiosk Mode";
 "legacy_actions.disclaimer" = "Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.";
+"live_activity.empty_state" = "No active Live Activities";
+"live_activity.end_all.button" = "End All Activities";
+"live_activity.end_all.confirm.button" = "End All";
+"live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
+"live_activity.frequent_updates.title" = "Frequent Updates";
+"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
+"live_activity.section.active" = "Active Activities";
+"live_activity.section.privacy" = "Privacy";
+"live_activity.section.status" = "Status";
+"live_activity.status.enabled" = "Enabled";
+"live_activity.status.not_supported" = "Not available on iPad";
+"live_activity.status.open_settings" = "Open Settings";
+"live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
+"live_activity.title" = "Live Activities";
 "location_change_notification.app_shortcut.body" = "アプリのショートカットを介して更新された場所";
 "location_change_notification.background_fetch.body" = "バックグラウンドフェッチによる現在地の配信";
 "location_change_notification.beacon_region_enter.body" = "%@ iBeacon経由で入力されました";
