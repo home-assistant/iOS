@@ -22,7 +22,7 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
-        #if os(iOS) && !targetEnvironment(macCatalyst)
+        #if !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
             register(command: "end_live_activity", handler: HandlerEndLiveActivity())
@@ -48,7 +48,7 @@ public class NotificationCommandManager {
 
         // Support data.live_update: true — the same field Android uses for Live Updates.
         // A single YAML automation can target both platforms with no platform-specific keys.
-        #if os(iOS)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *), hadict["live_update"] as? Bool == true,
            let handler = commands["live_activity"] {
             return handler.handle(hadict)
