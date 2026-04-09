@@ -21,12 +21,12 @@ final class KioskLocalizationTests: XCTestCase {
     /// SwiftGen output coerces all args with `String(describing:)` before
     /// passing to `String(format:)` — this test mirrors the runtime path.
     private static let kioskFormatKeys: [(key: String, args: [CVarArg], specifiers: Int)] = [
-        ("kiosk.brightness.manual", ["80"], 1),
-        ("kiosk.screensaver.dim_level", ["25"], 1),
+        ("kiosk.brightness.manual", [80 as Int], 1),
+        ("kiosk.screensaver.dim_level", [25 as Int], 1),
         ("kiosk.clock.accessibility.analog_clock", ["3:45 PM"], 1),
         ("kiosk.clock.accessibility.current_time", ["3:45 PM"], 1),
         ("kiosk.clock.accessibility.date", ["Wednesday, April 8"], 1),
-        ("kiosk.security.taps_required", ["5"], 1),
+        ("kiosk.security.taps_required", [5 as Int], 1),
         ("kiosk.security.gesture_footer", ["top-left", "5"], 2),
     ]
 
@@ -83,7 +83,14 @@ final class KioskLocalizationTests: XCTestCase {
                 )
                 // Every supplied arg must appear in the output, confirming each specifier consumed a value.
                 for arg in args {
-                    guard let argString = arg as? String else { continue }
+                    let argString: String
+                    if let s = arg as? String {
+                        argString = s
+                    } else if let i = arg as? Int {
+                        argString = "\(i)"
+                    } else {
+                        continue
+                    }
                     XCTAssertTrue(
                         result.contains(argString),
                         "Locale '\(language)' key '\(key)' output '\(result)' missing arg '\(argString)'"
@@ -109,6 +116,9 @@ final class KioskLocalizationTests: XCTestCase {
             .filter { $0.pathExtension == "lproj" }
             .filter { $0.deletingPathExtension().lastPathComponent != "Base" }
 
+        let savedLocalized = Current.localized
+        defer { Current.localized = savedLocalized }
+
         for lprojURL in lprojURLs {
             let language = lprojURL.deletingPathExtension().lastPathComponent
             let stringsURL = lprojURL.appendingPathComponent("Localizable.strings")
@@ -126,14 +136,11 @@ final class KioskLocalizationTests: XCTestCase {
 
             // Call the generated L10n function — this is the exact path
             // KioskSettingsView exercises when rendering the footer.
-            let result = L10n.Kiosk.Security.gestureFooter("top-left", 5)
+            let result = L10n.Kiosk.Security.gestureFooter("top-left", String(5))
             XCTAssertFalse(
                 result.isEmpty,
                 "Locale '\(language)' gestureFooter produced empty result"
             )
         }
-
-        // Restore default manager so subsequent tests see clean state.
-        Current.localized = LocalizedManager()
     }
 }
