@@ -116,6 +116,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             if #available(iOS 17.2, *) {
                 LiveActivitySettingsView()
             }
+            #else
+            EmptyView()
             #endif
         case .sensors:
             SensorListView()
