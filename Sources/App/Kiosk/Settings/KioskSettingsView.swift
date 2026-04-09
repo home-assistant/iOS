@@ -168,7 +168,7 @@ public struct KioskSettingsView: View {
                 Text(
                     L10n.Kiosk.Security.gestureFooter(
                         viewModel.settings.secretExitGestureCorner.displayName,
-                        viewModel.settings.secretExitGestureTaps
+                        String(viewModel.settings.secretExitGestureTaps)
                     )
                 )
             }
