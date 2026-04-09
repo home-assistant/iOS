@@ -6,7 +6,6 @@ on:
     - cron: '0 6 * * *'
 
 env:
-  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
   BUNDLE_PATH: vendor/bundle
 
 jobs:
@@ -16,12 +15,6 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
-
-      - name: Install Brews
-        run: |
-          brew update
-          brew tap lokalise/cli-2
-          brew bundle
 
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
