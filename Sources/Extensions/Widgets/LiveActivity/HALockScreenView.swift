@@ -1,3 +1,4 @@
+#if os(iOS) && !targetEnvironment(macCatalyst)
 import ActivityKit
 import Shared
 import SwiftUI
@@ -83,3 +84,4 @@ struct HALockScreenView: View {
         return .haPrimary
     }
 }
+#endif

@@ -513,8 +513,15 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.status.enabled" = "Enabled";
 "live_activity.status.not_supported" = "Not available on iPad";
 "live_activity.status.open_settings" = "Open Settings";
+"live_activity.end_all.button" = "End All Activities";
+"live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.end_all.confirm.button" = "End All";
+"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings › %@ › Live Activities.";
+"live_activity.frequent_updates.title" = "Frequent Updates";
+"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
 "live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
 "live_activity.title" = "Live Activities";
+
 "location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
 "location_change_notification.beacon_region_enter.body" = "%@ entered via iBeacon";

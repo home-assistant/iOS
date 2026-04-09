@@ -21,9 +21,11 @@ struct WidgetsBundleLegacy: WidgetBundle {
     }
 
     var body: some Widget {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOSApplicationExtension 17.2, *) {
             HALiveActivityConfiguration()
         }
+        #endif
         WidgetAssist()
         LegacyWidgetActions()
         WidgetOpenPage()
@@ -37,9 +39,11 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOSApplicationExtension 17.2, *) {
             HALiveActivityConfiguration()
         }
+        #endif
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
@@ -60,7 +64,9 @@ struct WidgetsBundle18: WidgetBundle {
     }
 
     var body: some Widget {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         HALiveActivityConfiguration()
+        #endif
 
         // Controls
         ControlAssist()
