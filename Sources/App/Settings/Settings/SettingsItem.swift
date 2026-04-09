@@ -112,9 +112,11 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications:
             SettingsNotificationsView()
         case .liveActivities:
+            #if canImport(ActivityKit)
             if #available(iOS 17.2, *) {
                 LiveActivitySettingsView()
             }
+            #endif
         case .sensors:
             SensorListView()
         case .nfc:
