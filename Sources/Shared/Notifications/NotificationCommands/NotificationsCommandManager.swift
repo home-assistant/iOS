@@ -22,7 +22,7 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
-        #if os(iOS)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
             register(command: "end_live_activity", handler: HandlerEndLiveActivity())
@@ -111,8 +111,8 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         // Also end any Live Activity whose tag matches — same YAML works on both iOS and Android.
         // Bridged into the returned Promise so the background fetch window stays open until
         // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
-        // ActivityKit is unavailable in the PushProvider extension, so guard accordingly.
-        #if os(iOS)
+        // ActivityKit is unavailable in the PushProvider extension and Mac Catalyst, so guard accordingly.
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
             return Promise<Void> { seal in
                 Task {

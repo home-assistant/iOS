@@ -11,7 +11,7 @@ import Version
 #if os(iOS)
 import Reachability
 #endif
-#if os(iOS)
+#if os(iOS) && !targetEnvironment(macCatalyst)
 import ActivityKit
 #endif
 
@@ -562,7 +562,7 @@ public class HomeAssistantAPI {
                     "push_token": pushID,
                 ]
 
-                #if os(iOS)
+                #if os(iOS) && !targetEnvironment(macCatalyst)
                 if #available(iOS 17.2, *) {
                     // Advertise Live Activity support so HA can gate the UI and send
                     // activity push tokens back to the relay server.
