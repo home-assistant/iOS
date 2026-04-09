@@ -1,4 +1,4 @@
-#if canImport(ActivityKit)
+#if os(iOS) && !targetEnvironment(macCatalyst)
 import ActivityKit
 import Foundation
 import PromiseKit
