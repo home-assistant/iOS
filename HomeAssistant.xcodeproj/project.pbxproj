@@ -1137,6 +1137,8 @@
 		42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */; };
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
+		C3EB3740FA097F36D51F525E /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
+		D87EC7A89E0515C4CAB93220 /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
 		42EEEFE22E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE32E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
@@ -2971,6 +2973,7 @@
 		42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorView.swift; sourceTree = "<group>"; };
 		42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareActivityView.swift; sourceTree = "<group>"; };
 		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
+		1396822195C7FF562AB891F2 /* BarometerSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarometerSensor.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
 		42EEEFE12E2791430080E973 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
@@ -4212,6 +4215,7 @@
 				B6D3B4EB225B26300082BB4F /* SensorContainer.swift */,
 				42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */,
 				11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */,
+				1396822195C7FF562AB891F2 /* BarometerSensor.swift */,
 				11AF4D1B249C8AA0006C74C0 /* BatterySensor.swift */,
 				11AF4D1E249C8AF0006C74C0 /* ConnectivitySensor.swift */,
 				11AF4D21249C924B006C74C0 /* GeocoderSensor.swift */,
@@ -9866,6 +9870,7 @@
 				1120C580274638330046C38B /* PerServerContainer.swift in Sources */,
 				427647262C8F38590027B21F /* HAAreasRegistryResponse.swift in Sources */,
 				42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */,
+				C3EB3740FA097F36D51F525E /* BarometerSensor.swift in Sources */,
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */,
 				4251AAC22C6CE9CB004CCC9D /* WatchConfig.swift in Sources */,
@@ -10316,6 +10321,7 @@
 				42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */,
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */,
+				D87EC7A89E0515C4CAB93220 /* BarometerSensor.swift in Sources */,
 				1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */,

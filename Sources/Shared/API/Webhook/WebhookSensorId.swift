@@ -22,4 +22,5 @@ public enum WebhookSensorId: String, CaseIterable {
     case appVersion = "app-version"
     case locationPermission = "location-permission"
     case focus
+    case pressure
 }
