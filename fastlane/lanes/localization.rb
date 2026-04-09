@@ -1,18 +1,30 @@
 # Localization and strings management lanes
 
+require 'base64'
 require 'json'
 require 'net/http'
+require 'set'
 require 'tmpdir'
 require 'uri'
 
-def lokalise_request!(project_id:, token:, http_method:, path:, body: nil)
-  uri = URI("https://api.lokalise.com/api2/projects/#{project_id}#{path}")
-  request = lokalise_request_class(http_method).new(uri)
-  lokalise_configure_request!(request: request, token: token, body: body)
-  response = lokalise_http_response(uri: uri, request: request)
-  parsed_body = lokalise_response_body(response)
-  lokalise_raise_for_error!(response: response, parsed_body: parsed_body, path: path)
+def lokalise_request!(request_options)
+  response, parsed_body, path = lokalise_perform_request(request_options)
+  lokalise_raise_for_error!(
+    response: response,
+    parsed_body: parsed_body,
+    path: path,
+    accepted_response_classes: request_options.fetch(:accepted_response_classes, [Net::HTTPSuccess])
+  )
   parsed_body
+end
+
+def lokalise_perform_request(request_options)
+  path = request_options.fetch(:path)
+  uri = URI("https://api.lokalise.com/api2/projects/#{request_options.fetch(:project_id)}#{path}")
+  request = lokalise_request_class(request_options.fetch(:http_method)).new(uri)
+  lokalise_configure_request!(request: request, token: request_options.fetch(:token), body: request_options[:body])
+  response = lokalise_http_response(uri: uri, request: request)
+  [response, lokalise_response_body(response), path]
 end
 
 def lokalise_request_class(http_method)
@@ -53,8 +65,8 @@ rescue JSON::ParserError
   {}
 end
 
-def lokalise_raise_for_error!(response:, parsed_body:, path:)
-  return if response.is_a?(Net::HTTPSuccess)
+def lokalise_raise_for_error!(response:, parsed_body:, path:, accepted_response_classes:)
+  return if accepted_response_classes.any? { |klass| response.is_a?(klass) }
 
   error_details = parsed_body['error'] || parsed_body['message'] || response.body
   UI.user_error!("Lokalise API request failed for #{path} (HTTP #{response.code}): #{error_details}")
@@ -117,8 +129,73 @@ def lokalise_queue_export!(project_id:, token:, export_params:, export_name:)
     path: '/files/async-download',
     body: export_params
   )
-  process_id = lokalise_process_id(queue_response)
-  UI.user_error!("Lokalise did not return a process id for #{export_name}.") unless process_id
+  lokalise_process_id!(queue_response, "Lokalise did not return a process id for #{export_name}.")
+end
+
+def lokalise_upload_file!(token:, project_id:, file_path:, lang_iso:)
+  file_name = File.basename(file_path)
+  UI.message("Uploading #{file_name} to Lokalise...")
+  upload_context = lokalise_upload_context(
+    token: token, project_id: project_id, file_path: file_path, file_name: file_name, lang_iso: lang_iso
+  )
+  process_id = lokalise_queue_upload!(**upload_context)
+  lokalise_finish_upload!(token: token, project_id: project_id, process_id: process_id, file_name: file_name)
+end
+
+def lokalise_queue_upload!(token:, project_id:, file_path:, file_name:, lang_iso:)
+  upload_response = lokalise_request!(
+    lokalise_upload_request_options(
+      token: token,
+      project_id: project_id,
+      file_path: file_path,
+      file_name: file_name,
+      lang_iso: lang_iso
+    )
+  )
+  lokalise_process_id!(upload_response, "Lokalise did not return a process id for upload #{file_name}.")
+end
+
+def lokalise_upload_context(token:, project_id:, file_path:, file_name:, lang_iso:)
+  {
+    token: token,
+    project_id: project_id,
+    file_path: file_path,
+    file_name: file_name,
+    lang_iso: lang_iso
+  }
+end
+
+def lokalise_finish_upload!(token:, project_id:, process_id:, file_name:)
+  lokalise_wait_for_finished_export!(
+    project_id: project_id,
+    token: token,
+    process_id: process_id,
+    export_name: "upload #{file_name}"
+  )
+end
+
+def lokalise_upload_body(file_path:, file_name:, lang_iso:)
+  {
+    data: Base64.strict_encode64(File.binread(file_path)),
+    filename: file_name,
+    lang_iso: lang_iso
+  }
+end
+
+def lokalise_upload_request_options(token:, project_id:, file_path:, file_name:, lang_iso:)
+  {
+    project_id: project_id,
+    token: token,
+    http_method: :post,
+    path: '/files/upload',
+    body: lokalise_upload_body(file_path: file_path, file_name: file_name, lang_iso: lang_iso),
+    accepted_response_classes: [Net::HTTPSuccess, Net::HTTPRedirection]
+  }
+end
+
+def lokalise_process_id!(payload, error_message)
+  process_id = lokalise_process_id(payload)
+  UI.user_error!(error_message) unless process_id
   process_id
 end
 
@@ -171,7 +248,7 @@ def lokalise_unpack_bundle!(bundle_url:, unzip_to:, export_name:)
 end
 
 def lokalise_download_bundle_body!(url, redirects_remaining = 5)
-  UI.user_error!('Too many redirects while downloading Lokalise bundle.') if redirects_remaining.negative?
+  UI.user_error!('Too many redirects while downloading Lokalise bundle.') if redirects_remaining <= 0
 
   response = lokalise_bundle_response(url)
   return response.body if response.is_a?(Net::HTTPSuccess)
@@ -180,9 +257,23 @@ def lokalise_download_bundle_body!(url, redirects_remaining = 5)
   UI.user_error!("Unable to download Lokalise bundle (HTTP #{response.code}): #{response.body}")
 end
 
-def lokalise_bundle_response(url)
+def lokalise_bundle_response(url, open_timeout: 10, read_timeout: 30, retries_remaining: 1)
   uri = URI(url)
-  Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+  lokalise_bundle_http_response(uri: uri, open_timeout: open_timeout, read_timeout: read_timeout)
+rescue Net::OpenTimeout, Net::ReadTimeout => e
+  retry if (retries_remaining -= 1) >= 0
+
+  UI.user_error!("Timed out while downloading Lokalise bundle from #{url}: #{e.class}")
+end
+
+def lokalise_bundle_http_response(uri:, open_timeout:, read_timeout:)
+  Net::HTTP.start(
+    uri.host,
+    uri.port,
+    use_ssl: uri.scheme == 'https',
+    open_timeout: open_timeout,
+    read_timeout: read_timeout
+  ) do |http|
     http.get(uri.request_uri)
   end
 end
@@ -378,15 +469,11 @@ lane :push_strings do
     Dir.each_child(directory) do |file|
       next if ['Frontend.strings', 'Core.strings'].include?(file)
 
-      puts "Uploading file #{file}"
-      sh(
-        'lokalise2',
-        '--token', token,
-        '--project-id', project_id,
-        'file', 'upload',
-        '--file', "#{directory}/#{file}",
-        '--lang-iso', 'en',
-        log: false
+      lokalise_upload_file!(
+        token: token,
+        project_id: project_id,
+        file_path: "#{directory}/#{file}",
+        lang_iso: 'en'
       )
     end
   end
