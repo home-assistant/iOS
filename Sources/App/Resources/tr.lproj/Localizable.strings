@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "Sürükleyip bırakarak yeniden sıralayın";
 "cameras.no_server_found" = "Kamera için sunucu bulunamadı: %@";
 "cancel_label" = "İptal";
+"carPlay.action.execute.in_progress" = "Yürütülüyor...";
 "carPlay.action.intro.item.body" = "iPhone'unuzda devam etmek için dokunun";
 "carPlay.action.intro.item.title" = "İlk eyleminizi oluşturun";
 "carPlay.config.tabs.title" = "Sekmeler";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "%@ üzerinde kilitleme eylemi gerçekleştirmek istediğinizden emin misiniz?";
 "carplay.navigation.button.next" = "Sonraki";
 "carplay.navigation.button.previous" = "Önceki";
+"carplay.tab.quick_access.layout" = "Düzen";
 "carplay.unlock.confirmation.title" = "%@ üzerinde kilit açma eylemi gerçekleştirmek istediğinizden emin misiniz?";
 "cl_error.description.deferred_accuracy_too_low" = "İstenen doğruluk için ertelenmiş mod desteklenmiyor.";
 "cl_error.description.deferred_canceled" = "Ertelenmiş güncelleme talebi, uygulamanız veya konum yöneticisi tarafından iptal edildi.";
@@ -490,7 +492,7 @@
 "kiosk.section.title" = "Kiosk Modu";
 "kiosk.security.device_auth" = "Cihaz Doğrulaması";
 "kiosk.security.gesture_corner" = "Çıkış Hareketi Köşesi";
-"kiosk.security.gesture_footer" = "Kilitliyken kiosk ayarlarına erişmek için %@ numaralı köşeye %li kez dokunun.";
+"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
 "kiosk.security.hide_status_bar" = "Durum Çubuğunu Gizle";
 "kiosk.security.prevent_autolock" = "Otomatik Kilitlemeyi Önle";
 "kiosk.security.secret_gesture" = "Gizli Çıkış Hareketi";
@@ -498,6 +500,21 @@
 "kiosk.security.taps_required" = "Gerekli Dokunma: %li";
 "kiosk.title" = "Kiosk Modu";
 "legacy_actions.disclaimer" = "Eski iOS Eylemleri artık Home Assistant ile etkileşim kurmanın önerilen yolu değildir; lütfen Widget'larınızda, Apple Watch'unuzda ve CarPlay'inizde doğrudan Komut Dosyaları, Sahneler ve Otomasyonlar kullanın.";
+"live_activity.empty_state" = "No active Live Activities";
+"live_activity.end_all.button" = "End All Activities";
+"live_activity.end_all.confirm.button" = "End All";
+"live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
+"live_activity.frequent_updates.title" = "Frequent Updates";
+"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
+"live_activity.section.active" = "Active Activities";
+"live_activity.section.privacy" = "Privacy";
+"live_activity.section.status" = "Status";
+"live_activity.status.enabled" = "Enabled";
+"live_activity.status.not_supported" = "Not available on iPad";
+"live_activity.status.open_settings" = "Open Settings";
+"live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
+"live_activity.title" = "Live Activities";
 "location_change_notification.app_shortcut.body" = "Konum Uygulama Kısayolu ile güncellendi";
 "location_change_notification.background_fetch.body" = "Arka plan getirme yoluyla tetiklenen geçerli konum teslimi";
 "location_change_notification.beacon_region_enter.body" = "%@ iBeacon aracılığıyla girildi";
@@ -558,9 +575,9 @@
 "menu.status_item.toggle" = "Geçiş %1$@";
 "menu.view.find" = "Bul";
 "menu.view.reload_page" = "Sayfayı Yeniden Yükle";
-"mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
-\
-Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";
+"mtls.beta.info" = "Bu beta bir özelliktir, herhangi bir sorun yaşarsanız lütfen aşağıdaki düğmeyi kullanarak bildirin. \
+ \
+ Şu anda mTLS yalnızca iOS 17 ve üzeri sürümlerde desteklenmektedir, bildirim eklerinin görüntülenmesi, Yardımcı Metin Okuma (TTS) sesi ile ilgili sorunlar yaşanabilir ve Apple Watch'ta tam olarak çalışmayabilir.";
 "navBar.close" = "Kapat";
 "network.error.no_active_url.body" = "Tamamlayıcı uygulama ayarlarını açın ve sunucu ayarlarınızı kontrol edin, dahili URL yalnızca yerel ağ tanımlanmışsa (SSID) kullanılacaktır, VPN kullanıyorsanız harici URL'nizi dahili URL ile aynı olarak ayarlamayı deneyin.";
 "network.error.no_active_url.title" = "Yüklenecek URL bulunamadı";

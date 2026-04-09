@@ -9,6 +9,6 @@
 "panel::media_browser" = "Medios";
 "panel::profile" = "Perfil";
 "panel::shopping_list" = "Lista de la compra";
-"panel::states" = "Resumen";
+"panel::states" = "Vista general";
 "state::default::unavailable" = "No disponible";
 "state::default::unknown" = "Desconocido";

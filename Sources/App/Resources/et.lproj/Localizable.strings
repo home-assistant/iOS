@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "Lohista ja aseta ümberjärjestamiseks";
 "cameras.no_server_found" = "Kaamera jaoks ei leitud serverit: %@";
 "cancel_label" = "Loobu";
+"carPlay.action.execute.in_progress" = "Täitmine...";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";
 "carPlay.action.intro.item.title" = "Loo oma esimene toiming";
 "carPlay.config.tabs.title" = "Vahekaardid";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "Kas oled kindel, et soovid teostada %@ lukustustamise toimingut?";
 "carplay.navigation.button.next" = "Järgmine";
 "carplay.navigation.button.previous" = "Eelmine";
+"carplay.tab.quick_access.layout" = "Paigutus";
 "carplay.unlock.confirmation.title" = "Kas oled kindel, et soovid teostada %@ lukustuse avamise toimingut?";
 "cl_error.description.deferred_accuracy_too_low" = "Soovitud täpsuse jaoks edasilükatud režiimi ei toetata.";
 "cl_error.description.deferred_canceled" = "Rakendus või asukohahaldur tühistas edasilükatud värskenduste taotluse.";
@@ -490,7 +492,7 @@
 "kiosk.section.title" = "Kioskirežiim";
 "kiosk.security.device_auth" = "Seadme tuvastamine";
 "kiosk.security.gesture_corner" = "Väljapääsu žestide nurk";
-"kiosk.security.gesture_footer" = "Koputage lukustatud kioski seadete avamiseks korduvalt nuppu %@ %li .";
+"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
 "kiosk.security.hide_status_bar" = "Peida olekuriba";
 "kiosk.security.prevent_autolock" = "Automaatse lukustuse vältimine";
 "kiosk.security.secret_gesture" = "Salajane väljumisžest";
@@ -498,6 +500,21 @@
 "kiosk.security.taps_required" = "Vajalik koputuste arv:  %li";
 "kiosk.title" = "Kioskirežiim";
 "legacy_actions.disclaimer" = "Vananenud iOS-i toimingud ei ole enam soovitatav viis Home Assistantiga suhtlemiseks. Kasuta skripte, stseene ja automatiseeringuid otse oma vidinates, Apple Watchis ja CarPlays.";
+"live_activity.empty_state" = "Ei ole aktiivset live-tegevust";
+"live_activity.end_all.button" = "Lõpeta kõik tegevused";
+"live_activity.end_all.confirm.button" = "Lõpeta kõik";
+"live_activity.end_all.confirm.title" = "Kas lõpetada kõik Live Activity tegevused?";
+"live_activity.frequent_updates.footer" = "Lubab Home Assistantil reaalajas tegevusi kuni üks kord sekundis värskendada. Luba seadetes. \u203A %@ \u203A Otseülekanded.";
+"live_activity.frequent_updates.title" = "Sagedased uuendused";
+"live_activity.privacy.message" = "Live Activity sisu on nähtav lukustusekraanil ja dünaamilisel saarel ilma Face ID või Touch ID-ta. Vali hoolikalt, mida kuvada.";
+"live_activity.section.active" = "Aktiivsed tegevused";
+"live_activity.section.privacy" = "Privaatsus";
+"live_activity.section.status" = "Olek";
+"live_activity.status.enabled" = "Lubatud";
+"live_activity.status.not_supported" = "Pole iPadis saadaval";
+"live_activity.status.open_settings" = "Ava seaded";
+"live_activity.subtitle" = "Reaalajas Home Assistant värskendused lukustuskuval ja dünaamilisel saarel.";
+"live_activity.title" = "Live Activities";
 "location_change_notification.app_shortcut.body" = "Asukohta värskendati rakenduse otsetee kaudu";
 "location_change_notification.background_fetch.body" = "Praeguse asukoha edastamine käivitati taustal toomise kaudu";
 "location_change_notification.beacon_region_enter.body" = "%@ sisenes iBeaconi kaudu";
