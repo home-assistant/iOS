@@ -17,6 +17,8 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @Published var inputText = ""
     @Published var isRecording = false
+    @Published var isThinking = false
+    @Published var isSpeaking = false
     @Published var showError = false
     @Published var focusOnInput = false
     @Published var errorMessage = ""

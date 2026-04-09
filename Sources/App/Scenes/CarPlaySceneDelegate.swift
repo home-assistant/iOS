@@ -30,6 +30,7 @@ class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entitiesSubscriptionToken: HACancellable?
     private var quickAccessEntitiesSubscriptionTokens: [HACancellable?] = []
+    private var cancellables = Set<AnyCancellable>()
 
     private var domainsListTemplate: (any CarPlayTemplateProvider)?
     private var serversListTemplate: (any CarPlayTemplateProvider)?
@@ -51,6 +52,7 @@ class CarPlaySceneDelegate: UIResponder {
     private var latestStates: HACachedStates?
     private var latestStatesServerId: String?
     private var latestQuickAccessStatesPerServer: [String: HACachedStates] = [:]
+    public var carPlaySceneDelegate: CarPlaySceneDelegate?
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
@@ -64,6 +66,32 @@ class CarPlaySceneDelegate: UIResponder {
     func setup() {
         observeCarPlayConfigChanges()
         subscribeToEntitiesChanges()
+    }
+
+    @available(iOS 16.0, *)
+    public func presentAssistTemplate(server: Server, pipeline: String, withVoice: Bool) {
+        guard let interfaceController = self.interfaceController else { return }
+
+        let assistTemplate = CarPlayAssistTemplate()
+        assistTemplate.interfaceController = interfaceController
+
+        let viewModel = AssistViewModel(
+            server: server,
+            preferredPipelineId: pipeline,
+            audioRecorder: AudioRecorder(),
+            audioPlayer: AudioPlayer(),
+            assistService: AssistService(server: server),
+            autoStartRecording: withVoice
+        )
+
+        viewModel.objectWillChange.sink { [weak assistTemplate, weak interfaceController] _ in
+            guard let assistTemplate = assistTemplate, let interfaceController = interfaceController else { return }
+            assistTemplate.state = assistTemplate.mapViewModelToState(viewModel)
+            interfaceController.setRootTemplate(assistTemplate.template, animated: true, completion: nil)
+        }.store(in: &cancellables)
+
+        interfaceController.setRootTemplate(assistTemplate.template, animated: true, completion: nil)
+        print("Presenting Assist template for server: \(server.identifier.rawValue), pipeline: \(pipeline), withVoice: \(withVoice)")
     }
 
     private func setTemplates(config: CarPlayConfig?) {
@@ -253,6 +281,18 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
     ) {
         self.interfaceController = interfaceController
         self.interfaceController?.delegate = self
+
+        if let activity = templateApplicationScene.userActivity,
+           let userInfo = activity.userInfo {
+            if activity.activityType == SceneActivity.assist.activityIdentifier {
+                if let serverId = userInfo["serverId"] as? String,
+                   let pipelineId = userInfo["pipelineId"] as? String,
+                   let withVoice = userInfo["withVoice"] as? Bool,
+                   let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) {
+                    presentAssistTemplate(server: server, pipeline: pipelineId, withVoice: withVoice)
+                }
+            }
+        }
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
