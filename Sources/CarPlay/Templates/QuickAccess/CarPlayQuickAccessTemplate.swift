@@ -29,6 +29,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     var template: CPListTemplate
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
+    weak var sceneDelegate: CarPlaySceneDelegate?
     weak var interfaceController: CPInterfaceController?
     private var entityProviders: [CarPlayEntityListItem] = []
     private var currentItems: [MagicItem] = []
@@ -151,7 +152,35 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func presentIntroductionItem() {
         template.trailingNavigationBarButtons = []
-        template.updateSections([.init(items: [introduceQuickAccessListItem])])
+        template.updateSections([.init(items: [assistListItem, introduceQuickAccessListItem])])
+    }
+
+    private lazy var assistListItem: CPListItem = {
+        let item = CPListItem(
+            text: "Assist",
+            detailText: "Start voice assistant",
+            image: MaterialDesignIcons.microphoneIcon.carPlayIcon()
+        )
+        item.handler = { [weak self] _, completion in
+            self?.presentAssist()
+            completion()
+        }
+        return item
+    }()
+
+    private func presentAssist() {
+        guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else {
+            let alertTemplate = CarPlayNoServerAlert()
+            alertTemplate.interfaceController = interfaceController
+            alertTemplate.present()
+            return
+        }
+
+        sceneDelegate?.presentAssistTemplate(
+            server: server,
+            pipeline: "",
+            withVoice: true
+        )
     }
 
     private func refreshCurrentPresentation() {
@@ -215,7 +244,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             }
         }
 
-        return items.compactMap({ $0 })
+        return [assistListItem] + items.compactMap({ $0 })
     }
 
     @available(iOS 26.0, *)
@@ -223,44 +252,47 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let entityToAreaMap = entityToAreaMap()
         let displayItems = items.compactMap { rowDisplayItem(for: $0, entityToAreaMap: entityToAreaMap) }
 
-        return stride(from: 0, to: displayItems.count, by: CarPlayCondensedEntitiesGroup.size).map { startIndex in
-            let pageItems = Array(displayItems[startIndex ..< min(
-                startIndex + CarPlayCondensedEntitiesGroup.size,
-                displayItems.count
-            )])
-            let elements = pageItems.map { item in
-                CPListImageRowItemCondensedElement(
-                    image: item.image.carPlayCondensedElementImage(iconColor: item.iconColor),
-                    imageShape: .circular,
-                    title: item.title,
-                    subtitle: item.subtitle,
-                    accessorySymbolName: nil
-                )
-            }
-
-            let rowItem = CPListImageRowItem(
-                text: nil,
-                condensedElements: elements,
-                allowsMultipleLines: true
-            )
-            rowItem.listImageRowHandler = { [weak self] _, index, completion in
-                guard pageItems.indices.contains(index) else {
-                    completion()
-                    return
+        let rowItems = stride(from: 0, to: displayItems.count, by: CarPlayCondensedEntitiesGroup.size)
+            .map { startIndex in
+                let pageItems = Array(displayItems[startIndex ..< min(
+                    startIndex + CarPlayCondensedEntitiesGroup.size,
+                    displayItems.count
+                )])
+                let elements = pageItems.map { item in
+                    CPListImageRowItemCondensedElement(
+                        image: item.image.carPlayCondensedElementImage(iconColor: item.iconColor),
+                        imageShape: .circular,
+                        title: item.title,
+                        subtitle: item.subtitle,
+                        accessorySymbolName: nil
+                    )
                 }
 
-                let selectedItem = pageItems[index]
-                self?.itemTap(
-                    magicItem: selectedItem.magicItem,
-                    info: selectedItem.info,
-                    currentItemState: selectedItem.currentState,
-                    executionStarted: { [weak self] in self?.beginExecuting(selectedItem.magicItem) },
-                    executionFinished: { [weak self] in self?.endExecuting(selectedItem.magicItem) }
+                let rowItem = CPListImageRowItem(
+                    text: nil,
+                    condensedElements: elements,
+                    allowsMultipleLines: true
                 )
-                completion()
+                rowItem.listImageRowHandler = { [weak self] _, index, completion in
+                    guard pageItems.indices.contains(index) else {
+                        completion()
+                        return
+                    }
+
+                    let selectedItem = pageItems[index]
+                    self?.itemTap(
+                        magicItem: selectedItem.magicItem,
+                        info: selectedItem.info,
+                        currentItemState: selectedItem.currentState,
+                        executionStarted: { [weak self] in self?.beginExecuting(selectedItem.magicItem) },
+                        executionFinished: { [weak self] in self?.endExecuting(selectedItem.magicItem) }
+                    )
+                    completion()
+                }
+                return rowItem
             }
-            return rowItem
-        }
+
+        return [assistListItem] + rowItems
     }
 
     private func placeholderEntity(id: String) -> HAEntity? {

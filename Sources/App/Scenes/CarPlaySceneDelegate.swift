@@ -1,5 +1,4 @@
 import CarPlay
-import Combine
 import Communicator
 import GRDB
 import HAKit
@@ -30,12 +29,12 @@ class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entitiesSubscriptionToken: HACancellable?
     private var quickAccessEntitiesSubscriptionTokens: [HACancellable?] = []
-    private var cancellables = Set<AnyCancellable>()
 
     private var domainsListTemplate: (any CarPlayTemplateProvider)?
     private var serversListTemplate: (any CarPlayTemplateProvider)?
     private var quickAccessListTemplate: (any CarPlayTemplateProvider)?
     private var areasZonesListTemplate: (any CarPlayTemplateProvider)?
+    private var assistTemplate: CarPlayAssistTemplate?
     private var includedDomains: [Domain] = CarPlaySupportedDomains.all
 
     private var allTemplates: [any CarPlayTemplateProvider] {
@@ -44,6 +43,7 @@ class CarPlaySceneDelegate: UIResponder {
             areasZonesListTemplate,
             domainsListTemplate,
             serversListTemplate,
+            assistTemplate,
         ].compactMap({ $0 })
     }
 
@@ -70,10 +70,7 @@ class CarPlaySceneDelegate: UIResponder {
 
     @available(iOS 16.0, *)
     public func presentAssistTemplate(server: Server, pipeline: String, withVoice: Bool) {
-        guard let interfaceController = self.interfaceController else { return }
-
-        let assistTemplate = CarPlayAssistTemplate()
-        assistTemplate.interfaceController = interfaceController
+        guard let interfaceController else { return }
 
         let viewModel = AssistViewModel(
             server: server,
@@ -83,15 +80,11 @@ class CarPlaySceneDelegate: UIResponder {
             assistService: AssistService(server: server),
             autoStartRecording: withVoice
         )
+        let assistTemplate = CarPlayAssistTemplate(viewModel: viewModel)
+        assistTemplate.interfaceController = interfaceController
+        self.assistTemplate = assistTemplate
 
-        viewModel.objectWillChange.sink { [weak assistTemplate, weak interfaceController] _ in
-            guard let assistTemplate = assistTemplate, let interfaceController = interfaceController else { return }
-            assistTemplate.state = assistTemplate.mapViewModelToState(viewModel)
-            interfaceController.setRootTemplate(assistTemplate.template, animated: true, completion: nil)
-        }.store(in: &cancellables)
-
-        interfaceController.setRootTemplate(assistTemplate.template, animated: true, completion: nil)
-        print("Presenting Assist template for server: \(server.identifier.rawValue), pipeline: \(pipeline), withVoice: \(withVoice)")
+        interfaceController.pushTemplate(assistTemplate.template, animated: true, completion: nil)
     }
 
     private func setTemplates(config: CarPlayConfig?) {
@@ -152,6 +145,7 @@ class CarPlaySceneDelegate: UIResponder {
 
     private func buildQuickAccessTab() {
         quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+        (quickAccessListTemplate as? CarPlayQuickAccessTemplate)?.sceneDelegate = self
         // Quick access keeps a separate per-server cache for its mixed-server entities,
         // so restore that snapshot immediately when the template is recreated.
         replayQuickAccessStates()
@@ -304,6 +298,9 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
 extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     func templateWillDisappear(_ aTemplate: CPTemplate, animated: Bool) {
         allTemplates.forEach { $0.templateWillDisappear(template: aTemplate) }
+        if assistTemplate?.template == aTemplate {
+            assistTemplate = nil
+        }
     }
 
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {

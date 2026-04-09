@@ -371,7 +371,10 @@ final class AssistViewModel: NSObject, ObservableObject {
 
 extension AssistViewModel: AudioRecorderDelegate {
     func didFailToRecord(error: any Error) {
-        showError(message: error.localizedDescription)
+        Task { @MainActor [weak self] in
+            self?.showError(message: error.localizedDescription)
+            self?.stopStreaming()
+        }
     }
 
     func didOutputSample(data: Data) {

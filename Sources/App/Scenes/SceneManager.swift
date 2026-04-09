@@ -112,6 +112,10 @@ final class SceneManager {
         UIApplication.shared.supportsMultipleScenes
     }
 
+    func hasExistingScene(for activity: SceneActivity) -> Bool {
+        !existingScenes(for: activity).isEmpty
+    }
+
     public func activateAnyScene(for activity: SceneActivity) {
         UIApplication.shared.requestSceneSessionActivation(
             existingScenes(for: activity).first?.session,

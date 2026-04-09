@@ -24,7 +24,7 @@ struct AssistAppIntent: AppIntent {
 
     func perform() async throws -> some IntentResult {
         #if !WIDGET_EXTENSION
-        if Current.sceneManager.existingScenes(for: .assist).isEmpty {
+        if !Current.sceneManager.hasExistingScene(for: .assist) {
             // Mobile context: This is what existing code was doing
             DispatchQueue.main.async {
                 guard let server = Current.servers.all
@@ -44,7 +44,7 @@ struct AssistAppIntent: AppIntent {
             let userInfo: [AnyHashable: Any] = [
                 "pipelineId": pipeline.id,
                 "serverId": pipeline.serverId,
-                "withVoice": withVoice
+                "withVoice": withVoice,
             ]
 
             Current.sceneManager.activateAnyScene(for: .assist, with: userInfo)

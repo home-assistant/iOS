@@ -26,6 +26,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
 
     private(set) var audioSampleRate: Double?
     private var captureSession: AVCaptureSession?
+    private var hasDeliveredRecordingStart = false
 
     override init() {
         super.init()
@@ -37,12 +38,12 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     }
 
     func startRecording() {
+        hasDeliveredRecordingStart = false
         setupAudioRecorder()
         guard let captureSession else { return }
         DispatchQueue.global().async { [weak self] in
-            if let audioSampleRate = self?.audioSampleRate {
+            if self?.audioSampleRate != nil {
                 captureSession.startRunning()
-                self?.delegate?.didStartRecording(with: audioSampleRate)
             } else {
                 Current.Log.error("No sample rate available to start recording")
             }
@@ -126,6 +127,11 @@ extension AudioRecorder: AVCaptureAudioDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
+        if !hasDeliveredRecordingStart, let audioSampleRate {
+            hasDeliveredRecordingStart = true
+            delegate?.didStartRecording(with: audioSampleRate)
+        }
+
         guard let data = sampleBuffer.audioSamples() else {
             Current.Log.error("Failed to extract audio samples from CMSampleBuffer")
             return

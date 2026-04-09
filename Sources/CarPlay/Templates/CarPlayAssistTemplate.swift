@@ -1,11 +1,12 @@
 import CarPlay
+import Combine
 import Foundation
 import HAKit
+import SFSafeSymbols
 import Shared
-import SwiftUI
 
 @available(iOS 16.0, *)
-enum CarPlayAssistState {
+enum CarPlayAssistState: String {
     case idle
     case listening
     case thinking
@@ -14,52 +15,102 @@ enum CarPlayAssistState {
 
 @available(iOS 16.0, *)
 final class CarPlayAssistTemplate: CarPlayTemplateProvider {
-    var state: CarPlayAssistState = .idle
-    
-    var template: CPInterfaceTemplate {
-        let statusText: String
-        let detailText: String?
-        let image: CPImage?
-        
-        switch state {
-        case .idle:
-            statusText = "Assist"
-            detailText = "Tap to start"
-            image = CPImage(systemSymbol: .mic)
-        case .listening:
-            statusText = "Listening"
-            detailText = "Speak your command"
-            image = CPImage(systemSymbol: .waveform)
-        case .thinking:
-            statusText = "Thinking"
-            detailText = "Processing..."
-            image = CPImage(systemSymbol: .ellipsis)
-        case .speaking:
-            statusText = "Speaking"
-            detailText = "Playing response"
-            image = CPImage(systemSymbol: .speaker)
-        }
+    private let viewModel: AssistViewModel
+    private var cancellables = Set<AnyCancellable>()
+    private var hasStartedSession = false
 
-        let item = CPListItem(text: statusText, detail: detailText, image: image)
-        let section = CPListSection(items: [item])
-        return CPInterfaceTemplate(templateFields: [section])
+    var state: CarPlayAssistState = .idle {
+        didSet {
+            guard oldValue != state else { return }
+            template.updateGridButtons([Self.statusButton(for: state)])
+        }
     }
-    
-    var interfaceController: CPInterfaceController?
-    
+
+    var template: CPGridTemplate
+    weak var interfaceController: CPInterfaceController?
+
+    init(viewModel: AssistViewModel) {
+        self.viewModel = viewModel
+        self.template = CPGridTemplate(
+            title: L10n.Assist.ModernUi.Header.title,
+            gridButtons: [Self.statusButton(for: .idle)]
+        )
+        bindViewModel()
+    }
+
+    func templateWillDisappear(template: CPTemplate) {
+        guard template == self.template else { return }
+        viewModel.onDisappear()
+    }
+
+    func templateWillAppear(template: CPTemplate) {
+        guard template == self.template else { return }
+        guard !hasStartedSession else { return }
+
+        hasStartedSession = true
+        viewModel.subscribeForConfigChanges()
+        Task { @MainActor [weak self] in
+            self?.viewModel.initialRoutine()
+        }
+    }
+
     func entitiesStateChange(serverId: String, entities: HACachedStates) {}
+
     func update() {}
 
-    @available(iOS 16.0, *)
-    func mapViewModelToState(_ viewModel: AssistViewModel) -> CarPlayAssistState {
-        if viewModel.isSpeaking {
+    private func bindViewModel() {
+        viewModel.$isRecording
+            .combineLatest(viewModel.$isThinking, viewModel.$isSpeaking)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isRecording, isThinking, isSpeaking in
+                self?.state = Self.mapState(
+                    isRecording: isRecording,
+                    isThinking: isThinking,
+                    isSpeaking: isSpeaking
+                )
+            }
+            .store(in: &cancellables)
+    }
+
+    private static func mapState(
+        isRecording: Bool,
+        isThinking: Bool,
+        isSpeaking: Bool
+    ) -> CarPlayAssistState {
+        if isSpeaking {
             return .speaking
-        } else if viewModel.isThinking {
+        } else if isThinking {
             return .thinking
-        } else if viewModel.isRecording {
+        } else if isRecording {
             return .listening
         } else {
             return .idle
         }
+    }
+
+    private static func statusButton(for state: CarPlayAssistState) -> CPGridButton {
+        let title: String
+        let image: UIImage
+
+        switch state {
+        case .idle:
+            title = L10n.Assist.ModernUi.Header.title
+            image = UIImage(systemSymbol: .micFill)
+        case .listening:
+            title = L10n.Assist.Button.Listening.title
+            image = UIImage(systemSymbol: .waveform)
+        case .thinking:
+            title = L10n.CarPlay.State.Loading.title
+            image = UIImage(systemSymbol: .ellipsis)
+        case .speaking:
+            title = L10n.Assist.ModernUi.Header.title
+            image = UIImage(systemSymbol: .speakerWave2Fill)
+        }
+
+        return CPGridButton(
+            titleVariants: [title],
+            image: image,
+            handler: nil
+        )
     }
 }
