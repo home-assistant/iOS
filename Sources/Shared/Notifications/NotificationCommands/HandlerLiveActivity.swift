@@ -1,4 +1,4 @@
-#if canImport(ActivityKit)
+#if os(iOS)
 import ActivityKit
 import Foundation
 import PromiseKit

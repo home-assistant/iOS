@@ -141,7 +141,7 @@ public class AppEnvironment {
     }
 
     #if os(iOS)
-    #if canImport(ActivityKit)
+    #if os(iOS)
     /// Call `_ = Current.liveActivityRegistry` on the main thread at launch (before any
     /// background thread can access it) to avoid a lazy-init race between concurrent callers.
     public lazy var liveActivityRegistry: LiveActivityRegistryProtocol? = {
