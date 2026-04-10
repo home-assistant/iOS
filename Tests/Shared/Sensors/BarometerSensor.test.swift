@@ -1,0 +1,288 @@
+import CoreMotion
+import Foundation
+import PromiseKit
+@testable import Shared
+import Version
+import XCTest
+
+class BarometerSensorTests: XCTestCase {
+    private enum TestError: Error {
+        case someError
+    }
+
+    private var request: SensorProviderRequest!
+
+    override func setUp() {
+        super.setUp()
+
+        request = .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil,
+            serverVersion: Version()
+        )
+
+        // start by assuming nothing is enabled/available
+        Current.barometer.isAuthorized = { false }
+        Current.barometer.isAvailable = { false }
+        Current.barometer.startUpdatesOnQueueHandler = { _, handler in handler(nil, nil) }
+        Current.barometer.stopUpdates = {}
+    }
+
+    func testUnauthorizedReturnsError() {
+        let promise = BarometerSensor(request: request).sensors()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? BarometerSensor.BarometerError, .unauthorized)
+        }
+    }
+
+    func testUnavailableReturnsError() {
+        Current.barometer.isAuthorized = { true }
+        let promise = BarometerSensor(request: request).sensors()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? BarometerSensor.BarometerError, .unavailable)
+        }
+    }
+
+    func testNoDataReturnsError() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+        let promise = BarometerSensor(request: request).sensors()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? BarometerSensor.BarometerError, .noData)
+        }
+    }
+
+    func testQueryErrorReturnsError() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+        Current.barometer.startUpdatesOnQueueHandler = { _, handler in handler(nil, TestError.someError) }
+
+        let promise = BarometerSensor(request: request).sensors()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? TestError, .someError)
+        }
+    }
+
+    func testStopUpdatesCalledAfterReading() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var stopUpdatesCalled = false
+        Current.barometer.stopUpdates = { stopUpdatesCalled = true }
+        Current.barometer.startUpdatesOnQueueHandler = { _, handler in
+            handler(FakeAltitudeData(pressureValue: 101.325), nil)
+        }
+
+        let promise = BarometerSensor(request: request).sensors()
+        _ = try? hang(promise)
+        XCTAssertTrue(stopUpdatesCalled)
+    }
+
+    func testPressureConvertedToHpa() throws {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+        // CMAltitudeData.pressure is in kilopascals; 101.325 kPa = 1013.25 hPa
+        Current.barometer.startUpdatesOnQueueHandler = { _, handler in
+            handler(FakeAltitudeData(pressureValue: 101.325), nil)
+        }
+
+        let promise = BarometerSensor(request: request).sensors()
+        let sensors = try hang(promise)
+
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].UniqueID, WebhookSensorId.pressure.rawValue)
+        XCTAssertEqual(sensors[0].Name, "Pressure")
+        XCTAssertEqual(sensors[0].Icon, "mdi:gauge")
+        XCTAssertEqual(sensors[0].DeviceClass, .pressure)
+        XCTAssertEqual(sensors[0].UnitOfMeasurement, "hPa")
+        XCTAssertEqual(sensors[0].State as? Double, 1013.25)
+    }
+
+    func testPressureRoundedToTwoDecimalPlaces() throws {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+        // 98.7654 kPa * 10 = 987.654, rounded to 987.65
+        Current.barometer.startUpdatesOnQueueHandler = { _, handler in
+            handler(FakeAltitudeData(pressureValue: 98.7654), nil)
+        }
+
+        let promise = BarometerSensor(request: request).sensors()
+        let sensors = try hang(promise)
+
+        XCTAssertEqual(sensors[0].State as? Double, 987.65)
+    }
+
+    func testSensorsUsesCachedDataWhenSignalerIsActive() throws {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var handler: CMAltitudeHandler?
+        var startCount = 0
+        Current.barometer.startUpdatesOnQueueHandler = { _, h in
+            startCount += 1
+            handler = h
+        }
+        Current.barometer.stopUpdates = {}
+
+        // First call to sensors() starts the signaler and does a one-shot read
+        let sensor = BarometerSensor(request: request)
+        // Trigger the signaler's observe by getting the signaler registered
+        let signaler: BarometerSensorUpdateSignaler = request.dependencies.updateSignaler(for: sensor)
+        signaler.observe()
+
+        // Simulate the signaler receiving data
+        handler?(FakeAltitudeData(pressureValue: 101.0), nil)
+        XCTAssertNotNil(signaler.latestData)
+
+        // Reset count to track whether sensors() starts another read
+        startCount = 0
+
+        // Now calling sensors() should use cached data, not start a new one-shot
+        let promise = sensor.sensors()
+        let sensors = try hang(promise)
+
+        XCTAssertEqual(sensors[0].State as? Double, 1010.0) // 101.0 kPa * 10
+        // Should NOT have started another altimeter session
+        XCTAssertEqual(startCount, 0)
+    }
+
+    func testSignalerStartsAndStopsUpdates() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var startCalled = false
+        var stopCalled = false
+        Current.barometer.startUpdatesOnQueueHandler = { _, _ in startCalled = true }
+        Current.barometer.stopUpdates = { stopCalled = true }
+
+        var signalCount = 0
+        let signaler = BarometerSensorUpdateSignaler(signal: { signalCount += 1 })
+
+        signaler.observe()
+        XCTAssertTrue(startCalled)
+
+        signaler.stopObserving()
+        XCTAssertTrue(stopCalled)
+    }
+
+    func testSignalerClearsDataOnStop() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var handler: CMAltitudeHandler?
+        Current.barometer.startUpdatesOnQueueHandler = { _, h in handler = h }
+        Current.barometer.stopUpdates = {}
+
+        let signaler = BarometerSensorUpdateSignaler(signal: {})
+        signaler.observe()
+        handler?(FakeAltitudeData(pressureValue: 101.0), nil)
+        XCTAssertNotNil(signaler.latestData)
+
+        signaler.stopObserving()
+        XCTAssertNil(signaler.latestData)
+    }
+
+    func testSignalerFiltersSmallPressureChanges() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var handler: CMAltitudeHandler?
+        Current.barometer.startUpdatesOnQueueHandler = { _, h in handler = h }
+        Current.barometer.stopUpdates = {}
+
+        var signalCount = 0
+        let signaler = BarometerSensorUpdateSignaler(signal: { signalCount += 1 })
+        signaler.observe()
+
+        // First reading always signals
+        handler?(FakeAltitudeData(pressureValue: 101.325), nil)
+        XCTAssertEqual(signalCount, 1)
+
+        // Tiny change (< 0.01 kPa = < 0.1 hPa) should not signal
+        handler?(FakeAltitudeData(pressureValue: 101.330), nil)
+        XCTAssertEqual(signalCount, 1)
+
+        // Significant change (>= 0.01 kPa = >= 0.1 hPa) should signal
+        handler?(FakeAltitudeData(pressureValue: 101.340), nil)
+        XCTAssertEqual(signalCount, 2)
+    }
+
+    func testSignalerIgnoresNilData() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var handler: CMAltitudeHandler?
+        Current.barometer.startUpdatesOnQueueHandler = { _, h in handler = h }
+        Current.barometer.stopUpdates = {}
+
+        var signalCount = 0
+        let signaler = BarometerSensorUpdateSignaler(signal: { signalCount += 1 })
+        signaler.observe()
+
+        // nil data should not signal or cache
+        handler?(nil, nil)
+        XCTAssertEqual(signalCount, 0)
+        XCTAssertNil(signaler.latestData)
+    }
+
+    func testSignalerDoesNotStartWhenUnavailable() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { false }
+
+        var startCalled = false
+        Current.barometer.startUpdatesOnQueueHandler = { _, _ in startCalled = true }
+
+        let signaler = BarometerSensorUpdateSignaler(signal: {})
+        signaler.observe()
+        XCTAssertFalse(startCalled)
+    }
+
+    func testSignalerDoesNotStartWhenUnauthorized() {
+        Current.barometer.isAuthorized = { false }
+        Current.barometer.isAvailable = { true }
+
+        var startCalled = false
+        Current.barometer.startUpdatesOnQueueHandler = { _, _ in startCalled = true }
+
+        let signaler = BarometerSensorUpdateSignaler(signal: {})
+        signaler.observe()
+        XCTAssertFalse(startCalled)
+    }
+
+    func testSignalerDoesNotDoubleObserve() {
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var startCount = 0
+        Current.barometer.startUpdatesOnQueueHandler = { _, _ in startCount += 1 }
+        Current.barometer.stopUpdates = {}
+
+        let signaler = BarometerSensorUpdateSignaler(signal: {})
+        signaler.observe()
+        signaler.observe()
+        XCTAssertEqual(startCount, 1)
+    }
+}
+
+private class FakeAltitudeData: CMAltitudeData {
+    private let pressureKpa: NSNumber
+
+    init(pressureValue: Double) {
+        self.pressureKpa = NSNumber(value: pressureValue)
+        super.init()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not supported")
+    }
+
+    override var pressure: NSNumber {
+        pressureKpa
+    }
+
+    override var relativeAltitude: NSNumber {
+        NSNumber(value: 0)
+    }
+}

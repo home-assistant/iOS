@@ -225,6 +225,7 @@ public class AppEnvironment {
         $0.register(provider: AppVersionSensor.self)
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
+        $0.register(provider: BarometerSensor.self)
     }
 
     public var localized = LocalizedManager()
@@ -451,6 +452,30 @@ public class AppEnvironment {
     }
 
     public var pedometer = Pedometer()
+
+    /// Wrapper around CMAltimeter for barometric pressure readings
+    public struct Barometer {
+        private let underlyingAltimeter = CMAltimeter()
+        // isRelativeAltitudeAvailable checks for a barometer chip; the same hardware delivers
+        // both relative altitude and barometric pressure via startRelativeAltitudeUpdates.
+        public var isAvailable: () -> Bool = CMAltimeter.isRelativeAltitudeAvailable
+        public var isAuthorized: () -> Bool = {
+            guard !Current.isCatalyst else { return false }
+            return CMAltimeter.authorizationStatus() == .authorized
+        }
+
+        public lazy var startUpdatesOnQueueHandler: (
+            OperationQueue, @escaping CMAltitudeHandler
+        ) -> Void = { [underlyingAltimeter] queue, handler in
+            underlyingAltimeter.startRelativeAltitudeUpdates(to: queue, withHandler: handler)
+        }
+
+        public lazy var stopUpdates: () -> Void = { [underlyingAltimeter] in
+            underlyingAltimeter.stopRelativeAltitudeUpdates()
+        }
+    }
+
+    public var barometer = Barometer()
 
     public var device = DeviceWrapper()
 
