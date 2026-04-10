@@ -29,8 +29,8 @@ public final class KioskPresenceDetector: NSObject, ObservableObject {
     /// Camera authorization status
     @Published public private(set) var authorizationStatus: AVAuthorizationStatus = .notDetermined
 
-    /// Error message if detection failed
-    @Published public private(set) var errorMessage: String?
+    /// Internal error state for debugging; not displayed in UI
+    public private(set) var errorMessage: String?
 
     // MARK: - Private
 
@@ -38,9 +38,9 @@ public final class KioskPresenceDetector: NSObject, ObservableObject {
     private var videoOutput: AVCaptureVideoDataOutput?
     private let processingQueue = DispatchQueue(label: "com.home-assistant.kiosk.presence", qos: .userInitiated)
 
-    // Vision requests
-    private var personDetectionRequest: VNDetectHumanRectanglesRequest?
-    private var faceDetectionRequest: VNDetectFaceRectanglesRequest?
+    // Vision requests — set once in init, read from processingQueue
+    private nonisolated(unsafe) var personDetectionRequest: VNDetectHumanRectanglesRequest?
+    private nonisolated(unsafe) var faceDetectionRequest: VNDetectFaceRectanglesRequest?
 
     // State tracking with hysteresis
     private var consecutiveDetections: Int = 0
@@ -192,7 +192,8 @@ public final class KioskPresenceDetector: NSObject, ObservableObject {
         videoOutput = output
     }
 
-    private func processFrame(
+    /// Process a video frame for presence detection. Called on processingQueue.
+    private nonisolated func processFrame(
         _ pixelBuffer: CVPixelBuffer,
         presenceEnabled: Bool,
         faceDetectionEnabled: Bool
@@ -299,13 +300,19 @@ extension KioskPresenceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
     ) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-        Task { @MainActor in
+        // Read settings on MainActor, then process on processingQueue
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             let settings = KioskModeManager.shared.settings
-            processFrame(
-                pixelBuffer,
-                presenceEnabled: settings.cameraPresenceEnabled,
-                faceDetectionEnabled: settings.cameraFaceDetectionEnabled
-            )
+            let presenceEnabled = settings.cameraPresenceEnabled
+            let faceEnabled = settings.cameraFaceDetectionEnabled
+            processingQueue.async { [weak self] in
+                self?.processFrame(
+                    pixelBuffer,
+                    presenceEnabled: presenceEnabled,
+                    faceDetectionEnabled: faceEnabled
+                )
+            }
         }
     }
 }

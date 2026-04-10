@@ -77,7 +77,7 @@ struct KioskCameraSettingsTests {
     }
 
     @Test func backwardsCompatibility() async throws {
-        // Simulate PR1-era settings JSON (no camera fields)
+        // Simulate settings JSON without camera fields (backwards compatibility)
         let pr1JSON = """
         {
             "isKioskModeEnabled": true,
@@ -90,7 +90,7 @@ struct KioskCameraSettingsTests {
 
         let decoded = try JSONDecoder().decode(KioskSettings.self, from: pr1JSON)
 
-        // PR1 fields preserved
+        // Original fields preserved
         #expect(decoded.isKioskModeEnabled == true)
         #expect(decoded.screensaverMode == .clock)
 
