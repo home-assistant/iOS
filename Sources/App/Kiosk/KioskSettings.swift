@@ -48,6 +48,9 @@ public struct KioskSettingsRecord: Codable, FetchableRecord, PersistableRecord {
 /// Complete settings model for kiosk mode
 /// All settings are Codable for persistence and HA integration sync
 public struct KioskSettings: Codable, Equatable {
+    /// Default initializer with all default values
+    public init() {}
+
     // MARK: - Core Kiosk Mode
 
     /// Whether kiosk mode is currently enabled
