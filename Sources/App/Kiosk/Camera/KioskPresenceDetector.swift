@@ -32,14 +32,6 @@ public final class KioskPresenceDetector: NSObject, ObservableObject {
     /// Error message if detection failed
     @Published public private(set) var errorMessage: String?
 
-    // MARK: - Callbacks
-
-    /// Called when presence state changes
-    public var onPresenceChanged: ((Bool) -> Void)?
-
-    /// Called when face detection state changes
-    public var onFaceDetectionChanged: ((Bool, Int) -> Void)?
-
     // MARK: - Private
 
     private var captureSession: AVCaptureSession?
@@ -249,8 +241,6 @@ public final class KioskPresenceDetector: NSObject, ObservableObject {
             faceDetected = detected
 
             if detected != previouslyDetected || faces.count != previousCount {
-                onFaceDetectionChanged?(detected, faces.count)
-
                 if detected {
                     lastDetectionTime = Current.date()
                     Current.Log.info("Face detected (count: \(faces.count))")
@@ -278,7 +268,6 @@ public final class KioskPresenceDetector: NSObject, ObservableObject {
             if consecutiveDetections >= detectionThreshold, !personDetected {
                 personDetected = true
                 lastDetectionTime = Current.date()
-                onPresenceChanged?(true)
                 Current.Log.info("Person presence detected")
             }
         } else {
@@ -295,7 +284,6 @@ public final class KioskPresenceDetector: NSObject, ObservableObject {
             personDetected = false
             faceDetected = false
             faceCount = 0
-            onPresenceChanged?(false)
             Current.Log.info("Person presence timeout - marking as absent")
         }
     }

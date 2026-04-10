@@ -236,7 +236,9 @@ public final class KioskModeManager: ObservableObject {
         notifyObserversOfModeChange()
 
         // Start camera detection if enabled
+        #if !targetEnvironment(macCatalyst)
         startCameraDetection()
+        #endif
     }
 
     /// Disable kiosk mode
@@ -278,7 +280,9 @@ public final class KioskModeManager: ObservableObject {
         updateKioskModeLockdown(enabled: false)
 
         // Stop camera detection
+        #if !targetEnvironment(macCatalyst)
         stopCameraDetection()
+        #endif
 
         notifyObserversOfModeChange()
     }
@@ -745,6 +749,7 @@ public final class KioskModeManager: ObservableObject {
         }
 
         // Restart camera detection if camera settings changed
+        #if !targetEnvironment(macCatalyst)
         if oldValue.cameraMotionEnabled != newValue.cameraMotionEnabled
             || oldValue.cameraPresenceEnabled != newValue.cameraPresenceEnabled
             || oldValue.cameraFaceDetectionEnabled != newValue.cameraFaceDetectionEnabled
@@ -753,6 +758,7 @@ public final class KioskModeManager: ObservableObject {
             || oldValue.wakeOnCameraPresence != newValue.wakeOnCameraPresence {
             restartCameraDetection()
         }
+        #endif
 
         updateKioskModeLockdown(enabled: true)
         notifyObserversOfSettingsChange()

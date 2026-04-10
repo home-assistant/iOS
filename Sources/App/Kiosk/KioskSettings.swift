@@ -229,7 +229,7 @@ public struct KioskSettings: Codable, Equatable {
             forKey: .secretExitGestureTaps
         ) ?? 3
 
-        // Camera Detection (new in PR2 — all default to false/medium)
+        // Camera Detection
         self.cameraMotionEnabled = try container.decodeIfPresent(
             Bool.self,
             forKey: .cameraMotionEnabled
