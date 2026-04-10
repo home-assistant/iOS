@@ -28,6 +28,7 @@ public struct KioskSettingsView: View {
             coreSettingsSection
             brightnessSection
             screensaverSection
+            cameraDetectionSection
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -258,6 +259,46 @@ public struct KioskSettingsView: View {
             Text(L10n.Kiosk.Screensaver.section)
         } footer: {
             Text(L10n.Kiosk.Screensaver.pixelShiftFooter)
+        }
+    }
+
+    // MARK: - Camera Detection Section
+
+    private var cameraDetectionSection: some View {
+        Section {
+            Toggle(isOn: $viewModel.settings.cameraMotionEnabled) {
+                Label(L10n.Kiosk.Camera.motionDetection, systemSymbol: .figureWalk)
+            }
+
+            if viewModel.settings.cameraMotionEnabled {
+                Picker(L10n.Kiosk.Camera.sensitivity, selection: $viewModel.settings.cameraMotionSensitivity) {
+                    ForEach(MotionSensitivity.allCases, id: \.self) { sensitivity in
+                        Text(sensitivity.displayName).tag(sensitivity)
+                    }
+                }
+
+                Toggle(isOn: $viewModel.settings.wakeOnCameraMotion) {
+                    Label(L10n.Kiosk.Camera.wakeOnMotion, systemSymbol: .sunMax)
+                }
+            }
+
+            Toggle(isOn: $viewModel.settings.cameraPresenceEnabled) {
+                Label(L10n.Kiosk.Camera.presenceDetection, systemSymbol: .personFill)
+            }
+
+            if viewModel.settings.cameraPresenceEnabled {
+                Toggle(isOn: $viewModel.settings.cameraFaceDetectionEnabled) {
+                    Label(L10n.Kiosk.Camera.faceDetection, systemSymbol: .faceSmiling)
+                }
+
+                Toggle(isOn: $viewModel.settings.wakeOnCameraPresence) {
+                    Label(L10n.Kiosk.Camera.wakeOnPresence, systemSymbol: .sunMax)
+                }
+            }
+        } header: {
+            Text(L10n.Kiosk.Camera.section)
+        } footer: {
+            Text(L10n.Kiosk.Camera.footer)
         }
     }
 }
