@@ -23,8 +23,8 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
     /// Camera authorization status
     @Published public private(set) var authorizationStatus: AVAuthorizationStatus = .notDetermined
 
-    /// Error message if detection failed
-    @Published public private(set) var errorMessage: String?
+    /// Internal error state for debugging; not displayed in UI
+    public private(set) var errorMessage: String?
 
     // MARK: - Private
 
@@ -32,11 +32,13 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
     private var videoOutput: AVCaptureVideoDataOutput?
     private let processingQueue = DispatchQueue(label: "com.home-assistant.kiosk.motion", qos: .userInitiated)
 
-    private var previousFrame: CIImage?
+    // Accessed only from processingQueue
+    private nonisolated(unsafe) var previousFrame: CIImage?
     private var motionThreshold: Float = 0.02
     private var cooldownTimer: Timer?
     private var isInCooldown: Bool = false
-    private let ciContext = CIContext(options: [.workingColorSpace: kCFNull as Any])
+    // Accessed only from processingQueue
+    private nonisolated(unsafe) let ciContext = CIContext(options: [.workingColorSpace: kCFNull as Any])
 
     // MARK: - Initialization
 
@@ -169,7 +171,8 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
         videoOutput = output
     }
 
-    private func processFrame(_ pixelBuffer: CVPixelBuffer) {
+    /// Process a video frame for motion detection. Called on processingQueue.
+    private nonisolated func processFrame(_ pixelBuffer: CVPixelBuffer) {
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
 
         guard let previous = previousFrame else {
@@ -178,21 +181,18 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
         }
 
         let difference = calculateDifference(current: ciImage, previous: previous)
+        previousFrame = ciImage
 
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
-
             motionLevel = difference
-
             if difference > motionThreshold, !isInCooldown {
                 handleMotionDetected()
             }
         }
-
-        previousFrame = ciImage
     }
 
-    private func calculateDifference(current: CIImage, previous: CIImage) -> Float {
+    private nonisolated func calculateDifference(current: CIImage, previous: CIImage) -> Float {
         let differenceFilter = CIFilter(name: "CIDifferenceBlendMode")
         differenceFilter?.setValue(current, forKey: kCIInputImageKey)
         differenceFilter?.setValue(previous, forKey: kCIInputBackgroundImageKey)
@@ -255,9 +255,6 @@ extension KioskCameraMotionDetector: AVCaptureVideoDataOutputSampleBufferDelegat
         from connection: AVCaptureConnection
     ) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-
-        Task { @MainActor in
-            processFrame(pixelBuffer)
-        }
+        processFrame(pixelBuffer)
     }
 }
