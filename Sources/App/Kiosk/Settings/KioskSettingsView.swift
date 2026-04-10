@@ -28,7 +28,9 @@ public struct KioskSettingsView: View {
             coreSettingsSection
             brightnessSection
             screensaverSection
+            #if !targetEnvironment(macCatalyst)
             cameraDetectionSection
+            #endif
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

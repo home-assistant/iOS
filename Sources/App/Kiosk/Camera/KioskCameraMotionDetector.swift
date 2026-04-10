@@ -26,11 +26,6 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
     /// Error message if detection failed
     @Published public private(set) var errorMessage: String?
 
-    // MARK: - Callbacks
-
-    /// Called when motion is detected
-    public var onMotionDetected: (() -> Void)?
-
     // MARK: - Private
 
     private var captureSession: AVCaptureSession?
@@ -41,6 +36,7 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
     private var motionThreshold: Float = 0.02
     private var cooldownTimer: Timer?
     private var isInCooldown: Bool = false
+    private let ciContext = CIContext(options: [.workingColorSpace: kCFNull as Any])
 
     // MARK: - Initialization
 
@@ -217,8 +213,7 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
         guard let outputImage = averageFilter?.outputImage else { return 0 }
 
         var bitmap = [UInt8](repeating: 0, count: 4)
-        let context = CIContext(options: [.workingColorSpace: kCFNull as Any])
-        context.render(
+        ciContext.render(
             outputImage,
             toBitmap: &bitmap,
             rowBytes: 4,
@@ -239,7 +234,6 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
         isInCooldown = true
 
         Current.Log.info("Motion detected (level: \(motionLevel))")
-        onMotionDetected?()
 
         // 2-second cooldown to prevent rapid re-triggering
         cooldownTimer?.invalidate()
