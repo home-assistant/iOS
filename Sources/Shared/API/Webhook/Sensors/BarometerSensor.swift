@@ -110,9 +110,13 @@ public class BarometerSensor: SensorProvider {
         let queue = OperationQueue()
         queue.name = "barometer-sensor"
 
+        // startRelativeAltitudeUpdates is a streaming API, so an in-flight callback
+        // could arrive after stopUpdates(). Guard against double-resolving the promise.
+        var resolved = false
         Current.barometer.startUpdatesOnQueueHandler(queue) { data, error in
-            // We only need a single reading, so stop updates immediately
             Current.barometer.stopUpdates()
+            guard !resolved else { return }
+            resolved = true
 
             if let data {
                 seal.fulfill(data)
