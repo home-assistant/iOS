@@ -492,7 +492,7 @@
 "kiosk.section.title" = "信息亭模式";
 "kiosk.security.device_auth" = "设备认证";
 "kiosk.security.gesture_corner" = "退出手势角";
-"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
+"kiosk.security.gesture_footer" = "点击 %1$@ 角落 %2$@ 次可在锁定状态下访问 kiosk 设置。";
 "kiosk.security.hide_status_bar" = "隐藏状态栏";
 "kiosk.security.prevent_autolock" = "防止自动锁定";
 "kiosk.security.secret_gesture" = "安全退出手势";

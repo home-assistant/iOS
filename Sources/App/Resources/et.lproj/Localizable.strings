@@ -492,7 +492,7 @@
 "kiosk.section.title" = "Kioskirežiim";
 "kiosk.security.device_auth" = "Seadme tuvastamine";
 "kiosk.security.gesture_corner" = "Väljapääsu žestide nurk";
-"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
+"kiosk.security.gesture_footer" = "Kui kiosk on lukustatud, koputa kioski seadetele juurdepääsu saamiseks korduvalt %1$@ nurka %2$@ .";
 "kiosk.security.hide_status_bar" = "Peida olekuriba";
 "kiosk.security.prevent_autolock" = "Automaatse lukustuse vältimine";
 "kiosk.security.secret_gesture" = "Salajane väljumisžest";
