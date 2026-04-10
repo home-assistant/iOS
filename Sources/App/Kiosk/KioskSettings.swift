@@ -48,6 +48,9 @@ public struct KioskSettingsRecord: Codable, FetchableRecord, PersistableRecord {
 /// Complete settings model for kiosk mode
 /// All settings are Codable for persistence and HA integration sync
 public struct KioskSettings: Codable, Equatable {
+    /// Default initializer with all default values
+    public init() {}
+
     // MARK: - Core Kiosk Mode
 
     /// Whether kiosk mode is currently enabled
@@ -117,6 +120,144 @@ public struct KioskSettings: Codable, Equatable {
 
     /// Number of taps required for secret exit gesture
     public var secretExitGestureTaps: Int = 3
+
+    // MARK: - Camera Detection
+
+    /// Enable camera-based motion detection
+    public var cameraMotionEnabled: Bool = false
+
+    /// Motion detection sensitivity
+    public var cameraMotionSensitivity: MotionSensitivity = .medium
+
+    /// Wake the screen when camera motion is detected
+    public var wakeOnCameraMotion: Bool = false
+
+    /// Enable camera-based presence (person) detection
+    public var cameraPresenceEnabled: Bool = false
+
+    /// Enable face detection (requires presence detection)
+    public var cameraFaceDetectionEnabled: Bool = false
+
+    /// Wake the screen when a person is detected by camera
+    public var wakeOnCameraPresence: Bool = false
+
+    // MARK: - Codable (backwards-compatible decoding)
+
+    enum CodingKeys: String, CodingKey {
+        case isKioskModeEnabled
+        case requireDeviceAuthentication
+        case hideStatusBar
+        case preventAutoLock
+        case brightnessControlEnabled
+        case manualBrightness
+        case screensaverEnabled
+        case screensaverMode
+        case screensaverTimeout
+        case screensaverDimLevel
+        case pixelShiftEnabled
+        case pixelShiftAmount
+        case pixelShiftInterval
+        case clockShowSeconds
+        case clockShowDate
+        case clockUse24HourFormat
+        case clockStyle
+        case secretExitGestureEnabled
+        case secretExitGestureCorner
+        case secretExitGestureTaps
+        case cameraMotionEnabled
+        case cameraMotionSensitivity
+        case wakeOnCameraMotion
+        case cameraPresenceEnabled
+        case cameraFaceDetectionEnabled
+        case wakeOnCameraPresence
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        // Core
+        self.isKioskModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isKioskModeEnabled) ?? false
+        self.requireDeviceAuthentication = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .requireDeviceAuthentication
+        ) ?? false
+        self.hideStatusBar = try container.decodeIfPresent(Bool.self, forKey: .hideStatusBar) ?? true
+        self.preventAutoLock = try container.decodeIfPresent(Bool.self, forKey: .preventAutoLock) ?? true
+
+        // Brightness
+        self.brightnessControlEnabled = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .brightnessControlEnabled
+        ) ?? true
+        self.manualBrightness = try container.decodeIfPresent(Float.self, forKey: .manualBrightness) ?? 0.8
+
+        // Screensaver
+        self.screensaverEnabled = try container.decodeIfPresent(Bool.self, forKey: .screensaverEnabled) ?? true
+        self.screensaverMode = try container.decodeIfPresent(
+            ScreensaverMode.self,
+            forKey: .screensaverMode
+        ) ?? .clock
+        self.screensaverTimeout = try container.decodeIfPresent(
+            TimeInterval.self,
+            forKey: .screensaverTimeout
+        ) ?? 300
+        self.screensaverDimLevel = try container.decodeIfPresent(Float.self, forKey: .screensaverDimLevel) ?? 0.1
+        self.pixelShiftEnabled = try container.decodeIfPresent(Bool.self, forKey: .pixelShiftEnabled) ?? true
+        self.pixelShiftAmount = try container.decodeIfPresent(CGFloat.self, forKey: .pixelShiftAmount) ?? 10
+        self.pixelShiftInterval = try container.decodeIfPresent(
+            TimeInterval.self,
+            forKey: .pixelShiftInterval
+        ) ?? 60
+
+        // Clock
+        self.clockShowSeconds = try container.decodeIfPresent(Bool.self, forKey: .clockShowSeconds) ?? false
+        self.clockShowDate = try container.decodeIfPresent(Bool.self, forKey: .clockShowDate) ?? true
+        self.clockUse24HourFormat = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .clockUse24HourFormat
+        ) ?? true
+        self.clockStyle = try container.decodeIfPresent(ClockStyle.self, forKey: .clockStyle) ?? .large
+
+        // Secret Exit Gesture
+        self.secretExitGestureEnabled = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .secretExitGestureEnabled
+        ) ?? true
+        self.secretExitGestureCorner = try container.decodeIfPresent(
+            ScreenCorner.self,
+            forKey: .secretExitGestureCorner
+        ) ?? .bottomRight
+        self.secretExitGestureTaps = try container.decodeIfPresent(
+            Int.self,
+            forKey: .secretExitGestureTaps
+        ) ?? 3
+
+        // Camera Detection
+        self.cameraMotionEnabled = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .cameraMotionEnabled
+        ) ?? false
+        self.cameraMotionSensitivity = try container.decodeIfPresent(
+            MotionSensitivity.self,
+            forKey: .cameraMotionSensitivity
+        ) ?? .medium
+        self.wakeOnCameraMotion = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .wakeOnCameraMotion
+        ) ?? false
+        self.cameraPresenceEnabled = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .cameraPresenceEnabled
+        ) ?? false
+        self.cameraFaceDetectionEnabled = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .cameraFaceDetectionEnabled
+        ) ?? false
+        self.wakeOnCameraPresence = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .wakeOnCameraPresence
+        ) ?? false
+    }
 }
 
 // MARK: - Enums
@@ -186,6 +327,28 @@ public enum ClockStyle: String, Codable, CaseIterable {
         case .minimal: return L10n.Kiosk.Clock.Style.minimal
         case .analog: return L10n.Kiosk.Clock.Style.analog
         case .digital: return L10n.Kiosk.Clock.Style.digital
+        }
+    }
+}
+
+public enum MotionSensitivity: String, Codable, CaseIterable {
+    case low
+    case medium
+    case high
+
+    public var threshold: Float {
+        switch self {
+        case .low: return 0.05
+        case .medium: return 0.02
+        case .high: return 0.008
+        }
+    }
+
+    public var displayName: String {
+        switch self {
+        case .low: return L10n.Kiosk.Camera.Sensitivity.low
+        case .medium: return L10n.Kiosk.Camera.Sensitivity.medium
+        case .high: return L10n.Kiosk.Camera.Sensitivity.high
         }
     }
 }
