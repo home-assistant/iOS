@@ -456,6 +456,8 @@ public class AppEnvironment {
     /// Wrapper around CMAltimeter for barometric pressure readings
     public struct Barometer {
         private let underlyingAltimeter = CMAltimeter()
+        // isRelativeAltitudeAvailable checks for a barometer chip; the same hardware delivers
+        // both relative altitude and barometric pressure via startRelativeAltitudeUpdates.
         public var isAvailable: () -> Bool = CMAltimeter.isRelativeAltitudeAvailable
         public var isAuthorized: () -> Bool = {
             guard !Current.isCatalyst else { return false }
