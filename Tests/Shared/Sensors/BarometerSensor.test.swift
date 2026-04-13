@@ -75,7 +75,7 @@ class BarometerSensorTests: XCTestCase {
         }
 
         let promise = BarometerSensor(request: request).sensors()
-        _ = try? hang(promise)
+        XCTAssertNoThrow(try hang(promise))
         XCTAssertTrue(stopUpdatesCalled)
     }
 

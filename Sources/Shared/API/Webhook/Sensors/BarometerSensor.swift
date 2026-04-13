@@ -6,10 +6,16 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
     private let signal: () -> Void
     private var lastPressureKpa: Double?
     private var observationQueue: OperationQueue?
+    private let lock = NSLock()
 
     /// The most recent altitude data received from CMAltimeter, used by BarometerSensor
     /// to avoid starting a separate one-shot read that would conflict with the signaler's stream.
-    private(set) var latestData: CMAltitudeData?
+    private var _latestData: CMAltitudeData?
+    var latestData: CMAltitudeData? {
+        lock.lock()
+        defer { lock.unlock() }
+        return _latestData
+    }
 
     required init(signal: @escaping () -> Void) {
         self.signal = signal
@@ -23,11 +29,14 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 
         let queue = OperationQueue()
         queue.name = "barometer-signaler"
+        queue.maxConcurrentOperationCount = 1
         observationQueue = queue
 
         Current.barometer.startUpdatesOnQueueHandler(queue) { [weak self] data, _ in
             guard let self, let data else { return }
-            latestData = data
+            lock.lock()
+            _latestData = data
+            lock.unlock()
             let newPressure = data.pressure.doubleValue
             if let last = lastPressureKpa, abs(newPressure - last) < 0.01 {
                 // Less than 0.1 hPa change, skip update
@@ -49,7 +58,9 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
         Current.barometer.stopUpdates()
         observationQueue = nil
         lastPressureKpa = nil
-        latestData = nil
+        lock.lock()
+        _latestData = nil
+        lock.unlock()
         isObserving = false
     }
 }
@@ -109,14 +120,16 @@ public class BarometerSensor: SensorProvider {
         let (promise, seal) = Promise<CMAltitudeData>.pending()
         let queue = OperationQueue()
         queue.name = "barometer-sensor"
+        queue.maxConcurrentOperationCount = 1
 
         // startRelativeAltitudeUpdates is a streaming API, so an in-flight callback
-        // could arrive after stopUpdates(). Guard against double-resolving the promise.
+        // could arrive after stopUpdates(). Guard against double-resolving the promise,
+        // and ensure late callbacks become no-ops before stopping updates.
         var resolved = false
         Current.barometer.startUpdatesOnQueueHandler(queue) { data, error in
-            Current.barometer.stopUpdates()
             guard !resolved else { return }
             resolved = true
+            Current.barometer.stopUpdates()
 
             if let data {
                 seal.fulfill(data)
