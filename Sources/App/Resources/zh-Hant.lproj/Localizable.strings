@@ -492,7 +492,7 @@
 "kiosk.section.title" = "Kiosk 模式";
 "kiosk.security.device_auth" = "裝置認證";
 "kiosk.security.gesture_corner" = "退出手勢角落";
-"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
+"kiosk.security.gesture_footer" = "點選 %1$@ 角落 %2$@ 次以於鎖定狀態下進入 Kiosk 設定。";
 "kiosk.security.hide_status_bar" = "隱藏狀態列";
 "kiosk.security.prevent_autolock" = "防止自動鎖定";
 "kiosk.security.secret_gesture" = "秘密手勢角落";
