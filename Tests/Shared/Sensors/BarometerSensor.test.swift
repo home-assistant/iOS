@@ -117,34 +117,34 @@ class BarometerSensorTests: XCTestCase {
         Current.barometer.isAuthorized = { true }
         Current.barometer.isAvailable = { true }
 
-        var handler: CMAltitudeHandler?
-        var startCount = 0
-        Current.barometer.startUpdatesOnQueueHandler = { _, h in
-            startCount += 1
-            handler = h
-        }
+        // Capture every handler that gets registered, since BaseSensorUpdateSignaler's
+        // observer registration may trigger observe() and register a handler before
+        // our explicit call does.
+        var handlers = [CMAltitudeHandler]()
+        var startCountAfterSetup = 0
+        Current.barometer.startUpdatesOnQueueHandler = { _, h in handlers.append(h) }
         Current.barometer.stopUpdates = {}
 
-        // First call to sensors() starts the signaler and does a one-shot read
         let sensor = BarometerSensor(request: request)
-        // Trigger the signaler's observe by getting the signaler registered
         let signaler: BarometerSensorUpdateSignaler = request.dependencies.updateSignaler(for: sensor)
         signaler.observe()
 
-        // Simulate the signaler receiving data
-        handler?(FakeAltitudeData(pressureValue: 101.0), nil)
+        // Deliver data to the most recently registered handler
+        guard let latestHandler = handlers.last else {
+            XCTFail("No handler was registered")
+            return
+        }
+        latestHandler(FakeAltitudeData(pressureValue: 101.0), nil)
         XCTAssertNotNil(signaler.latestData)
 
-        // Reset count to track whether sensors() starts another read
-        startCount = 0
-
-        // Now calling sensors() should use cached data, not start a new one-shot
+        // Reset to track whether sensors() starts another read
+        startCountAfterSetup = handlers.count
         let promise = sensor.sensors()
         let sensors = try hang(promise)
 
         XCTAssertEqual(sensors[0].State as? Double, 1010.0) // 101.0 kPa * 10
         // Should NOT have started another altimeter session
-        XCTAssertEqual(startCount, 0)
+        XCTAssertEqual(handlers.count, startCountAfterSetup)
     }
 
     func testSignalerStartsAndStopsUpdates() {
