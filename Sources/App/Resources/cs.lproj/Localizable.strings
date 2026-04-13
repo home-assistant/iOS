@@ -492,7 +492,7 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "kiosk.section.title" = "Režim kiosku";
 "kiosk.security.device_auth" = "Ověření zařízení";
 "kiosk.security.gesture_corner" = "Roh pro gesto pro ukončení";
-"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
+"kiosk.security.gesture_footer" = "Klepněte na %1$@ roh %2$@krát pro přístup k nastavení kiosku, když je uzamčen.";
 "kiosk.security.hide_status_bar" = "Skrýt stavový řádek";
 "kiosk.security.prevent_autolock" = "Zabránit automatickému uzamčení";
 "kiosk.security.secret_gesture" = "Tajné gesto pro ukončení";
