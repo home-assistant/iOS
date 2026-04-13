@@ -1874,7 +1874,7 @@ public enum L10n {
       }
     }
     public enum FrequentUpdates {
-      /// Allows Home Assistant to update Live Activities up to once per second. Enable in Settings › %@ › Live Activities.
+      /// Allows Home Assistant to update Live Activities up to once per second. Enable in Settings u203A %@ u203A Live Activities.
       public static func footer(_ p1: Any) -> String {
         return L10n.tr("Localizable", "live_activity.frequent_updates.footer", String(describing: p1))
       }
