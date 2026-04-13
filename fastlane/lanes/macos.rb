@@ -7,6 +7,7 @@ platform :mac do
     specifiers = provisioning_profile_specifiers(sdk: 'macosx')
     developer_id_app_path = build_mac_app(
       export_method: 'developer-id',
+      destination: 'generic/platform=macOS',
       skip_package_dependencies_resolution: true,
       skip_profile_detection: true,
       skip_package_pkg: true,
@@ -20,6 +21,7 @@ platform :mac do
     app_store_pkg_path = build_mac_app(
       archive_path: lane_context[SharedValues::XCODEBUILD_ARCHIVE],
       export_method: 'app-store',
+      destination: 'generic/platform=macOS',
       skip_package_dependencies_resolution: true,
       skip_profile_detection: true,
       skip_build_archive: true,
