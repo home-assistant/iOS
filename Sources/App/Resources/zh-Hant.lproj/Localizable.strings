@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "拖拉以進行重新排序";
 "cameras.no_server_found" = "找不到攝影機伺服器：%@";
 "cancel_label" = "取消";
+"carPlay.action.execute.in_progress" = "執行中...";
 "carPlay.action.intro.item.body" = "於 iPhone 點擊繼續";
 "carPlay.action.intro.item.title" = "建立第一個操作";
 "carPlay.config.tabs.title" = "頁面";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "確定要對 %@ 進行鎖定操作嗎？";
 "carplay.navigation.button.next" = "下一頁";
 "carplay.navigation.button.previous" = "上一頁";
+"carplay.tab.quick_access.layout" = "版面配置";
 "carplay.unlock.confirmation.title" = "確定要對 %@ 進行解鎖操作嗎？";
 "cl_error.description.deferred_accuracy_too_low" = "所請求的準確度不支援推遲（Deferred）模式。";
 "cl_error.description.deferred_canceled" = "推遲（Deferred）更新請求已被 App 或 Location Manager 所取消。";
@@ -490,7 +492,7 @@
 "kiosk.section.title" = "Kiosk 模式";
 "kiosk.security.device_auth" = "裝置認證";
 "kiosk.security.gesture_corner" = "退出手勢角落";
-"kiosk.security.gesture_footer" = "點擊%@角落 %li 次以於鎖定時存取 Kiosk 設定。";
+"kiosk.security.gesture_footer" = "點選 %1$@ 角落 %2$@ 次以於鎖定狀態下進入 Kiosk 設定。";
 "kiosk.security.hide_status_bar" = "隱藏狀態列";
 "kiosk.security.prevent_autolock" = "防止自動鎖定";
 "kiosk.security.secret_gesture" = "秘密手勢角落";
@@ -498,6 +500,21 @@
 "kiosk.security.taps_required" = "需要點擊：%li";
 "kiosk.title" = "Kiosk 模式";
 "legacy_actions.disclaimer" = "舊版 iOS 操作已不再是與 Home Assistant 互動的建議方式，請直接於小工具、Apple Watch 與 CarPlay 中使用腳本、場景與自動化。";
+"live_activity.empty_state" = "沒有即時動態";
+"live_activity.end_all.button" = "結束所有即時動態";
+"live_activity.end_all.confirm.button" = "全部結束";
+"live_activity.end_all.confirm.title" = "結束所有即時動態？";
+"live_activity.frequent_updates.footer" = "允許 Home Assistant 每秒更新一次即時動態。於設定中開啟 \u203A %@ \u203A 即時動態。";
+"live_activity.frequent_updates.title" = "頻繁更新";
+"live_activity.privacy.message" = "即使沒有 Face ID 或 Touch ID，也可以在鎖定畫面和動態島上查看即時動態內容。請謹慎選擇要顯示的內容。";
+"live_activity.section.active" = "啟用動態";
+"live_activity.section.privacy" = "隱私權";
+"live_activity.section.status" = "狀態";
+"live_activity.status.enabled" = "已開啟";
+"live_activity.status.not_supported" = "iPad 版暫不可用";
+"live_activity.status.open_settings" = "開啟設定";
+"live_activity.subtitle" = "在鎖定畫面和動態島上即時更新 Home Assistant。";
+"live_activity.title" = "即時動態";
 "location_change_notification.app_shortcut.body" = "已透過 App 捷徑更新座標";
 "location_change_notification.background_fetch.body" = "背景取得目前座標";
 "location_change_notification.beacon_region_enter.body" = "已透過 iBeacon 偵測到 %@ 進入";

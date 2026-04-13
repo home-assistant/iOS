@@ -1527,6 +1527,7 @@
 		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
 		C35621B95F7E4548BC8F6D75 /* FolderEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BECEB2525564358A124F818 /* FolderEditView.swift */; };
 		C574CE3276BCE901743FF8C9 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */; };
+		DEFBE1A5E9A005B0A5392D27 /* KioskLocalization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4593A60DBF019E6C91AAA7 /* KioskLocalization.test.swift */; };
 		C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */; };
 		CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */; };
 		CB4D44CC6DBA5176155E157E /* KioskSecretExitGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */; };
@@ -3476,6 +3477,7 @@
 		E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Intents-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Intents-metadata.plist"; sourceTree = "<group>"; };
 		ED4B2D38DF1316D881D79769 /* Pods-iOS-Shared-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntitiesTimelineProvider.swift; sourceTree = "<group>"; };
+		4F4593A60DBF019E6C91AAA7 /* KioskLocalization.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskLocalization.test.swift; sourceTree = "<group>"; };
 		EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
 		F49767602CA2066683EC638F /* KioskSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsView.swift; sourceTree = "<group>"; };
 		F6DA82FEEE2DDC3B2CC20DA3 /* Pods_iOS_Extensions_NotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_NotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3681,6 +3683,7 @@
 		06D62F8A8D381DAFB70C6B31 /* Kiosk */ = {
 			isa = PBXGroup;
 			children = (
+				4F4593A60DBF019E6C91AAA7 /* KioskLocalization.test.swift */,
 				EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */,
 			);
 			path = Kiosk;
@@ -9706,6 +9709,7 @@
 				429481EB2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 				C574CE3276BCE901743FF8C9 /* KioskSettings.test.swift in Sources */,
+				DEFBE1A5E9A005B0A5392D27 /* KioskLocalization.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

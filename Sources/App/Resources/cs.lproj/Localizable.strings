@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "Přetažením přeuspořádáte";
 "cameras.no_server_found" = "Pro kameru nebyl nalezen server: %@";
 "cancel_label" = "Zrušit";
+"carPlay.action.execute.in_progress" = "Provádění...";
 "carPlay.action.intro.item.body" = "Klepnutím pokračujte na vašem iPhonu";
 "carPlay.action.intro.item.title" = "Vytvořte svou první akci";
 "carPlay.config.tabs.title" = "Karty";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "Opravdu chcete provést akci uzamčení na %@?";
 "carplay.navigation.button.next" = "Další";
 "carplay.navigation.button.previous" = "Předchozí";
+"carplay.tab.quick_access.layout" = "Rozložení";
 "carplay.unlock.confirmation.title" = "Opravdu chcete provést akci odemknutí na %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Odložený režim není pro požadovanou přesnost podporován.";
 "cl_error.description.deferred_canceled" = "Žádost o odložené aktualizace byla zrušena Vaší aplikací nebo správcem místa.";
@@ -490,7 +492,7 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "kiosk.section.title" = "Režim kiosku";
 "kiosk.security.device_auth" = "Ověření zařízení";
 "kiosk.security.gesture_corner" = "Roh pro gesto pro ukončení";
-"kiosk.security.gesture_footer" = "Klepněte na %@ roh %likrát pro přístup k nastavení kiosku, když je uzamčen.";
+"kiosk.security.gesture_footer" = "Klepněte na %1$@ roh %2$@krát pro přístup k nastavení kiosku, když je uzamčen.";
 "kiosk.security.hide_status_bar" = "Skrýt stavový řádek";
 "kiosk.security.prevent_autolock" = "Zabránit automatickému uzamčení";
 "kiosk.security.secret_gesture" = "Tajné gesto pro ukončení";
@@ -498,6 +500,21 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "kiosk.security.taps_required" = "Požadovaná klepnutí: %li";
 "kiosk.title" = "Režim kiosku";
 "legacy_actions.disclaimer" = "Akce starších verzí systému iOS již nejsou doporučeným způsobem interakce s Home Asistentem. Používejte skripty, scény a automatizace přímo ve widgetech, Apple Watch a CarPlay.";
+"live_activity.empty_state" = "Žádné aktivní živé aktivity";
+"live_activity.end_all.button" = "Ukončit všechny aktivity";
+"live_activity.end_all.confirm.button" = "Ukončit vše";
+"live_activity.end_all.confirm.title" = "Ukončit všechny živé aktivity?";
+"live_activity.frequent_updates.footer" = "Umožňuje Home Assistantovi aktualizovat živé aktivity až jednou za sekundu. Povolte v Nastavení. \u203A %@ \u203A Živé aktivity.";
+"live_activity.frequent_updates.title" = "Časté aktualizace";
+"live_activity.privacy.message" = "Obsah živých aktivit je viditelný na zamykací obrazovce a v Dynamic Islandu bez použití Face ID nebo Touch ID. Pečlivě si vyberte, co chcete zobrazit.";
+"live_activity.section.active" = "Aktivní aktivity";
+"live_activity.section.privacy" = "Soukromí";
+"live_activity.section.status" = "Stav";
+"live_activity.status.enabled" = "Povoleno";
+"live_activity.status.not_supported" = "Není dostupné na iPadu";
+"live_activity.status.open_settings" = "Otevřít Nastavení";
+"live_activity.subtitle" = "Aktualizace Home Assistanta v reálném čase na zamykací obrazovce a v Dynamic Islandu.";
+"live_activity.title" = "Živé aktivity";
 "location_change_notification.app_shortcut.body" = "Poloha aktualizována přes zástupce aplikace";
 "location_change_notification.background_fetch.body" = "Doručení aktuální polohy spuštěno prostřednictvím načtení na pozadí";
 "location_change_notification.beacon_region_enter.body" = "%@ vstoupil přes iBeacon";

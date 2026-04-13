@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "拖放即可重新排序";
 "cameras.no_server_found" = "未找到摄像头的服务器：%@";
 "cancel_label" = "取消";
+"carPlay.action.execute.in_progress" = "正在执行……";
 "carPlay.action.intro.item.body" = "在您的 iPhone 上点击并继续";
 "carPlay.action.intro.item.title" = "创建您的第一个动作";
 "carPlay.config.tabs.title" = "标签";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "您确定要对%@执行锁定动作吗 ？";
 "carplay.navigation.button.next" = "下一步";
 "carplay.navigation.button.previous" = "上一步";
+"carplay.tab.quick_access.layout" = "布局";
 "carplay.unlock.confirmation.title" = "您确定要对%@执行解锁动作吗 ？";
 "cl_error.description.deferred_accuracy_too_low" = "要求的准确性不支持延迟模式。";
 "cl_error.description.deferred_canceled" = "延迟更新的请求已被应用程序或位置管理器取消。";
@@ -490,7 +492,7 @@
 "kiosk.section.title" = "信息亭模式";
 "kiosk.security.device_auth" = "设备认证";
 "kiosk.security.gesture_corner" = "退出手势角";
-"kiosk.security.gesture_footer" = "点击 %@ 角 %li 次可在锁定状态下访问信息亭设置。";
+"kiosk.security.gesture_footer" = "点击 %1$@ 角落 %2$@ 次可在锁定状态下访问 kiosk 设置。";
 "kiosk.security.hide_status_bar" = "隐藏状态栏";
 "kiosk.security.prevent_autolock" = "防止自动锁定";
 "kiosk.security.secret_gesture" = "安全退出手势";
@@ -498,6 +500,21 @@
 "kiosk.security.taps_required" = "需要点击次数：%li";
 "kiosk.title" = "信息亭模式";
 "legacy_actions.disclaimer" = "不再推荐使用旧版 iOS 动作与 Home Assistant 交互，请直接在小部件、Apple Watch 和 CarPlay 中使用脚本、场景和自动化。";
+"live_activity.empty_state" = "暂无活跃的实时活动";
+"live_activity.end_all.button" = "结束所有活动";
+"live_activity.end_all.confirm.button" = "全部结束";
+"live_activity.end_all.confirm.title" = "结束所有实时活动吗 ？";
+"live_activity.frequent_updates.footer" = "允许 Home Assistant 每秒更新一次实时活动。在“设置” \u203A %@ \u203A “实时活动”中启用。";
+"live_activity.frequent_updates.title" = "频繁更新";
+"live_activity.privacy.message" = "即使没有面容 ID 或触控 ID，您也可以在锁定屏幕和动态岛屿上查看实时活动内容。请谨慎选择要显示的内容。";
+"live_activity.section.active" = "活跃活动";
+"live_activity.section.privacy" = "隐私";
+"live_activity.section.status" = "状况";
+"live_activity.status.enabled" = "已启用";
+"live_activity.status.not_supported" = "iPad 版暂不可用";
+"live_activity.status.open_settings" = "打开设置";
+"live_activity.subtitle" = "在锁屏和动态岛屿上实时更新 Home Assistant 。";
+"live_activity.title" = "实时活动";
 "location_change_notification.app_shortcut.body" = "通过应用捷径更新位置";
 "location_change_notification.background_fetch.body" = "通过后台获取当前位置信息";
 "location_change_notification.beacon_region_enter.body" = "%@ 由 iBeacon 识别进入";

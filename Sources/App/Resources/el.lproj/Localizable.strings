@@ -165,6 +165,7 @@
 "cameras.drag_to_reorder" = "Σύρετε και αποθέστε για αναδιάταξη";
 "cameras.no_server_found" = "Δεν βρέθηκε server για την κάμερα: %@";
 "cancel_label" = "Ακύρωση";
+"carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
 "carPlay.config.tabs.title" = "Καρτέλες";
@@ -208,6 +209,7 @@
 "carplay.lock.confirmation.title" = "Είστε σίγουροι ότι θέλετε να εκτελέσετε ενέργεια κλειδώματος στο %@;";
 "carplay.navigation.button.next" = "Επόμενο";
 "carplay.navigation.button.previous" = "Προηγούμενο";
+"carplay.tab.quick_access.layout" = "Layout";
 "carplay.unlock.confirmation.title" = "Είστε σίγουροι ότι θέλετε να εκτελέσετε ενέργεια ξεκλειδώματος στο %@;";
 "cl_error.description.deferred_accuracy_too_low" = "Η λειτουργία αναβολής δεν υποστηρίζεται για την ακρίβεια που ζητήθηκε.";
 "cl_error.description.deferred_canceled" = "Το αίτημα για αναβαλλόμενες ενημερώσεις ακυρώθηκε από την εφαρμογή σας ή από το διαχειριστή τοποθεσίας.";
@@ -490,7 +492,7 @@
 "kiosk.section.title" = "Λειτουργία κιόσκι";
 "kiosk.security.device_auth" = "Ελεγχος ταυτότητας συσκευής";
 "kiosk.security.gesture_corner" = "Γωνία χειρονομίας εξόδου";
-"kiosk.security.gesture_footer" = "Πατήστε τη γωνία %@ %li φορές για να αποκτήσετε πρόσβαση στις ρυθμίσεις κιόσκι όταν είναι κλειδωμένο.";
+"kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
 "kiosk.security.hide_status_bar" = "Απόκρυψη γραμμής κατάστασης";
 "kiosk.security.prevent_autolock" = "Αποτροπή αυτόματου κλειδώματος";
 "kiosk.security.secret_gesture" = "Μυστική χειρονομία εξόδου";
@@ -498,6 +500,21 @@
 "kiosk.security.taps_required" = "Απαιτούμενες πατήματα: %li";
 "kiosk.title" = "Λειτουργία κιόσκι";
 "legacy_actions.disclaimer" = "Οι παλαιού τύπου Ενέργειες iOS δεν είναι πλέον ο συνιστώμενος τρόπος αλληλεπίδρασης με το Home Assistant, παρακαλώ χρησιμοποιήστε Σενάρια, Σκηνές και Αυτοματισμούς απευθείας στα Γραφικά στοιχεία, το Apple Watch και το CarPlay.";
+"live_activity.empty_state" = "No active Live Activities";
+"live_activity.end_all.button" = "End All Activities";
+"live_activity.end_all.confirm.button" = "End All";
+"live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
+"live_activity.frequent_updates.title" = "Frequent Updates";
+"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
+"live_activity.section.active" = "Active Activities";
+"live_activity.section.privacy" = "Privacy";
+"live_activity.section.status" = "Status";
+"live_activity.status.enabled" = "Enabled";
+"live_activity.status.not_supported" = "Not available on iPad";
+"live_activity.status.open_settings" = "Open Settings";
+"live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
+"live_activity.title" = "Live Activities";
 "location_change_notification.app_shortcut.body" = "Η τοποθεσία ενημερώθηκε μέσω συντόμευσης εφαρμογής";
 "location_change_notification.background_fetch.body" = "Η τρέχουσα παράδοση τοποθεσίας πυροδοτήθηκε μέσω λήψης φόντου";
 "location_change_notification.beacon_region_enter.body" = "%@ εισήχθη μέσω iBeacon";

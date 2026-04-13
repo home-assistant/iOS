@@ -1832,9 +1832,9 @@ public enum L10n {
       public static var deviceAuth: String { return L10n.tr("Localizable", "kiosk.security.device_auth") }
       /// Exit Gesture Corner
       public static var gestureCorner: String { return L10n.tr("Localizable", "kiosk.security.gesture_corner") }
-      /// Tap the %@ corner %li times to access kiosk settings when locked.
-      public static func gestureFooter(_ p1: Any, _ p2: Int) -> String {
-        return L10n.tr("Localizable", "kiosk.security.gesture_footer", String(describing: p1), p2)
+      /// Tap the %1$@ corner %2$@ times to access kiosk settings when locked.
+      public static func gestureFooter(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "kiosk.security.gesture_footer", String(describing: p1), String(describing: p2))
       }
       /// Hide Status Bar
       public static var hideStatusBar: String { return L10n.tr("Localizable", "kiosk.security.hide_status_bar") }

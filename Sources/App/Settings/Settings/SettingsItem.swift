@@ -112,9 +112,13 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications:
             SettingsNotificationsView()
         case .liveActivities:
+            #if os(iOS) && !targetEnvironment(macCatalyst)
             if #available(iOS 17.2, *) {
                 LiveActivitySettingsView()
             }
+            #else
+            EmptyView()
+            #endif
         case .sensors:
             SensorListView()
         case .nfc:

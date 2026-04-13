@@ -1,3 +1,4 @@
+#if os(iOS) && !targetEnvironment(macCatalyst)
 import ActivityKit
 import Shared
 import SwiftUI
@@ -685,3 +686,4 @@ private struct ActivitySnapshot: Identifiable {
         self.message = activity.content.state.message
     }
 }
+#endif
