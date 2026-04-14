@@ -28,12 +28,24 @@ public class HomeAssistantAPI {
         case unknown
     }
 
-    private struct TokenFetchFailure: LocalizedError {
+    struct TokenFetchFailure: LocalizedError {
         let underlyingType: String
+        let shouldDisconnectPermanently: Bool
 
         var errorDescription: String? {
             "Token fetch failed (\(underlyingType))"
         }
+    }
+
+    static func tokenFetchFailure(from error: Error) -> TokenFetchFailure {
+        let errorType = String(reflecting: type(of: error))
+        let errorDescription = String(describing: error)
+        let underlyingInfo = "\(errorType): \(errorDescription)"
+
+        return TokenFetchFailure(
+            underlyingType: underlyingInfo,
+            shouldDisconnectPermanently: error.authenticationAPIError?.shouldRequireReauthentication == true
+        )
     }
 
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
@@ -162,13 +174,13 @@ public class HomeAssistantAPI {
                         let errorDescription = String(describing: error)
                         Current.Log
                             .error("HAKit token fetch failed with error type: \(errorType), error: \(errorDescription)")
-                        let underlyingInfo = "\(errorType): \(errorDescription)"
-                        completion(.failure(TokenFetchFailure(underlyingType: underlyingInfo)))
+                        completion(.failure(Self.tokenFetchFailure(from: error)))
                     }
                 }
             ),
             urlSession: hakitURLSession
         )
+        connection.delegate = self
 
         #if !os(watchOS)
         // Use custom delegate that supports client certificates (mTLS)
@@ -1175,5 +1187,18 @@ extension HomeAssistantAPI: SensorObserver {
 
     public func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
         // we don't do anything for this
+    }
+}
+
+extension HomeAssistantAPI: HAConnectionDelegate {
+    public func connection(_ connection: HAConnection, didTransitionTo state: HAConnectionState) {
+        guard case let .disconnected(reason: .waitingToReconnect(lastError: error, atLatest: _, retryCount: _)) = state,
+              let tokenFetchFailure = error as? TokenFetchFailure,
+              tokenFetchFailure.shouldDisconnectPermanently else {
+            return
+        }
+
+        Current.Log.info("stopping websocket reconnects after fatal auth token fetch failure")
+        connection.disconnect()
     }
 }

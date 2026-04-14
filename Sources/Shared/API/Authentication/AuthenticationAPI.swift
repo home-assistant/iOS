@@ -19,6 +19,21 @@ public class AuthenticationAPI {
                 return [String(describing: statusCode), errorCode, error].compactMap { $0 }.joined(separator: ", ")
             }
         }
+
+        var shouldRequireReauthentication: Bool {
+            if case let .serverError(statusCode, _, _) = self {
+                return (400 ... 403).contains(statusCode)
+            }
+
+            return false
+        }
+
+        var statusCode: Int {
+            switch self {
+            case let .serverError(statusCode, _, _):
+                return statusCode
+            }
+        }
     }
 
     let server: Server
@@ -192,5 +207,15 @@ extension DataRequest {
                 ))
             }
         }
+    }
+}
+
+extension Error {
+    var authenticationAPIError: AuthenticationAPI.AuthenticationError? {
+        if let authenticationError = self as? AuthenticationAPI.AuthenticationError {
+            return authenticationError
+        }
+
+        return (self as? AFError)?.underlyingError as? AuthenticationAPI.AuthenticationError
     }
 }
