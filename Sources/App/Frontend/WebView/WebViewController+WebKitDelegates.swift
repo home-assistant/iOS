@@ -253,9 +253,6 @@ extension WebViewController: UIScrollViewDelegate {
         }
     }
 
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        recordKioskActivity()
-    }
 }
 
 extension WebViewController: UIGestureRecognizerDelegate {

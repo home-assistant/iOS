@@ -23,13 +23,21 @@ extension WebViewController {
 
     // MARK: - Touch Handling
 
-    /// Add a tap gesture recognizer to detect WebView touches for the idle timer.
+    /// Add gesture recognizers to detect WebView touches for the idle timer.
     /// WKWebView consumes touch events, so without this the idle timer never resets.
     private func setupKioskTouchDetection() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(kioskTouchDetected))
         tap.cancelsTouchesInView = false
         tap.delegate = self
         webView.addGestureRecognizer(tap)
+
+        // Use a pan gesture recognizer to detect scrolls without overriding
+        // webView.scrollView.delegate, which would break WKWebView's internal
+        // scroll management (keyboard avoidance, content insets) on iOS 26+.
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(kioskTouchDetected))
+        pan.cancelsTouchesInView = false
+        pan.delegate = self
+        webView.addGestureRecognizer(pan)
     }
 
     @objc private func kioskTouchDetected() {

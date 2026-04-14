@@ -62,47 +62,4 @@ enum WebViewJavascriptCommands {
     document.dispatchEvent(event);
     """
 
-    static var scrollFocusedElementIntoView = """
-    (function() {
-        function activeElement(root) {
-            let element = root.activeElement;
-
-            while (element && element.shadowRoot && element.shadowRoot.activeElement) {
-                element = element.shadowRoot.activeElement;
-            }
-
-            return element;
-        }
-
-        const element = activeElement(document);
-        if (!element) {
-            return false;
-        }
-
-        const tagName = element.tagName ? element.tagName.toUpperCase() : '';
-        const isEditable = element.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName);
-        if (!isEditable) {
-            return false;
-        }
-
-        const viewport = window.visualViewport;
-        const viewportHeight = viewport ? viewport.height : window.innerHeight;
-        const viewportOffsetTop = viewport ? viewport.offsetTop : 0;
-        const padding = 24;
-        const rect = element.getBoundingClientRect();
-        const visibleTop = viewportOffsetTop + padding;
-        const visibleBottom = viewportOffsetTop + viewportHeight - padding;
-
-        if (rect.top >= visibleTop && rect.bottom <= visibleBottom) {
-            return true;
-        }
-
-        element.scrollIntoView({
-            block: 'center',
-            inline: 'nearest',
-            behavior: 'auto'
-        });
-        return true;
-    })();
-    """
 }
