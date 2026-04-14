@@ -23,7 +23,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
-    var emptyStateView: UIView?
+    var emptyStateView: WebViewEmptyStateWrapperView?
     let emptyStateTransitionDuration: TimeInterval = 0.3
 
     var statusBarView: UIView?

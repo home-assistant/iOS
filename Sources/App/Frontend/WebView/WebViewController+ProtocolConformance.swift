@@ -59,14 +59,22 @@ extension WebViewController: WebViewControllerProtocol {
         emptyStateTimer?.invalidate()
         emptyStateTimer = nil
 
-        let state = FrontEndConnectionState(rawValue: state) ?? .unknown
-        isConnected = state == .connected
-        connectionState = state
+        let requestedState = FrontEndConnectionState(rawValue: state) ?? .unknown
+        let resolvedState: FrontEndConnectionState = if connectionState == .authInvalid, requestedState != .connected {
+            .authInvalid
+        } else {
+            requestedState
+        }
+        isConnected = resolvedState == .connected
+        connectionState = resolvedState
 
         // Possible values: connected, disconnected, auth-invalid
-        if state == .connected {
+        switch resolvedState {
+        case .connected:
             hideEmptyState()
-        } else {
+        case .authInvalid:
+            showEmptyState()
+        case .disconnected, .unknown:
             // Start a 10-second timer. If not interrupted by a 'connected' state, set alpha to 1.
             emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
                 self?.showEmptyState()
