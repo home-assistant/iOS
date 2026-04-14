@@ -60,6 +60,51 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.keyboardFocusedElementScrollWorkItem)
     }
 
+    func testEmptyStateStyleUsesUnauthenticatedVariantForAuthInvalidConnectionState() {
+        let sut = makeSUT()
+
+        let style = sut.emptyStateStyle(for: .authInvalid)
+
+        XCTAssertEqual(style, .unauthenticated)
+    }
+
+    func testEmptyStateStyleUsesDisconnectedVariantForDisconnectedConnectionState() {
+        let sut = makeSUT()
+
+        let style = sut.emptyStateStyle(for: .disconnected)
+
+        XCTAssertEqual(style, .disconnected)
+    }
+
+    func testResetEmptyStateTimerKeepsAuthInvalidConnectionState() {
+        let sut = makeSUT()
+        sut.connectionState = .authInvalid
+        sut.isConnected = false
+
+        sut.resetEmptyStateTimerWithLatestConnectedState()
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+    }
+
+    func testUpdateFrontendConnectionStateDoesNotDowngradeAuthInvalidToDisconnected() {
+        let sut = makeSUT()
+        sut.connectionState = .authInvalid
+
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    func testUpdateFrontendConnectionStateSchedulesTimerForDisconnectedState() {
+        let sut = makeSUT()
+
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+
+        XCTAssertEqual(sut.connectionState, .disconnected)
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
     private func makeSUT() -> WebViewController {
         let sut = WebViewController(server: .fake())
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))

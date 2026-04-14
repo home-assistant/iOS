@@ -2,10 +2,52 @@ import Shared
 import SwiftUI
 import UIKit
 
+enum WebViewEmptyStateStyle: Equatable {
+    case disconnected
+    case unauthenticated
+
+    var title: String {
+        switch self {
+        case .disconnected:
+            L10n.WebView.EmptyState.title
+        case .unauthenticated:
+            L10n.Unauthenticated.Message.title
+        }
+    }
+
+    var body: String {
+        switch self {
+        case .disconnected:
+            L10n.WebView.EmptyState.body
+        case .unauthenticated:
+            L10n.Unauthenticated.Message.body
+        }
+    }
+
+    var primaryButtonTitle: String {
+        switch self {
+        case .disconnected:
+            L10n.WebView.EmptyState.retryButton
+        case .unauthenticated:
+            L10n.WebView.EmptyState.openSettingsButton
+        }
+    }
+
+    var secondaryButtonTitle: String {
+        switch self {
+        case .disconnected:
+            L10n.WebView.EmptyState.openSettingsButton
+        case .unauthenticated:
+            L10n.WebView.EmptyState.retryButton
+        }
+    }
+}
+
 struct WebViewEmptyStateView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     @State private var showCloseButton = false
+    let style: WebViewEmptyStateStyle
     let server: Server
     let retryAction: (() -> Void)?
     let settingsAction: (() -> Void)?
@@ -40,27 +82,19 @@ struct WebViewEmptyStateView: View {
                 .scaledToFit()
                 .frame(width: 80, height: 80)
                 .foregroundColor(.accentColor)
-            Text(L10n.WebView.EmptyState.title)
+            Text(style.title)
                 .font(.title2)
                 .fontWeight(.semibold)
-            Text(L10n.WebView.EmptyState.body)
+            Text(style.body)
                 .font(.callout)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, DesignSystem.Spaces.two)
             VStack(spacing: DesignSystem.Spaces.one) {
-                Button(action: {
-                    retryAction?()
-                }) {
-                    Text(L10n.WebView.EmptyState.retryButton)
-                }
-                .buttonStyle(.primaryButton)
-                Button(action: {
-                    settingsAction?()
-                }) {
-                    Text(L10n.WebView.EmptyState.openSettingsButton)
-                }
-                .buttonStyle(.secondaryButton)
+                primaryButton
+                    .buttonStyle(.primaryButton)
+                secondaryButton
+                    .buttonStyle(.secondaryButton)
             }
             .frame(maxWidth: Sizes.maxWidthForLargerScreens)
             .padding(.horizontal, DesignSystem.Spaces.two)
@@ -87,24 +121,60 @@ struct WebViewEmptyStateView: View {
             }
         }
     }
+
+    private var primaryButton: some View {
+        Button(action: {
+            switch style {
+            case .disconnected:
+                retryAction?()
+            case .unauthenticated:
+                settingsAction?()
+            }
+        }) {
+            Text(style.primaryButtonTitle)
+        }
+    }
+
+    private var secondaryButton: some View {
+        Button(action: {
+            switch style {
+            case .disconnected:
+                settingsAction?()
+            case .unauthenticated:
+                retryAction?()
+            }
+        }) {
+            Text(style.secondaryButtonTitle)
+        }
+    }
 }
 
 #Preview {
-    WebViewEmptyStateView(server: ServerFixture.standard) {} settingsAction: {} dismissAction: {}
+    WebViewEmptyStateView(style: .disconnected, server: ServerFixture.standard) {} settingsAction: {} dismissAction: {}
 }
 
 final class WebViewEmptyStateWrapperView: UIView {
     private let hostingController: UIHostingController<WebViewEmptyStateView>
     private let server: Server
+    private let retryAction: (() -> Void)?
+    private let settingsAction: (() -> Void)?
+    private let dismissAction: (() -> Void)?
+    private(set) var style: WebViewEmptyStateStyle
 
     init(
+        style: WebViewEmptyStateStyle = .disconnected,
         server: Server,
         retryAction: (() -> Void)? = nil,
         settingsAction: (() -> Void)? = nil,
         dismissAction: (() -> Void)? = nil
     ) {
+        self.style = style
         self.server = server
+        self.retryAction = retryAction
+        self.settingsAction = settingsAction
+        self.dismissAction = dismissAction
         let swiftUIView = WebViewEmptyStateView(
+            style: style,
             server: server,
             retryAction: retryAction,
             settingsAction: settingsAction,
@@ -130,5 +200,17 @@ final class WebViewEmptyStateWrapperView: UIView {
             hostingController.view.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
         backgroundColor = .clear
+    }
+
+    func updateStyle(_ style: WebViewEmptyStateStyle) {
+        guard self.style != style else { return }
+        self.style = style
+        hostingController.rootView = WebViewEmptyStateView(
+            style: style,
+            server: server,
+            retryAction: retryAction,
+            settingsAction: settingsAction,
+            dismissAction: dismissAction
+        )
     }
 }
