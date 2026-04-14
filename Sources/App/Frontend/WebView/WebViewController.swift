@@ -8,7 +8,6 @@ import KeychainAccess
 import MBProgressHUD
 import PromiseKit
 import Shared
-import SwiftMessages
 import SwiftUI
 import UIKit
 @preconcurrency import WebKit
@@ -31,6 +30,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var webViewTopConstraint: NSLayoutConstraint?
     var webViewBottomConstraint: NSLayoutConstraint?
     var keyboardFocusedElementScrollWorkItem: DispatchWorkItem?
+    var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
 
     var initialURL: URL?
     var statusBarButtonsStack: UIStackView?

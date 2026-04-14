@@ -61,6 +61,14 @@ extension WebViewController: WebViewControllerProtocol {
         }
     }
 
+    func showBanner(request: BannerRequest) {
+        bannerPresenter.show(on: self, request: request)
+    }
+
+    func hideBanner(id: String) {
+        bannerPresenter.hide(id: id)
+    }
+
     func reload() {
         webView.reload()
     }

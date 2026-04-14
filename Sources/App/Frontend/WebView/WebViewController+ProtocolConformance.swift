@@ -80,6 +80,14 @@ extension WebViewController: WebViewControllerProtocol {
         }
     }
 
+    func showBanner(request: BannerRequest) {
+        bannerPresenter.show(on: self, request: request)
+    }
+
+    func hideBanner(id: String) {
+        bannerPresenter.hide(id: id)
+    }
+
     func load(request: URLRequest) {
         Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
         webView.load(request)
