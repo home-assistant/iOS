@@ -504,29 +504,9 @@ extension WebViewController {
         }
 
         // Avoid retrying from Home Assistant UI since this is a dead end
+        connectionState = .authInvalid
         load(request: URLRequest(url: URL(string: "about:blank")!))
         showEmptyState()
-        showBanner(request: .init(
-            id: "reauth-\(serverId)",
-            title: L10n.Unauthenticated.Message.title,
-            message: L10n.Unauthenticated.Message.body,
-            duration: .forever,
-            dimming: .gray(interactive: true),
-            style: .warning,
-            action: .init(
-                image: MaterialDesignIcons.cogIcon.image(
-                    ofSize: CGSize(width: 24, height: 24),
-                    color: .haPrimary
-                ),
-                tintColor: .haPrimary,
-                accessibilityLabel: L10n.ConnectionError.OpenSettings.title,
-                dismissOnTap: false,
-                handler: { [weak self] in
-                    self?.showSettingsViewController()
-                }
-            ),
-            dimmingAccessibilityLabel: L10n.cancelLabel
-        ))
     }
 
     func showActionAutomationEditorNotAvailable() {
