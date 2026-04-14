@@ -19,25 +19,10 @@ final class CarPlayEntitiesListViewModel {
     private var entitiesCachedStates: HACachedStates
 
     private var entityProviders: [CarPlayEntityListItem] = []
+    private var excludedEntityIds: Set<String> = []
     weak var templateProvider: CarPlayEntitiesListTemplate?
 
     private var sortedEntities: [HAEntity] {
-        // Fetch entity registry data to exclude hidden and configuration/diagnostic entities
-        let excludedEntityIds: Set<String> = {
-            do {
-                let registryEntities = try AppEntityRegistry.config(serverId: server.identifier.rawValue)
-                return Set(
-                    registryEntities
-                        .filter { $0.entityCategory != nil || $0.isHidden }
-                        .compactMap(\.entityId)
-                )
-            } catch {
-                Current.Log
-                    .error("Failed to fetch entity registry for CarPlay filtering: \(error.localizedDescription)")
-                return []
-            }
-        }()
-
         let entities = entitiesCachedStates.all.filter({ entity in
             // Filter out hidden entities and entities with categories (configuration/diagnostic)
             guard !excludedEntityIds.contains(entity.entityId) else {
@@ -91,7 +76,23 @@ final class CarPlayEntitiesListViewModel {
         self.entitiesCachedStates = entitiesCachedStates
     }
 
+    private func refreshExcludedEntityIds() {
+        do {
+            let registryEntities = try AppEntityRegistry.config(serverId: server.identifier.rawValue)
+            excludedEntityIds = Set(
+                registryEntities
+                    .filter { $0.entityCategory != nil || $0.isHidden }
+                    .compactMap(\.entityId)
+            )
+        } catch {
+            Current.Log
+                .error("Failed to fetch entity registry for CarPlay filtering: \(error.localizedDescription)")
+            excludedEntityIds = []
+        }
+    }
+
     func update() {
+        refreshExcludedEntityIds()
         // Fetch all areas for this server once and create a lookup map
         let areas: [AppArea]
         do {
