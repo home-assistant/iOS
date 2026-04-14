@@ -156,12 +156,6 @@ protocol BannerPresenter: AnyObject {
     func hide(id: String)
 }
 
-private enum BannerDismissReason {
-    case action
-    case backgroundTap
-    case programmatic
-}
-
 final class DefaultBannerPresenter: BannerPresenter {
     private weak var currentOverlay: BannerOverlayView?
     private var currentRequest: BannerRequest?
@@ -180,13 +174,9 @@ final class DefaultBannerPresenter: BannerPresenter {
 
             let overlay = BannerOverlayView(request: request)
             overlay.translatesAutoresizingMaskIntoConstraints = false
-            overlay.onDismissRequested = { [weak self, weak overlay] reason in
+            overlay.onDismissRequested = { [weak self, weak overlay] in
                 guard let self, let overlay, currentOverlay === overlay else { return }
-                dismissCurrent(animated: true, after: {
-                    if case .action = reason {
-                        request.action?.handler()
-                    }
-                })
+                dismissCurrent(animated: true)
             }
             overlay.onActionRequested = { [weak self, weak overlay] in
                 guard let self, let overlay, currentOverlay === overlay else { return }
@@ -265,7 +255,7 @@ private final class BannerOverlayView: UIView {
     private let messageLabel = UILabel()
     private let actionButton = UIButton(type: .system)
 
-    var onDismissRequested: ((BannerDismissReason) -> Void)?
+    var onDismissRequested: (() -> Void)?
     var onActionRequested: (() -> Void)?
 
     init(request: BannerRequest) {
@@ -442,7 +432,7 @@ private final class BannerOverlayView: UIView {
 
     @objc private func backgroundTapped() {
         guard request.dimming.isInteractive else { return }
-        onDismissRequested?(.backgroundTap)
+        onDismissRequested?()
     }
 
     @objc private func actionTapped() {
