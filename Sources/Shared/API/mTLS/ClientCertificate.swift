@@ -107,9 +107,17 @@ public final class ClientCertificateManager {
             }
         }
 
+        // Extract intermediate certificates from the chain returned by SecPKCS12Import.
+        // kSecImportItemCertChain contains all certs in the P12 ordered leaf-first; everything
+        // after the leaf (index > 0) is an intermediate (or root) that must be sent during the
+        // TLS handshake so the server can build the trust chain when an intermediate CA is used.
+        let certChain = firstItem[kSecImportItemCertChain as String] as? [SecCertificate] ?? []
+        let intermediateCerts = Array(certChain.dropFirst())
+
         // Store identity in Keychain
         let keychainIdentifier = "com.ha-ios.mtls.\(identifier)"
         try storeIdentity(secIdentity, identifier: keychainIdentifier)
+        storeIntermediateCertificates(intermediateCerts, for: keychainIdentifier)
 
         return ClientCertificate(
             keychainIdentifier: keychainIdentifier,
@@ -183,32 +191,93 @@ public final class ClientCertificateManager {
     /// Create a URLCredential from a stored certificate
     public func urlCredential(for certificate: ClientCertificate) throws -> URLCredential {
         let identity = try retrieveIdentity(for: certificate)
-        var leafCertificate: SecCertificate?
-        let status = SecIdentityCopyCertificate(identity, &leafCertificate)
 
-        if status == errSecSuccess, let leafCertificate {
-            // Include the leaf certificate so TLS client-auth always sends a non-empty certificate list.
-            return URLCredential(identity: identity, certificates: [leafCertificate], persistence: .forSession)
+        var certChain: [SecCertificate] = []
+
+        // Include the leaf certificate.
+        var leafCertificate: SecCertificate?
+        if SecIdentityCopyCertificate(identity, &leafCertificate) == errSecSuccess, let leafCertificate {
+            certChain.append(leafCertificate)
+        }
+
+        // Include intermediate certificates so the server can verify the full chain when the
+        // client certificate was signed by an intermediate CA rather than the root directly.
+        let intermediates = retrieveIntermediateCertificates(for: certificate.keychainIdentifier)
+        certChain.append(contentsOf: intermediates)
+
+        if !certChain.isEmpty {
+            return URLCredential(identity: identity, certificates: certChain, persistence: .forSession)
         }
 
         Current.Log
-            .warning(
-                "Failed to copy client certificate from identity (\(status)); falling back to identity-only credential"
-            )
+            .warning("Failed to copy client certificate from identity; falling back to identity-only credential")
         return URLCredential(identity: identity, certificates: nil, persistence: .forSession)
+    }
+
+    // MARK: - Intermediate Certificate Chain
+
+    private func intermediateChainLabel(for identifier: String) -> String {
+        "\(identifier).chain"
+    }
+
+    /// Persist intermediate (and/or root) certificates from the P12 chain alongside the identity.
+    private func storeIntermediateCertificates(_ certs: [SecCertificate], for identifier: String) {
+        let label = intermediateChainLabel(for: identifier)
+        // Clear any previously stored chain for this identifier before writing the new one.
+        let deleteQuery: [String: Any] = [
+            kSecClass as String: kSecClassCertificate,
+            kSecAttrLabel as String: label,
+        ]
+        SecItemDelete(deleteQuery as CFDictionary)
+
+        for cert in certs {
+            let addQuery: [String: Any] = [
+                kSecClass as String: kSecClassCertificate,
+                kSecValueRef as String: cert,
+                kSecAttrLabel as String: label,
+            ]
+            let status = SecItemAdd(addQuery as CFDictionary, nil)
+            if status != errSecSuccess, status != errSecDuplicateItem {
+                Current.Log.warning("Failed to store intermediate certificate in keychain: \(status)")
+            }
+        }
+    }
+
+    /// Retrieve previously stored intermediate certificates for the given keychain identifier.
+    private func retrieveIntermediateCertificates(for identifier: String) -> [SecCertificate] {
+        let label = intermediateChainLabel(for: identifier)
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassCertificate,
+            kSecAttrLabel as String: label,
+            kSecReturnRef as String: true,
+            kSecMatchLimit as String: kSecMatchLimitAll,
+        ]
+        var result: CFTypeRef?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+              let certs = result as? [SecCertificate] else {
+            return []
+        }
+        return certs
     }
 
     /// Delete a certificate from the Keychain
     public func delete(certificate: ClientCertificate) throws {
-        let query: [String: Any] = [
+        let identityQuery: [String: Any] = [
             kSecClass as String: kSecClassIdentity,
             kSecAttrLabel as String: certificate.keychainIdentifier,
         ]
 
-        let status = SecItemDelete(query as CFDictionary)
+        let status = SecItemDelete(identityQuery as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw ClientCertificateError.keychainError(status)
         }
+
+        // Also delete any stored intermediate certificates for this identity.
+        let chainQuery: [String: Any] = [
+            kSecClass as String: kSecClassCertificate,
+            kSecAttrLabel as String: intermediateChainLabel(for: certificate.keychainIdentifier),
+        ]
+        SecItemDelete(chainQuery as CFDictionary)
     }
 
     /// Extract expiration date from certificate data (simplified)
