@@ -1,5 +1,4 @@
 import Foundation
-import GRDB
 import HAKit
 import PromiseKit
 import Shared
@@ -23,19 +22,15 @@ final class CarPlayEntitiesListViewModel {
     weak var templateProvider: CarPlayEntitiesListTemplate?
 
     private var sortedEntities: [HAEntity] {
-        // Fetch entity registry data to exclude configuration/diagnostic entities
-        let entitiesWithCategories: Set<String> = {
+        // Fetch entity registry data to exclude hidden and configuration/diagnostic entities
+        let excludedEntityIds: Set<String> = {
             do {
-                let registryEntities = try Current.database().read { db in
-                    try AppEntityRegistryListForDisplay
-                        .filter(
-                            Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == server
-                                .identifier.rawValue
-                        )
-                        .fetchAll(db)
-                }
-                // Create a set of entity IDs that have a non-nil category (config/diagnostic entities)
-                return Set(registryEntities.filter { $0.registry.entityCategory != nil }.map(\.entityId))
+                let registryEntities = try AppEntityRegistry.config(serverId: server.identifier.rawValue)
+                return Set(
+                    registryEntities
+                        .filter { $0.entityCategory != nil || $0.isHidden }
+                        .compactMap(\.entityId)
+                )
             } catch {
                 Current.Log
                     .error("Failed to fetch entity registry for CarPlay filtering: \(error.localizedDescription)")
@@ -44,8 +39,8 @@ final class CarPlayEntitiesListViewModel {
         }()
 
         let entities = entitiesCachedStates.all.filter({ entity in
-            // Filter out entities with categories (configuration/diagnostic)
-            guard !entitiesWithCategories.contains(entity.entityId) else {
+            // Filter out hidden entities and entities with categories (configuration/diagnostic)
+            guard !excludedEntityIds.contains(entity.entityId) else {
                 return false
             }
 
