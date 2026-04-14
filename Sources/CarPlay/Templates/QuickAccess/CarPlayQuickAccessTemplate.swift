@@ -38,6 +38,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var executingItemIds: Set<String> = []
     private var executingStartedAt: [String: Date] = [:]
     private var pendingExecutingClearWorkItems: [String: DispatchWorkItem] = [:]
+    private var activeAssistSession: CarPlayAssistSession?
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
@@ -197,6 +198,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 }
                 entityProviders.append(entityProvider)
                 return listItem
+            case .assistPipeline:
+                let pipelineTitle = magicItem.name(info: info)
+                let assistLabel = L10n.Widgets.Action.Name.assist
+                let item = CPListItem(
+                    text: pipelineTitle,
+                    detailText: pipelineTitle == assistLabel ? nil : assistLabel,
+                    image: magicItem.icon(info: info)
+                        .carPlayIcon(color: .init(hex: info.customization?.iconColor) ?? .haPrimary)
+                )
+                item.handler = { [weak self] _, completion in
+                    self?.presentAssistSession(magicItem: magicItem, info: info)
+                    completion()
+                }
+                return item
             default:
                 let item = CPListItem(
                     text: magicItem.name(info: info),
@@ -250,14 +265,22 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 }
 
                 let selectedItem = pageItems[index]
-                self?.itemTap(
-                    magicItem: selectedItem.magicItem,
-                    info: selectedItem.info,
-                    currentItemState: selectedItem.currentState,
-                    executionStarted: { [weak self] in self?.beginExecuting(selectedItem.magicItem) },
-                    executionFinished: { [weak self] in self?.endExecuting(selectedItem.magicItem) }
-                )
-                completion()
+                if selectedItem.magicItem.type == .assistPipeline {
+                    self?.presentAssistSession(
+                        magicItem: selectedItem.magicItem,
+                        info: selectedItem.info
+                    )
+                    completion()
+                } else {
+                    self?.itemTap(
+                        magicItem: selectedItem.magicItem,
+                        info: selectedItem.info,
+                        currentItemState: selectedItem.currentState,
+                        executionStarted: { [weak self] in self?.beginExecuting(selectedItem.magicItem) },
+                        executionFinished: { [weak self] in self?.endExecuting(selectedItem.magicItem) }
+                    )
+                    completion()
+                }
             }
             return rowItem
         }
@@ -464,6 +487,19 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 subtitle: renderedSubtitle(for: magicItem, defaultSubtitle: content.subtitle),
                 currentState: entityProvider.entity.state
             )
+        case .assistPipeline:
+            let iconColor = UIColor(hex: info.customization?.iconColor) ?? .haPrimary
+            let pipelineTitle = magicItem.name(info: info)
+            let assistLabel = L10n.Widgets.Action.Name.assist
+            return RowDisplayItem(
+                magicItem: magicItem,
+                info: info,
+                image: magicItem.icon(info: info).carPlayIcon(color: iconColor),
+                iconColor: iconColor,
+                title: pipelineTitle,
+                subtitle: pipelineTitle == assistLabel ? nil : assistLabel,
+                currentState: ""
+            )
         default:
             let iconColor = UIColor(hex: info.customization?.iconColor) ?? .haPrimary
             return RowDisplayItem(
@@ -495,5 +531,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             }
         }
         return entityToAreaMap
+    }
+
+    private func presentAssistSession(magicItem: MagicItem, info: MagicItem.Info) {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
+            Current.Log.error("Failed to get server for assist pipeline: \(magicItem.id)")
+            return
+        }
+        let session = CarPlayAssistSession(
+            interfaceController: interfaceController,
+            server: server,
+            pipelineId: magicItem.id,
+            pipelineName: magicItem.name(info: info)
+        )
+        activeAssistSession = session
+        session.start()
     }
 }
