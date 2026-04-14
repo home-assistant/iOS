@@ -146,15 +146,6 @@
       }
     },
     {
-      "identity" : "swiftmessages",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SwiftKickMobile/SwiftMessages",
-      "state" : {
-        "revision" : "c0ff6c65bfc00e6a707957cb7069988c5cde2a30",
-        "version" : "10.0.2"
-      }
-    },
-    {
       "identity" : "webrtc",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stasel/WebRTC.git",

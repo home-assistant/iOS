@@ -29,6 +29,8 @@ final class MockWebViewController: WebViewControllerProtocol {
     var lastUpdateImprovEntryViewState = false
     var refreshCalled = false
     var presentAlertControllerCalled = false
+    var shownBannerRequests = [BannerRequest]()
+    var hiddenBannerIDs = [String]()
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -92,6 +94,14 @@ final class MockWebViewController: WebViewControllerProtocol {
     func navigateToPath(path: String) {
         navigateToPathCalled = true
         lastNavigateToPathPath = path
+    }
+
+    func showBanner(request: BannerRequest) {
+        shownBannerRequests.append(request)
+    }
+
+    func hideBanner(id: String) {
+        hiddenBannerIDs.append(id)
     }
 
     func refresh() {

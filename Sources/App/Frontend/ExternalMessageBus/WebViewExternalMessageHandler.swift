@@ -4,7 +4,6 @@ import Improv_iOS
 import PromiseKit
 import SFSafeSymbols
 @preconcurrency import Shared
-import SwiftMessages
 import SwiftUI
 
 // MARK: - Protocol
@@ -423,26 +422,17 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     @MainActor
     private func presentBarcodeScannerMessage(message: String) {
-        var config = SwiftMessages.Config()
-        config.dimMode = .none
-        config.presentationStyle = .bottom
-        config.duration = .seconds(seconds: 3)
-        let view = MessageView.viewFromNib(layout: .cardView)
-        view.configureContent(
+        webViewController?.showBanner(request: .init(
+            id: "BarcodeScannerMessage",
             title: nil,
-            body: message,
-            iconImage: nil,
-            iconText: nil,
-            buttonImage: nil,
-            buttonTitle: nil,
-            buttonTapHandler: { _ in
-                DispatchQueue.main.async {
-                    SwiftMessages.hide()
-                }
-            }
-        )
-        view.id = "BarcodeScannerMessage"
-        SwiftMessages.show(config: config, view: view)
+            message: message,
+            duration: .seconds(3),
+            dimming: .none,
+            style: .card(
+                backgroundColor: .secondarySystemBackground,
+                foregroundColor: .label
+            )
+        ))
     }
 
     @MainActor
