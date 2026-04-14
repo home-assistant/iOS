@@ -245,19 +245,6 @@ extension WebViewController {
     }
 }
 
-extension WebViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Prevent scrollView from scrolling past the top or bottom
-        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height {
-            scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
-        }
-    }
-
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        recordKioskActivity()
-    }
-}
-
 extension WebViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
