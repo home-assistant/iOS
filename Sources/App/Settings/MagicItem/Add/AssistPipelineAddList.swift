@@ -40,7 +40,7 @@ struct AssistPipelineAddList: View {
                         } label: {
                             HStack {
                                 Image(
-                                    uiImage: MaterialDesignIcons.microphoneMessageIcon.image(
+                                    uiImage: MaterialDesignIcons.microphoneIcon.image(
                                         ofSize: .init(width: 18, height: 18),
                                         color: .accent
                                     )

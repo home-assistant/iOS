@@ -226,7 +226,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             return .init(
                 id: item.serverUniqueId,
                 name: pipelineName,
-                iconName: MaterialDesignIcons.microphoneMessageIcon.name,
+                iconName: MaterialDesignIcons.microphoneIcon.name,
                 customization: item.customization
             )
         }

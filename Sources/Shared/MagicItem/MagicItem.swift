@@ -160,7 +160,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             case .folder:
                 icon = .folderIcon
             case .assistPipeline:
-                icon = .microphoneMessageIcon
+                icon = .microphoneIcon
             }
         }
 
