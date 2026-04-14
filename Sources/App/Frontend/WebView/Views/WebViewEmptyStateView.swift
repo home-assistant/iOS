@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 import UIKit
@@ -29,28 +30,49 @@ enum WebViewEmptyStateStyle: Equatable {
         case .disconnected:
             L10n.WebView.EmptyState.retryButton
         case .unauthenticated:
-            L10n.WebView.EmptyState.openSettingsButton
+            L10n.WebView.EmptyState.reauthenticateButton
         }
     }
 
     var secondaryButtonTitle: String {
         switch self {
-        case .disconnected:
+        case .disconnected, .unauthenticated:
             L10n.WebView.EmptyState.openSettingsButton
-        case .unauthenticated:
-            L10n.WebView.EmptyState.retryButton
         }
     }
 }
 
 struct WebViewEmptyStateView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
+    @State private var selectedReauthURLType: ConnectionInfo.URLType
+    @State private var showURLPicker = false
 
     let style: WebViewEmptyStateStyle
     let server: Server
+    let availableReauthURLTypes: [ConnectionInfo.URLType]
     let retryAction: (() -> Void)?
     let settingsAction: (() -> Void)?
+    let reauthAction: ((ConnectionInfo.URLType) -> Void)?
     let dismissAction: (() -> Void)?
+
+    init(
+        style: WebViewEmptyStateStyle,
+        server: Server,
+        availableReauthURLTypes: [ConnectionInfo.URLType] = [],
+        retryAction: (() -> Void)? = nil,
+        settingsAction: (() -> Void)? = nil,
+        reauthAction: ((ConnectionInfo.URLType) -> Void)? = nil,
+        dismissAction: (() -> Void)? = nil
+    ) {
+        self.style = style
+        self.server = server
+        self.availableReauthURLTypes = availableReauthURLTypes
+        self._selectedReauthURLType = State(initialValue: availableReauthURLTypes.first ?? .external)
+        self.retryAction = retryAction
+        self.settingsAction = settingsAction
+        self.reauthAction = reauthAction
+        self.dismissAction = dismissAction
+    }
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -92,6 +114,7 @@ struct WebViewEmptyStateView: View {
             VStack(spacing: DesignSystem.Spaces.one) {
                 primaryButton
                     .buttonStyle(.primaryButton)
+                reauthURLHint
                 secondaryButton
                     .buttonStyle(.secondaryButton)
             }
@@ -127,20 +150,45 @@ struct WebViewEmptyStateView: View {
             case .disconnected:
                 retryAction?()
             case .unauthenticated:
-                settingsAction?()
+                reauthAction?(selectedReauthURLType)
             }
         }) {
             Text(style.primaryButtonTitle)
         }
     }
 
+    @ViewBuilder
+    private var reauthURLHint: some View {
+        if style == .unauthenticated, availableReauthURLTypes.count > 1 {
+            Button {
+                showURLPicker = true
+            } label: {
+                HStack(spacing: 4) {
+                    Text(selectedReauthURLType.description)
+                    Image(systemSymbol: .chevronUpChevronDown)
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+            .confirmationDialog(
+                L10n.WebView.EmptyState.reauthenticateButton,
+                isPresented: $showURLPicker,
+                titleVisibility: .visible
+            ) {
+                ForEach(availableReauthURLTypes, id: \.self) { urlType in
+                    Button(urlType.description) {
+                        selectedReauthURLType = urlType
+                    }
+                }
+            }
+        }
+    }
+
     private var secondaryButton: some View {
         Button(action: {
             switch style {
-            case .disconnected:
+            case .disconnected, .unauthenticated:
                 settingsAction?()
-            case .unauthenticated:
-                retryAction?()
             }
         }) {
             Text(style.secondaryButtonTitle)
@@ -149,14 +197,19 @@ struct WebViewEmptyStateView: View {
 }
 
 #Preview {
-    WebViewEmptyStateView(style: .disconnected, server: ServerFixture.standard) {} settingsAction: {} dismissAction: {}
+    WebViewEmptyStateView(
+        style: .disconnected,
+        server: ServerFixture.standard
+    )
 }
 
 final class WebViewEmptyStateWrapperView: UIView {
     private let hostingController: UIHostingController<WebViewEmptyStateView>
     private let server: Server
+    private let availableReauthURLTypes: [ConnectionInfo.URLType]
     private let retryAction: (() -> Void)?
     private let settingsAction: (() -> Void)?
+    private let reauthAction: ((ConnectionInfo.URLType) -> Void)?
     private let dismissAction: (() -> Void)?
     private(set) var style: WebViewEmptyStateStyle
 
@@ -165,18 +218,23 @@ final class WebViewEmptyStateWrapperView: UIView {
         server: Server,
         retryAction: (() -> Void)? = nil,
         settingsAction: (() -> Void)? = nil,
+        reauthAction: ((ConnectionInfo.URLType) -> Void)? = nil,
         dismissAction: (() -> Void)? = nil
     ) {
         self.style = style
         self.server = server
+        self.availableReauthURLTypes = Self.availableReauthURLTypes(for: server)
         self.retryAction = retryAction
         self.settingsAction = settingsAction
+        self.reauthAction = reauthAction
         self.dismissAction = dismissAction
         let swiftUIView = WebViewEmptyStateView(
             style: style,
             server: server,
+            availableReauthURLTypes: availableReauthURLTypes,
             retryAction: retryAction,
             settingsAction: settingsAction,
+            reauthAction: reauthAction,
             dismissAction: dismissAction
         )
         self.hostingController = UIHostingController(rootView: swiftUIView)
@@ -207,9 +265,17 @@ final class WebViewEmptyStateWrapperView: UIView {
         hostingController.rootView = WebViewEmptyStateView(
             style: style,
             server: server,
+            availableReauthURLTypes: availableReauthURLTypes,
             retryAction: retryAction,
             settingsAction: settingsAction,
+            reauthAction: reauthAction,
             dismissAction: dismissAction
         )
+    }
+
+    /// Returns available URL types for re-authentication, ordered by preference: cloud > external > internal.
+    private static func availableReauthURLTypes(for server: Server) -> [ConnectionInfo.URLType] {
+        let preferenceOrder: [ConnectionInfo.URLType] = [.remoteUI, .external, .internal]
+        return preferenceOrder.filter { server.info.connection.address(for: $0) != nil }
     }
 }
