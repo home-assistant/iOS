@@ -46,7 +46,6 @@ enum WebViewEmptyStateStyle: Equatable {
 struct WebViewEmptyStateView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
 
-    @State private var showCloseButton = false
     let style: WebViewEmptyStateStyle
     let server: Server
     let retryAction: (() -> Void)?
