@@ -13,6 +13,8 @@ extension WebViewController {
             self?.refresh()
         } settingsAction: { [weak self] in
             self?.showSettingsViewController()
+        } reauthAction: { [weak self] urlType in
+            self?.performReauthentication(using: urlType)
         } dismissAction: { [weak self] in
             self?.hideEmptyState()
         }
