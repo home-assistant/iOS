@@ -206,7 +206,6 @@ struct WebViewEmptyStateView: View {
 final class WebViewEmptyStateWrapperView: UIView {
     private let hostingController: UIHostingController<WebViewEmptyStateView>
     private let server: Server
-    private let availableReauthURLTypes: [ConnectionInfo.URLType]
     private let retryAction: (() -> Void)?
     private let settingsAction: (() -> Void)?
     private let reauthAction: ((ConnectionInfo.URLType) -> Void)?
@@ -223,7 +222,6 @@ final class WebViewEmptyStateWrapperView: UIView {
     ) {
         self.style = style
         self.server = server
-        self.availableReauthURLTypes = Self.availableReauthURLTypes(for: server)
         self.retryAction = retryAction
         self.settingsAction = settingsAction
         self.reauthAction = reauthAction
@@ -231,7 +229,7 @@ final class WebViewEmptyStateWrapperView: UIView {
         let swiftUIView = WebViewEmptyStateView(
             style: style,
             server: server,
-            availableReauthURLTypes: availableReauthURLTypes,
+            availableReauthURLTypes: Self.availableReauthURLTypes(for: server),
             retryAction: retryAction,
             settingsAction: settingsAction,
             reauthAction: reauthAction,
@@ -265,7 +263,7 @@ final class WebViewEmptyStateWrapperView: UIView {
         hostingController.rootView = WebViewEmptyStateView(
             style: style,
             server: server,
-            availableReauthURLTypes: availableReauthURLTypes,
+            availableReauthURLTypes: Self.availableReauthURLTypes(for: server),
             retryAction: retryAction,
             settingsAction: settingsAction,
             reauthAction: reauthAction,
@@ -273,7 +271,7 @@ final class WebViewEmptyStateWrapperView: UIView {
         )
     }
 
-    /// Returns available URL types for re-authentication, ordered by preference: cloud > external > internal.
+    /// Returns available URL types for re-authentication, ordered by preference: remote UI > external > internal.
     private static func availableReauthURLTypes(for server: Server) -> [ConnectionInfo.URLType] {
         let preferenceOrder: [ConnectionInfo.URLType] = [.remoteUI, .external, .internal]
         return preferenceOrder.filter { server.info.connection.address(for: $0) != nil }

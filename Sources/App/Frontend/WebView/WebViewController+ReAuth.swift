@@ -8,6 +8,7 @@ extension WebViewController {
 
         guard let baseURL = connectionInfo.address(for: urlType) else {
             Current.Log.error("No URL available for re-authentication with type \(urlType)")
+            showReauthFailureAlert(error: ServerConnectionError.noActiveURL(server.info.name))
             return
         }
 
