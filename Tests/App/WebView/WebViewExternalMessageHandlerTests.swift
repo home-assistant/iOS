@@ -1,6 +1,5 @@
 @testable import HomeAssistant
 import Improv_iOS
-import SwiftMessages
 import SwiftUI
 import XCTest
 
@@ -108,8 +107,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ]
 
         sut.handleExternalMessage(dictionary2)
-        let swiftMessage = SwiftMessages.current(id: "BarcodeScannerMessage")
-        XCTAssertNotNil(swiftMessage)
+        XCTAssertEqual(mockWebViewController.shownBannerRequests.last?.id, "BarcodeScannerMessage")
+        XCTAssertEqual(mockWebViewController.shownBannerRequests.last?.message, "abc")
     }
 
     @MainActor func testHandleExternalMessageStoreInPlatformKeychainOpenTransferFlow() {

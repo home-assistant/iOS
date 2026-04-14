@@ -4137,7 +4137,7 @@ public enum L10n {
 
   public enum Unauthenticated {
     public enum Message {
-      /// This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.
+      /// Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.
       public static var body: String { return L10n.tr("Localizable", "unauthenticated.message.body") }
       /// You are unauthenticated
       public static var title: String { return L10n.tr("Localizable", "unauthenticated.message.title") }
@@ -5061,6 +5061,8 @@ public enum L10n {
       public static var body: String { return L10n.tr("Localizable", "web_view.empty_state.body") }
       /// Open App settings
       public static var openSettingsButton: String { return L10n.tr("Localizable", "web_view.empty_state.open_settings_button") }
+      /// Re-authenticate
+      public static var reauthenticateButton: String { return L10n.tr("Localizable", "web_view.empty_state.reauthenticate_button") }
       /// Retry
       public static var retryButton: String { return L10n.tr("Localizable", "web_view.empty_state.retry_button") }
       /// You're disconnected

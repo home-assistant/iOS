@@ -5,11 +5,16 @@ import UIKit
 
 extension WebViewController {
     func setupEmptyState() {
-        let emptyState = WebViewEmptyStateWrapperView(server: server) { [weak self] in
+        let emptyState = WebViewEmptyStateWrapperView(
+            style: emptyStateStyle(for: connectionState),
+            server: server
+        ) { [weak self] in
             self?.hideEmptyState()
             self?.refresh()
         } settingsAction: { [weak self] in
             self?.showSettingsViewController()
+        } reauthAction: { [weak self] urlType in
+            self?.performReauthentication(using: urlType)
         } dismissAction: { [weak self] in
             self?.hideEmptyState()
         }
@@ -29,7 +34,17 @@ extension WebViewController {
         emptyStateView = emptyState
     }
 
+    func emptyStateStyle(for connectionState: FrontEndConnectionState) -> WebViewEmptyStateStyle {
+        switch connectionState {
+        case .authInvalid:
+            .unauthenticated
+        case .connected, .disconnected, .unknown:
+            .disconnected
+        }
+    }
+
     func showEmptyState() {
+        emptyStateView?.updateStyle(emptyStateStyle(for: connectionState))
         UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
             self.emptyStateView?.alpha = 1
         }, completion: nil)
@@ -44,7 +59,11 @@ extension WebViewController {
     // To avoid keeping the empty state on screen when user is disconnected in background
     // due to inactivity, we reset the empty state timer
     @objc func resetEmptyStateTimerWithLatestConnectedState() {
-        let state: FrontEndConnectionState = isConnected ? .connected : .disconnected
+        let state: FrontEndConnectionState = if connectionState == .authInvalid {
+            .authInvalid
+        } else {
+            isConnected ? .connected : .disconnected
+        }
         updateFrontendConnectionState(state: state.rawValue)
     }
 

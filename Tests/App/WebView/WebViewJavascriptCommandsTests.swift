@@ -79,10 +79,4 @@ struct WebViewJavascriptCommandsTests {
         document.dispatchEvent(event);
         """)
     }
-
-    @Test func testWebViewJavascriptCommandsScrollFocusedElementIntoView() async throws {
-        assert(WebViewJavascriptCommands.scrollFocusedElementIntoView.contains("shadowRoot.activeElement"))
-        assert(WebViewJavascriptCommands.scrollFocusedElementIntoView.contains("scrollIntoView"))
-        assert(WebViewJavascriptCommands.scrollFocusedElementIntoView.contains("visualViewport"))
-    }
 }

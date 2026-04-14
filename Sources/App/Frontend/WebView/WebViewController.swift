@@ -8,7 +8,6 @@ import KeychainAccess
 import MBProgressHUD
 import PromiseKit
 import Shared
-import SwiftMessages
 import SwiftUI
 import UIKit
 @preconcurrency import WebKit
@@ -24,13 +23,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
-    var emptyStateView: UIView?
+    var emptyStateView: WebViewEmptyStateWrapperView?
     let emptyStateTransitionDuration: TimeInterval = 0.3
 
     var statusBarView: UIView?
     var webViewTopConstraint: NSLayoutConstraint?
-    var webViewBottomConstraint: NSLayoutConstraint?
-    var keyboardFocusedElementScrollWorkItem: DispatchWorkItem?
+    var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
 
     var initialURL: URL?
     var statusBarButtonsStack: UIStackView?
@@ -177,17 +175,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     deinit {
-        keyboardFocusedElementScrollWorkItem?.cancel()
-        NotificationCenter.default.removeObserver(
-            self,
-            name: UIResponder.keyboardWillChangeFrameNotification,
-            object: nil
-        )
-        NotificationCenter.default.removeObserver(
-            self,
-            name: UIResponder.keyboardDidChangeFrameNotification,
-            object: nil
-        )
         removeEmptyStateObservations()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
@@ -256,10 +243,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
-        webView.scrollView.delegate = self
 
         setupWebViewConstraints(statusBarView: statusBarView)
-        setupKeyboardAvoidance()
         setupPullToRefresh()
         setupEmptyState()
 
