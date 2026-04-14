@@ -4,18 +4,12 @@ import PromiseKit
 
 final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     private let signal: () -> Void
-    private var lastPressureKpa: Double?
+    private var lastSignaledPressureKpa: Double?
     private var observationQueue: OperationQueue?
-    private let lock = NSLock()
 
-    /// The most recent altitude data received from CMAltimeter, used by BarometerSensor
+    /// The most recent pressure in kilopascals from CMAltimeter, used by BarometerSensor
     /// to avoid starting a separate one-shot read that would conflict with the signaler's stream.
-    private var _latestData: CMAltitudeData?
-    var latestData: CMAltitudeData? {
-        lock.lock()
-        defer { lock.unlock() }
-        return _latestData
-    }
+    private(set) var latestPressureKpa: Double?
 
     required init(signal: @escaping () -> Void) {
         self.signal = signal
@@ -34,15 +28,13 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 
         Current.barometer.startUpdatesOnQueueHandler(queue) { [weak self] data, _ in
             guard let self, let data else { return }
-            lock.lock()
-            _latestData = data
-            lock.unlock()
             let newPressure = data.pressure.doubleValue
-            if let last = lastPressureKpa, abs(newPressure - last) < 0.01 {
+            latestPressureKpa = newPressure
+            if let last = lastSignaledPressureKpa, abs(newPressure - last) < 0.01 {
                 // Less than 0.1 hPa change, skip update
                 return
             }
-            lastPressureKpa = newPressure
+            lastSignaledPressureKpa = newPressure
             signal()
         }
         isObserving = true
@@ -57,10 +49,8 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
         guard isObserving else { return }
         Current.barometer.stopUpdates()
         observationQueue = nil
-        lastPressureKpa = nil
-        lock.lock()
-        _latestData = nil
-        lock.unlock()
+        lastSignaledPressureKpa = nil
+        latestPressureKpa = nil
         isObserving = false
     }
 }
@@ -80,31 +70,33 @@ public class BarometerSensor: SensorProvider {
     public func sensors() -> Promise<[WebhookSensor]> {
         let signaler: BarometerSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
-        return firstly {
-            // If the signaler is actively observing, use its cached data to avoid
-            // starting a separate one-shot read that would stop the signaler's stream.
-            // If observing but no data yet, fall back to noData rather than racing.
-            if let cached = signaler.latestData {
-                return Promise.value(cached)
-            } else if signaler.isObserving {
-                return .init(error: BarometerError.noData)
-            }
-            return latestBarometerData()
-        }.map { data in
-            // CMAltitudeData.pressure is in kilopascals; HA pressure device class expects hPa (= mbar)
-            let pressureHpa = data.pressure.doubleValue * 10.0
-
-            let pressureSensor = WebhookSensor(
-                name: "Pressure",
-                uniqueID: WebhookSensorId.pressure.rawValue,
-                icon: "mdi:gauge",
-                deviceClass: .pressure,
-                state: round(pressureHpa * 100) / 100,
-                unit: "hPa"
-            )
-
-            return [pressureSensor]
+        // If the signaler is actively observing, use its cached pressure to avoid
+        // starting a separate one-shot read that would stop the signaler's stream.
+        if let cachedKpa = signaler.latestPressureKpa {
+            return .value([Self.pressureSensor(fromKpa: cachedKpa)])
+        } else if signaler.isObserving {
+            // Signaler started but no data yet — skip rather than racing with a one-shot
+            return .init(error: BarometerError.noData)
         }
+
+        return firstly {
+            latestBarometerData()
+        }.map { data in
+            [Self.pressureSensor(fromKpa: data.pressure.doubleValue)]
+        }
+    }
+
+    static func pressureSensor(fromKpa kpa: Double) -> WebhookSensor {
+        // CMAltitudeData.pressure is in kilopascals; HA pressure device class expects hPa (= mbar)
+        let pressureHpa = kpa * 10.0
+        return WebhookSensor(
+            name: "Pressure",
+            uniqueID: WebhookSensorId.pressure.rawValue,
+            icon: "mdi:gauge",
+            deviceClass: .pressure,
+            state: round(pressureHpa * 100) / 100,
+            unit: "hPa"
+        )
     }
 
     private func latestBarometerData() -> Promise<CMAltitudeData> {

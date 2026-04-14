@@ -15,6 +15,10 @@ class BarometerSensorTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        // Reset sensor container to prevent leftover lastUpdate from previous tests
+        // from triggering BaseSensorUpdateSignaler's observer path during init.
+        Current.sensors = SensorContainer()
+
         request = .init(
             reason: .trigger("unit-test"),
             dependencies: .init(),
@@ -135,7 +139,7 @@ class BarometerSensorTests: XCTestCase {
             return
         }
         latestHandler(FakeAltitudeData(pressureValue: 101.0), nil)
-        XCTAssertNotNil(signaler.latestData)
+        XCTAssertNotNil(signaler.latestPressureKpa)
 
         // Reset to track whether sensors() starts another read
         startCountAfterSetup = handlers.count
@@ -177,10 +181,10 @@ class BarometerSensorTests: XCTestCase {
         let signaler = BarometerSensorUpdateSignaler(signal: {})
         signaler.observe()
         handler?(FakeAltitudeData(pressureValue: 101.0), nil)
-        XCTAssertNotNil(signaler.latestData)
+        XCTAssertNotNil(signaler.latestPressureKpa)
 
         signaler.stopObserving()
-        XCTAssertNil(signaler.latestData)
+        XCTAssertNil(signaler.latestPressureKpa)
     }
 
     func testSignalerFiltersSmallPressureChanges() {
@@ -223,7 +227,7 @@ class BarometerSensorTests: XCTestCase {
         // nil data should not signal or cache
         handler?(nil, nil)
         XCTAssertEqual(signalCount, 0)
-        XCTAssertNil(signaler.latestData)
+        XCTAssertNil(signaler.latestPressureKpa)
     }
 
     func testSignalerDoesNotStartWhenUnavailable() {
