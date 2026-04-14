@@ -61,5 +61,4 @@ enum WebViewJavascriptCommands {
     });
     document.dispatchEvent(event);
     """
-
 }

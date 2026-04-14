@@ -252,7 +252,6 @@ extension WebViewController: UIScrollViewDelegate {
             scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
         }
     }
-
 }
 
 extension WebViewController: UIGestureRecognizerDelegate {

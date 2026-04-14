@@ -79,5 +79,4 @@ struct WebViewJavascriptCommandsTests {
         document.dispatchEvent(event);
         """)
     }
-
 }
