@@ -193,6 +193,15 @@ public class AppEnvironment {
         }
     }
 
+    /// Thread-safe single-key insertion into the API cache.
+    /// Prefer this over `cachedApis[id] = api` which involves a
+    /// non-atomic get→mutate→set cycle on the computed property.
+    public func setCachedApi(_ api: HomeAssistantAPI, for identifier: Identifier<Server>) {
+        cachedApisLock.lock()
+        defer { cachedApisLock.unlock() }
+        _cachedApis[identifier] = api
+    }
+
     public var apis: [HomeAssistantAPI] { servers.all.compactMap(api(for:)) }
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()

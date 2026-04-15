@@ -5,35 +5,39 @@ public extension DatabaseQueue {
     // Following GRDB cocnurrency rules, we have just one database instance
     // https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/concurrency#Concurrency-Rules
     static var appDatabase: DatabaseQueue = {
+        let database: DatabaseQueue
         do {
-            let database = try DatabaseQueue(path: databasePath())
-
-            // Create tables if needed
-            for table in DatabaseQueue.tables() {
-                do {
-                    try table.createIfNeeded(database: database)
-                } catch {
-                    let className = String(describing: type(of: table))
-                    let errorMessage = "Failed create GRDB table \(className), error: \(error.localizedDescription)"
-                    Current.clientEventStore.addEvent(ClientEvent(text: errorMessage, type: .database))
-                }
-            }
-            DatabaseQueue.deleteOldTables(database: database)
-
+            database = try DatabaseQueue(path: databasePath())
             #if targetEnvironment(simulator)
             print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
-            return database
         } catch {
             Current.Log.error("Failed to initialize GRDB, error: \(error.localizedDescription)")
             // Fallback to in-memory database so extensions don't crash
             do {
-                return try DatabaseQueue()
+                database = try DatabaseQueue()
+                Current.Log.error("Using in-memory GRDB database as fallback")
             } catch {
                 fatalError("Failed to create even an in-memory GRDB database: \(error.localizedDescription)")
             }
         }
+
+        setupSchema(database: database)
+        return database
     }()
+
+    private static func setupSchema(database: DatabaseQueue) {
+        for table in DatabaseQueue.tables() {
+            do {
+                try table.createIfNeeded(database: database)
+            } catch {
+                let className = String(describing: type(of: table))
+                let errorMessage = "Failed create GRDB table \(className), error: \(error.localizedDescription)"
+                Current.clientEventStore.addEvent(ClientEvent(text: errorMessage, type: .database))
+            }
+        }
+        DatabaseQueue.deleteOldTables(database: database)
+    }
 
     static func databasePath() -> String {
         // Path for tests
