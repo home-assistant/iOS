@@ -126,7 +126,7 @@ struct MagicItemProviderTests {
                 serverId: "1",
                 type: .assistPipeline,
                 customization: .init(
-                    iconColor: "00AEF8",
+                    iconColor: MagicItem.defaultAssistIconColorHex,
                     requiresConfirmation: false
                 )
             ),

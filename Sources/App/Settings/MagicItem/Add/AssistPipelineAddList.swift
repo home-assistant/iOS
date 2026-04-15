@@ -2,8 +2,6 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-private let defaultAssistIconColorHex = "00AEF8"
-
 struct AssistPipelineAddList: View {
     @State private var isLoading = false
     @State private var assistConfigs: [AssistPipelines] = []
@@ -38,7 +36,7 @@ struct AssistPipelineAddList: View {
                                 id: pipeline.id,
                                 serverId: config.serverId,
                                 type: .assistPipeline,
-                                customization: .init(iconColor: defaultAssistIconColorHex)
+                                customization: .init(iconColor: MagicItem.defaultAssistIconColorHex)
                             ))
                         } label: {
                             HStack {

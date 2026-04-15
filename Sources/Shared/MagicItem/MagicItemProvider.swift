@@ -10,8 +10,6 @@ public protocol MagicItemProviderProtocol {
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
-    private static let defaultAssistIconColorHex = "00AEF8"
-
     var entitiesPerServer: [String: [HAAppEntity]] = [:]
 
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
@@ -257,7 +255,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             var customization = item.customization ?? .init()
 
             if customization.iconColor == nil {
-                customization.iconColor = Self.defaultAssistIconColorHex
+                customization.iconColor = MagicItem.defaultAssistIconColorHex
             }
             customization.requiresConfirmation = false
 
