@@ -5,20 +5,25 @@ import HAKit
 import Shared
 
 @available(iOS 16.0, *)
-final class CarPlayAssistSession {
+final class CarPlayAssistSession: NSObject {
     enum State {
         case recording
         case processing
         case responding
         case error(String)
         case done
+
+        var isError: Bool {
+            if case .error = self { return true }
+            return false
+        }
     }
 
     weak var interfaceController: CPInterfaceController?
 
     private var assistService: AssistServiceProtocol
     private var audioRecorder: AudioRecorderProtocol
-    private var audioPlayer: AudioPlayerProtocol
+    private let ttsPlayer = AVPlayer()
     private var canSendAudioData = false
     private var state: State = .recording
     private var isStopped = false
@@ -41,7 +46,6 @@ final class CarPlayAssistSession {
         pipelineId: String,
         pipelineName: String,
         audioRecorder: AudioRecorderProtocol = AudioRecorder(),
-        audioPlayer: AudioPlayerProtocol = AudioPlayer(),
         assistService: AssistServiceProtocol? = nil
     ) {
         self.interfaceController = interfaceController
@@ -49,14 +53,17 @@ final class CarPlayAssistSession {
         self.pipelineId = pipelineId
         self.pipelineName = pipelineName
         self.audioRecorder = audioRecorder
-        self.audioPlayer = audioPlayer
         self.assistService = assistService ?? AssistService(server: server)
+        super.init()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     func start() {
         audioRecorder.delegate = self
         assistService.delegate = self
-        audioPlayer.delegate = self
         state = .recording
         updateTemplateForCurrentState()
         interfaceController?.pushTemplate(template, animated: true, completion: nil)
@@ -68,16 +75,62 @@ final class CarPlayAssistSession {
         isStopped = true
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
-        audioPlayer.pause()
+        ttsPlayer.pause()
         canSendAudioData = false
+        NotificationCenter.default.removeObserver(self)
         interfaceController?.popTemplate(animated: true, completion: nil)
+    }
+
+    // MARK: - TTS Playback
+
+    /// Plays TTS audio directly via AVPlayer, bypassing the phone volume check
+    /// that would incorrectly skip playback in the CarPlay context.
+    private func playTTS(url: URL) {
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setActive(false)
+            try audioSession.setCategory(.playback, mode: .default, options: [.duckOthers])
+            try audioSession.setActive(true)
+        } catch {
+            Current.Log.error("CarPlay Assist failed to setup audio session for TTS: \(error.localizedDescription)")
+        }
+
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+
+        let playerItem = AVPlayerItem(url: url)
+        ttsPlayer.replaceCurrentItem(with: playerItem)
+        ttsPlayer.play()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ttsDidFinishPlaying),
+            name: .AVPlayerItemDidPlayToEndTime,
+            object: playerItem
+        )
+    }
+
+    @objc private func ttsDidFinishPlaying(_ notification: Notification) {
+        guard !isStopped else { return }
+        if assistService.shouldStartListeningAgainAfterPlaybackEnd {
+            assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
+            restartRecording()
+        } else {
+            state = .done
+            updateTemplateForCurrentState()
+        }
     }
 
     // MARK: - Template Updates
 
     private func updateTemplateForCurrentState() {
         let item = listItemForState()
-        template.updateSections([CPListSection(items: [item])])
+        if Thread.isMainThread {
+            template.updateSections([CPListSection(items: [item])])
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.template.updateSections([CPListSection(items: [item])])
+            }
+        }
     }
 
     private func listItemForState() -> CPListItem {
@@ -90,18 +143,18 @@ final class CarPlayAssistSession {
                 image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary)
             )
             item.handler = { [weak self] _, completion in
-                self?.toggleRecording()
+                self?.stopRecordingAndSend()
                 completion()
             }
         case .processing:
             item = CPListItem(
-                text: L10n.Assist.Button.FinishRecording.title,
+                text: L10n.Assist.Carplay.Processing.title,
                 detailText: nil,
                 image: MaterialDesignIcons.dotsHorizontalIcon.carPlayIcon(color: .haPrimary)
             )
         case .responding:
             item = CPListItem(
-                text: L10n.Assist.Button.FinishRecording.title,
+                text: L10n.Assist.Carplay.Responding.title,
                 detailText: nil,
                 image: MaterialDesignIcons.volumeHighIcon.carPlayIcon(color: .haPrimary)
             )
@@ -117,7 +170,7 @@ final class CarPlayAssistSession {
             }
         case .done:
             item = CPListItem(
-                text: L10n.Assist.Button.Listening.title,
+                text: L10n.Assist.Carplay.TapToRecord.title,
                 detailText: nil,
                 image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary)
             )
@@ -129,14 +182,12 @@ final class CarPlayAssistSession {
         return item
     }
 
-    private func toggleRecording() {
-        if case .recording = state {
-            audioRecorder.stopRecording()
-            assistService.finishSendingAudio()
-            canSendAudioData = false
-        } else {
-            restartRecording()
-        }
+    private func stopRecordingAndSend() {
+        audioRecorder.stopRecording()
+        assistService.finishSendingAudio()
+        canSendAudioData = false
+        state = .processing
+        updateTemplateForCurrentState()
     }
 
     private func restartRecording() {
@@ -165,12 +216,11 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
     }
 
     func didStopRecording() {
-        // Recording stopped, waiting for processing
+        // Recording stopped, waiting for server processing
     }
 
     func didFailToRecord(error: any Error) {
-        guard !isStopped else { return }
-        if case .error = state { return }
+        guard !isStopped, !state.isError else { return }
         Current.Log.error("CarPlay Assist recording failed: \(error.localizedDescription)")
         state = .error(error.localizedDescription)
         updateTemplateForCurrentState()
@@ -186,6 +236,7 @@ extension CarPlayAssistSession: AssistServiceDelegate {
     }
 
     func didReceiveEvent(_ event: AssistEvent) {
+        guard !isStopped else { return }
         if event == .sttEnd {
             audioRecorder.stopRecording()
             assistService.finishSendingAudio()
@@ -204,45 +255,20 @@ extension CarPlayAssistSession: AssistServiceDelegate {
     }
 
     func didReceiveIntentEndContent(_ content: String) {
-        // No text display — TTS will speak the response
+        guard !isStopped else { return }
         state = .responding
         updateTemplateForCurrentState()
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
-        audioPlayer.play(url: mediaUrl)
+        guard !isStopped else { return }
+        playTTS(url: mediaUrl)
     }
 
     func didReceiveError(code: String, message: String) {
+        guard !isStopped else { return }
         Current.Log.error("CarPlay Assist error [\(code)]: \(message)")
         state = .error(message)
         updateTemplateForCurrentState()
-    }
-}
-
-// MARK: - AudioPlayerDelegate
-
-@available(iOS 16.0, *)
-extension CarPlayAssistSession: AudioPlayerDelegate {
-    func audioPlayerDidFinishPlaying(_ player: AudioPlayer) {
-        guard !isStopped else { return }
-        if assistService.shouldStartListeningAgainAfterPlaybackEnd {
-            assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
-            restartRecording()
-        } else {
-            state = .done
-            updateTemplateForCurrentState()
-        }
-    }
-
-    func volumeIsZero() {
-        guard !isStopped else { return }
-        if assistService.shouldStartListeningAgainAfterPlaybackEnd {
-            assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
-            restartRecording()
-        } else {
-            state = .done
-            updateTemplateForCurrentState()
-        }
     }
 }
