@@ -214,6 +214,21 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 iconName: MaterialDesignIcons.folderIcon.name,
                 customization: item.customization
             )
+        case .assistPipeline:
+            let pipelineName: String = {
+                let configs = (try? AssistPipelines.config()) ?? []
+                let pipeline = configs
+                    .first(where: { $0.serverId == item.serverId })?
+                    .pipelines
+                    .first(where: { $0.id == item.id })
+                return pipeline?.name ?? item.id
+            }()
+            return .init(
+                id: item.serverUniqueId,
+                name: pipelineName,
+                iconName: MaterialDesignIcons.microphoneIcon.name,
+                customization: item.customization
+            )
         }
     }
 
