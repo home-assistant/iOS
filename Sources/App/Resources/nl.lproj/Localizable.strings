@@ -1181,7 +1181,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "token_error.connection_failed" = "Verbinding mislukt.";
 "token_error.expired" = "Token is verlopen.";
 "token_error.token_unavailable" = "Token is niet beschikbaar.";
-"unauthenticated.message.body" = "Dit kan tijdelijk zijn als je achter een proxy of netwerkbeperking zit. Als het probleem aanhoudt, verwijdert dan de server en voeg deze opnieuw toe.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Je bent ongeauthenticeerd";
 "unknownLabel" = "Onbekend";
 "updater.check_for_updates_menu.title" = "Zoeken naar updates....";
@@ -1440,6 +1440,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Controleer je verbinding of probeer het later opnieuw. Als Home Assistant opnieuw wordt opgestart, wordt de verbinding hersteld zodra deze weer beschikbaar is.";
 "web_view.empty_state.open_settings_button" = "App-instellingen openen";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Opnieuw proberen";
 "web_view.empty_state.title" = "Je hebt geen verbinding meer";
 "web_view.no_url_available.body" = "🔐 Door je beveiligingskeuzes is er geen URL die we mogen gebruiken. \

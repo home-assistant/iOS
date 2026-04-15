@@ -1181,7 +1181,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "token_error.connection_failed" = "Bağlantı kurulamadı.";
 "token_error.expired" = "Anahtar süresi doldu.";
 "token_error.token_unavailable" = "Anahtar kullanılamıyor.";
-"unauthenticated.message.body" = "Eğer bir proxy veya ağ kısıtlaması varsa bu geçici olabilir, aksi takdirde devam ederse sunucunuzu kaldırıp tekrar ekleyin.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Kimliğiniz doğrulanmadı";
 "unknownLabel" = "Bilinmeyen";
 "updater.check_for_updates_menu.title" = "Güncellemeleri kontrol edin…";
@@ -1440,6 +1440,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Lütfen bağlantınızı kontrol edin veya daha sonra tekrar deneyin. Home Assistant yeniden başlatılıyorsa, tekrar çevrimiçi olduktan sonra yeniden bağlanacaktır.";
 "web_view.empty_state.open_settings_button" = "Uygulama ayarlarını aç";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Yeniden dene";
 "web_view.empty_state.title" = "Bağlantınız kesildi";
 "web_view.no_url_available.body" = "🔐 Güvenlik tercihleriniz nedeniyle kullanmamıza izin verilen bir URL bulunmamaktadır. \
