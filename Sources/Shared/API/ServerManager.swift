@@ -182,6 +182,8 @@ final class ServerManagerImpl: ServerManager {
             value.restrictCaching = Current.isAppExtension
         }
 
+        restoreKeychainFromMirrorIfNeeded()
+
         // load to cache immediately
         _ = all
 
@@ -430,6 +432,23 @@ final class ServerManagerImpl: ServerManager {
         mirrorStore.removeAll()
         for (key, value) in keychain.allServerInfo(decoder: decoder) {
             mirrorStore.set(value, key: key)
+        }
+    }
+
+    private func restoreKeychainFromMirrorIfNeeded() {
+        guard keychain.allKeys().isEmpty else { return }
+
+        let deletedServers = cache.read(\.deletedServers)
+        let mirroredServers = mirrorStore.allServerInfo().filter { key, _ in
+            !deletedServers.contains(.init(keychainKey: key))
+        }
+
+        guard !mirroredServers.isEmpty else { return }
+
+        // Rehydrate the Keychain with the sanitized mirror so startup sees the same
+        // server list and WebView can continue through the empty-token reauth flow.
+        for (key, value) in mirroredServers {
+            keychain.set(serverInfo: value, key: key, encoder: encoder)
         }
     }
 
