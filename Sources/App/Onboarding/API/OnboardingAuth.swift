@@ -53,7 +53,7 @@ class OnboardingAuth {
                 // somewhat necessary so it points to the keychain-persisted version
                 api.server = server
                 // not super necessary but prevents making a duplicate connection during this session
-                Current.cachedApis[api.server.identifier] = api
+                Current.setCachedApi(api, for: api.server.identifier)
             }.then { server in
                 steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
