@@ -25,9 +25,13 @@ public extension DatabaseQueue {
             #endif
             return database
         } catch {
-            let errorMessage = "Failed to initialize GRDB, error: \(error.localizedDescription)"
-            Current.Log.error(errorMessage)
-            fatalError(errorMessage)
+            Current.Log.error("Failed to initialize GRDB, error: \(error.localizedDescription)")
+            // Fallback to in-memory database so extensions don't crash
+            do {
+                return try DatabaseQueue()
+            } catch {
+                fatalError("Failed to create even an in-memory GRDB database: \(error.localizedDescription)")
+            }
         }
     }()
 

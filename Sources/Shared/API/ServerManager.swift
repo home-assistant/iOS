@@ -102,7 +102,12 @@ private struct ServerCache {
 
     var info: [Identifier<Server>: ServerInfo] = [:] {
         didSet {
-            precondition(deletedServers.isDisjoint(with: info.keys))
+            if !deletedServers.isDisjoint(with: info.keys) {
+                Current.Log
+                    .error(
+                        "Stale server(s) in info cache overlapping with deleted servers, info keys: \(info.keys), deleted servers: \(deletedServers)"
+                    )
+            }
         }
     }
 
