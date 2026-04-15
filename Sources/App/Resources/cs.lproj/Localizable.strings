@@ -1181,7 +1181,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "token_error.connection_failed" = "Připojení se nezdařilo.";
 "token_error.expired" = "Platnost tokenu vypršela.";
 "token_error.token_unavailable" = "Token není dostupný.";
-"unauthenticated.message.body" = "To může být dočasné, pokud jste za omezením proxy nebo sítě. V opačném případě a pokud problém přetrvává, odeberte server a přidejte jej zpět.";
+"unauthenticated.message.body" = "Vaše relace vypršela. Pro pokračování se znovu přihlaste, nebo zkontrolujte připojení, pokud se nacházíte za proxy serverem nebo síťovým omezením.";
 "unauthenticated.message.title" = "Nejste ověřeni";
 "unknownLabel" = "Neznámé";
 "updater.check_for_updates_menu.title" = "Vyhledávání aktualizací…";
@@ -1440,6 +1440,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Zkontrolujte připojení nebo to zkuste znovu později. Pokud se Home Assistant restartuje, znovu se připojí po opětovném připojení k internetu.";
 "web_view.empty_state.open_settings_button" = "Otevřít nastavení aplikace";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Zkusit znovu";
 "web_view.empty_state.title" = "Jste odpojeni";
 "web_view.no_url_available.body" = "🔐 Vzhledem k vašim bezpečnostním nastavením nemáme povoleno používat žádnou URL adresu.\

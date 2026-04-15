@@ -1180,7 +1180,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "token_error.connection_failed" = "接続に失敗しました。";
 "token_error.expired" = "トークンの有効期限が切れています。";
 "token_error.token_unavailable" = "トークンが利用できません。";
-"unauthenticated.message.body" = "プロキシやネットワーク制限に引っかかっている場合は一時的なものかもしれませんが、そうでない場合はサーバーを一旦削除し、再度追加してください。";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "あなたは認証されていません";
 "unknownLabel" = "不明";
 "updater.check_for_updates_menu.title" = "アップデートを確認する…";
@@ -1439,6 +1439,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "接続を確認するか、しばらくしてからもう一度お試しください。Home Assistantが再起動している場合は、オンラインに戻った後に再接続されます。";
 "web_view.empty_state.open_settings_button" = "アプリの設定を開く";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "再試行";
 "web_view.empty_state.title" = "接続が切断されました";
 "web_view.no_url_available.body" = "🔐 セキュリティの選択により、使用できる URL がありません。 \

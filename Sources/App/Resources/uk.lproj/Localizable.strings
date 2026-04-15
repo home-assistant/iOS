@@ -1181,7 +1181,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "token_error.connection_failed" = "Не вдалося підключитися.";
 "token_error.expired" = "Токен застарів";
 "token_error.token_unavailable" = "Токен недоступний";
-"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "You are unauthenticated";
 "unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Перевірити наявність оновлень …";
@@ -1440,6 +1440,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
 "web_view.empty_state.open_settings_button" = "Open App settings";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Retry";
 "web_view.empty_state.title" = "You're disconnected";
 "web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \

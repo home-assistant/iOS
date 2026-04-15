@@ -1181,7 +1181,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "token_error.connection_failed" = "Ühendus nurjus.";
 "token_error.expired" = "Token on aegunud.";
 "token_error.token_unavailable" = "Token pole saadaval.";
-"unauthenticated.message.body" = "See võib olla ajutine kui oled puhverserveri või võrgupiirangu taga. Kui see püsib, eemalda oma server ja lisa see uuesti.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Tuvastamine puudub";
 "unknownLabel" = "Teadmata";
 "updater.check_for_updates_menu.title" = "Otsi värskendusi...";
@@ -1440,6 +1440,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "web_view.add_to.option.Widget.title" = "Vidin";
 "web_view.empty_state.body" = "Kontrolli ühendust või proovi hiljem uuesti. Kui Home Assistant taaskäivitub, loob see pärast võrguühenduse taastamist uuesti ühenduse.";
 "web_view.empty_state.open_settings_button" = "Ava rakenduse seaded";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Proovi uuesti";
 "web_view.empty_state.title" = "Oled ühenduseta";
 "web_view.no_url_available.body" = "🔐 Turvavalikute tõttu pole meil lubatud ühtegi URL-i kasutada. \

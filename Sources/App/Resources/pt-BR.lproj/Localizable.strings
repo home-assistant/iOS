@@ -1181,7 +1181,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "token_error.connection_failed" = "Falha na conexão.";
 "token_error.expired" = "O token expirou.";
 "token_error.token_unavailable" = "O token não está disponível.";
-"unauthenticated.message.body" = "Isso pode ser temporário se você estiver atrás de um proxy ou restrição de rede. Caso contrário, se persistir, remova seu servidor e adicione-o novamente.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Você não está autenticado";
 "unknownLabel" = "Desconhecido";
 "updater.check_for_updates_menu.title" = "Verifique se há atualizações...";
@@ -1440,6 +1440,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Verifique sua conexão ou tente novamente mais tarde. Se o Home Assistant estiver reiniciando, ele se reconectará após ficar online novamente.";
 "web_view.empty_state.open_settings_button" = "Abra as configurações do aplicativo";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Tentar novamente";
 "web_view.empty_state.title" = "Você está desconectado";
 "web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \

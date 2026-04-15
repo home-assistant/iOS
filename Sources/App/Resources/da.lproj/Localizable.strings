@@ -1181,7 +1181,7 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "token_error.connection_failed" = "Forbindelsen mislykkedes.";
 "token_error.expired" = "Token er udløbet.";
 "token_error.token_unavailable" = "Token er ikke tilgængelig.";
-"unauthenticated.message.body" = "Dette kan være midlertidigt, hvis du er bag en proxy- eller netværksbegrænsning. Hvis det fortsætter, skal du fjerne din server og tilføje den igen.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Du er ikke autentificeret";
 "unknownLabel" = "Ukendt";
 "updater.check_for_updates_menu.title" = "Søg efter opdateringer…";
@@ -1440,6 +1440,7 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Tjek din forbindelse, eller prøv igen senere. Hvis Home Assistant genstarter, genopretter den forbindelsen, når den er online igen.";
 "web_view.empty_state.open_settings_button" = "Åbn app-indstillinger";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Prøv igen";
 "web_view.empty_state.title" = "Der er ikke forbindelse";
 "web_view.no_url_available.body" = "🔐 På grund af dine sikkerhedsvalg er der ingen webadresse, som vi må bruge. \
