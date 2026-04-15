@@ -35,7 +35,8 @@ struct AssistPipelineAddList: View {
                             itemToAdd(.init(
                                 id: pipeline.id,
                                 serverId: config.serverId,
-                                type: .assistPipeline
+                                type: .assistPipeline,
+                                customization: .init(iconColor: MagicItem.defaultAssistIconColorHex)
                             ))
                         } label: {
                             HStack {
