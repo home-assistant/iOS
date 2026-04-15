@@ -120,9 +120,14 @@ struct MagicItemCustomizationView: View {
         Section {
             HStack(spacing: DesignSystem.Spaces.two) {
                 if viewModel.item.type == .assistPipeline {
+                    let iconColor: UIColor = if let iconColorHex = viewModel.item.customization?.iconColor {
+                        UIColor(Color(hex: iconColorHex))
+                    } else {
+                        .haPrimary
+                    }
                     Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
                         ofSize: .init(width: 24, height: 24),
-                        color: .haPrimary
+                        color: iconColor
                     ))
                 } else {
                     IconPicker(

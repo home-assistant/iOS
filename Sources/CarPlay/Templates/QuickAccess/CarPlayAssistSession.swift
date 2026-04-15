@@ -254,15 +254,16 @@ extension CarPlayAssistSession: AssistServiceDelegate {
     }
 
     func didReceiveEvent(_ event: AssistEvent) {
-        let stopped = stateQueue.sync { isStopped }
-        guard !stopped else { return }
         if event == .sttEnd {
-            audioRecorder.stopRecording()
-            assistService.finishSendingAudio()
-            stateQueue.sync {
+            let shouldHandleSttEnd = stateQueue.sync { () -> Bool in
+                guard !isStopped else { return false }
                 canSendAudioData = false
                 state = .processing
+                return true
             }
+            guard shouldHandleSttEnd else { return }
+            audioRecorder.stopRecording()
+            assistService.finishSendingAudio()
             activateVoiceControlState(for: .processing)
         }
     }

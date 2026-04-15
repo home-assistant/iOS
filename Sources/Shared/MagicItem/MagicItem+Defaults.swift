@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 public extension MagicItem {
     static var defaultAssistIconColorHex: String {
