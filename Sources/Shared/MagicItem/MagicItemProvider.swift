@@ -216,7 +216,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             )
         case .assistPipeline:
             let pipelineName: String = {
-                guard let configs = try? AssistPipelines.config() else { return item.id }
+                let configs = (try? AssistPipelines.config()) ?? []
                 let pipeline = configs
                     .first(where: { $0.serverId == item.serverId })?
                     .pipelines

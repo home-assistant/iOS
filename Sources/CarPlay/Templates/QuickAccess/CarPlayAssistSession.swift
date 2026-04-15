@@ -6,6 +6,8 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayAssistSession: NSObject {
+    typealias OnStop = () -> Void
+
     enum State {
         case recording
         case processing
@@ -20,10 +22,15 @@ final class CarPlayAssistSession: NSObject {
     }
 
     weak var interfaceController: CPInterfaceController?
+    var onStop: OnStop?
 
     private var assistService: AssistServiceProtocol
     private var audioRecorder: AudioRecorderProtocol
     private let ttsPlayer = AVPlayer()
+
+    /// Serial queue protecting all mutable session state (`canSendAudioData`, `state`, `isStopped`).
+    /// Callbacks from AVCaptureSession, HAKit, and NotificationCenter may arrive on arbitrary threads.
+    private let stateQueue = DispatchQueue(label: "io.home-assistant.carplay-assist-session", qos: .userInteractive)
     private var canSendAudioData = false
     private var state: State = .recording
     private var isStopped = false
@@ -64,21 +71,30 @@ final class CarPlayAssistSession: NSObject {
     func start() {
         audioRecorder.delegate = self
         assistService.delegate = self
-        state = .recording
+        stateQueue.sync {
+            state = .recording
+            isStopped = false
+            canSendAudioData = false
+        }
         updateTemplateForCurrentState()
         interfaceController?.pushTemplate(template, animated: true, completion: nil)
         audioRecorder.startRecording()
     }
 
     func stop() {
-        guard !isStopped else { return }
-        isStopped = true
+        let alreadyStopped: Bool = stateQueue.sync {
+            if isStopped { return true }
+            isStopped = true
+            canSendAudioData = false
+            return false
+        }
+        guard !alreadyStopped else { return }
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
         ttsPlayer.pause()
-        canSendAudioData = false
         NotificationCenter.default.removeObserver(self)
         interfaceController?.popTemplate(animated: true, completion: nil)
+        onStop?()
     }
 
     // MARK: - TTS Playback
@@ -110,12 +126,13 @@ final class CarPlayAssistSession: NSObject {
     }
 
     @objc private func ttsDidFinishPlaying(_ notification: Notification) {
-        guard !isStopped else { return }
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
         if assistService.shouldStartListeningAgainAfterPlaybackEnd {
             assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
             restartRecording()
         } else {
-            state = .done
+            stateQueue.sync { state = .done }
             updateTemplateForCurrentState()
         }
     }
@@ -123,7 +140,8 @@ final class CarPlayAssistSession: NSObject {
     // MARK: - Template Updates
 
     private func updateTemplateForCurrentState() {
-        let item = listItemForState()
+        let currentState = stateQueue.sync { state }
+        let item = listItemForState(currentState)
         if Thread.isMainThread {
             template.updateSections([CPListSection(items: [item])])
         } else {
@@ -133,7 +151,7 @@ final class CarPlayAssistSession: NSObject {
         }
     }
 
-    private func listItemForState() -> CPListItem {
+    private func listItemForState(_ state: State) -> CPListItem {
         let item: CPListItem
         switch state {
         case .recording:
@@ -185,14 +203,18 @@ final class CarPlayAssistSession: NSObject {
     private func stopRecordingAndSend() {
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
-        canSendAudioData = false
-        state = .processing
+        stateQueue.sync {
+            canSendAudioData = false
+            state = .processing
+        }
         updateTemplateForCurrentState()
     }
 
     private func restartRecording() {
-        canSendAudioData = false
-        state = .recording
+        stateQueue.sync {
+            canSendAudioData = false
+            state = .recording
+        }
         updateTemplateForCurrentState()
         audioRecorder.startRecording()
     }
@@ -211,7 +233,8 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
     }
 
     func didOutputSample(data: Data) {
-        guard canSendAudioData else { return }
+        let canSend = stateQueue.sync { canSendAudioData && !isStopped }
+        guard canSend else { return }
         assistService.sendAudioData(data)
     }
 
@@ -220,9 +243,13 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
     }
 
     func didFailToRecord(error: any Error) {
-        guard !isStopped, !state.isError else { return }
+        let shouldHandle: Bool = stateQueue.sync {
+            guard !isStopped, !state.isError else { return false }
+            state = .error(error.localizedDescription)
+            return true
+        }
+        guard shouldHandle else { return }
         Current.Log.error("CarPlay Assist recording failed: \(error.localizedDescription)")
-        state = .error(error.localizedDescription)
         updateTemplateForCurrentState()
     }
 }
@@ -232,16 +259,19 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
 @available(iOS 16.0, *)
 extension CarPlayAssistSession: AssistServiceDelegate {
     func didReceiveGreenLightForAudioInput() {
-        canSendAudioData = true
+        stateQueue.sync { canSendAudioData = true }
     }
 
     func didReceiveEvent(_ event: AssistEvent) {
-        guard !isStopped else { return }
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
         if event == .sttEnd {
             audioRecorder.stopRecording()
             assistService.finishSendingAudio()
-            canSendAudioData = false
-            state = .processing
+            stateQueue.sync {
+                canSendAudioData = false
+                state = .processing
+            }
             updateTemplateForCurrentState()
         }
     }
@@ -255,20 +285,23 @@ extension CarPlayAssistSession: AssistServiceDelegate {
     }
 
     func didReceiveIntentEndContent(_ content: String) {
-        guard !isStopped else { return }
-        state = .responding
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
+        stateQueue.sync { state = .responding }
         updateTemplateForCurrentState()
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
-        guard !isStopped else { return }
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
         playTTS(url: mediaUrl)
     }
 
     func didReceiveError(code: String, message: String) {
-        guard !isStopped else { return }
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
         Current.Log.error("CarPlay Assist error [\(code)]: \(message)")
-        state = .error(message)
+        stateQueue.sync { state = .error(message) }
         updateTemplateForCurrentState()
     }
 }

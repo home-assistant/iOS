@@ -534,6 +534,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func presentAssistSession(magicItem: MagicItem, info: MagicItem.Info) {
+        // Stop any existing session before starting a new one
+        activeAssistSession?.stop()
+        activeAssistSession = nil
+
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
             Current.Log.error("Failed to get server for assist pipeline: \(magicItem.id)")
             return
@@ -544,6 +548,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             pipelineId: magicItem.id,
             pipelineName: magicItem.name(info: info)
         )
+        session.onStop = { [weak self] in
+            self?.activeAssistSession = nil
+        }
         activeAssistSession = session
         session.start()
     }
