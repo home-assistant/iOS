@@ -165,7 +165,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var generalItems: [SettingsItem] {
-        var items: [SettingsItem] = [.general, .gestures, .kiosk, .location, .notifications]
+        var items: [SettingsItem] = [.general, .gestures, .location, .notifications, .kiosk]
         if #available(iOS 17.2, *), Current.isTestFlight {
             items.append(.liveActivities)
         }
