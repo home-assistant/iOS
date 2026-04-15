@@ -13,12 +13,17 @@ final class CarPlayAssistSession: NSObject {
         case processing
         case responding
         case error(String)
-        case done
 
         var isError: Bool {
             if case .error = self { return true }
             return false
         }
+    }
+
+    private enum VoiceControlStateID: String {
+        case recording
+        case processing
+        case responding
     }
 
     weak var interfaceController: CPInterfaceController?
@@ -39,12 +44,26 @@ final class CarPlayAssistSession: NSObject {
     private let pipelineId: String
     private let pipelineName: String
 
-    private lazy var template: CPListTemplate = {
-        let template = CPListTemplate(title: pipelineName, sections: [])
-        template.backButton = CPBarButton(title: L10n.Alerts.Confirm.cancel) { [weak self] _ in
-            self?.stop()
-        }
-        return template
+    private lazy var template: CPVoiceControlTemplate = {
+        let recordingState = CPVoiceControlState(
+            identifier: VoiceControlStateID.recording.rawValue,
+            titleVariants: [L10n.Assist.Button.Listening.title],
+            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary),
+            repeats: true
+        )
+        let processingState = CPVoiceControlState(
+            identifier: VoiceControlStateID.processing.rawValue,
+            titleVariants: [L10n.Assist.Carplay.Processing.title],
+            image: MaterialDesignIcons.dotsHorizontalIcon.carPlayIcon(color: .haPrimary),
+            repeats: true
+        )
+        let respondingState = CPVoiceControlState(
+            identifier: VoiceControlStateID.responding.rawValue,
+            titleVariants: [L10n.Assist.Carplay.Responding.title],
+            image: MaterialDesignIcons.volumeHighIcon.carPlayIcon(color: .haPrimary),
+            repeats: true
+        )
+        return CPVoiceControlTemplate(voiceControlStates: [recordingState, processingState, respondingState])
     }()
 
     init(
@@ -76,12 +95,21 @@ final class CarPlayAssistSession: NSObject {
             isStopped = false
             canSendAudioData = false
         }
-        updateTemplateForCurrentState()
-        interfaceController?.pushTemplate(template, animated: true, completion: nil)
+        activateVoiceControlState(for: .recording)
+        interfaceController?.presentTemplate(template, animated: true, completion: nil)
         audioRecorder.startRecording()
     }
 
     func stop() {
+        stop(dismissTemplate: true)
+    }
+
+    func templateWillDisappear(template disappearingTemplate: CPTemplate) {
+        guard disappearingTemplate === template else { return }
+        stop(dismissTemplate: false)
+    }
+
+    private func stop(dismissTemplate: Bool) {
         let alreadyStopped: Bool = stateQueue.sync {
             if isStopped { return true }
             isStopped = true
@@ -92,9 +120,23 @@ final class CarPlayAssistSession: NSObject {
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
         ttsPlayer.pause()
+        ttsPlayer.replaceCurrentItem(with: nil)
+        deactivateAudioSession()
         NotificationCenter.default.removeObserver(self)
-        interfaceController?.popTemplate(animated: true, completion: nil)
+        if dismissTemplate {
+            interfaceController?.dismissTemplate(animated: true, completion: nil)
+        }
         onStop?()
+    }
+
+    // MARK: - Audio Session
+
+    private func deactivateAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        } catch {
+            Current.Log.error("CarPlay Assist failed to deactivate audio session: \(error.localizedDescription)")
+        }
     }
 
     // MARK: - TTS Playback
@@ -132,82 +174,31 @@ final class CarPlayAssistSession: NSObject {
             assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
             restartRecording()
         } else {
-            stateQueue.sync { state = .done }
-            updateTemplateForCurrentState()
+            stop()
         }
     }
 
-    // MARK: - Template Updates
+    // MARK: - Voice Control State Updates
 
-    private func updateTemplateForCurrentState() {
-        let currentState = stateQueue.sync { state }
-        let item = listItemForState(currentState)
-        if Thread.isMainThread {
-            template.updateSections([CPListSection(items: [item])])
-        } else {
-            DispatchQueue.main.async { [weak self] in
-                self?.template.updateSections([CPListSection(items: [item])])
-            }
-        }
-    }
-
-    private func listItemForState(_ state: State) -> CPListItem {
-        let item: CPListItem
+    private func activateVoiceControlState(for state: State) {
+        let identifier: String
         switch state {
         case .recording:
-            item = CPListItem(
-                text: L10n.Assist.Button.Listening.title,
-                detailText: nil,
-                image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary)
-            )
-            item.handler = { [weak self] _, completion in
-                self?.stopRecordingAndSend()
-                completion()
-            }
+            identifier = VoiceControlStateID.recording.rawValue
         case .processing:
-            item = CPListItem(
-                text: L10n.Assist.Carplay.Processing.title,
-                detailText: nil,
-                image: MaterialDesignIcons.dotsHorizontalIcon.carPlayIcon(color: .haPrimary)
-            )
+            identifier = VoiceControlStateID.processing.rawValue
         case .responding:
-            item = CPListItem(
-                text: L10n.Assist.Carplay.Responding.title,
-                detailText: nil,
-                image: MaterialDesignIcons.volumeHighIcon.carPlayIcon(color: .haPrimary)
-            )
-        case let .error(message):
-            item = CPListItem(
-                text: message,
-                detailText: nil,
-                image: MaterialDesignIcons.alertCircleIcon.carPlayIcon(color: .red)
-            )
-            item.handler = { [weak self] _, completion in
-                self?.restartRecording()
-                completion()
-            }
-        case .done:
-            item = CPListItem(
-                text: L10n.Assist.Carplay.TapToRecord.title,
-                detailText: nil,
-                image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary)
-            )
-            item.handler = { [weak self] _, completion in
-                self?.restartRecording()
-                completion()
+            identifier = VoiceControlStateID.responding.rawValue
+        case .error:
+            return
+        }
+        if Thread.isMainThread {
+            template.activateVoiceControlState(withIdentifier: identifier)
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.template.activateVoiceControlState(withIdentifier: identifier)
             }
         }
-        return item
-    }
-
-    private func stopRecordingAndSend() {
-        audioRecorder.stopRecording()
-        assistService.finishSendingAudio()
-        stateQueue.sync {
-            canSendAudioData = false
-            state = .processing
-        }
-        updateTemplateForCurrentState()
     }
 
     private func restartRecording() {
@@ -215,7 +206,7 @@ final class CarPlayAssistSession: NSObject {
             canSendAudioData = false
             state = .recording
         }
-        updateTemplateForCurrentState()
+        activateVoiceControlState(for: .recording)
         audioRecorder.startRecording()
     }
 }
@@ -250,7 +241,7 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
         }
         guard shouldHandle else { return }
         Current.Log.error("CarPlay Assist recording failed: \(error.localizedDescription)")
-        updateTemplateForCurrentState()
+        stop()
     }
 }
 
@@ -272,23 +263,23 @@ extension CarPlayAssistSession: AssistServiceDelegate {
                 canSendAudioData = false
                 state = .processing
             }
-            updateTemplateForCurrentState()
+            activateVoiceControlState(for: .processing)
         }
     }
 
     func didReceiveSttContent(_ content: String) {
-        // No text display in CarPlay per Apple requirements
+        // No text display in CarPlay
     }
 
     func didReceiveStreamResponseChunk(_ content: String) {
-        // No text display in CarPlay per Apple requirements
+        // No text display in CarPlay
     }
 
     func didReceiveIntentEndContent(_ content: String) {
         let stopped = stateQueue.sync { isStopped }
         guard !stopped else { return }
         stateQueue.sync { state = .responding }
-        updateTemplateForCurrentState()
+        activateVoiceControlState(for: .responding)
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
@@ -302,6 +293,6 @@ extension CarPlayAssistSession: AssistServiceDelegate {
         guard !stopped else { return }
         Current.Log.error("CarPlay Assist error [\(code)]: \(message)")
         stateQueue.sync { state = .error(message) }
-        updateTemplateForCurrentState()
+        stop()
     }
 }

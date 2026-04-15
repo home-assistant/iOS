@@ -74,6 +74,10 @@ struct MagicItemCustomizationView: View {
     }
 
     private func save() {
+        if context == .carPlay, viewModel.item.type == .assistPipeline {
+            viewModel.item.customization?.requiresConfirmation = false
+        }
+
         if let action = viewModel.item.action {
             switch action {
             case .default, .nothing, .runScript, .assist, .moreInfoDialog:
@@ -115,23 +119,30 @@ struct MagicItemCustomizationView: View {
     private func mainInformationView(info: MagicItem.Info) -> some View {
         Section {
             HStack(spacing: DesignSystem.Spaces.two) {
-                IconPicker(
-                    selectedIcon: .init(get: {
-                        viewModel.item.icon(info: info)
-                    }, set: { newIcon in
-                        viewModel.item.customization?.icon = newIcon?.name
-                        viewModel.item.customization?.iconIsCustomized = true
-                    }),
-                    selectedColor: .init(get: {
-                        if let iconColorHex = viewModel.item.customization?.iconColor {
-                            return Color(hex: iconColorHex)
-                        } else {
-                            return Color.haPrimary
-                        }
-                    }, set: { _ in
-                        /* no-op */
-                    })
-                )
+                if viewModel.item.type == .assistPipeline {
+                    Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
+                        ofSize: .init(width: 24, height: 24),
+                        color: .haPrimary
+                    ))
+                } else {
+                    IconPicker(
+                        selectedIcon: .init(get: {
+                            viewModel.item.icon(info: info)
+                        }, set: { newIcon in
+                            viewModel.item.customization?.icon = newIcon?.name
+                            viewModel.item.customization?.iconIsCustomized = true
+                        }),
+                        selectedColor: .init(get: {
+                            if let iconColorHex = viewModel.item.customization?.iconColor {
+                                return Color(hex: iconColorHex)
+                            } else {
+                                return Color.haPrimary
+                            }
+                        }, set: { _ in
+                            /* no-op */
+                        })
+                    )
+                }
                 TextField(viewModel.item.name(info: info), text: .init(get: {
                     viewModel.item.name(info: info)
                 }, set: { newValue in
@@ -162,18 +173,20 @@ struct MagicItemCustomizationView: View {
             }, set: { newColor in
                 viewModel.item.customization?.iconColor = newColor.hex()
             }), supportsOpacity: false)
-            Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
-            if useCustomColors {
-                ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: .init(get: {
-                    Color(hex: viewModel.item.customization?.backgroundColor)
-                }, set: { newColor in
-                    viewModel.item.customization?.backgroundColor = newColor.hex()
-                }), supportsOpacity: false)
-                ColorPicker(L10n.MagicItem.TextColor.title, selection: .init(get: {
-                    Color(hex: viewModel.item.customization?.textColor)
-                }, set: { newColor in
-                    viewModel.item.customization?.textColor = newColor.hex()
-                }), supportsOpacity: false)
+            if context != .carPlay {
+                Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
+                if useCustomColors {
+                    ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: .init(get: {
+                        Color(hex: viewModel.item.customization?.backgroundColor)
+                    }, set: { newColor in
+                        viewModel.item.customization?.backgroundColor = newColor.hex()
+                    }), supportsOpacity: false)
+                    ColorPicker(L10n.MagicItem.TextColor.title, selection: .init(get: {
+                        Color(hex: viewModel.item.customization?.textColor)
+                    }, set: { newColor in
+                        viewModel.item.customization?.textColor = newColor.hex()
+                    }), supportsOpacity: false)
+                }
             }
         }
     }
@@ -215,15 +228,17 @@ struct MagicItemCustomizationView: View {
                 scriptActionDetails
             }
         }
-        Section {
-            Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
-                viewModel.item.customization?.requiresConfirmation ?? false
-            }, set: { newValue in
-                viewModel.item.customization?.requiresConfirmation = newValue
-            }))
-        } footer: {
-            if context == .widget {
-                Text(verbatim: L10n.Widgets.Custom.RequireConfirmation.footer)
+        if !(context == .carPlay && viewModel.item.type == .assistPipeline) {
+            Section {
+                Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
+                    viewModel.item.customization?.requiresConfirmation ?? false
+                }, set: { newValue in
+                    viewModel.item.customization?.requiresConfirmation = newValue
+                }))
+            } footer: {
+                if context == .widget {
+                    Text(verbatim: L10n.Widgets.Custom.RequireConfirmation.footer)
+                }
             }
         }
     }

@@ -43,7 +43,7 @@ struct MagicItemAddView: View {
                 }
                 options.append(.legacyiOSActions)
             }
-            if context == .carPlay {
+            if context == .carPlay, #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
             }
             return options
