@@ -358,14 +358,35 @@ public final class KioskModeManager: ObservableObject {
         webViewController?.refresh()
     }
 
-    /// Called when app returns to foreground
+    /// Called when app returns to foreground.
+    /// If kiosk is active, re-apply whatever brightness state kiosk expects —
+    /// screensaver dim if a screensaver is still showing, or the managed
+    /// brightness level if brightness control is enabled. Otherwise leave
+    /// brightness as iOS restored it when HA backgrounded (home-assistant/iOS#4506).
     public func appDidBecomeActive() {
         appState = .active
+
+        guard isKioskModeActive else { return }
+
+        if activeScreensaverMode != nil {
+            applyBrightnessForActiveScreensaver()
+        } else if settings.brightnessControlEnabled {
+            applyBrightness()
+        }
     }
 
-    /// Called when app enters background
+    /// Called when app enters background (user switched apps, device locked, etc).
+    /// Intentionally wired to didEnterBackgroundNotification, not willResignActiveNotification —
+    /// so a notification banner or Control Center pulldown alone does NOT restore brightness,
+    /// only actually leaving the app does.
+    ///
+    /// If kiosk mode has dimmed UIScreen.main.brightness, restore the user's original
+    /// brightness so other apps aren't stuck at the kiosk dim level (home-assistant/iOS#4506).
     public func appDidEnterBackground() {
         appState = .background
+
+        guard isKioskModeActive, let original = originalBrightness else { return }
+        Current.setScreenBrightness(CGFloat(original))
     }
 
     // MARK: - Screensaver State
