@@ -416,6 +416,14 @@ public final class KioskModeManager: ObservableObject {
     /// Apply the brightness level that matches the currently-active screensaver mode.
     /// Used by showScreensaver() for the initial dim, and by appDidBecomeActive()
     /// to reapply dim when returning to foreground while a screensaver is still active.
+    ///
+    /// Clock mode only dims when the current display brightness exceeds the configured
+    /// dim level — so users who've already turned their screen down (or set a low
+    /// managed-brightness level) are not brightened by the screensaver. We compare
+    /// against the actual display brightness via Current.screenBrightness() rather than
+    /// the stored currentBrightness property, because those diverge on the
+    /// background → foreground reapply path (background restores originalBrightness
+    /// to the display without updating the stored property).
     private func applyBrightnessForActiveScreensaver() {
         guard let mode = activeScreensaverMode else { return }
 
@@ -425,7 +433,7 @@ public final class KioskModeManager: ObservableObject {
         case .dim:
             Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
         case .clock:
-            if settings.screensaverDimLevel < currentBrightness {
+            if CGFloat(settings.screensaverDimLevel) < Current.screenBrightness() {
                 Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
             }
         }

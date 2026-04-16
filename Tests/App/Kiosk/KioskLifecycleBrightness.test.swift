@@ -31,23 +31,26 @@ struct KioskLifecycleBrightnessTests {
         var value: CGFloat = 0
     }
 
-    /// Prepare the shared manager for a test: ensure kiosk is disabled, snapshot the
-    /// current persisted settings, and install mocked brightness closures on Current.
+    /// Prepare the shared manager for a test: install mocked brightness closures on
+    /// Current BEFORE touching kiosk state (so a stale kiosk-active state from a prior
+    /// test or prior run cannot invoke the real Current.setScreenBrightness and change
+    /// the simulator/device brightness as a side effect), snapshot the current
+    /// persisted settings, then ensure kiosk is disabled.
     /// Returns the brightness box plus a single cleanup closure that restores everything.
     private func setupTest(initialBrightness: CGFloat) -> (BrightnessBox, () -> Void) {
         let mgr = KioskModeManager.shared
+
+        let savedGet = Current.screenBrightness
+        let savedSet = Current.setScreenBrightness
+        let box = BrightnessBox()
+        box.value = initialBrightness
+        Current.screenBrightness = { box.value }
+        Current.setScreenBrightness = { box.value = $0 }
 
         let savedSettings = mgr.settings
         if mgr.isKioskModeActive {
             mgr.disableKioskMode()
         }
-
-        let box = BrightnessBox()
-        box.value = initialBrightness
-        let savedGet = Current.screenBrightness
-        let savedSet = Current.setScreenBrightness
-        Current.screenBrightness = { box.value }
-        Current.setScreenBrightness = { box.value = $0 }
 
         let cleanup: () -> Void = {
             if mgr.isKioskModeActive {
@@ -140,6 +143,39 @@ struct KioskLifecycleBrightnessTests {
         #expect(
             box.value == 0.3,
             "expected foreground to re-apply managed brightness (0.3), got \(box.value)"
+        )
+    }
+
+    @Test func foregroundReappliesClockScreensaverDim() async throws {
+        // Regression: the helper previously compared settings.screensaverDimLevel against
+        // the stored currentBrightness property rather than the actual display brightness.
+        // On the background → foreground cycle, background restores originalBrightness to
+        // the display but does not update currentBrightness, so the clock-mode guard
+        // wrongly evaluated false and the display stayed stuck at the restored
+        // (too-bright) level. This test exercises exactly that path.
+        let (box, cleanup) = setupTest(initialBrightness: 0.8)
+        defer { cleanup() }
+
+        let mgr = KioskModeManager.shared
+        mgr.enableKioskMode()
+
+        var settings = mgr.settings
+        settings.screensaverMode = .clock
+        settings.screensaverDimLevel = 0.2
+        mgr.updateSettings(settings)
+
+        mgr.sleepScreen(mode: .clock)
+        #expect(box.value == 0.2, "clock screensaver should have dimmed below the pre-screensaver brightness")
+
+        mgr.appDidEnterBackground()
+        #expect(box.value == 0.8, "background should restore originalBrightness")
+
+        #expect(mgr.activeScreensaverMode == .clock)
+        mgr.appDidBecomeActive()
+
+        #expect(
+            box.value == 0.2,
+            "expected foreground to re-apply clock screensaver dim (0.2), got \(box.value)"
         )
     }
 
