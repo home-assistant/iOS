@@ -158,6 +158,25 @@ private class OnboardingClientCertificateDelegate: SessionDelegate {
 
     override func urlSession(
         _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            do {
+                let credential = try ClientCertificateManager.shared.urlCredential(for: certificate)
+                Current.Log.info("[mTLS] Using client certificate for token exchange: \(certificate.displayName)")
+                completionHandler(.useCredential, credential)
+                return
+            } catch {
+                Current.Log.error("[mTLS] Failed to get credential for token exchange: \(error)")
+            }
+        }
+
+        super.urlSession(session, didReceive: challenge, completionHandler: completionHandler)
+    }
+
+    override func urlSession(
+        _ session: URLSession,
         task: URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void

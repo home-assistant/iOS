@@ -13,11 +13,26 @@ public class ClientCertificateSessionDelegate: SessionDelegate {
 
     override public func urlSession(
         _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        // Handle client certificate challenge at session level (used by macOS)
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            handleClientCertificateChallenge(challenge, completionHandler: completionHandler)
+            return
+        }
+
+        // Let parent handle other challenges (server trust, etc.)
+        super.urlSession(session, didReceive: challenge, completionHandler: completionHandler)
+    }
+
+    override public func urlSession(
+        _ session: URLSession,
         task: URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        // Handle client certificate challenge
+        // Handle client certificate challenge at task level (used by iOS)
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
             handleClientCertificateChallenge(challenge, completionHandler: completionHandler)
             return
