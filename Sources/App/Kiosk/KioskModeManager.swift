@@ -377,20 +377,12 @@ public final class KioskModeManager: ObservableObject {
         preScreensaverBrightness = Current.screenBrightness()
 
         switch mode {
-        case .blank:
-            screenState = .off
-            Current.setScreenBrightness(0)
-
-        case .dim:
-            screenState = .dimmed
-            Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
-
-        case .clock:
-            screenState = .screensaver
-            if settings.screensaverDimLevel < currentBrightness {
-                Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
-            }
+        case .blank: screenState = .off
+        case .dim: screenState = .dimmed
+        case .clock: screenState = .screensaver
         }
+
+        applyBrightnessForActiveScreensaver()
 
         if settings.pixelShiftEnabled {
             startPixelShiftTimer()
@@ -398,6 +390,24 @@ public final class KioskModeManager: ObservableObject {
 
         presentScreensaverViewController(mode: mode)
         notifyObserversOfScreenStateChange()
+    }
+
+    /// Apply the brightness level that matches the currently-active screensaver mode.
+    /// Used by showScreensaver() for the initial dim, and by appDidBecomeActive()
+    /// to reapply dim when returning to foreground while a screensaver is still active.
+    private func applyBrightnessForActiveScreensaver() {
+        guard let mode = activeScreensaverMode else { return }
+
+        switch mode {
+        case .blank:
+            Current.setScreenBrightness(0)
+        case .dim:
+            Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
+        case .clock:
+            if settings.screensaverDimLevel < currentBrightness {
+                Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
+            }
+        }
     }
 
     private func hideScreensaver(source: String) {
