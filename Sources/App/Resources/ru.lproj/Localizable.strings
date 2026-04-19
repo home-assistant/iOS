@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Какие действия?";
 "assist.button.finish_recording.title" = "Нажмите, чтобы завершить запись...";
 "assist.button.listening.title" = "Слушаю...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Не удалось получить пайплайны Assist, пожалуйста, проверьте ваши настройки пайплайнов.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Обработчик";

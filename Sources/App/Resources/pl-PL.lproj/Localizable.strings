@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "assist.button.finish_recording.title" = "Stuknij, aby zakończyć nagrywanie...";
 "assist.button.listening.title" = "Nasłuchiwanie...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.modern_ui.header.title" = "Asystent";
 "assist.modern_ui.pipeline.label" = "Pipeline";
