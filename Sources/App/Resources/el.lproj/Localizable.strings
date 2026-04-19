@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
 "assist.button.finish_recording.title" = "Πατήστε για να ολοκληρώσετε την εγγραφή...";
 "assist.button.listening.title" = "Ακρόαση...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Αποτυχία λήψης των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
