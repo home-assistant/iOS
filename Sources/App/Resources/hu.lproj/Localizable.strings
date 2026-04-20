@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Milyen műveletek?";
 "assist.button.finish_recording.title" = "Érintse meg a felvétel befejezéséhez...";
 "assist.button.listening.title" = "Hallgatás...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Nem sikerült lekérni az Assist folyamatokat, kérjük, ellenőrizze a folyamatok konfigurációját.";
 "assist.modern_ui.header.title" = "Asszisztens";
 "assist.modern_ui.pipeline.label" = "Folyamat";

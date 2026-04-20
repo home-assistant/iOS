@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Quali azioni?";
 "assist.button.finish_recording.title" = "Premi per terminare la registrazione...";
 "assist.button.listening.title" = "In ascolto...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Impossibile ottenere i pipeline Assist, controlla la configurazione dei tuoi pipeline.";
 "assist.modern_ui.header.title" = "Assistente";
 "assist.modern_ui.pipeline.label" = "Pipeline";
