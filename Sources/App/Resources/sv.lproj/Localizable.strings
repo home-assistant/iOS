@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Vilka åtgärder?";
 "assist.button.finish_recording.title" = "Tryck för att avsluta inspelningen...";
 "assist.button.listening.title" = "Lyssnar...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Misslyckades med att inhämta Assist Pipelines, kontrollera din pipelinekonfiguration.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -1180,7 +1183,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "token_error.connection_failed" = "Anslutningen misslyckades.";
 "token_error.expired" = "Token har upphört att gälla.";
 "token_error.token_unavailable" = "Token är inte tillgänglig.";
-"unauthenticated.message.body" = "Detta kan vara tillfälligt om du är bakom en proxy eller nätverksbegränsning, annars om det kvarstår, ta bort din server och lägg till den igen.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Du är inte autentiserad";
 "unknownLabel" = "Okänd";
 "updater.check_for_updates_menu.title" = "Sök efter uppdateringar...";
@@ -1439,6 +1442,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant startas om kommer den att återanslutas efter uppstarten.";
 "web_view.empty_state.open_settings_button" = "Öppna appinställningar";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Försök igen";
 "web_view.empty_state.title" = "Du är frånkopplad";
 "web_view.no_url_available.body" = "🔐 På grund av dina säkerhetsval finns det ingen URL som vi får använda. \

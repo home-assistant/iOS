@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Milyen műveletek?";
 "assist.button.finish_recording.title" = "Érintse meg a felvétel befejezéséhez...";
 "assist.button.listening.title" = "Hallgatás...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Nem sikerült lekérni az Assist folyamatokat, kérjük, ellenőrizze a folyamatok konfigurációját.";
 "assist.modern_ui.header.title" = "Asszisztens";
 "assist.modern_ui.pipeline.label" = "Folyamat";
@@ -1180,7 +1183,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "token_error.connection_failed" = "A kapcsolat sikertelen.";
 "token_error.expired" = "A token lejárt.";
 "token_error.token_unavailable" = "A token nem elérhető.";
-"unauthenticated.message.body" = "Ez átmeneti lehet, ha proxy mögött vagy hálózati korlátozás alatt van. Ha a probléma továbbra is fennáll, távolítsa el a szervert, majd adja hozzá újra.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Nincs hitelesítve";
 "unknownLabel" = "Ismeretlen";
 "updater.check_for_updates_menu.title" = "Frissítések keresése…";
@@ -1439,6 +1442,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Ellenőrizze a kapcsolatot vagy próbálja meg később újra. Ha a Home Assistant újraindul, a kapcsolat automatikusan helyreáll, amint ismét online lesz.";
 "web_view.empty_state.open_settings_button" = "Alkalmazásbeállítások megnyitása";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Újrapróbálkozás";
 "web_view.empty_state.title" = "Nincs kapcsolat";
 "web_view.no_url_available.body" = "🔐  A biztonsági beállításai miatt nincs olyan URL, amelyet használhatnánk. \

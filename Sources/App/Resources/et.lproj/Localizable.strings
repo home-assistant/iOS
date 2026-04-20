@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Millised toimingud?";
 "assist.button.finish_recording.title" = "Salvestamise lõpetamiseks toksa...";
 "assist.button.listening.title" = "Kuulan...";
+"assist.carplay.processing.title" = "Töötlemine...";
+"assist.carplay.responding.title" = "Vastamine...";
+"assist.carplay.tap_to_record.title" = "Puuduta salvestamiseks";
 "assist.error.pipelines_response" = "Assisti voogude hankimine nurjus, kontrolli oma voogude sätteid.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Voog";
@@ -1181,7 +1184,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "token_error.connection_failed" = "Ühendus nurjus.";
 "token_error.expired" = "Token on aegunud.";
 "token_error.token_unavailable" = "Token pole saadaval.";
-"unauthenticated.message.body" = "See võib olla ajutine kui oled puhverserveri või võrgupiirangu taga. Kui see püsib, eemalda oma server ja lisa see uuesti.";
+"unauthenticated.message.body" = "Seanss on aegunud. Jätkamiseks tuvasta end uuesti või kontrolli oma ühendust kui oled puhverserveri või võrgupiirangu taga.";
 "unauthenticated.message.title" = "Tuvastamine puudub";
 "unknownLabel" = "Teadmata";
 "updater.check_for_updates_menu.title" = "Otsi värskendusi...";
@@ -1440,6 +1443,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "web_view.add_to.option.Widget.title" = "Vidin";
 "web_view.empty_state.body" = "Kontrolli ühendust või proovi hiljem uuesti. Kui Home Assistant taaskäivitub, loob see pärast võrguühenduse taastamist uuesti ühenduse.";
 "web_view.empty_state.open_settings_button" = "Ava rakenduse seaded";
+"web_view.empty_state.reauthenticate_button" = "Taastuvasta";
 "web_view.empty_state.retry_button" = "Proovi uuesti";
 "web_view.empty_state.title" = "Oled ühenduseta";
 "web_view.no_url_available.body" = "🔐 Turvavalikute tõttu pole meil lubatud ühtegi URL-i kasutada. \

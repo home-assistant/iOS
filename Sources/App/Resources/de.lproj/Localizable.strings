@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Welche Aktionen?";
 "assist.button.finish_recording.title" = "Zum Beenden der Aufnahme tippen …";
 "assist.button.listening.title" = "Zuhören …";
+"assist.carplay.processing.title" = "Verarbeitung …";
+"assist.carplay.responding.title" = "Antworten …";
+"assist.carplay.tap_to_record.title" = "Zum Aufnehmen tippen";
 "assist.error.pipelines_response" = "Assist-Pipelines konnten nicht abgerufen werden. Bitte überprüfe deine Pipeline-Konfiguration.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -1181,7 +1184,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "token_error.connection_failed" = "Verbindung fehlgeschlagen.";
 "token_error.expired" = "Das Token ist abgelaufen.";
 "token_error.token_unavailable" = "Token ist nicht verfügbar.";
-"unauthenticated.message.body" = "Dies kann vorübergehend sein, wenn du dich hinter einem Proxy oder einer Netzwerkbeschränkung befindest, andernfalls entferne deinen Server und füge ihn wieder hinzu.";
+"unauthenticated.message.body" = "Deine Sitzung ist abgelaufen. Bitte authentifiziere dich erneut, um fortzufahren, oder überprüfe deine Verbindung, ob du dich hinter einem Proxy befindest oder Netzwerkbeschränkungen vorliegen.";
 "unauthenticated.message.title" = "Du bist nicht authentifiziert";
 "unknownLabel" = "Unbekannt";
 "updater.check_for_updates_menu.title" = "Auf Updates prüfen …";
@@ -1441,6 +1444,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Bitte überprüfe deine Verbindung oder versuche es später erneut. Wenn Home Assistant neu gestartet wird, wird die Verbindung wiederhergestellt, sobald er wieder online ist.";
 "web_view.empty_state.open_settings_button" = "App-Einstellungen öffnen";
+"web_view.empty_state.reauthenticate_button" = "Erneut authentifizieren";
 "web_view.empty_state.retry_button" = "Erneut versuchen";
 "web_view.empty_state.title" = "Verbindung wurde getrennt";
 "web_view.no_url_available.body" = "🔐 Aufgrund deiner Sicherheitseinstellungen gibt es keine URL, die wir verwenden dürfen. \

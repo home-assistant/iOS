@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "assist.button.finish_recording.title" = "Tap to finish recording...";
 "assist.button.listening.title" = "Listening...";
+"assist.carplay.processing.title" = "Behandler...";
+"assist.carplay.responding.title" = "Svarer...";
+"assist.carplay.tap_to_record.title" = "Trykk for å ta opp";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -504,9 +507,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.button" = "End All";
 "live_activity.end_all.confirm.title" = "End all Live Activities?";
-"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
-"live_activity.frequent_updates.title" = "Frequent Updates";
-"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
+"live_activity.frequent_updates.footer" = "Lar Home Assistant oppdatere Live Activities opptil én gang per sekund. Aktiver i Settings \u203A %@ \u203A Live Activities.";
+"live_activity.frequent_updates.title" = "Hyppige oppdateringer";
+"live_activity.privacy.message" = "Live Activity-innhold er synlig på låseskjermen og Dynamic Island uten Face ID eller Touch ID. Vær nøye med hva du viser.";
 "live_activity.section.active" = "Active Activities";
 "live_activity.section.privacy" = "Privacy";
 "live_activity.section.status" = "Status";
@@ -1181,7 +1184,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "token_error.connection_failed" = "Tilkoblingen mislyktes.";
 "token_error.expired" = "Token er utløpt.";
 "token_error.token_unavailable" = "Token er ikke tilgjengelig.";
-"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "You are unauthenticated";
 "unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Se etter oppdateringer…";
@@ -1440,6 +1443,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
 "web_view.empty_state.open_settings_button" = "Open App settings";
+"web_view.empty_state.reauthenticate_button" = "Re-autentisering";
 "web_view.empty_state.retry_button" = "Prøv på nytt";
 "web_view.empty_state.title" = "Du er frakoblet";
 "web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \

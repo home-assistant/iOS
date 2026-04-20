@@ -96,4 +96,40 @@ struct MagicItemProviderTests {
             .init(id: "light.one", serverId: "1", type: .entity),
         ])
     }
+
+    @Test mutating func migrateCarPlayAssistItemsNormalizesUnsupportedCustomization() async throws {
+        var carPlayConfig = CarPlayConfig()
+        carPlayConfig.quickAccessItems = [
+            .init(
+                id: "pipeline.one",
+                serverId: "1",
+                type: .assistPipeline,
+                customization: .init(requiresConfirmation: true)
+            ),
+        ]
+
+        try await Current.database().write { [carPlayConfig] db in
+            try CarPlayConfig.deleteAll(db)
+            try carPlayConfig.insert(db)
+        }
+
+        await withCheckedContinuation { continuation in
+            sut.migrateCarPlayConfig {
+                continuation.resume()
+            }
+        }
+
+        let newCarPlayConfig = try CarPlayConfig.config()
+        #expect(newCarPlayConfig?.quickAccessItems == [
+            .init(
+                id: "pipeline.one",
+                serverId: "1",
+                type: .assistPipeline,
+                customization: .init(
+                    iconColor: MagicItem.defaultAssistIconColorHex,
+                    requiresConfirmation: false
+                )
+            ),
+        ])
+    }
 }

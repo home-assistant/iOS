@@ -10,8 +10,9 @@ final class CarPlayQuickAccessViewModel {
     func update() {
         do {
             if let config = try CarPlayConfig.config() {
+                let items = filterItems(config.quickAccessItems)
                 templateProvider?.updateList(
-                    for: config.quickAccessItems,
+                    for: items,
                     layout: config.resolvedQuickAccessLayout
                 )
             } else {
@@ -20,6 +21,14 @@ final class CarPlayQuickAccessViewModel {
         } catch {
             Current.Log.error("Failed to access CarPlay configuration, error: \(error.localizedDescription)")
             templateProvider?.updateList(for: [], layout: .grid)
+        }
+    }
+
+    private func filterItems(_ items: [MagicItem]) -> [MagicItem] {
+        if #available(iOS 26.0, *) {
+            return items
+        } else {
+            return items.filter { $0.type != .assistPipeline }
         }
     }
 

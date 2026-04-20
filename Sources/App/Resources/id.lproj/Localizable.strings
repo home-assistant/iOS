@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
 "assist.button.finish_recording.title" = "Tap to finish recording...";
 "assist.button.listening.title" = "Mendengarkan...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -1180,7 +1183,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "token_error.connection_failed" = "Koneksi gagal.";
 "token_error.expired" = "Token kedaluwarsa.";
 "token_error.token_unavailable" = "Token tidak tersedia.";
-"unauthenticated.message.body" = "Ini mungkin bersifat sementara jika Anda berada di belakang proxy atau pembatasan jaringan. Jika tidak dan terus berlanjut, hapus server Anda dan tambahkan kembali.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Anda tidak diautentikasi";
 "unknownLabel" = "Tidak diketahui";
 "updater.check_for_updates_menu.title" = "Periksa Pembaruan…";
@@ -1439,6 +1442,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Periksa koneksi Anda atau coba lagi nanti. Jika dimulai ulang, Home Assistant akan tersambung kembali setelah online.";
 "web_view.empty_state.open_settings_button" = "Buka pengaturan App";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Coba Lagi";
 "web_view.empty_state.title" = "Anda terputus";
 "web_view.no_url_available.body" = "🔐 Karena pilihan keamanan Anda, tidak ada URL yang diizinkan untuk kami gunakan. \

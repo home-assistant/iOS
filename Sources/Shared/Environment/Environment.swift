@@ -175,7 +175,32 @@ public class AppEnvironment {
 
     public var servers: ServerManager = ServerManagerImpl()
 
-    public var cachedApis = [Identifier<Server>: HomeAssistantAPI]()
+    // Thread-safe wrapper for the API cache. AppIntents (e.g. ScriptAppIntent,
+    // SwitchIntent) run on arbitrary threads and can call api(for:) concurrently,
+    // so unprotected dictionary access causes memory corruption in extensions.
+    private var cachedApisLock = NSLock()
+    private var _cachedApis = [Identifier<Server>: HomeAssistantAPI]()
+    public var cachedApis: [Identifier<Server>: HomeAssistantAPI] {
+        get {
+            cachedApisLock.lock()
+            defer { cachedApisLock.unlock() }
+            return _cachedApis
+        }
+        set {
+            cachedApisLock.lock()
+            defer { cachedApisLock.unlock() }
+            _cachedApis = newValue
+        }
+    }
+
+    /// Thread-safe single-key insertion into the API cache.
+    /// Prefer this over `cachedApis[id] = api` which involves a
+    /// non-atomic get→mutate→set cycle on the computed property.
+    public func setCachedApi(_ api: HomeAssistantAPI, for identifier: Identifier<Server>) {
+        cachedApisLock.lock()
+        defer { cachedApisLock.unlock() }
+        _cachedApis[identifier] = api
+    }
 
     public var apis: [HomeAssistantAPI] { servers.all.compactMap(api(for:)) }
 
@@ -185,11 +210,15 @@ public class AppEnvironment {
             return nil
         }
 
-        if let existing = cachedApis[server.identifier] {
+        // Use the same lock to make the read-check-write atomic
+        cachedApisLock.lock()
+        defer { cachedApisLock.unlock() }
+
+        if let existing = _cachedApis[server.identifier] {
             return existing
         } else {
             let api = HomeAssistantAPI(server: server, urlConfig: .default)
-            cachedApis[server.identifier] = api
+            _cachedApis[server.identifier] = api
             return api
         }
     }

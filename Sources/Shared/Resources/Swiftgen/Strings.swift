@@ -532,6 +532,20 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "assist.button.listening.title") }
       }
     }
+    public enum Carplay {
+      public enum Processing {
+        /// Processing...
+        public static var title: String { return L10n.tr("Localizable", "assist.carplay.processing.title") }
+      }
+      public enum Responding {
+        /// Responding...
+        public static var title: String { return L10n.tr("Localizable", "assist.carplay.responding.title") }
+      }
+      public enum TapToRecord {
+        /// Tap to record
+        public static var title: String { return L10n.tr("Localizable", "assist.carplay.tap_to_record.title") }
+      }
+    }
     public enum Error {
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }

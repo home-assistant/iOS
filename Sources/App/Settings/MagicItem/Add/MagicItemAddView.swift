@@ -14,6 +14,7 @@ struct MagicItemAddView: View {
         case scripts
         case scenes
         case legacyiOSActions
+        case assistPipelines
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -41,6 +42,9 @@ struct MagicItemAddView: View {
                     options.append(.scenes)
                 }
                 options.append(.legacyiOSActions)
+            }
+            if context == .carPlay, #available(iOS 26.0, *) {
+                options.append(.assistPipelines)
             }
             return options
         }()
@@ -73,6 +77,15 @@ struct MagicItemAddView: View {
                         pickerView
                             .padding(.horizontal)
                         entitiesPerServerList(domainFilter: .scene)
+                    }
+                case .assistPipelines:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        AssistPipelineAddList { pipeline in
+                            itemToAdd(pipeline)
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -123,6 +136,9 @@ struct MagicItemAddView: View {
                     case .scenes:
                         Text(verbatim: L10n.MagicItem.ItemType.Scene.List.title)
                             .tag(MagicItemAddType.scenes)
+                    case .assistPipelines:
+                        Text(verbatim: L10n.Widgets.Action.Name.assist)
+                            .tag(MagicItemAddType.assistPipelines)
                     }
                 }
             }

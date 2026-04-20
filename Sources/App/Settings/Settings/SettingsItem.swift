@@ -155,9 +155,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 return false
             }
             #endif
-            // Live Activities require iOS 17.2+ and TestFlight
+            // Live Activities are shown in DebugView
             if item == .liveActivities {
-                if #available(iOS 17.2, *) { return Current.isTestFlight }
                 return false
             }
             return true
@@ -165,11 +164,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var generalItems: [SettingsItem] {
-        var items: [SettingsItem] = [.general, .gestures, .kiosk, .location, .notifications]
-        if #available(iOS 17.2, *), Current.isTestFlight {
-            items.append(.liveActivities)
-        }
-        return items
+        [.general, .gestures, .location, .notifications, .kiosk]
     }
 
     static var integrationItems: [SettingsItem] {

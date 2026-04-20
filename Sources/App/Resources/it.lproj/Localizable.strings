@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Quali azioni?";
 "assist.button.finish_recording.title" = "Premi per terminare la registrazione...";
 "assist.button.listening.title" = "In ascolto...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Impossibile ottenere i pipeline Assist, controlla la configurazione dei tuoi pipeline.";
 "assist.modern_ui.header.title" = "Assistente";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -504,7 +507,7 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.button" = "End All";
 "live_activity.end_all.confirm.title" = "End all Live Activities?";
-"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
+"live_activity.frequent_updates.footer" = "Consente a Home Assistant di aggiornare le Live Activity fino a una volta al secondo. Attiva nelle Impostazioni \u203A %@ \u203A Live Activities.";
 "live_activity.frequent_updates.title" = "Frequent Updates";
 "live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
 "live_activity.section.active" = "Active Activities";
@@ -1181,7 +1184,7 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "token_error.connection_failed" = "Connessione fallita.";
 "token_error.expired" = "Il token è scaduto.";
 "token_error.token_unavailable" = "Il Token non è disponibile.";
-"unauthenticated.message.body" = "Questo potrebbe essere temporaneo se sei dietro un proxy o una restrizione di rete, altrimenti se il problema persiste rimuovi il tuo Server e aggiungilo di nuovo.";
+"unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "Non sei autenticato";
 "unknownLabel" = "Sconosciuto";
 "updater.check_for_updates_menu.title" = "Controllo degli aggiornamenti…";
@@ -1440,6 +1443,7 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Controlla la tua connessione o riprova più tardi. Se Home Assistant si sta riavviando si riconnetterà quando sarà online";
 "web_view.empty_state.open_settings_button" = "Apri le impostazioni dell'app";
+"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
 "web_view.empty_state.retry_button" = "Riprova";
 "web_view.empty_state.title" = "Sei disconnesso";
 "web_view.no_url_available.body" = "🔐  A causa delle tue impostazioni di sicurezza, non ci è consentito utilizzare alcun URL. \
