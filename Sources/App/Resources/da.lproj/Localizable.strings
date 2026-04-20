@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Hvilke handlinger?";
 "assist.button.finish_recording.title" = "Tryk for at afslutte optagelsen...";
 "assist.button.listening.title" = "Lytter...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Kunne ikke hente Assist-pipelines. Tjek venligst din pipelines-konfiguration.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";

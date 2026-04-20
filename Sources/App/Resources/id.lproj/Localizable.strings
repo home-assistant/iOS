@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
 "assist.button.finish_recording.title" = "Tap to finish recording...";
 "assist.button.listening.title" = "Mendengarkan...";
+"assist.carplay.processing.title" = "Processing...";
+"assist.carplay.responding.title" = "Responding...";
+"assist.carplay.tap_to_record.title" = "Tap to record";
 "assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
