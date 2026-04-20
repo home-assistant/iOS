@@ -11,6 +11,7 @@ struct WhatsNewFeatureItem: Identifiable {
 
     /// The current release's feature highlights.
     /// Update these items each release to reflect the latest changes.
+    /// Also update the corresponding strings in Sources/App/Resources/en.lproj/Localizable.strings.
     static var currentFeatures: [WhatsNewFeatureItem] {
         [
             WhatsNewFeatureItem(
@@ -115,22 +116,22 @@ struct WhatsNewView: View {
     WhatsNewView(
         features: [
             WhatsNewFeatureItem(
-                icon: .bell,
+                icon: .macwindow,
+                iconColor: .haPrimary,
+                title: "Refreshed Mac Experience",
+                description: "The macOS experience has been refined with a cleaner interface and improved navigation."
+            ),
+            WhatsNewFeatureItem(
+                icon: .bellBadge,
                 iconColor: .blue,
                 title: "Improved Notifications",
-                description: "Get richer notification controls with quick actions and inline responses."
+                description: "Richer notification controls with quick actions and inline media attachments."
             ),
             WhatsNewFeatureItem(
-                icon: .gear,
+                icon: .gearshape,
                 iconColor: .gray,
                 title: "Redesigned Settings",
-                description: "A cleaner, more organized settings experience to help you find what you need."
-            ),
-            WhatsNewFeatureItem(
-                icon: .house,
-                iconColor: .haPrimary,
-                title: "Better Home Control",
-                description: "Faster access to your devices with an improved home screen layout."
+                description: "A cleaner, more organized settings experience to help you find what you need faster."
             ),
         ],
         releaseNotesURL: URL(string: "https://www.home-assistant.io/latest-ios-release-notes/")
