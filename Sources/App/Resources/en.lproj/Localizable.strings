@@ -934,6 +934,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Edit Template";
+"settings.whats_new.continue" = "Continue";
+"settings.whats_new.feature1.description" = "The macOS experience has been refined with a cleaner interface and improved navigation.";
+"settings.whats_new.feature1.title" = "Refreshed Mac Experience";
+"settings.whats_new.feature2.description" = "Richer notification controls with quick actions and inline media attachments.";
+"settings.whats_new.feature2.title" = "Improved Notifications";
+"settings.whats_new.feature3.description" = "A cleaner, more organized settings experience to help you find what you need faster.";
+"settings.whats_new.feature3.title" = "Redesigned Settings";
+"settings.whats_new.release_notes" = "Release Notes";
 "settings.whats_new.title" = "What's new?";
 "settings.widgets.create.add_item.title" = "Add item";
 "settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";

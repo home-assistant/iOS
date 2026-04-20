@@ -1017,6 +1017,7 @@
 		42B980D92DC24E5D00BC5C08 /* SensorDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B980D82DC24E5D00BC5C08 /* SensorDetailViewModel.swift */; };
 		42B980DC2DC256A300BC5C08 /* SensorRow.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B980DB2DC256A300BC5C08 /* SensorRow.test.swift */; };
 		42B980DE2DC3599300BC5C08 /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B980DD2DC3599300BC5C08 /* PrivacyView.swift */; };
+		F0C1A73304454FE4AEEB5B74 /* WhatsNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5AB41572A24259895967AB /* WhatsNewView.swift */; };
 		42BA1BC82C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */; };
 		42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */; };
 		42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
@@ -2877,6 +2878,15 @@
 		42B980D82DC24E5D00BC5C08 /* SensorDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewModel.swift; sourceTree = "<group>"; };
 		42B980DB2DC256A300BC5C08 /* SensorRow.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorRow.test.swift; sourceTree = "<group>"; };
 		42B980DD2DC3599300BC5C08 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
+		4C5AB41572A24259895967AB /* WhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewView.swift; sourceTree = "<group>"; };
+		0E7C389BC3CA48348B3BA4DC /* WhatsNew */ = {
+			isa = PBXGroup;
+			children = (
+				4C5AB41572A24259895967AB /* WhatsNewView.swift */,
+			);
+			path = WhatsNew;
+			sourceTree = "<group>";
+		};
 		42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPageAppIntent.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
 		42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.test.swift; sourceTree = "<group>"; };
@@ -6942,6 +6952,7 @@
 				11AD2E542528FE1300FBC437 /* Notifications */,
 				421B1C142BD65238001ED18C /* Widgets */,
 				42B980DD2DC3599300BC5C08 /* PrivacyView.swift */,
+				0E7C389BC3CA48348B3BA4DC /* WhatsNew */,
 				421155222D354F3F00A71630 /* AppIcon.swift */,
 				B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */,
 				42DF7DDC2EC53D42003F3C4A /* Settings */,
@@ -9632,6 +9643,7 @@
 				42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */,
 				42DC8B782E14027000D9999E /* SearchingServersAnimationView.swift in Sources */,
 				42B980DE2DC3599300BC5C08 /* PrivacyView.swift in Sources */,
+				F0C1A73304454FE4AEEB5B74 /* WhatsNewView.swift in Sources */,
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
 				4238E8532EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift in Sources */,
 				42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */,

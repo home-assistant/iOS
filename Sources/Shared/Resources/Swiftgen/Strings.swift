@@ -3328,6 +3328,28 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings.template_edit.title") }
     }
     public enum WhatsNew {
+      /// Continue
+      public static var `continue`: String { return L10n.tr("Localizable", "settings.whats_new.continue") }
+      public enum Feature1 {
+        /// The macOS experience has been refined with a cleaner interface and improved navigation.
+        public static var description: String { return L10n.tr("Localizable", "settings.whats_new.feature1.description") }
+        /// Refreshed Mac Experience
+        public static var title: String { return L10n.tr("Localizable", "settings.whats_new.feature1.title") }
+      }
+      public enum Feature2 {
+        /// Richer notification controls with quick actions and inline media attachments.
+        public static var description: String { return L10n.tr("Localizable", "settings.whats_new.feature2.description") }
+        /// Improved Notifications
+        public static var title: String { return L10n.tr("Localizable", "settings.whats_new.feature2.title") }
+      }
+      public enum Feature3 {
+        /// A cleaner, more organized settings experience to help you find what you need faster.
+        public static var description: String { return L10n.tr("Localizable", "settings.whats_new.feature3.description") }
+        /// Redesigned Settings
+        public static var title: String { return L10n.tr("Localizable", "settings.whats_new.feature3.title") }
+      }
+      /// Release Notes
+      public static var releaseNotes: String { return L10n.tr("Localizable", "settings.whats_new.release_notes") }
       /// What's new?
       public static var title: String { return L10n.tr("Localizable", "settings.whats_new.title") }
     }

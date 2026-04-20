@@ -150,8 +150,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
             if item == .servers || item == .gestures || item == .kiosk || item == .watch || item == .carPlay ||
-                item == .complications || item == .nfc || item == .help ||
-                item == .whatsNew {
+                item == .complications || item == .nfc || item == .help {
                 return false
             }
             #endif

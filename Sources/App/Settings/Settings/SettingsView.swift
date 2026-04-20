@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsView: View {
     @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false
+    @State private var showWhatsNew = false
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
     @StateObject private var serversObserver = ServersObserver()
@@ -46,11 +47,23 @@ struct SettingsView: View {
             // Other settings items
             Section {
                 ForEach(SettingsItem.allVisibleCases, id: \.self) { item in
-                    NavigationLink(destination: item.destinationView) {
-                        Label {
-                            Text(item.title)
-                        } icon: {
-                            item.icon
+                    if item == .whatsNew {
+                        Button {
+                            showWhatsNew = true
+                        } label: {
+                            Label {
+                                Text(item.title)
+                            } icon: {
+                                item.icon
+                            }
+                        }
+                    } else {
+                        NavigationLink(destination: item.destinationView) {
+                            Label {
+                                Text(item.title)
+                            } icon: {
+                                item.icon
+                            }
                         }
                     }
                 }
@@ -63,6 +76,12 @@ struct SettingsView: View {
                     EditButton()
                 }
             }
+        }
+        .sheet(isPresented: $showWhatsNew) {
+            WhatsNewView(
+                features: WhatsNewFeatureItem.currentFeatures,
+                releaseNotesURL: URL(string: "https://www.home-assistant.io/latest-ios-release-notes/")
+            )
         }
     }
 
