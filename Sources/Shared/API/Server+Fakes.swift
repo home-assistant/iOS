@@ -49,6 +49,7 @@ extension Server {
 
 class FakeServerManager: ServerManager {
     var all = [Server]()
+    var isMirrorRestorePending = false
     var observers = [WeakWrapper]()
 
     init(initial: Int = 0) {
