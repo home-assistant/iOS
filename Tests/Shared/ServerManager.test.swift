@@ -558,11 +558,26 @@ class ServerManagerTests: XCTestCase {
         servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
         servers.setup()
 
+        XCTAssertFalse(servers.isMirrorRestorePending)
         XCTAssertFalse(servers.restoreKeychainFromMirrorIfNeeded())
         XCTAssertTrue(servers.all.isEmpty)
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertNil(try keychain.getData("fake1"))
         XCTAssertNotNil(mirrorStore.data["fake1"])
+    }
+
+    func testExplicitRestoreMirroredServersNotifiesObservers() {
+        mirrorStore.set(.fake(), key: "fake1")
+
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let observer = FakeObserver()
+        servers.add(observer: observer)
+
+        let expectation = observer.addExpectation(from: self)
+        XCTAssertTrue(servers.restoreKeychainFromMirrorIfNeeded())
+        wait(for: [expectation], timeout: 10.0)
     }
 
     func testSetupDoesNotRestoreDeletedMirroredServersToKeychain() throws {

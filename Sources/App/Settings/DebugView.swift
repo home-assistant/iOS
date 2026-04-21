@@ -188,12 +188,20 @@ struct DebugView: View {
         }
         .alert(L10n.Settings.Debugging.KeychainRestartRequired.title, isPresented: $showDeleteKeychainRestartAlert) {
             Button(L10n.okLabel) {
-                Current.Log.info("Crashing app after full keychain deletion to force restart")
-                fatalError("Intentional crash after full keychain deletion to force app restart")
+                forceAppRestartAfterKeychainDeletion()
             }
         } message: {
             Text(L10n.Settings.Debugging.KeychainRestartRequired.message)
         }
+    }
+
+    private func forceAppRestartAfterKeychainDeletion() {
+        #if DEBUG
+        Current.Log.info("Crashing app after full keychain deletion to force restart")
+        fatalError("Intentional crash after full keychain deletion to force app restart")
+        #else
+        Current.Log.warning("Full keychain deletion completed; app restart is required")
+        #endif
     }
 
     private var deleteKeychainAlert: some ViewModifier {

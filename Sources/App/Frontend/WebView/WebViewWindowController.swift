@@ -1,6 +1,4 @@
 import Foundation
-import GRDB
-import KeychainAccess
 import MBProgressHUD
 import PromiseKit
 import Shared
@@ -40,10 +38,6 @@ final class WebViewWindowController {
                 return L10n.Onboarding.ServerImport.Reauthenticate.errorsCancelled
             }
         }
-    }
-
-    private enum RecoveryCheckConstants {
-        static let serverKeychainService = "io.home-assistant.servers"
     }
 
     enum RootViewControllerType {
@@ -149,25 +143,7 @@ final class WebViewWindowController {
     }
 
     private func shouldShowRecoveredServersImportScreen() -> Bool {
-        let keychain = Keychain(service: RecoveryCheckConstants.serverKeychainService)
-        guard keychain.allKeys().isEmpty else { return false }
-
-        let deletedServerIDs = Set(
-            (UserDefaults(suiteName: AppConstants.AppGroupID)?.array(forKey: "deletedServers") as? [String]) ?? []
-        )
-
-        do {
-            return try DatabaseQueue.appDatabase.read { db in
-                let mirroredServerIDs = try String.fetchAll(
-                    db,
-                    sql: "SELECT id FROM \(GRDBDatabaseTable.serverInfoMirror.rawValue)"
-                )
-                return mirroredServerIDs.contains { !deletedServerIDs.contains($0) }
-            }
-        } catch {
-            Current.Log.error("Failed to inspect mirrored server info before startup recovery screen: \(error)")
-            return false
-        }
+        Current.servers.isMirrorRestorePending
     }
 
     private func nextRecoveredServerNeedingReauthentication(restorationType: WebViewRestorationType?) -> Server? {

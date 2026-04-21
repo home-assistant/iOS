@@ -9,6 +9,7 @@ public protocol ServerObserver: AnyObject {
 
 public protocol ServerManager {
     var all: [Server] { get }
+    var isMirrorRestorePending: Bool { get }
     func server(for identifier: Identifier<Server>) -> Server?
     func serverOrFirstIfAvailable(for identifier: Identifier<Server>) -> Server?
     @discardableResult
@@ -443,6 +444,8 @@ final class ServerManagerImpl: ServerManager {
     }
 
     private func syncMirrorStoreFromKeychainIfNeeded() {
+        pruneDeletedMirroredServers()
+
         // Preserve the mirror while the recovery UI is deciding whether to restore
         // mirrored servers back into Keychain, and never let an empty Keychain wipe
         // the last preserved snapshot.
@@ -479,6 +482,21 @@ final class ServerManagerImpl: ServerManager {
         restoredMirroredServers = pruned
     }
 
+    private func pruneDeletedMirroredServers() {
+        let deletedKeys = Set(cache.read(\.deletedServers).map(\.keychainKey))
+        guard !deletedKeys.isEmpty else { return }
+
+        let mirrorKeys = Set(mirrorStore.allKeys())
+        let keysToRemove = mirrorKeys.intersection(deletedKeys)
+        guard !keysToRemove.isEmpty else { return }
+
+        for key in keysToRemove {
+            mirrorStore.remove(key)
+        }
+
+        pruneRestoredMirroredServers(validKeys: mirrorKeys.subtracting(keysToRemove))
+    }
+
     private func restorableMirroredServers(excludingPreviouslyRestored: Bool = false) -> [(String, ServerInfo)] {
         let deletedServers = cache.read(\.deletedServers)
         let restoredMirroredServers = excludingPreviouslyRestored ? restoredMirroredServers : []
@@ -487,7 +505,7 @@ final class ServerManagerImpl: ServerManager {
         }
     }
 
-    private var isMirrorRestorePending: Bool {
+    public var isMirrorRestorePending: Bool {
         keychain.allKeys().isEmpty && !restorableMirroredServers(excludingPreviouslyRestored: true).isEmpty
     }
 
@@ -511,6 +529,7 @@ final class ServerManagerImpl: ServerManager {
             cache.reset()
         }
 
+        notify()
         return true
     }
 

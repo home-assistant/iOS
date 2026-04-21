@@ -238,6 +238,7 @@ struct WebViewEmptyStateView: View {
                     .background(Color(uiColor: .secondarySystemBackground))
                     .clipShape(Circle())
             }
+            .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
         case .close:
             ModalCloseButton {
                 dismissAction?()
