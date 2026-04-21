@@ -48,7 +48,8 @@ func deleteKeychainCompletely() throws {
     }
 
     UserDefaults(suiteName: AppConstants.AppGroupID)?.removeObject(forKey: "deviceUID")
-    Current.servers.removeAll()
+    // Do not mark servers as deleted here. We want the sanitized GRDB mirror to
+    // survive the forced restart so startup can recover the server list.
 }
 
 func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
