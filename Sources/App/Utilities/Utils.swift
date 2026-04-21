@@ -2,8 +2,20 @@ import Foundation
 import KeychainAccess
 import RealmSwift
 import SafariServices
+import Security
 import Shared
 import Version
+
+private enum DeleteKeychainError: LocalizedError {
+    case keychain(OSStatus)
+
+    var errorDescription: String? {
+        switch self {
+        case let .keychain(status):
+            "Keychain error: \(status)"
+        }
+    }
+}
 
 func resetStores() {
     do {
@@ -20,9 +32,23 @@ func resetStores() {
 }
 
 func deleteKeychainCompletely() throws {
+    let keychainClasses: [CFString] = [
+        kSecClassGenericPassword,
+        kSecClassInternetPassword,
+        kSecClassCertificate,
+        kSecClassKey,
+        kSecClassIdentity,
+    ]
+
+    for keychainClass in keychainClasses {
+        let status = SecItemDelete([kSecClass as String: keychainClass] as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw DeleteKeychainError.keychain(status)
+        }
+    }
+
+    UserDefaults(suiteName: AppConstants.AppGroupID)?.removeObject(forKey: "deviceUID")
     Current.servers.removeAll()
-    try keychain.removeAll()
-    try Keychain(service: "deviceUID").removeAll()
 }
 
 func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
