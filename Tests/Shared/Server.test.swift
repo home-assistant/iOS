@@ -148,4 +148,27 @@ class ServerTests: XCTestCase {
 
         XCTAssertTrue(notifiedInfos.isEmpty)
     }
+
+    func testMirroredForPersistenceRemovesSensitiveConnectionState() throws {
+        var info = ServerInfo.fake()
+        var securityExceptions = SecurityExceptions()
+        try securityExceptions.add(for: .unitTestDotExampleDotCom1)
+
+        info.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
+        info.connection.webhookSecret = "webhook-secret"
+        info.connection.securityExceptions = securityExceptions
+        info.connection.clientCertificate = ClientCertificate(
+            keychainIdentifier: "client-cert-1",
+            displayName: "Client Certificate"
+        )
+
+        let mirrored = info.mirroredForPersistence
+
+        XCTAssertEqual(mirrored.token, ServerInfo.mirrorPlaceholderToken)
+        XCTAssertEqual(mirrored.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
+        XCTAssertNil(mirrored.connection.cloudhookURL)
+        XCTAssertNil(mirrored.connection.webhookSecret)
+        XCTAssertFalse(mirrored.connection.securityExceptions.hasExceptions)
+        XCTAssertNil(mirrored.connection.clientCertificate)
+    }
 }
