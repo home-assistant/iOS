@@ -456,9 +456,10 @@ class ServerManagerTests: XCTestCase {
     }
 
     func testSetupBackfillsMirrorForExistingKeychainServers() throws {
+        let securityExceptionTrust = try SecTrust.unitTestDotExampleDotCom1
         let info = with(ServerInfo.fake()) {
             $0.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
-            $0.connection.securityExceptions.add(for: try! .unitTestDotExampleDotCom1)
+            $0.connection.securityExceptions.add(for: securityExceptionTrust)
             $0.connection.clientCertificate = ClientCertificate(
                 keychainIdentifier: "client-cert-1",
                 displayName: "Client Certificate"
