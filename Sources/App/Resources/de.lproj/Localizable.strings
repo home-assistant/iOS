@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Welche Aktionen?";
 "assist.button.finish_recording.title" = "Zum Beenden der Aufnahme tippen …";
 "assist.button.listening.title" = "Zuhören …";
+"assist.carplay.processing.title" = "Verarbeitung …";
+"assist.carplay.responding.title" = "Antworten …";
+"assist.carplay.tap_to_record.title" = "Zum Aufnehmen tippen";
 "assist.error.pipelines_response" = "Assist-Pipelines konnten nicht abgerufen werden. Bitte überprüfe deine Pipeline-Konfiguration.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -1441,7 +1444,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Bitte überprüfe deine Verbindung oder versuche es später erneut. Wenn Home Assistant neu gestartet wird, wird die Verbindung wiederhergestellt, sobald er wieder online ist.";
 "web_view.empty_state.open_settings_button" = "App-Einstellungen öffnen";
-"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
+"web_view.empty_state.reauthenticate_button" = "Erneut authentifizieren";
 "web_view.empty_state.retry_button" = "Erneut versuchen";
 "web_view.empty_state.title" = "Verbindung wurde getrennt";
 "web_view.no_url_available.body" = "🔐 Aufgrund deiner Sicherheitseinstellungen gibt es keine URL, die wir verwenden dürfen. \

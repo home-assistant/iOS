@@ -116,6 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Které akce?";
 "assist.button.finish_recording.title" = "Klepnutím dokončíte nahrávání...";
 "assist.button.listening.title" = "Poslouchání...";
+"assist.carplay.processing.title" = "Zpracovávání...";
+"assist.carplay.responding.title" = "Odpovídání...";
+"assist.carplay.tap_to_record.title" = "Klepněte po nahrání";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -1440,7 +1443,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Zkontrolujte připojení nebo to zkuste znovu později. Pokud se Home Assistant restartuje, znovu se připojí po opětovném připojení k internetu.";
 "web_view.empty_state.open_settings_button" = "Otevřít nastavení aplikace";
-"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
+"web_view.empty_state.reauthenticate_button" = "Znovu ověřit";
 "web_view.empty_state.retry_button" = "Zkusit znovu";
 "web_view.empty_state.title" = "Jste odpojeni";
 "web_view.no_url_available.body" = "🔐 Vzhledem k vašim bezpečnostním nastavením nemáme povoleno používat žádnou URL adresu.\

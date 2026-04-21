@@ -74,6 +74,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     func templateWillDisappear(template: CPTemplate) {
+        activeAssistSession?.templateWillDisappear(template: template)
         if template == self.template {
             /* no-op */
         }
@@ -307,6 +308,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         // Check if this is a lock entity - locks always require confirmation
         let isLockEntity = magicItem
             .type == .entity && Domain(entityId: magicItem.id) == .lock
+        let supportsConfirmation = magicItem.type != .assistPipeline
 
         if isLockEntity {
             // For lock entities, show lock-specific confirmation
@@ -314,7 +316,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 executionStarted()
                 self?.executeLockEntity(magicItem, currentState: currentItemState, completion: executionFinished)
             }
-        } else if info.customization?.requiresConfirmation ?? false {
+        } else if supportsConfirmation, info.customization?.requiresConfirmation ?? false {
             showConfirmationForRunningMagicItem(item: magicItem, info: info) { [weak self] in
                 executionStarted()
                 self?.executeMagicItem(magicItem, completion: executionFinished)

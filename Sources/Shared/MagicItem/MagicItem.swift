@@ -2,6 +2,7 @@ import Foundation
 import GRDB
 import HAKit
 import PromiseKit
+import SwiftUI
 
 /// Object that represents iOS item that can be displayed in Watch, Widgets, CarPlay and perform different action types
 public struct MagicItem: Codable, Equatable, Hashable {
@@ -350,6 +351,10 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
 }
 
 public extension MagicItem {
+    static var defaultAssistIconColorHex: String {
+        Color.haPrimary.hex() ?? Color.brand50.hex() ?? ""
+    }
+
     // currentItemState is used only for lock domain since it can't be toggled
     func execute(
         on server: Server,

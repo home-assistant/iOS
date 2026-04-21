@@ -53,6 +53,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             return
         }
         carPlayConfig.quickAccessItems = migrateItemsIfNeeded(items: carPlayConfig.quickAccessItems)
+        carPlayConfig.quickAccessItems = normalizeCarPlayItems(carPlayConfig.quickAccessItems)
 
         do {
             try Current.database().write { db in
@@ -244,5 +245,22 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
 
         return nil
+    }
+
+    private func normalizeCarPlayItems(_ items: [MagicItem]) -> [MagicItem] {
+        items.map { item in
+            guard item.type == .assistPipeline else { return item }
+
+            var item = item
+            var customization = item.customization ?? .init()
+
+            if customization.iconColor == nil {
+                customization.iconColor = MagicItem.defaultAssistIconColorHex
+            }
+            customization.requiresConfirmation = false
+
+            item.customization = customization
+            return item
+        }
     }
 }
