@@ -240,7 +240,7 @@ private struct KeychainExplorerError: LocalizedError {
             return message
         }
 
-        return L10n.Settings.Debugging.KeychainExplorer.queryErrorFormat(status)
+        return L10n.Settings.Debugging.KeychainExplorer.queryErrorFormat(Int(status))
     }
 }
 

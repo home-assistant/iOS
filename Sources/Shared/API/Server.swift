@@ -247,6 +247,10 @@ extension ServerInfo {
         info.connection.clientCertificate = nil
         return info
     }
+
+    public var requiresReauthenticationAfterMirrorRestore: Bool {
+        token == Self.mirrorPlaceholderToken
+    }
 }
 
 public final class Server: Hashable, Comparable, CustomStringConvertible {

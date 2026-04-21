@@ -79,6 +79,18 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
         refresh()
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        guard !promise.isResolved else {
+            return
+        }
+
+        if isBeingDismissed || navigationController?.isBeingDismissed == true {
+            resolver.reject(PMKError.cancelled)
+        }
+    }
+
     func webView(
         _ webView: WKWebView,
         didReceive challenge: URLAuthenticationChallenge,

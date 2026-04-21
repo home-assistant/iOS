@@ -28,6 +28,20 @@ final class WebViewWindowController {
         static let minimumVisibleDuration: TimeInterval = 3
     }
 
+    private enum RecoveredServerReauthenticationError: LocalizedError {
+        case missingPresenter
+        case cancelled
+
+        var errorDescription: String? {
+            switch self {
+            case .missingPresenter:
+                return L10n.Onboarding.ServerImport.Reauthenticate.errorsMissingPresenter
+            case .cancelled:
+                return L10n.Onboarding.ServerImport.Reauthenticate.errorsCancelled
+            }
+        }
+    }
+
     private enum RecoveryCheckConstants {
         static let serverKeychainService = "io.home-assistant.servers"
     }
@@ -91,6 +105,8 @@ final class WebViewWindowController {
     }
 
     func setup() {
+        let restorationType = WebViewRestorationType(restorationActivity)
+
         if shouldShowRecoveredServersImportScreen() {
             updateRootViewController(
                 to: RecoveredServersImportView(onImport: {
@@ -105,6 +121,11 @@ final class WebViewWindowController {
             return
         }
 
+        if let recoveredServer = nextRecoveredServerNeedingReauthentication(restorationType: restorationType) {
+            showRecoveredServerReauthentication(for: recoveredServer)
+            return
+        }
+
         if let style = OnboardingNavigation.requiredOnboardingStyle {
             Current.Log.info("Showing onboarding \(style)")
             updateRootViewController(
@@ -112,7 +133,7 @@ final class WebViewWindowController {
                 type: .onboarding
             )
         } else {
-            if let webViewController = makeWebViewIfNotInCache(restorationType: .init(restorationActivity)) {
+            if let webViewController = makeWebViewIfNotInCache(restorationType: restorationType) {
                 updateRootViewController(
                     to: webViewNavigationController(rootViewController: webViewController),
                     type: .webView
@@ -149,6 +170,124 @@ final class WebViewWindowController {
         }
     }
 
+    private func nextRecoveredServerNeedingReauthentication(restorationType: WebViewRestorationType?) -> Server? {
+        guard let server = preferredStartupServer(restorationType: restorationType),
+              server.info.requiresReauthenticationAfterMirrorRestore else {
+            return nil
+        }
+
+        return server
+    }
+
+    private func preferredStartupServer(restorationType: WebViewRestorationType?) -> Server? {
+        if let restoredServer = restorationType?.server {
+            return restoredServer
+        }
+
+        return Current.servers.all.first(where: { !$0.info.requiresReauthenticationAfterMirrorRestore })
+            ?? Current.servers.all.first
+    }
+
+    private func showRecoveredServerReauthentication(for server: Server) {
+        updateRootViewController(
+            to: WebViewEmptyStateView(
+                style: .recoveredServerNeedingReauthentication,
+                server: server,
+                availableReauthURLTypes: availableReauthURLTypes(for: server),
+                settingsAction: { [weak self] in
+                    self?.showSettingsViewController()
+                },
+                recoveredServerReauthAction: { [weak self] urlType, completion in
+                    self?.performRecoveredServerReauthentication(
+                        for: server,
+                        using: urlType,
+                        completion: completion
+                    )
+                }, serverSelectionAction: { [weak self] selectedServer in
+                    self?.handleRecoveredServerSelection(selectedServer)
+                }
+            ).embeddedInHostingController(),
+            type: .onboarding
+        )
+    }
+
+    private func handleRecoveredServerSelection(_ server: Server) {
+        if server.info.requiresReauthenticationAfterMirrorRestore {
+            showRecoveredServerReauthentication(for: server)
+        } else {
+            _ = open(server: server)
+        }
+    }
+
+    private func performRecoveredServerReauthentication(
+        for server: Server,
+        using urlType: ConnectionInfo.URLType,
+        completion: @escaping (Swift.Result<Void, Error>) -> Void
+    ) {
+        let connectionInfo = server.info.connection
+
+        guard let baseURL = connectionInfo.address(for: urlType) else {
+            completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
+            return
+        }
+
+        guard let presenter = window.rootViewController else {
+            completion(.failure(RecoveredServerReauthenticationError.missingPresenter))
+            return
+        }
+
+        do {
+            let authDetails = try OnboardingAuthDetails(baseURL: baseURL)
+            authDetails.exceptions = connectionInfo.securityExceptions
+            authDetails.clientCertificate = connectionInfo.clientCertificate
+
+            let login = OnboardingAuthLoginImpl()
+
+            firstly {
+                login.open(authDetails: authDetails, sender: presenter)
+            }.then { code -> Promise<TokenInfo> in
+                AuthenticationAPI.fetchToken(
+                    authorizationCode: code,
+                    baseURL: baseURL,
+                    exceptions: authDetails.exceptions,
+                    clientCertificate: authDetails.clientCertificate
+                )
+            }.done { [weak self] tokenInfo in
+                server.update { serverInfo in
+                    serverInfo.token = tokenInfo
+                }
+
+                if self?.onboardingPreloadWebViewController?.server.identifier == server.identifier {
+                    self?.onboardingPreloadWebViewController = nil
+                }
+                self?.cachedWebViewControllers[server.identifier] = nil
+
+                completion(.success(()))
+                _ = self?.open(server: server)
+            }.catch { error in
+                if let pmkError = error as? PMKError, pmkError.isCancelled {
+                    completion(.failure(RecoveredServerReauthenticationError.cancelled))
+                    return
+                }
+
+                Current.Log.error("Recovered server re-authentication failed: \(error)")
+                completion(.failure(error))
+            }
+        } catch {
+            Current.Log.error("Failed to create auth details for recovered server re-authentication: \(error)")
+            completion(.failure(error))
+        }
+    }
+
+    private func showSettingsViewController() {
+        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
+            Current.sceneManager.activateAnyScene(for: .settings)
+        } else {
+            let settingsView = SettingsView().embeddedInHostingController()
+            window.rootViewController?.present(settingsView, animated: true)
+        }
+    }
+
     func presentInvitation(url inviteURL: URL?) {
         guard let inviteURL else { return }
 
@@ -179,12 +318,19 @@ final class WebViewWindowController {
         restorationType: WebViewRestorationType?,
         shouldLoadImmediately: Bool = false
     ) -> WebViewController? {
-        if let server = restorationType?.server ?? Current.servers.all.first {
+        if let server = preferredStartupServer(restorationType: restorationType) {
+            let effectiveRestorationType: WebViewRestorationType? = if restorationType?.server?.identifier == server
+                .identifier {
+                restorationType
+            } else {
+                .server(server)
+            }
+
             if let cachedController = cachedWebViewControllers[server.identifier] {
                 return cachedController
             } else {
                 let newController = WebViewController(
-                    restoring: restorationType,
+                    restoring: effectiveRestorationType,
                     shouldLoadImmediately: shouldLoadImmediately
                 )
                 cachedWebViewControllers[server.identifier] = newController
@@ -193,6 +339,11 @@ final class WebViewWindowController {
         } else {
             return nil
         }
+    }
+
+    private func availableReauthURLTypes(for server: Server) -> [ConnectionInfo.URLType] {
+        let preferenceOrder: [ConnectionInfo.URLType] = [.remoteUI, .external, .internal]
+        return preferenceOrder.filter { server.info.connection.address(for: $0) != nil }
     }
 
     func present(_ viewController: UIViewController, animated: Bool = true, completion: (() -> Void)? = nil) {
@@ -231,29 +382,25 @@ final class WebViewWindowController {
 
     @discardableResult
     func open(server: Server) -> Guarantee<WebViewController> {
-        webViewControllerPromise.then { [self] controller -> Guarantee<WebViewController> in
-            guard controller.server != server else {
-                return .value(controller)
+        let makeController = { [self] in
+            if let cachedController = cachedWebViewControllers[server.identifier] {
+                return cachedController
+            } else {
+                let newController = WebViewController(server: server)
+                cachedWebViewControllers[server.identifier] = newController
+                return newController
             }
+        }
 
+        let openController = { [self] (controller: WebViewController) -> Guarantee<WebViewController> in
             let (promise, resolver) = Guarantee<WebViewController>.pending()
 
             let perform = { [self] in
-                let newController: WebViewController = {
-                    if let cachedController = cachedWebViewControllers[server.identifier] {
-                        return cachedController
-                    } else {
-                        let newController = WebViewController(server: server)
-                        cachedWebViewControllers[server.identifier] = newController
-                        return newController
-                    }
-                }()
-
                 updateRootViewController(
-                    to: webViewNavigationController(rootViewController: newController),
+                    to: webViewNavigationController(rootViewController: controller),
                     type: .webView
                 )
-                resolver(newController)
+                resolver(controller)
             }
 
             if let rootViewController = window.rootViewController, rootViewController.presentedViewController != nil {
@@ -265,6 +412,18 @@ final class WebViewWindowController {
             }
 
             return promise
+        }
+
+        guard rootViewControllerType == .webView, webViewControllerPromise.isFulfilled else {
+            return openController(makeController())
+        }
+
+        return webViewControllerPromise.then { controller -> Guarantee<WebViewController> in
+            guard controller.server != server else {
+                return .value(controller)
+            }
+
+            return openController(makeController())
         }
     }
 

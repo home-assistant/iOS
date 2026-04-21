@@ -2759,6 +2759,28 @@ public enum L10n {
         }
       }
     }
+    public enum ServerImport {
+      /// Hang tight, we’re rounding up your servers.
+      public static var message: String { return L10n.tr("Localizable", "onboarding.server_import.message") }
+      /// Importing Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "onboarding.server_import.title") }
+      public enum Reauthenticate {
+        /// Continue
+        public static var continueButton: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.continue_button") }
+        /// Sign in was cancelled.
+        public static var errorsCancelled: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.errors_cancelled") }
+        /// Unable to present the sign-in flow right now.
+        public static var errorsMissingPresenter: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.errors_missing_presenter") }
+        /// One more step: sign in again to finish restoring %@.
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.message", String(describing: p1))
+        }
+        /// Reconnect Home Assistant
+        public static var title: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.title") }
+        /// Choose a connection
+        public static var urlPickerTitle: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.url_picker_title") }
+      }
+    }
     public enum Servers {
       /// Searching on home network
       public static var title: String { return L10n.tr("Localizable", "onboarding.servers.title") }
@@ -2810,12 +2832,6 @@ public enum L10n {
         /// Learn more
         public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.updated.secondary_button") }
       }
-    }
-    public enum ServerImport {
-      /// Hang tight, we’re rounding up your servers.
-      public static var message: String { return L10n.tr("Localizable", "onboarding.server_import.message") }
-      /// Importing Home Assistant
-      public static var title: String { return L10n.tr("Localizable", "onboarding.server_import.title") }
     }
   }
 
@@ -3142,6 +3158,10 @@ public enum L10n {
     public enum Debugging {
       /// Debugging
       public static var title: String { return L10n.tr("Localizable", "settings.debugging.title") }
+      public enum CriticalSection {
+        /// Make sure you are aware that these operations cannot be reverted.
+        public static var footer: String { return L10n.tr("Localizable", "settings.debugging.critical_section.footer") }
+      }
       public enum DeleteKeychain {
         /// yyyy-MM-dd
         public static var datePlaceholder: String { return L10n.tr("Localizable", "settings.debugging.delete_keychain.date_placeholder") }
@@ -3157,10 +3177,6 @@ public enum L10n {
         }
         /// Delete keychain completely
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.delete_keychain.title") }
-      }
-      public enum CriticalSection {
-        /// Make sure you are aware that these operations cannot be reverted.
-        public static var footer: String { return L10n.tr("Localizable", "settings.debugging.critical_section.footer") }
       }
       public enum Header {
         /// Let's fix that 🐞
@@ -3200,7 +3216,7 @@ public enum L10n {
         /// None
         public static var noneValue: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.none_value") }
         /// Keychain query failed with status %d
-        public static func queryErrorFormat(_ p1: Int32) -> String {
+        public static func queryErrorFormat(_ p1: Int) -> String {
           return L10n.tr("Localizable", "settings.debugging.keychain_explorer.query_error_format", p1)
         }
         /// Service

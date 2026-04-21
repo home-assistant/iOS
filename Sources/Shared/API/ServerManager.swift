@@ -142,6 +142,8 @@ private struct ServerCache {
 // MARK: - Server Manager
 
 final class ServerManagerImpl: ServerManager {
+    private static let restoredMirroredServersKey = "restoredMirroredServers"
+
     private var keychain: ServerManagerKeychain
     private var historicKeychain: ServerManagerKeychain
     private var mirrorStore: ServerManagerMirrorStore
@@ -279,6 +281,12 @@ final class ServerManagerImpl: ServerManager {
             return server(key: identifier.keychainKey, value: setValue, currentCache: &cache)
         }
 
+        mirrorStore.set(setValue, key: identifier.keychainKey)
+        var restoredMirroredServers = restoredMirroredServers
+        if restoredMirroredServers.remove(identifier.keychainKey) != nil {
+            self.restoredMirroredServers = restoredMirroredServers
+        }
+
         notify()
 
         return result
@@ -333,8 +341,12 @@ final class ServerManagerImpl: ServerManager {
                 } else {
                     // Prefer live Keychain data, but fall back to the last startup
                     // snapshot in GRDB when the Keychain entry is gone.
-                    let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder)
-                        ?? (!self.isMirrorRestorePending ? self.mirrorStore.getServerInfo(identifier.keychainKey) : nil)
+                    let keychainInfo = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder)
+                    let mirroredInfo = keychainInfo == nil ? self.mirrorStore
+                        .getServerInfo(identifier.keychainKey) : nil
+                    let shouldUseMirrorFallback = !(keychain.allKeys().isEmpty && mirroredInfo != nil)
+                    let info = keychainInfo
+                        ?? (shouldUseMirrorFallback ? mirroredInfo : nil)
                         ?? fallback
                     if !cache.deletedServers.contains(identifier) {
                         cache.info[identifier] = info
@@ -415,12 +427,8 @@ final class ServerManagerImpl: ServerManager {
 
     private func mergedServerInfo(deletedServers: Set<Identifier<Server>>) -> [(String, ServerInfo)] {
         let keychainValues = Dictionary(uniqueKeysWithValues: keychain.allServerInfo(decoder: decoder))
-        guard !isMirrorRestorePending else {
-            return keychainValues
-                .filter { key, _ in
-                    !deletedServers.contains(.init(keychainKey: key))
-                }
-                .map { ($0.key, $0.value) }
+        guard !keychainValues.isEmpty else {
+            return []
         }
 
         // When both stores have a copy, prefer Keychain because it still contains the
@@ -436,8 +444,9 @@ final class ServerManagerImpl: ServerManager {
 
     private func syncMirrorStoreFromKeychainIfNeeded() {
         // Preserve the mirror while the recovery UI is deciding whether to restore
-        // mirrored servers back into Keychain.
-        if isMirrorRestorePending {
+        // mirrored servers back into Keychain, and never let an empty Keychain wipe
+        // the last preserved snapshot.
+        if keychain.allKeys().isEmpty || isMirrorRestorePending {
             return
         }
 
@@ -451,24 +460,42 @@ final class ServerManagerImpl: ServerManager {
         for (key, value) in keychain.allServerInfo(decoder: decoder) {
             mirrorStore.set(value, key: key)
         }
+        pruneRestoredMirroredServers(validKeys: Set(mirrorStore.allKeys()))
     }
 
-    private func restorableMirroredServers() -> [(String, ServerInfo)] {
+    private var restoredMirroredServers: Set<String> {
+        get {
+            let values = Current.settingsStore.prefs.array(forKey: Self.restoredMirroredServersKey) as? [String] ?? []
+            return Set(values)
+        }
+        set {
+            Current.settingsStore.prefs.set(Array(newValue).sorted(), forKey: Self.restoredMirroredServersKey)
+        }
+    }
+
+    private func pruneRestoredMirroredServers(validKeys: Set<String>) {
+        let pruned = restoredMirroredServers.intersection(validKeys)
+        guard pruned != restoredMirroredServers else { return }
+        restoredMirroredServers = pruned
+    }
+
+    private func restorableMirroredServers(excludingPreviouslyRestored: Bool = false) -> [(String, ServerInfo)] {
         let deletedServers = cache.read(\.deletedServers)
+        let restoredMirroredServers = excludingPreviouslyRestored ? restoredMirroredServers : []
         return mirrorStore.allServerInfo().filter { key, _ in
-            !deletedServers.contains(.init(keychainKey: key))
+            !deletedServers.contains(.init(keychainKey: key)) && !restoredMirroredServers.contains(key)
         }
     }
 
     private var isMirrorRestorePending: Bool {
-        keychain.allKeys().isEmpty && !restorableMirroredServers().isEmpty
+        keychain.allKeys().isEmpty && !restorableMirroredServers(excludingPreviouslyRestored: true).isEmpty
     }
 
     @discardableResult
     public func restoreKeychainFromMirrorIfNeeded() -> Bool {
         guard keychain.allKeys().isEmpty else { return false }
 
-        let mirroredServers = restorableMirroredServers()
+        let mirroredServers = restorableMirroredServers(excludingPreviouslyRestored: true)
         guard !mirroredServers.isEmpty else { return false }
 
         // Rehydrate the Keychain with the sanitized mirror so startup sees the same
@@ -476,6 +503,9 @@ final class ServerManagerImpl: ServerManager {
         for (key, value) in mirroredServers {
             keychain.set(serverInfo: value, key: key, encoder: encoder)
         }
+        var restoredMirroredServers = restoredMirroredServers
+        restoredMirroredServers.formUnion(mirroredServers.map(\.0))
+        self.restoredMirroredServers = restoredMirroredServers
 
         cache.mutate { cache in
             cache.reset()
