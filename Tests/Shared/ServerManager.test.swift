@@ -456,8 +456,10 @@ class ServerManagerTests: XCTestCase {
     }
 
     func testSetupBackfillsMirrorForExistingKeychainServers() throws {
+        let securityExceptionTrust = try SecTrust.unitTestDotExampleDotCom1
         let info = with(ServerInfo.fake()) {
             $0.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
+            $0.connection.securityExceptions.add(for: securityExceptionTrust)
             $0.connection.clientCertificate = ClientCertificate(
                 keychainIdentifier: "client-cert-1",
                 displayName: "Client Certificate"
@@ -475,6 +477,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(mirrored.connection.isLocalPushEnabled, info.connection.isLocalPushEnabled)
         XCTAssertNil(mirrored.connection.cloudhookURL)
         XCTAssertNil(mirrored.connection.webhookSecret)
+        XCTAssertFalse(mirrored.connection.securityExceptions.hasExceptions)
         XCTAssertEqual(mirrored.token, ServerInfo.mirrorPlaceholderToken)
         XCTAssertNil(mirrored.connection.clientCertificate)
     }
@@ -498,8 +501,10 @@ class ServerManagerTests: XCTestCase {
     }
 
     func testMirrorFallbackRestoresServersWithoutSecrets() throws {
+        let securityExceptionTrust = try SecTrust.unitTestDotExampleDotCom1
         let info = with(ServerInfo.fake()) {
             $0.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
+            $0.connection.securityExceptions.add(for: securityExceptionTrust)
             $0.connection.clientCertificate = ClientCertificate(
                 keychainIdentifier: "client-cert-1",
                 displayName: "Client Certificate"
@@ -519,6 +524,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(restored.info.connection.isLocalPushEnabled, info.connection.isLocalPushEnabled)
         XCTAssertNil(restored.info.connection.cloudhookURL)
         XCTAssertNil(restored.info.connection.webhookSecret)
+        XCTAssertFalse(restored.info.connection.securityExceptions.hasExceptions)
         XCTAssertEqual(restored.info.token, ServerInfo.mirrorPlaceholderToken)
         XCTAssertNil(restored.info.connection.clientCertificate)
     }
