@@ -10,6 +10,10 @@ struct DebugView: View {
     @State private var showShareSheet = false
     @State private var logsURL: URL?
     @State private var tapsOnCasitaLogo = 0
+    @State private var showDeleteKeychainAlert = false
+    @State private var deleteKeychainConfirmationText = ""
+    @State private var deleteKeychainErrorMessage: String?
+    @State private var showDeleteKeychainError = false
 
     private let feedbackGenerator = UINotificationFeedbackGenerator()
 
@@ -23,6 +27,15 @@ struct DebugView: View {
     @State private var showResetAppAlert = false
     @State private var watchSyncErrorMessage: String?
     @State private var showWatchSyncError = false
+
+    private static let deleteKeychainDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
 
     var body: some View {
         List {
@@ -153,6 +166,25 @@ struct DebugView: View {
                 developerSection
             }
         }
+        .modifier(deleteKeychainAlert)
+        .alert(deleteKeychainErrorMessage ?? L10n.errorLabel, isPresented: $showDeleteKeychainError) {
+            Button(L10n.okLabel, role: .cancel) {
+                deleteKeychainErrorMessage = nil
+            }
+        } message: {
+            Text(deleteKeychainErrorMessage ?? "")
+        }
+    }
+
+    private var deleteKeychainAlert: some ViewModifier {
+        DeleteKeychainAlertModifier(
+            isPresented: $showDeleteKeychainAlert,
+            confirmationText: $deleteKeychainConfirmationText,
+            errorMessage: $deleteKeychainErrorMessage,
+            showError: $showDeleteKeychainError,
+            currentConfirmationDate: currentConfirmationDate,
+            feedbackGenerator: feedbackGenerator
+        )
     }
 
     private func linkContent(
@@ -319,6 +351,18 @@ struct DebugView: View {
                 )
             }
 
+            Button {
+                deleteKeychainConfirmationText = ""
+                showDeleteKeychainAlert = true
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .trash),
+                    title: "Delete keychain completely",
+                    iconColor: .red,
+                    textColor: .red
+                )
+            }
+
             Toggle(isOn: .init(get: {
                 prefs.bool(forKey: XCGLogger.shouldNotifyUserDefaultsKey)
             }, set: { newValue in
@@ -448,6 +492,10 @@ struct DebugView: View {
         UNUserNotificationCenter.current().add(notificationRequest)
     }
 
+    private var currentConfirmationDate: String {
+        Self.deleteKeychainDateFormatter.string(from: Date())
+    }
+
     private func resetApp() async {
         loadingResetApp = true
         Current.Log.verbose("Resetting app!")
@@ -499,6 +547,48 @@ struct DebugView: View {
                 }
                 continuation.resume()
             }
+        }
+    }
+}
+
+private struct DeleteKeychainAlertModifier: ViewModifier {
+    @Binding var isPresented: Bool
+    @Binding var confirmationText: String
+    @Binding var errorMessage: String?
+    @Binding var showError: Bool
+
+    let currentConfirmationDate: String
+    let feedbackGenerator: UINotificationFeedbackGenerator
+
+    func body(content: Content) -> some View {
+        content.alert("Delete keychain completely", isPresented: $isPresented) {
+            TextField("yyyy-MM-dd", text: $confirmationText)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+
+            Button(L10n.cancelLabel, role: .cancel) {
+                confirmationText = ""
+            }
+            Button("Delete", role: .destructive) {
+                guard confirmationText == currentConfirmationDate else {
+                    errorMessage = "Enter today's date as \(currentConfirmationDate) to continue."
+                    showError = true
+                    return
+                }
+
+                do {
+                    try deleteKeychainCompletely()
+                    feedbackGenerator.notificationOccurred(.success)
+                } catch {
+                    Current.Log.error("Failed to delete keychain completely: \(error.localizedDescription)")
+                    errorMessage = error.localizedDescription
+                    showError = true
+                }
+
+                confirmationText = ""
+            }
+        } message: {
+            Text("Type today's date (\(currentConfirmationDate)) to permanently delete all app keychain data.")
         }
     }
 }
