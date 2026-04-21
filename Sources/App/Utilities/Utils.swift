@@ -19,6 +19,12 @@ func resetStores() {
     Realm.reset()
 }
 
+func deleteKeychainCompletely() throws {
+    Current.servers.removeAll()
+    try keychain.removeAll()
+    try Keychain(service: "deviceUID").removeAll()
+}
+
 func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
     guard ["http", "https"].contains(urlToOpen.scheme?.lowercased()) else {
         URLOpener.shared.open(urlToOpen, options: [:], completionHandler: nil)
