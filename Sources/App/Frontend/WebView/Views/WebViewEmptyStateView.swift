@@ -40,6 +40,24 @@ enum WebViewEmptyStateStyle: Equatable {
             L10n.WebView.EmptyState.openSettingsButton
         }
     }
+
+    var showsTopLeadingSettingsButton: Bool {
+        switch self {
+        case .disconnected:
+            false
+        case .unauthenticated:
+            true
+        }
+    }
+
+    var showsSecondarySettingsButton: Bool {
+        switch self {
+        case .disconnected:
+            true
+        case .unauthenticated:
+            false
+        }
+    }
 }
 
 struct WebViewEmptyStateView: View {
@@ -83,12 +101,21 @@ struct WebViewEmptyStateView: View {
     }
 
     private var header: some View {
-        Group {
+        HStack {
+            if style.showsTopLeadingSettingsButton {
+                settingsHeaderButton
+            } else {
+                Color.clear
+                    .frame(width: 44, height: 44)
+            }
+
+            Spacer()
             serverSelection
+            Spacer()
+
             ModalCloseButton {
                 dismissAction?()
             }
-            .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding()
         // This is needed alongside with the ignores safe area below because
@@ -115,8 +142,10 @@ struct WebViewEmptyStateView: View {
                 primaryButton
                     .buttonStyle(.primaryButton)
                 reauthURLHint
-                secondaryButton
-                    .buttonStyle(.secondaryButton)
+                if style.showsSecondarySettingsButton {
+                    secondaryButton
+                        .buttonStyle(.secondaryButton)
+                }
             }
             .frame(maxWidth: Sizes.maxWidthForLargerScreens)
             .padding(.horizontal, DesignSystem.Spaces.two)
@@ -130,17 +159,26 @@ struct WebViewEmptyStateView: View {
     @ViewBuilder
     private var serverSelection: some View {
         if Current.servers.all.count > 1 {
-            HStack {
-                Spacer()
-                ServerPickerView(server: server)
-                #if targetEnvironment(macCatalyst)
-                    .padding()
-                #endif
-                    // Using .secondarySystemBackground to visually distinguish the server selection view
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .clipShape(Capsule())
-                Spacer()
-            }
+            ServerPickerView(server: server)
+            #if targetEnvironment(macCatalyst)
+                .padding()
+            #endif
+                // Using .secondarySystemBackground to visually distinguish the server selection view
+                .background(Color(uiColor: .secondarySystemBackground))
+                .clipShape(Capsule())
+        }
+    }
+
+    private var settingsHeaderButton: some View {
+        Button(action: {
+            settingsAction?()
+        }) {
+            Image(systemSymbol: .gearshape)
+                .font(.title3)
+                .foregroundStyle(Color(uiColor: .label))
+                .frame(width: 44, height: 44)
+                .background(Color(uiColor: .secondarySystemBackground))
+                .clipShape(Circle())
         }
     }
 

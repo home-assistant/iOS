@@ -500,7 +500,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(mirrorStore.data["fake1"]?.remoteName, "Current")
     }
 
-    func testSetupRestoresMirroredServersToKeychainWithoutSecrets() throws {
+    func testExplicitRestoreMirroredServersToKeychainWithoutSecrets() throws {
         let securityExceptionTrust = try SecTrust.unitTestDotExampleDotCom1
         let info = with(ServerInfo.fake()) {
             $0.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
@@ -516,6 +516,9 @@ class ServerManagerTests: XCTestCase {
         mirrorStore.set(info, key: "fake1")
         servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
         servers.setup()
+        XCTAssertNil(try keychain.getData("fake1"))
+
+        XCTAssertTrue(servers.restoreKeychainFromMirrorIfNeeded())
 
         let restoredFromKeychain = try XCTUnwrap(keychain.getServerInfo(key: "fake1", decoder: JSONDecoder()))
         XCTAssertEqual(restoredFromKeychain.remoteName, info.remoteName)
@@ -549,6 +552,18 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(try keychain.getData("fake1"))
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertTrue(mirrorStore.data.isEmpty)
+    }
+
+    func testSetupPreservesMirrorSnapshotWhileExplicitRestoreIsPending() throws {
+        mirrorStore.set(.fake(), key: "fake1")
+
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        XCTAssertTrue(servers.all.isEmpty)
+        XCTAssertNil(servers.server(for: "fake1"))
+        XCTAssertNil(try keychain.getData("fake1"))
+        XCTAssertNotNil(mirrorStore.data["fake1"])
     }
 
     func testKeychainInfoWinsOverMirrorFallback() throws {

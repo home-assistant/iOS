@@ -14,6 +14,7 @@ struct DebugView: View {
     @State private var deleteKeychainConfirmationText = ""
     @State private var deleteKeychainErrorMessage: String?
     @State private var showDeleteKeychainError = false
+    @State private var showDeleteKeychainRestartAlert = false
 
     private let feedbackGenerator = UINotificationFeedbackGenerator()
 
@@ -131,6 +132,17 @@ struct DebugView: View {
                         title: L10n.Settings.DatabaseExplorer.title
                     )
                 }
+
+                #if DEBUG
+                NavigationLink {
+                    KeychainExplorerView()
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .key),
+                        title: L10n.Settings.Debugging.KeychainExplorer.title
+                    )
+                }
+                #endif
             }
 
             #if os(iOS) && !targetEnvironment(macCatalyst)
@@ -174,6 +186,14 @@ struct DebugView: View {
         } message: {
             Text(deleteKeychainErrorMessage ?? "")
         }
+        .alert(L10n.Settings.Debugging.KeychainRestartRequired.title, isPresented: $showDeleteKeychainRestartAlert) {
+            Button(L10n.okLabel) {
+                Current.Log.info("Crashing app after full keychain deletion to force restart")
+                fatalError("Intentional crash after full keychain deletion to force app restart")
+            }
+        } message: {
+            Text(L10n.Settings.Debugging.KeychainRestartRequired.message)
+        }
     }
 
     private var deleteKeychainAlert: some ViewModifier {
@@ -183,7 +203,12 @@ struct DebugView: View {
             errorMessage: $deleteKeychainErrorMessage,
             showError: $showDeleteKeychainError,
             currentConfirmationDate: currentConfirmationDate,
-            feedbackGenerator: feedbackGenerator
+            feedbackGenerator: feedbackGenerator,
+            onDeleteSuccess: {
+                DispatchQueue.main.async {
+                    showDeleteKeychainRestartAlert = true
+                }
+            }
         )
     }
 
@@ -559,19 +584,20 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
 
     let currentConfirmationDate: String
     let feedbackGenerator: UINotificationFeedbackGenerator
+    let onDeleteSuccess: () -> Void
 
     func body(content: Content) -> some View {
-        content.alert("Delete keychain completely", isPresented: $isPresented) {
-            TextField("yyyy-MM-dd", text: $confirmationText)
+        content.alert(L10n.Settings.Debugging.DeleteKeychain.title, isPresented: $isPresented) {
+            TextField(L10n.Settings.Debugging.DeleteKeychain.datePlaceholder, text: $confirmationText)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
 
             Button(L10n.cancelLabel, role: .cancel) {
                 confirmationText = ""
             }
-            Button("Delete", role: .destructive) {
+            Button(L10n.Settings.Debugging.DeleteKeychain.deleteButton, role: .destructive) {
                 guard confirmationText == currentConfirmationDate else {
-                    errorMessage = "Enter today's date as \(currentConfirmationDate) to continue."
+                    errorMessage = L10n.Settings.Debugging.DeleteKeychain.invalidDateFormat(currentConfirmationDate)
                     showError = true
                     return
                 }
@@ -579,6 +605,7 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
                 do {
                     try deleteKeychainCompletely()
                     feedbackGenerator.notificationOccurred(.success)
+                    onDeleteSuccess()
                 } catch {
                     Current.Log.error("Failed to delete keychain completely: \(error.localizedDescription)")
                     errorMessage = error.localizedDescription
@@ -588,7 +615,7 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
                 confirmationText = ""
             }
         } message: {
-            Text("Type today's date (\(currentConfirmationDate)) to permanently delete all app keychain data.")
+            Text(L10n.Settings.Debugging.DeleteKeychain.messageFormat(currentConfirmationDate))
         }
     }
 }

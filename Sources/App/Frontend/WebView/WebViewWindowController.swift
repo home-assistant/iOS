@@ -1,4 +1,6 @@
 import Foundation
+import GRDB
+import KeychainAccess
 import MBProgressHUD
 import PromiseKit
 import Shared
@@ -22,6 +24,14 @@ final class StatusBarForwardingNavigationController: UINavigationController {
 }
 
 final class WebViewWindowController {
+    enum RecoveryScreenConstants {
+        static let minimumVisibleDuration: TimeInterval = 3
+    }
+
+    private enum RecoveryCheckConstants {
+        static let serverKeychainService = "io.home-assistant.servers"
+    }
+
     enum RootViewControllerType {
         case onboarding
         case webView
@@ -81,6 +91,20 @@ final class WebViewWindowController {
     }
 
     func setup() {
+        if shouldShowRecoveredServersImportScreen() {
+            updateRootViewController(
+                to: RecoveredServersImportView(onImport: {
+                    _ = Current.servers.restoreKeychainFromMirrorIfNeeded()
+                }).embeddedInHostingController(),
+                type: .onboarding
+            )
+            DispatchQueue.main
+                .asyncAfter(deadline: .now() + RecoveryScreenConstants.minimumVisibleDuration) { [weak self] in
+                    self?.setup()
+                }
+            return
+        }
+
         if let style = OnboardingNavigation.requiredOnboardingStyle {
             Current.Log.info("Showing onboarding \(style)")
             updateRootViewController(
@@ -100,6 +124,28 @@ final class WebViewWindowController {
                 )
             }
             restorationActivity = nil
+        }
+    }
+
+    private func shouldShowRecoveredServersImportScreen() -> Bool {
+        let keychain = Keychain(service: RecoveryCheckConstants.serverKeychainService)
+        guard keychain.allKeys().isEmpty else { return false }
+
+        let deletedServerIDs = Set(
+            (UserDefaults(suiteName: AppConstants.AppGroupID)?.array(forKey: "deletedServers") as? [String]) ?? []
+        )
+
+        do {
+            return try DatabaseQueue.appDatabase.read { db in
+                let mirroredServerIDs = try String.fetchAll(
+                    db,
+                    sql: "SELECT id FROM \(GRDBDatabaseTable.serverInfoMirror.rawValue)"
+                )
+                return mirroredServerIDs.contains { !deletedServerIDs.contains($0) }
+            }
+        } catch {
+            Current.Log.error("Failed to inspect mirrored server info before startup recovery screen: \(error)")
+            return false
         }
     }
 

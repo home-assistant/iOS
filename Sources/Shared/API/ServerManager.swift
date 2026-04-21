@@ -11,6 +11,8 @@ public protocol ServerManager {
     var all: [Server] { get }
     func server(for identifier: Identifier<Server>) -> Server?
     func serverOrFirstIfAvailable(for identifier: Identifier<Server>) -> Server?
+    @discardableResult
+    func restoreKeychainFromMirrorIfNeeded() -> Bool
 
     @discardableResult
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server
@@ -182,8 +184,6 @@ final class ServerManagerImpl: ServerManager {
             value.restrictCaching = Current.isAppExtension
         }
 
-        restoreKeychainFromMirrorIfNeeded()
-
         // load to cache immediately
         _ = all
 
@@ -196,7 +196,7 @@ final class ServerManagerImpl: ServerManager {
         // Keep a sanitized startup snapshot of non-secret server metadata so the app
         // can still recover server shells if the developer-account migration wipes
         // Keychain data later on.
-        syncMirrorStoreFromKeychain()
+        syncMirrorStoreFromKeychainIfNeeded()
     }
 
     public var all: [Server] {
@@ -334,7 +334,7 @@ final class ServerManagerImpl: ServerManager {
                     // Prefer live Keychain data, but fall back to the last startup
                     // snapshot in GRDB when the Keychain entry is gone.
                     let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder)
-                        ?? self.mirrorStore.getServerInfo(identifier.keychainKey)
+                        ?? (!self.isMirrorRestorePending ? self.mirrorStore.getServerInfo(identifier.keychainKey) : nil)
                         ?? fallback
                     if !cache.deletedServers.contains(identifier) {
                         cache.info[identifier] = info
@@ -414,9 +414,17 @@ final class ServerManagerImpl: ServerManager {
     // MARK: Mirror Reconciliation
 
     private func mergedServerInfo(deletedServers: Set<Identifier<Server>>) -> [(String, ServerInfo)] {
+        let keychainValues = Dictionary(uniqueKeysWithValues: keychain.allServerInfo(decoder: decoder))
+        guard !isMirrorRestorePending else {
+            return keychainValues
+                .filter { key, _ in
+                    !deletedServers.contains(.init(keychainKey: key))
+                }
+                .map { ($0.key, $0.value) }
+        }
+
         // When both stores have a copy, prefer Keychain because it still contains the
         // full record. The mirror is only a best-effort recovery snapshot.
-        let keychainValues = Dictionary(uniqueKeysWithValues: keychain.allServerInfo(decoder: decoder))
         let mirrorValues = Dictionary(uniqueKeysWithValues: mirrorStore.allServerInfo())
         return mirrorValues
             .merging(keychainValues, uniquingKeysWith: { _, keychainInfo in keychainInfo })
@@ -424,6 +432,16 @@ final class ServerManagerImpl: ServerManager {
                 !deletedServers.contains(.init(keychainKey: key))
             }
             .map { ($0.key, $0.value) }
+    }
+
+    private func syncMirrorStoreFromKeychainIfNeeded() {
+        // Preserve the mirror while the recovery UI is deciding whether to restore
+        // mirrored servers back into Keychain.
+        if isMirrorRestorePending {
+            return
+        }
+
+        syncMirrorStoreFromKeychain()
     }
 
     private func syncMirrorStoreFromKeychain() {
@@ -435,21 +453,35 @@ final class ServerManagerImpl: ServerManager {
         }
     }
 
-    private func restoreKeychainFromMirrorIfNeeded() {
-        guard keychain.allKeys().isEmpty else { return }
-
+    private func restorableMirroredServers() -> [(String, ServerInfo)] {
         let deletedServers = cache.read(\.deletedServers)
-        let mirroredServers = mirrorStore.allServerInfo().filter { key, _ in
+        return mirrorStore.allServerInfo().filter { key, _ in
             !deletedServers.contains(.init(keychainKey: key))
         }
+    }
 
-        guard !mirroredServers.isEmpty else { return }
+    private var isMirrorRestorePending: Bool {
+        keychain.allKeys().isEmpty && !restorableMirroredServers().isEmpty
+    }
+
+    @discardableResult
+    public func restoreKeychainFromMirrorIfNeeded() -> Bool {
+        guard keychain.allKeys().isEmpty else { return false }
+
+        let mirroredServers = restorableMirroredServers()
+        guard !mirroredServers.isEmpty else { return false }
 
         // Rehydrate the Keychain with the sanitized mirror so startup sees the same
         // server list and WebView can continue through the empty-token reauth flow.
         for (key, value) in mirroredServers {
             keychain.set(serverInfo: value, key: key, encoder: encoder)
         }
+
+        cache.mutate { cache in
+            cache.reset()
+        }
+
+        return true
     }
 
     // MARK: Migration

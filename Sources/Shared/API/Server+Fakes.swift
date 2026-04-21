@@ -61,6 +61,10 @@ class FakeServerManager: ServerManager {
         all.first(where: { $0.identifier == identifier })
     }
 
+    func restoreKeychainFromMirrorIfNeeded() -> Bool {
+        false
+    }
+
     func addFake() -> Server {
         let server = Server.fake()
         return add(identifier: server.identifier, serverInfo: server.info)
