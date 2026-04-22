@@ -352,7 +352,7 @@ struct WebViewEmptyStateView: View {
     }
 
     private var canShowErrorDetailsButton: Bool {
-        style == .disconnected && showsErrorDetailsButton
+        style == .disconnected && showsErrorDetailsButton && errorDetailsAction != nil
     }
 
     private var resolvedLeadingHeaderAccessory: WebViewEmptyStateStyle.HeaderAccessory {
