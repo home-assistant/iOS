@@ -34,7 +34,7 @@ public struct MenuManagerTitleSubscription: Equatable {
     }
 }
 
-final class CompositeHACancellable: HACancellable {
+private final class CompositeHACancellable: HACancellable {
     private var cancellables: [HACancellable]
 
     init(_ cancellables: [HACancellable] = []) {
