@@ -18,9 +18,6 @@ struct HALockScreenView: View {
     /// Icon size for the MDI icon in the header row.
     private static let iconSize: CGFloat = 28
 
-    /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
-    private static let haBlueHex = "#03A9F4"
-
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.oneAndHalf) {
             HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
@@ -86,7 +83,7 @@ struct HALockScreenView: View {
     private var iconView: some View {
         if let iconSlug = state.icon {
             // UIColor(hex:) from Shared handles CSS names and 3/6/8-digit hex; non-failable.
-            let uiColor = UIColor(hex: state.color ?? Self.haBlueHex)
+            let uiColor = HAActivityVisualStyle.uiColor(from: state.color)
             let mdiIcon = MaterialDesignIcons(serversideValueNamed: iconSlug)
             Image(uiImage: mdiIcon.image(
                 ofSize: .init(width: Self.iconSize, height: Self.iconSize),
@@ -100,7 +97,7 @@ struct HALockScreenView: View {
     @ViewBuilder
     private var trailingValue: some View {
         if let fraction = state.progressFraction {
-            Text("\(Int(fraction * 100))%")
+            Text(HAActivityVisualStyle.percentString(for: fraction))
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(primaryTextColor)
         } else if let critical = state.criticalText {
@@ -115,10 +112,7 @@ struct HALockScreenView: View {
 
     /// Accent color from ContentState, fallback to Home Assistant primary blue.
     private var accentColor: Color {
-        if let hex = state.color {
-            return Color(hex: hex)
-        }
-        return .haPrimary
+        HAActivityVisualStyle.color(from: state.color)
     }
 
     private var primaryTextColor: Color {
@@ -170,7 +164,32 @@ struct HAActivityProgressBar: View {
         .frame(height: height)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Progress")
-        .accessibilityValue(Text("\(Int(clampedFraction * 100)) percent"))
+        .accessibilityValue(Text(HAActivityVisualStyle.accessibilityPercentString(for: clampedFraction)))
+    }
+}
+
+enum HAActivityVisualStyle {
+    /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
+    private static let haBlueHex = "#03A9F4"
+
+    static func uiColor(from color: String?) -> UIColor {
+        UIColor(hex: color ?? haBlueHex)
+    }
+
+    static func color(from color: String?) -> Color {
+        Color(uiColor: uiColor(from: color))
+    }
+
+    static func percentString(for fraction: Double) -> String {
+        "\(roundedPercent(for: fraction))%"
+    }
+
+    static func accessibilityPercentString(for fraction: Double) -> String {
+        "\(roundedPercent(for: fraction)) percent"
+    }
+
+    private static func roundedPercent(for fraction: Double) -> Int {
+        Int((min(max(fraction, 0), 1) * 100).rounded())
     }
 }
 #endif

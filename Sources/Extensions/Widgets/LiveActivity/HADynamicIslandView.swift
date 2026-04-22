@@ -53,13 +53,10 @@ struct HADynamicIslandIconView: View {
     let color: String?
     let size: CGFloat
 
-    /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
-    private static let haBlueHex = "#03A9F4"
-
     var body: some View {
         if let slug {
             // UIColor(hex:) from Shared handles nil/CSS names/3-6-8 digit hex; non-failable.
-            let uiColor = UIColor(hex: color ?? Self.haBlueHex)
+            let uiColor = HAActivityVisualStyle.uiColor(from: color)
             let mdiIcon = MaterialDesignIcons(serversideValueNamed: slug)
             Image(uiImage: mdiIcon.image(
                 ofSize: .init(width: size, height: size),
@@ -94,10 +91,7 @@ struct HADynamicIslandIconContainerView: View {
     }
 
     private var accentColor: Color {
-        if let color {
-            return Color(hex: color)
-        }
-        return .haPrimary
+        HAActivityVisualStyle.color(from: color)
     }
 }
 
@@ -128,7 +122,7 @@ struct HACompactTrailingView: View {
                 .lineLimit(1)
                 .frame(maxWidth: Self.compactTrailingMaxWidth)
         } else if let fraction = state.progressFraction {
-            Text("\(Int(fraction * 100))%")
+            Text(HAActivityVisualStyle.percentString(for: fraction))
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(.white)
                 .monospacedDigit()
@@ -144,7 +138,7 @@ struct HAExpandedTrailingView: View {
 
     var body: some View {
         if let fraction = state.progressFraction {
-            Text("\(Int(fraction * 100))%")
+            Text(HAActivityVisualStyle.percentString(for: fraction))
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(.white)
         } else if let critical = state.criticalText {
@@ -190,10 +184,7 @@ struct HAExpandedBottomView: View {
 
     /// Accent color from ContentState, fallback to Home Assistant primary blue.
     private var accentColor: Color {
-        if let hex = state.color {
-            return Color(hex: hex)
-        }
-        return .haPrimary
+        HAActivityVisualStyle.color(from: state.color)
     }
 }
 #endif
