@@ -34,6 +34,29 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equata
 private var underlyingWasSetUp: UInt32 = 0
 private var underlyingCurrent = AppEnvironment()
 
+private enum HAKitLogging {
+    static let hiddenConsoleTag = "hakit-console-noise"
+    private static let hiddenConsolePrefixes = [
+        "Received: event:"
+    ]
+
+    static func userInfo(for level: HAGlobal.LogLevel, message: String) -> [String: Any] {
+        guard shouldHideFromConsole(level: level, message: message) else {
+            return [:]
+        }
+
+        return [XCGLogger.Constants.userInfoKeyTags: hiddenConsoleTag]
+    }
+
+    private static func shouldHideFromConsole(level: HAGlobal.LogLevel, message: String) -> Bool {
+        guard case .info = level else {
+            return false
+        }
+
+        return hiddenConsolePrefixes.contains { message.hasPrefix($0) }
+    }
+}
+
 public var Current: AppEnvironment {
     get {
         let result = underlyingCurrent
@@ -69,11 +92,13 @@ public class AppEnvironment {
             }
         }
         HAGlobal.log = { level, log in
-            let string = "WebSocket: \(log.replacingOccurrences(of: "\n", with: " "))"
+            let sanitizedLog = log.replacingOccurrences(of: "\n", with: " ")
+            let string = "WebSocket: \(sanitizedLog)"
+            let userInfo = HAKitLogging.userInfo(for: level, message: sanitizedLog)
 
             switch level {
-            case .info: Current.Log.info(string)
-            case .error: Current.Log.error(string)
+            case .info: Current.Log.info(string, userInfo: userInfo)
+            case .error: Current.Log.error(string, userInfo: userInfo)
             }
         }
     }
@@ -399,6 +424,8 @@ public class AppEnvironment {
             $0.showFileName = true
             $0.showLineNumber = true
             $0.showDate = true
+            // Keep repetitive websocket event receipts in the archived logs without spamming the debugger console.
+            $0.filters = [TagFilter(excludeFrom: [HAKitLogging.hiddenConsoleTag])]
         })
         #endif
 
