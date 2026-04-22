@@ -1225,6 +1225,7 @@
 		4697F4C22D8A416400C5C467 /* SharedTesting.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		46BA6A4E2D734EBB002C2262 /* SnapshotTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */; };
 		46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C3EB1B2D721017009A893F /* Array+SafeSubscripting.test.swift */; };
+		46F9A1012F0A000100ABCD01 /* StatusItemTitleRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F9A1002F0A000100ABCD01 /* StatusItemTitleRendererTests.swift */; };
 		46C62B962D8A3730002C0001 /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 46C62B952D8A3730002C0001 /* InlineSnapshotTesting */; };
 		46C62B982D8A3730002C0001 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 46C62B972D8A3730002C0001 /* SnapshotTesting */; };
 		46C62B9A2D8A3730002C0001 /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 46C62B992D8A3730002C0001 /* SnapshotTestingCustomDump */; };
@@ -3053,6 +3054,7 @@
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingHelper.swift; sourceTree = "<group>"; };
 		46C3EB1B2D721017009A893F /* Array+SafeSubscripting.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SafeSubscripting.test.swift"; sourceTree = "<group>"; };
+		46F9A1002F0A000100ABCD01 /* StatusItemTitleRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemTitleRendererTests.swift; sourceTree = "<group>"; };
 		46C62B882D8A3687002C0001 /* SharedTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SharedTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		46C62BA02D8A3792002C0001 /* SnapshottablePreviewConfigurations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshottablePreviewConfigurations.swift; sourceTree = "<group>"; };
 		46C62BA22D8A382F002C0001 /* SharedTesting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedTesting.h; sourceTree = "<group>"; };
@@ -6452,6 +6454,7 @@
 		46C3EB192D721000009A893F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				46F9A1002F0A000100ABCD01 /* StatusItemTitleRendererTests.swift */,
 				46C3EB1A2D72100C009A893F /* Extensions */,
 			);
 			path = Utilities;
@@ -9668,6 +9671,7 @@
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */,
 				46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */,
+				46F9A1012F0A000100ABCD01 /* StatusItemTitleRendererTests.swift in Sources */,
 				4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */,
 				42ACC2AF2E9FA1D60045A3FD /* DiscoveredHomeAssistant.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
