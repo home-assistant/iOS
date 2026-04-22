@@ -2759,6 +2759,28 @@ public enum L10n {
         }
       }
     }
+    public enum ServerImport {
+      /// Hang tight, we’re rounding up your servers.
+      public static var message: String { return L10n.tr("Localizable", "onboarding.server_import.message") }
+      /// Importing Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "onboarding.server_import.title") }
+      public enum Reauthenticate {
+        /// Continue
+        public static var continueButton: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.continue_button") }
+        /// Sign in was cancelled.
+        public static var errorsCancelled: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.errors_cancelled") }
+        /// Unable to present the sign-in flow right now.
+        public static var errorsMissingPresenter: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.errors_missing_presenter") }
+        /// One more step: sign in again to finish restoring %@.
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.message", String(describing: p1))
+        }
+        /// Reconnect Home Assistant
+        public static var title: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.title") }
+        /// Choose a connection
+        public static var urlPickerTitle: String { return L10n.tr("Localizable", "onboarding.server_import.reauthenticate.url_picker_title") }
+      }
+    }
     public enum Servers {
       /// Searching on home network
       public static var title: String { return L10n.tr("Localizable", "onboarding.servers.title") }
@@ -3140,11 +3162,79 @@ public enum L10n {
         /// Make sure you are aware that these operations cannot be reverted.
         public static var footer: String { return L10n.tr("Localizable", "settings.debugging.critical_section.footer") }
       }
+      public enum DeleteKeychain {
+        /// yyyy-MM-dd
+        public static var datePlaceholder: String { return L10n.tr("Localizable", "settings.debugging.delete_keychain.date_placeholder") }
+        /// Delete
+        public static var deleteButton: String { return L10n.tr("Localizable", "settings.debugging.delete_keychain.delete_button") }
+        /// Enter today's date as %@ to continue.
+        public static func invalidDateFormat(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.debugging.delete_keychain.invalid_date_format", String(describing: p1))
+        }
+        /// Type today's date (%@) to permanently delete all app keychain data.
+        public static func messageFormat(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.debugging.delete_keychain.message_format", String(describing: p1))
+        }
+        /// Delete keychain completely
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.delete_keychain.title") }
+      }
       public enum Header {
         /// Let's fix that 🐞
         public static var subtitle: String { return L10n.tr("Localizable", "settings.debugging.header.subtitle") }
         /// Debug
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.header.title") }
+      }
+      public enum KeychainExplorer {
+        /// Access group
+        public static var accessGroupLabel: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.access_group_label") }
+        /// Accessibility
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.accessibility_label") }
+        /// Account
+        public static var accountLabel: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.account_label") }
+        /// Base64: %@
+        public static func base64Prefix(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.debugging.keychain_explorer.base64_prefix", String(describing: p1))
+        }
+        /// %lld bytes
+        public static func bytesFormat(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings.debugging.keychain_explorer.bytes_format", p1)
+        }
+        /// No generic password items were found in the app keychain.
+        public static var emptyState: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.empty_state") }
+        /// %lld item(s)
+        public static func itemCountFormat(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings.debugging.keychain_explorer.item_count_format", p1)
+        }
+        /// Failed to load keychain items: %@
+        public static func loadErrorFormat(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.debugging.keychain_explorer.load_error_format", String(describing: p1))
+        }
+        /// Metadata
+        public static var metadataSection: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.metadata_section") }
+        /// Keychain explorer
+        public static var navigationTitle: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.navigation_title") }
+        /// None
+        public static var noneValue: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.none_value") }
+        /// Keychain query failed with status %d
+        public static func queryErrorFormat(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings.debugging.keychain_explorer.query_error_format", p1)
+        }
+        /// Service
+        public static var serviceLabel: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.service_label") }
+        /// Size
+        public static var sizeLabel: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.size_label") }
+        /// Keychain explorer
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.title") }
+        /// Unknown
+        public static var unknownValue: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.unknown_value") }
+        /// Value
+        public static var valueSection: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.value_section") }
+      }
+      public enum KeychainRestartRequired {
+        /// The app needs to restart to finish deleting keychain data.
+        public static var message: String { return L10n.tr("Localizable", "settings.debugging.keychain_restart_required.message") }
+        /// App restart required
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.keychain_restart_required.title") }
       }
       public enum ShakeDisclaimer {
         /// Now when you shake the app you can access debug features.
