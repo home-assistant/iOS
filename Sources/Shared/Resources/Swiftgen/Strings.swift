@@ -3215,7 +3215,7 @@ public enum L10n {
         public static var navigationTitle: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.navigation_title") }
         /// None
         public static var noneValue: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.none_value") }
-        /// Keychain query failed with status %d
+        /// Keychain query failed with status %li
         public static func queryErrorFormat(_ p1: Int) -> String {
           return L10n.tr("Localizable", "settings.debugging.keychain_explorer.query_error_format", p1)
         }
