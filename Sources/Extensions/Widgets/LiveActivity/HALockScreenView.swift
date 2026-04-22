@@ -10,54 +10,77 @@ import WidgetKit
 /// Keep layout tight and avoid decorative spacing.
 @available(iOS 17.2, *)
 struct HALockScreenView: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
 
     /// Icon size for the MDI icon in the header row.
-    private static let iconSize: CGFloat = 20
+    private static let iconSize: CGFloat = 28
 
     /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
     private static let haBlueHex = "#03A9F4"
 
-    /// Subdued white for secondary text (timer/message body).
-    private static let secondaryWhite: Color = .white.opacity(0.85)
-
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            // Header row: icon + title
-            HStack(spacing: DesignSystem.Spaces.one) {
-                iconView
-                Text(attributes.title)
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.oneAndHalf) {
+            HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
+                iconContainer
+
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                    Text(attributes.title)
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(primaryTextColor)
+                        .lineLimit(1)
+
+                    if state.chronometer == true, let end = state.countdownEnd {
+                        Text(timerInterval: Date.now ... end, countsDown: true)
+                            .font(.title3.monospacedDigit().weight(.medium))
+                            .foregroundStyle(secondaryTextColor)
+                            .contentTransition(.numericText(countsDown: true))
+                    } else {
+                        Text(state.message)
+                            .font(.body)
+                            .foregroundStyle(secondaryTextColor)
+                            .lineLimit(2)
+                    }
+                }
+
+                Spacer(minLength: 0)
+
+                trailingValue
             }
 
-            // Body: timer or message
-            if state.chronometer == true, let end = state.countdownEnd {
-                Text(timerInterval: Date.now ... end, countsDown: true)
-                    .font(.subheadline)
-                    .foregroundStyle(Self.secondaryWhite)
-                    .monospacedDigit()
-                    .contentTransition(.numericText(countsDown: true))
-            } else {
-                Text(state.message)
-                    .font(.subheadline)
-                    .foregroundStyle(Self.secondaryWhite)
-                    .lineLimit(2)
-            }
-
-            // Progress bar (only when progress data is present)
             if let fraction = state.progressFraction {
-                ProgressView(value: fraction)
-                    .tint(accentColor)
+                HAActivityProgressBar(
+                    fraction: fraction,
+                    fillColor: accentColor,
+                    trackColor: trackColor,
+                    height: 10
+                )
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.two)
-        .padding(.vertical, DesignSystem.Spaces.oneAndHalf)
+        .padding(.vertical, DesignSystem.Spaces.two)
     }
 
     // MARK: - Sub-views
+
+    @ViewBuilder
+    private var iconContainer: some View {
+        if state.icon != nil {
+            ZStack {
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
+                    .fill(accentColor.opacity(colorScheme == .dark ? 0.2 : 0.14))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
+                            .strokeBorder(accentColor.opacity(colorScheme == .dark ? 0.3 : 0.18))
+                    }
+
+                iconView
+            }
+            .frame(width: 48, height: 48)
+        }
+    }
 
     @ViewBuilder
     private var iconView: some View {
@@ -74,6 +97,20 @@ struct HALockScreenView: View {
         }
     }
 
+    @ViewBuilder
+    private var trailingValue: some View {
+        if let fraction = state.progressFraction {
+            Text("\(Int(fraction * 100))%")
+                .font(.headline.monospacedDigit())
+                .foregroundStyle(primaryTextColor)
+        } else if let critical = state.criticalText {
+            Text(critical)
+                .font(.headline)
+                .foregroundStyle(primaryTextColor)
+                .lineLimit(1)
+        }
+    }
+
     // MARK: - Helpers
 
     /// Accent color from ContentState, fallback to Home Assistant primary blue.
@@ -82,6 +119,58 @@ struct HALockScreenView: View {
             return Color(hex: hex)
         }
         return .haPrimary
+    }
+
+    private var primaryTextColor: Color {
+        colorScheme == .dark ? .white : .black
+    }
+
+    private var secondaryTextColor: Color {
+        colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.72)
+    }
+
+    private var trackColor: Color {
+        colorScheme == .dark ? .white.opacity(0.14) : .black.opacity(0.08)
+    }
+}
+
+@available(iOS 17.2, *)
+struct HAActivityProgressBar: View {
+    let fraction: Double
+    let fillColor: Color
+    let trackColor: Color
+    let height: CGFloat
+
+    private var clampedFraction: Double {
+        min(max(fraction, 0), 1)
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            let width = clampedFraction == 0 ? 0 : max(geometry.size.width * clampedFraction, height)
+
+            ZStack(alignment: .leading) {
+                Capsule(style: .continuous)
+                    .fill(trackColor)
+
+                Capsule(style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                fillColor.opacity(0.9),
+                                fillColor,
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: width)
+            }
+        }
+        .frame(height: height)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Progress")
+        .accessibilityValue(Text("\(Int(clampedFraction * 100)) percent"))
     }
 }
 #endif
