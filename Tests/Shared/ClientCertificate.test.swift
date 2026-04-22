@@ -1,4 +1,5 @@
 import Foundation
+import Security
 @testable import Shared
 import Testing
 
@@ -244,6 +245,24 @@ struct ClientCertificateErrorTests {
     func keychainErrorStatusCodes(status: Int32, expectedDescription: String) {
         let error = ClientCertificateError.keychainError(OSStatus(status))
         #expect(error.errorDescription == expectedDescription)
+    }
+}
+
+@Suite("ClientCertificateManager Import Tests")
+struct ClientCertificateManagerImportTests {
+    @Test("Given empty password when creating PKCS#12 import options then passphrase is omitted")
+    func emptyPasswordOmitsPassphraseOption() {
+        let options = ClientCertificateManager.pkcs12ImportOptions(password: "")
+
+        #expect(options.isEmpty)
+        #expect(options[kSecImportExportPassphrase as String] == nil)
+    }
+
+    @Test("Given non-empty password when creating PKCS#12 import options then passphrase is included")
+    func nonEmptyPasswordIncludesPassphraseOption() {
+        let options = ClientCertificateManager.pkcs12ImportOptions(password: "secret")
+
+        #expect(options[kSecImportExportPassphrase as String] as? String == "secret")
     }
 }
 #endif

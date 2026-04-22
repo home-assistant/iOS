@@ -58,6 +58,18 @@ public final class ClientCertificateManager {
 
     private init() {}
 
+    static func pkcs12ImportOptions(password: String) -> [String: Any] {
+        // On macOS, passwordless PKCS#12 imports fail when an explicit empty-string passphrase
+        // is supplied. Omitting the option lets Security treat the bundle as unprotected.
+        guard !password.isEmpty else {
+            return [:]
+        }
+
+        return [
+            kSecImportExportPassphrase as String: password,
+        ]
+    }
+
     /// Import a PKCS#12 file into the Keychain
     /// - Parameters:
     ///   - p12Data: The raw .p12 file data
@@ -65,10 +77,7 @@ public final class ClientCertificateManager {
     ///   - identifier: A unique identifier for storing in Keychain
     /// - Returns: A ClientCertificate reference
     public func importP12(data p12Data: Data, password: String, identifier: String) throws -> ClientCertificate {
-        // Import options
-        let options: [String: Any] = [
-            kSecImportExportPassphrase as String: password,
-        ]
+        let options = Self.pkcs12ImportOptions(password: password)
 
         var items: CFArray?
         let status = SecPKCS12Import(p12Data as CFData, options as CFDictionary, &items)
