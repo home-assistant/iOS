@@ -83,4 +83,83 @@ class HAAPITokenFetchFailureTests: XCTestCase {
 
         XCTAssertEqual(connection.state, expectedState)
     }
+
+    func testAutomaticConnectStartsDisconnectedConnection() {
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        api.connection = connection
+
+        api.connectWebSocketIfNeeded()
+        drainMainQueue()
+
+        XCTAssertEqual(connection.state, .ready(version: "1.0-mock"))
+    }
+
+    func testAutomaticConnectPreservesWaitingToReconnectState() {
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        api.connection = connection
+
+        let expectedState = HAConnectionState.disconnected(reason: .waitingToReconnect(
+            lastError: URLError(.cannotConnectToHost),
+            atLatest: Date(timeIntervalSinceNow: 30),
+            retryCount: 3
+        ))
+        connection.setState(expectedState)
+
+        api.connectWebSocketIfNeeded()
+        drainMainQueue()
+
+        XCTAssertEqual(connection.state, expectedState)
+    }
+
+    func testAutomaticConnectPreservesRejectedState() {
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        api.connection = connection
+
+        connection.setState(.disconnected(reason: .rejected))
+
+        api.connectWebSocketIfNeeded()
+        drainMainQueue()
+
+        XCTAssertEqual(connection.state, .disconnected(reason: .rejected))
+    }
+
+    func testRetryAwareConnectionDoesNotReconnectWhileBackoffIsActive() {
+        let underlying = HAMockConnection()
+        let connection = RetryAwareHAConnection(underlying: underlying)
+        let expectedState = HAConnectionState.disconnected(reason: .waitingToReconnect(
+            lastError: URLError(.cannotConnectToHost),
+            atLatest: Date(timeIntervalSinceNow: 30),
+            retryCount: 3
+        ))
+        underlying.setState(expectedState)
+
+        _ = connection.send(.init(type: .webSocket("ping")), completion: { _ in })
+        drainMainQueue()
+
+        XCTAssertEqual(underlying.state, expectedState)
+    }
+
+    func testRetryAwareConnectionReconnectsSocketRequestsFromIdleDisconnectedState() {
+        let underlying = HAMockConnection()
+        let connection = RetryAwareHAConnection(underlying: underlying)
+
+        _ = connection.send(.init(type: .webSocket("ping")), completion: { _ in })
+        drainMainQueue()
+
+        XCTAssertEqual(underlying.state, .ready(version: "1.0-mock"))
+    }
+
+    func testRetryAwareConnectionDoesNotConnectRestRequests() {
+        let underlying = HAMockConnection()
+        let connection = RetryAwareHAConnection(underlying: underlying)
+
+        _ = connection.send(.init(type: .rest(.get, "config")), completion: { _ in })
+        drainMainQueue()
+
+        XCTAssertEqual(underlying.state, .disconnected(reason: .disconnected))
+        XCTAssertEqual(underlying.pendingRequests.count, 1)
+    }
 }

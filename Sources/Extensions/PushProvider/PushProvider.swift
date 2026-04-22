@@ -89,7 +89,7 @@ import UserNotifications
     override func handleTimerEvent() {
         // we may be signaled that it's a good time to connect, so do so
         for manager in localPushManagers {
-            Current.api(for: manager.server)?.connection.connect()
+            Current.api(for: manager.server)?.connectWebSocketIfNeeded()
         }
     }
 
