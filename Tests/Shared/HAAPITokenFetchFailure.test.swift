@@ -83,7 +83,6 @@ class HAAPITokenFetchFailureTests: XCTestCase {
 
         XCTAssertEqual(connection.state, expectedState)
     }
-
 }
 
 class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
