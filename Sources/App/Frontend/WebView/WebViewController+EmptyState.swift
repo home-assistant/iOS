@@ -1,4 +1,5 @@
 import Shared
+import SwiftUI
 import UIKit
 
 // MARK: - Empty State
@@ -7,17 +8,25 @@ extension WebViewController {
     func setupEmptyState() {
         let emptyState = WebViewEmptyStateWrapperView(
             style: emptyStateStyle(for: connectionState),
-            server: server
-        ) { [weak self] in
-            self?.hideEmptyState()
-            self?.refresh()
-        } settingsAction: { [weak self] in
-            self?.showSettingsViewController()
-        } reauthAction: { [weak self] urlType in
-            self?.performReauthentication(using: urlType)
-        } dismissAction: { [weak self] in
-            self?.hideEmptyState()
-        }
+            server: server,
+            showsErrorDetailsButton: shouldShowErrorDetailsButton,
+            retryAction: { [weak self] in
+                self?.hideEmptyState()
+                self?.refresh()
+            },
+            settingsAction: { [weak self] in
+                self?.showSettingsViewController()
+            },
+            errorDetailsAction: { [weak self] in
+                self?.presentLatestLoadErrorDetails()
+            },
+            reauthAction: { [weak self] urlType in
+                self?.performReauthentication(using: urlType)
+            },
+            dismissAction: { [weak self] in
+                self?.hideEmptyState()
+            }
+        )
 
         view.addSubview(emptyState)
 
@@ -44,10 +53,28 @@ extension WebViewController {
     }
 
     func showEmptyState() {
-        emptyStateView?.updateStyle(emptyStateStyle(for: connectionState))
+        emptyStateView?.update(
+            style: emptyStateStyle(for: connectionState),
+            showsErrorDetailsButton: shouldShowErrorDetailsButton
+        )
         UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
             self.emptyStateView?.alpha = 1
         }, completion: nil)
+    }
+
+    var shouldShowErrorDetailsButton: Bool {
+        connectionState == .disconnected && latestLoadError != nil
+    }
+
+    func presentLatestLoadErrorDetails() {
+        guard let latestLoadError else { return }
+        presentOverlayController(
+            controller: UIHostingController(rootView: ConnectionErrorDetailsView(
+                server: server,
+                error: latestLoadError
+            )),
+            animated: true
+        )
     }
 
     @objc func hideEmptyState() {
