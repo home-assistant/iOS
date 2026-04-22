@@ -84,6 +84,26 @@ class HAAPITokenFetchFailureTests: XCTestCase {
         XCTAssertEqual(connection.state, expectedState)
     }
 
+}
+
+class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
+    private func drainMainQueue(cycles: Int = 2) {
+        let expectation = expectation(description: "drain main queue")
+
+        func schedule(_ remaining: Int) {
+            DispatchQueue.main.async {
+                if remaining == 0 {
+                    expectation.fulfill()
+                } else {
+                    schedule(remaining - 1)
+                }
+            }
+        }
+
+        schedule(cycles)
+        wait(for: [expectation], timeout: 10.0)
+    }
+
     func testAutomaticConnectStartsDisconnectedConnection() {
         let api = HomeAssistantAPI(server: .fake())
         let connection = HAMockConnection()
