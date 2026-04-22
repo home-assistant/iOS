@@ -229,7 +229,10 @@ public class AppEnvironment {
 
     public var settingsStore = SettingsStore()
 
-    public var webhooks = with(WebhookManager()) {
+    // Keep this lazy so widget and Live Activity extension startup does not eagerly
+    // create WebhookManager background URL sessions before they are actually needed.
+    // The main app and extension background handlers still initialize it on first use.
+    public lazy var webhooks = with(WebhookManager()) {
         // ^ because background url session identifiers cannot be reused, this must be a singleton-ish
         $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)
         $0.register(responseHandler: WebhookResponseLocation.self, for: .location)

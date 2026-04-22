@@ -6,8 +6,8 @@ import WidgetKit
 
 @available(iOS 17.2, *)
 struct HALiveActivityConfiguration: Widget {
-    /// Semi-transparent dark background for the Lock Screen presentation.
-    private static let lockScreenBackground = Color.black.opacity(0.75)
+    /// Adaptive Lock Screen surface that matches the current system appearance.
+    private static let lockScreenBackground = Color(uiColor: .systemBackground)
 
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: HALiveActivityAttributes.self) { context in
@@ -16,7 +16,7 @@ struct HALiveActivityConfiguration: Widget {
                 state: context.state
             )
             .activityBackgroundTint(Self.lockScreenBackground)
-            .activitySystemActionForegroundColor(Color.white)
+            .activitySystemActionForegroundColor(Color.primary)
         } dynamicIsland: { context in
             makeHADynamicIsland(attributes: context.attributes, state: context.state)
         }

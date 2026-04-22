@@ -49,6 +49,7 @@ extension Server {
 
 class FakeServerManager: ServerManager {
     var all = [Server]()
+    var isMirrorRestorePending = false
     var observers = [WeakWrapper]()
 
     init(initial: Int = 0) {
@@ -59,6 +60,10 @@ class FakeServerManager: ServerManager {
 
     func server(for identifier: Identifier<Server>) -> Server? {
         all.first(where: { $0.identifier == identifier })
+    }
+
+    func restoreKeychainFromMirrorIfNeeded() -> Bool {
+        false
     }
 
     func addFake() -> Server {

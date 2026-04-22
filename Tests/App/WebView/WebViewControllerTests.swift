@@ -105,6 +105,27 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNotNil(sut.emptyStateTimer)
     }
 
+    func testShowEmptyStateShowsErrorDetailsButtonWhenLatestLoadErrorExists() {
+        let sut = makeSUT()
+        sut.setupEmptyState()
+        sut.connectionState = .disconnected
+        sut.latestLoadError = URLError(.notConnectedToInternet)
+
+        sut.showEmptyState()
+
+        XCTAssertEqual(sut.emptyStateView?.style, .disconnected)
+        XCTAssertEqual(sut.emptyStateView?.showsErrorDetailsButton, true)
+    }
+
+    func testUpdateFrontendConnectionStateClearsLatestLoadError() {
+        let sut = makeSUT()
+        sut.latestLoadError = URLError(.timedOut)
+
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.connected.rawValue)
+
+        XCTAssertNil(sut.latestLoadError)
+    }
+
     private func makeSUT() -> WebViewController {
         let sut = WebViewController(server: .fake())
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))

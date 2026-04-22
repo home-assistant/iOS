@@ -2,8 +2,20 @@ import Foundation
 import KeychainAccess
 import RealmSwift
 import SafariServices
+import Security
 import Shared
 import Version
+
+private enum DeleteKeychainError: LocalizedError {
+    case keychain(OSStatus)
+
+    var errorDescription: String? {
+        switch self {
+        case let .keychain(status):
+            "Keychain error: \(status)"
+        }
+    }
+}
 
 func resetStores() {
     do {
@@ -17,6 +29,27 @@ func resetStores() {
     UserDefaults.standard.removePersistentDomain(forName: AppConstants.AppGroupID)
 
     Realm.reset()
+}
+
+func deleteKeychainCompletely() throws {
+    let keychainClasses: [CFString] = [
+        kSecClassGenericPassword,
+        kSecClassInternetPassword,
+        kSecClassCertificate,
+        kSecClassKey,
+        kSecClassIdentity,
+    ]
+
+    for keychainClass in keychainClasses {
+        let status = SecItemDelete([kSecClass as String: keychainClass] as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw DeleteKeychainError.keychain(status)
+        }
+    }
+
+    UserDefaults(suiteName: AppConstants.AppGroupID)?.removeObject(forKey: "deviceUID")
+    // Do not mark servers as deleted here. We want the sanitized GRDB mirror to
+    // survive the forced restart so startup can recover the server list.
 }
 
 func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
