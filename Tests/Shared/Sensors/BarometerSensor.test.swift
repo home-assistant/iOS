@@ -11,12 +11,16 @@ class BarometerSensorTests: XCTestCase {
     }
 
     private var request: SensorProviderRequest!
+    private var originalSensors: SensorContainer!
 
     override func setUp() {
         super.setUp()
 
         // Reset sensor container to prevent leftover lastUpdate from previous tests
         // from triggering BaseSensorUpdateSignaler's observer path during init.
+        // Saved and restored in tearDown so we don't strip the registered providers
+        // that other test classes rely on.
+        originalSensors = Current.sensors
         Current.sensors = SensorContainer()
 
         request = .init(
@@ -31,6 +35,12 @@ class BarometerSensorTests: XCTestCase {
         Current.barometer.isAvailable = { false }
         Current.barometer.startUpdatesOnQueueHandler = { _, handler in handler(nil, nil) }
         Current.barometer.stopUpdates = {}
+    }
+
+    override func tearDown() {
+        Current.sensors = originalSensors
+        originalSensors = nil
+        super.tearDown()
     }
 
     func testUnauthorizedReturnsError() {
