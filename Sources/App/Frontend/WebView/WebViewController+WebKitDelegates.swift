@@ -44,8 +44,8 @@ extension WebViewController {
             }
 
             if !error.isCancelled {
+                latestLoadError = error
                 showEmptyState()
-                showSwiftMessage(error: error)
             }
         }
     }
@@ -75,13 +75,14 @@ extension WebViewController {
         }
 
         if shouldShowError {
+            latestLoadError = error
             showEmptyState()
-            showSwiftMessage(error: error)
         }
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         refreshControl.endRefreshing()
+        latestLoadError = nil
 
         // in case the view appears again, don't reload
         initialURL = nil

@@ -111,9 +111,11 @@ struct WebViewEmptyStateView: View {
 
     let style: WebViewEmptyStateStyle
     let server: Server
+    let showsErrorDetailsButton: Bool
     let availableReauthURLTypes: [ConnectionInfo.URLType]
     let retryAction: (() -> Void)?
     let settingsAction: (() -> Void)?
+    let errorDetailsAction: (() -> Void)?
     let reauthAction: ((ConnectionInfo.URLType) -> Void)?
     let recoveredServerReauthAction: ((ConnectionInfo.URLType, @escaping (Swift.Result<Void, Error>) -> Void) -> Void)?
     let serverSelectionAction: ((Server) -> Void)?
@@ -122,9 +124,11 @@ struct WebViewEmptyStateView: View {
     init(
         style: WebViewEmptyStateStyle,
         server: Server,
+        showsErrorDetailsButton: Bool = false,
         availableReauthURLTypes: [ConnectionInfo.URLType] = [],
         retryAction: (() -> Void)? = nil,
         settingsAction: (() -> Void)? = nil,
+        errorDetailsAction: (() -> Void)? = nil,
         reauthAction: ((ConnectionInfo.URLType) -> Void)? = nil,
         recoveredServerReauthAction: (
             (ConnectionInfo.URLType, @escaping (Swift.Result<Void, Error>) -> Void) -> Void
@@ -135,10 +139,12 @@ struct WebViewEmptyStateView: View {
     ) {
         self.style = style
         self.server = server
+        self.showsErrorDetailsButton = showsErrorDetailsButton
         self.availableReauthURLTypes = availableReauthURLTypes
         self._selectedReauthURLType = State(initialValue: availableReauthURLTypes.first ?? .external)
         self.retryAction = retryAction
         self.settingsAction = settingsAction
+        self.errorDetailsAction = errorDetailsAction
         self.reauthAction = reauthAction
         self.recoveredServerReauthAction = recoveredServerReauthAction
         self.serverSelectionAction = serverSelectionAction
@@ -169,7 +175,7 @@ struct WebViewEmptyStateView: View {
 
     private var header: some View {
         HStack {
-            headerAccessory(style.leadingHeaderAccessory)
+            headerAccessory(resolvedLeadingHeaderAccessory)
 
             Spacer()
             serverSelection
@@ -194,7 +200,11 @@ struct WebViewEmptyStateView: View {
                 primaryButton
                     .buttonStyle(.primaryButton)
                 reauthURLHint
-                if style.showsSecondarySettingsButton {
+                if canShowErrorDetailsButton {
+                    errorDetailsButton
+                        .buttonStyle(.secondaryButton)
+                }
+                if style.showsSecondarySettingsButton, !canShowErrorDetailsButton {
                     secondaryButton
                         .buttonStyle(.secondaryButton)
                 }
@@ -341,6 +351,26 @@ struct WebViewEmptyStateView: View {
         }
     }
 
+    private var canShowErrorDetailsButton: Bool {
+        style == .disconnected && showsErrorDetailsButton && errorDetailsAction != nil
+    }
+
+    private var resolvedLeadingHeaderAccessory: WebViewEmptyStateStyle.HeaderAccessory {
+        if style.showsSecondarySettingsButton, canShowErrorDetailsButton {
+            .settings
+        } else {
+            style.leadingHeaderAccessory
+        }
+    }
+
+    private var errorDetailsButton: some View {
+        Button(action: {
+            errorDetailsAction?()
+        }) {
+            Text(L10n.ConnectionError.MoreDetailsSection.title)
+        }
+    }
+
     private func beginRecoveredServerReauthentication() {
         guard !isPerformingPrimaryAction else { return }
         guard let recoveredServerReauthAction else { return }
@@ -373,6 +403,7 @@ final class WebViewEmptyStateWrapperView: UIView {
     private let server: Server
     private let retryAction: (() -> Void)?
     private let settingsAction: (() -> Void)?
+    private let errorDetailsAction: (() -> Void)?
     private let reauthAction: ((ConnectionInfo.URLType) -> Void)?
     private let recoveredServerReauthAction: (
         (ConnectionInfo.URLType, @escaping (Swift.Result<Void, Error>) -> Void)
@@ -381,12 +412,15 @@ final class WebViewEmptyStateWrapperView: UIView {
     private let serverSelectionAction: ((Server) -> Void)?
     private let dismissAction: (() -> Void)?
     private(set) var style: WebViewEmptyStateStyle
+    private(set) var showsErrorDetailsButton: Bool
 
     init(
         style: WebViewEmptyStateStyle = .disconnected,
         server: Server,
+        showsErrorDetailsButton: Bool = false,
         retryAction: (() -> Void)? = nil,
         settingsAction: (() -> Void)? = nil,
+        errorDetailsAction: (() -> Void)? = nil,
         reauthAction: ((ConnectionInfo.URLType) -> Void)? = nil,
         recoveredServerReauthAction: (
             (ConnectionInfo.URLType, @escaping (Swift.Result<Void, Error>) -> Void) -> Void
@@ -397,8 +431,10 @@ final class WebViewEmptyStateWrapperView: UIView {
     ) {
         self.style = style
         self.server = server
+        self.showsErrorDetailsButton = showsErrorDetailsButton
         self.retryAction = retryAction
         self.settingsAction = settingsAction
+        self.errorDetailsAction = errorDetailsAction
         self.reauthAction = reauthAction
         self.recoveredServerReauthAction = recoveredServerReauthAction
         self.serverSelectionAction = serverSelectionAction
@@ -406,9 +442,11 @@ final class WebViewEmptyStateWrapperView: UIView {
         let swiftUIView = WebViewEmptyStateView(
             style: style,
             server: server,
+            showsErrorDetailsButton: showsErrorDetailsButton,
             availableReauthURLTypes: Self.availableReauthURLTypes(for: server),
             retryAction: retryAction,
             settingsAction: settingsAction,
+            errorDetailsAction: errorDetailsAction,
             reauthAction: reauthAction,
             recoveredServerReauthAction: recoveredServerReauthAction,
             serverSelectionAction: serverSelectionAction,
@@ -436,15 +474,18 @@ final class WebViewEmptyStateWrapperView: UIView {
         backgroundColor = .clear
     }
 
-    func updateStyle(_ style: WebViewEmptyStateStyle) {
-        guard self.style != style else { return }
+    func update(style: WebViewEmptyStateStyle, showsErrorDetailsButton: Bool) {
+        guard self.style != style || self.showsErrorDetailsButton != showsErrorDetailsButton else { return }
         self.style = style
+        self.showsErrorDetailsButton = showsErrorDetailsButton
         hostingController.rootView = WebViewEmptyStateView(
             style: style,
             server: server,
+            showsErrorDetailsButton: showsErrorDetailsButton,
             availableReauthURLTypes: Self.availableReauthURLTypes(for: server),
             retryAction: retryAction,
             settingsAction: settingsAction,
+            errorDetailsAction: errorDetailsAction,
             reauthAction: reauthAction,
             recoveredServerReauthAction: recoveredServerReauthAction,
             serverSelectionAction: serverSelectionAction,

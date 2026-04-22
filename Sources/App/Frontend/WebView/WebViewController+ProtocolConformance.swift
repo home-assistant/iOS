@@ -58,6 +58,7 @@ extension WebViewController: WebViewControllerProtocol {
     func updateFrontendConnectionState(state: String) {
         emptyStateTimer?.invalidate()
         emptyStateTimer = nil
+        latestLoadError = nil
 
         let requestedState = FrontEndConnectionState(rawValue: state) ?? .unknown
         let resolvedState: FrontEndConnectionState = if connectionState == .authInvalid, requestedState != .connected {
