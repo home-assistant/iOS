@@ -112,7 +112,7 @@ public class HomeAssistantAPI {
         let hakitURLSession = URLSession(configuration: .ephemeral)
         #endif
 
-        self.connection = HAKit.connection(
+        let underlyingConnection = HAKit.connection(
             configuration: .init(
                 connectionInfo: {
                     do {
@@ -178,8 +178,10 @@ public class HomeAssistantAPI {
                     }
                 }
             ),
+            connectAutomatically: false,
             urlSession: hakitURLSession
         )
+        self.connection = RetryAwareHAConnection(underlying: underlyingConnection)
         connection.delegate = self
 
         #if !os(watchOS)
@@ -279,11 +281,35 @@ public class HomeAssistantAPI {
         }
     }
 
+    static func shouldAttemptAutomaticWebSocketConnect(for state: HAConnectionState) -> Bool {
+        switch state {
+        case .disconnected(reason: .disconnected):
+            return true
+        case .disconnected(reason: .waitingToReconnect),
+             .disconnected(reason: .rejected),
+             .connecting,
+             .authenticating,
+             .ready:
+            return false
+        }
+    }
+
+    public func connectWebSocketIfNeeded() {
+        let state = connection.state
+
+        guard Self.shouldAttemptAutomaticWebSocketConnect(for: state) else {
+            Current.Log.info("skipping automatic websocket connect while state is \(state)")
+            return
+        }
+
+        connection.connect()
+    }
+
     public func Connect(reason: ConnectReason) -> Promise<Void> {
         Current.Log.info("running connect for \(reason)")
 
         // websocket
-        connection.connect()
+        connectWebSocketIfNeeded()
 
         return firstly { () -> Promise<Void> in
             guard !Current.isAppExtension else {
@@ -1145,6 +1171,125 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
     }
 }
 #endif
+
+/// Prevents pending websocket work from resetting HAKit's reconnect backoff.
+final class RetryAwareHAConnection: HAConnection {
+    private let underlying: HAConnection
+
+    weak var delegate: HAConnectionDelegate?
+
+    var configuration: HAConnectionConfiguration {
+        get { underlying.configuration }
+        set { underlying.configuration = newValue }
+    }
+
+    var state: HAConnectionState {
+        underlying.state
+    }
+
+    var caches: HACachesContainer {
+        underlying.caches
+    }
+
+    var callbackQueue: DispatchQueue {
+        get { underlying.callbackQueue }
+        set { underlying.callbackQueue = newValue }
+    }
+
+    init(underlying: HAConnection) {
+        self.underlying = underlying
+        underlying.delegate = self
+    }
+
+    func connect() {
+        underlying.connect()
+    }
+
+    func disconnect() {
+        underlying.disconnect()
+    }
+
+    @discardableResult
+    func send(
+        _ request: HARequest,
+        completion: @escaping RequestCompletion
+    ) -> HACancellable {
+        connectIfNeeded(for: request)
+        return underlying.send(request, completion: completion)
+    }
+
+    @discardableResult
+    func send<T>(
+        _ request: HATypedRequest<T>,
+        completion: @escaping (Swift.Result<T, HAError>) -> Void
+    ) -> HACancellable {
+        connectIfNeeded(for: request.request)
+        return underlying.send(request, completion: completion)
+    }
+
+    @discardableResult
+    func subscribe(
+        to request: HARequest,
+        handler: @escaping SubscriptionHandler
+    ) -> HACancellable {
+        connectIfNeeded(for: request)
+        return underlying.subscribe(to: request, handler: handler)
+    }
+
+    @discardableResult
+    func subscribe(
+        to request: HARequest,
+        initiated: @escaping SubscriptionInitiatedHandler,
+        handler: @escaping SubscriptionHandler
+    ) -> HACancellable {
+        connectIfNeeded(for: request)
+        return underlying.subscribe(to: request, initiated: initiated, handler: handler)
+    }
+
+    @discardableResult
+    func subscribe<T>(
+        to request: HATypedSubscription<T>,
+        handler: @escaping (HACancellable, T) -> Void
+    ) -> HACancellable {
+        connectIfNeeded(for: request.request)
+        return underlying.subscribe(to: request, handler: handler)
+    }
+
+    @discardableResult
+    func subscribe<T>(
+        to request: HATypedSubscription<T>,
+        initiated: @escaping SubscriptionInitiatedHandler,
+        handler: @escaping (HACancellable, T) -> Void
+    ) -> HACancellable {
+        connectIfNeeded(for: request.request)
+        return underlying.subscribe(to: request, initiated: initiated, handler: handler)
+    }
+
+    private func connectIfNeeded(for request: HARequest) {
+        switch request.type {
+        case .rest:
+            return
+        case .webSocket, .sttData:
+            break
+        }
+
+        guard HomeAssistantAPI.shouldAttemptAutomaticWebSocketConnect(for: underlying.state) else {
+            return
+        }
+
+        underlying.connect()
+    }
+}
+
+extension RetryAwareHAConnection: HAConnectionDelegate {
+    func connection(_ connection: HAConnection, didTransitionTo state: HAConnectionState) {
+        delegate?.connection(self, didTransitionTo: state)
+        NotificationCenter.default.post(
+            name: HAConnectionState.didTransitionToStateNotification,
+            object: self
+        )
+    }
+}
 
 extension HomeAssistantAPI.APIError: LocalizedError {
     public var errorDescription: String? {
