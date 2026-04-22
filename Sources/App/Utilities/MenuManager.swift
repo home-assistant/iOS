@@ -68,7 +68,8 @@ enum StatusItemTitleRenderer {
 
         cancellable.append(api.connection.send(.init(
             type: .rest(.post, "template"),
-            data: ["template": template]
+            data: ["template": template],
+            shouldRetry: true
         )) { result in
             switch result {
             case let .success(data):
