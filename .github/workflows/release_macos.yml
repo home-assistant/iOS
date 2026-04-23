@@ -74,7 +74,8 @@ jobs:
               !Number.isInteger(expectedRunNumber)
             ) {
               core.setFailed(
-                `Invalid EXPECTED_RUN_NUMBER: "${process.env.EXPECTED_RUN_NUMBER}". The release tag must contain a numeric Distribute run number.`
+                `Invalid EXPECTED_RUN_NUMBER: "${process.env.EXPECTED_RUN_NUMBER}". ` +
+                'The release tag must contain a numeric Distribute run number.'
               );
               return;
             }
@@ -183,7 +184,10 @@ jobs:
             "${ARTIFACT_URL}" \
             --output /dev/null
 
-          artifact_download_url="$(awk 'BEGIN { IGNORECASE = 1 } /^location:/ { sub(/\r$/, "", $2); print $2; exit }' "$redirect_headers")"
+          artifact_download_url="$(
+            awk 'BEGIN { IGNORECASE = 1 } /^location:/ { sub(/\r$/, "", $2); print $2; exit }' \
+              "$redirect_headers"
+          )"
 
           if [ -z "$artifact_download_url" ]; then
             echo "Failed to resolve artifact download redirect URL"
