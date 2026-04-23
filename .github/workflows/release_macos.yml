@@ -1,0 +1,312 @@
+name: Release macOS
+
+on:
+  push:
+    tags:
+      - 'release/*/*'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: macos-release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Parse release tag
+        id: parse_tag
+        run: |
+          tag="${GITHUB_REF_NAME}"
+
+          case "$tag" in
+            release/*/*) ;;
+            *)
+              echo "Unexpected tag format: $tag"
+              exit 1
+              ;;
+          esac
+
+          version="${tag#release/}"
+          version="${version%%/*}"
+          build="${tag##*/}"
+          display_build="${build##*.}"
+
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "display_build=$display_build" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure tag points to main
+        run: |
+          git fetch origin main
+
+          if ! git branch -r --contains "$GITHUB_SHA" | grep -Eq 'origin/main$'; then
+            echo "Tag ${GITHUB_REF_NAME} does not point to a commit on origin/main"
+            exit 1
+          fi
+
+      - name: Wait for successful distribute run
+        id: find_run
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const workflowId = 'distribute.yml';
+            const headSha = context.sha;
+            const pollIntervalMs = 60 * 1000;
+            const deadline = Date.now() + (30 * 60 * 1000);
+
+            while (Date.now() < deadline) {
+              const { data } = await github.request(
+                'GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs',
+                {
+                  owner,
+                  repo,
+                  workflow_id: workflowId,
+                  head_sha: headSha,
+                  branch: 'main',
+                  event: 'push',
+                  per_page: 20,
+                }
+              );
+
+              const runs = [...data.workflow_runs].sort((lhs, rhs) =>
+                new Date(rhs.created_at) - new Date(lhs.created_at)
+              );
+              const successfulRun = runs.find((run) => run.conclusion === 'success');
+
+              if (successfulRun) {
+                core.info(
+                  `Using successful Distribute run #${successfulRun.run_number} (${successfulRun.html_url})`
+                );
+                core.setOutput('run_id', String(successfulRun.id));
+                core.setOutput('run_url', successfulRun.html_url);
+                return;
+              }
+
+              const pendingRun = runs.find((run) => run.status !== 'completed');
+              if (pendingRun) {
+                core.info(
+                  `Waiting for Distribute run #${pendingRun.run_number} (${pendingRun.status})`
+                );
+                await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+                continue;
+              }
+
+              const latestRun = runs[0];
+              if (latestRun) {
+                core.setFailed(
+                  `No successful Distribute run found for ${headSha}. Latest run concluded with ${latestRun.conclusion}.`
+                );
+                return;
+              }
+
+              core.info(`No Distribute run found for ${headSha} yet.`);
+              await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+            }
+
+            core.setFailed(
+              `Timed out waiting for a successful Distribute run for ${headSha} on main.`
+            );
+
+      - name: Resolve artifact
+        id: find_artifact
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          DISTRIBUTE_RUN_ID: ${{ steps.find_run.outputs.run_id }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const runId = Number(process.env.DISTRIBUTE_RUN_ID);
+
+            const { data } = await github.request(
+              'GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts',
+              {
+                owner,
+                repo,
+                run_id: runId,
+                per_page: 100,
+              }
+            );
+
+            const artifact = data.artifacts.find((candidate) => candidate.name === 'mac-developer-id.zip');
+
+            if (!artifact) {
+              core.setFailed(`Artifact mac-developer-id.zip was not found on run ${runId}.`);
+              return;
+            }
+
+            core.setOutput('artifact_name', artifact.name);
+            core.setOutput('artifact_url', artifact.archive_download_url);
+
+      - name: Download release asset
+        id: download_asset
+        env:
+          ARTIFACT_URL: ${{ steps.find_artifact.outputs.artifact_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p release-artifact/extracted release-assets
+
+          curl --fail --location \
+            --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "${ARTIFACT_URL}" \
+            --output release-artifact/mac-developer-id.zip
+
+          unzip -o release-artifact/mac-developer-id.zip -d release-artifact/extracted
+
+          extracted_asset_path="$(find release-artifact/extracted -type f -name 'home-assistant-mac.zip' -print -quit)"
+
+          if [ -z "$extracted_asset_path" ]; then
+            echo "Expected release asset was not found inside the artifact archive"
+            exit 1
+          fi
+
+          asset_path="release-assets/home-assistant-mac.zip"
+          cp "$extracted_asset_path" "$asset_path"
+
+          echo "asset_path=$asset_path" >> "$GITHUB_OUTPUT"
+          echo "asset_name=$(basename "$asset_path")" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update prerelease
+        id: release
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          TAG_NAME: ${{ steps.parse_tag.outputs.tag }}
+          RELEASE_NAME: ${{ steps.parse_tag.outputs.version }} (${{ steps.parse_tag.outputs.display_build }})
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const tag = process.env.TAG_NAME;
+            const releaseName = process.env.RELEASE_NAME;
+            let release;
+
+            try {
+              release = (
+                await github.request(
+                  'GET /repos/{owner}/{repo}/releases/tags/{tag}',
+                  {
+                    owner,
+                    repo,
+                    tag,
+                  }
+                )
+              ).data;
+
+              release = (
+                await github.request(
+                  'PATCH /repos/{owner}/{repo}/releases/{release_id}',
+                  {
+                    owner,
+                    repo,
+                    release_id: release.id,
+                    name: releaseName,
+                    target_commitish: context.sha,
+                    prerelease: release.prerelease,
+                  }
+                )
+              ).data;
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+
+              release = (
+                await github.request(
+                  'POST /repos/{owner}/{repo}/releases',
+                  {
+                    owner,
+                    repo,
+                    tag_name: tag,
+                    target_commitish: context.sha,
+                    name: releaseName,
+                    prerelease: true,
+                    generate_release_notes: true,
+                  }
+                )
+              ).data;
+            }
+
+            core.setOutput('release_id', String(release.id));
+            core.setOutput('release_url', release.html_url);
+            core.setOutput('upload_url', release.upload_url);
+
+      - name: Upload macOS asset
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          ASSET_PATH: ${{ steps.download_asset.outputs.asset_path }}
+          ASSET_NAME: ${{ steps.download_asset.outputs.asset_name }}
+          RELEASE_ID: ${{ steps.release.outputs.release_id }}
+          UPLOAD_URL: ${{ steps.release.outputs.upload_url }}
+        with:
+          script: |
+            const fs = require('fs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const releaseId = Number(process.env.RELEASE_ID);
+            const assetPath = process.env.ASSET_PATH;
+            const assetName = process.env.ASSET_NAME;
+            const uploadUrl = process.env.UPLOAD_URL.replace(
+              '{?name,label}',
+              `?name=${encodeURIComponent(assetName)}`
+            );
+            const data = fs.readFileSync(assetPath);
+
+            const { data: assets } = await github.request(
+              'GET /repos/{owner}/{repo}/releases/{release_id}/assets',
+              {
+                owner,
+                repo,
+                release_id: releaseId,
+                per_page: 100,
+              }
+            );
+
+            const existingAsset = assets.find((asset) => asset.name === assetName);
+            if (existingAsset) {
+              await github.request(
+                'DELETE /repos/{owner}/{repo}/releases/assets/{asset_id}',
+                {
+                  owner,
+                  repo,
+                  asset_id: existingAsset.id,
+                }
+              );
+            }
+
+            await github.request({
+              method: 'POST',
+              url: uploadUrl,
+              headers: {
+                'content-type': 'application/zip',
+                'content-length': data.length,
+              },
+              data,
+            });
+
+      - name: Write summary
+        env:
+          VERSION: ${{ steps.parse_tag.outputs.version }}
+          DISPLAY_BUILD: ${{ steps.parse_tag.outputs.display_build }}
+          DISTRIBUTE_RUN_URL: ${{ steps.find_run.outputs.run_url }}
+          RELEASE_URL: ${{ steps.release.outputs.release_url }}
+        run: |
+          {
+            echo "## macOS release created"
+            echo
+            echo "- Version: ${VERSION} (${DISPLAY_BUILD})"
+            echo "- Distribution run: ${DISTRIBUTE_RUN_URL}"
+            echo "- Release: ${RELEASE_URL}"
+          } >> "$GITHUB_STEP_SUMMARY"
