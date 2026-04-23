@@ -507,11 +507,8 @@
 "live_activity.end_all.button" = "Tüm Etkinlikleri Sonlandır";
 "live_activity.end_all.confirm.button" = "Tümünü Sonlandır";
 "live_activity.end_all.confirm.title" = "Tüm canlı etkinlikleri sonlandırılsın mı?";
-"live_activity.frequent_updates.footer" = "Home Assistant'ın Canlı Etkinlikleri saniyede bir kez güncellemesine olanak tanır. Ayarlar'dan etkinleştirin. \u203A %@ \u203A Canlı Etkinlikler.";
 "live_activity.frequent_updates.title" = "Sık Güncellemeler";
-"live_activity.privacy.message" = "Canlı Etkinlik içeriği, Face ID veya Touch ID olmadan da Kilit Ekranınızda ve Dinamik Ada'da görünür. Ne göstereceğinizi dikkatlice seçin.";
 "live_activity.section.active" = "Aktif Etkinlikler";
-"live_activity.section.privacy" = "Gizlilik";
 "live_activity.section.status" = "Durum";
 "live_activity.status.enabled" = "Etkin";
 "live_activity.status.not_supported" = "iPad'de mevcut değil";

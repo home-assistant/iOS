@@ -507,11 +507,8 @@
 "live_activity.end_all.button" = "Lõpeta kõik tegevused";
 "live_activity.end_all.confirm.button" = "Lõpeta kõik";
 "live_activity.end_all.confirm.title" = "Kas lõpetada kõik Live Activity tegevused?";
-"live_activity.frequent_updates.footer" = "Lubab Home Assistantil reaalajas tegevusi kuni üks kord sekundis värskendada. Luba seadetes. \u203A %@ \u203A Otseülekanded.";
 "live_activity.frequent_updates.title" = "Sagedased uuendused";
-"live_activity.privacy.message" = "Live Activity sisu on nähtav lukustusekraanil ja dünaamilisel saarel ilma Face ID või Touch ID-ta. Vali hoolikalt, mida kuvada.";
 "live_activity.section.active" = "Aktiivsed tegevused";
-"live_activity.section.privacy" = "Privaatsus";
 "live_activity.section.status" = "Olek";
 "live_activity.status.enabled" = "Lubatud";
 "live_activity.status.not_supported" = "Pole iPadis saadaval";

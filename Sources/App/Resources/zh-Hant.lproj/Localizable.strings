@@ -507,11 +507,8 @@
 "live_activity.end_all.button" = "結束所有即時動態";
 "live_activity.end_all.confirm.button" = "全部結束";
 "live_activity.end_all.confirm.title" = "結束所有即時動態？";
-"live_activity.frequent_updates.footer" = "允許 Home Assistant 每秒更新一次即時動態。於設定中開啟 \u203A %@ \u203A 即時動態。";
 "live_activity.frequent_updates.title" = "頻繁更新";
-"live_activity.privacy.message" = "即使沒有 Face ID 或 Touch ID，也可以在鎖定畫面和動態島上查看即時動態內容。請謹慎選擇要顯示的內容。";
 "live_activity.section.active" = "啟用動態";
-"live_activity.section.privacy" = "隱私權";
 "live_activity.section.status" = "狀態";
 "live_activity.status.enabled" = "已開啟";
 "live_activity.status.not_supported" = "iPad 版暫不可用";

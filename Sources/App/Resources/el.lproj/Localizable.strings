@@ -507,11 +507,8 @@
 "live_activity.end_all.button" = "Τερματισμός όλων των δραστηριοτήτων";
 "live_activity.end_all.confirm.button" = "Τερματισμός όλων";
 "live_activity.end_all.confirm.title" = "Τερματισμός όλων των ζωντανών δραστηριοτήτων;";
-"live_activity.frequent_updates.footer" = "Επιτρέπει στο Home Assistant να ενημερώνει τις Ζωντανές Δραστηριότητες έως και μία φορά ανά δευτερόλεπτο. Ενεργοποίηση στις Ρυθμίσεις \u203A %@ \u203A Ζωντανές Δραστηριότητες.";
 "live_activity.frequent_updates.title" = "Συχνές ενημερώσεις";
-"live_activity.privacy.message" = "Το περιεχόμενο της Ζωντανής Δραστηριότητας είναι ορατό στην Οθόνη Κλειδώματος και στο Dynamic Island χωρίς Face ID ή Touch ID. Επιλέξτε προσεκτικά τι θα εμφανίσετε.";
 "live_activity.section.active" = "Ενεργές δραστηριότητες";
-"live_activity.section.privacy" = "Απόρρητο";
 "live_activity.section.status" = "Κατάσταση";
 "live_activity.status.enabled" = "Ενεργό";
 "live_activity.status.not_supported" = "Δεν είναι διαθέσιμο σε iPad";

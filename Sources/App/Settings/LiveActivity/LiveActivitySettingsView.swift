@@ -27,7 +27,6 @@ struct LiveActivitySettingsView: View {
             )
 
             statusSection
-            frequentUpdatesSection
 
             if activities.isEmpty {
                 Section(L10n.LiveActivity.Section.active) {
@@ -63,7 +62,6 @@ struct LiveActivitySettingsView: View {
                 }
             }
 
-            privacySection
             samplesSection
         }
         .navigationTitle(L10n.LiveActivity.title)
@@ -73,7 +71,7 @@ struct LiveActivitySettingsView: View {
     // MARK: - Sections
 
     private var statusSection: some View {
-        Section(L10n.LiveActivity.Section.status) {
+        Section {
             HStack {
                 Label(L10n.LiveActivity.title, systemSymbol: .livephoto)
                 Spacer()
@@ -92,6 +90,24 @@ struct LiveActivitySettingsView: View {
                     .foregroundStyle(.orange)
                 }
             }
+
+            HStack {
+                Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .bolt)
+                Spacer()
+                if frequentUpdatesEnabled {
+                    Text(L10n.LiveActivity.Status.enabled)
+                        .foregroundStyle(.green)
+                } else {
+                    Button(L10n.LiveActivity.Status.openSettings) {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text(L10n.LiveActivity.Section.status)
         }
     }
 
@@ -567,50 +583,12 @@ struct LiveActivitySettingsView: View {
         )
     }
 
-    private var privacySection: some View {
-        Section {
-            Label(L10n.LiveActivity.Privacy.message, systemSymbol: .lockShield)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-        } header: {
-            Text(L10n.LiveActivity.Section.privacy)
-        }
-    }
-
-    @available(iOS 17.2, *)
-    private var frequentUpdatesSection: some View {
-        let appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Home Assistant"
-        return Section {
-            HStack {
-                Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .bolt)
-                Spacer()
-                if frequentUpdatesEnabled {
-                    Text(L10n.LiveActivity.Status.enabled)
-                        .foregroundStyle(.green)
-                } else {
-                    Button(L10n.LiveActivity.Status.openSettings) {
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(url)
-                        }
-                    }
-                    .foregroundStyle(.secondary)
-                }
-            }
-        } header: {
-            Text(L10n.LiveActivity.FrequentUpdates.title)
-        } footer: {
-            Text(L10n.LiveActivity.FrequentUpdates.footer(appName))
-        }
-    }
-
     // MARK: - Data
 
     private func loadActivities() async {
         let info = ActivityAuthorizationInfo()
         authorizationEnabled = info.areActivitiesEnabled
-        if #available(iOS 17.2, *) {
-            frequentUpdatesEnabled = info.frequentPushesEnabled
-        }
+        frequentUpdatesEnabled = info.frequentPushesEnabled
 
         activities = Activity<HALiveActivityAttributes>.activities.map {
             ActivitySnapshot(activity: $0)

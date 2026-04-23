@@ -507,11 +507,8 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "live_activity.end_all.button" = "Alle activiteiten beëindigen";
 "live_activity.end_all.confirm.button" = "Alles beëindigen";
 "live_activity.end_all.confirm.title" = "Alle live activiteiten beëindigen?";
-"live_activity.frequent_updates.footer" = "Hiermee kan Home Assistant Live Activiteiten tot één keer per seconde bijwerken. Schakel dit in via Instellingen \u203A %@ \u203A Live activiteiten.";
 "live_activity.frequent_updates.title" = "Regelmatig bijwerken";
-"live_activity.privacy.message" = "Live activiteit-inhoud is zichtbaar op je vergrendelscherm en Dynamic Island zonder Face ID of Touch ID. Bedenk goed wat je wilt laten zien.";
 "live_activity.section.active" = "Actieve activiteiten";
-"live_activity.section.privacy" = "Privacy";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Ingeschakeld";
 "live_activity.status.not_supported" = "Niet beschikbaar op iPad";

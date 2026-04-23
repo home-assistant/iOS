@@ -1888,22 +1888,12 @@ public enum L10n {
       }
     }
     public enum FrequentUpdates {
-      /// Allows Home Assistant to update Live Activities up to once per second. Enable in Settings u203A %@ u203A Live Activities.
-      public static func footer(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "live_activity.frequent_updates.footer", String(describing: p1))
-      }
       /// Frequent Updates
       public static var title: String { return L10n.tr("Localizable", "live_activity.frequent_updates.title") }
-    }
-    public enum Privacy {
-      /// Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.
-      public static var message: String { return L10n.tr("Localizable", "live_activity.privacy.message") }
     }
     public enum Section {
       /// Active Activities
       public static var active: String { return L10n.tr("Localizable", "live_activity.section.active") }
-      /// Privacy
-      public static var privacy: String { return L10n.tr("Localizable", "live_activity.section.privacy") }
       /// Status
       public static var status: String { return L10n.tr("Localizable", "live_activity.section.status") }
     }
