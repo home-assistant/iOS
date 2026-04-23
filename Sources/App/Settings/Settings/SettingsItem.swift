@@ -149,22 +149,30 @@ enum SettingsItem: String, Hashable, CaseIterable {
         allCases.filter { item in
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
-            if item == .servers || item == .gestures || item == .kiosk || item == .watch || item == .carPlay ||
-                item == .complications || item == .nfc || item == .help ||
-                item == .whatsNew {
+            let hiddenItems: [SettingsItem] = [
+                .servers,
+                .gestures,
+                .kiosk,
+                .watch,
+                .carPlay,
+                .complications,
+                .nfc,
+                .help,
+                .whatsNew,
+                .liveActivities,
+            ]
+
+            if hiddenItems.contains(item) {
                 return false
             }
             #endif
-            // Live Activities are shown in DebugView
-            if item == .liveActivities {
-                return false
-            }
+
             return true
         }
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .location, .notifications, .kiosk]
+        [.general, .gestures, .location, .notifications, .kiosk, .liveActivities]
     }
 
     static var integrationItems: [SettingsItem] {
