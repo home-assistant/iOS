@@ -70,7 +70,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     func didRegisterForRemoteNotifications(deviceToken: Data) {
         let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
+        Current.Log.info("Successfully registered for push notifications")
         Current.crashReporter.setUserProperty(value: apnsToken, name: "APNS Token")
 
         var tokenType: MessagingAPNSTokenType = .prod
@@ -357,10 +357,10 @@ extension NotificationManager: MessagingDelegate {
         let loggableCurrent = Current.settingsStore.pushID ?? "(null)"
         let loggableNew = fcmToken ?? "(null)"
 
-        Current.Log.info("Firebase registration token refreshed, new token: \(loggableNew)")
+        Current.Log.info("Firebase registration token refreshed")
 
         if loggableCurrent != loggableNew {
-            Current.Log.warning("FCM token has changed from \(loggableCurrent) to \(loggableNew)")
+            Current.Log.warning("FCM token has changed")
         }
 
         Current.crashReporter.setUserProperty(value: fcmToken, name: "FCM Token")

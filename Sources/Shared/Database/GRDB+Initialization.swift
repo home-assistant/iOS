@@ -8,9 +8,6 @@ public extension DatabaseQueue {
         let database: DatabaseQueue
         do {
             database = try DatabaseQueue(path: databasePath())
-            #if targetEnvironment(simulator)
-            print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
-            #endif
         } catch {
             Current.Log.error("Failed to initialize GRDB, error: \(error.localizedDescription)")
             // Fallback to in-memory database so extensions don't crash

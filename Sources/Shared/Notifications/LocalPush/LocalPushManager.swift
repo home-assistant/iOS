@@ -134,7 +134,7 @@ public class LocalPushManager {
         subscription?.cancel()
 
         guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available to update subscription")
+            Current.Log.verbose("Skipping local push subscription update until API is available")
             return
         }
 

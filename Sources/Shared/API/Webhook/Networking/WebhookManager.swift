@@ -35,6 +35,10 @@ enum WebhookError: LocalizedError, Equatable, CancellableError {
 }
 
 public class WebhookManager: NSObject {
+    private static func requestLogDescription(_ request: WebhookRequest) -> String {
+        request.type
+    }
+
     public static func isManager(forSessionIdentifier identifier: String) -> Bool {
         identifier.starts(with: baseURLSessionIdentifier)
     }
@@ -224,7 +228,7 @@ public class WebhookManager: NSObject {
                 firstly {
                     Self.urlRequest(for: request, server: server, baseURL: overrideURL)
                 }.get { _, _ in
-                    Current.Log.info("sending to \(server.identifier): \(request)")
+                    Current.Log.info("sending \(Self.requestLogDescription(request)) to \(server.identifier)")
                 }.then(on: dataQueue) { [self] urlRequest, data -> Promise<(Data, URLResponse)> in
                     let (promise, seal) = Promise<(Data, URLResponse)>.pending()
                     let task = currentRegularSessionInfo.session.uploadTask(
@@ -265,8 +269,8 @@ public class WebhookManager: NSObject {
             }
         }.tap { [weak self] result in
             switch result {
-            case let .fulfilled(response):
-                Current.Log.info("got successful response from \(server.identifier) for \(request.type): \(response)")
+            case .fulfilled:
+                Current.Log.info("got successful response from \(server.identifier) for \(request.type)")
             case let .rejected(error):
                 Current.Log.error("got failure from \(server.identifier) for \(request.type): \(error)")
 
@@ -556,7 +560,9 @@ public class WebhookManager: NSObject {
             let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
 
             // httpBody is ignored by URLSession but is made available in tests
-            urlRequest.httpBody = data
+            if Current.isRunningTests {
+                urlRequest.httpBody = data
+            }
 
             seal.fulfill((urlRequest, data))
         }

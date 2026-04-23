@@ -198,6 +198,11 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         do {
             try FileManager.default.removeItem(at: widgetsCacheFile)
         } catch {
+            let nsError = error as NSError
+            if nsError.domain == NSCocoaErrorDomain, nsError.code == NSFileNoSuchFileError {
+                return
+            }
+
             Current.Log.error("Failed to remove widgets cache file: \(error)")
         }
     }

@@ -37,7 +37,11 @@ private var underlyingCurrent = AppEnvironment()
 private enum HAKitLogging {
     static let hiddenConsoleTag = "hakit-console-noise"
     private static let hiddenConsolePrefixes = [
-        "Received: event:"
+        "Received: event:",
+        "Received: result success",
+        "Sending: (auth)",
+        "Sending: HARequestIdentifier(",
+        "Sending: {"
     ]
 
     static func userInfo(for level: HAGlobal.LogLevel, message: String) -> [String: Any] {
@@ -54,6 +58,191 @@ private enum HAKitLogging {
         }
 
         return hiddenConsolePrefixes.contains { message.hasPrefix($0) }
+    }
+}
+
+private final class ConsoleNoiseFilter: FilterProtocol {
+    private struct Rule {
+        let fileName: String?
+        let internalOnly: Bool
+        let prefixes: [String]
+        let substrings: [String]
+
+        init(
+            fileName: String? = nil,
+            internalOnly: Bool = false,
+            prefixes: [String] = [],
+            substrings: [String] = []
+        ) {
+            self.fileName = fileName
+            self.internalOnly = internalOnly
+            self.prefixes = prefixes
+            self.substrings = substrings
+        }
+    }
+
+    private static let rules: [Rule] = [
+        .init(
+            internalOnly: true,
+            prefixes: [
+                "XCGLogger appending log to:",
+                "Home Assistant ",
+                "XCGLogger Version:"
+            ]
+        ),
+        .init(
+            fileName: "Realm+Initialization.swift",
+            prefixes: [
+                "Realm is stored at ",
+                "Current schema version ",
+                "Schema version defined: "
+            ]
+        ),
+        .init(
+            fileName: "GRDB+Initialization.swift",
+            prefixes: [
+                "Failed or not needed delete client event GRDB info"
+            ]
+        ),
+        .init(
+            fileName: "ClientEventStore.swift",
+            prefixes: [
+                "Adding event:",
+                "JSON saved successfully for client events"
+            ]
+        ),
+        .init(
+            fileName: "SettingsStore.swift",
+            prefixes: [
+                "disregarding zoom preference for "
+            ]
+        ),
+        .init(
+            fileName: "ThemeColors.swift",
+            prefixes: [
+                "loaded cached colors ",
+                "caching color values "
+            ]
+        ),
+        .init(
+            fileName: "PanelsUpdater.swift",
+            prefixes: [
+                "Updating panels, servers count "
+            ]
+        ),
+        .init(
+            fileName: "HAAPI.swift",
+            prefixes: [
+                "[mTLS] Creating HAKit URLSession for server:",
+                "[mTLS] Has client certificate:",
+                "[mTLS] Has security exceptions:",
+                "[mTLS] Using default URLSession for HAKit"
+            ]
+        ),
+        .init(
+            fileName: "AppDelegate.swift",
+            prefixes: [
+                "No need to reset local push, migration already done"
+            ]
+        ),
+        .init(
+            fileName: "KioskSettings.swift",
+            prefixes: [
+                "No saved kiosk settings found in GRDB, using defaults"
+            ]
+        ),
+        .init(
+            fileName: "KioskModeManager.swift",
+            prefixes: [
+                "KioskModeManager initialized"
+            ]
+        ),
+        .init(
+            fileName: "WatchHelpers.swift",
+            prefixes: [
+                "Skipping watch context sync because the watch app is not available"
+            ]
+        ),
+        .init(
+            fileName: "NotificationManager.swift",
+            prefixes: [
+                "Calling UIApplication.shared.registerForRemoteNotifications()"
+            ]
+        ),
+        .init(
+            fileName: "WebhookManager.swift",
+            prefixes: [
+                "sending ",
+                "got successful response from "
+            ]
+        ),
+        .init(
+            fileName: "LiveActivityRegistry.swift",
+            prefixes: [
+                "LiveActivityRegistry: new push-to-start token"
+            ]
+        ),
+        .init(
+            fileName: "AppDatabaseUpdater.swift",
+            prefixes: [
+                "Processing queued update for server:",
+                "Updating database for server "
+            ],
+            substrings: [
+                "[Profiling]"
+            ]
+        ),
+        .init(
+            fileName: "WebViewController+Settings.swift",
+            prefixes: [
+                "updating web view settings for ",
+                "setting view scale to "
+            ]
+        ),
+        .init(
+            fileName: "WebViewController+URLLoading.swift",
+            prefixes: [
+                "loadActiveURLIfNeeded called",
+                "loadActiveURLIfNeeded already in progress, skipping",
+                "restoring initial url path: "
+            ]
+        ),
+        .init(
+            fileName: "WebViewScriptMessageHandler.swift",
+            prefixes: [
+                "message ",
+                "getExternalAuth called",
+                "Success on getExternalAuth callback:"
+            ]
+        ),
+        .init(
+            fileName: "WebViewExternalMessageHandler.swift",
+            prefixes: [
+                "sending {"
+            ]
+        ),
+    ]
+
+    func shouldExclude(logDetails: inout LogDetails, message: inout String) -> Bool {
+        let fileName = (logDetails.fileName as NSString).lastPathComponent
+
+        return Self.rules.contains { rule in
+            if let ruleFileName = rule.fileName, ruleFileName != fileName {
+                return false
+            }
+
+            if rule.internalOnly,
+               (logDetails.userInfo[XCGLogger.Constants.userInfoKeyInternal] as? Bool) != true {
+                return false
+            }
+
+            return rule.prefixes.contains(where: logDetails.message.hasPrefix)
+                || rule.substrings.contains(where: logDetails.message.contains)
+        }
+    }
+
+    var debugDescription: String {
+        "ConsoleNoiseFilter"
     }
 }
 
@@ -77,6 +266,10 @@ public var Current: AppEnvironment {
 /// unit tests.
 public class AppEnvironment {
     init() {
+        #if targetEnvironment(simulator)
+        setenv("REALM_DISABLE_UPDATE_CHECKER", "1", 1)
+        #endif
+
         PromiseKit.conf.logHandler = { event in
             Current.Log.info {
                 switch event {
@@ -192,7 +385,15 @@ public class AppEnvironment {
     public var setScreenBrightness: (CGFloat) -> Void = { UIScreen.main.brightness = $0 }
 
     public lazy var isForegroundApp = {
-        self.application?().applicationState == .active
+        let isForeground = {
+            self.application?().applicationState == .active
+        }
+
+        if Thread.isMainThread {
+            return isForeground()
+        } else {
+            return DispatchQueue.main.sync(execute: isForeground)
+        }
     }
     #endif
 
@@ -329,7 +530,6 @@ public class AppEnvironment {
     /// Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = {
         #if DEBUG
-        print("⚠️ isTestFlight returns TRUE while debugging")
         return true
         #else
         return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
@@ -425,7 +625,10 @@ public class AppEnvironment {
             $0.showLineNumber = true
             $0.showDate = true
             // Keep repetitive websocket event receipts in the archived logs without spamming the debugger console.
-            $0.filters = [TagFilter(excludeFrom: [HAKitLogging.hiddenConsoleTag])]
+            $0.filters = [
+                TagFilter(excludeFrom: [HAKitLogging.hiddenConsoleTag]),
+                ConsoleNoiseFilter(),
+            ]
         })
         #endif
 

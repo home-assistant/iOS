@@ -115,6 +115,10 @@ public class ConnectivityWrapper {
         #if targetEnvironment(macCatalyst)
         // macOS uses macBridge to retrieve network information
         completion?()
+        #elseif targetEnvironment(simulator)
+        self.currentWiFiSSID = { "Simulator" }
+        self.currentWiFiBSSID = { nil }
+        completion?()
         #else
         NEHotspotNetwork.fetchCurrent { hotspotNetwork in
             Current.Log
@@ -123,9 +127,6 @@ public class ConnectivityWrapper {
                 )
             let ssid = hotspotNetwork?.ssid
             self.currentWiFiSSID = {
-                #if targetEnvironment(simulator)
-                return "Simulator"
-                #endif
                 return ssid
             }
             let bssid = hotspotNetwork?.bssid

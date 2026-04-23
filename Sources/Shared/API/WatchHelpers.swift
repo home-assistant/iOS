@@ -56,7 +56,7 @@ public extension HomeAssistantAPI {
     static func SyncWatchContext() -> NSError? {
         #if os(iOS)
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
-            Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
+            Current.Log.verbose("Skipping watch context sync because the watch app is not available")
             return nil
         }
         #endif
