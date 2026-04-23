@@ -39,11 +39,13 @@ jobs:
           version="${version%%/*}"
           build="${tag##*/}"
           display_build="${build##*.}"
+          run_number="${display_build}"
 
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "display_build=$display_build" >> "$GITHUB_OUTPUT"
+          echo "run_number=$run_number" >> "$GITHUB_OUTPUT"
 
       - name: Ensure tag points to main
         run: |
@@ -57,12 +59,15 @@ jobs:
       - name: Wait for successful distribute run
         id: find_run
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          EXPECTED_RUN_NUMBER: ${{ steps.parse_tag.outputs.run_number }}
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const workflowId = 'distribute.yml';
             const headSha = context.sha;
+            const expectedRunNumber = Number(process.env.EXPECTED_RUN_NUMBER);
             const pollIntervalMs = 60 * 1000;
             const deadline = Date.now() + (30 * 60 * 1000);
 
@@ -83,40 +88,40 @@ jobs:
               const runs = [...data.workflow_runs].sort((lhs, rhs) =>
                 new Date(rhs.created_at) - new Date(lhs.created_at)
               );
-              const successfulRun = runs.find((run) => run.conclusion === 'success');
+              const matchingRun = runs.find((run) => run.run_number === expectedRunNumber);
 
-              if (successfulRun) {
+              if (matchingRun?.conclusion === 'success') {
                 core.info(
-                  `Using successful Distribute run #${successfulRun.run_number} (${successfulRun.html_url})`
+                  `Using successful Distribute run #${matchingRun.run_number} (${matchingRun.html_url})`
                 );
-                core.setOutput('run_id', String(successfulRun.id));
-                core.setOutput('run_url', successfulRun.html_url);
+                core.setOutput('run_id', String(matchingRun.id));
+                core.setOutput('run_url', matchingRun.html_url);
                 return;
               }
 
-              const pendingRun = runs.find((run) => run.status !== 'completed');
-              if (pendingRun) {
+              if (matchingRun && matchingRun.status !== 'completed') {
                 core.info(
-                  `Waiting for Distribute run #${pendingRun.run_number} (${pendingRun.status})`
+                  `Waiting for Distribute run #${matchingRun.run_number} (${matchingRun.status})`
                 );
                 await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
                 continue;
               }
 
-              const latestRun = runs[0];
-              if (latestRun) {
+              if (matchingRun) {
                 core.setFailed(
-                  `No successful Distribute run found for ${headSha}. Latest run concluded with ${latestRun.conclusion}.`
+                  `Distribute run #${matchingRun.run_number} for ${headSha} concluded with ${matchingRun.conclusion}.`
                 );
                 return;
               }
 
-              core.info(`No Distribute run found for ${headSha} yet.`);
+              core.info(
+                `No Distribute run #${expectedRunNumber} found for ${headSha} yet.`
+              );
               await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
             }
 
             core.setFailed(
-              `Timed out waiting for a successful Distribute run for ${headSha} on main.`
+              `Timed out waiting for successful Distribute run #${expectedRunNumber} for ${headSha} on main.`
             );
 
       - name: Resolve artifact
