@@ -40,18 +40,22 @@ jobs:
           build="${tag##*/}"
           display_build="${build##*.}"
           run_number="${display_build}"
+          commit_sha="$(git rev-parse "${tag}^{commit}")"
 
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "display_build=$display_build" >> "$GITHUB_OUTPUT"
           echo "run_number=$run_number" >> "$GITHUB_OUTPUT"
+          echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
 
       - name: Ensure tag points to main
+        env:
+          TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
         run: |
           git fetch origin main
 
-          if ! git branch -r --contains "$GITHUB_SHA" | grep -Eq 'origin/main$'; then
+          if ! git branch -r --contains "$TARGET_COMMIT_SHA" | grep -Eq 'origin/main$'; then
             echo "Tag ${GITHUB_REF_NAME} does not point to a commit on origin/main"
             exit 1
           fi
@@ -61,12 +65,13 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
           EXPECTED_RUN_NUMBER: ${{ steps.parse_tag.outputs.run_number }}
+          TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const workflowId = 'distribute.yml';
-            const headSha = context.sha;
+            const headSha = process.env.TARGET_COMMIT_SHA;
             const expectedRunNumber = Number(process.env.EXPECTED_RUN_NUMBER);
 
             if (
@@ -92,7 +97,6 @@ jobs:
                   workflow_id: workflowId,
                   head_sha: headSha,
                   branch: 'main',
-                  event: 'push',
                   per_page: 20,
                 }
               );
@@ -219,12 +223,14 @@ jobs:
         env:
           TAG_NAME: ${{ steps.parse_tag.outputs.tag }}
           RELEASE_NAME: ${{ steps.parse_tag.outputs.version }} (${{ steps.parse_tag.outputs.display_build }})
+          TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const tag = process.env.TAG_NAME;
             const releaseName = process.env.RELEASE_NAME;
+            const targetCommitish = process.env.TARGET_COMMIT_SHA;
             let release;
 
             try {
@@ -247,7 +253,7 @@ jobs:
                     repo,
                     release_id: release.id,
                     name: releaseName,
-                    target_commitish: context.sha,
+                    target_commitish: targetCommitish,
                     // Preserve the current prerelease flag so reruns don't undo a manual promotion.
                     prerelease: release.prerelease,
                   }
@@ -265,7 +271,7 @@ jobs:
                     owner,
                     repo,
                     tag_name: tag,
-                    target_commitish: context.sha,
+                    target_commitish: targetCommitish,
                     name: releaseName,
                     prerelease: true,
                     generate_release_notes: true,
