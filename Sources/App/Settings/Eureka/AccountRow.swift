@@ -1,8 +1,5 @@
-import Alamofire
 import Eureka
 import Foundation
-import HAKit
-import PromiseKit
 import Shared
 
 enum AccountRowValue: Equatable, CustomStringConvertible {
@@ -134,44 +131,13 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
         self.cellStyle = .subtitle
     }
 
-    deinit {
-        accountSubscription?.cancel()
-        avatarSubscription?.cancel()
-    }
-
     fileprivate var cachedImage: UIImage?
     fileprivate var cachedUserName: String?
-    private var accountSubscription: HACancellable? {
-        didSet {
-            oldValue?.cancel()
-        }
-    }
-
-    private var avatarSubscription: HACancellable? {
-        didSet {
-            oldValue?.cancel()
-        }
-    }
 
     override var value: Cell.Value? {
         didSet {
             if value != oldValue {
                 fetchAvatar()
-            }
-        }
-    }
-
-    enum FetchAvatarError: Error, CancellableError {
-        case missingPerson
-        case missingURLForUserEntityPicture
-        case alreadySet
-        case couldntDecode
-
-        var isCancelled: Bool {
-            if self == .alreadySet {
-                return true
-            } else {
-                return false
             }
         }
     }
@@ -189,59 +155,27 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
-        accountSubscription = api.connection.caches.user.once { [weak self] user in
+        cachedImage = nil
+        cachedUserName = nil
+        updateCell()
+
+        api.currentUser { [weak self] user in
             guard let self else { return }
-            Current.Log.verbose("got user from user \(user)")
-            cachedUserName = user.name
+            guard value?.server?.identifier == server.identifier else { return }
+
+            cachedUserName = user?.name
             updateCell()
 
-            var lastTask: Request? {
-                didSet {
-                    oldValue?.cancel()
-                    lastTask?.resume()
-                }
+            guard let user else {
+                return
             }
 
-            avatarSubscription = api.connection.caches.states().once { [weak self] states in
-                firstly { () -> Guarantee<Set<HAEntity>> in
-                    Guarantee.value(states.all)
-                }.map { states throws -> HAEntity in
-                    if let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) {
-                        return person
-                    } else {
-                        throw FetchAvatarError.missingPerson
-                    }
-                }.map { entity -> String in
-                    if let urlString = entity.attributes["entity_picture"] as? String {
-                        return urlString
-                    } else {
-                        throw FetchAvatarError.missingURLForUserEntityPicture
-                    }
-                }.map { path throws -> URL in
-                    guard let url = server.info.connection.activeURL()?.appendingPathComponent(path) else {
-                        throw ServerConnectionError.noActiveURL(server.info.name)
-                    }
-                    if let lastTask, lastTask.error == nil, lastTask.request?.url == url {
-                        throw FetchAvatarError.alreadySet
-                    }
-                    return url
-                }.then { url -> Promise<Data> in
-                    Promise<Data> { seal in
-                        lastTask = api.manager.download(url).validate().responseData { result in
-                            seal.resolve(result.result)
-                        }
-                    }
-                }.map { data throws -> UIImage in
-                    if let image = UIImage(data: data) {
-                        return image
-                    } else {
-                        throw FetchAvatarError.couldntDecode
-                    }
-                }.done { [weak self] image in
-                    Current.Log.verbose("got image \(image.size)")
-                    self?.cachedImage = image
-                    self?.updateCell()
-                }.cauterize()
+            api.profilePicture(for: user) { [weak self] image in
+                guard let self else { return }
+                guard value?.server?.identifier == server.identifier else { return }
+
+                cachedImage = image
+                updateCell()
             }
         }
     }

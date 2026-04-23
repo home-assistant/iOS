@@ -124,6 +124,11 @@ final class ConnectionSettingsViewModel: ObservableObject {
         updateFromServerInfo(server.info)
         updateURLs()
         clientCertificate = server.info.connection.clientCertificate
+        Current.api(for: server)?.currentUser { [weak self] user in
+            Task { @MainActor [weak self] in
+                self?.loggedInUser = user?.name ?? ""
+            }
+        }
     }
 
     private func updateFromServerInfo(_ info: ServerInfo) {

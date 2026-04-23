@@ -1069,15 +1069,22 @@ public class HomeAssistantAPI {
     }
     #endif
 
-    public func profilePictureURL(completion: @escaping (URL?) -> Void) {
-        connection.caches.user.once { [weak self] user in
-            guard let self else {
-                Current.Log.error("Failed to retrieve profile picture URL: self is nil")
+    public func currentUser(completion: @escaping (HAResponseCurrentUser?) -> Void) {
+        connection.send(HATypedRequest<HAResponseCurrentUser>.fetchCurrentUser()) { result in
+            switch result {
+            case let .success(user):
+                completion(user)
+            case let .failure(error):
+                Current.Log.error("Failed to retrieve current user: \(error)")
                 completion(nil)
-                return
             }
-            connection.caches.states().once { [weak self] states in
-                let states = states.all
+        }
+    }
+
+    public func profilePictureURL(for user: HAResponseCurrentUser, completion: @escaping (URL?) -> Void) {
+        connection.send(HATypedRequest<[HAEntity]>.fetchStates()) { [weak self] result in
+            switch result {
+            case let .success(states):
                 guard let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) else {
                     Current.Log.error("Profile picture: No person found for user \(user.id)")
                     completion(nil)
@@ -1090,19 +1097,33 @@ public class HomeAssistantAPI {
                     return
                 }
 
-                guard let url = self?.server.info.connection.activeURL()?.appendingPathComponent(path) else {
+                guard let url = self?.resolvedProfilePictureURL(from: path) else {
                     Current.Log.error("Profile picture: Missing active URL for user entity picture, user id \(user.id)")
                     completion(nil)
                     return
                 }
 
                 completion(url)
+            case let .failure(error):
+                Current.Log.error("Failed to retrieve states for profile picture: \(error)")
+                completion(nil)
             }
         }
     }
 
-    public func profilePicture(completion: @escaping (UIImage?) -> Void) {
-        profilePictureURL { [weak self] url in
+    public func profilePictureURL(completion: @escaping (URL?) -> Void) {
+        currentUser { [weak self] user in
+            guard let self, let user else {
+                completion(nil)
+                return
+            }
+
+            profilePictureURL(for: user, completion: completion)
+        }
+    }
+
+    public func profilePicture(for user: HAResponseCurrentUser, completion: @escaping (UIImage?) -> Void) {
+        profilePictureURL(for: user) { [weak self] url in
             guard let self, let url else {
                 completion(nil)
                 return
@@ -1118,6 +1139,25 @@ public class HomeAssistantAPI {
                 }
             }
         }
+    }
+
+    public func profilePicture(completion: @escaping (UIImage?) -> Void) {
+        currentUser { [weak self] user in
+            guard let self, let user else {
+                completion(nil)
+                return
+            }
+
+            profilePicture(for: user, completion: completion)
+        }
+    }
+
+    private func resolvedProfilePictureURL(from path: String) -> URL? {
+        guard let activeURL = server.info.connection.activeURL() else {
+            return nil
+        }
+
+        return URL(string: path, relativeTo: activeURL)?.absoluteURL
     }
 }
 
