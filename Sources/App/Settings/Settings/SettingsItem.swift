@@ -133,7 +133,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .complications:
             SettingsComplicationsView()
         case .actions:
-            SettingsActionsView()
+            ActionsSettingsView()
         case .help:
             EmptyView()
         case .privacy:
@@ -230,11 +230,3 @@ struct SettingsComplicationsView: View {
     }
 }
 
-struct SettingsActionsView: View {
-    var body: some View {
-        let viewController = SettingsDetailViewController()
-        viewController.detailGroup = .actions
-        return embed(viewController)
-            .navigationTitle(L10n.SettingsDetails.LegacyActions.title)
-    }
-}
