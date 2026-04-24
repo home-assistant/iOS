@@ -163,12 +163,12 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     // MARK: - Location sources persistence
 
     private func writeLocationSources() {
-        Current.settingsStore.locationSources = .init(
-            zone: zoneEnabled,
-            backgroundFetch: backgroundFetchEnabled,
-            significantLocationChange: significantLocationChangeEnabled,
-            pushNotifications: pushNotificationsEnabled
-        )
+        var sources = Current.settingsStore.locationSources
+        sources.zone = zoneEnabled
+        sources.backgroundFetch = backgroundFetchEnabled
+        sources.significantLocationChange = significantLocationChangeEnabled
+        sources.pushNotifications = pushNotificationsEnabled
+        Current.settingsStore.locationSources = sources
     }
 
     // MARK: - Zones
