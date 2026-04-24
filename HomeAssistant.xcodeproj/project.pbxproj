@@ -25,7 +25,6 @@
 /* Begin PBXBuildFile section */
 		00C267608DCC88B783816CBF /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
 		072BACCC5B2509E4AF06BFED /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
-		1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
 		1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */; };
 		1101568424D770B2009424C9 /* NFCWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E324D76CDB003CE877 /* NFCWriter.swift */; };
@@ -452,7 +451,6 @@
 		11F2F2B8258728B200F61F7C /* NotificationAttachmentParserURL.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F2B7258728B200F61F7C /* NotificationAttachmentParserURL.test.swift */; };
 		11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
 		11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
-		11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85B24C4295200642676 /* EurekaLocationRow.swift */; };
 		11F3D74C2495377B00C05BBA /* SensorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D74B2495377B00C05BBA /* SensorListView.swift */; };
 		11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */; };
 		11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */; };
@@ -1538,6 +1536,8 @@
 		C3EB3740FA097F36D51F525E /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
 		C574CE3276BCE901743FF8C9 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */; };
 		C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */; };
+		CA0CA15000000000000000A2 /* LocationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0CA15000000000000000A1 /* LocationSettingsView.swift */; };
+		CA0CA15000000000000000B2 /* LocationSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0CA15000000000000000B1 /* LocationSettingsViewModel.swift */; };
 		CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */; };
 		CB4D44CC6DBA5176155E157E /* KioskSecretExitGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
@@ -2248,7 +2248,6 @@
 		11F2F2A82587288200F61F7C /* NotificationAttachmentParserCamera.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserCamera.test.swift; sourceTree = "<group>"; };
 		11F2F2B7258728B200F61F7C /* NotificationAttachmentParserURL.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserURL.test.swift; sourceTree = "<group>"; };
 		11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWrapperBatteryObserver.swift; sourceTree = "<group>"; };
-		11F3B85B24C4295200642676 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListView.swift; sourceTree = "<group>"; };
 		11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategoryListViewController.swift; sourceTree = "<group>"; };
 		11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRateLimitViewController.swift; sourceTree = "<group>"; };
@@ -3460,6 +3459,8 @@
 		C22F619E232C3F0E98A9346D /* Pods_iOS_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C663B0750E0318469E7008C3 /* Pods_iOS_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsViewModel.swift; sourceTree = "<group>"; };
+		CA0CA15000000000000000A1 /* LocationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSettingsView.swift; sourceTree = "<group>"; };
+		CA0CA15000000000000000B1 /* LocationSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSettingsViewModel.swift; sourceTree = "<group>"; };
 		CA722B125EDED73BB36596DA /* Pods-iOS-Extensions-NotificationContent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.debug.xcconfig"; sourceTree = "<group>"; };
 		CB6A8D422BB20D007F14F7BB /* Pods_watchOS_WatchExtension_Watch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_WatchExtension_Watch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB911C7BDEB5B6FC0EA67484 /* Pods-Tests-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.beta.xcconfig"; sourceTree = "<group>"; };
@@ -4088,7 +4089,6 @@
 		11AD2E1C2528FD6F00FBC437 /* Eureka */ = {
 			isa = PBXGroup;
 			children = (
-				11F3B85B24C4295200642676 /* EurekaLocationRow.swift */,
 				11C590EC24A832CA0066085D /* YamlSection.swift */,
 				11A48D8224CA9D010021BDD9 /* RealmSection.swift */,
 				115F9D6F25F4B7B700CC6A45 /* TemplateSection.swift */,
@@ -6976,6 +6976,7 @@
 				1130F530253A1E6400F371BE /* AppleWatch */,
 				11AD2E2B2528FDEB00FBC437 /* Observation */,
 				11AD2E1C2528FD6F00FBC437 /* Eureka */,
+				CA0CA15000000000000000C1 /* Location */,
 				1161C01924D7633700A0E3C4 /* NFC */,
 				11F3D74F2495433800C05BBA /* Sensors */,
 				11AD2E392528FDF800FBC437 /* Connection */,
@@ -7054,7 +7055,6 @@
 				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
-				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
 				11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */,
 				42AAEE862EC4B7CC0049E1F3 /* URLOpener.swift */,
@@ -7154,6 +7154,15 @@
 				11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */,
 			);
 			path = Responses;
+			sourceTree = "<group>";
+		};
+		CA0CA15000000000000000C1 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				CA0CA15000000000000000A1 /* LocationSettingsView.swift */,
+				CA0CA15000000000000000B1 /* LocationSettingsViewModel.swift */,
+			);
+			path = Location;
 			sourceTree = "<group>";
 		};
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {
@@ -9266,6 +9275,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA0CA15000000000000000A2 /* LocationSettingsView.swift in Sources */,
+				CA0CA15000000000000000B2 /* LocationSettingsViewModel.swift in Sources */,
 				423B5E0B2D677B9B0000CB95 /* WidgetCustom.swift in Sources */,
 				427AE07E2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
@@ -9284,7 +9295,6 @@
 				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
 				1185DFB4271FF53800ED7D9A /* OnboardingAuthStepModels.swift in Sources */,
 				42DF6B2D2CCF8A2200D7EC14 /* PermissionRequestView.swift in Sources */,
-				11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */,
 				42FCD0002B9B1C310057783F /* ThreadCredentialsSharingViewModelProtocol.swift in Sources */,
 				B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */,
 				423178442F28C29100814230 /* NFCListView.swift in Sources */,
@@ -9528,7 +9538,6 @@
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
-				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				504A2C862F8133E6002A3C0E /* CarPlayTabsSelectionView.swift in Sources */,
 				42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */,
 				42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */,

@@ -108,7 +108,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .kiosk:
             KioskSettingsView()
         case .location:
-            SettingsLocationView()
+            LocationSettingsView()
         case .notifications:
             SettingsNotificationsView()
         case .liveActivities:
@@ -213,15 +213,6 @@ struct SettingsServersView: View {
             }
         }
         .navigationTitle(L10n.Settings.ConnectionSection.servers)
-    }
-}
-
-struct SettingsLocationView: View {
-    var body: some View {
-        let viewController = SettingsDetailViewController()
-        viewController.detailGroup = .location
-        return embed(viewController)
-            .navigationTitle(L10n.Settings.DetailsSection.LocationSettingsRow.title)
     }
 }
 
