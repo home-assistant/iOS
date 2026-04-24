@@ -229,4 +229,3 @@ struct SettingsComplicationsView: View {
             .navigationTitle(L10n.Settings.DetailsSection.WatchRowComplications.title)
     }
 }
-

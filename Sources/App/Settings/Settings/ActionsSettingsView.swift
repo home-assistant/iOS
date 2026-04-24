@@ -190,9 +190,11 @@ private struct ActionRowView: View {
 
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
-            Image(uiImage: MaterialDesignIcons(named: snapshot.iconName)
-                .image(ofSize: MaterialDesignIcons.settingsIconSize, color: .label))
-                .renderingMode(.template)
+            Image(
+                uiImage: MaterialDesignIcons(named: snapshot.iconName)
+                    .image(ofSize: MaterialDesignIcons.settingsIconSize, color: .label)
+            )
+            .renderingMode(.template)
             VStack(alignment: .leading, spacing: 2) {
                 Text(snapshot.name)
                     .foregroundStyle(.primary)
