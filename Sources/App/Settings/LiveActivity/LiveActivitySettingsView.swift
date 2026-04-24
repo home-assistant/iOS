@@ -6,7 +6,7 @@ import SwiftUI
 // MARK: - Entry point
 
 /// Deployment target is iOS 15. The settings item is filtered from the list on < iOS 17.2
-/// (see SettingsItem.allVisibleCases), so this view is only ever navigated to on iOS 17.2+.
+/// (see SettingsItem.generalItems/allVisibleCases), so this view is only ever navigated to on iOS 17.2+.
 @available(iOS 17.2, *)
 struct LiveActivitySettingsView: View {
     // MARK: State
@@ -62,7 +62,9 @@ struct LiveActivitySettingsView: View {
                 }
             }
 
+            #if DEBUG
             samplesSection
+            #endif
         }
         .navigationTitle(L10n.LiveActivity.title)
         .task { await loadActivities() }
@@ -75,12 +77,12 @@ struct LiveActivitySettingsView: View {
             HStack {
                 Label(L10n.LiveActivity.title, systemSymbol: .livephoto)
                 Spacer()
-                if authorizationEnabled {
-                    Text(L10n.LiveActivity.Status.enabled)
-                        .foregroundStyle(.green)
-                } else if UIDevice.current.userInterfaceIdiom == .pad {
+                if !isLiveActivitySupportedOnDevice {
                     Text(L10n.LiveActivity.Status.notSupported)
                         .foregroundStyle(.secondary)
+                } else if authorizationEnabled {
+                    Text(L10n.LiveActivity.Status.enabled)
+                        .foregroundStyle(.green)
                 } else {
                     Button(L10n.LiveActivity.Status.openSettings) {
                         if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -94,7 +96,10 @@ struct LiveActivitySettingsView: View {
             HStack {
                 Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .bolt)
                 Spacer()
-                if frequentUpdatesEnabled {
+                if !isLiveActivitySupportedOnDevice {
+                    Text(L10n.LiveActivity.Status.notSupported)
+                        .foregroundStyle(.secondary)
+                } else if frequentUpdatesEnabled {
                     Text(L10n.LiveActivity.Status.enabled)
                         .foregroundStyle(.green)
                 } else {
@@ -111,8 +116,13 @@ struct LiveActivitySettingsView: View {
         }
     }
 
-    // MARK: - Samples
+    private var isLiveActivitySupportedOnDevice: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
 
+    // MARK: - Samples (DEBUG builds only)
+
+    #if DEBUG
     //
     // Two sections: Static (fixed snapshots to verify layout) and Animated (multi-stage
     // self-updating sequences to simulate real HA automation behavior).
@@ -582,6 +592,7 @@ struct LiveActivitySettingsView: View {
             ]
         )
     }
+    #endif
 
     // MARK: - Data
 

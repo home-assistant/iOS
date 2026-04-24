@@ -147,6 +147,10 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     static var allVisibleCases: [SettingsItem] {
         allCases.filter { item in
+            if item == .liveActivities {
+                return canShowLiveActivities
+            }
+
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
             let hiddenItems: [SettingsItem] = [
@@ -159,7 +163,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 .nfc,
                 .help,
                 .whatsNew,
-                .liveActivities,
             ]
 
             if hiddenItems.contains(item) {
@@ -172,7 +175,11 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .location, .notifications, .kiosk, .liveActivities]
+        var items: [SettingsItem] = [.general, .gestures, .location, .notifications, .kiosk]
+        if canShowLiveActivities {
+            items.append(.liveActivities)
+        }
+        return items
     }
 
     static var integrationItems: [SettingsItem] {
@@ -193,6 +200,18 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     static var helpItems: [SettingsItem] {
         [.help, .privacy, .debugging]
+    }
+
+    private static var canShowLiveActivities: Bool {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            return true
+        } else {
+            return false
+        }
+        #else
+        return false
+        #endif
     }
 }
 
