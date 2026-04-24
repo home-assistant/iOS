@@ -1,4 +1,3 @@
-import Eureka
 import Foundation
 import PromiseKit
 import Shared
@@ -46,51 +45,6 @@ class NotificationRateLimitsAPI {
                 $0.dateDecodingStrategy = .formatted(dateFormatter)
             }
             return try decoder.decode(RateLimitResponse.self, from: data)
-        }
-    }
-}
-
-extension RateLimitResponse.RateLimits {
-    func row(for keyPath: KeyPath<Self, Int>) -> BaseRow {
-        LabelRow {
-            $0.value = NumberFormatter.localizedString(
-                from: NSNumber(value: self[keyPath: keyPath]),
-                number: .none
-            )
-            $0.title = { () -> String in
-                switch keyPath {
-                case \.attempts:
-                    return L10n.SettingsDetails.Notifications.RateLimits.attempts
-                case \.successful:
-                    return L10n.SettingsDetails.Notifications.RateLimits.delivered
-                case \.errors:
-                    return L10n.SettingsDetails.Notifications.RateLimits.errors
-                case \.total:
-                    return L10n.SettingsDetails.Notifications.RateLimits.total
-                case \.maximum:
-                    return ""
-                default:
-                    fatalError("missing key: \(keyPath)")
-                }
-            }()
-        }
-    }
-
-    func row(for keyPath: KeyPath<Self, Date>) -> BaseRow {
-        LabelRow { row in
-            row.value = DateFormatter.localizedString(
-                from: self[keyPath: keyPath],
-                dateStyle: .none,
-                timeStyle: .medium
-            )
-
-            switch keyPath {
-            case \.resetsAt:
-                row.title = L10n.SettingsDetails.Notifications.RateLimits.resetsIn
-                row.tag = "resetsIn"
-            default:
-                fatalError("missing key: \(keyPath)")
-            }
         }
     }
 }

@@ -336,8 +336,11 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         _ center: UNUserNotificationCenter,
         openSettingsFor notification: UNNotification?
     ) {
-        let view = NotificationSettingsViewController()
-        view.doneButton = true
+        let rootView = NavigationView {
+            NotificationSettingsView(showsDoneButton: true)
+        }
+        .navigationViewStyle(.stack)
+        let hostingController = rootView.embeddedInHostingController()
 
         Current.sceneManager.webViewWindowControllerPromise.done {
             var rootViewController = $0.window.rootViewController
@@ -345,8 +348,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                 rootViewController = navigationController.viewControllers.first
             }
             rootViewController?.dismiss(animated: false, completion: {
-                let navController = UINavigationController(rootViewController: view)
-                rootViewController?.present(navController, animated: true, completion: nil)
+                rootViewController?.present(hostingController, animated: true, completion: nil)
             })
         }
     }
