@@ -1,5 +1,6 @@
 import Eureka
 import Foundation
+import HAKit
 import Shared
 
 enum AccountRowValue: Equatable, CustomStringConvertible {
@@ -131,8 +132,24 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
         self.cellStyle = .subtitle
     }
 
+    deinit {
+        currentUserRequest?.cancel()
+        avatarRequest?.cancel()
+    }
+
     fileprivate var cachedImage: UIImage?
     fileprivate var cachedUserName: String?
+    private var currentUserRequest: HACancellable? {
+        didSet {
+            oldValue?.cancel()
+        }
+    }
+
+    private var avatarRequest: HACancellable? {
+        didSet {
+            oldValue?.cancel()
+        }
+    }
 
     override var value: Cell.Value? {
         didSet {
@@ -143,6 +160,9 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
     }
 
     private func fetchAvatar() {
+        currentUserRequest = nil
+        avatarRequest = nil
+
         guard let server = value?.server else {
             cachedImage = nil
             cachedUserName = nil
@@ -150,16 +170,16 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
+        cachedImage = nil
+        cachedUserName = nil
+        updateCell()
+
         guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to fetch avatar")
             return
         }
 
-        cachedImage = nil
-        cachedUserName = nil
-        updateCell()
-
-        api.currentUser { [weak self] user in
+        currentUserRequest = api.currentUser { [weak self] user in
             guard let self else { return }
             guard value?.server?.identifier == server.identifier else { return }
 
@@ -170,7 +190,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                 return
             }
 
-            api.profilePicture(for: user) { [weak self] image in
+            avatarRequest = api.profilePicture(for: user) { [weak self] image in
                 guard let self else { return }
                 guard value?.server?.identifier == server.identifier else { return }
 

@@ -143,7 +143,7 @@ struct ServerSelectViewRow: View {
         guard let api = Current.api(for: server) else { return }
 
         api.currentUser { user in
-            userName = user?.name.orEmpty ?? ""
+            userName = user?.name ?? ""
 
             guard let user else { return }
             api.profilePicture(for: user) { image in

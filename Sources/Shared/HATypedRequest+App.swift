@@ -147,9 +147,7 @@ public extension HATypedRequest {
     }
 
     static func fetchCurrentUser() -> HATypedRequest<HAResponseCurrentUser> {
-        HATypedRequest<HAResponseCurrentUser>(request: .init(
-            type: .rest(.get, "auth/current_user")
-        ))
+        HATypedRequest<HAResponseCurrentUser>.currentUser()
     }
 
     static func fetchStates() -> HATypedRequest<[HAEntity]> {

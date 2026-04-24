@@ -8,7 +8,7 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         super.tearDown()
     }
 
-    func testCurrentUserUsesRestEndpoint() {
+    func testCurrentUserUsesWebSocketEndpoint() {
         let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
         let connection = FakeHAConnection()
         connection.mockResponses["auth/current_user"] = .dictionary([
@@ -32,16 +32,15 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
         XCTAssertEqual(connection.sentRequests.count, 1)
 
-        guard case let .rest(method, command) = connection.sentRequests[0].type else {
-            XCTFail("Expected REST request")
+        guard case let .webSocket(command) = connection.sentRequests[0].type else {
+            XCTFail("Expected WebSocket request")
             return
         }
 
-        XCTAssertEqual(method, .get)
         XCTAssertEqual(command, "auth/current_user")
     }
 
-    func testProfilePictureURLUsesRestRequests() {
+    func testProfilePictureURLUsesWebSocketCurrentUserAndRestStates() {
         let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
         let connection = FakeHAConnection()
         connection.mockResponses["auth/current_user"] = .dictionary([
@@ -82,12 +81,11 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
         XCTAssertEqual(connection.sentRequests.count, 2)
 
-        guard case let .rest(firstMethod, firstCommand) = connection.sentRequests[0].type else {
-            XCTFail("Expected first request to use REST")
+        guard case let .webSocket(firstCommand) = connection.sentRequests[0].type else {
+            XCTFail("Expected first request to use WebSocket")
             return
         }
 
-        XCTAssertEqual(firstMethod, .get)
         XCTAssertEqual(firstCommand, "auth/current_user")
 
         guard case let .rest(secondMethod, secondCommand) = connection.sentRequests[1].type else {
@@ -97,6 +95,45 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
 
         XCTAssertEqual(secondMethod, .get)
         XCTAssertEqual(secondCommand, "states")
+    }
+
+    func testProfilePictureURLRejectsExternalEntityPictureURL() {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        let connection = FakeHAConnection()
+        connection.mockResponses["auth/current_user"] = .dictionary([
+            "id": "user-id",
+            "name": "cepresso",
+            "is_owner": false,
+            "is_admin": true,
+            "credentials": [],
+            "mfa_modules": [],
+        ])
+        connection.mockResponses["states"] = .array([
+            .dictionary([
+                "entity_id": "person.cepresso",
+                "state": "home",
+                "last_changed": "2026-04-23T10:00:00Z",
+                "last_updated": "2026-04-23T10:00:00Z",
+                "attributes": [
+                    "user_id": "user-id",
+                    "entity_picture": "https://attacker.example.com/avatar.png",
+                ],
+                "context": [
+                    "id": "context-id",
+                ],
+            ]),
+        ])
+        api.connection = connection
+
+        let expectation = expectation(description: "profile picture URL")
+
+        api.profilePictureURL { url in
+            XCTAssertNil(url)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(connection.sentRequests.count, 2)
     }
 }
 
