@@ -225,8 +225,7 @@ struct SettingsNotificationsView: View {
 
 struct SettingsComplicationsView: View {
     var body: some View {
-        embed(ComplicationListViewController())
-            .navigationTitle(L10n.Settings.DetailsSection.WatchRowComplications.title)
+        ComplicationListView()
     }
 }
 
