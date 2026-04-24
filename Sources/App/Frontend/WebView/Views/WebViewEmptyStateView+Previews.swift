@@ -9,12 +9,16 @@ import SwiftUI
 }
 
 #Preview("Disconnected With Error Details") {
-    WebViewEmptyStateView(
-        style: .disconnected,
-        server: ServerFixture.standard,
-        showsErrorDetailsButton: true,
-        errorDetailsAction: {}
-    )
+    ZStack {
+        WebViewEmptyStateView(
+            style: .disconnected,
+            server: ServerFixture.standard,
+            showsErrorDetailsButton: true,
+            errorDetailsAction: {}
+        )
+    }
+    // Validate background covers the whole screen
+    .background(.green)
 }
 
 #Preview("Unauthenticated") {
