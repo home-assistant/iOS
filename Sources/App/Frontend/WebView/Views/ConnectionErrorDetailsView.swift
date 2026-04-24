@@ -4,7 +4,7 @@ import SwiftUI
 
 struct ConnectionErrorDetailsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var showExportLogsShareSheet: Bool = false
+    @State private var exportLogsArchiveURL: URL?
     @StateObject private var connectivityState = ConnectivityCheckState()
 
     private let feedbackGenerator = UINotificationFeedbackGenerator()
@@ -36,8 +36,11 @@ struct ConnectionErrorDetailsView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showExportLogsShareSheet, content: {
-                if let archiveURL = Current.Log.archiveURL() {
+            .sheet(isPresented: Binding(
+                get: { exportLogsArchiveURL != nil },
+                set: { if !$0 { exportLogsArchiveURL = nil } }
+            ), content: {
+                if let archiveURL = exportLogsArchiveURL {
                     ShareActivityView(activityItems: [archiveURL])
                 }
             })
@@ -283,8 +286,8 @@ struct ConnectionErrorDetailsView: View {
         ) {
             if Current.isCatalyst, let logsURL = Current.Log.archiveURL() {
                 URLOpener.shared.open(logsURL, options: [:], completionHandler: nil)
-            } else {
-                showExportLogsShareSheet = true
+            } else if let logsURL = Current.Log.archiveURL() {
+                exportLogsArchiveURL = logsURL
                 feedbackGenerator.notificationOccurred(.success)
             }
         }
