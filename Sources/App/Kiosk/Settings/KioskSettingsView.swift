@@ -57,6 +57,19 @@ public struct KioskSettingsView: View {
         } message: {
             Text(viewModel.authErrorMessage)
         }
+        .alert(
+            L10n.Kiosk.Camera.PermissionDenied.title,
+            isPresented: $viewModel.showingCameraPermissionDenied
+        ) {
+            Button(L10n.Kiosk.Camera.PermissionDenied.openSettings) {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button(L10n.cancelLabel, role: .cancel) {}
+        } message: {
+            Text(L10n.Kiosk.Camera.PermissionDenied.message)
+        }
     }
 
     // MARK: - Auth Gate Overlay
@@ -268,7 +281,10 @@ public struct KioskSettingsView: View {
 
     private var cameraDetectionSection: some View {
         Section {
-            Toggle(isOn: $viewModel.settings.cameraMotionEnabled) {
+            Toggle(isOn: Binding(
+                get: { viewModel.settings.cameraMotionEnabled },
+                set: { viewModel.setCameraMotionEnabled($0) }
+            )) {
                 Label(L10n.Kiosk.Camera.motionDetection, systemSymbol: .figureWalk)
             }
 

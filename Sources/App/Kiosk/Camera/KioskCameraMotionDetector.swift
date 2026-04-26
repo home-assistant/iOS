@@ -89,11 +89,11 @@ public final class KioskCameraMotionDetector: NSObject, ObservableObject {
 
         processingQueue.async { [weak self] in
             self?.captureSession?.stopRunning()
+            self?.previousFrame = nil
             DispatchQueue.main.async {
                 self?.isActive = false
                 self?.motionDetected = false
                 self?.motionLevel = 0
-                self?.previousFrame = nil
             }
         }
 

@@ -49,27 +49,21 @@ public final class KioskCameraDetectionManager: ObservableObject {
 
     // MARK: - Public Methods
 
-    /// Start camera detection based on current settings
+    /// Start camera detection based on current settings.
+    /// `isActive` reflects the underlying detector state (bound in setupBindings),
+    /// so it stays false if the detector bails out (e.g. camera permission denied).
     public func start() {
-        guard !isActive else { return }
-
         Current.Log.info("Starting camera detection manager")
 
         if settings.cameraMotionEnabled {
             motionDetector.start()
         }
-
-        isActive = settings.cameraMotionEnabled
     }
 
     /// Stop all camera detection
     public func stop() {
-        guard isActive else { return }
-
         Current.Log.info("Stopping camera detection manager")
-
         motionDetector.stop()
-        isActive = false
     }
 
     /// Restart detection (e.g., after settings change)
@@ -92,6 +86,13 @@ public final class KioskCameraDetectionManager: ObservableObject {
     }
 
     private func setupBindings() {
+        motionDetector.$isActive
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] active in
+                self?.isActive = active
+            }
+            .store(in: &cancellables)
+
         motionDetector.$motionDetected
             .receive(on: DispatchQueue.main)
             .sink { [weak self] detected in
