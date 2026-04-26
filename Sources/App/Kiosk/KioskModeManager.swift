@@ -615,18 +615,12 @@ public final class KioskModeManager: ObservableObject {
             wakeScreen(source: "camera_motion")
         }
 
-        cameraManager.onPresenceChanged = { [weak self] detected in
-            guard let self, detected, settings.wakeOnCameraPresence else { return }
-            wakeScreen(source: "camera_presence")
-        }
-
         cameraManager.start()
     }
 
     private func stopCameraDetection() {
         let cameraManager = KioskCameraDetectionManager.shared
         cameraManager.onMotionDetected = nil
-        cameraManager.onPresenceChanged = nil
         cameraManager.stop()
     }
 
@@ -688,11 +682,8 @@ public final class KioskModeManager: ObservableObject {
         // Restart camera detection if camera settings changed
         #if !targetEnvironment(macCatalyst)
         if oldValue.cameraMotionEnabled != newValue.cameraMotionEnabled
-            || oldValue.cameraPresenceEnabled != newValue.cameraPresenceEnabled
-            || oldValue.cameraFaceDetectionEnabled != newValue.cameraFaceDetectionEnabled
             || oldValue.cameraMotionSensitivity != newValue.cameraMotionSensitivity
-            || oldValue.wakeOnCameraMotion != newValue.wakeOnCameraMotion
-            || oldValue.wakeOnCameraPresence != newValue.wakeOnCameraPresence {
+            || oldValue.wakeOnCameraMotion != newValue.wakeOnCameraMotion {
             restartCameraDetection()
         }
         #endif

@@ -132,15 +132,6 @@ public struct KioskSettings: Codable, Equatable {
     /// Wake the screen when camera motion is detected
     public var wakeOnCameraMotion: Bool = false
 
-    /// Enable camera-based presence (person) detection
-    public var cameraPresenceEnabled: Bool = false
-
-    /// Enable face detection (requires presence detection)
-    public var cameraFaceDetectionEnabled: Bool = false
-
-    /// Wake the screen when a person is detected by camera
-    public var wakeOnCameraPresence: Bool = false
-
     // MARK: - Codable (backwards-compatible decoding)
 
     enum CodingKeys: String, CodingKey {
@@ -167,9 +158,6 @@ public struct KioskSettings: Codable, Equatable {
         case cameraMotionEnabled
         case cameraMotionSensitivity
         case wakeOnCameraMotion
-        case cameraPresenceEnabled
-        case cameraFaceDetectionEnabled
-        case wakeOnCameraPresence
     }
 
     public init(from decoder: Decoder) throws {
@@ -244,18 +232,6 @@ public struct KioskSettings: Codable, Equatable {
         self.wakeOnCameraMotion = try container.decodeIfPresent(
             Bool.self,
             forKey: .wakeOnCameraMotion
-        ) ?? false
-        self.cameraPresenceEnabled = try container.decodeIfPresent(
-            Bool.self,
-            forKey: .cameraPresenceEnabled
-        ) ?? false
-        self.cameraFaceDetectionEnabled = try container.decodeIfPresent(
-            Bool.self,
-            forKey: .cameraFaceDetectionEnabled
-        ) ?? false
-        self.wakeOnCameraPresence = try container.decodeIfPresent(
-            Bool.self,
-            forKey: .wakeOnCameraPresence
         ) ?? false
     }
 }

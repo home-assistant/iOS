@@ -1525,7 +1525,6 @@
 		BECCC152A4E3F69A8EF5A6F3 /* TableSchemaTests.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9A0E08E6FEBDDE425D0D4 /* TableSchemaTests.test.swift */; };
 		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
 		C35621B95F7E4548BC8F6D75 /* FolderEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BECEB2525564358A124F818 /* FolderEditView.swift */; };
-		C3D543FC10EC39A66961A92D /* KioskPresenceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64EAB9B84E4838281F3C36B /* KioskPresenceDetector.swift */; };
 		C574CE3276BCE901743FF8C9 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */; };
 		C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */; };
 		CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */; };
@@ -3436,7 +3435,6 @@
 		C00AE2FDC80CA2FFDFCA2B2B /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
 		C1694CFE2AAC39ABD6266B1D /* Pods-iOS-Extensions-Matter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Matter.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Matter/Pods-iOS-Extensions-Matter.release.xcconfig"; sourceTree = "<group>"; };
 		C22F619E232C3F0E98A9346D /* Pods_iOS_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C64EAB9B84E4838281F3C36B /* KioskPresenceDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KioskPresenceDetector.swift; sourceTree = "<group>"; };
 		C663B0750E0318469E7008C3 /* Pods_iOS_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsViewModel.swift; sourceTree = "<group>"; };
 		CA722B125EDED73BB36596DA /* Pods-iOS-Extensions-NotificationContent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.debug.xcconfig"; sourceTree = "<group>"; };
@@ -6540,7 +6538,6 @@
 			children = (
 				5F06E4C4BCA8BCEFAC2BD8CD /* KioskCameraDetectionManager.swift */,
 				596D41DEAF91D00E446816EC /* KioskCameraMotionDetector.swift */,
-				C64EAB9B84E4838281F3C36B /* KioskPresenceDetector.swift */,
 			);
 			name = Camera;
 			path = Camera;
@@ -9644,7 +9641,6 @@
 				12FC58D695EB7AF41673476E /* WebViewController+Kiosk.swift in Sources */,
 				5C03030E951BE417C7CB03E7 /* KioskCameraDetectionManager.swift in Sources */,
 				E72C0153D13C2041C76CE742 /* KioskCameraMotionDetector.swift in Sources */,
-				C3D543FC10EC39A66961A92D /* KioskPresenceDetector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

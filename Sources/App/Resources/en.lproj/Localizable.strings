@@ -506,10 +506,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.camera.sensitivity.medium" = "Medium";
 "kiosk.camera.sensitivity.high" = "High";
 "kiosk.camera.wake_on_motion" = "Wake on Motion";
-"kiosk.camera.presence_detection" = "Presence Detection";
-"kiosk.camera.face_detection" = "Face Detection";
-"kiosk.camera.wake_on_presence" = "Wake on Presence";
-"kiosk.camera.footer" = "Uses the front camera to detect motion and human presence. Requires camera permission.";
+"kiosk.camera.footer" = "Uses the front camera to detect motion. Requires camera permission.";
 "legacy_actions.disclaimer" = "Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.";
 "live_activity.empty_state" = "No active Live Activities";
 "live_activity.end_all.button" = "End All Activities";
