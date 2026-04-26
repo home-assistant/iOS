@@ -679,11 +679,12 @@ public final class KioskModeManager: ObservableObject {
             }
         }
 
-        // Restart camera detection if camera settings changed
+        // Restart camera detection only when detector configuration changes.
+        // wakeOnCameraMotion is read at fire time by the closure, so toggling it
+        // doesn't require tearing down the capture session.
         #if !targetEnvironment(macCatalyst)
         if oldValue.cameraMotionEnabled != newValue.cameraMotionEnabled
-            || oldValue.cameraMotionSensitivity != newValue.cameraMotionSensitivity
-            || oldValue.wakeOnCameraMotion != newValue.wakeOnCameraMotion {
+            || oldValue.cameraMotionSensitivity != newValue.cameraMotionSensitivity {
             restartCameraDetection()
         }
         #endif

@@ -1756,6 +1756,14 @@ public enum L10n {
       public static var sensitivity: String { return L10n.tr("Localizable", "kiosk.camera.sensitivity") }
       /// Wake on Motion
       public static var wakeOnMotion: String { return L10n.tr("Localizable", "kiosk.camera.wake_on_motion") }
+      public enum PermissionDenied {
+        /// Enable camera access for Home Assistant in Settings to use motion detection.
+        public static var message: String { return L10n.tr("Localizable", "kiosk.camera.permission_denied.message") }
+        /// Open Settings
+        public static var openSettings: String { return L10n.tr("Localizable", "kiosk.camera.permission_denied.open_settings") }
+        /// Camera Access Required
+        public static var title: String { return L10n.tr("Localizable", "kiosk.camera.permission_denied.title") }
+      }
       public enum Sensitivity {
         /// High
         public static var high: String { return L10n.tr("Localizable", "kiosk.camera.sensitivity.high") }
