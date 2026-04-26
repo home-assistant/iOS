@@ -112,7 +112,7 @@ public class HomeAssistantAPI {
         let hakitURLSession = URLSession(configuration: .ephemeral)
         #endif
 
-        self.connection = HAKit.connection(
+        let underlyingConnection = HAKit.connection(
             configuration: .init(
                 connectionInfo: {
                     do {
@@ -178,8 +178,10 @@ public class HomeAssistantAPI {
                     }
                 }
             ),
+            connectAutomatically: false,
             urlSession: hakitURLSession
         )
+        self.connection = RetryAwareHAConnection(underlying: underlyingConnection)
         connection.delegate = self
 
         #if !os(watchOS)
@@ -279,11 +281,35 @@ public class HomeAssistantAPI {
         }
     }
 
+    static func shouldAttemptAutomaticWebSocketConnect(for state: HAConnectionState) -> Bool {
+        switch state {
+        case .disconnected(reason: .disconnected):
+            return true
+        case .disconnected(reason: .waitingToReconnect),
+             .disconnected(reason: .rejected),
+             .connecting,
+             .authenticating,
+             .ready:
+            return false
+        }
+    }
+
+    public func connectWebSocketIfNeeded() {
+        let state = connection.state
+
+        guard Self.shouldAttemptAutomaticWebSocketConnect(for: state) else {
+            Current.Log.info("skipping automatic websocket connect while state is \(state)")
+            return
+        }
+
+        connection.connect()
+    }
+
     public func Connect(reason: ConnectReason) -> Promise<Void> {
         Current.Log.info("running connect for \(reason)")
 
         // websocket
-        connection.connect()
+        connectWebSocketIfNeeded()
 
         return firstly { () -> Promise<Void> in
             guard !Current.isAppExtension else {
@@ -1043,15 +1069,59 @@ public class HomeAssistantAPI {
     }
     #endif
 
-    public func profilePictureURL(completion: @escaping (URL?) -> Void) {
-        connection.caches.user.once { [weak self] user in
-            guard let self else {
-                Current.Log.error("Failed to retrieve profile picture URL: self is nil")
-                completion(nil)
-                return
+    private final class ProfilePictureCancellable: HACancellable {
+        private(set) var isCancelled = false
+        private var cancellables = [HACancellable]()
+        private var downloadRequest: Request?
+
+        func add(_ cancellable: HACancellable) {
+            if isCancelled {
+                cancellable.cancel()
+            } else {
+                cancellables.append(cancellable)
             }
-            connection.caches.states().once { [weak self] states in
-                let states = states.all
+        }
+
+        func setDownloadRequest(_ request: Request) {
+            if isCancelled {
+                request.cancel()
+            } else {
+                downloadRequest = request
+            }
+        }
+
+        func cancel() {
+            guard !isCancelled else { return }
+
+            isCancelled = true
+            cancellables.forEach { $0.cancel() }
+            downloadRequest?.cancel()
+            cancellables.removeAll()
+            downloadRequest = nil
+        }
+    }
+
+    @discardableResult
+    public func currentUser(completion: @escaping (HAResponseCurrentUser?) -> Void) -> HACancellable {
+        connection.send(HATypedRequest<HAResponseCurrentUser>.fetchCurrentUser()) { result in
+            switch result {
+            case let .success(user):
+                completion(user)
+            case let .failure(error):
+                Current.Log.error("Failed to retrieve current user: \(error)")
+                completion(nil)
+            }
+        }
+    }
+
+    @discardableResult
+    public func profilePictureURL(
+        for user: HAResponseCurrentUser,
+        completion: @escaping (URL?) -> Void
+    ) -> HACancellable {
+        connection.send(HATypedRequest<[HAEntity]>.fetchStates()) { [weak self] result in
+            switch result {
+            case let .success(states):
                 guard let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) else {
                     Current.Log.error("Profile picture: No person found for user \(user.id)")
                     completion(nil)
@@ -1064,25 +1134,58 @@ public class HomeAssistantAPI {
                     return
                 }
 
-                guard let url = self?.server.info.connection.activeURL()?.appendingPathComponent(path) else {
-                    Current.Log.error("Profile picture: Missing active URL for user entity picture, user id \(user.id)")
+                guard let url = self?.resolvedProfilePictureURL(from: path) else {
+                    Current.Log.error("Profile picture: Invalid URL for user entity picture, user id \(user.id)")
                     completion(nil)
                     return
                 }
 
                 completion(url)
+            case let .failure(error):
+                Current.Log.error("Failed to retrieve states for profile picture: \(error)")
+                completion(nil)
             }
         }
     }
 
-    public func profilePicture(completion: @escaping (UIImage?) -> Void) {
-        profilePictureURL { [weak self] url in
+    @discardableResult
+    public func profilePictureURL(completion: @escaping (URL?) -> Void) -> HACancellable {
+        let cancellable = ProfilePictureCancellable()
+
+        cancellable.add(currentUser { [weak self] user in
+            guard !cancellable.isCancelled else { return }
+            guard let self, let user else {
+                completion(nil)
+                return
+            }
+
+            cancellable.add(profilePictureURL(for: user) { url in
+                guard !cancellable.isCancelled else { return }
+                completion(url)
+            })
+        })
+
+        return cancellable
+    }
+
+    @discardableResult
+    public func profilePicture(
+        for user: HAResponseCurrentUser,
+        completion: @escaping (UIImage?) -> Void
+    ) -> HACancellable {
+        let cancellable = ProfilePictureCancellable()
+
+        cancellable.add(profilePictureURL(for: user) { [weak self] url in
+            guard !cancellable.isCancelled else { return }
             guard let self, let url else {
                 completion(nil)
                 return
             }
 
-            manager.download(url).validate().responseData { response in
+            let request = manager.download(url).validate()
+            cancellable.setDownloadRequest(request)
+            request.responseData { response in
+                guard !cancellable.isCancelled else { return }
                 switch response.result {
                 case let .success(data):
                     completion(UIImage(data: data))
@@ -1091,6 +1194,74 @@ public class HomeAssistantAPI {
                     completion(nil)
                 }
             }
+        })
+
+        return cancellable
+    }
+
+    @discardableResult
+    public func profilePicture(completion: @escaping (UIImage?) -> Void) -> HACancellable {
+        let cancellable = ProfilePictureCancellable()
+
+        cancellable.add(currentUser { [weak self] user in
+            guard !cancellable.isCancelled else { return }
+            guard let self, let user else {
+                completion(nil)
+                return
+            }
+
+            cancellable.add(profilePicture(for: user) { image in
+                guard !cancellable.isCancelled else { return }
+                completion(image)
+            })
+        })
+
+        return cancellable
+    }
+
+    private func resolvedProfilePictureURL(from path: String) -> URL? {
+        guard let activeURL = server.info.connection.activeURL() else {
+            return nil
+        }
+
+        guard let url = URL(string: path, relativeTo: activeURL)?.absoluteURL else {
+            return nil
+        }
+
+        guard url.hasSameOrigin(as: activeURL) else {
+            return nil
+        }
+
+        return url
+    }
+}
+
+private extension URL {
+    func hasSameOrigin(as other: URL) -> Bool {
+        guard let scheme = scheme?.lowercased(),
+              let otherScheme = other.scheme?.lowercased(),
+              let host = host?.lowercased(),
+              let otherHost = other.host?.lowercased() else {
+            return false
+        }
+
+        return scheme == otherScheme &&
+            host == otherHost &&
+            normalizedOriginPort == other.normalizedOriginPort
+    }
+
+    private var normalizedOriginPort: Int? {
+        if let port {
+            return port
+        }
+
+        switch scheme?.lowercased() {
+        case "http":
+            return 80
+        case "https":
+            return 443
+        default:
+            return nil
         }
     }
 }
@@ -1145,6 +1316,125 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
     }
 }
 #endif
+
+/// Prevents pending websocket work from resetting HAKit's reconnect backoff.
+final class RetryAwareHAConnection: HAConnection {
+    private let underlying: HAConnection
+
+    weak var delegate: HAConnectionDelegate?
+
+    var configuration: HAConnectionConfiguration {
+        get { underlying.configuration }
+        set { underlying.configuration = newValue }
+    }
+
+    var state: HAConnectionState {
+        underlying.state
+    }
+
+    var caches: HACachesContainer {
+        underlying.caches
+    }
+
+    var callbackQueue: DispatchQueue {
+        get { underlying.callbackQueue }
+        set { underlying.callbackQueue = newValue }
+    }
+
+    init(underlying: HAConnection) {
+        self.underlying = underlying
+        underlying.delegate = self
+    }
+
+    func connect() {
+        underlying.connect()
+    }
+
+    func disconnect() {
+        underlying.disconnect()
+    }
+
+    @discardableResult
+    func send(
+        _ request: HARequest,
+        completion: @escaping RequestCompletion
+    ) -> HACancellable {
+        connectIfNeeded(for: request)
+        return underlying.send(request, completion: completion)
+    }
+
+    @discardableResult
+    func send<T>(
+        _ request: HATypedRequest<T>,
+        completion: @escaping (Swift.Result<T, HAError>) -> Void
+    ) -> HACancellable {
+        connectIfNeeded(for: request.request)
+        return underlying.send(request, completion: completion)
+    }
+
+    @discardableResult
+    func subscribe(
+        to request: HARequest,
+        handler: @escaping SubscriptionHandler
+    ) -> HACancellable {
+        connectIfNeeded(for: request)
+        return underlying.subscribe(to: request, handler: handler)
+    }
+
+    @discardableResult
+    func subscribe(
+        to request: HARequest,
+        initiated: @escaping SubscriptionInitiatedHandler,
+        handler: @escaping SubscriptionHandler
+    ) -> HACancellable {
+        connectIfNeeded(for: request)
+        return underlying.subscribe(to: request, initiated: initiated, handler: handler)
+    }
+
+    @discardableResult
+    func subscribe<T>(
+        to request: HATypedSubscription<T>,
+        handler: @escaping (HACancellable, T) -> Void
+    ) -> HACancellable {
+        connectIfNeeded(for: request.request)
+        return underlying.subscribe(to: request, handler: handler)
+    }
+
+    @discardableResult
+    func subscribe<T>(
+        to request: HATypedSubscription<T>,
+        initiated: @escaping SubscriptionInitiatedHandler,
+        handler: @escaping (HACancellable, T) -> Void
+    ) -> HACancellable {
+        connectIfNeeded(for: request.request)
+        return underlying.subscribe(to: request, initiated: initiated, handler: handler)
+    }
+
+    private func connectIfNeeded(for request: HARequest) {
+        switch request.type {
+        case .rest:
+            return
+        case .webSocket, .sttData:
+            break
+        }
+
+        guard HomeAssistantAPI.shouldAttemptAutomaticWebSocketConnect(for: underlying.state) else {
+            return
+        }
+
+        underlying.connect()
+    }
+}
+
+extension RetryAwareHAConnection: HAConnectionDelegate {
+    func connection(_ connection: HAConnection, didTransitionTo state: HAConnectionState) {
+        delegate?.connection(self, didTransitionTo: state)
+        NotificationCenter.default.post(
+            name: HAConnectionState.didTransitionToStateNotification,
+            object: self
+        )
+    }
+}
 
 extension HomeAssistantAPI.APIError: LocalizedError {
     public var errorDescription: String? {

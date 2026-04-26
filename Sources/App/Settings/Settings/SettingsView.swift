@@ -246,7 +246,7 @@ struct SettingsView: View {
         Label {
             HStack(spacing: DesignSystem.Spaces.one) {
                 Text(item.title)
-                if item == .kiosk || item == .liveActivities {
+                if item == .kiosk {
                     LabsLabel()
                 }
             }

@@ -466,38 +466,6 @@ extension WebViewController {
         ))
     }
 
-    func showSwiftMessage(error: Error, duration: TimeInterval = 15) {
-        Current.Log.error(error)
-        showBanner(request: .init(
-            title: L10n.Connection.Error.genericTitle,
-            message: nil,
-            duration: .seconds(duration),
-            dimming: .none,
-            style: .card(
-                backgroundColor: .secondarySystemBackground,
-                foregroundColor: .label
-            ),
-            action: .init(
-                image: MaterialDesignIcons.helpCircleIcon.image(
-                    ofSize: .init(width: 35, height: 35),
-                    color: .haPrimary
-                ),
-                tintColor: .haPrimary,
-                accessibilityLabel: L10n.helpLabel,
-                handler: { [weak self] in
-                    guard let self else { return }
-                    presentOverlayController(
-                        controller: UIHostingController(rootView: ConnectionErrorDetailsView(
-                            server: server,
-                            error: error
-                        )),
-                        animated: true
-                    )
-                }
-            )
-        ))
-    }
-
     func showReAuthPopup(serverId: String, code: Int) {
         guard serverId == server.identifier.rawValue else {
             return

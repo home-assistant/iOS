@@ -29,6 +29,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var statusBarView: UIView?
     var webViewTopConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
+    var latestLoadError: Error?
 
     var initialURL: URL?
     var statusBarButtonsStack: UIStackView?

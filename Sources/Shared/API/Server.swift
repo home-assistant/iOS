@@ -243,8 +243,13 @@ extension ServerInfo {
         info.connection.cloudhookURL = nil
         info.connection.webhookID = Self.mirrorPlaceholderWebhookID
         info.connection.webhookSecret = nil
+        info.connection.securityExceptions = .init()
         info.connection.clientCertificate = nil
         return info
+    }
+
+    public var requiresReauthenticationAfterMirrorRestore: Bool {
+        token == Self.mirrorPlaceholderToken
     }
 }
 
