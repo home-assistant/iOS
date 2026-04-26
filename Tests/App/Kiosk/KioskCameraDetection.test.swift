@@ -51,9 +51,6 @@ struct KioskCameraSettingsTests {
         #expect(settings.cameraMotionEnabled == false)
         #expect(settings.cameraMotionSensitivity == .medium)
         #expect(settings.wakeOnCameraMotion == false)
-        #expect(settings.cameraPresenceEnabled == false)
-        #expect(settings.cameraFaceDetectionEnabled == false)
-        #expect(settings.wakeOnCameraPresence == false)
     }
 
     @Test func cameraSettingsRoundtrip() async throws {
@@ -61,9 +58,6 @@ struct KioskCameraSettingsTests {
         settings.cameraMotionEnabled = true
         settings.cameraMotionSensitivity = .high
         settings.wakeOnCameraMotion = true
-        settings.cameraPresenceEnabled = true
-        settings.cameraFaceDetectionEnabled = true
-        settings.wakeOnCameraPresence = true
 
         let encoded = try JSONEncoder().encode(settings)
         let decoded = try JSONDecoder().decode(KioskSettings.self, from: encoded)
@@ -71,9 +65,6 @@ struct KioskCameraSettingsTests {
         #expect(decoded.cameraMotionEnabled == true)
         #expect(decoded.cameraMotionSensitivity == .high)
         #expect(decoded.wakeOnCameraMotion == true)
-        #expect(decoded.cameraPresenceEnabled == true)
-        #expect(decoded.cameraFaceDetectionEnabled == true)
-        #expect(decoded.wakeOnCameraPresence == true)
     }
 
     @Test func backwardsCompatibility() async throws {
@@ -98,9 +89,6 @@ struct KioskCameraSettingsTests {
         #expect(decoded.cameraMotionEnabled == false)
         #expect(decoded.cameraMotionSensitivity == .medium)
         #expect(decoded.wakeOnCameraMotion == false)
-        #expect(decoded.cameraPresenceEnabled == false)
-        #expect(decoded.cameraFaceDetectionEnabled == false)
-        #expect(decoded.wakeOnCameraPresence == false)
     }
 
     @Test func settingsEqualityWithCameraFields() async throws {

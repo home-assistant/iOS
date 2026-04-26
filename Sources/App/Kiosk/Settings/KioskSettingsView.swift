@@ -283,20 +283,6 @@ public struct KioskSettingsView: View {
                     Label(L10n.Kiosk.Camera.wakeOnMotion, systemSymbol: .sunMax)
                 }
             }
-
-            Toggle(isOn: $viewModel.settings.cameraPresenceEnabled) {
-                Label(L10n.Kiosk.Camera.presenceDetection, systemSymbol: .personFill)
-            }
-
-            if viewModel.settings.cameraPresenceEnabled {
-                Toggle(isOn: $viewModel.settings.cameraFaceDetectionEnabled) {
-                    Label(L10n.Kiosk.Camera.faceDetection, systemSymbol: .faceSmiling)
-                }
-
-                Toggle(isOn: $viewModel.settings.wakeOnCameraPresence) {
-                    Label(L10n.Kiosk.Camera.wakeOnPresence, systemSymbol: .sunMax)
-                }
-            }
         } header: {
             Text(L10n.Kiosk.Camera.section)
         } footer: {

@@ -3479,7 +3479,6 @@
 		C00AE2FDC80CA2FFDFCA2B2B /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
 		C1694CFE2AAC39ABD6266B1D /* Pods-iOS-Extensions-Matter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Matter.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Matter/Pods-iOS-Extensions-Matter.release.xcconfig"; sourceTree = "<group>"; };
 		C22F619E232C3F0E98A9346D /* Pods_iOS_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C64EAB9B84E4838281F3C36B /* KioskPresenceDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KioskPresenceDetector.swift; sourceTree = "<group>"; };
 		C663B0750E0318469E7008C3 /* Pods_iOS_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C700605E488301BAD78A5B27 /* NotificationCategoryEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationCategoryEditorView.swift; sourceTree = "<group>"; };
 		C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -6600,7 +6599,6 @@
 			children = (
 				5F06E4C4BCA8BCEFAC2BD8CD /* KioskCameraDetectionManager.swift */,
 				596D41DEAF91D00E446816EC /* KioskCameraMotionDetector.swift */,
-				C64EAB9B84E4838281F3C36B /* KioskPresenceDetector.swift */,
 			);
 			name = Camera;
 			path = Camera;
@@ -9774,7 +9772,6 @@
 				D9BF1EFF40733A4A1D03B9C8 /* CustomWidgetIntentHelper.swift in Sources */,
 				5C03030E951BE417C7CB03E7 /* KioskCameraDetectionManager.swift in Sources */,
 				E72C0153D13C2041C76CE742 /* KioskCameraMotionDetector.swift in Sources */,
-				C3D543FC10EC39A66961A92D /* KioskPresenceDetector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
