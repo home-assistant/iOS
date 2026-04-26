@@ -31,6 +31,12 @@ struct KioskLifecycleBrightnessTests {
         var value: CGFloat = 0
     }
 
+    /// Brightness fields in KioskSettings are `Float`, so values that round-trip
+    /// through them lose precision (CGFloat(Float(0.05)) ≠ 0.05). Use a tolerance.
+    private func approxEq(_ a: CGFloat, _ b: CGFloat) -> Bool {
+        abs(a - b) < 1e-5
+    }
+
     /// Prepare the shared manager for a test: install mocked brightness closures on
     /// Current BEFORE touching kiosk state (so a stale kiosk-active state from a prior
     /// test or prior run cannot invoke the real Current.setScreenBrightness and change
@@ -78,13 +84,13 @@ struct KioskLifecycleBrightnessTests {
         mgr.updateSettings(settings)
 
         mgr.sleepScreen(mode: .dim)
-        #expect(box.value == 0.05, "screensaver should have dimmed to settings.screensaverDimLevel")
+        #expect(approxEq(box.value, 0.05), "screensaver should have dimmed to settings.screensaverDimLevel")
 
         // Act: HA backgrounds (user taps a notification and opens another app)
         mgr.appDidEnterBackground()
 
         #expect(
-            box.value == 0.8,
+            approxEq(box.value, 0.8),
             "expected background to restore originalBrightness (0.8), got \(box.value)"
         )
     }
@@ -104,7 +110,7 @@ struct KioskLifecycleBrightnessTests {
         mgr.sleepScreen(mode: .dim)
 
         mgr.appDidEnterBackground()
-        #expect(box.value == 0.8)
+        #expect(approxEq(box.value, 0.8))
 
         #expect(
             mgr.activeScreensaverMode == .dim,
@@ -114,7 +120,7 @@ struct KioskLifecycleBrightnessTests {
         mgr.appDidBecomeActive()
 
         #expect(
-            box.value == 0.05,
+            approxEq(box.value, 0.05),
             "expected foreground to re-apply screensaver dim (0.05), got \(box.value)"
         )
     }
@@ -131,17 +137,17 @@ struct KioskLifecycleBrightnessTests {
         settings.manualBrightness = 0.3
         mgr.updateSettings(settings)
 
-        #expect(box.value == 0.3, "managed brightness should have been applied on enable/settings change")
+        #expect(approxEq(box.value, 0.3), "managed brightness should have been applied on enable/settings change")
 
         mgr.appDidEnterBackground()
-        #expect(box.value == 0.8, "background should restore originalBrightness")
+        #expect(approxEq(box.value, 0.8), "background should restore originalBrightness")
 
         #expect(mgr.activeScreensaverMode == nil)
 
         mgr.appDidBecomeActive()
 
         #expect(
-            box.value == 0.3,
+            approxEq(box.value, 0.3),
             "expected foreground to re-apply managed brightness (0.3), got \(box.value)"
         )
     }
@@ -165,16 +171,16 @@ struct KioskLifecycleBrightnessTests {
         mgr.updateSettings(settings)
 
         mgr.sleepScreen(mode: .clock)
-        #expect(box.value == 0.2, "clock screensaver should have dimmed below the pre-screensaver brightness")
+        #expect(approxEq(box.value, 0.2), "clock screensaver should have dimmed below the pre-screensaver brightness")
 
         mgr.appDidEnterBackground()
-        #expect(box.value == 0.8, "background should restore originalBrightness")
+        #expect(approxEq(box.value, 0.8), "background should restore originalBrightness")
 
         #expect(mgr.activeScreensaverMode == .clock)
         mgr.appDidBecomeActive()
 
         #expect(
-            box.value == 0.2,
+            approxEq(box.value, 0.2),
             "expected foreground to re-apply clock screensaver dim (0.2), got \(box.value)"
         )
     }
