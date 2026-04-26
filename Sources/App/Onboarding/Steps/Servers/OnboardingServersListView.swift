@@ -7,6 +7,13 @@ struct OnboardingServersListView: View {
         static let initialDelayUntilDismissCenterLoader: TimeInterval = 3
         static let minimumDelayUntilDismissCenterLoader: TimeInterval = 1.5
         static let delayUntilAutoconnect: TimeInterval = 2
+
+        enum MacSheetSize {
+            static let errorDetailsMinWidth: CGFloat = 760
+            static let errorDetailsMinHeight: CGFloat = 680
+            static let manualInputMinWidth: CGFloat = 720
+            static let manualInputMinHeight: CGFloat = 600
+        }
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -90,12 +97,20 @@ struct OnboardingServersListView: View {
         }
         .sheet(isPresented: $viewModel.showError) {
             errorView
+                .macOnboardingSheetFrame(
+                    minWidth: Constants.MacSheetSize.errorDetailsMinWidth,
+                    minHeight: Constants.MacSheetSize.errorDetailsMinHeight
+                )
         }
         .sheet(isPresented: $showManualInput) {
             ManualURLEntryView { connectURL in
                 viewModel.manualInputLoading = true
                 viewModel.selectInstance(.init(manualURL: connectURL), presentingController: presentingViewController)
             }
+            .macOnboardingSheetFrame(
+                minWidth: Constants.MacSheetSize.manualInputMinWidth,
+                minHeight: Constants.MacSheetSize.manualInputMinHeight
+            )
         }
         .fullScreenCover(isPresented: .init(get: {
             viewModel.showPermissionsFlow && viewModel.onboardingServer != nil

@@ -175,7 +175,32 @@ public class AppEnvironment {
 
     public var servers: ServerManager = ServerManagerImpl()
 
-    public var cachedApis = [Identifier<Server>: HomeAssistantAPI]()
+    // Thread-safe wrapper for the API cache. AppIntents (e.g. ScriptAppIntent,
+    // SwitchIntent) run on arbitrary threads and can call api(for:) concurrently,
+    // so unprotected dictionary access causes memory corruption in extensions.
+    private var cachedApisLock = NSLock()
+    private var _cachedApis = [Identifier<Server>: HomeAssistantAPI]()
+    public var cachedApis: [Identifier<Server>: HomeAssistantAPI] {
+        get {
+            cachedApisLock.lock()
+            defer { cachedApisLock.unlock() }
+            return _cachedApis
+        }
+        set {
+            cachedApisLock.lock()
+            defer { cachedApisLock.unlock() }
+            _cachedApis = newValue
+        }
+    }
+
+    /// Thread-safe single-key insertion into the API cache.
+    /// Prefer this over `cachedApis[id] = api` which involves a
+    /// non-atomic get→mutate→set cycle on the computed property.
+    public func setCachedApi(_ api: HomeAssistantAPI, for identifier: Identifier<Server>) {
+        cachedApisLock.lock()
+        defer { cachedApisLock.unlock() }
+        _cachedApis[identifier] = api
+    }
 
     public var apis: [HomeAssistantAPI] { servers.all.compactMap(api(for:)) }
 
@@ -185,11 +210,15 @@ public class AppEnvironment {
             return nil
         }
 
-        if let existing = cachedApis[server.identifier] {
+        // Use the same lock to make the read-check-write atomic
+        cachedApisLock.lock()
+        defer { cachedApisLock.unlock() }
+
+        if let existing = _cachedApis[server.identifier] {
             return existing
         } else {
             let api = HomeAssistantAPI(server: server, urlConfig: .default)
-            cachedApis[server.identifier] = api
+            _cachedApis[server.identifier] = api
             return api
         }
     }
@@ -200,7 +229,10 @@ public class AppEnvironment {
 
     public var settingsStore = SettingsStore()
 
-    public var webhooks = with(WebhookManager()) {
+    // Keep this lazy so widget and Live Activity extension startup does not eagerly
+    // create WebhookManager background URL sessions before they are actually needed.
+    // The main app and extension background handlers still initialize it on first use.
+    public lazy var webhooks = with(WebhookManager()) {
         // ^ because background url session identifiers cannot be reused, this must be a singleton-ish
         $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)
         $0.register(responseHandler: WebhookResponseLocation.self, for: .location)
@@ -225,6 +257,7 @@ public class AppEnvironment {
         $0.register(provider: AppVersionSensor.self)
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
+        $0.register(provider: BarometerSensor.self)
     }
 
     public var localized = LocalizedManager()
@@ -451,6 +484,30 @@ public class AppEnvironment {
     }
 
     public var pedometer = Pedometer()
+
+    /// Wrapper around CMAltimeter for barometric pressure readings
+    public struct Barometer {
+        private let underlyingAltimeter = CMAltimeter()
+        // isRelativeAltitudeAvailable checks for a barometer chip; the same hardware delivers
+        // both relative altitude and barometric pressure via startRelativeAltitudeUpdates.
+        public var isAvailable: () -> Bool = CMAltimeter.isRelativeAltitudeAvailable
+        public var isAuthorized: () -> Bool = {
+            guard !Current.isCatalyst else { return false }
+            return CMAltimeter.authorizationStatus() == .authorized
+        }
+
+        public lazy var startUpdatesOnQueueHandler: (
+            OperationQueue, @escaping CMAltitudeHandler
+        ) -> Void = { [underlyingAltimeter] queue, handler in
+            underlyingAltimeter.startRelativeAltitudeUpdates(to: queue, withHandler: handler)
+        }
+
+        public lazy var stopUpdates: () -> Void = { [underlyingAltimeter] in
+            underlyingAltimeter.stopRelativeAltitudeUpdates()
+        }
+    }
+
+    public var barometer = Barometer()
 
     public var device = DeviceWrapper()
 

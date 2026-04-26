@@ -2,6 +2,7 @@ import Foundation
 import GRDB
 import HAKit
 import PromiseKit
+import SwiftUI
 
 /// Object that represents iOS item that can be displayed in Watch, Widgets, CarPlay and perform different action types
 public struct MagicItem: Codable, Equatable, Hashable {
@@ -93,6 +94,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case scene
         case entity
         case folder
+        case assistPipeline
     }
 
     public struct Customization: Codable, Equatable, Hashable {
@@ -158,6 +160,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
                 )
             case .folder:
                 icon = .folderIcon
+            case .assistPipeline:
+                icon = .microphoneIcon
             }
         }
 
@@ -171,6 +175,15 @@ public struct MagicItem: Codable, Equatable, Hashable {
 
     public var widgetInteractionType: WidgetInteractionType {
         let magicItem = self
+
+        if magicItem.type == .assistPipeline {
+            return assistIntent(
+                serverId: magicItem.serverId,
+                pipelineId: magicItem.id,
+                startListening: true
+            )
+        }
+
         guard let domain = magicItem.domain else { return .appIntent(.refresh) }
 
         var interactionType: WidgetInteractionType = .appIntent(.refresh)
@@ -338,6 +351,10 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
 }
 
 public extension MagicItem {
+    static var defaultAssistIconColorHex: String {
+        Color.haPrimary.hex() ?? Color.brand50.hex() ?? ""
+    }
+
     // currentItemState is used only for lock domain since it can't be toggled
     func execute(
         on server: Server,
@@ -382,8 +399,8 @@ public extension MagicItem {
                         entityId: id,
                         state: currentItemState
                     )
-                case .folder:
-                    // Folders don't execute actions
+                case .folder, .assistPipeline:
+                    // Folders and assist pipelines don't execute actions
                     return nil
                 }
             }() {

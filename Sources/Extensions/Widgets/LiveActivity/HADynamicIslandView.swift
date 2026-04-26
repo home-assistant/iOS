@@ -15,32 +15,33 @@ func makeHADynamicIsland(
 ) -> DynamicIsland {
     DynamicIsland {
         DynamicIslandExpandedRegion(.leading) {
-            HADynamicIslandIconView(slug: state.icon, color: state.color, size: 24)
-                .padding(.leading, DesignSystem.Spaces.half)
+            HADynamicIslandIconContainerView(slug: state.icon, color: state.color, size: 28)
+                .padding(.leading, DesignSystem.Spaces.one)
         }
         DynamicIslandExpandedRegion(.center) {
             Text(attributes.title)
-                .font(.caption.weight(.semibold))
+                .font(.body.weight(.semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
         DynamicIslandExpandedRegion(.trailing) {
             HAExpandedTrailingView(state: state)
-                .padding(.trailing, DesignSystem.Spaces.half)
+                .padding(.trailing, DesignSystem.Spaces.one)
         }
         DynamicIslandExpandedRegion(.bottom) {
             HAExpandedBottomView(state: state)
-                .padding(.horizontal, DesignSystem.Spaces.one)
-                .padding(.bottom, DesignSystem.Spaces.half)
+                .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
+                .padding(.bottom, DesignSystem.Spaces.one)
         }
     } compactLeading: {
-        HADynamicIslandIconView(slug: state.icon, color: state.color, size: 16)
+        HADynamicIslandIconView(slug: state.icon, color: state.color, size: 18)
             .padding(.leading, DesignSystem.Spaces.half)
     } compactTrailing: {
         HACompactTrailingView(state: state)
             .padding(.trailing, DesignSystem.Spaces.half)
     } minimal: {
-        HADynamicIslandIconView(slug: state.icon, color: state.color, size: 14)
+        HADynamicIslandIconView(slug: state.icon, color: state.color, size: 16)
     }
 }
 
@@ -52,13 +53,10 @@ struct HADynamicIslandIconView: View {
     let color: String?
     let size: CGFloat
 
-    /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
-    private static let haBlueHex = "#03A9F4"
-
     var body: some View {
         if let slug {
             // UIColor(hex:) from Shared handles nil/CSS names/3-6-8 digit hex; non-failable.
-            let uiColor = UIColor(hex: color ?? Self.haBlueHex)
+            let uiColor = HAActivityVisualStyle.uiColor(from: color)
             let mdiIcon = MaterialDesignIcons(serversideValueNamed: slug)
             Image(uiImage: mdiIcon.image(
                 ofSize: .init(width: size, height: size),
@@ -67,6 +65,33 @@ struct HADynamicIslandIconView: View {
             .resizable()
             .frame(width: size, height: size)
         }
+    }
+}
+
+@available(iOS 17.2, *)
+struct HADynamicIslandIconContainerView: View {
+    let slug: String?
+    let color: String?
+    let size: CGFloat
+
+    var body: some View {
+        if slug != nil {
+            ZStack {
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
+                    .fill(accentColor.opacity(0.2))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
+                            .strokeBorder(accentColor.opacity(0.28))
+                    }
+
+                HADynamicIslandIconView(slug: slug, color: color, size: size)
+            }
+            .frame(width: 44, height: 44)
+        }
+    }
+
+    private var accentColor: Color {
+        HAActivityVisualStyle.color(from: color)
     }
 }
 
@@ -86,20 +111,19 @@ struct HACompactTrailingView: View {
     var body: some View {
         if state.chronometer == true, let end = state.countdownEnd {
             Text(timerInterval: Date.now ... end, countsDown: true)
-                .font(.caption2)
+                .font(.footnote.monospacedDigit())
                 .foregroundStyle(.white)
-                .monospacedDigit()
                 .contentTransition(.numericText(countsDown: true))
                 .frame(width: Self.compactTrailingTimerWidth)
         } else if let critical = state.criticalText {
             Text(critical)
-                .font(.caption2)
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .frame(maxWidth: Self.compactTrailingMaxWidth)
         } else if let fraction = state.progressFraction {
-            Text("\(Int(fraction * 100))%")
-                .font(.caption2)
+            Text(HAActivityVisualStyle.percentString(for: fraction))
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(.white)
                 .monospacedDigit()
         }
@@ -114,13 +138,12 @@ struct HAExpandedTrailingView: View {
 
     var body: some View {
         if let fraction = state.progressFraction {
-            Text("\(Int(fraction * 100))%")
-                .font(.caption2)
+            Text(HAActivityVisualStyle.percentString(for: fraction))
+                .font(.headline.monospacedDigit())
                 .foregroundStyle(.white)
-                .monospacedDigit()
         } else if let critical = state.criticalText {
             Text(critical)
-                .font(.caption2)
+                .font(.headline)
                 .foregroundStyle(.white)
                 .lineLimit(1)
         }
@@ -134,32 +157,34 @@ struct HAExpandedBottomView: View {
     let state: HALiveActivityAttributes.ContentState
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spaces.half) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             if state.chronometer == true, let end = state.countdownEnd {
                 Text(timerInterval: Date.now ... end, countsDown: true)
-                    .font(.body.monospacedDigit())
+                    .font(.title3.monospacedDigit().weight(.medium))
                     .foregroundStyle(.white)
                     .contentTransition(.numericText(countsDown: true))
             } else {
                 Text(state.message)
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.85))
+                    .font(.body)
+                    .foregroundStyle(.white.opacity(0.88))
                     .lineLimit(2)
             }
 
             if let fraction = state.progressFraction {
-                ProgressView(value: fraction)
-                    .tint(accentColor)
+                HAActivityProgressBar(
+                    fraction: fraction,
+                    fillColor: accentColor,
+                    trackColor: .white.opacity(0.16),
+                    height: 8
+                )
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// Accent color from ContentState, fallback to Home Assistant primary blue.
     private var accentColor: Color {
-        if let hex = state.color {
-            return Color(hex: hex)
-        }
-        return .haPrimary
+        HAActivityVisualStyle.color(from: state.color)
     }
 }
 #endif

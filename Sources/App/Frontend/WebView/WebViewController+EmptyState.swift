@@ -1,18 +1,32 @@
 import Shared
+import SwiftUI
 import UIKit
 
 // MARK: - Empty State
 
 extension WebViewController {
     func setupEmptyState() {
-        let emptyState = WebViewEmptyStateWrapperView(server: server) { [weak self] in
-            self?.hideEmptyState()
-            self?.refresh()
-        } settingsAction: { [weak self] in
-            self?.showSettingsViewController()
-        } dismissAction: { [weak self] in
-            self?.hideEmptyState()
-        }
+        let emptyState = WebViewEmptyStateWrapperView(
+            style: emptyStateStyle(for: connectionState),
+            server: server,
+            showsErrorDetailsButton: shouldShowErrorDetailsButton,
+            retryAction: { [weak self] in
+                self?.hideEmptyState()
+                self?.refresh()
+            },
+            settingsAction: { [weak self] in
+                self?.showSettingsViewController()
+            },
+            errorDetailsAction: { [weak self] in
+                self?.presentLatestLoadErrorDetails()
+            },
+            reauthAction: { [weak self] urlType in
+                self?.performReauthentication(using: urlType)
+            },
+            dismissAction: { [weak self] in
+                self?.hideEmptyState()
+            }
+        )
 
         view.addSubview(emptyState)
 
@@ -29,10 +43,38 @@ extension WebViewController {
         emptyStateView = emptyState
     }
 
+    func emptyStateStyle(for connectionState: FrontEndConnectionState) -> WebViewEmptyStateStyle {
+        switch connectionState {
+        case .authInvalid:
+            .unauthenticated
+        case .connected, .disconnected, .unknown:
+            .disconnected
+        }
+    }
+
     func showEmptyState() {
+        emptyStateView?.update(
+            style: emptyStateStyle(for: connectionState),
+            showsErrorDetailsButton: shouldShowErrorDetailsButton
+        )
         UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
             self.emptyStateView?.alpha = 1
         }, completion: nil)
+    }
+
+    var shouldShowErrorDetailsButton: Bool {
+        connectionState == .disconnected && latestLoadError != nil
+    }
+
+    func presentLatestLoadErrorDetails() {
+        guard let latestLoadError else { return }
+        presentOverlayController(
+            controller: UIHostingController(rootView: ConnectionErrorDetailsView(
+                server: server,
+                error: latestLoadError
+            )),
+            animated: true
+        )
     }
 
     @objc func hideEmptyState() {
@@ -44,7 +86,11 @@ extension WebViewController {
     // To avoid keeping the empty state on screen when user is disconnected in background
     // due to inactivity, we reset the empty state timer
     @objc func resetEmptyStateTimerWithLatestConnectedState() {
-        let state: FrontEndConnectionState = isConnected ? .connected : .disconnected
+        let state: FrontEndConnectionState = if connectionState == .authInvalid {
+            .authInvalid
+        } else {
+            isConnected ? .connected : .disconnected
+        }
         updateFrontendConnectionState(state: state.rawValue)
     }
 

@@ -129,6 +129,10 @@ struct CarPlayConfigurationView: View {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .accent))
             Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
+            if item.type == .assistPipeline {
+                LabsLabel()
+                    .fixedSize()
+            }
             Image(systemSymbol: .line3Horizontal)
                 .foregroundStyle(.gray)
         }

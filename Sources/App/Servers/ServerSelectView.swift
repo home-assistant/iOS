@@ -140,12 +140,15 @@ struct ServerSelectViewRow: View {
     }
 
     private func loadUserNameAndProfilePicture() {
-        Current.api(for: server)?.connection.caches.user.once { user in
-            userName = user.name.orEmpty
-        }
+        guard let api = Current.api(for: server) else { return }
 
-        Current.api(for: server)?.profilePicture { image in
-            profilePictureImage = image
+        api.currentUser { user in
+            userName = user?.name ?? ""
+
+            guard let user else { return }
+            api.profilePicture(for: user) { image in
+                profilePictureImage = image
+            }
         }
     }
 }

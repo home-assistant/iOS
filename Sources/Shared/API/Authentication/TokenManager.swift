@@ -152,8 +152,8 @@ public class TokenManager {
                 case let .rejected(error):
                     Current.Log.error("refresh token got error: \(error)")
 
-                    if let underlying = (error as? AFError)?.underlyingError as? AuthenticationAPI.AuthenticationError,
-                       case .serverError(400 ... 403, _, _) = underlying {
+                    if let underlying = error.authenticationAPIError,
+                       underlying.shouldRequireReauthentication {
                         /// Server rejected the refresh token. All is lost.
                         let event = ClientEvent(
                             text: "Refresh token is invalid, notifying user",
@@ -167,7 +167,7 @@ public class TokenManager {
                         Current.api(for: server)?.connection.disconnect()
                         Current.onboardingObservation.needed(.unauthenticated(
                             server.identifier.rawValue,
-                            underlying.asAFError?.responseCode ?? -1
+                            underlying.statusCode
                         ))
                     }
                 case .fulfilled:

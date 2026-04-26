@@ -58,15 +58,24 @@ extension WebViewController: WebViewControllerProtocol {
     func updateFrontendConnectionState(state: String) {
         emptyStateTimer?.invalidate()
         emptyStateTimer = nil
+        latestLoadError = nil
 
-        let state = FrontEndConnectionState(rawValue: state) ?? .unknown
-        isConnected = state == .connected
-        connectionState = state
+        let requestedState = FrontEndConnectionState(rawValue: state) ?? .unknown
+        let resolvedState: FrontEndConnectionState = if connectionState == .authInvalid, requestedState != .connected {
+            .authInvalid
+        } else {
+            requestedState
+        }
+        isConnected = resolvedState == .connected
+        connectionState = resolvedState
 
         // Possible values: connected, disconnected, auth-invalid
-        if state == .connected {
+        switch resolvedState {
+        case .connected:
             hideEmptyState()
-        } else {
+        case .authInvalid:
+            showEmptyState()
+        case .disconnected, .unknown:
             // Start a 10-second timer. If not interrupted by a 'connected' state, set alpha to 1.
             emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
                 self?.showEmptyState()
@@ -78,6 +87,14 @@ extension WebViewController: WebViewControllerProtocol {
         if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
             load(request: URLRequest(url: url))
         }
+    }
+
+    func showBanner(request: BannerRequest) {
+        bannerPresenter.show(on: self, request: request)
+    }
+
+    func hideBanner(id: String) {
+        bannerPresenter.hide(id: id)
     }
 
     func load(request: URLRequest) {

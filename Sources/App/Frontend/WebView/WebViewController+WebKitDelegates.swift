@@ -44,8 +44,8 @@ extension WebViewController {
             }
 
             if !error.isCancelled {
+                latestLoadError = error
                 showEmptyState()
-                showSwiftMessage(error: error)
             }
         }
     }
@@ -75,13 +75,14 @@ extension WebViewController {
         }
 
         if shouldShowError {
+            latestLoadError = error
             showEmptyState()
-            showSwiftMessage(error: error)
         }
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         refreshControl.endRefreshing()
+        latestLoadError = nil
 
         // in case the view appears again, don't reload
         initialURL = nil
@@ -242,19 +243,6 @@ extension WebViewController {
         decisionHandler: @escaping (WKPermissionDecision) -> Void
     ) {
         decisionHandler(.grant)
-    }
-}
-
-extension WebViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Prevent scrollView from scrolling past the top or bottom
-        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height {
-            scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
-        }
-    }
-
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        recordKioskActivity()
     }
 }
 
