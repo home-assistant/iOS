@@ -14,47 +14,20 @@ import SwiftUI
 struct ActionsSettingsView: View {
     @StateObject private var viewModel = ActionsSettingsViewModel()
 
-    @State private var newAction: Action?
     @State private var editingAction: Action?
-    @State private var editingSceneAction: Action?
 
     var body: some View {
         List {
             disclaimerSection
             localActionsSection
-            scenesSection
             serverActionsSection
             serverUpdateSection
         }
         .listStyle(.insetGrouped)
         .navigationTitle(L10n.SettingsDetails.LegacyActions.title)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                HStack {
-                    if hasAnyEditableActions {
-                        EditButton()
-                    }
-                    Button {
-                        newAction = Action()
-                    } label: {
-                        Image(systemSymbol: .plus)
-                    }
-                }
-            }
-        }
-        .sheet(item: $newAction) { action in
-            ActionEditorSheet(action: action, isNew: true) { updated, openAutomationEditor in
-                handleSheetSave(updated: updated, openAutomationEditor: openAutomationEditor)
-            }
-        }
         .sheet(item: $editingAction) { action in
             ActionEditorSheet(action: action, isNew: false) { updated, openAutomationEditor in
                 handleSheetSave(updated: updated, openAutomationEditor: openAutomationEditor)
-            }
-        }
-        .sheet(item: $editingSceneAction) { action in
-            ActionEditorSheet(action: action, isNew: false) { updated, _ in
-                viewModel.save(action: updated)
             }
         }
     }
@@ -93,31 +66,6 @@ struct ActionsSettingsView: View {
                 .onMove { source, destination in
                     viewModel.moveLocalActions(from: source, to: destination)
                 }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var scenesSection: some View {
-        if !viewModel.scenes.isEmpty {
-            Section {
-                ForEach(viewModel.scenes) { scene in
-                    SceneActionRowView(
-                        scene: scene,
-                        onToggle: { enabled in
-                            viewModel.setSceneEnabled(scene.identifier, enabled: enabled)
-                        },
-                        onCustomize: {
-                            if let first = viewModel.firstAction(forSceneId: scene.identifier) {
-                                editingSceneAction = first
-                            }
-                        }
-                    )
-                }
-            } header: {
-                Text(L10n.SettingsDetails.Actions.Scenes.title)
-            } footer: {
-                Text(L10n.SettingsDetails.Actions.Scenes.footer)
             }
         }
     }
@@ -275,6 +223,7 @@ private struct SceneActionRowView: View {
 // MARK: - Sheet wrapper
 
 private struct ActionEditorSheet: View {
+    @Environment(\.dismiss) private var dismiss
     let action: Action
     let isNew: Bool
     let onSave: (Action, _ openAutomationEditor: Bool) -> Void
@@ -283,6 +232,11 @@ private struct ActionEditorSheet: View {
         NavigationView {
             ActionConfiguratorView(action: isNew ? nil : action) { updated, openAutomationEditor in
                 onSave(updated, openAutomationEditor)
+            }
+            .toolbar {
+                CloseButton {
+                    dismiss()
+                }
             }
         }
         .navigationViewStyle(.stack)
