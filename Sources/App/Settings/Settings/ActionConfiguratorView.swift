@@ -45,7 +45,16 @@ final class ActionConfiguratorViewModel: ObservableObject {
         self.textColor = sourceAction.TextColor
         self.backgroundColor = sourceAction.BackgroundColor
         self.useCustomColors = sourceAction.useCustomColors
-        self.serverIdentifier = sourceAction.serverIdentifier
+
+        // Fall back to the first available server if the stored identifier is empty
+        // or points to a server that no longer exists. Common for actions imported from
+        // older single-server installs.
+        let allServerIds = Set(Current.servers.all.map(\.identifier.rawValue))
+        if sourceAction.serverIdentifier.isEmpty || !allServerIds.contains(sourceAction.serverIdentifier) {
+            self.serverIdentifier = Current.servers.all.first?.identifier.rawValue ?? sourceAction.serverIdentifier
+        } else {
+            self.serverIdentifier = sourceAction.serverIdentifier
+        }
     }
 
     func canConfigure(_ keyPath: PartialKeyPath<Action>) -> Bool {

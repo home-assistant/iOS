@@ -101,6 +101,15 @@ final class ActionsSettingsViewModel: ObservableObject {
     // MARK: - Mutations
 
     func save(action: Action) {
+        // For brand-new local actions (no managed copy yet) assign a position at the end of
+        // the current local list. Without this, the default `Position = 0` makes the new
+        // action sort to the top of the manual section once Realm publishes the change.
+        let isNewLocal = action.Scene == nil
+            && !action.isServerControlled
+            && realm.object(ofType: Action.self, forPrimaryKey: action.ID) == nil
+        if isNewLocal {
+            action.Position = Action.PositionOffset.manual.rawValue + localActions.count
+        }
         realm.reentrantWrite { [realm] in
             realm.add(action, update: .all)
         }.done { [weak self] in

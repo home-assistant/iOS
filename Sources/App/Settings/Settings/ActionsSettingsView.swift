@@ -44,18 +44,12 @@ struct ActionsSettingsView: View {
         }
         .sheet(item: $newAction) { action in
             ActionEditorSheet(action: action, isNew: true) { updated, openAutomationEditor in
-                viewModel.save(action: updated)
-                if openAutomationEditor {
-                    openAutomationEditorIfAvailable(for: updated)
-                }
+                handleSheetSave(updated: updated, openAutomationEditor: openAutomationEditor)
             }
         }
         .sheet(item: $editingAction) { action in
             ActionEditorSheet(action: action, isNew: false) { updated, openAutomationEditor in
-                viewModel.save(action: updated)
-                if openAutomationEditor {
-                    openAutomationEditorIfAvailable(for: updated)
-                }
+                handleSheetSave(updated: updated, openAutomationEditor: openAutomationEditor)
             }
         }
         .sheet(item: $editingSceneAction) { action in
@@ -174,6 +168,20 @@ struct ActionsSettingsView: View {
         }
     }
 
+    /// Mirrors the legacy `ActionConfigurator` "Create Automation" path: server-controlled
+    /// actions should never be persisted from this sheet (they're owned by the server),
+    /// even though the same callback funnels both Save and Create-Automation actions.
+    private func handleSheetSave(updated: Action, openAutomationEditor: Bool) {
+        if openAutomationEditor, updated.isServerControlled {
+            // Don't write back; just open the automation editor.
+        } else {
+            viewModel.save(action: updated)
+        }
+        if openAutomationEditor {
+            openAutomationEditorIfAvailable(for: updated)
+        }
+    }
+
     private func openAutomationEditorIfAvailable(for action: Action) {
         Current.sceneManager.webViewWindowControllerPromise
             .then(\.webViewControllerPromise)
@@ -251,6 +259,14 @@ private struct SceneActionRowView: View {
                     onCustomize()
                 }
                 .font(.footnote)
+            }
+        }
+        // Keep local @State in sync with the upstream Realm-backed snapshot, otherwise
+        // an external change to `actionEnabled` (sync, another screen, etc.) would not
+        // update the toggle while the row is on screen.
+        .onChange(of: scene.actionEnabled) { newValue in
+            if newValue != isEnabled {
+                isEnabled = newValue
             }
         }
     }

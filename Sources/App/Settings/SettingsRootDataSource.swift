@@ -1,6 +1,7 @@
 import Eureka
 import Shared
 import SwiftUI
+import UIKit
 
 enum SettingsRootDataSource {
     static let buttonRows: [SettingsButtonRow] = {
@@ -67,9 +68,9 @@ enum SettingsRootDataSource {
             $0.title = L10n.SettingsDetails.LegacyActions.title
             $0.icon = .gamepadVariantOutlineIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = .actions
-                return view
+                let host = UIHostingController(rootView: ActionsSettingsView())
+                host.title = L10n.SettingsDetails.LegacyActions.title
+                return host
             }, onDismiss: nil)
         }
     }
