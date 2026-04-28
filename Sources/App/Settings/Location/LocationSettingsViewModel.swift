@@ -180,14 +180,16 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     private func observeZones() {
         let results = Current.realm().objects(RLMZone.self)
         // Realm calls this back on the thread the observation was set up on (main).
-        // Map to value-type snapshots synchronously, then hop to MainActor to publish.
+        // Map to value-type snapshots synchronously (eagerly into an Array — Realm's
+        // `.map` returns a `LazyMapSequence`, not `[T]`), then hop to MainActor to
+        // publish.
         zonesToken = results.observe { [weak self] _ in
-            let snapshot = results.map(LocationZoneItem.init)
+            let snapshot = Array(results).map(LocationZoneItem.init)
             Task { @MainActor [weak self] in
                 self?.zones = snapshot
             }
         }
-        zones = results.map(LocationZoneItem.init)
+        zones = Array(results).map(LocationZoneItem.init)
     }
 }
 
