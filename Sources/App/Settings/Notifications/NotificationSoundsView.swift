@@ -333,7 +333,9 @@ final class NotificationSoundsViewModel: ObservableObject {
         return copied.count
     }
 
-    private static func enumerateSounds(path: URL) -> [URL]? {
+    // Pure file-system work — opt out of the surrounding `@MainActor` isolation so
+    // it can be called from `Task.detached` for off-main enumeration.
+    private nonisolated static func enumerateSounds(path: URL) -> [URL]? {
         guard let enu = FileManager.default.enumerator(at: path, includingPropertiesForKeys: [.isDirectoryKey]) else {
             Current.Log.error("Unable to get enumerator!")
             return nil
@@ -350,7 +352,7 @@ final class NotificationSoundsViewModel: ObservableObject {
         return foundURLs
     }
 
-    private static func ensureDurationStatic(_ soundURL: URL) -> Bool {
+    private nonisolated static func ensureDurationStatic(_ soundURL: URL) -> Bool {
         let duration = Double(CMTimeGetSeconds(AVURLAsset(url: soundURL).duration))
         return duration > 0.0 && duration <= 30.0
     }
