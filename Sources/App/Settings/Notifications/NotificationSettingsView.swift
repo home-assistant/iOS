@@ -34,8 +34,10 @@ struct NotificationSettingsView: View {
         .navigationTitle(L10n.SettingsDetails.Notifications.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if showsDoneButton {
-                ToolbarItem(placement: .confirmationAction) {
+            // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
+            // Move the conditional inside the item so it works on iOS 15 too.
+            ToolbarItem(placement: .confirmationAction) {
+                if showsDoneButton {
                     Button(L10n.doneLabel) {
                         dismiss()
                     }
