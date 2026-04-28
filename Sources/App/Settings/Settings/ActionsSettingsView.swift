@@ -292,7 +292,9 @@ private struct ActionEditorSheet: View {
 // MARK: - Action Identifiable
 
 extension Action: @retroactive Identifiable {
-    public var id: String { ID }
+    // Disambiguate the property reference: `Identifiable` defines an `associatedtype ID`,
+    // which shadows the stored `ID` property on Action without `self.` qualification.
+    public var id: String { self.ID }
 }
 
 #Preview {

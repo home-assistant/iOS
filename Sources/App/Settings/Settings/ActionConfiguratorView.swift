@@ -108,8 +108,10 @@ struct ActionConfiguratorView: View {
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if hasEditableFields {
-                ToolbarItem(placement: .primaryAction) {
+            // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
+            // Move the conditional inside the item so it works on iOS 15 too.
+            ToolbarItem(placement: .primaryAction) {
+                if hasEditableFields {
                     Button(L10n.saveLabel) {
                         save(openAutomationEditor: false)
                     }
