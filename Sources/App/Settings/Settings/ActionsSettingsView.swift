@@ -291,15 +291,15 @@ private struct ActionEditorSheet: View {
 
 // MARK: - Action Identifiable
 
-// Define `id` in a plain extension so `Identifiable`'s `associatedtype ID` isn't in
-// scope here — otherwise `ID` is ambiguous between the stored property and the
-// associated type, and qualifying with `self.ID` collides with SwiftFormat's
-// `--self init-only` rule.
-public extension Action {
-    var id: String { ID }
+extension Action: @retroactive Identifiable {
+    // The compiler synthesises `typealias ID = String` from the `Identifiable`
+    // conformance, which lives on `Action` at module scope and shadows the
+    // stored `ID` property in *any* extension. The only way to disambiguate is
+    // `self.ID`. SwiftFormat's `--self init-only` rule strips that, so disable
+    // `redundantSelf` for the one line that needs the qualification.
+    // swiftformat:disable:next redundantSelf
+    public var id: String { self.ID }
 }
-
-extension Action: @retroactive Identifiable {}
 
 #Preview {
     NavigationView {
