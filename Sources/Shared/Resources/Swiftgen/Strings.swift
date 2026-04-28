@@ -1910,8 +1910,6 @@ public enum L10n {
     public enum Status {
       /// Enabled
       public static var enabled: String { return L10n.tr("Localizable", "live_activity.status.enabled") }
-      /// Not available on iPad
-      public static var notSupported: String { return L10n.tr("Localizable", "live_activity.status.not_supported") }
       /// Open Settings
       public static var openSettings: String { return L10n.tr("Localizable", "live_activity.status.open_settings") }
     }

@@ -514,7 +514,6 @@
 "live_activity.section.privacy" = "Privaatsus";
 "live_activity.section.status" = "Olek";
 "live_activity.status.enabled" = "Lubatud";
-"live_activity.status.not_supported" = "Pole iPadis saadaval";
 "live_activity.status.open_settings" = "Ava seaded";
 "live_activity.subtitle" = "Reaalajas Home Assistant värskendused lukustuskuval ja dünaamilisel saarel.";
 "live_activity.title" = "Live Activities";

@@ -514,7 +514,6 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "live_activity.section.privacy" = "Datenschutz";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Aktiviert";
-"live_activity.status.not_supported" = "Auf dem iPad nicht verfügbar";
 "live_activity.status.open_settings" = "Einstellungen öffnen";
 "live_activity.subtitle" = "Home Assistant-Updates in Echtzeit auf deinem Sperrbildschirm und Dynamic Island.";
 "live_activity.title" = "Live-Aktivitäten";

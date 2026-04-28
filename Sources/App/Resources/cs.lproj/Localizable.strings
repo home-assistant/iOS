@@ -514,7 +514,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "live_activity.section.privacy" = "Soukromí";
 "live_activity.section.status" = "Stav";
 "live_activity.status.enabled" = "Povoleno";
-"live_activity.status.not_supported" = "Není dostupné na iPadu";
 "live_activity.status.open_settings" = "Otevřít Nastavení";
 "live_activity.subtitle" = "Aktualizace Home Assistanta v reálném čase na zamykací obrazovce a v Dynamic Islandu.";
 "live_activity.title" = "Živé aktivity";
