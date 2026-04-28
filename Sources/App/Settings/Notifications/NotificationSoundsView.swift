@@ -212,7 +212,8 @@ struct NotificationSoundsView: View {
 
     // MARK: - Helpers
 
-    private func handleImport(result: Result<[URL], Error>) {
+    // PromiseKit also exports a single-parameter `Result`, so qualify with `Swift.Result`.
+    private func handleImport(result: Swift.Result<[URL], Error>) {
         switch result {
         case let .success(urls):
             Task { await viewModel.importPickedFiles(urls) { error in

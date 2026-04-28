@@ -253,7 +253,10 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var permissionText: String = ""
     @Published var lastPermissionSeen: UNAuthorizationStatus?
     @Published var badgeCountText: String = ""
-    @Published var pushIDDisplay: String = Self.displayForPushID(Current.settingsStore.pushID)
+    // `Self` can't be referenced from a stored-property initializer in a class; use the
+    // type name explicitly.
+    @Published var pushIDDisplay: String = NotificationSettingsViewModel
+        .displayForPushID(Current.settingsStore.pushID)
     @Published var clearBadgeAutomatically: Bool = Current.settingsStore.clearBadgeAutomatically {
         didSet {
             Current.settingsStore.clearBadgeAutomatically = clearBadgeAutomatically
@@ -297,7 +300,8 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
     }
 
-    func resetPushID(completion: @escaping (Result<Void, Error>) -> Void) {
+    // PromiseKit also exports a single-parameter `Result`, so qualify with `Swift.Result`.
+    func resetPushID(completion: @escaping (Swift.Result<Void, Error>) -> Void) {
         Current.Log.verbose("Resetting push token!")
         firstly {
             Current.notificationManager.resetPushID()
