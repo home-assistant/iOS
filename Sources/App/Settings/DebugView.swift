@@ -145,21 +145,6 @@ struct DebugView: View {
                 #endif
             }
 
-            #if os(iOS) && !targetEnvironment(macCatalyst)
-            if #available(iOS 17.2, *) {
-                Section {
-                    NavigationLink {
-                        LiveActivitySettingsView()
-                    } label: {
-                        linkContent(
-                            image: .init(systemSymbol: .livephoto),
-                            title: L10n.LiveActivity.title
-                        )
-                    }
-                }
-            }
-            #endif
-
             criticalSection
 
             if tapsOnCasitaLogo < 10 {

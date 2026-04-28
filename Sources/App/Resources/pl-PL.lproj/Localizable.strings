@@ -507,11 +507,8 @@
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.button" = "End All";
 "live_activity.end_all.confirm.title" = "End all Live Activities?";
-"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
 "live_activity.frequent_updates.title" = "Frequent Updates";
-"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
 "live_activity.section.active" = "Active Activities";
-"live_activity.section.privacy" = "Privacy";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Enabled";
 "live_activity.status.not_supported" = "Not available on iPad";

@@ -507,11 +507,8 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "live_activity.end_all.button" = "Ukončit všechny aktivity";
 "live_activity.end_all.confirm.button" = "Ukončit vše";
 "live_activity.end_all.confirm.title" = "Ukončit všechny živé aktivity?";
-"live_activity.frequent_updates.footer" = "Umožňuje Home Assistantovi aktualizovat živé aktivity až jednou za sekundu. Povolte v Nastavení. \u203A %@ \u203A Živé aktivity.";
 "live_activity.frequent_updates.title" = "Časté aktualizace";
-"live_activity.privacy.message" = "Obsah živých aktivit je viditelný na zamykací obrazovce a v Dynamic Islandu bez použití Face ID nebo Touch ID. Pečlivě si vyberte, co chcete zobrazit.";
 "live_activity.section.active" = "Aktivní aktivity";
-"live_activity.section.privacy" = "Soukromí";
 "live_activity.section.status" = "Stav";
 "live_activity.status.enabled" = "Povoleno";
 "live_activity.status.not_supported" = "Není dostupné na iPadu";

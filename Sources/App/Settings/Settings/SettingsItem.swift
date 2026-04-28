@@ -147,24 +147,39 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     static var allVisibleCases: [SettingsItem] {
         allCases.filter { item in
+            if item == .liveActivities {
+                return canShowLiveActivities
+            }
+
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
-            if item == .servers || item == .gestures || item == .kiosk || item == .watch || item == .carPlay ||
-                item == .complications || item == .nfc || item == .help ||
-                item == .whatsNew {
+            let hiddenItems: [SettingsItem] = [
+                .servers,
+                .gestures,
+                .kiosk,
+                .watch,
+                .carPlay,
+                .complications,
+                .nfc,
+                .help,
+                .whatsNew,
+            ]
+
+            if hiddenItems.contains(item) {
                 return false
             }
             #endif
-            // Live Activities are shown in DebugView
-            if item == .liveActivities {
-                return false
-            }
+
             return true
         }
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .location, .notifications, .kiosk]
+        var items: [SettingsItem] = [.general, .gestures, .location, .notifications, .kiosk]
+        if canShowLiveActivities {
+            items.append(.liveActivities)
+        }
+        return items
     }
 
     static var integrationItems: [SettingsItem] {
@@ -185,6 +200,18 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     static var helpItems: [SettingsItem] {
         [.help, .privacy, .debugging]
+    }
+
+    private static var canShowLiveActivities: Bool {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            return true
+        } else {
+            return false
+        }
+        #else
+        return false
+        #endif
     }
 }
 

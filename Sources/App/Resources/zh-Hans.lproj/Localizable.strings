@@ -507,11 +507,8 @@
 "live_activity.end_all.button" = "结束所有活动";
 "live_activity.end_all.confirm.button" = "全部结束";
 "live_activity.end_all.confirm.title" = "结束所有实时活动吗 ？";
-"live_activity.frequent_updates.footer" = "允许 Home Assistant 每秒更新一次实时活动。在“设置” \u203A %@ \u203A “实时活动”中启用。";
 "live_activity.frequent_updates.title" = "频繁更新";
-"live_activity.privacy.message" = "即使没有面容 ID 或触控 ID，您也可以在锁定屏幕和动态岛屿上查看实时活动内容。请谨慎选择要显示的内容。";
 "live_activity.section.active" = "活跃活动";
-"live_activity.section.privacy" = "隐私";
 "live_activity.section.status" = "状况";
 "live_activity.status.enabled" = "已启用";
 "live_activity.status.not_supported" = "iPad 版暂不可用";

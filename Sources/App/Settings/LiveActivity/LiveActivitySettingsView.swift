@@ -6,7 +6,7 @@ import SwiftUI
 // MARK: - Entry point
 
 /// Deployment target is iOS 15. The settings item is filtered from the list on < iOS 17.2
-/// (see SettingsItem.allVisibleCases), so this view is only ever navigated to on iOS 17.2+.
+/// (see SettingsItem.generalItems/allVisibleCases), so this view is only ever navigated to on iOS 17.2+.
 @available(iOS 17.2, *)
 struct LiveActivitySettingsView: View {
     // MARK: State
@@ -63,14 +63,8 @@ struct LiveActivitySettingsView: View {
             }
 
             #if DEBUG
-            debugSection
+            samplesSection
             #endif
-
-            privacySection
-
-            if #available(iOS 17.2, *) {
-                frequentUpdatesSection
-            }
         }
         .navigationTitle(L10n.LiveActivity.title)
         .task { await loadActivities() }
@@ -79,16 +73,16 @@ struct LiveActivitySettingsView: View {
     // MARK: - Sections
 
     private var statusSection: some View {
-        Section(L10n.LiveActivity.Section.status) {
+        Section {
             HStack {
                 Label(L10n.LiveActivity.title, systemSymbol: .livephoto)
                 Spacer()
-                if authorizationEnabled {
-                    Text(L10n.LiveActivity.Status.enabled)
-                        .foregroundStyle(.green)
-                } else if UIDevice.current.userInterfaceIdiom == .pad {
+                if !isLiveActivitySupportedOnDevice {
                     Text(L10n.LiveActivity.Status.notSupported)
                         .foregroundStyle(.secondary)
+                } else if authorizationEnabled {
+                    Text(L10n.LiveActivity.Status.enabled)
+                        .foregroundStyle(.green)
                 } else {
                     Button(L10n.LiveActivity.Status.openSettings) {
                         if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -98,11 +92,37 @@ struct LiveActivitySettingsView: View {
                     .foregroundStyle(.orange)
                 }
             }
+
+            HStack {
+                Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .bolt)
+                Spacer()
+                if !isLiveActivitySupportedOnDevice {
+                    Text(L10n.LiveActivity.Status.notSupported)
+                        .foregroundStyle(.secondary)
+                } else if frequentUpdatesEnabled {
+                    Text(L10n.LiveActivity.Status.enabled)
+                        .foregroundStyle(.green)
+                } else {
+                    Button(L10n.LiveActivity.Status.openSettings) {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text(L10n.LiveActivity.Section.status)
         }
     }
 
-    // MARK: - Debug (DEBUG builds only)
+    private var isLiveActivitySupportedOnDevice: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
 
+    // MARK: - Samples (DEBUG builds only)
+
+    #if DEBUG
     //
     // Two sections: Static (fixed snapshots to verify layout) and Animated (multi-stage
     // self-updating sequences to simulate real HA automation behavior).
@@ -121,131 +141,139 @@ struct LiveActivitySettingsView: View {
     //       It does NOT appear on the lock screen. Use a Dynamic Island device or
     //       simulator (iPhone 14 Pro+) to see it.
 
-    #if DEBUG
-    private var debugSection: some View {
-        Group {
-            Section {
-                // Minimum viable layout — only the message field is set.
-                // Verifies the bare layout renders without icon, progress, or timer.
-                Button("Plain Message") {
-                    startTestActivity(
-                        tag: "debug-plain",
-                        title: "Home Assistant",
-                        state: .init(message: "Everything looks good at home.")
-                    )
+    private var samplesSection: some View {
+        Section {
+            NavigationLink("Samples") {
+                List {
+                    staticSamplesSection
+                    animatedSamplesSection
                 }
-
-                // icon = nil code path. Layout must not shift or break when no icon is provided.
-                // color = nil so the progress bar uses the default HA-blue tint.
-                // criticalText ("Active") visible in DI compact trailing only.
-                Button("No Icon · Default Color") {
-                    startTestActivity(
-                        tag: "debug-no-icon",
-                        title: "Script Running",
-                        state: .init(
-                            message: "Irrigation zone 3 is active",
-                            criticalText: "Active",
-                            progress: 35,
-                            progressMax: 100
-                        )
-                    )
-                }
-
-                // Short 60-second countdown with no progress bar.
-                // Red color communicates urgency. Watch the timer count down in real time.
-                // Represents automations like alarm arming delays or reminder countdowns.
-                Button("Alarm · 60 sec Countdown") {
-                    startTestActivity(
-                        tag: "debug-alarm",
-                        title: "Security Alarm",
-                        state: .init(
-                            message: "Motion at back door · Arms in 60 seconds",
-                            criticalText: "60 sec",
-                            chronometer: true,
-                            countdownEnd: Date().addingTimeInterval(60),
-                            icon: "mdi:alarm-light",
-                            color: "#F44336"
-                        )
-                    )
-                }
-
-                // Every ContentState field active at the same time.
-                // Lock screen shows: icon → live countdown → progress bar.
-                // criticalText ("5 min") visible in DI compact trailing only.
-                // Use this to confirm no layout collisions when all fields are populated.
-                Button("All Fields · Max Load") {
-                    startTestActivity(
-                        tag: "debug-all",
-                        title: "All Fields",
-                        state: .init(
-                            message: "All content state fields active",
-                            criticalText: "5 min",
-                            progress: 42,
-                            progressMax: 100,
-                            chronometer: true,
-                            countdownEnd: Date().addingTimeInterval(5 * 60),
-                            icon: "mdi:home-assistant",
-                            color: "#03A9F4"
-                        )
-                    )
-                }
-            } header: {
-                Text("Debug · Static")
-            } footer: {
-                Text("Fixed state — no updates after start. Good for checking layout at a glance.")
-            }
-
-            Section {
-                // Progress bar advances through five named stages.
-                // criticalText tracks the current stage name in the DI compact trailing slot.
-                // Icon swaps from washing-machine to check-circle on the final update.
-                // Represents any multi-step appliance cycle automation.
-                Button("Washing Machine · Stage Labels (~12 s)") { startWashingMachineCycle() }
-
-                // Numeric percentage in criticalText updates alongside the progress bar.
-                // Color shifts from green to yellow-green as the charge nears 100 %.
-                // Represents any "% complete with time remaining" automation pattern.
-                Button("EV Charging · Numeric % (~16 s)") { startEVChargingSimulation() }
-
-                // The only scenario where both progress (playback position) and a live countdown
-                // (time remaining in track) are active and updating at the same time.
-                // Simulates a track change mid-sequence: progress resets, countdown resets.
-                Button("Media Player · Progress + Timer (~20 s)") { startMediaNowPlaying() }
-
-                // Message, criticalText, and icon all change on every update — no progress bar.
-                // Represents automations where the status category itself changes (not just a value).
-                Button("Package Delivery · All Text Fields (~15 s)") { startPackageJourney() }
-
-                // No progress bar — state communicated entirely through color and icon.
-                // Escalates orange (motion) → red (person) → green (all clear).
-                // Represents any alert-and-resolve automation pattern.
-                Button("Security Escalation · Color + Icon (~8 s)") { startSecuritySequence() }
-
-                // Cycles through wash stages then calls activity.end() with .default dismissal.
-                // The only scenario that tests the full lifecycle: start → update → end.
-                // After ending, the final "Done" state lingers on the lock screen (up to 4 h).
-                Button("Dishwasher · Full Lifecycle, Ends Itself (~12 s)") { startDishwasherAutoComplete() }
-
-                // Fires 6 updates 2 seconds apart (12 s total).
-                // On iOS 18 the system enforces ~15 s between rendered updates — some will be
-                // silently dropped. Watch the counter skip values to see the rate limit in action.
-                // On the simulator and iOS 17 all 6 updates should render.
-                Button("Rate Limit · 6 Rapid Updates, 2 s Apart (~12 s)") { startRapidUpdateStressTest() }
-            } header: {
-                Text("Debug · Animated")
-            } footer: {
-                Text(
-                    "Activity updates itself after you tap. Tap, then immediately lock (⌘L) " +
-                        "to watch updates on the lock screen in real time."
-                )
+                .navigationTitle("Samples")
             }
         }
     }
-    #endif
 
-    #if DEBUG
+    private var staticSamplesSection: some View {
+        Section {
+            // Minimum viable layout — only the message field is set.
+            // Verifies the bare layout renders without icon, progress, or timer.
+            Button("Plain Message") {
+                startTestActivity(
+                    tag: "debug-plain",
+                    title: "Home Assistant",
+                    state: .init(message: "Everything looks good at home.")
+                )
+            }
 
-    // MARK: - Debug helpers
+            // icon = nil code path. Layout must not shift or break when no icon is provided.
+            // color = nil so the progress bar uses the default HA-blue tint.
+            // criticalText ("Active") visible in DI compact trailing only.
+            Button("No Icon · Default Color") {
+                startTestActivity(
+                    tag: "debug-no-icon",
+                    title: "Script Running",
+                    state: .init(
+                        message: "Irrigation zone 3 is active",
+                        criticalText: "Active",
+                        progress: 35,
+                        progressMax: 100
+                    )
+                )
+            }
+
+            // Short 60-second countdown with no progress bar.
+            // Red color communicates urgency. Watch the timer count down in real time.
+            // Represents automations like alarm arming delays or reminder countdowns.
+            Button("Alarm · 60 sec Countdown") {
+                startTestActivity(
+                    tag: "debug-alarm",
+                    title: "Security Alarm",
+                    state: .init(
+                        message: "Motion at back door · Arms in 60 seconds",
+                        criticalText: "60 sec",
+                        chronometer: true,
+                        countdownEnd: Date().addingTimeInterval(60),
+                        icon: "mdi:alarm-light",
+                        color: "#F44336"
+                    )
+                )
+            }
+
+            // Every ContentState field active at the same time.
+            // Lock screen shows: icon → live countdown → progress bar.
+            // criticalText ("5 min") visible in DI compact trailing only.
+            // Use this to confirm no layout collisions when all fields are populated.
+            Button("All Fields · Max Load") {
+                startTestActivity(
+                    tag: "debug-all",
+                    title: "All Fields",
+                    state: .init(
+                        message: "All content state fields active",
+                        criticalText: "5 min",
+                        progress: 42,
+                        progressMax: 100,
+                        chronometer: true,
+                        countdownEnd: Date().addingTimeInterval(5 * 60),
+                        icon: "mdi:home-assistant",
+                        color: "#03A9F4"
+                    )
+                )
+            }
+        } header: {
+            Text("Sample · Static")
+        } footer: {
+            Text("Fixed state — no updates after start. Good for checking layout at a glance.")
+        }
+    }
+
+    private var animatedSamplesSection: some View {
+        Section {
+            // Progress bar advances through five named stages.
+            // criticalText tracks the current stage name in the DI compact trailing slot.
+            // Icon swaps from washing-machine to check-circle on the final update.
+            // Represents any multi-step appliance cycle automation.
+            Button("Washing Machine · Stage Labels (~12 s)") { startWashingMachineCycle() }
+
+            // Numeric percentage in criticalText updates alongside the progress bar.
+            // Color shifts from green to yellow-green as the charge nears 100 %.
+            // Represents any "% complete with time remaining" automation pattern.
+            Button("EV Charging · Numeric % (~16 s)") { startEVChargingSimulation() }
+
+            // The only scenario where both progress (playback position) and a live countdown
+            // (time remaining in track) are active and updating at the same time.
+            // Simulates a track change mid-sequence: progress resets, countdown resets.
+            Button("Media Player · Progress + Timer (~20 s)") { startMediaNowPlaying() }
+
+            // Message, criticalText, and icon all change on every update — no progress bar.
+            // Represents automations where the status category itself changes (not just a value).
+            Button("Package Delivery · All Text Fields (~15 s)") { startPackageJourney() }
+
+            // No progress bar — state communicated entirely through color and icon.
+            // Escalates orange (motion) → red (person) → green (all clear).
+            // Represents any alert-and-resolve automation pattern.
+            Button("Security Escalation · Color + Icon (~8 s)") { startSecuritySequence() }
+
+            // Cycles through wash stages then calls activity.end() with .default dismissal.
+            // The only scenario that tests the full lifecycle: start → update → end.
+            // After ending, the final "Done" state lingers on the lock screen (up to 4 h).
+            Button("Dishwasher · Full Lifecycle, Ends Itself (~12 s)") { startDishwasherAutoComplete() }
+
+            // Fires 6 updates 2 seconds apart (12 s total).
+            // On iOS 18 the system enforces ~15 s between rendered updates — some will be
+            // silently dropped. Watch the counter skip values to see the rate limit in action.
+            // On the simulator and iOS 17 all 6 updates should render.
+            Button("Rate Limit · 6 Rapid Updates, 2 s Apart (~12 s)") { startRapidUpdateStressTest() }
+        } header: {
+            Text("Sample · Animated")
+        } footer: {
+            Text(
+                "Activity updates itself after you tap. Tap, then immediately lock (⌘L) " +
+                    "to watch updates on the lock screen in real time."
+            )
+        }
+    }
+
+    // MARK: - Sample helpers
 
     /// Starts a single-state activity (no subsequent updates).
     private func startTestActivity(tag: String, title: String, state: HALiveActivityAttributes.ContentState) {
@@ -564,53 +592,14 @@ struct LiveActivitySettingsView: View {
             ]
         )
     }
-
     #endif
-
-    private var privacySection: some View {
-        Section {
-            Label(L10n.LiveActivity.Privacy.message, systemSymbol: .lockShield)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-        } header: {
-            Text(L10n.LiveActivity.Section.privacy)
-        }
-    }
-
-    @available(iOS 17.2, *)
-    private var frequentUpdatesSection: some View {
-        let appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Home Assistant"
-        return Section {
-            HStack {
-                Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .bolt)
-                Spacer()
-                if frequentUpdatesEnabled {
-                    Text(L10n.LiveActivity.Status.enabled)
-                        .foregroundStyle(.green)
-                } else {
-                    Button(L10n.LiveActivity.Status.openSettings) {
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(url)
-                        }
-                    }
-                    .foregroundStyle(.secondary)
-                }
-            }
-        } header: {
-            Text(L10n.LiveActivity.FrequentUpdates.title)
-        } footer: {
-            Text(L10n.LiveActivity.FrequentUpdates.footer(appName))
-        }
-    }
 
     // MARK: - Data
 
     private func loadActivities() async {
         let info = ActivityAuthorizationInfo()
         authorizationEnabled = info.areActivitiesEnabled
-        if #available(iOS 17.2, *) {
-            frequentUpdatesEnabled = info.frequentPushesEnabled
-        }
+        frequentUpdatesEnabled = info.frequentPushesEnabled
 
         activities = Activity<HALiveActivityAttributes>.activities.map {
             ActivitySnapshot(activity: $0)

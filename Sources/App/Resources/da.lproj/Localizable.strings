@@ -507,11 +507,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.end_all.button" = "Afslut alle aktiviteter";
 "live_activity.end_all.confirm.button" = "Afslut alle";
 "live_activity.end_all.confirm.title" = "Afslut alle liveaktiviteter?";
-"live_activity.frequent_updates.footer" = "Tillader Home Assistant at opdatere Liveaktiviteter op til én gang i sekundet. Aktivér i Indstillinger \u203A %@ \u203A Liveaktiviteter.";
 "live_activity.frequent_updates.title" = "Hyppige opdateringer";
-"live_activity.privacy.message" = "Liveaktivitet-indhold er synligt på din låseskærm og Dynamic Island uden Face ID eller Touch ID. Vælg omhyggeligt, hvad du vil vise.";
 "live_activity.section.active" = "Aktive aktiviteter";
-"live_activity.section.privacy" = "Privatliv";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Aktiveret";
 "live_activity.status.not_supported" = "Ikke tilgængelig på iPad";

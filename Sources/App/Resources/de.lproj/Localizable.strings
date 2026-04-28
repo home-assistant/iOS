@@ -507,11 +507,8 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "live_activity.end_all.button" = "Alle Aktivitäten beenden";
 "live_activity.end_all.confirm.button" = "Alle beenden";
 "live_activity.end_all.confirm.title" = "Alle Live-Aktivitäten beenden?";
-"live_activity.frequent_updates.footer" = "Ermöglicht es Home Assistant, Live-Aktivitäten bis zu einmal pro Sekunde zu aktualisieren. In Einstellungen \u203A %@ \u203A Live-Aktivitäten aktiveren.";
 "live_activity.frequent_updates.title" = "Häufige Aktualisierungen";
-"live_activity.privacy.message" = "Inhalte für Live-Aktivität sind auf deinem Sperrbildschirm und Dynamic Island auch ohne Face ID oder Touch ID sichtbar. Wähle die angezeigten Inhalte sorgfältig aus.";
 "live_activity.section.active" = "Aktive Aktivitäten";
-"live_activity.section.privacy" = "Datenschutz";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Aktiviert";
 "live_activity.status.not_supported" = "Auf dem iPad nicht verfügbar";
