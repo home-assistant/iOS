@@ -514,7 +514,6 @@
 "live_activity.section.privacy" = "Gizlilik";
 "live_activity.section.status" = "Durum";
 "live_activity.status.enabled" = "Etkin";
-"live_activity.status.not_supported" = "iPad'de mevcut değil";
 "live_activity.status.open_settings" = "Ayarları Aç";
 "live_activity.subtitle" = "Kilit Ekranınızda ve Dinamik Ada' da gerçek zamanlı Home Assistant güncellemeleri.";
 "live_activity.title" = "Canlı Etkinlikler";

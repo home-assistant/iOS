@@ -514,7 +514,6 @@
 "live_activity.section.privacy" = "Απόρρητο";
 "live_activity.section.status" = "Κατάσταση";
 "live_activity.status.enabled" = "Ενεργό";
-"live_activity.status.not_supported" = "Δεν είναι διαθέσιμο σε iPad";
 "live_activity.status.open_settings" = "Ανοιγμα ρυθμίσεων";
 "live_activity.subtitle" = "Ενημερώσεις του Home Assistant σε πραγματικό χρόνο στην οθόνη κλειδώματος και στο Dynamic Island.";
 "live_activity.title" = "Ζωντανές δραστηριότητες";

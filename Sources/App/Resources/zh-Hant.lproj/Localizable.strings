@@ -514,7 +514,6 @@
 "live_activity.section.privacy" = "隱私權";
 "live_activity.section.status" = "狀態";
 "live_activity.status.enabled" = "已開啟";
-"live_activity.status.not_supported" = "iPad 版暫不可用";
 "live_activity.status.open_settings" = "開啟設定";
 "live_activity.subtitle" = "在鎖定畫面和動態島上即時更新 Home Assistant。";
 "live_activity.title" = "即時動態";

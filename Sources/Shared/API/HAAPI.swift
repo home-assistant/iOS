@@ -602,10 +602,9 @@ public class HomeAssistantAPI {
 
                 #if os(iOS) && !targetEnvironment(macCatalyst)
                 if #available(iOS 17.2, *) {
-                    // Advertise Live Activity support so HA can gate the UI and send
-                    // activity push tokens back to the relay server.
-                    // Use areActivitiesEnabled so iPad and users who disabled Live Activities
-                    // in Settings correctly report false.
+                    // Advertise Live Activity support so HA can send activity push tokens
+                    // to the relay server. areActivitiesEnabled reflects the user's Settings
+                    // toggle and returns true on both iPhone and iPad (iPadOS 17+).
                     appData["supports_live_activities"] = ActivityAuthorizationInfo().areActivitiesEnabled
                     appData["supports_live_activities_frequent_updates"] =
                         ActivityAuthorizationInfo().frequentPushesEnabled

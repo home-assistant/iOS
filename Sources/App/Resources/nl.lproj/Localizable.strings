@@ -514,7 +514,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "live_activity.section.privacy" = "Privacy";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Ingeschakeld";
-"live_activity.status.not_supported" = "Niet beschikbaar op iPad";
 "live_activity.status.open_settings" = "Open instellingen";
 "live_activity.subtitle" = "Real-time updates van Home Assistant op je vergrendelscherm en Dynamic Island.";
 "live_activity.title" = "Live activiteiten";

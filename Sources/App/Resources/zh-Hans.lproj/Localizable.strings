@@ -514,7 +514,6 @@
 "live_activity.section.privacy" = "隐私";
 "live_activity.section.status" = "状况";
 "live_activity.status.enabled" = "已启用";
-"live_activity.status.not_supported" = "iPad 版暂不可用";
 "live_activity.status.open_settings" = "打开设置";
 "live_activity.subtitle" = "在锁屏和动态岛屿上实时更新 Home Assistant 。";
 "live_activity.title" = "实时活动";

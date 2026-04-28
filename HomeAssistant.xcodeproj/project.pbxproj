@@ -11436,7 +11436,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = QMQYCKL255;
+				DEVELOPMENT_TEAM = 4Q9RHLUX47;
 			};
 			name = Beta;
 		};
@@ -11649,7 +11649,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = QMQYCKL255;
+				DEVELOPMENT_TEAM = 4Q9RHLUX47;
 			};
 			name = Debug;
 		};
@@ -11657,7 +11657,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = QMQYCKL255;
+				DEVELOPMENT_TEAM = 4Q9RHLUX47;
 			};
 			name = Release;
 		};
