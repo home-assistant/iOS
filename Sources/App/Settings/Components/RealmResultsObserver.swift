@@ -3,10 +3,14 @@ import RealmSwift
 
 /// Observable wrapper around an `AnyRealmCollection` for use in SwiftUI.
 ///
-/// Mirrors Realm results changes onto the main thread and publishes a plain
-/// Swift array so SwiftUI views can observe it via `@StateObject` /
-/// `@ObservedObject`. Replaces the Eureka `RealmSection` wrapper for views
-/// that previously relied on Realm notifications.
+/// Publishes a plain Swift array so SwiftUI views can observe it via
+/// `@StateObject` / `@ObservedObject`. Realm calls the change handler back on
+/// the same thread the observation was registered on (we always construct
+/// these from the main-actor isolated views), and the snapshot is taken
+/// synchronously and published on the main actor. Replaces the Eureka
+/// `RealmSection` wrapper for views that previously relied on Realm
+/// notifications.
+@MainActor
 final class RealmResultsObserver<ObjectType: Object>: ObservableObject {
     @Published private(set) var items: [ObjectType] = []
 
@@ -18,14 +22,19 @@ final class RealmResultsObserver<ObjectType: Object>: ObservableObject {
         self.items = Array(collection)
 
         self.token = collection.observe { [weak self] change in
-            guard let self else { return }
+            // Snapshot synchronously on Realm's queue (main thread for our use cases),
+            // then hop to the main actor to publish so SwiftUI updates land on main.
+            let snapshot: [ObjectType]
             switch change {
             case let .initial(collection):
-                self.items = Array(collection)
+                snapshot = Array(collection)
             case let .update(collection, _, _, _):
-                self.items = Array(collection)
+                snapshot = Array(collection)
             case .error:
-                break
+                return
+            }
+            Task { @MainActor [weak self] in
+                self?.items = snapshot
             }
         }
     }

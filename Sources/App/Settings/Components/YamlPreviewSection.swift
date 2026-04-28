@@ -5,8 +5,8 @@ import UIKit
 /// A reusable SwiftUI section that renders a YAML preview with a share button.
 ///
 /// Replaces the Eureka `YamlSection` used across settings forms. The YAML value
-/// is produced by the `yaml` closure so callers can rebuild the string in
-/// response to form changes.
+/// is passed in via `yaml`; callers are responsible for rebuilding the string
+/// in response to form changes (typically via a derived computed property).
 struct YamlPreviewSection: View {
     let header: String
     let shareTitle: String

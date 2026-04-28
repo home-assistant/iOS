@@ -27,6 +27,8 @@ struct NotificationCategoryEditorView: View {
     @State private var showingNewAction = false
     @State private var showValidationAlert = false
 
+    @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
+
     private let isNewCategory: Bool
     private let isServerControlled: Bool
     private let category: NotificationCategory
@@ -352,7 +354,9 @@ struct NotificationCategoryEditorView: View {
         guard let url = URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications") else {
             return
         }
-        openURLInBrowser(url, nil)
+        // Pass the hosting view controller so the SafariInApp browser preference works
+        // (it requires a non-nil presenter to show its in-app browser).
+        openURLInBrowser(url, viewControllerProvider.viewController)
     }
 
     private func triggerPreviewNotification() {
@@ -361,7 +365,10 @@ struct NotificationCategoryEditorView: View {
         content.body = L10n.NotificationsConfigurator.Category.PreviewNotification
             .body(name.isEmpty ? identifier : name)
         content.sound = .default
-        content.categoryIdentifier = identifier
+        // `UNNotificationCategory` instances are registered with the uppercased identifier
+        // (see `NotificationCategory.categories`); match that here so the registered
+        // actions actually attach to the preview notification.
+        content.categoryIdentifier = identifier.uppercased()
         content.userInfo = ["preview": true]
 
         UNUserNotificationCenter.current().add(UNNotificationRequest(

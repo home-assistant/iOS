@@ -28,6 +28,8 @@ struct NotificationCategoryListView: View {
     @State private var editingCategory: NotificationCategory?
     @State private var showingNewCategory = false
 
+    @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
+
     var body: some View {
         List {
             localSection
@@ -46,9 +48,11 @@ struct NotificationCategoryListView: View {
         }
         .sheet(isPresented: $showingNewCategory) {
             editorSheet(for: nil)
+                .environmentObject(viewControllerProvider)
         }
         .sheet(item: $editingCategory) { category in
             editorSheet(for: category)
+                .environmentObject(viewControllerProvider)
         }
     }
 
@@ -148,7 +152,9 @@ struct NotificationCategoryListView: View {
         guard let url = URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications") else {
             return
         }
-        openURLInBrowser(url, nil)
+        // Pass the hosting view controller so the SafariInApp browser preference works
+        // (it requires a non-nil presenter to show its in-app browser).
+        openURLInBrowser(url, viewControllerProvider.viewController)
     }
 }
 

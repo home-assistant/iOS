@@ -7,8 +7,9 @@ import SwiftUI
 /// replaces the old Eureka `NotificationIdentifierRow` so the constraints can
 /// be reused from SwiftUI forms.
 enum NotificationIdentifierField {
-    /// Sanitises text in-place according to the casing rules, replacing
-    /// invalid characters (including spaces) with underscores.
+    /// Sanitises text in-place according to the casing rules. Spaces are
+    /// replaced with underscores; any other characters outside the allowed
+    /// alphanumeric+underscore set are dropped.
     static func sanitize(_ value: String, uppercaseOnly: Bool) -> String {
         let working = value.replacingOccurrences(of: " ", with: "_")
         let allowed: Set<Character>
