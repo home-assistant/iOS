@@ -15,7 +15,7 @@ final class ComplicationListViewModel: ObservableObject {
     @Published var showError = false
 
     private var realmToken: NotificationToken?
-    private var watchStateToken: Any?
+    private var watchStateToken: Observation?
     private var updateNotificationToken: NSObjectProtocol?
 
     init() {
