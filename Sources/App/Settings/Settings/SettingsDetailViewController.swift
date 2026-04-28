@@ -7,7 +7,6 @@ import UIKit
 enum SettingsDetailsGroup: String {
     case display
     case actions
-    case location
 }
 
 class SettingsDetailViewController: HAFormViewController, TypedRowControllerType {

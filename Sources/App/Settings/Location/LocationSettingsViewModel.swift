@@ -6,6 +6,7 @@ import UIKit
 
 /// View model backing `LocationSettingsView`. Tracks permission status, background refresh status,
 /// the persisted location-source toggles and exposes the list of zones for display.
+@MainActor
 final class LocationSettingsViewModel: NSObject, ObservableObject {
     // MARK: - Permissions
 
@@ -61,7 +62,10 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.backgroundRefreshStatus = UIApplication.shared.backgroundRefreshStatus
+            let status = UIApplication.shared.backgroundRefreshStatus
+            Task { @MainActor [weak self] in
+                self?.backgroundRefreshStatus = status
+            }
         }
 
         observeZones()
@@ -175,13 +179,14 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
 
     private func observeZones() {
         let results = Current.realm().objects(RLMZone.self)
+        // Realm calls this back on the thread the observation was set up on (main).
+        // Map to value-type snapshots synchronously, then hop to MainActor to publish.
         zonesToken = results.observe { [weak self] _ in
-            self?.updateZones(with: results)
+            let snapshot = results.map(LocationZoneItem.init)
+            Task { @MainActor [weak self] in
+                self?.zones = snapshot
+            }
         }
-        updateZones(with: results)
-    }
-
-    private func updateZones(with results: Results<RLMZone>) {
         zones = results.map(LocationZoneItem.init)
     }
 }
@@ -189,9 +194,13 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
 // MARK: - CLLocationManagerDelegate
 
 extension LocationSettingsViewModel: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        locationAuthorizationStatus = manager.authorizationStatus
-        locationAccuracyAuthorization = manager.accuracyAuthorization
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        let accuracy = manager.accuracyAuthorization
+        Task { @MainActor [weak self] in
+            self?.locationAuthorizationStatus = status
+            self?.locationAccuracyAuthorization = accuracy
+        }
     }
 }
 
@@ -227,9 +236,21 @@ struct LocationZoneItem: Identifiable {
     }
 
     var formattedCoordinate: String {
+        CoordinateFormatter.string(from: coordinate)
+    }
+}
+
+// MARK: - Coordinate formatting
+
+enum CoordinateFormatter {
+    private static let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 4
         formatter.minimumFractionDigits = 4
+        return formatter
+    }()
+
+    static func string(from coordinate: CLLocationCoordinate2D) -> String {
         let lat = formatter.string(from: NSNumber(value: coordinate.latitude)) ?? ""
         let lng = formatter.string(from: NSNumber(value: coordinate.longitude)) ?? ""
         return "\(lat), \(lng)"

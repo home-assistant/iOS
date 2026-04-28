@@ -1,7 +1,6 @@
 import CoreLocation
 import MapKit
 import PromiseKit
-import RealmSwift
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -248,17 +247,12 @@ struct LocationZoneMapView: View {
     var body: some View {
         ZoneMapRepresentable(coordinate: coordinate, radius: radius)
             .ignoresSafeArea(edges: .bottom)
-            .navigationTitle(coordinateTitle)
+            .navigationTitle(title.isEmpty ? coordinateTitle : title)
             .navigationBarTitleDisplayMode(.inline)
     }
 
     private var coordinateTitle: String {
-        let formatter = NumberFormatter()
-        formatter.maximumFractionDigits = 4
-        formatter.minimumFractionDigits = 4
-        let lat = formatter.string(from: NSNumber(value: coordinate.latitude)) ?? ""
-        let lng = formatter.string(from: NSNumber(value: coordinate.longitude)) ?? ""
-        return "\(lat), \(lng)"
+        CoordinateFormatter.string(from: coordinate)
     }
 }
 
@@ -277,14 +271,15 @@ private struct ZoneMapRepresentable: UIViewRepresentable {
         pin.coordinate = coordinate
         mapView.addAnnotation(pin)
 
-        let displayRadius = max(radius, 50)
-        let circle = MKCircle(center: coordinate, radius: displayRadius)
+        let circle = MKCircle(center: coordinate, radius: radius)
         mapView.addOverlay(circle)
 
+        // Don't zoom in tighter than 400m even for very small zones, so the radius circle stays readable.
+        let regionMeters = max(radius * 4, 400)
         let region = MKCoordinateRegion(
             center: coordinate,
-            latitudinalMeters: max(displayRadius * 4, 400),
-            longitudinalMeters: max(displayRadius * 4, 400)
+            latitudinalMeters: regionMeters,
+            longitudinalMeters: regionMeters
         )
         mapView.setRegion(region, animated: false)
 

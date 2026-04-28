@@ -55,9 +55,9 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.DetailsSection.LocationSettingsRow.title
             $0.icon = .crosshairsGpsIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = .location
-                return view
+                let host = UIHostingController(rootView: LocationSettingsView())
+                host.title = L10n.SettingsDetails.Location.title
+                return host
             }, onDismiss: nil)
         }
     }
