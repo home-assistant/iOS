@@ -28,6 +28,9 @@ public struct KioskSettingsView: View {
             coreSettingsSection
             brightnessSection
             screensaverSection
+            #if !targetEnvironment(macCatalyst)
+            cameraDetectionSection
+            #endif
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -53,6 +56,19 @@ public struct KioskSettingsView: View {
             }
         } message: {
             Text(viewModel.authErrorMessage)
+        }
+        .alert(
+            L10n.Kiosk.Camera.PermissionDenied.title,
+            isPresented: $viewModel.showingCameraPermissionDenied
+        ) {
+            Button(L10n.Kiosk.Camera.PermissionDenied.openSettings) {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button(L10n.cancelLabel, role: .cancel) {}
+        } message: {
+            Text(L10n.Kiosk.Camera.PermissionDenied.message)
         }
     }
 
@@ -258,6 +274,35 @@ public struct KioskSettingsView: View {
             Text(L10n.Kiosk.Screensaver.section)
         } footer: {
             Text(L10n.Kiosk.Screensaver.pixelShiftFooter)
+        }
+    }
+
+    // MARK: - Camera Detection Section
+
+    private var cameraDetectionSection: some View {
+        Section {
+            Toggle(isOn: Binding(
+                get: { viewModel.settings.cameraMotionEnabled },
+                set: { viewModel.setCameraMotionEnabled($0) }
+            )) {
+                Label(L10n.Kiosk.Camera.motionDetection, systemSymbol: .figureWalk)
+            }
+
+            if viewModel.settings.cameraMotionEnabled {
+                Picker(L10n.Kiosk.Camera.sensitivity, selection: $viewModel.settings.cameraMotionSensitivity) {
+                    ForEach(MotionSensitivity.allCases, id: \.self) { sensitivity in
+                        Text(sensitivity.displayName).tag(sensitivity)
+                    }
+                }
+
+                Toggle(isOn: $viewModel.settings.wakeOnCameraMotion) {
+                    Label(L10n.Kiosk.Camera.wakeOnMotion, systemSymbol: .sunMax)
+                }
+            }
+        } header: {
+            Text(L10n.Kiosk.Camera.section)
+        } footer: {
+            Text(L10n.Kiosk.Camera.footer)
         }
     }
 }

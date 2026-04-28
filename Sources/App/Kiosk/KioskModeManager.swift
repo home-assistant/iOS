@@ -224,6 +224,11 @@ public final class KioskModeManager: ObservableObject {
 
         updateKioskModeLockdown(enabled: true)
         notifyObserversOfModeChange()
+
+        // Start camera detection if enabled
+        #if !targetEnvironment(macCatalyst)
+        startCameraDetection()
+        #endif
     }
 
     /// Disable kiosk mode
@@ -259,6 +264,12 @@ public final class KioskModeManager: ObservableObject {
         hideScreensaver(source: "kiosk_disabled")
 
         updateKioskModeLockdown(enabled: false)
+
+        // Stop camera detection
+        #if !targetEnvironment(macCatalyst)
+        stopCameraDetection()
+        #endif
+
         notifyObserversOfModeChange()
     }
 
@@ -594,6 +605,30 @@ public final class KioskModeManager: ObservableObject {
         notifyObserversOfPixelShift()
     }
 
+    // MARK: - Camera Detection
+
+    private func startCameraDetection() {
+        let cameraManager = KioskCameraDetectionManager.shared
+
+        cameraManager.onMotionDetected = { [weak self] in
+            guard let self, settings.wakeOnCameraMotion else { return }
+            wakeScreen(source: "camera_motion")
+        }
+
+        cameraManager.start()
+    }
+
+    private func stopCameraDetection() {
+        let cameraManager = KioskCameraDetectionManager.shared
+        cameraManager.onMotionDetected = nil
+        cameraManager.stop()
+    }
+
+    private func restartCameraDetection() {
+        stopCameraDetection()
+        startCameraDetection()
+    }
+
     // MARK: - Settings Persistence
 
     private static func loadSettings() -> KioskSettings {
@@ -643,6 +678,16 @@ public final class KioskModeManager: ObservableObject {
                 stopIdleTimer()
             }
         }
+
+        // Restart camera detection only when detector configuration changes.
+        // wakeOnCameraMotion is read at fire time by the closure, so toggling it
+        // doesn't require tearing down the capture session.
+        #if !targetEnvironment(macCatalyst)
+        if oldValue.cameraMotionEnabled != newValue.cameraMotionEnabled
+            || oldValue.cameraMotionSensitivity != newValue.cameraMotionSensitivity {
+            restartCameraDetection()
+        }
+        #endif
 
         updateKioskModeLockdown(enabled: true)
         notifyObserversOfSettingsChange()

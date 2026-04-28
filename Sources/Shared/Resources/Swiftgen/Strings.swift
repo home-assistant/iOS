@@ -1745,6 +1745,34 @@ public enum L10n {
       /// Brightness
       public static var section: String { return L10n.tr("Localizable", "kiosk.brightness.section") }
     }
+    public enum Camera {
+      /// Uses the front camera to detect motion. Requires camera permission.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.camera.footer") }
+      /// Motion Detection
+      public static var motionDetection: String { return L10n.tr("Localizable", "kiosk.camera.motion_detection") }
+      /// Camera Detection
+      public static var section: String { return L10n.tr("Localizable", "kiosk.camera.section") }
+      /// Sensitivity
+      public static var sensitivity: String { return L10n.tr("Localizable", "kiosk.camera.sensitivity") }
+      /// Wake on Motion
+      public static var wakeOnMotion: String { return L10n.tr("Localizable", "kiosk.camera.wake_on_motion") }
+      public enum PermissionDenied {
+        /// Enable camera access for Home Assistant in Settings to use motion detection.
+        public static var message: String { return L10n.tr("Localizable", "kiosk.camera.permission_denied.message") }
+        /// Open Settings
+        public static var openSettings: String { return L10n.tr("Localizable", "kiosk.camera.permission_denied.open_settings") }
+        /// Camera Access Required
+        public static var title: String { return L10n.tr("Localizable", "kiosk.camera.permission_denied.title") }
+      }
+      public enum Sensitivity {
+        /// High
+        public static var high: String { return L10n.tr("Localizable", "kiosk.camera.sensitivity.high") }
+        /// Low
+        public static var low: String { return L10n.tr("Localizable", "kiosk.camera.sensitivity.low") }
+        /// Medium
+        public static var medium: String { return L10n.tr("Localizable", "kiosk.camera.sensitivity.medium") }
+      }
+    }
     public enum Clock {
       /// 24-Hour Format
       public static var _24hour: String { return L10n.tr("Localizable", "kiosk.clock.24hour") }

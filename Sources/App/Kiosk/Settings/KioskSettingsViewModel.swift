@@ -1,3 +1,4 @@
+import AVFoundation
 import LocalAuthentication
 import Shared
 import SwiftUI
@@ -8,6 +9,7 @@ public final class KioskSettingsViewModel: ObservableObject {
     @Published public var isAuthenticated = false
     @Published public var showingAuthError = false
     @Published public var authErrorMessage = ""
+    @Published public var showingCameraPermissionDenied = false
 
     private let manager: KioskModeManager
     private let onDismiss: (() -> Void)?
@@ -129,6 +131,36 @@ public final class KioskSettingsViewModel: ObservableObject {
     func handleAuthErrorDismissed(using environmentDismiss: DismissAction) {
         if manager.isKioskModeActive {
             dismiss(using: environmentDismiss)
+        }
+    }
+
+    /// Toggle camera motion detection. Turning it on requests camera authorization
+    /// first so the underlying detector can actually start; on denial we revert
+    /// the toggle and surface an alert that deep-links to iOS Settings.
+    func setCameraMotionEnabled(_ enabled: Bool) {
+        guard enabled else {
+            settings.cameraMotionEnabled = false
+            return
+        }
+
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            settings.cameraMotionEnabled = true
+        case .notDetermined:
+            Task { [weak self] in
+                let granted = await AVCaptureDevice.requestAccess(for: .video)
+                await MainActor.run {
+                    if granted {
+                        self?.settings.cameraMotionEnabled = true
+                    } else {
+                        self?.showingCameraPermissionDenied = true
+                    }
+                }
+            }
+        case .denied, .restricted:
+            showingCameraPermissionDenied = true
+        @unknown default:
+            showingCameraPermissionDenied = true
         }
     }
 }
