@@ -116,9 +116,9 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
 "assist.button.finish_recording.title" = "Πατήστε για να ολοκληρώσετε την εγγραφή...";
 "assist.button.listening.title" = "Ακρόαση...";
-"assist.carplay.processing.title" = "Processing...";
-"assist.carplay.responding.title" = "Responding...";
-"assist.carplay.tap_to_record.title" = "Tap to record";
+"assist.carplay.processing.title" = "Επεξεργασία...";
+"assist.carplay.responding.title" = "Απάντηση...";
+"assist.carplay.tap_to_record.title" = "Πατήστε για καταγραφή";
 "assist.error.pipelines_response" = "Αποτυχία λήψης των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
@@ -758,10 +758,10 @@
 "onboarding.scanning.manual.button.divider.title" = "ή";
 "onboarding.scanning.manual.button.title" = "Εισάγετε τη διεύθυνση χειροκίνητα";
 "onboarding.scanning.title" = "Σάρωση για διακομιστές";
-"onboarding.server_import.message" = "Hang tight, we’re rounding up your servers.";
-"onboarding.server_import.reauthenticate.continue_button" = "Continue";
-"onboarding.server_import.reauthenticate.errors_cancelled" = "Sign in was cancelled.";
-"onboarding.server_import.reauthenticate.errors_missing_presenter" = "Unable to present the sign-in flow right now.";
+"onboarding.server_import.message" = "Κρατηθείτε καλά, συμμαζεύουμε τους servers σας.";
+"onboarding.server_import.reauthenticate.continue_button" = "Συνέχεια";
+"onboarding.server_import.reauthenticate.errors_cancelled" = "Η σύνδεση ακυρώθηκε.";
+"onboarding.server_import.reauthenticate.errors_missing_presenter" = "Δεν είναι δυνατή η παρουσίαση της ροής σύνδεσης αυτή τη στιγμή.";
 "onboarding.server_import.reauthenticate.message" = "Ενα ακόμη βήμα: συνδεθείτε ξανά για να ολοκληρώσετε την επαναφορά του %@.";
 "onboarding.server_import.reauthenticate.title" = "Επανασύνδεση Home Assistant";
 "onboarding.server_import.reauthenticate.url_picker_title" = "Επιλέξτε μια σύνδεση";
@@ -1475,7 +1475,7 @@
 "web_view.add_to.option.Widget.title" = "Γραφικό στοιχείο";
 "web_view.empty_state.body" = "Ελέγξτε τη σύνδεσή σας ή προσπαθήστε ξανά αργότερα. Εάν το Home Assistant κάνει επανεκκίνηση, θα επανασυνδεθεί αφού επανέλθει σε λειτουργία.";
 "web_view.empty_state.open_settings_button" = "Ανοιγμα ρυθμίσεων εφαρμογής";
-"web_view.empty_state.reauthenticate_button" = "Re-authenticate";
+"web_view.empty_state.reauthenticate_button" = "Εκ νέου έλεγχος ταυτότητας";
 "web_view.empty_state.retry_button" = "Επανάληψη";
 "web_view.empty_state.title" = "Εχετε αποσυνδεθεί";
 "web_view.no_url_available.body" = "🔐 Λόγω των επιλογών ασφαλείας σας, δεν υπάρχει διεύθυνση URL που επιτρέπεται να χρησιμοποιήσουμε. \
