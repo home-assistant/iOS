@@ -291,11 +291,15 @@ private struct ActionEditorSheet: View {
 
 // MARK: - Action Identifiable
 
-extension Action: @retroactive Identifiable {
-    // Disambiguate the property reference: `Identifiable` defines an `associatedtype ID`,
-    // which shadows the stored `ID` property on Action without `self.` qualification.
-    public var id: String { self.ID }
+// Define `id` in a plain extension so `Identifiable`'s `associatedtype ID` isn't in
+// scope here — otherwise `ID` is ambiguous between the stored property and the
+// associated type, and qualifying with `self.ID` collides with SwiftFormat's
+// `--self init-only` rule.
+public extension Action {
+    var id: String { ID }
 }
+
+extension Action: @retroactive Identifiable {}
 
 #Preview {
     NavigationView {
