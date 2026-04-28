@@ -17,6 +17,9 @@ final class WebViewEmptyStateWrapperView: UIView {
     private let dismissAction: (() -> Void)?
     private(set) var style: WebViewEmptyStateStyle
     private(set) var showsErrorDetailsButton: Bool
+    var hostingViewController: UIViewController {
+        hostingController
+    }
 
     init(
         style: WebViewEmptyStateStyle = .disconnected,
