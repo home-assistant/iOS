@@ -46,7 +46,11 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.DetailsSection.NotificationSettingsRow.title
             $0.icon = .bellOutlineIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                NotificationSettingsViewController()
+                let view = NavigationView {
+                    NotificationSettingsView()
+                }
+                .navigationViewStyle(.stack)
+                return view.embeddedInHostingController()
             }, onDismiss: nil)
         }
     }

@@ -453,8 +453,8 @@
 		11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
 		11F3D74C2495377B00C05BBA /* SensorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D74B2495377B00C05BBA /* SensorListView.swift */; };
 		11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */; };
-		11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */; };
-		11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55EEC25D3B088003977AC /* NotificationDebugNotificationsViewController.swift */; };
+		11F55ECD25D3A364003977AC /* NotificationRateLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55ECC25D3A364003977AC /* NotificationRateLimitView.swift */; };
+		11F55EED25D3B088003977AC /* NotificationDebugNotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55EEC25D3B088003977AC /* NotificationDebugNotificationsView.swift */; };
 		11F855D624DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */; };
 		11F855D724DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */; };
 		11F855D824DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F855D324DF6C7A0018013E /* MaterialDesignIcons.swift */; };
@@ -1438,7 +1438,7 @@
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
-		B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */; };
+		B65C0B522282BA13007E057B /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C0B512282BA13007E057B /* NotificationSettingsView.swift */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
@@ -1524,7 +1524,7 @@
 		B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D8A3282271448E00FA765D /* error.json in Resources */ = {isa = PBXBuildFile; fileRef = B6D8A3272271448D00FA765D /* error.json */; };
-		B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */; };
+		B6DA3C7122690B1F00DE811C /* NotificationSoundsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7022690B1F00DE811C /* NotificationSoundsView.swift */; };
 		B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7222691A5000DE811C /* AKConverter.swift */; };
 		B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */; };
 		B6DDF8534A4176416CFAC79A /* KioskSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49767602CA2066683EC638F /* KioskSettingsView.swift */; };
@@ -2251,8 +2251,8 @@
 		11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWrapperBatteryObserver.swift; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListView.swift; sourceTree = "<group>"; };
 		11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategoryListViewController.swift; sourceTree = "<group>"; };
-		11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRateLimitViewController.swift; sourceTree = "<group>"; };
-		11F55EEC25D3B088003977AC /* NotificationDebugNotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDebugNotificationsViewController.swift; sourceTree = "<group>"; };
+		11F55ECC25D3A364003977AC /* NotificationRateLimitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRateLimitView.swift; sourceTree = "<group>"; };
+		11F55EEC25D3B088003977AC /* NotificationDebugNotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDebugNotificationsView.swift; sourceTree = "<group>"; };
 		11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialDesignIcons.ttf; path = Tools/MaterialDesignIcons.ttf; sourceTree = SOURCE_ROOT; };
 		11F855D324DF6C7A0018013E /* MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialDesignIcons.swift; sourceTree = "<group>"; };
 		11F855D424DF6C7A0018013E /* IconDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconDrawable.swift; sourceTree = "<group>"; };
@@ -3363,7 +3363,7 @@
 		B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Beta.plist"; sourceTree = "<group>"; };
 		B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileAppUpdateRegistrationRequest.swift; sourceTree = "<group>"; };
 		B65B15042273188300635D5C /* Assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
-		B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewController.swift; sourceTree = "<group>"; };
+		B65C0B512282BA13007E057B /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B661FB67226B961400E541DD /* WebSocketBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = WebSocketBridge.js; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
@@ -3426,7 +3426,7 @@
 		B6CC5D9B2159D10F00833E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6D3B4EB225B26300082BB4F /* SensorContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.swift; sourceTree = "<group>"; };
 		B6D8A3272271448D00FA765D /* error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = error.json; sourceTree = "<group>"; };
-		B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSoundsViewController.swift; sourceTree = "<group>"; };
+		B6DA3C7022690B1F00DE811C /* NotificationSoundsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSoundsView.swift; sourceTree = "<group>"; };
 		B6DA3C7222691A5000DE811C /* AKConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKConverter.swift; sourceTree = "<group>"; };
 		B6DAC734215F069300727D2A /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
 		B6DAC736215F06B100727D2A /* NotificationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAction.swift; sourceTree = "<group>"; };
@@ -4148,12 +4148,12 @@
 			children = (
 				B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */,
 				B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */,
-				B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */,
-				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
+				B6DA3C7022690B1F00DE811C /* NotificationSoundsView.swift */,
+				B65C0B512282BA13007E057B /* NotificationSettingsView.swift */,
 				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
 				11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */,
-				11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */,
-				11F55EEC25D3B088003977AC /* NotificationDebugNotificationsViewController.swift */,
+				11F55ECC25D3A364003977AC /* NotificationRateLimitView.swift */,
+				11F55EEC25D3B088003977AC /* NotificationDebugNotificationsView.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -9382,7 +9382,7 @@
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				42FA83392F4722A30050095A /* FrontEndConnectionState.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
-				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
+				11F55EED25D3B088003977AC /* NotificationDebugNotificationsView.swift in Sources */,
 				42DFE8742EFAE33D0058DADB /* AssistWavesAnimation.swift in Sources */,
 				42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				42175EC12F436811001073AF /* ClientCertificateOnboardingView.swift in Sources */,
@@ -9524,7 +9524,7 @@
 				4238E8572EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift in Sources */,
 				42AAEE882EC4B9880049E1F3 /* URLOpener.swift in Sources */,
 				42DF7DE22EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift in Sources */,
-				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
+				B6DA3C7122690B1F00DE811C /* NotificationSoundsView.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
 				451D63FF25213F1E2AF7C73A /* CarPlayAssistSession.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,
@@ -9571,7 +9571,7 @@
 				42790C442C48077200E31B38 /* ImprovSuccessView.swift in Sources */,
 				429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */,
 				425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */,
-				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
+				11F55ECD25D3A364003977AC /* NotificationRateLimitView.swift in Sources */,
 				4210CCEB2F152AD000B71FB9 /* CameraPlayerView.swift in Sources */,
 				3E4087F02CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
 				42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */,
@@ -9642,7 +9642,7 @@
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
 				4278CB852D01F0B200CFAAC9 /* GesturesSetupViewModel.swift in Sources */,
 				42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */,
-				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
+				B65C0B522282BA13007E057B /* NotificationSettingsView.swift in Sources */,
 				42C1012B2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */,
 				429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,

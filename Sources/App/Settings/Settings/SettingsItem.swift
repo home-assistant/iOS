@@ -218,8 +218,7 @@ struct SettingsServersView: View {
 
 struct SettingsNotificationsView: View {
     var body: some View {
-        embed(NotificationSettingsViewController())
-            .navigationTitle(L10n.Settings.DetailsSection.NotificationSettingsRow.title)
+        NotificationSettingsView()
     }
 }
 
