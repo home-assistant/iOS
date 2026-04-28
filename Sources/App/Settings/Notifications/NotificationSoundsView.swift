@@ -108,10 +108,13 @@ struct NotificationSoundsView: View {
     private var importedSection: some View {
         Section {
             ForEach(viewModel.imported, id: \.self) { url in
-                soundRow(url: url, allowDelete: true)
+                soundRow(url: url)
             }
             .onDelete { indexSet in
-                for index in indexSet {
+                // Iterate descending so each removal doesn't shift the indices we still
+                // need to read out of the source array.
+                for index in indexSet.sorted(by: >) {
+                    guard index < viewModel.imported.count else { continue }
                     let url = viewModel.imported[index]
                     do {
                         try viewModel.deleteSound(url)
@@ -150,7 +153,7 @@ struct NotificationSoundsView: View {
     private var bundledSection: some View {
         Section {
             ForEach(viewModel.bundled, id: \.self) { url in
-                soundRow(url: url, allowDelete: false)
+                soundRow(url: url)
             }
         }
     }
@@ -158,10 +161,13 @@ struct NotificationSoundsView: View {
     private var systemSection: some View {
         Section {
             ForEach(viewModel.system, id: \.self) { url in
-                soundRow(url: url, allowDelete: true)
+                soundRow(url: url)
             }
             .onDelete { indexSet in
-                for index in indexSet {
+                // Iterate descending so each removal doesn't shift the indices we still
+                // need to read out of the source array.
+                for index in indexSet.sorted(by: >) {
+                    guard index < viewModel.system.count else { continue }
                     let url = viewModel.system[index]
                     do {
                         try viewModel.deleteSound(url)
@@ -184,7 +190,7 @@ struct NotificationSoundsView: View {
         }
     }
 
-    private func soundRow(url: URL, allowDelete: Bool) -> some View {
+    private func soundRow(url: URL) -> some View {
         Button {
             viewModel.play(url: url) { error in
                 presentError(error)
@@ -536,7 +542,7 @@ private extension FileManager {
 
 // MARK: - Error type
 
-struct SoundError: LocalizedError {
+private struct SoundError: LocalizedError {
     enum ErrorKind {
         case cantBuildLibrarySoundsPath
         case cantGetFileSharingPath
