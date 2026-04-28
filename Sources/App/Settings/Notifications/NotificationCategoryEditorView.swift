@@ -180,15 +180,20 @@ struct NotificationCategoryEditorView: View {
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        if !isServerControlled {
-            ToolbarItem(placement: .cancellationAction) {
+        // `if` directly inside a `@ToolbarContentBuilder` requires the iOS 16+
+        // ToolbarContentBuilder. Always emit the items and gate their content
+        // (a regular ViewBuilder context) so this compiles on iOS 15.
+        ToolbarItem(placement: .cancellationAction) {
+            if !isServerControlled {
                 Button(L10n.cancelLabel) {
                     onDismiss(nil)
                     dismiss()
                 }
             }
+        }
 
-            ToolbarItem(placement: .confirmationAction) {
+        ToolbarItem(placement: .confirmationAction) {
+            if !isServerControlled {
                 Button(L10n.saveLabel) {
                     if validate() {
                         save()
