@@ -19,11 +19,12 @@ struct IconSearchPicker: View {
                     .foregroundColor(.primary)
                 Spacer()
                 HStack(spacing: DesignSystem.Spaces.one) {
+                    // The UIImage is rendered with the desired tint color baked in;
+                    // keep the original rendering mode so SwiftUI doesn't strip it.
                     Image(uiImage: selectedIcon.image(
                         ofSize: CGSize(width: 24, height: 24),
                         color: UIColor(tintColor)
                     ))
-                    .renderingMode(.template)
                     Text(selectedIcon.name)
                         .foregroundColor(.secondary)
                         .lineLimit(1)
@@ -67,11 +68,12 @@ private struct IconSearchSheet: View {
                     isPresented = false
                 } label: {
                     HStack(spacing: DesignSystem.Spaces.two) {
+                        // Keep the baked-in tint color rather than letting SwiftUI flatten
+                        // the template image to a single color (was discarding `tintColor`).
                         Image(uiImage: icon.image(
                             ofSize: CGSize(width: 30, height: 30),
                             color: UIColor(tintColor)
                         ))
-                        .renderingMode(.template)
                         Text(icon.name)
                             .foregroundColor(.primary)
                         Spacer()

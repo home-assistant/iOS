@@ -1,4 +1,3 @@
-import Combine
 import HAKit
 import Shared
 import SwiftUI
@@ -86,7 +85,12 @@ final class TemplateRenderer: ObservableObject {
     }
 
     private func startSubscription() {
-        guard let api = Current.api(for: server) else { return }
+        guard let api = Current.api(for: server) else {
+            // No API available for this server — surface that instead of leaving the
+            // preview stuck on the loading spinner that `refresh()` set.
+            handle(failure: HomeAssistantAPI.APIError.noAPIAvailable)
+            return
+        }
         subscriptionToken = api.connection.subscribe(
             to: .renderTemplate(template),
             initiated: { [weak self] result in

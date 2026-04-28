@@ -60,7 +60,7 @@ struct ComplicationFamilySelectView: View {
             }
         }
         .disabled(disabled)
-        .accessibilityAddTraits(disabled ? .isButton : [])
+        .accessibilityAddTraits(disabled ? [] : .isButton)
     }
 
     private func makeNewComplication(for family: ComplicationGroupMember) -> WatchComplication {

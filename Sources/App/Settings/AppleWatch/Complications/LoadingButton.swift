@@ -16,8 +16,7 @@ struct LoadingButton: View {
     var body: some View {
         Button(action: action) {
             HStack {
-                Text(title)
-                    .foregroundColor(.accentColor)
+                LoadingButtonLabel(title: title)
                 Spacer()
                 if isLoading {
                     ProgressView()
@@ -26,5 +25,17 @@ struct LoadingButton: View {
             .contentShape(Rectangle())
         }
         .disabled(isLoading)
+    }
+}
+
+/// Reads `\.isEnabled` so the title color matches the system tint when enabled
+/// and dims to `.secondary` when disabled, mirroring the system Button look.
+private struct LoadingButtonLabel: View {
+    let title: String
+    @Environment(\.isEnabled) private var isEnabled
+
+    var body: some View {
+        Text(title)
+            .foregroundColor(isEnabled ? .accentColor : .secondary)
     }
 }
