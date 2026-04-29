@@ -6,11 +6,6 @@ import HAKit
 import PromiseKit
 import Shared
 
-public protocol EntitiesStateSubscription {
-    func subscribe()
-    func unsubscribe()
-}
-
 enum CarPlaySupportedDomains {
     static var all: [Domain] = [
         .light,
