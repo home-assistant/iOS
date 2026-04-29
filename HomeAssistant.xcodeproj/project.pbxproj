@@ -6935,7 +6935,6 @@
 				421155222D354F3F00A71630 /* AppIcon.swift */,
 				42DF7DDC2EC53D42003F3C4A /* Settings */,
 				B641BC1D1E2097EF002CCBC1 /* AboutView.swift */,
-				1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */,
 				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				42B19BD02D4A358B00B3262B /* DebugView.swift */,
 				420C1BB32CF7DBF300AF22E7 /* ClientEventsLogView */,
