@@ -90,7 +90,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testWebhookTypeToken_isFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.webhookTypeToken,
-            "mobile_app_live_activity_token"
+            "live_activity_token"
         )
     }
 
@@ -108,7 +108,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testWebhookTypeDismissed_isFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.webhookTypeDismissed,
-            "mobile_app_live_activity_dismissed"
+            "live_activity_dismissed"
         )
     }
 
