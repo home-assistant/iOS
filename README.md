@@ -95,6 +95,14 @@ bundle exec fastlane lint
 bundle exec fastlane autocorrect
 ```
 
+To run `fastlane autocorrect` automatically before every commit, point Git at the checked-in `.githooks/` directory once:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The hook re-stages any files it modifies that were already part of the commit. Bypass for a single commit with `SKIP_AUTOCORRECT=1 git commit ...`.
+
 In the Xcode project, the autocorrectable linters will not modify your source code but will provide warnings. This project uses several linters:
 
 - [SwiftFormat](https://github.com/nicklockwood/SwiftFormat)

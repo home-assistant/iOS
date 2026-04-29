@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# pre-commit: run `bundle exec fastlane autocorrect` so SwiftFormat / Rubocop
+# fixes are applied automatically before each commit, and re-stage any
+# modifications it introduces to files that were already part of this commit.
+#
+# Install once with:
+#     git config core.hooksPath .githooks
+#
+# Bypass for a single commit:
+#     SKIP_AUTOCORRECT=1 git commit ...
+
+set -euo pipefail
+
+if [[ "${SKIP_AUTOCORRECT:-0}" == "1" ]]; then
+    exit 0
+fi
+
+# Nothing staged → nothing to do (covers `git commit --amend` no-ops).
+if git diff --cached --quiet; then
+    exit 0
+fi
+
+echo "pre-commit: running 'bundle exec fastlane autocorrect'..."
+bundle exec fastlane autocorrect
+
+# Re-stage anything autocorrect modified, but only for files that were already
+# part of the commit. Files outside the staged set are left in the working
+# tree as unstaged changes for the developer to review.
+already_staged=$(git diff --cached --name-only)
+if [[ -n "$already_staged" ]]; then
+    echo "$already_staged" | while IFS= read -r f; do
+        [[ -n "$f" ]] || continue
+        [[ -f "$f" ]] || continue
+        if ! git diff --quiet -- "$f"; then
+            git add -- "$f"
+        fi
+    done
+fi
