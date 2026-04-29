@@ -2902,8 +2902,6 @@ public enum L10n {
       public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
-      /// All Servers
-      public static var allServers: String { return L10n.tr("Localizable", "settings.connection_section.all_servers") }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
       public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
       /// Connected via
