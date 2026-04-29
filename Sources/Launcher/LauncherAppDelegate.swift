@@ -8,11 +8,21 @@ class LauncherAppDelegate: NSObject, NSApplicationDelegate {
     // the delegate. With the nib removed, we provide `main()` explicitly and
     // hook the delegate up in code. `LSBackgroundOnly = true` means there is
     // no menu bar to configure.
+    //
+    // `NSApplication.delegate` is an unretained reference, so the local
+    // `delegate` would be eligible for ARC release as soon as it falls out of
+    // scope — `withExtendedLifetime` keeps it alive for the duration of
+    // `run()`. The `autoreleasepool` mirrors what `NSApplicationMain` does
+    // internally.
     static func main() {
-        let app = NSApplication.shared
-        let delegate = LauncherAppDelegate()
-        app.delegate = delegate
-        app.run()
+        autoreleasepool {
+            let app = NSApplication.shared
+            let delegate = LauncherAppDelegate()
+            app.delegate = delegate
+            withExtendedLifetime(delegate) {
+                app.run()
+            }
+        }
     }
 
     func applicationDidFinishLaunching(_ note: Notification) {
