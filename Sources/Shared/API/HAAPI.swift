@@ -11,9 +11,6 @@ import Version
 #if os(iOS)
 import Reachability
 #endif
-#if os(iOS) && !targetEnvironment(macCatalyst)
-import ActivityKit
-#endif
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
