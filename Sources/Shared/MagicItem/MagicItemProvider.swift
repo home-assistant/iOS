@@ -136,26 +136,6 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
     func getInfo(for item: MagicItem) -> MagicItem.Info? {
         switch item.type {
-        case .action:
-            guard let actionItem = Current.realm().object(ofType: Action.self, forPrimaryKey: item.id) else {
-                Current.Log
-                    .error(
-                        "Failed to get magic item Action info for item id: \(item.id), server id: \(String(describing: item.serverId))"
-                    )
-                return nil
-            }
-            return .init(
-                id: ServerEntity.uniqueId(serverId: actionItem.serverIdentifier, entityId: actionItem.ID),
-                name: actionItem.Text,
-                iconName: actionItem.IconName,
-                customization: .init(
-                    iconColor: actionItem.IconColor,
-                    textColor: actionItem.TextColor,
-                    backgroundColor: actionItem.BackgroundColor,
-                    // Legacy iOS Actions always run without confirmation as it previously did
-                    requiresConfirmation: false
-                )
-            )
         case .script:
             guard let scriptsForServer = entitiesPerServer[item.serverId]?
                 .filter({ $0.domain == Domain.script.rawValue }),
@@ -234,8 +214,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func getAreaName(for item: MagicItem) -> String? {
-        guard item.type != .action,
-              let entitiesForServer = entitiesPerServer[item.serverId] else {
+        guard let entitiesForServer = entitiesPerServer[item.serverId] else {
             return nil
         }
 

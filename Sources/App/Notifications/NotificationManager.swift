@@ -121,72 +121,17 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
         Current.Log.verbose("Sending params in shortcut \(inputParams)")
 
-        let eventName = "ios.shortcut_run"
-        let deviceDict: [String: String] = [
-            "sourceDevicePermanentID": AppConstants.PermanentID, "sourceDeviceName": UIDevice.current.name,
-            "sourceDeviceID": Current.settingsStore.deviceID,
-        ]
-        var eventData: [String: Any] = ["name": shortcutName, "input": shortcutDict, "device": deviceDict]
-
-        var successHandler: CallbackURLKit.SuccessCallback?
-
-        if shortcutDict["ignore_result"] == nil {
-            successHandler = { params in
-                Current.Log.verbose("Received params from shortcut run \(String(describing: params))")
-                eventData["status"] = "success"
-                eventData["result"] = params?["result"]
-
-                Current.Log.verbose("Success, sending data \(eventData)")
-
-                when(fulfilled: Current.apis.map { api in
-                    api.CreateEvent(eventType: eventName, eventData: eventData)
-                }).catch { error in
-                    Current.Log.error("Received error from createEvent during shortcut run \(error)")
-                }
-            }
-        }
-
-        let failureHandler: CallbackURLKit.FailureCallback = { error in
-            eventData["status"] = "failure"
-            eventData["error"] = error.XCUErrorParameters
-
-            when(fulfilled: Current.apis.map { api in
-                api.CreateEvent(eventType: eventName, eventData: eventData)
-            }).catch { error in
-                Current.Log.error("Received error from createEvent during shortcut run \(error)")
-            }
-        }
-
-        let cancelHandler: CallbackURLKit.CancelCallback = {
-            eventData["status"] = "cancelled"
-
-            when(fulfilled: Current.apis.map { api in
-                api.CreateEvent(eventType: eventName, eventData: eventData)
-            }).catch { error in
-                Current.Log.error("Received error from createEvent during shortcut run \(error)")
-            }
-        }
-
         do {
             try Manager.shared.perform(
                 action: "run-shortcut",
                 urlScheme: "shortcuts",
                 parameters: inputParams,
-                onSuccess: successHandler,
-                onFailure: failureHandler,
-                onCancel: cancelHandler
+                onSuccess: nil,
+                onFailure: nil,
+                onCancel: nil
             )
         } catch let error as NSError {
             Current.Log.error("Running shortcut failed \(error)")
-
-            eventData["status"] = "error"
-            eventData["error"] = error.localizedDescription
-
-            when(fulfilled: Current.apis.map { api in
-                api.CreateEvent(eventType: eventName, eventData: eventData)
-            }).catch { error in
-                Current.Log.error("Received error from CallbackURLKit perform \(error)")
-            }
         }
     }
 }

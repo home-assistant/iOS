@@ -88,8 +88,6 @@ public struct MagicItem: Codable, Equatable, Hashable {
     }
 
     public enum ItemType: String, Codable {
-        /// aka iOS legacy Action
-        case action
         case script
         case scene
         case entity
@@ -151,7 +149,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             return MaterialDesignIcons(named: icon, fallback: .dotsGridIcon)
         } else {
             switch type {
-            case .action, .scene:
+            case .scene:
                 icon = MaterialDesignIcons(named: info.iconName, fallback: .scriptTextOutlineIcon)
             case .script, .entity:
                 icon = MaterialDesignIcons(
@@ -375,9 +373,6 @@ public extension MagicItem {
                         triggerSource: source,
                         shouldLog: true
                     )
-                case .action:
-                    return Current.api(for: server)?
-                        .HandleAction(actionID: id, source: source)
                 case .scene:
                     let domain = Domain.scene.rawValue
                     return Current.api(for: server)?.CallService(

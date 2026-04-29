@@ -76,7 +76,12 @@ struct FolderDetailView: View {
             customization: nil
         )
 
-        if item.type == .action {
+        NavigationLink {
+            MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
+                viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
+            }
+            .environment(\.colorScheme, .dark)
+        } label: {
             HStack {
                 Image(uiImage: image(for: item, itemInfo: itemInfo))
                     .renderingMode(.original)
@@ -84,22 +89,6 @@ struct FolderDetailView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemSymbol: .line3Horizontal)
                     .foregroundStyle(.gray)
-            }
-        } else {
-            NavigationLink {
-                MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
-                    viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
-                }
-                .environment(\.colorScheme, .dark)
-            } label: {
-                HStack {
-                    Image(uiImage: image(for: item, itemInfo: itemInfo))
-                        .renderingMode(.original)
-                    Text(item.name(info: itemInfo))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Image(systemSymbol: .line3Horizontal)
-                        .foregroundStyle(.gray)
-                }
             }
         }
     }

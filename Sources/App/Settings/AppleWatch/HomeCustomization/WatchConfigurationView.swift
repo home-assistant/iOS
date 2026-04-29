@@ -249,9 +249,7 @@ struct WatchConfigurationView: View {
 
     @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        if item.type == .action {
-            itemRow(item: item, info: info)
-        } else if item.type == .folder {
+        if item.type == .folder {
             NavigationLink {
                 FolderDetailView(
                     folderId: item.id,

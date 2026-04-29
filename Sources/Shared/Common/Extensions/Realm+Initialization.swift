@@ -177,13 +177,13 @@ public extension Realm {
                         }
                     }
 
-                    migrate(NotificationCategory.self)
                     migrate(RLMScene.self)
                     migrate(RLMZone.self)
-                    migrate(Action.self)
 
-                    migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
-                        newObject?["serverIdentifier"] = Server.historicId.rawValue
+                    for typeName in [NotificationCategory.className(), Action.className(), WatchComplication.className()] {
+                        migration.enumerateObjects(ofType: typeName) { _, newObject in
+                            newObject?["serverIdentifier"] = Server.historicId.rawValue
+                        }
                     }
                 }
 

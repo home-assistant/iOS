@@ -96,7 +96,7 @@ struct WatchConfigurationViewModel_test {
         // Add multiple items to the folder
         let item1 = MagicItem(id: "script.one", serverId: "s1", type: .script)
         let item2 = MagicItem(id: "scene.two", serverId: "s1", type: .scene)
-        let item3 = MagicItem(id: "action.three", serverId: "s1", type: .action)
+        let item3 = MagicItem(id: "scene.three", serverId: "s1", type: .scene)
 
         viewModel.addItemToFolder(folderId: folderId, item: item1)
         viewModel.addItemToFolder(folderId: folderId, item: item2)
@@ -109,7 +109,7 @@ struct WatchConfigurationViewModel_test {
         let rootItemIds = viewModel.watchConfig.items.map(\.id)
         #expect(!rootItemIds.contains("script.one"), "script.one should not be at root")
         #expect(!rootItemIds.contains("scene.two"), "scene.two should not be at root")
-        #expect(!rootItemIds.contains("action.three"), "action.three should not be at root")
+        #expect(!rootItemIds.contains("scene.three"), "scene.three should not be at root")
 
         // The folder should contain all 3 items
         let folder = viewModel.watchConfig.items[0]
@@ -118,7 +118,7 @@ struct WatchConfigurationViewModel_test {
         let folderItemIds = folder.items?.map(\.id) ?? []
         #expect(folderItemIds.contains("script.one"), "Folder should contain script.one")
         #expect(folderItemIds.contains("scene.two"), "Folder should contain scene.two")
-        #expect(folderItemIds.contains("action.three"), "Folder should contain action.three")
+        #expect(folderItemIds.contains("scene.three"), "Folder should contain scene.three")
     }
 
     @Test func addItemToNonExistentFolderDoesNothing() async throws {

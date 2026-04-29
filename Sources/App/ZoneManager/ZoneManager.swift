@@ -129,37 +129,6 @@ class ZoneManager {
         }
     }
 
-    private func fire(event: ZoneManagerEvent) {
-        guard let zone = event.associatedZone,
-              let server = Current.servers.server(forServerIdentifier: zone.serverIdentifier) else { return }
-
-        switch event.eventType {
-        case let .region(region, state):
-            guard let api = Current.api(for: server) else {
-                Current.Log.error("No API available to fire ZoneManager event, server: \(server)")
-                return
-            }
-            let eventInfo = api.zoneStateEvent(region: region, state: state, zone: zone)
-            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).pipe { result in
-                switch result {
-                case .fulfilled:
-                    Current.Log.info("Fired ZoneManager event")
-                case let .rejected(error):
-                    let message = "Failed to fire ZoneManager event: \(error.localizedDescription)"
-                    Current.Log.error(message)
-                    Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
-                    Current.notificationDispatcher.send(.init(
-                        id: .debug,
-                        title: "DEBUG: Failed to fire ZoneManager",
-                        body: message
-                    ))
-                }
-            }
-        case .locationChange:
-            break
-        }
-    }
-
     private func sync(zones: AnyCollection<RLMZone>) {
         let currentRegions = locationManager.monitoredRegions
         let desiredRegions = regionFilter.regions(
@@ -231,7 +200,6 @@ extension ZoneManager: ZoneManagerCollectorDelegate {
     }
 
     func collector(_ collector: ZoneManagerCollector, didCollect event: ZoneManagerEvent) {
-        fire(event: event)
         perform(event: event)
     }
 }

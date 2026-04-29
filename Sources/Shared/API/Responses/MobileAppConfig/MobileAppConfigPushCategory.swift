@@ -1,7 +1,7 @@
 import Foundation
 import ObjectMapper
 
-public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSource {
+public struct MobileAppConfigPushCategory {
     public struct Action: ImmutableMappable {
         public var title: String
         public var identifier: String
@@ -40,16 +40,4 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
             }
         }
     }
-
-    public var name: String
-    public var identifier: String
-    public var actions: [Action]
-
-    public init(map: Map) throws {
-        self.name = try map.value("name")
-        self.identifier = try map.value("identifier", default: name)
-        self.actions = map.value("actions", default: [])
-    }
-
-    public var primaryKey: String { identifier.uppercased() }
 }

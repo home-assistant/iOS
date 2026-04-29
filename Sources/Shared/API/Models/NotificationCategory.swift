@@ -2,7 +2,7 @@ import Foundation
 import RealmSwift
 import UserNotifications
 
-public final class NotificationCategory: Object, UpdatableModel {
+public final class NotificationCategory: Object {
     public static let FallbackActionIdentifier = "_"
 
     @objc public dynamic var isServerControlled: Bool = false
@@ -25,17 +25,8 @@ public final class NotificationCategory: Object, UpdatableModel {
 
     public var Actions = List<NotificationAction>()
 
-    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
-        #warning("multiserver - primary key duplication")
-        return sourceIdentifier
-    }
-
     override public static func primaryKey() -> String? {
         #keyPath(Identifier)
-    }
-
-    static func serverIdentifierKey() -> String {
-        #keyPath(serverIdentifier)
     }
 
     public var options: UNNotificationCategoryOptions {
@@ -98,33 +89,4 @@ public final class NotificationCategory: Object, UpdatableModel {
         """
     }
 
-    static func didUpdate(objects: [NotificationCategory], server: Server, realm: Realm) {}
-
-    static func willDelete(objects: [NotificationCategory], server: Server?, realm: Realm) {}
-
-    static var updateEligiblePredicate: NSPredicate {
-        .init(format: "isServerControlled == YES")
-    }
-
-    public func update(with object: MobileAppConfigPushCategory, server: Server, using realm: Realm) -> Bool {
-        if self.realm == nil {
-            Identifier = object.identifier.uppercased()
-        } else {
-            precondition(Identifier == object.identifier.uppercased())
-        }
-
-        isServerControlled = true
-        serverIdentifier = server.identifier.rawValue
-        Name = object.name
-
-        // TODO: update
-        realm.delete(Actions)
-        Actions.removeAll()
-
-        Actions.append(objectsIn: object.actions.map { action in
-            NotificationAction(action: action)
-        })
-
-        return true
-    }
 }

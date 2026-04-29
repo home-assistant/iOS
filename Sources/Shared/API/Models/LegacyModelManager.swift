@@ -112,8 +112,6 @@ public class LegacyModelManager: ServerObserver {
             ),
             CleanupDefinition(orphansOf: RLMScene.self),
             CleanupDefinition(orphansOf: RLMZone.self),
-            CleanupDefinition(orphansOf: Action.self),
-            CleanupDefinition(orphansOf: NotificationCategory.self),
             CleanupDefinition(
                 orphansOf: WatchComplication.self,
                 serverIdentifierKey: #keyPath(WatchComplication.serverIdentifier),
@@ -284,20 +282,7 @@ public class LegacyModelManager: ServerObserver {
             _ modelManager: LegacyModelManager
         ) -> Promise<Void>
 
-        public static let defaults: [Self] = [
-            FetchDefinition(update: { api, queue, manager in
-                api.GetMobileAppConfig().then(on: queue) {
-                    when(fulfilled: [
-                        manager.store(
-                            type: NotificationCategory.self,
-                            from: api.server,
-                            sourceModels: $0.push.categories
-                        ),
-                        manager.store(type: Action.self, from: api.server, sourceModels: $0.actions),
-                    ])
-                }
-            }),
-        ]
+        public static let defaults: [Self] = []
     }
 
     public func fetch(

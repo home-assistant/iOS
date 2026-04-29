@@ -203,9 +203,7 @@ struct NotificationActionEditorView: View {
     }
 
     private var yamlPreview: String {
-        guard let api = Current.apis.first else { return "" }
-        return NotificationAction.exampleTrigger(
-            api: api,
+        NotificationAction.exampleTrigger(
             identifier: identifier,
             category: category.Identifier,
             textInput: textInput

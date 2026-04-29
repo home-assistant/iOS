@@ -241,8 +241,6 @@
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
 		119DE933263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE913263325790099F7D8 /* IconDrawable+Settings.swift */; };
 		119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE913263325790099F7D8 /* IconDrawable+Settings.swift */; };
-		119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfigAction.swift */; };
-		119EC3C824D5119300617D51 /* MobileAppConfigAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfigAction.swift */; };
 		11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A183B22511BCF300CA326A /* LifecycleManager.swift */; };
 		11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = 1167402225198F9A00F51626 /* MacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3BD2C26192210005237E6 /* LocalPushManager.swift */; };
@@ -467,10 +465,6 @@
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
 		3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */; };
 		3997926B2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */; };
-		3997926E2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */; };
-		3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */; };
-		399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
-		399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */; };
 		3BB66E53094D6C7C2F395D54 /* ControlFan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D00E1755885575FF8118933 /* ControlFan.swift */; };
 		3E02C0E22CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */; };
@@ -2069,7 +2063,6 @@
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
 		119DE913263325790099F7D8 /* IconDrawable+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IconDrawable+Settings.swift"; sourceTree = "<group>"; };
-		119EC3C624D5119300617D51 /* MobileAppConfigAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigAction.swift; sourceTree = "<group>"; };
 		119EC3D724D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Intents.strings"; sourceTree = "<group>"; };
 		119EC3D924D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		119EC3DA24D5395C00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -2237,8 +2230,6 @@
 		392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Matter-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Matter-metadata.plist"; sourceTree = "<group>"; };
 		3995EF7323087AA35F01BDDF /* ComplicationEditView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ComplicationEditView.swift; sourceTree = "<group>"; };
 		399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPushCategory.swift; sourceTree = "<group>"; };
-		3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPush.swift; sourceTree = "<group>"; };
-		399792702B7F909900231B54 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
 		39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scaledToSize.swift"; sourceTree = "<group>"; };
 		3B8B29386598719DCBBC161B /* Pods-iOS-Extensions-PushProvider.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-PushProvider.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-PushProvider/Pods-iOS-Extensions-PushProvider.release.xcconfig"; sourceTree = "<group>"; };
 		3D9C81015FD7A8FA8716E4F2 /* Pods_iOS_Extensions_Widgets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Widgets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4433,10 +4424,7 @@
 		3997926C2B7F906C00231B54 /* MobileAppConfig */ = {
 			isa = PBXGroup;
 			children = (
-				119EC3C624D5119300617D51 /* MobileAppConfigAction.swift */,
 				399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */,
-				3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */,
-				399792702B7F909900231B54 /* MobileAppConfig.swift */,
 			);
 			path = MobileAppConfig;
 			sourceTree = "<group>";
@@ -9751,7 +9739,6 @@
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
 				11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
-				3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */,
 				42905D872E12B01200250728 /* DesignSystem.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
@@ -9926,7 +9913,6 @@
 				11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */,
 				4210CD002F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */,
 				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
-				399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				1121CD4D271295AD0071C2AA /* Style.swift in Sources */,
 				116570782702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
@@ -9942,7 +9928,6 @@
 				42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */,
 				11B38EF3275C54A300205C7B /* PerformActionIntentHandler.swift in Sources */,
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
-				119EC3C824D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
 				115BC82F2677093A00452430 /* FocusStatusWrapper.swift in Sources */,
 				B67CE89E22200F220034C1D0 /* DiscoveredHomeAssistant.swift in Sources */,
 				1182620824F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
@@ -10158,7 +10143,6 @@
 				42D996E52D89863A001737A0 /* Bool+HA.swift in Sources */,
 				11F20BFC274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
 				42B74A5D2D36A47E00C37304 /* CloseButton.swift in Sources */,
-				399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				42955C222F1A550B00E398E8 /* ExternalBusPayload.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
 				42FDCA2B2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */,
@@ -10246,7 +10230,6 @@
 				1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */,
 				11B6B592294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
-				3997926E2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				42790C472C4809DD00E31B38 /* UIScreen+PerfectCornerRadius.swift in Sources */,
 				4278CB892D01F81B00CFAAC9 /* AppGesture.swift in Sources */,
 				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
@@ -10268,7 +10251,6 @@
 				42F3E1492E1D22B400F4E6FC /* HATextField.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
-				119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
 				42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */,
 				427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
 				420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */,

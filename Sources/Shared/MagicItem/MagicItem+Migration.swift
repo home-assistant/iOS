@@ -23,8 +23,8 @@ extension MagicItemProvider {
 
         let replacementItems = missingItems.compactMap { item -> MagicItem? in
             switch item.type {
-            case .action, .assistPipeline:
-                // Actions and assist pipelines do not require entity-based migration
+            case .assistPipeline:
+                // Assist pipelines do not require entity-based migration
                 return item
             default:
                 return getSimilarItem(for: item)

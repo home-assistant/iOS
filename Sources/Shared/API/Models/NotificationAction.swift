@@ -92,26 +92,20 @@ public class NotificationAction: Object {
     }
 
     public class func exampleTrigger(
-        api: HomeAssistantAPI,
         identifier: String,
         category: String?,
         textInput: Bool
     ) -> String {
-        let data = api.legacyNotificationActionEvent(
-            identifier: identifier,
-            category: category,
-            actionData: "# value of action_data in notify call",
-            textInput: textInput ? "# text you input" : nil
-        )
-        let eventDataStrings = data.eventData.map { $0 + ": " + String(describing: $1) }.sorted()
-
-        let indentation = "\n    "
-
-        return """
-        - platform: event
-          event_type: \(data.eventType)
-          event_data:
-            \(eventDataStrings.joined(separator: indentation))
-        """
+        var lines: [String] = [
+            "- platform: event",
+            "  event_type: mobile_app_notification_action",
+            "  event_data:",
+            "    action: \(identifier)",
+        ]
+        if textInput {
+            lines.append("    reply_text: # text you input")
+        }
+        lines.append("    action_data: # value of action_data in notify call")
+        return lines.joined(separator: "\n")
     }
 }

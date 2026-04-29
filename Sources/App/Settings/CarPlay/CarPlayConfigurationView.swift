@@ -111,16 +111,12 @@ struct CarPlayConfigurationView: View {
 
     @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        if item.type == .action {
-            itemRow(item: item, info: info)
-        } else {
-            NavigationLink {
-                MagicItemCustomizationView(mode: .edit, context: .carPlay, item: item) { updatedMagicItem in
-                    viewModel.updateItem(updatedMagicItem)
-                }
-            } label: {
-                itemRow(item: item, info: info)
+        NavigationLink {
+            MagicItemCustomizationView(mode: .edit, context: .carPlay, item: item) { updatedMagicItem in
+                viewModel.updateItem(updatedMagicItem)
             }
+        } label: {
+            itemRow(item: item, info: info)
         }
     }
 

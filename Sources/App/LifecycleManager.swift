@@ -61,15 +61,6 @@ class LifecycleManager {
     }
 
     func didFinishLaunching() {
-        Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
-            when(fulfilled: Current.apis.map { api in
-                api.CreateEvent(
-                    eventType: "ios.finished_launching",
-                    eventData: api.sharedEventDeviceInfo
-                )
-            })
-        }.cauterize()
-
         periodicUpdateManager.connectAPI(reason: .cold)
     }
 
@@ -80,15 +71,6 @@ class LifecycleManager {
 
     @objc private func didEnterBackground() {
         isActive = false
-        Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidEnterBackground.rawValue) { _ in
-            when(fulfilled: Current.apis.map { api in
-                api.CreateEvent(
-                    eventType: "ios.entered_background",
-                    eventData: api.sharedEventDeviceInfo
-                )
-            })
-        }.cauterize()
-
         periodicUpdateManager.invalidatePeriodicUpdateTimer(forBackground: true)
         DataWidgetsUpdater.update()
     }
@@ -104,14 +86,6 @@ class LifecycleManager {
     }
 
     @objc private func didBecomeActive() {
-        Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidBecomeActive.rawValue) { _ in
-            when(fulfilled: Current.apis.map { api in
-                api.CreateEvent(
-                    eventType: "ios.became_active",
-                    eventData: api.sharedEventDeviceInfo
-                )
-            })
-        }.cauterize()
         syncNetworkInformation()
     }
 

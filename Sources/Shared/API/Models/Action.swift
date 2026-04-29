@@ -3,7 +3,7 @@ import ObjectMapper
 import RealmSwift
 import UIKit
 
-public final class Action: Object, ImmutableMappable, UpdatableModel {
+public final class Action: Object, ImmutableMappable {
     public enum PositionOffset: Int {
         case manual = 0
         case synced = 5000
@@ -26,17 +26,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     @objc public dynamic var showInWatch: Bool = true
     @objc public dynamic var useCustomColors: Bool = false
 
-    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
-        #warning("multiserver - primary key duplication")
-        return sourceIdentifier
-    }
-
     override public static func primaryKey() -> String? {
         #keyPath(ID)
-    }
-
-    static func serverIdentifierKey() -> String {
-        #keyPath(serverIdentifier)
     }
 
     override public required init() {
@@ -118,72 +109,6 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         useCustomColors >>> map["useCustomColors"]
     }
 
-    static func didUpdate(objects: [Action], server: Server, realm: Realm) {
-        for (idx, object) in objects.enumerated() {
-            object.Position = PositionOffset.synced.rawValue + server.info.sortOrder + idx
-        }
-    }
-
-    static func willDelete(objects: [Action], server: Server?, realm: Realm) {}
-
-    static var updateEligiblePredicate: NSPredicate {
-        .init(format: "isServerControlled == YES")
-    }
-
-    public func update(with object: MobileAppConfigAction, server: Server, using realm: Realm) -> Bool {
-        Current.Log.info("Updating server configured Actions")
-        if self.realm == nil {
-            ID = object.name
-            Name = object.name
-        } else {
-            precondition(ID == object.name)
-            precondition(Name == object.name)
-        }
-
-        isServerControlled = true
-        serverIdentifier = server.identifier.rawValue
-        Name = object.name
-
-        if let backgroundColor = object.backgroundColor {
-            BackgroundColor = backgroundColor
-        }
-
-        if let iconName = object.iconIcon {
-            IconName = iconName.normalizingIconString
-        } else {
-            let allCases = MaterialDesignIcons.allCases
-            IconName = allCases[abs(object.name.djb2hash % allCases.count)].name
-        }
-
-        if let iconColor = object.iconColor {
-            IconColor = iconColor
-        }
-
-        if let text = object.labelText {
-            Text = text
-        } else {
-            Text = object.name.replacingOccurrences(of: "_", with: " ").localizedCapitalized
-        }
-
-        if let textColor = object.labelColor {
-            TextColor = textColor
-        }
-
-        if let showInCarPlay = object.showInCarPlay {
-            self.showInCarPlay = showInCarPlay
-        }
-
-        if let showInWatch = object.showInWatch {
-            self.showInWatch = showInWatch
-        }
-
-        if let useCustomColors = object.useCustomColors {
-            self.useCustomColors = useCustomColors
-        }
-
-        return true
-    }
-
     #if os(iOS)
     public var uiShortcut: UIApplicationShortcutItem {
         UIApplicationShortcutItem(
@@ -196,54 +121,22 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     }
     #endif
 
-    public enum TriggerType {
-        case event
-        case scene
-    }
-
-    public var triggerType: TriggerType {
-        // we don't sync the scene information over to the watch, so checking ID which is synced
-        if ID.starts(with: "scene.") {
-            return .scene
-        } else {
-            return .event
-        }
-    }
-
     public func exampleTrigger(api: HomeAssistantAPI) -> String {
-        switch triggerType {
-        case .event:
-            let data = api.actionEvent(actionID: ID, actionName: Name, source: .Preview)
-            let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
-            let sourceStrings = AppTriggerSource.allCases.map(\.description).sorted()
+        let data = api.actionScene(actionID: ID, source: .Preview)
+        let eventDataStrings = data.serviceData.map { $0 + ": " + $1 }.sorted()
 
-            let indentation = "\n    "
+        let indentation = "\n      "
 
-            return """
-            - platform: event
-              event_type: \(data.eventType)
-              event_data:
-                # source may be one of:
-                # - \(sourceStrings.joined(separator: indentation + "# - "))
-                \(eventDataStrings.joined(separator: indentation))
-            """
-        case .scene:
-            let data = api.actionScene(actionID: ID, source: .Preview)
-            let eventDataStrings = data.serviceData.map { $0 + ": " + $1 }.sorted()
-
-            let indentation = "\n      "
-
-            return """
-            # you can watch for the scene change
-            - platform: event
-              event_type: call_service
-              event_data:
-                domain: \(data.serviceDomain)
-                service: \(data.serviceName)
-                service_data:
-                  \(eventDataStrings.joined(separator: indentation))
-            """
-        }
+        return """
+        # you can watch for the scene change
+        - platform: event
+          event_type: call_service
+          event_data:
+            domain: \(data.serviceDomain)
+            service: \(data.serviceName)
+            service_data:
+              \(eventDataStrings.joined(separator: indentation))
+        """
     }
 
     public var widgetLinkURL: URL {

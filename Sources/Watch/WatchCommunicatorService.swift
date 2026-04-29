@@ -192,15 +192,6 @@ final class WatchCommunicatorService {
         }
 
         switch type {
-        case .action:
-            firstly {
-                api.HandleAction(actionID: itemId, source: .Watch)
-            }.done {
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
-            }.catch { err in
-                Current.Log.error("Error during action event fire: \(err)")
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-            }
         case .script:
             callService(
                 server: server,

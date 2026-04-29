@@ -549,27 +549,6 @@ public class HomeAssistantAPI {
         )
     }
 
-    public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
-        firstly { () -> Promise<MobileAppConfig> in
-            if server.info.version < .actionSyncing {
-                let old: Promise<MobileAppConfigPush> = requestImmutable(
-                    path: "ios/push",
-                    callingFunctionName: "\(#function)"
-                )
-                return old.map { MobileAppConfig(push: $0) }
-            } else {
-                return requestImmutable(path: "ios/config", callingFunctionName: "\(#function)")
-            }
-        }.recover { error -> Promise<MobileAppConfig> in
-            if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
-                Current.Log.info("ios component is not loaded; pretending there's no push config")
-                return .value(.init())
-            }
-
-            throw error
-        }
-    }
-
     public func StreamCamera(entityId: String) -> Promise<StreamCameraResponse> {
         Current.webhooks.sendEphemeral(
             server: server,
@@ -722,29 +701,6 @@ public class HomeAssistantAPI {
         ]
     }
 
-    public func legacyNotificationActionEvent(
-        identifier: String,
-        category: String?,
-        actionData: Any?,
-        textInput: String?
-    ) -> (eventType: String, eventData: [String: Any]) {
-        var eventData: [String: Any] = sharedEventDeviceInfo
-        eventData["actionName"] = identifier
-
-        if let category {
-            eventData["categoryName"] = category
-        }
-        if let actionData {
-            eventData["action_data"] = actionData
-        }
-        if let textInput {
-            eventData["response_info"] = textInput
-            eventData["textInput"] = textInput
-        }
-
-        return (eventType: "ios.notification_action_fired", eventData: eventData)
-    }
-
     public func mobileAppNotificationActionEvent(
         identifier: String,
         category: String?,
@@ -762,19 +718,6 @@ public class HomeAssistantAPI {
         }
 
         return (eventType: "mobile_app_notification_action", eventData: eventData)
-    }
-
-    public func actionEvent(
-        actionID: String,
-        actionName: String,
-        source: AppTriggerSource
-    ) -> (eventType: String, eventData: [String: String]) {
-        var eventData = sharedEventDeviceInfo
-        eventData["actionName"] = actionName
-        eventData["actionID"] = actionID
-        eventData["triggerSource"] = source.description
-
-        return (eventType: "ios.action_fired", eventData: eventData)
     }
 
     public func actionScene(
@@ -797,24 +740,6 @@ public class HomeAssistantAPI {
             eventData["device_id"] = Current.settingsStore.integrationDeviceID
         }
         return (eventType: "tag_scanned", eventData: eventData)
-    }
-
-    @available(watchOS, unavailable)
-    public func zoneStateEvent(
-        region: CLRegion,
-        state: CLRegionState,
-        zone: RLMZone
-    ) -> (eventType: String, eventData: [String: Any]) {
-        var eventData: [String: Any] = sharedEventDeviceInfo
-        eventData["zone"] = zone.entityId
-        if region.identifier.contains("@"), let subId = region.identifier.split(separator: "@").last {
-            eventData["multi_region_zone_id"] = String(subId)
-        }
-        if state == .inside {
-            return (eventType: "ios.zone_entered", eventData: eventData)
-        } else {
-            return (eventType: "ios.zone_exited", eventData: eventData)
-        }
     }
 
     public func shareEvent(
@@ -866,25 +791,14 @@ public class HomeAssistantAPI {
     }
 
     public func handlePushAction(for info: PushActionInfo) -> Promise<Void> {
-        let actions = [
-            legacyNotificationActionEvent(
-                identifier: info.identifier,
-                category: info.category,
-                actionData: info.actionData,
-                textInput: info.textInput
-            ),
-            mobileAppNotificationActionEvent(
-                identifier: info.identifier,
-                category: info.category,
-                actionData: info.actionData,
-                textInput: info.textInput
-            ),
-        ]
-
-        return when(resolved: actions.map { action -> Promise<Void> in
-            Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
-            return CreateEvent(eventType: action.eventType, eventData: action.eventData)
-        }).asVoid()
+        let action = mobileAppNotificationActionEvent(
+            identifier: info.identifier,
+            category: info.category,
+            actionData: info.actionData,
+            textInput: info.textInput
+        )
+        Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
+        return CreateEvent(eventType: action.eventType, eventData: action.eventData)
     }
 
     public func HandleAction(actionID: String, source: AppTriggerSource) -> Promise<Void> {
@@ -896,26 +810,15 @@ public class HomeAssistantAPI {
         let intent = PerformActionIntent(action: action)
         INInteraction(intent: intent, response: nil).donate(completion: nil)
 
-        switch action.triggerType {
-        case .event:
-            let actionInfo = actionEvent(actionID: action.ID, actionName: action.Name, source: source)
-            Current.Log.verbose("Sending action: \(actionInfo.eventType) payload: \(actionInfo.eventData)")
+        let serviceInfo = actionScene(actionID: action.ID, source: source)
+        Current.Log.verbose("activating scene: \(action.ID)")
 
-            return CreateEvent(
-                eventType: actionInfo.eventType,
-                eventData: actionInfo.eventData
-            )
-        case .scene:
-            let serviceInfo = actionScene(actionID: action.ID, source: source)
-            Current.Log.verbose("activating scene: \(action.ID)")
-
-            return CallService(
-                domain: serviceInfo.serviceDomain,
-                service: serviceInfo.serviceName,
-                serviceData: serviceInfo.serviceData,
-                triggerSource: source
-            )
-        }
+        return CallService(
+            domain: serviceInfo.serviceDomain,
+            service: serviceInfo.serviceName,
+            serviceData: serviceInfo.serviceData,
+            triggerSource: source
+        )
     }
 
     public func executeActionForDomainType(domain: Domain, entityId: String, state: String) -> Promise<Void> {

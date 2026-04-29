@@ -160,8 +160,8 @@ struct WatchMagicViewRow: View {
             )
         )
         WatchMagicViewRow(
-            item: .init(id: "1", serverId: "1", type: .action),
-            itemInfo: .init(id: "1", name: "New Action", iconName: "earth")
+            item: .init(id: "1", serverId: "1", type: .scene),
+            itemInfo: .init(id: "1", name: "New Scene", iconName: "earth")
         )
     }
     .background(Color.red)
