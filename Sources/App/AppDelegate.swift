@@ -418,7 +418,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func setupModels() {
         // Force Realm migration to happen now
         _ = Realm.live()
-        Action.setupObserver()
         NotificationCategory.setupObserver()
     }
 
