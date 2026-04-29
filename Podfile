@@ -102,6 +102,16 @@ abstract_target 'watchOS' do
 end
 
 post_install do |installer|
+  # Wire up the checked-in pre-commit hook so every developer gets autocorrect
+  # on commit. Idempotent — safe to re-run on every `pod install`.
+  if Dir.exist?('.git') && Dir.exist?('.githooks')
+    current = `git config --get core.hooksPath`.strip
+    if current != '.githooks'
+      system('git', 'config', 'core.hooksPath', '.githooks')
+      Pod::UI.puts 'Configured git core.hooksPath = .githooks (pre-commit autocorrect)'.green
+    end
+  end
+
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '8.0'

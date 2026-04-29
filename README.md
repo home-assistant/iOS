@@ -95,6 +95,8 @@ bundle exec fastlane lint
 bundle exec fastlane autocorrect
 ```
 
+A checked-in pre-commit hook at `.githooks/pre-commit` runs `fastlane autocorrect` before every commit. It stashes unstaged work with `--keep-index` first, so autocorrect runs against the exact tree about to be committed, then re-stages only the changes autocorrect itself introduced — partial-staged hunks (`git add -p`) and unstaged edits are preserved. `bundle exec pod install` wires it up automatically by setting `core.hooksPath = .githooks`. Bypass for a single commit with `SKIP_AUTOCORRECT=1 git commit ...`.
+
 In the Xcode project, the autocorrectable linters will not modify your source code but will provide warnings. This project uses several linters:
 
 - [SwiftFormat](https://github.com/nicklockwood/SwiftFormat)
