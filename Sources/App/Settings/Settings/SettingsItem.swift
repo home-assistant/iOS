@@ -15,7 +15,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case watch
     case carPlay
     case complications
-    case actions
     case help
     case privacy
     case debugging
@@ -36,7 +35,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .watch: return L10n.Settings.DetailsSection.WatchRowConfiguration.title
         case .carPlay: return "CarPlay"
         case .complications: return L10n.Settings.DetailsSection.WatchRowComplications.title
-        case .actions: return L10n.SettingsDetails.LegacyActions.title
         case .help: return L10n.helpLabel
         case .privacy: return L10n.SettingsDetails.Privacy.title
         case .debugging: return L10n.Settings.Debugging.title
@@ -73,8 +71,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .carBackIcon, size: 24)
             case .complications:
                 MaterialDesignIconsImage(icon: .chartDonutIcon, size: 24)
-            case .actions:
-                MaterialDesignIconsImage(icon: .gamepadVariantOutlineIcon, size: 24)
             case .help:
                 MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: 24)
             case .privacy:
@@ -132,8 +128,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
             CarPlayConfigurationView(needsNavigationController: false)
         case .complications:
             SettingsComplicationsView()
-        case .actions:
-            ActionsSettingsView()
         case .help:
             EmptyView()
         case .privacy:
@@ -177,10 +171,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     static var carPlayItems: [SettingsItem] {
         [.carPlay]
-    }
-
-    static var legacyItems: [SettingsItem] {
-        [.actions]
     }
 
     static var helpItems: [SettingsItem] {

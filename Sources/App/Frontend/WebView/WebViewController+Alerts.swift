@@ -477,16 +477,6 @@ extension WebViewController {
         showEmptyState()
     }
 
-    func showActionAutomationEditorNotAvailable() {
-        let alert = UIAlertController(
-            title: L10n.Alerts.ActionAutomationEditor.Unavailable.title,
-            message: L10n.Alerts.ActionAutomationEditor.Unavailable.body,
-            preferredStyle: .alert
-        )
-        alert.addAction(.init(title: L10n.okLabel, style: .default))
-        present(alert, animated: true)
-    }
-
     func openDebug() {
         let controller = UIHostingController(rootView: AnyView(
             NavigationView {
