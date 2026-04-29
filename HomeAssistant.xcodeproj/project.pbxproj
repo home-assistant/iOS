@@ -377,7 +377,6 @@
 		11CFD784273662DF0082D557 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CFD783273662DF0082D557 /* Server.swift */; };
 		11CFD785273662DF0082D557 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CFD783273662DF0082D557 /* Server.swift */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */; };
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
@@ -1266,7 +1265,6 @@
 		AB3E076F146799C008ACB0EA /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7D8DAEFAD435091FDDD61E7 /* Pods_iOS_Extensions_NotificationContent.framework */; };
 		AC710001000000000000AA01 /* ActionsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC720001000000000000AA01 /* ActionsSettingsView.swift */; };
 		AC710002000000000000AA01 /* ActionsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC720002000000000000AA01 /* ActionsSettingsViewModel.swift */; };
-		B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022212226DAC9D00E8DBFE /* ScaledFont.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
@@ -1411,7 +1409,6 @@
 		B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */; };
 		B62CD2A6225B099D008DF3C5 /* WebhookSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
-		B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */; };
 		B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDC8216442BB00123C50 /* CameraViewController.swift */; };
 		B63CCDCB216442C200123C50 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCA216442C200123C50 /* MapViewController.swift */; };
 		B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
@@ -2165,7 +2162,6 @@
 		11CFD78027364F450082D557 /* Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		11CFD783273662DF0082D557 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
-		11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3114,7 +3110,6 @@
 		B26248E8DEAC8C13210A6587 /* Pods-iOS-Extensions-Widgets.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.beta.xcconfig"; sourceTree = "<group>"; };
 		B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; sourceTree = "<group>"; };
 		B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerLiveActivityTests.swift; sourceTree = "<group>"; };
-		B6022212226DAC9D00E8DBFE /* ScaledFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaledFont.swift; sourceTree = "<group>"; };
 		B60247ED1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B60247FF1FBD343000998205 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B60248011FBD349000998205 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -3281,7 +3276,6 @@
 		B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookSensor.swift; sourceTree = "<group>"; };
 		B630F295238C9A1200C6E4BE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutsManager.swift; sourceTree = "<group>"; };
 		B63CCDC8216442BB00123C50 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		B63CCDCA216442C200123C50 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		B63CCDCE2164714900123C50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
@@ -6990,14 +6984,13 @@
 			isa = PBXGroup;
 			children = (
 				396F2B4C2C121D2B002F84FD /* Extensions */,
-				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
 				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
 				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
-				B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */,
+				B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */,
+				B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */,
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
-				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
@@ -9275,7 +9268,6 @@
 				420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */,
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
-				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
 				1112AE9B25F71775007A541A /* LocationHistoryListView.swift in Sources */,
 				426EE49B2CA4194E00A5EF4F /* OnboardingWelcomeView.swift in Sources */,
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
@@ -9346,7 +9338,6 @@
 				42175EC12F436811001073AF /* ClientCertificateOnboardingView.swift in Sources */,
 				42175EC52F878B23001073AF /* RecoveredServersImportView.swift in Sources */,
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
-				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				42DF7DE02EC53D85003F3C4A /* ServersListView.swift in Sources */,
 				4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */,
 				42F5C0882F02BCD700C50310 /* FanIntent.swift in Sources */,
@@ -9545,7 +9536,7 @@
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
 				4261EAA22F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift in Sources */,
-				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
+				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
