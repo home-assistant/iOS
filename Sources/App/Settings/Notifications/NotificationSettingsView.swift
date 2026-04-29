@@ -144,7 +144,7 @@ struct NotificationSettingsView: View {
     private var categoriesSection: some View {
         Section {
             NavigationLink {
-                categoriesDestination
+                NotificationCategoryListView()
             } label: {
                 Text(L10n.SettingsDetails.Notifications.Categories.header)
             }
@@ -152,13 +152,6 @@ struct NotificationSettingsView: View {
                 .font(.footnote)
                 .foregroundColor(.secondary)
         }
-    }
-
-    private var categoriesDestination: some View {
-        // Category list migration is handled by the notification-categories slice.
-        // Keep the existing Eureka controller until that migration lands.
-        embed(NotificationCategoryListViewController())
-            .navigationTitle(L10n.SettingsDetails.Notifications.Categories.header)
     }
 
     private var debugSection: some View {
