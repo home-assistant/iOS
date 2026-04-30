@@ -4760,14 +4760,6 @@
 			path = Tables;
 			sourceTree = "<group>";
 		};
-		AC730010000000000000AA01 /* AppIconShortcuts */ = {
-			isa = PBXGroup;
-			children = (
-				AC730011000000000000AA01 /* AppIconShortcutConfig.swift */,
-			);
-			path = AppIconShortcuts;
-			sourceTree = "<group>";
-		};
 		420DBEXP2F10000000000005 /* DatabaseExplorer */ = {
 			isa = PBXGroup;
 			children = (
@@ -6641,6 +6633,24 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		AC730010000000000000AA01 /* AppIconShortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				AC730011000000000000AA01 /* AppIconShortcutConfig.swift */,
+			);
+			path = AppIconShortcuts;
+			sourceTree = "<group>";
+		};
+		AC730020000000000000AA01 /* AppIconShortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				AC730021000000000000AA01 /* AppIconShortcutItemsUpdater.swift */,
+				AC730022000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift */,
+				AC730023000000000000AA01 /* AppIconShortcutsConfigurationView.swift */,
+			);
+			path = AppIconShortcuts;
+			sourceTree = "<group>";
+		};
 		B60614B31D1F116D00249C11 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
@@ -6951,7 +6961,6 @@
 				421155222D354F3F00A71630 /* AppIcon.swift */,
 				42DF7DDC2EC53D42003F3C4A /* Settings */,
 				B641BC1D1E2097EF002CCBC1 /* AboutView.swift */,
-				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				42B19BD02D4A358B00B3262B /* DebugView.swift */,
 				420C1BB32CF7DBF300AF22E7 /* ClientEventsLogView */,
 				420DBEXP2F10000000000005 /* DatabaseExplorer */,
@@ -6959,16 +6968,6 @@
 				D75BA669B0E8C771B69ABE41 /* Components */,
 			);
 			path = Settings;
-			sourceTree = "<group>";
-		};
-		AC730020000000000000AA01 /* AppIconShortcuts */ = {
-			isa = PBXGroup;
-			children = (
-				AC730021000000000000AA01 /* AppIconShortcutItemsUpdater.swift */,
-				AC730022000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift */,
-				AC730023000000000000AA01 /* AppIconShortcutsConfigurationView.swift */,
-			);
-			path = AppIconShortcuts;
 			sourceTree = "<group>";
 		};
 		B661FC74226C792000E541DD /* Lottie Files */ = {
@@ -7020,8 +7019,6 @@
 				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
-				B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */,
-				B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */,
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
@@ -9572,7 +9569,6 @@
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
 				4261EAA22F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift in Sources */,
-				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
