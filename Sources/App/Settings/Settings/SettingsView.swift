@@ -152,15 +152,6 @@ struct SettingsView: View {
                 }
             }
 
-            // Legacy section
-            Section {
-                ForEach(SettingsItem.legacyItems, id: \.self) { item in
-                    NavigationLink(destination: item.destinationView) {
-                        settingsItemLabel(item)
-                    }
-                }
-            }
-
             // Help section
             Section {
                 ForEach(SettingsItem.helpItems, id: \.self) { item in

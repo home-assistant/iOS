@@ -13,7 +13,6 @@ struct MagicItemAddView: View {
         case entities
         case scripts
         case scenes
-        case legacyiOSActions
         case assistPipelines
     }
 
@@ -41,7 +40,6 @@ struct MagicItemAddView: View {
                     options.append(.scripts)
                     options.append(.scenes)
                 }
-                options.append(.legacyiOSActions)
             }
             if context == .carPlay, #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
@@ -54,12 +52,6 @@ struct MagicItemAddView: View {
         NavigationView {
             Group {
                 switch viewModel.selectedItemType {
-                case .actions:
-                    List {
-                        pickerView
-                        actionsList
-                    }
-                    .searchable(text: $viewModel.searchText)
                 case .entities:
                     VStack {
                         pickerView
@@ -91,7 +83,6 @@ struct MagicItemAddView: View {
             }
             .onAppear {
                 autoSelectItemType()
-                viewModel.loadContent()
 
                 if viewModel.selectedServerId == nil {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
@@ -127,9 +118,6 @@ struct MagicItemAddView: View {
                     case .entities:
                         Text(verbatim: L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
-                    case .legacyiOSActions:
-                        Text(verbatim: L10n.MagicItem.ItemType.Action.List.title)
-                            .tag(MagicItemAddType.actions)
                     case .scripts:
                         Text(verbatim: L10n.MagicItem.ItemType.Script.List.title)
                             .tag(MagicItemAddType.scripts)
@@ -155,22 +143,6 @@ struct MagicItemAddView: View {
             viewModel.selectedItemType = .scripts
         case .carPlay, .widget:
             viewModel.selectedItemType = .entities
-        }
-    }
-
-    @ViewBuilder
-    private var actionsList: some View {
-        actionsDeprecationDisclaimer
-        ForEach(viewModel.actions, id: \.ID) { action in
-            if visibleForSearch(title: action.Text, entityId: action.ID) {
-                Button(action: {
-                    itemToAdd(.init(id: action.ID, serverId: action.serverIdentifier, type: .action))
-                    dismiss()
-                }, label: {
-                    EntityRowView(optionalTitle: action.Text, accessoryImageSystemSymbol: .plusCircleFill)
-                })
-                .tint(Color(uiColor: .label))
-            }
         }
     }
 
