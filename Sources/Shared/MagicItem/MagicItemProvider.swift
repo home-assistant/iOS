@@ -103,7 +103,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 try appIconShortcutConfig.update(db)
             }
         } catch {
-            Current.Log.error("Failed to save migration App Icon Shortcuts config, error: \(error.localizedDescription)")
+            Current.Log
+                .error("Failed to save migration App Icon Shortcuts config, error: \(error.localizedDescription)")
         }
 
         completion()
