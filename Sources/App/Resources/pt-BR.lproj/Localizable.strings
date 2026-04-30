@@ -806,7 +806,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "servers_selection.title" = "Servidores";
 "settings.connection_section.activate_server" = "Ativar";
 "settings.connection_section.add_server" = "Adicionar servidor";
-"settings.connection_section.all_servers" = "Todos os servidores";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Se você tiver uma conexão insegura, isso pode expor seu token de autenticação em redes públicas.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Tem certeza?";
 "settings.connection_section.always_fallback_internal.footer" = "Habilitar isso com uma URL não segura (http) pode comprometer sua segurança em redes públicas.";

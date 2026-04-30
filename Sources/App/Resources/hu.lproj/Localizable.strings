@@ -805,7 +805,6 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "servers_selection.title" = "Szerverek";
 "settings.connection_section.activate_server" = "Aktiválás";
 "settings.connection_section.add_server" = "Szerver hozzáadása";
-"settings.connection_section.all_servers" = "Az összes szerver";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Ha a kapcsolat nem biztonságos, ez nyilvános hálózatokon felfedheti az azonosító tokenjét.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Biztos benne?";
 "settings.connection_section.always_fallback_internal.footer" = "Ha ezt egy nem biztonságos URL-lel (http) engedélyezi, az veszélyeztetheti az Ön biztonságát nyilvános hálózatokon.";
