@@ -18,7 +18,14 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
         Set([.beforeAuth])
     }
 
-    private var taskIdentifierToResolver = [Int: Resolver<Void>]()
+    // Delegate callbacks and the recover block all read/write these from the main queue (the
+    // session is created with `delegateQueue: .main` and PromiseKit's default queue is also main),
+    // so they don't need locking. They are reset at the start of every `perform(point:)` because
+    // the same step instance can be reused for retries.
+    private var currentResolver: Resolver<Void>?
+    private var clientCertificateUnsupportedOccurred = false
+    private var clientCertificateRequiredOccurred = false
+    private var clientCertificateErrorOccurred = false
     var prepareSessionConfiguration: ((URLSessionConfiguration) -> Void)?
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
@@ -30,6 +37,11 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
     }
 
     private func performConnection(resolver: Resolver<Void>) {
+        currentResolver = resolver
+        clientCertificateUnsupportedOccurred = false
+        clientCertificateRequiredOccurred = false
+        clientCertificateErrorOccurred = false
+
         let configuration = URLSessionConfiguration.ephemeral
         prepareSessionConfiguration?(configuration)
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: .main)
@@ -43,7 +55,6 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 requestResolver.resolve(nil, error)
             }
         }
-        taskIdentifierToResolver[task.taskIdentifier] = resolver
         task.resume()
 
         requestPromise
@@ -65,11 +76,11 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                     data = nil
                 }
 
-                if clientCertificateUnsupportedOccurred[task.taskIdentifier] == true {
+                if clientCertificateUnsupportedOccurred {
                     kind = .clientCertificateUnsupported
-                } else if clientCertificateRequiredOccurred[task.taskIdentifier] == true {
+                } else if clientCertificateRequiredOccurred {
                     kind = .clientCertificateRequired
-                } else if clientCertificateErrorOccurred[task.taskIdentifier] == true {
+                } else if clientCertificateErrorOccurred {
                     kind = .clientCertificateError(error)
                 } else if let error = error as? URLError {
                     switch error.code {
@@ -87,10 +98,6 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             }
             .pipe(to: resolver.resolve)
     }
-
-    private var clientCertificateErrorOccurred = [Int: Bool]()
-    private var clientCertificateRequiredOccurred = [Int: Bool]()
-    private var clientCertificateUnsupportedOccurred = [Int: Bool]()
 
     private func confirm(
         secTrust: SecTrust,
@@ -141,17 +148,11 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
         }
     }
 
-    func urlSession(
-        _ session: URLSession,
-        task: URLSessionTask,
-        didReceive challenge: URLAuthenticationChallenge,
+    private func handleChallenge(
+        _ challenge: URLAuthenticationChallenge,
+        pendingResolver: Resolver<Void>,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        guard let pendingResolver = taskIdentifierToResolver[task.taskIdentifier] else {
-            completionHandler(.cancelAuthenticationChallenge, nil)
-            return
-        }
-
         switch challenge.protectionSpace.authenticationMethod {
         case NSURLAuthenticationMethodServerTrust:
             guard let secTrust = challenge.protectionSpace.serverTrust else {
@@ -174,7 +175,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                     return
                 } catch {
                     Current.Log.error("[mTLS] Failed to get credential: \(error)")
-                    clientCertificateErrorOccurred[task.taskIdentifier] = true
+                    clientCertificateErrorOccurred = true
                     completionHandler(.performDefaultHandling, nil)
                     return
                 }
@@ -182,7 +183,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             #endif
             // No certificate available - server requires one
             Current.Log.warning("[mTLS] Client certificate requested but none available")
-            clientCertificateRequiredOccurred[task.taskIdentifier] = true
+            clientCertificateRequiredOccurred = true
             completionHandler(.performDefaultHandling, nil)
         default:
             pendingResolver
@@ -191,5 +192,34 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 )))
             completionHandler(.cancelAuthenticationChallenge, nil)
         }
+    }
+
+    // CFNetwork dispatches server-trust to the session-level delegate method only. Without this,
+    // `authDetails.exceptions` is silently ignored and chain errors surface as a generic -1206.
+    // Once a session-level handler exists, the test URLProtocol routes everything through it too,
+    // so we forward all challenge types into the shared `handleChallenge`.
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard let pendingResolver = currentResolver else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+        handleChallenge(challenge, pendingResolver: pendingResolver, completionHandler: completionHandler)
+    }
+
+    func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard let pendingResolver = currentResolver else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+        handleChallenge(challenge, pendingResolver: pendingResolver, completionHandler: completionHandler)
     }
 }
