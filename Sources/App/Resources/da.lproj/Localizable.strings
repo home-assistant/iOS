@@ -806,7 +806,6 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "servers_selection.title" = "Servere";
 "settings.connection_section.activate_server" = "Aktivér";
 "settings.connection_section.add_server" = "Tilføj server";
-"settings.connection_section.all_servers" = "Alle servere";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Hvis du har en usikker forbindelse, kan det eksponere dit godkendelsestoken på offentlige netværk.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Er du sikker?";
 "settings.connection_section.always_fallback_internal.footer" = "Aktivering af dette med en usikker URL (http) kan kompromittere din sikkerhed på offentlige netværk.";

@@ -805,7 +805,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "servers_selection.title" = "サーバー";
 "settings.connection_section.activate_server" = "アクティベート";
 "settings.connection_section.add_server" = "サーバーの追加";
-"settings.connection_section.all_servers" = "すべてのサーバー";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "安全でない接続の場合、認証トークンがパブリックネットワーク上で公開される可能性があります。";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "よろしいですか？";
 "settings.connection_section.always_fallback_internal.footer" = "安全でない URL (http) でこれを有効にすると、パブリック ネットワーク上のセキュリティが危険にさらされる可能性があります。";

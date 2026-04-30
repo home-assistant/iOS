@@ -584,7 +584,7 @@
 "network.error.no_active_url.body" = "Ανοίξτε τις ρυθμίσεις της εφαρμογής companion και ελέγξτε τις ρυθμίσεις του διακομιστή σας, η εσωτερική διεύθυνση URL θα χρησιμοποιηθεί μόνο αν έχει οριστεί το τοπικό δίκτυο (SSID), αν χρησιμοποιείτε VPN δοκιμάστε να ορίσετε την εξωτερική διεύθυνση URL ως την ίδια με την εσωτερική διεύθυνση URL.";
 "network.error.no_active_url.title" = "Δεν υπάρχει διαθέσιμη διεύθυνση URL για φόρτωση";
 "nfc.detail.copy" = "Αντιγραφή στον πίνακα επικόλλησης";
-"nfc.detail.duplicate" = "Δημιουργήστε ένα διπλότυπο";
+"nfc.detail.duplicate" = "Δημιουργία αντιγράφου";
 "nfc.detail.example_trigger" = "Παράδειγμα πυροδότησης";
 "nfc.detail.fire" = "Πυροδότηση Συμβάντος";
 "nfc.detail.share" = "Κοινή χρήση αναγνωριστικού";
@@ -806,7 +806,6 @@
 "servers_selection.title" = "Διακομιστές";
 "settings.connection_section.activate_server" = "Ενεργοποίηση";
 "settings.connection_section.add_server" = "Προσθήκη διακομιστή";
-"settings.connection_section.all_servers" = "Όλοι οι διακομιστές";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Εάν έχετε μη ασφαλή σύνδεση, αυτό μπορεί να εκθέσει το token ελέγχου ταυτότητας σε δημόσια δίκτυα.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Είστε σίγουρος/η;";
 "settings.connection_section.always_fallback_internal.footer" = "Η ενεργοποίηση αυτής της λειτουργίας με μη ασφαλή διεύθυνση URL (http) μπορεί να θέσει σε κίνδυνο την ασφάλειά σας σε δημόσια δίκτυα.";

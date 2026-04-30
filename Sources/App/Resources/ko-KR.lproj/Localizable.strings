@@ -806,7 +806,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "servers_selection.title" = "서버";
 "settings.connection_section.activate_server" = "활성화";
 "settings.connection_section.add_server" = "서버 추가";
-"settings.connection_section.all_servers" = "모든 서버";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "안전하지 않은 연결이 있는 경우 공용 네트워크에서 인증 토큰이 노출될 수 있습니다.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "확실한가요?";
 "settings.connection_section.always_fallback_internal.footer" = "안전하지 않은 URL(http)로 이 기능을 활성화하면 공용 네트워크의 보안이 손상될 수 있습니다.";

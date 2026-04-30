@@ -806,7 +806,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "servers_selection.title" = "Servery";
 "settings.connection_section.activate_server" = "Aktivovat";
 "settings.connection_section.add_server" = "Přidat server";
-"settings.connection_section.all_servers" = "Všechny servery";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Pokud máte nezabezpečené připojení, může to odhalit váš ověřovací token ve veřejných sítích.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Jste si jisti?";
 "settings.connection_section.always_fallback_internal.footer" = "Povolení v nezabezpečené adrese URL (http) může ohrozit vaši bezpečnost ve veřejných sítích.";

@@ -805,7 +805,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "servers_selection.title" = "Servrar";
 "settings.connection_section.activate_server" = "Aktivera";
 "settings.connection_section.add_server" = "Lägg till server";
-"settings.connection_section.all_servers" = "Alla servrar";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Om du har en osäker anslutning kan detta exponera din autentiseringstoken på offentliga nätverk.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Är du säker?";
 "settings.connection_section.always_fallback_internal.footer" = "Om du aktiverar detta med en osäker URL (http) kan din säkerhet äventyras i offentliga nätverk.";
