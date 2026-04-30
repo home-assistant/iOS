@@ -7,6 +7,7 @@ struct MagicItemAddView: View {
         case watch
         case carPlay
         case widget
+        case appIconShortcut
     }
 
     enum PickerOption {
@@ -31,7 +32,7 @@ struct MagicItemAddView: View {
 
         self.visiblePickerOptions = {
             var options: [PickerOption] = []
-            if [.carPlay, .widget].contains(context) {
+            if [.carPlay, .widget, .appIconShortcut].contains(context) {
                 options.append(.entities)
             }
             if context != .widget {
@@ -43,7 +44,7 @@ struct MagicItemAddView: View {
                 }
                 options.append(.legacyiOSActions)
             }
-            if context == .carPlay, #available(iOS 26.0, *) {
+            if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
             }
             return options
@@ -153,7 +154,7 @@ struct MagicItemAddView: View {
         switch context {
         case .watch:
             viewModel.selectedItemType = .scripts
-        case .carPlay, .widget:
+        case .carPlay, .widget, .appIconShortcut:
             viewModel.selectedItemType = .entities
         }
     }

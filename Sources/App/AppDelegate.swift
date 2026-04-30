@@ -458,6 +458,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 localizedSubtitle: nil,
                 icon: .init(systemSymbol: .gear)
             )]
+        } else {
+            AppIconShortcutItemsUpdater.update()
         }
     }
 

@@ -2897,6 +2897,30 @@ public enum L10n {
   }
 
   public enum Settings {
+    public enum AppIconShortcuts {
+      /// Choose items to display when long pressing the app icon.
+      public static var subtitle: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.subtitle") }
+      /// App Icon Shortcuts
+      public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.title") }
+      public enum AddItem {
+        /// Add item
+        public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.add_item.title") }
+      }
+      public enum Footer {
+        /// iOS shows up to four shortcuts from the app icon quick actions menu.
+        public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.footer.title") }
+      }
+      public enum Items {
+        /// Items
+        public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.items.title") }
+      }
+      public enum Reset {
+        /// Reset App Icon Shortcuts?
+        public static var confirmationTitle: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.reset.confirmation_title") }
+        /// Reset App Icon Shortcuts
+        public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.reset.title") }
+      }
+    }
     public enum ConnectionSection {
       /// Activate
       public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }

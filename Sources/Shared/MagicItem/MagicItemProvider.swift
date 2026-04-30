@@ -17,7 +17,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             guard let self else { return }
             migrateWatchConfig(completion: {
                 self.migrateCarPlayConfig {
-                    completion(self.entitiesPerServer)
+                    self.migrateAppIconShortcutConfig {
+                        completion(self.entitiesPerServer)
+                    }
                 }
             })
         }
@@ -36,6 +38,11 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
         await withCheckedContinuation { continuation in
             migrateCarPlayConfig {
+                continuation.resume()
+            }
+        }
+        await withCheckedContinuation { continuation in
+            migrateAppIconShortcutConfig {
                 continuation.resume()
             }
         }
@@ -84,6 +91,24 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         completion()
     }
 
+    func migrateAppIconShortcutConfig(completion: @escaping () -> Void) {
+        guard var appIconShortcutConfig = try? Current.appIconShortcutConfig() else {
+            completion()
+            return
+        }
+        appIconShortcutConfig.items = migrateItemsIfNeeded(items: appIconShortcutConfig.items)
+
+        do {
+            try Current.database().write { db in
+                try appIconShortcutConfig.update(db)
+            }
+        } catch {
+            Current.Log.error("Failed to save migration App Icon Shortcuts config, error: \(error.localizedDescription)")
+        }
+
+        completion()
+    }
+
     /**
      Migrates the configuration of custom widgets by updating their items if needed and saving the changes to the database.
 
@@ -115,7 +140,12 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
     private func loadAppEntities(completion: @escaping () -> Void) {
         var serversCompletedFetchCount = 0
-        Current.servers.all.forEach { [weak self] server in
+        let servers = Current.servers.all
+        guard !servers.isEmpty else {
+            completion()
+            return
+        }
+        servers.forEach { [weak self] server in
             do {
                 let entities: [HAAppEntity] = try Current.database().read { db in
                     try HAAppEntity
@@ -128,7 +158,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             }
 
             serversCompletedFetchCount += 1
-            if serversCompletedFetchCount == Current.servers.all.count {
+            if serversCompletedFetchCount == servers.count {
                 completion()
             }
         }

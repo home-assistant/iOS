@@ -213,17 +213,6 @@
 			</array>
 		</dict>
 	</dict>
-	<key>UIApplicationShortcutItems</key>
-	<array>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeMarkLocation</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>SEND_LOCATION_APP_SHORTCUT_TITLE</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>sendLocation</string>
-		</dict>
-	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

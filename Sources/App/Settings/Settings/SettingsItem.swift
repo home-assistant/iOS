@@ -12,6 +12,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case sensors
     case nfc
     case widgets
+    case appIconShortcuts
     case watch
     case carPlay
     case complications
@@ -33,6 +34,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .sensors: return L10n.SettingsSensors.title
         case .nfc: return L10n.Nfc.List.title
         case .widgets: return L10n.Settings.Widgets.title
+        case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
         case .watch: return L10n.Settings.DetailsSection.WatchRowConfiguration.title
         case .carPlay: return "CarPlay"
         case .complications: return L10n.Settings.DetailsSection.WatchRowComplications.title
@@ -67,6 +69,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .nfcVariantIcon, size: 24)
             case .widgets:
                 MaterialDesignIconsImage(icon: .widgetsIcon, size: 24)
+            case .appIconShortcuts:
+                MaterialDesignIconsImage(icon: .applicationIcon, size: 24)
             case .watch:
                 MaterialDesignIconsImage(icon: .watchVariantIcon, size: 24)
             case .carPlay:
@@ -125,6 +129,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             NFCListView()
         case .widgets:
             CustomWidgetsListView()
+        case .appIconShortcuts:
+            AppIconShortcutsConfigurationView()
         case .watch:
             WatchConfigurationView()
                 .environment(\.colorScheme, .dark)
@@ -150,6 +156,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
             if item == .servers || item == .gestures || item == .kiosk || item == .watch || item == .carPlay ||
+                item == .appIconShortcuts ||
                 item == .complications || item == .nfc || item == .help ||
                 item == .whatsNew {
                 return false
@@ -168,7 +175,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var integrationItems: [SettingsItem] {
-        [.sensors, .nfc, .widgets]
+        [.sensors, .nfc, .widgets, .appIconShortcuts]
     }
 
     static var watchItems: [SettingsItem] {
