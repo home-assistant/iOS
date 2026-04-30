@@ -345,6 +345,9 @@ class IncomingURLHandler {
                 Current.sceneManager.activateAnyScene(for: .settings)
                 return .value(())
             default:
+                if let identifier = AppIconShortcutItemsUpdater.identifier(from: shortcutItem.type) {
+                    return handleAppIconShortcut(identifier: identifier)
+                }
                 if
                     let action = Current.realm().object(ofType: Action.self, forPrimaryKey: shortcutItem.type),
                     let server = Current.servers.server(for: action) {
@@ -361,6 +364,165 @@ class IncomingURLHandler {
                     return .init(error: HomeAssistantAPI.APIError.notConfigured)
                 }
             }
+        }
+    }
+
+    private func handleAppIconShortcut(
+        identifier: AppIconShortcutItemsUpdater.ShortcutIdentifier
+    ) -> Promise<Void> {
+        Promise { seal in
+            let magicItemProvider = Current.magicItemProvider()
+            magicItemProvider.loadInformation { [weak self] _ in
+                guard let self else {
+                    seal.reject(HomeAssistantAPI.APIError.notConfigured)
+                    return
+                }
+
+                guard let config = try? AppIconShortcutConfig.config(),
+                      let item = config.items.first(where: {
+                          $0.serverId == identifier.serverId
+                              && $0.id == identifier.itemId
+                              && $0.type == identifier.itemType
+                      }) else {
+                    seal.reject(HomeAssistantAPI.APIError.notConfigured)
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    self.performAppIconShortcut(item, provider: magicItemProvider).pipe { result in
+                        switch result {
+                        case .fulfilled:
+                            seal.fulfill(())
+                        case let .rejected(error):
+                            seal.reject(error)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func performAppIconShortcut(_ item: MagicItem, provider: MagicItemProviderProtocol) -> Promise<Void> {
+        if item.customization?.requiresConfirmation == true {
+            return confirmAppIconShortcut(item, provider: provider)
+        } else {
+            return runAppIconShortcut(item, provider: provider)
+        }
+    }
+
+    private func confirmAppIconShortcut(_ item: MagicItem, provider: MagicItemProviderProtocol) -> Promise<Void> {
+        Promise { seal in
+            let info = provider.getInfo(for: item)
+            let name = info.map { item.name(info: $0) } ?? item.displayText ?? item.id
+            confirmAction(
+                title: L10n.Watch.Home.Run.Confirmation.title(name),
+                message: "",
+                handler: { [weak self] in
+                    guard let self else {
+                        seal.reject(HomeAssistantAPI.APIError.notConfigured)
+                        return
+                    }
+                    runAppIconShortcut(item, provider: provider).pipe { result in
+                        switch result {
+                        case .fulfilled:
+                            seal.fulfill(())
+                        case let .rejected(error):
+                            seal.reject(error)
+                        }
+                    }
+                },
+                cancelHandler: {
+                    seal.fulfill(())
+                }
+            )
+        }
+    }
+
+    private func runAppIconShortcut(_ item: MagicItem, provider: MagicItemProviderProtocol) -> Promise<Void> {
+        if let customAction = customMagicItemAction(for: item) {
+            return customAction
+        }
+
+        if case let .widgetURL(url) = item.widgetInteractionType {
+            _ = handle(url: url)
+            return .value(())
+        }
+
+        guard item.type != .folder else {
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == item.serverId }) else {
+            Current.Log.error("Failed to get server for App Icon Shortcut magic item id: \(item.id)")
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+
+        if let info = provider.getInfo(for: item) {
+            Current.sceneManager.showFullScreenConfirm(
+                icon: item.icon(info: info),
+                text: item.name(info: info),
+                onto: .value(windowController.window)
+            )
+        }
+
+        return Promise { seal in
+            item.execute(on: server, source: .AppShortcut) { success in
+                if success {
+                    seal.fulfill(())
+                } else {
+                    seal.reject(HomeAssistantAPI.APIError.notConfigured)
+                }
+            }
+        }
+    }
+
+    private func customMagicItemAction(for item: MagicItem) -> Promise<Void>? {
+        guard let action = item.action, action != .default else { return nil }
+
+        switch action {
+        case .default:
+            return nil
+        case .moreInfoDialog:
+            if let url = AppConstants.openEntityDeeplinkURL(entityId: item.id, serverId: item.serverId) {
+                _ = handle(url: url)
+            }
+            return .value(())
+        case let .navigate(path):
+            if let url = AppConstants.navigateDeeplinkURL(
+                path: path,
+                serverId: item.serverId,
+                avoidUnnecessaryReload: true
+            ) {
+                _ = handle(url: url)
+            }
+            return .value(())
+        case let .runScript(serverId, scriptId):
+            guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
+                Current.Log.error("Failed to get server for App Icon Shortcut run script action id: \(scriptId)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            return Promise { seal in
+                MagicItem(id: scriptId, serverId: serverId, type: .script)
+                    .execute(on: server, source: .AppShortcut) { success in
+                        if !success {
+                            Current.Log.error("Failed to execute App Icon Shortcut run script action id: \(scriptId)")
+                            seal.reject(HomeAssistantAPI.APIError.notConfigured)
+                        } else {
+                            seal.fulfill(())
+                        }
+                    }
+            }
+        case let .assist(serverId, pipelineId, startListening):
+            if let url = AppConstants.assistDeeplinkURL(
+                serverId: serverId,
+                pipelineId: pipelineId,
+                startListening: startListening
+            ) {
+                _ = handle(url: url)
+            }
+            return .value(())
+        case .nothing:
+            return .value(())
         }
     }
 
