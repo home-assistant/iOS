@@ -14,22 +14,15 @@ enum AppIconShortcutItemsUpdater {
     }
 
     static func update() {
-        if Current.isCatalyst {
-            DispatchQueue.main.async {
-                UIApplication.shared.shortcutItems = [.init(
-                    type: HAApplicationShortcutItem.openSettings.rawValue,
-                    localizedTitle: L10n.ShortcutItem.OpenSettings.title,
-                    localizedSubtitle: nil,
-                    icon: .init(systemSymbol: .gear)
-                )]
-            }
-            return
+        let forcedShortcutItems = Self.forcedShortcutItems
+        if forcedShortcutItems.isEmpty == false {
+            publish(shortcutItems: forcedShortcutItems)
         }
 
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { _ in
             let config = (try? AppIconShortcutConfig.config()) ?? AppIconShortcutConfig()
-            let shortcutItems = config.items.prefix(maximumShortcutItems).map { item in
+            let configuredShortcutItems = config.items.prefix(maximumShortcutItems).map { item in
                 UIApplicationShortcutItem(
                     type: shortcutType(for: item),
                     localizedTitle: title(for: item, provider: magicItemProvider),
@@ -37,9 +30,8 @@ enum AppIconShortcutItemsUpdater {
                     icon: icon(for: item, provider: magicItemProvider)
                 )
             }
-            DispatchQueue.main.async {
-                UIApplication.shared.shortcutItems = shortcutItems
-            }
+            let shortcutItems = forcedShortcutItems + configuredShortcutItems
+            publish(shortcutItems: shortcutItems)
         }
     }
 
@@ -61,6 +53,24 @@ enum AppIconShortcutItemsUpdater {
     private static func shortcutType(for item: MagicItem) -> String {
         let separator = shortcutTypeSeparator
         return "\(shortcutTypePrefix)\(item.serverId)\(separator)\(item.type.rawValue)\(separator)\(item.id)"
+    }
+
+    private static var forcedShortcutItems: [UIApplicationShortcutItem] {
+        guard Current.isCatalyst else { return [] }
+        return [
+            .init(
+                type: HAApplicationShortcutItem.openSettings.rawValue,
+                localizedTitle: L10n.ShortcutItem.OpenSettings.title,
+                localizedSubtitle: nil,
+                icon: .init(systemSymbol: .gear)
+            ),
+        ]
+    }
+
+    private static func publish(shortcutItems: [UIApplicationShortcutItem]) {
+        DispatchQueue.main.async {
+            UIApplication.shared.shortcutItems = shortcutItems
+        }
     }
 
     private static func title(for item: MagicItem, provider: MagicItemProviderProtocol) -> String {

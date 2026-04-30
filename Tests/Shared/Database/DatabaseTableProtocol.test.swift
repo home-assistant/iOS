@@ -35,6 +35,16 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
+    @Test("AppIconShortcutConfigTable conforms to DatabaseTableProtocol")
+    func appIconShortcutConfigTableConformance() throws {
+        let table = AppIconShortcutConfigTable()
+        #expect(table.tableName == GRDBDatabaseTable.appIconShortcutConfig.rawValue)
+        #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
+
+        let expectedColumns = DatabaseTables.AppIconShortcutConfig.allCases.map(\.rawValue)
+        #expect(Set(table.definedColumns) == Set(expectedColumns))
+    }
+
     @Test("AssistPipelinesTable conforms to DatabaseTableProtocol")
     func assistPipelinesTableConformance() throws {
         let table = AssistPipelinesTable()
@@ -153,10 +163,10 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 15 tables conform to DatabaseTableProtocol")
+    @Test("All 16 tables conform to DatabaseTableProtocol")
     func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 15, "Should have exactly 15 tables")
+        #expect(tables.count == 16, "Should have exactly 16 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName
