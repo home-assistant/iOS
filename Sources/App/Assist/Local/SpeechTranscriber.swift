@@ -82,6 +82,12 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     private let finalGracePeriod: TimeInterval = 0.5
     private var didReportFinalTranscript = false
 
+    // kAFAssistantErrorDomain error codes that indicate a normal session cancellation
+    // (internal Apple speech service domain, not publicly declared in the SDK)
+    private let kAFAssistantErrorDomain = "kAFAssistantErrorDomain"
+    private let kAFAssistantErrorCodeCancelled = 1
+    private let kAFAssistantErrorCodeTaskCancelled = 216
+
     // MARK: - Initialization
 
     /// Initialize with the device's current locale
@@ -269,9 +275,12 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         }
 
         if let error {
-            // Ignore cancellation errors
+            // Ignore cancellation errors from the AFAssistant speech service
+            // (e.g. task cancelled after endAudio). Check both domain and code to
+            // avoid misclassifying unrelated errors that share the same numeric code.
             let nsError = error as NSError
-            let isCancellation = nsError.code == 216 || nsError.code == 1
+            let isCancellation = nsError.domain == kAFAssistantErrorDomain &&
+                (nsError.code == kAFAssistantErrorCodeTaskCancelled || nsError.code == kAFAssistantErrorCodeCancelled)
             if !isCancellation {
                 errorMessage = error.localizedDescription
                 onError?(error)
