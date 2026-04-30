@@ -806,7 +806,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Activer";
 "settings.connection_section.add_server" = "Ajouter un serveur";
-"settings.connection_section.all_servers" = "Tous les serveurs";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
 "settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
