@@ -39,6 +39,16 @@ if [[ $TARGET_NAME = "App" ]]; then
   fi
 fi
 
+if [[ $TARGET_NAME = "App" ]]; then
+  if [[ $CI && $CONFIGURATION != "Release" ]]; then
+    echo "warning: com.apple.developer.carplay-voice-based-conversational-app disabled for CI"
+  elif [[ ${ENABLE_CARPLAY} -eq 1 ]]; then
+      /usr/libexec/PlistBuddy -c "add com.apple.developer.carplay-voice-based-conversational-app bool true" "$ENTITLEMENTS_FILE"
+  else
+      echo "warning: com.apple.developer.carplay-voice-based-conversational-app entitlement disabled"
+  fi
+fi
+
 
 if [[ $TARGET_NAME = "App" ]]; then
   if [[ $CI && $CONFIGURATION != "Release" ]]; then
