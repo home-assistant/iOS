@@ -29,6 +29,13 @@ final class AppIconShortcutsConfigurationViewModel: ObservableObject {
     }
 
     func addItem(_ item: MagicItem) {
+        let isDuplicate = config.items.contains(where: {
+            $0.id == item.id && $0.serverId == item.serverId && $0.type == item.type
+        })
+        guard !isDuplicate else {
+            showError(message: L10n.Settings.AppIconShortcuts.duplicateError)
+            return
+        }
         config.items.append(item)
     }
 

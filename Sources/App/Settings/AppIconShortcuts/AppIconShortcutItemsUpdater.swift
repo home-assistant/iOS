@@ -4,25 +4,34 @@ import UIKit
 
 enum AppIconShortcutItemsUpdater {
     private static let shortcutTypePrefix = "appIconShortcut."
+    private static let shortcutTypeSeparator: Character = "|"
     private static let maximumShortcutItems = 4
+
+    struct ShortcutIdentifier: Equatable {
+        let serverId: String
+        let itemId: String
+        let itemType: MagicItem.ItemType
+    }
 
     static func update() {
         if Current.isCatalyst {
-            UIApplication.shared.shortcutItems = [.init(
-                type: HAApplicationShortcutItem.openSettings.rawValue,
-                localizedTitle: L10n.ShortcutItem.OpenSettings.title,
-                localizedSubtitle: nil,
-                icon: .init(systemSymbol: .gear)
-            )]
+            DispatchQueue.main.async {
+                UIApplication.shared.shortcutItems = [.init(
+                    type: HAApplicationShortcutItem.openSettings.rawValue,
+                    localizedTitle: L10n.ShortcutItem.OpenSettings.title,
+                    localizedSubtitle: nil,
+                    icon: .init(systemSymbol: .gear)
+                )]
+            }
             return
         }
 
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { _ in
             let config = (try? AppIconShortcutConfig.config()) ?? AppIconShortcutConfig()
-            let shortcutItems = config.items.prefix(maximumShortcutItems).enumerated().map { index, item in
+            let shortcutItems = config.items.prefix(maximumShortcutItems).map { item in
                 UIApplicationShortcutItem(
-                    type: shortcutType(for: index),
+                    type: shortcutType(for: item),
                     localizedTitle: title(for: item, provider: magicItemProvider),
                     localizedSubtitle: subtitle(for: item, provider: magicItemProvider),
                     icon: icon(for: item, provider: magicItemProvider)
@@ -34,13 +43,24 @@ enum AppIconShortcutItemsUpdater {
         }
     }
 
-    static func index(from shortcutType: String) -> Int? {
+    static func identifier(from shortcutType: String) -> ShortcutIdentifier? {
         guard shortcutType.hasPrefix(shortcutTypePrefix) else { return nil }
-        return Int(shortcutType.dropFirst(shortcutTypePrefix.count))
+        let payload = shortcutType.dropFirst(shortcutTypePrefix.count)
+        let parts = payload.split(separator: shortcutTypeSeparator, maxSplits: 2, omittingEmptySubsequences: false)
+        guard parts.count == 3,
+              let itemType = MagicItem.ItemType(rawValue: String(parts[1])) else {
+            return nil
+        }
+        return ShortcutIdentifier(
+            serverId: String(parts[0]),
+            itemId: String(parts[2]),
+            itemType: itemType
+        )
     }
 
-    private static func shortcutType(for index: Int) -> String {
-        "\(shortcutTypePrefix)\(index)"
+    private static func shortcutType(for item: MagicItem) -> String {
+        let separator = shortcutTypeSeparator
+        return "\(shortcutTypePrefix)\(item.serverId)\(separator)\(item.type.rawValue)\(separator)\(item.id)"
     }
 
     private static func title(for item: MagicItem, provider: MagicItemProviderProtocol) -> String {

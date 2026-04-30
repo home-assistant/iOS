@@ -2898,6 +2898,8 @@ public enum L10n {
 
   public enum Settings {
     public enum AppIconShortcuts {
+      /// This item is already in your shortcuts.
+      public static var duplicateError: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.duplicate_error") }
       /// Choose items to display when long pressing the app icon.
       public static var subtitle: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.subtitle") }
       /// App Icon Shortcuts

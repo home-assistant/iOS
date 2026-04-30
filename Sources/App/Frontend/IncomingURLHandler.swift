@@ -345,8 +345,8 @@ class IncomingURLHandler {
                 Current.sceneManager.activateAnyScene(for: .settings)
                 return .value(())
             default:
-                if let index = AppIconShortcutItemsUpdater.index(from: shortcutItem.type) {
-                    return handleAppIconShortcut(at: index)
+                if let identifier = AppIconShortcutItemsUpdater.identifier(from: shortcutItem.type) {
+                    return handleAppIconShortcut(identifier: identifier)
                 }
                 if
                     let action = Current.realm().object(ofType: Action.self, forPrimaryKey: shortcutItem.type),
@@ -367,7 +367,9 @@ class IncomingURLHandler {
         }
     }
 
-    private func handleAppIconShortcut(at index: Int) -> Promise<Void> {
+    private func handleAppIconShortcut(
+        identifier: AppIconShortcutItemsUpdater.ShortcutIdentifier
+    ) -> Promise<Void> {
         Promise { seal in
             let magicItemProvider = Current.magicItemProvider()
             magicItemProvider.loadInformation { [weak self] _ in
@@ -377,12 +379,15 @@ class IncomingURLHandler {
                 }
 
                 guard let config = try? AppIconShortcutConfig.config(),
-                      config.items.indices.contains(index) else {
+                      let item = config.items.first(where: {
+                          $0.serverId == identifier.serverId
+                              && $0.id == identifier.itemId
+                              && $0.type == identifier.itemType
+                      }) else {
                     seal.reject(HomeAssistantAPI.APIError.notConfigured)
                     return
                 }
 
-                let item = config.items[index]
                 DispatchQueue.main.async {
                     self.performAppIconShortcut(item, provider: magicItemProvider).pipe { result in
                         switch result {
