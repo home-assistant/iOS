@@ -805,7 +805,6 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "servers_selection.title" = "Server";
 "settings.connection_section.activate_server" = "Aktifkan";
 "settings.connection_section.add_server" = "Tambah Server";
-"settings.connection_section.all_servers" = "Semua Server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Jika Anda memiliki koneksi yang tidak aman, hal ini dapat mengekspos token autentikasi Anda di jaringan publik.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Yakin?";
 "settings.connection_section.always_fallback_internal.footer" = "Mengaktifkan hal ini dengan URL yang tidak aman (http) dapat membahayakan keamanan Anda di jaringan publik.";

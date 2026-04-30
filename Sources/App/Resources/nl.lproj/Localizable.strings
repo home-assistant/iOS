@@ -806,7 +806,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Activeer";
 "settings.connection_section.add_server" = "Voeg server toe";
-"settings.connection_section.all_servers" = "Alle servers";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Als je een onbeveiligde verbinding hebt, kan dit je authenticatietoken blootstellen op openbare netwerken.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Weet je het zeker?";
 "settings.connection_section.always_fallback_internal.footer" = "Als je dit inschakelt met een onbeveiligde URL (http), kan dit je beveiliging op openbare netwerken in gevaar brengen.";

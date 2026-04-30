@@ -806,7 +806,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "servers_selection.title" = "Serverid";
 "settings.connection_section.activate_server" = "Aktiveeri";
 "settings.connection_section.add_server" = "Lisa server";
-"settings.connection_section.all_servers" = "Kõik serverid";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Kui teil on ebaturvaline ühendus võib see paljastada teie autentimistõendi avalikes võrkudes.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Kas oled kindel?";
 "settings.connection_section.always_fallback_internal.footer" = "Selle lubamine ebaturvalise URL-iga (http) võib kahjustada teie turvalisust avalikes võrkudes.";
