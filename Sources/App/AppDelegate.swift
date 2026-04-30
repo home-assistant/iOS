@@ -451,14 +451,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupUIApplicationShortcutItems() {
-        if Current.isCatalyst {
-            UIApplication.shared.shortcutItems = [.init(
-                type: HAApplicationShortcutItem.openSettings.rawValue,
-                localizedTitle: L10n.ShortcutItem.OpenSettings.title,
-                localizedSubtitle: nil,
-                icon: .init(systemSymbol: .gear)
-            )]
-        }
+        AppIconShortcutItemsUpdater.update()
     }
 
     private func migrateIfNeeded() {

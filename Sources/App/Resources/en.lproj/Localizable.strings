@@ -965,6 +965,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Edit Template";
 "settings.whats_new.title" = "What's new?";
+"settings.app_icon_shortcuts.add_item.title" = "Add item";
+"settings.app_icon_shortcuts.duplicate_error" = "This item is already in your shortcuts.";
+"settings.app_icon_shortcuts.footer.title" = "iOS shows up to four shortcuts from the app icon quick actions menu.";
+"settings.app_icon_shortcuts.items.title" = "Items";
+"settings.app_icon_shortcuts.reset.confirmation_title" = "Reset App Icon Shortcuts?";
+"settings.app_icon_shortcuts.reset.title" = "Reset App Icon Shortcuts";
+"settings.app_icon_shortcuts.subtitle" = "Choose items to display when long pressing the app icon.";
+"settings.app_icon_shortcuts.title" = "App Icon Shortcuts";
 "settings.widgets.create.add_item.title" = "Add item";
 "settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
 "settings.widgets.create.items.title" = "Items";

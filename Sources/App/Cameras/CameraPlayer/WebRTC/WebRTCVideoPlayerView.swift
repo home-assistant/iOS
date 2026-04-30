@@ -16,6 +16,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
 
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
+    @State private var previousFrameScale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
 
@@ -52,6 +53,20 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
             ZStack {
                 player
                 errorView
+                CameraZoomGestureOverlay(
+                    onPinchBegan: { _ in
+                        previousFrameScale = lastScale
+                    },
+                    onPinchChanged: { factor, midpoint in
+                        handlePinchChanged(factor: factor, midpoint: midpoint, in: geometry.size)
+                    },
+                    onPinchEnded: {
+                        handlePinchEnded(in: geometry.size)
+                    },
+                    onDoubleTap: { location in
+                        handleDoubleTap(at: location, in: geometry.size)
+                    }
+                )
             }
             .background(.black)
             .onAppear {
@@ -61,15 +76,12 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                 hideControlsWorkItem?.cancel()
                 hideControlsWorkItem = nil
             }
-            .gesture(
-                magnificationGesture(geometry: geometry)
-            )
             .simultaneousGesture(
                 dragGesture(geometry: geometry)
             )
-            .gesture(
-                tapGesture
-            )
+            .onTapGesture {
+                showControlsTemporarily()
+            }
             .onChange(of: viewModel.isWebRTCUnsupported) { isUnsupported in
                 if isUnsupported {
                     onWebRTCUnsupported?()
@@ -107,27 +119,63 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         .animation(.easeInOut, value: viewModel.failureReason)
     }
 
-    private func magnificationGesture(geometry: GeometryProxy) -> some Gesture {
-        MagnificationGesture()
-            .onChanged { value in
-                scale = lastScale * value
-                showControlsTemporarily()
+    private func handlePinchChanged(factor: CGFloat, midpoint: CGPoint, in containerSize: CGSize) {
+        let proposedScale = max(lastScale * factor, 1.0)
+        let oldScale = max(previousFrameScale, 1.0)
+        let ratio = proposedScale / oldScale
+
+        let pX = midpoint.x - containerSize.width / 2
+        let pY = midpoint.y - containerSize.height / 2
+
+        let newOffset = CGSize(
+            width: pX * (1 - ratio) + offset.width * ratio,
+            height: pY * (1 - ratio) + offset.height * ratio
+        )
+
+        scale = proposedScale
+        offset = clampedOffset(for: newOffset, in: containerSize)
+        previousFrameScale = proposedScale
+        showControlsTemporarily()
+    }
+
+    private func handlePinchEnded(in containerSize: CGSize) {
+        lastScale = scale
+        previousFrameScale = scale
+        showControlsTemporarily()
+        if scale <= 1.0 {
+            withAnimation {
+                offset = .zero
+                lastOffset = .zero
             }
-            .onEnded { _ in
-                lastScale = scale
-                showControlsTemporarily()
-                if scale <= 1.0 {
-                    withAnimation {
-                        offset = .zero
-                        lastOffset = .zero
-                    }
-                } else {
-                    withAnimation {
-                        offset = clampedOffset(for: offset, in: geometry.size)
-                        lastOffset = offset
-                    }
-                }
+        } else {
+            withAnimation {
+                offset = clampedOffset(for: offset, in: containerSize)
+                lastOffset = offset
             }
+        }
+    }
+
+    private func handleDoubleTap(at location: CGPoint, in containerSize: CGSize) {
+        withAnimation(.spring()) {
+            if scale > 1.0 {
+                scale = 1.0
+                lastScale = 1.0
+                previousFrameScale = 1.0
+                offset = .zero
+                lastOffset = .zero
+            } else {
+                let target: CGFloat = 2.0
+                let pX = location.x - containerSize.width / 2
+                let pY = location.y - containerSize.height / 2
+                let newOffset = CGSize(width: pX * (1 - target), height: pY * (1 - target))
+                scale = target
+                lastScale = target
+                previousFrameScale = target
+                offset = clampedOffset(for: newOffset, in: containerSize)
+                lastOffset = offset
+            }
+            showControlsTemporarily()
+        }
     }
 
     private func dragGesture(geometry: GeometryProxy) -> some Gesture {
@@ -157,23 +205,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
             }
     }
 
-    private var tapGesture: some Gesture {
-        TapGesture(count: 2).onEnded {
-            withAnimation {
-                if scale > 1.0 {
-                    scale = 1.0
-                    lastScale = 1.0
-                    offset = .zero
-                    lastOffset = .zero
-                } else {
-                    scale = 2.0
-                    lastScale = 2.0
-                }
-                showControlsTemporarily()
-            }
-        }
-    }
-
     private var player: some View {
         WebRTCVideoPlayerViewControllerWrapper(
             viewModel: viewModel,
@@ -182,10 +213,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         .edgesIgnoringSafeArea(.all)
         .scaleEffect(.init(floatLiteral: scale >= 1.0 ? scale : 1.0))
         .offset(offset)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            showControlsTemporarily()
-        }
     }
 
     private func showControlsTemporarily() {

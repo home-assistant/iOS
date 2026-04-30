@@ -1240,6 +1240,7 @@
 		6FCEBAA2C8E9C5403055E73D /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
 		70BD8A8EA1ABC5DC1F0A0D6E /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C663B0750E0318469E7008C3 /* Pods_iOS_Shared_iOS.framework */; };
 		71E0BF803A854C3B9F0CB726 /* HandlerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */; };
+		8411EA28D9F5FEF26D01A39E /* CameraZoomGestureOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5A1F2C65420338C176B7BD /* CameraZoomGestureOverlay.swift */; };
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
 		864FFB19D2954B698B31E350 /* WebViewController+ReAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1945E8E386664E5A88668E77 /* WebViewController+ReAuth.swift */; };
 		87ADC61008345747CABC2270 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
@@ -1264,6 +1265,13 @@
 		AB3E076F146799C008ACB0EA /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7D8DAEFAD435091FDDD61E7 /* Pods_iOS_Extensions_NotificationContent.framework */; };
 		AC710001000000000000AA01 /* ActionsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC720001000000000000AA01 /* ActionsSettingsView.swift */; };
 		AC710002000000000000AA01 /* ActionsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC720002000000000000AA01 /* ActionsSettingsViewModel.swift */; };
+		AC730001000000000000AA01 /* AppIconShortcutConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730011000000000000AA01 /* AppIconShortcutConfig.swift */; };
+		AC730002000000000000AA01 /* AppIconShortcutConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730011000000000000AA01 /* AppIconShortcutConfig.swift */; };
+		AC730003000000000000AA01 /* AppIconShortcutConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730012000000000000AA01 /* AppIconShortcutConfigTable.swift */; };
+		AC730004000000000000AA01 /* AppIconShortcutConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730012000000000000AA01 /* AppIconShortcutConfigTable.swift */; };
+		AC730005000000000000AA01 /* AppIconShortcutItemsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730021000000000000AA01 /* AppIconShortcutItemsUpdater.swift */; };
+		AC730006000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730022000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift */; };
+		AC730007000000000000AA01 /* AppIconShortcutsConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730023000000000000AA01 /* AppIconShortcutsConfigurationView.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
@@ -2228,6 +2236,7 @@
 		273BF4150C522259C6183B32 /* Pods-watchOS-Shared-watchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-Shared-watchOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-Shared-watchOS/Pods-watchOS-Shared-watchOS.debug.xcconfig"; sourceTree = "<group>"; };
 		2A674A3ACB31BFCEB70423FE /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.release.xcconfig"; sourceTree = "<group>"; };
 		2C50B9249EE482AF53672D36 /* Pods-iOS-SharedTesting.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-SharedTesting.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-SharedTesting/Pods-iOS-SharedTesting.beta.xcconfig"; sourceTree = "<group>"; };
+		2F5A1F2C65420338C176B7BD /* CameraZoomGestureOverlay.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CameraZoomGestureOverlay.swift; sourceTree = "<group>"; };
 		332C060487B468055C487070 /* TemplatePreviewSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TemplatePreviewSection.swift; sourceTree = "<group>"; };
 		33CA7FF55788E7084DA5E4B3 /* Pods_iOS_Extensions_Share.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Share.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		365F0937BF33147F29CE8F8B /* Pods-watchOS-Shared-watchOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-Shared-watchOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-Shared-watchOS/Pods-watchOS-Shared-watchOS.beta.xcconfig"; sourceTree = "<group>"; };
@@ -3104,6 +3113,11 @@
 		AC24B1CAB85767B8171BB850 /* Pods-iOS-Extensions-NotificationContent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.release.xcconfig"; sourceTree = "<group>"; };
 		AC720001000000000000AA01 /* ActionsSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionsSettingsView.swift; sourceTree = "<group>"; };
 		AC720002000000000000AA01 /* ActionsSettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionsSettingsViewModel.swift; sourceTree = "<group>"; };
+		AC730011000000000000AA01 /* AppIconShortcutConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutConfig.swift; sourceTree = "<group>"; };
+		AC730012000000000000AA01 /* AppIconShortcutConfigTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutConfigTable.swift; sourceTree = "<group>"; };
+		AC730021000000000000AA01 /* AppIconShortcutItemsUpdater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutItemsUpdater.swift; sourceTree = "<group>"; };
+		AC730022000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutsConfigurationViewModel.swift; sourceTree = "<group>"; };
+		AC730023000000000000AA01 /* AppIconShortcutsConfigurationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutsConfigurationView.swift; sourceTree = "<group>"; };
 		ADC769271BB34C474C2D1E24 /* Pods-iOS-Shared-iOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-metadata.plist"; sourceTree = "<group>"; };
 		B26248E8DEAC8C13210A6587 /* Pods-iOS-Extensions-Widgets.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.beta.xcconfig"; sourceTree = "<group>"; };
 		B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; sourceTree = "<group>"; };
@@ -4734,6 +4748,7 @@
 				420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */,
 				420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */,
 				420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */,
+				AC730012000000000000AA01 /* AppIconShortcutConfigTable.swift */,
 				420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */,
 				420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */,
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
@@ -4826,6 +4841,7 @@
 				42DC44342E1C0791001046C1 /* WebRTCVideoPlayerView.swift */,
 				425390D82E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift */,
 				425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */,
+				2F5A1F2C65420338C176B7BD /* CameraZoomGestureOverlay.swift */,
 			);
 			path = WebRTC;
 			sourceTree = "<group>";
@@ -6617,6 +6633,24 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		AC730010000000000000AA01 /* AppIconShortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				AC730011000000000000AA01 /* AppIconShortcutConfig.swift */,
+			);
+			path = AppIconShortcuts;
+			sourceTree = "<group>";
+		};
+		AC730020000000000000AA01 /* AppIconShortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				AC730021000000000000AA01 /* AppIconShortcutItemsUpdater.swift */,
+				AC730022000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift */,
+				AC730023000000000000AA01 /* AppIconShortcutsConfigurationView.swift */,
+			);
+			path = AppIconShortcuts;
+			sourceTree = "<group>";
+		};
 		B60614B31D1F116D00249C11 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
@@ -6911,6 +6945,7 @@
 				4257EA912F1790DE00D81506 /* EntityPicker */,
 				429AFE5A2DB7BE3200AF0836 /* General */,
 				4211551F2D3525E800A71630 /* AppIcon */,
+				AC730020000000000000AA01 /* AppIconShortcuts */,
 				4278CB862D01F0BE00CFAAC9 /* Gestures */,
 				42EFFAEA2C8882CC002F10FC /* CarPlay */,
 				4251AAC32C6CF5D6004CCC9D /* MagicItem */,
@@ -6926,7 +6961,6 @@
 				421155222D354F3F00A71630 /* AppIcon.swift */,
 				42DF7DDC2EC53D42003F3C4A /* Settings */,
 				B641BC1D1E2097EF002CCBC1 /* AboutView.swift */,
-				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				42B19BD02D4A358B00B3262B /* DebugView.swift */,
 				420C1BB32CF7DBF300AF22E7 /* ClientEventsLogView */,
 				420DBEXP2F10000000000005 /* DatabaseExplorer */,
@@ -6985,8 +7019,6 @@
 				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
-				B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */,
-				B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */,
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
@@ -7185,6 +7217,7 @@
 				42D6EAB62F0FF8BD00FA249B /* ExternalMessageModels */,
 				42D6EABB2F0FF96400FA249B /* Toast */,
 				42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */,
+				AC730010000000000000AA01 /* AppIconShortcuts */,
 				4251AABD2C6CE230004CCC9D /* MagicItem */,
 				4264906A2C0F1B40002155CC /* Assist */,
 				426740A42B17348700C1DD73 /* Assets */,
@@ -9240,6 +9273,9 @@
 				427AE07E2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift in Sources */,
 				42FA83472F4731F80050095A /* WebViewController+Gestures.swift in Sources */,
 				42FA83452F4723450050095A /* WebViewController+Settings.swift in Sources */,
+				AC730005000000000000AA01 /* AppIconShortcutItemsUpdater.swift in Sources */,
+				AC730006000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift in Sources */,
+				AC730007000000000000AA01 /* AppIconShortcutsConfigurationView.swift in Sources */,
 				4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */,
 				42D31F012F9ABC0100C0D001 /* MacOnboardingSheetFrame.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
@@ -9532,7 +9568,6 @@
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
 				4261EAA22F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift in Sources */,
-				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
@@ -9632,6 +9667,7 @@
 				13A43381205AA9A649AFA8E5 /* YamlPreviewSection.swift in Sources */,
 				01783C74005B40978CE7508B /* NotificationIdentifierField.swift in Sources */,
 				D6F87818FFB55C006563EBBB /* RealmResultsObserver.swift in Sources */,
+				8411EA28D9F5FEF26D01A39E /* CameraZoomGestureOverlay.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9749,6 +9785,8 @@
 				420CFC782D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */,
 				11C4628324B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
+				AC730001000000000000AA01 /* AppIconShortcutConfig.swift in Sources */,
+				AC730003000000000000AA01 /* AppIconShortcutConfigTable.swift in Sources */,
 				421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */,
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				42FDCA2A2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */,
@@ -10055,6 +10093,8 @@
 				427A21772F7EA57600BD40B7 /* ServerInfoMirrorTable.swift in Sources */,
 				42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
+				AC730002000000000000AA01 /* AppIconShortcutConfig.swift in Sources */,
+				AC730004000000000000AA01 /* AppIconShortcutConfigTable.swift in Sources */,
 				1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */,
 				427A7CDF2EBDFB4200D17841 /* AppArea+Queries.swift in Sources */,
 				4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */,

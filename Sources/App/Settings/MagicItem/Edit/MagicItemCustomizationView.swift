@@ -198,7 +198,7 @@ struct MagicItemCustomizationView: View {
 
     @ViewBuilder
     private var actionView: some View {
-        if context == .widget, actionsLoaded {
+        if [.widget, .appIconShortcut].contains(context), actionsLoaded {
             Section(L10n.MagicItem.action) {
                 HStack {
                     Text(verbatim: L10n.MagicItem.Action.onTap)

@@ -79,6 +79,14 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     private let preferredLocale: Locale?
     private var silenceDetectionTask: Task<Void, Never>?
     private let silenceTimeout: TimeInterval = 1.5
+    private let finalGracePeriod: TimeInterval = 0.5
+    private var didReportFinalTranscript = false
+
+    // kAFAssistantErrorDomain error codes that indicate a normal session cancellation
+    // (internal Apple speech service domain, not publicly declared in the SDK)
+    private let kAFAssistantErrorDomain = "kAFAssistantErrorDomain"
+    private let kAFAssistantErrorCodeCancelled = 1
+    private let kAFAssistantErrorCodeTaskCancelled = 216
 
     // MARK: - Initialization
 
@@ -164,6 +172,7 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         stopListening()
 
         transcript = ""
+        didReportFinalTranscript = false
         isListening = true
         errorMessage = nil
         onListeningStateChange?(true)
@@ -257,18 +266,30 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     private func handleRecognitionResult(_ result: SFSpeechRecognitionResult?, error: Error?) {
         if let result {
             transcript = result.bestTranscription.formattedString
-            onTranscriptUpdate?(transcript, result.isFinal)
-            if !result.isFinal {
+            if result.isFinal {
+                reportFinalIfNeeded()
+            } else {
+                onTranscriptUpdate?(transcript, false)
                 scheduleSilenceDetection()
             }
         }
 
         if let error {
-            // Ignore cancellation errors
+            // Ignore cancellation errors from the AFAssistant speech service
+            // (e.g. task cancelled after endAudio). Check both domain and code to
+            // avoid misclassifying unrelated errors that share the same numeric code.
             let nsError = error as NSError
-            if nsError.code != 216, nsError.code != 1 { // cancellation codes
+            let isCancellation = nsError.domain == kAFAssistantErrorDomain &&
+                (nsError.code == kAFAssistantErrorCodeTaskCancelled || nsError.code == kAFAssistantErrorCodeCancelled)
+            if !isCancellation {
                 errorMessage = error.localizedDescription
                 onError?(error)
+            } else {
+                // The recognizer can cancel right after `endAudio()` without ever
+                // delivering an `isFinal == true` result (observed on iOS 26 with
+                // on-device recognition). Surface the transcript built so far so
+                // it isn't silently dropped.
+                reportFinalIfNeeded()
             }
             stopListening()
         }
@@ -278,12 +299,28 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         }
     }
 
+    private func reportFinalIfNeeded() {
+        guard !didReportFinalTranscript else { return }
+        let text = transcript
+        guard !text.isEmpty else { return }
+        didReportFinalTranscript = true
+        onTranscriptUpdate?(text, true)
+    }
+
     private func scheduleSilenceDetection() {
         silenceDetectionTask?.cancel()
         silenceDetectionTask = Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: UInt64((self?.silenceTimeout ?? 1.5) * 1_000_000_000))
             guard !Task.isCancelled, let self else { return }
             self.recognitionRequest?.endAudio()
+
+            // Fallback: if the recognizer fails to deliver a final result after
+            // `endAudio()`, finalize the transcript ourselves so the assist
+            // pipeline still receives the recognized text.
+            try? await Task.sleep(nanoseconds: UInt64(self.finalGracePeriod * 1_000_000_000))
+            guard !Task.isCancelled, self.isListening, !self.didReportFinalTranscript else { return }
+            self.reportFinalIfNeeded()
+            self.stopListening()
         }
     }
 
