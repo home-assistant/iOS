@@ -804,6 +804,14 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "sensors.active.setting.time_until_idle" = "Aeg jõudeolekuni";
 "sensors.geocoded_location.setting.use_zones" = "Kasuta tsooni nime";
 "servers_selection.title" = "Serverid";
+"settings.app_icon_shortcuts.add_item.title" = "Lisa üksus";
+"settings.app_icon_shortcuts.duplicate_error" = "See üksus on juba otseteede hulgas.";
+"settings.app_icon_shortcuts.footer.title" = "iOS kuvab rakenduse ikooni kiirtoimingute menüüst kuni neli otseteed.";
+"settings.app_icon_shortcuts.items.title" = "Üksused";
+"settings.app_icon_shortcuts.reset.confirmation_title" = "Kas lähtestada rakenduse ikooni otseteed?";
+"settings.app_icon_shortcuts.reset.title" = "Rakenduse ikooni otseteede lähtestamine";
+"settings.app_icon_shortcuts.subtitle" = "Vali üksused mis kuvatakse rakenduse ikooni pikal vajutamisel.";
+"settings.app_icon_shortcuts.title" = "Rakenduse ikoonide otseteed";
 "settings.connection_section.activate_server" = "Aktiveeri";
 "settings.connection_section.add_server" = "Lisa server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Kui teil on ebaturvaline ühendus võib see paljastada teie autentimistõendi avalikes võrkudes.";

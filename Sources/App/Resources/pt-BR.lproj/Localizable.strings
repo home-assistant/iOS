@@ -804,6 +804,14 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "sensors.active.setting.time_until_idle" = "Tempo até ocioso";
 "sensors.geocoded_location.setting.use_zones" = "Usar nome da zona";
 "servers_selection.title" = "Servidores";
+"settings.app_icon_shortcuts.add_item.title" = "Add item";
+"settings.app_icon_shortcuts.duplicate_error" = "This item is already in your shortcuts.";
+"settings.app_icon_shortcuts.footer.title" = "iOS shows up to four shortcuts from the app icon quick actions menu.";
+"settings.app_icon_shortcuts.items.title" = "Items";
+"settings.app_icon_shortcuts.reset.confirmation_title" = "Reset App Icon Shortcuts?";
+"settings.app_icon_shortcuts.reset.title" = "Reset App Icon Shortcuts";
+"settings.app_icon_shortcuts.subtitle" = "Choose items to display when long pressing the app icon.";
+"settings.app_icon_shortcuts.title" = "App Icon Shortcuts";
 "settings.connection_section.activate_server" = "Ativar";
 "settings.connection_section.add_server" = "Adicionar servidor";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Se você tiver uma conexão insegura, isso pode expor seu token de autenticação em redes públicas.";

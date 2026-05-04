@@ -804,6 +804,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "sensors.active.setting.time_until_idle" = "Tiempo hasta inactividad";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
 "servers_selection.title" = "Servidores";
+"settings.app_icon_shortcuts.add_item.title" = "Add item";
+"settings.app_icon_shortcuts.duplicate_error" = "This item is already in your shortcuts.";
+"settings.app_icon_shortcuts.footer.title" = "iOS shows up to four shortcuts from the app icon quick actions menu.";
+"settings.app_icon_shortcuts.items.title" = "Items";
+"settings.app_icon_shortcuts.reset.confirmation_title" = "Reset App Icon Shortcuts?";
+"settings.app_icon_shortcuts.reset.title" = "Reset App Icon Shortcuts";
+"settings.app_icon_shortcuts.subtitle" = "Choose items to display when long pressing the app icon.";
+"settings.app_icon_shortcuts.title" = "App Icon Shortcuts";
 "settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";

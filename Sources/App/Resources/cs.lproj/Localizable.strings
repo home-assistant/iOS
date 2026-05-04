@@ -804,6 +804,14 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "sensors.active.setting.time_until_idle" = "Čas do nečinnosti";
 "sensors.geocoded_location.setting.use_zones" = "Použít název zóny";
 "servers_selection.title" = "Servery";
+"settings.app_icon_shortcuts.add_item.title" = "Přidat položku";
+"settings.app_icon_shortcuts.duplicate_error" = "Tato položka je již ve vašich zkratkách.";
+"settings.app_icon_shortcuts.footer.title" = "iOS zobrazuje v nabídce rychlých akcí ikony aplikace až čtyři zkratky.";
+"settings.app_icon_shortcuts.items.title" = "Položky";
+"settings.app_icon_shortcuts.reset.confirmation_title" = "Resetovat zkratky ikon aplikací?";
+"settings.app_icon_shortcuts.reset.title" = "Resetovat zkratky ikon aplikací";
+"settings.app_icon_shortcuts.subtitle" = "Vyberte položky, které se zobrazí po dlouhém stisknutí ikony aplikace.";
+"settings.app_icon_shortcuts.title" = "Zkratky ikon aplikací";
 "settings.connection_section.activate_server" = "Aktivovat";
 "settings.connection_section.add_server" = "Přidat server";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Pokud máte nezabezpečené připojení, může to odhalit váš ověřovací token ve veřejných sítích.";
