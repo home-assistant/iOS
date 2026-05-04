@@ -1009,6 +1009,8 @@
 		42BC580F2FA8C38D0080EE09 /* TrustedURLAllowlistRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC580D2FA8C38D0080EE09 /* TrustedURLAllowlistRecord.swift */; };
 		42BC58112FA8C38D0080EE09 /* TrustedURLAllowlistTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC58102FA8C38D0080EE09 /* TrustedURLAllowlistTable.swift */; };
 		42BC58122FA8C38D0080EE09 /* TrustedURLAllowlistTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC58102FA8C38D0080EE09 /* TrustedURLAllowlistTable.swift */; };
+		42BC58152FA8C8E20080EE09 /* AllowedTagURLsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC58142FA8C8E20080EE09 /* AllowedTagURLsView.swift */; };
+		42BC58172FA8C8E20080EE09 /* TagsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC58162FA8C8E20080EE09 /* TagsSettingsView.swift */; };
 		42BF7F302DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
 		42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
 		42BF8DB12EC4E16900DCB7E7 /* AssistSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */; };
@@ -2876,6 +2878,8 @@
 		42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = WatchConfigV1.sqlite; sourceTree = "<group>"; };
 		42BC580D2FA8C38D0080EE09 /* TrustedURLAllowlistRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedURLAllowlistRecord.swift; sourceTree = "<group>"; };
 		42BC58102FA8C38D0080EE09 /* TrustedURLAllowlistTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedURLAllowlistTable.swift; sourceTree = "<group>"; };
+		42BC58142FA8C8E20080EE09 /* AllowedTagURLsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllowedTagURLsView.swift; sourceTree = "<group>"; };
+		42BC58162FA8C8E20080EE09 /* TagsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsSettingsView.swift; sourceTree = "<group>"; };
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
 		42BF8DAF2EC4D69600DCB7E7 /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "copilot-instructions.md"; sourceTree = "<group>"; };
@@ -6032,6 +6036,15 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		42BC58132FA8C8CB0080EE09 /* Tags */ = {
+			isa = PBXGroup;
+			children = (
+				42BC58142FA8C8E20080EE09 /* AllowedTagURLsView.swift */,
+				42BC58162FA8C8E20080EE09 /* TagsSettingsView.swift */,
+			);
+			path = Tags;
+			sourceTree = "<group>";
+		};
 		42BE698B2C4691E000745ECA /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -6974,6 +6987,7 @@
 				420DBEXP2F10000000000005 /* DatabaseExplorer */,
 				42C7A1022F90010000A1B2C3 /* KeychainExplorer */,
 				D75BA669B0E8C771B69ABE41 /* Components */,
+				42BC58132FA8C8CB0080EE09 /* Tags */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -9452,6 +9466,7 @@
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				42AF75992DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift in Sources */,
 				422F881A2D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */,
+				42BC58172FA8C8E20080EE09 /* TagsSettingsView.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
 				4256A70D2F5ECBB3003D464F /* SpeechTranscriber.swift in Sources */,
@@ -9589,6 +9604,7 @@
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
+				42BC58152FA8C8E20080EE09 /* AllowedTagURLsView.swift in Sources */,
 				4261EAA22F34F8C8002A7C85 /* WebViewController+ProtocolConformance.swift in Sources */,
 				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,

@@ -41,6 +41,21 @@ public struct TrustedURLAllowlistRecord: Codable, FetchableRecord, PersistableRe
         }
     }
 
+    public static func allowedURLs(database: DatabaseQueue = .appDatabase) -> [String] {
+        (try? database.read { db in
+            let records = try TrustedURLAllowlistRecord.fetchAll(db)
+            return Array(Set(records.map(\.url))).sorted()
+        }) ?? []
+    }
+
+    public static func delete(url: String, database: DatabaseQueue = .appDatabase) throws {
+        try database.write { db in
+            try TrustedURLAllowlistRecord
+                .filter(Column(DatabaseTables.TrustedURLAllowlist.url.rawValue) == url)
+                .deleteAll(db)
+        }
+    }
+
     private static func recordId(serverId: String, url: String) -> String {
         "\(serverId)|\(url)"
     }

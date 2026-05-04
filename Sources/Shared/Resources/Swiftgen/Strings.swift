@@ -3435,6 +3435,18 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings.status_section.version_row.title") }
       }
     }
+    public enum Tags {
+      /// Tags
+      public static var title: String { return L10n.tr("Localizable", "settings.tags.title") }
+      public enum AllowedUrls {
+        /// No allowed URLs yet.
+        public static var empty: String { return L10n.tr("Localizable", "settings.tags.allowed_urls.empty") }
+        /// Deleting a URL will require confirmation the next time that exact link is opened.
+        public static var footer: String { return L10n.tr("Localizable", "settings.tags.allowed_urls.footer") }
+        /// Allowed URLs
+        public static var title: String { return L10n.tr("Localizable", "settings.tags.allowed_urls.title") }
+      }
+    }
     public enum TemplateEdit {
       /// Edit Template
       public static var title: String { return L10n.tr("Localizable", "settings.template_edit.title") }

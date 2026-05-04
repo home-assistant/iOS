@@ -10,6 +10,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case notifications
     case liveActivities
     case sensors
+    case tags
     case nfc
     case widgets
     case appIconShortcuts
@@ -32,6 +33,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
+        case .tags: return L10n.Settings.Tags.title
         case .nfc: return L10n.Nfc.List.title
         case .widgets: return L10n.Settings.Widgets.title
         case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
@@ -65,6 +67,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: 24)
             case .sensors:
                 MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: 24)
+            case .tags:
+                MaterialDesignIconsImage(icon: .tagMultipleIcon, size: 24)
             case .nfc:
                 MaterialDesignIconsImage(icon: .nfcVariantIcon, size: 24)
             case .widgets:
@@ -125,6 +129,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             #endif
         case .sensors:
             SensorListView()
+        case .tags:
+            TagsSettingsView()
         case .nfc:
             NFCListView()
         case .widgets:
@@ -163,7 +169,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             }
             #endif
             // Live Activities are shown in DebugView
-            if item == .liveActivities {
+            if item == .liveActivities || item == .nfc {
                 return false
             }
             return true
@@ -175,7 +181,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var integrationItems: [SettingsItem] {
-        [.sensors, .nfc, .widgets, .appIconShortcuts]
+        [.sensors, .tags, .widgets, .appIconShortcuts]
     }
 
     static var watchItems: [SettingsItem] {

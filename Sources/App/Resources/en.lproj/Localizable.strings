@@ -897,6 +897,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.database_explorer.no_entries" = "No entries found";
 "settings.database_explorer.row_detail" = "Row Details";
 "settings.database_explorer.title" = "Database Explorer";
+"settings.tags.allowed_urls.empty" = "No allowed URLs yet.";
+"settings.tags.allowed_urls.footer" = "Deleting a URL will require confirmation the next time that exact link is opened.";
+"settings.tags.allowed_urls.title" = "Allowed URLs";
+"settings.tags.title" = "Tags";
 "settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
 "settings.debugging.delete_keychain.date_placeholder" = "yyyy-MM-dd";
 "settings.debugging.delete_keychain.delete_button" = "Delete";
