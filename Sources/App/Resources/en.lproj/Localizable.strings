@@ -1249,6 +1249,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location: %@";
 "url_handler.send_location.success.message" = "Sent a one shot location";
 "url_handler.send_location.success.title" = "Sent location";
+"url_handler.tag_link.confirm.allow" = "Allow";
+"url_handler.tag_link.confirm.always_allow" = "Always Allow";
+"url_handler.tag_link.confirm.deny" = "Deny";
+"url_handler.tag_link.confirm.message" = "Link:\n%@\n\nThis link can trigger actions in Home Assistant. Only allow automatic access if you trust where the link came from.\n\nIf someone else knows this exact link, they may be able to trigger the same action.\n\nIf you choose Always Allow, this link can run again later without asking.";
+"url_handler.tag_link.confirm.title" = "Open this Home Assistant tag link?";
 "url_handler.x_callback_url.error.eventNameMissing" = "eventName must be defined";
 "url_handler.x_callback_url.error.general" = "A general error occurred";
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";

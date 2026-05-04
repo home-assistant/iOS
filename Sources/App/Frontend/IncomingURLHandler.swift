@@ -1,5 +1,6 @@
 import CallbackURLKit
 import Foundation
+import GRDB
 import PromiseKit
 import SafariServices
 import Shared
@@ -262,21 +263,8 @@ class IncomingURLHandler {
         }
 
         switch Current.tags.handle(userActivity: userActivity) {
-        case let .handled(type):
-            let (icon, text) = { () -> (MaterialDesignIcons, String) in
-                switch type {
-                case .nfc:
-                    return (.nfcVariantIcon, L10n.Nfc.tagRead)
-                case .generic:
-                    return (.qrcodeIcon, L10n.Nfc.genericTagRead)
-                }
-            }()
-
-            Current.sceneManager.showFullScreenConfirm(
-                icon: icon,
-                text: text,
-                onto: .value(windowController.window)
-            )
+        case let .handled(tag, type, sourceURL):
+            handleTagUserActivity(tag: tag, type: type, sourceURL: sourceURL)
             return true
         case let .open(url):
             // NFC-based URL
@@ -315,6 +303,93 @@ class IncomingURLHandler {
             } else {
                 return false
             }
+        }
+    }
+
+    private func handleTagUserActivity(
+        tag: String,
+        type: TagManagerHandleResult.HandledType,
+        sourceURL: URL
+    ) {
+        switch type {
+        case .nfc:
+            Current.tags.fireEvent(tag: tag).cauterize()
+            showTagTriggerFeedback(for: type)
+        case .generic:
+            let serverIds = Array(Set(Current.servers.all.map(\.identifier.rawValue))).sorted()
+            let database = Current.database()
+
+            if TrustedURLAllowlistRecord.isAllowed(
+                url: sourceURL,
+                serverIds: serverIds,
+                database: database
+            ) {
+                Current.tags.fireEvent(tag: tag).cauterize()
+                showTagTriggerFeedback(for: type)
+            } else {
+                confirmTagLink(tag: tag, sourceURL: sourceURL, serverIds: serverIds, database: database)
+            }
+        }
+    }
+
+    private func showTagTriggerFeedback(for type: TagManagerHandleResult.HandledType) {
+        let (icon, text) = { () -> (MaterialDesignIcons, String) in
+            switch type {
+            case .nfc:
+                return (.nfcVariantIcon, L10n.Nfc.tagRead)
+            case .generic:
+                return (.qrcodeIcon, L10n.Nfc.genericTagRead)
+            }
+        }()
+
+        Current.sceneManager.showFullScreenConfirm(
+            icon: icon,
+            text: text,
+            onto: .value(windowController.window)
+        )
+    }
+
+    private func confirmTagLink(
+        tag: String,
+        sourceURL: URL,
+        serverIds: [String],
+        database: DatabaseQueue
+    ) {
+        let alert = UIAlertController(
+            title: L10n.UrlHandler.TagLink.Confirm.title,
+            message: L10n.UrlHandler.TagLink.Confirm.message(sourceURL.absoluteString),
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: L10n.UrlHandler.TagLink.Confirm.deny, style: .cancel))
+        alert.addAction(UIAlertAction(
+            title: L10n.UrlHandler.TagLink.Confirm.allow,
+            style: .default,
+            handler: { [weak self] _ in
+                guard let self else { return }
+                Current.tags.fireEvent(tag: tag).cauterize()
+                showTagTriggerFeedback(for: .generic)
+            }
+        ))
+        alert.addAction(UIAlertAction(
+            title: L10n.UrlHandler.TagLink.Confirm.alwaysAllow,
+            style: .default,
+            handler: { [weak self] _ in
+                guard let self else { return }
+
+                do {
+                    try TrustedURLAllowlistRecord.allow(url: sourceURL, serverIds: serverIds, database: database)
+                } catch {
+                    Current.Log.error("Failed to persist trusted tag URL \(sourceURL): \(error.localizedDescription)")
+                }
+
+                Current.tags.fireEvent(tag: tag).cauterize()
+                showTagTriggerFeedback(for: .generic)
+            }
+        ))
+
+        windowController?.webViewControllerPromise.done {
+            $0.present(alert, animated: true, completion: nil)
         }
     }
 

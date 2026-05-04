@@ -8,7 +8,7 @@ public enum TagManagerHandleResult {
     }
 
     case unhandled
-    case handled(HandledType)
+    case handled(tag: String, type: HandledType, sourceURL: URL)
     case open(URL)
 }
 

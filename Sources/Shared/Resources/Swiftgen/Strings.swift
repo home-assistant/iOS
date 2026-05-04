@@ -4380,6 +4380,29 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "url_handler.send_location.success.title") }
       }
     }
+    public enum TagLink {
+      public enum Confirm {
+        /// Allow
+        public static var allow: String { return L10n.tr("Localizable", "url_handler.tag_link.confirm.allow") }
+        /// Always Allow
+        public static var alwaysAllow: String { return L10n.tr("Localizable", "url_handler.tag_link.confirm.always_allow") }
+        /// Deny
+        public static var deny: String { return L10n.tr("Localizable", "url_handler.tag_link.confirm.deny") }
+        /// Link:
+        /// %@
+        /// 
+        /// This link can trigger actions in Home Assistant. Only allow automatic access if you trust where the link came from.
+        /// 
+        /// If someone else knows this exact link, they may be able to trigger the same action.
+        /// 
+        /// If you choose Always Allow, this link can run again later without asking.
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.tag_link.confirm.message", String(describing: p1))
+        }
+        /// Open this Home Assistant tag link?
+        public static var title: String { return L10n.tr("Localizable", "url_handler.tag_link.confirm.title") }
+      }
+    }
     public enum XCallbackUrl {
       public enum Error {
         /// eventName must be defined

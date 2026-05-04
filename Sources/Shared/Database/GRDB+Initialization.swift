@@ -68,6 +68,7 @@ public extension DatabaseQueue {
             CameraListConfigurationTable(),
             AssistConfigurationTable(),
             KioskSettingsTable(),
+            TrustedURLAllowlistTable(),
         ]
     }
 
