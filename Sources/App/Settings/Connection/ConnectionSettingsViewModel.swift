@@ -290,9 +290,16 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
         switch result {
         case let .fulfilled(certificate):
+            let replacedCertificate = server.info.connection.clientCertificate
+
             // Update server connection info
             server.update { info in
                 info.connection.clientCertificate = certificate
+            }
+
+            if let replacedCertificate,
+               replacedCertificate.keychainIdentifier != certificate.keychainIdentifier {
+                deleteCertificateIfUnreferenced(replacedCertificate)
             }
 
             clientCertificate = certificate
@@ -309,17 +316,32 @@ final class ConnectionSettingsViewModel: ObservableObject {
     func removeCertificate() {
         guard let certificate = clientCertificate else { return }
 
+        server.update { info in
+            info.connection.clientCertificate = nil
+        }
+
+        deleteCertificateIfUnreferenced(certificate)
+
+        clientCertificate = nil
+        Current.Log.info("Removed client certificate")
+    }
+
+    private func deleteCertificateIfUnreferenced(_ certificate: ClientCertificate) {
+        guard !isCertificateReferenced(certificate) else {
+            Current.Log.info("Keeping shared client certificate in Keychain")
+            return
+        }
+
         do {
             try ClientCertificateManager.shared.delete(certificate: certificate)
         } catch {
             Current.Log.error("Failed to delete certificate from Keychain: \(error)")
         }
+    }
 
-        server.update { info in
-            info.connection.clientCertificate = nil
+    private func isCertificateReferenced(_ certificate: ClientCertificate) -> Bool {
+        Current.servers.all.contains { server in
+            server.info.connection.clientCertificate?.keychainIdentifier == certificate.keychainIdentifier
         }
-
-        clientCertificate = nil
-        Current.Log.info("Removed client certificate")
     }
 }

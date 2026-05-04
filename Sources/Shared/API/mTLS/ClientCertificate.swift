@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import Security
 
@@ -74,7 +75,7 @@ public final class ClientCertificateManager {
     /// - Parameters:
     ///   - p12Data: The raw .p12 file data
     ///   - password: The password to decrypt the .p12 file
-    ///   - identifier: A unique identifier for storing in Keychain
+    ///   - identifier: A fallback identifier for storing in Keychain if the certificate cannot be fingerprinted
     /// - Returns: A ClientCertificate reference
     public func importP12(data p12Data: Data, password: String, identifier: String) throws -> ClientCertificate {
         let options = Self.pkcs12ImportOptions(password: password)
@@ -123,8 +124,10 @@ public final class ClientCertificateManager {
         let certChain = firstItem[kSecImportItemCertChain as String] as? [SecCertificate] ?? []
         let intermediateCerts = Array(certChain.dropFirst())
 
-        // Store identity in Keychain
-        let keychainIdentifier = "com.ha-ios.mtls.\(identifier)"
+        // Store identities by certificate fingerprint rather than by server. The iOS Keychain
+        // treats a certificate/private-key pair as one identity, so labeling the same identity
+        // with different server IDs makes later imports move the item away from older servers.
+        let keychainIdentifier = Self.keychainIdentifier(for: certificate, fallbackIdentifier: identifier)
         try storeIdentity(secIdentity, identifier: keychainIdentifier)
         storeIntermediateCertificates(intermediateCerts, for: keychainIdentifier)
 
@@ -134,6 +137,21 @@ public final class ClientCertificateManager {
             importedAt: Date(),
             expiresAt: expiresAt
         )
+    }
+
+    private static func keychainIdentifier(
+        for certificate: SecCertificate?,
+        fallbackIdentifier: String
+    ) -> String {
+        guard let certificate,
+              let certData = SecCertificateCopyData(certificate) as Data? else {
+            return "com.ha-ios.mtls.\(fallbackIdentifier)"
+        }
+
+        let fingerprint = SHA256.hash(data: certData)
+            .map { String(format: "%02x", $0) }
+            .joined()
+        return "com.ha-ios.mtls.identity.\(fingerprint)"
     }
 
     /// Store a SecIdentity in the Keychain
@@ -155,9 +173,10 @@ public final class ClientCertificateManager {
 
         let status = SecItemAdd(addQuery as CFDictionary, nil)
 
-        // Handle duplicate - the identity might already exist with different label
+        // Handle duplicate - the same identity might already exist under a legacy server label.
         if status == errSecDuplicateItem {
-            // Try to update instead
+            // Move the existing identity to the certificate-derived label so every server that
+            // imports the same P12 can resolve the same Keychain item.
             let updateQuery: [String: Any] = [
                 kSecValueRef as String: identity,
             ]
@@ -166,9 +185,9 @@ public final class ClientCertificateManager {
                 kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
             ]
             let updateStatus = SecItemUpdate(updateQuery as CFDictionary, updateAttrs as CFDictionary)
-            // If update also fails, the item exists which is fine for our purposes
-            if updateStatus != errSecSuccess, updateStatus != errSecItemNotFound {
-                Current.Log.warning("Keychain update returned \(updateStatus), but certificate may still work")
+            if updateStatus != errSecSuccess {
+                Current.Log.error("Failed to update duplicate client certificate identity label: \(updateStatus)")
+                throw ClientCertificateError.keychainError(updateStatus)
             }
             return
         }
