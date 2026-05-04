@@ -1,3 +1,4 @@
+import AudioToolbox
 import AVFoundation
 import CarPlay
 import Foundation
@@ -7,6 +8,8 @@ import Shared
 @available(iOS 16.0, *)
 final class CarPlayAssistSession: NSObject {
     typealias OnStop = () -> Void
+
+    private static let listeningCueSoundID: SystemSoundID = 1117
 
     enum State {
         case recording
@@ -97,6 +100,7 @@ final class CarPlayAssistSession: NSObject {
         }
         activateVoiceControlState(for: .recording)
         interfaceController?.presentTemplate(template, animated: true, completion: nil)
+        playListeningCue()
         audioRecorder.startRecording()
     }
 
@@ -207,7 +211,13 @@ final class CarPlayAssistSession: NSObject {
             state = .recording
         }
         activateVoiceControlState(for: .recording)
+        playListeningCue()
         audioRecorder.startRecording()
+    }
+
+    private func playListeningCue() {
+        // Use a short system cue so drivers hear when the microphone is live.
+        AudioServicesPlaySystemSound(Self.listeningCueSoundID)
     }
 }
 
