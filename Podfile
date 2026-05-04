@@ -21,16 +21,12 @@ end
 
 plugin 'cocoapods-acknowledgements'
 
-pod 'Alamofire', '~> 5.8'
 pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
-pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit', '~> 8.1.1'
 pod 'Improv-iOS', '~> 0.0.6'
-pod 'SFSafeSymbols', '~> 5.3'
 
 pod 'RealmSwift'
-pod 'GRDB.swift', git: 'https://github.com/groue/GRDB.swift.git', tag: 'v7.8.0'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'

@@ -26,6 +26,7 @@
 		00C267608DCC88B783816CBF /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
 		01783C74005B40978CE7508B /* NotificationIdentifierField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC7EF1136575D0E7A17091 /* NotificationIdentifierField.swift */; };
 		072BACCC5B2509E4AF06BFED /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
+		073711509F4D03288A0001AA /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = E63EDB66D3BB78DEF6955C79 /* KeychainAccess */; };
 		0C1F82B6DF9051F98A587352 /* ComplicationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3995EF7323087AA35F01BDDF /* ComplicationEditView.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
 		1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */; };
@@ -456,11 +457,13 @@
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */; };
 		1E9DE26E93988560ACF01A4A /* NotificationCategoryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C700605E488301BAD78A5B27 /* NotificationCategoryEditorView.swift */; };
+		2084DE26F168CD86A257C765 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = AA91BE047E1864305B716E1A /* SFSafeSymbols */; };
 		21316D8EAC0226B0CD48FF30 /* Pods_iOS_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22F619E232C3F0E98A9346D /* Pods_iOS_App.framework */; };
 		2281600CB792D88059A71F4C /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00AE2FDC80CA2FFDFCA2B2B /* KioskModeManager.swift */; };
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
 		28305758AD4046002E242490 /* WatchFolderContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F3921F07C51AA4021DD11D /* WatchFolderContentView.swift */; };
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
+		304F0CC1D53CBCBC42CA9C71 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 3D9C165098C021C25223E1B9 /* GRDB */; };
 		324A8B0F152A80EA190D98F3 /* Pods_iOS_Extensions_Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC9B77AAC44845DC9EE48759 /* Pods_iOS_Extensions_Intents.framework */; };
 		37414CBA81F74D6AADCFE442 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
@@ -472,6 +475,7 @@
 		399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */; };
 		3BB66E53094D6C7C2F395D54 /* ControlFan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D00E1755885575FF8118933 /* ControlFan.swift */; };
+		3C890E35E0DF705F9A3F0F17 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 1A773DF05344302A467B799D /* SFSafeSymbols */; };
 		3E02C0E22CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */; };
 		3E02C0E32CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */; };
 		3E02C0E82CA7FCF400102131 /* WidgetSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E42CA7FCF400102131 /* WidgetSensors.swift */; };
@@ -494,6 +498,7 @@
 		403FFD6242C8A6021379C555 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB6A8D422BB20D007F14F7BB /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		404C797F2C3491390010EB81 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		404C79802C3491390010EB81 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
+		406BA5A26954F5BA6BFB7B2A /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 3594A7F2E636DD8BE51B1370 /* GRDB */; };
 		4080D5BE2C319AA000099C88 /* WidgetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */; };
 		4080D5BF2C319AA000099C88 /* WidgetDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5BC2C319AA000099C88 /* WidgetDetails.swift */; };
 		4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
@@ -1202,6 +1207,7 @@
 		42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
 		42FF5E992E22F84600BDF5EF /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		451D63FF25213F1E2AF7C73A /* CarPlayAssistSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7182697D2C66EC0B42D73AC2 /* CarPlayAssistSession.swift */; };
+		4620A20DB547F2972A7E7EBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 44979AE5D85C04879708FED8 /* SFSafeSymbols */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
@@ -1224,6 +1230,8 @@
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		494DBDBB52DF51EA226CF9FC /* NotificationCategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6ACBDCC2C47510C37E4C8 /* NotificationCategoryListView.swift */; };
 		498C0EF747C141F3E3204BBE /* ComplicationListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862436CFE6E3F4B31500EFB2 /* ComplicationListViewModel.swift */; };
+		49D0375988E89F57D8E171BA /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = A1AB4CF4588A21773CD9C335 /* Alamofire */; };
+		4A6715E0297E9FE54A9002B9 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 85C13C33BA798C1CAE94AF84 /* GRDB */; };
 		504A2C862F8133E6002A3C0E /* CarPlayTabsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504A2C852F8133E6002A3C0E /* CarPlayTabsSelectionView.swift */; };
 		51B609B13F56C4F17CEF2BE4 /* KioskConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */; };
 		54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */; };
@@ -1237,6 +1245,9 @@
 		65286F3B745551AD4090EE6B /* Pods-iOS-SharedTesting-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4053903E4C54A6803204286E /* Pods-iOS-SharedTesting-metadata.plist */; };
 		6596FA74E1A501276EA62D86 /* Pods_watchOS_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */; };
 		692BCBBA4EEEABCC76DBBECA /* GRDB+Initialization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50FA39BF16AD0BD782D0D7 /* GRDB+Initialization.test.swift */; };
+		697B8D2A5845FB2B73ABE682 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = EB521BDDF16986C5288D96E7 /* GRDB */; };
+		6CBE9322F905475982F999C9 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 3A6BE40EF2890C1561546ADB /* GRDB */; };
+		6EDAD9A0724EB7BAA56B3D22 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A562F9D946C3194772BC6E43 /* KeychainAccess */; };
 		6FCEBAA2C8E9C5403055E73D /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
 		70BD8A8EA1ABC5DC1F0A0D6E /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C663B0750E0318469E7008C3 /* Pods_iOS_Shared_iOS.framework */; };
 		71E0BF803A854C3B9F0CB726 /* HandlerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */; };
@@ -1247,7 +1258,10 @@
 		897D7538631C46D4BD849CF5 /* NotificationsCommandManagerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D790D5FA5DBB4B5B9DBB2334 /* NotificationsCommandManagerLiveActivityTests.swift */; };
 		8DFA3DEE4881E59961C3B5E2 /* BarometerSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A4CD40BADC119045547D77 /* BarometerSensor.test.swift */; };
 		8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */; };
+		8F2826B4A733CB745D06D148 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 1CF04704578C8FC0329D07C1 /* Alamofire */; };
+		9255C8424CF59EBE941C519E /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = E8F3F49A4F0D70FFE7711DE3 /* Alamofire */; };
 		925D92FC9E2221189D67B22C /* ComplicationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF9C3A30E10A8E214623EBB /* ComplicationListView.swift */; };
+		9483EDBE3C8556AB94987A15 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 928F4E710DD0E903DC788E0B /* KeychainAccess */; };
 		999549244371450BC98C700E /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 608CFDA223EBCDF01B946093 /* Pods_iOS_Extensions_PushProvider.framework */; };
 		9D57ECBD5431BC00BDC16F1E /* NotificationActionEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F913E441276235B7A2D7B29 /* NotificationActionEditorView.swift */; };
 		A1619F1ED93FB8B0E7E53C38 /* KioskLifecycleBrightness.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373AE72CB925F044BAE18B62 /* KioskLifecycleBrightness.test.swift */; };
@@ -1255,6 +1269,7 @@
 		A596C4D1E125E6863C7D2034 /* ComplicationEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512A72C5F1BCC979E74F7629 /* ComplicationEditViewModel.swift */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
 		A60E917B401A6D456F1DB630 /* ComplicationFamilySelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1861EB0361816DC9260D1F5E /* ComplicationFamilySelectView.swift */; };
+		A89523271446421E5795B87C /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 5C3CCFB562462B5F05A310EF /* SFSafeSymbols */; };
 		A95FDD0C2F6B89C6008EF72F /* LiveActivityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD0A2F6B89C6008EF72F /* LiveActivityRegistry.swift */; };
 		A95FDD0D2F6B89C6008EF72F /* HALiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD092F6B89C6008EF72F /* HALiveActivityAttributes.swift */; };
 		A95FDD0F2F6B8A19008EF72F /* HandlerLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD0E2F6B8A19008EF72F /* HandlerLiveActivity.swift */; };
@@ -1272,6 +1287,8 @@
 		AC730005000000000000AA01 /* AppIconShortcutItemsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730021000000000000AA01 /* AppIconShortcutItemsUpdater.swift */; };
 		AC730006000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730022000000000000AA01 /* AppIconShortcutsConfigurationViewModel.swift */; };
 		AC730007000000000000AA01 /* AppIconShortcutsConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730023000000000000AA01 /* AppIconShortcutsConfigurationView.swift */; };
+		AD49BFDCD7BD1D008343E6BC /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7C1D1B61FE65E7EB7C165D68 /* SFSafeSymbols */; };
+		B42792DE78EB0AA0B202731C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8C34DB9CA7F4E10326004227 /* Alamofire */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
@@ -1518,9 +1535,11 @@
 		BB77559927344584B2C0E987 /* OnboardingAuthError.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */; };
 		BD1044995DE13A04C0FA039A /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D9C81015FD7A8FA8716E4F2 /* Pods_iOS_Extensions_Widgets.framework */; };
 		BECCC152A4E3F69A8EF5A6F3 /* TableSchemaTests.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9A0E08E6FEBDDE425D0D4 /* TableSchemaTests.test.swift */; };
+		BFD8981C6240D7CF96A23DEE /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 8058CE9D9CC65C24817149A1 /* KeychainAccess */; };
 		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
 		C35621B95F7E4548BC8F6D75 /* FolderEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BECEB2525564358A124F818 /* FolderEditView.swift */; };
 		C3EB3740FA097F36D51F525E /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
+		C50440CD5CA027DA320820A8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6D9DA0CBB874AA046156AE62 /* Alamofire */; };
 		C574CE3276BCE901743FF8C9 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */; };
 		C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */; };
 		CA0CA15000000000000000A2 /* LocationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0CA15000000000000000A1 /* LocationSettingsView.swift */; };
@@ -1573,6 +1592,8 @@
 		DB54626ADCE0C32094C8C0B9 /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFD0D30836C69840AB63A8A /* LoadingButton.swift */; };
 		DEFBE1A5E9A005B0A5392D27 /* KioskLocalization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4593A60DBF019E6C91AAA7 /* KioskLocalization.test.swift */; };
 		E3A02409794174F002C8BB4F /* IconSearchPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC23DE131CA8813C2DBD657 /* IconSearchPicker.swift */; };
+		E3A3644C5AF0C23C96A582B2 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CA23AB0C73C4624139F78B80 /* GRDB */; };
+		E4C5D22E6630AA7D4EC22A49 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE9098899D9E7A5A09FE6B /* Alamofire */; };
 		E92E09E3A93650D56E3C5093 /* KioskScreensaverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CDCFDB29D283A7902A3ABE /* KioskScreensaverViewController.swift */; };
 		F0D1DD41A8F55F6D767EBF37 /* TemplatePreviewSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332C060487B468055C487070 /* TemplatePreviewSection.swift */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
@@ -3522,6 +3543,8 @@
 				1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */,
 				1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */,
 				BD1044995DE13A04C0FA039A /* Pods_iOS_Extensions_Widgets.framework in Frameworks */,
+				406BA5A26954F5BA6BFB7B2A /* GRDB in Frameworks */,
+				4620A20DB547F2972A7E7EBB /* SFSafeSymbols in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3580,6 +3603,8 @@
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
 				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
 				AB3E076F146799C008ACB0EA /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */,
+				8F2826B4A733CB745D06D148 /* Alamofire in Frameworks */,
+				073711509F4D03288A0001AA /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3596,6 +3621,10 @@
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
 				21316D8EAC0226B0CD48FF30 /* Pods_iOS_App.framework in Frameworks */,
+				C50440CD5CA027DA320820A8 /* Alamofire in Frameworks */,
+				304F0CC1D53CBCBC42CA9C71 /* GRDB in Frameworks */,
+				6EDAD9A0724EB7BAA56B3D22 /* KeychainAccess in Frameworks */,
+				A89523271446421E5795B87C /* SFSafeSymbols in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3608,6 +3637,8 @@
 				420E64BD2D676B2400A31E86 /* InlineSnapshotTesting in Frameworks */,
 				4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */,
 				D234820A53471DE7B485A445 /* Pods_Tests_App.framework in Frameworks */,
+				E4C5D22E6630AA7D4EC22A49 /* Alamofire in Frameworks */,
+				697B8D2A5845FB2B73ABE682 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3633,6 +3664,10 @@
 			files = (
 				427692E52B98B83200F24321 /* SharedPush in Frameworks */,
 				6596FA74E1A501276EA62D86 /* Pods_watchOS_Shared_watchOS.framework in Frameworks */,
+				9255C8424CF59EBE941C519E /* Alamofire in Frameworks */,
+				4A6715E0297E9FE54A9002B9 /* GRDB in Frameworks */,
+				BFD8981C6240D7CF96A23DEE /* KeychainAccess in Frameworks */,
+				AD49BFDCD7BD1D008343E6BC /* SFSafeSymbols in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3653,6 +3688,7 @@
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				403FFD6242C8A6021379C555 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */,
+				2084DE26F168CD86A257C765 /* SFSafeSymbols in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3667,6 +3703,10 @@
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */,
 				70BD8A8EA1ABC5DC1F0A0D6E /* Pods_iOS_Shared_iOS.framework in Frameworks */,
+				B42792DE78EB0AA0B202731C /* Alamofire in Frameworks */,
+				6CBE9322F905475982F999C9 /* GRDB in Frameworks */,
+				9483EDBE3C8556AB94987A15 /* KeychainAccess in Frameworks */,
+				3C890E35E0DF705F9A3F0F17 /* SFSafeSymbols in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3676,6 +3716,8 @@
 			files = (
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
 				61495A70232316478717CF27 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */,
+				49D0375988E89F57D8E171BA /* Alamofire in Frameworks */,
+				E3A3644C5AF0C23C96A582B2 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7615,6 +7657,10 @@
 				1171507E24DFCE0D0065E874 /* PBXTargetDependency */,
 			);
 			name = "Extensions-Widgets";
+			packageProductDependencies = (
+				3594A7F2E636DD8BE51B1370 /* GRDB */,
+				44979AE5D85C04879708FED8 /* SFSafeSymbols */,
+			);
 			productName = WidgetsExtension;
 			productReference = 1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -7715,6 +7761,10 @@
 				D0EEF345214F15CA00D1D360 /* PBXTargetDependency */,
 			);
 			name = "Extensions-NotificationContent";
+			packageProductDependencies = (
+				1CF04704578C8FC0329D07C1 /* Alamofire */,
+				E63EDB66D3BB78DEF6955C79 /* KeychainAccess */,
+			);
 			productName = NotificationContentExtension;
 			productReference = B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -7750,6 +7800,12 @@
 				11B6B5812948F8E100B8B552 /* PBXTargetDependency */,
 			);
 			name = App;
+			packageProductDependencies = (
+				6D9DA0CBB874AA046156AE62 /* Alamofire */,
+				3D9C165098C021C25223E1B9 /* GRDB */,
+				A562F9D946C3194772BC6E43 /* KeychainAccess */,
+				5C3CCFB562462B5F05A310EF /* SFSafeSymbols */,
+			);
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
 			productType = "com.apple.product-type.application";
@@ -7773,6 +7829,10 @@
 				4697F4C42D8A416400C5C467 /* PBXTargetDependency */,
 			);
 			name = "Tests-App";
+			packageProductDependencies = (
+				6FAE9098899D9E7A5A09FE6B /* Alamofire */,
+				EB521BDDF16986C5288D96E7 /* GRDB */,
+			);
 			productName = HomeAssistantTests;
 			productReference = B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -7831,6 +7891,10 @@
 			name = "Shared-watchOS";
 			packageProductDependencies = (
 				427692E42B98B83200F24321 /* SharedPush */,
+				E8F3F49A4F0D70FFE7711DE3 /* Alamofire */,
+				85C13C33BA798C1CAE94AF84 /* GRDB */,
+				8058CE9D9CC65C24817149A1 /* KeychainAccess */,
+				7C1D1B61FE65E7EB7C165D68 /* SFSafeSymbols */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -7891,6 +7955,9 @@
 				B67CE82A22200D420034C1D0 /* PBXTargetDependency */,
 			);
 			name = "WatchExtension-Watch";
+			packageProductDependencies = (
+				AA91BE047E1864305B716E1A /* SFSafeSymbols */,
+			);
 			productName = "WatchApp Extension";
 			productReference = B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
@@ -7916,6 +7983,10 @@
 			packageProductDependencies = (
 				427692E22B98B82500F24321 /* SharedPush */,
 				4237E6382E5333370023B673 /* ZIPFoundation */,
+				8C34DB9CA7F4E10326004227 /* Alamofire */,
+				3A6BE40EF2890C1561546ADB /* GRDB */,
+				928F4E710DD0E903DC788E0B /* KeychainAccess */,
+				1A773DF05344302A467B799D /* SFSafeSymbols */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -7937,6 +8008,10 @@
 				D03D894920E0BC1800D4F28D /* PBXTargetDependency */,
 			);
 			name = "Tests-Shared";
+			packageProductDependencies = (
+				A1AB4CF4588A21773CD9C335 /* Alamofire */,
+				CA23AB0C73C4624139F78B80 /* GRDB */,
+			);
 			productName = SharedTests;
 			productReference = D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -8168,6 +8243,10 @@
 				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				39501F2E8650AF35D455E6E2 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				83409D4D5231CB9BBB0E5E11 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				59F30F6AE6DC888F3F5B4990 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				14F9B474A95007DB80F31655 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -11446,8 +11525,6 @@
 					"-l\"c++\"",
 					"-l\"z\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"MBProgressHUD\"",
 					"-framework",
 					"\"PromiseKit\"",
@@ -11665,8 +11742,6 @@
 					"-l\"c++\"",
 					"-l\"z\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"MBProgressHUD\"",
 					"-framework",
 					"\"PromiseKit\"",
@@ -11706,8 +11781,6 @@
 					"-ObjC",
 					"-l\"c++\"",
 					"-l\"z\"",
-					"-framework",
-					"\"Alamofire\"",
 					"-framework",
 					"\"MBProgressHUD\"",
 					"-framework",
@@ -12306,6 +12379,22 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		14F9B474A95007DB80F31655 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.3.0;
+			};
+		};
+		39501F2E8650AF35D455E6E2 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.8.1;
+			};
+		};
 		420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
@@ -12338,9 +12427,50 @@
 				version = 140.0.0;
 			};
 		};
+		59F30F6AE6DC888F3F5B4990 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.2;
+			};
+		};
+		83409D4D5231CB9BBB0E5E11 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 7.8.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1A773DF05344302A467B799D /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14F9B474A95007DB80F31655 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+		1CF04704578C8FC0329D07C1 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39501F2E8650AF35D455E6E2 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		3594A7F2E636DD8BE51B1370 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83409D4D5231CB9BBB0E5E11 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		3A6BE40EF2890C1561546ADB /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83409D4D5231CB9BBB0E5E11 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		3D9C165098C021C25223E1B9 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83409D4D5231CB9BBB0E5E11 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
 		420E64BC2D676B2400A31E86 /* InlineSnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
@@ -12388,6 +12518,11 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedPush;
 		};
+		44979AE5D85C04879708FED8 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14F9B474A95007DB80F31655 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
 		46C62B952D8A3730002C0001 /* InlineSnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
@@ -12402,6 +12537,81 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTestingCustomDump;
+		};
+		5C3CCFB562462B5F05A310EF /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14F9B474A95007DB80F31655 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+		6D9DA0CBB874AA046156AE62 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39501F2E8650AF35D455E6E2 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		6FAE9098899D9E7A5A09FE6B /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39501F2E8650AF35D455E6E2 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		7C1D1B61FE65E7EB7C165D68 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14F9B474A95007DB80F31655 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+		8058CE9D9CC65C24817149A1 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F30F6AE6DC888F3F5B4990 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		85C13C33BA798C1CAE94AF84 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83409D4D5231CB9BBB0E5E11 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		8C34DB9CA7F4E10326004227 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39501F2E8650AF35D455E6E2 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		928F4E710DD0E903DC788E0B /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F30F6AE6DC888F3F5B4990 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		A1AB4CF4588A21773CD9C335 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39501F2E8650AF35D455E6E2 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		A562F9D946C3194772BC6E43 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F30F6AE6DC888F3F5B4990 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		AA91BE047E1864305B716E1A /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14F9B474A95007DB80F31655 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+		CA23AB0C73C4624139F78B80 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83409D4D5231CB9BBB0E5E11 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		E63EDB66D3BB78DEF6955C79 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F30F6AE6DC888F3F5B4990 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		E8F3F49A4F0D70FFE7711DE3 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39501F2E8650AF35D455E6E2 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		EB521BDDF16986C5288D96E7 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83409D4D5231CB9BBB0E5E11 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
