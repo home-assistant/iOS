@@ -413,7 +413,7 @@
 "home_view.customization.areas_layout.list.title" = "Λίστα";
 "home_view.customization.areas_layout.title" = "Διάταξη περιοχών";
 "home_view.customization.common_controls.title" = "Τμήμα πρόβλεψης χειριστηρίων";
-"home_view.customization.summaries.title" = "Περιλήψεις";
+"home_view.customization.summaries.title" = "Συνόψεις";
 "home_view.menu.allow_multiple_selection" = "Να επιτρέπεται πολλαπλή επιλογή";
 "home_view.menu.customize" = "Προσαρμογή";
 "home_view.menu.reorder" = "Αναδιάταξη";
@@ -423,7 +423,7 @@
 "home_view.summaries.covers.title" = "Ρολά";
 "home_view.summaries.lights.count_on" = "%li ενεργό";
 "home_view.summaries.lights.title" = "Φώτα";
-"home_view.summaries.title" = "Περιλήψεις";
+"home_view.summaries.title" = "Συνόψεις";
 "improv.button.continue" = "Συνέχεια";
 "improv.connection_state.authorized" = "Ρύθμιση Wi-Fi";
 "improv.connection_state.provisioning" = "Σύνδεση στο Wi-Fi";
@@ -596,7 +596,7 @@
 Τα tags θα λειτουργούν σε οποιαδήποτε συσκευή με εγκατεστημένο το Home Assistant που διαθέτει υποστήριξη υλικού για την ανάγνωσή τους.";
 "nfc.list.learn_more" = "Μάθε περισσότερα";
 "nfc.list.read_tag" = "Ανάγνωση tag";
-"nfc.list.title" = "NFC Tags";
+"nfc.list.title" = "NFC tags";
 "nfc.list.write_tag" = "Εγγραφή σε tag";
 "nfc.not_available" = "Το NFC δεν είναι διαθέσιμο σε αυτή τη συσκευή";
 "nfc.read.error.generic_failure" = "Αποτυχία ανάγνωσης tag";
@@ -804,6 +804,14 @@
 "sensors.active.setting.time_until_idle" = "Χρόνος μέχρι την αδράνεια";
 "sensors.geocoded_location.setting.use_zones" = "Χρήση ονόματος ζώνης";
 "servers_selection.title" = "Διακομιστές";
+"settings.app_icon_shortcuts.add_item.title" = "Προσθήκη στοιχείου";
+"settings.app_icon_shortcuts.duplicate_error" = "Αυτό το στοιχείο βρίσκεται ήδη στις συντομεύσεις σας.";
+"settings.app_icon_shortcuts.footer.title" = "Το iOS εμφανίζει έως και 4 συντομεύσεις από το μενού γρήγορων ενεργειών του εικονιδίου της εφαρμογής.";
+"settings.app_icon_shortcuts.items.title" = "Στοιχεία";
+"settings.app_icon_shortcuts.reset.confirmation_title" = "Επαναφορά συντομεύσεων εικονιδίων εφαρμογών;";
+"settings.app_icon_shortcuts.reset.title" = "Επαναφορά συντομεύσεων εικονιδίων εφαρμογών";
+"settings.app_icon_shortcuts.subtitle" = "Επιλέξτε στοιχεία που θα εμφανίζονται όταν πατάτε παρατεταμένα το εικονίδιο της εφαρμογής.";
+"settings.app_icon_shortcuts.title" = "Συντομεύσεις εικονιδίων εφαρμογών";
 "settings.connection_section.activate_server" = "Ενεργοποίηση";
 "settings.connection_section.add_server" = "Προσθήκη διακομιστή";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Εάν έχετε μη ασφαλή σύνδεση, αυτό μπορεί να εκθέσει το token ελέγχου ταυτότητας σε δημόσια δίκτυα.";
