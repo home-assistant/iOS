@@ -5,11 +5,12 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
+@available(iOS 26.4, *)
 final class CarPlayAssistSession: NSObject {
     typealias OnStop = () -> Void
 
     enum State {
+        case idle
         case recording
         case processing
         case responding
@@ -22,6 +23,7 @@ final class CarPlayAssistSession: NSObject {
     }
 
     private enum VoiceControlStateID: String {
+        case idle
         case recording
         case processing
         case responding
@@ -51,6 +53,19 @@ final class CarPlayAssistSession: NSObject {
     private let pipelineName: String
 
     private lazy var template: CPVoiceControlTemplate = {
+        let idleState = CPVoiceControlState(
+            identifier: VoiceControlStateID.idle.rawValue,
+            titleVariants: [L10n.Assist.Carplay.TapToRecord.title],
+            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary),
+            repeats: false
+        )
+        let idleButton = CPButton(
+            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary)
+        ) { [weak self] _ in
+            self?.restartRecording()
+        }
+        idleState.actionButtons = [idleButton]
+
         let recordingState = CPVoiceControlState(
             identifier: VoiceControlStateID.recording.rawValue,
             titleVariants: [L10n.Assist.Button.Listening.title],
@@ -69,7 +84,7 @@ final class CarPlayAssistSession: NSObject {
             image: MaterialDesignIcons.volumeHighIcon.carPlayIcon(color: .haPrimary),
             repeats: true
         )
-        return CPVoiceControlTemplate(voiceControlStates: [recordingState, processingState, respondingState])
+        return CPVoiceControlTemplate(voiceControlStates: [recordingState, processingState, respondingState, idleState])
     }()
 
     init(
@@ -485,7 +500,7 @@ final class CarPlayAssistSession: NSObject {
             assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
             restartRecording()
         } else {
-            stop()
+            enterIdleState()
         }
     }
 
@@ -494,6 +509,8 @@ final class CarPlayAssistSession: NSObject {
     private func activateVoiceControlState(for state: State) {
         let identifier: String
         switch state {
+        case .idle:
+            identifier = VoiceControlStateID.idle.rawValue
         case .recording:
             identifier = VoiceControlStateID.recording.rawValue
         case .processing:
@@ -517,14 +534,34 @@ final class CarPlayAssistSession: NSObject {
             canSendAudioData = false
             state = .recording
         }
+        ttsAudioPlayer?.stop()
+        ttsAudioPlayer = nil
+        ttsPlayer.pause()
+        ttsPlayer.replaceCurrentItem(with: nil)
+        clearTTSPlayerObservers()
+        configureAudioSessionForAssist()
         activateVoiceControlState(for: .recording)
         audioRecorder.startRecording()
+    }
+
+    private func enterIdleState() {
+        stateQueue.sync {
+            canSendAudioData = false
+            state = .idle
+        }
+        ttsAudioPlayer?.stop()
+        ttsAudioPlayer = nil
+        ttsPlayer.pause()
+        ttsPlayer.replaceCurrentItem(with: nil)
+        clearTTSPlayerObservers()
+        deactivateAudioSession()
+        activateVoiceControlState(for: .idle)
     }
 }
 
 // MARK: - AudioRecorderDelegate
 
-@available(iOS 16.0, *)
+@available(iOS 26.4, *)
 extension CarPlayAssistSession: AudioRecorderDelegate {
     func didStartRecording(with sampleRate: Double) {
         playRecordingIndicatorToneIfNeeded()
@@ -557,7 +594,7 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
     }
 }
 
-@available(iOS 16.0, *)
+@available(iOS 26.4, *)
 extension CarPlayAssistSession: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         Current.Log.info("CarPlay Assist AVAudioPlayer TTS finished, success: \(flag)")
@@ -568,7 +605,7 @@ extension CarPlayAssistSession: AVAudioPlayerDelegate {
             assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
             restartRecording()
         } else {
-            stop()
+            enterIdleState()
         }
     }
 
@@ -579,7 +616,7 @@ extension CarPlayAssistSession: AVAudioPlayerDelegate {
     }
 }
 
-@available(iOS 16.0, *)
+@available(iOS 26.4, *)
 private extension CarPlayAssistSession {
     static let recordingIndicatorToneData: Data = {
         let sampleRate = 24000
@@ -634,7 +671,7 @@ private extension CarPlayAssistSession {
 
 // MARK: - AssistServiceDelegate
 
-@available(iOS 16.0, *)
+@available(iOS 26.4, *)
 extension CarPlayAssistSession: AssistServiceDelegate {
     func didReceiveGreenLightForAudioInput() {
         stateQueue.sync { canSendAudioData = true }

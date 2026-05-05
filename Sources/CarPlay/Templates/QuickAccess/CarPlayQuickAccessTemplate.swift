@@ -38,7 +38,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var executingItemIds: Set<String> = []
     private var executingStartedAt: [String: Date] = [:]
     private var pendingExecutingClearWorkItems: [String: DispatchWorkItem] = [:]
-    private var activeAssistSession: CarPlayAssistSession?
+    private var activeAssistSession: AnyObject?
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
@@ -74,7 +74,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     func templateWillDisappear(template: CPTemplate) {
-        activeAssistSession?.templateWillDisappear(template: template)
+        if #available(iOS 26.4, *),
+           let activeAssistSession = activeAssistSession as? CarPlayAssistSession {
+            activeAssistSession.templateWillDisappear(template: template)
+        }
         if template == self.template {
             /* no-op */
         }
@@ -536,8 +539,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func presentAssistSession(magicItem: MagicItem, info: MagicItem.Info) {
+        guard #available(iOS 26.4, *) else { return }
+
         // Stop any existing session before starting a new one
-        activeAssistSession?.stop()
+        (activeAssistSession as? CarPlayAssistSession)?.stop()
         activeAssistSession = nil
 
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
