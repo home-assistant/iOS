@@ -327,53 +327,18 @@ struct DebugView: View {
 
     private var carPlayDebugSection: some View {
         Section {
-            Picker("Audio category", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistAudioCategory },
-                set: { Current.settingsStore.carPlayAssistAudioCategory = $0 }
-            )) {
-                ForEach(SettingsStore.CarPlayAssistAudioCategory.allCases, id: \.self) { category in
-                    Text(category.title).tag(category)
-                }
-            }
-
-            Picker("Audio mode", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistAudioMode },
-                set: { Current.settingsStore.carPlayAssistAudioMode = $0 }
-            )) {
-                ForEach(SettingsStore.CarPlayAssistAudioMode.allCases, id: \.self) { mode in
-                    Text(mode.title).tag(mode)
-                }
-            }
-
-            Toggle("Allow Bluetooth HFP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistAllowBluetoothHFP },
-                set: { Current.settingsStore.carPlayAssistAllowBluetoothHFP = $0 }
-            ))
-
-            Toggle("Allow Bluetooth A2DP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistAllowBluetoothA2DP },
-                set: { Current.settingsStore.carPlayAssistAllowBluetoothA2DP = $0 }
-            ))
-
-            Toggle("Play recording indicator tone", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone },
-                set: { Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone = $0 }
-            ))
-
-            Toggle("AudioRecorder manages audio session", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistRecorderManagesAudioSession },
-                set: { Current.settingsStore.carPlayAssistRecorderManagesAudioSession = $0 }
-            ))
-
-            Button("Reset CarPlay audio defaults") {
-                Current.settingsStore.resetCarPlayAssistDebugSettings()
+            NavigationLink {
+                CarPlayDebugSettingsView()
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .carFill),
+                    title: "CarPlay Debug Settings"
+                )
             }
         } header: {
             Text("CarPlay")
         } footer: {
-            Text(
-                "These values apply to the next CarPlay Assist session. Unsupported category and mode combinations fall back to system behavior and are logged."
-            )
+            Text("CarPlay audio and TTS debugging controls live here to avoid cluttering the main debug screen.")
         }
     }
 
@@ -633,6 +598,178 @@ struct DebugView: View {
                     Current.Log.error("Failed to reset push ID, error: \(error.localizedDescription)")
                 }
                 continuation.resume()
+            }
+        }
+    }
+}
+
+private struct CarPlayDebugSettingsView: View {
+    var body: some View {
+        List {
+            assistSessionSection
+            ttsPlaybackSection
+            ttsSessionSection
+            resetSection
+        }
+        .navigationTitle("CarPlay Debug")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var assistSessionSection: some View {
+        Section {
+            Picker("Audio category", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistAudioCategory },
+                set: { Current.settingsStore.carPlayAssistAudioCategory = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistAudioCategory.allCases, id: \.self) { category in
+                    Text(category.title).tag(category)
+                }
+            }
+
+            Picker("Audio mode", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistAudioMode },
+                set: { Current.settingsStore.carPlayAssistAudioMode = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistAudioMode.allCases, id: \.self) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+
+            Picker("Preferred sample rate", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistPreferredSampleRate },
+                set: { Current.settingsStore.carPlayAssistPreferredSampleRate = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistPreferredSampleRate.allCases, id: \.self) { sampleRate in
+                    Text(sampleRate.title).tag(sampleRate)
+                }
+            }
+
+            Toggle("Allow Bluetooth HFP", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistAllowBluetoothHFP },
+                set: { Current.settingsStore.carPlayAssistAllowBluetoothHFP = $0 }
+            ))
+
+            Toggle("Allow Bluetooth A2DP", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistAllowBluetoothA2DP },
+                set: { Current.settingsStore.carPlayAssistAllowBluetoothA2DP = $0 }
+            ))
+
+            Toggle("AudioRecorder manages audio session", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistRecorderManagesAudioSession },
+                set: { Current.settingsStore.carPlayAssistRecorderManagesAudioSession = $0 }
+            ))
+
+            Toggle("Play recording indicator tone", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone },
+                set: { Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone = $0 }
+            ))
+        } header: {
+            Text("Assist Session")
+        } footer: {
+            Text("These values apply when a new CarPlay Assist session starts.")
+        }
+    }
+
+    private var ttsPlaybackSection: some View {
+        Section {
+            Picker("Playback strategy", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSPlaybackStrategy },
+                set: { Current.settingsStore.carPlayAssistTTSPlaybackStrategy = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistTTSPlaybackStrategy.allCases, id: \.self) { strategy in
+                    Text(strategy.title).tag(strategy)
+                }
+            }
+
+            Picker("Playback delay", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSPlaybackDelay },
+                set: { Current.settingsStore.carPlayAssistTTSPlaybackDelay = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistPlaybackDelay.allCases, id: \.self) { delay in
+                    Text(delay.title).tag(delay)
+                }
+            }
+
+            Toggle("AVPlayer waits to minimize stalling", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling },
+                set: { Current.settingsStore.carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling = $0 }
+            ))
+        } header: {
+            Text("TTS Playback")
+        } footer: {
+            Text(
+                "Use the downloaded AVAudioPlayer strategy to determine whether the failure is tied to AVPlayer or remote URL playback."
+            )
+        }
+    }
+
+    private var ttsSessionSection: some View {
+        Section {
+            Toggle("Reconfigure before TTS", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSReconfigureAudioSession },
+                set: { Current.settingsStore.carPlayAssistTTSReconfigureAudioSession = $0 }
+            ))
+
+            Toggle("Deactivate before reconfigure", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSDeactivateBeforeReconfigure },
+                set: { Current.settingsStore.carPlayAssistTTSDeactivateBeforeReconfigure = $0 }
+            ))
+
+            Toggle("Activate audio session before play", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSActivateAudioSession },
+                set: { Current.settingsStore.carPlayAssistTTSActivateAudioSession = $0 }
+            ))
+
+            Picker("TTS category", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSCategory },
+                set: { Current.settingsStore.carPlayAssistTTSCategory = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistAudioCategory.allCases, id: \.self) { category in
+                    Text(category.title).tag(category)
+                }
+            }
+
+            Picker("TTS mode", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSMode },
+                set: { Current.settingsStore.carPlayAssistTTSMode = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistAudioMode.allCases, id: \.self) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+
+            Toggle("TTS allow Bluetooth HFP", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSAllowBluetoothHFP },
+                set: { Current.settingsStore.carPlayAssistTTSAllowBluetoothHFP = $0 }
+            ))
+
+            Toggle("TTS allow Bluetooth A2DP", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSAllowBluetoothA2DP },
+                set: { Current.settingsStore.carPlayAssistTTSAllowBluetoothA2DP = $0 }
+            ))
+
+            Toggle("TTS duck others", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSDuckOthers },
+                set: { Current.settingsStore.carPlayAssistTTSDuckOthers = $0 }
+            ))
+
+            Toggle("TTS interrupt spoken audio", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistTTSInterruptSpokenAudio },
+                set: { Current.settingsStore.carPlayAssistTTSInterruptSpokenAudio = $0 }
+            ))
+        } header: {
+            Text("TTS Audio Session")
+        } footer: {
+            Text(
+                "This section lets you force a dedicated TTS session reconfiguration, which is the most likely area if another app starting playback makes the response suddenly audible."
+            )
+        }
+    }
+
+    private var resetSection: some View {
+        Section {
+            Button("Reset CarPlay debug defaults", role: .destructive) {
+                Current.settingsStore.resetCarPlayAssistDebugSettings()
             }
         }
     }

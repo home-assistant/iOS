@@ -62,6 +62,56 @@ public class SettingsStore {
         }
     }
 
+    public enum CarPlayAssistPreferredSampleRate: Int, CaseIterable {
+        case rate16000 = 16000
+        case rate24000 = 24000
+        case rate44100 = 44100
+        case rate48000 = 48000
+
+        public var title: String {
+            "\(rawValue) Hz"
+        }
+
+        public var value: Double {
+            Double(rawValue)
+        }
+    }
+
+    public enum CarPlayAssistTTSPlaybackStrategy: String, CaseIterable {
+        case avPlayer
+        case downloadedAVAudioPlayer
+
+        public var title: String {
+            switch self {
+            case .avPlayer:
+                "AVPlayer"
+            case .downloadedAVAudioPlayer:
+                "Download then AVAudioPlayer"
+            }
+        }
+    }
+
+    public enum CarPlayAssistPlaybackDelay: Int, CaseIterable {
+        case none = 0
+        case ms100 = 100
+        case ms250 = 250
+        case ms500 = 500
+        case ms1000 = 1000
+
+        public var title: String {
+            switch self {
+            case .none:
+                "None"
+            default:
+                "\(rawValue) ms"
+            }
+        }
+
+        public var seconds: Double {
+            Double(rawValue) / 1000.0
+        }
+    }
+
     let keychain = AppConstants.Keychain
     let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
@@ -591,6 +641,16 @@ public class SettingsStore {
         }
     }
 
+    public var carPlayAssistPreferredSampleRate: CarPlayAssistPreferredSampleRate {
+        get {
+            let rawValue = prefs.integer(forKey: "carPlayAssistPreferredSampleRate")
+            return CarPlayAssistPreferredSampleRate(rawValue: rawValue) ?? .rate16000
+        }
+        set {
+            prefs.set(newValue.rawValue, forKey: "carPlayAssistPreferredSampleRate")
+        }
+    }
+
     public var carPlayAssistAllowBluetoothHFP: Bool {
         get {
             if prefs.object(forKey: "carPlayAssistAllowBluetoothHFP") == nil {
@@ -633,13 +693,162 @@ public class SettingsStore {
         }
     }
 
+    public var carPlayAssistTTSPlaybackStrategy: CarPlayAssistTTSPlaybackStrategy {
+        get {
+            guard let rawValue = prefs.string(forKey: "carPlayAssistTTSPlaybackStrategy"),
+                  let value = CarPlayAssistTTSPlaybackStrategy(rawValue: rawValue) else {
+                return .avPlayer
+            }
+            return value
+        }
+        set {
+            prefs.set(newValue.rawValue, forKey: "carPlayAssistTTSPlaybackStrategy")
+        }
+    }
+
+    public var carPlayAssistTTSReconfigureAudioSession: Bool {
+        get {
+            prefs.bool(forKey: "carPlayAssistTTSReconfigureAudioSession")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistTTSReconfigureAudioSession")
+        }
+    }
+
+    public var carPlayAssistTTSDeactivateBeforeReconfigure: Bool {
+        get {
+            prefs.bool(forKey: "carPlayAssistTTSDeactivateBeforeReconfigure")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistTTSDeactivateBeforeReconfigure")
+        }
+    }
+
+    public var carPlayAssistTTSActivateAudioSession: Bool {
+        get {
+            if prefs.object(forKey: "carPlayAssistTTSActivateAudioSession") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "carPlayAssistTTSActivateAudioSession")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistTTSActivateAudioSession")
+        }
+    }
+
+    public var carPlayAssistTTSCategory: CarPlayAssistAudioCategory {
+        get {
+            guard let rawValue = prefs.string(forKey: "carPlayAssistTTSCategory"),
+                  let value = CarPlayAssistAudioCategory(rawValue: rawValue) else {
+                return .playAndRecord
+            }
+            return value
+        }
+        set {
+            prefs.set(newValue.rawValue, forKey: "carPlayAssistTTSCategory")
+        }
+    }
+
+    public var carPlayAssistTTSMode: CarPlayAssistAudioMode {
+        get {
+            guard let rawValue = prefs.string(forKey: "carPlayAssistTTSMode"),
+                  let value = CarPlayAssistAudioMode(rawValue: rawValue) else {
+                return .voicePrompt
+            }
+            return value
+        }
+        set {
+            prefs.set(newValue.rawValue, forKey: "carPlayAssistTTSMode")
+        }
+    }
+
+    public var carPlayAssistTTSAllowBluetoothHFP: Bool {
+        get {
+            if prefs.object(forKey: "carPlayAssistTTSAllowBluetoothHFP") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "carPlayAssistTTSAllowBluetoothHFP")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistTTSAllowBluetoothHFP")
+        }
+    }
+
+    public var carPlayAssistTTSAllowBluetoothA2DP: Bool {
+        get {
+            if prefs.object(forKey: "carPlayAssistTTSAllowBluetoothA2DP") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "carPlayAssistTTSAllowBluetoothA2DP")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistTTSAllowBluetoothA2DP")
+        }
+    }
+
+    public var carPlayAssistTTSDuckOthers: Bool {
+        get {
+            prefs.bool(forKey: "carPlayAssistTTSDuckOthers")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistTTSDuckOthers")
+        }
+    }
+
+    public var carPlayAssistTTSInterruptSpokenAudio: Bool {
+        get {
+            if prefs.object(forKey: "carPlayAssistTTSInterruptSpokenAudio") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "carPlayAssistTTSInterruptSpokenAudio")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistTTSInterruptSpokenAudio")
+        }
+    }
+
+    public var carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling: Bool {
+        get {
+            if prefs.object(forKey: "carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling")
+        }
+    }
+
+    public var carPlayAssistTTSPlaybackDelay: CarPlayAssistPlaybackDelay {
+        get {
+            let rawValue = prefs.integer(forKey: "carPlayAssistTTSPlaybackDelay")
+            return CarPlayAssistPlaybackDelay(rawValue: rawValue) ?? .none
+        }
+        set {
+            prefs.set(newValue.rawValue, forKey: "carPlayAssistTTSPlaybackDelay")
+        }
+    }
+
     public func resetCarPlayAssistDebugSettings() {
         carPlayAssistAudioCategory = .playAndRecord
         carPlayAssistAudioMode = .voiceChat
+        carPlayAssistPreferredSampleRate = .rate16000
         carPlayAssistAllowBluetoothHFP = true
         carPlayAssistAllowBluetoothA2DP = true
         carPlayAssistPlayRecordingIndicatorTone = false
         carPlayAssistRecorderManagesAudioSession = false
+        carPlayAssistTTSPlaybackStrategy = .avPlayer
+        carPlayAssistTTSReconfigureAudioSession = false
+        carPlayAssistTTSDeactivateBeforeReconfigure = false
+        carPlayAssistTTSActivateAudioSession = true
+        carPlayAssistTTSCategory = .playAndRecord
+        carPlayAssistTTSMode = .voicePrompt
+        carPlayAssistTTSAllowBluetoothHFP = true
+        carPlayAssistTTSAllowBluetoothA2DP = true
+        carPlayAssistTTSDuckOthers = false
+        carPlayAssistTTSInterruptSpokenAudio = true
+        carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling = true
+        carPlayAssistTTSPlaybackDelay = .none
     }
 
     // MARK: - Private helpers

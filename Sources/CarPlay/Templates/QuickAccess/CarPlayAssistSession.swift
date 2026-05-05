@@ -34,7 +34,10 @@ final class CarPlayAssistSession: NSObject {
     private var assistService: AssistServiceProtocol
     private var audioRecorder: AudioRecorderProtocol
     private var recordingIndicatorPlayer: AVAudioPlayer?
+    private var ttsAudioPlayer: AVAudioPlayer?
     private let ttsPlayer = AVPlayer()
+    private var ttsPlayerItemStatusObservation: NSKeyValueObservation?
+    private var ttsPlayerTimeControlObservation: NSKeyValueObservation?
 
     /// Serial queue protecting all mutable session state (`canSendAudioData`, `state`, `isStopped`).
     /// Callbacks from AVCaptureSession, HAKit, and NotificationCenter may arrive on arbitrary threads.
@@ -125,8 +128,11 @@ final class CarPlayAssistSession: NSObject {
         guard !alreadyStopped else { return }
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
+        ttsAudioPlayer?.stop()
+        ttsAudioPlayer = nil
         ttsPlayer.pause()
         ttsPlayer.replaceCurrentItem(with: nil)
+        clearTTSPlayerObservers()
         deactivateAudioSession()
         NotificationCenter.default.removeObserver(self)
         if dismissTemplate {
@@ -139,25 +145,73 @@ final class CarPlayAssistSession: NSObject {
 
     private func configureAudioSessionForAssist() {
         do {
-            var options: AVAudioSession.CategoryOptions = []
-            if Current.settingsStore.carPlayAssistAllowBluetoothHFP {
-                options.insert(.allowBluetoothHFP)
-            }
-            if Current.settingsStore.carPlayAssistAllowBluetoothA2DP {
-                options.insert(.allowBluetoothA2DP)
-            }
-
             try audioSession.setCategory(
                 Current.settingsStore.carPlayAssistAudioCategory.avCategory,
                 mode: Current.settingsStore.carPlayAssistAudioMode.avMode,
-                options: options
+                options: makeAudioSessionOptions(
+                    allowBluetoothHFP: Current.settingsStore.carPlayAssistAllowBluetoothHFP,
+                    allowBluetoothA2DP: Current.settingsStore.carPlayAssistAllowBluetoothA2DP,
+                    duckOthers: false,
+                    interruptSpokenAudio: false
+                )
             )
-            try audioSession.setPreferredSampleRate(16000.0)
+            try audioSession.setPreferredSampleRate(Current.settingsStore.carPlayAssistPreferredSampleRate.value)
             try audioSession.setActive(true)
             logCurrentAudioRoute(context: "activated")
         } catch {
             Current.Log.error("CarPlay Assist failed to configure audio session: \(error.localizedDescription)")
         }
+    }
+
+    private func configureAudioSessionForTTSIfNeeded() {
+        guard Current.settingsStore.carPlayAssistTTSReconfigureAudioSession else { return }
+
+        do {
+            if Current.settingsStore.carPlayAssistTTSDeactivateBeforeReconfigure {
+                try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+            }
+
+            try audioSession.setCategory(
+                Current.settingsStore.carPlayAssistTTSCategory.avCategory,
+                mode: Current.settingsStore.carPlayAssistTTSMode.avMode,
+                options: makeAudioSessionOptions(
+                    allowBluetoothHFP: Current.settingsStore.carPlayAssistTTSAllowBluetoothHFP,
+                    allowBluetoothA2DP: Current.settingsStore.carPlayAssistTTSAllowBluetoothA2DP,
+                    duckOthers: Current.settingsStore.carPlayAssistTTSDuckOthers,
+                    interruptSpokenAudio: Current.settingsStore.carPlayAssistTTSInterruptSpokenAudio
+                )
+            )
+
+            if Current.settingsStore.carPlayAssistTTSActivateAudioSession {
+                try audioSession.setActive(true)
+            }
+
+            logCurrentAudioRoute(context: "tts configured")
+        } catch {
+            Current.Log.error("CarPlay Assist failed to configure TTS audio session: \(error.localizedDescription)")
+        }
+    }
+
+    private func makeAudioSessionOptions(
+        allowBluetoothHFP: Bool,
+        allowBluetoothA2DP: Bool,
+        duckOthers: Bool,
+        interruptSpokenAudio: Bool
+    ) -> AVAudioSession.CategoryOptions {
+        var options: AVAudioSession.CategoryOptions = []
+        if allowBluetoothHFP {
+            options.insert(.allowBluetoothHFP)
+        }
+        if allowBluetoothA2DP {
+            options.insert(.allowBluetoothA2DP)
+        }
+        if duckOthers {
+            options.insert(.duckOthers)
+        }
+        if interruptSpokenAudio {
+            options.insert(.interruptSpokenAudioAndMixWithOthers)
+        }
+        return options
     }
 
     private func deactivateAudioSession() {
@@ -261,10 +315,44 @@ final class CarPlayAssistSession: NSObject {
 
     /// Plays TTS audio using the already active conversational audio session to preserve the car route.
     private func playTTS(url: URL) {
+        let playbackDelay = Current.settingsStore.carPlayAssistTTSPlaybackDelay.seconds
+        if playbackDelay > 0 {
+            Current.Log.info("CarPlay Assist delaying TTS playback by \(playbackDelay)s")
+            DispatchQueue.main.asyncAfter(deadline: .now() + playbackDelay) { [weak self] in
+                self?.startTTSPlayback(url: url)
+            }
+        } else {
+            startTTSPlayback(url: url)
+        }
+    }
+
+    private func startTTSPlayback(url: URL) {
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
+
+        configureAudioSessionForTTSIfNeeded()
+        logCurrentAudioRoute(context: "before tts playback")
+
+        switch Current.settingsStore.carPlayAssistTTSPlaybackStrategy {
+        case .avPlayer:
+            playTTSWithAVPlayer(url: url)
+        case .downloadedAVAudioPlayer:
+            playTTSWithDownloadedAudioPlayer(url: url)
+        }
+    }
+
+    private func playTTSWithAVPlayer(url: URL) {
         NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemPlaybackStalled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemFailedToPlayToEndTime, object: nil)
+        clearTTSPlayerObservers()
 
         let playerItem = AVPlayerItem(url: url)
+        ttsPlayer.automaticallyWaitsToMinimizeStalling =
+            Current.settingsStore.carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling
         ttsPlayer.replaceCurrentItem(with: playerItem)
+        observeTTSPlayer(item: playerItem)
+        Current.Log.info("CarPlay Assist starting AVPlayer TTS for URL: \(url.absoluteString)")
         ttsPlayer.play()
 
         NotificationCenter.default.addObserver(
@@ -273,6 +361,111 @@ final class CarPlayAssistSession: NSObject {
             name: .AVPlayerItemDidPlayToEndTime,
             object: playerItem
         )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ttsPlaybackStalled(_:)),
+            name: .AVPlayerItemPlaybackStalled,
+            object: playerItem
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ttsFailedToPlayToEnd(_:)),
+            name: .AVPlayerItemFailedToPlayToEndTime,
+            object: playerItem
+        )
+    }
+
+    private func playTTSWithDownloadedAudioPlayer(url: URL) {
+        Current.Log.info("CarPlay Assist downloading TTS audio for AVAudioPlayer: \(url.absoluteString)")
+
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let self else { return }
+
+            if let error {
+                Current.Log.error("CarPlay Assist failed to download TTS audio: \(error.localizedDescription)")
+                stop()
+                return
+            }
+
+            guard let data else {
+                Current.Log.error("CarPlay Assist downloaded empty TTS audio data")
+                stop()
+                return
+            }
+
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                let stopped = stateQueue.sync { self.isStopped }
+                guard !stopped else { return }
+
+                do {
+                    ttsAudioPlayer = try AVAudioPlayer(data: data)
+                    ttsAudioPlayer?.delegate = self
+                    ttsAudioPlayer?.prepareToPlay()
+                    if ttsAudioPlayer?.play() == true {
+                        Current.Log.info("CarPlay Assist started downloaded AVAudioPlayer TTS playback")
+                    } else {
+                        Current.Log.error("CarPlay Assist AVAudioPlayer failed to start TTS playback")
+                        stop()
+                    }
+                } catch {
+                    Current.Log
+                        .error("CarPlay Assist failed to create AVAudioPlayer for TTS: \(error.localizedDescription)")
+                    stop()
+                }
+            }
+        }.resume()
+    }
+
+    private func observeTTSPlayer(item: AVPlayerItem) {
+        ttsPlayerItemStatusObservation = item.observe(\.status, options: [.initial, .new]) { item, _ in
+            switch item.status {
+            case .unknown:
+                Current.Log.info("CarPlay Assist TTS player item status: unknown")
+            case .readyToPlay:
+                Current.Log.info("CarPlay Assist TTS player item status: readyToPlay")
+            case .failed:
+                Current.Log.error(
+                    "CarPlay Assist TTS player item failed: \(item.error?.localizedDescription ?? "unknown error")"
+                )
+            @unknown default:
+                Current.Log.info("CarPlay Assist TTS player item status: unknown future case")
+            }
+        }
+
+        ttsPlayerTimeControlObservation = ttsPlayer.observe(\.timeControlStatus, options: [
+            .initial,
+            .new,
+        ]) { player, _ in
+            let description: String
+            switch player.timeControlStatus {
+            case .paused:
+                description = "paused"
+            case .waitingToPlayAtSpecifiedRate:
+                description = "waiting"
+            case .playing:
+                description = "playing"
+            @unknown default:
+                description = "unknown"
+            }
+            Current.Log.info("CarPlay Assist TTS player timeControlStatus: \(description)")
+        }
+    }
+
+    private func clearTTSPlayerObservers() {
+        ttsPlayerItemStatusObservation = nil
+        ttsPlayerTimeControlObservation = nil
+    }
+
+    @objc private func ttsPlaybackStalled(_ notification: Notification) {
+        Current.Log.error("CarPlay Assist TTS playback stalled")
+    }
+
+    @objc private func ttsFailedToPlayToEnd(_ notification: Notification) {
+        let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error
+        Current.Log.error("CarPlay Assist TTS failed to play to end: \(error?.localizedDescription ?? "unknown error")")
     }
 
     @objc private func ttsDidFinishPlaying(_ notification: Notification) {
@@ -350,6 +543,28 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
         }
         guard shouldHandle else { return }
         Current.Log.error("CarPlay Assist recording failed: \(error.localizedDescription)")
+        stop()
+    }
+}
+
+@available(iOS 16.0, *)
+extension CarPlayAssistSession: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        Current.Log.info("CarPlay Assist AVAudioPlayer TTS finished, success: \(flag)")
+        let stopped = stateQueue.sync { isStopped }
+        guard !stopped else { return }
+
+        if assistService.shouldStartListeningAgainAfterPlaybackEnd {
+            assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
+            restartRecording()
+        } else {
+            stop()
+        }
+    }
+
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        Current.Log
+            .error("CarPlay Assist AVAudioPlayer decode error: \(error?.localizedDescription ?? "unknown error")")
         stop()
     }
 }
