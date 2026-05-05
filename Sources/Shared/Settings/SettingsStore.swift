@@ -677,7 +677,10 @@ public class SettingsStore {
 
     public var carPlayAssistPlayRecordingIndicatorTone: Bool {
         get {
-            prefs.bool(forKey: "carPlayAssistPlayRecordingIndicatorTone")
+            if prefs.object(forKey: "carPlayAssistPlayRecordingIndicatorTone") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "carPlayAssistPlayRecordingIndicatorTone")
         }
         set {
             prefs.set(newValue, forKey: "carPlayAssistPlayRecordingIndicatorTone")
@@ -835,7 +838,7 @@ public class SettingsStore {
         carPlayAssistPreferredSampleRate = .rate16000
         carPlayAssistAllowBluetoothHFP = true
         carPlayAssistAllowBluetoothA2DP = true
-        carPlayAssistPlayRecordingIndicatorTone = false
+        carPlayAssistPlayRecordingIndicatorTone = true
         carPlayAssistRecorderManagesAudioSession = false
         carPlayAssistTTSPlaybackStrategy = .avPlayer
         carPlayAssistTTSReconfigureAudioSession = false

@@ -301,7 +301,17 @@ final class CarPlayAssistSession: NSObject {
         guard Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone else { return }
 
         do {
-            recordingIndicatorPlayer = try AVAudioPlayer(data: Self.recordingIndicatorToneData)
+            guard let toneURL = Bundle.main.url(
+                forResource: "center_button_press",
+                withExtension: "flac",
+                subdirectory: "Sounds/Assist"
+            ) else {
+                Current.Log.error("CarPlay Assist could not find center_button_press.flac in the app bundle")
+                AudioServicesPlaySystemSound(1113)
+                return
+            }
+
+            recordingIndicatorPlayer = try AVAudioPlayer(contentsOf: toneURL)
             recordingIndicatorPlayer?.volume = 0.7
             recordingIndicatorPlayer?.prepareToPlay()
             recordingIndicatorPlayer?.play()
