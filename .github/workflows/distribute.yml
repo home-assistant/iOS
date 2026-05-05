@@ -23,6 +23,9 @@ jobs:
         kind: [mac, ios]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: ruby/setup-ruby@c4e5b1316158f92e3d49443a9d58b31d25ac0f8f  # v1.306.0
+        with:
+          ruby-version: .ruby-version
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
 
