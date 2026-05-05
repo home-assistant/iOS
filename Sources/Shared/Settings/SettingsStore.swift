@@ -1,3 +1,4 @@
+import AVFoundation
 import CoreLocation
 import CoreMotion
 import Foundation
@@ -6,6 +7,61 @@ import UIKit
 import Version
 
 public class SettingsStore {
+    public enum CarPlayAssistAudioCategory: String, CaseIterable {
+        case playAndRecord
+        case playback
+        case record
+
+        public var avCategory: AVAudioSession.Category {
+            switch self {
+            case .playAndRecord:
+                .playAndRecord
+            case .playback:
+                .playback
+            case .record:
+                .record
+            }
+        }
+
+        public var title: String {
+            switch self {
+            case .playAndRecord:
+                "playAndRecord"
+            case .playback:
+                "playback"
+            case .record:
+                "record"
+            }
+        }
+    }
+
+    public enum CarPlayAssistAudioMode: String, CaseIterable {
+        case `default`
+        case voiceChat
+        case voicePrompt
+        case spokenAudio
+        case measurement
+
+        public var avMode: AVAudioSession.Mode {
+            switch self {
+            case .default:
+                .default
+            case .voiceChat:
+                .voiceChat
+            case .voicePrompt:
+                .voicePrompt
+            case .spokenAudio:
+                .spokenAudio
+            case .measurement:
+                .measurement
+            }
+        }
+
+        public var title: String {
+            rawValue
+        }
+    }
+
     let keychain = AppConstants.Keychain
     let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
@@ -507,6 +563,83 @@ public class SettingsStore {
         set {
             prefs.set(newValue, forKey: "toastsHandledByApp")
         }
+    }
+
+    public var carPlayAssistAudioCategory: CarPlayAssistAudioCategory {
+        get {
+            guard let rawValue = prefs.string(forKey: "carPlayAssistAudioCategory"),
+                  let value = CarPlayAssistAudioCategory(rawValue: rawValue) else {
+                return .playAndRecord
+            }
+            return value
+        }
+        set {
+            prefs.set(newValue.rawValue, forKey: "carPlayAssistAudioCategory")
+        }
+    }
+
+    public var carPlayAssistAudioMode: CarPlayAssistAudioMode {
+        get {
+            guard let rawValue = prefs.string(forKey: "carPlayAssistAudioMode"),
+                  let value = CarPlayAssistAudioMode(rawValue: rawValue) else {
+                return .voiceChat
+            }
+            return value
+        }
+        set {
+            prefs.set(newValue.rawValue, forKey: "carPlayAssistAudioMode")
+        }
+    }
+
+    public var carPlayAssistAllowBluetoothHFP: Bool {
+        get {
+            if prefs.object(forKey: "carPlayAssistAllowBluetoothHFP") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "carPlayAssistAllowBluetoothHFP")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistAllowBluetoothHFP")
+        }
+    }
+
+    public var carPlayAssistAllowBluetoothA2DP: Bool {
+        get {
+            if prefs.object(forKey: "carPlayAssistAllowBluetoothA2DP") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "carPlayAssistAllowBluetoothA2DP")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistAllowBluetoothA2DP")
+        }
+    }
+
+    public var carPlayAssistPlayRecordingIndicatorTone: Bool {
+        get {
+            prefs.bool(forKey: "carPlayAssistPlayRecordingIndicatorTone")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistPlayRecordingIndicatorTone")
+        }
+    }
+
+    public var carPlayAssistRecorderManagesAudioSession: Bool {
+        get {
+            prefs.bool(forKey: "carPlayAssistRecorderManagesAudioSession")
+        }
+        set {
+            prefs.set(newValue, forKey: "carPlayAssistRecorderManagesAudioSession")
+        }
+    }
+
+    public func resetCarPlayAssistDebugSettings() {
+        carPlayAssistAudioCategory = .playAndRecord
+        carPlayAssistAudioMode = .voiceChat
+        carPlayAssistAllowBluetoothHFP = true
+        carPlayAssistAllowBluetoothA2DP = true
+        carPlayAssistPlayRecordingIndicatorTone = false
+        carPlayAssistRecorderManagesAudioSession = false
     }
 
     // MARK: - Private helpers

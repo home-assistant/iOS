@@ -160,6 +160,8 @@ struct DebugView: View {
             }
             #endif
 
+            carPlayDebugSection
+
             criticalSection
 
             if tapsOnCasitaLogo < 10 {
@@ -320,6 +322,58 @@ struct DebugView: View {
 
         } footer: {
             Text(verbatim: L10n.Settings.Debugging.CriticalSection.footer)
+        }
+    }
+
+    private var carPlayDebugSection: some View {
+        Section {
+            Picker("Audio category", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistAudioCategory },
+                set: { Current.settingsStore.carPlayAssistAudioCategory = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistAudioCategory.allCases, id: \.self) { category in
+                    Text(category.title).tag(category)
+                }
+            }
+
+            Picker("Audio mode", selection: Binding(
+                get: { Current.settingsStore.carPlayAssistAudioMode },
+                set: { Current.settingsStore.carPlayAssistAudioMode = $0 }
+            )) {
+                ForEach(SettingsStore.CarPlayAssistAudioMode.allCases, id: \.self) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+
+            Toggle("Allow Bluetooth HFP", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistAllowBluetoothHFP },
+                set: { Current.settingsStore.carPlayAssistAllowBluetoothHFP = $0 }
+            ))
+
+            Toggle("Allow Bluetooth A2DP", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistAllowBluetoothA2DP },
+                set: { Current.settingsStore.carPlayAssistAllowBluetoothA2DP = $0 }
+            ))
+
+            Toggle("Play recording indicator tone", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone },
+                set: { Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone = $0 }
+            ))
+
+            Toggle("AudioRecorder manages audio session", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistRecorderManagesAudioSession },
+                set: { Current.settingsStore.carPlayAssistRecorderManagesAudioSession = $0 }
+            ))
+
+            Button("Reset CarPlay audio defaults") {
+                Current.settingsStore.resetCarPlayAssistDebugSettings()
+            }
+        } header: {
+            Text("CarPlay")
+        } footer: {
+            Text(
+                "These values apply to the next CarPlay Assist session. Unsupported category and mode combinations fall back to system behavior and are logged."
+            )
         }
     }
 

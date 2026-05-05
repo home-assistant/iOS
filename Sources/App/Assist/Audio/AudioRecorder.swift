@@ -5,6 +5,7 @@ import Shared
 protocol AudioRecorderProtocol {
     var delegate: AudioRecorderDelegate? { get set }
     var audioSampleRate: Double? { get }
+    var managesAudioSession: Bool { get set }
     func startRecording()
     func stopRecording()
 }
@@ -23,6 +24,7 @@ enum AudioRecorderError: Error {
 
 final class AudioRecorder: NSObject, AudioRecorderProtocol {
     weak var delegate: AudioRecorderDelegate?
+    var managesAudioSession = true
 
     private(set) var audioSampleRate: Double?
     private var captureSession: AVCaptureSession?
@@ -63,11 +65,13 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
         }
 
         do {
-            try audioSession.setActive(false)
-            try audioSession.setCategory(.record, mode: .default)
-            try audioSession.setPreferredOutputNumberOfChannels(1)
-            try audioSession.setPreferredSampleRate(16000.0)
-            try audioSession.setActive(true)
+            if managesAudioSession {
+                try audioSession.setActive(false)
+                try audioSession.setCategory(.record, mode: .default)
+                try audioSession.setPreferredOutputNumberOfChannels(1)
+                try audioSession.setPreferredSampleRate(16000.0)
+                try audioSession.setActive(true)
+            }
             let audioInput = try AVCaptureDeviceInput(device: captureDevice)
 
             captureSession = AVCaptureSession()
