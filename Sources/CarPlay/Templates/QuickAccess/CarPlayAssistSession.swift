@@ -27,6 +27,7 @@ final class CarPlayAssistSession: NSObject {
         case recording
         case processing
         case responding
+        case error
     }
 
     weak var interfaceController: CPInterfaceController?
@@ -53,18 +54,19 @@ final class CarPlayAssistSession: NSObject {
     private let pipelineName: String
 
     private lazy var template: CPVoiceControlTemplate = {
+        let retryButton = CPButton(
+            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary)
+        ) { [weak self] _ in
+            self?.restartRecording()
+        }
+
         let idleState = CPVoiceControlState(
             identifier: VoiceControlStateID.idle.rawValue,
             titleVariants: [L10n.Assist.Carplay.TapToRecord.title],
             image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary),
             repeats: false
         )
-        let idleButton = CPButton(
-            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary)
-        ) { [weak self] _ in
-            self?.restartRecording()
-        }
-        idleState.actionButtons = [idleButton]
+        idleState.actionButtons = [retryButton]
 
         let recordingState = CPVoiceControlState(
             identifier: VoiceControlStateID.recording.rawValue,
@@ -84,7 +86,17 @@ final class CarPlayAssistSession: NSObject {
             image: MaterialDesignIcons.volumeHighIcon.carPlayIcon(color: .haPrimary),
             repeats: true
         )
-        return CPVoiceControlTemplate(voiceControlStates: [recordingState, processingState, respondingState, idleState])
+        let errorState = CPVoiceControlState(
+            identifier: VoiceControlStateID.error.rawValue,
+            titleVariants: [L10n.errorLabel],
+            image: MaterialDesignIcons.alertCircleIcon.carPlayIcon(color: .systemRed),
+            repeats: false
+        )
+        errorState.actionButtons = [retryButton]
+
+        return CPVoiceControlTemplate(
+            voiceControlStates: [recordingState, processingState, respondingState, idleState, errorState]
+        )
     }()
 
     init(
@@ -410,13 +422,13 @@ final class CarPlayAssistSession: NSObject {
 
             if let error {
                 Current.Log.error("CarPlay Assist failed to download TTS audio: \(error.localizedDescription)")
-                stop()
+                enterErrorState(message: error.localizedDescription)
                 return
             }
 
             guard let data else {
                 Current.Log.error("CarPlay Assist downloaded empty TTS audio data")
-                stop()
+                enterErrorState(message: "Downloaded empty TTS audio data")
                 return
             }
 
@@ -433,12 +445,12 @@ final class CarPlayAssistSession: NSObject {
                         Current.Log.info("CarPlay Assist started downloaded AVAudioPlayer TTS playback")
                     } else {
                         Current.Log.error("CarPlay Assist AVAudioPlayer failed to start TTS playback")
-                        stop()
+                        enterErrorState(message: "AVAudioPlayer failed to start TTS playback")
                     }
                 } catch {
                     Current.Log
                         .error("CarPlay Assist failed to create AVAudioPlayer for TTS: \(error.localizedDescription)")
-                    stop()
+                    enterErrorState(message: error.localizedDescription)
                 }
             }
         }.resume()
@@ -486,11 +498,13 @@ final class CarPlayAssistSession: NSObject {
 
     @objc private func ttsPlaybackStalled(_ notification: Notification) {
         Current.Log.error("CarPlay Assist TTS playback stalled")
+        enterErrorState(message: "TTS playback stalled")
     }
 
     @objc private func ttsFailedToPlayToEnd(_ notification: Notification) {
         let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error
         Current.Log.error("CarPlay Assist TTS failed to play to end: \(error?.localizedDescription ?? "unknown error")")
+        enterErrorState(message: error?.localizedDescription ?? "TTS failed to play to end")
     }
 
     @objc private func ttsDidFinishPlaying(_ notification: Notification) {
@@ -518,7 +532,7 @@ final class CarPlayAssistSession: NSObject {
         case .responding:
             identifier = VoiceControlStateID.responding.rawValue
         case .error:
-            return
+            identifier = VoiceControlStateID.error.rawValue
         }
         if Thread.isMainThread {
             template.activateVoiceControlState(withIdentifier: identifier)
@@ -557,6 +571,25 @@ final class CarPlayAssistSession: NSObject {
         deactivateAudioSession()
         activateVoiceControlState(for: .idle)
     }
+
+    private func enterErrorState(message: String) {
+        let shouldHandle = stateQueue.sync { () -> Bool in
+            guard !isStopped else { return false }
+            canSendAudioData = false
+            state = .error(message)
+            return true
+        }
+        guard shouldHandle else { return }
+
+        ttsAudioPlayer?.stop()
+        ttsAudioPlayer = nil
+        ttsPlayer.pause()
+        ttsPlayer.replaceCurrentItem(with: nil)
+        clearTTSPlayerObservers()
+        deactivateAudioSession()
+        Current.Log.error("CarPlay Assist entered error state: \(message)")
+        activateVoiceControlState(for: .error(message))
+    }
 }
 
 // MARK: - AudioRecorderDelegate
@@ -590,7 +623,7 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
         }
         guard shouldHandle else { return }
         Current.Log.error("CarPlay Assist recording failed: \(error.localizedDescription)")
-        stop()
+        enterErrorState(message: error.localizedDescription)
     }
 }
 
@@ -612,7 +645,7 @@ extension CarPlayAssistSession: AVAudioPlayerDelegate {
     func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         Current.Log
             .error("CarPlay Assist AVAudioPlayer decode error: \(error?.localizedDescription ?? "unknown error")")
-        stop()
+        enterErrorState(message: error?.localizedDescription ?? "AVAudioPlayer decode error")
     }
 }
 
@@ -717,7 +750,6 @@ extension CarPlayAssistSession: AssistServiceDelegate {
         let stopped = stateQueue.sync { isStopped }
         guard !stopped else { return }
         Current.Log.error("CarPlay Assist error [\(code)]: \(message)")
-        stateQueue.sync { state = .error(message) }
-        stop()
+        enterErrorState(message: message)
     }
 }
