@@ -618,50 +618,96 @@ private struct CarPlayDebugSettingsView: View {
     private var assistSessionSection: some View {
         Section {
             Picker("Audio category", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistAudioCategory },
-                set: { Current.settingsStore.carPlayAssistAudioCategory = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.audioCategory },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.audioCategory = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             )) {
-                ForEach(SettingsStore.CarPlayAssistAudioCategory.allCases, id: \.self) { category in
+                ForEach(CarPlayAssistAudioCategory.allCases, id: \.self) { category in
                     Text(category.title).tag(category)
                 }
             }
 
             Picker("Audio mode", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistAudioMode },
-                set: { Current.settingsStore.carPlayAssistAudioMode = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.audioMode },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.audioMode = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             )) {
-                ForEach(SettingsStore.CarPlayAssistAudioMode.allCases, id: \.self) { mode in
+                ForEach(CarPlayAssistAudioMode.allCases, id: \.self) { mode in
                     Text(mode.title).tag(mode)
                 }
             }
 
             Picker("Preferred sample rate", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistPreferredSampleRate },
-                set: { Current.settingsStore.carPlayAssistPreferredSampleRate = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.preferredSampleRate },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.preferredSampleRate = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             )) {
-                ForEach(SettingsStore.CarPlayAssistPreferredSampleRate.allCases, id: \.self) { sampleRate in
+                ForEach(CarPlayAssistPreferredSampleRate.allCases, id: \.self) { sampleRate in
                     Text(sampleRate.title).tag(sampleRate)
                 }
             }
 
             Toggle("Allow Bluetooth HFP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistAllowBluetoothHFP },
-                set: { Current.settingsStore.carPlayAssistAllowBluetoothHFP = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.allowBluetoothHFP },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.allowBluetoothHFP = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Toggle("Allow Bluetooth A2DP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistAllowBluetoothA2DP },
-                set: { Current.settingsStore.carPlayAssistAllowBluetoothA2DP = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.allowBluetoothA2DP },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.allowBluetoothA2DP = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
+            ))
+
+            Toggle("Duck others", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistDebugSettings.duckOthers },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.duckOthers = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
+            ))
+
+            Toggle("Interrupt spoken audio", isOn: Binding(
+                get: { Current.settingsStore.carPlayAssistDebugSettings.interruptSpokenAudio },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.interruptSpokenAudio = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Toggle("AudioRecorder manages audio session", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistRecorderManagesAudioSession },
-                set: { Current.settingsStore.carPlayAssistRecorderManagesAudioSession = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.recorderManagesAudioSession },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.recorderManagesAudioSession = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Toggle("Play recording indicator tone", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone },
-                set: { Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.playRecordingIndicatorTone },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.playRecordingIndicatorTone = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
         } header: {
             Text("Assist Session")
@@ -673,26 +719,38 @@ private struct CarPlayDebugSettingsView: View {
     private var ttsPlaybackSection: some View {
         Section {
             Picker("Playback strategy", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSPlaybackStrategy },
-                set: { Current.settingsStore.carPlayAssistTTSPlaybackStrategy = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackStrategy },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsPlaybackStrategy = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             )) {
-                ForEach(SettingsStore.CarPlayAssistTTSPlaybackStrategy.allCases, id: \.self) { strategy in
+                ForEach(CarPlayAssistTTSPlaybackStrategy.allCases, id: \.self) { strategy in
                     Text(strategy.title).tag(strategy)
                 }
             }
 
             Picker("Playback delay", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSPlaybackDelay },
-                set: { Current.settingsStore.carPlayAssistTTSPlaybackDelay = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackDelay },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsPlaybackDelay = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             )) {
-                ForEach(SettingsStore.CarPlayAssistPlaybackDelay.allCases, id: \.self) { delay in
+                ForEach(CarPlayAssistPlaybackDelay.allCases, id: \.self) { delay in
                     Text(delay.title).tag(delay)
                 }
             }
 
             Toggle("AVPlayer waits to minimize stalling", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling },
-                set: { Current.settingsStore.carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.avPlayerAutomaticallyWaitsToMinimizeStalling },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.avPlayerAutomaticallyWaitsToMinimizeStalling = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
         } header: {
             Text("TTS Playback")
@@ -706,56 +764,92 @@ private struct CarPlayDebugSettingsView: View {
     private var ttsSessionSection: some View {
         Section {
             Toggle("Reconfigure before TTS", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSReconfigureAudioSession },
-                set: { Current.settingsStore.carPlayAssistTTSReconfigureAudioSession = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsReconfigureAudioSession },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsReconfigureAudioSession = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Toggle("Deactivate before reconfigure", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSDeactivateBeforeReconfigure },
-                set: { Current.settingsStore.carPlayAssistTTSDeactivateBeforeReconfigure = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsDeactivateBeforeReconfigure },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsDeactivateBeforeReconfigure = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Toggle("Activate audio session before play", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSActivateAudioSession },
-                set: { Current.settingsStore.carPlayAssistTTSActivateAudioSession = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsActivateAudioSession },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsActivateAudioSession = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Picker("TTS category", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSCategory },
-                set: { Current.settingsStore.carPlayAssistTTSCategory = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsCategory },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsCategory = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             )) {
-                ForEach(SettingsStore.CarPlayAssistAudioCategory.allCases, id: \.self) { category in
+                ForEach(CarPlayAssistAudioCategory.allCases, id: \.self) { category in
                     Text(category.title).tag(category)
                 }
             }
 
             Picker("TTS mode", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSMode },
-                set: { Current.settingsStore.carPlayAssistTTSMode = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsMode },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsMode = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             )) {
-                ForEach(SettingsStore.CarPlayAssistAudioMode.allCases, id: \.self) { mode in
+                ForEach(CarPlayAssistAudioMode.allCases, id: \.self) { mode in
                     Text(mode.title).tag(mode)
                 }
             }
 
             Toggle("TTS allow Bluetooth HFP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSAllowBluetoothHFP },
-                set: { Current.settingsStore.carPlayAssistTTSAllowBluetoothHFP = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsAllowBluetoothHFP },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsAllowBluetoothHFP = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Toggle("TTS allow Bluetooth A2DP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSAllowBluetoothA2DP },
-                set: { Current.settingsStore.carPlayAssistTTSAllowBluetoothA2DP = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsAllowBluetoothA2DP },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsAllowBluetoothA2DP = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Toggle("TTS duck others", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSDuckOthers },
-                set: { Current.settingsStore.carPlayAssistTTSDuckOthers = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsDuckOthers },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsDuckOthers = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
 
             Toggle("TTS interrupt spoken audio", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistTTSInterruptSpokenAudio },
-                set: { Current.settingsStore.carPlayAssistTTSInterruptSpokenAudio = $0 }
+                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsInterruptSpokenAudio },
+                set: {
+                    var settings = Current.settingsStore.carPlayAssistDebugSettings
+                    settings.ttsInterruptSpokenAudio = $0
+                    Current.settingsStore.carPlayAssistDebugSettings = settings
+                }
             ))
         } header: {
             Text("TTS Audio Session")

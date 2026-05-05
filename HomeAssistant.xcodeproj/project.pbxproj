@@ -1006,6 +1006,8 @@
 		42BB53302CAA09F300680ED8 /* WatchConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */; };
 		42BB53322CAA0B3C00680ED8 /* WatchConfigV1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */; };
 		42BC581A2FAA2C8F0080EE09 /* center_button_press.flac in Resources */ = {isa = PBXBuildFile; fileRef = 42BC58192FAA2C8F0080EE09 /* center_button_press.flac */; };
+		42BC581C2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC581B2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift */; };
+		42BC581D2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC581B2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift */; };
 		42BF7F302DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
 		42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
 		42BF8DB12EC4E16900DCB7E7 /* AssistSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */; };
@@ -2872,6 +2874,7 @@
 		42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.test.swift; sourceTree = "<group>"; };
 		42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = WatchConfigV1.sqlite; sourceTree = "<group>"; };
 		42BC58192FAA2C8F0080EE09 /* center_button_press.flac */ = {isa = PBXFileReference; lastKnownFileType = file; path = center_button_press.flac; sourceTree = "<group>"; };
+		42BC581B2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.swift; sourceTree = "<group>"; };
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
 		42BF8DAF2EC4D69600DCB7E7 /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "copilot-instructions.md"; sourceTree = "<group>"; };
@@ -7412,6 +7415,7 @@
 			children = (
 				D0C884792122A65800CCB501 /* SettingsStore.swift */,
 				4238DCA32DD1F1E300126434 /* AppSessionValues.swift */,
+				42BC581B2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -9824,6 +9828,7 @@
 				11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
+				42BC581C2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift in Sources */,
 				42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */,
 				42905D872E12B01200250728 /* DesignSystem.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
@@ -10157,6 +10162,7 @@
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				427FEE682D9ECFD70047C00C /* PrivacyNoteView.swift in Sources */,
 				11BA5EC92759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
+				42BC581D2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift in Sources */,
 				11B38EE4275C54A200205C7B /* FireEventIntentHandler.swift in Sources */,
 				42EEEFE32E2791430080E973 /* Service.swift in Sources */,
 				1120C5842749C6350046C38B /* ServerProviding.swift in Sources */,

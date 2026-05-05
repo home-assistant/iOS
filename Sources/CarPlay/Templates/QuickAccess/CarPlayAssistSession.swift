@@ -49,9 +49,7 @@ final class CarPlayAssistSession: NSObject {
     private var state: State = .recording
     private var isStopped = false
 
-    private let server: Server
     private let pipelineId: String
-    private let pipelineName: String
 
     private lazy var template: CPVoiceControlTemplate = {
         let retryButton = CPButton(
@@ -103,18 +101,16 @@ final class CarPlayAssistSession: NSObject {
         interfaceController: CPInterfaceController?,
         server: Server,
         pipelineId: String,
-        pipelineName: String,
         audioRecorder: AudioRecorderProtocol = AudioRecorder(),
         assistService: AssistServiceProtocol? = nil
     ) {
         self.interfaceController = interfaceController
-        self.server = server
         self.pipelineId = pipelineId
-        self.pipelineName = pipelineName
         self.audioRecorder = audioRecorder
         self.assistService = assistService ?? AssistService(server: server)
         super.init()
-        self.audioRecorder.managesAudioSession = Current.settingsStore.carPlayAssistRecorderManagesAudioSession
+        self.audioRecorder.managesAudioSession = Current.settingsStore.carPlayAssistDebugSettings
+            .recorderManagesAudioSession
         registerForAudioSessionNotifications()
     }
 
@@ -171,18 +167,19 @@ final class CarPlayAssistSession: NSObject {
     // MARK: - Audio Session
 
     private func configureAudioSessionForAssist() {
+        let settings = Current.settingsStore.carPlayAssistDebugSettings
         do {
             try audioSession.setCategory(
-                Current.settingsStore.carPlayAssistAudioCategory.avCategory,
-                mode: Current.settingsStore.carPlayAssistAudioMode.avMode,
+                settings.audioCategory.avCategory,
+                mode: settings.audioMode.avMode,
                 options: makeAudioSessionOptions(
-                    allowBluetoothHFP: Current.settingsStore.carPlayAssistAllowBluetoothHFP,
-                    allowBluetoothA2DP: Current.settingsStore.carPlayAssistAllowBluetoothA2DP,
-                    duckOthers: false,
-                    interruptSpokenAudio: false
+                    allowBluetoothHFP: settings.allowBluetoothHFP,
+                    allowBluetoothA2DP: settings.allowBluetoothA2DP,
+                    duckOthers: settings.duckOthers,
+                    interruptSpokenAudio: settings.interruptSpokenAudio
                 )
             )
-            try audioSession.setPreferredSampleRate(Current.settingsStore.carPlayAssistPreferredSampleRate.value)
+            try audioSession.setPreferredSampleRate(settings.preferredSampleRate.value)
             try audioSession.setActive(true)
             logCurrentAudioRoute(context: "activated")
         } catch {
@@ -191,25 +188,26 @@ final class CarPlayAssistSession: NSObject {
     }
 
     private func configureAudioSessionForTTSIfNeeded() {
-        guard Current.settingsStore.carPlayAssistTTSReconfigureAudioSession else { return }
+        let settings = Current.settingsStore.carPlayAssistDebugSettings
+        guard settings.ttsReconfigureAudioSession else { return }
 
         do {
-            if Current.settingsStore.carPlayAssistTTSDeactivateBeforeReconfigure {
+            if settings.ttsDeactivateBeforeReconfigure {
                 try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
             }
 
             try audioSession.setCategory(
-                Current.settingsStore.carPlayAssistTTSCategory.avCategory,
-                mode: Current.settingsStore.carPlayAssistTTSMode.avMode,
+                settings.ttsCategory.avCategory,
+                mode: settings.ttsMode.avMode,
                 options: makeAudioSessionOptions(
-                    allowBluetoothHFP: Current.settingsStore.carPlayAssistTTSAllowBluetoothHFP,
-                    allowBluetoothA2DP: Current.settingsStore.carPlayAssistTTSAllowBluetoothA2DP,
-                    duckOthers: Current.settingsStore.carPlayAssistTTSDuckOthers,
-                    interruptSpokenAudio: Current.settingsStore.carPlayAssistTTSInterruptSpokenAudio
+                    allowBluetoothHFP: settings.ttsAllowBluetoothHFP,
+                    allowBluetoothA2DP: settings.ttsAllowBluetoothA2DP,
+                    duckOthers: settings.ttsDuckOthers,
+                    interruptSpokenAudio: settings.ttsInterruptSpokenAudio
                 )
             )
 
-            if Current.settingsStore.carPlayAssistTTSActivateAudioSession {
+            if settings.ttsActivateAudioSession {
                 try audioSession.setActive(true)
             }
 
@@ -325,7 +323,7 @@ final class CarPlayAssistSession: NSObject {
     }
 
     private func playRecordingIndicatorToneIfNeeded() {
-        guard Current.settingsStore.carPlayAssistPlayRecordingIndicatorTone else { return }
+        guard Current.settingsStore.carPlayAssistDebugSettings.playRecordingIndicatorTone else { return }
 
         do {
             guard let toneURL = Bundle.main.url(
@@ -352,7 +350,7 @@ final class CarPlayAssistSession: NSObject {
 
     /// Plays TTS audio using the already active conversational audio session to preserve the car route.
     private func playTTS(url: URL) {
-        let playbackDelay = Current.settingsStore.carPlayAssistTTSPlaybackDelay.seconds
+        let playbackDelay = Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackDelay.seconds
         if playbackDelay > 0 {
             Current.Log.info("CarPlay Assist delaying TTS playback by \(playbackDelay)s")
             DispatchQueue.main.asyncAfter(deadline: .now() + playbackDelay) { [weak self] in
@@ -370,7 +368,7 @@ final class CarPlayAssistSession: NSObject {
         configureAudioSessionForTTSIfNeeded()
         logCurrentAudioRoute(context: "before tts playback")
 
-        switch Current.settingsStore.carPlayAssistTTSPlaybackStrategy {
+        switch Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackStrategy {
         case .avPlayer:
             playTTSWithAVPlayer(url: url)
         case .downloadedAVAudioPlayer:
@@ -385,8 +383,9 @@ final class CarPlayAssistSession: NSObject {
         clearTTSPlayerObservers()
 
         let playerItem = AVPlayerItem(url: url)
-        ttsPlayer.automaticallyWaitsToMinimizeStalling =
-            Current.settingsStore.carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling
+        ttsPlayer.automaticallyWaitsToMinimizeStalling = Current.settingsStore
+            .carPlayAssistDebugSettings
+            .avPlayerAutomaticallyWaitsToMinimizeStalling
         ttsPlayer.replaceCurrentItem(with: playerItem)
         observeTTSPlayer(item: playerItem)
         Current.Log.info("CarPlay Assist starting AVPlayer TTS for URL: \(url.absoluteString)")
@@ -647,59 +646,6 @@ extension CarPlayAssistSession: AVAudioPlayerDelegate {
             .error("CarPlay Assist AVAudioPlayer decode error: \(error?.localizedDescription ?? "unknown error")")
         enterErrorState(message: error?.localizedDescription ?? "AVAudioPlayer decode error")
     }
-}
-
-@available(iOS 26.4, *)
-private extension CarPlayAssistSession {
-    static let recordingIndicatorToneData: Data = {
-        let sampleRate = 24000
-        let duration = 0.12
-        let frequency = 880.0
-        let frameCount = Int(Double(sampleRate) * duration)
-        let amplitude = 0.25
-
-        var pcmData = Data(capacity: frameCount * MemoryLayout<Int16>.size)
-
-        for frame in 0 ..< frameCount {
-            let progress = Double(frame) / Double(frameCount)
-            let envelope = min(progress / 0.1, (1.0 - progress) / 0.15, 1.0)
-            let sample = sin(2.0 * .pi * frequency * progress * duration) * amplitude * envelope
-            let intSample = Int16(max(-1.0, min(1.0, sample)) * Double(Int16.max))
-            var littleEndianSample = intSample.littleEndian
-            pcmData.append(Data(bytes: &littleEndianSample, count: MemoryLayout<Int16>.size))
-        }
-
-        let bytesPerSample = MemoryLayout<Int16>.size
-        let subchunk2Size = frameCount * bytesPerSample
-        let chunkSize = 36 + subchunk2Size
-        let byteRate = sampleRate * bytesPerSample
-        let blockAlign = UInt16(bytesPerSample)
-        let bitsPerSample: UInt16 = 16
-        let channels: UInt16 = 1
-        let audioFormat: UInt16 = 1
-
-        func littleEndianData<T: FixedWidthInteger>(_ value: T) -> Data {
-            var littleEndian = value.littleEndian
-            return Data(bytes: &littleEndian, count: MemoryLayout<T>.size)
-        }
-
-        var wavData = Data()
-        wavData.append("RIFF".data(using: .ascii)!)
-        wavData.append(littleEndianData(UInt32(chunkSize)))
-        wavData.append("WAVE".data(using: .ascii)!)
-        wavData.append("fmt ".data(using: .ascii)!)
-        wavData.append(littleEndianData(UInt32(16)))
-        wavData.append(littleEndianData(audioFormat))
-        wavData.append(littleEndianData(channels))
-        wavData.append(littleEndianData(UInt32(sampleRate)))
-        wavData.append(littleEndianData(UInt32(byteRate)))
-        wavData.append(littleEndianData(blockAlign))
-        wavData.append(littleEndianData(bitsPerSample))
-        wavData.append("data".data(using: .ascii)!)
-        wavData.append(littleEndianData(UInt32(subchunk2Size)))
-        wavData.append(pcmData)
-        return wavData
-    }()
 }
 
 // MARK: - AssistServiceDelegate

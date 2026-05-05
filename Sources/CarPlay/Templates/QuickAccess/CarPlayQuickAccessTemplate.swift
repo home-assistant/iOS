@@ -552,8 +552,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let session = CarPlayAssistSession(
             interfaceController: interfaceController,
             server: server,
-            pipelineId: magicItem.id,
-            pipelineName: magicItem.name(info: info)
+            pipelineId: magicItem.id
         )
         session.onStop = { [weak self] in
             self?.activeAssistSession = nil
