@@ -790,7 +790,7 @@ public enum L10n {
         public static var navigationTitle: String { return L10n.tr("Localizable", "carPlay.debug.settings.navigation_title") }
         /// Reset
         public static var reset: String { return L10n.tr("Localizable", "carPlay.debug.settings.reset") }
-        /// Carplay Debug Settings
+        /// CarPlay Debug Settings
         public static var rowTitle: String { return L10n.tr("Localizable", "carPlay.debug.settings.row_title") }
         public enum AssistSession {
           /// Allow Bluetooth A2DP
