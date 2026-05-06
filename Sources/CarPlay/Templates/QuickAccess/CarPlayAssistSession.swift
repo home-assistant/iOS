@@ -61,7 +61,7 @@ final class CarPlayAssistSession: NSObject {
             self?.restartRecording()
         }
         let helpButton = CPButton(
-            image: makeActionButtonImage(icon: .commentQuestionIcon, color: .white)
+            image: makeActionButtonImage(icon: .commentQuestionIcon, color: .gray)
         ) { [weak self] _ in
             self?.showPlaybackHelp()
         }
@@ -69,7 +69,10 @@ final class CarPlayAssistSession: NSObject {
         let idleState = CPVoiceControlState(
             identifier: VoiceControlStateID.idle.rawValue,
             titleVariants: [L10n.Assist.Carplay.TapToRecord.title],
-            image: .messageProcessingOutline.withTintColor(.haPrimary),
+            image: MaterialDesignIcons.messageProcessingOutlineIcon.carPlayIcon(
+                color: .haPrimary,
+                context: .assistStateIndicator
+            ),
             repeats: false
         )
         idleState.actionButtons = [retryButton, helpButton]
