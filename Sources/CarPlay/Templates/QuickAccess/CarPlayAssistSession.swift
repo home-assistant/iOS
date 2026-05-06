@@ -38,6 +38,8 @@ final class CarPlayAssistSession: NSObject {
     private var audioRecorder: AudioRecorderProtocol
     private var recordingIndicatorPlayer: AVAudioPlayer?
     private var ttsAudioPlayer: AVAudioPlayer?
+    private var processingIndicatorSoundID: SystemSoundID?
+    private var errorIndicatorSoundID: SystemSoundID?
     private let ttsPlayer = AVPlayer()
     private var ttsPlayerItemStatusObservation: NSKeyValueObservation?
     private var ttsPlayerTimeControlObservation: NSKeyValueObservation?
@@ -125,6 +127,8 @@ final class CarPlayAssistSession: NSObject {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+        disposeSystemSoundIfNeeded(&processingIndicatorSoundID)
+        disposeSystemSoundIfNeeded(&errorIndicatorSoundID)
     }
 
     func start() {
@@ -426,6 +430,81 @@ final class CarPlayAssistSession: NSObject {
         }
     }
 
+    private func playProcessingIndicatorToneIfNeeded() {
+        playSystemLibrarySoundIfNeeded(
+            named: "SiriStopSuccess_Haptic.caf",
+            candidateSubdirectories: ["", "nano"],
+            soundID: &processingIndicatorSoundID
+        )
+    }
+
+    private func playErrorIndicatorToneIfNeeded() {
+        playSystemLibrarySoundIfNeeded(
+            named: "PINUnexpected.caf",
+            candidateSubdirectories: [""],
+            soundID: &errorIndicatorSoundID
+        )
+    }
+
+    private func playSystemLibrarySoundIfNeeded(
+        named fileName: String,
+        candidateSubdirectories: [String],
+        soundID: inout SystemSoundID?
+    ) {
+        if soundID == nil {
+            soundID = makeSystemSoundID(
+                named: fileName,
+                candidateSubdirectories: candidateSubdirectories
+            )
+        }
+
+        guard let soundID else {
+            Current.Log.error("CarPlay Assist could not load system sound \(fileName)")
+            return
+        }
+
+        AudioServicesPlaySystemSound(soundID)
+    }
+
+    private func makeSystemSoundID(
+        named fileName: String,
+        candidateSubdirectories: [String]
+    ) -> SystemSoundID? {
+        let soundsRoot = URL(fileURLWithPath: "/System/Library/Audio/UISounds", isDirectory: true)
+
+        for subdirectory in candidateSubdirectories {
+            let candidateURL: URL
+            if subdirectory.isEmpty {
+                candidateURL = soundsRoot.appendingPathComponent(fileName)
+            } else {
+                candidateURL = soundsRoot
+                    .appendingPathComponent(subdirectory, isDirectory: true)
+                    .appendingPathComponent(fileName)
+            }
+
+            guard FileManager.default.fileExists(atPath: candidateURL.path) else { continue }
+
+            var soundID: SystemSoundID = 0
+            let status = AudioServicesCreateSystemSoundID(candidateURL as CFURL, &soundID)
+            if status == kAudioServicesNoError {
+                return soundID
+            }
+
+            Current.Log
+                .error(
+                    "CarPlay Assist failed to create system sound ID for \(candidateURL.lastPathComponent): \(status)"
+                )
+        }
+
+        return nil
+    }
+
+    private func disposeSystemSoundIfNeeded(_ soundID: inout SystemSoundID?) {
+        guard let resolvedSoundID = soundID else { return }
+        AudioServicesDisposeSystemSoundID(resolvedSoundID)
+        soundID = nil
+    }
+
     // MARK: - TTS Playback
 
     /// Plays TTS audio using the already active conversational audio session to preserve the car route.
@@ -667,6 +746,7 @@ final class CarPlayAssistSession: NSObject {
         clearTTSPlayerObservers()
         deactivateAudioSession()
         Current.Log.error("CarPlay Assist entered error state: \(message)")
+        playErrorIndicatorToneIfNeeded()
         activateVoiceControlState(for: .error(message))
     }
 }
@@ -747,6 +827,7 @@ extension CarPlayAssistSession: AssistServiceDelegate {
             guard shouldHandleSttEnd else { return }
             audioRecorder.stopRecording()
             assistService.finishSendingAudio()
+            playProcessingIndicatorToneIfNeeded()
             activateVoiceControlState(for: .processing)
         }
     }
