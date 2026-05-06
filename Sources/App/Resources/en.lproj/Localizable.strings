@@ -207,7 +207,7 @@
 "carPlay.debug.settings.option.tts_playback_strategy.download_and_play" = "Download and play";
 "carPlay.debug.settings.option.tts_playback_strategy.stream" = "Stream";
 "carPlay.debug.settings.reset" = "Reset";
-"carPlay.debug.settings.row_title" = "Carplay Debug Settings";
+"carPlay.debug.settings.row_title" = "CarPlay Debug Settings";
 "carPlay.debug.settings.tts_audio_session.activate_audio_session_before_play" = "Activate audio session before play";
 "carPlay.debug.settings.tts_audio_session.allow_bluetooth_a2dp" = "TTS allow Bluetooth A2DP";
 "carPlay.debug.settings.tts_audio_session.allow_bluetooth_hfp" = "TTS allow Bluetooth HFP";
