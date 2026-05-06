@@ -38,8 +38,6 @@ final class CarPlayAssistSession: NSObject {
     private var audioRecorder: AudioRecorderProtocol
     private var recordingIndicatorPlayer: AVAudioPlayer?
     private var ttsAudioPlayer: AVAudioPlayer?
-    private var processingIndicatorSoundID: SystemSoundID?
-    private var errorIndicatorSoundID: SystemSoundID?
     private let ttsPlayer = AVPlayer()
     private var ttsPlayerItemStatusObservation: NSKeyValueObservation?
     private var ttsPlayerTimeControlObservation: NSKeyValueObservation?
@@ -130,8 +128,6 @@ final class CarPlayAssistSession: NSObject {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        disposeSystemSoundIfNeeded(&processingIndicatorSoundID)
-        disposeSystemSoundIfNeeded(&errorIndicatorSoundID)
     }
 
     func start() {
@@ -434,79 +430,13 @@ final class CarPlayAssistSession: NSObject {
     }
 
     private func playProcessingIndicatorToneIfNeeded() {
-        playSystemLibrarySoundIfNeeded(
-            named: "SiriStopSuccess_Haptic.caf",
-            candidateSubdirectories: ["", "nano"],
-            soundID: &processingIndicatorSoundID
-        )
+        // SystemSoundID values are tracked in https://github.com/TUNER88/iOSSystemSoundsLibrary.
+        AudioServicesPlaySystemSound(1405) // SiriStopSuccess_Haptic.caf
     }
 
     private func playErrorIndicatorToneIfNeeded() {
-        playSystemLibrarySoundIfNeeded(
-            named: "PINUnexpected.caf",
-            candidateSubdirectories: [""],
-            soundID: &errorIndicatorSoundID
-        )
-    }
-
-    private func playSystemLibrarySoundIfNeeded(
-        named fileName: String,
-        candidateSubdirectories: [String],
-        soundID: inout SystemSoundID?
-    ) {
-        if soundID == nil {
-            soundID = makeSystemSoundID(
-                named: fileName,
-                candidateSubdirectories: candidateSubdirectories
-            )
-        }
-
-        guard let soundID else {
-            Current.Log.error("CarPlay Assist could not load system sound \(fileName)")
-            return
-        }
-
-        AudioServicesPlaySystemSound(soundID)
-    }
-
-    private func documentedSystemSoundID(named fileName: String) -> SystemSoundID? {
-        let normalizedFileName = URL(fileURLWithPath: fileName)
-            .deletingPathExtension()
-            .lastPathComponent
-            .lowercased()
-
-        switch normalizedFileName {
-        case "tink":
-            return 1103
-        case "tock":
-            return 1104
-        default:
-            return nil
-        }
-    }
-
-    private func makeSystemSoundID(
-        named fileName: String,
-        candidateSubdirectories: [String]
-    ) -> SystemSoundID? {
-        _ = candidateSubdirectories
-
-        if let soundID = documentedSystemSoundID(named: fileName) {
-            return soundID
-        }
-
-        Current.Log
-            .error(
-                "CarPlay Assist does not support loading UI sounds from private system paths. Unsupported sound: \(fileName)"
-            )
-
-        return nil
-    }
-
-    private func disposeSystemSoundIfNeeded(_ soundID: inout SystemSoundID?) {
-        guard let resolvedSoundID = soundID else { return }
-        AudioServicesDisposeSystemSoundID(resolvedSoundID)
-        soundID = nil
+        // SystemSoundID values are tracked in https://github.com/TUNER88/iOSSystemSoundsLibrary.
+        AudioServicesPlaySystemSound(1343) // PINUnexpected.caf
     }
 
     // MARK: - TTS Playback
