@@ -22,15 +22,21 @@ struct MagicItemAddView: View {
     @StateObject private var viewModel = MagicItemAddViewModel()
     @State private var selectedEntity: HAAppEntity?
     private let visiblePickerOptions: [PickerOption]
+    private let initialItemType: MagicItemAddType
 
     let context: Context
     let itemToAdd: (MagicItem?) -> Void
 
-    init(context: Context, itemToAdd: @escaping (MagicItem?) -> Void) {
+    init(
+        context: Context,
+        initialItemType: MagicItemAddType? = nil,
+        visiblePickerOptions: [PickerOption]? = nil,
+        itemToAdd: @escaping (MagicItem?) -> Void
+    ) {
         self.context = context
         self.itemToAdd = itemToAdd
 
-        self.visiblePickerOptions = {
+        let resolvedPickerOptions = visiblePickerOptions ?? {
             var options: [PickerOption] = []
             if [.carPlay, .widget, .appIconShortcut].contains(context) {
                 options.append(.entities)
@@ -49,6 +55,11 @@ struct MagicItemAddView: View {
             }
             return options
         }()
+        self.visiblePickerOptions = resolvedPickerOptions
+        self.initialItemType = initialItemType ?? Self.defaultItemType(
+            for: context,
+            visiblePickerOptions: resolvedPickerOptions
+        )
     }
 
     var body: some View {
@@ -151,11 +162,33 @@ struct MagicItemAddView: View {
     }
 
     private func autoSelectItemType() {
+        viewModel.selectedItemType = initialItemType
+    }
+
+    private static func defaultItemType(
+        for context: Context,
+        visiblePickerOptions: [PickerOption]
+    ) -> MagicItemAddType {
+        if let firstOption = visiblePickerOptions.first {
+            switch firstOption {
+            case .entities:
+                return .entities
+            case .scripts:
+                return .scripts
+            case .scenes:
+                return .scenes
+            case .legacyiOSActions:
+                return .actions
+            case .assistPipelines:
+                return .assistPipelines
+            }
+        }
+
         switch context {
         case .watch:
-            viewModel.selectedItemType = .scripts
+            return .scripts
         case .carPlay, .widget, .appIconShortcut:
-            viewModel.selectedItemType = .entities
+            return .entities
         }
     }
 

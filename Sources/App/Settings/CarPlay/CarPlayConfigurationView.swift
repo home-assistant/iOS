@@ -3,13 +3,40 @@ import SFSafeSymbols
 import Shared
 import StoreKit
 import SwiftUI
+import UIKit
 
 struct CarPlayConfigurationView: View {
+    private enum AddItemDestination: String, Identifiable {
+        case entity
+        case assist
+
+        var id: String { rawValue }
+
+        var magicItemType: MagicItemAddType {
+            switch self {
+            case .entity:
+                return .entities
+            case .assist:
+                return .assistPipelines
+            }
+        }
+
+        var pickerOption: MagicItemAddView.PickerOption {
+            switch self {
+            case .entity:
+                return .entities
+            case .assist:
+                return .assistPipelines
+            }
+        }
+    }
+
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: CarPlayConfigurationViewModel
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
+    @State private var addItemDestination: AddItemDestination?
 
     private let needsNavigationController: Bool
 
@@ -39,6 +66,7 @@ struct CarPlayConfigurationView: View {
             carPlayLogo
             tabsSection
             itemsSection
+            advancedSection
             resetView
         }
         .navigationTitle("CarPlay")
@@ -46,7 +74,9 @@ struct CarPlayConfigurationView: View {
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    SKStoreReviewController.requestReview()
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        SKStoreReviewController.requestReview(in: windowScene)
+                    }
                     dismiss()
                 }, label: {
                     Text(L10n.doneLabel)
@@ -59,8 +89,12 @@ struct CarPlayConfigurationView: View {
             viewModel.loadConfig()
             isLoaded = true
         }
-        .sheet(isPresented: $viewModel.showAddItem, content: {
-            MagicItemAddView(context: .carPlay) { itemToAdd in
+        .sheet(item: $addItemDestination, content: { destination in
+            MagicItemAddView(
+                context: .carPlay,
+                initialItemType: destination.magicItemType,
+                visiblePickerOptions: [destination.pickerOption]
+            ) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItem(itemToAdd)
             }
@@ -91,11 +125,38 @@ struct CarPlayConfigurationView: View {
             .onDelete { indexSet in
                 viewModel.deleteItem(at: indexSet)
             }
+            addItemButton
+        }
+    }
+
+    @ViewBuilder
+    private var addItemButton: some View {
+        Menu {
             Button {
-                viewModel.showAddItem = true
+                addItemDestination = .entity
             } label: {
-                Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
+                Label {
+                    Text(L10n.MagicItem.ItemType.Entity.List.title)
+                } icon: {
+                    Image(systemSymbol: .lightbulb)
+                }
             }
+
+            Button {
+                addItemDestination = .assist
+            } label: {
+                Label {
+                    Text(isAssistSupported ? L10n.Widgets.Action.Name.assist : "Assist (iOS 26.4+)")
+                } icon: {
+                    Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
+                        ofSize: .init(width: 18, height: 18),
+                        color: .label
+                    ))
+                }
+            }
+            .disabled(!isAssistSupported)
+        } label: {
+            Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
         }
     }
 
@@ -129,10 +190,6 @@ struct CarPlayConfigurationView: View {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .accent))
             Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            if item.type == .assistPipeline {
-                LabsLabel()
-                    .fixedSize()
-            }
             Image(systemSymbol: .line3Horizontal)
                 .foregroundStyle(.gray)
         }
@@ -190,6 +247,22 @@ struct CarPlayConfigurationView: View {
                 }
             }
             Button(L10n.noLabel, role: .cancel) {}
+        }
+    }
+
+    private var advancedSection: some View {
+        NavigationLink {
+            CarPlayAdvancedSettingsView()
+        } label: {
+            Text(L10n.CarPlay.Labels.Settings.Advanced.Section.title)
+        }
+    }
+
+    private var isAssistSupported: Bool {
+        if #available(iOS 26.4, *) {
+            return true
+        } else {
+            return false
         }
     }
 }
