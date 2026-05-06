@@ -466,35 +466,36 @@ final class CarPlayAssistSession: NSObject {
         AudioServicesPlaySystemSound(soundID)
     }
 
+    private func documentedSystemSoundID(named fileName: String) -> SystemSoundID? {
+        let normalizedFileName = URL(fileURLWithPath: fileName)
+            .deletingPathExtension()
+            .lastPathComponent
+            .lowercased()
+
+        switch normalizedFileName {
+        case "tink":
+            return 1103
+        case "tock":
+            return 1104
+        default:
+            return nil
+        }
+    }
+
     private func makeSystemSoundID(
         named fileName: String,
         candidateSubdirectories: [String]
     ) -> SystemSoundID? {
-        let soundsRoot = URL(fileURLWithPath: "/System/Library/Audio/UISounds", isDirectory: true)
+        _ = candidateSubdirectories
 
-        for subdirectory in candidateSubdirectories {
-            let candidateURL: URL
-            if subdirectory.isEmpty {
-                candidateURL = soundsRoot.appendingPathComponent(fileName)
-            } else {
-                candidateURL = soundsRoot
-                    .appendingPathComponent(subdirectory, isDirectory: true)
-                    .appendingPathComponent(fileName)
-            }
-
-            guard FileManager.default.fileExists(atPath: candidateURL.path) else { continue }
-
-            var soundID: SystemSoundID = 0
-            let status = AudioServicesCreateSystemSoundID(candidateURL as CFURL, &soundID)
-            if status == kAudioServicesNoError {
-                return soundID
-            }
-
-            Current.Log
-                .error(
-                    "CarPlay Assist failed to create system sound ID for \(candidateURL.lastPathComponent): \(status)"
-                )
+        if let soundID = documentedSystemSoundID(named: fileName) {
+            return soundID
         }
+
+        Current.Log
+            .error(
+                "CarPlay Assist does not support loading UI sounds from private system paths. Unsupported sound: \(fileName)"
+            )
 
         return nil
     }
