@@ -48,49 +48,58 @@ final class CarPlayAssistSession: NSObject {
     private var canSendAudioData = false
     private var state: State = .recording
     private var isStopped = false
+    private var postDismissAction: (() -> Void)?
 
     private let pipelineId: String
 
     private lazy var template: CPVoiceControlTemplate = {
         let retryButton = CPButton(
-            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary)
+            image: makeActionButtonImage(icon: .microphoneIcon, color: .haPrimary)
         ) { [weak self] _ in
             self?.restartRecording()
+        }
+        let helpButton = CPButton(
+            image: makeActionButtonImage(icon: .commentQuestionIcon, color: .white)
+        ) { [weak self] _ in
+            self?.showPlaybackHelp()
         }
 
         let idleState = CPVoiceControlState(
             identifier: VoiceControlStateID.idle.rawValue,
             titleVariants: [L10n.Assist.Carplay.TapToRecord.title],
-            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary),
+            image: .messageProcessingOutline.withTintColor(.haPrimary),
             repeats: false
         )
-        idleState.actionButtons = [retryButton]
+        idleState.actionButtons = [retryButton, helpButton]
 
         let recordingState = CPVoiceControlState(
             identifier: VoiceControlStateID.recording.rawValue,
             titleVariants: [L10n.Assist.Button.Listening.title],
-            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary),
+            image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary, context: .assistStateIndicator),
             repeats: true
         )
         let processingState = CPVoiceControlState(
             identifier: VoiceControlStateID.processing.rawValue,
             titleVariants: [L10n.Assist.Carplay.Processing.title],
-            image: MaterialDesignIcons.dotsHorizontalIcon.carPlayIcon(color: .haPrimary),
+            image: MaterialDesignIcons.dotsHorizontalIcon.carPlayIcon(
+                color: .haPrimary,
+                context: .assistStateIndicator
+            ),
             repeats: true
         )
         let respondingState = CPVoiceControlState(
             identifier: VoiceControlStateID.responding.rawValue,
             titleVariants: [L10n.Assist.Carplay.Responding.title],
-            image: MaterialDesignIcons.volumeHighIcon.carPlayIcon(color: .haPrimary),
+            image: MaterialDesignIcons.volumeHighIcon.carPlayIcon(color: .haPrimary, context: .assistStateIndicator),
             repeats: true
         )
         let errorState = CPVoiceControlState(
             identifier: VoiceControlStateID.error.rawValue,
             titleVariants: [L10n.errorLabel],
-            image: MaterialDesignIcons.alertCircleIcon.carPlayIcon(color: .systemRed),
+            image: MaterialDesignIcons.alertCircleIcon.carPlayIcon(color: .systemRed, context: .assistStateIndicator),
             repeats: false
         )
-        errorState.actionButtons = [retryButton]
+        errorState.actionButtons = [retryButton, helpButton]
 
         return CPVoiceControlTemplate(
             voiceControlStates: [recordingState, processingState, respondingState, idleState, errorState]
@@ -159,9 +168,80 @@ final class CarPlayAssistSession: NSObject {
         deactivateAudioSession()
         NotificationCenter.default.removeObserver(self)
         if dismissTemplate {
-            interfaceController?.dismissTemplate(animated: true, completion: nil)
+            interfaceController?.dismissTemplate(animated: true, completion: { [weak self] _, error in
+                if let error {
+                    Current.Log.error("CarPlay Assist failed to dismiss template: \(error.localizedDescription)")
+                }
+
+                let postDismissAction = self?.postDismissAction
+                self?.postDismissAction = nil
+                postDismissAction?()
+                self?.onStop?()
+            })
+        } else {
+            postDismissAction = nil
+            onStop?()
         }
-        onStop?()
+    }
+
+    private func showPlaybackHelp() {
+        postDismissAction = { [weak self] in
+            self?.presentPlaybackHelpTemplate()
+        }
+        stop()
+    }
+
+    private func presentPlaybackHelpTemplate() {
+        let template = CPInformationTemplate(
+            title: L10n.Assist.Carplay.PlaybackHelp.title,
+            layout: .leading,
+            items: [
+                CPInformationItem(
+                    title: L10n.Assist.Carplay.PlaybackHelp.OpenApp.title,
+                    detail: L10n.Assist.Carplay.PlaybackHelp.OpenApp.detail
+                ),
+                CPInformationItem(
+                    title: L10n.Assist.Carplay.PlaybackHelp.GoToAdvanced.title,
+                    detail: L10n.Assist.Carplay.PlaybackHelp.GoToAdvanced.detail
+                ),
+                CPInformationItem(
+                    title: L10n.Assist.Carplay.PlaybackHelp.ChangePlayback.title,
+                    detail: L10n.Assist.Carplay.PlaybackHelp.ChangePlayback.detail
+                ),
+            ],
+            actions: []
+        )
+        interfaceController?.pushTemplate(template, animated: true, completion: { _, error in
+            if let error {
+                Current.Log.error("CarPlay Assist failed to present playback help: \(error.localizedDescription)")
+            }
+        })
+    }
+
+    private func makeActionButtonImage(
+        icon: MaterialDesignIcons,
+        color: UIColor
+    ) -> UIImage {
+        let iconScale: CGFloat = 0.42
+        let canvasSize = CPButtonMaximumImageSize
+        let iconSize = CGSize(
+            width: canvasSize.width * iconScale,
+            height: canvasSize.height * iconScale
+        )
+        let iconImage = icon.image(ofSize: iconSize, color: color)
+        let iconOrigin = CGPoint(
+            x: (canvasSize.width - iconSize.width) / 2,
+            y: (canvasSize.height - iconSize.height) / 2
+        )
+
+        return UIGraphicsImageRenderer(
+            size: canvasSize,
+            format: with(UIGraphicsImageRendererFormat.preferred()) {
+                $0.opaque = false
+            }
+        ).image { _ in
+            iconImage.draw(in: CGRect(origin: iconOrigin, size: iconSize))
+        }
     }
 
     // MARK: - Audio Session

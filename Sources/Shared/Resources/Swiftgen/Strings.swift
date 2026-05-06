@@ -533,6 +533,30 @@ public enum L10n {
       }
     }
     public enum Carplay {
+      public enum PlaybackHelp {
+        /// If you encounter audio playback issues, open CarPlay settings in the Home Assistant Companion app, tap Advanced, open Assist, and change TTS Playback to Download and play.
+        public static var message: String { return L10n.tr("Localizable", "assist.carplay.playback_help.message") }
+        /// Audio Playback Help
+        public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.title") }
+        public enum ChangePlayback {
+          /// Choose Download and play if Stream does not play audio in your car.
+          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.change_playback.detail") }
+          /// TTS Playback
+          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.change_playback.title") }
+        }
+        public enum GoToAdvanced {
+          /// Open Advanced, then Assist.
+          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_advanced.detail") }
+          /// Advanced > Assist
+          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_advanced.title") }
+        }
+        public enum OpenApp {
+          /// Open CarPlay settings in the Home Assistant Companion app.
+          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.open_app.detail") }
+          /// Companion app
+          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.open_app.title") }
+        }
+      }
       public enum Processing {
         /// Processing...
         public static var title: String { return L10n.tr("Localizable", "assist.carplay.processing.title") }
@@ -761,6 +785,106 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "carPlay.debug.delete_db.reset.title") }
         }
       }
+      public enum Settings {
+        /// CarPlay Debug
+        public static var navigationTitle: String { return L10n.tr("Localizable", "carPlay.debug.settings.navigation_title") }
+        /// Reset
+        public static var reset: String { return L10n.tr("Localizable", "carPlay.debug.settings.reset") }
+        /// Carplay Debug Settings
+        public static var rowTitle: String { return L10n.tr("Localizable", "carPlay.debug.settings.row_title") }
+        public enum AssistSession {
+          /// Allow Bluetooth A2DP
+          public static var allowBluetoothA2dp: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.allow_bluetooth_a2dp") }
+          /// Allow Bluetooth HFP
+          public static var allowBluetoothHfp: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.allow_bluetooth_hfp") }
+          /// Audio category
+          public static var audioCategory: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.audio_category") }
+          /// Audio mode
+          public static var audioMode: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.audio_mode") }
+          /// Duck others
+          public static var duckOthers: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.duck_others") }
+          /// These values apply when a new CarPlay Assist session starts.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.footer") }
+          /// Interrupt spoken audio
+          public static var interruptSpokenAudio: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.interrupt_spoken_audio") }
+          /// Play recording indicator tone
+          public static var playRecordingIndicatorTone: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.play_recording_indicator_tone") }
+          /// Preferred sample rate
+          public static var preferredSampleRate: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.preferred_sample_rate") }
+          /// AudioRecorder manages audio session
+          public static var recorderManagesAudioSession: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.recorder_manages_audio_session") }
+          /// Assist Session
+          public static var title: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.title") }
+        }
+        public enum Option {
+          public enum AudioCategory {
+            /// playAndRecord
+            public static var playAndRecord: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_category.play_and_record") }
+            /// playback
+            public static var playback: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_category.playback") }
+            /// record
+            public static var record: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_category.record") }
+          }
+          public enum AudioMode {
+            /// default
+            public static var `default`: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.default") }
+            /// measurement
+            public static var measurement: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.measurement") }
+            /// spokenAudio
+            public static var spokenAudio: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.spoken_audio") }
+            /// voiceChat
+            public static var voiceChat: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.voice_chat") }
+            /// voicePrompt
+            public static var voicePrompt: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.voice_prompt") }
+          }
+          public enum PlaybackDelay {
+            /// None
+            public static var `none`: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.playback_delay.none") }
+          }
+          public enum TtsPlaybackStrategy {
+            /// Download and play
+            public static var downloadAndPlay: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.tts_playback_strategy.download_and_play") }
+            /// Stream
+            public static var stream: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.tts_playback_strategy.stream") }
+          }
+        }
+        public enum TtsAudioSession {
+          /// Activate audio session before play
+          public static var activateAudioSessionBeforePlay: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.activate_audio_session_before_play") }
+          /// TTS allow Bluetooth A2DP
+          public static var allowBluetoothA2dp: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.allow_bluetooth_a2dp") }
+          /// TTS allow Bluetooth HFP
+          public static var allowBluetoothHfp: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.allow_bluetooth_hfp") }
+          /// TTS category
+          public static var category: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.category") }
+          /// Deactivate before reconfigure
+          public static var deactivateBeforeReconfigure: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.deactivate_before_reconfigure") }
+          /// TTS duck others
+          public static var duckOthers: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.duck_others") }
+          /// This section lets you force a dedicated TTS session reconfiguration, which is the most likely area if another app starting playback makes the response suddenly audible.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.footer") }
+          /// TTS interrupt spoken audio
+          public static var interruptSpokenAudio: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.interrupt_spoken_audio") }
+          /// TTS mode
+          public static var mode: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.mode") }
+          /// Reconfigure before TTS
+          public static var reconfigureBeforeTts: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.reconfigure_before_tts") }
+          /// TTS Audio Session
+          public static var title: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.title") }
+        }
+        public enum TtsPlayback {
+          /// AVPlayer waits to minimize stalling
+          public static var avplayerWaitsToMinimizeStalling: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.avplayer_waits_to_minimize_stalling") }
+          /// Use the downloaded AVAudioPlayer strategy to determine whether the failure is tied to AVPlayer or remote URL playback.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.footer") }
+          /// Playback delay
+          public static var playbackDelay: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.playback_delay") }
+          /// Playback strategy
+          public static var playbackStrategy: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.playback_strategy") }
+          /// TTS Playback
+          public static var title: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.title") }
+        }
+      }
     }
     public enum Labels {
       /// Already added
@@ -775,6 +899,18 @@ public enum L10n {
       public static var servers: String { return L10n.tr("Localizable", "carPlay.labels.servers") }
       public enum Settings {
         public enum Advanced {
+          public enum Assist {
+            public enum Section {
+              /// Assist
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.section.title") }
+            }
+            public enum TtsPlayback {
+              /// In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.
+              public static var footer: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.tts_playback.footer") }
+              /// TTS Playback
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.tts_playback.title") }
+            }
+          }
           public enum Section {
             /// Advanced
             public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.title") }

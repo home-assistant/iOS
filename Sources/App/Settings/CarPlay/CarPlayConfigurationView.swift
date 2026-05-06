@@ -3,6 +3,7 @@ import SFSafeSymbols
 import Shared
 import StoreKit
 import SwiftUI
+import UIKit
 
 struct CarPlayConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
@@ -39,6 +40,7 @@ struct CarPlayConfigurationView: View {
             carPlayLogo
             tabsSection
             itemsSection
+            advancedSection
             resetView
         }
         .navigationTitle("CarPlay")
@@ -46,7 +48,9 @@ struct CarPlayConfigurationView: View {
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    SKStoreReviewController.requestReview()
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        SKStoreReviewController.requestReview(in: windowScene)
+                    }
                     dismiss()
                 }, label: {
                     Text(L10n.doneLabel)
@@ -190,6 +194,14 @@ struct CarPlayConfigurationView: View {
                 }
             }
             Button(L10n.noLabel, role: .cancel) {}
+        }
+    }
+
+    private var advancedSection: some View {
+        NavigationLink {
+            CarPlayAdvancedSettingsView()
+        } label: {
+            Text(L10n.CarPlay.Labels.Settings.Advanced.Section.title)
         }
     }
 }

@@ -929,6 +929,7 @@
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
 		429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */; };
 		429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
+		429C07722FAB2D31000302D1 /* CarPlayAssistSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C07712FAB2D31000302D1 /* CarPlayAssistSettingsView.swift */; };
 		429C33BF2F17989F0033EF5E /* EntityPickerViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */; };
 		429C33C22F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
 		429C33C32F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
@@ -1239,7 +1240,7 @@
 		651755E378F6F79AB401F05C /* AssistPipelineAddList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07701F2786F6D45E945CC1AA /* AssistPipelineAddList.swift */; };
 		65286F3B745551AD4090EE6B /* Pods-iOS-SharedTesting-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4053903E4C54A6803204286E /* Pods-iOS-SharedTesting-metadata.plist */; };
 		6596FA74E1A501276EA62D86 /* Pods_watchOS_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */; };
-		692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */; };
+		692BCBBA4EEEABCC76DBBECA /* GRDB+Initialization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50FA39BF16AD0BD782D0D7 /* GRDB+Initialization.test.swift */; };
 		6FCEBAA2C8E9C5403055E73D /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
 		70BD8A8EA1ABC5DC1F0A0D6E /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C663B0750E0318469E7008C3 /* Pods_iOS_Shared_iOS.framework */; };
 		71E0BF803A854C3B9F0CB726 /* HandlerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */; };
@@ -1254,7 +1255,7 @@
 		999549244371450BC98C700E /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 608CFDA223EBCDF01B946093 /* Pods_iOS_Extensions_PushProvider.framework */; };
 		9D57ECBD5431BC00BDC16F1E /* NotificationActionEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F913E441276235B7A2D7B29 /* NotificationActionEditorView.swift */; };
 		A1619F1ED93FB8B0E7E53C38 /* KioskLifecycleBrightness.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373AE72CB925F044BAE18B62 /* KioskLifecycleBrightness.test.swift */; };
-		A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */; };
+		A2F3A140CDD1EF1AEA6DFAB9 /* DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* DatabaseTableProtocol.test.swift */; };
 		A596C4D1E125E6863C7D2034 /* ComplicationEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512A72C5F1BCC979E74F7629 /* ComplicationEditViewModel.swift */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
 		A60E917B401A6D456F1DB630 /* ComplicationFamilySelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1861EB0361816DC9260D1F5E /* ComplicationFamilySelectView.swift */; };
@@ -1520,7 +1521,7 @@
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		BB77559927344584B2C0E987 /* OnboardingAuthError.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */; };
 		BD1044995DE13A04C0FA039A /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D9C81015FD7A8FA8716E4F2 /* Pods_iOS_Extensions_Widgets.framework */; };
-		BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */; };
+		BECCC152A4E3F69A8EF5A6F3 /* TableSchemaTests.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9A0E08E6FEBDDE425D0D4 /* TableSchemaTests.test.swift */; };
 		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
 		C35621B95F7E4548BC8F6D75 /* FolderEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BECEB2525564358A124F818 /* FolderEditView.swift */; };
 		C3EB3740FA097F36D51F525E /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
@@ -1572,7 +1573,7 @@
 		D87EC7A89E0515C4CAB93220 /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
 		D8B4F2A61E9C73058AF2D49E /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */; };
 		D9A6697AF4D05BB8DE822A54 /* Pods_iOS_Extensions_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CA7FF55788E7084DA5E4B3 /* Pods_iOS_Extensions_Share.framework */; };
-		DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */; };
+		DA6F4C18D66EDBA5DCEAE833 /* DatabaseMigration.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F0EF22A0B9F20AAEE4CCA /* DatabaseMigration.test.swift */; };
 		DB54626ADCE0C32094C8C0B9 /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFD0D30836C69840AB63A8A /* LoadingButton.swift */; };
 		DEFBE1A5E9A005B0A5392D27 /* KioskLocalization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4593A60DBF019E6C91AAA7 /* KioskLocalization.test.swift */; };
 		E3A02409794174F002C8BB4F /* IconSearchPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC23DE131CA8813C2DBD657 /* IconSearchPicker.swift */; };
@@ -2639,6 +2640,7 @@
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
 		429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorDetailsView.swift; sourceTree = "<group>"; };
 		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
+		429C07712FAB2D31000302D1 /* CarPlayAssistSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistSettingsView.swift; sourceTree = "<group>"; };
 		429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPickerViewModel.test.swift; sourceTree = "<group>"; };
 		429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAUsagePredictionCommonControl.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
@@ -3066,7 +3068,7 @@
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
 		592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-NotificationService-metadata.plist"; path = "Pods/Pods-iOS-Extensions-NotificationService-metadata.plist"; sourceTree = "<group>"; };
 		5BFD0D30836C69840AB63A8A /* LoadingButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoadingButton.swift; sourceTree = "<group>"; };
-		5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Database/GRDB+Initialization.test.swift"; sourceTree = "<group>"; };
+		5C50FA39BF16AD0BD782D0D7 /* GRDB+Initialization.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Database/GRDB+Initialization.test.swift"; sourceTree = "<group>"; };
 		5D4737412F241342009A70EA /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
 		5E95733B72864AB3B9607B57 /* MockLiveActivityRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLiveActivityRegistry.swift; sourceTree = "<group>"; };
 		5FF9C3A30E10A8E214623EBB /* ComplicationListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ComplicationListView.swift; sourceTree = "<group>"; };
@@ -3090,7 +3092,7 @@
 		825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskConstants.swift; sourceTree = "<group>"; };
 		862436CFE6E3F4B31500EFB2 /* ComplicationListViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ComplicationListViewModel.swift; sourceTree = "<group>"; };
 		86BFD63671D2D0A012DFE169 /* Pods-iOS-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.debug.xcconfig"; sourceTree = "<group>"; };
-		892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/DatabaseMigration.test.swift; sourceTree = "<group>"; };
+		892F0EF22A0B9F20AAEE4CCA /* DatabaseMigration.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/DatabaseMigration.test.swift; sourceTree = "<group>"; };
 		8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlFanValueProvider.swift; sourceTree = "<group>"; };
 		8D6888525DCF492642BA7EA3 /* FanIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanIntent.swift; sourceTree = "<group>"; };
 		9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-watchOS-WatchExtension-Watch-metadata.plist"; path = "Pods/Pods-watchOS-WatchExtension-Watch-metadata.plist"; sourceTree = "<group>"; };
@@ -3103,7 +3105,7 @@
 		9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.xcconfig; sourceTree = "<group>"; };
 		9D84964A844E6CD21F16D3AB /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; sourceTree = "<group>"; };
 		9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFolderRow.swift; sourceTree = "<group>"; };
-		9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/TableSchemaTests.test.swift; sourceTree = "<group>"; };
+		9EE9A0E08E6FEBDDE425D0D4 /* TableSchemaTests.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/TableSchemaTests.test.swift; sourceTree = "<group>"; };
 		9F913E441276235B7A2D7B29 /* NotificationActionEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationActionEditorView.swift; sourceTree = "<group>"; };
 		9F9398CFD66E4C66DC39E1D3 /* Pods-iOS-Extensions-PushProvider.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-PushProvider.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-PushProvider/Pods-iOS-Extensions-PushProvider.beta.xcconfig"; sourceTree = "<group>"; };
 		A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthError.test.swift; sourceTree = "<group>"; };
@@ -3433,7 +3435,7 @@
 		B6FD0574228411B200AC45BA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B7D8DAEFAD435091FDDD61E7 /* Pods_iOS_Extensions_NotificationContent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_NotificationContent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B833A17275EC47FA65A3235A /* YamlPreviewSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = YamlPreviewSection.swift; sourceTree = "<group>"; };
-		BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/DatabaseTableProtocol.test.swift; sourceTree = "<group>"; };
+		BC31518EE9DC9E065AC508D9 /* DatabaseTableProtocol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/DatabaseTableProtocol.test.swift; sourceTree = "<group>"; };
 		BC9B77AAC44845DC9EE48759 /* Pods_iOS_Extensions_Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Intents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDC6ACBDCC2C47510C37E4C8 /* NotificationCategoryListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationCategoryListView.swift; sourceTree = "<group>"; };
 		BEF9A7008EFA4A6FC9E02B5E /* Pods-iOS-Extensions-Intents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.release.xcconfig"; sourceTree = "<group>"; };
@@ -6302,6 +6304,7 @@
 				504A2C852F8133E6002A3C0E /* CarPlayTabsSelectionView.swift */,
 				42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */,
 				42ABB0B82C888AA10081461D /* CarPlayConfig.swift */,
+				429C07712FAB2D31000302D1 /* CarPlayAssistSettingsView.swift */,
 			);
 			path = CarPlay;
 			sourceTree = "<group>";
@@ -7288,10 +7291,10 @@
 				11CB98CC249E637300B05222 /* Version+HA.test.swift */,
 				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
 				11883CC624C131EE0036A6C6 /* RealmZone.test.swift */,
-				892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */,
-				BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */,
-				5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */,
-				9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */,
+				892F0EF22A0B9F20AAEE4CCA /* DatabaseMigration.test.swift */,
+				BC31518EE9DC9E065AC508D9 /* DatabaseTableProtocol.test.swift */,
+				5C50FA39BF16AD0BD782D0D7 /* GRDB+Initialization.test.swift */,
+				9EE9A0E08E6FEBDDE425D0D4 /* TableSchemaTests.test.swift */,
 				11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */,
 				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
 				1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */,
@@ -8178,7 +8181,7 @@
 			packageReferences = (
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
-				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */,
+				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
@@ -8706,13 +8709,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8851,13 +8850,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8894,13 +8889,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -9001,13 +8992,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -9654,6 +9641,7 @@
 				421FC34D2F5EFD3C0027DB31 /* SpeechSynthesizer.swift in Sources */,
 				42FCCFFF2B9B1C310057783F /* ThreadCredentialsSharingView.swift in Sources */,
 				429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */,
+				429C07722FAB2D31000302D1 /* CarPlayAssistSettingsView.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
 				421D89A22EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
@@ -10447,10 +10435,10 @@
 				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
 				11F2F2B8258728B200F61F7C /* NotificationAttachmentParserURL.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
-				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
-				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,
-				692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */,
-				BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */,
+				DA6F4C18D66EDBA5DCEAE833 /* DatabaseMigration.test.swift in Sources */,
+				A2F3A140CDD1EF1AEA6DFAB9 /* DatabaseTableProtocol.test.swift in Sources */,
+				692BCBBA4EEEABCC76DBBECA /* GRDB+Initialization.test.swift in Sources */,
+				BECCC152A4E3F69A8EF5A6F3 /* TableSchemaTests.test.swift in Sources */,
 				11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */,
 				11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */,
 				42FDCA272F0C7EB900C92958 /* EntityRegistry.test.swift in Sources */,
@@ -12331,7 +12319,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */ = {
+		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/SharedPush;
 		};
@@ -12395,7 +12383,7 @@
 		};
 		4273F7DF2E258827000629F7 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */;
+			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */;
 			productName = SharedPush;
 		};
 		427692E22B98B82500F24321 /* SharedPush */ = {

@@ -20,11 +20,11 @@ public enum CarPlayAssistAudioCategory: String, CaseIterable {
     public var title: String {
         switch self {
         case .playAndRecord:
-            "playAndRecord"
+            L10n.CarPlay.Debug.Settings.Option.AudioCategory.playAndRecord
         case .playback:
-            "playback"
+            L10n.CarPlay.Debug.Settings.Option.AudioCategory.playback
         case .record:
-            "record"
+            L10n.CarPlay.Debug.Settings.Option.AudioCategory.record
         }
     }
 }
@@ -52,7 +52,18 @@ public enum CarPlayAssistAudioMode: String, CaseIterable {
     }
 
     public var title: String {
-        rawValue
+        switch self {
+        case .default:
+            L10n.CarPlay.Debug.Settings.Option.AudioMode.default
+        case .voiceChat:
+            L10n.CarPlay.Debug.Settings.Option.AudioMode.voiceChat
+        case .voicePrompt:
+            L10n.CarPlay.Debug.Settings.Option.AudioMode.voicePrompt
+        case .spokenAudio:
+            L10n.CarPlay.Debug.Settings.Option.AudioMode.spokenAudio
+        case .measurement:
+            L10n.CarPlay.Debug.Settings.Option.AudioMode.measurement
+        }
     }
 }
 
@@ -78,9 +89,9 @@ public enum CarPlayAssistTTSPlaybackStrategy: String, CaseIterable {
     public var title: String {
         switch self {
         case .avPlayer:
-            "AVPlayer"
+            L10n.CarPlay.Debug.Settings.Option.TtsPlaybackStrategy.stream
         case .downloadedAVAudioPlayer:
-            "Download then AVAudioPlayer"
+            L10n.CarPlay.Debug.Settings.Option.TtsPlaybackStrategy.downloadAndPlay
         }
     }
 }
@@ -95,7 +106,7 @@ public enum CarPlayAssistPlaybackDelay: Int, CaseIterable {
     public var title: String {
         switch self {
         case .none:
-            "None"
+            L10n.CarPlay.Debug.Settings.Option.PlaybackDelay.none
         default:
             "\(rawValue) ms"
         }
@@ -106,7 +117,7 @@ public enum CarPlayAssistPlaybackDelay: Int, CaseIterable {
     }
 }
 
-public struct CarPlayAssistDebugSettings {
+public struct CarPlayAssistDebugSettings: Equatable {
     public var audioCategory: CarPlayAssistAudioCategory
     public var audioMode: CarPlayAssistAudioMode
     public var preferredSampleRate: CarPlayAssistPreferredSampleRate

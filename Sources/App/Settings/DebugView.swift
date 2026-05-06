@@ -326,19 +326,13 @@ struct DebugView: View {
     }
 
     private var carPlayDebugSection: some View {
-        Section {
-            NavigationLink {
-                CarPlayDebugSettingsView()
-            } label: {
-                linkContent(
-                    image: .init(systemSymbol: .carFill),
-                    title: "CarPlay Debug Settings"
-                )
-            }
-        } header: {
-            Text("CarPlay")
-        } footer: {
-            Text("CarPlay audio and TTS debugging controls live here to avoid cluttering the main debug screen.")
+        NavigationLink {
+            CarPlayDebugSettingsView()
+        } label: {
+            linkContent(
+                image: .init(systemSymbol: .carFill),
+                title: L10n.CarPlay.Debug.Settings.rowTitle
+            )
         }
     }
 
@@ -568,7 +562,7 @@ struct DebugView: View {
     }
 
     private func wait(seconds: Int) async {
-        await Task.sleep(UInt64(seconds * 1_000_000_000))
+        try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
     }
 
     private func revokeToken(api: HomeAssistantAPI) async {
@@ -604,6 +598,13 @@ struct DebugView: View {
 }
 
 private struct CarPlayDebugSettingsView: View {
+    @State private var settings: CarPlayAssistDebugSettings
+    @State private var showResetConfirmation = false
+
+    init() {
+        _settings = State(initialValue: Current.settingsStore.carPlayAssistDebugSettings)
+    }
+
     var body: some View {
         List {
             assistSessionSection
@@ -611,259 +612,138 @@ private struct CarPlayDebugSettingsView: View {
             ttsSessionSection
             resetSection
         }
-        .navigationTitle("CarPlay Debug")
+        .navigationTitle(L10n.CarPlay.Debug.Settings.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: settings) { updatedSettings in
+            Current.settingsStore.carPlayAssistDebugSettings = updatedSettings
+        }
     }
 
     private var assistSessionSection: some View {
         Section {
-            Picker("Audio category", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.audioCategory },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.audioCategory = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            )) {
+            Picker(L10n.CarPlay.Debug.Settings.AssistSession.audioCategory, selection: $settings.audioCategory) {
                 ForEach(CarPlayAssistAudioCategory.allCases, id: \.self) { category in
                     Text(category.title).tag(category)
                 }
             }
 
-            Picker("Audio mode", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.audioMode },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.audioMode = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            )) {
+            Picker(L10n.CarPlay.Debug.Settings.AssistSession.audioMode, selection: $settings.audioMode) {
                 ForEach(CarPlayAssistAudioMode.allCases, id: \.self) { mode in
                     Text(mode.title).tag(mode)
                 }
             }
 
-            Picker("Preferred sample rate", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.preferredSampleRate },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.preferredSampleRate = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            )) {
+            Picker(
+                L10n.CarPlay.Debug.Settings.AssistSession.preferredSampleRate,
+                selection: $settings.preferredSampleRate
+            ) {
                 ForEach(CarPlayAssistPreferredSampleRate.allCases, id: \.self) { sampleRate in
                     Text(sampleRate.title).tag(sampleRate)
                 }
             }
 
-            Toggle("Allow Bluetooth HFP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.allowBluetoothHFP },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.allowBluetoothHFP = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("Allow Bluetooth A2DP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.allowBluetoothA2DP },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.allowBluetoothA2DP = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("Duck others", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.duckOthers },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.duckOthers = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("Interrupt spoken audio", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.interruptSpokenAudio },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.interruptSpokenAudio = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("AudioRecorder manages audio session", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.recorderManagesAudioSession },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.recorderManagesAudioSession = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("Play recording indicator tone", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.playRecordingIndicatorTone },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.playRecordingIndicatorTone = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
+            Toggle(L10n.CarPlay.Debug.Settings.AssistSession.allowBluetoothHfp, isOn: $settings.allowBluetoothHFP)
+            Toggle(L10n.CarPlay.Debug.Settings.AssistSession.allowBluetoothA2dp, isOn: $settings.allowBluetoothA2DP)
+            Toggle(L10n.CarPlay.Debug.Settings.AssistSession.duckOthers, isOn: $settings.duckOthers)
+            Toggle(L10n.CarPlay.Debug.Settings.AssistSession.interruptSpokenAudio, isOn: $settings.interruptSpokenAudio)
+            Toggle(
+                L10n.CarPlay.Debug.Settings.AssistSession.recorderManagesAudioSession,
+                isOn: $settings.recorderManagesAudioSession
+            )
+            Toggle(
+                L10n.CarPlay.Debug.Settings.AssistSession.playRecordingIndicatorTone,
+                isOn: $settings.playRecordingIndicatorTone
+            )
         } header: {
-            Text("Assist Session")
+            Text(L10n.CarPlay.Debug.Settings.AssistSession.title)
         } footer: {
-            Text("These values apply when a new CarPlay Assist session starts.")
+            Text(L10n.CarPlay.Debug.Settings.AssistSession.footer)
         }
     }
 
     private var ttsPlaybackSection: some View {
         Section {
-            Picker("Playback strategy", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackStrategy },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsPlaybackStrategy = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            )) {
+            Picker(L10n.CarPlay.Debug.Settings.TtsPlayback.playbackStrategy, selection: $settings.ttsPlaybackStrategy) {
                 ForEach(CarPlayAssistTTSPlaybackStrategy.allCases, id: \.self) { strategy in
                     Text(strategy.title).tag(strategy)
                 }
             }
 
-            Picker("Playback delay", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackDelay },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsPlaybackDelay = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            )) {
+            Picker(L10n.CarPlay.Debug.Settings.TtsPlayback.playbackDelay, selection: $settings.ttsPlaybackDelay) {
                 ForEach(CarPlayAssistPlaybackDelay.allCases, id: \.self) { delay in
                     Text(delay.title).tag(delay)
                 }
             }
 
-            Toggle("AVPlayer waits to minimize stalling", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.avPlayerAutomaticallyWaitsToMinimizeStalling },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.avPlayerAutomaticallyWaitsToMinimizeStalling = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-        } header: {
-            Text("TTS Playback")
-        } footer: {
-            Text(
-                "Use the downloaded AVAudioPlayer strategy to determine whether the failure is tied to AVPlayer or remote URL playback."
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsPlayback.avplayerWaitsToMinimizeStalling,
+                isOn: $settings.avPlayerAutomaticallyWaitsToMinimizeStalling
             )
+        } header: {
+            Text(L10n.CarPlay.Debug.Settings.TtsPlayback.title)
+        } footer: {
+            Text(L10n.CarPlay.Debug.Settings.TtsPlayback.footer)
         }
     }
 
     private var ttsSessionSection: some View {
         Section {
-            Toggle("Reconfigure before TTS", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsReconfigureAudioSession },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsReconfigureAudioSession = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.reconfigureBeforeTts,
+                isOn: $settings.ttsReconfigureAudioSession
+            )
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.deactivateBeforeReconfigure,
+                isOn: $settings.ttsDeactivateBeforeReconfigure
+            )
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.activateAudioSessionBeforePlay,
+                isOn: $settings.ttsActivateAudioSession
+            )
 
-            Toggle("Deactivate before reconfigure", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsDeactivateBeforeReconfigure },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsDeactivateBeforeReconfigure = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("Activate audio session before play", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsActivateAudioSession },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsActivateAudioSession = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Picker("TTS category", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsCategory },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsCategory = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            )) {
+            Picker(L10n.CarPlay.Debug.Settings.TtsAudioSession.category, selection: $settings.ttsCategory) {
                 ForEach(CarPlayAssistAudioCategory.allCases, id: \.self) { category in
                     Text(category.title).tag(category)
                 }
             }
 
-            Picker("TTS mode", selection: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsMode },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsMode = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            )) {
+            Picker(L10n.CarPlay.Debug.Settings.TtsAudioSession.mode, selection: $settings.ttsMode) {
                 ForEach(CarPlayAssistAudioMode.allCases, id: \.self) { mode in
                     Text(mode.title).tag(mode)
                 }
             }
 
-            Toggle("TTS allow Bluetooth HFP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsAllowBluetoothHFP },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsAllowBluetoothHFP = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("TTS allow Bluetooth A2DP", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsAllowBluetoothA2DP },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsAllowBluetoothA2DP = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("TTS duck others", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsDuckOthers },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsDuckOthers = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-
-            Toggle("TTS interrupt spoken audio", isOn: Binding(
-                get: { Current.settingsStore.carPlayAssistDebugSettings.ttsInterruptSpokenAudio },
-                set: {
-                    var settings = Current.settingsStore.carPlayAssistDebugSettings
-                    settings.ttsInterruptSpokenAudio = $0
-                    Current.settingsStore.carPlayAssistDebugSettings = settings
-                }
-            ))
-        } header: {
-            Text("TTS Audio Session")
-        } footer: {
-            Text(
-                "This section lets you force a dedicated TTS session reconfiguration, which is the most likely area if another app starting playback makes the response suddenly audible."
+            Toggle(L10n.CarPlay.Debug.Settings.TtsAudioSession.allowBluetoothHfp, isOn: $settings.ttsAllowBluetoothHFP)
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.allowBluetoothA2dp,
+                isOn: $settings.ttsAllowBluetoothA2DP
             )
+            Toggle(L10n.CarPlay.Debug.Settings.TtsAudioSession.duckOthers, isOn: $settings.ttsDuckOthers)
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.interruptSpokenAudio,
+                isOn: $settings.ttsInterruptSpokenAudio
+            )
+        } header: {
+            Text(L10n.CarPlay.Debug.Settings.TtsAudioSession.title)
+        } footer: {
+            Text(L10n.CarPlay.Debug.Settings.TtsAudioSession.footer)
         }
     }
 
     private var resetSection: some View {
         Section {
-            Button("Reset CarPlay debug defaults", role: .destructive) {
-                Current.settingsStore.resetCarPlayAssistDebugSettings()
+            Button(L10n.CarPlay.Debug.Settings.reset, role: .destructive) {
+                showResetConfirmation = true
+            }
+            .confirmationDialog(
+                L10n.Alert.Confirmation.Generic.title,
+                isPresented: $showResetConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button(L10n.CarPlay.Debug.Settings.reset, role: .destructive) {
+                    settings = .default
+                }
+                Button(L10n.cancelLabel, role: .cancel) {}
             }
         }
     }
