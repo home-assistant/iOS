@@ -2,10 +2,27 @@ import CarPlay
 import Foundation
 import UIKit
 
+public enum CarPlayIconContext {
+    case `default`
+    case assistStateIndicator
+}
+
 public extension MaterialDesignIcons {
-    func carPlayIcon(color: UIColor? = nil) -> UIImage {
+    func carPlayIcon(color: UIColor? = nil, context: CarPlayIconContext = .default) -> UIImage {
         let color = color ?? .haPrimary
-        return image(ofSize: CPListItem.maximumImageSize, color: color)
+        switch context {
+        case .default:
+            return image(ofSize: CPListItem.maximumImageSize, color: color)
+        case .assistStateIndicator:
+            let multiplier: CGFloat = 2
+            return image(
+                ofSize: .init(
+                    width: CPListItem.maximumImageSize.width * multiplier,
+                    height: CPListItem.maximumImageSize.height * multiplier
+                ),
+                color: color
+            )
+        }
     }
 
     @available(iOS 26.0, *)
