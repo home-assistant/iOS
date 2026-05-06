@@ -40,6 +40,6 @@ lane :test do
     result_bundle: true,
     skip_package_dependencies_resolution: true,
     skip_detect_devices: true,
-    destination: 'platform=iOS Simulator,name=iPhone 17,OS=26.4'
+    destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
   )
 end
