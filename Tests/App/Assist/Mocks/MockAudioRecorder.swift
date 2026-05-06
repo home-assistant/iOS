@@ -1,9 +1,10 @@
 @testable import HomeAssistant
 
 final class MockAudioRecorder: AudioRecorderProtocol {
+
     weak var delegate: AudioRecorderDelegate?
     var audioSampleRate: Double?
-
+    var managesAudioSession: Bool = true
     var startRecordingCalled = false
     var stopRecordingCalled = false
 
