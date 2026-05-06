@@ -160,7 +160,11 @@ jobs:
         with:
           path: vendor/bundle
           key: >-
-            ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}
+            ${{ format('{0}-gems-{1}-{2}-{3}',
+            runner.os,
+            env.ImageVersion,
+            env.DEVELOPER_DIR,
+            hashFiles('.ruby-version', '**/Gemfile.lock')) }}
 
       - name: Install Brews
         # right now, we don't need anything from brew for tests, so save some time
@@ -230,7 +234,11 @@ jobs:
         with:
           path: vendor/bundle
           key: >-
-            ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}
+            ${{ format('{0}-gems-{1}-{2}-{3}',
+            runner.os,
+            env.ImageVersion,
+            env.DEVELOPER_DIR,
+            hashFiles('.ruby-version', '**/Gemfile.lock')) }}
 
       - name: Install Brews
         # right now, we don't need anything from brew for sizing, so save some time
