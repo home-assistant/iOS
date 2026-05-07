@@ -1166,6 +1166,8 @@
 		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */; };
 		42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */; };
+		42A7F1012FBC000100BEEF01 /* AllowedTag.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF01 /* AllowedTag.test.swift */; };
+		42A7F1212FBC000100BEEF01 /* NFCTagApproval.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1202FBC000100BEEF01 /* NFCTagApproval.test.swift */; };
 		42F958992BB4684700497981 /* WidgetAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F958972BB4681E00497981 /* WidgetAssist.swift */; };
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
 		42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589D2BB4705E00497981 /* WidgetAssistView.swift */; };
@@ -3017,6 +3019,8 @@
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
 		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
+		42A7F1002FBC000100BEEF01 /* AllowedTag.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/AllowedTag.test.swift; sourceTree = "<group>"; };
+		42A7F1202FBC000100BEEF01 /* NFCTagApproval.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCTagApproval.test.swift; sourceTree = "<group>"; };
 		42F958972BB4681E00497981 /* WidgetAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssist.swift; sourceTree = "<group>"; };
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
 		42F9589D2BB4705E00497981 /* WidgetAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistView.swift; sourceTree = "<group>"; };
@@ -6046,6 +6050,7 @@
 				42A42A692DC37311000ABBAF /* PrivacyView.test.swift */,
 				42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */,
 				42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */,
+				42A7F1202FBC000100BEEF01 /* NFCTagApproval.test.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -7311,6 +7316,7 @@
 				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
 				11883CC624C131EE0036A6C6 /* RealmZone.test.swift */,
 				892F0EF22A0B9F20AAEE4CCA /* DatabaseMigration.test.swift */,
+				42A7F1002FBC000100BEEF01 /* AllowedTag.test.swift */,
 				BC31518EE9DC9E065AC508D9 /* DatabaseTableProtocol.test.swift */,
 				5C50FA39BF16AD0BD782D0D7 /* GRDB+Initialization.test.swift */,
 				9EE9A0E08E6FEBDDE425D0D4 /* TableSchemaTests.test.swift */,
@@ -9771,6 +9777,7 @@
 				11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */,
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
 				42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */,
+				42A7F1212FBC000100BEEF01 /* NFCTagApproval.test.swift in Sources */,
 				42A42A6A2DC37311000ABBAF /* PrivacyView.test.swift in Sources */,
 				42FCD0082B9B1ECE0057783F /* SimulatorThreadClientService.swift in Sources */,
 				42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */,
@@ -10463,6 +10470,7 @@
 				11F2F2B8258728B200F61F7C /* NotificationAttachmentParserURL.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
 				DA6F4C18D66EDBA5DCEAE833 /* DatabaseMigration.test.swift in Sources */,
+				42A7F1012FBC000100BEEF01 /* AllowedTag.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* DatabaseTableProtocol.test.swift in Sources */,
 				692BCBBA4EEEABCC76DBBECA /* GRDB+Initialization.test.swift in Sources */,
 				BECCC152A4E3F69A8EF5A6F3 /* TableSchemaTests.test.swift in Sources */,

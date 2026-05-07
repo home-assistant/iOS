@@ -163,10 +163,20 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 16 tables conform to DatabaseTableProtocol")
+    @Test("AllowedTagTable conforms to DatabaseTableProtocol")
+    func allowedTagTableConformance() throws {
+        let table = AllowedTagTable()
+        #expect(table.tableName == GRDBDatabaseTable.allowedTags.rawValue)
+        #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
+
+        let expectedColumns = DatabaseTables.AllowedTag.allCases.map(\.rawValue)
+        #expect(Set(table.definedColumns) == Set(expectedColumns))
+    }
+
+    @Test("All 17 tables conform to DatabaseTableProtocol")
     func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 16, "Should have exactly 16 tables")
+        #expect(tables.count == 17, "Should have exactly 17 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName

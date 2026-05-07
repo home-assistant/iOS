@@ -68,6 +68,7 @@ struct TagApprovalBottomSheet: View {
                         .buttonStyle(.secondaryButton)
                     }
                 }
+                .padding(.top)
             },
             contentInsets: .init(
                 top: .zero,

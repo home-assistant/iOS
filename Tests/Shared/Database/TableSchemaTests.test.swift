@@ -220,13 +220,24 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 16 tables create successfully together")
+    @Test("AllowedTagTable schema validation")
+    func allowedTagTableSchema() throws {
+        let table = AllowedTagTable()
+        let expectedColumns = DatabaseTables.AllowedTag.allCases.map(\.rawValue)
+        try verifyTableSchema(
+            table: table,
+            expectedTableName: GRDBDatabaseTable.allowedTags.rawValue,
+            expectedColumns: expectedColumns
+        )
+    }
+
+    @Test("All 17 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 16 tables
-        #expect(tables.count == 16, "Should have exactly 16 tables, but found \(tables.count)")
+        // Verify we have exactly 17 tables
+        #expect(tables.count == 17, "Should have exactly 17 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {
