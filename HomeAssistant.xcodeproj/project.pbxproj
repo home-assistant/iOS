@@ -380,6 +380,7 @@
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
+		42A9C0022FBB000100D0C0DE /* TagApprovalBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9C0012FBB000100D0C0DE /* TagApprovalBottomSheet.swift */; };
 		11DE9D8625B6103C0081C0ED /* LauncherAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE9D8525B6103C0081C0ED /* LauncherAppDelegate.swift */; };
 		11DE9FBE25B6186E0081C0ED /* Home Assistant Launcher.app in Embed Mac Launcher */ = {isa = PBXBuildFile; fileRef = 11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		11E1639A250B1B760076D612 /* OnboardingStateObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E16399250B1B760076D612 /* OnboardingStateObservation.swift */; };
@@ -560,6 +561,10 @@
 		420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */; };
 		420CFC682D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */; };
 		420CFC6A2D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */; };
+		42A9C1022FBB000100D0C0DE /* AllowedTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9C1012FBB000100D0C0DE /* AllowedTag.swift */; };
+		42A9C1032FBB000100D0C0DE /* AllowedTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9C1012FBB000100D0C0DE /* AllowedTag.swift */; };
+		42A9C1052FBB000100D0C0DE /* AllowedTagTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9C1042FBB000100D0C0DE /* AllowedTagTable.swift */; };
+		42A9C1062FBB000100D0C0DE /* AllowedTagTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9C1042FBB000100D0C0DE /* AllowedTagTable.swift */; };
 		420CFC6C2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */; };
 		420CFC6D2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */; };
 		420CFC702D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */; };
@@ -2176,6 +2181,7 @@
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
+		42A9C0012FBB000100D0C0DE /* TagApprovalBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagApprovalBottomSheet.swift; sourceTree = "<group>"; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11DE9D8525B6103C0081C0ED /* LauncherAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherAppDelegate.swift; sourceTree = "<group>"; };
 		11DE9D8E25B6103D0081C0ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2334,6 +2340,8 @@
 		420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.test.swift; sourceTree = "<group>"; };
 		420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAppEntityTable.swift; sourceTree = "<group>"; };
 		420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigTable.swift; sourceTree = "<group>"; };
+		42A9C1012FBB000100D0C0DE /* AllowedTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllowedTag.swift; sourceTree = "<group>"; };
+		42A9C1042FBB000100D0C0DE /* AllowedTagTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllowedTagTable.swift; sourceTree = "<group>"; };
 		420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelinesTable.swift; sourceTree = "<group>"; };
 		420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryListForDisplayTable.swift; sourceTree = "<group>"; };
@@ -4074,6 +4082,7 @@
 			isa = PBXGroup;
 			children = (
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
+				42A9C0012FBB000100D0C0DE /* TagApprovalBottomSheet.swift */,
 				42B18FD42F38C11F00A1537A /* WebView */,
 				42955C392F20E2E800E398E8 /* ConnectivityCheck */,
 				42D6EABC2F0FF98F00FA249B /* ExternalMessageBus */,
@@ -4743,6 +4752,7 @@
 				420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */,
 				420CFC622D3F9C1F009A94F3 /* Tables */,
 				4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */,
+				42A9C1012FBB000100D0C0DE /* AllowedTag.swift */,
 				42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */,
 				428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */,
 			);
@@ -4764,6 +4774,7 @@
 				4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */,
 				4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */,
 				14444A34DA125693568C7035 /* KioskSettingsTable.swift */,
+				42A9C1042FBB000100D0C0DE /* AllowedTagTable.swift */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -9526,6 +9537,7 @@
 				4273C48E2C8859530065A5B4 /* PageAppEntity.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
+				42A9C0022FBB000100D0C0DE /* TagApprovalBottomSheet.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLView.swift in Sources */,
@@ -9865,6 +9877,8 @@
 				4298587F2EB1025E00E33710 /* LocationManager.swift in Sources */,
 				420CFC6A2D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */,
 				072BACCC5B2509E4AF06BFED /* KioskSettingsTable.swift in Sources */,
+				42A9C1032FBB000100D0C0DE /* AllowedTag.swift in Sources */,
+				42A9C1062FBB000100D0C0DE /* AllowedTagTable.swift in Sources */,
 				1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */,
 				426D9C752C9C60B000F278AF /* ControlEntityProvider.swift in Sources */,
@@ -10349,6 +10363,8 @@
 				B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */,
 				1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				420CFC682D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */,
+				42A9C1022FBB000100D0C0DE /* AllowedTag.swift in Sources */,
+				42A9C1052FBB000100D0C0DE /* AllowedTagTable.swift in Sources */,
 				42DC8B792E169FA300D9999E /* Color+Hex.swift in Sources */,
 				11B38EE7275C54A200205C7B /* PerformActionIntentHandler.swift in Sources */,
 				11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */,

@@ -9,6 +9,7 @@ public enum TagManagerHandleResult {
 
     case unhandled
     case handled(HandledType)
+    case requiresApproval(tag: String, type: HandledType)
     case open(URL)
 }
 

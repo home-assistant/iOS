@@ -2391,6 +2391,22 @@ public enum L10n {
         public static var tagInvalid: String { return L10n.tr("Localizable", "nfc.read.error.tag_invalid") }
       }
     }
+    public enum TagApproval {
+      /// Allow Always
+      public static var allowAlways: String { return L10n.tr("Localizable", "nfc.tag_approval.allow_always") }
+      /// Allow Once
+      public static var allowOnce: String { return L10n.tr("Localizable", "nfc.tag_approval.allow_once") }
+      /// Copy tag
+      public static var copyTag: String { return L10n.tr("Localizable", "nfc.tag_approval.copy_tag") }
+      /// Send this tag to Home Assistant to perform the automation attached to it.
+      public static var description: String { return L10n.tr("Localizable", "nfc.tag_approval.description") }
+      /// Allow Sending?
+      public static var title: String { return L10n.tr("Localizable", "nfc.tag_approval.title") }
+      public enum TagId {
+        /// Tag identifier
+        public static var title: String { return L10n.tr("Localizable", "nfc.tag_approval.tag_id.title") }
+      }
+    }
     public enum Write {
       /// Hold your %@ near a writable NFC tag
       public static func startMessage(_ p1: Any) -> String {
@@ -3444,6 +3460,14 @@ public enum L10n {
         public enum Notification {
           /// Expand this to show the camera content extension
           public static var body: String { return L10n.tr("Localizable", "settings.developer.camera_notification.notification.body") }
+        }
+      }
+      public enum ClearAllowedTags {
+        /// Clear approved tags
+        public static var title: String { return L10n.tr("Localizable", "settings.developer.clear_allowed_tags.title") }
+        public enum Complete {
+          /// Approved tags cleared
+          public static var title: String { return L10n.tr("Localizable", "settings.developer.clear_allowed_tags.complete.title") }
         }
       }
       public enum CopyRealm {
