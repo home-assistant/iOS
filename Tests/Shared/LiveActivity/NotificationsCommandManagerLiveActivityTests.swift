@@ -7,8 +7,7 @@ import XCTest
 /// Tests for the two live-activity routing paths in `NotificationCommandManager`:
 ///   1. `homeassistant.command == "live_activity"` — explicit command key
 ///   2. `homeassistant.live_update == true` — data flag (Android-compat pattern)
-///   3. `homeassistant.command == "end_live_activity"` — end command
-///   4. `homeassistant.command == "clear_notification"` with a `tag` — dismisses live activity
+///   3. `homeassistant.command == "clear_notification"` with a `tag` — dismisses live activity
 @available(iOS 17.2, *)
 final class NotificationsCommandManagerLiveActivityTests: XCTestCase {
     private var sut: NotificationCommandManager!
@@ -75,30 +74,6 @@ final class NotificationsCommandManagerLiveActivityTests: XCTestCase {
         // No "command" key → returns notCommand error; registry is never called
         XCTAssertThrowsError(try hang(sut.handle(payload)))
         XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
-    }
-
-    // MARK: - end_live_activity command
-
-    func testHandle_endLiveActivityCommand_callsRegistryEnd() {
-        let payload = makePayload([
-            "command": "end_live_activity",
-            "tag": "end-me",
-        ])
-        XCTAssertNoThrow(try hang(sut.handle(payload)))
-        XCTAssertEqual(mockRegistry.endCalls.count, 1)
-        XCTAssertEqual(mockRegistry.endCalls[0].tag, "end-me")
-        XCTAssertTrue(mockRegistry.endCalls[0].policyIsImmediate)
-    }
-
-    func testHandle_endLiveActivityCommand_withDefaultPolicy_callsRegistryEndWithDefaultPolicy() {
-        let payload = makePayload([
-            "command": "end_live_activity",
-            "tag": "end-me",
-            "dismissal_policy": "default",
-        ])
-        XCTAssertNoThrow(try hang(sut.handle(payload)))
-        XCTAssertEqual(mockRegistry.endCalls.count, 1)
-        XCTAssertTrue(mockRegistry.endCalls[0].policyIsDefault)
     }
 
     // MARK: - clear_notification also ends live activity
