@@ -25,7 +25,6 @@ public class NotificationCommandManager {
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
-            register(command: "end_live_activity", handler: HandlerEndLiveActivity())
         }
         #endif
         #endif
