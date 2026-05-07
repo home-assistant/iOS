@@ -648,7 +648,7 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 Tags will work on any device with Home Assistant installed which has hardware support to read them.";
 "nfc.list.learn_more" = "Learn More";
 "nfc.list.read_tag" = "Read Tag";
-"nfc.list.title" = "NFC Tags";
+"nfc.list.title" = "NFC Read/Write";
 "nfc.list.write_tag" = "Write Tag";
 "nfc.not_available" = "NFC is not available on this device";
 "nfc.tag_approval.allow_always" = "Allow Always";
@@ -658,6 +658,13 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "nfc.tag_approval.description" = "Send this tag to Home Assistant to perform the automation attached to it.";
 "nfc.tag_approval.title" = "Allow Sending?";
 "nfc.read.error.generic_failure" = "Failed to read tag";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "nfc.read.error.not_home_assistant" = "NFC tag is not a Home Assistant tag";
 "nfc.read.error.tag_invalid" = "NFC tag is invalid";
 "nfc.read.start_message" = "Hold your %@ near an NFC tag";

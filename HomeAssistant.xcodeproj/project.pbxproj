@@ -662,6 +662,8 @@
 		422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */; };
 		423178442F28C29100814230 /* NFCListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423178422F28C29100814230 /* NFCListView.swift */; };
 		423178452F28C29100814230 /* NFCTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423178432F28C29100814230 /* NFCTagView.swift */; };
+		423178462FBB000100814230 /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423178472FBB000100814230 /* TagsView.swift */; };
+		423178482FBB000100814230 /* AllowedTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423178492FBB000100814230 /* AllowedTagsView.swift */; };
 		423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
@@ -2411,6 +2413,8 @@
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		423178422F28C29100814230 /* NFCListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCListView.swift; sourceTree = "<group>"; };
 		423178432F28C29100814230 /* NFCTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCTagView.swift; sourceTree = "<group>"; };
+		423178472FBB000100814230 /* TagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
+		423178492FBB000100814230 /* AllowedTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllowedTagsView.swift; sourceTree = "<group>"; };
 		4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentHaptics.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
@@ -3858,6 +3862,8 @@
 		1161C01924D7633700A0E3C4 /* NFC */ = {
 			isa = PBXGroup;
 			children = (
+				423178472FBB000100814230 /* TagsView.swift */,
+				423178492FBB000100814230 /* AllowedTagsView.swift */,
 				423178422F28C29100814230 /* NFCListView.swift */,
 				423178432F28C29100814230 /* NFCTagView.swift */,
 				1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */,
@@ -9323,6 +9329,8 @@
 				B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */,
 				423178442F28C29100814230 /* NFCListView.swift in Sources */,
 				423178452F28C29100814230 /* NFCTagView.swift in Sources */,
+				423178462FBB000100814230 /* TagsView.swift in Sources */,
+				423178482FBB000100814230 /* AllowedTagsView.swift in Sources */,
 				42FCCFFE2B9B1C310057783F /* ThreadCredentialsSharing+build.swift in Sources */,
 				423B5E0D2D677BB90000CB95 /* WidgetContentMargin.swift in Sources */,
 				42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */,

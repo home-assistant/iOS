@@ -21,6 +21,19 @@ public struct AllowedTag: Codable, FetchableRecord, PersistableRecord {
         }
     }
 
+    public static func all() -> [AllowedTag] {
+        do {
+            return try Current.database().read { db in
+                try AllowedTag
+                    .order(Column(DatabaseTables.AllowedTag.tag.rawValue))
+                    .fetchAll(db)
+            }
+        } catch {
+            Current.Log.error("Failed to fetch allowed tags, error: \(error.localizedDescription)")
+            return []
+        }
+    }
+
     public static func add(_ tag: String) {
         guard !tag.isEmpty else { return }
 
@@ -30,6 +43,16 @@ public struct AllowedTag: Codable, FetchableRecord, PersistableRecord {
             }
         } catch {
             Current.Log.error("Failed to save allowed tag \(tag), error: \(error.localizedDescription)")
+        }
+    }
+
+    public static func delete(_ tag: String) {
+        do {
+            try Current.database().write { db in
+                _ = try AllowedTag.deleteOne(db, key: tag)
+            }
+        } catch {
+            Current.Log.error("Failed to delete allowed tag \(tag), error: \(error.localizedDescription)")
         }
     }
 

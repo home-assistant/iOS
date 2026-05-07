@@ -2372,7 +2372,7 @@ public enum L10n {
       public static var learnMore: String { return L10n.tr("Localizable", "nfc.list.learn_more") }
       /// Read Tag
       public static var readTag: String { return L10n.tr("Localizable", "nfc.list.read_tag") }
-      /// NFC Tags
+      /// NFC Read/Write
       public static var title: String { return L10n.tr("Localizable", "nfc.list.title") }
       /// Write Tag
       public static var writeTag: String { return L10n.tr("Localizable", "nfc.list.write_tag") }
@@ -4336,6 +4336,29 @@ public enum L10n {
     public enum OpenSettings {
       /// Open Settings
       public static var title: String { return L10n.tr("Localizable", "shortcut_item.open_settings.title") }
+    }
+  }
+
+  public enum Tags {
+    /// Tags
+    public static var title: String { return L10n.tr("Localizable", "tags.title") }
+    public enum Allowed {
+      /// Delete all
+      public static var deleteAll: String { return L10n.tr("Localizable", "tags.allowed.delete_all") }
+      /// No allowed tags
+      public static var empty: String { return L10n.tr("Localizable", "tags.allowed.empty") }
+      /// Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.
+      public static var footer: String { return L10n.tr("Localizable", "tags.allowed.footer") }
+      /// Allowed tags
+      public static var title: String { return L10n.tr("Localizable", "tags.allowed.title") }
+      public enum DeleteAll {
+        public enum Confirm {
+          /// Delete all
+          public static var button: String { return L10n.tr("Localizable", "tags.allowed.delete_all.confirm.button") }
+          /// Delete all allowed tags?
+          public static var title: String { return L10n.tr("Localizable", "tags.allowed.delete_all.confirm.title") }
+        }
+      }
     }
   }
 
