@@ -2372,7 +2372,7 @@ public enum L10n {
       public static var learnMore: String { return L10n.tr("Localizable", "nfc.list.learn_more") }
       /// Read Tag
       public static var readTag: String { return L10n.tr("Localizable", "nfc.list.read_tag") }
-      /// NFC Tags
+      /// NFC Read/Write
       public static var title: String { return L10n.tr("Localizable", "nfc.list.title") }
       /// Write Tag
       public static var writeTag: String { return L10n.tr("Localizable", "nfc.list.write_tag") }
