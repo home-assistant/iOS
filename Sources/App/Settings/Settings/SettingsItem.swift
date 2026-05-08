@@ -32,7 +32,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
-        case .nfc: return L10n.Nfc.List.title
+        case .nfc: return L10n.Tags.title
         case .widgets: return L10n.Settings.Widgets.title
         case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
         case .watch: return L10n.Settings.DetailsSection.WatchRowConfiguration.title
@@ -126,7 +126,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .sensors:
             SensorListView()
         case .nfc:
-            NFCListView()
+            TagsView()
         case .widgets:
             CustomWidgetsListView()
         case .appIconShortcuts:

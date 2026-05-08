@@ -26,6 +26,7 @@ struct DebugView: View {
     // Alerts
     @State private var showDeleteEntitiesAlert = false
     @State private var showResetAppAlert = false
+    @State private var showClearAllowedTagsAlert = false
     @State private var watchSyncErrorMessage: String?
     @State private var showWatchSyncError = false
 
@@ -194,6 +195,9 @@ struct DebugView: View {
             }
         } message: {
             Text(L10n.Settings.Debugging.KeychainRestartRequired.message)
+        }
+        .alert(L10n.Settings.Developer.ClearAllowedTags.Complete.title, isPresented: $showClearAllowedTagsAlert) {
+            Button(L10n.okLabel, role: .cancel) {}
         }
     }
 
@@ -394,6 +398,16 @@ struct DebugView: View {
                 linkContent(
                     image: .init(systemSymbol: .map),
                     title: L10n.Settings.Developer.MapNotification.title
+                )
+            }
+
+            Button {
+                AllowedTag.clearAll()
+                showClearAllowedTagsAlert = true
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .trash),
+                    title: L10n.Settings.Developer.ClearAllowedTags.title
                 )
             }
 

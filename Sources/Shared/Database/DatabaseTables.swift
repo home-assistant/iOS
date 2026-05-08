@@ -17,6 +17,7 @@ public enum GRDBDatabaseTable: String {
     case cameraListConfiguration
     case assistConfiguration
     case kioskSettings
+    case allowedTags
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -195,5 +196,9 @@ public enum DatabaseTables {
     public enum KioskSettings: String, CaseIterable {
         case id
         case settingsJSON
+    }
+
+    public enum AllowedTag: String, CaseIterable {
+        case tag
     }
 }

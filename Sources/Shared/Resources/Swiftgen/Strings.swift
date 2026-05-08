@@ -2391,6 +2391,22 @@ public enum L10n {
         public static var tagInvalid: String { return L10n.tr("Localizable", "nfc.read.error.tag_invalid") }
       }
     }
+    public enum TagApproval {
+      /// Allow Always
+      public static var allowAlways: String { return L10n.tr("Localizable", "nfc.tag_approval.allow_always") }
+      /// Allow Once
+      public static var allowOnce: String { return L10n.tr("Localizable", "nfc.tag_approval.allow_once") }
+      /// Copy tag
+      public static var copyTag: String { return L10n.tr("Localizable", "nfc.tag_approval.copy_tag") }
+      /// Send this tag to Home Assistant to perform the automation attached to it.
+      public static var description: String { return L10n.tr("Localizable", "nfc.tag_approval.description") }
+      /// Allow Sending?
+      public static var title: String { return L10n.tr("Localizable", "nfc.tag_approval.title") }
+      public enum TagId {
+        /// Tag identifier
+        public static var title: String { return L10n.tr("Localizable", "nfc.tag_approval.tag_id.title") }
+      }
+    }
     public enum Write {
       /// Hold your %@ near a writable NFC tag
       public static func startMessage(_ p1: Any) -> String {
@@ -3446,6 +3462,14 @@ public enum L10n {
           public static var body: String { return L10n.tr("Localizable", "settings.developer.camera_notification.notification.body") }
         }
       }
+      public enum ClearAllowedTags {
+        /// Clear approved tags
+        public static var title: String { return L10n.tr("Localizable", "settings.developer.clear_allowed_tags.title") }
+        public enum Complete {
+          /// Approved tags cleared
+          public static var title: String { return L10n.tr("Localizable", "settings.developer.clear_allowed_tags.complete.title") }
+        }
+      }
       public enum CopyRealm {
         /// Copy Realm from app group to Documents
         public static var title: String { return L10n.tr("Localizable", "settings.developer.copy_realm.title") }
@@ -4312,6 +4336,29 @@ public enum L10n {
     public enum OpenSettings {
       /// Open Settings
       public static var title: String { return L10n.tr("Localizable", "shortcut_item.open_settings.title") }
+    }
+  }
+
+  public enum Tags {
+    /// Tags
+    public static var title: String { return L10n.tr("Localizable", "tags.title") }
+    public enum Allowed {
+      /// Delete all
+      public static var deleteAll: String { return L10n.tr("Localizable", "tags.allowed.delete_all") }
+      /// No allowed tags
+      public static var empty: String { return L10n.tr("Localizable", "tags.allowed.empty") }
+      /// Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.
+      public static var footer: String { return L10n.tr("Localizable", "tags.allowed.footer") }
+      /// Allowed tags
+      public static var title: String { return L10n.tr("Localizable", "tags.allowed.title") }
+      public enum DeleteAll {
+        public enum Confirm {
+          /// Delete all
+          public static var button: String { return L10n.tr("Localizable", "tags.allowed.delete_all.confirm.button") }
+          /// Delete all allowed tags?
+          public static var title: String { return L10n.tr("Localizable", "tags.allowed.delete_all.confirm.title") }
+        }
+      }
     }
   }
 

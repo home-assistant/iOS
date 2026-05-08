@@ -263,20 +263,10 @@ class IncomingURLHandler {
 
         switch Current.tags.handle(userActivity: userActivity) {
         case let .handled(type):
-            let (icon, text) = { () -> (MaterialDesignIcons, String) in
-                switch type {
-                case .nfc:
-                    return (.nfcVariantIcon, L10n.Nfc.tagRead)
-                case .generic:
-                    return (.qrcodeIcon, L10n.Nfc.genericTagRead)
-                }
-            }()
-
-            Current.sceneManager.showFullScreenConfirm(
-                icon: icon,
-                text: text,
-                onto: .value(windowController.window)
-            )
+            showTagReadConfirmation(type: type)
+            return true
+        case let .requiresApproval(tag, type):
+            showTagApproval(tag: tag, type: type)
             return true
         case let .open(url):
             // NFC-based URL
@@ -556,6 +546,54 @@ class IncomingURLHandler {
 
         windowController?.webViewControllerPromise.done {
             $0.present(alert, animated: true, completion: nil)
+        }
+    }
+
+    private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
+        windowController?.webViewControllerPromise.done { webViewController in
+            let view = TagApprovalBottomSheet(
+                tag: tag,
+                onAllowOnce: { [weak self] in
+                    self?.fireApprovedTag(tag, type: type)
+                },
+                onAllowAlways: { [weak self] in
+                    AllowedTag.add(tag)
+                    self?.fireApprovedTag(tag, type: type)
+                },
+                onDismiss: { [weak webViewController] in
+                    webViewController?.dismiss(animated: false)
+                }
+            )
+
+            let controller = UIHostingController(rootView: view)
+            controller.modalPresentationStyle = .overFullScreen
+            controller.view.backgroundColor = .clear
+            webViewController.present(controller, animated: false)
+        }
+    }
+
+    private func fireApprovedTag(_ tag: String, type: TagManagerHandleResult.HandledType) {
+        Current.tags.fireEvent(tag: tag).cauterize()
+        showTagReadConfirmation(type: type)
+    }
+
+    private func showTagReadConfirmation(type: TagManagerHandleResult.HandledType) {
+        let (icon, text) = tagConfirmationContent(type: type)
+        Current.sceneManager.showFullScreenConfirm(
+            icon: icon,
+            text: text,
+            onto: .value(windowController.window)
+        )
+    }
+
+    private func tagConfirmationContent(
+        type: TagManagerHandleResult.HandledType
+    ) -> (icon: MaterialDesignIcons, text: String) {
+        switch type {
+        case .nfc:
+            return (.nfcVariantIcon, L10n.Nfc.tagRead)
+        case .generic:
+            return (.qrcodeIcon, L10n.Nfc.genericTagRead)
         }
     }
 
