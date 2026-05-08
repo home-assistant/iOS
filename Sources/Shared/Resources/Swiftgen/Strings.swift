@@ -2178,6 +2178,10 @@ public enum L10n {
           /// Start listening
           public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.start_listening.title") }
         }
+        public enum Unsupported {
+          /// Assist (iOS 26.4+)
+          public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.unsupported.title") }
+        }
       }
       public enum NavigationPath {
         /// e.g. /lovelace/cameras
@@ -2188,6 +2192,20 @@ public enum L10n {
       public enum Script {
         /// Script
         public static var title: String { return L10n.tr("Localizable", "magic_item.action.script.title") }
+      }
+    }
+    public enum AssistPrompt {
+      /// Assist prompt
+      public static var navigationTitle: String { return L10n.tr("Localizable", "magic_item.assist_prompt.navigation_title") }
+      public enum Prompt {
+        /// When executed in CarPlay, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.
+        public static var footer: String { return L10n.tr("Localizable", "magic_item.assist_prompt.prompt.footer") }
+        /// Prompt
+        public static var title: String { return L10n.tr("Localizable", "magic_item.assist_prompt.prompt.title") }
+      }
+      public enum Title {
+        /// Title
+        public static var title: String { return L10n.tr("Localizable", "magic_item.assist_prompt.title.title") }
       }
     }
     public enum BackgroundColor {
@@ -2221,6 +2239,14 @@ public enum L10n {
         public enum List {
           /// App
           public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.app.list.title") }
+        }
+      }
+      public enum AssistPrompt {
+        /// Assist prompt
+        public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.assist_prompt.title") }
+        public enum Unsupported {
+          /// Assist prompt (iOS 26.4+)
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.assist_prompt.unsupported.title") }
         }
       }
       public enum Entity {

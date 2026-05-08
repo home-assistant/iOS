@@ -237,8 +237,8 @@ final class WatchCommunicatorService {
         case .folder:
             // Already handled above, before server resolution
             break
-        case .assistPipeline:
-            // Assist pipelines are not supported on Watch
+        case .assistPipeline, .assistPrompt:
+            // Assist items are not supported on Watch
             message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
         }
     }

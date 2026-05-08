@@ -51,12 +51,13 @@ final class CarPlayAssistSession: NSObject {
     private var postDismissAction: (() -> Void)?
 
     private let pipelineId: String
+    private let prompt: String?
 
     private lazy var template: CPVoiceControlTemplate = {
         let retryButton = CPButton(
             image: makeActionButtonImage(icon: .microphoneIcon, color: .haPrimary)
         ) { [weak self] _ in
-            self?.restartRecording()
+            self?.restart()
         }
         let helpButton = CPButton(
             image: makeActionButtonImage(icon: .commentQuestionIcon, color: .gray)
@@ -113,11 +114,13 @@ final class CarPlayAssistSession: NSObject {
         interfaceController: CPInterfaceController?,
         server: Server,
         pipelineId: String,
+        prompt: String? = nil,
         audioRecorder: AudioRecorderProtocol = AudioRecorder(),
         assistService: AssistServiceProtocol? = nil
     ) {
         self.interfaceController = interfaceController
         self.pipelineId = pipelineId
+        self.prompt = prompt
         self.audioRecorder = audioRecorder
         self.assistService = assistService ?? AssistService(server: server)
         super.init()
@@ -131,17 +134,17 @@ final class CarPlayAssistSession: NSObject {
     }
 
     func start() {
-        audioRecorder.delegate = self
         assistService.delegate = self
         stateQueue.sync {
-            state = .recording
             isStopped = false
             canSendAudioData = false
         }
-        configureAudioSessionForAssist()
-        activateVoiceControlState(for: .recording)
-        interfaceController?.presentTemplate(template, animated: true, completion: nil)
-        audioRecorder.startRecording()
+
+        if let promptToSend {
+            startPrompt(promptToSend, presentTemplate: true)
+        } else {
+            startRecording(presentTemplate: true)
+        }
     }
 
     func stop() {
@@ -245,6 +248,47 @@ final class CarPlayAssistSession: NSObject {
         ).image { _ in
             iconImage.draw(in: CGRect(origin: iconOrigin, size: iconSize))
         }
+    }
+
+    private var promptToSend: String? {
+        guard let prompt = prompt?.trimmingCharacters(in: .whitespacesAndNewlines), !prompt.isEmpty else {
+            return nil
+        }
+
+        return prompt
+    }
+
+    private func startRecording(presentTemplate: Bool) {
+        audioRecorder.delegate = self
+        stateQueue.sync {
+            canSendAudioData = false
+            state = .recording
+        }
+        configureAudioSessionForAssist()
+        activateVoiceControlState(for: .recording)
+        if presentTemplate {
+            interfaceController?.presentTemplate(template, animated: true, completion: nil)
+        }
+        audioRecorder.startRecording()
+    }
+
+    private func startPrompt(_ prompt: String, presentTemplate: Bool) {
+        stateQueue.sync {
+            canSendAudioData = false
+            state = .processing
+        }
+        ttsAudioPlayer?.stop()
+        ttsAudioPlayer = nil
+        ttsPlayer.pause()
+        ttsPlayer.replaceCurrentItem(with: nil)
+        clearTTSPlayerObservers()
+        configureAudioSessionForAssist()
+        activateVoiceControlState(for: .processing)
+        if presentTemplate {
+            interfaceController?.presentTemplate(template, animated: true, completion: nil)
+        }
+        playProcessingIndicatorToneIfNeeded()
+        assistService.assist(source: .text(input: prompt, pipelineId: pipelineId, expectTTS: true))
     }
 
     // MARK: - Audio Session
@@ -635,19 +679,27 @@ final class CarPlayAssistSession: NSObject {
         }
     }
 
-    private func restartRecording() {
-        stateQueue.sync {
-            canSendAudioData = false
-            state = .recording
-        }
+    private func restart() {
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
         ttsPlayer.pause()
         ttsPlayer.replaceCurrentItem(with: nil)
         clearTTSPlayerObservers()
-        configureAudioSessionForAssist()
-        activateVoiceControlState(for: .recording)
-        audioRecorder.startRecording()
+
+        if let promptToSend {
+            startPrompt(promptToSend, presentTemplate: false)
+        } else {
+            startRecording(presentTemplate: false)
+        }
+    }
+
+    private func restartRecording() {
+        ttsAudioPlayer?.stop()
+        ttsAudioPlayer = nil
+        ttsPlayer.pause()
+        ttsPlayer.replaceCurrentItem(with: nil)
+        clearTTSPlayerObservers()
+        startRecording(presentTemplate: false)
     }
 
     private func enterIdleState() {

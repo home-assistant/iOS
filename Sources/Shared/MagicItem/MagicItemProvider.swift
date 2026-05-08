@@ -246,19 +246,23 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 iconName: MaterialDesignIcons.folderIcon.name,
                 customization: item.customization
             )
-        case .assistPipeline:
+        case .assistPipeline, .assistPrompt:
+            let pipelineId = item.assistPipelineId ?? item.id
             let pipelineName: String = {
                 let configs = (try? AssistPipelines.config()) ?? []
                 let pipeline = configs
                     .first(where: { $0.serverId == item.serverId })?
                     .pipelines
-                    .first(where: { $0.id == item.id })
-                return pipeline?.name ?? item.id
+                    .first(where: { $0.id == pipelineId })
+                return pipeline?.name ?? pipelineId
             }()
+            let iconName = item.type == .assistPrompt ?
+                MaterialDesignIcons.messageProcessingOutlineIcon.name :
+                MaterialDesignIcons.microphoneIcon.name
             return .init(
                 id: item.serverUniqueId,
                 name: pipelineName,
-                iconName: MaterialDesignIcons.microphoneIcon.name,
+                iconName: iconName,
                 customization: item.customization
             )
         }
@@ -280,7 +284,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
     private func normalizeCarPlayItems(_ items: [MagicItem]) -> [MagicItem] {
         items.map { item in
-            guard item.type == .assistPipeline else { return item }
+            guard item.type == .assistPipeline || item.type == .assistPrompt else { return item }
 
             var item = item
             var customization = item.customization ?? .init()
