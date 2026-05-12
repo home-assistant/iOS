@@ -617,6 +617,8 @@ private struct CloudhookDetailView: View {
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .textSelection(.enabled)
+                    .privacySensitive()
+                    .screenCaptureProtected()
 
                 Button {
                     viewModel.copyURL()
