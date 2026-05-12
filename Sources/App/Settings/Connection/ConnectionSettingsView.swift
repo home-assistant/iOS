@@ -696,11 +696,18 @@ private final class CloudhookDetailViewModel: ObservableObject {
         defer { isCheckingReachability = false }
 
         do {
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+            configuration.urlCache = nil
+
+            let session = URLSession(configuration: configuration)
+
             var request = URLRequest(url: cloudhookURL)
             request.httpMethod = "HEAD"
             request.timeoutInterval = 10
+            request.cachePolicy = .reloadIgnoringLocalCacheData
 
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await session.data(for: request)
 
             if let httpResponse = response as? HTTPURLResponse {
                 reachabilityStatus = L10n.Settings.ConnectionSection.Cloudhook.CheckReachability
