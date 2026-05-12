@@ -11,7 +11,6 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 111711E825B29ACB003C149E /* Build configuration list for PBXAggregateTarget "Codegen" */;
 			buildPhases = (
-				42CBB9002BBC226900385107 /* BuildMaterialDesignIconsFont */,
 				111711F725B29AFC003C149E /* Run SwiftGen */,
 				115CF89325B29B64001DAECE /* Run SwiftLint */,
 			);
@@ -8827,24 +8826,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Skip SwiftLint if flag is set in Build settings \"user-defined settings\"\nif [ \"${DISABLE_SWIFTLINT}\" = \"1\" ]; then\n  echo \"SwiftLint skipped because DISABLE_SWIFTLINT=1\"\n  exit 0\nfi\n\nif which swiftlint > /dev/null; then\n  swiftlint --strict --config \"${SRCROOT}/.swiftlint.yml\"\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
-		42CBB9002BBC226900385107 /* BuildMaterialDesignIconsFont */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = BuildMaterialDesignIconsFont;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n${SRCROOT}/Tools/BuildMaterialDesignIconsFont.sh\n";
 		};
 		5A903D9D6E968889ECB0DA46 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

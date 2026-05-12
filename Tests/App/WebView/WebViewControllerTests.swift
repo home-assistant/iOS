@@ -1,4 +1,6 @@
 @testable import HomeAssistant
+import CoreLocation
+import PromiseKit
 import UIKit
 import WebKit
 import XCTest
@@ -170,5 +172,133 @@ final class WebViewControllerTests: XCTestCase {
                 UIResponder.keyboardAnimationCurveUserInfoKey: NSNumber(value: curve.rawValue),
             ]
         )
+    }
+}
+
+final class InFlightGreetingDetectorTests: XCTestCase {
+    func testLikelyInFlightWhenSpeedIsAboveFlightThreshold() {
+        let now = Date()
+        let location = makeLocation(speedKilometersPerHour: 310, altitude: 100, timestamp: now)
+
+        XCTAssertTrue(InFlightGreetingDetector.isLikelyInFlight(location: location, now: now))
+    }
+
+    func testLikelyInFlightWhenAltitudeBoostsNearFlightSpeed() {
+        let now = Date()
+        let location = makeLocation(speedKilometersPerHour: 260, altitude: 2_000, timestamp: now)
+
+        XCTAssertTrue(InFlightGreetingDetector.isLikelyInFlight(location: location, now: now))
+    }
+
+    func testNotLikelyInFlightWhenNearFlightSpeedIsAtLowAltitude() {
+        let now = Date()
+        let location = makeLocation(speedKilometersPerHour: 260, altitude: 100, timestamp: now)
+
+        XCTAssertFalse(InFlightGreetingDetector.isLikelyInFlight(location: location, now: now))
+    }
+
+    func testNotLikelyInFlightWhenLocationIsStale() {
+        let now = Date()
+        let location = makeLocation(
+            speedKilometersPerHour: 310,
+            altitude: 2_000,
+            timestamp: now.addingTimeInterval(-601)
+        )
+
+        XCTAssertFalse(InFlightGreetingDetector.isLikelyInFlight(location: location, now: now))
+    }
+
+    func testProductionGreetingIsLimitedToOncePerDay() {
+        let defaults = makeDefaults()
+        var now = Date(timeIntervalSince1970: 1_777_651_200)
+        let manager = makeManager(
+            defaults: defaults,
+            dateProvider: { now },
+            isDebug: false
+        )
+
+        XCTAssertTrue(manager.canShowGreetingToday())
+
+        manager.recordGreetingShown()
+
+        XCTAssertFalse(manager.canShowGreetingToday())
+
+        now = now.addingTimeInterval(24 * 60 * 60)
+
+        XCTAssertTrue(manager.canShowGreetingToday())
+    }
+
+    func testDebugGreetingDoesNotUseDailyLimit() {
+        let manager = makeManager(isDebug: true)
+
+        XCTAssertTrue(manager.canShowGreetingToday())
+
+        manager.recordGreetingShown()
+
+        XCTAssertTrue(manager.canShowGreetingToday())
+    }
+
+    func testColdLaunchGreetingShowsToastWhenLikelyInFlight() {
+        let expectation = expectation(description: "toast shown")
+        let now = Date()
+        let location = makeLocation(speedKilometersPerHour: 310, altitude: 2_000, timestamp: now)
+        let manager = makeManager(
+            dateProvider: { now },
+            locationProvider: { .value(location) },
+            toastPresenter: {
+                expectation.fulfill()
+            }
+        )
+
+        manager.markColdLaunch()
+        manager.evaluateColdLaunchGreetingIfNeeded()
+
+        wait(for: [expectation], timeout: 1)
+    }
+
+    private func makeManager(
+        defaults: UserDefaults? = nil,
+        dateProvider: @escaping () -> Date = Date.init,
+        isDebug: Bool = false,
+        locationProvider: @escaping () -> Promise<CLLocation> = {
+            .value(CLLocation(latitude: 1, longitude: 1))
+        },
+        toastPresenter: @escaping () -> Void = {}
+    ) -> InFlightGreetingManager {
+        InFlightGreetingManager(
+            userDefaults: defaults ?? makeDefaults(),
+            dateProvider: dateProvider,
+            calendarProvider: { Calendar(identifier: .gregorian) },
+            isDebugProvider: { isDebug },
+            applicationStateProvider: { .active },
+            isLocationEnabledProvider: { _ in true },
+            locationProvider: locationProvider,
+            toastPresenter: toastPresenter
+        )
+    }
+
+    private func makeLocation(
+        speedKilometersPerHour: Double,
+        altitude: CLLocationDistance,
+        horizontalAccuracy: CLLocationAccuracy = 100,
+        verticalAccuracy: CLLocationAccuracy = 100,
+        timestamp: Date
+    ) -> CLLocation {
+        CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 52.309, longitude: 4.764),
+            altitude: altitude,
+            horizontalAccuracy: horizontalAccuracy,
+            verticalAccuracy: verticalAccuracy,
+            course: 0,
+            speed: speedKilometersPerHour / 3.6,
+            timestamp: timestamp
+        )
+    }
+
+    private func makeDefaults() -> UserDefaults {
+        let suiteName = "InFlightGreetingDetectorTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+        return defaults
     }
 }

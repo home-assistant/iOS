@@ -1831,6 +1831,15 @@ public enum L10n {
     }
   }
 
+  public enum InFlightGreeting {
+    public enum Toast {
+      /// Home Assistant is ready when you are.
+      public static var message: String { return L10n.tr("Localizable", "in_flight_greeting.toast.message") }
+      /// Have a good flight
+      public static var title: String { return L10n.tr("Localizable", "in_flight_greeting.toast.title") }
+    }
+  }
+
   public enum Intents {
     /// Select a server before picking this value.
     public static var serverRequiredForValue: String { return L10n.tr("Localizable", "intents.server_required_for_value") }

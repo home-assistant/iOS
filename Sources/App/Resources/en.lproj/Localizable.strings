@@ -489,6 +489,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "improv.state.connecting" = "Connecting...";
 "improv.state.success" = "Wi-Fi connected successfully";
 "improv.toast.title" = "There are devices available to setup.";
+"in_flight_greeting.toast.message" = "Home Assistant is ready when you are.";
+"in_flight_greeting.toast.title" = "Have a good flight";
 "improv.wifi.alert.cancel_button" = "Cancel";
 "improv.wifi.alert.connect_button" = "Connect";
 "improv.wifi.alert.description" = "Please enter your SSID and password.";
