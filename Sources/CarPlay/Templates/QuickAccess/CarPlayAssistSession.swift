@@ -54,17 +54,25 @@ final class CarPlayAssistSession: NSObject {
     private let prompt: String?
 
     private lazy var template: CPVoiceControlTemplate = {
-        let retryButtonIcon: MaterialDesignIcons = promptToSend == nil ? .microphoneIcon : .replayIcon
-        let retryButton = CPButton(
-            image: makeActionButtonImage(icon: retryButtonIcon, color: .haPrimary)
+        let recordButton = CPButton(
+            image: makeActionButtonImage(icon: .microphoneIcon, color: .haPrimary)
         ) { [weak self] _ in
-            self?.restart()
+            self?.restartRecording()
+        }
+        let replayPromptButton = CPButton(
+            image: makeActionButtonImage(icon: .replayIcon, color: .haPrimary)
+        ) { [weak self] _ in
+            self?.restartPrompt()
         }
         let helpButton = CPButton(
             image: makeActionButtonImage(icon: .commentQuestionIcon, color: .gray)
         ) { [weak self] _ in
             self?.showPlaybackHelp()
         }
+
+        let actionButtons: [CPButton] = promptToSend == nil
+            ? [recordButton, helpButton]
+            : [recordButton, replayPromptButton, helpButton]
 
         let idleState = CPVoiceControlState(
             identifier: VoiceControlStateID.idle.rawValue,
@@ -75,7 +83,7 @@ final class CarPlayAssistSession: NSObject {
             ),
             repeats: false
         )
-        idleState.actionButtons = [retryButton, helpButton]
+        idleState.actionButtons = actionButtons
 
         let recordingState = CPVoiceControlState(
             identifier: VoiceControlStateID.recording.rawValue,
@@ -104,7 +112,7 @@ final class CarPlayAssistSession: NSObject {
             image: MaterialDesignIcons.alertCircleIcon.carPlayIcon(color: .systemRed, context: .assistStateIndicator),
             repeats: false
         )
-        errorState.actionButtons = [retryButton, helpButton]
+        errorState.actionButtons = actionButtons
 
         return CPVoiceControlTemplate(
             voiceControlStates: [recordingState, processingState, respondingState, idleState, errorState]
@@ -680,20 +688,6 @@ final class CarPlayAssistSession: NSObject {
         }
     }
 
-    private func restart() {
-        ttsAudioPlayer?.stop()
-        ttsAudioPlayer = nil
-        ttsPlayer.pause()
-        ttsPlayer.replaceCurrentItem(with: nil)
-        clearTTSPlayerObservers()
-
-        if let promptToSend {
-            startPrompt(promptToSend, presentTemplate: false)
-        } else {
-            startRecording(presentTemplate: false)
-        }
-    }
-
     private func restartRecording() {
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
@@ -701,6 +695,19 @@ final class CarPlayAssistSession: NSObject {
         ttsPlayer.replaceCurrentItem(with: nil)
         clearTTSPlayerObservers()
         startRecording(presentTemplate: false)
+    }
+
+    private func restartPrompt() {
+        guard let promptToSend else {
+            restartRecording()
+            return
+        }
+        ttsAudioPlayer?.stop()
+        ttsAudioPlayer = nil
+        ttsPlayer.pause()
+        ttsPlayer.replaceCurrentItem(with: nil)
+        clearTTSPlayerObservers()
+        startPrompt(promptToSend, presentTemplate: false)
     }
 
     private func enterIdleState() {
