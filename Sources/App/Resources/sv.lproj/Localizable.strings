@@ -651,6 +651,12 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "nfc.read.error.not_home_assistant" = "NFC-taggen är inte en Home Assistant-tagg";
 "nfc.read.error.tag_invalid" = "NFC-taggen är ogiltig";
 "nfc.read.start_message" = "Håll din %@ nära en NFC-tagg";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "NFC-tagg läst";
 "nfc.write.error.capacity" = "NFC-tagg har otillräcklig kapacitet: behöver %ld men har bara %ld";
 "nfc.write.error.invalid_format" = "NFC-tagg har inte NDEF-format";
@@ -983,6 +989,8 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.developer.annoying_background_notifications.title" = "Irriterande bakgrundsinformation";
 "settings.developer.camera_notification.notification.body" = "Expandera för att visa kamerainnehållstillägget";
 "settings.developer.camera_notification.title" = "Visa tillägg för kamera-aviseringsinnehåll";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "Kopierat sfär från %@ till %@";
 "settings.developer.copy_realm.alert.title" = "Kopierat sfär";
 "settings.developer.copy_realm.title" = "Kopiera sfär från appgrupp till dokument";
@@ -1250,6 +1258,13 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "share_extension.entered_placeholder" = "'inlagt' i händelse";
 "share_extension.error.title" = "Kunde inte skicka";
 "shortcut_item.open_settings.title" = "Öppna inställningar";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Aktivt driftsdataset";
 "thread.border_agent_id.title" = "Gränsvakts-ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Se till att du är inloggad med ditt iCloud-konto som är ägare till ett hem i Apple Home.";

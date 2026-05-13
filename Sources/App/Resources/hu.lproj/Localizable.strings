@@ -655,6 +655,12 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "nfc.read.error.not_home_assistant" = "Az NFC-címke nem Home Assistant címke";
 "nfc.read.error.tag_invalid" = "Az NFC-címke érvénytelen";
 "nfc.read.start_message" = "Tartsa a(z) %@-t egy NFC-címke közelébe";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "NFC-címke olvasása";
 "nfc.write.error.capacity" = "Az NFC-címke kapacitása nem elegendő: %ld szükséges, de csak %ld van.";
 "nfc.write.error.invalid_format" = "Az NFC-címke nem NDEF formátumú";
@@ -987,6 +993,8 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.developer.annoying_background_notifications.title" = "Bosszantó háttér-információk";
 "settings.developer.camera_notification.notification.body" = "Bontsa ki ezt a kameratartalom-bővítmény megjelenítéséhez";
 "settings.developer.camera_notification.title" = "Kamera értesítés tartalmi kiterjesztés megjelenítése";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "Realm másolva innen %@ ide: %@";
 "settings.developer.copy_realm.alert.title" = "Realm átmásolva";
 "settings.developer.copy_realm.title" = "Realm másolása az alkalmazáscsoportból a Dokumentumokba";
@@ -1254,6 +1262,13 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "share_extension.entered_placeholder" = "'entered' az eseményben";
 "share_extension.error.title" = "Nem sikerült elküldeni";
 "shortcut_item.open_settings.title" = "Beállítások megnyitása";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Aktív működési adatkészlet";
 "thread.border_agent_id.title" = "Border Agent azonosító";
 "thread.credentials.share_credentials.no_credentials_message" = "Győződjön meg róla, hogy bejelentkezett az iCloud fiókjával, amely egy Otthon tulajdonosa az Apple Home-ban.";
