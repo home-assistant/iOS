@@ -892,6 +892,14 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Verwijderen";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Certificaat verwijderen?";
 "settings.connection_section.cloud_overrides_external" = "Als je verbinding maakt via Cloud, wordt de externe URL niet gebruikt. Je hoeft die dan niet in te stellen, tenzij je Cloud wilt uitschakelen.";
+"settings.connection_section.cloudhook.check_reachability.reachable" = "Reachable";
+"settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
+"settings.connection_section.cloudhook.check_reachability.result" = "Result";
+"settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
+"settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
+"settings.connection_section.cloudhook.status.not_configured" = "Not configured";
+"settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "Verbonden via";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Minder veilig";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Meest veilig";

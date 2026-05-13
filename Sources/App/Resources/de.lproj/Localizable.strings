@@ -658,9 +658,9 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "nfc.tag_approval.allow_always" = "Immer zulassen";
 "nfc.tag_approval.allow_once" = "Einmal zulassen";
 "nfc.tag_approval.copy_tag" = "Tag kopieren";
-"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.description" = "Dieses Tag an Home Assistant senden, um verknüpfte Automationen auszulösen.";
 "nfc.tag_approval.tag_id.title" = "Tag-Kennung";
-"nfc.tag_approval.title" = "Allow tag?";
+"nfc.tag_approval.title" = "Tag zulassen?";
 "nfc.tag_read" = "NFC-Tag lesen";
 "nfc.write.error.capacity" = "Kapazität des NFC Tags zu gering: benötigt %ld, aber nur %ld vorhanden";
 "nfc.write.error.invalid_format" = "Das NFC-Tag ist nicht im NDEF-Format";
@@ -892,6 +892,14 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Entfernen";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Zertifikat entfernen?";
 "settings.connection_section.cloud_overrides_external" = "Bei Verbindung über die Cloud wird die externe URL nicht verwendet. Du musst keine URL einrichten, außer du möchtest die Cloud deaktivieren.";
+"settings.connection_section.cloudhook.check_reachability.reachable" = "Reachable";
+"settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
+"settings.connection_section.cloudhook.check_reachability.result" = "Result";
+"settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
+"settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
+"settings.connection_section.cloudhook.status.not_configured" = "Not configured";
+"settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "Verbunden über";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Weniger sicher";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Am sichersten";

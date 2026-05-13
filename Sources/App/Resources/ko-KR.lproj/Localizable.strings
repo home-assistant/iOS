@@ -61,7 +61,7 @@
 "app_intents.automations.automation.title" = "Automation";
 "app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
 "app_intents.automations.icon.title" = "Icon";
-"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.parameter.automation.title" = "자동화";
 "app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "닫힘 상태 아이콘";
 "app_intents.controls.assist.parameter.with_voice" = "음성으로";
@@ -114,7 +114,7 @@
 "app_intents.state.toggle" = "토글";
 "app_intents.switch.title" = "스위치";
 "app_intents.widget_action.actions_parameter_configuration" = "어떤 동작을 원하시나요?";
-"assist.button.finish_recording.title" = "Tap to finish recording...";
+"assist.button.finish_recording.title" = "탭하여 녹음 종료";
 "assist.button.listening.title" = "청취 중...";
 "assist.carplay.playback_help.change_playback.detail" = "Choose Download and play if Stream does not play audio in your car.";
 "assist.carplay.playback_help.change_playback.title" = "TTS Playback";
@@ -523,7 +523,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.corner.bottom_right" = "Bottom Right";
 "kiosk.corner.top_left" = "Top Left";
 "kiosk.corner.top_right" = "Top Right";
-"kiosk.enable_button" = "Enable Kiosk Mode";
+"kiosk.enable_button" = "키오스크 모드 활성화";
 "kiosk.footer.description" = "When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.";
 "kiosk.screen_label" = "Screen: %@";
 "kiosk.screensaver.dim_level" = "Dim Level: %li%%";
@@ -531,7 +531,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.mode.blank" = "Blank";
 "kiosk.screensaver.mode.clock" = "Clock";
 "kiosk.screensaver.mode.dim" = "Dim";
-"kiosk.screensaver.pixel_shift" = "Pixel Shift (OLED)";
+"kiosk.screensaver.pixel_shift" = "픽셀 시프트(OLED)";
 "kiosk.screensaver.pixel_shift_footer" = "Pixel shift helps prevent burn-in on OLED displays by slightly moving content periodically.";
 "kiosk.screensaver.section" = "Screensaver";
 "kiosk.screensaver.timeout" = "Timeout";
@@ -544,7 +544,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.timeout.5min" = "5 minutes";
 "kiosk.screensaver.toggle" = "Screensaver";
 "kiosk.screensaver_label" = "Screensaver: %@";
-"kiosk.section.title" = "Kiosk Mode";
+"kiosk.section.title" = "키오스크 모드";
 "kiosk.security.device_auth" = "Device Authentication";
 "kiosk.security.gesture_corner" = "Exit Gesture Corner";
 "kiosk.security.gesture_footer" = "Tap the %1$@ corner %2$@ times to access kiosk settings when locked.";
@@ -553,7 +553,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.security.secret_gesture" = "Secret Exit Gesture";
 "kiosk.security.section" = "Security & Display";
 "kiosk.security.taps_required" = "Taps Required: %li";
-"kiosk.title" = "Kiosk Mode";
+"kiosk.title" = "키오스크 모드";
 "legacy_actions.disclaimer" = "Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.";
 "live_activity.empty_state" = "No active Live Activities";
 "live_activity.end_all.button" = "End All Activities";
@@ -561,14 +561,14 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.end_all.confirm.title" = "End all Live Activities?";
 "live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
 "live_activity.frequent_updates.title" = "Frequent Updates";
-"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
+"live_activity.privacy.message" = "실시간 현황 콘텐츠는 Face ID 또는 Touch ID 없이도 잠금 화면 및 다이내믹 아일랜드에서 볼 수 있습니다. 표시할 내용을 신중하게 선택하십시오.";
 "live_activity.section.active" = "Active Activities";
 "live_activity.section.privacy" = "Privacy";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Enabled";
 "live_activity.status.open_settings" = "Open Settings";
-"live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
-"live_activity.title" = "Live Activities";
+"live_activity.subtitle" = "잠금 화면 및 다이내믹 아일랜드에서 확인하는 Home Assistant 실시간 업데이트";
+"live_activity.title" = "실시간 현황";
 "location_change_notification.app_shortcut.body" = "앱 바로가기를 통해 업데이트된 위치";
 "location_change_notification.background_fetch.body" = "백그라운드 가져오기를 통해 트리거된 현재 위치 전달";
 "location_change_notification.beacon_region_enter.body" = "iBeacon을 통해 %@ 입장함";
@@ -685,7 +685,7 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "notifications_configurator.action.rows.destructive.title" = "파괴적인";
 "notifications_configurator.action.rows.foreground.footer" = "이 기능을 활성화하면 알림을 탭할 때 앱이 백그라운드에 있는 경우 앱이 시작됩니다";
 "notifications_configurator.action.rows.foreground.title" = "앱 실행";
-"notifications_configurator.action.rows.text_input_button_title.title" = "버튼 제목";
+"notifications_configurator.action.rows.text_input_button_title.title" = "버튼 이름";
 "notifications_configurator.action.rows.text_input_placeholder.title" = "자리 표시자";
 "notifications_configurator.action.rows.title.title" = "제목";
 "notifications_configurator.action.text_input.title" = "텍스트 입력";
@@ -745,11 +745,11 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "onboarding.local_only_disclaimer.secondary_description" = "For now, you're securely connected to your local network.";
 "onboarding.local_only_disclaimer.title" = "Local by default.\
 Remote when you're ready.";
-"onboarding.location_access.primary_action.title" = "Share my location";
+"onboarding.location_access.primary_action.title" = "위치 정보 공유";
 "onboarding.location_access.primary_description" = "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.";
-"onboarding.location_access.secondary_action.title" = "Do not share my location";
+"onboarding.location_access.secondary_action.title" = "위치 정보 공유 안 함";
 "onboarding.location_access.secondary_description" = "This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.";
-"onboarding.location_access.title" = "Use this device's location for automations";
+"onboarding.location_access.title" = "자동화를 위해 기기 위치 정보 사용";
 "onboarding.manual_setup.connect" = "연결";
 "onboarding.manual_setup.couldnt_make_url.message" = "'%@'은 유효한 URL이 아닙니다.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL을 생성할 수 없습니다.";
@@ -841,7 +841,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
 \
 Home Assistant is open source, advocates for privacy and runs locally in your home.";
-"onboarding.welcome.updated.secondary_button" = "Learn more";
+"onboarding.welcome.updated.secondary_button" = "더 알아보기";
 "open_label" = "열기";
 "permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
 "permission.notification.primary_button" = "Allow notifications";
@@ -892,10 +892,18 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
 "settings.connection_section.cloud_overrides_external" = "Cloud를 통해 연결할 때 외부 URL은 사용되지 않습니다. Cloud를 비활성화하려는 경우가 아니면 구성할 필요가 없습니다.";
+"settings.connection_section.cloudhook.check_reachability.reachable" = "Reachable";
+"settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
+"settings.connection_section.cloudhook.check_reachability.result" = "Result";
+"settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
+"settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
+"settings.connection_section.cloudhook.status.not_configured" = "Not configured";
+"settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "다음을 통해 연결됨";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
-"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
-"settings.connection_section.connection_access_security_level.title" = "Connection security level";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "최고 보안 수준";
+"settings.connection_section.connection_access_security_level.title" = "연결 보안 수준";
 "settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.delete_server.message" = "이 서버를 삭제 하시겠습니까?";
 "settings.connection_section.delete_server.progress" = "서버를 삭제하는 중...";
@@ -1039,13 +1047,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.widgets.create.name.placeholder" = "예: 거실 즐겨 찾기";
 "settings.widgets.create.name.title" = "이름";
 "settings.widgets.create.no_items.title" = "항목 없음";
-"settings.widgets.create.title" = "위젯 만들기";
+"settings.widgets.create.title" = "위젯 생성";
 "settings.widgets.custom.delete_all.title" = "모든 사용자 정의 위젯 재설정";
 "settings.widgets.select.empty.subtitle" = "Create your first widget to add this entity.";
-"settings.widgets.select.empty.title" = "No Widgets Yet";
+"settings.widgets.select.empty.title" = "추가할 위젯 없음";
 "settings.widgets.select.footer.title" = "Select a widget to add this entity to.";
 "settings.widgets.select.item_count.title" = "%li items";
-"settings.widgets.select.title" = "Add to Widget";
+"settings.widgets.select.title" = "위젯에 추가";
 "settings.widgets.title" = "위젯";
 "settings.widgets.your_widgets.title" = "내 위젯";
 "settings_details.actions.actions_synced.empty" = "동기화된 동작 없음";
@@ -1120,7 +1128,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.visibility.title" = "다음에서 앱 표시하기";
 "settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
 "settings_details.http.warning.title" = "Security Warning";
-"settings_details.learn_more" = "Learn more";
+"settings_details.learn_more" = "자세한 내용 보기";
 "settings_details.legacy_actions.title" = "(레거시) iOS 작업";
 "settings_details.location.background_refresh.disabled" = "비활성화됨";
 "settings_details.location.background_refresh.enabled" = "활성화됨";
@@ -1676,15 +1684,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.upper_template" = "상단 텍스트 템플릿";
 "widgets.details.title" = "세부 정보";
 "widgets.entity_state.placeholder" = "구성요소 상태";
-"widgets.gauge.description" = "홈어시스턴트의 숫자 상태를 게이지에 표시";
+"widgets.gauge.description" = "Home Assistant의 숫자 상태를 게이지에 표시";
 "widgets.gauge.description_with_warning" = "Home Assistant에서 게이지에 숫자 상태를 표시합니다. 주의: 사용자는 템플릿 액세스를 위해 관리자여야 합니다.";
 "widgets.gauge.parameters.action" = "동작";
 "widgets.gauge.parameters.gauge_type" = "게이지 유형";
 "widgets.gauge.parameters.gauge_type.capacity" = "용량";
 "widgets.gauge.parameters.gauge_type.normal" = "일반";
-"widgets.gauge.parameters.max_label_template" = "최대 라벨 템플릿";
-"widgets.gauge.parameters.min_label_template" = "최소 라벨 템플릿";
-"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.max_label_template" = "최대 레이블 템플릿";
+"widgets.gauge.parameters.min_label_template" = "최소 레이블 템플릿";
+"widgets.gauge.parameters.run_script" = "스크립트 실행";
 "widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "서버";
 "widgets.gauge.parameters.value_label_template" = "값 레이블 템플릿";
@@ -1715,7 +1723,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.due_date.ago_format" = "%@ ago";
 "widgets.todo_list.due_date.in_format" = "In %@";
 "widgets.todo_list.due_date.now" = "Now";
-"widgets.todo_list.due_date.today" = "Today";
+"widgets.todo_list.due_date.today" = "오늘";
 "widgets.todo_list.parameter.item_id" = "Item ID";
 "widgets.todo_list.parameter.list" = "List";
 "widgets.todo_list.parameter.list_id" = "List ID";
