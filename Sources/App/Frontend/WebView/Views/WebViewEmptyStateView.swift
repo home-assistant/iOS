@@ -1,113 +1,14 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
-
-enum WebViewEmptyStateStyle: Equatable {
-    case disconnected
-    case unauthenticated
-    case recoveredServerNeedingReauthentication
-
-    enum HeaderAccessory {
-        case none
-        case settings
-        case close
-    }
-
-    var title: String {
-        switch self {
-        case .disconnected:
-            L10n.WebView.EmptyState.title
-        case .unauthenticated:
-            L10n.Unauthenticated.Message.title
-        case .recoveredServerNeedingReauthentication:
-            L10n.Onboarding.ServerImport.Reauthenticate.title
-        }
-    }
-
-    var body: String {
-        switch self {
-        case .disconnected:
-            L10n.WebView.EmptyState.body
-        case .unauthenticated:
-            L10n.Unauthenticated.Message.body
-        case .recoveredServerNeedingReauthentication:
-            ""
-        }
-    }
-
-    var primaryButtonTitle: String {
-        switch self {
-        case .disconnected:
-            L10n.WebView.EmptyState.retryButton
-        case .unauthenticated:
-            L10n.WebView.EmptyState.reauthenticateButton
-        case .recoveredServerNeedingReauthentication:
-            L10n.Onboarding.ServerImport.Reauthenticate.continueButton
-        }
-    }
-
-    var secondaryButtonTitle: String {
-        switch self {
-        case .disconnected, .unauthenticated, .recoveredServerNeedingReauthentication:
-            L10n.WebView.EmptyState.openSettingsButton
-        }
-    }
-
-    var leadingHeaderAccessory: HeaderAccessory {
-        switch self {
-        case .disconnected:
-            .none
-        case .unauthenticated:
-            .settings
-        case .recoveredServerNeedingReauthentication:
-            .none
-        }
-    }
-
-    var trailingHeaderAccessory: HeaderAccessory {
-        switch self {
-        case .disconnected, .unauthenticated:
-            .close
-        case .recoveredServerNeedingReauthentication:
-            .settings
-        }
-    }
-
-    var showsSecondarySettingsButton: Bool {
-        switch self {
-        case .disconnected:
-            true
-        case .unauthenticated:
-            false
-        case .recoveredServerNeedingReauthentication:
-            false
-        }
-    }
-
-    var showsServerPicker: Bool {
-        switch self {
-        case .disconnected, .unauthenticated, .recoveredServerNeedingReauthentication:
-            true
-        }
-    }
-
-    var urlPickerTitle: String {
-        switch self {
-        case .disconnected, .unauthenticated:
-            L10n.WebView.EmptyState.reauthenticateButton
-        case .recoveredServerNeedingReauthentication:
-            L10n.Onboarding.ServerImport.Reauthenticate.urlPickerTitle
-        }
-    }
-}
 
 struct WebViewEmptyStateView: View {
-    @Environment(\.safeAreaInsets) private var safeAreaInsets
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
     @State private var isPerformingPrimaryAction = false
     @State private var errorMessage: String?
+
+    private let headerAccessorySize = CGSize(width: 44, height: 44)
 
     let style: WebViewEmptyStateStyle
     let server: Server
@@ -152,25 +53,27 @@ struct WebViewEmptyStateView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            content
-            header
-        }
-        .ignoresSafeArea()
-        .alert(L10n.errorLabel, isPresented: .init(
-            get: { errorMessage != nil },
-            set: { newValue in
-                if !newValue {
+        content
+            .safeAreaInset(edge: .top, content: {
+                header
+            })
+            .safeAreaInset(edge: .bottom, content: {
+                actionButtons
+            })
+            .alert(L10n.errorLabel, isPresented: .init(
+                get: { errorMessage != nil },
+                set: { newValue in
+                    if !newValue {
+                        errorMessage = nil
+                    }
+                }
+            )) {
+                Button(L10n.okLabel, role: .cancel) {
                     errorMessage = nil
                 }
+            } message: {
+                Text(errorMessage ?? "")
             }
-        )) {
-            Button(L10n.okLabel, role: .cancel) {
-                errorMessage = nil
-            }
-        } message: {
-            Text(errorMessage ?? "")
-        }
     }
 
     private var header: some View {
@@ -184,38 +87,42 @@ struct WebViewEmptyStateView: View {
             headerAccessory(style.trailingHeaderAccessory)
         }
         .padding()
-        // This is needed alongside with the ignores safe area below because
-        // this view is added as a subview to the WebView
-        .offset(x: 0, y: safeAreaInsets.top)
     }
 
     private var content: some View {
-        VStack(spacing: DesignSystem.Spaces.two) {
+        VStack(spacing: DesignSystem.Spaces.three) {
             iconView
-            Text(style.title)
-                .font(.title2)
-                .fontWeight(.semibold)
-            bodyText
             VStack(spacing: DesignSystem.Spaces.one) {
-                primaryButton
-                    .buttonStyle(.primaryButton)
-                reauthURLHint
-                if canShowErrorDetailsButton {
-                    errorDetailsButton
-                        .buttonStyle(.secondaryButton)
-                }
-                if style.showsSecondarySettingsButton, !canShowErrorDetailsButton {
-                    secondaryButton
-                        .buttonStyle(.secondaryButton)
-                }
+                Text(style.title)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                bodyText
             }
-            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-            .padding(.horizontal, DesignSystem.Spaces.two)
-            .padding(.top)
+            Spacer()
         }
-        .padding(DesignSystem.Spaces.three)
+        .padding(.horizontal, DesignSystem.Spaces.three)
+        .padding(.top, DesignSystem.Spaces.five)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: .systemBackground))
+    }
+
+    private var actionButtons: some View {
+        VStack(spacing: DesignSystem.Spaces.one) {
+            primaryButton
+                .buttonStyle(.primaryButton)
+            reauthURLHint
+            if canShowErrorDetailsButton {
+                errorDetailsButton
+                    .buttonStyle(.secondaryButton)
+            }
+            if style.showsSecondarySettingsButton, !canShowErrorDetailsButton {
+                secondaryButton
+                    .buttonStyle(.secondaryButton)
+            }
+        }
+        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .padding(.top)
     }
 
     @ViewBuilder
@@ -236,17 +143,15 @@ struct WebViewEmptyStateView: View {
         switch accessory {
         case .none:
             Color.clear
-                .frame(width: 44, height: 44)
+                .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
         case .settings:
             Button(action: {
                 settingsAction?()
             }) {
                 Image(systemSymbol: .gearshape)
                     .font(.title3)
-                    .foregroundStyle(Color(uiColor: .label))
-                    .frame(width: 44, height: 44)
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .clipShape(Circle())
+                    .foregroundStyle(Color.secondary)
+                    .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
             }
             .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
         case .close:
@@ -264,7 +169,6 @@ struct WebViewEmptyStateView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)
-                .foregroundColor(.accentColor)
         case .recoveredServerNeedingReauthentication:
             Image(systemSymbol: .key)
                 .font(.system(size: 56))
@@ -388,114 +292,5 @@ struct WebViewEmptyStateView: View {
                 }
             }
         }
-    }
-}
-
-#Preview {
-    WebViewEmptyStateView(
-        style: .disconnected,
-        server: ServerFixture.standard
-    )
-}
-
-final class WebViewEmptyStateWrapperView: UIView {
-    private let hostingController: UIHostingController<WebViewEmptyStateView>
-    private let server: Server
-    private let retryAction: (() -> Void)?
-    private let settingsAction: (() -> Void)?
-    private let errorDetailsAction: (() -> Void)?
-    private let reauthAction: ((ConnectionInfo.URLType) -> Void)?
-    private let recoveredServerReauthAction: (
-        (ConnectionInfo.URLType, @escaping (Swift.Result<Void, Error>) -> Void)
-            -> Void
-    )?
-    private let serverSelectionAction: ((Server) -> Void)?
-    private let dismissAction: (() -> Void)?
-    private(set) var style: WebViewEmptyStateStyle
-    private(set) var showsErrorDetailsButton: Bool
-
-    init(
-        style: WebViewEmptyStateStyle = .disconnected,
-        server: Server,
-        showsErrorDetailsButton: Bool = false,
-        retryAction: (() -> Void)? = nil,
-        settingsAction: (() -> Void)? = nil,
-        errorDetailsAction: (() -> Void)? = nil,
-        reauthAction: ((ConnectionInfo.URLType) -> Void)? = nil,
-        recoveredServerReauthAction: (
-            (ConnectionInfo.URLType, @escaping (Swift.Result<Void, Error>) -> Void) -> Void
-        )? =
-            nil,
-        serverSelectionAction: ((Server) -> Void)? = nil,
-        dismissAction: (() -> Void)? = nil
-    ) {
-        self.style = style
-        self.server = server
-        self.showsErrorDetailsButton = showsErrorDetailsButton
-        self.retryAction = retryAction
-        self.settingsAction = settingsAction
-        self.errorDetailsAction = errorDetailsAction
-        self.reauthAction = reauthAction
-        self.recoveredServerReauthAction = recoveredServerReauthAction
-        self.serverSelectionAction = serverSelectionAction
-        self.dismissAction = dismissAction
-        let swiftUIView = WebViewEmptyStateView(
-            style: style,
-            server: server,
-            showsErrorDetailsButton: showsErrorDetailsButton,
-            availableReauthURLTypes: Self.availableReauthURLTypes(for: server),
-            retryAction: retryAction,
-            settingsAction: settingsAction,
-            errorDetailsAction: errorDetailsAction,
-            reauthAction: reauthAction,
-            recoveredServerReauthAction: recoveredServerReauthAction,
-            serverSelectionAction: serverSelectionAction,
-            dismissAction: dismissAction
-        )
-        self.hostingController = UIHostingController(rootView: swiftUIView)
-        super.init(frame: .zero)
-        setup()
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setup() {
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(hostingController.view)
-        NSLayoutConstraint.activate([
-            hostingController.view.topAnchor.constraint(equalTo: topAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: bottomAnchor),
-            hostingController.view.leadingAnchor.constraint(equalTo: leadingAnchor),
-            hostingController.view.trailingAnchor.constraint(equalTo: trailingAnchor),
-        ])
-        backgroundColor = .clear
-    }
-
-    func update(style: WebViewEmptyStateStyle, showsErrorDetailsButton: Bool) {
-        guard self.style != style || self.showsErrorDetailsButton != showsErrorDetailsButton else { return }
-        self.style = style
-        self.showsErrorDetailsButton = showsErrorDetailsButton
-        hostingController.rootView = WebViewEmptyStateView(
-            style: style,
-            server: server,
-            showsErrorDetailsButton: showsErrorDetailsButton,
-            availableReauthURLTypes: Self.availableReauthURLTypes(for: server),
-            retryAction: retryAction,
-            settingsAction: settingsAction,
-            errorDetailsAction: errorDetailsAction,
-            reauthAction: reauthAction,
-            recoveredServerReauthAction: recoveredServerReauthAction,
-            serverSelectionAction: serverSelectionAction,
-            dismissAction: dismissAction
-        )
-    }
-
-    /// Returns available URL types for re-authentication, ordered by preference: remote UI > external > internal.
-    private static func availableReauthURLTypes(for server: Server) -> [ConnectionInfo.URLType] {
-        let preferenceOrder: [ConnectionInfo.URLType] = [.remoteUI, .external, .internal]
-        return preferenceOrder.filter { server.info.connection.address(for: $0) != nil }
     }
 }

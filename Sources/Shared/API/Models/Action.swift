@@ -184,18 +184,6 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         return true
     }
 
-    #if os(iOS)
-    public var uiShortcut: UIApplicationShortcutItem {
-        UIApplicationShortcutItem(
-            type: ID,
-            localizedTitle: Text,
-            localizedSubtitle: nil,
-            icon: nil,
-            userInfo: [:]
-        )
-    }
-    #endif
-
     public enum TriggerType {
         case event
         case scene

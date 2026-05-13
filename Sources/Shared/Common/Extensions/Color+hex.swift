@@ -48,28 +48,35 @@ public extension Color {
 
     func hex() -> String? {
         let uic = UIColor(self)
-        guard let components = uic.cgColor.components, components.count >= 3 else {
+
+        // `cgColor.components` only exposes three values for RGB color spaces. Grayscale
+        // colors (e.g. `.white`, `.black`, anything picked from the system grayscale
+        // gamut) report two components and previously caused this method to return nil,
+        // breaking ColorPicker round-trips. Use `getRed:green:blue:alpha:` instead — it
+        // converts grayscale colors to their RGB equivalents.
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 1
+        guard uic.getRed(&r, green: &g, blue: &b, alpha: &a) else {
             return nil
         }
-        let r = Float(components[0])
-        let g = Float(components[1])
-        let b = Float(components[2])
-        var a = Float(1.0)
 
-        if components.count >= 4 {
-            a = Float(components[3])
-        }
+        let rf = Float(r)
+        let gf = Float(g)
+        let bf = Float(b)
+        let af = Float(a)
 
-        if a != Float(1.0) {
+        if af != Float(1.0) {
             return String(
                 format: "%02lX%02lX%02lX%02lX",
-                lroundf(r * 255),
-                lroundf(g * 255),
-                lroundf(b * 255),
-                lroundf(a * 255)
+                lroundf(rf * 255),
+                lroundf(gf * 255),
+                lroundf(bf * 255),
+                lroundf(af * 255)
             )
         } else {
-            return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
+            return String(format: "%02lX%02lX%02lX", lroundf(rf * 255), lroundf(gf * 255), lroundf(bf * 255))
         }
     }
 }

@@ -533,6 +533,30 @@ public enum L10n {
       }
     }
     public enum Carplay {
+      public enum PlaybackHelp {
+        /// If you encounter audio playback issues, open CarPlay settings in the Home Assistant Companion app, tap Advanced, open Assist, and change TTS Playback to Download and play.
+        public static var message: String { return L10n.tr("Localizable", "assist.carplay.playback_help.message") }
+        /// Audio Playback Help
+        public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.title") }
+        public enum ChangePlayback {
+          /// Choose Download and play if Stream does not play audio in your car.
+          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.change_playback.detail") }
+          /// TTS Playback
+          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.change_playback.title") }
+        }
+        public enum GoToAdvanced {
+          /// Open Advanced, then Assist.
+          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_advanced.detail") }
+          /// Advanced > Assist
+          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_advanced.title") }
+        }
+        public enum OpenApp {
+          /// Open CarPlay settings in the Home Assistant Companion app.
+          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.open_app.detail") }
+          /// Companion app
+          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.open_app.title") }
+        }
+      }
       public enum Processing {
         /// Processing...
         public static var title: String { return L10n.tr("Localizable", "assist.carplay.processing.title") }
@@ -761,6 +785,106 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "carPlay.debug.delete_db.reset.title") }
         }
       }
+      public enum Settings {
+        /// CarPlay Debug
+        public static var navigationTitle: String { return L10n.tr("Localizable", "carPlay.debug.settings.navigation_title") }
+        /// Reset
+        public static var reset: String { return L10n.tr("Localizable", "carPlay.debug.settings.reset") }
+        /// CarPlay Debug Settings
+        public static var rowTitle: String { return L10n.tr("Localizable", "carPlay.debug.settings.row_title") }
+        public enum AssistSession {
+          /// Allow Bluetooth A2DP
+          public static var allowBluetoothA2dp: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.allow_bluetooth_a2dp") }
+          /// Allow Bluetooth HFP
+          public static var allowBluetoothHfp: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.allow_bluetooth_hfp") }
+          /// Audio category
+          public static var audioCategory: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.audio_category") }
+          /// Audio mode
+          public static var audioMode: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.audio_mode") }
+          /// Duck others
+          public static var duckOthers: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.duck_others") }
+          /// These values apply when a new CarPlay Assist session starts.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.footer") }
+          /// Interrupt spoken audio
+          public static var interruptSpokenAudio: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.interrupt_spoken_audio") }
+          /// Play recording indicator tone
+          public static var playRecordingIndicatorTone: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.play_recording_indicator_tone") }
+          /// Preferred sample rate
+          public static var preferredSampleRate: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.preferred_sample_rate") }
+          /// AudioRecorder manages audio session
+          public static var recorderManagesAudioSession: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.recorder_manages_audio_session") }
+          /// Assist Session
+          public static var title: String { return L10n.tr("Localizable", "carPlay.debug.settings.assist_session.title") }
+        }
+        public enum Option {
+          public enum AudioCategory {
+            /// playAndRecord
+            public static var playAndRecord: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_category.play_and_record") }
+            /// playback
+            public static var playback: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_category.playback") }
+            /// record
+            public static var record: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_category.record") }
+          }
+          public enum AudioMode {
+            /// default
+            public static var `default`: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.default") }
+            /// measurement
+            public static var measurement: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.measurement") }
+            /// spokenAudio
+            public static var spokenAudio: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.spoken_audio") }
+            /// voiceChat
+            public static var voiceChat: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.voice_chat") }
+            /// voicePrompt
+            public static var voicePrompt: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.audio_mode.voice_prompt") }
+          }
+          public enum PlaybackDelay {
+            /// None
+            public static var `none`: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.playback_delay.none") }
+          }
+          public enum TtsPlaybackStrategy {
+            /// Download and play
+            public static var downloadAndPlay: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.tts_playback_strategy.download_and_play") }
+            /// Stream
+            public static var stream: String { return L10n.tr("Localizable", "carPlay.debug.settings.option.tts_playback_strategy.stream") }
+          }
+        }
+        public enum TtsAudioSession {
+          /// Activate audio session before play
+          public static var activateAudioSessionBeforePlay: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.activate_audio_session_before_play") }
+          /// TTS allow Bluetooth A2DP
+          public static var allowBluetoothA2dp: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.allow_bluetooth_a2dp") }
+          /// TTS allow Bluetooth HFP
+          public static var allowBluetoothHfp: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.allow_bluetooth_hfp") }
+          /// TTS category
+          public static var category: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.category") }
+          /// Deactivate before reconfigure
+          public static var deactivateBeforeReconfigure: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.deactivate_before_reconfigure") }
+          /// TTS duck others
+          public static var duckOthers: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.duck_others") }
+          /// This section lets you force a dedicated TTS session reconfiguration, which is the most likely area if another app starting playback makes the response suddenly audible.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.footer") }
+          /// TTS interrupt spoken audio
+          public static var interruptSpokenAudio: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.interrupt_spoken_audio") }
+          /// TTS mode
+          public static var mode: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.mode") }
+          /// Reconfigure before TTS
+          public static var reconfigureBeforeTts: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.reconfigure_before_tts") }
+          /// TTS Audio Session
+          public static var title: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_audio_session.title") }
+        }
+        public enum TtsPlayback {
+          /// AVPlayer waits to minimize stalling
+          public static var avplayerWaitsToMinimizeStalling: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.avplayer_waits_to_minimize_stalling") }
+          /// Use the downloaded AVAudioPlayer strategy to determine whether the failure is tied to AVPlayer or remote URL playback.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.footer") }
+          /// Playback delay
+          public static var playbackDelay: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.playback_delay") }
+          /// Playback strategy
+          public static var playbackStrategy: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.playback_strategy") }
+          /// TTS Playback
+          public static var title: String { return L10n.tr("Localizable", "carPlay.debug.settings.tts_playback.title") }
+        }
+      }
     }
     public enum Labels {
       /// Already added
@@ -775,6 +899,18 @@ public enum L10n {
       public static var servers: String { return L10n.tr("Localizable", "carPlay.labels.servers") }
       public enum Settings {
         public enum Advanced {
+          public enum Assist {
+            public enum Section {
+              /// Assist
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.section.title") }
+            }
+            public enum TtsPlayback {
+              /// In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.
+              public static var footer: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.tts_playback.footer") }
+              /// TTS Playback
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.tts_playback.title") }
+            }
+          }
           public enum Section {
             /// Advanced
             public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.title") }
@@ -1910,8 +2046,6 @@ public enum L10n {
     public enum Status {
       /// Enabled
       public static var enabled: String { return L10n.tr("Localizable", "live_activity.status.enabled") }
-      /// Not available on iPad
-      public static var notSupported: String { return L10n.tr("Localizable", "live_activity.status.not_supported") }
       /// Open Settings
       public static var openSettings: String { return L10n.tr("Localizable", "live_activity.status.open_settings") }
     }
@@ -2238,7 +2372,7 @@ public enum L10n {
       public static var learnMore: String { return L10n.tr("Localizable", "nfc.list.learn_more") }
       /// Read Tag
       public static var readTag: String { return L10n.tr("Localizable", "nfc.list.read_tag") }
-      /// NFC Tags
+      /// NFC Read/Write
       public static var title: String { return L10n.tr("Localizable", "nfc.list.title") }
       /// Write Tag
       public static var writeTag: String { return L10n.tr("Localizable", "nfc.list.write_tag") }
@@ -2255,6 +2389,22 @@ public enum L10n {
         public static var notHomeAssistant: String { return L10n.tr("Localizable", "nfc.read.error.not_home_assistant") }
         /// NFC tag is invalid
         public static var tagInvalid: String { return L10n.tr("Localizable", "nfc.read.error.tag_invalid") }
+      }
+    }
+    public enum TagApproval {
+      /// Allow Always
+      public static var allowAlways: String { return L10n.tr("Localizable", "nfc.tag_approval.allow_always") }
+      /// Allow Once
+      public static var allowOnce: String { return L10n.tr("Localizable", "nfc.tag_approval.allow_once") }
+      /// Copy tag
+      public static var copyTag: String { return L10n.tr("Localizable", "nfc.tag_approval.copy_tag") }
+      /// Send this tag to Home Assistant to trigger linked automations.
+      public static var description: String { return L10n.tr("Localizable", "nfc.tag_approval.description") }
+      /// Allow tag?
+      public static var title: String { return L10n.tr("Localizable", "nfc.tag_approval.title") }
+      public enum TagId {
+        /// Tag identifier
+        public static var title: String { return L10n.tr("Localizable", "nfc.tag_approval.tag_id.title") }
       }
     }
     public enum Write {
@@ -2899,13 +3049,37 @@ public enum L10n {
   }
 
   public enum Settings {
+    public enum AppIconShortcuts {
+      /// This item is already in your shortcuts.
+      public static var duplicateError: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.duplicate_error") }
+      /// Choose items to display when long pressing the app icon.
+      public static var subtitle: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.subtitle") }
+      /// App Icon Shortcuts
+      public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.title") }
+      public enum AddItem {
+        /// Add item
+        public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.add_item.title") }
+      }
+      public enum Footer {
+        /// iOS shows up to four shortcuts from the app icon quick actions menu.
+        public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.footer.title") }
+      }
+      public enum Items {
+        /// Items
+        public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.items.title") }
+      }
+      public enum Reset {
+        /// Reset App Icon Shortcuts?
+        public static var confirmationTitle: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.reset.confirmation_title") }
+        /// Reset App Icon Shortcuts
+        public static var title: String { return L10n.tr("Localizable", "settings.app_icon_shortcuts.reset.title") }
+      }
+    }
     public enum ConnectionSection {
       /// Activate
       public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
-      /// All Servers
-      public static var allServers: String { return L10n.tr("Localizable", "settings.connection_section.all_servers") }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
       public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
       /// Connected via
@@ -2978,6 +3152,32 @@ public enum L10n {
           public static var remove: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove_confirmation.remove") }
           /// Remove Certificate?
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove_confirmation.title") }
+        }
+      }
+      public enum Cloudhook {
+        /// Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.footer") }
+        /// Cloudhook
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.title") }
+        public enum CheckReachability {
+          /// Reachable
+          public static var reachable: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.reachable") }
+          /// Reachable (HTTP %d)
+          public static func reachableStatusCode(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.reachable_status_code", p1)
+          }
+          /// Result
+          public static var result: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.result") }
+          /// Check reachability
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.title") }
+          /// Unreachable: %@
+          public static func unreachable(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.unreachable", String(describing: p1))
+          }
+        }
+        public enum Status {
+          /// Not configured
+          public static var notConfigured: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.status.not_configured") }
         }
       }
       public enum ConnectionAccessSecurityLevel {
@@ -3286,6 +3486,14 @@ public enum L10n {
         public enum Notification {
           /// Expand this to show the camera content extension
           public static var body: String { return L10n.tr("Localizable", "settings.developer.camera_notification.notification.body") }
+        }
+      }
+      public enum ClearAllowedTags {
+        /// Clear approved tags
+        public static var title: String { return L10n.tr("Localizable", "settings.developer.clear_allowed_tags.title") }
+        public enum Complete {
+          /// Approved tags cleared
+          public static var title: String { return L10n.tr("Localizable", "settings.developer.clear_allowed_tags.complete.title") }
         }
       }
       public enum CopyRealm {
@@ -4154,6 +4362,29 @@ public enum L10n {
     public enum OpenSettings {
       /// Open Settings
       public static var title: String { return L10n.tr("Localizable", "shortcut_item.open_settings.title") }
+    }
+  }
+
+  public enum Tags {
+    /// Tags
+    public static var title: String { return L10n.tr("Localizable", "tags.title") }
+    public enum Allowed {
+      /// Delete all
+      public static var deleteAll: String { return L10n.tr("Localizable", "tags.allowed.delete_all") }
+      /// No allowed tags
+      public static var empty: String { return L10n.tr("Localizable", "tags.allowed.empty") }
+      /// Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.
+      public static var footer: String { return L10n.tr("Localizable", "tags.allowed.footer") }
+      /// Allowed tags
+      public static var title: String { return L10n.tr("Localizable", "tags.allowed.title") }
+      public enum DeleteAll {
+        public enum Confirm {
+          /// Delete all
+          public static var button: String { return L10n.tr("Localizable", "tags.allowed.delete_all.confirm.button") }
+          /// Delete all allowed tags?
+          public static var title: String { return L10n.tr("Localizable", "tags.allowed.delete_all.confirm.title") }
+        }
+      }
     }
   }
 
@@ -5528,6 +5759,12 @@ public enum L10n {
       public enum RequireConfirmation {
         /// Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.
         public static var footer: String { return L10n.tr("Localizable", "widgets.custom.require_confirmation.footer") }
+      }
+      public enum ServerUnreachable {
+        /// Home Assistant could not be reached, please check your app server settings and connection security level.
+        public static var body: String { return L10n.tr("Localizable", "widgets.custom.server_unreachable.body") }
+        /// Home Assistant could not be reached
+        public static var title: String { return L10n.tr("Localizable", "widgets.custom.server_unreachable.title") }
       }
       public enum ShowLastUpdateTime {
         public enum Param {

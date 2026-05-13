@@ -358,14 +358,35 @@ public final class KioskModeManager: ObservableObject {
         webViewController?.refresh()
     }
 
-    /// Called when app returns to foreground
+    /// Called when app returns to foreground.
+    /// If kiosk is active, re-apply whatever brightness state kiosk expects —
+    /// screensaver dim if a screensaver is still showing, or the managed
+    /// brightness level if brightness control is enabled. Otherwise leave
+    /// brightness as iOS restored it when HA backgrounded (home-assistant/iOS#4506).
     public func appDidBecomeActive() {
         appState = .active
+
+        guard isKioskModeActive else { return }
+
+        if activeScreensaverMode != nil {
+            applyBrightnessForActiveScreensaver()
+        } else if settings.brightnessControlEnabled {
+            applyBrightness()
+        }
     }
 
-    /// Called when app enters background
+    /// Called when app enters background (user switched apps, device locked, etc).
+    /// Intentionally wired to didEnterBackgroundNotification, not willResignActiveNotification —
+    /// so a notification banner or Control Center pulldown alone does NOT restore brightness,
+    /// only actually leaving the app does.
+    ///
+    /// If kiosk mode has dimmed UIScreen.main.brightness, restore the user's original
+    /// brightness so other apps aren't stuck at the kiosk dim level (home-assistant/iOS#4506).
     public func appDidEnterBackground() {
         appState = .background
+
+        guard isKioskModeActive, let original = originalBrightness else { return }
+        Current.setScreenBrightness(CGFloat(original))
     }
 
     // MARK: - Screensaver State
@@ -377,20 +398,12 @@ public final class KioskModeManager: ObservableObject {
         preScreensaverBrightness = Current.screenBrightness()
 
         switch mode {
-        case .blank:
-            screenState = .off
-            Current.setScreenBrightness(0)
-
-        case .dim:
-            screenState = .dimmed
-            Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
-
-        case .clock:
-            screenState = .screensaver
-            if settings.screensaverDimLevel < currentBrightness {
-                Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
-            }
+        case .blank: screenState = .off
+        case .dim: screenState = .dimmed
+        case .clock: screenState = .screensaver
         }
+
+        applyBrightnessForActiveScreensaver()
 
         if settings.pixelShiftEnabled {
             startPixelShiftTimer()
@@ -398,6 +411,32 @@ public final class KioskModeManager: ObservableObject {
 
         presentScreensaverViewController(mode: mode)
         notifyObserversOfScreenStateChange()
+    }
+
+    /// Apply the brightness level that matches the currently-active screensaver mode.
+    /// Used by showScreensaver() for the initial dim, and by appDidBecomeActive()
+    /// to reapply dim when returning to foreground while a screensaver is still active.
+    ///
+    /// Clock mode only dims when the current display brightness exceeds the configured
+    /// dim level — so users who've already turned their screen down (or set a low
+    /// managed-brightness level) are not brightened by the screensaver. We compare
+    /// against the actual display brightness via Current.screenBrightness() rather than
+    /// the stored currentBrightness property, because those diverge on the
+    /// background → foreground reapply path (background restores originalBrightness
+    /// to the display without updating the stored property).
+    private func applyBrightnessForActiveScreensaver() {
+        guard let mode = activeScreensaverMode else { return }
+
+        switch mode {
+        case .blank:
+            Current.setScreenBrightness(0)
+        case .dim:
+            Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
+        case .clock:
+            if CGFloat(settings.screensaverDimLevel) < Current.screenBrightness() {
+                Current.setScreenBrightness(CGFloat(settings.screensaverDimLevel))
+            }
+        }
     }
 
     private func hideScreensaver(source: String) {

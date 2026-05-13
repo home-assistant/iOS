@@ -86,9 +86,6 @@ struct LiveActivitySettingsView: View {
                 if authorizationEnabled {
                     Text(L10n.LiveActivity.Status.enabled)
                         .foregroundStyle(.green)
-                } else if UIDevice.current.userInterfaceIdiom == .pad {
-                    Text(L10n.LiveActivity.Status.notSupported)
-                        .foregroundStyle(.secondary)
                 } else {
                     Button(L10n.LiveActivity.Status.openSettings) {
                         if let url = URL(string: UIApplication.openSettingsURLString) {

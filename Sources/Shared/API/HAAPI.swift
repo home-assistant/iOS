@@ -602,10 +602,9 @@ public class HomeAssistantAPI {
 
                 #if os(iOS) && !targetEnvironment(macCatalyst)
                 if #available(iOS 17.2, *) {
-                    // Advertise Live Activity support so HA can gate the UI and send
-                    // activity push tokens back to the relay server.
-                    // Use areActivitiesEnabled so iPad and users who disabled Live Activities
-                    // in Settings correctly report false.
+                    // Advertise Live Activity support so HA can send activity push tokens
+                    // to the relay server. areActivitiesEnabled reflects the user's Settings
+                    // toggle and returns true on both iPhone and iPad (iPadOS 17+).
                     appData["supports_live_activities"] = ActivityAuthorizationInfo().areActivitiesEnabled
                     appData["supports_live_activities_frequent_updates"] =
                         ActivityAuthorizationInfo().frequentPushesEnabled
@@ -1069,15 +1068,59 @@ public class HomeAssistantAPI {
     }
     #endif
 
-    public func profilePictureURL(completion: @escaping (URL?) -> Void) {
-        connection.caches.user.once { [weak self] user in
-            guard let self else {
-                Current.Log.error("Failed to retrieve profile picture URL: self is nil")
-                completion(nil)
-                return
+    private final class ProfilePictureCancellable: HACancellable {
+        private(set) var isCancelled = false
+        private var cancellables = [HACancellable]()
+        private var downloadRequest: Request?
+
+        func add(_ cancellable: HACancellable) {
+            if isCancelled {
+                cancellable.cancel()
+            } else {
+                cancellables.append(cancellable)
             }
-            connection.caches.states().once { [weak self] states in
-                let states = states.all
+        }
+
+        func setDownloadRequest(_ request: Request) {
+            if isCancelled {
+                request.cancel()
+            } else {
+                downloadRequest = request
+            }
+        }
+
+        func cancel() {
+            guard !isCancelled else { return }
+
+            isCancelled = true
+            cancellables.forEach { $0.cancel() }
+            downloadRequest?.cancel()
+            cancellables.removeAll()
+            downloadRequest = nil
+        }
+    }
+
+    @discardableResult
+    public func currentUser(completion: @escaping (HAResponseCurrentUser?) -> Void) -> HACancellable {
+        connection.send(HATypedRequest<HAResponseCurrentUser>.fetchCurrentUser()) { result in
+            switch result {
+            case let .success(user):
+                completion(user)
+            case let .failure(error):
+                Current.Log.error("Failed to retrieve current user: \(error)")
+                completion(nil)
+            }
+        }
+    }
+
+    @discardableResult
+    public func profilePictureURL(
+        for user: HAResponseCurrentUser,
+        completion: @escaping (URL?) -> Void
+    ) -> HACancellable {
+        connection.send(HATypedRequest<[HAEntity]>.fetchStates()) { [weak self] result in
+            switch result {
+            case let .success(states):
                 guard let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) else {
                     Current.Log.error("Profile picture: No person found for user \(user.id)")
                     completion(nil)
@@ -1090,25 +1133,58 @@ public class HomeAssistantAPI {
                     return
                 }
 
-                guard let url = self?.server.info.connection.activeURL()?.appendingPathComponent(path) else {
-                    Current.Log.error("Profile picture: Missing active URL for user entity picture, user id \(user.id)")
+                guard let url = self?.resolvedProfilePictureURL(from: path) else {
+                    Current.Log.error("Profile picture: Invalid URL for user entity picture, user id \(user.id)")
                     completion(nil)
                     return
                 }
 
                 completion(url)
+            case let .failure(error):
+                Current.Log.error("Failed to retrieve states for profile picture: \(error)")
+                completion(nil)
             }
         }
     }
 
-    public func profilePicture(completion: @escaping (UIImage?) -> Void) {
-        profilePictureURL { [weak self] url in
+    @discardableResult
+    public func profilePictureURL(completion: @escaping (URL?) -> Void) -> HACancellable {
+        let cancellable = ProfilePictureCancellable()
+
+        cancellable.add(currentUser { [weak self] user in
+            guard !cancellable.isCancelled else { return }
+            guard let self, let user else {
+                completion(nil)
+                return
+            }
+
+            cancellable.add(profilePictureURL(for: user) { url in
+                guard !cancellable.isCancelled else { return }
+                completion(url)
+            })
+        })
+
+        return cancellable
+    }
+
+    @discardableResult
+    public func profilePicture(
+        for user: HAResponseCurrentUser,
+        completion: @escaping (UIImage?) -> Void
+    ) -> HACancellable {
+        let cancellable = ProfilePictureCancellable()
+
+        cancellable.add(profilePictureURL(for: user) { [weak self] url in
+            guard !cancellable.isCancelled else { return }
             guard let self, let url else {
                 completion(nil)
                 return
             }
 
-            manager.download(url).validate().responseData { response in
+            let request = manager.download(url).validate()
+            cancellable.setDownloadRequest(request)
+            request.responseData { response in
+                guard !cancellable.isCancelled else { return }
                 switch response.result {
                 case let .success(data):
                     completion(UIImage(data: data))
@@ -1117,6 +1193,74 @@ public class HomeAssistantAPI {
                     completion(nil)
                 }
             }
+        })
+
+        return cancellable
+    }
+
+    @discardableResult
+    public func profilePicture(completion: @escaping (UIImage?) -> Void) -> HACancellable {
+        let cancellable = ProfilePictureCancellable()
+
+        cancellable.add(currentUser { [weak self] user in
+            guard !cancellable.isCancelled else { return }
+            guard let self, let user else {
+                completion(nil)
+                return
+            }
+
+            cancellable.add(profilePicture(for: user) { image in
+                guard !cancellable.isCancelled else { return }
+                completion(image)
+            })
+        })
+
+        return cancellable
+    }
+
+    private func resolvedProfilePictureURL(from path: String) -> URL? {
+        guard let activeURL = server.info.connection.activeURL() else {
+            return nil
+        }
+
+        guard let url = URL(string: path, relativeTo: activeURL)?.absoluteURL else {
+            return nil
+        }
+
+        guard url.hasSameOrigin(as: activeURL) else {
+            return nil
+        }
+
+        return url
+    }
+}
+
+private extension URL {
+    func hasSameOrigin(as other: URL) -> Bool {
+        guard let scheme = scheme?.lowercased(),
+              let otherScheme = other.scheme?.lowercased(),
+              let host = host?.lowercased(),
+              let otherHost = other.host?.lowercased() else {
+            return false
+        }
+
+        return scheme == otherScheme &&
+            host == otherHost &&
+            normalizedOriginPort == other.normalizedOriginPort
+    }
+
+    private var normalizedOriginPort: Int? {
+        if let port {
+            return port
+        }
+
+        switch scheme?.lowercased() {
+        case "http":
+            return 80
+        case "https":
+            return 443
+        default:
+            return nil
         }
     }
 }

@@ -117,6 +117,14 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.emptyStateView?.showsErrorDetailsButton, true)
     }
 
+    func testSetupEmptyStateAddsHostingControllerAsChild() {
+        let sut = makeSUT()
+
+        sut.setupEmptyState()
+
+        XCTAssertIdentical(sut.emptyStateView?.hostingViewController.parent, sut)
+    }
+
     func testUpdateFrontendConnectionStateClearsLatestLoadError() {
         let sut = makeSUT()
         sut.latestLoadError = URLError(.timedOut)

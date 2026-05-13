@@ -18,6 +18,10 @@ struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
 
     func perform() async throws -> some IntentResult {
         guard let serverUniqueId, let widgetId else {
+            Current.Log
+                .error(
+                    "UpdateWidgetItemConfirmationStateAppIntent: missing parameters, serverUniqueId: \(String(describing: serverUniqueId)), widgetId: \(String(describing: widgetId))"
+                )
             return .result()
         }
 

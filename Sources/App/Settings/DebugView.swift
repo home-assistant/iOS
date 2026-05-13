@@ -26,6 +26,7 @@ struct DebugView: View {
     // Alerts
     @State private var showDeleteEntitiesAlert = false
     @State private var showResetAppAlert = false
+    @State private var showClearAllowedTagsAlert = false
     @State private var watchSyncErrorMessage: String?
     @State private var showWatchSyncError = false
 
@@ -160,6 +161,8 @@ struct DebugView: View {
             }
             #endif
 
+            carPlayDebugSection
+
             criticalSection
 
             if tapsOnCasitaLogo < 10 {
@@ -192,6 +195,9 @@ struct DebugView: View {
             }
         } message: {
             Text(L10n.Settings.Debugging.KeychainRestartRequired.message)
+        }
+        .alert(L10n.Settings.Developer.ClearAllowedTags.Complete.title, isPresented: $showClearAllowedTagsAlert) {
+            Button(L10n.okLabel, role: .cancel) {}
         }
     }
 
@@ -323,6 +329,17 @@ struct DebugView: View {
         }
     }
 
+    private var carPlayDebugSection: some View {
+        NavigationLink {
+            CarPlayDebugSettingsView()
+        } label: {
+            linkContent(
+                image: .init(systemSymbol: .carFill),
+                title: L10n.CarPlay.Debug.Settings.rowTitle
+            )
+        }
+    }
+
     private var developerSection: some View {
         Section {
             Toggle("Toasts handled by the app", isOn: Binding(
@@ -381,6 +398,16 @@ struct DebugView: View {
                 linkContent(
                     image: .init(systemSymbol: .map),
                     title: L10n.Settings.Developer.MapNotification.title
+                )
+            }
+
+            Button {
+                AllowedTag.clearAll()
+                showClearAllowedTagsAlert = true
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .trash),
+                    title: L10n.Settings.Developer.ClearAllowedTags.title
                 )
             }
 
@@ -549,7 +576,7 @@ struct DebugView: View {
     }
 
     private func wait(seconds: Int) async {
-        await Task.sleep(UInt64(seconds * 1_000_000_000))
+        try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
     }
 
     private func revokeToken(api: HomeAssistantAPI) async {
@@ -579,6 +606,158 @@ struct DebugView: View {
                     Current.Log.error("Failed to reset push ID, error: \(error.localizedDescription)")
                 }
                 continuation.resume()
+            }
+        }
+    }
+}
+
+private struct CarPlayDebugSettingsView: View {
+    @State private var settings: CarPlayAssistDebugSettings
+    @State private var showResetConfirmation = false
+
+    init() {
+        _settings = State(initialValue: Current.settingsStore.carPlayAssistDebugSettings)
+    }
+
+    var body: some View {
+        List {
+            assistSessionSection
+            ttsPlaybackSection
+            ttsSessionSection
+            resetSection
+        }
+        .navigationTitle(L10n.CarPlay.Debug.Settings.navigationTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: settings) { updatedSettings in
+            Current.settingsStore.carPlayAssistDebugSettings = updatedSettings
+        }
+    }
+
+    private var assistSessionSection: some View {
+        Section {
+            Picker(L10n.CarPlay.Debug.Settings.AssistSession.audioCategory, selection: $settings.audioCategory) {
+                ForEach(CarPlayAssistAudioCategory.allCases, id: \.self) { category in
+                    Text(category.title).tag(category)
+                }
+            }
+
+            Picker(L10n.CarPlay.Debug.Settings.AssistSession.audioMode, selection: $settings.audioMode) {
+                ForEach(CarPlayAssistAudioMode.allCases, id: \.self) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+
+            Picker(
+                L10n.CarPlay.Debug.Settings.AssistSession.preferredSampleRate,
+                selection: $settings.preferredSampleRate
+            ) {
+                ForEach(CarPlayAssistPreferredSampleRate.allCases, id: \.self) { sampleRate in
+                    Text(sampleRate.title).tag(sampleRate)
+                }
+            }
+
+            Toggle(L10n.CarPlay.Debug.Settings.AssistSession.allowBluetoothHfp, isOn: $settings.allowBluetoothHFP)
+            Toggle(L10n.CarPlay.Debug.Settings.AssistSession.allowBluetoothA2dp, isOn: $settings.allowBluetoothA2DP)
+            Toggle(L10n.CarPlay.Debug.Settings.AssistSession.duckOthers, isOn: $settings.duckOthers)
+            Toggle(L10n.CarPlay.Debug.Settings.AssistSession.interruptSpokenAudio, isOn: $settings.interruptSpokenAudio)
+            Toggle(
+                L10n.CarPlay.Debug.Settings.AssistSession.recorderManagesAudioSession,
+                isOn: $settings.recorderManagesAudioSession
+            )
+            Toggle(
+                L10n.CarPlay.Debug.Settings.AssistSession.playRecordingIndicatorTone,
+                isOn: $settings.playRecordingIndicatorTone
+            )
+        } header: {
+            Text(L10n.CarPlay.Debug.Settings.AssistSession.title)
+        } footer: {
+            Text(L10n.CarPlay.Debug.Settings.AssistSession.footer)
+        }
+    }
+
+    private var ttsPlaybackSection: some View {
+        Section {
+            Picker(L10n.CarPlay.Debug.Settings.TtsPlayback.playbackStrategy, selection: $settings.ttsPlaybackStrategy) {
+                ForEach(CarPlayAssistTTSPlaybackStrategy.allCases, id: \.self) { strategy in
+                    Text(strategy.title).tag(strategy)
+                }
+            }
+
+            Picker(L10n.CarPlay.Debug.Settings.TtsPlayback.playbackDelay, selection: $settings.ttsPlaybackDelay) {
+                ForEach(CarPlayAssistPlaybackDelay.allCases, id: \.self) { delay in
+                    Text(delay.title).tag(delay)
+                }
+            }
+
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsPlayback.avplayerWaitsToMinimizeStalling,
+                isOn: $settings.avPlayerAutomaticallyWaitsToMinimizeStalling
+            )
+        } header: {
+            Text(L10n.CarPlay.Debug.Settings.TtsPlayback.title)
+        } footer: {
+            Text(L10n.CarPlay.Debug.Settings.TtsPlayback.footer)
+        }
+    }
+
+    private var ttsSessionSection: some View {
+        Section {
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.reconfigureBeforeTts,
+                isOn: $settings.ttsReconfigureAudioSession
+            )
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.deactivateBeforeReconfigure,
+                isOn: $settings.ttsDeactivateBeforeReconfigure
+            )
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.activateAudioSessionBeforePlay,
+                isOn: $settings.ttsActivateAudioSession
+            )
+
+            Picker(L10n.CarPlay.Debug.Settings.TtsAudioSession.category, selection: $settings.ttsCategory) {
+                ForEach(CarPlayAssistAudioCategory.allCases, id: \.self) { category in
+                    Text(category.title).tag(category)
+                }
+            }
+
+            Picker(L10n.CarPlay.Debug.Settings.TtsAudioSession.mode, selection: $settings.ttsMode) {
+                ForEach(CarPlayAssistAudioMode.allCases, id: \.self) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+
+            Toggle(L10n.CarPlay.Debug.Settings.TtsAudioSession.allowBluetoothHfp, isOn: $settings.ttsAllowBluetoothHFP)
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.allowBluetoothA2dp,
+                isOn: $settings.ttsAllowBluetoothA2DP
+            )
+            Toggle(L10n.CarPlay.Debug.Settings.TtsAudioSession.duckOthers, isOn: $settings.ttsDuckOthers)
+            Toggle(
+                L10n.CarPlay.Debug.Settings.TtsAudioSession.interruptSpokenAudio,
+                isOn: $settings.ttsInterruptSpokenAudio
+            )
+        } header: {
+            Text(L10n.CarPlay.Debug.Settings.TtsAudioSession.title)
+        } footer: {
+            Text(L10n.CarPlay.Debug.Settings.TtsAudioSession.footer)
+        }
+    }
+
+    private var resetSection: some View {
+        Section {
+            Button(L10n.CarPlay.Debug.Settings.reset, role: .destructive) {
+                showResetConfirmation = true
+            }
+            .confirmationDialog(
+                L10n.Alert.Confirmation.Generic.title,
+                isPresented: $showResetConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button(L10n.CarPlay.Debug.Settings.reset, role: .destructive) {
+                    settings = .default
+                }
+                Button(L10n.cancelLabel, role: .cancel) {}
             }
         }
     }

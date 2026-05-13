@@ -44,6 +44,18 @@ public extension URL {
         return components.url ?? self
     }
 
+    func serverBaseURL() -> URL {
+        guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
+            return self
+        }
+
+        components.path = ""
+        components.query = nil
+        components.fragment = nil
+
+        return components.url ?? self
+    }
+
     internal func adapting(url: URL) -> URL {
         guard
             let components = URLComponents(url: self, resolvingAgainstBaseURL: false),

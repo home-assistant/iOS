@@ -28,6 +28,7 @@ extension WebViewController {
             }
         )
 
+        addChild(emptyState.hostingViewController)
         view.addSubview(emptyState)
 
         emptyState.translatesAutoresizingMaskIntoConstraints = false
@@ -41,6 +42,7 @@ extension WebViewController {
 
         emptyState.alpha = 0
         emptyStateView = emptyState
+        emptyState.hostingViewController.didMove(toParent: self)
     }
 
     func emptyStateStyle(for connectionState: FrontEndConnectionState) -> WebViewEmptyStateStyle {

@@ -7,6 +7,7 @@ struct MagicItemAddView: View {
         case watch
         case carPlay
         case widget
+        case appIconShortcut
     }
 
     enum PickerOption {
@@ -21,17 +22,23 @@ struct MagicItemAddView: View {
     @StateObject private var viewModel = MagicItemAddViewModel()
     @State private var selectedEntity: HAAppEntity?
     private let visiblePickerOptions: [PickerOption]
+    private let initialItemType: MagicItemAddType
 
     let context: Context
     let itemToAdd: (MagicItem?) -> Void
 
-    init(context: Context, itemToAdd: @escaping (MagicItem?) -> Void) {
+    init(
+        context: Context,
+        initialItemType: MagicItemAddType? = nil,
+        visiblePickerOptions: [PickerOption]? = nil,
+        itemToAdd: @escaping (MagicItem?) -> Void
+    ) {
         self.context = context
         self.itemToAdd = itemToAdd
 
-        self.visiblePickerOptions = {
+        let resolvedPickerOptions = visiblePickerOptions ?? {
             var options: [PickerOption] = []
-            if [.carPlay, .widget].contains(context) {
+            if [.carPlay, .widget, .appIconShortcut].contains(context) {
                 options.append(.entities)
             }
             if context != .widget {
@@ -43,11 +50,16 @@ struct MagicItemAddView: View {
                 }
                 options.append(.legacyiOSActions)
             }
-            if context == .carPlay, #available(iOS 26.0, *) {
+            if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
             }
             return options
         }()
+        self.visiblePickerOptions = resolvedPickerOptions
+        self.initialItemType = initialItemType ?? Self.defaultItemType(
+            for: context,
+            visiblePickerOptions: resolvedPickerOptions
+        )
     }
 
     var body: some View {
@@ -150,11 +162,33 @@ struct MagicItemAddView: View {
     }
 
     private func autoSelectItemType() {
+        viewModel.selectedItemType = initialItemType
+    }
+
+    private static func defaultItemType(
+        for context: Context,
+        visiblePickerOptions: [PickerOption]
+    ) -> MagicItemAddType {
+        if let firstOption = visiblePickerOptions.first {
+            switch firstOption {
+            case .entities:
+                return .entities
+            case .scripts:
+                return .scripts
+            case .scenes:
+                return .scenes
+            case .legacyiOSActions:
+                return .actions
+            case .assistPipelines:
+                return .assistPipelines
+            }
+        }
+
         switch context {
         case .watch:
-            viewModel.selectedItemType = .scripts
-        case .carPlay, .widget:
-            viewModel.selectedItemType = .entities
+            return .scripts
+        case .carPlay, .widget, .appIconShortcut:
+            return .entities
         }
     }
 

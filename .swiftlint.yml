@@ -54,6 +54,8 @@ excluded:
   - Tests
   - Pods
   - vendor
+  - .claude
+  - build
   - "**/**/.build"
   - "./.swiftlint.yml"
 

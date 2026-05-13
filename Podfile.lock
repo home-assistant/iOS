@@ -3,13 +3,9 @@ PODS:
   - CallbackURLKit (2.3.0):
     - CallbackURLKit/Core (= 2.3.0)
   - CallbackURLKit/Core (2.3.0)
-  - ColorPickerRow (1.3.3):
-    - Eureka (>= 5.0.0)
-    - UIColor_Hex_Swift (>= 3.0.0)
   - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
-  - Eureka (5.4.0)
   - GRDB.swift (7.8.0):
     - GRDB.swift/standard (= 7.8.0)
   - GRDB.swift/standard (7.8.0)
@@ -65,8 +61,6 @@ PODS:
   - SwiftLint (0.54.0)
   - UIColor_Hex_Swift (5.1.9)
   - Version (0.8.0)
-  - ViewRow (0.8):
-    - Eureka (>= 5.0.0)
   - XCGLogger (7.0.1):
     - XCGLogger/Core (= 7.0.1)
   - XCGLogger/Core (7.0.1):
@@ -75,11 +69,9 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 5.8)
   - CallbackURLKit
-  - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, commit `fde095843bb8c08e8818097c51ed140373180790`)
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
-  - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v7.8.0`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.14`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.14`)
@@ -100,7 +92,6 @@ DEPENDENCIES:
   - SwiftLint (= 0.54.0)
   - UIColor_Hex_Swift
   - Version
-  - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `master`)
   - XCGLogger
 
 SPEC REPOS:
@@ -125,9 +116,6 @@ SPEC REPOS:
     - XCGLogger
 
 EXTERNAL SOURCES:
-  ColorPickerRow:
-    :commit: fde095843bb8c08e8818097c51ed140373180790
-    :git: https://github.com/EurekaCommunity/ColorPickerRow
   Communicator:
     :branch: observation-memory-direct
     :git: https://github.com/zacwest/Communicator.git
@@ -137,9 +125,6 @@ EXTERNAL SOURCES:
   EMTLoadingIndicator:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  Eureka:
-    :branch: master
-    :git: https://github.com/xmartlabs/Eureka
   GRDB.swift:
     :git: https://github.com/groue/GRDB.swift.git
     :tag: v7.8.0
@@ -155,14 +140,8 @@ EXTERNAL SOURCES:
   Starscream:
     :git: https://github.com/bgoncal/starscream
     :tag: 4.0.9
-  ViewRow:
-    :branch: master
-    :git: https://github.com/EurekaCommunity/ViewRow
 
 CHECKOUT OPTIONS:
-  ColorPickerRow:
-    :commit: fde095843bb8c08e8818097c51ed140373180790
-    :git: https://github.com/EurekaCommunity/ColorPickerRow
   Communicator:
     :commit: f5dd96048cbe1e7ebfee85688c23c17c6f71f9e4
     :git: https://github.com/zacwest/Communicator.git
@@ -172,9 +151,6 @@ CHECKOUT OPTIONS:
   EMTLoadingIndicator:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  Eureka:
-    :commit: ba4ebbcc4e368e901de666870fc2a4524474a4c7
-    :git: https://github.com/xmartlabs/Eureka
   GRDB.swift:
     :git: https://github.com/groue/GRDB.swift.git
     :tag: v7.8.0
@@ -190,18 +166,13 @@ CHECKOUT OPTIONS:
   Starscream:
     :git: https://github.com/bgoncal/starscream
     :tag: 4.0.9
-  ViewRow:
-    :commit: 3428a3b825a5641ae7fb65f3f787aba2b1b4dab9
-    :git: https://github.com/EurekaCommunity/ViewRow
 
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
-  ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
-  Eureka: fadaa9fa3d6e402d3c60f78f24edf3d7bafc9c29
   GRDB.swift: 682e07f771a9100f0bdf40fd0bed57b83ca08e29
   HAKit: 347164dfd7b727986812902288b904f54bdf9de3
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
@@ -222,9 +193,8 @@ SPEC CHECKSUMS:
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   UIColor_Hex_Swift: 20cb4e8d51b63e168a9da6933bc5d39cd8fb4ab5
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
-  ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: ccc3cf2c89569a005dec358e6c59d8bd3d6900f0
+PODFILE CHECKSUM: 63209440b17ff6d23dca34a6c8fe5c61067dbac6
 
 COCOAPODS: 1.15.2

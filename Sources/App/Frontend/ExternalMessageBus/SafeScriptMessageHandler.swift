@@ -61,7 +61,7 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
             return nil
         }
 
-        return "\(scheme.lowercased())://\(host.lowercased()):\(normalizedPort)"
+        return "\(scheme.lowercased())://\(normalizedHost(host)):\(normalizedPort)"
     }
 
     private func normalizedPort(for scheme: String, port: Int?) -> Int? {
@@ -74,5 +74,14 @@ final class SafeScriptMessageHandler: NSObject, WKScriptMessageHandler {
         case "https": return 443
         default: return port
         }
+    }
+
+    private func normalizedHost(_ host: String) -> String {
+        let lowercasedHost = host.lowercased()
+        if lowercasedHost.hasPrefix("["), lowercasedHost.hasSuffix("]") {
+            return String(lowercasedHost.dropFirst().dropLast())
+        }
+
+        return lowercasedHost
     }
 }

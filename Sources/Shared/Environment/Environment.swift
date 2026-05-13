@@ -118,6 +118,10 @@ public class AppEnvironment {
         try CarPlayConfig.config()
     }
 
+    public var appIconShortcutConfig: () throws -> AppIconShortcutConfig? = {
+        try AppIconShortcutConfig.config()
+    }
+
     public var magicItemProvider: () -> MagicItemProviderProtocol = {
         MagicItemProvider()
     }

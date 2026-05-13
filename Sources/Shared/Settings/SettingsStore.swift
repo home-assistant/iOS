@@ -509,7 +509,153 @@ public class SettingsStore {
         }
     }
 
+    public var carPlayAssistDebugSettings: CarPlayAssistDebugSettings {
+        get {
+            let defaults = CarPlayAssistDebugSettings.default
+            return CarPlayAssistDebugSettings(
+                audioCategory: carPlayAssistEnum(
+                    key: "carPlayAssistAudioCategory",
+                    default: defaults.audioCategory
+                ),
+                audioMode: carPlayAssistEnum(
+                    key: "carPlayAssistAudioMode",
+                    default: defaults.audioMode
+                ),
+                preferredSampleRate: carPlayAssistEnum(
+                    key: "carPlayAssistPreferredSampleRate",
+                    default: defaults.preferredSampleRate
+                ),
+                allowBluetoothHFP: carPlayAssistBool(
+                    key: "carPlayAssistAllowBluetoothHFP",
+                    default: defaults.allowBluetoothHFP
+                ),
+                allowBluetoothA2DP: carPlayAssistBool(
+                    key: "carPlayAssistAllowBluetoothA2DP",
+                    default: defaults.allowBluetoothA2DP
+                ),
+                duckOthers: carPlayAssistBool(
+                    key: "carPlayAssistDuckOthers",
+                    default: defaults.duckOthers
+                ),
+                interruptSpokenAudio: carPlayAssistBool(
+                    key: "carPlayAssistInterruptSpokenAudio",
+                    default: defaults.interruptSpokenAudio
+                ),
+                playRecordingIndicatorTone: carPlayAssistBool(
+                    key: "carPlayAssistPlayRecordingIndicatorTone",
+                    default: defaults.playRecordingIndicatorTone
+                ),
+                recorderManagesAudioSession: carPlayAssistBool(
+                    key: "carPlayAssistRecorderManagesAudioSession",
+                    default: defaults.recorderManagesAudioSession
+                ),
+                ttsPlaybackStrategy: carPlayAssistEnum(
+                    key: "carPlayAssistTTSPlaybackStrategy",
+                    default: defaults.ttsPlaybackStrategy
+                ),
+                ttsReconfigureAudioSession: carPlayAssistBool(
+                    key: "carPlayAssistTTSReconfigureAudioSession",
+                    default: defaults.ttsReconfigureAudioSession
+                ),
+                ttsDeactivateBeforeReconfigure: carPlayAssistBool(
+                    key: "carPlayAssistTTSDeactivateBeforeReconfigure",
+                    default: defaults.ttsDeactivateBeforeReconfigure
+                ),
+                ttsActivateAudioSession: carPlayAssistBool(
+                    key: "carPlayAssistTTSActivateAudioSession",
+                    default: defaults.ttsActivateAudioSession
+                ),
+                ttsCategory: carPlayAssistEnum(
+                    key: "carPlayAssistTTSCategory",
+                    default: defaults.ttsCategory
+                ),
+                ttsMode: carPlayAssistEnum(
+                    key: "carPlayAssistTTSMode",
+                    default: defaults.ttsMode
+                ),
+                ttsAllowBluetoothHFP: carPlayAssistBool(
+                    key: "carPlayAssistTTSAllowBluetoothHFP",
+                    default: defaults.ttsAllowBluetoothHFP
+                ),
+                ttsAllowBluetoothA2DP: carPlayAssistBool(
+                    key: "carPlayAssistTTSAllowBluetoothA2DP",
+                    default: defaults.ttsAllowBluetoothA2DP
+                ),
+                ttsDuckOthers: carPlayAssistBool(
+                    key: "carPlayAssistTTSDuckOthers",
+                    default: defaults.ttsDuckOthers
+                ),
+                ttsInterruptSpokenAudio: carPlayAssistBool(
+                    key: "carPlayAssistTTSInterruptSpokenAudio",
+                    default: defaults.ttsInterruptSpokenAudio
+                ),
+                avPlayerAutomaticallyWaitsToMinimizeStalling: carPlayAssistBool(
+                    key: "carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling",
+                    default: defaults.avPlayerAutomaticallyWaitsToMinimizeStalling
+                ),
+                ttsPlaybackDelay: carPlayAssistEnum(
+                    key: "carPlayAssistTTSPlaybackDelay",
+                    default: defaults.ttsPlaybackDelay
+                )
+            )
+        }
+        set {
+            prefs.set(newValue.audioCategory.rawValue, forKey: "carPlayAssistAudioCategory")
+            prefs.set(newValue.audioMode.rawValue, forKey: "carPlayAssistAudioMode")
+            prefs.set(newValue.preferredSampleRate.rawValue, forKey: "carPlayAssistPreferredSampleRate")
+            prefs.set(newValue.allowBluetoothHFP, forKey: "carPlayAssistAllowBluetoothHFP")
+            prefs.set(newValue.allowBluetoothA2DP, forKey: "carPlayAssistAllowBluetoothA2DP")
+            prefs.set(newValue.duckOthers, forKey: "carPlayAssistDuckOthers")
+            prefs.set(newValue.interruptSpokenAudio, forKey: "carPlayAssistInterruptSpokenAudio")
+            prefs.set(newValue.playRecordingIndicatorTone, forKey: "carPlayAssistPlayRecordingIndicatorTone")
+            prefs.set(newValue.recorderManagesAudioSession, forKey: "carPlayAssistRecorderManagesAudioSession")
+            prefs.set(newValue.ttsPlaybackStrategy.rawValue, forKey: "carPlayAssistTTSPlaybackStrategy")
+            prefs.set(newValue.ttsReconfigureAudioSession, forKey: "carPlayAssistTTSReconfigureAudioSession")
+            prefs.set(newValue.ttsDeactivateBeforeReconfigure, forKey: "carPlayAssistTTSDeactivateBeforeReconfigure")
+            prefs.set(newValue.ttsActivateAudioSession, forKey: "carPlayAssistTTSActivateAudioSession")
+            prefs.set(newValue.ttsCategory.rawValue, forKey: "carPlayAssistTTSCategory")
+            prefs.set(newValue.ttsMode.rawValue, forKey: "carPlayAssistTTSMode")
+            prefs.set(newValue.ttsAllowBluetoothHFP, forKey: "carPlayAssistTTSAllowBluetoothHFP")
+            prefs.set(newValue.ttsAllowBluetoothA2DP, forKey: "carPlayAssistTTSAllowBluetoothA2DP")
+            prefs.set(newValue.ttsDuckOthers, forKey: "carPlayAssistTTSDuckOthers")
+            prefs.set(newValue.ttsInterruptSpokenAudio, forKey: "carPlayAssistTTSInterruptSpokenAudio")
+            prefs.set(
+                newValue.avPlayerAutomaticallyWaitsToMinimizeStalling,
+                forKey: "carPlayAssistAVPlayerAutomaticallyWaitsToMinimizeStalling"
+            )
+            prefs.set(newValue.ttsPlaybackDelay.rawValue, forKey: "carPlayAssistTTSPlaybackDelay")
+        }
+    }
+
+    public func resetCarPlayAssistDebugSettings() {
+        carPlayAssistDebugSettings = .default
+    }
+
     // MARK: - Private helpers
+
+    private func carPlayAssistBool(key: String, default defaultValue: Bool) -> Bool {
+        guard prefs.object(forKey: key) != nil else {
+            return defaultValue
+        }
+        return prefs.bool(forKey: key)
+    }
+
+    private func carPlayAssistEnum<T: RawRepresentable>(key: String, default defaultValue: T) -> T
+        where T.RawValue == String {
+        guard let rawValue = prefs.string(forKey: key),
+              let value = T(rawValue: rawValue) else {
+            return defaultValue
+        }
+        return value
+    }
+
+    private func carPlayAssistEnum<T: RawRepresentable>(key: String, default defaultValue: T) -> T
+        where T.RawValue == Int {
+        guard prefs.object(forKey: key) != nil else {
+            return defaultValue
+        }
+        return T(rawValue: prefs.integer(forKey: key)) ?? defaultValue
+    }
 
     private var defaultDeviceID: String {
         let baseID = removeSpecialCharsFromString(text: Current.device.deviceName())

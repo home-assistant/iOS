@@ -1,6 +1,20 @@
 import Foundation
+import UIKit
 
 enum WebViewJavascriptCommands {
+    static func setAppSafeAreaInsets(_ insets: UIEdgeInsets) -> String {
+        func cssPixels(_ value: CGFloat) -> String {
+            String(format: "%.2fpx", locale: Locale(identifier: "en_US_POSIX"), value)
+        }
+
+        return """
+        document.documentElement.style.setProperty('--app-safe-area-inset-top', '\(cssPixels(insets.top))');
+        document.documentElement.style.setProperty('--app-safe-area-inset-bottom', '\(cssPixels(insets.bottom))');
+        document.documentElement.style.setProperty('--app-safe-area-inset-left', '\(cssPixels(insets.left))');
+        document.documentElement.style.setProperty('--app-safe-area-inset-right', '\(cssPixels(insets.right))');
+        """
+    }
+
     static var searchEntitiesKeyEvent = """
     var event = new KeyboardEvent('keydown', {
         key: 'e',
