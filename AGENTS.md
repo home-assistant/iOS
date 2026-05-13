@@ -8,7 +8,7 @@ Home Assistant for Apple Platforms is a native Swift companion app for [Home Ass
 
 - **Language**: Swift 5.8+
 - **Platforms**: iOS, watchOS, macOS (Catalyst), CarPlay
-- **Build System**: Xcode 26.2+, CocoaPods
+- **Build System**: Xcode 26.2+, CocoaPods, Swift Package Manager
 - **Workspace**: Always open `HomeAssistant.xcworkspace` (not the `.xcodeproj`)
 
 ## Getting Started
@@ -20,7 +20,7 @@ bundle install
 bundle exec pod install --repo-update
 ```
 
-> CocoaPods manages all third-party dependencies. Never add Swift Package Manager dependencies.
+> CocoaPods and Swift Package Manager (SPM) manage third-party dependencies. CocoaPods is used for most dependencies, while SPM is used for select packages (e.g., swift-snapshot-testing, WebRTC, ZIPFoundation, firebase-ios-sdk).
 
 ### Code Signing (for device builds)
 
