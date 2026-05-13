@@ -146,19 +146,6 @@ struct MagicItemAddView: View {
         }
     }
 
-    private var actionsDeprecationDisclaimer: some View {
-        Section {
-            Button {
-                viewModel.selectedItemType = .scripts
-            } label: {
-                Text(verbatim: L10n.MagicItem.ItemType.Action.List.Warning.title)
-            }
-            .buttonStyle(.bordered)
-            .tint(.red)
-            .listRowBackground(Color.clear)
-        }
-    }
-
     @ViewBuilder
     private func entitiesPerServerList(domainFilter: Domain? = nil) -> some View {
         EntityPicker(
@@ -190,12 +177,6 @@ struct MagicItemAddView: View {
                 }
             }
         )
-    }
-
-    private func visibleForSearch(title: String, entityId: String) -> Bool {
-        viewModel.searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-            title.lowercased().contains(viewModel.searchText.lowercased()) ||
-            entityId.lowercased().contains(viewModel.searchText.lowercased())
     }
 }
 
