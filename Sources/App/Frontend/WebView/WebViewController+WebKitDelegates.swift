@@ -87,6 +87,7 @@ extension WebViewController {
         // in case the view appears again, don't reload
         initialURL = nil
 
+        updateLegacyFrontendSafeAreaInsets()
         updateWebViewSettings(reason: .load)
     }
 
