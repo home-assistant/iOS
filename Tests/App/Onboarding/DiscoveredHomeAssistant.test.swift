@@ -47,4 +47,14 @@ struct DiscoveredHomeAssistantTests {
 
         #expect(discovered.locationName == "Home")
     }
+
+    @Test("Manual URL initialization removes path query and fragment but keeps port")
+    func manualURLInitWithFullFrontendURL() async throws {
+        let url = URL(string: "http://homeassistant.local:8123/lovelace/0?foo=bar#section")!
+        let expectedURL = URL(string: "http://homeassistant.local:8123")!
+        let discovered = DiscoveredHomeAssistant(manualURL: url)
+
+        #expect(discovered.internalOrExternalURL == expectedURL)
+        #expect(discovered.internalURL == expectedURL || discovered.externalURL == expectedURL)
+    }
 }
