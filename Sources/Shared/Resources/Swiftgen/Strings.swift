@@ -3154,6 +3154,32 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove_confirmation.title") }
         }
       }
+      public enum Cloudhook {
+        /// Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.footer") }
+        /// Cloudhook
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.title") }
+        public enum CheckReachability {
+          /// Reachable
+          public static var reachable: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.reachable") }
+          /// Reachable (HTTP %d)
+          public static func reachableStatusCode(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.reachable_status_code", p1)
+          }
+          /// Result
+          public static var result: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.result") }
+          /// Check reachability
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.title") }
+          /// Unreachable: %@
+          public static func unreachable(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.unreachable", String(describing: p1))
+          }
+        }
+        public enum Status {
+          /// Not configured
+          public static var notConfigured: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.status.not_configured") }
+        }
+      }
       public enum ConnectionAccessSecurityLevel {
         /// Connection security level
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.title") }
