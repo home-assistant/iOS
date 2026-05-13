@@ -17,13 +17,21 @@ struct CustomWidgetPressButtonAppIntent: AppIntent {
     var entityId: String?
 
     func perform() async throws -> some IntentResult {
-        guard let serverId,
-              let domainString = domain,
-              let domain = Domain(rawValue: domainString),
-              let entityId,
-              let server = Current.servers.all.first(where: { server in
-                  server.identifier.rawValue == serverId
-              }), let connection = Current.api(for: server)?.connection else {
+        guard let serverId, let domainString = domain, let entityId else {
+            Current.Log
+                .error(
+                    "PressButtonAppIntent: missing parameters, serverId: \(String(describing: serverId)), domain: \(String(describing: domain)), entityId: \(String(describing: entityId))"
+                )
+            return .result()
+        }
+        guard let domain = Domain(rawValue: domainString) else {
+            Current.Log.error("PressButtonAppIntent: unknown domain '\(domainString)', entityId: \(entityId)")
+            return .result()
+        }
+        guard let connection = CustomWidgetIntentHelper.resolveConnection(
+            serverId: serverId,
+            intentName: "PressButtonAppIntent"
+        ) else {
             return .result()
         }
         AppIntentHaptics.notify()

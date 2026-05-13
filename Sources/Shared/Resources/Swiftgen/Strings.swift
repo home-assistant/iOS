@@ -2398,9 +2398,9 @@ public enum L10n {
       public static var allowOnce: String { return L10n.tr("Localizable", "nfc.tag_approval.allow_once") }
       /// Copy tag
       public static var copyTag: String { return L10n.tr("Localizable", "nfc.tag_approval.copy_tag") }
-      /// Send this tag to Home Assistant to perform the automation attached to it.
+      /// Send this tag to Home Assistant to trigger linked automations.
       public static var description: String { return L10n.tr("Localizable", "nfc.tag_approval.description") }
-      /// Allow Sending?
+      /// Allow tag?
       public static var title: String { return L10n.tr("Localizable", "nfc.tag_approval.title") }
       public enum TagId {
         /// Tag identifier
@@ -3152,6 +3152,32 @@ public enum L10n {
           public static var remove: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove_confirmation.remove") }
           /// Remove Certificate?
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove_confirmation.title") }
+        }
+      }
+      public enum Cloudhook {
+        /// Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.footer") }
+        /// Cloudhook
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.title") }
+        public enum CheckReachability {
+          /// Reachable
+          public static var reachable: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.reachable") }
+          /// Reachable (HTTP %d)
+          public static func reachableStatusCode(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.reachable_status_code", p1)
+          }
+          /// Result
+          public static var result: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.result") }
+          /// Check reachability
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.title") }
+          /// Unreachable: %@
+          public static func unreachable(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.unreachable", String(describing: p1))
+          }
+        }
+        public enum Status {
+          /// Not configured
+          public static var notConfigured: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.status.not_configured") }
         }
       }
       public enum ConnectionAccessSecurityLevel {
@@ -5733,6 +5759,12 @@ public enum L10n {
       public enum RequireConfirmation {
         /// Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.
         public static var footer: String { return L10n.tr("Localizable", "widgets.custom.require_confirmation.footer") }
+      }
+      public enum ServerUnreachable {
+        /// Home Assistant could not be reached, please check your app server settings and connection security level.
+        public static var body: String { return L10n.tr("Localizable", "widgets.custom.server_unreachable.body") }
+        /// Home Assistant could not be reached
+        public static var title: String { return L10n.tr("Localizable", "widgets.custom.server_unreachable.title") }
       }
       public enum ShowLastUpdateTime {
         public enum Param {

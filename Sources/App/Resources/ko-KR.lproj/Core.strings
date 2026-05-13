@@ -13,7 +13,7 @@
 "common::state::on" = "켜짐";
 "common::state::open" = "열림";
 "common::state::paused" = "일시중지";
-"common::state::standby" = "준비중";
+"common::state::standby" = "대기 중";
 "common::state::unlocked" = "해제";
 "common::state::yes" = "네";
 "component::airzone::entity::select::sleep_times::state::off" = "꺼짐";
@@ -65,7 +65,7 @@
 "component::device_tracker::entity_component::_::state::not_home" = "외출";
 "component::ecoforest::entity::sensor::status::state::off" = "꺼짐";
 "component::ecoforest::entity::sensor::status::state::on" = "켜짐";
-"component::ecoforest::entity::sensor::status::state::stand_by" = "준비중";
+"component::ecoforest::entity::sensor::status::state::stand_by" = "대기 중";
 "component::fan::entity_component::_::state::off" = "꺼짐";
 "component::fan::entity_component::_::state::on" = "켜짐";
 "component::fan::entity_component::_::state_attributes::oscillating::state::false" = "아니요";
@@ -81,7 +81,7 @@
 "component::group::entity_component::_::state::on" = "켜짐";
 "component::group::entity_component::_::state::open" = "열림";
 "component::group::entity_component::_::state::unlocked" = "잠금 해제";
-"component::hdmi_cec::services::standby::name" = "준비중";
+"component::hdmi_cec::services::standby::name" = "대기 중";
 "component::homekit_controller::entity::select::ecobee_mode::state::away" = "외출";
 "component::homekit_controller::entity::select::ecobee_mode::state::home" = "재실";
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "비활성화";
@@ -248,8 +248,8 @@
 "component::tuya::entity::select::relay_status::state::power_off" = "꺼짐";
 "component::tuya::entity::select::relay_status::state::power_on" = "켜짐";
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "닫힘";
-"component::tuya::entity::select::vacuum_mode::state::standby" = "준비중";
-"component::tuya::entity::sensor::sous_vide_status::state::standby" = "준비중";
+"component::tuya::entity::select::vacuum_mode::state::standby" = "대기 중";
+"component::tuya::entity::sensor::sous_vide_status::state::standby" = "대기 중";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "꺼짐";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "꺼짐";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "켜짐";
@@ -276,7 +276,7 @@
 "component::wled::entity::select::live_override::state:::1" = "켜짐";
 "component::wolflink::entity::sensor::state::state::aus" = "비활성화";
 "component::wolflink::entity::sensor::state::state::ein" = "활성화";
-"component::wolflink::entity::sensor::state::state::standby" = "준비중";
+"component::wolflink::entity::sensor::state::state::standby" = "대기 중";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "꺼짐";
 "component::yamaha::services::enable_output::fields::enabled::name" = "활성화";
 "component::yamaha_musiccast::entity::select::zone_sleep::state::off" = "꺼짐";

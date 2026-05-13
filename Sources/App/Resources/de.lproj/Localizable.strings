@@ -655,6 +655,12 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "nfc.read.error.not_home_assistant" = "NFC-Tag ist kein Home Assistant Tag";
 "nfc.read.error.tag_invalid" = "NFC-Tag ist ungültig";
 "nfc.read.start_message" = "Halte dein/deine %@ nahe an ein NFC-Tag";
+"nfc.tag_approval.allow_always" = "Immer zulassen";
+"nfc.tag_approval.allow_once" = "Einmal zulassen";
+"nfc.tag_approval.copy_tag" = "Tag kopieren";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag-Kennung";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "NFC-Tag lesen";
 "nfc.write.error.capacity" = "Kapazität des NFC Tags zu gering: benötigt %ld, aber nur %ld vorhanden";
 "nfc.write.error.invalid_format" = "Das NFC-Tag ist nicht im NDEF-Format";
@@ -988,6 +994,8 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.developer.annoying_background_notifications.title" = "Lästige Hintergrundinformation";
 "settings.developer.camera_notification.notification.body" = "Aufklappen, um die Kamerainhalt-Erweiterung einzublenden";
 "settings.developer.camera_notification.title" = "Kamerainhalt in Benachrichtigung einblenden";
+"settings.developer.clear_allowed_tags.complete.title" = "Genehmigte Tags gelöscht";
+"settings.developer.clear_allowed_tags.title" = "Genehmigte Tags löschen";
 "settings.developer.copy_realm.alert.message" = "Bereich von %@ nach %@ kopiert";
 "settings.developer.copy_realm.alert.title" = "Kopierter Bereich";
 "settings.developer.copy_realm.title" = "Kopiere AppGroup/store.realm nach Documents/default.realm";
@@ -1255,6 +1263,13 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "share_extension.entered_placeholder" = "'entered' im Ereignis";
 "share_extension.error.title" = "Konnte nicht gesendet werden";
 "shortcut_item.open_settings.title" = "Einstellungen öffnen";
+"tags.allowed.delete_all" = "Alle löschen";
+"tags.allowed.delete_all.confirm.button" = "Alle löschen";
+"tags.allowed.delete_all.confirm.title" = "Alle zulässigen Tags löschen?";
+"tags.allowed.empty" = "Keine zulässigen Tags";
+"tags.allowed.footer" = "Zulässige Tags können ohne erneute Genehmigung an Home Assistant gesendet werden. Wische auf einem Tag nach links, um ihn zu löschen.";
+"tags.allowed.title" = "Zulässige Tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Aktiver Betriebsdatensatz";
 "thread.border_agent_id.title" = "Border-Agent-ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Stelle sicher, dass du mit deinem iCloud-Account angemeldet bist, der Besitzer eines Zuhauses in Apple Home ist.";

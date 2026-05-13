@@ -655,6 +655,12 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "nfc.read.error.not_home_assistant" = "L'etiqueta NFC no és una etiqueta Home Assistant";
 "nfc.read.error.tag_invalid" = "L'etiqueta NFC no és vàlida";
 "nfc.read.start_message" = "Mentingueu el vostre %@ prop d'una etiqueta NFC";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "Lectura d'etiquetes NFC";
 "nfc.write.error.capacity" = "L’etiqueta NFC no té capacitat suficient: necessita %ld però només té %ld";
 "nfc.write.error.invalid_format" = "L’etiqueta NFC no té el format NDEF";
@@ -988,6 +994,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.developer.annoying_background_notifications.title" = "Informació de fons molesta";
 "settings.developer.camera_notification.notification.body" = "Expandeix això per mostrar l'extensió del contingut de la càmera";
 "settings.developer.camera_notification.title" = "Show camera notification content extension";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "S'ha copiat el Regne de %@ a %@";
 "settings.developer.copy_realm.alert.title" = "Regne copiat";
 "settings.developer.copy_realm.title" = "Copia el Regne del grup d'aplicacions a Documents";
@@ -1255,6 +1263,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "share_extension.entered_placeholder" = "'entrat' en l'esdeveniment";
 "share_extension.error.title" = "No s'ha pogut enviar";
 "shortcut_item.open_settings.title" = "Open Settings";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Active operational data set";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Assegureu-vos que heu iniciat la sessió amb el vostre compte d'iCloud, que és propietari d'una llar a Apple Home.";

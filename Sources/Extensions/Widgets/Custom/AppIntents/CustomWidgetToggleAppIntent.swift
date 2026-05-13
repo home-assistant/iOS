@@ -23,13 +23,29 @@ struct CustomWidgetToggleAppIntent: AppIntent {
     func perform() async throws -> some IntentResult {
         guard let serverId,
               let domainString = domain,
-              let domain = Domain(rawValue: domainString),
               let entityId,
-              let widgetShowingStates,
-              let server = Current.servers.all.first(where: { server in
-                  server.identifier.rawValue == serverId
-              }), let connection = Current.api(for: server)?.connection,
-              let request = HATypedRequest<HAResponseVoid>.executeMainAction(domain: domain, entityId: entityId) else {
+              let widgetShowingStates else {
+            Current.Log
+                .error(
+                    "ToggleAppIntent: missing parameters, serverId: \(String(describing: serverId)), domain: \(String(describing: domain)), entityId: \(String(describing: entityId)), widgetShowingStates: \(String(describing: widgetShowingStates))"
+                )
+            return .result()
+        }
+        guard let domain = Domain(rawValue: domainString) else {
+            Current.Log.error("ToggleAppIntent: unknown domain '\(domainString)', entityId: \(entityId)")
+            return .result()
+        }
+        guard let connection = CustomWidgetIntentHelper.resolveConnection(
+            serverId: serverId,
+            intentName: "ToggleAppIntent"
+        ) else {
+            return .result()
+        }
+        guard let request = HATypedRequest<HAResponseVoid>.executeMainAction(domain: domain, entityId: entityId) else {
+            Current.Log
+                .error(
+                    "ToggleAppIntent: no main action for domain \(domain.rawValue), entityId: \(entityId), serverId: \(serverId)"
+                )
             return .result()
         }
         AppIntentHaptics.notify()

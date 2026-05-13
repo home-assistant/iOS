@@ -655,6 +655,12 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "nfc.read.error.not_home_assistant" = "NFC štítek neobsahuje štítek z Home Assistanta";
 "nfc.read.error.tag_invalid" = "NFC štítek je neplatný";
 "nfc.read.start_message" = "Podržte %@ poblíž NFC štítku";
+"nfc.tag_approval.allow_always" = "Vždy povolit";
+"nfc.tag_approval.allow_once" = "Povolit jednou";
+"nfc.tag_approval.copy_tag" = "Kopírovat štítek";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Identifikátor štítku";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "Přečíst NFC štítek";
 "nfc.write.error.capacity" = "NFC štítek nemá dostatečnou kapacitu: potřebuje %ld, ale má jen %ld";
 "nfc.write.error.invalid_format" = "NFC štítek není ve formátu NDEF";
@@ -988,6 +994,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.developer.annoying_background_notifications.title" = "Obtěžující informace na pozadí";
 "settings.developer.camera_notification.notification.body" = "Rozbalením zobrazíte rozšíření obsahu kamery";
 "settings.developer.camera_notification.title" = "Zobrazit rozšíření obsahu oznámení kamery";
+"settings.developer.clear_allowed_tags.complete.title" = "Schválené štítky vymazány";
+"settings.developer.clear_allowed_tags.title" = "Vymazat schválené štítky";
 "settings.developer.copy_realm.alert.message" = "Realm zkopírován z %@ do %@";
 "settings.developer.copy_realm.alert.title" = "Realm byl zkopírován";
 "settings.developer.copy_realm.title" = "Kopírovat Realm ze skupiny aplikací do Dokumentů";
@@ -1255,6 +1263,13 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "share_extension.entered_placeholder" = "\"entered\" v události";
 "share_extension.error.title" = "Nelze odeslat";
 "shortcut_item.open_settings.title" = "Otevřít Nastavení";
+"tags.allowed.delete_all" = "Smazat vše";
+"tags.allowed.delete_all.confirm.button" = "Smazat vše";
+"tags.allowed.delete_all.confirm.title" = "Smazat všechny povolené štítky?";
+"tags.allowed.empty" = "Žádné povolené tagy";
+"tags.allowed.footer" = "Povolené štítky lze odeslat do Home Assistanta, aniž by se pokaždé žádalo o schválení. Přejetím prstem doleva na štítku jej smažete.";
+"tags.allowed.title" = "Povolené štítky";
+"tags.title" = "Štítky";
 "thread.active_operational_data_set.title" = "Aktivní soubor provozních dat";
 "thread.border_agent_id.title" = "ID hraničního agenta";
 "thread.credentials.share_credentials.no_credentials_message" = "Ujistěte se, že jste přihlášeni pomocí svého účtu iCloud, který je vlastníkem domácnosti v Apple Home.";
