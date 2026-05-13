@@ -13,6 +13,15 @@ extension WebViewController {
         userContentController.add(safeScriptMessageHandler, name: "externalBus")
         userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
         userContentController.add(safeScriptMessageHandler, name: "logError")
+
+        if #unavailable(iOS 16.0), !Current.isCatalyst {
+            userContentController.addUserScript(WKUserScript(
+                source: WebViewJavascriptCommands.setAppSafeAreaInsets(.zero),
+                injectionTime: .atDocumentStart,
+                forMainFrameOnly: true
+            ))
+        }
+
         return userContentController
     }
 
@@ -36,6 +45,25 @@ extension WebViewController {
             statusBarView.isHidden = false
         }
         webViewTopConstraint?.isActive = true
+    }
+
+    func updateLegacyFrontendSafeAreaInsets() {
+        guard #unavailable(iOS 16.0), !Current.isCatalyst, isViewLoaded, webView != nil else {
+            return
+        }
+
+        let exposesTopSafeArea = Current.settingsStore.edgeToEdge || Current.settingsStore.fullScreen
+        let insets = UIEdgeInsets(
+            top: exposesTopSafeArea ? legacyStatusBarHeight() : 0,
+            left: view.safeAreaInsets.left,
+            bottom: view.safeAreaInsets.bottom,
+            right: view.safeAreaInsets.right
+        )
+
+        webView.evaluateJavaScript(
+            WebViewJavascriptCommands.setAppSafeAreaInsets(insets),
+            completionHandler: nil
+        )
     }
 
     func setupURLObserver() {
