@@ -655,6 +655,12 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "nfc.read.error.not_home_assistant" = "NFC таг не е таг на Home Assistant";
 "nfc.read.error.tag_invalid" = "NFC маркерът е невалиден";
 "nfc.read.start_message" = "Дръжте вашия %@ близо до NFC таг";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "Четене на NFC етикет";
 "nfc.write.error.capacity" = "NFC маркерът няма достатъчен капацитет: нуждае се от %ld, но има само %ld";
 "nfc.write.error.invalid_format" = "NFC тагът не е в NDEF формат";
@@ -988,6 +994,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.developer.annoying_background_notifications.title" = "Annoying Background Info";
 "settings.developer.camera_notification.notification.body" = "Разширете това, за да покажете разширението на съдържанието на камерата";
 "settings.developer.camera_notification.title" = "Показване на разширение на съдържанието на известие за камера";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "Копирано Realm от %@ до %@";
 "settings.developer.copy_realm.alert.title" = "Копиран Realm";
 "settings.developer.copy_realm.title" = "Копирайте Realm от групата приложения в Документи";
@@ -1255,6 +1263,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Couldn't Send";
 "shortcut_item.open_settings.title" = "Open Settings";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Active operational data set";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Уверете се, че сте влезли в своя iCloud акаунт, който е собственик на Дом в Apple Home.";
