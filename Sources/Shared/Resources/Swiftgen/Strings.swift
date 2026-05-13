@@ -5734,6 +5734,12 @@ public enum L10n {
         /// Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.
         public static var footer: String { return L10n.tr("Localizable", "widgets.custom.require_confirmation.footer") }
       }
+      public enum ServerUnreachable {
+        /// Home Assistant could not be reached, please check your app server settings and connection security level.
+        public static var body: String { return L10n.tr("Localizable", "widgets.custom.server_unreachable.body") }
+        /// Home Assistant could not be reached
+        public static var title: String { return L10n.tr("Localizable", "widgets.custom.server_unreachable.title") }
+      }
       public enum ShowLastUpdateTime {
         public enum Param {
           /// Show last update time
