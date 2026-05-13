@@ -30,6 +30,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
             && customization == other.customization
             && action == other.action
             && displayText == other.displayText
+            && assistPrompt == other.assistPrompt
+            && assistPipelineId == other.assistPipelineId
             && items == other.items
     }
 
@@ -40,6 +42,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
     public var customization: Customization?
     public var action: ItemAction?
     public var displayText: String?
+    public var assistPrompt: String?
+    public var assistPipelineId: String?
     public var items: [MagicItem]? /// Only for folder type, represents items inside the folder
 
     /// Server unique ID - e.g. "EB1364-script.open_gate"
@@ -56,6 +60,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
         hasher.combine(customization)
         hasher.combine(action)
         hasher.combine(displayText)
+        hasher.combine(assistPrompt)
+        hasher.combine(assistPipelineId)
         hasher.combine(items?.map(\.contentHash))
         return hasher.finalize()
     }
@@ -76,6 +82,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
         customization: Customization? = .init(),
         action: ItemAction? = .default,
         displayText: String? = nil,
+        assistPrompt: String? = nil,
+        assistPipelineId: String? = nil,
         items: [MagicItem]? = nil
     ) {
         self.id = id
@@ -84,6 +92,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
         self.customization = customization
         self.action = action
         self.displayText = displayText
+        self.assistPrompt = assistPrompt
+        self.assistPipelineId = assistPipelineId
         self.items = items
     }
 
@@ -95,6 +105,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case entity
         case folder
         case assistPipeline
+        case assistPrompt
     }
 
     public struct Customization: Codable, Equatable, Hashable {
@@ -162,6 +173,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
                 icon = .folderIcon
             case .assistPipeline:
                 icon = .microphoneIcon
+            case .assistPrompt:
+                icon = .messageProcessingOutlineIcon
             }
         }
 
@@ -399,8 +412,8 @@ public extension MagicItem {
                         entityId: id,
                         state: currentItemState
                     )
-                case .folder, .assistPipeline:
-                    // Folders and assist pipelines don't execute actions
+                case .folder, .assistPipeline, .assistPrompt:
+                    // Folders and assist items don't execute direct actions
                     return nil
                 }
             }() {

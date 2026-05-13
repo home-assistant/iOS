@@ -202,14 +202,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 }
                 entityProviders.append(entityProvider)
                 return listItem
-            case .assistPipeline:
-                let pipelineTitle = magicItem.name(info: info)
-                let assistLabel = L10n.Widgets.Action.Name.assist
+            case .assistPipeline, .assistPrompt:
                 let item = CPListItem(
-                    text: pipelineTitle,
-                    detailText: pipelineTitle == assistLabel ? nil : assistLabel,
+                    text: assistTitle(for: magicItem, info: info),
+                    detailText: assistSubtitle(for: magicItem, info: info),
                     image: magicItem.icon(info: info)
-                        .carPlayIcon(color: .init(hex: info.customization?.iconColor) ?? .haPrimary)
+                        .carPlayIcon(color: iconColor(for: info))
                 )
                 item.handler = { [weak self] _, completion in
                     self?.presentAssistSession(magicItem: magicItem, info: info)
@@ -269,7 +267,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 }
 
                 let selectedItem = pageItems[index]
-                if selectedItem.magicItem.type == .assistPipeline {
+                if self?.isAssistItem(selectedItem.magicItem) == true {
                     self?.presentAssistSession(
                         magicItem: selectedItem.magicItem,
                         info: selectedItem.info
@@ -311,7 +309,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         // Check if this is a lock entity - locks always require confirmation
         let isLockEntity = magicItem
             .type == .entity && Domain(entityId: magicItem.id) == .lock
-        let supportsConfirmation = magicItem.type != .assistPipeline
+        let supportsConfirmation = !isAssistItem(magicItem)
 
         if isLockEntity {
             // For lock entities, show lock-specific confirmation
@@ -429,6 +427,35 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
     }
 
+    private func isAssistItem(_ magicItem: MagicItem) -> Bool {
+        magicItem.type == .assistPipeline || magicItem.type == .assistPrompt
+    }
+
+    private func assistTitle(for magicItem: MagicItem, info: MagicItem.Info) -> String {
+        magicItem.name(info: info)
+    }
+
+    private func assistSubtitle(for magicItem: MagicItem, info: MagicItem.Info) -> String? {
+        let pipelineTitle = magicItem.name(info: info)
+
+        if magicItem.type == .assistPrompt {
+            guard let assistPrompt = magicItem.assistPrompt?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !assistPrompt.isEmpty else {
+                return nil
+            }
+
+            return assistPrompt
+        }
+
+        let assistLabel = L10n.Widgets.Action.Name.assist
+        return pipelineTitle == assistLabel ? nil : assistLabel
+    }
+
+    private func iconColor(for info: MagicItem.Info) -> UIColor {
+        guard let iconColorHex = info.customization?.iconColor else { return .haPrimary }
+        return UIColor(hex: iconColorHex)
+    }
+
     private func renderedSubtitle(for magicItem: MagicItem, defaultSubtitle: String?) -> String? {
         isExecuting(magicItem) ? CarPlayEntityListItem.executingSubtitle : defaultSubtitle
     }
@@ -492,21 +519,19 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 subtitle: renderedSubtitle(for: magicItem, defaultSubtitle: content.subtitle),
                 currentState: entityProvider.entity.state
             )
-        case .assistPipeline:
-            let iconColor = UIColor(hex: info.customization?.iconColor) ?? .haPrimary
-            let pipelineTitle = magicItem.name(info: info)
-            let assistLabel = L10n.Widgets.Action.Name.assist
+        case .assistPipeline, .assistPrompt:
+            let iconColor = iconColor(for: info)
             return RowDisplayItem(
                 magicItem: magicItem,
                 info: info,
                 image: magicItem.icon(info: info).carPlayIcon(color: iconColor),
                 iconColor: iconColor,
-                title: pipelineTitle,
-                subtitle: pipelineTitle == assistLabel ? nil : assistLabel,
+                title: assistTitle(for: magicItem, info: info),
+                subtitle: assistSubtitle(for: magicItem, info: info),
                 currentState: ""
             )
         default:
-            let iconColor = UIColor(hex: info.customization?.iconColor) ?? .haPrimary
+            let iconColor = iconColor(for: info)
             return RowDisplayItem(
                 magicItem: magicItem,
                 info: info,
@@ -546,13 +571,14 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         activeAssistSession = nil
 
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
-            Current.Log.error("Failed to get server for assist pipeline: \(magicItem.id)")
+            Current.Log.error("Failed to get server for assist item: \(magicItem.id)")
             return
         }
         let session = CarPlayAssistSession(
             interfaceController: interfaceController,
             server: server,
-            pipelineId: magicItem.id
+            pipelineId: magicItem.assistPipelineId ?? magicItem.id,
+            prompt: magicItem.type == .assistPrompt ? magicItem.assistPrompt : nil
         )
         session.onStop = { [weak self] in
             self?.activeAssistSession = nil

@@ -9,24 +9,29 @@ struct CarPlayConfigurationView: View {
     private enum AddItemDestination: String, Identifiable {
         case entity
         case assist
+        case assistPrompt
 
         var id: String { rawValue }
 
-        var magicItemType: MagicItemAddType {
+        var magicItemType: MagicItemAddType? {
             switch self {
             case .entity:
                 return .entities
             case .assist:
                 return .assistPipelines
+            case .assistPrompt:
+                return nil
             }
         }
 
-        var pickerOption: MagicItemAddView.PickerOption {
+        var pickerOption: MagicItemAddView.PickerOption? {
             switch self {
             case .entity:
                 return .entities
             case .assist:
                 return .assistPipelines
+            case .assistPrompt:
+                return nil
             }
         }
     }
@@ -90,13 +95,25 @@ struct CarPlayConfigurationView: View {
             isLoaded = true
         }
         .sheet(item: $addItemDestination, content: { destination in
-            MagicItemAddView(
-                context: .carPlay,
-                initialItemType: destination.magicItemType,
-                visiblePickerOptions: [destination.pickerOption]
-            ) { itemToAdd in
-                guard let itemToAdd else { return }
-                viewModel.addItem(itemToAdd)
+            switch destination {
+            case .entity, .assist:
+                if let magicItemType = destination.magicItemType, let pickerOption = destination.pickerOption {
+                    MagicItemAddView(
+                        context: .carPlay,
+                        initialItemType: magicItemType,
+                        visiblePickerOptions: [pickerOption]
+                    ) { itemToAdd in
+                        guard let itemToAdd else { return }
+                        viewModel.addItem(itemToAdd)
+                    }
+                }
+            case .assistPrompt:
+                NavigationView {
+                    AssistPromptMagicItemView(mode: .add) { itemToAdd in
+                        viewModel.addItem(itemToAdd)
+                    }
+                }
+                .navigationViewStyle(.stack)
             }
         })
         .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
@@ -146,7 +163,29 @@ struct CarPlayConfigurationView: View {
                 addItemDestination = .assist
             } label: {
                 Label {
-                    Text(isAssistSupported ? L10n.Widgets.Action.Name.assist : "Assist (iOS 26.4+)")
+                    Text(
+                        isAssistSupported ?
+                            L10n.Widgets.Action.Name.assist :
+                            L10n.MagicItem.Action.Assist.Unsupported.title
+                    )
+                } icon: {
+                    Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
+                        ofSize: .init(width: 18, height: 18),
+                        color: .label
+                    ))
+                }
+            }
+            .disabled(!isAssistSupported)
+
+            Button {
+                addItemDestination = .assistPrompt
+            } label: {
+                Label {
+                    Text(
+                        isAssistSupported ?
+                            L10n.MagicItem.ItemType.AssistPrompt.title :
+                            L10n.MagicItem.ItemType.AssistPrompt.Unsupported.title
+                    )
                 } icon: {
                     Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
                         ofSize: .init(width: 18, height: 18),
@@ -174,6 +213,14 @@ struct CarPlayConfigurationView: View {
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         if item.type == .action {
             itemRow(item: item, info: info)
+        } else if item.type == .assistPrompt {
+            NavigationLink {
+                AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
+                    viewModel.updateItem(updatedMagicItem)
+                }
+            } label: {
+                itemRow(item: item, info: info)
+            }
         } else {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .carPlay, item: item) { updatedMagicItem in
@@ -188,11 +235,39 @@ struct CarPlayConfigurationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .accent))
-            Text(item.name(info: info))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title(for: item, info: info))
+                if let subtitle = subtitle(for: item) {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemSymbol: .line3Horizontal)
                 .foregroundStyle(.gray)
         }
+    }
+
+    private func title(for item: MagicItem, info: MagicItem.Info) -> String {
+        if item.type == .assistPrompt,
+           let displayText = item.displayText?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !displayText.isEmpty {
+            return displayText
+        }
+
+        return item.name(info: info)
+    }
+
+    private func subtitle(for item: MagicItem) -> String? {
+        guard item.type == .assistPrompt,
+              let assistPrompt = item.assistPrompt?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !assistPrompt.isEmpty else {
+            return nil
+        }
+
+        return assistPrompt
     }
 
     private func image(
