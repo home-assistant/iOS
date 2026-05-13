@@ -166,12 +166,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sceneManager.activateAnyScene(for: .settings)
     }
 
-    @objc func openActionsPreferences() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        let delegate: Guarantee<SettingsSceneDelegate> = sceneManager.scene(for: .init(activity: .settings))
-        delegate.done { $0.pushActions(animated: true) }
-    }
-
     @objc func openHelp() {
         openURLInBrowser(
             URL(string: "https://companion.home-assistant.io")!,

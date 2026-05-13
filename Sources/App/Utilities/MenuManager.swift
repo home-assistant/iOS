@@ -6,8 +6,6 @@ import Shared
 import UIKit
 
 private extension UIMenu.Identifier {
-    static var haActions: Self { .init(rawValue: "ha.actions") }
-    static var haActionsConfigure: Self { .init(rawValue: "ha.actions.configure") }
     static var haHelp: Self { .init(rawValue: "ha.help") }
     static var haWebViewActions: Self { .init(rawValue: "ha.webViewActions") }
     static var haFile: Self { .init(rawValue: "ha.file") }
@@ -123,13 +121,11 @@ enum StatusItemTitleRenderer {
 
 class MenuManager {
     let builder: UIMenuBuilder
-    let actionsWithImages: [(Action, UIImage)]
 
     // remember: this class is short-lived. it only exists for the duration of creating the menu.
 
     init(builder: UIMenuBuilder) {
         self.builder = builder
-        self.actionsWithImages = Self.actionsWithImages()
         update()
     }
 
@@ -199,12 +195,6 @@ class MenuManager {
         }
 
         builder.replaceChildren(ofMenu: .help) { _ in helpMenus() }
-
-        if builder.menu(for: .haActions) == nil {
-            builder.insertSibling(actionsMenu(), beforeMenu: .window)
-        } else {
-            builder.replace(menu: .haActions, with: actionsMenu())
-        }
 
         if builder.menu(for: .haWebViewActions) == nil {
             builder.insertSibling(webViewActionsMenu(), beforeMenu: .fullscreen)
@@ -326,92 +316,6 @@ class MenuManager {
         ]
     }
 
-    private static func actionsWithImages() -> [(Action, UIImage)] {
-        // Action+Observation calls reload, so when they change this all gets run again
-        Current.realm()
-            .objects(Action.self)
-            .sorted(byKeyPath: #keyPath(Action.Position))
-            .map { action -> (Action, UIImage) in
-                let iconRect = CGRect(x: 0, y: 0, width: 28, height: 28)
-
-                let image = UIKit.UIGraphicsImageRenderer(size: iconRect.size).image { _ in
-                    let imageRect = iconRect.insetBy(dx: 3, dy: 3)
-
-                    UIColor(hex: action.BackgroundColor).set()
-                    UIBezierPath(roundedRect: iconRect, cornerRadius: 6.0).fill()
-
-                    MaterialDesignIcons(named: action.IconName)
-                        .image(ofSize: imageRect.size, color: UIColor(hex: action.IconColor))
-                        .draw(in: imageRect)
-                }
-
-                return (action, image)
-            }
-    }
-
-    private func actionsMenu() -> UIMenu {
-        let children = actionsWithImages.map { action, image in
-            UICommand(
-                title: action.Text,
-                image: image,
-                action: #selector(AppDelegate.openMenuUrl(_:)),
-                propertyList: Self.propertyList(for: action.widgetLinkURL)
-            )
-        } + [
-            UIMenu(title: "", image: nil, identifier: .haActionsConfigure, options: [.displayInline], children: [
-                UICommand(
-                    title: L10n.Menu.Actions.configure,
-                    image: nil,
-                    action: #selector(AppDelegate.openActionsPreferences),
-                    propertyList: nil
-                ),
-            ]),
-        ]
-
-        return UIMenu(
-            title: L10n.Menu.Actions.title,
-            image: nil,
-            identifier: .haActions,
-            children: Array(children)
-        )
-    }
-
-    private func actionsMenu() -> AppMacBridgeStatusItemMenuItem {
-        var items = [AppMacBridgeStatusItemMenuItem]()
-        items.append(contentsOf: actionsWithImages.compactMap { action, image in
-            let url = action.widgetLinkURL
-
-            return .init(
-                name: action.Name,
-                image: image
-            ) { callbackInfo in
-                callbackInfo.activate()
-
-                let delegate: Guarantee<WebViewSceneDelegate> = Current.sceneManager.scene(
-                    for: .init(activity: .webView)
-                )
-                delegate.done {
-                    $0.urlHandler?.handle(url: url)
-                }
-            }
-        })
-        if !items.isEmpty {
-            items.append(.separator())
-        }
-        items.append(.init(name: L10n.Menu.Actions.configure) { callbackInfo in
-            callbackInfo.activate()
-
-            UIApplication.shared.sendAction(
-                #selector(AppDelegate.openActionsPreferences),
-                to: UIApplication.shared.delegate,
-                from: nil,
-                for: nil
-            )
-        })
-
-        return AppMacBridgeStatusItemMenuItem(name: L10n.Menu.Actions.title, subitems: items)
-    }
-
     private func webViewActionsMenu() -> UIMenu {
         var commands: [UIMenuElement] = [
             UIKeyCommand(
@@ -492,8 +396,6 @@ class MenuManager {
 
         var menuItems = [AppMacBridgeStatusItemMenuItem]()
         menuItems.append(toggleMenu())
-        menuItems.append(.separator())
-        menuItems.append(actionsMenu())
         menuItems.append(.separator())
         menuItems.append(contentsOf: aboutMenu())
         menuItems.append(preferencesMenu())
