@@ -571,7 +571,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         activeAssistSession = nil
 
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
-            Current.Log.error("Failed to get server for assist pipeline: \(magicItem.id)")
+            Current.Log.error("Failed to get server for assist item: \(magicItem.id)")
             return
         }
         let session = CarPlayAssistSession(

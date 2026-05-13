@@ -169,7 +169,7 @@ struct CarPlayConfigurationView: View {
                             L10n.MagicItem.Action.Assist.Unsupported.title
                     )
                 } icon: {
-                    Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
+                    Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
                         ofSize: .init(width: 18, height: 18),
                         color: .label
                     ))

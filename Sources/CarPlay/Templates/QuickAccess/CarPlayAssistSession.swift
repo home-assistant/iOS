@@ -54,8 +54,9 @@ final class CarPlayAssistSession: NSObject {
     private let prompt: String?
 
     private lazy var template: CPVoiceControlTemplate = {
+        let retryButtonIcon: MaterialDesignIcons = promptToSend == nil ? .microphoneIcon : .replayIcon
         let retryButton = CPButton(
-            image: makeActionButtonImage(icon: .microphoneIcon, color: .haPrimary)
+            image: makeActionButtonImage(icon: retryButtonIcon, color: .haPrimary)
         ) { [weak self] _ in
             self?.restart()
         }
