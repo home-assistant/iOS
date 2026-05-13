@@ -89,22 +89,30 @@ jobs:
             const deadline = Date.now() + (30 * 60 * 1000);
 
             while (Date.now() < deadline) {
-              const { data } = await github.request(
-                'GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs',
+              const runs = await github.paginate(
+                github.rest.actions.listWorkflowRuns,
                 {
                   owner,
                   repo,
                   workflow_id: workflowId,
                   head_sha: headSha,
                   branch: 'main',
-                  per_page: 20,
+                  per_page: 100,
+                },
+                (response, done) => {
+                  const workflowRuns = response.data.workflow_runs ?? [];
+
+                  if (workflowRuns.some((run) => run.run_number === expectedRunNumber)) {
+                    done();
+                  }
+
+                  return workflowRuns;
                 }
               );
 
-              const runs = [...data.workflow_runs].sort((lhs, rhs) =>
-                new Date(rhs.created_at) - new Date(lhs.created_at)
-              );
-              const matchingRun = runs.find((run) => run.run_number === expectedRunNumber);
+              const matchingRun = [...runs]
+                .sort((lhs, rhs) => new Date(rhs.created_at) - new Date(lhs.created_at))
+                .find((run) => run.run_number === expectedRunNumber);
 
               if (matchingRun?.conclusion === 'success') {
                 core.info(
@@ -169,40 +177,19 @@ jobs:
             }
 
             core.setOutput('artifact_name', artifact.name);
-            core.setOutput('artifact_url', artifact.archive_download_url);
 
       - name: Download release asset
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          run-id: ${{ steps.find_run.outputs.run_id }}
+          name: ${{ steps.find_artifact.outputs.artifact_name }}
+          path: release-artifact/extracted
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare release asset
         id: download_asset
-        env:
-          ARTIFACT_URL: ${{ steps.find_artifact.outputs.artifact_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdir -p release-artifact/extracted release-assets
-          redirect_headers="$(mktemp)"
-          trap 'rm -f "$redirect_headers"' EXIT
-
-          curl --fail --silent --show-error \
-            --dump-header "$redirect_headers" \
-            --header "Authorization: Bearer ${GITHUB_TOKEN}" \
-            --header "Accept: application/vnd.github+json" \
-            "${ARTIFACT_URL}" \
-            --output /dev/null
-
-          artifact_download_url="$(
-            awk 'BEGIN { IGNORECASE = 1 } /^location:/ { sub(/\r$/, "", $2); print $2; exit }' \
-              "$redirect_headers"
-          )"
-
-          if [ -z "$artifact_download_url" ]; then
-            echo "Failed to resolve artifact download redirect URL"
-            exit 1
-          fi
-
-          curl --fail --location \
-            --output release-artifact/mac-developer-id.zip \
-            "$artifact_download_url"
-
-          unzip -o release-artifact/mac-developer-id.zip -d release-artifact/extracted
+          mkdir -p release-assets
 
           extracted_asset_path="$(find release-artifact/extracted -type f -name 'home-assistant-mac.zip' -print -quit)"
 
@@ -299,11 +286,11 @@ jobs:
             const releaseId = Number(process.env.RELEASE_ID);
             const assetPath = process.env.ASSET_PATH;
             const assetName = process.env.ASSET_NAME;
+            const assetSize = fs.statSync(assetPath).size;
             const uploadUrl = process.env.UPLOAD_URL.replace(
               '{?name,label}',
               `?name=${encodeURIComponent(assetName)}`
             );
-            const data = fs.readFileSync(assetPath);
 
             const { data: assets } = await github.request(
               'GET /repos/{owner}/{repo}/releases/{release_id}/assets',
@@ -332,9 +319,9 @@ jobs:
               url: uploadUrl,
               headers: {
                 'content-type': 'application/zip',
-                'content-length': data.length,
+                'content-length': assetSize,
               },
-              data,
+              data: fs.createReadStream(assetPath),
             });
 
       - name: Write summary
