@@ -891,6 +891,14 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
 "settings.connection_section.cloud_overrides_external" = "クラウド経由で接続する場合、外部 URL は使用されません。クラウドを無効にする場合を除き、構成する必要はありません。";
+"settings.connection_section.cloudhook.check_reachability.reachable" = "Reachable";
+"settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
+"settings.connection_section.cloudhook.check_reachability.result" = "Result";
+"settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
+"settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
+"settings.connection_section.cloudhook.status.not_configured" = "Not configured";
+"settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "～経由で接続";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "安全性が低い";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "最も安全";
