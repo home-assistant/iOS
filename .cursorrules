@@ -1,6 +1,6 @@
-# Claude Code Instructions for Home Assistant iOS
+# Cursor AI Rules for Home Assistant iOS
 
-See [AGENTS.md](AGENTS.md) for the full AI agent reference. This file provides Claude-specific guidance.
+See [AGENTS.md](AGENTS.md) for the full AI agent reference.
 
 ## Quick Reference
 
@@ -23,7 +23,7 @@ bundle exec fastlane test
 
 ### Key Rules
 
-1. **Dependency Injection**: This project uses the "World" pattern. A global `Current` variable (`AppEnvironment`) holds all dependencies. Never assign to `Current.*` outside test code.
+1. **Dependency Injection**: This project uses the "World" pattern (Point-Free). A global `Current` variable (`AppEnvironment`) holds all dependencies. Never assign to `Current.*` outside test code.
 2. **Localization**: Add strings to `Sources/App/Resources/en.lproj/Localizable.strings`. SwiftGen generates type-safe `L10n` accessors on build.
 3. **SF Symbols**: Use `SFSafeSymbols` (`Image(systemSymbol: .house)`) not string-based APIs.
 4. **CocoaPods only**: No Swift Package Manager. Dependencies via `Podfile`.
