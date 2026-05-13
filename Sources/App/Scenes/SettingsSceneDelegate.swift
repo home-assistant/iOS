@@ -29,10 +29,4 @@ import UIKit
         }
         #endif
     }
-
-    func pushActions(animated: Bool) {
-        // SwiftUI SettingsView handles navigation internally
-        // This method is kept for compatibility but no longer does anything
-        Current.Log.info("pushActions called on SwiftUI SettingsView - navigation handled internally")
-    }
 }
