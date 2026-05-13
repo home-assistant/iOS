@@ -1,5 +1,5 @@
 {
-  "originHash" : "1ee0c6b9e2c94ac5f37c3886febf9000aea9b07c91a41ed586f43fd4122b5102",
+  "originHash" : "f10295e78667f40f2b966ce2c424534b34a28c1ca456ae98d4497b79892b406b",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "61b85103a1aeed8218f17c794687781505fbbef5",
         "version" : "11.2.0"
+      }
+    },
+    {
+      "identity" : "debugswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DebugSwift/DebugSwift.git",
+      "state" : {
+        "revision" : "6f5a7f2111257fab7323641716943001707a61bb",
+        "version" : "1.15.0"
       }
     },
     {
