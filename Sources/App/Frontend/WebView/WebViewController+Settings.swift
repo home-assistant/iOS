@@ -80,10 +80,8 @@ extension WebViewController {
         webViewTopConstraint?.isActive = true
 
         // Force layout update
-        updateLegacyStatusBarHeight()
         view.setNeedsLayout()
         view.layoutIfNeeded()
-        updateLegacyFrontendSafeAreaInsets()
 
         // Refresh styling to ensure statusBarView has proper background color
         styleUI()
