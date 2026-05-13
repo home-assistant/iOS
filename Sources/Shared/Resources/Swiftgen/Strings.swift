@@ -2398,9 +2398,9 @@ public enum L10n {
       public static var allowOnce: String { return L10n.tr("Localizable", "nfc.tag_approval.allow_once") }
       /// Copy tag
       public static var copyTag: String { return L10n.tr("Localizable", "nfc.tag_approval.copy_tag") }
-      /// Send this tag to Home Assistant to perform the automation attached to it.
+      /// Send this tag to Home Assistant to trigger linked automations.
       public static var description: String { return L10n.tr("Localizable", "nfc.tag_approval.description") }
-      /// Allow Sending?
+      /// Allow tag?
       public static var title: String { return L10n.tr("Localizable", "nfc.tag_approval.title") }
       public enum TagId {
         /// Tag identifier

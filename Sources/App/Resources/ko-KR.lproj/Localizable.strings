@@ -504,9 +504,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.auth.required" = "Authentication Required";
 "kiosk.auth_error.reason" = "Authenticate to exit kiosk mode";
 "kiosk.auth_error.title" = "Authentication Error";
-"kiosk.brightness.control" = "Brightness Control";
+"kiosk.brightness.control" = "밝기 조절";
 "kiosk.brightness.manual" = "Manual Brightness: %li%%";
-"kiosk.brightness.section" = "Brightness";
+"kiosk.brightness.section" = "밝기";
 "kiosk.clock.24hour" = "24-Hour Format";
 "kiosk.clock.accessibility.analog_clock" = "Analog clock showing %@";
 "kiosk.clock.accessibility.current_time" = "Current time: %@";
@@ -588,10 +588,10 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "location_change_notification.visit.body" = "Visit을 통해 업데이트된 위치";
 "location_change_notification.watch_context.body" = "시계 컨텍스트 동기화를 통해 위치가 업데이트됨";
 "location_change_notification.x_callback_url.body" = "X-Callback-URL을 통해 업데이트된 위치";
-"mac.copy.accessibility_label" = "Copy";
+"mac.copy.accessibility_label" = "복사";
 "mac.navigation.go_back.accessibility_label" = "Navigate back";
 "mac.navigation.go_forward.accessibility_label" = "Navigate forward";
-"mac.paste.accessibility_label" = "Paste";
+"mac.paste.accessibility_label" = "붙여넣기";
 "magic_item.action" = "동작";
 "magic_item.action.assist.pipeline.title" = "파이프라인";
 "magic_item.action.assist.start_listening.title" = "듣기 시작";
@@ -655,6 +655,12 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "nfc.read.error.not_home_assistant" = "NFC 태그가 Home Assistant 태그가 아닙니다.";
 "nfc.read.error.tag_invalid" = "NFC 태그가 잘못되었습니다.";
 "nfc.read.start_message" = "%@을(를) NFC 태그 근처에 두십시오.";
+"nfc.tag_approval.allow_always" = "항상 허용";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "NFC 태그 읽기";
 "nfc.write.error.capacity" = "NFC 태그의 용량이 부족합니다: %ld가 필요하지만 %ld만 있습니다.";
 "nfc.write.error.invalid_format" = "NFC 태그가 NDEF 형식이 아닙니다.";
@@ -988,6 +994,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.developer.annoying_background_notifications.title" = "성가신 배경 정보";
 "settings.developer.camera_notification.notification.body" = "확장하면 카메라 콘텐츠 확장이 표시됩니다.";
 "settings.developer.camera_notification.title" = "카메라 알림 콘텐츠 확장 표시";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "%@에서 %@로 Realm을 복사했습니다.";
 "settings.developer.copy_realm.alert.title" = "Realm을 복사했습니다.";
 "settings.developer.copy_realm.title" = "앱 그룹에서 문서로 Realm 복사";
@@ -1082,7 +1090,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.enum.red" = "빨간색";
 "settings_details.general.app_icon.enum.release" = "릴리스";
 "settings_details.general.app_icon.enum.white" = "흰색";
-"settings_details.general.app_icon.explanation.title" = "각 아이콘에는 기본, 어둡게, 색조 등 3가지 변형(iOS 18세 이상)이 있으며, 선택한 iOS 홈 화면 스타일에 따라 반응합니다. 일부 아이콘은 어두운 모드에서 동일하거나 iOS에서 자동으로 처리됩니다.";
+"settings_details.general.app_icon.explanation.title" = "각 아이콘에는 기본, 어둡게, 색조 등 3가지 변형(iOS 18 이상)이 있으며, 선택한 iOS 홈 화면 스타일에 따라 반응합니다. 일부 아이콘은 어두운 모드에서 동일하거나 iOS에서 자동으로 처리됩니다.";
 "settings_details.general.app_icon.title" = "앱 아이콘";
 "settings_details.general.body" = "기본 앱 구성, 앱 아이콘 및 웹 페이지 설정";
 "settings_details.general.device_name.title" = "기기 이름";
@@ -1103,7 +1111,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.page_zoom.default" = "%@ (기본값)";
 "settings_details.general.page_zoom.title" = "페이지 확대";
 "settings_details.general.pinch_to_zoom.title" = "핀치하여 확대";
-"settings_details.general.refresh_after_inactive.title" = "Refresh After 5 Min Inactive";
+"settings_details.general.refresh_after_inactive.title" = "5분간 비활성 시 새로고침";
 "settings_details.general.restoration.title" = "마지막 페이지 기억하기";
 "settings_details.general.title" = "일반";
 "settings_details.general.visibility.options.dock" = "독";
@@ -1255,6 +1263,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "share_extension.entered_placeholder" = "이벤트에서 '입력됨'";
 "share_extension.error.title" = "보낼 수 없음";
 "shortcut_item.open_settings.title" = "설정 열기";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "허용된 태그";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "활성 운영 데이터 세트";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Apple Home의 홈 소유자인 iCloud 계정으로 로그인했는지 확인하세요.";
@@ -1559,7 +1574,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.assist.title" = "어시스트";
 "widgets.assist.unknown_configuration" = "설정";
 "widgets.automation.trigger.title" = "Trigger automation";
-"widgets.automations.description" = "Run Automation";
+"widgets.automations.description" = "자동화 실행";
 "widgets.button.reload_timeline" = "모든 위젯 새로고침";
 "widgets.commonly_used_entities.description" = "Display your commonly used entities based on your usage patterns.";
 "widgets.commonly_used_entities.empty.description" = "No commonly used entities found. Use Home Assistant to build your usage history.";

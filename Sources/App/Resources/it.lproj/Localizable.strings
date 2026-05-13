@@ -222,9 +222,9 @@
 "carPlay.debug.settings.tts_audio_session.title" = "TTS Audio Session";
 "carPlay.debug.settings.tts_playback.avplayer_waits_to_minimize_stalling" = "AVPlayer waits to minimize stalling";
 "carPlay.debug.settings.tts_playback.footer" = "Use the downloaded AVAudioPlayer strategy to determine whether the failure is tied to AVPlayer or remote URL playback.";
-"carPlay.debug.settings.tts_playback.playback_delay" = "Playback delay";
-"carPlay.debug.settings.tts_playback.playback_strategy" = "Playback strategy";
-"carPlay.debug.settings.tts_playback.title" = "TTS Playback";
+"carPlay.debug.settings.tts_playback.playback_delay" = "Ritardo riproduzione";
+"carPlay.debug.settings.tts_playback.playback_strategy" = "Strategia riproduzione";
+"carPlay.debug.settings.tts_playback.title" = "Riproduzione TTS";
 "carPlay.labels.already_added_server" = "Già aggiunto";
 "carPlay.labels.empty_domain_list" = "Nessun dominio disponibile";
 "carPlay.labels.no_servers_available" = "Nessun server disponibile. Aggiungere un server nell'app.";
@@ -232,7 +232,7 @@
 "carPlay.labels.servers" = "Server";
 "carPlay.labels.settings.advanced.assist.section.title" = "Assist";
 "carPlay.labels.settings.advanced.assist.tts_playback.footer" = "In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.";
-"carPlay.labels.settings.advanced.assist.tts_playback.title" = "TTS Playback";
+"carPlay.labels.settings.advanced.assist.tts_playback.title" = "Riproduci TTS";
 "carPlay.labels.settings.advanced.section.button.detail" = "Utilizza questa opzione se i dati del tuo server non vengono caricati correttamente.";
 "carPlay.labels.settings.advanced.section.button.title" = "Riavvia l'app";
 "carPlay.labels.settings.advanced.section.title" = "Avanzato";
@@ -655,6 +655,12 @@ Al momento, mTLS è supportato solo su iOS 17 e versioni successive; potrebbero 
 "nfc.read.error.not_home_assistant" = "Il tag NFC non è un tag Home Assistant";
 "nfc.read.error.tag_invalid" = "Il tag NFC non è valido";
 "nfc.read.start_message" = "Tieni il tuo %@ vicino a un tag NFC";
+"nfc.tag_approval.allow_always" = "Consenti sempre";
+"nfc.tag_approval.allow_once" = "Consenti una volta";
+"nfc.tag_approval.copy_tag" = "Copia tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "ID del tag";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "Lettura tag NFC";
 "nfc.write.error.capacity" = "Il tag NFC ha una capacità insufficiente: necessita di %ld ma ha solo %ld";
 "nfc.write.error.invalid_format" = "Il tag NFC non è in formato NDEF";
@@ -988,6 +994,8 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "settings.developer.annoying_background_notifications.title" = "Noiose Informazioni di base";
 "settings.developer.camera_notification.notification.body" = "Espandere questo per mostrare l'estensione del contenuto della fotocamera";
 "settings.developer.camera_notification.title" = "Mostra l'estensione del contenuto della notifica della videocamera";
+"settings.developer.clear_allowed_tags.complete.title" = "Tag approvati eliminati";
+"settings.developer.clear_allowed_tags.title" = "Elimina tag approvati";
 "settings.developer.copy_realm.alert.message" = "Copiato Realm da %@ a %@";
 "settings.developer.copy_realm.alert.title" = "Realm copiato";
 "settings.developer.copy_realm.title" = "Copia il reame dal gruppo di app in Documenti";
@@ -1255,6 +1263,13 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "share_extension.entered_placeholder" = "'inserito' nell'evento";
 "share_extension.error.title" = "Impossibile inviare";
 "shortcut_item.open_settings.title" = "Apri Impostazioni";
+"tags.allowed.delete_all" = "Elimina tutti";
+"tags.allowed.delete_all.confirm.button" = "Elimina tutti";
+"tags.allowed.delete_all.confirm.title" = "Eliminare tutti i tag approvati?";
+"tags.allowed.empty" = "Nessun tag approvato";
+"tags.allowed.footer" = "I tag approvati possono essere inviati a Home Assistant senza chiedere conferma ogni volta. Scorri a sinistra su un tag per eliminarlo";
+"tags.allowed.title" = "Tag approvati";
+"tags.title" = "Tag";
 "thread.active_operational_data_set.title" = "Set di dati operativi";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Assicurati di aver effettuato l'accesso con il tuo account iCloud che è proprietario di una Home in Apple Home.";
