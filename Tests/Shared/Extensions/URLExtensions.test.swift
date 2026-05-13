@@ -113,6 +113,26 @@ struct URLExtensionsTests {
     }
 
     @Test(
+        "Given full Home Assistant URLs when extracting server base URL then path query and fragment are removed",
+        arguments: [
+            ("http://homeassistant:8123/lovelace/0", "http://homeassistant:8123"),
+            ("http://homeassistant:8123/lovelace/0?foo=bar#section", "http://homeassistant:8123"),
+            ("https://example.duckdns.org:8123/", "https://example.duckdns.org:8123"),
+            (
+                "https://user:pass@example.duckdns.org:8443/history#dashboard",
+                "https://user:pass@example.duckdns.org:8443"
+            ),
+        ]
+    )
+    func serverBaseURLRemovesPathQueryAndFragment(urlString: String, expectedString: String) throws {
+        let url = try #require(URL(string: urlString))
+        let expected = try #require(URL(string: expectedString))
+
+        #expect(url.serverBaseURL() == expected)
+        #expect(url.serverBaseURL().port == expected.port)
+    }
+
+    @Test(
         "Given various private IP ranges when checking isLocal then returns true",
         arguments: [
             "http://10.0.0.1:8123", // Start of 10.0.0.0/8

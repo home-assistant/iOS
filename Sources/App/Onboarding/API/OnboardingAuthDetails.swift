@@ -8,7 +8,7 @@ class OnboardingAuthDetails: Equatable {
     var clientCertificate: ClientCertificate?
 
     init(baseURL: URL) throws {
-        guard var components = URLComponents(url: baseURL.sanitized(), resolvingAgainstBaseURL: false) else {
+        guard var components = URLComponents(url: baseURL.serverBaseURL(), resolvingAgainstBaseURL: false) else {
             throw OnboardingAuthError(kind: .invalidURL)
         }
 
@@ -32,7 +32,7 @@ class OnboardingAuthDetails: Equatable {
         }
         // swiftlint:enable prohibit_environment_assignment
 
-        components.path += "/auth/authorize"
+        components.path = "/auth/authorize"
         components.queryItems = [
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "client_id", value: clientID),

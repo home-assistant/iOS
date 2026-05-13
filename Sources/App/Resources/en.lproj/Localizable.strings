@@ -1667,6 +1667,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.custom.intent_toggle_failed.body" = "Please try again";
 "widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.server_unreachable.body" = "Home Assistant could not be reached, please check your app server settings and connection security level.";
+"widgets.custom.server_unreachable.title" = "Home Assistant could not be reached";
 "widgets.custom.show_last_update_time.param.title" = "Show last update time";
 "widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
 "widgets.custom.show_states.param.title" = "Show states (BETA)";
