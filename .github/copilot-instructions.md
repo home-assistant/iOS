@@ -26,7 +26,7 @@ bundle exec fastlane test
 1. **Dependency Injection**: This project uses the "World" pattern. A global `Current` variable (`AppEnvironment`) holds all dependencies. Never assign to `Current.*` outside test code.
 2. **Localization**: Add strings to `Sources/App/Resources/en.lproj/Localizable.strings`. SwiftGen generates type-safe `L10n` accessors on build.
 3. **SF Symbols**: Use `SFSafeSymbols` (`Image(systemSymbol: .house)`) not string-based APIs.
-4. **CocoaPods only**: No Swift Package Manager. Dependencies via `Podfile`.
+4. **CocoaPods and SPM**: Dependencies are managed via the `Podfile` (CocoaPods) and Xcode's Swift Package Manager integration for select packages.
 5. **Workspace**: Always use `HomeAssistant.xcworkspace`.
 
 ### Architecture
