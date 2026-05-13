@@ -7,8 +7,23 @@
 //
 @testable import HomeAssistant
 import Testing
+import UIKit
 
 struct WebViewJavascriptCommandsTests {
+    @Test func testSetAppSafeAreaInsetsCommand() async throws {
+        assert(WebViewJavascriptCommands.setAppSafeAreaInsets(.init(
+            top: 47,
+            left: 3.5,
+            bottom: 21,
+            right: 0
+        )) == """
+        document.documentElement.style.setProperty('--app-safe-area-inset-top', '47.00px');
+        document.documentElement.style.setProperty('--app-safe-area-inset-bottom', '21.00px');
+        document.documentElement.style.setProperty('--app-safe-area-inset-left', '3.50px');
+        document.documentElement.style.setProperty('--app-safe-area-inset-right', '0.00px');
+        """)
+    }
+
     @Test func testWebViewJavascriptCommandsSearchEntities() async throws {
         assert(WebViewJavascriptCommands.searchEntitiesKeyEvent == """
         var event = new KeyboardEvent('keydown', {

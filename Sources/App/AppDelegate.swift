@@ -1,6 +1,9 @@
 import Alamofire
 import CallbackURLKit
 import Communicator
+#if DEBUG
+import DebugSwift
+#endif
 import FirebaseCore
 import FirebaseMessaging
 import Intents
@@ -41,6 +44,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let sceneManager = SceneManager()
     private let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
+    #if DEBUG
+    private let debugSwift = DebugSwift()
+    #endif
     private var zoneManager: ZoneManager?
     private var titleSubscription: MenuManagerTitleSubscription? {
         didSet {
@@ -123,11 +129,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         lifecycleManager.didFinishLaunching()
+        setupDebugSwift()
 
         checkForUpdate()
         checkForAlerts()
 
         return true
+    }
+
+    private func setupDebugSwift() {
+        #if DEBUG
+        debugSwift.setup()
+        debugSwift.show()
+        #endif
     }
 
     override func buildMenu(with builder: UIMenuBuilder) {

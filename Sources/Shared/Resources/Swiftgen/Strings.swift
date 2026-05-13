@@ -3188,7 +3188,7 @@ public enum L10n {
         public enum CheckReachability {
           /// Reachable
           public static var reachable: String { return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.reachable") }
-          /// Reachable (HTTP %d)
+          /// Reachable (HTTP %li)
           public static func reachableStatusCode(_ p1: Int) -> String {
             return L10n.tr("Localizable", "settings.connection_section.cloudhook.check_reachability.reachable_status_code", p1)
           }

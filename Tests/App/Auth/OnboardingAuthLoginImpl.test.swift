@@ -46,6 +46,18 @@ class OnboardingAuthLoginImplTests: XCTestCase {
         try viewController.resolver.fulfill(XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
         XCTAssertEqual(try hang(result), "code_123")
     }
+
+    func testAuthDetailsNormalizeFrontendURLForAuthorizeEndpoint() throws {
+        let details = try OnboardingAuthDetails(baseURL: XCTUnwrap(URL(
+            string: "http://example.com:8123/lovelace/0?dashboard=main#section"
+        )))
+
+        XCTAssertEqual(details.url.scheme, "http")
+        XCTAssertEqual(details.url.host, "example.com")
+        XCTAssertEqual(details.url.port, 8123)
+        XCTAssertEqual(details.url.path, "/auth/authorize")
+        XCTAssertEqual(details.url.queryItems?["response_type"], "code")
+    }
 }
 
 private class FakeUIViewController: UIViewController {

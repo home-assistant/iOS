@@ -892,6 +892,14 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Eemalda";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Kas eemaldada sertifikaat?";
 "settings.connection_section.cloud_overrides_external" = "Pilve kaudu ühenduse loomisel välist URL-i ei kasutata. Seda ei pea konfigureerima, välja arvatud juhul, kui soovid pilve keelata.";
+"settings.connection_section.cloudhook.check_reachability.reachable" = "Reachable";
+"settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
+"settings.connection_section.cloudhook.check_reachability.result" = "Result";
+"settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
+"settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
+"settings.connection_section.cloudhook.status.not_configured" = "Not configured";
+"settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "Ühendatud läbi";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Vähem turvaline";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Kõige turvalisem";

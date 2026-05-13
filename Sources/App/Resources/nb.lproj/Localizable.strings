@@ -892,6 +892,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
 "settings.connection_section.cloud_overrides_external" = "Når du kobler til via Cloud, brukes ikke den eksterne URL-en. Du trenger ikke å konfigurere en med mindre du vil deaktivere Cloud.";
+"settings.connection_section.cloudhook.check_reachability.reachable" = "Reachable";
+"settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
+"settings.connection_section.cloudhook.check_reachability.result" = "Result";
+"settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
+"settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
+"settings.connection_section.cloudhook.status.not_configured" = "Not configured";
+"settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "Tilkoblet via";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Mindre sikker";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Mest sikker";

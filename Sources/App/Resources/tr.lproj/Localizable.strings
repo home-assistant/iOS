@@ -892,6 +892,14 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Kaldır";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Sertifikayı kaldır?";
 "settings.connection_section.cloud_overrides_external" = "Bulut yoluyla bağlanırken, Harici URL kullanılmayacaktır. Bulutu devre dışı bırakmak istemediğiniz sürece bir tane yapılandırmanıza gerek yoktur.";
+"settings.connection_section.cloudhook.check_reachability.reachable" = "Reachable";
+"settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
+"settings.connection_section.cloudhook.check_reachability.result" = "Result";
+"settings.connection_section.cloudhook.check_reachability.title" = "Check reachability";
+"settings.connection_section.cloudhook.check_reachability.unreachable" = "Unreachable: %@";
+"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
+"settings.connection_section.cloudhook.status.not_configured" = "Not configured";
+"settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "Üzerinden bağlandı";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Daha az güvenli";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "En güvenli";
