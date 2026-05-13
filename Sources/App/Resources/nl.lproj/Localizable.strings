@@ -655,6 +655,12 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "nfc.read.error.not_home_assistant" = "NFC-tag is geen Home Assistant-tag";
 "nfc.read.error.tag_invalid" = "NFC-tag is ongeldig";
 "nfc.read.start_message" = "Houd je %@ bij een NFC-tag";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "NFC-tag lezen";
 "nfc.write.error.capacity" = "NFC-tag heeft onvoldoende capaciteit: heeft %ld nodig, maar heeft %ld.";
 "nfc.write.error.invalid_format" = "NFC-tag heeft geen NDEF-indeling";
@@ -988,6 +994,8 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.developer.annoying_background_notifications.title" = "Vervelende achtergrondinformatie";
 "settings.developer.camera_notification.notification.body" = "Vouw dit uit om de extensie voor de camera-inhoud weer te geven";
 "settings.developer.camera_notification.title" = "Toon de inhoud van de cameramelding";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "Gekopieerd Realm van %@ naar %@";
 "settings.developer.copy_realm.alert.title" = "Gekopieerd Realm";
 "settings.developer.copy_realm.title" = "Kopieer Realm van app-groep naar Documenten";
@@ -1255,6 +1263,13 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "share_extension.entered_placeholder" = "'ingevoerd' in gebeurtenis";
 "share_extension.error.title" = "Verzenden niet gelukt";
 "shortcut_item.open_settings.title" = "Open instellingen";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Actieve operationele dataset";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Zorg ervoor dat je bent ingelogd met je Apple-account dat eigenaar is van een woning in Apple Woning.";
