@@ -655,6 +655,12 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "nfc.read.error.not_home_assistant" = "Тег NFC не є тегом Home Assistant";
 "nfc.read.error.tag_invalid" = "Неприпустимий тег NFC";
 "nfc.read.start_message" = "Тримайте %@ біля тегу NFC";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "Читання тегів NFC";
 "nfc.write.error.capacity" = "Тег NFC має недостатню ємність: потребує %ld але має лише %ld";
 "nfc.write.error.invalid_format" = "Тег NFC не у форматі NDEF";
@@ -988,6 +994,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.developer.annoying_background_notifications.title" = "Набридлива фонова інформація";
 "settings.developer.camera_notification.notification.body" = "Розгорніть це, щоб відобразити розширення вмісту камери";
 "settings.developer.camera_notification.title" = "Показати розширення вмісту сповіщень камери";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "Скопійовано сферу з %@ по %@";
 "settings.developer.copy_realm.alert.title" = "Скопійовано сферу";
 "settings.developer.copy_realm.title" = "Копіювати сферу з групи застосунка у документи";
@@ -1255,6 +1263,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Не вдалося надіслати";
 "shortcut_item.open_settings.title" = "Open Settings";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Active operational data set";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";

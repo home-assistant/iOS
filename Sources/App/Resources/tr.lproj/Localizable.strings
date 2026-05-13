@@ -655,6 +655,12 @@
 "nfc.read.error.not_home_assistant" = "NFC etiketi, Home Assistant etiketi değil";
 "nfc.read.error.tag_invalid" = "NFC etiketi geçersiz";
 "nfc.read.start_message" = "%@'lerinizi bir NFC etiketinin yakınında tutun";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "NFC Etiketi Okuma";
 "nfc.write.error.capacity" = "NFC etiketi yetersiz kapasiteye sahiptir: ihtiyacı %ld ama sadece %ld vardır";
 "nfc.write.error.invalid_format" = "NFC etiketi NDEF formatında değildir";
@@ -988,6 +994,8 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.developer.annoying_background_notifications.title" = "Rahatsız Edici Arka Plan Bilgisi";
 "settings.developer.camera_notification.notification.body" = "Kamera içerik uzantısını göstermek için bunu genişletin";
 "settings.developer.camera_notification.title" = "Kamera bildirimi içerik uzantısını göster";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "Kopyalanır Bölge %@ ile %@";
 "settings.developer.copy_realm.alert.title" = "Kopyalanan Bölge";
 "settings.developer.copy_realm.title" = "Realm'i uygulama grubundan Belgelere kopyala";
@@ -1255,6 +1263,13 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "share_extension.entered_placeholder" = "Etkinliğe 'girildi'";
 "share_extension.error.title" = "Gönderilemedi";
 "shortcut_item.open_settings.title" = "Ayarları Aç";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Aktif operasyonel veri seti";
 "thread.border_agent_id.title" = "Sınır Ajanı Kimliği";
 "thread.credentials.share_credentials.no_credentials_message" = "Apple Home'da bir Evin sahibi olan iCloud hesabınızla oturum açtığınızdan emin olun.";

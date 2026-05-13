@@ -655,6 +655,12 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "nfc.read.error.not_home_assistant" = "NFCタグはHome Assistantのタグではありません";
 "nfc.read.error.tag_invalid" = "NFCタグが無効です";
 "nfc.read.start_message" = "NFCタグに、%@ を近づける";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "NFCタグ読み取り";
 "nfc.write.error.capacity" = "NFCタグの容量が不足しています: %ld 必要ですが、%ld しかありません";
 "nfc.write.error.invalid_format" = "NFCタグが、NDEF形式ではありません";
@@ -987,6 +993,8 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.developer.annoying_background_notifications.title" = "迷惑な背景情報";
 "settings.developer.camera_notification.notification.body" = "これを展開すると、カメラコンテンツの拡張子が表示されます";
 "settings.developer.camera_notification.title" = "カメラ通知コンテンツ拡張機能を表示する";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "レルムを、%@ から %@ にコピーしました";
 "settings.developer.copy_realm.alert.title" = "コピーされたレルム";
 "settings.developer.copy_realm.title" = "アプリグループからドキュメントにレルムをコピーする";
@@ -1254,6 +1262,13 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "share_extension.entered_placeholder" = "イベントに'入力' されました";
 "share_extension.error.title" = "送信できませんでした";
 "shortcut_item.open_settings.title" = "設定を開く";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "アクティブな運用データセット";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Apple Home のホーム所有者である iCloud アカウントでログインしていることを確認してください。";

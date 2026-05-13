@@ -655,6 +655,12 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "nfc.read.error.not_home_assistant" = "La etiqueta NFC no es una etiqueta de Home Assistant";
 "nfc.read.error.tag_invalid" = "La etiqueta NFC no es válida";
 "nfc.read.start_message" = "Mantén tu %@ cerca de una etiqueta NFC";
+"nfc.tag_approval.allow_always" = "Allow Always";
+"nfc.tag_approval.allow_once" = "Allow Once";
+"nfc.tag_approval.copy_tag" = "Copy tag";
+"nfc.tag_approval.description" = "Send this tag to Home Assistant to trigger linked automations.";
+"nfc.tag_approval.tag_id.title" = "Tag identifier";
+"nfc.tag_approval.title" = "Allow tag?";
 "nfc.tag_read" = "Etiqueta NFC leída";
 "nfc.write.error.capacity" = "La etiqueta NFC no tiene capacidad suficiente: necesita %ld pero solo tiene %ld";
 "nfc.write.error.invalid_format" = "La etiqueta NFC no tiene formato NDEF";
@@ -988,6 +994,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.developer.annoying_background_notifications.title" = "Annoying Background Info";
 "settings.developer.camera_notification.notification.body" = "Expand this to show the camera content extension";
 "settings.developer.camera_notification.title" = "Show camera notification content extension";
+"settings.developer.clear_allowed_tags.complete.title" = "Approved tags cleared";
+"settings.developer.clear_allowed_tags.title" = "Clear approved tags";
 "settings.developer.copy_realm.alert.message" = "Copied Realm from %@ to %@";
 "settings.developer.copy_realm.alert.title" = "Copied Realm";
 "settings.developer.copy_realm.title" = "Copy Realm from app group to Documents";
@@ -1255,6 +1263,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Couldn't Send";
 "shortcut_item.open_settings.title" = "Open Settings";
+"tags.allowed.delete_all" = "Delete all";
+"tags.allowed.delete_all.confirm.button" = "Delete all";
+"tags.allowed.delete_all.confirm.title" = "Delete all allowed tags?";
+"tags.allowed.empty" = "No allowed tags";
+"tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
+"tags.allowed.title" = "Allowed tags";
+"tags.title" = "Tags";
 "thread.active_operational_data_set.title" = "Active operational data set";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
