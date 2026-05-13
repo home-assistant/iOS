@@ -118,7 +118,10 @@ struct URLExtensionsTests {
             ("http://homeassistant:8123/lovelace/0", "http://homeassistant:8123"),
             ("http://homeassistant:8123/lovelace/0?foo=bar#section", "http://homeassistant:8123"),
             ("https://example.duckdns.org:8123/", "https://example.duckdns.org:8123"),
-            ("https://user:pass@example.duckdns.org:8443/history#dashboard", "https://user:pass@example.duckdns.org:8443"),
+            (
+                "https://user:pass@example.duckdns.org:8443/history#dashboard",
+                "https://user:pass@example.duckdns.org:8443"
+            ),
         ]
     )
     func serverBaseURLRemovesPathQueryAndFragment(urlString: String, expectedString: String) throws {
