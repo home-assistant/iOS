@@ -1,6 +1,6 @@
-# Claude Code Instructions for Home Assistant iOS
+# GitHub Copilot Instructions for Home Assistant iOS
 
-See [AGENTS.md](AGENTS.md) for the full AI agent reference. This file provides Claude-specific guidance.
+See [AGENTS.md](../AGENTS.md) for the full AI agent reference. This file provides GitHub Copilot-specific guidance.
 
 ## Quick Reference
 
