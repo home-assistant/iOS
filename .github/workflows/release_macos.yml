@@ -1,0 +1,340 @@
+name: Release macOS
+
+on:
+  push:
+    tags:
+      - 'release/*/*'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: macos-release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Parse release tag
+        id: parse_tag
+        run: |
+          tag="${GITHUB_REF_NAME}"
+
+          case "$tag" in
+            release/*/*) ;;
+            *)
+              echo "Unexpected tag format: $tag"
+              exit 1
+              ;;
+          esac
+
+          version="${tag#release/}"
+          version="${version%%/*}"
+          build="${tag##*/}"
+          display_build="${build##*.}"
+          run_number="${display_build}"
+          commit_sha="$(git rev-parse "${tag}^{commit}")"
+
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "display_build=$display_build" >> "$GITHUB_OUTPUT"
+          echo "run_number=$run_number" >> "$GITHUB_OUTPUT"
+          echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure tag points to main
+        env:
+          TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
+        run: |
+          git fetch origin main
+
+          if ! git branch -r --contains "$TARGET_COMMIT_SHA" | grep -Eq 'origin/main$'; then
+            echo "Tag ${GITHUB_REF_NAME} does not point to a commit on origin/main"
+            exit 1
+          fi
+
+      - name: Wait for successful distribute run
+        id: find_run
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          EXPECTED_RUN_NUMBER: ${{ steps.parse_tag.outputs.run_number }}
+          TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const workflowId = 'distribute.yml';
+            const headSha = process.env.TARGET_COMMIT_SHA;
+            const expectedRunNumber = Number(process.env.EXPECTED_RUN_NUMBER);
+
+            if (
+              !Number.isFinite(expectedRunNumber) ||
+              !Number.isInteger(expectedRunNumber)
+            ) {
+              core.setFailed(
+                `Invalid EXPECTED_RUN_NUMBER: "${process.env.EXPECTED_RUN_NUMBER}". ` +
+                'The release tag must contain a numeric Distribute run number.'
+              );
+              return;
+            }
+
+            const pollIntervalMs = 60 * 1000;
+            const deadline = Date.now() + (30 * 60 * 1000);
+
+            while (Date.now() < deadline) {
+              const runs = await github.paginate(
+                github.rest.actions.listWorkflowRuns,
+                {
+                  owner,
+                  repo,
+                  workflow_id: workflowId,
+                  head_sha: headSha,
+                  branch: 'main',
+                  per_page: 100,
+                },
+                (response, done) => {
+                  const workflowRuns = response.data.workflow_runs ?? [];
+
+                  if (workflowRuns.some((run) => run.run_number === expectedRunNumber)) {
+                    done();
+                  }
+
+                  return workflowRuns;
+                }
+              );
+
+              const matchingRun = [...runs]
+                .sort((lhs, rhs) => new Date(rhs.created_at) - new Date(lhs.created_at))
+                .find((run) => run.run_number === expectedRunNumber);
+
+              if (matchingRun?.conclusion === 'success') {
+                core.info(
+                  `Using successful Distribute run #${matchingRun.run_number} (${matchingRun.html_url})`
+                );
+                core.setOutput('run_id', String(matchingRun.id));
+                core.setOutput('run_url', matchingRun.html_url);
+                return;
+              }
+
+              if (matchingRun && matchingRun.status !== 'completed') {
+                core.info(
+                  `Waiting for Distribute run #${matchingRun.run_number} (${matchingRun.status})`
+                );
+                await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+                continue;
+              }
+
+              if (matchingRun) {
+                core.setFailed(
+                  `Distribute run #${matchingRun.run_number} for ${headSha} concluded with ${matchingRun.conclusion}.`
+                );
+                return;
+              }
+
+              core.info(
+                `No Distribute run #${expectedRunNumber} found for ${headSha} yet.`
+              );
+              await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+            }
+
+            core.setFailed(
+              `Timed out waiting for successful Distribute run #${expectedRunNumber} for ${headSha} on main.`
+            );
+
+      - name: Resolve artifact
+        id: find_artifact
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          DISTRIBUTE_RUN_ID: ${{ steps.find_run.outputs.run_id }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const runId = Number(process.env.DISTRIBUTE_RUN_ID);
+
+            const { data } = await github.request(
+              'GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts',
+              {
+                owner,
+                repo,
+                run_id: runId,
+                per_page: 100,
+              }
+            );
+
+            const artifact = data.artifacts.find((candidate) => candidate.name === 'mac-developer-id.zip');
+
+            if (!artifact) {
+              core.setFailed(`Artifact mac-developer-id.zip was not found on run ${runId}.`);
+              return;
+            }
+
+            core.setOutput('artifact_name', artifact.name);
+
+      - name: Download release asset
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          run-id: ${{ steps.find_run.outputs.run_id }}
+          name: ${{ steps.find_artifact.outputs.artifact_name }}
+          path: release-artifact/extracted
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare release asset
+        id: download_asset
+        run: |
+          mkdir -p release-assets
+
+          extracted_asset_path="$(find release-artifact/extracted -type f -name 'home-assistant-mac.zip' -print -quit)"
+
+          if [ -z "$extracted_asset_path" ]; then
+            echo "Expected release asset was not found inside the artifact archive"
+            exit 1
+          fi
+
+          asset_path="release-assets/home-assistant-mac.zip"
+          cp "$extracted_asset_path" "$asset_path"
+
+          echo "asset_path=$asset_path" >> "$GITHUB_OUTPUT"
+          echo "asset_name=$(basename "$asset_path")" >> "$GITHUB_OUTPUT"
+
+      - name: Create release or sync existing release
+        id: release
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          TAG_NAME: ${{ steps.parse_tag.outputs.tag }}
+          RELEASE_NAME: ${{ steps.parse_tag.outputs.version }} (${{ steps.parse_tag.outputs.display_build }})
+          TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const tag = process.env.TAG_NAME;
+            const releaseName = process.env.RELEASE_NAME;
+            const targetCommitish = process.env.TARGET_COMMIT_SHA;
+            let release;
+
+            try {
+              release = (
+                await github.request(
+                  'GET /repos/{owner}/{repo}/releases/tags/{tag}',
+                  {
+                    owner,
+                    repo,
+                    tag,
+                  }
+                )
+              ).data;
+
+              release = (
+                await github.request(
+                  'PATCH /repos/{owner}/{repo}/releases/{release_id}',
+                  {
+                    owner,
+                    repo,
+                    release_id: release.id,
+                    name: releaseName,
+                    target_commitish: targetCommitish,
+                    // Preserve the current prerelease flag so reruns don't undo a manual promotion.
+                    prerelease: release.prerelease,
+                  }
+                )
+              ).data;
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+
+              release = (
+                await github.request(
+                  'POST /repos/{owner}/{repo}/releases',
+                  {
+                    owner,
+                    repo,
+                    tag_name: tag,
+                    target_commitish: targetCommitish,
+                    name: releaseName,
+                    prerelease: true,
+                    generate_release_notes: true,
+                  }
+                )
+              ).data;
+            }
+
+            core.setOutput('release_id', String(release.id));
+            core.setOutput('release_url', release.html_url);
+            core.setOutput('upload_url', release.upload_url);
+
+      - name: Upload macOS asset
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          ASSET_PATH: ${{ steps.download_asset.outputs.asset_path }}
+          ASSET_NAME: ${{ steps.download_asset.outputs.asset_name }}
+          RELEASE_ID: ${{ steps.release.outputs.release_id }}
+          UPLOAD_URL: ${{ steps.release.outputs.upload_url }}
+        with:
+          script: |
+            const fs = require('fs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const releaseId = Number(process.env.RELEASE_ID);
+            const assetPath = process.env.ASSET_PATH;
+            const assetName = process.env.ASSET_NAME;
+            const assetSize = fs.statSync(assetPath).size;
+            const uploadUrl = process.env.UPLOAD_URL.replace(
+              '{?name,label}',
+              `?name=${encodeURIComponent(assetName)}`
+            );
+
+            const { data: assets } = await github.request(
+              'GET /repos/{owner}/{repo}/releases/{release_id}/assets',
+              {
+                owner,
+                repo,
+                release_id: releaseId,
+                per_page: 100,
+              }
+            );
+
+            const existingAsset = assets.find((asset) => asset.name === assetName);
+            if (existingAsset) {
+              await github.request(
+                'DELETE /repos/{owner}/{repo}/releases/assets/{asset_id}',
+                {
+                  owner,
+                  repo,
+                  asset_id: existingAsset.id,
+                }
+              );
+            }
+
+            await github.request({
+              method: 'POST',
+              url: uploadUrl,
+              headers: {
+                'content-type': 'application/zip',
+                'content-length': assetSize,
+              },
+              data: fs.createReadStream(assetPath),
+            });
+
+      - name: Write summary
+        env:
+          VERSION: ${{ steps.parse_tag.outputs.version }}
+          DISPLAY_BUILD: ${{ steps.parse_tag.outputs.display_build }}
+          DISTRIBUTE_RUN_URL: ${{ steps.find_run.outputs.run_url }}
+          RELEASE_URL: ${{ steps.release.outputs.release_url }}
+        run: |
+          {
+            echo "## macOS release created"
+            echo
+            echo "- Version: ${VERSION} (${DISPLAY_BUILD})"
+            echo "- Distribution run: ${DISTRIBUTE_RUN_URL}"
+            echo "- Release: ${RELEASE_URL}"
+          } >> "$GITHUB_STEP_SUMMARY"
