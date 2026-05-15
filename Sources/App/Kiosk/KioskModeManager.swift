@@ -175,6 +175,13 @@ public final class KioskModeManager: ObservableObject {
         // Setup secret exit gesture overlay (always available when kiosk mode is active)
         setupSecretExitGesture(in: viewController)
 
+        // Restore kiosk mode if it was enabled before the app was last closed
+        if settings.isKioskModeEnabled, !isKioskModeActive {
+            Current.Log.info("Restoring kiosk mode from persisted settings")
+            enableKioskMode()
+            return
+        }
+
         // Apply initial state if already in kiosk mode
         if isKioskModeActive {
             updateKioskModeLockdown(enabled: true)
