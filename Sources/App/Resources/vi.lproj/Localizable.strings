@@ -596,11 +596,16 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Start listening";
 "magic_item.action.assist.title" = "Assist";
+"magic_item.action.assist.unsupported.title" = "Assist (iOS 26.4+)";
 "magic_item.action.navigation_path.placeholder" = "e.g. /lovelace/cameras";
 "magic_item.action.navigation_path.title" = "Navigation path";
 "magic_item.action.on_tap" = "On tap";
 "magic_item.action.script.title" = "Script";
 "magic_item.add" = "Add";
+"magic_item.assist_prompt.navigation_title" = "Assist prompt";
+"magic_item.assist_prompt.prompt.footer" = "When executed in CarPlay, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.";
+"magic_item.assist_prompt.prompt.title" = "Prompt";
+"magic_item.assist_prompt.title.title" = "Title";
 "magic_item.background_color.title" = "Background color";
 "magic_item.display_text.title" = "Display text";
 "magic_item.edit" = "Save";
@@ -609,6 +614,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.item_type.action.list.title" = "iOS Actions";
 "magic_item.item_type.action.list.warning.title" = "We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.";
 "magic_item.item_type.app.list.title" = "App";
+"magic_item.item_type.assist_prompt.title" = "Assist prompt";
+"magic_item.item_type.assist_prompt.unsupported.title" = "Assist prompt (iOS 26.4+)";
 "magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Scenes";
 "magic_item.item_type.script.list.title" = "Scripts";
@@ -1667,6 +1674,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.custom.intent_toggle_failed.body" = "Vui lòng thử lại";
 "widgets.custom.intent_toggle_failed.title" = "Không thể 'bật/tắt' thực thể";
 "widgets.custom.require_confirmation.footer" = "Xác nhận tiện ích và hiển thị trạng thái hiện đang ở giai đoạn BETA, nếu bạn gặp sự cố, vui lòng tắt 'Yêu cầu xác nhận' và lưu.";
+"widgets.custom.server_unreachable.body" = "Home Assistant could not be reached, please check your app server settings and connection security level.";
+"widgets.custom.server_unreachable.title" = "Home Assistant could not be reached";
 "widgets.custom.show_last_update_time.param.title" = "Hiển thị thời gian cập nhật cuối cùng";
 "widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
 "widgets.custom.show_states.param.title" = "Hiển thị trạng thái (BETA)";

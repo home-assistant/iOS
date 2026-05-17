@@ -96,10 +96,10 @@
 "component::improv_ble::config::abort::cannot_connect" = "Tilkobling mislyktes";
 "component::improv_ble::config::abort::characteristic_missing" = "The device is either already connected to Wi-Fi, or no longer able to connect to Wi-Fi. If you want to connect it to another network, try factory resetting it first.";
 "component::improv_ble::config::abort::no_devices_found" = "Ingen enheter funnet på nettverket";
-"component::improv_ble::config::abort::provision_successful" = "The device has successfully connected to the Wi-Fi network.";
-"component::improv_ble::config::abort::provision_successful_url" = "The device has successfully connected to the Wi-Fi network.\
+"component::improv_ble::config::abort::provision_successful" = "Enheten har koblet seg til Wi-Fi-nettverket.";
+"component::improv_ble::config::abort::provision_successful_url" = "Enheten har koblet seg til Wi-Fi-nettverket.\
 \
-Please finish the setup by following the [setup instructions]({url}).";
+Vennligst fullfør oppsettet ved å følge [oppsettsinstruksjonene]({url}).";
 "component::improv_ble::config::abort::unknown" = "Uventet feil";
 "component::improv_ble::config::error::unable_to_connect" = "The device could not connect to the Wi-Fi network. Check that the SSID and password are correct and try again.";
 "component::improv_ble::config::flow_title" = "{name}";
