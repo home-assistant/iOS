@@ -596,11 +596,16 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.action.assist.pipeline.title" = "파이프라인";
 "magic_item.action.assist.start_listening.title" = "듣기 시작";
 "magic_item.action.assist.title" = "Assist";
+"magic_item.action.assist.unsupported.title" = "Assist (iOS 26.4+)";
 "magic_item.action.navigation_path.placeholder" = "예: /lovelace/cameras";
 "magic_item.action.navigation_path.title" = "탐색 경로";
 "magic_item.action.on_tap" = "탭 시";
 "magic_item.action.script.title" = "스크립트";
 "magic_item.add" = "추가하기";
+"magic_item.assist_prompt.navigation_title" = "Assist prompt";
+"magic_item.assist_prompt.prompt.footer" = "When executed in CarPlay, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.";
+"magic_item.assist_prompt.prompt.title" = "Prompt";
+"magic_item.assist_prompt.title.title" = "Title";
 "magic_item.background_color.title" = "배경색";
 "magic_item.display_text.title" = "텍스트 표시";
 "magic_item.edit" = "저장하기";
@@ -609,6 +614,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.item_type.action.list.title" = "iOS 동작";
 "magic_item.item_type.action.list.warning.title" = "앞으로 iOS 동작 지원이 중단될 예정이므로 대신 Home Assistant 스크립트나 장면을 사용하시기 바랍니다.";
 "magic_item.item_type.app.list.title" = "앱";
+"magic_item.item_type.assist_prompt.title" = "Assist prompt";
+"magic_item.item_type.assist_prompt.unsupported.title" = "Assist prompt (iOS 26.4+)";
 "magic_item.item_type.entity.list.title" = "구성요소";
 "magic_item.item_type.scene.list.title" = "장면";
 "magic_item.item_type.script.list.title" = "스크립트";
@@ -1667,6 +1674,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.custom.intent_toggle_failed.body" = "다시 시도해주세요";
 "widgets.custom.intent_toggle_failed.title" = "구성요소 '토글'에 실패했습니다";
 "widgets.custom.require_confirmation.footer" = "위젯 확인 및 상태 표시 기능은 현재 베타 버전입니다. 문제가 발생하면 '확인 필요'를 비활성화하고 저장하세요.";
+"widgets.custom.server_unreachable.body" = "Home Assistant could not be reached, please check your app server settings and connection security level.";
+"widgets.custom.server_unreachable.title" = "Home Assistant could not be reached";
 "widgets.custom.show_last_update_time.param.title" = "마지막 업데이트 시간 표시";
 "widgets.custom.show_states.description" = "최신 상태가 100% 표시되는 것은 보장할 수 없으므로, 시도해 보고 자세한 내용은 앱 설명서를 확인하세요.";
 "widgets.custom.show_states.param.title" = "상태 표시 (베타)";
