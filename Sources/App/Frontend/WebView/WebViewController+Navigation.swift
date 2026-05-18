@@ -28,7 +28,7 @@ extension WebViewController {
                     )
                 return
             }
-            load(request: URLRequest(url: url))
+            load(request: urlRequest(for: url))
         } else {
             openURLInBrowser(url, self)
         }
@@ -40,7 +40,7 @@ extension WebViewController {
 
         guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil || server.info
             .version >= .canNavigateMoreInfoDialogThroughFrontend else {
-            load(request: URLRequest(url: url))
+            load(request: urlRequest(for: url))
             Current.Log.verbose("Opening more-info dialog for URL: \(url)")
             return
         }
@@ -57,7 +57,7 @@ extension WebViewController {
             if !success {
                 Current.Log.warning("Failed to navigate through frontend for URL: \(url)")
                 // Fallback to loading the URL directly if navigation fails
-                self?.load(request: URLRequest(url: url))
+                self?.load(request: self?.urlRequest(for: url) ?? URLRequest(url: url))
             }
         }
     }

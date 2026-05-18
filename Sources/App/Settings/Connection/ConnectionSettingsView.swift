@@ -23,6 +23,10 @@ struct ConnectionSettingsView: View {
     @State private var certificatePassword = ""
     @State private var pendingCertificateURL: URL?
     @State private var showRemoveCertificateConfirmation = false
+    @State private var showAddHeaderSheet = false
+    @State private var newHeaderName = ""
+    @State private var newHeaderValue = ""
+    @State private var editingHeaderName: String?
 
     let onDismiss: (() -> Void)?
 
@@ -35,6 +39,7 @@ struct ConnectionSettingsView: View {
         List {
             detailsSection
             clientCertificateSection
+            customHeadersSection
             privacySection
             statusSection
             deleteSection
@@ -210,6 +215,9 @@ struct ConnectionSettingsView: View {
             Button(L10n.okLabel, role: .cancel) {}
         } message: { error in
             Text(error.localizedDescription)
+        }
+        .sheet(isPresented: $showAddHeaderSheet) {
+            addHeaderSheet
         }
         .onDisappear {
             onDismiss?()
@@ -420,6 +428,121 @@ struct ConnectionSettingsView: View {
         } footer: {
             Text(L10n.Settings.ConnectionSection.ClientCertificate.footer)
         }
+    }
+
+    // MARK: - Custom Headers Section
+
+    private var customHeadersSection: some View {
+        Section {
+            ForEach(viewModel.customHeaders, id: \.name) { header in
+                Button {
+                    editingHeaderName = header.name
+                    newHeaderName = header.name
+                    newHeaderValue = header.value
+                    showAddHeaderSheet = true
+                } label: {
+                    HStack {
+                        Text(header.name)
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text(header.value)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+            .onDelete { offsets in
+                viewModel.deleteCustomHeaders(at: offsets)
+            }
+
+            Button {
+                editingHeaderName = nil
+                newHeaderName = ""
+                newHeaderValue = ""
+                showAddHeaderSheet = true
+            } label: {
+                Label(L10n.Settings.ConnectionSection.CustomHeaders.add, systemSymbol: .plus)
+            }
+        } header: {
+            Text(L10n.Settings.ConnectionSection.CustomHeaders.header)
+        } footer: {
+            Text(L10n.Settings.ConnectionSection.CustomHeaders.footer)
+        }
+    }
+
+    private var addHeaderSheet: some View {
+        NavigationView {
+            Form {
+                Section {
+                    TextField(
+                        L10n.Settings.ConnectionSection.CustomHeaders.namePlaceholder,
+                        text: $newHeaderName
+                    )
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    TextField(
+                        L10n.Settings.ConnectionSection.CustomHeaders.valuePlaceholder,
+                        text: $newHeaderValue
+                    )
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                } footer: {
+                    let trimmedName = newHeaderName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let trimmedValue = newHeaderValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !trimmedName.isEmpty, !trimmedValue.isEmpty {
+                        Text("\(trimmedName): \(trimmedValue)")
+                            .font(.caption.monospaced())
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                if let oldName = editingHeaderName {
+                    Section {
+                        Button(role: .destructive) {
+                            viewModel.deleteCustomHeader(name: oldName)
+                            showAddHeaderSheet = false
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Text(L10n.delete)
+                                Spacer()
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle(
+                editingHeaderName != nil
+                    ? L10n.Settings.ConnectionSection.CustomHeaders.editTitle
+                    : L10n.Settings.ConnectionSection.CustomHeaders.add
+            )
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(L10n.cancelLabel) {
+                        showAddHeaderSheet = false
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(L10n.doneLabel) {
+                        if let oldName = editingHeaderName {
+                            viewModel.updateCustomHeader(
+                                oldName: oldName,
+                                newName: newHeaderName,
+                                value: newHeaderValue
+                            )
+                        } else {
+                            viewModel.addCustomHeader(name: newHeaderName, value: newHeaderValue)
+                        }
+                        showAddHeaderSheet = false
+                    }
+                    .disabled(newHeaderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 
     // MARK: - Privacy Section

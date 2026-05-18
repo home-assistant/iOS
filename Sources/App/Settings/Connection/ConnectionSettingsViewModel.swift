@@ -28,6 +28,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
+    @Published var customHeaders: [(name: String, value: String)] = []
 
     // MARK: - Properties
 
@@ -124,6 +125,9 @@ final class ConnectionSettingsViewModel: ObservableObject {
         updateFromServerInfo(server.info)
         updateURLs()
         clientCertificate = server.info.connection.clientCertificate
+        customHeaders = server.info.connection.customHeaders.map { dict in
+            dict.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
+        } ?? []
         Current.api(for: server)?.currentUser { [weak self] user in
             Task { @MainActor [weak self] in
                 self?.loggedInUser = user?.name ?? ""
@@ -343,5 +347,59 @@ final class ConnectionSettingsViewModel: ObservableObject {
         Current.servers.all.contains { server in
             server.info.connection.clientCertificate?.keychainIdentifier == certificate.keychainIdentifier
         }
+    }
+
+    // MARK: - Custom Headers
+
+    func addCustomHeader(name: String, value: String) {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedName.isEmpty else { return }
+        server.update { info in
+            var headers = info.connection.customHeaders ?? [:]
+            headers[trimmedName] = trimmedValue
+            info.connection.customHeaders = headers
+        }
+        customHeaders = server.info.connection.customHeaders.map { dict in
+            dict.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
+        } ?? []
+    }
+
+    func updateCustomHeader(oldName: String, newName: String, value: String) {
+        let trimmedName = newName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedName.isEmpty else { return }
+        server.update { info in
+            var headers = info.connection.customHeaders ?? [:]
+            headers.removeValue(forKey: oldName)
+            headers[trimmedName] = trimmedValue
+            info.connection.customHeaders = headers
+        }
+        customHeaders = server.info.connection.customHeaders.map { dict in
+            dict.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
+        } ?? []
+    }
+
+    func deleteCustomHeader(name: String) {
+        server.update { info in
+            var headers = info.connection.customHeaders ?? [:]
+            headers.removeValue(forKey: name)
+            info.connection.customHeaders = headers.isEmpty ? nil : headers
+        }
+        customHeaders = server.info.connection.customHeaders.map { dict in
+            dict.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
+        } ?? []
+    }
+
+    func deleteCustomHeaders(at offsets: IndexSet) {
+        var headers = server.info.connection.customHeaders ?? [:]
+        let sortedHeaders = headers.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
+        for index in offsets {
+            headers.removeValue(forKey: sortedHeaders[index].name)
+        }
+        server.update { info in
+            info.connection.customHeaders = headers.isEmpty ? nil : headers
+        }
+        customHeaders = headers.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
     }
 }

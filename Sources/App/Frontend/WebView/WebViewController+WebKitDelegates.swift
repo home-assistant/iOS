@@ -133,7 +133,7 @@ extension WebViewController {
 
             if let webviewURL = server.info.connection.webviewURL() {
                 decisionHandler(.cancel)
-                load(request: URLRequest(url: webviewURL))
+                load(request: urlRequest(for: webviewURL))
             } else {
                 // we don't have anything we can do about this
                 decisionHandler(.allow)

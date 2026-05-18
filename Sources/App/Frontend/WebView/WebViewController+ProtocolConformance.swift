@@ -85,7 +85,7 @@ extension WebViewController: WebViewControllerProtocol {
 
     func navigateToPath(path: String) {
         if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
-            load(request: URLRequest(url: url))
+            load(request: urlRequest(for: url))
         }
     }
 
@@ -110,7 +110,7 @@ extension WebViewController: WebViewControllerProtocol {
                 if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                     reload()
                 } else {
-                    load(request: URLRequest(url: webviewURL))
+                    load(request: urlRequest(for: webviewURL))
                 }
                 hideNoActiveURLError()
             } else {

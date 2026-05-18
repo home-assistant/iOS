@@ -951,7 +951,6 @@
 		42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */; };
 		42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A892C452DB500C9B43D /* MockWebViewController.swift */; };
 		42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A8F2C4548E100C9B43D /* ImprovDiscoverView.swift */; };
-		42A7F1012FBC000100BEEF01 /* AllowedTag.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF01 /* AllowedTag.test.swift */; };
 		42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */; };
 		42A7F1212FBC000100BEEF01 /* NFCTagApproval.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1202FBC000100BEEF01 /* NFCTagApproval.test.swift */; };
 		42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */; };
@@ -1588,7 +1587,6 @@
 		D8B4F2A61E9C73058AF2D49E /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */; };
 		D9A6697AF4D05BB8DE822A54 /* Pods_iOS_Extensions_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CA7FF55788E7084DA5E4B3 /* Pods_iOS_Extensions_Share.framework */; };
 		D9BF1EFF40733A4A1D03B9C8 /* CustomWidgetIntentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7FF77B68D19A4AD68F8FE3 /* CustomWidgetIntentHelper.swift */; };
-		DA6F4C18D66EDBA5DCEAE833 /* DatabaseMigration.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F0EF22A0B9F20AAEE4CCA /* DatabaseMigration.test.swift */; };
 		DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */; };
 		DB54626ADCE0C32094C8C0B9 /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFD0D30836C69840AB63A8A /* LoadingButton.swift */; };
 		DEFBE1A5E9A005B0A5392D27 /* KioskLocalization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4593A60DBF019E6C91AAA7 /* KioskLocalization.test.swift */; };
@@ -2842,7 +2840,6 @@
 		42A747492E832FB8005E0332 /* report.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = report.xml; sourceTree = "<group>"; };
 		42A7474A2E832FB8005E0332 /* Snapfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Snapfile; sourceTree = "<group>"; };
 		42A7474B2E832FB8005E0332 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
-		42A7F1002FBC000100BEEF01 /* AllowedTag.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/AllowedTag.test.swift; sourceTree = "<group>"; };
 		42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/AllowedTag.test.swift; sourceTree = "<group>"; };
 		42A7F1202FBC000100BEEF01 /* NFCTagApproval.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCTagApproval.test.swift; sourceTree = "<group>"; };
 		42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistViewModel.test.swift; sourceTree = "<group>"; };

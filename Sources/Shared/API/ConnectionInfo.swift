@@ -36,6 +36,8 @@ public struct ConnectionInfo: Codable, Equatable {
     public var connectionAccessSecurityLevel: ConnectionSecurityLevel = .undefined
     /// Client certificate for mTLS authentication (optional, iOS only)
     public var clientCertificate: ClientCertificate?
+    /// Custom HTTP headers sent on every request to this server (e.g. Cloudflare Access service tokens)
+    public var customHeaders: [String: String]?
     public var internalSSIDs: [String]? {
         didSet {
             overrideActiveURLType = nil
@@ -120,7 +122,8 @@ public struct ConnectionInfo: Codable, Equatable {
         isLocalPushEnabled: Bool,
         securityExceptions: SecurityExceptions,
         connectionAccessSecurityLevel: ConnectionSecurityLevel,
-        clientCertificate: ClientCertificate? = nil
+        clientCertificate: ClientCertificate? = nil,
+        customHeaders: [String: String]? = nil
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -134,6 +137,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.securityExceptions = securityExceptions
         self.connectionAccessSecurityLevel = connectionAccessSecurityLevel
         self.clientCertificate = clientCertificate
+        self.customHeaders = customHeaders
     }
 
     public init(from decoder: Decoder) throws {
@@ -161,6 +165,7 @@ public struct ConnectionInfo: Codable, Equatable {
             ClientCertificate.self,
             forKey: .clientCertificate
         )
+        self.customHeaders = try container.decodeIfPresent([String: String].self, forKey: .customHeaders)
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
@@ -404,6 +409,16 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 }
 
+extension URLSessionConfiguration {
+    /// Merges custom server headers into the session's additional headers.
+    func apply(customHeaders: [String: String]?) {
+        guard let customHeaders, !customHeaders.isEmpty else { return }
+        var headers = httpAdditionalHeaders ?? [:]
+        customHeaders.forEach { headers[$0.key] = $0.value }
+        httpAdditionalHeaders = headers
+    }
+}
+
 class ServerRequestAdapter: RequestAdapter {
     let server: Server
 
@@ -429,6 +444,10 @@ class ServerRequestAdapter: RequestAdapter {
                 Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
                 completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
             }
+        }
+
+        server.info.connection.customHeaders?.forEach { name, value in
+            updatedRequest.setValue(value, forHTTPHeaderField: name)
         }
 
         completion(.success(updatedRequest))

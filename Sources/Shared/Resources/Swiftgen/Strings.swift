@@ -3222,6 +3222,20 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.undefined.title") }
         }
       }
+      public enum CustomHeaders {
+        /// Add Header
+        public static var add: String { return L10n.tr("Localizable", "settings.connection_section.custom_headers.add") }
+        /// Edit Header
+        public static var editTitle: String { return L10n.tr("Localizable", "settings.connection_section.custom_headers.edit_title") }
+        /// Headers added to every request sent to this server. Useful for proxy authentication (e.g. Cloudflare Access service tokens).
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.custom_headers.footer") }
+        /// Custom Request Headers
+        public static var header: String { return L10n.tr("Localizable", "settings.connection_section.custom_headers.header") }
+        /// Header Name
+        public static var namePlaceholder: String { return L10n.tr("Localizable", "settings.connection_section.custom_headers.name_placeholder") }
+        /// Value
+        public static var valuePlaceholder: String { return L10n.tr("Localizable", "settings.connection_section.custom_headers.value_placeholder") }
+      }
       public enum DeleteServer {
         /// Are you sure you wish to delete this server?
         public static var message: String { return L10n.tr("Localizable", "settings.connection_section.delete_server.message") }

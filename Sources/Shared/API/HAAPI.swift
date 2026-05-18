@@ -103,13 +103,18 @@ public class HomeAssistantAPI {
             let certificateProvider = HomeAssistantCertificateProvider(server: server)
             let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
             let configuration = URLSessionConfiguration.ephemeral
+            configuration.apply(customHeaders: server.info.connection.customHeaders)
             hakitURLSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
         } else {
             Current.Log.info("[mTLS] Using default URLSession for HAKit")
-            hakitURLSession = URLSession(configuration: .ephemeral)
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.apply(customHeaders: server.info.connection.customHeaders)
+            hakitURLSession = URLSession(configuration: configuration)
         }
         #else
-        let hakitURLSession = URLSession(configuration: .ephemeral)
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.apply(customHeaders: server.info.connection.customHeaders)
+        let hakitURLSession = URLSession(configuration: configuration)
         #endif
 
         let underlyingConnection = HAKit.connection(

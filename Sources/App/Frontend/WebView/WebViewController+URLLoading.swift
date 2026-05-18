@@ -38,6 +38,15 @@ extension WebViewController {
         }
     }
 
+    /// Builds a URLRequest for the given URL with any configured custom headers applied.
+    func urlRequest(for url: URL) -> URLRequest {
+        var request = URLRequest(url: url)
+        server.info.connection.customHeaders?.forEach { name, value in
+            request.setValue(value, forHTTPHeaderField: name)
+        }
+        return request
+    }
+
     @objc func loadActiveURLIfNeeded() {
         guard !loadActiveURLIfNeededInProgress else {
             Current.Log.info("loadActiveURLIfNeeded already in progress, skipping")
@@ -78,7 +87,7 @@ extension WebViewController {
             if Current.settingsStore.restoreLastURL,
                let initialURL, initialURL.baseIsEqual(to: webviewURL) {
                 Current.Log.info("restoring initial url path: \(initialURL.path)")
-                request = URLRequest(url: initialURL)
+                request = urlRequest(for: initialURL)
             } else if let currentURL = webView.url, currentURL.path.count > 1 {
                 // Preserve the current path when the base URL changes (e.g., switching between internal/external)
                 var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
@@ -96,10 +105,10 @@ extension WebViewController {
                 components?.fragment = currentURL.fragment
                 let newURL = components?.url ?? webviewURL
                 Current.Log.info("preserving current path on base URL change: \(newURL.path)")
-                request = URLRequest(url: newURL)
+                request = urlRequest(for: newURL)
             } else {
                 Current.Log.info("loading default url path: \(webviewURL.path)")
-                request = URLRequest(url: webviewURL)
+                request = urlRequest(for: webviewURL)
             }
 
             load(request: request)

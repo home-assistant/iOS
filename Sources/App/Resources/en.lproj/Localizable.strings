@@ -883,6 +883,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
 "settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
 "settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
+"settings.connection_section.custom_headers.add" = "Add Header";
+"settings.connection_section.custom_headers.edit_title" = "Edit Header";
+"settings.connection_section.custom_headers.footer" = "Headers added to every request sent to this server. Useful for proxy authentication (e.g. Cloudflare Access service tokens).";
+"settings.connection_section.custom_headers.header" = "Custom Request Headers";
+"settings.connection_section.custom_headers.name_placeholder" = "Header Name";
+"settings.connection_section.custom_headers.value_placeholder" = "Value";
 "settings.connection_section.client_certificate.expired" = "Certificate expired";
 "settings.connection_section.client_certificate.expires_at" = "Expires %@";
 "settings.connection_section.client_certificate.footer" = "Import a PKCS#12 (.p12) certificate for mutual TLS authentication. Required when your Home Assistant server requires client certificates.";
