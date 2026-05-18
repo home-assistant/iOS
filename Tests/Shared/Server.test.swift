@@ -171,4 +171,14 @@ class ServerTests: XCTestCase {
         XCTAssertFalse(mirrored.connection.securityExceptions.hasExceptions)
         XCTAssertNil(mirrored.connection.clientCertificate)
     }
+
+    func testMirroredForPersistenceRemovesCustomHeaders() {
+        var info = ServerInfo.fake()
+        info.connection.customHeaders = ["CF-Access-Client-Id": "abc123", "CF-Access-Client-Secret": "secret"]
+
+        let mirrored = info.mirroredForPersistence
+
+        XCTAssertNil(mirrored.connection.customHeaders)
+        XCTAssertNotNil(info.connection.customHeaders, "original should be unmodified")
+    }
 }

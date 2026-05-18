@@ -363,6 +363,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         customHeaders = server.info.connection.customHeaders.map { dict in
             dict.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
         } ?? []
+        reconnectForSettingsChange()
     }
 
     func updateCustomHeader(oldName: String, newName: String, value: String) {
@@ -378,6 +379,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         customHeaders = server.info.connection.customHeaders.map { dict in
             dict.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
         } ?? []
+        reconnectForSettingsChange()
     }
 
     func deleteCustomHeader(name: String) {
@@ -389,6 +391,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         customHeaders = server.info.connection.customHeaders.map { dict in
             dict.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
         } ?? []
+        reconnectForSettingsChange()
     }
 
     func deleteCustomHeaders(at offsets: IndexSet) {
@@ -401,5 +404,13 @@ final class ConnectionSettingsViewModel: ObservableObject {
             info.connection.customHeaders = headers.isEmpty ? nil : headers
         }
         customHeaders = headers.map { (name: $0.key, value: $0.value) }.sorted { $0.name < $1.name }
+        reconnectForSettingsChange()
+    }
+
+    private func reconnectForSettingsChange() {
+        Current.api(for: server)?.connection.disconnect()
+        let freshAPI = HomeAssistantAPI(server: server, urlConfig: .default)
+        Current.setCachedApi(freshAPI, for: server.identifier)
+        freshAPI.connection.connect()
     }
 }

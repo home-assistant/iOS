@@ -701,6 +701,85 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.invitationURL(), remoteURL)
     }
 
+    // MARK: - Custom Headers
+
+    func testCustomHeadersCodableRoundTrip() throws {
+        var info = ConnectionInfo(
+            externalURL: URL(string: "http://example.com:8123"),
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined,
+            customHeaders: ["CF-Access-Client-Id": "abc123", "X-Custom": "value"]
+        )
+
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        let data = try encoder.encode(info)
+        let decoded = try decoder.decode(ConnectionInfo.self, from: data)
+
+        XCTAssertEqual(decoded.customHeaders, info.customHeaders)
+    }
+
+    func testCustomHeadersNilByDefault() throws {
+        let info = ConnectionInfo(
+            externalURL: URL(string: "http://example.com:8123"),
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        XCTAssertNil(info.customHeaders)
+
+        let data = try JSONEncoder().encode(info)
+        let decoded = try JSONDecoder().decode(ConnectionInfo.self, from: data)
+        XCTAssertNil(decoded.customHeaders)
+    }
+
+    func testURLSessionConfigurationApplyCustomHeaders() {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.apply(customHeaders: ["Foo": "Bar", "X-Token": "abc"])
+
+        let headers = configuration.httpAdditionalHeaders as? [String: String]
+        XCTAssertEqual(headers?["Foo"], "Bar")
+        XCTAssertEqual(headers?["X-Token"], "abc")
+    }
+
+    func testURLSessionConfigurationApplyNilCustomHeaders() {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.apply(customHeaders: nil)
+        XCTAssertNil(configuration.httpAdditionalHeaders)
+    }
+
+    func testURLSessionConfigurationApplyEmptyCustomHeaders() {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.apply(customHeaders: [:])
+        XCTAssertNil(configuration.httpAdditionalHeaders)
+    }
+
+    func testURLSessionConfigurationApplyDoesNotOverwriteExistingHeaders() {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.httpAdditionalHeaders = ["User-Agent": "MyApp/1.0"]
+        configuration.apply(customHeaders: ["X-Token": "abc"])
+
+        let headers = configuration.httpAdditionalHeaders as? [String: String]
+        XCTAssertEqual(headers?["User-Agent"], "MyApp/1.0")
+        XCTAssertEqual(headers?["X-Token"], "abc")
+    }
+
     func testInvitationURLForInternal() {
         let internalURL = URL(string: "http://internal.com:8123")
         let info = ConnectionInfo(
