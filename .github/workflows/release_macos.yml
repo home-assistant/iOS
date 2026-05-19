@@ -4,13 +4,23 @@ on:
   push:
     tags:
       - 'release/*/*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag to publish, for example release/2026.5.0/2026.1985
+        required: true
+        type: string
+      distribute_run_id:
+        description: Optional Distribute workflow run ID to use directly
+        required: false
+        type: string
 
 permissions:
   actions: read
   contents: write
 
 concurrency:
-  group: macos-release-${{ github.ref_name }}
+  group: macos-release-${{ inputs.release_tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -24,8 +34,10 @@ jobs:
 
       - name: Parse release tag
         id: parse_tag
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag || '' }}
         run: |
-          tag="${GITHUB_REF_NAME}"
+          tag="${RELEASE_TAG:-${GITHUB_REF_NAME}}"
 
           case "$tag" in
             release/*/*) ;;
@@ -66,6 +78,7 @@ jobs:
         env:
           EXPECTED_RUN_NUMBER: ${{ steps.parse_tag.outputs.run_number }}
           TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
+          DISTRIBUTE_RUN_ID: ${{ inputs.distribute_run_id || '' }}
         with:
           script: |
             const owner = context.repo.owner;
@@ -73,6 +86,7 @@ jobs:
             const workflowId = 'distribute.yml';
             const headSha = process.env.TARGET_COMMIT_SHA;
             const expectedRunNumber = Number(process.env.EXPECTED_RUN_NUMBER);
+            const distributeRunId = process.env.DISTRIBUTE_RUN_ID.trim();
 
             if (
               !Number.isFinite(expectedRunNumber) ||
@@ -82,6 +96,72 @@ jobs:
                 `Invalid EXPECTED_RUN_NUMBER: "${process.env.EXPECTED_RUN_NUMBER}". ` +
                 'The release tag must contain a numeric Distribute run number.'
               );
+              return;
+            }
+
+            function validateRun(run) {
+              if (run.run_number !== expectedRunNumber) {
+                core.setFailed(
+                  `Distribute run ${run.id} is #${run.run_number}, expected #${expectedRunNumber}.`
+                );
+                return false;
+              }
+
+              if (run.head_sha !== headSha) {
+                core.setFailed(
+                  `Distribute run #${run.run_number} points to ${run.head_sha}, expected ${headSha}.`
+                );
+                return false;
+              }
+
+              if (run.head_branch !== 'main') {
+                core.setFailed(
+                  `Distribute run #${run.run_number} is for ${run.head_branch}, expected main.`
+                );
+                return false;
+              }
+
+              if (run.path !== '.github/workflows/distribute.yml') {
+                core.setFailed(
+                  `Run #${run.run_number} used ${run.path}, expected .github/workflows/distribute.yml.`
+                );
+                return false;
+              }
+
+              return true;
+            }
+
+            if (distributeRunId) {
+              const runId = Number(distributeRunId);
+
+              if (!Number.isFinite(runId) || !Number.isInteger(runId)) {
+                core.setFailed(`Invalid DISTRIBUTE_RUN_ID: "${distributeRunId}".`);
+                return;
+              }
+
+              const { data: run } = await github.request(
+                'GET /repos/{owner}/{repo}/actions/runs/{run_id}',
+                {
+                  owner,
+                  repo,
+                  run_id: runId,
+                }
+              );
+
+              if (!validateRun(run)) {
+                return;
+              }
+
+              if (run.conclusion !== 'success') {
+                core.setFailed(
+                  `Distribute run #${run.run_number} concluded with ${run.conclusion}.`
+                );
+                return;
+              }
+
+              core.info(`Using Distribute run #${run.run_number} (${run.html_url})`);
+              core.setOutput('run_id', String(run.id));
+              core.setOutput('run_url', run.html_url);
               return;
             }
 
@@ -95,14 +175,16 @@ jobs:
                   owner,
                   repo,
                   workflow_id: workflowId,
-                  head_sha: headSha,
                   branch: 'main',
                   per_page: 100,
                 },
                 (response, done) => {
                   const workflowRuns = response.data.workflow_runs ?? [];
 
-                  if (workflowRuns.some((run) => run.run_number === expectedRunNumber)) {
+                  if (
+                    workflowRuns.some((run) => run.run_number === expectedRunNumber) ||
+                    workflowRuns.every((run) => run.run_number < expectedRunNumber)
+                  ) {
                     done();
                   }
 
@@ -110,9 +192,23 @@ jobs:
                 }
               );
 
-              const matchingRun = [...runs]
+              core.info(
+                `Checked ${runs.length} Distribute runs on main. ` +
+                `Newest run numbers: ${runs.slice(0, 5).map((run) => run.run_number).join(', ')}`
+              );
+
+              const runWithExpectedNumber = [...runs]
                 .sort((lhs, rhs) => new Date(rhs.created_at) - new Date(lhs.created_at))
                 .find((run) => run.run_number === expectedRunNumber);
+              const matchingRun = runWithExpectedNumber?.head_sha === headSha ? runWithExpectedNumber : undefined;
+
+              if (runWithExpectedNumber && !matchingRun) {
+                core.setFailed(
+                  `Distribute run #${expectedRunNumber} points to ` +
+                  `${runWithExpectedNumber.head_sha}, expected ${headSha}.`
+                );
+                return;
+              }
 
               if (matchingRun?.conclusion === 'success') {
                 core.info(
@@ -139,7 +235,7 @@ jobs:
               }
 
               core.info(
-                `No Distribute run #${expectedRunNumber} found for ${headSha} yet.`
+                `No Distribute run #${expectedRunNumber} found for ${headSha} on main yet.`
               );
               await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
             }
