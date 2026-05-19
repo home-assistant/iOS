@@ -97,7 +97,7 @@ enum AppIconShortcutItemsUpdater {
             return .init(systemSymbol: .rectangleAndPaperclip)
         case .folder:
             return .init(systemSymbol: .folderFill)
-        case .assistPipeline:
+        case .assistPipeline, .assistPrompt:
             return .init(systemSymbol: .micFill)
         }
     }

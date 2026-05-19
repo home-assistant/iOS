@@ -14,66 +14,17 @@ extension WebViewController {
         view.addSubview(statusBarView)
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
 
-        let verticalConstraint: NSLayoutConstraint
-        if #unavailable(iOS 16.0), !Current.isCatalyst {
-            verticalConstraint = statusBarView.heightAnchor.constraint(equalToConstant: legacyStatusBarHeight())
-            statusBarHeightConstraint = verticalConstraint
-        } else {
-            verticalConstraint = statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
-        }
-
         NSLayoutConstraint.activate([
             statusBarView.topAnchor.constraint(equalTo: view.topAnchor),
             statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor),
             statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            verticalConstraint,
+            statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
         ])
 
         if Current.isCatalyst {
             setupStatusBarButtons(in: statusBarView)
         }
         return statusBarView
-    }
-
-    func updateLegacyStatusBarHeight() {
-        guard #unavailable(iOS 16.0), !Current.isCatalyst, let statusBarHeightConstraint else {
-            return
-        }
-
-        let height = legacyStatusBarHeight()
-        guard abs(statusBarHeightConstraint.constant - height) > .ulpOfOne else {
-            return
-        }
-
-        statusBarHeightConstraint.constant = height
-        view.setNeedsLayout()
-    }
-
-    func legacyStatusBarHeight() -> CGFloat {
-        guard #unavailable(iOS 16.0), !Current.isCatalyst else {
-            return view.safeAreaInsets.top
-        }
-
-        if prefersStatusBarHidden {
-            return 0
-        }
-
-        if let statusBarHeight = legacyWindowScene()?.statusBarManager?.statusBarFrame.height,
-           statusBarHeight > 0 {
-            return statusBarHeight
-        }
-
-        return view.safeAreaInsets.top
-    }
-
-    private func legacyWindowScene() -> UIWindowScene? {
-        if let windowScene = view.window?.windowScene {
-            return windowScene
-        }
-
-        return UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .first { $0.activationState == .foregroundActive }
     }
 
     func setupStatusBarButtons(in statusBarView: UIView) {

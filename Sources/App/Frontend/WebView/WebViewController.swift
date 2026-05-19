@@ -27,7 +27,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let emptyStateTransitionDuration: TimeInterval = 0.3
 
     var statusBarView: UIView?
-    var statusBarHeightConstraint: NSLayoutConstraint?
     var webViewTopConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
     var latestLoadError: Error?
@@ -270,7 +269,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         postOnboardingNotificationPermission()
-        updateLegacyFrontendSafeAreaInsets()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
         setupKioskMode()
@@ -290,16 +288,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         loadActiveURLIfNeeded()
     }
 
-    override func viewSafeAreaInsetsDidChange() {
-        super.viewSafeAreaInsetsDidChange()
-        updateLegacyStatusBarHeight()
-        updateLegacyFrontendSafeAreaInsets()
-    }
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateLegacyStatusBarHeight()
-        updateLegacyFrontendSafeAreaInsets()
         updateDatabaseAndPanels()
 
         // Refresh kiosk status bar state when view appears (e.g., after settings modal dismisses)
