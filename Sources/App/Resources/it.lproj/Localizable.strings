@@ -596,11 +596,16 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Inizia ad ascoltare";
 "magic_item.action.assist.title" = "Assist";
+"magic_item.action.assist.unsupported.title" = "Assist (iOS 26.4+)";
 "magic_item.action.navigation_path.placeholder" = "ad es. /lovelace/cameras";
 "magic_item.action.navigation_path.title" = "Percorso di navigazione";
 "magic_item.action.on_tap" = "Al tocco";
 "magic_item.action.script.title" = "Script";
 "magic_item.add" = "Aggiungi";
+"magic_item.assist_prompt.navigation_title" = "Assist prompt";
+"magic_item.assist_prompt.prompt.footer" = "When executed in CarPlay, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.";
+"magic_item.assist_prompt.prompt.title" = "Prompt";
+"magic_item.assist_prompt.title.title" = "Title";
 "magic_item.background_color.title" = "Colore dello sfondo";
 "magic_item.display_text.title" = "Testo da visualizzare";
 "magic_item.edit" = "Salva";
@@ -609,6 +614,8 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "magic_item.item_type.action.list.title" = "Azioni iOS";
 "magic_item.item_type.action.list.warning.title" = "In futuro non supporteremo più le azioni iOS. Ti consigliamo di utilizzare al loro posto gli script o le scene di Home Assistant.";
 "magic_item.item_type.app.list.title" = "App";
+"magic_item.item_type.assist_prompt.title" = "Assist prompt";
+"magic_item.item_type.assist_prompt.unsupported.title" = "Assist prompt (iOS 26.4+)";
 "magic_item.item_type.entity.list.title" = "Entità";
 "magic_item.item_type.scene.list.title" = "Scene";
 "magic_item.item_type.script.list.title" = "Script";
@@ -1667,6 +1674,8 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "widgets.custom.intent_toggle_failed.body" = "Prova di nuovo";
 "widgets.custom.intent_toggle_failed.title" = "Impossibile 'commutare' l'entità";
 "widgets.custom.require_confirmation.footer" = "La conferma dei widget e la visualizzazione dello stato sono attualmente in versione BETA; in caso di problemi, disattiva l'opzione “Richiedi conferma” e salva.";
+"widgets.custom.server_unreachable.body" = "Home Assistant could not be reached, please check your app server settings and connection security level.";
+"widgets.custom.server_unreachable.title" = "Home Assistant could not be reached";
 "widgets.custom.show_last_update_time.param.title" = "Mostra l'ora dell'ultimo aggiornamento";
 "widgets.custom.show_states.description" = "La visualizzazione degli stati più recenti non è garantita al 100%; puoi provarci e consultare la documentazione dell'app associata per ulteriori informazioni.";
 "widgets.custom.show_states.param.title" = "Mostra stati (BETA)";
