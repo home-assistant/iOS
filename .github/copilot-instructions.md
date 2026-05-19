@@ -49,7 +49,7 @@ BUNDLE_ID_PREFIX = some.bundle.prefix
 
 ### WKWebView Frontend
 
-`WebViewController` is the core UI — it loads the Home Assistant web app. Functionality is spread across many `WebViewController+*.swift` extension files (navigation, gestures, alerts, URL loading, etc.). Native features communicate with the web UI via a JavaScript message bus (`ExternalMessageBus`) and custom URL schemes / deep links defined in `AppConstants`.
+`WebViewController` is the core UI — it loads the Home Assistant web app. Functionality is spread across many `WebViewController+*.swift` extension files (navigation, gestures, alerts, URL loading, etc.). Native features communicate with the web UI via a JavaScript message bus handled by `WebViewExternalMessageHandler` (messages typed as `WebViewExternalBusMessage` / `WebViewExternalBusOutgoingMessage` in `Sources/App/Frontend/ExternalMessageBus/`) and custom URL schemes / deep links defined in `AppConstants`.
 
 ### `Current` Environment (Dependency Injection)
 
@@ -98,13 +98,11 @@ When adding a new persistent model, prefer GRDB. Implement `DatabaseTableProtoco
 
 ### Localized Strings
 
-All user-visible strings come from SwiftGen-generated enums — never use hardcoded string literals. Add new strings to `Sources/App/Resources/en.lproj/Localizable.strings`; SwiftGen generates the type-safe accessors on build.
+All user-visible strings come from SwiftGen-generated enums — never use hardcoded string literals. Add new strings to `Sources/App/Resources/en.lproj/Localizable.strings`; the type-safe accessors are regenerated automatically as an Xcode build phase (SwiftGen runs via CocoaPods at `Pods/SwiftGen/bin/swiftgen`).
 
 - `L10n.*` — app-specific strings from `Localizable.strings`
 - `CoreStrings.*` — Home Assistant core translations
 - `FrontendStrings.*` — Home Assistant frontend translations
-
-Regenerate after editing `.strings` files with `swiftgen`.
 
 ### SFSymbols
 
@@ -185,7 +183,7 @@ CI runs on GitHub Actions:
 - Include screenshots for UI changes (light **and** dark mode).
 - Ensure `bundle exec fastlane lint` passes before submitting.
 - Update documentation if adding/changing functionality.
-- Translations are managed via [lokalise.com](https://lokalise.com/public/834452985a05254348aee2.46389241/) — do not edit `.strings` files manually.
+- Translations: only edit English sources (`en.lproj/Localizable.strings`). All other locales are synced from [lokalise.com](https://lokalise.com/public/834452985a05254348aee2.46389241/) — do not edit non-English `.strings` files manually.
 - Link related documentation PRs in the `companion.home-assistant` repository.
 
 ## Additional Resources
