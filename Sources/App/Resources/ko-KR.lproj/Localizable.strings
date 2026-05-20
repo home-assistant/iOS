@@ -500,7 +500,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.auth.authenticate_button" = "Authenticate";
 "kiosk.auth.gate_description" = "Authentication is required to access kiosk settings. Verify your identity to continue.";
 "kiosk.auth.gate_title" = "Kiosk Mode Active";
-"kiosk.auth.go_back_button" = "Go Back";
+"kiosk.auth.go_back_button" = "뒤로가기";
 "kiosk.auth.required" = "Authentication Required";
 "kiosk.auth_error.reason" = "Authenticate to exit kiosk mode";
 "kiosk.auth_error.title" = "Authentication Error";
@@ -538,10 +538,10 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.timeout.10min" = "10 minutes";
 "kiosk.screensaver.timeout.15min" = "15 minutes";
 "kiosk.screensaver.timeout.1min" = "1 minute";
-"kiosk.screensaver.timeout.2min" = "2 minutes";
+"kiosk.screensaver.timeout.2min" = "2분";
 "kiosk.screensaver.timeout.30min" = "30 minutes";
-"kiosk.screensaver.timeout.30sec" = "30 seconds";
-"kiosk.screensaver.timeout.5min" = "5 minutes";
+"kiosk.screensaver.timeout.30sec" = "30초";
+"kiosk.screensaver.timeout.5min" = "5분";
 "kiosk.screensaver.toggle" = "Screensaver";
 "kiosk.screensaver_label" = "Screensaver: %@";
 "kiosk.section.title" = "키오스크 모드";
