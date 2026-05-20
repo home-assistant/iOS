@@ -28,7 +28,15 @@ extension WebViewController {
             }
         )
 
-        addChild(emptyState.hostingViewController)
+        // On iOS 16+, parenting the empty state's UIHostingController as a child of self lets the
+        // SwiftUI safe-area plumbing reflect the real layout (#4572). On iOS 15 the same call
+        // triggers a UIKit safe-area-inflation bug that oversizes the native statusBarView and
+        // breaks WKWebView hit-testing for the entire WebViewController (#4499). Skip the
+        // child-VC parenting on iOS 15 — the empty state still renders, it just doesn't get the
+        // iOS-16-specific SwiftUI safe-area propagation #4572 added.
+        if #available(iOS 16.0, *) {
+            addChild(emptyState.hostingViewController)
+        }
         view.addSubview(emptyState)
 
         emptyState.translatesAutoresizingMaskIntoConstraints = false
@@ -42,7 +50,9 @@ extension WebViewController {
 
         emptyState.alpha = 0
         emptyStateView = emptyState
-        emptyState.hostingViewController.didMove(toParent: self)
+        if #available(iOS 16.0, *) {
+            emptyState.hostingViewController.didMove(toParent: self)
+        }
     }
 
     func emptyStateStyle(for connectionState: FrontEndConnectionState) -> WebViewEmptyStateStyle {
