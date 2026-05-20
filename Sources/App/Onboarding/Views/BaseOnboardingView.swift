@@ -176,7 +176,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
                 .tint(Color.haPrimary)
             }
         }
-        .padding(.bottom, Current.isCatalyst ? DesignSystem.Spaces.two : .zero)
+        .padding(.bottom, Current.isCatalyst ? DesignSystem.Spaces.two : DesignSystem.Spaces.one)
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding([.horizontal, .top], DesignSystem.Spaces.two)
         .background(Color(uiColor: .systemBackground).opacity(0.95))

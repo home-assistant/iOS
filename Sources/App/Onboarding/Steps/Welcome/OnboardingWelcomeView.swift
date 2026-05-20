@@ -48,6 +48,7 @@ struct OnboardingWelcomeView: View {
             Text(verbatim: L10n.Onboarding.Welcome.header)
                 .font(DesignSystem.Font.largeTitle.bold())
                 .padding(.horizontal, DesignSystem.Spaces.two)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
