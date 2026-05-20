@@ -80,6 +80,7 @@ jobs:
           TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
           DISTRIBUTE_RUN_ID: ${{ inputs.distribute_run_id || '' }}
         with:
+          github-token: ${{ secrets.MAC_RELEASE_WORKFLOW_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -250,6 +251,7 @@ jobs:
         env:
           DISTRIBUTE_RUN_ID: ${{ steps.find_run.outputs.run_id }}
         with:
+          github-token: ${{ secrets.MAC_RELEASE_WORKFLOW_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -280,7 +282,7 @@ jobs:
           run-id: ${{ steps.find_run.outputs.run_id }}
           name: ${{ steps.find_artifact.outputs.artifact_name }}
           path: release-artifact/extracted
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.MAC_RELEASE_WORKFLOW_TOKEN }}
 
       - name: Prepare release asset
         id: download_asset
@@ -308,6 +310,7 @@ jobs:
           RELEASE_NAME: ${{ steps.parse_tag.outputs.version }} (${{ steps.parse_tag.outputs.display_build }})
           TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
         with:
+          github-token: ${{ secrets.MAC_RELEASE_WORKFLOW_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -375,6 +378,7 @@ jobs:
           RELEASE_ID: ${{ steps.release.outputs.release_id }}
           UPLOAD_URL: ${{ steps.release.outputs.upload_url }}
         with:
+          github-token: ${{ secrets.MAC_RELEASE_WORKFLOW_TOKEN }}
           script: |
             const fs = require('fs');
             const owner = context.repo.owner;
