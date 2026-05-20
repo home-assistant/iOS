@@ -31,6 +31,12 @@ extension WebViewController {
         if edgeToEdge {
             webViewTopConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
             statusBarView.isHidden = true
+        } else if #unavailable(iOS 16.0), !Current.isCatalyst {
+            webViewTopConstraint = webView.topAnchor.constraint(
+                equalTo: view.topAnchor,
+                constant: DesignSystem.Spaces.two
+            )
+            statusBarView.isHidden = false
         } else {
             webViewTopConstraint = webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor)
             statusBarView.isHidden = false
