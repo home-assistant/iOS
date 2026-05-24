@@ -202,10 +202,7 @@ struct AssistSettingsView: View {
     }
 
     private func formattedSeconds(_ value: Double, fractionDigits: Int) -> String {
-        if fractionDigits == 0 {
-            return String(format: "%.0f s", value)
-        }
-        return String(format: "%.1f s", value)
+        String(format: "%.\(fractionDigits)f s", value)
     }
 
     private func toggleLabel(symbol: SFSymbol, text: String) -> some View {

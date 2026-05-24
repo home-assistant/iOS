@@ -114,6 +114,56 @@ final class AssistViewModelTests: XCTestCase {
         )
     }
 
+    func testDidStartRecordingNormalizesPartialVadSettings() {
+        sut.preferredPipelineId = "2"
+        sut.configuration.vadSilenceSeconds = 1.2
+
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(
+                pipelineId: "2",
+                audioSampleRate: 16000.0,
+                tts: true,
+                options: .init(
+                    vadSilenceSeconds: 1.2,
+                    vadTimeoutSeconds: AssistConfiguration.defaultVadTimeoutSeconds
+                )
+            )
+        )
+    }
+
+    func testVoiceSubscriptionOmitsVadSettingsByDefault() throws {
+        let subscription = AssistRequests.assistByVoiceTypedSubscription(
+            preferredPipelineId: nil,
+            audioSampleRate: 16000,
+            conversationId: nil,
+            hassDeviceId: nil,
+            tts: true
+        )
+
+        let input = try XCTUnwrap(subscription.request.data["input"] as? [String: Any])
+        XCTAssertEqual(input["sample_rate"] as? Double, 16000)
+        XCTAssertNil(input["vad_silence_seconds"])
+        XCTAssertNil(input["vad_timeout_seconds"])
+    }
+
+    func testVoiceSubscriptionIncludesVadSettings() throws {
+        let subscription = AssistRequests.assistByVoiceTypedSubscription(
+            preferredPipelineId: nil,
+            audioSampleRate: 16000,
+            conversationId: nil,
+            hassDeviceId: nil,
+            tts: true,
+            options: .init(vadSilenceSeconds: 1.2, vadTimeoutSeconds: 45)
+        )
+
+        let input = try XCTUnwrap(subscription.request.data["input"] as? [String: Any])
+        XCTAssertEqual(input["vad_silence_seconds"] as? Double, 1.2)
+        XCTAssertEqual(input["vad_timeout_seconds"] as? Double, 45)
+    }
+
     func testDidStopRecording() {
         sut.didStopRecording()
         XCTAssertFalse(sut.isRecording)

@@ -25,6 +25,14 @@ struct AssistConfiguration: Codable, Identifiable, Equatable, PersistableRecord,
         vadSilenceSeconds != nil || vadTimeoutSeconds != nil
     }
 
+    var vadAudioOptions: AssistPipelineAudioOptions {
+        guard isCustomVadSettingsEnabled else { return .init() }
+        return .init(
+            vadSilenceSeconds: vadSilenceSeconds ?? Self.defaultVadSilenceSeconds,
+            vadTimeoutSeconds: vadTimeoutSeconds ?? Self.defaultVadTimeoutSeconds
+        )
+    }
+
     /// Custom row initializer to handle NULL values from migrated columns.
     init(row: Row) throws {
         self.id = row[DatabaseTables.AssistConfiguration.id.rawValue]
