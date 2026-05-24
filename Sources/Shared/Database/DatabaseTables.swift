@@ -190,6 +190,8 @@ public enum DatabaseTables {
         case muteTTS
         case enableOnDeviceTTS
         case onDeviceTTSVoiceIdentifier
+        case vadSilenceSeconds
+        case vadTimeoutSeconds
     }
 
     // Kiosk mode settings (stored as JSON blob)

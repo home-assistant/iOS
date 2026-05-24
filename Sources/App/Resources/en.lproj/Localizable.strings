@@ -151,6 +151,11 @@
 "assist.settings.title" = "Assist Settings";
 "assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";
+"assist.settings.voice_detection.custom_toggle" = "Customize voice detection";
+"assist.settings.voice_detection.footer" = "Applies when Assist sends microphone audio to Home Assistant. Leave this off to use Home Assistant defaults.";
+"assist.settings.voice_detection.silence_seconds" = "End-of-speech silence";
+"assist.settings.voice_detection.timeout_seconds" = "Command timeout";
+"assist.settings.voice_detection.title" = "Voice detection";
 "assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
 "assist.watch.volume.title" = "Volume control";

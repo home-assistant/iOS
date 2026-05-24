@@ -8,14 +8,23 @@ public enum AssistRequests {
         audioSampleRate: Double,
         conversationId: String?,
         hassDeviceId: String?,
-        tts: Bool
+        tts: Bool,
+        options: AssistPipelineAudioOptions = .init()
     ) -> HATypedSubscription<AssistResponse> {
+        var input: [String: Any] = [
+            "sample_rate": audioSampleRate,
+        ]
+        if let vadSilenceSeconds = options.vadSilenceSeconds {
+            input["vad_silence_seconds"] = vadSilenceSeconds
+        }
+        if let vadTimeoutSeconds = options.vadTimeoutSeconds {
+            input["vad_timeout_seconds"] = vadTimeoutSeconds
+        }
+
         var data: [String: Any] = [
             "start_stage": "stt",
             "end_stage": tts ? "tts" : "intent",
-            "input": [
-                "sample_rate": audioSampleRate,
-            ],
+            "input": input,
         ]
         if let preferredPipelineId {
             data["pipeline"] = preferredPipelineId

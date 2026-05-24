@@ -31,6 +31,39 @@ struct AssistSettingsView: View {
         )
     }
 
+    private var customVadSettingsBinding: Binding<Bool> {
+        Binding(
+            get: {
+                viewModel.configuration.isCustomVadSettingsEnabled
+            },
+            set: { isEnabled in
+                viewModel.configuration.setCustomVadSettingsEnabled(isEnabled)
+            }
+        )
+    }
+
+    private var vadSilenceSecondsBinding: Binding<Double> {
+        Binding(
+            get: {
+                viewModel.configuration.vadSilenceSeconds ?? AssistConfiguration.defaultVadSilenceSeconds
+            },
+            set: { newValue in
+                viewModel.configuration.vadSilenceSeconds = newValue
+            }
+        )
+    }
+
+    private var vadTimeoutSecondsBinding: Binding<Double> {
+        Binding(
+            get: {
+                viewModel.configuration.vadTimeoutSeconds ?? AssistConfiguration.defaultVadTimeoutSeconds
+            },
+            set: { newValue in
+                viewModel.configuration.vadTimeoutSeconds = newValue
+            }
+        )
+    }
+
     private var selectedVoiceDisplayName: String {
         guard let id = viewModel.configuration.onDeviceTTSVoiceIdentifier,
               let voice = AVSpeechSynthesisVoice(identifier: id) else {
@@ -47,6 +80,7 @@ struct AssistSettingsView: View {
         NavigationView {
             Form {
                 muteToggle
+                voiceDetection
                 experimental
             }
             .onChange(of: viewModel.configuration.enableOnDeviceSTT) { isEnabled in
@@ -76,6 +110,42 @@ struct AssistSettingsView: View {
             })
         } footer: {
             Text(L10n.Assist.Settings.TtsMute.footer)
+        }
+    }
+
+    private var voiceDetection: some View {
+        Section {
+            Toggle(isOn: customVadSettingsBinding) {
+                toggleLabel(symbol: .micFill, text: L10n.Assist.Settings.VoiceDetection.customToggle)
+            }
+
+            if viewModel.configuration.isCustomVadSettingsEnabled {
+                Stepper(
+                    value: vadSilenceSecondsBinding,
+                    in: AssistConfiguration.vadSilenceSecondsRange,
+                    step: 0.1
+                ) {
+                    valueLabel(
+                        title: L10n.Assist.Settings.VoiceDetection.silenceSeconds,
+                        value: formattedSeconds(vadSilenceSecondsBinding.wrappedValue, fractionDigits: 1)
+                    )
+                }
+
+                Stepper(
+                    value: vadTimeoutSecondsBinding,
+                    in: AssistConfiguration.vadTimeoutSecondsRange,
+                    step: 1
+                ) {
+                    valueLabel(
+                        title: L10n.Assist.Settings.VoiceDetection.timeoutSeconds,
+                        value: formattedSeconds(vadTimeoutSecondsBinding.wrappedValue, fractionDigits: 0)
+                    )
+                }
+            }
+        } header: {
+            Text(L10n.Assist.Settings.VoiceDetection.title)
+        } footer: {
+            Text(L10n.Assist.Settings.VoiceDetection.footer)
         }
     }
 
@@ -120,6 +190,22 @@ struct AssistSettingsView: View {
                 }
             }
         }
+    }
+
+    private func valueLabel(title: String, value: String) -> some View {
+        HStack {
+            Text(title)
+            Spacer()
+            Text(value)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func formattedSeconds(_ value: Double, fractionDigits: Int) -> String {
+        if fractionDigits == 0 {
+            return String(format: "%.0f s", value)
+        }
+        return String(format: "%.1f s", value)
     }
 
     private func toggleLabel(symbol: SFSymbol, text: String) -> some View {

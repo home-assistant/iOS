@@ -24,16 +24,35 @@ public protocol AssistServiceDelegate: AnyObject {
     func didReceiveError(code: String, message: String)
 }
 
+public struct AssistPipelineAudioOptions: Equatable {
+    public let vadSilenceSeconds: Double?
+    public let vadTimeoutSeconds: Double?
+
+    public init(vadSilenceSeconds: Double? = nil, vadTimeoutSeconds: Double? = nil) {
+        self.vadSilenceSeconds = vadSilenceSeconds
+        self.vadTimeoutSeconds = vadTimeoutSeconds
+    }
+}
+
 public enum AssistSource: Equatable {
     case text(input: String, pipelineId: String?, expectTTS: Bool)
-    case audio(pipelineId: String?, audioSampleRate: Double, tts: Bool)
+    case audio(
+        pipelineId: String?,
+        audioSampleRate: Double,
+        tts: Bool,
+        options: AssistPipelineAudioOptions = .init()
+    )
 
     public static func == (lhs: AssistSource, rhs: AssistSource) -> Bool {
         switch (lhs, rhs) {
         case let (.text(lhsInput, lhsPipelineId, lhsExpectTTS), .text(rhsInput, rhsPipelineId, rhsExpectTTS)):
             return lhsInput == rhsInput && lhsPipelineId == rhsPipelineId && lhsExpectTTS == rhsExpectTTS
-        case let (.audio(lhsPipelineId, lhsSampleRate, lhsTTS), .audio(rhsPipelineId, rhsSampleRate, rhsTTS)):
+        case let (
+            .audio(lhsPipelineId, lhsSampleRate, lhsTTS, lhsOptions),
+            .audio(rhsPipelineId, rhsSampleRate, rhsTTS, rhsOptions)
+        ):
             return lhsPipelineId == rhsPipelineId && lhsSampleRate == rhsSampleRate && lhsTTS == rhsTTS
+                && lhsOptions == rhsOptions
         default:
             return false
         }
@@ -77,8 +96,8 @@ public final class AssistService: AssistServiceProtocol {
         switch source {
         case let .text(input, pipelineId, expectTTS):
             assistWithText(input: input, pipelineId: pipelineId, expectTTS: expectTTS)
-        case let .audio(pipelineId, audioSampleRate, tts):
-            assistWithAudio(pipelineId: pipelineId, audioSampleRate: audioSampleRate, tts: tts)
+        case let .audio(pipelineId, audioSampleRate, tts, options):
+            assistWithAudio(pipelineId: pipelineId, audioSampleRate: audioSampleRate, tts: tts, options: options)
         }
     }
 
@@ -122,14 +141,20 @@ public final class AssistService: AssistServiceProtocol {
         }
     }
 
-    private func assistWithAudio(pipelineId: String?, audioSampleRate: Double, tts: Bool) {
+    private func assistWithAudio(
+        pipelineId: String?,
+        audioSampleRate: Double,
+        tts: Bool,
+        options: AssistPipelineAudioOptions
+    ) {
         lastPipelineIdUsed = pipelineId
         Current.api(for: server)?.connection.subscribe(to: AssistRequests.assistByVoiceTypedSubscription(
             preferredPipelineId: pipelineId,
             audioSampleRate: audioSampleRate,
             conversationId: conversationId,
             hassDeviceId: server.info.hassDeviceId,
-            tts: tts
+            tts: tts,
+            options: options
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable

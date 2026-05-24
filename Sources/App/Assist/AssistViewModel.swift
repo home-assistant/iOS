@@ -168,7 +168,11 @@ final class AssistViewModel: NSObject, ObservableObject {
             source: .audio(
                 pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
                 audioSampleRate: audioSampleRate,
-                tts: !configuration.muteTTS && !configuration.enableOnDeviceTTS
+                tts: !configuration.muteTTS && !configuration.enableOnDeviceTTS,
+                options: .init(
+                    vadSilenceSeconds: configuration.vadSilenceSeconds,
+                    vadTimeoutSeconds: configuration.vadTimeoutSeconds
+                )
             )
         )
     }

@@ -649,6 +649,18 @@ public enum L10n {
         /// Mute voice responses
         public static var toggle: String { return L10n.tr("Localizable", "assist.settings.tts_mute.toggle") }
       }
+      public enum VoiceDetection {
+        /// Customize voice detection
+        public static var customToggle: String { return L10n.tr("Localizable", "assist.settings.voice_detection.custom_toggle") }
+        /// Applies when Assist sends microphone audio to Home Assistant. Leave this off to use Home Assistant defaults.
+        public static var footer: String { return L10n.tr("Localizable", "assist.settings.voice_detection.footer") }
+        /// End-of-speech silence
+        public static var silenceSeconds: String { return L10n.tr("Localizable", "assist.settings.voice_detection.silence_seconds") }
+        /// Command timeout
+        public static var timeoutSeconds: String { return L10n.tr("Localizable", "assist.settings.voice_detection.timeout_seconds") }
+        /// Voice detection
+        public static var title: String { return L10n.tr("Localizable", "assist.settings.voice_detection.title") }
+      }
     }
     public enum Watch {
       public enum MicButton {

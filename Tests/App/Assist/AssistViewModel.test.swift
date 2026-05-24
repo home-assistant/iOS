@@ -90,7 +90,28 @@ final class AssistViewModelTests: XCTestCase {
     func testDidStartRecording() {
         sut.preferredPipelineId = "2"
         sut.didStartRecording(with: 16000)
-        XCTAssertEqual(mockAssistService.assistSource, .audio(pipelineId: "2", audioSampleRate: 16000.0, tts: true))
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: "2", audioSampleRate: 16000.0, tts: true, options: .init())
+        )
+    }
+
+    func testDidStartRecordingUsesCustomVadSettings() {
+        sut.preferredPipelineId = "2"
+        sut.configuration.vadSilenceSeconds = 1.2
+        sut.configuration.vadTimeoutSeconds = 45
+
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(
+                pipelineId: "2",
+                audioSampleRate: 16000.0,
+                tts: true,
+                options: .init(vadSilenceSeconds: 1.2, vadTimeoutSeconds: 45)
+            )
+        )
     }
 
     func testDidStopRecording() {
