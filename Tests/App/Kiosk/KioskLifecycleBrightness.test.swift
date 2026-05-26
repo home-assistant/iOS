@@ -198,4 +198,86 @@ struct KioskLifecycleBrightnessTests {
         mgr.appDidBecomeActive()
         #expect(box.value == 0.65, "kiosk inactive: foreground must not touch brightness")
     }
+
+    // MARK: - Auto-Activation on Launch (#4608)
+
+    // Regression: when kiosk mode was enabled and the app was then force-quit, crashed,
+    // or the device rebooted, the persisted isKioskModeEnabled was loaded into memory
+    // but never acted on — the user had to manually re-toggle kiosk mode after every
+    // restart. setup(using:) now restores kiosk mode when settings.isKioskModeEnabled
+    // is true on launch.
+
+    @Test func setupRestoresKioskModeWhenPersistedEnabled() async throws {
+        let (_, cleanup) = setupTest(initialBrightness: 0.5)
+        defer { cleanup() }
+
+        let mgr = KioskModeManager.shared
+        #expect(mgr.isKioskModeActive == false)
+
+        // Simulate state after a previous session enabled kiosk mode and the app was killed.
+        var persisted = mgr.settings
+        persisted.isKioskModeEnabled = true
+        mgr.updateSettings(persisted)
+
+        // App relaunches — WebViewController.viewDidLoad calls setup(using:).
+        let stubVC = StubKioskWebViewController()
+        mgr.setup(using: stubVC)
+
+        #expect(
+            mgr.isKioskModeActive == true,
+            "kiosk mode should auto-activate on launch when settings.isKioskModeEnabled is true"
+        )
+    }
+
+    @Test func setupDoesNotActivateWhenPersistedDisabled() async throws {
+        let (_, cleanup) = setupTest(initialBrightness: 0.5)
+        defer { cleanup() }
+
+        let mgr = KioskModeManager.shared
+
+        var persisted = mgr.settings
+        persisted.isKioskModeEnabled = false
+        mgr.updateSettings(persisted)
+
+        let stubVC = StubKioskWebViewController()
+        mgr.setup(using: stubVC)
+
+        #expect(
+            mgr.isKioskModeActive == false,
+            "kiosk mode must not activate on launch when settings.isKioskModeEnabled is false"
+        )
+    }
+}
+
+// MARK: - Test Stub
+
+/// Minimal `WebViewControllerProtocol`-conforming `UIViewController` subclass used
+/// to exercise `KioskModeManager.setup(using:)` without spinning up a full WebView.
+/// `setup(using:)` guards on `webViewController as? UIViewController`, so a plain
+/// `MockWebViewController` (which is not a UIViewController) cannot drive the restore path.
+private final class StubKioskWebViewController: UIViewController, WebViewControllerProtocol {
+    let webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol = MockWebViewExternalMessageHandler()
+    var canGoBack: Bool = false
+    var canGoForward: Bool = false
+    var server: Server = ServerFixture.standard
+    var connectionState: FrontEndConnectionState = .connected
+    var overlayedController: UIViewController?
+
+    func presentOverlayController(controller: UIViewController, animated: Bool) {}
+    func presentAlertController(controller: UIViewController, animated: Bool) {}
+    func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {}
+    func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {}
+    func dismissControllerAboveOverlayController() {}
+    func updateFrontendConnectionState(state: String) {}
+    func navigateToPath(path: String) {}
+    func showBanner(request: BannerRequest) {}
+    func hideBanner(id: String) {}
+    func refresh() {}
+    func refreshIfDisconnected() {}
+    func load(request: URLRequest) {}
+    func showSettingsViewController() {}
+    func openDebug() {}
+    func goBack() {}
+    func goForward() {}
+    func styleUI() {}
 }
