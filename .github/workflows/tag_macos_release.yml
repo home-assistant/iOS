@@ -1,0 +1,255 @@
+name: Tag macOS Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag to create, for example release/2026.5.0/2026.1987
+        required: true
+        type: string
+      target_commit:
+        description: Commit SHA to tag
+        required: true
+        type: string
+      distribute_run_id:
+        description: Optional Distribute workflow run ID to use directly
+        required: false
+        type: string
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: macos-release-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Parse release inputs
+        id: parse_inputs
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          TARGET_COMMIT: ${{ inputs.target_commit }}
+        run: |
+          case "$RELEASE_TAG" in
+            release/*/*) ;;
+            *)
+              echo "Unexpected tag format: $RELEASE_TAG"
+              exit 1
+              ;;
+          esac
+
+          git fetch origin main
+
+          commit_sha="$(git rev-parse "${TARGET_COMMIT}^{commit}")"
+
+          if ! git branch -r --contains "$commit_sha" | grep -Eq 'origin/main$'; then
+            echo "Target commit ${commit_sha} is not on origin/main"
+            exit 1
+          fi
+
+          build="${RELEASE_TAG##*/}"
+          display_build="${build##*.}"
+
+          case "$display_build" in
+            ''|*[!0-9]*)
+              echo "The release tag must end with a numeric Distribute run number."
+              exit 1
+              ;;
+          esac
+
+          echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
+          echo "run_number=$display_build" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve Distribute run
+        id: find_run
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          EXPECTED_RUN_NUMBER: ${{ steps.parse_inputs.outputs.run_number }}
+          TARGET_COMMIT_SHA: ${{ steps.parse_inputs.outputs.commit_sha }}
+          DISTRIBUTE_RUN_ID: ${{ inputs.distribute_run_id || '' }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const workflowId = 'distribute.yml';
+            const headSha = process.env.TARGET_COMMIT_SHA;
+            const expectedRunNumber = Number(process.env.EXPECTED_RUN_NUMBER);
+            const distributeRunId = process.env.DISTRIBUTE_RUN_ID.trim();
+
+            function validateRun(run) {
+              if (run.run_number !== expectedRunNumber) {
+                core.setFailed(
+                  `Distribute run ${run.id} is #${run.run_number}, expected #${expectedRunNumber}.`
+                );
+                return false;
+              }
+
+              if (run.head_sha !== headSha) {
+                core.setFailed(
+                  `Distribute run #${run.run_number} points to ${run.head_sha}, expected ${headSha}.`
+                );
+                return false;
+              }
+
+              if (run.head_branch !== 'main') {
+                core.setFailed(
+                  `Distribute run #${run.run_number} is for ${run.head_branch}, expected main.`
+                );
+                return false;
+              }
+
+              if (run.path !== '.github/workflows/distribute.yml') {
+                core.setFailed(
+                  `Run #${run.run_number} used ${run.path}, expected .github/workflows/distribute.yml.`
+                );
+                return false;
+              }
+
+              return true;
+            }
+
+            if (distributeRunId) {
+              const runId = Number(distributeRunId);
+
+              if (!Number.isFinite(runId) || !Number.isInteger(runId)) {
+                core.setFailed(`Invalid DISTRIBUTE_RUN_ID: "${distributeRunId}".`);
+                return;
+              }
+
+              const { data: run } = await github.request(
+                'GET /repos/{owner}/{repo}/actions/runs/{run_id}',
+                {
+                  owner,
+                  repo,
+                  run_id: runId,
+                }
+              );
+
+              if (!validateRun(run)) {
+                return;
+              }
+
+              if (run.conclusion !== 'success') {
+                core.setFailed(
+                  `Distribute run #${run.run_number} concluded with ${run.conclusion}.`
+                );
+                return;
+              }
+
+              core.info(`Using Distribute run #${run.run_number} (${run.html_url})`);
+              core.setOutput('run_id', String(run.id));
+              core.setOutput('run_url', run.html_url);
+              return;
+            }
+
+            const pollIntervalMs = 60 * 1000;
+            const deadline = Date.now() + (30 * 60 * 1000);
+
+            while (Date.now() < deadline) {
+              const runs = await github.paginate(
+                github.rest.actions.listWorkflowRuns,
+                {
+                  owner,
+                  repo,
+                  workflow_id: workflowId,
+                  branch: 'main',
+                  per_page: 100,
+                },
+                (response, done) => {
+                  const workflowRuns = response.data.workflow_runs ?? [];
+
+                  if (
+                    workflowRuns.some((run) => run.run_number === expectedRunNumber) ||
+                    workflowRuns.every((run) => run.run_number < expectedRunNumber)
+                  ) {
+                    done();
+                  }
+
+                  return workflowRuns;
+                }
+              );
+
+              core.info(
+                `Checked ${runs.length} Distribute runs on main. ` +
+                `Newest run numbers: ${runs.slice(0, 5).map((run) => run.run_number).join(', ')}`
+              );
+
+              const matchingRun = [...runs]
+                .sort((lhs, rhs) => new Date(rhs.created_at) - new Date(lhs.created_at))
+                .find((run) => (
+                  run.run_number === expectedRunNumber &&
+                  run.head_sha === headSha
+                ));
+
+              if (matchingRun?.conclusion === 'success') {
+                core.info(
+                  `Using successful Distribute run #${matchingRun.run_number} (${matchingRun.html_url})`
+                );
+                core.setOutput('run_id', String(matchingRun.id));
+                core.setOutput('run_url', matchingRun.html_url);
+                return;
+              }
+
+              if (matchingRun && matchingRun.status !== 'completed') {
+                core.info(
+                  `Waiting for Distribute run #${matchingRun.run_number} (${matchingRun.status})`
+                );
+                await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+                continue;
+              }
+
+              if (matchingRun) {
+                core.setFailed(
+                  `Distribute run #${matchingRun.run_number} for ${headSha} concluded with ${matchingRun.conclusion}.`
+                );
+                return;
+              }
+
+              core.info(
+                `No Distribute run #${expectedRunNumber} found for ${headSha} on main yet.`
+              );
+              await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+            }
+
+            core.setFailed(
+              `Timed out waiting for successful Distribute run #${expectedRunNumber} for ${headSha} on main.`
+            );
+
+      - name: Create or move release tag
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          TARGET_COMMIT_SHA: ${{ steps.parse_inputs.outputs.commit_sha }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git tag -f -a "$RELEASE_TAG" "$TARGET_COMMIT_SHA" -m ""
+          git push --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
+
+      - name: Dispatch macOS release workflow
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          DISTRIBUTE_RUN_ID: ${{ steps.find_run.outputs.run_id }}
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'release_macos.yml',
+              ref: 'main',
+              inputs: {
+                release_tag: process.env.RELEASE_TAG,
+                distribute_run_id: process.env.DISTRIBUTE_RUN_ID,
+              },
+            });

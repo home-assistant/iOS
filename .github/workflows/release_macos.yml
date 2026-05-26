@@ -1,9 +1,6 @@
 name: Release macOS
 
 on:
-  push:
-    tags:
-      - 'release/*/*'
   workflow_dispatch:
     inputs:
       release_tag:
@@ -47,6 +44,8 @@ jobs:
               ;;
           esac
 
+          git fetch --force origin "refs/tags/${tag}:refs/tags/${tag}"
+
           version="${tag#release/}"
           version="${version%%/*}"
           build="${tag##*/}"
@@ -63,12 +62,13 @@ jobs:
 
       - name: Ensure tag points to main
         env:
+          TAG_NAME: ${{ steps.parse_tag.outputs.tag }}
           TARGET_COMMIT_SHA: ${{ steps.parse_tag.outputs.commit_sha }}
         run: |
           git fetch origin main
 
           if ! git branch -r --contains "$TARGET_COMMIT_SHA" | grep -Eq 'origin/main$'; then
-            echo "Tag ${GITHUB_REF_NAME} does not point to a commit on origin/main"
+            echo "Tag ${TAG_NAME} does not point to a commit on origin/main"
             exit 1
           fi
 
