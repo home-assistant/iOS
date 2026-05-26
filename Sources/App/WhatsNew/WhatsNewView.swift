@@ -132,12 +132,3 @@ private enum WhatsNewColors {
         colors[index % colors.count]
     }
 }
-
-#if DEBUG
-#Preview {
-    WhatsNewView(
-        release: WhatsNewCatalog.releases[0],
-        onViewed: {}
-    )
-}
-#endif
