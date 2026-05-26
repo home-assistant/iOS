@@ -666,11 +666,14 @@ public class HomeAssistantAPI {
             update = .init(trigger: updateType, location: rawLocation, zone: zone)
             location = rawLocation
         case .zoneOnly:
+            let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
             if updateType == .BeaconRegionEnter {
-                update = .init(trigger: updateType, usingNameOf: zone)
+                let zones = zone.flatMap { $0.TrackingEnabled && !$0.isPassive ? [$0] : nil } ?? []
+                update = .init(trigger: updateType, usingNameOf: zones.first, inZones: supportsInZones ? zones : nil)
             } else if let rawLocation {
                 // note this is a different zone than the event - e.g. the zone may be the one we are exiting
-                update = .init(trigger: updateType, usingNameOf: RLMZone.zone(of: rawLocation, in: server))
+                let zones = RLMZone.zones(of: rawLocation, in: server, includingPassive: false)
+                update = .init(trigger: updateType, usingNameOf: zones.first, inZones: supportsInZones ? zones : nil)
             } else {
                 update = .init(trigger: updateType)
             }
