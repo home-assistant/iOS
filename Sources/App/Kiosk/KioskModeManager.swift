@@ -172,11 +172,15 @@ public final class KioskModeManager: ObservableObject {
 
         guard let viewController = webViewController as? UIViewController else { return }
 
-        // Setup secret exit gesture overlay (always available when kiosk mode is active)
-        setupSecretExitGesture(in: viewController)
-
-        // Apply initial state if already in kiosk mode
+        // The secret-exit gesture overlay is only installed while kiosk mode is actually active —
+        // see enableKioskMode(). Installing it unconditionally regressed iOS 15: adding a full-screen
+        // child UIViewController whose subtree contains a UIHostingController to a WebViewController
+        // hosted in a UINavigationController with hidden nav bar triggers a UIKit safe-area
+        // inflation bug that oversizes the native statusBarView and breaks WKWebView hit-testing
+        // (issue #4499).
         if isKioskModeActive {
+            tearDownSecretExitGesture()
+            setupSecretExitGesture(in: viewController)
             updateKioskModeLockdown(enabled: true)
         }
     }
@@ -222,6 +226,12 @@ public final class KioskModeManager: ObservableObject {
         applyBrightness()
         startIdleTimer()
 
+        // Install the secret-exit gesture overlay only while kiosk mode is active so it doesn't
+        // affect WebView safe-area / hit-testing during normal use.
+        if let viewController = webViewController as? UIViewController {
+            setupSecretExitGesture(in: viewController)
+        }
+
         updateKioskModeLockdown(enabled: true)
         notifyObserversOfModeChange()
     }
@@ -257,6 +267,10 @@ public final class KioskModeManager: ObservableObject {
 
         // Hide screensaver if active
         hideScreensaver(source: "kiosk_disabled")
+
+        // Tear down the secret-exit gesture overlay so its child VC + UIHostingController stop
+        // covering the WebView.
+        tearDownSecretExitGesture()
 
         updateKioskModeLockdown(enabled: false)
         notifyObserversOfModeChange()
@@ -488,6 +502,8 @@ public final class KioskModeManager: ObservableObject {
     // MARK: - Secret Exit Gesture
 
     private func setupSecretExitGesture(in parentController: UIViewController) {
+        guard secretExitGestureController == nil else { return }
+
         let controller = KioskSecretExitGestureViewController()
         secretExitGestureController = controller
 
@@ -507,6 +523,14 @@ public final class KioskModeManager: ObservableObject {
         ])
 
         controller.didMove(toParent: parentController)
+    }
+
+    private func tearDownSecretExitGesture() {
+        guard let controller = secretExitGestureController else { return }
+        controller.willMove(toParent: nil)
+        controller.view.removeFromSuperview()
+        controller.removeFromParent()
+        secretExitGestureController = nil
     }
 
     // MARK: - UI Lockdown

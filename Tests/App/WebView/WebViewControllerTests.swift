@@ -117,7 +117,10 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.emptyStateView?.showsErrorDetailsButton, true)
     }
 
-    func testSetupEmptyStateAddsHostingControllerAsChild() {
+    func testSetupEmptyStateAddsHostingControllerAsChild() throws {
+        // The parent-child relationship is intentionally only established on iOS 16+ — on iOS 15 it
+        // triggers a UIKit safe-area-inflation bug that breaks WKWebView hit-testing (#4499).
+        guard #available(iOS 16.0, *) else { throw XCTSkip("iOS 16+ only by design (#4499)") }
         let sut = makeSUT()
 
         sut.setupEmptyState()
