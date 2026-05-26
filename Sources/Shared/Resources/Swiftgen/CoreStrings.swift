@@ -448,7 +448,7 @@ public enum CoreStrings {
   public static var componentSfrBoxEntitySensorDslTrainingStateIdle: String { return CoreStrings.tr("Core", "component::sfr_box::entity::sensor::dsl_training::state::idle") }
   /// Closed
   public static var componentShellyEntitySensorValveStatusStateClosed: String { return CoreStrings.tr("Core", "component::shelly::entity::sensor::valve_status::state::closed") }
-  /// Active
+  /// Active (uses more device battery, fastest updates)
   public static var componentShellySelectorBleScannerModeOptionsActive: String { return CoreStrings.tr("Core", "component::shelly::selector::ble_scanner_mode::options::active") }
   /// Disabled
   public static var componentShellySelectorBleScannerModeOptionsDisabled: String { return CoreStrings.tr("Core", "component::shelly::selector::ble_scanner_mode::options::disabled") }

@@ -218,7 +218,7 @@
 "component::sensor::entity_component::_::state::on" = "Sees";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Ootel";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Suletud";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Aktiivne";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Active (uses more device battery, fastest updates)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Keelatud";
 "component::siren::entity_component::_::state::off" = "Väljas";
 "component::siren::entity_component::_::state::on" = "Sees";

@@ -218,7 +218,7 @@ Dokončete nastavení podle [pokynů]({url}).";
 "component::sensor::entity_component::_::state::on" = "Zapnuto";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Nečinný";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Zavřeno";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Aktivní";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Aktivní (spotřebovává více baterie zařízení, nejrychlejší aktualizace)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Zakázáno";
 "component::siren::entity_component::_::state::off" = "Vypnuto";
 "component::siren::entity_component::_::state::on" = "Zapnuto";
