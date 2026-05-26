@@ -178,6 +178,15 @@ public final class KioskModeManager: ObservableObject {
         // hosted in a UINavigationController with hidden nav bar triggers a UIKit safe-area
         // inflation bug that oversizes the native statusBarView and breaks WKWebView hit-testing
         // (issue #4499).
+
+        // Restore kiosk mode if it was enabled before the app was last closed.
+        // enableKioskMode() installs the secret-exit gesture as part of its lockdown flow.
+        if settings.isKioskModeEnabled, !isKioskModeActive {
+            Current.Log.info("Restoring kiosk mode from persisted settings")
+            enableKioskMode()
+            return
+        }
+
         if isKioskModeActive {
             tearDownSecretExitGesture()
             setupSecretExitGesture(in: viewController)
