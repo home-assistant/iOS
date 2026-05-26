@@ -218,7 +218,7 @@
 "component::sensor::entity_component::_::state::on" = "開啟";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "待命";
 "component::shelly::entity::sensor::valve_status::state::closed" = "關閉";
-"component::shelly::selector::ble_scanner_mode::options::active" = "啟用";
+"component::shelly::selector::ble_scanner_mode::options::active" = "主動（耗用較多裝置電量，更新速度最快）";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "已關閉";
 "component::siren::entity_component::_::state::off" = "關閉";
 "component::siren::entity_component::_::state::on" = "開啟";
