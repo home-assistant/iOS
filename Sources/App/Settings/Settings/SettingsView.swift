@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsView: View {
     @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false
+    @State private var whatsNewRelease: WhatsNewRelease?
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
     @StateObject private var serversObserver = ServersObserver()
@@ -184,17 +185,13 @@ struct SettingsView: View {
                 }
             }
 
-            // What's New
-            Section {
-                Button {
-                    if let url = URL(string: "https://www.home-assistant.io/latest-ios-release-notes/") {
-                        openURLInBrowser(url, viewControllerProvider.viewController)
-                    }
-                } label: {
-                    HStack {
+            if let latestRelease = WhatsNewEngine().latestRelease() {
+                // What's New
+                Section {
+                    Button {
+                        whatsNewRelease = latestRelease
+                    } label: {
                         settingsItemLabel(.whatsNew)
-                        Spacer()
-                        SettingsItem.whatsNew.accessoryIcon
                     }
                 }
             }
@@ -238,6 +235,11 @@ struct SettingsView: View {
                     aboutViewContent
                 }
                 .navigationViewStyle(.stack)
+            }
+        }
+        .sheet(item: $whatsNewRelease) { release in
+            WhatsNewView(release: release) {
+                WhatsNewEngine().markSeen(release)
             }
         }
     }
