@@ -559,11 +559,13 @@
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.button" = "End All";
 "live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.frequent_updates.footer" = "Позволяет Home Assistant обновлять эфир активности с частотой до одного раза в секунду. Включите в настройках \u203A %@ \u203A эфира активности.";
 "live_activity.frequent_updates.title" = "Более частые обновления";
+"live_activity.privacy.message" = "Информация о текущей активности отображается на экране блокировки и в динамическом острове без использования Face ID или Touch ID. Внимательно выбирайте то, что вы показываете.";
 "live_activity.section.active" = "Действующие активности";
+"live_activity.section.privacy" = "Конфиденциальность";
 "live_activity.section.status" = "Статус";
 "live_activity.status.enabled" = "Включен";
-"live_activity.status.not_supported" = "Not available on iPad";
 "live_activity.status.open_settings" = "Open Settings";
 "live_activity.subtitle" = "Обновление Home Assistant в режиме реального времени на экране блокировки и динамическом острове.";
 "live_activity.title" = "Эфир активности";

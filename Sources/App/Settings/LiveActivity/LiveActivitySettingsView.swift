@@ -78,7 +78,7 @@ struct LiveActivitySettingsView: View {
                 Label(L10n.LiveActivity.title, systemSymbol: .livephoto)
                 Spacer()
                 if !isLiveActivitySupportedOnDevice {
-                    Text(L10n.LiveActivity.Status.notSupported)
+                    Text("Not available on iPad")
                         .foregroundStyle(.secondary)
                 } else if authorizationEnabled {
                     Text(L10n.LiveActivity.Status.enabled)
@@ -97,7 +97,7 @@ struct LiveActivitySettingsView: View {
                 Label(L10n.LiveActivity.FrequentUpdates.title, systemSymbol: .bolt)
                 Spacer()
                 if !isLiveActivitySupportedOnDevice {
-                    Text(L10n.LiveActivity.Status.notSupported)
+                    Text("Not available on iPad")
                         .foregroundStyle(.secondary)
                 } else if frequentUpdatesEnabled {
                     Text(L10n.LiveActivity.Status.enabled)
