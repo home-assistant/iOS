@@ -48,6 +48,8 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         case shareWithHomeAssistant
         /// Location permission is being requested for secure local network connections
         case secureLocalConnection
+        /// Location permission is being requested so iOS records the user's less secure local connection decision
+        case lessSecureLocalConnection
     }
 
     // MARK: - Published Properties
@@ -184,6 +186,13 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         requestLocationPermission()
     }
 
+    /// Requests location permission specifically for less secure local network connections
+    /// - Note: Sets context to lessSecureLocalConnection before requesting permission
+    func requestLocationPermissionForLessSecureLocalConnection() {
+        locationPermissionContext = .lessSecureLocalConnection
+        requestLocationPermission()
+    }
+
     /// Configures the server for less secure local connections (when location permission is denied)
     /// - Note: Sets security level to .lessSecure as fallback option
     func setLessSecureLocalConnection() {
@@ -212,6 +221,10 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     private func requestLocationPermission() {
         switch Current.location.permissionStatus {
         case .denied, .restricted:
+            guard locationPermissionContext != .lessSecureLocalConnection else {
+                applyLocationPermissionNeeds()
+                return
+            }
             // Open iOS settings for user to manually enable location
             if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
                 URLOpener.shared.open(settingsUrl, options: [:], completionHandler: nil)
@@ -241,7 +254,23 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
             }
         }
 
+        if locationPermissionContext == .lessSecureLocalConnection {
+            setLessSecureLocalConnection()
+            navigatePastLocalAccessConfiguration()
+            return
+        }
+
         nextStep()
+    }
+
+    private func navigatePastLocalAccessConfiguration() {
+        if steps.contains(.completion) {
+            navigateToStep(.completion)
+        } else if steps.contains(.updatePreferencesSuccess) {
+            navigateToStep(.updatePreferencesSuccess)
+        } else {
+            nextStep()
+        }
     }
 }
 
@@ -262,6 +291,9 @@ extension OnboardingPermissionsNavigationViewModel: CLLocationManagerDelegate {
         case .denied:
             // User explicitly denied location access - disable related sensors
             disableLocationSensor()
+            if locationPermissionContext == .lessSecureLocalConnection {
+                applyLocationPermissionNeeds()
+            }
         case .authorizedAlways:
             // Full location access granted - no additional action needed
             break
