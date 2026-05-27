@@ -252,11 +252,16 @@ public final class RLMZone: Object, UpdatableModel {
         in server: Server,
         includingPassive: Bool = true
     ) -> [Self] {
-        Current.realm()
+        var results = Current.realm()
             .objects(Self.self)
             .filter("%K == %@", #keyPath(serverIdentifier), server.identifier.rawValue)
             .filter("TrackingEnabled == true")
-            .filter { includingPassive || !$0.isPassive }
+
+        if !includingPassive {
+            results = results.filter("isPassive == false")
+        }
+
+        return results
             .filter { $0.circularRegion.containsWithAccuracy(location) }
             .sorted { zoneA, zoneB in
                 // match the smaller zone over the larger
