@@ -18,6 +18,11 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         api = FakeHomeAssistantAPI(server: .fake())
     }
 
+    override func tearDown() {
+        HTTPStubs.removeAllStubs()
+        super.tearDown()
+    }
+
     private func content(title: String = "Dishwasher", body: String = "Cycle complete.") -> UNNotificationContent {
         let c = UNMutableNotificationContent()
         c.title = title
@@ -29,7 +34,13 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
 
     func testBuildIntent_mdi_setsSenderNameAndImage() throws {
         let info = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: "#FF0000",
+                iconColorString: "#FFFFFF"
+            ),
             senderName: "Front Door"
         )
         let intent = try hang(Promise(decorator.buildIntent(
@@ -47,7 +58,13 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
 
     func testBuildIntent_conversationIdentifier_stableAcrossCalls() throws {
         let info = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: "#FF0000",
+                iconColorString: "#FFFFFF"
+            ),
             senderName: "Front Door"
         )
         let intent1 = try hang(Promise(decorator.buildIntent(sender: info, title: "Front Door", body: "x", api: api)))
@@ -58,11 +75,23 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
 
     func testBuildIntent_conversationIdentifier_differsForDifferentSenderNames() throws {
         let a = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: "#FF0000",
+                iconColorString: "#FFFFFF"
+            ),
             senderName: "Front Door"
         )
         let b = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: "#FF0000",
+                iconColorString: "#FFFFFF"
+            ),
             senderName: "Back Door"
         )
         let ia = try hang(Promise(decorator.buildIntent(sender: a, title: "Front Door", body: "x", api: api)))
@@ -73,7 +102,13 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
     func testDecorate_emptyTitle_returnsOriginalContentUnchanged() throws {
         let original = content(title: "", body: "x")
         let info = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: "#FF0000",
+                iconColorString: "#FFFFFF"
+            ),
             senderName: "X" // ignored — decorator uses content.title
         )
         let result = try hang(Promise(decorator.decorate(content: original, sender: info, api: api)))

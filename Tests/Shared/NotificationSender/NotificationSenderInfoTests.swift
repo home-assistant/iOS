@@ -5,11 +5,23 @@ import XCTest
 final class NotificationSenderInfoTests: XCTestCase {
     func testEquatable_sameValues_areEqual() {
         let a = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: nil,
+                iconColorString: nil
+            ),
             senderName: "Front Door"
         )
         let b = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: nil,
+                iconColorString: nil
+            ),
             senderName: "Front Door"
         )
         XCTAssertEqual(a, b)
@@ -17,11 +29,23 @@ final class NotificationSenderInfoTests: XCTestCase {
 
     func testEquatable_differentSenderName_areNotEqual() {
         let a = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: nil,
+                iconColorString: nil
+            ),
             senderName: "Front Door"
         )
         let b = NotificationSenderInfo(
-            source: .mdi(name: "mdi:door", background: .red, foreground: .white),
+            source: .mdi(
+                name: "mdi:door",
+                background: .red,
+                foreground: .white,
+                colorString: nil,
+                iconColorString: nil
+            ),
             senderName: "Back Door"
         )
         XCTAssertNotEqual(a, b)

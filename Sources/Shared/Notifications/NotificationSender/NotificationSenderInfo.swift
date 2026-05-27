@@ -15,7 +15,13 @@ public struct NotificationSenderInfo: Equatable {
         /// Built-in Material Design Icon, rendered onto a colored square.
         /// `background` defaults to `AppConstants.tintColor` when `color` is absent.
         /// `foreground` defaults to `.white` when `notification_icon_color` is absent.
-        case mdi(name: String, background: UIColor, foreground: UIColor)
+        case mdi(
+            name: String,
+            background: UIColor,
+            foreground: UIColor,
+            colorString: String?,
+            iconColorString: String?
+        )
     }
 
     public let source: Source

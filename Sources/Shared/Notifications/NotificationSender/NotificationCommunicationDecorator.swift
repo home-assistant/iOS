@@ -94,7 +94,7 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
         api: HomeAssistantAPI
     ) -> Guarantee<INImage?> {
         switch source {
-        case let .mdi(name, background, foreground):
+        case let .mdi(name, background, foreground, _, _):
             #if os(iOS)
             let image = INImage(
                 icon: MaterialDesignIcons(serversideValueNamed: name, fallback: .bellIcon),
@@ -107,20 +107,24 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
             #endif
         case let .iconURL(url, needsAuth):
             let cacheKey = notificationIconCacheKey(for: url)
-            // The cache stores the ORIGINAL downloaded bytes, not the downsampled
-            // bytes, so a future caller can re-downsample at a different size if
-            // needed (e.g. notification content extension at higher resolution).
             if let cached = cache.data(forKey: cacheKey) {
-                return .value(Self.image(fromOriginalData: cached))
+                return .value(INImage(imageData: cached))
             }
             return Guarantee { seal in
                 api.DownloadDataAt(url: url, needsAuth: needsAuth).done { [cache] downloadedFile in
-                    guard let data = try? Data(contentsOf: downloadedFile) else {
-                        Current.Log.error("Failed to read downloaded avatar from \(downloadedFile.path) for url \(url)")
+                    defer {
+                        try? FileManager.default.removeItem(at: downloadedFile)
+                    }
+                    guard let size = Self.fileSize(at: downloadedFile), size <= 5 * 1024 * 1024 else {
+                        Current.Log.error("Downloaded avatar file is too large or size unknown: \(downloadedFile.path)")
                         seal(nil); return
                     }
-                    cache.setData(data, forKey: cacheKey)
-                    seal(Self.image(fromOriginalData: data))
+                    guard let downsampled = Self.downsample(url: downloadedFile, maxDimension: 256) else {
+                        Current.Log.error("Failed to decode/downsample downloaded avatar from \(downloadedFile.path)")
+                        seal(nil); return
+                    }
+                    cache.setData(downsampled, forKey: cacheKey)
+                    seal(INImage(imageData: downsampled))
                 }.catch { error in
                     Current.Log.error("Failed to download notification avatar from \(url): \(error)")
                     seal(nil)
@@ -137,17 +141,22 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
     private func conversationIdentifier(for sender: NotificationSenderInfo) -> String {
         let iconKey: String
         switch sender.source {
-        case let .mdi(name, background, foreground):
-            iconKey = "\(name)|\(background.hexDescription())|\(foreground.hexDescription())"
+        case let .mdi(name, _, _, colorString, iconColorString):
+            iconKey = "\(name)|\(colorString ?? "default")|\(iconColorString ?? "white")"
         case let .iconURL(url, _):
             iconKey = url.absoluteString
         }
         return "ha-sender:\(sender.senderName.lowercased()):\(iconKey)"
     }
 
+    private static func fileSize(at url: URL) -> Int64? {
+        let values = try? url.resourceValues(forKeys: [.fileSizeKey])
+        return values?.fileSize.map(Int64.init)
+    }
+
     /// Reduce the source image to at most `maxDimension` px on the longer side, returning
-    /// fresh PNG bytes suitable for `INImage(imageData:)`. Returns `nil` if the data
-    /// isn't a decodable image — caller falls back to the raw data.
+    /// fresh PNG bytes suitable for `INImage(imageData:)`. Returns `nil` if the image
+    /// isn't a decodable format.
     ///
     /// ImageIO option choice (these operate at different levels):
     /// - `kCGImageSourceShouldCache: false` on the SOURCE: ImageIO must not cache the full
@@ -158,9 +167,9 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
     ///   memory budget rather than later inside the Intents framework.
     ///
     /// `INImage` has no `init(cgImage:)`, so we round-trip back through PNG bytes.
-    private static func downsample(data: Data, maxDimension: CGFloat) -> Data? {
+    private static func downsample(url: URL, maxDimension: CGFloat) -> Data? {
         let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions) else { return nil }
+        guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions) else { return nil }
         let downsampleOptions = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
             kCGImageSourceShouldCacheImmediately: true,
@@ -175,20 +184,5 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
         #else
         return nil
         #endif
-    }
-
-    /// Wrap original-PNG-or-JPEG bytes in an `INImage`, downsampling first when possible.
-    /// Falls back to handing the raw bytes to `INImage` if ImageIO can't decode them.
-    private static func image(fromOriginalData data: Data) -> INImage {
-        INImage(imageData: downsample(data: data, maxDimension: 256) ?? data)
-    }
-}
-
-private extension UIColor {
-    /// Stable hex serialization used only for conversation-ID construction.
-    func hexDescription() -> String {
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-        getRed(&r, green: &g, blue: &b, alpha: &a)
-        return String(format: "#%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255))
     }
 }

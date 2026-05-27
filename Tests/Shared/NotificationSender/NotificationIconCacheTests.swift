@@ -28,13 +28,26 @@ final class NotificationIconCacheTests: XCTestCase {
         XCTAssertEqual(cache.data(forKey: "abc"), payload)
     }
 
-    func testEviction_dropsOldestWhenOverLimit() {
+    func testEviction_dropsOldestWhenOverLimit() throws {
         cache.setData(Data([1]), forKey: "k1")
-        Thread.sleep(forTimeInterval: 0.01) // ensure distinct mtimes
         cache.setData(Data([2]), forKey: "k2")
-        Thread.sleep(forTimeInterval: 0.01)
         cache.setData(Data([3]), forKey: "k3")
-        Thread.sleep(forTimeInterval: 0.01)
+
+        let fm = FileManager.default
+        let now = Date()
+        try fm.setAttributes(
+            [.modificationDate: now.addingTimeInterval(-30)],
+            ofItemAtPath: tempDir.appendingPathComponent("k1").path
+        )
+        try fm.setAttributes(
+            [.modificationDate: now.addingTimeInterval(-20)],
+            ofItemAtPath: tempDir.appendingPathComponent("k2").path
+        )
+        try fm.setAttributes(
+            [.modificationDate: now.addingTimeInterval(-10)],
+            ofItemAtPath: tempDir.appendingPathComponent("k3").path
+        )
+
         cache.setData(Data([4]), forKey: "k4") // triggers eviction; max is 3
 
         XCTAssertNil(cache.data(forKey: "k1"), "k1 should be evicted")

@@ -21,12 +21,20 @@ public enum NotificationSenderParser {
         }
 
         if let mdiName = userInfo["notification_icon"] as? String, !mdiName.isEmpty {
-            let background = (userInfo["color"] as? String).flatMap(Self.color(fromHex:))
+            let colorString = userInfo["color"] as? String
+            let iconColorString = userInfo["notification_icon_color"] as? String
+            let background = colorString.flatMap(Self.color(fromHex:))
                 ?? AppConstants.tintColor
-            let foreground = (userInfo["notification_icon_color"] as? String).flatMap(Self.color(fromHex:))
+            let foreground = iconColorString.flatMap(Self.color(fromHex:))
                 ?? .white
             return NotificationSenderInfo(
-                source: .mdi(name: mdiName, background: background, foreground: foreground),
+                source: .mdi(
+                    name: mdiName,
+                    background: background,
+                    foreground: foreground,
+                    colorString: colorString,
+                    iconColorString: iconColorString
+                ),
                 senderName: senderName
             )
         }
