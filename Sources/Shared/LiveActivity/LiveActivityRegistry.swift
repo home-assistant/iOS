@@ -36,12 +36,12 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     // MARK: - Webhook Constants (wire-format frozen — tested in LiveActivityContractTests)
 
     /// Webhook type for reporting a new per-activity push token to HA.
-    static let webhookTypeToken = "mobile_app_live_activity_token"
+    static let webhookTypeToken = "live_activity_token"
     /// Keys in the token webhook request data dictionary.
     static let tokenWebhookKeys: Set<String> = ["activity_id", "push_token", "apns_environment"]
 
     /// Webhook type for reporting that a Live Activity was dismissed.
-    static let webhookTypeDismissed = "mobile_app_live_activity_dismissed"
+    static let webhookTypeDismissed = "live_activity_dismissed"
     /// Keys in the dismissed webhook request data dictionary.
     static let dismissedWebhookKeys: Set<String> = ["activity_id", "live_activity_tag", "reason"]
 

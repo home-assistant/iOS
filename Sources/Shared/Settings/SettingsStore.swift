@@ -8,6 +8,7 @@ import Version
 public class SettingsStore {
     let keychain = AppConstants.Keychain
     let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
+    private let seenWhatsNewReleaseIDsKey = "seenWhatsNewReleaseIDs"
 
     /// These will only be posted on the main thread
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
@@ -43,6 +44,10 @@ public class SettingsStore {
         set {
             keychain["deviceID"] = newValue
         }
+    }
+
+    private var seenWhatsNewReleaseIDs: Set<String> {
+        Set(prefs.stringArray(forKey: seenWhatsNewReleaseIDsKey) ?? [])
     }
 
     #if os(iOS)
@@ -176,6 +181,14 @@ public class SettingsStore {
         set {
             prefs.set(newValue, forKey: "restoreLastURL")
         }
+    }
+
+    public func hasSeenWhatsNew(releaseID: String) -> Bool {
+        seenWhatsNewReleaseIDs.contains(releaseID)
+    }
+
+    public func markWhatsNewSeen(releaseID: String) {
+        prefs.set(seenWhatsNewReleaseIDs.union([releaseID]).sorted(), forKey: seenWhatsNewReleaseIDsKey)
     }
 
     public var fullScreen: Bool {

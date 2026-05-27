@@ -26,6 +26,11 @@ final class WebViewWindowController {
         static let minimumVisibleDuration: TimeInterval = 3
     }
 
+    enum WhatsNewConstants {
+        static let retryDelay: TimeInterval = 0.5
+        static let retryLimit = 10
+    }
+
     private enum RecoveredServerReauthenticationError: LocalizedError {
         case missingPresenter
         case cancelled
@@ -54,6 +59,7 @@ final class WebViewWindowController {
     private var rootViewControllerType: RootViewControllerType?
     private var webViewControllerSeal: (WebViewController) -> Void
     private var onboardingPreloadWebViewController: WebViewController?
+    private var didPresentWhatsNew = false
 
     init(window: UIWindow, restorationActivity: NSUserActivity?) {
         self.window = window
@@ -132,6 +138,7 @@ final class WebViewWindowController {
                     to: webViewNavigationController(rootViewController: webViewController),
                     type: .webView
                 )
+                presentWhatsNewIfNeeded(over: webViewController)
             } else {
                 updateRootViewController(
                     to: OnboardingNavigationView(onboardingStyle: .initial).embeddedInHostingController(),
@@ -162,6 +169,34 @@ final class WebViewWindowController {
 
         return Current.servers.all.first(where: { !$0.info.requiresReauthenticationAfterMirrorRestore })
             ?? Current.servers.all.first
+    }
+
+    private func presentWhatsNewIfNeeded(over webViewController: WebViewController, attempt: Int = 0) {
+        guard !didPresentWhatsNew else { return }
+        let engine = WhatsNewEngine()
+        guard let release = engine.releaseToShow() else { return }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + WhatsNewConstants.retryDelay) { [
+            weak self,
+            weak webViewController
+        ] in
+            guard let self, let webViewController, !didPresentWhatsNew else { return }
+
+            guard webViewController.viewIfLoaded?.window != nil,
+                  webViewController.overlayedController == nil else {
+                if attempt < WhatsNewConstants.retryLimit {
+                    presentWhatsNewIfNeeded(over: webViewController, attempt: attempt + 1)
+                }
+                return
+            }
+
+            didPresentWhatsNew = true
+            let controller = WhatsNewView(release: release) {
+                engine.markSeen(release)
+            }.embeddedInHostingController()
+            controller.modalPresentationStyle = .formSheet
+            webViewController.presentOverlayController(controller: controller, animated: true)
+        }
     }
 
     private func showRecoveredServerReauthentication(for server: Server) {

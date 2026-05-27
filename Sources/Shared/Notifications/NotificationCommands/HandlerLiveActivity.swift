@@ -137,49 +137,4 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     }
 }
 
-// MARK: - HandlerEndLiveActivity
-
-/// Handles explicit `end_live_activity` commands.
-/// Note: the `clear_notification` + `tag` dismiss flow is handled in `HandlerClearNotification`.
-@available(iOS 17.2, *)
-struct HandlerEndLiveActivity: NotificationCommandHandler {
-    func handle(_ payload: [String: Any]) -> Promise<Void> {
-        guard !Current.isAppExtension else {
-            return .value(())
-        }
-
-        return Promise { seal in
-            Task {
-                guard let tag = payload["tag"] as? String, !tag.isEmpty,
-                      HandlerStartOrUpdateLiveActivity.isValidTag(tag) else {
-                    seal.fulfill(())
-                    return
-                }
-
-                let policy = Self.dismissalPolicy(from: payload)
-                await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: policy)
-                seal.fulfill(())
-            }
-        }
-    }
-
-    private static func dismissalPolicy(from payload: [String: Any]) -> ActivityUIDismissalPolicy {
-        switch payload["dismissal_policy"] as? String {
-        case "default":
-            return .default
-        case let str where str?.hasPrefix("after:") == true:
-            if let timestampStr = str?.dropFirst(6),
-               let timestamp = Double(timestampStr) {
-                // Cap to 24 hours — iOS enforces its own maximum, but this prevents
-                // a far-future date from lingering in the dismissed activities list
-                // longer than intended if Apple ever relaxes the OS limit.
-                let maxDate = Date().addingTimeInterval(24 * 60 * 60)
-                return .after(min(Date(timeIntervalSince1970: timestamp), maxDate))
-            }
-            return .immediate
-        default:
-            return .immediate
-        }
-    }
-}
 #endif
