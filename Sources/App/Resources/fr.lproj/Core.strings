@@ -218,7 +218,7 @@ Veuillez terminer la configuration en suivant les [instructions de configuration
 "component::sensor::entity_component::_::state::on" = "Activé";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Inactif";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Fermé";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Actif";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Actif (consomme davantage de batterie, mises à jour plus rapides)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Désactivé";
 "component::siren::entity_component::_::state::off" = "Inactive";
 "component::siren::entity_component::_::state::on" = "Active";
