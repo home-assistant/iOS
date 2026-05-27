@@ -11,9 +11,6 @@ import Version
 #if os(iOS)
 import Reachability
 #endif
-#if os(iOS) && !targetEnvironment(macCatalyst)
-import ActivityKit
-#endif
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
@@ -602,13 +599,6 @@ public class HomeAssistantAPI {
 
                 #if os(iOS) && !targetEnvironment(macCatalyst)
                 if #available(iOS 17.2, *) {
-                    // Advertise Live Activity support so HA can send activity push tokens
-                    // to the relay server. areActivitiesEnabled reflects the user's Settings
-                    // toggle and returns true on both iPhone and iPad (iPadOS 17+).
-                    appData["supports_live_activities"] = ActivityAuthorizationInfo().areActivitiesEnabled
-                    appData["supports_live_activities_frequent_updates"] =
-                        ActivityAuthorizationInfo().frequentPushesEnabled
-
                     // Push-to-start token (stored in Keychain at launch, updated via stream).
                     // The relay server uses this token to start a Live Activity entirely via APNs.
                     if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
