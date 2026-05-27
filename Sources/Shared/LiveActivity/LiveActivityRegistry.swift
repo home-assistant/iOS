@@ -19,6 +19,11 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
     func startObservingRemoteActivityStarts() async
 }
 
+public extension LiveActivityRegistryProtocol {
+    @available(iOS 17.2, *)
+    func startObservingRemoteActivityStarts() async {}
+}
+
 /// Thread-safe registry for active `Activity<HALiveActivityAttributes>` instances.
 ///
 /// Uses Swift's actor isolation to protect the `[String: Entry]` dictionary from
