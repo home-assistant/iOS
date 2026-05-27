@@ -271,7 +271,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
             let observationTask = makeObservationTask(for: activity)
             entries[tag] = Entry(activity: activity, observationTask: observationTask)
-            Current.Log.verbose("LiveActivityRegistry: observed remotely started activity for tag \(tag), id=\(activity.id)")
+            Current.Log.verbose(
+                "LiveActivityRegistry: observed remotely started activity for tag \(tag), id=\(activity.id)"
+            )
         }
     }
 
