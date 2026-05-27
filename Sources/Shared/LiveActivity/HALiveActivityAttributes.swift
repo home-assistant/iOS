@@ -97,6 +97,42 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.icon = icon
             self.color = color
         }
+
+        // MARK: - Codable
+
+        // ActivityKit decodes content-state with the default JSONDecoder, which
+        // treats `Date` as seconds since 2001-01-01. HA core sends Unix epoch
+        // seconds, so map countdownEnd manually via timeIntervalSince1970 to
+        // avoid a ~31-year offset. The encoder is symmetric for round-tripping.
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            message = try container.decode(String.self, forKey: .message)
+            criticalText = try container.decodeIfPresent(String.self, forKey: .criticalText)
+            progress = try container.decodeIfPresent(Int.self, forKey: .progress)
+            progressMax = try container.decodeIfPresent(Int.self, forKey: .progressMax)
+            chronometer = try container.decodeIfPresent(Bool.self, forKey: .chronometer)
+            if let timestamp = try container.decodeIfPresent(Double.self, forKey: .countdownEnd) {
+                countdownEnd = Date(timeIntervalSince1970: timestamp)
+            } else {
+                countdownEnd = nil
+            }
+            icon = try container.decodeIfPresent(String.self, forKey: .icon)
+            color = try container.decodeIfPresent(String.self, forKey: .color)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(message, forKey: .message)
+            try container.encodeIfPresent(criticalText, forKey: .criticalText)
+            try container.encodeIfPresent(progress, forKey: .progress)
+            try container.encodeIfPresent(progressMax, forKey: .progressMax)
+            try container.encodeIfPresent(chronometer, forKey: .chronometer)
+            if let countdownEnd {
+                try container.encode(countdownEnd.timeIntervalSince1970, forKey: .countdownEnd)
+            }
+            try container.encodeIfPresent(icon, forKey: .icon)
+            try container.encodeIfPresent(color, forKey: .color)
+        }
     }
 
     // MARK: - Init
