@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'cocoapods'
 gem 'cocoapods-acknowledgements'
 gem 'fastlane', '2.222.0'
+gem 'abbrev'
 gem 'rubocop', require: false
 
 plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')

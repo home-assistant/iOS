@@ -5,6 +5,7 @@ GEM
       base64
       nkf
       rexml
+    abbrev (0.1.2)
     activesupport (7.1.3)
       base64
       bigdecimal
@@ -326,6 +327,7 @@ PLATFORMS
   x86_64-darwin-23
 
 DEPENDENCIES
+  abbrev
   cocoapods
   cocoapods-acknowledgements
   fastlane (= 2.222.0)
@@ -335,4 +337,4 @@ DEPENDENCIES
   rubocop
 
 BUNDLED WITH
-   2.2.2
+   2.7.2

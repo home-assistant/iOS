@@ -9,25 +9,29 @@ final class NotificationService: UNNotificationServiceExtension {
     ) {
         Current.Log.info("didReceive \(request), user info \(request.content.userInfo)")
 
-        guard let server = Current.servers.server(for: request.content), let api = Current.api(for: server) else {
+        guard let server = Current.servers.server(for: request.content),
+              let api = Current.api(for: server) else {
             contentHandler(request.content)
             return
         }
 
         firstly {
             Current.notificationAttachmentManager.content(from: request.content, api: api)
-        }.recover { error in
+        }.recover { error -> Guarantee<UNNotificationContent> in
             Current.Log.error("failed to get content, giving default: \(error)")
             return .value(request.content)
+        }.then { content -> Guarantee<UNNotificationContent> in
+            guard let sender = NotificationSenderParser.parse(from: content) else {
+                return .value(content)
+            }
+            return Current.notificationCommunicationDecorator
+                .decorate(content: content, sender: sender, api: api)
         }.done {
             contentHandler($0)
         }
     }
 
     override func serviceExtensionTimeWillExpire() {
-        // Called just before the extension will be terminated by the system.
-        // Use this as an opportunity to deliver your "best attempt" at modified content,
-        // otherwise the original push payload will be used.
         Current.Log.warning("serviceExtensionTimeWillExpire")
     }
 }
