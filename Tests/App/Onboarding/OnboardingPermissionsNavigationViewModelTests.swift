@@ -244,6 +244,15 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
     }
 
+    @Test("Request location permission for less secure local connection")
+    func requestLocationPermissionForLessSecureLocalConnection() async throws {
+        let server = ServerFixture.standard
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        viewModel.requestLocationPermissionForLessSecureLocalConnection()
+        #expect(viewModel.locationPermissionContext == .lessSecureLocalConnection)
+    }
+
     @Test("Disable location sensor")
     func disableLocationSensor() async throws {
         let server = ServerFixture.standard
@@ -308,6 +317,9 @@ struct OnboardingPermissionsNavigationViewModelTests {
         viewModel.locationPermissionContext = .secureLocalConnection
         #expect(viewModel.locationPermissionContext == .secureLocalConnection)
 
+        viewModel.locationPermissionContext = .lessSecureLocalConnection
+        #expect(viewModel.locationPermissionContext == .lessSecureLocalConnection)
+
         viewModel.locationPermissionContext = .notRequested
         #expect(viewModel.locationPermissionContext == .notRequested)
     }
@@ -352,6 +364,39 @@ struct OnboardingPermissionsNavigationViewModelLocationDelegateTests {
         // Should disable location sensor
         let locationPrivacy = server.info.setting(for: .locationPrivacy)
         #expect(locationPrivacy == .never)
+    }
+
+    @Test("Location manager authorization change - denied after less secure selection advances")
+    func locationManagerAuthorizationChangeDeniedAfterLessSecureSelectionAdvances() async throws {
+        let server = ServerFixture.standard
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+        viewModel.navigateToStep(.localAccess)
+        viewModel.locationPermissionContext = .lessSecureLocalConnection
+
+        let mockLocationManager = MockCLLocationManager()
+        mockLocationManager.authorizationStatus = .denied
+
+        viewModel.locationManagerDidChangeAuthorization(mockLocationManager)
+
+        #expect(server.info.setting(for: .locationPrivacy) == .never)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
+        #expect(viewModel.currentStep == .completion)
+    }
+
+    @Test("Location manager authorization change - when in use after less secure selection advances")
+    func locationManagerAuthorizationChangeWhenInUseAfterLessSecureSelectionAdvances() async throws {
+        let server = ServerFixture.standard
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+        viewModel.navigateToStep(.localAccess)
+        viewModel.locationPermissionContext = .lessSecureLocalConnection
+
+        let mockLocationManager = MockCLLocationManager()
+        mockLocationManager.authorizationStatus = .authorizedWhenInUse
+
+        viewModel.locationManagerDidChangeAuthorization(mockLocationManager)
+
+        #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
+        #expect(viewModel.currentStep == .completion)
     }
 
     @Test("Location manager authorization change - not determined")
