@@ -43,7 +43,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Webhook type for reporting that a Live Activity was dismissed.
     static let webhookTypeDismissed = "live_activity_dismissed"
     /// Keys in the dismissed webhook request data dictionary.
-    static let dismissedWebhookKeys: Set<String> = ["activity_id", "live_activity_tag", "reason"]
+    static let dismissedWebhookKeys: Set<String> = ["activity_id", "tag", "reason"]
 
     // MARK: - State
 
@@ -265,7 +265,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         AppConstants.Keychain[pushToStartTokenKeychainKey]
     }
 
-    static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
+    static let pushToStartTokenKeychainKey = "live_activity_start_token"
 
     // MARK: - Private — Stale Date
 
@@ -354,7 +354,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             type: Self.webhookTypeDismissed,
             data: [
                 "activity_id": activityID,
-                "live_activity_tag": tag,
+                "tag": tag,
                 "reason": reason,
             ]
         )
