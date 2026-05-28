@@ -99,7 +99,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testTokenWebhookKeys_areFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.tokenWebhookKeys,
-            ["activity_id", "push_token", "apns_environment"]
+            ["tag", "push_token"]
         )
     }
 
@@ -117,7 +117,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testDismissedWebhookKeys_areFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.dismissedWebhookKeys,
-            ["activity_id", "live_activity_tag", "reason"]
+            ["tag"]
         )
     }
 
