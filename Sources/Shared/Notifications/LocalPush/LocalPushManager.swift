@@ -181,6 +181,12 @@ public class LocalPushManager {
         }.recover { error in
             Current.Log.error("failed to get content, giving default: \(error)")
             return .value(baseContent)
+        }.then { content -> Guarantee<UNNotificationContent> in
+            if let sender = NotificationSenderParser.parse(from: content) {
+                return Current.notificationCommunicationDecorator.decorate(content: content, sender: sender, api: api)
+            } else {
+                return .value(content)
+            }
         }.then { [add] content -> Promise<Void> in
             add(UNNotificationRequest(identifier: event.identifier, content: content, trigger: nil))
         }.then { [subscription] () -> Promise<Void> in

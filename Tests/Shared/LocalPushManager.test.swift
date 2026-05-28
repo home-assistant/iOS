@@ -381,6 +381,67 @@ class LocalPushManagerTests: XCTestCase {
                 .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
         )
     }
+
+    func testEventCommunicationDecoratorInvoked() throws {
+        class SpyDecorator: NotificationCommunicationDecorator {
+            var decorateCalled = false
+            var apiUsed: HomeAssistantAPI?
+
+            func decorate(
+                content: UNNotificationContent,
+                sender: NotificationSenderInfo,
+                api: HomeAssistantAPI?
+            ) -> Guarantee<UNNotificationContent> {
+                decorateCalled = true
+                apiUsed = api
+                return .value(content)
+            }
+        }
+
+        let spy = SpyDecorator()
+        let originalDecorator = Current.notificationCommunicationDecorator
+        Current.notificationCommunicationDecorator = spy
+        defer {
+            Current.notificationCommunicationDecorator = originalDecorator
+        }
+
+        setUpManager(webhookID: "webhook1")
+
+        let expectation1 = expectation(description: "contentRequestsChanged")
+        attachmentManager.contentRequestsChanged = {
+            expectation1.fulfill()
+        }
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+            "notification_icon": "mdi:dishwasher",
+            "data": [
+                "tag": "test_tag",
+            ],
+        ]))
+
+        waitForExpectations(timeout: 10.0)
+
+        let req = try XCTUnwrap(attachmentManager.contentRequests.first)
+        req.1(with(UNMutableNotificationContent()) {
+            $0.body = "test_message_modified"
+            $0.title = "test_title"
+            $0.userInfo = [
+                "notification_icon": "mdi:dishwasher",
+            ]
+        })
+
+        let expectation2 = expectation(description: "addedChanged")
+        addedChanged = {
+            expectation2.fulfill()
+        }
+
+        waitForExpectations(timeout: 10.0)
+
+        XCTAssertTrue(spy.decorateCalled)
+        XCTAssertIdentical(spy.apiUsed, api)
+    }
 }
 
 private class FakeNotificationAttachmentManager: NotificationAttachmentManager {
