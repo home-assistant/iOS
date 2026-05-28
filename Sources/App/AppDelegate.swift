@@ -407,6 +407,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Task {
                 await registry.startObservingPushToStartToken()
             }
+
+            // Observe activities that ActivityKit starts directly from APNs push-to-start.
+            // The stream is infinite; this Task is kept alive for the app's lifetime.
+            Task {
+                await registry.startObservingRemoteActivityStarts()
+            }
         }
         #endif
     }
