@@ -106,18 +106,18 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         // avoid a ~31-year offset. The encoder is symmetric for round-tripping.
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            message = try container.decode(String.self, forKey: .message)
-            criticalText = try container.decodeIfPresent(String.self, forKey: .criticalText)
-            progress = try container.decodeIfPresent(Int.self, forKey: .progress)
-            progressMax = try container.decodeIfPresent(Int.self, forKey: .progressMax)
-            chronometer = try container.decodeIfPresent(Bool.self, forKey: .chronometer)
+            self.message = try container.decode(String.self, forKey: .message)
+            self.criticalText = try container.decodeIfPresent(String.self, forKey: .criticalText)
+            self.progress = try container.decodeIfPresent(Int.self, forKey: .progress)
+            self.progressMax = try container.decodeIfPresent(Int.self, forKey: .progressMax)
+            self.chronometer = try container.decodeIfPresent(Bool.self, forKey: .chronometer)
             if let timestamp = try container.decodeIfPresent(Double.self, forKey: .countdownEnd) {
-                countdownEnd = Date(timeIntervalSince1970: timestamp)
+                self.countdownEnd = Date(timeIntervalSince1970: timestamp)
             } else {
-                countdownEnd = nil
+                self.countdownEnd = nil
             }
-            icon = try container.decodeIfPresent(String.self, forKey: .icon)
-            color = try container.decodeIfPresent(String.self, forKey: .color)
+            self.icon = try container.decodeIfPresent(String.self, forKey: .icon)
+            self.color = try container.decodeIfPresent(String.self, forKey: .color)
         }
 
         public func encode(to encoder: Encoder) throws {
