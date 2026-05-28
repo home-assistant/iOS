@@ -1574,6 +1574,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "web_view.server_selection.title" = "Vyberte server";
 "web_view.unique_server_selection.title" = "Vybrat jeden server";
 "webrtc_player.known_issues.title" = "Známé problémy";
+"whats_new.title" = "What's New in The Companion App";
+"whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Výchozí";
 "widgets.action.name.moreInfoDialog" = "Více informací";
