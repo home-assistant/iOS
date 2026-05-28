@@ -1574,6 +1574,8 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "web_view.server_selection.title" = "Escolha o servidor";
 "web_view.unique_server_selection.title" = "Escolha um servidor";
 "webrtc_player.known_issues.title" = "Known Issues";
+"whats_new.title" = "What's New in The Companion App";
+"whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Padrão";
 "widgets.action.name.moreInfoDialog" = "Mais informações";

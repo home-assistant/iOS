@@ -1575,6 +1575,8 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "web_view.server_selection.title" = "Server auswählen";
 "web_view.unique_server_selection.title" = "Wähle einen Server";
 "webrtc_player.known_issues.title" = "Bekannte Probleme";
+"whats_new.title" = "What's New in The Companion App";
+"whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
 "widgets.action.name.moreInfoDialog" = "Detailansicht";
