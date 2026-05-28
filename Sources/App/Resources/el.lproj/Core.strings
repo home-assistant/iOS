@@ -218,7 +218,7 @@
 "component::sensor::entity_component::_::state::on" = "Ενεργό";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Σε αδράνεια";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Κλειστό";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Ενεργό";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Ενεργό (χρησιμοποιεί περισσότερη μπαταρία της συσκευής, ταχύτερες ενημερώσεις)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Απενεργοποιημένο";
 "component::siren::entity_component::_::state::off" = "Ανενεργό";
 "component::siren::entity_component::_::state::on" = "Ενεργό";
