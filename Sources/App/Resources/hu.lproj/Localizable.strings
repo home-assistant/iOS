@@ -1573,6 +1573,8 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "web_view.server_selection.title" = "Szerver kiválasztása";
 "web_view.unique_server_selection.title" = "Válasszon egy szervert";
 "webrtc_player.known_issues.title" = "Ismert problémák";
+"whats_new.title" = "What's New in The Companion App";
+"whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Alapértelmezett";
 "widgets.action.name.moreInfoDialog" = "További információ";

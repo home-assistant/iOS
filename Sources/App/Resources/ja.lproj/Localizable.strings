@@ -1573,6 +1573,8 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "web_view.server_selection.title" = "サーバーの選択";
 "web_view.unique_server_selection.title" = "サーバーを1つ選択";
 "webrtc_player.known_issues.title" = "Known Issues";
+"whats_new.title" = "What's New in The Companion App";
+"whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "アシスト";
 "widgets.action.name.default" = "デフォルト";
 "widgets.action.name.moreInfoDialog" = "詳細情報";
