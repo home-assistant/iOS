@@ -10,6 +10,8 @@
 	</array>
 	<key>com.apple.security.network.client</key>
 	<true/>
+	<key>com.apple.developer.usernotifications.communication</key>
+	<true/>
 	<key>keychain-access-groups</key>
 	<array>
 		<string>$(AppIdentifierPrefix)$(BUNDLE_ID_PREFIX).HomeAssistant$(BUNDLE_ID_SUFFIX)</string>
