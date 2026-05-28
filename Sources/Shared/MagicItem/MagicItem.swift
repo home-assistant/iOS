@@ -98,14 +98,24 @@ public struct MagicItem: Codable, Equatable, Hashable {
     }
 
     public enum ItemType: String, Codable {
-        /// aka iOS legacy Action
-        case action
         case script
         case scene
         case entity
         case folder
         case assistPipeline
         case assistPrompt
+        case unsupported
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            let rawValue = try container.decode(String.self)
+            self = Self(rawValue: rawValue) ?? .unsupported
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try container.encode(rawValue)
+        }
     }
 
     public struct Customization: Codable, Equatable, Hashable {
@@ -162,7 +172,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             return MaterialDesignIcons(named: icon, fallback: .dotsGridIcon)
         } else {
             switch type {
-            case .action, .scene:
+            case .scene:
                 icon = MaterialDesignIcons(named: info.iconName, fallback: .scriptTextOutlineIcon)
             case .script, .entity:
                 icon = MaterialDesignIcons(
@@ -175,6 +185,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
                 icon = .microphoneIcon
             case .assistPrompt:
                 icon = .messageProcessingOutlineIcon
+            case .unsupported:
+                icon = .dotsGridIcon
             }
         }
 
@@ -388,9 +400,6 @@ public extension MagicItem {
                         triggerSource: source,
                         shouldLog: true
                     )
-                case .action:
-                    return Current.api(for: server)?
-                        .HandleAction(actionID: id, source: source)
                 case .scene:
                     let domain = Domain.scene.rawValue
                     return Current.api(for: server)?.CallService(
@@ -412,7 +421,7 @@ public extension MagicItem {
                         entityId: id,
                         state: currentItemState
                     )
-                case .folder, .assistPipeline, .assistPrompt:
+                case .folder, .assistPipeline, .assistPrompt, .unsupported:
                     // Folders and assist items don't execute direct actions
                     return nil
                 }

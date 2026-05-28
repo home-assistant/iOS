@@ -211,9 +211,7 @@ struct CarPlayConfigurationView: View {
 
     @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        if item.type == .action {
-            itemRow(item: item, info: info)
-        } else if item.type == .assistPrompt {
+        if item.type == .assistPrompt {
             NavigationLink {
                 AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)

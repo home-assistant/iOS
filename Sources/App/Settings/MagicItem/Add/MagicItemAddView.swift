@@ -165,8 +165,6 @@ struct MagicItemAddView: View {
                 return .scripts
             case .scenes:
                 return .scenes
-            case .legacyiOSActions:
-                return .actions
             case .assistPipelines:
                 return .assistPipelines
             }
