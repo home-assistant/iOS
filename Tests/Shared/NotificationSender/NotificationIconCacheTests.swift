@@ -65,4 +65,14 @@ final class NotificationIconCacheTests: XCTestCase {
         let k2 = try notificationIconCacheKey(for: XCTUnwrap(URL(string: "https://example.com/b.png")))
         XCTAssertNotEqual(k1, k2)
     }
+
+    func testKeyHashing_withServerID() throws {
+        let url = try XCTUnwrap(URL(string: "https://example.com/a.png"))
+        let keyWithoutServer = notificationIconCacheKey(for: url)
+        let keyWithServer1 = notificationIconCacheKey(for: url, serverID: "server1")
+        let keyWithServer2 = notificationIconCacheKey(for: url, serverID: "server2")
+
+        XCTAssertNotEqual(keyWithoutServer, keyWithServer1)
+        XCTAssertNotEqual(keyWithServer1, keyWithServer2)
+    }
 }

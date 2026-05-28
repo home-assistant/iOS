@@ -120,7 +120,7 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
     func testBuildIntent_iconURL_cacheHit_skipsDownload() throws {
         let url = try XCTUnwrap(URL(string: "https://example.com/avatar.png"))
         let pngBytes = makeRedPNG() // helper below
-        cache.setData(pngBytes, forKey: notificationIconCacheKey(for: url))
+        cache.setData(pngBytes, forKey: notificationIconCacheKey(for: url, serverID: api.server.identifier.rawValue))
 
         let info = NotificationSenderInfo(
             source: .iconURL(url, needsAuth: false),
@@ -152,7 +152,7 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         )))
         XCTAssertNotNil(intent.sender?.image)
         XCTAssertNotNil(
-            cache.data(forKey: notificationIconCacheKey(for: url)),
+            cache.data(forKey: notificationIconCacheKey(for: url, serverID: api.server.identifier.rawValue)),
             "after download, the image must be cached"
         )
     }

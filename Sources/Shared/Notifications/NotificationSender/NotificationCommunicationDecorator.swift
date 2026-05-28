@@ -103,7 +103,8 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
             return .value(nil)
             #endif
         case let .iconURL(url, needsAuth):
-            let cacheKey = notificationIconCacheKey(for: url)
+            let serverID = api?.server.identifier.rawValue
+            let cacheKey = notificationIconCacheKey(for: url, serverID: serverID)
             if let cached = cache.data(forKey: cacheKey) {
                 return .value(INImage(imageData: cached))
             }

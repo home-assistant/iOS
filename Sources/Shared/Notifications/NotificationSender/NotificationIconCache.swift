@@ -10,11 +10,14 @@ public protocol NotificationIconCache {
     func setData(_ data: Data, forKey key: String)
 }
 
-/// Canonical cache key for a notification-icon URL. SHA-256 of the absolute URL
-/// string with a `.img` suffix. Lives at module scope so callers don't need to
-/// reference any concrete cache implementation.
-public func notificationIconCacheKey(for url: URL) -> String {
-    let digest = SHA256.hash(data: Data(url.absoluteString.utf8))
+public func notificationIconCacheKey(for url: URL, serverID: String? = nil) -> String {
+    let stringToHash: String
+    if let serverID {
+        stringToHash = "\(serverID)|\(url.absoluteString)"
+    } else {
+        stringToHash = url.absoluteString
+    }
+    let digest = SHA256.hash(data: Data(stringToHash.utf8))
     return digest.map { String(format: "%02x", $0) }.joined() + ".img"
 }
 
