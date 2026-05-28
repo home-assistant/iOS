@@ -51,7 +51,7 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
         body: String,
         api: HomeAssistantAPI?
     ) -> Guarantee<INSendMessageIntent> {
-        avatarImage(for: sender.source, api: api).map { [self] image in
+        avatarImage(for: sender.source, api: api).then { [self] image -> Guarantee<INSendMessageIntent> in
             let conversationID = conversationIdentifier(for: sender)
             let handle = INPersonHandle(value: conversationID, type: .unknown)
             var nameComponents = PersonNameComponents()
@@ -74,17 +74,14 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
                 sender: person,
                 attachments: nil
             )
-            // Donate before returning so that `decorate`'s subsequent call to
-            // `content.updating(from:)` can associate this notification with the
-            // conversation. Donation is a global system side-effect (visible in Siri
-            // suggestions); failures here are logged but never block notification
-            // delivery, since the styling still applies without the donation.
-            let interaction = INInteraction(intent: intent, response: nil)
-            interaction.direction = .incoming
-            interaction.donate { error in
-                if let error { Current.Log.error("INInteraction donate failed: \(error)") }
+            return Guarantee { seal in
+                let interaction = INInteraction(intent: intent, response: nil)
+                interaction.direction = .incoming
+                interaction.donate { error in
+                    if let error { Current.Log.error("INInteraction donate failed: \(error)") }
+                    seal(intent)
+                }
             }
-            return intent
         }
     }
 

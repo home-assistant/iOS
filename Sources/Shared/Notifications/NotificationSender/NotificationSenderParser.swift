@@ -9,9 +9,14 @@ public enum NotificationSenderParser {
         guard !senderName.isEmpty else { return nil }
 
         let userInfo = content.userInfo
+        let nestedData = userInfo["data"] as? [String: Any]
+
+        func value(forKey key: String) -> Any? {
+            userInfo[key] ?? nestedData?[key]
+        }
 
         // icon_url wins when both are present.
-        if let urlString = userInfo["icon_url"] as? String,
+        if let urlString = value(forKey: "icon_url") as? String,
            !urlString.isEmpty,
            let url = URL(string: urlString) {
             return NotificationSenderInfo(
@@ -20,9 +25,9 @@ public enum NotificationSenderParser {
             )
         }
 
-        if let mdiName = userInfo["notification_icon"] as? String, !mdiName.isEmpty {
-            let colorString = userInfo["color"] as? String
-            let iconColorString = userInfo["notification_icon_color"] as? String
+        if let mdiName = value(forKey: "notification_icon") as? String, !mdiName.isEmpty {
+            let colorString = value(forKey: "color") as? String
+            let iconColorString = value(forKey: "notification_icon_color") as? String
             let background = colorString.flatMap(Self.color(fromHex:))
                 ?? AppConstants.tintColor
             let foreground = iconColorString.flatMap(Self.color(fromHex:))

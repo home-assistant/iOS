@@ -56,6 +56,21 @@ final class NotificationSenderParserTests: XCTestCase {
         XCTAssertEqual(parsed?.senderName, "Hi")
     }
 
+    func testMdiInNestedData_defaults() {
+        let parsed = NotificationSenderParser.parse(from: content(userInfo: [
+            "data": [
+                "notification_icon": "mdi:cellphone",
+            ],
+        ]))
+        guard case let .mdi(name, background, foreground, _, _) = parsed?.source else {
+            return XCTFail("expected mdi source, got \(String(describing: parsed))")
+        }
+        XCTAssertEqual(name, "mdi:cellphone")
+        assertIsTintColor(background)
+        XCTAssertEqual(foreground, UIColor.white)
+        XCTAssertEqual(parsed?.senderName, "Hi")
+    }
+
     func testMdiWithColor_appliedAsBackground() {
         let parsed = NotificationSenderParser.parse(from: content(userInfo: [
             "notification_icon": "mdi:door",

@@ -160,6 +160,15 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         addAttachment(key: "image", contentType: "jpeg")
         addAttachment(key: "audio", contentType: "waveformaudio")
 
+        for key in ["icon_url", "notification_icon", "notification_icon_color", "color"] {
+            if let value = data[key] {
+                payload[key] = value
+            }
+        }
+        if payload["icon_url"] != nil || payload["notification_icon"] != nil {
+            needsMutableContent = true
+        }
+
         payload["url"] = data["url"]
         payload["shortcut"] = data["shortcut"]
         payload["presentation_options"] = data["presentation_options"]
