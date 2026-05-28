@@ -36,8 +36,9 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         self.inZones = inZones?.map(\.entityId)
     }
 
-    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
+    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?, inZones: [RLMZone]? = nil) {
         self.init(trigger: trigger)
+        self.inZones = inZones?.map(\.entityId)
 
         let useLocation: Bool
 

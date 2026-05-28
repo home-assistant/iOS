@@ -646,6 +646,7 @@ public class HomeAssistantAPI {
     ) -> Promise<Void> {
         let update: WebhookUpdateLocation
         let location: CLLocation?
+        let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
         let localMetadata = WebhookResponseLocation.localMetdata(
             trigger: updateType,
             zone: zone
@@ -656,23 +657,17 @@ public class HomeAssistantAPI {
             update = .init(trigger: updateType, location: rawLocation, zone: zone)
             location = rawLocation
         case .zoneOnly:
-            let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
-            if updateType == .BeaconRegionEnter {
-                let zones = zone.flatMap { $0.TrackingEnabled ? [$0] : nil } ?? []
-                let locationNameZone = supportsInZones ? zones.first { !$0.isPassive } : zone
+            let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
+            if updateType == .BeaconRegionEnter || rawLocation != nil {
                 update = .init(
                     trigger: updateType,
-                    usingNameOf: locationNameZone,
-                    inZones: supportsInZones ? zones : nil
-                )
-            } else if let rawLocation {
-                // note this is a different zone than the event - e.g. the zone may be the one we are exiting
-                let zones = RLMZone.zones(of: rawLocation, in: server)
-                let locationNameZone = supportsInZones ? zones.first { !$0.isPassive } : zones.first
-                update = .init(
-                    trigger: updateType,
-                    usingNameOf: locationNameZone,
-                    inZones: supportsInZones ? zones : nil
+                    usingNameOf: locationNameZone(
+                        for: updateType,
+                        from: inZones,
+                        fallbackZone: zone,
+                        supportsInZones: supportsInZones
+                    ),
+                    inZones: supportsInZones ? inZones : nil
                 )
             } else {
                 update = .init(trigger: updateType)
@@ -715,6 +710,35 @@ public class HomeAssistantAPI {
                 )
             )
         }.asVoid()
+    }
+
+    private func zones(
+        for updateType: LocationUpdateTrigger,
+        location rawLocation: CLLocation?,
+        fallbackZone zone: RLMZone?
+    ) -> [RLMZone] {
+        if updateType == .BeaconRegionEnter {
+            return zone.flatMap { $0.TrackingEnabled ? [$0] : nil } ?? []
+        } else if let rawLocation {
+            return RLMZone.zones(of: rawLocation, in: server)
+        } else {
+            return []
+        }
+    }
+
+    private func locationNameZone(
+        for updateType: LocationUpdateTrigger,
+        from zones: [RLMZone],
+        fallbackZone zone: RLMZone?,
+        supportsInZones: Bool
+    ) -> RLMZone? {
+        if supportsInZones {
+            return zones.first { !$0.isPassive }
+        } else if updateType == .BeaconRegionEnter {
+            return zone
+        } else {
+            return zones.first
+        }
     }
 
     public var sharedEventDeviceInfo: [String: String] {

@@ -251,9 +251,9 @@ public final class RLMZone: Object, UpdatableModel {
         of location: CLLocation,
         in server: Server,
         includingPassive: Bool = true
-    ) -> [Self] {
+    ) -> [RLMZone] {
         var results = Current.realm()
-            .objects(Self.self)
+            .objects(RLMZone.self)
             .filter("%K == %@", #keyPath(serverIdentifier), server.identifier.rawValue)
             .filter("TrackingEnabled == true")
 
@@ -269,7 +269,7 @@ public final class RLMZone: Object, UpdatableModel {
             }
     }
 
-    public static func zone(of location: CLLocation, in server: Server) -> Self? {
+    public static func zone(of location: CLLocation, in server: Server) -> RLMZone? {
         zones(of: location, in: server).first
     }
 }

@@ -326,6 +326,7 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertEqual(json["gps"] as? [Double], [1.23, 4.56])
         XCTAssertEqual(json["gps_accuracy"] as? Double, 104)
         XCTAssertNil(json["location_name"])
+        XCTAssertNil(json["in_zones"])
         XCTAssertEqual(json["speed"] as? Double, 108)
         XCTAssertEqual(json["altitude"] as? Double, 103)
         XCTAssertEqual(json["course"] as? Double, 106)
