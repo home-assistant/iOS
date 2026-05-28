@@ -47,12 +47,12 @@ final class NotificationSenderParserTests: XCTestCase {
         let parsed = NotificationSenderParser.parse(from: content(userInfo: [
             "notification_icon": "mdi:door",
         ]))
-        guard case let .mdi(name, background, foreground) = parsed?.source else {
+        guard case let .mdi(name, background, foreground, _, _) = parsed?.source else {
             return XCTFail("expected mdi source, got \(String(describing: parsed))")
         }
         XCTAssertEqual(name, "mdi:door")
         assertIsTintColor(background)
-        XCTAssertEqual(foreground, .white)
+        XCTAssertEqual(foreground, UIColor.white)
         XCTAssertEqual(parsed?.senderName, "Hi")
     }
 
@@ -61,7 +61,7 @@ final class NotificationSenderParserTests: XCTestCase {
             "notification_icon": "mdi:door",
             "color": "#2196F3",
         ]))
-        guard case let .mdi(_, background, _) = parsed?.source else { return XCTFail() }
+        guard case let .mdi(_, background, _, _, _) = parsed?.source else { return XCTFail() }
         XCTAssertEqual(background, UIColor(hex: "#2196F3"))
     }
 
@@ -70,7 +70,7 @@ final class NotificationSenderParserTests: XCTestCase {
             "notification_icon": "mdi:door",
             "notification_icon_color": "#FF5722",
         ]))
-        guard case let .mdi(_, _, foreground) = parsed?.source else { return XCTFail() }
+        guard case let .mdi(_, _, foreground, _, _) = parsed?.source else { return XCTFail() }
         XCTAssertEqual(foreground, UIColor(hex: "#FF5722"))
     }
 
@@ -79,7 +79,7 @@ final class NotificationSenderParserTests: XCTestCase {
             "notification_icon": "mdi:door",
             "color": "not-a-color",
         ]))
-        guard case let .mdi(_, background, _) = parsed?.source else { return XCTFail() }
+        guard case let .mdi(_, background, _, _, _) = parsed?.source else { return XCTFail() }
         assertIsTintColor(background)
     }
 

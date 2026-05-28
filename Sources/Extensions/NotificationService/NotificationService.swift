@@ -11,7 +11,13 @@ final class NotificationService: UNNotificationServiceExtension {
 
         guard let server = Current.servers.server(for: request.content),
               let api = Current.api(for: server) else {
-            contentHandler(request.content)
+            if let sender = NotificationSenderParser.parse(from: request.content) {
+                Current.notificationCommunicationDecorator
+                    .decorate(content: request.content, sender: sender, api: nil)
+                    .done { contentHandler($0) }
+            } else {
+                contentHandler(request.content)
+            }
             return
         }
 

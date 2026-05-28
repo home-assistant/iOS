@@ -9,7 +9,7 @@ public protocol NotificationCommunicationDecorator {
     func decorate(
         content: UNNotificationContent,
         sender: NotificationSenderInfo,
-        api: HomeAssistantAPI
+        api: HomeAssistantAPI?
     ) -> Guarantee<UNNotificationContent>
 }
 
@@ -27,7 +27,7 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
     public func decorate(
         content: UNNotificationContent,
         sender: NotificationSenderInfo,
-        api: HomeAssistantAPI
+        api: HomeAssistantAPI?
     ) -> Guarantee<UNNotificationContent> {
         let title = content.title
         guard !title.isEmpty else { return .value(content) }
@@ -49,7 +49,7 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
         sender: NotificationSenderInfo,
         title: String,
         body: String,
-        api: HomeAssistantAPI
+        api: HomeAssistantAPI?
     ) -> Guarantee<INSendMessageIntent> {
         avatarImage(for: sender.source, api: api).map { [self] image in
             let conversationID = conversationIdentifier(for: sender)
@@ -91,7 +91,7 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
     /// MDI path is synchronous (no network). URL path downloads, caches, and downsamples the avatar.
     private func avatarImage(
         for source: NotificationSenderInfo.Source,
-        api: HomeAssistantAPI
+        api: HomeAssistantAPI?
     ) -> Guarantee<INImage?> {
         switch source {
         case let .mdi(name, background, foreground, _, _):
@@ -109,6 +109,10 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
             let cacheKey = notificationIconCacheKey(for: url)
             if let cached = cache.data(forKey: cacheKey) {
                 return .value(INImage(imageData: cached))
+            }
+            guard let api else {
+                Current.Log.error("Cannot download notification avatar without HomeAssistantAPI context")
+                return .value(nil)
             }
             return Guarantee { seal in
                 api.DownloadDataAt(url: url, needsAuth: needsAuth).done { [cache] downloadedFile in
