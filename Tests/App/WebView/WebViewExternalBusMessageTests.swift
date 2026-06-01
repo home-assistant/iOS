@@ -53,8 +53,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             WebViewExternalBusOutgoingMessage.navigate.rawValue,
             "navigate"
         )
+        XCTAssertEqual(
+            WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue,
+            "matter/commission/finish"
+        )
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 7)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 8)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {

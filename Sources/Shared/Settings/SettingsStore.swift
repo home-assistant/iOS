@@ -78,6 +78,15 @@ public class SettingsStore {
         }
     }
 
+    public var matterLastCommissionedDeviceName: String? {
+        get {
+            keychain["matterLastCommissionedDeviceName"]
+        }
+        set {
+            keychain["matterLastCommissionedDeviceName"] = newValue
+        }
+    }
+
     public func isLocationEnabled(for state: UIApplication.State) -> Bool {
         let authorizationStatus: CLAuthorizationStatus
 
