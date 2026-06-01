@@ -54,7 +54,6 @@ final class CarPlayAssistSession: NSObject {
     private let prompt: String?
 
     private lazy var template: CPVoiceControlTemplate = {
-        #if compiler(>=6.3)
         let recordButton = CPButton(
             image: makeActionButtonImage(icon: .microphoneIcon, color: .haPrimary)
         ) { [weak self] _ in
@@ -74,7 +73,6 @@ final class CarPlayAssistSession: NSObject {
         let actionButtons: [CPButton] = promptToSend == nil
             ? [recordButton, helpButton]
             : [recordButton, replayPromptButton, helpButton]
-        #endif
 
         let idleState = CPVoiceControlState(
             identifier: VoiceControlStateID.idle.rawValue,
@@ -85,9 +83,7 @@ final class CarPlayAssistSession: NSObject {
             ),
             repeats: false
         )
-        #if compiler(>=6.3)
         idleState.actionButtons = actionButtons
-        #endif
 
         let recordingState = CPVoiceControlState(
             identifier: VoiceControlStateID.recording.rawValue,
@@ -116,9 +112,7 @@ final class CarPlayAssistSession: NSObject {
             image: MaterialDesignIcons.alertCircleIcon.carPlayIcon(color: .systemRed, context: .assistStateIndicator),
             repeats: false
         )
-        #if compiler(>=6.3)
         errorState.actionButtons = actionButtons
-        #endif
 
         return CPVoiceControlTemplate(
             voiceControlStates: [recordingState, processingState, respondingState, idleState, errorState]

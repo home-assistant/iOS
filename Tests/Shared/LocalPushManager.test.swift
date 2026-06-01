@@ -47,13 +47,21 @@ class LocalPushManagerTests: XCTestCase {
         }
     }
 
-    private func setUpManager(webhookID: String, version: Version? = nil) {
+    private func setUpManager(
+        webhookID: String,
+        version: Version? = nil,
+        notificationCommunicationDecorator: NotificationCommunicationDecorator =
+            NotificationCommunicationDecoratorImpl()
+    ) {
         api.server.info.connection.webhookID = webhookID
         if let version {
             api.server.info.version = version
         }
 
-        manager = LocalPushManager(server: api.server)
+        manager = LocalPushManager(
+            server: api.server,
+            notificationCommunicationDecorator: notificationCommunicationDecorator
+        )
         manager.add = { [weak self] request in
             let (promise, resolver) = Promise<Void>.pending()
             self?.added.append((request, resolver))
@@ -399,13 +407,8 @@ class LocalPushManagerTests: XCTestCase {
         }
 
         let spy = SpyDecorator()
-        let originalDecorator = Current.notificationCommunicationDecorator
-        Current.notificationCommunicationDecorator = spy
-        defer {
-            Current.notificationCommunicationDecorator = originalDecorator
-        }
 
-        setUpManager(webhookID: "webhook1")
+        setUpManager(webhookID: "webhook1", notificationCommunicationDecorator: spy)
 
         let expectation1 = expectation(description: "contentRequestsChanged")
         attachmentManager.contentRequestsChanged = {

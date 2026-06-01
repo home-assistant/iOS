@@ -12,6 +12,7 @@ public protocol LocalPushManagerDelegate: AnyObject {
 public class LocalPushManager {
     public let server: Server
     public weak var delegate: LocalPushManagerDelegate?
+    private let notificationCommunicationDecorator: NotificationCommunicationDecorator
 
     public static let stateDidChange: Notification.Name = .init(rawValue: "LocalPushManagerStateDidChange")
 
@@ -82,8 +83,13 @@ public class LocalPushManager {
 
     private var tokens = [HACancellable]()
 
-    public init(server: Server) {
+    public init(
+        server: Server,
+        notificationCommunicationDecorator: NotificationCommunicationDecorator =
+            NotificationCommunicationDecoratorImpl()
+    ) {
         self.server = server
+        self.notificationCommunicationDecorator = notificationCommunicationDecorator
 
         updateSubscription()
         tokens.append(server.observe { [weak self] _ in
@@ -183,7 +189,7 @@ public class LocalPushManager {
             return .value(baseContent)
         }.then { content -> Guarantee<UNNotificationContent> in
             if let sender = NotificationSenderParser.parse(from: content) {
-                return Current.notificationCommunicationDecorator.decorate(content: content, sender: sender, api: api)
+                return self.notificationCommunicationDecorator.decorate(content: content, sender: sender, api: api)
             } else {
                 return .value(content)
             }

@@ -3,6 +3,8 @@ import Shared
 import UserNotifications
 
 final class NotificationService: UNNotificationServiceExtension {
+    private let notificationCommunicationDecorator = NotificationCommunicationDecoratorImpl()
+
     override func didReceive(
         _ request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
@@ -12,7 +14,7 @@ final class NotificationService: UNNotificationServiceExtension {
         guard let server = Current.servers.server(for: request.content),
               let api = Current.api(for: server) else {
             if let sender = NotificationSenderParser.parse(from: request.content) {
-                Current.notificationCommunicationDecorator
+                notificationCommunicationDecorator
                     .decorate(content: request.content, sender: sender, api: nil)
                     .done { contentHandler($0) }
             } else {
@@ -30,7 +32,7 @@ final class NotificationService: UNNotificationServiceExtension {
             guard let sender = NotificationSenderParser.parse(from: content) else {
                 return .value(content)
             }
-            return Current.notificationCommunicationDecorator
+            return self.notificationCommunicationDecorator
                 .decorate(content: content, sender: sender, api: api)
         }.done {
             contentHandler($0)

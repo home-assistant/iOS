@@ -160,12 +160,13 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         addAttachment(key: "image", contentType: "jpeg")
         addAttachment(key: "audio", contentType: "waveformaudio")
 
-        for key in ["icon_url", "notification_icon", "notification_icon_color", "color"] {
-            if let value = data[key] {
-                payload[key] = value
+        for key in NotificationDecorationPayloadKey.notificationDecorationKeys {
+            if let value = data[key.rawValue] {
+                payload[key.rawValue] = value
             }
         }
-        if payload["icon_url"] != nil || payload["notification_icon"] != nil {
+        if payload[NotificationDecorationPayloadKey.iconURL.rawValue] != nil ||
+            payload[NotificationDecorationPayloadKey.notificationIcon.rawValue] != nil {
             needsMutableContent = true
         }
 
@@ -230,7 +231,9 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             homeassistant["live_update"] = true
             for key in [
                 "tag", "critical_text", "progress", "progress_max", "chronometer",
-                "when", "when_relative", "notification_icon", "notification_icon_color",
+                "when", "when_relative",
+                NotificationDecorationPayloadKey.notificationIcon.rawValue,
+                NotificationDecorationPayloadKey.notificationIconColor.rawValue,
             ] {
                 if let value = data[key] {
                     homeassistant[key] = value
@@ -288,6 +291,20 @@ enum LegacyNotificationCommandType: String {
     case clearNotification = "clear_notification"
     case updateComplications = "update_complications"
     case updateWidgets = "update_widgets"
+}
+
+enum NotificationDecorationPayloadKey: String, CaseIterable {
+    case iconURL = "icon_url"
+    case notificationIcon = "notification_icon"
+    case notificationIconColor = "notification_icon_color"
+    case color
+
+    static let notificationDecorationKeys: [Self] = [
+        .iconURL,
+        .notificationIcon,
+        .notificationIconColor,
+        .color,
+    ]
 }
 
 private extension Dictionary where Value == Any {

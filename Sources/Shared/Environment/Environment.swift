@@ -271,8 +271,6 @@ public class AppEnvironment {
     public var updater = Updater()
     public var serverAlerter = ServerAlerter()
     public var notificationAttachmentManager: NotificationAttachmentManager = NotificationAttachmentManagerImpl()
-    public var notificationCommunicationDecorator: NotificationCommunicationDecorator =
-        NotificationCommunicationDecoratorImpl()
 
     /// Dispatchque local notifications (From the App to the App, not from Home Assistant)
     public var notificationDispatcher: LocalNotificationDispatcherProtocol = LocalNotificationDispatcher()
