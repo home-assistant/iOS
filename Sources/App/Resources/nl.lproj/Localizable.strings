@@ -123,7 +123,7 @@
 "assist.carplay.playback_help.message" = "Als je problemen ondervindt bij het afspelen van audio, open dan de CarPlay-instellingen in de Home Assistant Companion-app, tik op Geavanceerd, open Assist en verander TTS-weergave in 'Downloaden en afspelen'.";
 "assist.carplay.playback_help.open_app.detail" = "Open CarPlay-instellingen in de Home Assistant Companion-app.";
 "assist.carplay.playback_help.open_app.title" = "Companion-app";
-"assist.carplay.playback_help.title" = "Audio Playback Help";
+"assist.carplay.playback_help.title" = "Audioafspeelhulp";
 "assist.carplay.processing.title" = "Bezig met verwerken...";
 "assist.carplay.responding.title" = "Reageren...";
 "assist.carplay.tap_to_record.title" = "Tik om op te nemen";
@@ -192,7 +192,7 @@
 "carPlay.debug.settings.assist_session.footer" = "Deze waarden zijn van toepassing wanneer een nieuwe CarPlay Assist-sessie wordt gestart.";
 "carPlay.debug.settings.assist_session.interrupt_spoken_audio" = "Onderbreek gesproken audio";
 "carPlay.debug.settings.assist_session.play_recording_indicator_tone" = "Opname-indicatietoon afspelen";
-"carPlay.debug.settings.assist_session.preferred_sample_rate" = "Preferred sample rate";
+"carPlay.debug.settings.assist_session.preferred_sample_rate" = "Gewenste samplefrequentie";
 "carPlay.debug.settings.assist_session.recorder_manages_audio_session" = "AudioRecorder beheert audiosessie";
 "carPlay.debug.settings.assist_session.title" = "Assist-sessie";
 "carPlay.debug.settings.navigation_title" = "CarPlay debuggen";
@@ -904,7 +904,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.cloudhook.check_reachability.result" = "Resultaat";
 "settings.connection_section.cloudhook.check_reachability.title" = "Controleer bereikbaarheid";
 "settings.connection_section.cloudhook.check_reachability.unreachable" = "Niet bereikbaar: %@";
-"settings.connection_section.cloudhook.footer" = "Treat this URL as sensitive. Anyone with it can send requests to this mobile app webhook.";
+"settings.connection_section.cloudhook.footer" = "Beschouw deze URL als vertrouwelijk. Iedereen die deze URL heeft, kan verzoeken naar deze webhook van de mobiele app sturen.";
 "settings.connection_section.cloudhook.status.not_configured" = "Niet geconfigureerd";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
 "settings.connection_section.connecting_via" = "Verbonden via";
@@ -1574,8 +1574,8 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "web_view.server_selection.title" = "Server kiezen";
 "web_view.unique_server_selection.title" = "Kies één server";
 "webrtc_player.known_issues.title" = "Bekende problemen";
-"whats_new.title" = "What's New in The Companion App";
-"whats_new.version_format" = "Version %@";
+"whats_new.title" = "Nieuw in de Companion-app";
+"whats_new.version_format" = "Versie %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standaard";
 "widgets.action.name.moreInfoDialog" = "Meer informatie";
@@ -1741,6 +1741,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "widgets.todo_list.parameter.server" = "Server";
 "widgets.todo_list.parameter.server_id" = "Server-ID";
 "widgets.todo_list.refresh_title" = "Takenlijst vernieuwen";
-"widgets.todo_list.select_list" = "Edit widget to select list.";
+"widgets.todo_list.select_list" = "Bewerk widget om lijst te selecteren.";
 "widgets.todo_list.title" = "Takenlijst";
 "yes_label" = "Ja";
