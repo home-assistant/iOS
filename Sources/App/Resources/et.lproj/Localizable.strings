@@ -1574,8 +1574,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "web_view.server_selection.title" = "Vali server";
 "web_view.unique_server_selection.title" = "Vali üks server";
 "webrtc_player.known_issues.title" = "Teadaolevad probleemid";
-"whats_new.title" = "What's New in The Companion App";
-"whats_new.version_format" = "Version %@";
+"whats_new.title" = "Mida uut on rakenduses Companion App";
+"whats_new.version_format" = "Versioon %@";
 "widgets.action.name.assist" = "Abiline";
 "widgets.action.name.default" = "Vaikimisi";
 "widgets.action.name.moreInfoDialog" = "Rohkem teavet";
