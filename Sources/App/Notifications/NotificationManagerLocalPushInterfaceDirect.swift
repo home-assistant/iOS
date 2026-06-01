@@ -14,6 +14,7 @@ class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushI
         self.localPushDelegate = delegate
         self.localPushManagers = .init { [weak self] server in
             let manager = LocalPushManager(server: server)
+            manager.delegate = self?.localPushDelegate
             let token = NotificationCenter.default.addObserver(
                 forName: LocalPushManager.stateDidChange,
                 object: manager,
