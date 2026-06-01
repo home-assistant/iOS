@@ -1574,6 +1574,8 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "web_view.server_selection.title" = "Server kiezen";
 "web_view.unique_server_selection.title" = "Kies één server";
 "webrtc_player.known_issues.title" = "Bekende problemen";
+"whats_new.title" = "What's New in The Companion App";
+"whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standaard";
 "widgets.action.name.moreInfoDialog" = "Meer informatie";

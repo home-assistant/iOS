@@ -15,6 +15,13 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
     func reattach() async
     @available(iOS 17.2, *)
     func startObservingPushToStartToken() async
+    @available(iOS 17.2, *)
+    func startObservingRemoteActivityStarts() async
+}
+
+public extension LiveActivityRegistryProtocol {
+    @available(iOS 17.2, *)
+    func startObservingRemoteActivityStarts() async {}
 }
 
 /// Thread-safe registry for active `Activity<HALiveActivityAttributes>` instances.
@@ -36,14 +43,14 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     // MARK: - Webhook Constants (wire-format frozen — tested in LiveActivityContractTests)
 
     /// Webhook type for reporting a new per-activity push token to HA.
-    static let webhookTypeToken = "mobile_app_live_activity_token"
+    static let webhookTypeToken = "live_activity_token"
     /// Keys in the token webhook request data dictionary.
-    static let tokenWebhookKeys: Set<String> = ["activity_id", "push_token", "apns_environment"]
+    static let tokenWebhookKeys: Set<String> = ["tag", "push_token"]
 
     /// Webhook type for reporting that a Live Activity was dismissed.
-    static let webhookTypeDismissed = "mobile_app_live_activity_dismissed"
+    static let webhookTypeDismissed = "live_activity_dismissed"
     /// Keys in the dismissed webhook request data dictionary.
-    static let dismissedWebhookKeys: Set<String> = ["activity_id", "live_activity_tag", "reason"]
+    static let dismissedWebhookKeys: Set<String> = ["tag"]
 
     // MARK: - State
 
@@ -257,6 +264,24 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         }
     }
 
+    /// Observe activities started remotely by ActivityKit push-to-start notifications.
+    ///
+    /// When APNs starts a Live Activity without launching through the notification command
+    /// handler, ActivityKit delivers the created activity through this stream. Attach our
+    /// normal push-token and lifecycle observers so Core can receive the per-activity token.
+    public func startObservingRemoteActivityStarts() async {
+        for await activity in Activity<HALiveActivityAttributes>.activityUpdates {
+            let tag = activity.attributes.tag
+            guard entries[tag] == nil else { continue }
+
+            let observationTask = makeObservationTask(for: activity)
+            entries[tag] = Entry(activity: activity, observationTask: observationTask)
+            Current.Log.verbose(
+                "LiveActivityRegistry: observed remotely started activity for tag \(tag), id=\(activity.id)"
+            )
+        }
+    }
+
     // MARK: - Public Helpers
 
     /// The stored push-to-start token for inclusion in registration payloads.
@@ -265,7 +290,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         AppConstants.Keychain[pushToStartTokenKeychainKey]
     }
 
-    static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
+    static let pushToStartTokenKeychainKey = "live_activity_token"
 
     // MARK: - Private — Stale Date
 
@@ -299,7 +324,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                         Current.Log.verbose(
                             "LiveActivityRegistry: new push token for tag \(activity.attributes.tag)"
                         )
-                        await self.reportPushToken(tokenHex, activityID: activity.id)
+                        await self.reportPushToken(tokenHex, tag: activity.attributes.tag)
                     }
                 }
 
@@ -308,11 +333,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                     for await state in activity.activityStateUpdates {
                         switch state {
                         case .dismissed, .ended:
-                            await self.reportActivityDismissed(
-                                activityID: activity.id,
-                                tag: activity.attributes.tag,
-                                reason: state == .dismissed ? "user_dismissed" : "ended"
-                            )
+                            await self.reportActivityDismissed(tag: activity.attributes.tag)
                             _ = await self.remove(id: activity.attributes.tag)
                             return
                         case .active, .stale:
@@ -333,13 +354,12 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     /// Report a new activity push token to all connected HA servers.
     /// The token is used by the relay server to send APNs updates directly to this activity.
-    private func reportPushToken(_ tokenHex: String, activityID: String) async {
+    private func reportPushToken(_ tokenHex: String, tag: String) async {
         let request = WebhookRequest(
             type: Self.webhookTypeToken,
             data: [
-                "activity_id": activityID,
+                "tag": tag,
                 "push_token": tokenHex,
-                "apns_environment": Current.apnsEnvironment,
             ]
         )
         for server in Current.servers.all {
@@ -349,13 +369,11 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     /// Notify HA servers that the Live Activity was dismissed or ended externally.
     /// This allows HA to stop sending APNs updates for this activity.
-    private func reportActivityDismissed(activityID: String, tag: String, reason: String) async {
+    private func reportActivityDismissed(tag: String) async {
         let request = WebhookRequest(
             type: Self.webhookTypeDismissed,
             data: [
-                "activity_id": activityID,
-                "live_activity_tag": tag,
-                "reason": reason,
+                "tag": tag,
             ]
         )
         for server in Current.servers.all {

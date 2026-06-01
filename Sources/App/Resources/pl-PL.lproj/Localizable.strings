@@ -230,7 +230,7 @@
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
 "carPlay.labels.select_server" = "Wybierz serwer";
 "carPlay.labels.servers" = "Serwery";
-"carPlay.labels.settings.advanced.assist.section.title" = "Assist";
+"carPlay.labels.settings.advanced.assist.section.title" = "Asystent";
 "carPlay.labels.settings.advanced.assist.tts_playback.footer" = "In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.";
 "carPlay.labels.settings.advanced.assist.tts_playback.title" = "TTS Playback";
 "carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
@@ -242,7 +242,7 @@
 "carPlay.navigation.button.previous" = "Poprzedni";
 "carPlay.navigation.tab.actions" = "Akcje";
 "carPlay.navigation.tab.areas" = "Obszary";
-"carPlay.navigation.tab.domains" = "Control";
+"carPlay.navigation.tab.domains" = "Sterowanie";
 "carPlay.navigation.tab.quick_access" = "Szybki dostęp";
 "carPlay.navigation.tab.settings" = "Ustawienia";
 "carPlay.no_actions.title" = "Należy otworzyć aplikację IOS, aby utworzyć akcje CarPlay.";
@@ -1572,6 +1572,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.server_selection.title" = "Wybierz serwer";
 "web_view.unique_server_selection.title" = "Wybierz serwer";
 "webrtc_player.known_issues.title" = "Znane problemy";
+"whats_new.title" = "What's New in The Companion App";
+"whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Asystent";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.moreInfoDialog" = "More info";
