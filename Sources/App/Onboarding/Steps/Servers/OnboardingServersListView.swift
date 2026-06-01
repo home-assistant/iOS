@@ -256,9 +256,9 @@ struct OnboardingServersListView: View {
     private func onAppear() {
         if !screenLoaded {
             screenLoaded = true
-            if let prefillURL {
-                viewModel.selectInstance(.init(manualURL: prefillURL), presentingController: presentingViewController)
-            } else {
+
+            // If no prefill URL (aka invitation link) we move on and look for servers nearby
+            if prefillURL == nil {
                 viewModel.startDiscovery()
             }
         }
