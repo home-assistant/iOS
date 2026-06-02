@@ -3,31 +3,43 @@ import Shared
 import UserNotifications
 
 final class NotificationService: UNNotificationServiceExtension {
+    private let notificationCommunicationDecorator = NotificationCommunicationDecoratorImpl()
+
     override func didReceive(
         _ request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
     ) {
         Current.Log.info("didReceive \(request), user info \(request.content.userInfo)")
 
-        guard let server = Current.servers.server(for: request.content), let api = Current.api(for: server) else {
-            contentHandler(request.content)
+        guard let server = Current.servers.server(for: request.content),
+              let api = Current.api(for: server) else {
+            if let sender = NotificationSenderParser.parse(from: request.content) {
+                notificationCommunicationDecorator
+                    .decorate(content: request.content, sender: sender, api: nil)
+                    .done { contentHandler($0) }
+            } else {
+                contentHandler(request.content)
+            }
             return
         }
 
         firstly {
             Current.notificationAttachmentManager.content(from: request.content, api: api)
-        }.recover { error in
+        }.recover { error -> Guarantee<UNNotificationContent> in
             Current.Log.error("failed to get content, giving default: \(error)")
             return .value(request.content)
+        }.then { content -> Guarantee<UNNotificationContent> in
+            guard let sender = NotificationSenderParser.parse(from: content) else {
+                return .value(content)
+            }
+            return self.notificationCommunicationDecorator
+                .decorate(content: content, sender: sender, api: api)
         }.done {
             contentHandler($0)
         }
     }
 
     override func serviceExtensionTimeWillExpire() {
-        // Called just before the extension will be terminated by the system.
-        // Use this as an opportunity to deliver your "best attempt" at modified content,
-        // otherwise the original push payload will be used.
         Current.Log.warning("serviceExtensionTimeWillExpire")
     }
 }

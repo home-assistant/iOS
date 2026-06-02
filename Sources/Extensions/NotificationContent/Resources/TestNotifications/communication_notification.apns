@@ -1,0 +1,14 @@
+{
+	"aps": {
+		"alert": {
+			"title": "Dishwasher",
+			"body": "Cycle complete."
+		},
+		"sound": "default",
+		"category": "notification",
+		"mutable-content": 1
+	},
+	"notification_icon": "mdi:dishwasher",
+	"color": "#4CAF50",
+	"webhook_id": "REPLACE_WITH_YOUR_WEBHOOK_ID"
+}
