@@ -11777,8 +11777,6 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = QMQYCKL255;
 				DISABLE_SWIFTLINT = 1;
 				ENV_URL_HANDLER = "homeassistant-dev";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
