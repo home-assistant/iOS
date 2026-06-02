@@ -977,6 +977,7 @@
 		42ACC2862E9E74C80045A3FD /* BaseOnboardingView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2842E9E74940045A3FD /* BaseOnboardingView.test.swift */; };
 		42ACC29C2E9E7A6E0045A3FD /* SelectionOptionView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC29A2E9E7A4D0045A3FD /* SelectionOptionView.test.swift */; };
 		42ACC29F2E9E7BBB0045A3FD /* OnboardingScanningInstanceRow.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC29D2E9E7B8C0045A3FD /* OnboardingScanningInstanceRow.test.swift */; };
+		42ACC2B12E9FA7000045A3FD /* InvitationView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2B02E9FA7000045A3FD /* InvitationView.test.swift */; };
 		42ACC2A72E9F9B300045A3FD /* URLExtensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2A32E9F9AEA0045A3FD /* URLExtensions.test.swift */; };
 		42ACC2AF2E9FA1D60045A3FD /* DiscoveredHomeAssistant.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2AB2E9FA0A80045A3FD /* DiscoveredHomeAssistant.test.swift */; };
 		42AF75992DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */; };
@@ -2871,6 +2872,7 @@
 		42ACC2842E9E74940045A3FD /* BaseOnboardingView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOnboardingView.test.swift; sourceTree = "<group>"; };
 		42ACC29A2E9E7A4D0045A3FD /* SelectionOptionView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionOptionView.test.swift; sourceTree = "<group>"; };
 		42ACC29D2E9E7B8C0045A3FD /* OnboardingScanningInstanceRow.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningInstanceRow.test.swift; sourceTree = "<group>"; };
+		42ACC2B02E9FA7000045A3FD /* InvitationView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationView.test.swift; sourceTree = "<group>"; };
 		42ACC2A32E9F9AEA0045A3FD /* URLExtensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensions.test.swift; sourceTree = "<group>"; };
 		42ACC2AB2E9FA0A80045A3FD /* DiscoveredHomeAssistant.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveredHomeAssistant.test.swift; sourceTree = "<group>"; };
 		42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorableStateKey.swift; sourceTree = "<group>"; };
@@ -4925,6 +4927,7 @@
 				42ACC2AB2E9FA0A80045A3FD /* DiscoveredHomeAssistant.test.swift */,
 				42ACC29D2E9E7B8C0045A3FD /* OnboardingScanningInstanceRow.test.swift */,
 				42ACC2842E9E74940045A3FD /* BaseOnboardingView.test.swift */,
+				42ACC2B02E9FA7000045A3FD /* InvitationView.test.swift */,
 				42ACC29A2E9E7A4D0045A3FD /* SelectionOptionView.test.swift */,
 				42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */,
 				428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */,
@@ -9827,6 +9830,7 @@
 				428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */,
 				42ACC29F2E9E7BBB0045A3FD /* OnboardingScanningInstanceRow.test.swift in Sources */,
 				428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */,
+				42ACC2B12E9FA7000045A3FD /* InvitationView.test.swift in Sources */,
 				425EB5002F5F0EDF0067A678 /* MockSpeechSynthesizer.swift in Sources */,
 				425EB5012F5F0EDF0067A678 /* MockSpeechTranscriber.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
