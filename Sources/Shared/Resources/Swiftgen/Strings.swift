@@ -2673,8 +2673,18 @@ public enum L10n {
     public enum Invitation {
       /// Accept
       public static var acceptButton: String { return L10n.tr("Localizable", "onboarding.invitation.accept_button") }
+      /// Home Assistant address
+      public static var addressTitle: String { return L10n.tr("Localizable", "onboarding.invitation.address_title") }
+      /// Home Assistant is open source home automation that puts local control and privacy first.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.invitation.description") }
       /// Other options
       public static var otherOptions: String { return L10n.tr("Localizable", "onboarding.invitation.other_options") }
+      /// Reject
+      public static var rejectButton: String { return L10n.tr("Localizable", "onboarding.invitation.reject_button") }
+      /// You've been invited
+      public static var screenTitle: String { return L10n.tr("Localizable", "onboarding.invitation.screen_title") }
+      /// Only continue if you trust the person who shared it. Connecting to an unknown server could give it access to data the app sends, such as your location and device information.
+      public static var securityWarning: String { return L10n.tr("Localizable", "onboarding.invitation.security_warning") }
       /// Home Assistant Invite
       public static var title: String { return L10n.tr("Localizable", "onboarding.invitation.title") }
     }
