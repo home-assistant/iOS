@@ -11806,7 +11806,6 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Local Developer: Main App";
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
