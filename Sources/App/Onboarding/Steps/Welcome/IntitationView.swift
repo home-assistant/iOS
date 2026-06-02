@@ -65,6 +65,7 @@ struct InvitationView: View {
                         Link(destination: invitationURL) {
                             Text(invitationURL.absoluteString)
                                 .privacySensitive()
+                                .screenCaptureProtected()
                                 .font(DesignSystem.Font.subheadline)
                                 .padding(.horizontal, DesignSystem.Spaces.two)
                                 .padding(.vertical, DesignSystem.Spaces.half)
