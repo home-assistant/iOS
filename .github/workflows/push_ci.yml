@@ -10,6 +10,9 @@ on:
     paths:
       - 'Sources/PushServer/**'
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-22.04
