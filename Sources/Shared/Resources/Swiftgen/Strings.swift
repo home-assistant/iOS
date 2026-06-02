@@ -732,6 +732,10 @@ public enum L10n {
       /// Unknown error
       public static var unknown: String { return L10n.tr("Localizable", "camera_player.errors.unknown") }
     }
+    public enum Notification {
+      /// Tap to open camera
+      public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
+    }
   }
 
   public enum Cameras {

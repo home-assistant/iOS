@@ -173,6 +173,7 @@
 "camera_player.errors.no_stream_available" = "No stream available";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.unknown" = "Unknown error";
+"camera_player.notification.body" = "Tap to open camera";
 "cameras.drag_to_reorder" = "Drag and drop to reorder";
 "cameras.no_server_found" = "No server found for camera: %@";
 "cancel_label" = "Cancel";

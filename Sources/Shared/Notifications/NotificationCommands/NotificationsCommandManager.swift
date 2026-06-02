@@ -52,8 +52,12 @@ public class NotificationCommandManager {
     }
 
     public func handle(_ payload: [AnyHashable: Any]) -> Promise<Void> {
-        guard let hadict = payload["homeassistant"] as? [String: Any] else {
+        guard var hadict = payload["homeassistant"] as? [String: Any] else {
             return .init(error: CommandError.notCommand)
+        }
+
+        if let webhookId = payload["webhook_id"] as? String {
+            hadict["webhook_id"] = webhookId
         }
 
         // Support data.live_update: true — the same field Android uses for Live Updates.

@@ -80,7 +80,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
             .done { webViewController in
                 let view = CameraPlayerView(
-                    server: webViewController.server,
+                    server: self.cameraServer(from: userInfo, fallback: webViewController.server),
                     cameraEntityId: entityId
                 ).embeddedInHostingController()
                 self.cameraOverlayController = view
@@ -98,14 +98,18 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         }
 
         let content = UNMutableNotificationContent()
-        content.body = "Tap to open camera"
+        content.body = L10n.CameraPlayer.Notification.body
         content.sound = .default
-        content.userInfo = [
+        var fallbackUserInfo: [AnyHashable: Any] = [
             "homeassistant": [
                 "command": "show_camera",
                 "entity_id": entityId,
             ],
         ]
+        if let webhookId = webhookId(from: userInfo) {
+            fallbackUserInfo["webhook_id"] = webhookId
+        }
+        content.userInfo = fallbackUserInfo
 
         Current.userNotificationCenter.add(UNNotificationRequest(
             identifier: "show_camera.\(entityId)",
@@ -138,6 +142,33 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         }
 
         return nil
+    }
+
+    private func webhookId(from userInfo: [AnyHashable: Any]?) -> String? {
+        guard let userInfo else { return nil }
+
+        if let webhookId = userInfo["webhook_id"] as? String {
+            return webhookId
+        }
+
+        if let homeassistant = userInfo["homeassistant"] as? [String: Any] {
+            return homeassistant["webhook_id"] as? String
+        }
+
+        if let homeassistant = userInfo["homeassistant"] as? [AnyHashable: Any] {
+            return homeassistant["webhook_id"] as? String
+        }
+
+        return nil
+    }
+
+    private func cameraServer(from userInfo: [AnyHashable: Any]?, fallback: Server) -> Server {
+        guard let webhookId = webhookId(from: userInfo),
+              let server = Current.servers.server(forWebhookID: webhookId) else {
+            return fallback
+        }
+
+        return server
     }
 
     @objc private func hideCameraFromNotification() {
