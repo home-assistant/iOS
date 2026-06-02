@@ -1,4 +1,5 @@
 import Communicator
+import Foundation
 import PromiseKit
 import UserNotifications
 import WidgetKit
@@ -12,6 +13,14 @@ public class NotificationCommandManager {
         .init(rawValue: "didUpdateComplicationsNotification")
     }
 
+    public static var didReceiveShowCameraNotification: Notification.Name {
+        .init(rawValue: "didReceiveShowCameraNotification")
+    }
+
+    public static var didReceiveHideCameraNotification: Notification.Name {
+        .init(rawValue: "didReceiveHideCameraNotification")
+    }
+
     public enum CommandError: Error {
         case notCommand
         case unknownCommand
@@ -22,6 +31,8 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
+        register(command: "show_camera", handler: HandlerShowCamera())
+        register(command: "hide_camera", handler: HandlerHideCamera())
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
@@ -41,8 +52,12 @@ public class NotificationCommandManager {
     }
 
     public func handle(_ payload: [AnyHashable: Any]) -> Promise<Void> {
-        guard let hadict = payload["homeassistant"] as? [String: Any] else {
+        guard var hadict = payload["homeassistant"] as? [String: Any] else {
             return .init(error: CommandError.notCommand)
+        }
+
+        if let webhookId = payload["webhook_id"] as? String {
+            hadict["webhook_id"] = webhookId
         }
 
         // Support data.live_update: true — the same field Android uses for Live Updates.
