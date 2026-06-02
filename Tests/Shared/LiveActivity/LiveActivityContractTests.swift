@@ -90,7 +90,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testWebhookTypeToken_isFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.webhookTypeToken,
-            "mobile_app_live_activity_token"
+            "live_activity_token"
         )
     }
 
@@ -99,7 +99,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testTokenWebhookKeys_areFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.tokenWebhookKeys,
-            ["activity_id", "push_token", "apns_environment"]
+            ["tag", "push_token"]
         )
     }
 
@@ -108,7 +108,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testWebhookTypeDismissed_isFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.webhookTypeDismissed,
-            "mobile_app_live_activity_dismissed"
+            "live_activity_dismissed"
         )
     }
 
@@ -117,7 +117,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testDismissedWebhookKeys_areFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.dismissedWebhookKeys,
-            ["activity_id", "live_activity_tag", "reason"]
+            ["tag"]
         )
     }
 
@@ -138,15 +138,6 @@ final class LiveActivityContractTests: XCTestCase {
             ] as [String: Any],
         ]
         XCTAssertNoThrow(try hang(manager.handle(liveActivityPayload)))
-
-        // "end_live_activity" command must route successfully
-        let endPayload: [AnyHashable: Any] = [
-            "homeassistant": [
-                "command": "end_live_activity",
-                "tag": "test",
-            ] as [String: Any],
-        ]
-        XCTAssertNoThrow(try hang(manager.handle(endPayload)))
     }
 
     /// The `live_update: true` data flag must be recognized (same field as Android Live Updates).

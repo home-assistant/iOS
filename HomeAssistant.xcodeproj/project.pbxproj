@@ -27,6 +27,8 @@
 		01783C74005B40978CE7508B /* NotificationIdentifierField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC7EF1136575D0E7A17091 /* NotificationIdentifierField.swift */; };
 		072BACCC5B2509E4AF06BFED /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
 		0C1F82B6DF9051F98A587352 /* ComplicationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3995EF7323087AA35F01BDDF /* ComplicationEditView.swift */; };
+		0907D6244565287ED4E46A3C /* WhatsNewCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09953104F4749B10268B7C61 /* WhatsNewCatalog.swift */; };
+		5002BDAF2FEE000100BEEF01 /* WhatsNewEngine.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5002BDAE2FEE000100BEEF01 /* WhatsNewEngine.test.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
 		1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */; };
 		1101568424D770B2009424C9 /* NFCWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E324D76CDB003CE877 /* NFCWriter.swift */; };
@@ -48,6 +50,9 @@
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
+		61FB3A85078071FD96D7CCDE /* WhatsNewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC73AA42B151A6DC06ACD22 /* WhatsNewModels.swift */; };
+		78F6EC29BAE43C9BAAFBAB1A /* WhatsNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12960782B4F42B5C4811E859 /* WhatsNewView.swift */; };
+		A47A58B70C53DADB13857F23 /* WhatsNewEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5ACE5BCADFD9765F5283BF7 /* WhatsNewEngine.swift */; };
 		110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA55B25B36630005061A0 /* ServerAlerter.swift */; };
 		110AA55D25B36630005061A0 /* ServerAlerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA55B25B36630005061A0 /* ServerAlerter.swift */; };
 		110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */; };
@@ -2676,6 +2681,7 @@
 		42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Encodable.swift"; sourceTree = "<group>"; };
 		42A42A692DC37311000ABBAF /* PrivacyView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.test.swift; sourceTree = "<group>"; };
 		42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.test.swift; sourceTree = "<group>"; };
+		5002BDAE2FEE000100BEEF01 /* WhatsNewEngine.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewEngine.test.swift; sourceTree = "<group>"; };
 		42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalMessageHandler.swift; sourceTree = "<group>"; };
 		42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalMessageHandlerTests.swift; sourceTree = "<group>"; };
 		42A47A892C452DB500C9B43D /* MockWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebViewController.swift; sourceTree = "<group>"; };
@@ -3528,6 +3534,10 @@
 		EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntitiesTimelineProvider.swift; sourceTree = "<group>"; };
 		EFD4B475DDA9447E45A9BAD3 /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
 		F49767602CA2066683EC638F /* KioskSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsView.swift; sourceTree = "<group>"; };
+		09953104F4749B10268B7C61 /* WhatsNewCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCatalog.swift; sourceTree = "<group>"; };
+		A5ACE5BCADFD9765F5283BF7 /* WhatsNewEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewEngine.swift; sourceTree = "<group>"; };
+		DFC73AA42B151A6DC06ACD22 /* WhatsNewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewModels.swift; sourceTree = "<group>"; };
+		12960782B4F42B5C4811E859 /* WhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewView.swift; sourceTree = "<group>"; };
 		F6DA82FEEE2DDC3B2CC20DA3 /* Pods_iOS_Extensions_NotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_NotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSecretExitGestureView.swift; sourceTree = "<group>"; };
 		FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -6962,6 +6972,7 @@
 				42FCCFDD2B9B1AB00057783F /* BarcodeScanner */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				117EB13E2569AD3000049541 /* Notifications */,
+				5002BDABA052EC20E1ECC92A /* WhatsNew */,
 				B661FB6B226BCC8500E541DD /* Settings */,
 				11B7ECD9274DA521009AD634 /* Servers */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
@@ -6969,6 +6980,17 @@
 				B69933961E232AF50054453D /* Resources */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		5002BDABA052EC20E1ECC92A /* WhatsNew */ = {
+			isa = PBXGroup;
+			children = (
+				09953104F4749B10268B7C61 /* WhatsNewCatalog.swift */,
+				A5ACE5BCADFD9765F5283BF7 /* WhatsNewEngine.swift */,
+				DFC73AA42B151A6DC06ACD22 /* WhatsNewModels.swift */,
+				12960782B4F42B5C4811E859 /* WhatsNewView.swift */,
+			);
+			path = WhatsNew;
 			sourceTree = "<group>";
 		};
 		B657A8FF1CA646EB00121384 /* App */ = {
@@ -6994,12 +7016,21 @@
 				39A32EDF2C0E37FC00985722 /* Thread */,
 				46C3EB192D721000009A893F /* Utilities */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
+				5002BDB02FEE000100BEEF01 /* WhatsNew */,
 				4286260C2DA5CD1B00D58D13 /* Webhook */,
 				39A32EE32C0E38A100985722 /* WebView */,
 				420F53EC2C4E9FF1003C8415 /* Widgets */,
 				11A71C7424A5023200D9565F /* ZoneManager */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		5002BDB02FEE000100BEEF01 /* WhatsNew */ = {
+			isa = PBXGroup;
+			children = (
+				5002BDAE2FEE000100BEEF01 /* WhatsNewEngine.test.swift */,
+			);
+			path = WhatsNew;
 			sourceTree = "<group>";
 		};
 		B657A90A1CA646EB00121384 /* UI */ = {
@@ -9404,11 +9435,14 @@
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */,
 				42B7BFEF2E97CDE40056BADC /* HomeNetworkInputView.swift in Sources */,
+				0907D6244565287ED4E46A3C /* WhatsNewCatalog.swift in Sources */,
 				42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */,
 				429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListView.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
+				A47A58B70C53DADB13857F23 /* WhatsNewEngine.swift in Sources */,
 				42DF7DDE2EC53D50003F3C4A /* SettingsItem.swift in Sources */,
+				61FB3A85078071FD96D7CCDE /* WhatsNewModels.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				426AB2342EF2A7D400FD5D46 /* ControlOpenSwitch.swift in Sources */,
 				426AB2352EF2A7D400FD5D46 /* ControlOpenCoverEntityValueProvider.swift in Sources */,
@@ -9552,6 +9586,7 @@
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				42FCCFE22B9B1B610057783F /* BarcodeScannerCamera.swift in Sources */,
 				42B7BFEC2E97AF070056BADC /* LocalAccessPermissionViewModel.swift in Sources */,
+				78F6EC29BAE43C9BAAFBAB1A /* WhatsNewView.swift in Sources */,
 				42FA83412F47230D0050095A /* WebViewController+Navigation.swift in Sources */,
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
@@ -9809,6 +9844,7 @@
 				42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */,
 				428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */,
 				42A42A6C2DC37F09000ABBAF /* AboutView.test.swift in Sources */,
+				5002BDAF2FEE000100BEEF01 /* WhatsNewEngine.test.swift in Sources */,
 				4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */,
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
 				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,

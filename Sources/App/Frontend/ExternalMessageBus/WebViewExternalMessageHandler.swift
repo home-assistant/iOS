@@ -472,12 +472,11 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             return
         }
         Current.matter.commission(webViewController.server).done {
-            Current.Log.info("commission call completed")
-        }.catch { error in
+            Current.Log.info("Commission call completed")
+        }.catch { [weak self] error in
             // we don't show a user-visible error because even a successful operation will return 'cancelled'
             // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
             Current.Log.error(error)
-        }.finally { [weak self] in
             self?.webViewController?.refresh()
         }
     }

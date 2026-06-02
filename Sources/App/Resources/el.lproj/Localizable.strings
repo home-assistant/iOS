@@ -1574,6 +1574,8 @@
 "web_view.server_selection.title" = "Επιλέξτε διακομιστή";
 "web_view.unique_server_selection.title" = "Επιλέξτε έναν διακομιστή";
 "webrtc_player.known_issues.title" = "Γνωστά ζητήματα";
+"whats_new.title" = "Τι νέο υπάρχει στην εφαρμογή Companion";
+"whats_new.version_format" = "Εκδοση %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Προεπιλογή";
 "widgets.action.name.moreInfoDialog" = "Περισσότερες πληροφορίες";

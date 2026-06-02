@@ -5,6 +5,8 @@ import SwiftUI
 struct SettingsView: View {
     @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false
+    @State private var whatsNewRelease: WhatsNewRelease?
+    @State private var isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
     @StateObject private var serversObserver = ServersObserver()
@@ -16,6 +18,9 @@ struct SettingsView: View {
             } else {
                 iOSView
             }
+        }
+        .onAppear {
+            isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
         }
     }
 
@@ -41,6 +46,10 @@ struct SettingsView: View {
             // Servers section
             Section(header: Text(L10n.Settings.ConnectionSection.serversHeader)) {
                 ServersListView()
+            }
+
+            if isShowingTranslationKeys {
+                translationKeysWarningSection
             }
 
             // Other settings items
@@ -111,6 +120,10 @@ struct SettingsView: View {
                 ServersListView()
             }
             .environment(\.defaultMinListRowHeight, 60)
+
+            if isShowingTranslationKeys {
+                translationKeysWarningSection
+            }
 
             // General section
             Section {
@@ -184,17 +197,13 @@ struct SettingsView: View {
                 }
             }
 
-            // What's New
-            Section {
-                Button {
-                    if let url = URL(string: "https://www.home-assistant.io/latest-ios-release-notes/") {
-                        openURLInBrowser(url, viewControllerProvider.viewController)
-                    }
-                } label: {
-                    HStack {
+            if let latestRelease = WhatsNewEngine().latestRelease() {
+                // What's New
+                Section {
+                    Button {
+                        whatsNewRelease = latestRelease
+                    } label: {
                         settingsItemLabel(.whatsNew)
-                        Spacer()
-                        SettingsItem.whatsNew.accessoryIcon
                     }
                 }
             }
@@ -240,6 +249,43 @@ struct SettingsView: View {
                 .navigationViewStyle(.stack)
             }
         }
+        .sheet(item: $whatsNewRelease) { release in
+            WhatsNewView(release: release) {
+                WhatsNewEngine().markSeen(release)
+            }
+        }
+    }
+
+    private var translationKeysWarningSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
+                Label {
+                    Text(verbatim: "Translation keys are visible")
+                        .font(.headline)
+                } icon: {
+                    Image(systemSymbol: .exclamationmarkTriangleFill)
+                        .foregroundColor(.orange)
+                }
+
+                Text(
+                    verbatim: "Debug strings is enabled, so app text is showing localization keys instead of translated labels."
+                )
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+                Button {
+                    disableTranslationKeys()
+                } label: {
+                    Text(verbatim: "Disable debug strings")
+                }
+            }
+            .padding(.vertical, DesignSystem.Spaces.one)
+        }
+    }
+
+    private func disableTranslationKeys() {
+        prefs.set(false, forKey: "showTranslationKeys")
+        isShowingTranslationKeys = false
     }
 
     private func settingsItemLabel(_ item: SettingsItem) -> some View {

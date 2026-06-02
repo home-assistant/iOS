@@ -5486,6 +5486,15 @@ public enum L10n {
     }
   }
 
+  public enum WhatsNew {
+    /// What's New in The Companion App
+    public static var title: String { return L10n.tr("Localizable", "whats_new.title") }
+    /// Version %@
+    public static func versionFormat(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "whats_new.version_format", String(describing: p1))
+    }
+  }
+
   public enum Widgets {
     public enum Action {
       public enum Name {

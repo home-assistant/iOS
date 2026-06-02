@@ -77,12 +77,7 @@ struct OnboardingPermissionsNavigationView: View {
             case .mostSecure:
                 viewModel.requestLocationPermissionForSecureLocalConnection()
             case .lessSecure:
-                viewModel.setLessSecureLocalConnection()
-                if viewModel.steps.contains(.completion) {
-                    viewModel.navigateToStep(.completion)
-                } else if viewModel.steps.contains(.updatePreferencesSuccess) {
-                    viewModel.navigateToStep(.updatePreferencesSuccess)
-                }
+                viewModel.requestLocationPermissionForLessSecureLocalConnection()
             }
         }
     }
