@@ -12,7 +12,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: fwal/setup-swift@364295d9c23900ce04d4e5cc708387921b4e50f9  # v3
         with:
