@@ -14,11 +14,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Import Swift signing keys
-        run: curl -sSL https://www.swift.org/keys/all-keys.asc | gpg --import -
       - uses: fwal/setup-swift@364295d9c23900ce04d4e5cc708387921b4e50f9  # v3
         with:
           swift-version: "5.8"
+          skip-verify-signature: true
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - name: Run Tests
         run: swift test
