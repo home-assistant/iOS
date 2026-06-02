@@ -309,6 +309,7 @@ struct OnboardingServersListView: View {
             return
         }
         rejectedInvitation = true
+        Current.appSessionValues.inviteURL = nil
         viewModel.showCenterLoader = true
         viewModel.startDiscovery()
     }
