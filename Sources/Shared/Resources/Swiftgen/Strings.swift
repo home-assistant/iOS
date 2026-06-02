@@ -2683,7 +2683,7 @@ public enum L10n {
       public static var rejectButton: String { return L10n.tr("Localizable", "onboarding.invitation.reject_button") }
       /// You've been invited
       public static var screenTitle: String { return L10n.tr("Localizable", "onboarding.invitation.screen_title") }
-      /// Only continue if you trust the person who shared it. Connecting to an unknown server could give it access to data the app sends, such as your location and device information.
+      /// Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.
       public static var securityWarning: String { return L10n.tr("Localizable", "onboarding.invitation.security_warning") }
       /// Home Assistant Invite
       public static var title: String { return L10n.tr("Localizable", "onboarding.invitation.title") }
