@@ -300,16 +300,25 @@ final class ServerManagerImpl: ServerManager {
             cache.remove(identifier: identifier)
         }
 
+        mirrorStore.remove(identifier.keychainKey)
+        var restoredMirroredServers = restoredMirroredServers
+        if restoredMirroredServers.remove(identifier.keychainKey) != nil {
+            self.restoredMirroredServers = restoredMirroredServers
+        }
+
         notify()
     }
 
     public func removeAll() {
+        let allKeys = Set(keychain.allKeys() + mirrorStore.allKeys())
         cache.mutate { cache in
-            let allKeys = Set(keychain.allKeys() + mirrorStore.allKeys())
             cache.deletedServers.formUnion(Set(allKeys.map { Identifier<Server>(keychainKey: $0) }))
             cache.reset()
             _ = try? keychain.removeAll()
         }
+
+        mirrorStore.removeAll()
+        restoredMirroredServers = []
 
         notify()
     }

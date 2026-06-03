@@ -137,6 +137,7 @@ class ServerManagerTests: XCTestCase {
             servers.remove(identifier: "fake1")
         }
         try XCTAssertNil(keychain.getData("fake1"))
+        XCTAssertNil(mirrorStore.data["fake1"])
 
         // grab it, which may also side-effect insert into cache, if buggy
         _ = server1.info
@@ -156,6 +157,7 @@ class ServerManagerTests: XCTestCase {
 
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertEqual(servers.all, [server2])
+        XCTAssertNil(mirrorStore.data["fake1"])
 
         var server3: Server!
 
@@ -178,6 +180,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(servers.server(for: "fake2"))
         XCTAssertNil(servers.server(for: "fake3"))
         XCTAssertTrue(keychain.data.isEmpty)
+        XCTAssertTrue(mirrorStore.data.isEmpty)
 
         expectingObserver {
             servers.restoreState(stateS2S3)
@@ -633,6 +636,10 @@ class ServerManagerTests: XCTestCase {
 
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertEqual(server.info.remoteName, info.remoteName)
+        XCTAssertNil(mirrorStore.data["fake1"])
+        XCTAssertFalse(servers.isMirrorRestorePending)
+        XCTAssertFalse(servers.restoreKeychainFromMirrorIfNeeded())
+        XCTAssertNil(try keychain.getData("fake1"))
     }
 
     func testKeychainInfoWinsOverMirrorFallback() throws {
