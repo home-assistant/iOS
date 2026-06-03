@@ -739,7 +739,6 @@
 "onboarding.device_name_check.error.prompt" = "Ποιο όνομα συσκευής θα πρέπει να χρησιμοποιηθεί αντ' αυτού;";
 "onboarding.device_name_check.error.title" = "Υπάρχει ήδη μια συσκευή με το όνομα \"%1$@\"";
 "onboarding.invitation.accept_button" = "Αποδοχή";
-"onboarding.invitation.other_options" = "Αλλες επιλογές";
 "onboarding.invitation.title" = "Πρόσκληση στο Home Assistant";
 "onboarding.local_access.description" = "Εάν αυτή η εφαρμογή γνωρίζει πότε βρίσκεστε εκτός σπιτιού, μπορεί να επιλέξει έναν πιο ασφαλή τρόπο σύνδεσης με το σύστημα Home Assistant. Αυτό απαιτεί την ενεργοποίηση των υπηρεσιών τοποθεσίας.";
 "onboarding.local_access.less_secure_option.title" = "Λιγότερο ασφαλές: Μην επιτρέπετε σε αυτή την εφαρμογή να γνωρίζει πότε είστε στο σπίτι";

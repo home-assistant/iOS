@@ -742,7 +742,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.address_title" = "Home Assistant address";
 "onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
-"onboarding.invitation.other_options" = "Other options";
 "onboarding.invitation.reject_button" = "Reject";
 "onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
 "onboarding.invitation.screen_title" = "You've been invited";

@@ -739,7 +739,6 @@
 "onboarding.device_name_check.error.prompt" = "应改用什么设备名称 ？";
 "onboarding.device_name_check.error.title" = "已存在名称为\"%1$@\"的设备。";
 "onboarding.invitation.accept_button" = "接受";
-"onboarding.invitation.other_options" = "其它选项";
 "onboarding.invitation.title" = "Home Assistant 邀请";
 "onboarding.local_access.description" = "如果此应用知道您何时离家，它可以选择更安全的方式连接到您的 Home Assistant 系统。这需要启用定位服务。";
 "onboarding.local_access.less_secure_option.title" = "低安全：不允许此应用知道您何时在家";
