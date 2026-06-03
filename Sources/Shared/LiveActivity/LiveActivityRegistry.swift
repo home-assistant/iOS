@@ -45,7 +45,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Webhook type for reporting a new per-activity push token to HA.
     static let webhookTypeToken = "live_activity_token"
     /// Keys in the token webhook request data dictionary.
-    static let tokenWebhookKeys: Set<String> = ["tag", "push_token"]
+    static let tokenWebhookKeys: Set<String> = ["tag", "push_token", "expires_at"]
+    /// ActivityKit expires Live Activities after eight hours.
+    static let pushTokenTimeToLive: TimeInterval = 8 * 60 * 60
 
     /// Webhook type for reporting that a Live Activity was dismissed.
     static let webhookTypeDismissed = "live_activity_dismissed"
@@ -338,11 +340,15 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Report a new activity push token to all connected HA servers.
     /// The token is used by the relay server to send APNs updates directly to this activity.
     private func reportPushToken(_ tokenHex: String, tag: String) async {
+        let expiresAt = Current.date()
+            .addingTimeInterval(Self.pushTokenTimeToLive)
+            .timeIntervalSince1970
         let request = WebhookRequest(
             type: Self.webhookTypeToken,
             data: [
                 "tag": tag,
                 "push_token": tokenHex,
+                "expires_at": expiresAt,
             ]
         )
         for server in Current.servers.all {

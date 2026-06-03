@@ -9,7 +9,7 @@ import UserNotifications
 import XCGLogger
 
 #if DEBUG
-private let forceDisableLocalPushForLiveActivityTesting = true
+private let forceDisableLocalPushForLiveActivityTesting = false
 #endif
 
 class NotificationManager: NSObject, LocalPushManagerDelegate {
