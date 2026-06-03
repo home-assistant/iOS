@@ -117,6 +117,20 @@ struct WidgetCustom: Widget {
             }()
 
             let interactionType = magicItem.widgetInteractionType
+            Current.Log.verbose(
+                """
+                WidgetCustom: generated item model, widgetId: \(widget.id), itemId: \(magicItem.id), \
+                serverId: \(magicItem.serverId), domain: \(String(describing: magicItem.domain?.rawValue)), \
+                action: \(String(describing: magicItem.action?.id)), requiresConfirmation: \(
+                    magicItem.customization?
+                        .requiresConfirmation ?? true
+                ), \
+                showStates: \(showStates), hasState: \(
+                    state !=
+                        nil
+                ), interactionType: \(String(describing: interactionType))
+                """
+            )
             let showIconBackground = {
                 switch interactionType {
                 case .widgetURL:

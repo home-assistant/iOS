@@ -21,6 +21,9 @@ struct CustomWidgetToggleAppIntent: AppIntent {
     var widgetShowingStates: Bool?
 
     func perform() async throws -> some IntentResult {
+        Current.Log.verbose(
+            "ToggleAppIntent: perform started, serverId: \(String(describing: serverId)), domain: \(String(describing: domain)), entityId: \(String(describing: entityId)), widgetShowingStates: \(String(describing: widgetShowingStates))"
+        )
         guard let serverId,
               let domainString = domain,
               let entityId,
@@ -48,11 +51,17 @@ struct CustomWidgetToggleAppIntent: AppIntent {
                 )
             return .result()
         }
+        Current.Log.verbose(
+            "ToggleAppIntent: sending main action, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+        )
         AppIntentHaptics.notify()
         await withCheckedContinuation { continuation in
             connection.send(request).promise.pipe { result in
                 switch result {
                 case .fulfilled:
+                    Current.Log.verbose(
+                        "ToggleAppIntent: main action succeeded, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+                    )
                     continuation.resume()
                 case let .rejected(error):
                     Current.Log
