@@ -2681,8 +2681,6 @@ public enum L10n {
       public static var addressTitle: String { return L10n.tr("Localizable", "onboarding.invitation.address_title") }
       /// Home Assistant is open source home automation that puts local control and privacy first.
       public static var description: String { return L10n.tr("Localizable", "onboarding.invitation.description") }
-      /// Other options
-      public static var otherOptions: String { return L10n.tr("Localizable", "onboarding.invitation.other_options") }
       /// Reject
       public static var rejectButton: String { return L10n.tr("Localizable", "onboarding.invitation.reject_button") }
       /// You've been invited

@@ -739,7 +739,6 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.device_name_check.error.prompt" = "Mitä nimeä laitteelle pitäisi käyttää sen sijaan?";
 "onboarding.device_name_check.error.title" = "Laite on jo olemassa nimellä '%1$@'";
 "onboarding.invitation.accept_button" = "Hyväksy";
-"onboarding.invitation.other_options" = "Muut vaihtoehdot";
 "onboarding.invitation.title" = "Home Assistant kutsu";
 "onboarding.local_access.description" = "Jos tämä sovellus tietää, milloin olet poissa kotoa, se voi valita turvallisemman tavan muodostaa yhteys Home Assistant -järjestelmääsi. Tämä edellyttää, että sijaintipalvelut ovat käytössä.";
 "onboarding.local_access.less_secure_option.title" = "Vähemmän turvallinen: Älä anna tämän sovelluksen tietää, milloin olet kotona";

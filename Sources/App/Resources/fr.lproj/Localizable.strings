@@ -739,7 +739,6 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.device_name_check.error.prompt" = "Quel nom de périphérique doit être utilisé à la place ?";
 "onboarding.device_name_check.error.title" = "Un périphérique existe déjà avec le nom ' %1$@ '";
 "onboarding.invitation.accept_button" = "Accept";
-"onboarding.invitation.other_options" = "Other options";
 "onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.local_access.description" = "If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.";
 "onboarding.local_access.less_secure_option.title" = "Less secure: Do not allow this app to know when you're home";

@@ -739,7 +739,6 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "onboarding.device_name_check.error.prompt" = "代わりにどのデバイス名を使用する必要がありますか？";
 "onboarding.device_name_check.error.title" = "'%1$@' という名前のデバイスは既に存在します";
 "onboarding.invitation.accept_button" = "受け入れる";
-"onboarding.invitation.other_options" = "その他のオプション";
 "onboarding.invitation.title" = "Home Assistant招待";
 "onboarding.local_access.description" = "このアプリは、あなたが自宅から離れていることを認識している場合、より安全な方法でHome Assistantシステムに接続できます。そのためには、位置情報サービスを有効にする必要があります。";
 "onboarding.local_access.less_secure_option.title" = "安全性が低い：このアプリに在宅を知らせないこと";
