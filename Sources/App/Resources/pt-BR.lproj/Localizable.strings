@@ -173,6 +173,7 @@
 "camera_player.errors.no_stream_available" = "No stream available";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.unknown" = "Unknown error";
+"camera_player.notification.body" = "Tap to open camera";
 "cameras.drag_to_reorder" = "Arraste e solte para reordenar.";
 "cameras.no_server_found" = "No server found for camera: %@";
 "cancel_label" = "Cancelar";
@@ -739,6 +740,11 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "onboarding.device_name_check.error.prompt" = "Qual nome de dispositivo deve ser usado?";
 "onboarding.device_name_check.error.title" = "Já existe um dispositivo com o nome ' %1$@ '";
 "onboarding.invitation.accept_button" = "Aceitar";
+"onboarding.invitation.address_title" = "Home Assistant address";
+"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
+"onboarding.invitation.reject_button" = "Reject";
+"onboarding.invitation.screen_title" = "You've been invited";
+"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
 "onboarding.invitation.title" = "Convite para o Home Assistant";
 "onboarding.local_access.description" = "Se este aplicativo souber quando você está longe de casa, ele pode escolher uma forma mais segura de se conectar ao seu sistema Home Assistant. Isso requer que os serviços de localização estejam ativados.";
 "onboarding.local_access.less_secure_option.title" = "Menos segura: Não permitir que este aplicativo saiba quando você está em casa";

@@ -173,6 +173,7 @@
 "camera_player.errors.no_stream_available" = "No stream available";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.unknown" = "Unknown error";
+"camera_player.notification.body" = "Tap to open camera";
 "cameras.drag_to_reorder" = "Drag and drop to reorder";
 "cameras.no_server_found" = "No server found for camera: %@";
 "cancel_label" = "ביטול";
@@ -739,6 +740,11 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.device_name_check.error.prompt" = "באיזה שם מכשיר יש להשתמש במקום זאת?";
 "onboarding.device_name_check.error.title" = "כבר קיים מכשיר בשם '%1$@'";
 "onboarding.invitation.accept_button" = "Accept";
+"onboarding.invitation.address_title" = "Home Assistant address";
+"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
+"onboarding.invitation.reject_button" = "Reject";
+"onboarding.invitation.screen_title" = "You've been invited";
+"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
 "onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.local_access.description" = "If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.";
 "onboarding.local_access.less_secure_option.title" = "Less secure: Do not allow this app to know when you're home";
