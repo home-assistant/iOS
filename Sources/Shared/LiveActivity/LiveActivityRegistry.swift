@@ -342,7 +342,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     private func reportPushToken(_ tokenHex: String, tag: String) async {
         let expiresAt = Current.date()
             .addingTimeInterval(Self.pushTokenTimeToLive)
-            .timeIntervalSince1970
+            .timeIntervalSince1970.rounded(.down)
         let request = WebhookRequest(
             type: Self.webhookTypeToken,
             data: [
