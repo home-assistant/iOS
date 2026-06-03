@@ -468,7 +468,6 @@
 "home_view.customization.common_controls.title" = "控制预测部分";
 "home_view.customization.summaries.title" = "摘要";
 "home_view.menu.allow_multiple_selection" = "允许多选";
-"home_view.menu.customize" = "自定义";
 "home_view.menu.reorder" = "重新排列";
 "home_view.menu.settings" = "设置";
 "home_view.summaries.count_active" = "%li 活动";

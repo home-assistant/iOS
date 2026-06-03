@@ -468,7 +468,6 @@
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Podsumowania";
 "home_view.menu.allow_multiple_selection" = "Allow multiple selection";
-"home_view.menu.customize" = "Customize";
 "home_view.menu.reorder" = "Reorder";
 "home_view.menu.settings" = "Ustawienia";
 "home_view.summaries.count_active" = "%li active";

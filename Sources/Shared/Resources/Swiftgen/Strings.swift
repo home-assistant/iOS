@@ -1638,8 +1638,6 @@ public enum L10n {
     public enum Menu {
       /// Allow multiple selection
       public static var allowMultipleSelection: String { return L10n.tr("Localizable", "home_view.menu.allow_multiple_selection") }
-      /// Customize
-      public static var customize: String { return L10n.tr("Localizable", "home_view.menu.customize") }
       /// Reorder
       public static var reorder: String { return L10n.tr("Localizable", "home_view.menu.reorder") }
       /// Settings

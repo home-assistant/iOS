@@ -468,7 +468,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Summaries";
 "home_view.menu.allow_multiple_selection" = "Permet selecció múltiple";
-"home_view.menu.customize" = "Personalitza";
 "home_view.menu.reorder" = "Reordena";
 "home_view.menu.settings" = "Configuració";
 "home_view.summaries.count_active" = "%li active";

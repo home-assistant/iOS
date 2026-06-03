@@ -468,7 +468,6 @@
 "home_view.customization.common_controls.title" = "Kontrollib prognooside sektsiooni";
 "home_view.customization.summaries.title" = "Kokkuvõtted";
 "home_view.menu.allow_multiple_selection" = "Luba mitu valikut";
-"home_view.menu.customize" = "Kohanda";
 "home_view.menu.reorder" = "Ümberjärjestamine";
 "home_view.menu.settings" = "Seaded";
 "home_view.summaries.count_active" = "%li aktiivne";
