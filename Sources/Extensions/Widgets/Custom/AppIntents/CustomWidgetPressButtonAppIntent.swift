@@ -17,6 +17,9 @@ struct CustomWidgetPressButtonAppIntent: AppIntent {
     var entityId: String?
 
     func perform() async throws -> some IntentResult {
+        Current.Log.verbose(
+            "PressButtonAppIntent: perform started, serverId: \(String(describing: serverId)), domain: \(String(describing: domain)), entityId: \(String(describing: entityId))"
+        )
         guard let serverId, let domainString = domain, let entityId else {
             Current.Log
                 .error(
@@ -35,10 +38,16 @@ struct CustomWidgetPressButtonAppIntent: AppIntent {
             return .result()
         }
         AppIntentHaptics.notify()
+        Current.Log.verbose(
+            "PressButtonAppIntent: sending press action, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+        )
         await withCheckedContinuation { continuation in
             connection.send(.pressButton(domain: domain, entityId: entityId)).promise.pipe { result in
                 switch result {
                 case .fulfilled:
+                    Current.Log.verbose(
+                        "PressButtonAppIntent: press action succeeded, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+                    )
                     continuation.resume()
                 case let .rejected(error):
                     Current.Log
