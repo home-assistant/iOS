@@ -7,7 +7,7 @@
 "4fFx9y" = "Opdateret";
 "4tpAXn" = "Bekræft venligt valg af '${server}'?";
 "5ZzwZD" = "Mislykkedes: Home Assistant er ikke tilgængelig i øjeblikket";
-"5bVvn0" = "Kunne ikke opdatere placering: ${error}";
+"5bVvn0" = "Kunne ikke opdatere lokalitet: ${error}";
 "637QjD" = "Fejl";
 "6ozAdN" = "Kamerabillede";
 "6qSzZG" = "Der er ${count} valgmuligheder, der matcher ‘${server}’.";

@@ -173,6 +173,7 @@
 "camera_player.errors.no_stream_available" = "Není dostupný žádný proud";
 "camera_player.errors.unable_to_connect_to_server" = "Nelze se připojit k Home Assistantovi";
 "camera_player.errors.unknown" = "Neznámá chyba";
+"camera_player.notification.body" = "Tap to open camera";
 "cameras.drag_to_reorder" = "Přetažením přeuspořádáte";
 "cameras.no_server_found" = "Pro kameru nebyl nalezen server: %@";
 "cancel_label" = "Zrušit";
@@ -739,6 +740,11 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "onboarding.device_name_check.error.prompt" = "Jaký název zařízení by měl být místo toho použit?";
 "onboarding.device_name_check.error.title" = "Zařízení s názvem \"%1$@\" již existuje";
 "onboarding.invitation.accept_button" = "Přijmout";
+"onboarding.invitation.address_title" = "Home Assistant address";
+"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
+"onboarding.invitation.reject_button" = "Reject";
+"onboarding.invitation.screen_title" = "You've been invited";
+"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
 "onboarding.invitation.title" = "Pozvánka do Home Asistenta";
 "onboarding.local_access.description" = "Pokud tato aplikace ví, kdy nejste doma, může zvolit bezpečnější způsob připojení k vašemu systému Home Assistant. To vyžaduje povolení lokalizačních služeb.";
 "onboarding.local_access.less_secure_option.title" = "Méně bezpečné: Nepovolit této aplikaci vědět, kdy jste doma";

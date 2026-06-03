@@ -218,7 +218,7 @@ Vés a {url} per acabar la configuració.";
 "component::sensor::entity_component::_::state::on" = "ON";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Inactiu";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Tancat/ada";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Actiu";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Actiu (utilitza més bateria, actualitzacions més ràpides)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Desactivada";
 "component::siren::entity_component::_::state::off" = "OFF";
 "component::siren::entity_component::_::state::on" = "ON";
