@@ -173,6 +173,7 @@
 "camera_player.errors.no_stream_available" = "沒有可用的串流";
 "camera_player.errors.unable_to_connect_to_server" = "無法連線至 Home Assistant";
 "camera_player.errors.unknown" = "未知錯誤";
+"camera_player.notification.body" = "Tap to open camera";
 "cameras.drag_to_reorder" = "拖拉以進行重新排序";
 "cameras.no_server_found" = "找不到攝影機伺服器：%@";
 "cancel_label" = "取消";
@@ -739,7 +740,11 @@
 "onboarding.device_name_check.error.prompt" = "所要使用的裝置名稱？";
 "onboarding.device_name_check.error.title" = "裝置已存在名稱 '%1$@'";
 "onboarding.invitation.accept_button" = "接受";
-"onboarding.invitation.other_options" = "其他選項";
+"onboarding.invitation.address_title" = "Home Assistant address";
+"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
+"onboarding.invitation.reject_button" = "Reject";
+"onboarding.invitation.screen_title" = "You've been invited";
+"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
 "onboarding.invitation.title" = "Home Assistant 邀請";
 "onboarding.local_access.description" = "如果應用程式得知您何時不在家，可以選擇更安全的方式連線至您的 Home Assistant 系統。此功能將需要啟用定位服務。";
 "onboarding.local_access.less_secure_option.title" = "安全性較低：不允許應用程式知道您何時在家";

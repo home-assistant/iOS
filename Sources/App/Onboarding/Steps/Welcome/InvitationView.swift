@@ -64,6 +64,8 @@ struct InvitationView: View {
                             .font(DesignSystem.Font.caption)
                         Link(destination: invitationURL) {
                             Text(invitationURL.absoluteString)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
                                 .privacySensitive()
                                 .screenCaptureProtected()
                                 .font(DesignSystem.Font.subheadline)
@@ -72,6 +74,7 @@ struct InvitationView: View {
                                 .background(Color(uiColor: .secondarySystemBackground))
                                 .clipShape(.capsule)
                         }
+                        .padding(.trailing, DesignSystem.Spaces.four)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     Label(
@@ -130,6 +133,20 @@ struct InvitationView: View {
     NavigationView {
         InvitationView(
             invitationURL: URL(string: "http://192.168.0.188:8123")!,
+            isAccepting: false,
+            onAccept: {},
+            onReject: {}
+        )
+    }
+    .navigationViewStyle(.stack)
+}
+
+#Preview("Long URL") {
+    NavigationView {
+        InvitationView(
+            invitationURL: URL(
+                string: "http://thisisaverylongurlsowecantesthowtheuibehaveswiththisurlwhichisgoingtobesuperlongandimnotgoingtoabletofititanywhere:8123"
+            )!,
             isAccepting: false,
             onAccept: {},
             onReject: {}

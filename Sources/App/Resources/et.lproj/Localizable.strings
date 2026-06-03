@@ -173,6 +173,7 @@
 "camera_player.errors.no_stream_available" = "Voog pole saadaval";
 "camera_player.errors.unable_to_connect_to_server" = "Home Assistantiga ei õnnestu ühendust luua";
 "camera_player.errors.unknown" = "Tundmatu tõrge";
+"camera_player.notification.body" = "Tap to open camera";
 "cameras.drag_to_reorder" = "Lohista ja aseta ümberjärjestamiseks";
 "cameras.no_server_found" = "Kaamera jaoks ei leitud serverit: %@";
 "cancel_label" = "Loobu";
@@ -739,7 +740,11 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.device_name_check.error.prompt" = "Millist seadme nime tuleks selle asemel kasutada?";
 "onboarding.device_name_check.error.title" = "Seade nimega \"%1$@\" on juba olemas.";
 "onboarding.invitation.accept_button" = "Nõustu";
-"onboarding.invitation.other_options" = "Muud valikud";
+"onboarding.invitation.address_title" = "Home Assistant address";
+"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
+"onboarding.invitation.reject_button" = "Reject";
+"onboarding.invitation.screen_title" = "You've been invited";
+"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
 "onboarding.invitation.title" = "Home Assistanti kutse";
 "onboarding.local_access.description" = "Kui see rakendus teab, millal kodust eemal oled, võib see valida turvalisema viisi, kuidas Home Assistantiga ühendust võtta. See eeldab, et asukohateenused on lubatud.";
 "onboarding.local_access.less_secure_option.title" = "Vähem turvaline: Ära luba sellel rakendusel teada millal sa kodus oled";
