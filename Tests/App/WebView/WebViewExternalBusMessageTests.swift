@@ -69,6 +69,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasSettingsScreen",
             "canWriteTag",
             "canCommissionMatter",
+            "hasMatterStatusReport",
             "canImportThreadCredentials",
             "hasBarCodeScanner",
             "canTransferThreadCredentialsToKeychain",

@@ -35,6 +35,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasSettingsScreen": !Current.isCatalyst,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
+            "hasMatterStatusReport": Current.matter.isAvailable,
             "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
             "hasBarCodeScanner": true,
             "canTransferThreadCredentialsToKeychain": Current.matter
