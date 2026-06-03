@@ -2,6 +2,7 @@ import Foundation
 @testable import HomeAssistant
 import Shared
 import UIKit
+import XCTest
 
 final class MockWebViewController: WebViewControllerProtocol {
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol
@@ -17,6 +18,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var evaluateJavaScriptCalled = false
     var lastEvaluatedJavaScriptScript: String?
     var lastEvaluatedJavaScriptCompletion: ((Any?, (any Error)?) -> Void)?
+    var evaluateJavaScriptExpectation: XCTestExpectation?
     var dismissControllerAboveOverlayControllerCalled = false
     var dismissOverlayControllerCalled = false
     var dismissOverlayControllerLastAnimated = false
@@ -69,6 +71,7 @@ final class MockWebViewController: WebViewControllerProtocol {
         evaluateJavaScriptCalled = true
         lastEvaluatedJavaScriptScript = script
         lastEvaluatedJavaScriptCompletion = completion
+        evaluateJavaScriptExpectation?.fulfill()
     }
 
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {

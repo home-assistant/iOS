@@ -471,14 +471,23 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             Current.Log.error("WebViewController not available while commissioning matter device")
             return
         }
-        Current.matter.commission(webViewController.server).done {
-            Current.Log.info("Commission call completed")
+        Current.matter.commission(webViewController.server).done { [weak self] deviceName in
+            Current.Log.info("Commission call completed with device name: \(String(describing: deviceName))")
+            self?.communicateMatterCommissioningFinished(deviceName: deviceName, success: true)
         }.catch { [weak self] error in
-            // we don't show a user-visible error because even a successful operation will return 'cancelled'
-            // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
             Current.Log.error(error)
-            self?.webViewController?.refresh()
+            self?.communicateMatterCommissioningFinished(deviceName: nil, success: false)
         }
+    }
+
+    private func communicateMatterCommissioningFinished(deviceName: String?, success: Bool) {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue,
+            payload: [
+                "name": deviceName,
+                "success": success,
+            ]
+        ))
     }
 
     func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
