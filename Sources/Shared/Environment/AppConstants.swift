@@ -386,6 +386,8 @@ public extension Version {
     static let canNavigateMoreInfoDialogThroughFrontend: Version = .init(major: 2026, minor: 1, prerelease: "any0")
     /// Frontend introduces the quickbar with Ctrl+K keyboard shortcut in 2026.2
     static let quickSearchKeyboardShortcut: Version = .init(major: 2026, minor: 2, prerelease: "any0")
+    /// Core accepts `in_zones` in update_location payloads from 2026.6.0.
+    static let inZonesOnLocationUpdate: Version = .init(major: 2026, minor: 6, patch: 0, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

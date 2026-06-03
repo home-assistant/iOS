@@ -169,6 +169,14 @@ class RealmZoneTests: XCTestCase {
             in: server1
         )
         XCTAssertEqual(inside1?.entityId, "zone1_b", "should prefer smaller")
+        XCTAssertEqual(
+            RLMZone.zones(
+                of: CLLocation(latitude: 37.77427675230296, longitude: -122.39145063179514),
+                in: server1
+            ).map(\.entityId),
+            ["zone1_b", "zone1_a"],
+            "should return all matching zones, sorted by radius"
+        )
 
         let inside2 = RLMZone.zone(
             of: CLLocation(latitude: 37.76392336744542, longitude: -122.41274993932525),
@@ -187,6 +195,15 @@ class RealmZoneTests: XCTestCase {
             in: server1
         )
         XCTAssertEqual(insidePassive?.entityId, "zone_passive", "passive zone with TrackingEnabled should be returned")
+        XCTAssertEqual(
+            RLMZone.zones(
+                of: CLLocation(latitude: 37.80535, longitude: -122.43194),
+                in: server1,
+                includingPassive: false
+            ).map(\.entityId),
+            [],
+            "passive zones should be excluded when requested"
+        )
 
         let insideDisabled = RLMZone.zone(
             of: CLLocation(latitude: 37.80290, longitude: -122.45290),

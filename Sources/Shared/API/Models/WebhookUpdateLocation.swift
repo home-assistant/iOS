@@ -13,6 +13,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
     public var battery: Int?
     public var location: CLLocationCoordinate2D?
     public var locationName: String?
+    public var inZones: [String]?
 
     public var speed: CLLocationSpeed?
     public var altitude: CLLocationDistance?
@@ -29,13 +30,15 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         }
     }
 
-    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) {
+    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?, inZones: [RLMZone]? = nil) {
         self.init(trigger: trigger)
         self.locationName = zone?.deviceTrackerName ?? LocationNames.NotHome.rawValue
+        self.inZones = inZones?.map(\.entityId)
     }
 
-    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
+    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?, inZones: [RLMZone]? = nil) {
         self.init(trigger: trigger)
+        self.inZones = inZones?.map(\.entityId)
 
         let useLocation: Bool
 
@@ -111,6 +114,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         location >>> (map["gps"], CLLocationCoordinate2DTransform())
         horizontalAccuracy >>> map["gps_accuracy"]
         locationName >>> map["location_name"]
+        inZones >>> map["in_zones"]
         speed >>> map["speed"]
         altitude >>> map["altitude"]
         course >>> map["course"]
