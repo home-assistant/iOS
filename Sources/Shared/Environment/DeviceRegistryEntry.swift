@@ -51,6 +51,56 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         self.viaDeviceID = try? data.decode("via_device_id")
     }
 
+    static func decodeLossyArray(
+        data: HAData,
+        onSkippedEntry: (SkippedDecode) -> Void
+    ) throws -> [DeviceRegistryEntry] {
+        guard case let .array(entries) = data else {
+            throw HADataError.couldntTransform(key: "root")
+        }
+
+        return entries.enumerated().compactMap { index, entryData in
+            do {
+                return try DeviceRegistryEntry(data: entryData)
+            } catch {
+                onSkippedEntry(.init(index: index, data: entryData, error: error))
+                return nil
+            }
+        }
+    }
+
+    struct SkippedDecode: Equatable {
+        let index: Int
+        let id: String?
+        let name: String?
+        let nameByUser: String?
+        let manufacturer: String?
+        let model: String?
+        let errorDescription: String
+
+        init(index: Int, data: HAData, error: Error) {
+            self.index = index
+            self.id = data.stringValue(for: "id")
+            self.name = data.stringValue(for: "name")
+            self.nameByUser = data.stringValue(for: "name_by_user")
+            self.manufacturer = data.stringValue(for: "manufacturer")
+            self.model = data.stringValue(for: "model")
+            self.errorDescription = String(describing: error)
+        }
+
+        var logDescription: String {
+            [
+                "index: \(index)",
+                "id: \(id ?? "unknown")",
+                "name: \(name ?? "unknown")",
+                "nameByUser: \(nameByUser ?? "unknown")",
+                "manufacturer: \(manufacturer ?? "unknown")",
+                "model: \(model ?? "unknown")",
+                "error: \(errorDescription)",
+            ].joined(separator: ", ")
+        }
+    }
+
     // Computed helpers
     var displayName: String {
         nameByUser ?? name ?? model ?? id
@@ -108,6 +158,22 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         self.viaDeviceID = viaDeviceID
     }
     #endif
+}
+
+private extension HAData {
+    func stringValue(for key: String) -> String? {
+        guard case let .dictionary(dictionary) = self,
+              let value = dictionary[key],
+              !(value is NSNull) else {
+            return nil
+        }
+
+        if let value = value as? String {
+            return value
+        } else {
+            return String(describing: value)
+        }
+    }
 }
 
 // MARK: - Database Model

@@ -362,11 +362,30 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     continuation.resume(returning: nil)
                     return
                 }
-                api.connection.send(.configDeviceRegistryList()) { result in
+                api.connection.send(HARequest(type: "config/device_registry/list")) { result in
                     switch result {
-                    case let .success(entries):
-                        Current.Log.verbose("Successfully fetched device registry for server \(server.info.name)")
-                        continuation.resume(returning: entries)
+                    case let .success(data):
+                        do {
+                            let entries = try DeviceRegistryEntry.decodeLossyArray(data: data) { skippedEntry in
+                                Current.Log.error(
+                                    "Skipped malformed device registry entry for server \(server.info.name), \(skippedEntry.logDescription)"
+                                )
+                            }
+                            Current.Log.verbose(
+                                "Successfully fetched device registry for server \(server.info.name), entries: \(entries.count)"
+                            )
+                            continuation.resume(returning: entries)
+                        } catch {
+                            Current.Log.error("Failed to decode device registry response: \(error)")
+                            Current.clientEventStore.addEvent(.init(
+                                text: "Failed to decode device registry response on server \(server.info.name)",
+                                type: .networkRequest,
+                                payload: [
+                                    "error": error.localizedDescription,
+                                ]
+                            ))
+                            continuation.resume(returning: nil)
+                        }
                     case let .failure(error):
                         Current.Log.error("Failed to fetch device registry: \(error)")
                         Current.clientEventStore.addEvent(.init(
