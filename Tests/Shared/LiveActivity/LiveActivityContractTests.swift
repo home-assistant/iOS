@@ -25,6 +25,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testContentState_codingKeys_areFrozen() {
         let state = HALiveActivityAttributes.ContentState(
             message: "test",
+            title: "Title",
             criticalText: "ct",
             progress: 1,
             progressMax: 2,
@@ -40,6 +41,7 @@ final class LiveActivityContractTests: XCTestCase {
 
         // These keys must match the Android notification field names exactly.
         let expectedKeys: Set<String> = [
+            "title",
             "message",
             "critical_text",
             "progress",
@@ -56,6 +58,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testContentState_roundTrip_preservesAllFields() {
         let original = HALiveActivityAttributes.ContentState(
             message: "Cycle in progress",
+            title: "Washer",
             criticalText: "45 min",
             progress: 2700,
             progressMax: 3600,

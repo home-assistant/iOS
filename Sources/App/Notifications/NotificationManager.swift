@@ -8,8 +8,18 @@ import SwiftUI
 import UserNotifications
 import XCGLogger
 
+#if DEBUG
+private let forceDisableLocalPushForLiveActivityTesting = true
+#endif
+
 class NotificationManager: NSObject, LocalPushManagerDelegate {
     lazy var localPushManager: NotificationManagerLocalPushInterface = {
+        #if DEBUG
+        if forceDisableLocalPushForLiveActivityTesting {
+            return NotificationManagerLocalPushInterfaceDisallowed()
+        }
+        #endif
+
         #if targetEnvironment(simulator)
         return NotificationManagerLocalPushInterfaceDirect(delegate: self)
         #else

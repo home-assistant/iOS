@@ -19,7 +19,7 @@ func makeHADynamicIsland(
                 .padding(.leading, DesignSystem.Spaces.one)
         }
         DynamicIslandExpandedRegion(.center) {
-            Text(attributes.title)
+            Text(state.title ?? attributes.title)
                 .font(.body.weight(.semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)

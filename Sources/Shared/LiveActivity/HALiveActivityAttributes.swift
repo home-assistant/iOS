@@ -26,6 +26,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
     /// Codable state that can be updated via push or local update.
     /// Field names map to Android companion app notification data fields.
     public struct ContentState: Codable, Hashable {
+        /// Dynamic display title. Mirrors top-level `title` so updates can refresh the header.
+        public var title: String?
+
         /// Primary body text. Maps to `message` in the notification payload.
         public var message: String
 
@@ -66,6 +69,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
 
         /// Explicit coding keys so that JSON field names match the Android notification fields.
         enum CodingKeys: String, CodingKey {
+            case title
             case message
             case criticalText = "critical_text"
             case progress
@@ -80,6 +84,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
 
         public init(
             message: String,
+            title: String? = nil,
             criticalText: String? = nil,
             progress: Int? = nil,
             progressMax: Int? = nil,
@@ -88,6 +93,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             icon: String? = nil,
             color: String? = nil
         ) {
+            self.title = title
             self.message = message
             self.criticalText = criticalText
             self.progress = progress
@@ -106,6 +112,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         // avoid a ~31-year offset. The encoder is symmetric for round-tripping.
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.title = try container.decodeIfPresent(String.self, forKey: .title)
             self.message = try container.decode(String.self, forKey: .message)
             self.criticalText = try container.decodeIfPresent(String.self, forKey: .criticalText)
             self.progress = try container.decodeIfPresent(Int.self, forKey: .progress)
@@ -122,6 +129,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
 
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encodeIfPresent(title, forKey: .title)
             try container.encode(message, forKey: .message)
             try container.encodeIfPresent(criticalText, forKey: .criticalText)
             try container.encodeIfPresent(progress, forKey: .progress)
