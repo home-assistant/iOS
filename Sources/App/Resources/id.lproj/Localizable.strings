@@ -739,7 +739,6 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.device_name_check.error.prompt" = "Nama perangkat apa yang ingin digunakan?";
 "onboarding.device_name_check.error.title" = "Sudah ada perangkat dengan nama '%1$@'";
 "onboarding.invitation.accept_button" = "Terima";
-"onboarding.invitation.other_options" = "Opsi lainnya";
 "onboarding.invitation.title" = "Undangan Home Assistant";
 "onboarding.local_access.description" = "Jika aplikasi ini mengetahui saat Anda jauh dari rumah, aplikasi ini dapat memilih cara yang lebih aman untuk terhubung ke sistem Home Assistant Anda. Hal ini memerlukan layanan lokasi untuk diaktifkan.";
 "onboarding.local_access.less_secure_option.title" = "Kurang aman: Jangan izinkan aplikasi ini mengetahui saat Anda berada di rumah";

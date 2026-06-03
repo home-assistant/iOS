@@ -739,7 +739,6 @@
 "onboarding.device_name_check.error.prompt" = "Bunun yerine hangi cihaz adı kullanılmalıdır?";
 "onboarding.device_name_check.error.title" = "%1$@ ' adında bir cihaz zaten var";
 "onboarding.invitation.accept_button" = "Kabul et";
-"onboarding.invitation.other_options" = "Diğer seçenekler";
 "onboarding.invitation.title" = "Home Assistant Daveti";
 "onboarding.local_access.description" = "Bu uygulama evden uzakta olduğunuzu bildiğinde, Ev Asistanı sisteminize bağlanmak için daha güvenli bir yol seçebilir. Bunun için konum servislerinin etkinleştirilmesi gerekir.";
 "onboarding.local_access.less_secure_option.title" = "Daha az güvenli: Bu uygulamanın evde olduğunuzu bilmesine izin vermeyin";

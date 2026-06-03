@@ -739,7 +739,6 @@
 "onboarding.device_name_check.error.prompt" = "所要使用的裝置名稱？";
 "onboarding.device_name_check.error.title" = "裝置已存在名稱 '%1$@'";
 "onboarding.invitation.accept_button" = "接受";
-"onboarding.invitation.other_options" = "其他選項";
 "onboarding.invitation.title" = "Home Assistant 邀請";
 "onboarding.local_access.description" = "如果應用程式得知您何時不在家，可以選擇更安全的方式連線至您的 Home Assistant 系統。此功能將需要啟用定位服務。";
 "onboarding.local_access.less_secure_option.title" = "安全性較低：不允許應用程式知道您何時在家";

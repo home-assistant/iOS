@@ -739,7 +739,6 @@
 "onboarding.device_name_check.error.prompt" = "Какое имя устройства следует использовать вместо этого?";
 "onboarding.device_name_check.error.title" = "Устройство с именем '%1$@' уже существует";
 "onboarding.invitation.accept_button" = "Принять";
-"onboarding.invitation.other_options" = "Другие варианты";
 "onboarding.invitation.title" = "Приглашение Home Assistant";
 "onboarding.local_access.description" = "Если это приложение знает, когда вы находитесь вне дома, оно может выбрать более безопасный способ подключения к вашей системе Home Assistant. Для этого необходимо включить службы местоположения.";
 "onboarding.local_access.less_secure_option.title" = "Менее безопасно: Не разрешать этому приложению знать, когда вы дома";

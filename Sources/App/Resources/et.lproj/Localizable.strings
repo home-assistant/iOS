@@ -739,7 +739,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.device_name_check.error.prompt" = "Millist seadme nime tuleks selle asemel kasutada?";
 "onboarding.device_name_check.error.title" = "Seade nimega \"%1$@\" on juba olemas.";
 "onboarding.invitation.accept_button" = "Nõustu";
-"onboarding.invitation.other_options" = "Muud valikud";
 "onboarding.invitation.title" = "Home Assistanti kutse";
 "onboarding.local_access.description" = "Kui see rakendus teab, millal kodust eemal oled, võib see valida turvalisema viisi, kuidas Home Assistantiga ühendust võtta. See eeldab, et asukohateenused on lubatud.";
 "onboarding.local_access.less_secure_option.title" = "Vähem turvaline: Ära luba sellel rakendusel teada millal sa kodus oled";

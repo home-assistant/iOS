@@ -739,7 +739,6 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.device_name_check.error.prompt" = "Hvilket enhetsnavn bør brukes i stedet?";
 "onboarding.device_name_check.error.title" = "Det finnes allerede en enhet med navnet ' %1$@ '";
 "onboarding.invitation.accept_button" = "Aksepter";
-"onboarding.invitation.other_options" = "Andre alternativer";
 "onboarding.invitation.title" = "Home Assistant invitasjon";
 "onboarding.local_access.description" = "If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.";
 "onboarding.local_access.less_secure_option.title" = "Less secure: Do not allow this app to know when you're home";

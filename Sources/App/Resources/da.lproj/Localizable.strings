@@ -739,7 +739,6 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.device_name_check.error.prompt" = "Hvilket enhedsnavn skal bruges i stedet?";
 "onboarding.device_name_check.error.title" = "Der findes allerede en enhed med navnet '%1$@'";
 "onboarding.invitation.accept_button" = "Acceptér";
-"onboarding.invitation.other_options" = "Andre muligheder";
 "onboarding.invitation.title" = "Invitation til Home Assistant";
 "onboarding.local_access.description" = "Hvis denne app ved, hvornår du er væk hjemmefra, kan den vælge en mere sikker måde at oprette forbindelse til dit Home Assistant-system på. Dette kræver, at lokalitetstjenester er aktiveret.";
 "onboarding.local_access.less_secure_option.title" = "Mindre sikker: Lad ikke denne app vide, hvornår du er hjemme";

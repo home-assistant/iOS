@@ -735,7 +735,6 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.device_name_check.error.prompt" = "Vilket enhetsnamn ska användas istället?";
 "onboarding.device_name_check.error.title" = "Det finns redan en enhet med namnet '%1$@'";
 "onboarding.invitation.accept_button" = "Acceptera";
-"onboarding.invitation.other_options" = "Andra alternativ";
 "onboarding.invitation.title" = "Home Assistant-inbjudan";
 "onboarding.local_access.description" = "Om den här appen vet när du är borta hemifrån kan den välja ett säkrare sätt att ansluta till ditt Home Assistant-system. Detta kräver att platstjänster är aktiverade.";
 "onboarding.local_access.less_secure_option.title" = "Mindre säker: Låt inte den här appen veta när du är hemma";

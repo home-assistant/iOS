@@ -739,7 +739,6 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.device_name_check.error.prompt" = "Milyen eszköznevet kell helyette használni?";
 "onboarding.device_name_check.error.title" = "Már létezik egy eszköz a '%1$@' névvel.";
 "onboarding.invitation.accept_button" = "Elfogadás";
-"onboarding.invitation.other_options" = "Egyéb lehetőségek";
 "onboarding.invitation.title" = "Home Assistant meghívó";
 "onboarding.local_access.description" = "Ha az alkalmazás tudja, mikor nincs otthon, biztonságosabb módot választhat a Home Assistant rendszerhez való csatlakozáshoz. Ehhez engedélyezni kell a helymeghatározó szolgáltatásokat.";
 "onboarding.local_access.less_secure_option.title" = "Kevésbé biztonságos: Az alkalmazás ne tudja, mikor van otthon";

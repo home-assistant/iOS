@@ -739,7 +739,6 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.device_name_check.error.prompt" = "Welcher Gerätename sollte stattdessen verwendet werden?";
 "onboarding.device_name_check.error.title" = "Ein Gerät mit dem Namen '%1$@' existiert bereits";
 "onboarding.invitation.accept_button" = "Annehmen";
-"onboarding.invitation.other_options" = "Weitere Optionen";
 "onboarding.invitation.title" = "Home Assistant-Einladung";
 "onboarding.local_access.description" = "Wenn diese App weiß, wann du nicht zuhause bist, kann sie eine sicherere Verbindung zu deinem Home Assistant-System herstellen. Dazu müssen die Ortungsdienste aktiviert sein.";
 "onboarding.local_access.less_secure_option.title" = "Weniger sicher: Erlaube dieser App nicht, zu wissen, wann du zuhause bist";

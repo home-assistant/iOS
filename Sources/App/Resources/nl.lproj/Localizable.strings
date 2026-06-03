@@ -739,7 +739,6 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.device_name_check.error.prompt" = "Welke apparaat moet in plaats daarvan worden gebruikt?";
 "onboarding.device_name_check.error.title" = "Er bestaat al een apparaat met de naam ' %1$@ '";
 "onboarding.invitation.accept_button" = "Accepteren";
-"onboarding.invitation.other_options" = "Andere opties";
 "onboarding.invitation.title" = "Uitnodiging voor Home Assistant";
 "onboarding.local_access.description" = "Als deze app weet wanneer je niet thuis bent, kan het een veiligere manier kiezen om verbinding te maken met je Home Assistant systeem. Hiervoor moeten locatievoorzieningen ingeschakeld zijn.";
 "onboarding.local_access.less_secure_option.title" = "Minder veilig: Laat deze app niet weten wanneer je thuis bent";
