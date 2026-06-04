@@ -14,25 +14,32 @@ final class LocalPushRetryDiagnosticsTests: XCTestCase {
     func testRetryEligibleWhenLocalPushEnabledAndCurrentSSIDMatches() {
         let server = makeServer(localPushEnabled: true, internalSSIDs: ["Home"])
 
-        XCTAssertTrue(LocalPushRetryDiagnostics.isRetryEligible(server: server, currentSSID: "Home"))
+        XCTAssertTrue(LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: "Home"))
     }
 
     func testRetryIneligibleWhenLocalPushDisabled() {
         let server = makeServer(localPushEnabled: false, internalSSIDs: ["Home"])
 
-        XCTAssertFalse(LocalPushRetryDiagnostics.isRetryEligible(server: server, currentSSID: "Home"))
+        XCTAssertFalse(LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: "Home"))
     }
 
     func testRetryIneligibleWhenCurrentSSIDIsNil() {
         let server = makeServer(localPushEnabled: true, internalSSIDs: ["Home"])
 
-        XCTAssertFalse(LocalPushRetryDiagnostics.isRetryEligible(server: server, currentSSID: nil))
+        XCTAssertFalse(LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: nil))
     }
 
     func testRetryIneligibleWhenCurrentSSIDDoesNotMatch() {
         let server = makeServer(localPushEnabled: true, internalSSIDs: ["Home"])
 
-        XCTAssertFalse(LocalPushRetryDiagnostics.isRetryEligible(server: server, currentSSID: "Coffee Shop"))
+        XCTAssertFalse(LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: "Coffee Shop"))
+    }
+
+    func testRetryIneligibleWhenInternalURLIsMissing() {
+        let server = makeServer(localPushEnabled: true, internalSSIDs: ["Home"], hasInternalURL: false)
+
+        XCTAssertFalse(LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: "Home"))
+        XCTAssertTrue(LocalPushRetryDiagnostics.matchesExpectedNetworkConditions(server: server, currentSSID: "Home"))
     }
 
     func testPayloadContainsRetryContext() {
@@ -59,12 +66,18 @@ final class LocalPushRetryDiagnosticsTests: XCTestCase {
         XCTAssertEqual(payload["error"] as? String, String(describing: TestError.example))
     }
 
-    private func makeServer(localPushEnabled: Bool, internalSSIDs: [String]) -> Server {
+    private func makeServer(
+        localPushEnabled: Bool,
+        internalSSIDs: [String],
+        hasInternalURL: Bool = true
+    ) -> Server {
         let server = servers.addFake()
         server.update { info in
             info.connection.isLocalPushEnabled = localPushEnabled
             info.connection.internalSSIDs = internalSSIDs
-            info.connection.set(address: URL(string: "http://homeassistant.local:8123"), for: .internal)
+            if hasInternalURL {
+                info.connection.set(address: URL(string: "http://homeassistant.local:8123"), for: .internal)
+            }
         }
         return server
     }

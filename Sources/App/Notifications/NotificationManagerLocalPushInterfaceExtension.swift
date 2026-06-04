@@ -84,6 +84,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         let servers = retryEligibleServers(targetServer: server)
         guard !servers.isEmpty else {
             Current.Log.info("Skipping local push retry for \(reason.eventValue), no eligible servers")
+            logRetryDiagnostics(reason: reason, targetServer: server, managers: [], error: nil)
             return
         }
 
@@ -346,7 +347,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     private func retryEligibleServers(targetServer: Server?) -> [Server] {
         let currentSSID = Current.connectivity.currentWiFiSSID()
         return (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
-            LocalPushRetryDiagnostics.isRetryEligible(server: server, currentSSID: currentSSID)
+            LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: currentSSID)
         }
     }
 
@@ -357,7 +358,9 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         error: Error?
     ) {
         let currentSSID = Current.connectivity.currentWiFiSSID()
-        let servers = retryEligibleServers(targetServer: targetServer)
+        let servers = (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
+            LocalPushRetryDiagnostics.matchesExpectedNetworkConditions(server: server, currentSSID: currentSSID)
+        }
 
         for server in servers {
             let serverManagers = managers[server.identifier, default: []]
@@ -399,7 +402,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 }
 
 enum LocalPushRetryDiagnostics {
-    static func isRetryEligible(server: Server, currentSSID: String?) -> Bool {
+    static func matchesExpectedNetworkConditions(server: Server, currentSSID: String?) -> Bool {
         guard server.info.connection.isLocalPushEnabled,
               let currentSSID,
               server.info.connection.internalSSIDs?.contains(currentSSID) == true else {
@@ -407,6 +410,11 @@ enum LocalPushRetryDiagnostics {
         }
 
         return true
+    }
+
+    static func canRetry(server: Server, currentSSID: String?) -> Bool {
+        matchesExpectedNetworkConditions(server: server, currentSSID: currentSSID) &&
+            server.info.connection.address(for: .internal) != nil
     }
 
     static func payload(

@@ -244,6 +244,7 @@ struct ConnectionSettingsView: View {
             LocalPushStatusRow(
                 title: L10n.SettingsDetails.Notifications.LocalPush.title,
                 value: viewModel.localPushStatus,
+                canRetry: viewModel.canRetryLocalPush,
                 retryAction: viewModel.retryLocalPush
             )
 
@@ -589,6 +590,7 @@ private struct LabelRow: View {
 private struct LocalPushStatusRow: View {
     let title: String
     let value: String
+    let canRetry: Bool
     let retryAction: () -> Void
 
     var body: some View {
@@ -601,6 +603,7 @@ private struct LocalPushStatusRow: View {
                 Image(systemSymbol: .arrowClockwise)
             }
             .buttonStyle(.borderless)
+            .disabled(!canRetry)
             .accessibilityLabel(L10n.SettingsDetails.Notifications.LocalPush.Retry.title)
         }
     }
