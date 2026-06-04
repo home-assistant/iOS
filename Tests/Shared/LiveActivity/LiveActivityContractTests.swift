@@ -88,6 +88,15 @@ final class LiveActivityContractTests: XCTestCase {
         )
     }
 
+    /// Registration app_data key for the push-to-start token.
+    /// Must match what HA core stores for starts before a per-activity token exists.
+    func testPushToStartRegistrationKey_isFrozen() {
+        XCTAssertEqual(
+            LiveActivityRegistry.pushToStartRegistrationKey,
+            "push_to_start_live_activity_token"
+        )
+    }
+
     /// Webhook type string for reporting a new per-activity push token.
     /// Must match the HA core webhook handler name.
     func testWebhookTypeToken_isFrozen() {

@@ -602,7 +602,7 @@ public class HomeAssistantAPI {
                     // Push-to-start token (stored in Keychain at launch, updated via stream).
                     // The relay server uses this token to start a Live Activity entirely via APNs.
                     if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
-                        appData["live_activity_token"] = pushToStartToken
+                        appData[LiveActivityRegistry.pushToStartRegistrationKey] = pushToStartToken
                         appData["live_activity_push_to_start_apns_environment"] = Current.apnsEnvironment
                     }
                 }
