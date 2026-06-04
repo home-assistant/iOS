@@ -3960,6 +3960,10 @@ public enum L10n {
       public enum LocalPush {
         /// Local Push
         public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.title") }
+        public enum Retry {
+          /// Retry Local Push
+          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.retry.title") }
+        }
         public enum Status {
           /// Available (%1$@)
           public static func available(_ p1: Any) -> String {
