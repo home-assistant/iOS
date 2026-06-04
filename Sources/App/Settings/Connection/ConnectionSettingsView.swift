@@ -241,9 +241,10 @@ struct ConnectionSettingsView: View {
 
             WebSocketStatusView(state: viewModel.websocketState)
 
-            LabelRow(
+            LocalPushStatusRow(
                 title: L10n.SettingsDetails.Notifications.LocalPush.title,
-                value: viewModel.localPushStatus
+                value: viewModel.localPushStatus,
+                retryAction: viewModel.retryLocalPush
             )
 
             NavigationLink {
@@ -581,6 +582,26 @@ private struct LabelRow: View {
             Spacer()
             Text(value)
                 .foregroundColor(.secondary)
+        }
+    }
+}
+
+private struct LocalPushStatusRow: View {
+    let title: String
+    let value: String
+    let retryAction: () -> Void
+
+    var body: some View {
+        HStack {
+            Text(title)
+            Spacer()
+            Text(value)
+                .foregroundColor(.secondary)
+            Button(action: retryAction) {
+                Image(systemSymbol: .arrowClockwise)
+            }
+            .buttonStyle(.borderless)
+            .accessibilityLabel(L10n.SettingsDetails.Notifications.LocalPush.Retry.title)
         }
     }
 }

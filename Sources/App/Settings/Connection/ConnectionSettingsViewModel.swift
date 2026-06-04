@@ -78,6 +78,11 @@ final class ConnectionSettingsViewModel: ObservableObject {
         server.refreshAppDatabase(forceUpdate: true)
     }
 
+    func retryLocalPush() {
+        Current.notificationManager.localPushManager.retryLocalPush(for: server, reason: .manual)
+        updateLocalPushStatus()
+    }
+
     // MARK: - Setup
 
     private func setupObservers() {

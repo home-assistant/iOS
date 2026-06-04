@@ -1206,6 +1206,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.local_push.status.establishing" = "Establishing";
 "settings_details.notifications.local_push.status.unavailable" = "Unavailable";
 "settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.title" = "Local Push";
 "settings_details.notifications.new_category.title" = "New Category";
 "settings_details.notifications.permission.disabled" = "Denied";

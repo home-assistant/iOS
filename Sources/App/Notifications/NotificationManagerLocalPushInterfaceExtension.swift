@@ -8,10 +8,12 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     /// Delay in seconds before reloading managers after configuration changes.
     /// This allows the system to persist changes before attempting to reload them.
     private static let managerReloadDelay: TimeInterval = 0.5
+    private static let appOpenRetryDelays: [TimeInterval] = [10, 30, 60]
 
     private var observers = [Observer]()
     private var syncStates: PerServerContainer<LocalPushStateSync>!
     private var managers = [Identifier<Server>: [NEAppPushManager]]()
+    private var appOpenRetryWorkItems = [DispatchWorkItem]()
 
     private var tokens: [NSKeyValueObservation] = [] {
         didSet {
@@ -78,7 +80,40 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         updateManagers()
     }
 
-    private func updateManagers() {
+    func retryLocalPush(for server: Server?, reason: LocalPushRetryReason) {
+        let servers = retryEligibleServers(targetServer: server)
+        guard !servers.isEmpty else {
+            Current.Log.info("Skipping local push retry for \(reason.eventValue), no eligible servers")
+            return
+        }
+
+        Current.Log.info("Retrying local push for \(servers.count) server(s), reason: \(reason.eventValue)")
+        updateManagers(reason: reason, targetServer: server)
+    }
+
+    func scheduleAppOpenLocalPushRetries() {
+        cancelAppOpenRetryWorkItems()
+
+        retryLocalPush(for: nil, reason: .appOpen)
+
+        for delay in Self.appOpenRetryDelays {
+            let workItem = DispatchWorkItem { [weak self] in
+                self?.retryLocalPush(for: nil, reason: .appOpenDelayed(seconds: delay))
+            }
+            appOpenRetryWorkItems.append(workItem)
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+        }
+    }
+
+    private func cancelAppOpenRetryWorkItems() {
+        appOpenRetryWorkItems.forEach { $0.cancel() }
+        appOpenRetryWorkItems.removeAll()
+    }
+
+    private func updateManagers(
+        reason: LocalPushRetryReason? = nil,
+        targetServer: Server? = nil
+    ) {
         Current.Log.info()
 
         NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
@@ -86,6 +121,14 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
             if let error {
                 Current.Log.error("failed to load local push managers: \(error)")
+                if let reason {
+                    logRetryDiagnostics(
+                        reason: reason,
+                        targetServer: targetServer,
+                        managers: managers ?? [],
+                        error: error
+                    )
+                }
                 return
             }
 
@@ -107,7 +150,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                     existingManager: existing,
                     ssid: ssid,
                     servers: servers,
-                    encoder: encoder
+                    encoder: encoder,
+                    reason: reason
                 )
                 updatedManagers.append(updated)
                 if updated.isDirty {
@@ -123,13 +167,16 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
 
             configure(managers: updatedManagers)
+            if let reason, !hasDirtyManagers {
+                logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers ?? [], error: nil)
+            }
 
             // If we made changes to managers, reload them after a brief delay to ensure
             // the system picks up the changes, especially when enabling local push
             // while already on the internal network
             if hasDirtyManagers {
                 DispatchQueue.main.asyncAfter(deadline: .now() + Self.managerReloadDelay) { [weak self] in
-                    self?.reloadManagersAfterSave()
+                    self?.reloadManagersAfterSave(reason: reason, targetServer: targetServer)
                 }
             }
         }
@@ -141,7 +188,10 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     ///
     /// Note: This only configures managers that were successfully saved by updateManagers().
     /// Managers for removed SSIDs or disabled servers are intentionally not recreated.
-    private func reloadManagersAfterSave() {
+    private func reloadManagersAfterSave(
+        reason: LocalPushRetryReason? = nil,
+        targetServer: Server? = nil
+    ) {
         Current.Log.info("Reloading managers after configuration changes")
 
         NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
@@ -149,6 +199,14 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
             if let error {
                 Current.Log.error("failed to reload local push managers: \(error)")
+                if let reason {
+                    logRetryDiagnostics(
+                        reason: reason,
+                        targetServer: targetServer,
+                        managers: managers ?? [],
+                        error: error
+                    )
+                }
                 return
             }
 
@@ -164,6 +222,9 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
 
             configure(managers: configureManagers)
+            if let reason {
+                logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers ?? [], error: nil)
+            }
         }
     }
 
@@ -206,7 +267,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         existingManager: NEAppPushManager?,
         ssid: String,
         servers: [Server],
-        encoder: JSONEncoder
+        encoder: JSONEncoder,
+        reason: LocalPushRetryReason?
     ) -> ConfigureManager {
         let manager = existingManager ?? NEAppPushManager()
         // just toggling isEnabled doesn't seem to kill off the extension reliably, so we remove when unwanted
@@ -249,8 +311,18 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
 
         if isDirty {
-            manager.saveToPreferences { error in
+            manager.saveToPreferences { [weak self] error in
                 Current.Log.info("manager \(manager) saved, error: \(String(describing: error))")
+                if let reason, let error {
+                    for server in servers {
+                        self?.logRetryDiagnostics(
+                            reason: reason,
+                            targetServer: server,
+                            managers: [manager],
+                            error: error
+                        )
+                    }
+                }
             }
         }
 
@@ -270,11 +342,99 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
         }
     }
+
+    private func retryEligibleServers(targetServer: Server?) -> [Server] {
+        let currentSSID = Current.connectivity.currentWiFiSSID()
+        return (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
+            LocalPushRetryDiagnostics.isRetryEligible(server: server, currentSSID: currentSSID)
+        }
+    }
+
+    private func logRetryDiagnostics(
+        reason: LocalPushRetryReason,
+        targetServer: Server?,
+        managers loadedManagers: [NEAppPushManager],
+        error: Error?
+    ) {
+        let currentSSID = Current.connectivity.currentWiFiSSID()
+        let servers = retryEligibleServers(targetServer: targetServer)
+
+        for server in servers {
+            let serverManagers = managers[server.identifier, default: []]
+            let loadedServerManagers = loadedManagers.filter { manager in
+                (server.info.connection.internalSSIDs ?? []).contains { manager.matchSSIDs.contains($0) }
+            }
+            let managerCount = max(serverManagers.count, loadedServerManagers.count)
+            let activeManagerCount = max(
+                serverManagers.filter(\.isActive).count,
+                loadedServerManagers.filter(\.isActive).count
+            )
+
+            let isDisabledStatus: Bool
+            if case .disabled = status(for: server) {
+                isDisabledStatus = true
+            } else {
+                isDisabledStatus = false
+            }
+
+            guard error != nil || activeManagerCount == 0 || isDisabledStatus else {
+                continue
+            }
+
+            let payload = LocalPushRetryDiagnostics.payload(
+                server: server,
+                reason: reason,
+                currentSSID: currentSSID,
+                managerCount: managerCount,
+                activeManagerCount: activeManagerCount,
+                error: error
+            )
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Local Push retry did not enable",
+                type: .settings,
+                payload: payload
+            ))
+        }
+    }
+}
+
+enum LocalPushRetryDiagnostics {
+    static func isRetryEligible(server: Server, currentSSID: String?) -> Bool {
+        guard server.info.connection.isLocalPushEnabled,
+              let currentSSID,
+              server.info.connection.internalSSIDs?.contains(currentSSID) == true else {
+            return false
+        }
+
+        return true
+    }
+
+    static func payload(
+        server: Server,
+        reason: LocalPushRetryReason,
+        currentSSID: String?,
+        managerCount: Int,
+        activeManagerCount: Int,
+        error: Error?
+    ) -> [String: Any] {
+        [
+            "server_id": server.identifier.rawValue,
+            "server_name": server.info.name,
+            "reason": reason.eventValue,
+            "current_ssid": currentSSID ?? "",
+            "configured_ssids": server.info.connection.internalSSIDs ?? [],
+            "local_push_enabled": server.info.connection.isLocalPushEnabled,
+            "has_internal_url": server.info.connection.address(for: .internal) != nil,
+            "manager_count": managerCount,
+            "active_manager_count": activeManagerCount,
+            "error": error.map { String(describing: $0) } ?? "",
+        ]
+    }
 }
 
 extension NotificationManagerLocalPushInterfaceExtension: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-        updateManagers()
+        updateManagers(reason: .serverChanged)
     }
 }
 
