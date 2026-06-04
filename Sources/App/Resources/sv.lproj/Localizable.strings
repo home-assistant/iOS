@@ -466,7 +466,6 @@
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Sammanfattningar";
 "home_view.menu.allow_multiple_selection" = "TIllåt flera val";
-"home_view.menu.customize" = "Anpassa";
 "home_view.menu.reorder" = "Ändra ordning";
 "home_view.menu.settings" = "Inställningar";
 "home_view.summaries.count_active" = "%li aktiv";

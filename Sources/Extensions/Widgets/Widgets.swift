@@ -27,7 +27,6 @@ struct WidgetsBundleLegacy: WidgetBundle {
         }
         #endif
         WidgetAssist()
-        LegacyWidgetActions()
         WidgetOpenPage()
     }
 }
@@ -51,7 +50,6 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetTodoList()
         WidgetGauge()
         WidgetDetails()
-        WidgetActions()
         WidgetOpenPage()
         WidgetSensors()
     }
@@ -100,7 +98,6 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetGauge()
         WidgetDetails()
         WidgetSensors()
-        WidgetActions()
         WidgetOpenPage()
     }
 }

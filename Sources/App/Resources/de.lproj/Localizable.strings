@@ -468,7 +468,6 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "home_view.customization.common_controls.title" = "Steuert den Vorhersage-Abschnitt";
 "home_view.customization.summaries.title" = "Zusammenfassungen";
 "home_view.menu.allow_multiple_selection" = "Mehrfachauswahl zulassen";
-"home_view.menu.customize" = "Anpassen";
 "home_view.menu.reorder" = "Neu anordnen";
 "home_view.menu.settings" = "Einstellungen";
 "home_view.summaries.count_active" = "%li aktiv";

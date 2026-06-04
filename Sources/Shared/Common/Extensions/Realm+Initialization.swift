@@ -73,9 +73,7 @@ public extension Realm {
 
         // 5  - 2020-07-08 v2020.4
         // 6  - 2020-07-12 v2020.4
-        // 7  - 2020-07-20 v2020.5 (added RLMScene)
         // 9  - 2020-07-23 v2020.5 (primary key removal on NotificationAction)
-        // 10 - 2020-07-31 v2020.5 (added isServerControlled to Action)
         // 11 - 2020-08-12 v2020.5.2 (cleaning up duplicate NotificationCategory identifiers)
         // 12 - 2020-08-16 v2020.6 (mdi upgrade/migration to 5.x)
         // 13 - 2020-10-17 v2020.7 (allow multiple complications)
@@ -87,8 +85,7 @@ public extension Realm {
         // 19 - 2021-11-27 v2021.12 (zone property renames)
         // 20…25 - 2022-08-13 v2022.x undoing realm automatic migration
         // 26 - 2022-08-13 v2022.x bumping mdi version
-        // 27 - 2024-01-18 v2024.x adding CarPlay toggle to Actions
-        // 28 - 2024-07-29 v2024.x Add option to use custom colors
+        // 29 - 2026-05-27 v2026.x Remove legacy iOS action Realm models
 
         // Current schema version from database
         if let currentSchemaVersion = try? schemaVersionAtURL(storeURL) {
@@ -96,7 +93,7 @@ public extension Realm {
         }
 
         // New schema version
-        let schemaVersion: UInt64 = 28
+        let schemaVersion: UInt64 = 29
         Current.Log.verbose("Schema version defined: \(schemaVersion)")
 
         let config = Realm.Configuration(
@@ -107,12 +104,6 @@ public extension Realm {
                 if oldVersion < 9 {
                     migration.enumerateObjects(ofType: NotificationAction.className()) { _, newObject in
                         newObject?["uuid"] = UUID().uuidString
-                    }
-                }
-
-                if oldVersion < 10 {
-                    migration.enumerateObjects(ofType: Action.className()) { _, newObject in
-                        newObject?["isServerControlled"] = false
                     }
                 }
 
@@ -147,20 +138,6 @@ public extension Realm {
                     }
                 }
 
-                if oldVersion < 15 {
-                    migration.enumerateObjects(ofType: RLMScene.className()) { oldObject, newObject in
-                        if let data = oldObject?["underlyingSceneData"] as? Data,
-                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                           let attributes = json["attributes"] as? [String: Any] {
-                            newObject?["backgroundColor"] = attributes["background_color"] as? String
-                            newObject?["textColor"] = attributes["text_color"] as? String
-                            newObject?["iconColor"] = attributes["icon_color"] as? String
-                            newObject?["icon"] = attributes["icon"] as? String
-                            newObject?["name"] = attributes["friendly_name"] as? String
-                        }
-                    }
-                }
-
                 if oldVersion < 16 {
                     // nothing, it added an optional
                 }
@@ -178,9 +155,7 @@ public extension Realm {
                     }
 
                     migrate(NotificationCategory.self)
-                    migrate(RLMScene.self)
                     migrate(RLMZone.self)
-                    migrate(Action.self)
 
                     migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
                         newObject?["serverIdentifier"] = Server.historicId.rawValue
@@ -200,27 +175,8 @@ public extension Realm {
                     }
                 }
 
-                if oldVersion < 27 {
-                    migration.enumerateObjects(ofType: Action.className()) { _, newObject in
-                        newObject?["showInCarPlay"] = true
-                        newObject?["showInWatch"] = true
-                    }
-                }
-
-                if oldVersion < 28 {
-                    migration.enumerateObjects(ofType: Action.className()) { _, newObject in
-                        newObject?["useCustomColors"] = false
-                    }
-                }
-
                 do {
                     // always do an MDI migration, since micro-managing whether it needs to be done is annoying
-                    migration.enumerateObjects(ofType: Action.className()) { _, newObject in
-                        let iconNameKey = "IconName"
-                        if let oldIconName = newObject?[iconNameKey] as? String {
-                            newObject?[iconNameKey] = MDIMigration.migrate(icon: oldIconName)
-                        }
-                    }
                     migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
                         let dataKey = "complicationData"
                         let iconDictKey = "icon"

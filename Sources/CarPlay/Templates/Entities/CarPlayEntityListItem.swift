@@ -4,7 +4,7 @@ import HAKit
 import Shared
 
 final class CarPlayEntityListItem: CarPlayListItemProvider {
-    static let executingSubtitle = L10n.CarPlay.Action.Execute.inProgress
+    static let executingSubtitle = L10n.CarPlay.QuickAccess.Execute.inProgress
     private static let minimumExecutingDuration: TimeInterval = 1.5
 
     private struct DisplayContent {

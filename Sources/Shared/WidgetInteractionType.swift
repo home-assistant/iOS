@@ -6,7 +6,6 @@ public enum WidgetInteractionType: Hashable, Encodable {
 }
 
 public enum WidgetIntentType: Hashable, Encodable {
-    case action(id: String, name: String)
     case script(id: String, entityId: String, serverId: String, name: String, showConfirmationNotification: Bool)
     /// Entities that can be toggled
     case toggle(entityId: String, domain: String, serverId: String)

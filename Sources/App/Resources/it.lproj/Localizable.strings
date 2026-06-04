@@ -468,7 +468,6 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Sintesi";
 "home_view.menu.allow_multiple_selection" = "Consenti selezione multipla";
-"home_view.menu.customize" = "Personalizza";
 "home_view.menu.reorder" = "Riordina";
 "home_view.menu.settings" = "Impostazioni";
 "home_view.summaries.count_active" = "%li attivo/i";

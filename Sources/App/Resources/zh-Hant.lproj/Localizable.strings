@@ -468,7 +468,6 @@
 "home_view.customization.common_controls.title" = "控制預測區段";
 "home_view.customization.summaries.title" = "摘要";
 "home_view.menu.allow_multiple_selection" = "允許多選";
-"home_view.menu.customize" = "自訂";
 "home_view.menu.reorder" = "重新排序";
 "home_view.menu.settings" = "設定";
 "home_view.summaries.count_active" = "%li 個活躍";

@@ -468,7 +468,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Summaries";
 "home_view.menu.allow_multiple_selection" = "Salli useita valintoja";
-"home_view.menu.customize" = "Mukauta";
 "home_view.menu.reorder" = "Järjestä uudelleen";
 "home_view.menu.settings" = "Asetukset";
 "home_view.summaries.count_active" = "%li active";

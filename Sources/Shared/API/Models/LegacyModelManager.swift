@@ -4,14 +4,14 @@ import PromiseKit
 import RealmSwift
 
 // Legacy manager which was previously used to handle all model updates and cleanup.
-// Now it is used just for zones and legacy iOS Actions
+// Now it is used just for zones and notification categories.
 public class LegacyModelManager: ServerObserver {
     private var notificationTokens = [NotificationToken]()
     private var hakitTokens = [HACancellable]()
     private var subscribedSubscriptions = [SubscribeDefinition]()
     private var cleanupDefinitions = [CleanupDefinition]()
 
-    private static var includedDomains: [Domain] = [.zone, .scene, .person]
+    private static var includedDomains: [Domain] = [.zone, .person]
 
     public var workQueue: DispatchQueue = .global(qos: .userInitiated)
     static var isAppInForeground: () -> Bool = { false }
@@ -110,9 +110,7 @@ public class LegacyModelManager: ServerObserver {
                 model: LocationError.self,
                 createdKey: #keyPath(LocationError.CreatedAt)
             ),
-            CleanupDefinition(orphansOf: RLMScene.self),
             CleanupDefinition(orphansOf: RLMZone.self),
-            CleanupDefinition(orphansOf: Action.self),
             CleanupDefinition(orphansOf: NotificationCategory.self),
             CleanupDefinition(
                 orphansOf: WatchComplication.self,
@@ -250,7 +248,6 @@ public class LegacyModelManager: ServerObserver {
 
         public static let defaults: [Self] = [
             .states(domain: "zone", type: RLMZone.self),
-            .states(domain: "scene", type: RLMScene.self),
         ]
     }
 
@@ -287,14 +284,11 @@ public class LegacyModelManager: ServerObserver {
         public static let defaults: [Self] = [
             FetchDefinition(update: { api, queue, manager in
                 api.GetMobileAppConfig().then(on: queue) {
-                    when(fulfilled: [
-                        manager.store(
-                            type: NotificationCategory.self,
-                            from: api.server,
-                            sourceModels: $0.push.categories
-                        ),
-                        manager.store(type: Action.self, from: api.server, sourceModels: $0.actions),
-                    ])
+                    manager.store(
+                        type: NotificationCategory.self,
+                        from: api.server,
+                        sourceModels: $0.push.categories
+                    )
                 }
             }),
         ]

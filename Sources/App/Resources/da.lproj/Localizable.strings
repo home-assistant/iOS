@@ -468,7 +468,6 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "home_view.customization.common_controls.title" = "Styrer forudsigelsessektionen";
 "home_view.customization.summaries.title" = "Oversigter";
 "home_view.menu.allow_multiple_selection" = "Tillad flere valg";
-"home_view.menu.customize" = "Tilpas";
 "home_view.menu.reorder" = "Omarrangér";
 "home_view.menu.settings" = "Indstillinger";
 "home_view.summaries.count_active" = "%li aktiv";

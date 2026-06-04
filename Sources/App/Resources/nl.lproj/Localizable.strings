@@ -468,7 +468,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "home_view.customization.common_controls.title" = "Bedieningsvoorspellingssectie";
 "home_view.customization.summaries.title" = "Samenvattingen";
 "home_view.menu.allow_multiple_selection" = "Meerdere selecties toestaan";
-"home_view.menu.customize" = "Aanpassen";
 "home_view.menu.reorder" = "Herschikken";
 "home_view.menu.settings" = "Instellingen";
 "home_view.summaries.count_active" = "%li actief";

@@ -15,8 +15,6 @@ public enum IntentHandlerFactory {
                 return GetCameraImageIntentHandler()
             case is RenderTemplateIntent:
                 return RenderTemplateIntentHandler()
-            case is PerformActionIntent:
-                return PerformActionIntentHandler()
             case is UpdateSensorsIntent:
                 return UpdateSensorsIntentHandler()
             case is AssistIntent:
@@ -25,8 +23,6 @@ public enum IntentHandlerFactory {
                 return OpenPageIntentHandler()
             case is INShareFocusStatusIntent:
                 return FocusStatusIntentHandler()
-            case is WidgetActionsIntent:
-                return WidgetActionsIntentHandler()
             case is AssistInAppIntent:
                 return AssistInAppIntentHandler()
             default:
