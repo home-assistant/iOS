@@ -468,7 +468,6 @@
 "home_view.customization.common_controls.title" = "Τμήμα πρόβλεψης χειριστηρίων";
 "home_view.customization.summaries.title" = "Συνόψεις";
 "home_view.menu.allow_multiple_selection" = "Να επιτρέπεται πολλαπλή επιλογή";
-"home_view.menu.customize" = "Προσαρμογή";
 "home_view.menu.reorder" = "Αναδιάταξη";
 "home_view.menu.settings" = "Ρυθμίσεις";
 "home_view.summaries.count_active" = "%li ενεργό";

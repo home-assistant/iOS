@@ -3,7 +3,6 @@ import Foundation
 import HAKit
 import Intents
 import MapKit
-import UIColor_Hex_Swift
 
 public extension CallServiceIntent {
     convenience init(domain: String, service: String) {
@@ -50,65 +49,6 @@ public extension SendLocationIntent {
 
         // We use MKPlacemark so we can return a CLPlacemark without requiring use of the geocoder
         self.location = MKPlacemark(coordinate: location.coordinate)
-    }
-}
-
-public extension PerformActionIntent {
-    convenience init(action: Action) {
-        self.init()
-        self.action = .init(action: action)
-
-        #if os(iOS)
-        let image = INImage(
-            icon: MaterialDesignIcons(named: action.IconName),
-            foreground: UIColor(hex: action.IconColor),
-            background: UIColor(hex: action.BackgroundColor)
-        )
-
-        // this should be:
-        //   setImage(image, forParameterNamed: \Self.action)
-        // but this crashes at runtime, iOS 13 and iOS 14 at least
-        __setImage(image, forParameterNamed: "action")
-        #endif
-    }
-}
-
-public extension IntentAction {
-    convenience init(action: Action) {
-        #if os(iOS)
-        self.init(
-            identifier: action.ID,
-            display: action.Name,
-            subtitle: nil,
-            image: INImage(
-                icon: MaterialDesignIcons(named: action.IconName),
-                foreground: UIColor(hex: action.IconColor),
-                background: UIColor(hex: action.BackgroundColor)
-            )
-        )
-        #else
-        self.init(identifier: action.ID, display: action.Name)
-        #endif
-    }
-
-    func asActionWithUpdated() -> (updated: IntentAction, action: Action)? {
-        guard let action = asAction() else {
-            return nil
-        }
-
-        return (.init(action: action), action)
-    }
-
-    func asAction() -> Action? {
-        guard let identifier, identifier.isEmpty == false else {
-            return nil
-        }
-
-        guard let result = Current.realm().object(ofType: Action.self, forPrimaryKey: identifier) else {
-            return nil
-        }
-
-        return result
     }
 }
 

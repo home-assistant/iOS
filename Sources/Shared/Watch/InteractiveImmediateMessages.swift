@@ -2,7 +2,6 @@ import Foundation
 
 public enum InteractiveImmediateMessages: String, CaseIterable {
     case ping
-    case actionRowPressed = "ActionRowPressed"
     case magicItemPressed
     case pushAction = "PushAction"
     case assistPipelinesFetch
@@ -12,7 +11,6 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
 
 public enum InteractiveImmediateResponses: String, CaseIterable {
     case pong
-    case actionRowPressedResponse = "ActionRowPressedResponse"
     case magicItemRowPressedResponse
     case pushActionResponse = "PushActionResponse"
     case assistPipelinesFetchResponse

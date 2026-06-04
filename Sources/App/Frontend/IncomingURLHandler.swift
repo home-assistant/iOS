@@ -18,7 +18,6 @@ class IncomingURLHandler {
         case callService = "call_service"
         case fireEvent = "fire_event"
         case sendLocation = "send_location"
-        case performAction = "perform_action"
         case assist
         case navigate
         case invite
@@ -60,8 +59,6 @@ class IncomingURLHandler {
                     message: L10n.UrlHandler.SendLocation.Confirm.message,
                     handler: { self.sendLocationURLHandler() }
                 )
-            case .performAction:
-                performActionURLHandler(url, serviceData: serviceData)
             case .camera:
                 guard #available(iOS 16.0, *),
                       var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
@@ -338,21 +335,7 @@ class IncomingURLHandler {
                 if let identifier = AppIconShortcutItemsUpdater.identifier(from: shortcutItem.type) {
                     return handleAppIconShortcut(identifier: identifier)
                 }
-                if
-                    let action = Current.realm().object(ofType: Action.self, forPrimaryKey: shortcutItem.type),
-                    let server = Current.servers.server(for: action) {
-                    Current.sceneManager.showFullScreenConfirm(
-                        icon: MaterialDesignIcons(named: action.IconName),
-                        text: action.Text,
-                        onto: .value(windowController.window)
-                    )
-
-                    return Current.api(for: server)?
-                        .HandleAction(actionID: shortcutItem.type, source: .AppShortcut) ??
-                        .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-                } else {
-                    return .init(error: HomeAssistantAPI.APIError.notConfigured)
-                }
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
             }
         }
     }
@@ -901,45 +884,5 @@ extension IncomingURLHandler {
                 message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription)
             )
         }
-    }
-
-    private func performActionURLHandler(_ url: URL, serviceData: [String: String]) {
-        let pathComponents = url.pathComponents
-        guard pathComponents.count > 1 else {
-            Current.Log.error("not enough path components for perform action handler")
-            return
-        }
-
-        let source: AppTriggerSource = {
-            if
-                let sourceString = serviceData["source"],
-                let source = AppTriggerSource(rawValue: sourceString) {
-                return source
-            } else {
-                return .URLHandler
-            }
-        }()
-
-        let actionID = url.pathComponents[1]
-
-        guard
-            let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-            let server = Current.servers.server(for: action),
-            let api = Current.api(for: server) else {
-            Current.sceneManager.showFullScreenConfirm(
-                icon: .alertCircleIcon,
-                text: L10n.UrlHandler.Error.actionNotFound,
-                onto: .value(windowController.window)
-            )
-            return
-        }
-
-        Current.sceneManager.showFullScreenConfirm(
-            icon: MaterialDesignIcons(named: action.IconName),
-            text: action.Text,
-            onto: .value(windowController.window)
-        )
-
-        api.HandleAction(actionID: actionID, source: source).cauterize()
     }
 }
