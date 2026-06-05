@@ -173,7 +173,7 @@
 "camera_player.errors.no_stream_available" = "Není dostupný žádný proud";
 "camera_player.errors.unable_to_connect_to_server" = "Nelze se připojit k Home Assistantovi";
 "camera_player.errors.unknown" = "Neznámá chyba";
-"camera_player.notification.body" = "Tap to open camera";
+"camera_player.notification.body" = "Klepnutím otevřete kameru";
 "cameras.drag_to_reorder" = "Přetažením přeuspořádáte";
 "cameras.no_server_found" = "Pro kameru nebyl nalezen server: %@";
 "cancel_label" = "Zrušit";
@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "Vytvořit akci pro iOS";
 "carPlay.notification.quick_access.intro.body" = "Klepnutím vytvoříte nastavení CarPlay.";
 "carPlay.notification.quick_access.intro.title" = "Vytvořit nastavení CarPlay";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Vytvořte nastavení CarPlay";
 "carPlay.state.loading.title" = "Načítání...";
 "carPlay.tabs.active.delete_action.title" = "Přejetím vlevo kartu odeberete";
@@ -686,6 +688,7 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "notification_service.parser.camera.invalid_entity" = "Poskytnuté entiy_id bylo neplatné.";
 "notification_service.parser.url.invalid_url" = "Zadaná URL byla neplatná.";
 "notification_service.parser.url.no_url" = "Nebyla zadána žádná URL.";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Když uživatel vybere akci s touto volbou, systém jej vyzve k odemknutí zařízení. Po odemknutí bude Home Assistantovi předána vybraná akce.";
 "notifications_configurator.action.rows.authentication_required.title" = "Vyžadováno ověření";
 "notifications_configurator.action.rows.destructive.footer" = "Je-li povoleno, zobrazí se akční tlačítko se speciálním zvýrazněním, které označuje, že provádí destruktivní úlohu.";
@@ -739,11 +742,11 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "onboarding.device_name_check.error.prompt" = "Jaký název zařízení by měl být místo toho použit?";
 "onboarding.device_name_check.error.title" = "Zařízení s názvem \"%1$@\" již existuje";
 "onboarding.invitation.accept_button" = "Přijmout";
-"onboarding.invitation.address_title" = "Home Assistant address";
-"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
-"onboarding.invitation.reject_button" = "Reject";
-"onboarding.invitation.screen_title" = "You've been invited";
-"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
+"onboarding.invitation.address_title" = "Adresa Home Assistanta";
+"onboarding.invitation.description" = "Home Assistant je open source domácí automatizace, která klade důraz na lokální ovládání a soukromí.";
+"onboarding.invitation.reject_button" = "Odmítnout";
+"onboarding.invitation.screen_title" = "Byli jste pozváni";
+"onboarding.invitation.security_warning" = "Tuto pozvánku přijměte jen v případě, že důvěřujete osobě, která ji sdílela. Připojení k neznámému serveru by jí mohlo umožnit přístup k údajům, které zadáváte nebo jsou odesílány aplikací, například k poloze a informacím o zařízení.";
 "onboarding.invitation.title" = "Pozvánka do Home Asistenta";
 "onboarding.local_access.description" = "Pokud tato aplikace ví, kdy nejste doma, může zvolit bezpečnější způsob připojení k vašemu systému Home Assistant. To vyžaduje povolení lokalizačních služeb.";
 "onboarding.local_access.less_secure_option.title" = "Méně bezpečné: Nepovolit této aplikaci vědět, kdy jste doma";
@@ -1200,6 +1203,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorie mohou být také definovány v konfiguraci .yaml.";
 "settings_details.notifications.categories_synced.header" = "Synchronizované kategorie";
 "settings_details.notifications.info" = "K odesílání upozornění do Vašeho zařízení použijte službu oznámení mobile_app.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Dostupných (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Zakázáno";
 "settings_details.notifications.local_push.status.establishing" = "Zakládání";
@@ -1747,4 +1751,5 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.todo_list.refresh_title" = "Obnovit seznam úkolů";
 "widgets.todo_list.select_list" = "Upravte widget pro výběr seznamu.";
 "widgets.todo_list.title" = "Seznam úkolů";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Ano";

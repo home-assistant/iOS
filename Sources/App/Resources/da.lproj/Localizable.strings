@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "Opret iOS-handling";
 "carPlay.notification.quick_access.intro.body" = "Tryk for at oprette din CarPlay-konfiguration.";
 "carPlay.notification.quick_access.intro.title" = "Opret CarPlay-konfiguration";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Opret din CarPlay-konfiguration";
 "carPlay.state.loading.title" = "Indlæser…";
 "carPlay.tabs.active.delete_action.title" = "Stryg til venstre for at fjerne fanen";
@@ -686,6 +688,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "notification_service.parser.camera.invalid_entity" = "Angivet entitets-Id er ugyldig.";
 "notification_service.parser.url.invalid_url" = "Den angivne webadresse var ugyldig.";
 "notification_service.parser.url.no_url" = "Ingen webadresse blev angivet.";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Når brugeren vælger en handling med denne indstilling, beder systemet brugeren om at låse enheden op. Efter oplåsning vil Home Assistant blive underrettet om den valgte handling.";
 "notifications_configurator.action.rows.authentication_required.title" = "Godkendelse påkrævet";
 "notifications_configurator.action.rows.destructive.footer" = "Når den er aktiveret, vises handlingsknappen med særlig fremhævning for at indikere, at den udfører en destruktiv opgave.";
@@ -1200,6 +1203,7 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan også defineres i .yaml-konfigurationen.";
 "settings_details.notifications.categories_synced.header" = "Synkroniserede kategorier";
 "settings_details.notifications.info" = "Brug mobile_app notify-tjenesten til at sende meddelelser til din enhed.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Tilgængelige (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Deaktiveret";
 "settings_details.notifications.local_push.status.establishing" = "Forbinder";
@@ -1747,4 +1751,5 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "widgets.todo_list.refresh_title" = "Opdater huskeliste";
 "widgets.todo_list.select_list" = "Redigér widget for at vælge liste.";
 "widgets.todo_list.title" = "Huskeliste";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Ja";

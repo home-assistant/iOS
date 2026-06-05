@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "Buat Aksi iOS";
 "carPlay.notification.quick_access.intro.body" = "Ketuk untuk membuat konfigurasi CarPlay Anda.";
 "carPlay.notification.quick_access.intro.title" = "Buat konfigurasi CarPlay";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Buat konfigurasi CarPlay Anda";
 "carPlay.state.loading.title" = "Memuat…";
 "carPlay.tabs.active.delete_action.title" = "Geser ke kiri untuk menghapus tab";
@@ -686,6 +688,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "notification_service.parser.camera.invalid_entity" = "Nilai entity_id yang diberikan tidak valid.";
 "notification_service.parser.url.invalid_url" = "URL yang diberikan tidak valid.";
 "notification_service.parser.url.no_url" = "Tidak ada URL yang diberikan.";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Ketika pengguna memilih tindakan dengan opsi ini, sistem meminta pengguna untuk membuka kunci perangkat. Setelah membuka kunci, Home Assistant akan diberi tahu tentang tindakan yang dipilih.";
 "notifications_configurator.action.rows.authentication_required.title" = "Diperlukan Autentikasi";
 "notifications_configurator.action.rows.destructive.footer" = "Saat diaktifkan, tombol tindakan ditampilkan dengan penyorotan khusus untuk menunjukkan bahwa tombol akan melakukan tugas yang merusak.";
@@ -1199,6 +1202,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategori juga dapat didefinisikan di konfigurasi .yaml.";
 "settings_details.notifications.categories_synced.header" = "Kategori yang Disinkronkan";
 "settings_details.notifications.info" = "Gunakan layanan notifikasi mobile_app untuk mengirim notifikasi ke perangkat Anda.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Tersedia (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Dinonaktifkan";
 "settings_details.notifications.local_push.status.establishing" = "Membuat";
@@ -1746,4 +1750,5 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "widgets.todo_list.refresh_title" = "Segarkan Daftar Tugas";
 "widgets.todo_list.select_list" = "Edit widget untuk memilih daftar.";
 "widgets.todo_list.title" = "Daftar Tugas";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Ya";

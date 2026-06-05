@@ -173,7 +173,7 @@
 "camera_player.errors.no_stream_available" = "Ingen ström tillgänglig";
 "camera_player.errors.unable_to_connect_to_server" = "Det går inte att ansluta till Home Assistant";
 "camera_player.errors.unknown" = "Okänt fel";
-"camera_player.notification.body" = "Tap to open camera";
+"camera_player.notification.body" = "Tryck för att öppna kameran";
 "cameras.drag_to_reorder" = "Dra och släpp för att ändra ordning";
 "cameras.no_server_found" = "Ingen server hittades för kamera: %@";
 "cancel_label" = "Avbryt";
@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "Skapa iOS-åtgärd";
 "carPlay.notification.quick_access.intro.body" = "Tryck för att skapa din CarPlay-konfiguration.";
 "carPlay.notification.quick_access.intro.title" = "Skapa CarPlay-konfiguration";
+"carPlay.quick_access.execute.in_progress" = "Kör...";
+"carPlay.quick_access.intro.item.body" = "Tryck för att fortsätta på din iPhone";
 "carPlay.quick_access.intro.item.title" = "Skapa din CarPlay-konfiguration";
 "carPlay.state.loading.title" = "Laddar...";
 "carPlay.tabs.active.delete_action.title" = "Svep åt vänster för att ta bort fliken";
@@ -601,7 +603,7 @@
 "magic_item.action.script.title" = "Skript";
 "magic_item.add" = "Lägg till";
 "magic_item.assist_prompt.navigation_title" = "Assist prompt";
-"magic_item.assist_prompt.prompt.footer" = "When executed in CarPlay, this prompt will be sent to Assist and the response will be played as audio. Make sure the selected Assist pipeline has text-to-speech configured.";
+"magic_item.assist_prompt.prompt.footer" = "När den körs i CarPlay skickas denna uppmaning till Assist och svaret spelas upp som ljud. Kontrollera att den valda Assist-pipelinen har text-till-tal konfigurerat.";
 "magic_item.assist_prompt.prompt.title" = "Prompt";
 "magic_item.assist_prompt.title.title" = "Rubrik";
 "magic_item.background_color.title" = "Bakgrundsfärg";
@@ -613,7 +615,7 @@
 "magic_item.item_type.action.list.warning.title" = "Vi kommer att sluta stödja iOS Actions i framtiden, överväg att använda Home Assistant-skript eller scener istället.";
 "magic_item.item_type.app.list.title" = "App";
 "magic_item.item_type.assist_prompt.title" = "Assist prompt";
-"magic_item.item_type.assist_prompt.unsupported.title" = "Assist prompt (iOS 26.4+)";
+"magic_item.item_type.assist_prompt.unsupported.title" = "Assist-prompt (iOS 26.4+)";
 "magic_item.item_type.entity.list.title" = "Entitet";
 "magic_item.item_type.scene.list.title" = "Scener";
 "magic_item.item_type.script.list.title" = "Skript";
@@ -682,6 +684,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "notification_service.parser.camera.invalid_entity" = "Angivet enhets_id var ogiltigt.";
 "notification_service.parser.url.invalid_url" = "Den angivna URL:en var ogiltig.";
 "notification_service.parser.url.no_url" = "Ingen URL angavs.";
+"notifications_configurator.action.example_trigger.title" = "Exempelutlösare";
 "notifications_configurator.action.rows.authentication_required.footer" = "När användaren väljer en åtgärd med det här alternativet uppmanar systemet användaren att låsa upp enheten. Efter upplåsning kommer Home Assistant att meddelas om den valda åtgärden.";
 "notifications_configurator.action.rows.authentication_required.title" = "Autentisering krävs";
 "notifications_configurator.action.rows.destructive.footer" = "När den är aktiverad visas åtgärdsknappen med särskild markering för att indikera att den utför en destruktiv uppgift.";
@@ -735,11 +738,11 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.device_name_check.error.prompt" = "Vilket enhetsnamn ska användas istället?";
 "onboarding.device_name_check.error.title" = "Det finns redan en enhet med namnet '%1$@'";
 "onboarding.invitation.accept_button" = "Acceptera";
-"onboarding.invitation.address_title" = "Home Assistant address";
-"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
-"onboarding.invitation.reject_button" = "Reject";
-"onboarding.invitation.screen_title" = "You've been invited";
-"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
+"onboarding.invitation.address_title" = "Home Assistant adress";
+"onboarding.invitation.description" = "Home Assistant är hemautomation med öppen källkod som sätter lokal kontroll och integritet i första rummet.";
+"onboarding.invitation.reject_button" = "Avvisa";
+"onboarding.invitation.screen_title" = "Du har blivit inbjuden";
+"onboarding.invitation.security_warning" = "Acceptera bara den här inbjudan om du litar på personen som delade den. Att ansluta till en okänd server kan ge den åtkomst till data som du anger eller som skickas av appen, till exempel din plats och enhetsinformation.";
 "onboarding.invitation.title" = "Home Assistant-inbjudan";
 "onboarding.local_access.description" = "Om den här appen vet när du är borta hemifrån kan den välja ett säkrare sätt att ansluta till ditt Home Assistant-system. Detta kräver att platstjänster är aktiverade.";
 "onboarding.local_access.less_secure_option.title" = "Mindre säker: Låt inte den här appen veta när du är hemma";
@@ -1195,6 +1198,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan också definieras i .yaml-konfigurationen.";
 "settings_details.notifications.categories_synced.header" = "Synkade kategorier";
 "settings_details.notifications.info" = "Använd notis-tjänsten mobile_app för att skicka notiser till din enhet.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Tillgängliga (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Inaktiverad";
 "settings_details.notifications.local_push.status.establishing" = "Upprättar";
@@ -1573,7 +1577,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "web_view.server_selection.title" = "Välj server";
 "web_view.unique_server_selection.title" = "Välj en server";
 "webrtc_player.known_issues.title" = "Kända problem";
-"whats_new.title" = "What's New in The Companion App";
+"whats_new.title" = "Vad är nytt i Companion-appen?";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
@@ -1742,4 +1746,5 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.todo_list.refresh_title" = "Uppdatera att-göra-listan";
 "widgets.todo_list.select_list" = "Redigera widget för att välja lista.";
 "widgets.todo_list.title" = "Att göra-lista";
+"yaml_preview.share" = "Dela innehåll";
 "yes_label" = "Ja";
