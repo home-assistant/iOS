@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "iOS-actie maken";
 "carPlay.notification.quick_access.intro.body" = "Tik om jouw CarPlay-configuratie te maken.";
 "carPlay.notification.quick_access.intro.title" = "CarPlay-configuratie maken";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Maak je CarPlay-configuratie";
 "carPlay.state.loading.title" = "Aan het laden...";
 "carPlay.tabs.active.delete_action.title" = "Veeg naar links om tabblad te verwijderen";
@@ -686,6 +688,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "notification_service.parser.camera.invalid_entity" = "entity_id is ongeldig.";
 "notification_service.parser.url.invalid_url" = "De opgegeven URL was ongeldig.";
 "notification_service.parser.url.no_url" = "Er is geen URL opgegeven.";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Wanneer de gebruiker een actie met deze optie selecteert, vraagt het systeem de gebruiker om het apparaat te ontgrendelen. Na het ontgrendelen wordt de Home Assistant op de hoogte gebracht van de geselecteerde actie.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authenticatie vereist";
 "notifications_configurator.action.rows.destructive.footer" = "Indien ingeschakeld, wordt de actieknop weergegeven met speciale markering om aan te geven dat het een destructieve taak uitvoert.";
@@ -1200,6 +1203,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings_details.notifications.categories_synced.footer_no_categories" = "Categorieën kunnen ook worden gedefinieerd in de .yaml-configuratie.";
 "settings_details.notifications.categories_synced.header" = "Gesynchroniseerde categorieën";
 "settings_details.notifications.info" = "Gebruik de mobile_app-meldingsservice om meldingen naar je apparaat te sturen.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Beschikbaar ( %1$@ )";
 "settings_details.notifications.local_push.status.disabled" = "Uitgeschakeld";
 "settings_details.notifications.local_push.status.establishing" = "Tot stand brengen";
@@ -1747,4 +1751,5 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "widgets.todo_list.refresh_title" = "Takenlijst vernieuwen";
 "widgets.todo_list.select_list" = "Bewerk widget om lijst te selecteren.";
 "widgets.todo_list.title" = "Takenlijst";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Ja";
