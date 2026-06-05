@@ -473,7 +473,12 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
            (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
             commandManager.handle(notification.request.content.userInfo).done {
-                completionHandler([])
+                // Play the chime if the notification has sound (non-silent live update),
+                // but never show a banner — the Live Activity widget is the visual feedback.
+                let options: UNNotificationPresentationOptions = notification.request.content.sound != nil
+                    ? [.sound]
+                    : []
+                completionHandler(options)
             }.catch { error in
                 // Unknown command — fall through to normal banner presentation so the user isn't silently swallowed.
                 if case NotificationCommandManager.CommandError.unknownCommand = error {
