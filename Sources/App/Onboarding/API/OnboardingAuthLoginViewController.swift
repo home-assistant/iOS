@@ -8,7 +8,7 @@ protocol OnboardingAuthLoginViewController: UIViewController {
     init(authDetails: OnboardingAuthDetails)
 }
 
-class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLoginViewController, WKNavigationDelegate {
+class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLoginViewController, WKNavigationDelegate, WKUIDelegate {
     let authDetails: OnboardingAuthDetails
     let promise: Promise<URL>
     private let resolver: Resolver<URL>
@@ -61,6 +61,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
         super.viewDidLoad()
 
         webView.navigationDelegate = self
+        webView.uiDelegate = self
 
         setContentScrollView(webView.scrollView)
 
@@ -133,6 +134,22 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         resolver.reject(error)
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        createWebViewWith configuration: WKWebViewConfiguration,
+        for navigationAction: WKNavigationAction,
+        windowFeatures: WKWindowFeatures
+    ) -> WKWebView? {
+        if navigationAction.targetFrame == nil {
+            guard let url = navigationAction.request.url else {
+                Current.Log.error("Received navigation action without URL for new window")
+                return nil
+            }
+            openURLInBrowser(url, self)
+        }
+        return nil
     }
 
     func webView(
