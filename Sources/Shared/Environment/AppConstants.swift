@@ -44,6 +44,10 @@ public enum AppConstants {
         ]
     }
 
+    public enum Firebase {
+        public static let pushURLString = "https://mobile-apps.home-assistant.io/api/sendPushNotification"
+    }
+
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)

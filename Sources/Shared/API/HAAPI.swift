@@ -593,7 +593,7 @@ public class HomeAssistantAPI {
         with(MobileAppRegistrationRequest()) {
             if let pushID = Current.settingsStore.pushID {
                 var appData: [String: Any] = [
-                    "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                    "push_url": AppConstants.Firebase.pushURLString,
                     "push_token": pushID,
                 ]
 
