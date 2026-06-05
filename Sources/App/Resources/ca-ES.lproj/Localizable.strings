@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "Crea una acció d'iOS";
 "carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
 "carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "S'està carregant…";
 "carPlay.tabs.active.delete_action.title" = "Swipe left to remove tab";
@@ -468,7 +470,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Summaries";
 "home_view.menu.allow_multiple_selection" = "Permet selecció múltiple";
-"home_view.menu.customize" = "Personalitza";
 "home_view.menu.reorder" = "Reordena";
 "home_view.menu.settings" = "Configuració";
 "home_view.summaries.count_active" = "%li active";
@@ -687,6 +688,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "notification_service.parser.camera.invalid_entity" = "entity_id proporcionat no era vàlid.";
 "notification_service.parser.url.invalid_url" = "L'adreça URL donada no era vàlida.";
 "notification_service.parser.url.no_url" = "No s'ha proporcionat cap URL.";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Quan l'usuari selecciona una acció amb aquesta opció, el sistema demana a l'usuari que desbloquegi el dispositiu. Després del desbloqueig, es notificarà a Home Assistant l'acció seleccionada.";
 "notifications_configurator.action.rows.authentication_required.title" = "Autenticació obligatòria";
 "notifications_configurator.action.rows.destructive.footer" = "Quan està habilitat, el botó d'acció es mostra amb un ressaltat especial per indicar que realitza una tasca destructiva.";
@@ -1201,6 +1203,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.categories_synced.footer_no_categories" = "Les categories també es poden definir a la configuració .yaml.";
 "settings_details.notifications.categories_synced.header" = "Categories sincronitzades";
 "settings_details.notifications.info" = "Utilitzeu el servei de notificacions \"mobile_app\" per enviar notificacions al vostre dispositiu.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Disponible(%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Desactivat";
 "settings_details.notifications.local_push.status.establishing" = "Establint";
@@ -1748,4 +1751,5 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.refresh_title" = "Refresh To-do List";
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Si";

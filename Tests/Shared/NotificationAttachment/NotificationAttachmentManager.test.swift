@@ -213,7 +213,7 @@ private class Image {
     init() {
         let size = CGSize(width: 10, height: 10)
         let data = UIGraphicsImageRenderer(size: size).pngData { _ in
-            UIColor.randomBackgroundColor().setFill()
+            UIColor.systemBlue.setFill()
             UIRectFill(CGRect(origin: .zero, size: size))
         }
 

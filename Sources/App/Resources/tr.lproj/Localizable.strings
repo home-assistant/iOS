@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "iOS Eylemi Oluştur";
 "carPlay.notification.quick_access.intro.body" = "CarPlay yapılandırmanızı oluşturmak için dokunun.";
 "carPlay.notification.quick_access.intro.title" = "CarPlay yapılandırmasını oluştur";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "CarPlay yapılandırmanızı oluşturun";
 "carPlay.state.loading.title" = "Yükleniyor …";
 "carPlay.tabs.active.delete_action.title" = "Sekmeyi kaldırmak için sola kaydırın";
@@ -468,7 +470,6 @@
 "home_view.customization.common_controls.title" = "Kontroller tahmin bölümü";
 "home_view.customization.summaries.title" = "Özetler";
 "home_view.menu.allow_multiple_selection" = "Çoklu seçim yapmaya izin ver";
-"home_view.menu.customize" = "Özelleştir";
 "home_view.menu.reorder" = "Yeniden sırala";
 "home_view.menu.settings" = "Ayarlar";
 "home_view.summaries.count_active" = "%li aktif";
@@ -687,6 +688,7 @@
 "notification_service.parser.camera.invalid_entity" = "Sağlanan varlık_kimliği geçersizdi.";
 "notification_service.parser.url.invalid_url" = "Verilen URL geçersizdi.";
 "notification_service.parser.url.no_url" = "URL sağlanmadı.";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Kullanıcı bu seçenekle bir eylem seçtiğinde, sistem kullanıcıdan cihazın kilidini açmasını ister. Kilidi açtıktan sonra, Home Assistant seçilen eylem hakkında bilgilendirilecektir.";
 "notifications_configurator.action.rows.authentication_required.title" = "Kimlik doğrulama istendi";
 "notifications_configurator.action.rows.destructive.footer" = "Etkinleştirildiğinde, yıkıcı bir görev gerçekleştirdiğini belirtmek için eylem düğmesi özel vurgulama ile görüntülenir.";
@@ -1201,6 +1203,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategoriler ayrıca .yaml konfigürasyonunda da tanımlanabilir.";
 "settings_details.notifications.categories_synced.header" = "Senkronize Kategoriler";
 "settings_details.notifications.info" = "Cihazınıza bildirim göndermek için mobile_app bildirim hizmetini kullanın.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Kullanılabilir (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Devre dışı";
 "settings_details.notifications.local_push.status.establishing" = "Kurul";
@@ -1748,4 +1751,5 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "widgets.todo_list.refresh_title" = "Yapılacaklar Listesini Yenile";
 "widgets.todo_list.select_list" = "Liste seçmek için widget'ı düzenleyin.";
 "widgets.todo_list.title" = "Yapılacaklar Listesi";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Evet";

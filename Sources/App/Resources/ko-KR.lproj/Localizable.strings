@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "iOS 동작 생성";
 "carPlay.notification.quick_access.intro.body" = "탭하여 CarPlay 구성을 생성합니다.";
 "carPlay.notification.quick_access.intro.title" = "CarPlay 구성 만들기";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "CarPlay 구성 만들기";
 "carPlay.state.loading.title" = "로드 중…";
 "carPlay.tabs.active.delete_action.title" = "탭을 제거하려면 왼쪽으로 스와이프하세요";
@@ -468,7 +470,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Summaries";
 "home_view.menu.allow_multiple_selection" = "Allow multiple selection";
-"home_view.menu.customize" = "Customize";
 "home_view.menu.reorder" = "Reorder";
 "home_view.menu.settings" = "Settings";
 "home_view.summaries.count_active" = "%li active";
@@ -687,6 +688,7 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "notification_service.parser.camera.invalid_entity" = "제공된 entity_id가 잘못되었습니다.";
 "notification_service.parser.url.invalid_url" = "제공된 URL이 잘못되었습니다.";
 "notification_service.parser.url.no_url" = "제공된 URL 없음";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "사용자가 이 옵션으로 동작을 선택하면 시스템은 사용자에게 기기 잠금을 해제하라는 메시지를 표시합니다. 잠금 해제 후 Home Assistant는 선택한 동작에 대한 알림을 받습니다.";
 "notifications_configurator.action.rows.authentication_required.title" = "인증 필요";
 "notifications_configurator.action.rows.destructive.footer" = "활성화하면 동작 버튼이 파괴적인 작업을 수행함을 나타내기 위해 특수 강조 표시로 표시됩니다.";
@@ -1201,6 +1203,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.categories_synced.footer_no_categories" = "카테고리는 .yaml 구성에서도 정의할 수 있습니다.";
 "settings_details.notifications.categories_synced.header" = "동기화된 카테고리";
 "settings_details.notifications.info" = "mobile_app 알림 서비스를 사용하여 기기에 알림을 보냅니다.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "이용 가능(%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "비활성화됨";
 "settings_details.notifications.local_push.status.establishing" = "설정 중";
@@ -1748,4 +1751,5 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.refresh_title" = "Refresh To-do List";
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "네";

@@ -12,4 +12,8 @@ class NotificationManagerLocalPushInterfaceDisallowed: NotificationManagerLocalP
     ) -> HACancellable {
         HANoopCancellable()
     }
+
+    func retryLocalPush(for server: Server?, reason: LocalPushRetryReason) {}
+
+    func scheduleAppOpenLocalPushRetries() {}
 }

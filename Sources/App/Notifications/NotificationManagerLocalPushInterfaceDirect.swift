@@ -41,6 +41,10 @@ class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushI
         }
     }
 
+    func retryLocalPush(for server: Server?, reason: LocalPushRetryReason) {}
+
+    func scheduleAppOpenLocalPushRetries() {}
+
     private struct Observer: Equatable {
         let identifier: UUID
         let server: Server

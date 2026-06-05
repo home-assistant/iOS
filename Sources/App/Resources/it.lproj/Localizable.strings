@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "Crea azione iOS";
 "carPlay.notification.quick_access.intro.body" = "Toccare per creare la tua configurazione di CarPlay.";
 "carPlay.notification.quick_access.intro.title" = "Creare la configurazione di CarPlay";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Creare la configurazione di CarPlay";
 "carPlay.state.loading.title" = "Caricamento…";
 "carPlay.tabs.active.delete_action.title" = "Scorri verso sinistra per chiudere la scheda";
@@ -468,7 +470,6 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Sintesi";
 "home_view.menu.allow_multiple_selection" = "Consenti selezione multipla";
-"home_view.menu.customize" = "Personalizza";
 "home_view.menu.reorder" = "Riordina";
 "home_view.menu.settings" = "Impostazioni";
 "home_view.summaries.count_active" = "%li attivo/i";
@@ -687,6 +688,7 @@ Al momento, mTLS è supportato solo su iOS 17 e versioni successive; potrebbero 
 "notification_service.parser.camera.invalid_entity" = "entity_id fornito non è valido.";
 "notification_service.parser.url.invalid_url" = "L'URL inserita non è valida";
 "notification_service.parser.url.no_url" = "Nessuna URL inserita";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Quando l'utente seleziona un'azione con questa opzione, il sistema richiede all'utente di sbloccare il dispositivo. Dopo lo sblocco, Home Assistant riceverà una notifica dell'azione selezionata.";
 "notifications_configurator.action.rows.authentication_required.title" = "Autenticazione richiesta";
 "notifications_configurator.action.rows.destructive.footer" = "Se abilitato, il pulsante di azione viene visualizzato con un'evidenziazione speciale per indicare che esegue un'operazione \"distruttiva\".";
@@ -1201,6 +1203,7 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "settings_details.notifications.categories_synced.footer_no_categories" = "Le categorie possono essere anche definite nella configurazione .yaml.";
 "settings_details.notifications.categories_synced.header" = "Categorie sincronizzate";
 "settings_details.notifications.info" = "Utilizza il servizio di notifica mobile_app per inviare notifiche al tuo dispositivo.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Disponibile (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Disabilitato";
 "settings_details.notifications.local_push.status.establishing" = "Stabilendo collegamento";
@@ -1748,4 +1751,5 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "widgets.todo_list.refresh_title" = "Aggiorna la lista delle cose da fare";
 "widgets.todo_list.select_list" = "Modifica il widget per selezionare l'elenco.";
 "widgets.todo_list.title" = "Lista delle cose da fare";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Sì";

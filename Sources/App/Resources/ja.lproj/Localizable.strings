@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "iOS アクションの作成";
 "carPlay.notification.quick_access.intro.body" = "タップしてCarPlay設定を作成します。";
 "carPlay.notification.quick_access.intro.title" = "CarPlay設定の作成";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "CarPlay設定を作成する";
 "carPlay.state.loading.title" = "読み込み中…";
 "carPlay.tabs.active.delete_action.title" = "左にスワイプしてタブを削除";
@@ -468,7 +470,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Summaries";
 "home_view.menu.allow_multiple_selection" = "複数選択を許可する";
-"home_view.menu.customize" = "カスタマイズ";
 "home_view.menu.reorder" = "再並べ替え";
 "home_view.menu.settings" = "設定";
 "home_view.summaries.count_active" = "%li active";
@@ -687,6 +688,7 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "notification_service.parser.camera.invalid_entity" = "指定されたentity_idは無効でした。";
 "notification_service.parser.url.invalid_url" = "指定されたURLが無効でした。";
 "notification_service.parser.url.no_url" = "URLが提供されていません。";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "ユーザーがこのオプションでアクションを選択すると、システムはユーザーにデバイスのロックを解除するように求めます。ロック解除後、選択したアクションが Home Assistant に通知されます。";
 "notifications_configurator.action.rows.authentication_required.title" = "認証が必要";
 "notifications_configurator.action.rows.destructive.footer" = "有効にすると、アクションボタンが破壊的なタスクを実行することを示す特別なハイライトで表示されます。";
@@ -1200,6 +1202,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings_details.notifications.categories_synced.footer_no_categories" = "カテゴリは、.yaml 構成で定義することもできます。";
 "settings_details.notifications.categories_synced.header" = "同期されたカテゴリー";
 "settings_details.notifications.info" = "mobile_app通知サービスを使用して、デバイスに通知を送信します。";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "利用可能 (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "無効";
 "settings_details.notifications.local_push.status.establishing" = "確立";
@@ -1747,4 +1750,5 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.todo_list.refresh_title" = "Refresh To-do List";
 "widgets.todo_list.select_list" = "Edit widget to select list.";
 "widgets.todo_list.title" = "To-do List";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "はい";

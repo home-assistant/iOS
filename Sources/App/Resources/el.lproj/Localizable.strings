@@ -173,7 +173,7 @@
 "camera_player.errors.no_stream_available" = "Δεν υπάρχει διαθέσιμη ροή";
 "camera_player.errors.unable_to_connect_to_server" = "Δεν είναι δυνατή η σύνδεση με το Home Assistant";
 "camera_player.errors.unknown" = "Αγνωστο σφάλμα";
-"camera_player.notification.body" = "Tap to open camera";
+"camera_player.notification.body" = "Πατήστε για να ανοίξετε την κάμερα";
 "cameras.drag_to_reorder" = "Σύρετε και αποθέστε για αναδιάταξη";
 "cameras.no_server_found" = "Δεν βρέθηκε server για την κάμερα: %@";
 "cancel_label" = "Ακύρωση";
@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "Δημιουργία ενέργειας iOS";
 "carPlay.notification.quick_access.intro.body" = "Πατήστε για να δημιουργήσετε τη διαμόρφωση του CarPlay σας.";
 "carPlay.notification.quick_access.intro.title" = "Δημιουργία διαμόρφωσης CarPlay";
+"carPlay.quick_access.execute.in_progress" = "Εκτέλεση...";
+"carPlay.quick_access.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.quick_access.intro.item.title" = "Δημιουργήστε τη διαμόρφωση του CarPlay σας";
 "carPlay.state.loading.title" = "Φόρτωση...";
 "carPlay.tabs.active.delete_action.title" = "Σύρετε προς τα αριστερά για να αφαιρέσετε την καρτέλα";
@@ -468,7 +470,6 @@
 "home_view.customization.common_controls.title" = "Τμήμα πρόβλεψης χειριστηρίων";
 "home_view.customization.summaries.title" = "Συνόψεις";
 "home_view.menu.allow_multiple_selection" = "Να επιτρέπεται πολλαπλή επιλογή";
-"home_view.menu.customize" = "Προσαρμογή";
 "home_view.menu.reorder" = "Αναδιάταξη";
 "home_view.menu.settings" = "Ρυθμίσεις";
 "home_view.summaries.count_active" = "%li ενεργό";
@@ -687,6 +688,7 @@
 "notification_service.parser.camera.invalid_entity" = "Το  entity_id που δόθηκε δεν ήταν έγκυρο.";
 "notification_service.parser.url.invalid_url" = "Η διεύθυνση URL που δόθηκε δεν ήταν έγκυρη.";
 "notification_service.parser.url.no_url" = "Δεν δόθηκε διεύθυνση URL.";
+"notifications_configurator.action.example_trigger.title" = "Παράδειγμα εναύσματος";
 "notifications_configurator.action.rows.authentication_required.footer" = "Οταν ο χρήστης επιλέξει μια ενέργεια με αυτή την επιλογή, το σύστημα ζητά από το χρήστη να ξεκλειδώσει τη συσκευή. Μετά το ξεκλείδωμα, το Home Assistant θα ειδοποιηθεί για την επιλεγμένη ενέργεια.";
 "notifications_configurator.action.rows.authentication_required.title" = "Απαιτείται έλεγχος ταυτότητας";
 "notifications_configurator.action.rows.destructive.footer" = "Όταν ενεργοποιηθεί, το κουμπί ενέργειας εμφανίζεται με ειδική επισήμανση που υποδεικνύει ότι εκτελεί μια καταστροφική εργασία.";
@@ -740,11 +742,11 @@
 "onboarding.device_name_check.error.prompt" = "Ποιο όνομα συσκευής θα πρέπει να χρησιμοποιηθεί αντ' αυτού;";
 "onboarding.device_name_check.error.title" = "Υπάρχει ήδη μια συσκευή με το όνομα \"%1$@\"";
 "onboarding.invitation.accept_button" = "Αποδοχή";
-"onboarding.invitation.address_title" = "Home Assistant address";
-"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
-"onboarding.invitation.reject_button" = "Reject";
-"onboarding.invitation.screen_title" = "You've been invited";
-"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
+"onboarding.invitation.address_title" = "Διεύθυνση Home Assistant";
+"onboarding.invitation.description" = "Το Home Assistant είναι ένα σύστημα αυτοματισμών σπιτιού ανοιχτού κώδικα που θέτει τον τοπικό έλεγχο και την ιδιωτικότητα σε προτεραιότητα.";
+"onboarding.invitation.reject_button" = "Απόρριψη";
+"onboarding.invitation.screen_title" = "Εχετε προσκληθεί";
+"onboarding.invitation.security_warning" = "Αποδεχτείτε αυτή την πρόσκληση μόνο αν εμπιστεύεστε το άτομο που την κοινοποίησε. Η σύνδεση με έναν άγνωστο server μπορεί να του δώσει πρόσβαση σε δεδομένα που εισάγετε ή έχουν σταλεί από την εφαρμογή, όπως η τοποθεσία σας και οι πληροφορίες της συσκευής σας.";
 "onboarding.invitation.title" = "Πρόσκληση στο Home Assistant";
 "onboarding.local_access.description" = "Εάν αυτή η εφαρμογή γνωρίζει πότε βρίσκεστε εκτός σπιτιού, μπορεί να επιλέξει έναν πιο ασφαλή τρόπο σύνδεσης με το σύστημα Home Assistant. Αυτό απαιτεί την ενεργοποίηση των υπηρεσιών τοποθεσίας.";
 "onboarding.local_access.less_secure_option.title" = "Λιγότερο ασφαλές: Μην επιτρέπετε σε αυτή την εφαρμογή να γνωρίζει πότε είστε στο σπίτι";
@@ -1201,6 +1203,7 @@
 "settings_details.notifications.categories_synced.footer_no_categories" = "Οι κατηγορίες μπορούν επίσης να οριστούν στη διαμόρφωση .yaml.";
 "settings_details.notifications.categories_synced.header" = "Συγχρονισμένες κατηγορίες";
 "settings_details.notifications.info" = "Χρησιμοποιήστε την υπηρεσία ειδοποιήσεων mobile_app για να στείλετε ειδοποιήσεις στη συσκευή σας.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Διαθέσιμο (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Απενεργοποιημένο";
 "settings_details.notifications.local_push.status.establishing" = "Καθιέρωση";
@@ -1748,4 +1751,5 @@
 "widgets.todo_list.refresh_title" = "Ανανέωση λίστας εκκρεμοτήτων";
 "widgets.todo_list.select_list" = "Επεξεργασία γραφικού στοιχείου για επιλογή λίστας.";
 "widgets.todo_list.title" = "Λίστα εκκρεμοτήτων";
+"yaml_preview.share" = "Κοινή χρήση περιεχομένων";
 "yes_label" = "Ναι";

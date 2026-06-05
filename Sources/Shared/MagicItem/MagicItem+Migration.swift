@@ -11,6 +11,7 @@ extension MagicItemProvider {
      This can happen when the user deletes the server and add it back again.
      */
     func migrateItemsIfNeeded(items: [MagicItem]) -> [MagicItem] {
+        let items = removingUnsupportedItems(from: items)
         let infos = items.compactMap { getInfo(for: $0) }
 
         if infos.count == items.count {
@@ -23,9 +24,11 @@ extension MagicItemProvider {
 
         let replacementItems = missingItems.compactMap { item -> MagicItem? in
             switch item.type {
-            case .action, .assistPipeline, .assistPrompt:
-                // Actions and assist items do not require entity-based migration
+            case .assistPipeline, .assistPrompt:
+                // Assist items do not require entity-based migration
                 return item
+            case .unsupported:
+                return nil
             default:
                 return getSimilarItem(for: item)
             }
@@ -34,6 +37,20 @@ extension MagicItemProvider {
         // Replace missing items with similar items
         return items.map { item in
             replacementItems.first(where: { $0.id == item.id }) ?? item
+        }
+    }
+
+    private func removingUnsupportedItems(from items: [MagicItem]) -> [MagicItem] {
+        items.compactMap { item in
+            guard item.type != .unsupported else {
+                return nil
+            }
+
+            var item = item
+            if let folderItems = item.items {
+                item.items = removingUnsupportedItems(from: folderItems)
+            }
+            return item
         }
     }
 

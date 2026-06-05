@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "iOS-művelet létrehozása";
 "carPlay.notification.quick_access.intro.body" = "Érintse meg a CarPlay konfiguráció létrehozásához.";
 "carPlay.notification.quick_access.intro.title" = "CarPlay konfiguráció létrehozása";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Hozza létre CarPlay konfigurációját";
 "carPlay.state.loading.title" = "Betöltés...";
 "carPlay.tabs.active.delete_action.title" = "Csúsztassa balra a lap eltávolításához";
@@ -468,7 +470,6 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "home_view.customization.common_controls.title" = "Vezérlők előrejelzési szakasz";
 "home_view.customization.summaries.title" = "Összefoglalók";
 "home_view.menu.allow_multiple_selection" = "Többszörös kiválasztás engedélyezése";
-"home_view.menu.customize" = "Testreszabás";
 "home_view.menu.reorder" = "Átrendezés";
 "home_view.menu.settings" = "Beállítások";
 "home_view.summaries.count_active" = "%li aktív";
@@ -687,6 +688,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "notification_service.parser.camera.invalid_entity" = "A megadott entity_id érvénytelen.";
 "notification_service.parser.url.invalid_url" = "A megadott URL érvénytelen.";
 "notification_service.parser.url.no_url" = "Nincs megadva URL.";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Ha a felhasználó ezzel a lehetőséggel választja ki a műveletet, a rendszer felszólítja a felhasználót a készülék feloldására. A feloldás után a Home Assistant értesítést kap a kiválasztott műveletről.";
 "notifications_configurator.action.rows.authentication_required.title" = "Hitelesítés szükséges";
 "notifications_configurator.action.rows.destructive.footer" = "Ha engedélyezve van, a műveletgomb külön kiemeléssel jelenik meg, jelezve, hogy destruktív feladatot hajt végre.";
@@ -1200,6 +1202,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings_details.notifications.categories_synced.footer_no_categories" = "A kategóriákat a .yaml konfigurációban is meg lehet határozni.";
 "settings_details.notifications.categories_synced.header" = "Szinkronizált kategóriák";
 "settings_details.notifications.info" = "A mobile_app notify szolgáltatás segítségével küldhet értesítéseket a készülékére.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Elérhető (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Letiltva";
 "settings_details.notifications.local_push.status.establishing" = "Létrehozás";
@@ -1747,4 +1750,5 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "widgets.todo_list.refresh_title" = "Teendőlista frissítése";
 "widgets.todo_list.select_list" = "Szerkessze a widgetet a lista kiválasztásához.";
 "widgets.todo_list.title" = "Teendőlista";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Igen";

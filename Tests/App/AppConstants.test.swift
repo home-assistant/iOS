@@ -113,4 +113,12 @@ struct AppConstantsTests {
         assert(queryValues["serverId"] == serverId, "URL should include serverId query item")
         assert(queryValues["add_item"] == nil, "URL should not include add_item in query item")
     }
+
+    @available(iOS 16.0, *)
+    @Test func testFirebaseURL() async throws {
+        assert(
+            AppConstants.Firebase.pushURLString == "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+            "Firebase push URL should match expected value"
+        )
+    }
 }

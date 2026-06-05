@@ -987,8 +987,14 @@ public enum L10n {
       }
     }
     public enum QuickAccess {
+      public enum Execute {
+        /// Executing...
+        public static var inProgress: String { return L10n.tr("Localizable", "carPlay.quick_access.execute.in_progress") }
+      }
       public enum Intro {
         public enum Item {
+          /// Tap to continue on your iPhone
+          public static var body: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.body") }
           /// Create your CarPlay configuration
           public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.title") }
         }
@@ -1745,8 +1751,6 @@ public enum L10n {
     public enum Menu {
       /// Allow multiple selection
       public static var allowMultipleSelection: String { return L10n.tr("Localizable", "home_view.menu.allow_multiple_selection") }
-      /// Customize
-      public static var customize: String { return L10n.tr("Localizable", "home_view.menu.customize") }
       /// Reorder
       public static var reorder: String { return L10n.tr("Localizable", "home_view.menu.reorder") }
       /// Settings
@@ -2494,6 +2498,10 @@ public enum L10n {
     /// Identifier
     public static var identifier: String { return L10n.tr("Localizable", "notifications_configurator.identifier") }
     public enum Action {
+      public enum ExampleTrigger {
+        /// Example Trigger
+        public static var title: String { return L10n.tr("Localizable", "notifications_configurator.action.example_trigger.title") }
+      }
       public enum Rows {
         public enum AuthenticationRequired {
           /// When the user selects an action with this option, the system prompts the user to unlock the device. After unlocking, Home Assistant will be notified of the selected action.
@@ -4146,6 +4154,10 @@ public enum L10n {
       public enum LocalPush {
         /// Local Push
         public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.title") }
+        public enum Retry {
+          /// Retry Local Push
+          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.retry.title") }
+        }
         public enum Status {
           /// Available (%1$@)
           public static func available(_ p1: Any) -> String {
@@ -6006,6 +6018,11 @@ public enum L10n {
         public static var serverId: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.server_id") }
       }
     }
+  }
+
+  public enum YamlPreview {
+    /// Share Contents
+    public static var share: String { return L10n.tr("Localizable", "yaml_preview.share") }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
