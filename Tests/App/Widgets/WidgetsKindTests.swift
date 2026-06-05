@@ -5,7 +5,6 @@ final class WidgetsKindTests: XCTestCase {
     func testWidgetsKindCasesValues() {
         // Widgets
         XCTAssertEqual(WidgetsKind.assist.rawValue, "WidgetAssist")
-        XCTAssertEqual(WidgetsKind.actions.rawValue, "WidgetActions")
         XCTAssertEqual(WidgetsKind.openPage.rawValue, "WidgetOpenPage")
         XCTAssertEqual(WidgetsKind.gauge.rawValue, "WidgetGauge")
         XCTAssertEqual(WidgetsKind.details.rawValue, "WidgetDetails")
@@ -35,6 +34,6 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlOpenSensor.rawValue, "controlOpenSensor")
         XCTAssertEqual(WidgetsKind.controlFan.rawValue, "controlFan")
         XCTAssertEqual(WidgetsKind.todoList.rawValue, "todoList")
-        XCTAssertEqual(WidgetsKind.allCases.count, 29)
+        XCTAssertEqual(WidgetsKind.allCases.count, 28)
     }
 }

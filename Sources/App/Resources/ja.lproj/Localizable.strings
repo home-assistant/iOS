@@ -468,7 +468,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Summaries";
 "home_view.menu.allow_multiple_selection" = "複数選択を許可する";
-"home_view.menu.customize" = "カスタマイズ";
 "home_view.menu.reorder" = "再並べ替え";
 "home_view.menu.settings" = "設定";
 "home_view.summaries.count_active" = "%li active";

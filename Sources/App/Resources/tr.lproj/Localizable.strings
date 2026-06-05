@@ -468,7 +468,6 @@
 "home_view.customization.common_controls.title" = "Kontroller tahmin bölümü";
 "home_view.customization.summaries.title" = "Özetler";
 "home_view.menu.allow_multiple_selection" = "Çoklu seçim yapmaya izin ver";
-"home_view.menu.customize" = "Özelleştir";
 "home_view.menu.reorder" = "Yeniden sırala";
 "home_view.menu.settings" = "Ayarlar";
 "home_view.summaries.count_active" = "%li aktif";

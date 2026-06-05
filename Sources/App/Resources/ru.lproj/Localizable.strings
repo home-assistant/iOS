@@ -468,7 +468,6 @@
 "home_view.customization.common_controls.title" = "Controls prediction section";
 "home_view.customization.summaries.title" = "Summaries";
 "home_view.menu.allow_multiple_selection" = "Разрешить множественный выбор";
-"home_view.menu.customize" = "Настроить";
 "home_view.menu.reorder" = "Упорядочить";
 "home_view.menu.settings" = "Настройки";
 "home_view.summaries.count_active" = "%li active";

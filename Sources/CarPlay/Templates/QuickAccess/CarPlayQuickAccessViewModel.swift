@@ -25,10 +25,11 @@ final class CarPlayQuickAccessViewModel {
     }
 
     private func filterItems(_ items: [MagicItem]) -> [MagicItem] {
+        let supportedItems = items.filter { $0.type != .unsupported }
         if #available(iOS 26.4, *) {
-            return items
+            return supportedItems
         } else {
-            return items.filter { $0.type != .assistPipeline && $0.type != .assistPrompt }
+            return supportedItems.filter { $0.type != .assistPipeline && $0.type != .assistPrompt }
         }
     }
 

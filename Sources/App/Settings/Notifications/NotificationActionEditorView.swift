@@ -70,7 +70,7 @@ struct NotificationActionEditorView: View {
             }
 
             YamlPreviewSection(
-                header: L10n.ActionsConfigurator.TriggerExample.title,
+                header: L10n.NotificationsConfigurator.Action.ExampleTrigger.title,
                 yaml: yamlPreview
             )
         }

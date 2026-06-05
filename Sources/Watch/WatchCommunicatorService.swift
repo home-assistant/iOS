@@ -67,8 +67,6 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
             case .watchConfig:
                 watchConfig(message: message)
-            case .actionRowPressed:
-                actionRowPressed(message: message)
             case .pushAction:
                 pushAction(message: message)
             case .assistPipelinesFetch:
@@ -184,23 +182,13 @@ final class WatchCommunicatorService {
         }
 
         guard let serverId = message.content["serverId"] as? String,
-              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
-              let api = Current.api(for: server) else {
+              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
             Current.Log.warning("Magic item press did not provide valid server info")
             message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             return
         }
 
         switch type {
-        case .action:
-            firstly {
-                api.HandleAction(actionID: itemId, source: .Watch)
-            }.done {
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
-            }.catch { err in
-                Current.Log.error("Error during action event fire: \(err)")
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-            }
         case .script:
             callService(
                 server: server,
@@ -240,6 +228,8 @@ final class WatchCommunicatorService {
         case .assistPipeline, .assistPrompt:
             // Assist items are not supported on Watch
             message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+        case .unsupported:
+            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
         }
     }
 
@@ -273,27 +263,6 @@ final class WatchCommunicatorService {
                 Current.Log.error("Failed to run \(domain), error: \(error.localizedDescription)")
                 message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             }
-        }
-    }
-
-    private func actionRowPressed(message: InteractiveImmediateMessage) {
-        let responseIdentifier = InteractiveImmediateResponses.actionRowPressedResponse.rawValue
-        guard let actionID = message.content["ActionID"] as? String,
-              let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-              let server = Current.servers.server(for: action),
-              let api = Current.api(for: server) else {
-            Current.Log.warning("ActionID either does not exist or is not a string in the payload")
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-            return
-        }
-
-        firstly {
-            api.HandleAction(actionID: actionID, source: .Watch)
-        }.done {
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
-        }.catch { err in
-            Current.Log.error("Error during action event fire: \(err)")
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
         }
     }
 

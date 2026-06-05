@@ -468,7 +468,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "home_view.customization.common_controls.title" = "Ovládání sekce predicke";
 "home_view.customization.summaries.title" = "Souhrny";
 "home_view.menu.allow_multiple_selection" = "Povolit vícenásobný výběr";
-"home_view.menu.customize" = "Přizpůsobit";
 "home_view.menu.reorder" = "Přeuspořádat";
 "home_view.menu.settings" = "Nastavení";
 "home_view.summaries.count_active" = "%li aktivní";
