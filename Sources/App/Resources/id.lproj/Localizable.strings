@@ -468,7 +468,6 @@ Server ini memerlukan sertifikat klien (mTLS) tetapi operasi dibatalkan.";
 "home_view.customization.common_controls.title" = "Mengontrol bagian prediksi";
 "home_view.customization.summaries.title" = "Ringkasan";
 "home_view.menu.allow_multiple_selection" = "Izinkan beberapa pilihan";
-"home_view.menu.customize" = "Sesuaikan";
 "home_view.menu.reorder" = "Susun ulang";
 "home_view.menu.settings" = "Settings";
 "home_view.summaries.count_active" = "%li aktif";

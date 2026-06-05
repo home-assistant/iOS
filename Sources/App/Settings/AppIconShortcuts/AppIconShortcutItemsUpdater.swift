@@ -22,14 +22,17 @@ enum AppIconShortcutItemsUpdater {
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { _ in
             let config = (try? AppIconShortcutConfig.config()) ?? AppIconShortcutConfig()
-            let configuredShortcutItems = config.items.prefix(maximumShortcutItems).map { item in
-                UIApplicationShortcutItem(
-                    type: shortcutType(for: item),
-                    localizedTitle: title(for: item, provider: magicItemProvider),
-                    localizedSubtitle: subtitle(for: item, provider: magicItemProvider),
-                    icon: icon(for: item, provider: magicItemProvider)
-                )
-            }
+            let configuredShortcutItems = config.items
+                .filter { $0.type != .unsupported }
+                .prefix(maximumShortcutItems)
+                .map { item in
+                    UIApplicationShortcutItem(
+                        type: shortcutType(for: item),
+                        localizedTitle: title(for: item, provider: magicItemProvider),
+                        localizedSubtitle: subtitle(for: item, provider: magicItemProvider),
+                        icon: icon(for: item, provider: magicItemProvider)
+                    )
+                }
             let shortcutItems = forcedShortcutItems + configuredShortcutItems
             publish(shortcutItems: shortcutItems)
         }
@@ -87,8 +90,6 @@ enum AppIconShortcutItemsUpdater {
 
     private static func icon(for item: MagicItem, provider: MagicItemProviderProtocol) -> UIApplicationShortcutIcon? {
         switch item.type {
-        case .action:
-            return .init(systemSymbol: .boltFill)
         case .script:
             return .init(systemSymbol: .applescriptFill)
         case .scene:
@@ -99,6 +100,8 @@ enum AppIconShortcutItemsUpdater {
             return .init(systemSymbol: .folderFill)
         case .assistPipeline, .assistPrompt:
             return .init(systemSymbol: .micFill)
+        case .unsupported:
+            return nil
         }
     }
 }

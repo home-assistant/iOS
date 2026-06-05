@@ -548,7 +548,7 @@ public class HomeAssistantAPI {
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
         firstly { () -> Promise<MobileAppConfig> in
-            if server.info.version < .actionSyncing {
+            if server.info.version < .mobileAppConfig {
                 let old: Promise<MobileAppConfigPush> = requestImmutable(
                     path: "ios/push",
                     callingFunctionName: "\(#function)"
@@ -593,7 +593,7 @@ public class HomeAssistantAPI {
         with(MobileAppRegistrationRequest()) {
             if let pushID = Current.settingsStore.pushID {
                 var appData: [String: Any] = [
-                    "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                    "push_url": AppConstants.Firebase.pushURLString,
                     "push_token": pushID,
                 ]
 
@@ -791,30 +791,6 @@ public class HomeAssistantAPI {
         return (eventType: "mobile_app_notification_action", eventData: eventData)
     }
 
-    public func actionEvent(
-        actionID: String,
-        actionName: String,
-        source: AppTriggerSource
-    ) -> (eventType: String, eventData: [String: String]) {
-        var eventData = sharedEventDeviceInfo
-        eventData["actionName"] = actionName
-        eventData["actionID"] = actionID
-        eventData["triggerSource"] = source.description
-
-        return (eventType: "ios.action_fired", eventData: eventData)
-    }
-
-    public func actionScene(
-        actionID: String,
-        source: AppTriggerSource
-    ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
-        (
-            serviceDomain: Domain.scene.rawValue,
-            serviceName: Service.turnOn.rawValue,
-            serviceData: ["entity_id": actionID]
-        )
-    }
-
     public func tagEvent(
         tagPath: String
     ) -> (eventType: String, eventData: [String: String]) {
@@ -912,37 +888,6 @@ public class HomeAssistantAPI {
             Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
             return CreateEvent(eventType: action.eventType, eventData: action.eventData)
         }).asVoid()
-    }
-
-    public func HandleAction(actionID: String, source: AppTriggerSource) -> Promise<Void> {
-        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
-            Current.Log.error("couldn't find action with id \(actionID)")
-            return .init(error: HomeAssistantAPI.APIError.cantBuildURL)
-        }
-
-        let intent = PerformActionIntent(action: action)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        switch action.triggerType {
-        case .event:
-            let actionInfo = actionEvent(actionID: action.ID, actionName: action.Name, source: source)
-            Current.Log.verbose("Sending action: \(actionInfo.eventType) payload: \(actionInfo.eventData)")
-
-            return CreateEvent(
-                eventType: actionInfo.eventType,
-                eventData: actionInfo.eventData
-            )
-        case .scene:
-            let serviceInfo = actionScene(actionID: action.ID, source: source)
-            Current.Log.verbose("activating scene: \(action.ID)")
-
-            return CallService(
-                domain: serviceInfo.serviceDomain,
-                service: serviceInfo.serviceName,
-                serviceData: serviceInfo.serviceData,
-                triggerSource: source
-            )
-        }
     }
 
     public func executeActionForDomainType(domain: Domain, entityId: String, state: String) -> Promise<Void> {

@@ -62,10 +62,3 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
         return .result(value: true)
     }
 }
-
-@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-private extension IntentDialog {
-    static var actionsParameterConfiguration: Self {
-        .init(stringLiteral: L10n.AppIntents.WidgetAction.actionsParameterConfiguration)
-    }
-}

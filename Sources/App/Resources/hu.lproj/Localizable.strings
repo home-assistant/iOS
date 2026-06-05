@@ -468,7 +468,6 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "home_view.customization.common_controls.title" = "Vezérlők előrejelzési szakasz";
 "home_view.customization.summaries.title" = "Összefoglalók";
 "home_view.menu.allow_multiple_selection" = "Többszörös kiválasztás engedélyezése";
-"home_view.menu.customize" = "Testreszabás";
 "home_view.menu.reorder" = "Átrendezés";
 "home_view.menu.settings" = "Beállítások";
 "home_view.summaries.count_active" = "%li aktív";

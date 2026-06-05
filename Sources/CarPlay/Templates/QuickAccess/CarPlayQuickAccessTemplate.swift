@@ -47,7 +47,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private lazy var introduceQuickAccessListItem: CPListItem = {
         let item = CPListItem(
             text: L10n.CarPlay.QuickAccess.Intro.Item.title,
-            detailText: L10n.CarPlay.Action.Intro.Item.body,
+            detailText: L10n.CarPlay.QuickAccess.Intro.Item.body,
             image: MaterialDesignIcons.homeLightningBoltIcon
                 .carPlayIcon()
         )

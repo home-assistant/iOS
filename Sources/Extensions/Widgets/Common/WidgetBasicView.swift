@@ -125,11 +125,6 @@ struct WidgetBasicView: View {
                 return intent
             }
             switch widgetIntentType {
-            case .action:
-                let intent = PerformAction()
-                intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
-                intent.hapticConfirmation = true
-                return intent
             case let .script(id, entityId, serverId, name, showConfirmationNotification):
                 let intent = ScriptAppIntent()
                 intent.script = .init(

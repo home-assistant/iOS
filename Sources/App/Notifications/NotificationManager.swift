@@ -65,6 +65,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         if Current.settingsStore.clearBadgeAutomatically {
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
+        localPushManager.scheduleAppOpenLocalPushRetries()
     }
 
     @objc private func showCameraFromNotification(_ notification: Notification) {

@@ -17,7 +17,7 @@ struct YamlPreviewSection: View {
 
     init(
         header: String,
-        shareTitle: String = L10n.ActionsConfigurator.TriggerExample.share,
+        shareTitle: String = L10n.YamlPreview.share,
         yaml: String
     ) {
         self.header = header

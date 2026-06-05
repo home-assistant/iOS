@@ -4,8 +4,6 @@ public protocol ServerIdentifierProviding {
     var serverIdentifier: String { get }
 }
 
-extension Action: ServerIdentifierProviding {}
-
 public protocol ServerIntentProviding {
     var server: IntentServer? { get }
 }

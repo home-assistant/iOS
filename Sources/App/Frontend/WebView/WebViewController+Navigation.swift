@@ -104,29 +104,6 @@ extension WebViewController {
         }
     }
 
-    func openActionAutomationEditor(actionId: String) {
-        guard server.info.version >= .externalBusCommandAutomationEditor else {
-            showActionAutomationEditorNotAvailable()
-            return
-        }
-        _ = webViewExternalMessageHandler.sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue,
-            payload: [
-                "config": [
-                    "trigger": [
-                        [
-                            "platform": "event",
-                            "event_type": "ios.action_fired",
-                            "event_data": [
-                                "actionID": actionId,
-                            ],
-                        ],
-                    ],
-                ],
-            ]
-        ))
-    }
-
     func getLatestConfig() {
         _ = Current.api(for: server)?.getConfig()
     }
