@@ -1203,7 +1203,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorien können auch in der .yaml-Konfiguration definiert werden.";
 "settings_details.notifications.categories_synced.header" = "Synchronisierte Kategorien";
 "settings_details.notifications.info" = "Verwende den Benachrichtigungsdienst mobile_app, um Benachrichtigungen an dein Gerät zu senden.";
-"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
+"settings_details.notifications.local_push.retry.title" = "Lokalen Push erneut versuchen";
 "settings_details.notifications.local_push.status.available" = "Verfügbar (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Deaktiviert";
 "settings_details.notifications.local_push.status.establishing" = "Wird aufgebaut";

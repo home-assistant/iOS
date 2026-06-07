@@ -1203,7 +1203,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategooriaid saab määratleda ka .yamli konfiguratsioonis.";
 "settings_details.notifications.categories_synced.header" = "Sünkroonitud kategooriad";
 "settings_details.notifications.info" = "Kasuta mobile_app teavitamisteenust, et saata oma seadmesse märguandeid.";
-"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
+"settings_details.notifications.local_push.retry.title" = "Taaskordne kohalik tõuketeavitus";
 "settings_details.notifications.local_push.status.available" = "Saadaval (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Keelatud";
 "settings_details.notifications.local_push.status.establishing" = "Ühenduse loomine";
