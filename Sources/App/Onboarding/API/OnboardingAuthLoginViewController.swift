@@ -8,7 +8,8 @@ protocol OnboardingAuthLoginViewController: UIViewController {
     init(authDetails: OnboardingAuthDetails)
 }
 
-class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLoginViewController, WKNavigationDelegate, WKUIDelegate {
+class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLoginViewController, WKNavigationDelegate,
+    WKUIDelegate {
     let authDetails: OnboardingAuthDetails
     let promise: Promise<URL>
     private let resolver: Resolver<URL>
