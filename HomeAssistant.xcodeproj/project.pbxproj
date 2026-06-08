@@ -27,6 +27,11 @@
 		01783C74005B40978CE7508B /* NotificationIdentifierField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC7EF1136575D0E7A17091 /* NotificationIdentifierField.swift */; };
 		072BACCC5B2509E4AF06BFED /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
 		0907D6244565287ED4E46A3C /* WhatsNewCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09953104F4749B10268B7C61 /* WhatsNewCatalog.swift */; };
+		00345F0517E14EC186DFB25D /* TestFlightCommunicationEngine.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */; };
+		14A4AE0E492F4BADB1E8A3CA /* TestFlightCommunicationCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666F733264F8449E8E7CB985 /* TestFlightCommunicationCatalog.swift */; };
+		639D841C8B7A4154956024A8 /* TestFlightCommunicationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0B01160F7B467E8FE2C7C7 /* TestFlightCommunicationEngine.swift */; };
+		E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */; };
+		027A90037B4049A1AFFF27E3 /* TestFlightCommunicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C389A0CF18C042F18FAD572C /* TestFlightCommunicationView.swift */; };
 		0C1F82B6DF9051F98A587352 /* ComplicationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3995EF7323087AA35F01BDDF /* ComplicationEditView.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
 		1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */; };
@@ -1885,6 +1890,11 @@
 		07701F2786F6D45E945CC1AA /* AssistPipelineAddList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelineAddList.swift; sourceTree = "<group>"; };
 		07A4CD40BADC119045547D77 /* BarometerSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarometerSensor.test.swift; sourceTree = "<group>"; };
 		09953104F4749B10268B7C61 /* WhatsNewCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCatalog.swift; sourceTree = "<group>"; };
+		14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationEngine.test.swift; sourceTree = "<group>"; };
+		666F733264F8449E8E7CB985 /* TestFlightCommunicationCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationCatalog.swift; sourceTree = "<group>"; };
+		7A0B01160F7B467E8FE2C7C7 /* TestFlightCommunicationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationEngine.swift; sourceTree = "<group>"; };
+		212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationModels.swift; sourceTree = "<group>"; };
+		C389A0CF18C042F18FAD572C /* TestFlightCommunicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationView.swift; sourceTree = "<group>"; };
 		09A39058730A6B3E876D8848 /* WebViewController+Kiosk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Kiosk.swift"; sourceTree = "<group>"; };
 		09DFDC1BD6D3E07060517D1D /* Pods-iOS-Extensions-NotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.debug.xcconfig"; sourceTree = "<group>"; };
 		1100D51E2496F63400B1073C /* ThemeColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColors.swift; sourceTree = "<group>"; };
@@ -6505,6 +6515,25 @@
 			path = WhatsNew;
 			sourceTree = "<group>";
 		};
+		FCEBF2FDD5304DACB114B80B /* TestFlightCommunication */ = {
+			isa = PBXGroup;
+			children = (
+				666F733264F8449E8E7CB985 /* TestFlightCommunicationCatalog.swift */,
+				7A0B01160F7B467E8FE2C7C7 /* TestFlightCommunicationEngine.swift */,
+				212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */,
+				C389A0CF18C042F18FAD572C /* TestFlightCommunicationView.swift */,
+			);
+			path = TestFlightCommunication;
+			sourceTree = "<group>";
+		};
+		D910BE79257341FBB86BCCF2 /* TestFlightCommunication */ = {
+			isa = PBXGroup;
+			children = (
+				14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */,
+			);
+			path = TestFlightCommunication;
+			sourceTree = "<group>";
+		};
 		55DB5351C79B716F7A464A95 /* Fan */ = {
 			isa = PBXGroup;
 			children = (
@@ -6915,6 +6944,7 @@
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				117EB13E2569AD3000049541 /* Notifications */,
 				5002BDABA052EC20E1ECC92A /* WhatsNew */,
+				FCEBF2FDD5304DACB114B80B /* TestFlightCommunication */,
 				B661FB6B226BCC8500E541DD /* Settings */,
 				11B7ECD9274DA521009AD634 /* Servers */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
@@ -6949,6 +6979,7 @@
 				46C3EB192D721000009A893F /* Utilities */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
 				5002BDB02FEE000100BEEF01 /* WhatsNew */,
+				D910BE79257341FBB86BCCF2 /* TestFlightCommunication */,
 				4286260C2DA5CD1B00D58D13 /* Webhook */,
 				39A32EE32C0E38A100985722 /* WebView */,
 				420F53EC2C4E9FF1003C8415 /* Widgets */,
@@ -9486,6 +9517,10 @@
 				42FCCFE22B9B1B610057783F /* BarcodeScannerCamera.swift in Sources */,
 				42B7BFEC2E97AF070056BADC /* LocalAccessPermissionViewModel.swift in Sources */,
 				78F6EC29BAE43C9BAAFBAB1A /* WhatsNewView.swift in Sources */,
+				14A4AE0E492F4BADB1E8A3CA /* TestFlightCommunicationCatalog.swift in Sources */,
+				639D841C8B7A4154956024A8 /* TestFlightCommunicationEngine.swift in Sources */,
+				E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */,
+				027A90037B4049A1AFFF27E3 /* TestFlightCommunicationView.swift in Sources */,
 				42FA83412F47230D0050095A /* WebViewController+Navigation.swift in Sources */,
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
@@ -9741,6 +9776,7 @@
 				428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */,
 				42A42A6C2DC37F09000ABBAF /* AboutView.test.swift in Sources */,
 				5002BDAF2FEE000100BEEF01 /* WhatsNewEngine.test.swift in Sources */,
+				00345F0517E14EC186DFB25D /* TestFlightCommunicationEngine.test.swift in Sources */,
 				42E000042FEE100100BEEF01 /* LocalPushRetryDiagnosticsTests.swift in Sources */,
 				4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */,
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
