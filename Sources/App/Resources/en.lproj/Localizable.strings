@@ -1054,6 +1054,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Edit Template";
+"settings.test_flight_communication.title" = "Beta Tester Updates";
 "settings.whats_new.title" = "What's new?";
 "settings.widgets.create.add_item.title" = "Add item";
 "settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
@@ -1582,6 +1583,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "webrtc_player.known_issues.title" = "Known Issues";
+"test_flight_communication.badge_title" = "Beta Tester Update";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";

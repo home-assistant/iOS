@@ -6,6 +6,7 @@ struct SettingsView: View {
     @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
+    @State private var testFlightMessage: TestFlightMessage?
     @State private var isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
@@ -199,6 +200,21 @@ struct SettingsView: View {
                 }
             }
 
+            if let latestMessage = TestFlightCommunicationEngine().latestMessage() {
+                // Beta Tester Updates
+                Section {
+                    Button {
+                        testFlightMessage = latestMessage
+                    } label: {
+                        Label {
+                            Text(L10n.Settings.TestFlightCommunication.title)
+                        } icon: {
+                            Image(systemSymbol: .testtube2)
+                        }
+                    }
+                }
+            }
+
             // About
             Section {
                 Button {
@@ -243,6 +259,11 @@ struct SettingsView: View {
         .sheet(item: $whatsNewRelease) { release in
             WhatsNewView(release: release) {
                 WhatsNewEngine().markSeen(release)
+            }
+        }
+        .sheet(item: $testFlightMessage) { message in
+            TestFlightCommunicationView(message: message) {
+                TestFlightCommunicationEngine().markSeen(message)
             }
         }
     }
