@@ -57,4 +57,21 @@ struct DiscoveredHomeAssistantTests {
         #expect(discovered.internalOrExternalURL == expectedURL)
         #expect(discovered.internalURL == expectedURL || discovered.externalURL == expectedURL)
     }
+
+    @Test("mDNS payload allows missing version")
+    func mdnsPayloadAllowsMissingVersion() async throws {
+        let discovered = try DiscoveredHomeAssistant(
+            JSON: [
+                "uuid": "test-uuid",
+                "internal_url": "http://homeassistant.local:8123",
+                "location_name": "Test Home",
+            ],
+            context: nil
+        )
+
+        #expect(discovered.version == nil)
+        #expect(discovered.uuid == "test-uuid")
+        #expect(discovered.internalOrExternalURL == URL(string: "http://homeassistant.local:8123")!)
+        #expect(discovered.locationName == "Test Home")
+    }
 }
