@@ -166,7 +166,7 @@ class OnboardingAuth {
                 name: ServerInfo.defaultName,
                 connection: connectionInfo,
                 token: tokenInfo,
-                version: instance.version
+                version: instance.version ?? DiscoveredHomeAssistant.defaultVersion
             )
 
             let identifier = Identifier<Server>(rawValue: instance.uuid ?? UUID().uuidString)
