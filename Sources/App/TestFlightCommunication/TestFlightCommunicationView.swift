@@ -40,7 +40,7 @@ struct TestFlightCommunicationView: View {
 
     private var header: some View {
         VStack(alignment: .center, spacing: DesignSystem.Spaces.one) {
-            Label("Beta Tester Update", systemImage: "testtube.2")
+            Label(L10n.TestFlightCommunication.badgeTitle, systemSymbol: .testtube2)
                 .font(.caption.bold())
                 .foregroundStyle(.orange)
             Text(message.title)

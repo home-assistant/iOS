@@ -3671,6 +3671,10 @@ public enum L10n {
       /// Edit Template
       public static var title: String { return L10n.tr("Localizable", "settings.template_edit.title") }
     }
+    public enum TestFlightCommunication {
+      /// Beta Tester Updates
+      public static var title: String { return L10n.tr("Localizable", "settings.test_flight_communication.title") }
+    }
     public enum WhatsNew {
       /// What's new?
       public static var title: String { return L10n.tr("Localizable", "settings.whats_new.title") }
@@ -4436,6 +4440,11 @@ public enum L10n {
         }
       }
     }
+  }
+
+  public enum TestFlightCommunication {
+    /// Beta Tester Update
+    public static var badgeTitle: String { return L10n.tr("Localizable", "test_flight_communication.badge_title") }
   }
 
   public enum Thread {

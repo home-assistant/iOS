@@ -207,9 +207,9 @@ struct SettingsView: View {
                         testFlightMessage = latestMessage
                     } label: {
                         Label {
-                            Text("Beta Tester Updates")
+                            Text(L10n.Settings.TestFlightCommunication.title)
                         } icon: {
-                            Image(systemName: "testtube.2")
+                            Image(systemSymbol: .testtube2)
                         }
                     }
                 }

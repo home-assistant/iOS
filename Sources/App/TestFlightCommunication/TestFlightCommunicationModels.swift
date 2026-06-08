@@ -15,10 +15,6 @@ struct TestFlightMessageId: RawRepresentable, Hashable {
     init(rawValue: String) { self.rawValue = rawValue }
 }
 
-extension TestFlightMessageId {
-    static let testFlightWelcome = TestFlightMessageId("testflight-welcome-2026-06")
-}
-
 struct TestFlightMessage: Identifiable, Equatable {
     struct CallToAction: Equatable {
         let title: String
