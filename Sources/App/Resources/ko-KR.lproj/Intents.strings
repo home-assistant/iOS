@@ -37,7 +37,7 @@
 "HSLcG7" = "이벤트 이름";
 "HoH8wg" = "동작";
 "J3qct4" = "서버";
-"JBMp1T" = "확인을 위해 ' ${server} '을(를) 원하셨습니까?";
+"JBMp1T" = "확인을 위해 '${server}'을(를) 원하셨습니까?";
 "JFaYRG" = "확인을 위해 '${pipeline}'을 원하셨습니까?";
 "K4xrvF" = "오류";
 "KHH48D" = "실패: 현재 Home Assistant에 연결할 수 없습니다.";
@@ -53,7 +53,7 @@
 "N9iJpK" = "카메라 이미지 가져오기";
 "NUF0Pa" = "${result}";
 "NdG9Jz" = "Home Assistant 템플릿을 렌더링합니다.";
-"NsbUTz" = "카메라 구성요소";
+"NsbUTz" = "카메라 엔티티";
 "Q2Qp4a" = "동작";
 "QCGKRz" = "어떤 언어인가요?";
 "QVD2lM" = "서비스 데이터";
@@ -63,7 +63,7 @@
 "RMQY3r" = "Home Assistant로 위치 보내기";
 "RsOw3P" = "성공적으로 렌더링된 템플릿";
 "T06Fka" = "프론트엔드에서 페이지 열기";
-"U4u9Xz" = "'${server} '와(과) 일치하는 ${count} 옵션이 있습니다.";
+"U4u9Xz" = "'${server}'와 일치하는 ${count} 옵션이 있습니다.";
 "ULka1b" = "동작";
 "VP2XpM" = "이벤트 데이터";
 "Wk7m4V" = "서버";
@@ -71,15 +71,15 @@
 "X4A8Cc" = "서비스 도메인";
 "Xq7UuD" = "제공된 템플릿을 렌더링합니다.";
 "YNQXwq" = "오류";
-"YxAau3" = "'${server} '와(과) 일치하는 ${count} 옵션이 있습니다.";
+"YxAau3" = "'${server}'와 일치하는 ${count} 옵션이 있습니다.";
 "ZApPxB" = "서비스 이름";
 "ZG5nuL" = "앱에서 Assist";
 "ZRPVYO" = "프론트엔드에서 페이지 열기";
 "ZT9Mld" = "이벤트 이름";
 "ZmUm9Q" = "어떤 템플릿을 렌더링하시겠습니까?";
 "Zoqsph" = "페이지";
-"aXZJt9" = "확인을 위해 '${server} '을(를) 원하셨습니까?";
-"am5G4A" = "확인을 위해 '${server} '을(를) 원하셨습니까?";
+"aXZJt9" = "확인을 위해 '${server}'을(를) 원하셨습니까?";
+"am5G4A" = "확인을 위해 '${server}'을(를) 원하셨습니까?";
 "cK9jdK" = "실패: ${error}";
 "cLmTme" = "동작";
 "cuflz3" = "실패: 현재 Home Assistant에 연결할 수 없습니다.";
@@ -107,7 +107,7 @@
 "hhPmPc" = "JSON";
 "hsrlTY" = "카메라에서 단일 스틸 프레임 가져오기";
 "iMvUhs" = "페이지 열기";
-"jWGtvO" = "'${server} '와(과) 일치하는 ${count} 옵션이 있습니다.";
+"jWGtvO" = "'${server}'와 일치하는 ${count} 옵션이 있습니다.";
 "jtqxOg" = "확인을 위해 '${action}'을 원하셨습니까?";
 "kGB23u" = "동작 수행";
 "kPqT8T" = "파이프라인";
@@ -119,7 +119,7 @@
 "mJ6CrP" = "${eventName}: ${error}을(를) 보내지 못했습니다.";
 "mZnRHS" = "${eventName} 실행됨";
 "mi6B62" = "이벤트와 함께 어떤 데이터를 보내시겠습니까?";
-"mrwamX" = "Assist In App";
+"mrwamX" = "앱 내 Assist";
 "ni0OSe" = "확인을 위해 '${server}'를 원하십니까?";
 "ns9RRU" = "페이지 열기";
 "nzqmFA" = "완료";
@@ -148,7 +148,7 @@
 "vAIAF2" = "Home Assistant에 센서 업데이트 보내기";
 "vebd70" = "서버";
 "wfPQQQ" = "Home Assistant 이벤트 버스에 이벤트 발생";
-"x7FAm9" = "(Legacy) Assist In App";
+"x7FAm9" = "(레거시) 앱 내 Assist";
 "xN51te" = "결과";
 "xfXG6b" = "어떤 서버?";
 "xhwpj4" = "완료";
