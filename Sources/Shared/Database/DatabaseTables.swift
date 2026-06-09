@@ -14,7 +14,6 @@ public enum GRDBDatabaseTable: String {
     case customWidget
     case appArea
     case homeViewConfiguration
-    case cameraListConfiguration
     case assistConfiguration
     case kioskSettings
     case allowedTags
@@ -117,13 +116,6 @@ public enum DatabaseTables {
         case showUsagePredictionSection
         case areasLayout
         case showSummaries
-    }
-
-    // Camera List Configuration (per server)
-    public enum CameraListConfiguration: String, CaseIterable {
-        case serverId
-        case areaOrders
-        case sectionOrder
     }
 
     // Entity Registry (full entity registry data)

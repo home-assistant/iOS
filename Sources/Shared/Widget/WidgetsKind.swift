@@ -21,7 +21,6 @@ public enum WidgetsKind: String, CaseIterable {
     case controlFan
     case controlOpenEntity
     case controlOpenCamera
-    case controlOpenCamerasList
     case controlOpenLock
     case controlOpenCoverEntity
     case controlOpenInputBoolean

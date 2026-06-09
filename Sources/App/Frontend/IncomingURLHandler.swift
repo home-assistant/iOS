@@ -71,17 +71,6 @@ class IncomingURLHandler {
                 let serverId = queryParameters?.first(where: { $0.name == "serverId" })?.value
                 let entityId = queryParameters?.first(where: { $0.name == "entityId" })?.value
 
-                // If no entityId is provided, show the camera list
-                if entityId == nil {
-                    Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                        .done { webViewController in
-                            let view = CameraListView(serverId: serverId).embeddedInHostingController()
-                            view.modalPresentationStyle = .pageSheet
-                            webViewController.present(view, animated: true)
-                        }
-                    return true
-                }
-
                 guard let entityId,
                       let server = Current.servers.all.first(where: { server in
                           server.identifier.rawValue == serverId
