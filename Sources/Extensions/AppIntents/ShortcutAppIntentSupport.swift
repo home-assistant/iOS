@@ -22,6 +22,17 @@ extension Promise {
             }
         }
     }
+
+    func timeout(seconds: TimeInterval) -> Promise<T> {
+        let timeout = after(seconds: seconds).then {
+            Promise<T>(error: ShortcutAppIntentError("Timed out after \(Int(seconds)) seconds"))
+        }
+        return race(self, timeout)
+    }
+
+    func async(timeout seconds: TimeInterval) async throws -> T {
+        try await timeout(seconds: seconds).async()
+    }
 }
 
 extension Sequence {
