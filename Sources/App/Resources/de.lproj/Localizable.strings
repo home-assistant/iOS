@@ -173,7 +173,7 @@
 "camera_player.errors.no_stream_available" = "Kein Stream verfügbar";
 "camera_player.errors.unable_to_connect_to_server" = "Verbindung zu Home Assistant nicht möglich";
 "camera_player.errors.unknown" = "Unbekannter Fehler";
-"camera_player.notification.body" = "Tap to open camera";
+"camera_player.notification.body" = "Zum Öffnen der Kamera tippen";
 "cameras.drag_to_reorder" = "Per Drag & Drop neu anordnen";
 "cameras.no_server_found" = "Kein Server für Kamera gefunden: %@";
 "cancel_label" = "Abbrechen";
@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "iOS-Aktion erstellen";
 "carPlay.notification.quick_access.intro.body" = "Tippe, um deine CarPlay-Konfiguration zu erstellen.";
 "carPlay.notification.quick_access.intro.title" = "CarPlay-Konfiguration erstellen";
+"carPlay.quick_access.execute.in_progress" = "Wird ausgeführt …";
+"carPlay.quick_access.intro.item.body" = "Tippe, um auf deinem iPhone fortzufahren";
 "carPlay.quick_access.intro.item.title" = "Deine CarPlay-Konfiguration erstellen";
 "carPlay.state.loading.title" = "Laden …";
 "carPlay.tabs.active.delete_action.title" = "Nach links wischen, um den Tab zu entfernen";
@@ -686,6 +688,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "notification_service.parser.camera.invalid_entity" = "Gegebene entity_id ist ungültig.";
 "notification_service.parser.url.invalid_url" = "Die angegebene URL ist ungültig.";
 "notification_service.parser.url.no_url" = "Es wurde keine URL angegeben.";
+"notifications_configurator.action.example_trigger.title" = "Beispiel-Auslöser";
 "notifications_configurator.action.rows.authentication_required.footer" = "Bei aktivierter Option wird der Benutzer nach Auswahl einer Benachrichtigungs-Aktion vom System aufgefordert das Gerät zu entsperren. Die Aktionswahl wird erst nach erfolgreicher Authentifizierung an Home Assistant weitergegeben.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authentifizierung erforderlich";
 "notifications_configurator.action.rows.destructive.footer" = "Wenn aktiviert, erfolgt eine besondere Hervorhebung des Aktions-Knopfes, um zu signalisieren, dass er eine destruktive Aufgabe ausführt.";
@@ -739,11 +742,11 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.device_name_check.error.prompt" = "Welcher Gerätename sollte stattdessen verwendet werden?";
 "onboarding.device_name_check.error.title" = "Ein Gerät mit dem Namen '%1$@' existiert bereits";
 "onboarding.invitation.accept_button" = "Annehmen";
-"onboarding.invitation.address_title" = "Home Assistant address";
-"onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
-"onboarding.invitation.reject_button" = "Reject";
-"onboarding.invitation.screen_title" = "You've been invited";
-"onboarding.invitation.security_warning" = "Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.";
+"onboarding.invitation.address_title" = "Home Assistant-Adresse";
+"onboarding.invitation.description" = "Home Assistant ist eine quelloffene Hausautomatisierung, bei der lokale Steuerung und Datenschutz an erster Stelle stehen.";
+"onboarding.invitation.reject_button" = "Ablehnen";
+"onboarding.invitation.screen_title" = "Du wurdest eingeladen";
+"onboarding.invitation.security_warning" = "Nimm diese Einladung nur an, wenn du der Person vertraust, die sie dir geschickt hat. Die Verbindung zu einem unbekannten Server könnte diesem Zugriff auf Daten gewähren, die du in der App eingibst oder die von ihr gesendet werden, wie z. B. deinen Standort und Geräteinformationen.";
 "onboarding.invitation.title" = "Home Assistant-Einladung";
 "onboarding.local_access.description" = "Wenn diese App weiß, wann du nicht zuhause bist, kann sie eine sicherere Verbindung zu deinem Home Assistant-System herstellen. Dazu müssen die Ortungsdienste aktiviert sein.";
 "onboarding.local_access.less_secure_option.title" = "Weniger sicher: Erlaube dieser App nicht, zu wissen, wann du zuhause bist";
@@ -1200,6 +1203,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorien können auch in der .yaml-Konfiguration definiert werden.";
 "settings_details.notifications.categories_synced.header" = "Synchronisierte Kategorien";
 "settings_details.notifications.info" = "Verwende den Benachrichtigungsdienst mobile_app, um Benachrichtigungen an dein Gerät zu senden.";
+"settings_details.notifications.local_push.retry.title" = "Lokalen Push erneut versuchen";
 "settings_details.notifications.local_push.status.available" = "Verfügbar (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Deaktiviert";
 "settings_details.notifications.local_push.status.establishing" = "Wird aufgebaut";
@@ -1748,4 +1752,5 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.todo_list.refresh_title" = "To-do-Liste aktualisieren";
 "widgets.todo_list.select_list" = "Widget bearbeiten, um Liste auszuwählen.";
 "widgets.todo_list.title" = "To-do-Liste";
+"yaml_preview.share" = "Inhalt teilen";
 "yes_label" = "Ja";

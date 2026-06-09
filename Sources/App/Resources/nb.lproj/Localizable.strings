@@ -252,6 +252,8 @@
 "carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
 "carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
+"carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Opprett din CarPlay-konfigurasjon";
 "carPlay.state.loading.title" = "Laster...";
 "carPlay.tabs.active.delete_action.title" = "Swipe left to remove tab";
@@ -686,6 +688,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "notification_service.parser.camera.invalid_entity" = "enhets_id oppgitt var ugyldig.";
 "notification_service.parser.url.invalid_url" = "Den angitte URL-adressen var ugyldig.";
 "notification_service.parser.url.no_url" = "Ingen URL ble oppgitt.";
+"notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Når brukeren velger en handling med dette alternativet, vil systemet be brukeren om å låse opp enheten. Etter opplåsing vil Home Assistant bli varslet om den valgte handlingen.";
 "notifications_configurator.action.rows.authentication_required.title" = "Godkjenning kreves";
 "notifications_configurator.action.rows.destructive.footer" = "Når aktivert, vises handlingsknappen med spesiell markering for å indikere at den utfører en ødeleggende oppgave.";
@@ -1200,6 +1203,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan også defineres i .yaml-konfigurasjonen.";
 "settings_details.notifications.categories_synced.header" = "Synkroniserte kategorier";
 "settings_details.notifications.info" = "Bruk varslingstjenesten mobile_app til å sende varsler til enheten din.";
+"settings_details.notifications.local_push.retry.title" = "Retry Local Push";
 "settings_details.notifications.local_push.status.available" = "Tilgjengelig (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Deaktivert";
 "settings_details.notifications.local_push.status.establishing" = "Etablerer";
@@ -1747,4 +1751,5 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.refresh_title" = "Oppdater gjøremålslisten";
 "widgets.todo_list.select_list" = "Rediger widget for å velge liste.";
 "widgets.todo_list.title" = "Gjøremålsliste";
+"yaml_preview.share" = "Share Contents";
 "yes_label" = "Ja";

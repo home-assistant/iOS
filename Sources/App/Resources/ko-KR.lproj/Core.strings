@@ -97,9 +97,8 @@
 "component::improv_ble::config::abort::characteristic_missing" = "기기가 이미 Wi-Fi에 연결되어 있거나 더 이상 Wi-Fi에 연결할 수 없습니다. 다른 네트워크에 연결하려면 먼저 공장 초기화를 시도해 보세요.";
 "component::improv_ble::config::abort::no_devices_found" = "네트워크에서 기기를 찾을 수 없습니다";
 "component::improv_ble::config::abort::provision_successful" = "기기가 Wi-Fi 네트워크에 성공적으로 연결되었습니다.";
-"component::improv_ble::config::abort::provision_successful_url" = "기기가 Wi-Fi 네트워크에 성공적으로 연결되었습니다. \
-\
- 설정을 완료하려면 {url} 방문하세요.";
+"component::improv_ble::config::abort::provision_successful_url" = "기기가 Wi-Fi 네트워크에 성공적으로 연결되었습니다.\
+[설정 안내]({url})에 따라 설정을 완료하세요.";
 "component::improv_ble::config::abort::unknown" = "예상치 못한 오류가 발생했습니다";
 "component::improv_ble::config::error::unable_to_connect" = "기기를 Wi-Fi 네트워크에 연결할 수 없습니다. SSID와 비밀번호가 올바른지 확인하고 다시 시도하세요.";
 "component::improv_ble::config::flow_title" = "{name}";

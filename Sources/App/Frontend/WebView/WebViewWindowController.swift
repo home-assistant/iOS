@@ -31,6 +31,11 @@ final class WebViewWindowController {
         static let retryLimit = 10
     }
 
+    enum TestFlightCommunicationConstants {
+        static let retryDelay: TimeInterval = 0.5
+        static let retryLimit = 10
+    }
+
     private enum RecoveredServerReauthenticationError: LocalizedError {
         case missingPresenter
         case cancelled
@@ -60,6 +65,7 @@ final class WebViewWindowController {
     private var webViewControllerSeal: (WebViewController) -> Void
     private var onboardingPreloadWebViewController: WebViewController?
     private var didPresentWhatsNew = false
+    private var didPresentTestFlightMessage = false
 
     init(window: UIWindow, restorationActivity: NSUserActivity?) {
         self.window = window
@@ -139,6 +145,7 @@ final class WebViewWindowController {
                     type: .webView
                 )
                 presentWhatsNewIfNeeded(over: webViewController)
+                presentTestFlightMessageIfNeeded(over: webViewController)
             } else {
                 updateRootViewController(
                     to: OnboardingNavigationView(onboardingStyle: .initial).embeddedInHostingController(),
@@ -193,6 +200,37 @@ final class WebViewWindowController {
             didPresentWhatsNew = true
             let controller = WhatsNewView(release: release) {
                 engine.markSeen(release)
+            }.embeddedInHostingController()
+            controller.modalPresentationStyle = .formSheet
+            webViewController.presentOverlayController(controller: controller, animated: true)
+        }
+    }
+
+    private func presentTestFlightMessageIfNeeded(
+        over webViewController: WebViewController,
+        attempt: Int = 0
+    ) {
+        guard !didPresentTestFlightMessage else { return }
+        let engine = TestFlightCommunicationEngine()
+        guard let message = engine.messageToShow() else { return }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + TestFlightCommunicationConstants.retryDelay) { [
+            weak self,
+            weak webViewController
+        ] in
+            guard let self, let webViewController, !didPresentTestFlightMessage else { return }
+
+            guard webViewController.viewIfLoaded?.window != nil,
+                  webViewController.overlayedController == nil else {
+                if attempt < TestFlightCommunicationConstants.retryLimit {
+                    presentTestFlightMessageIfNeeded(over: webViewController, attempt: attempt + 1)
+                }
+                return
+            }
+
+            didPresentTestFlightMessage = true
+            let controller = TestFlightCommunicationView(message: message) {
+                engine.markSeen(message)
             }.embeddedInHostingController()
             controller.modalPresentationStyle = .formSheet
             webViewController.presentOverlayController(controller: controller, animated: true)
