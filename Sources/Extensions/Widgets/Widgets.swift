@@ -85,10 +85,6 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenLock()
         ControlOpenSensor()
         ControlOpenSwitch()
-        #if DEBUG
-        ControlOpenCamerasList()
-        #endif
-
         // Widgets
         WidgetCommonlyUsedEntities()
         WidgetCustom()
