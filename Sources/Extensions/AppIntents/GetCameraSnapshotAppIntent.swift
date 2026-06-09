@@ -33,12 +33,12 @@ struct GetCameraSnapshotAppIntent: AppIntent {
         guard camera.serverId == server.id,
               let server = server.getServer(),
               let api = Current.api(for: server) else {
-            throw ShortcutAppIntentError("No server provided")
+            throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
 
         let image = try await api.getCameraSnapshot(cameraEntityID: camera.entityId).async()
         guard let pngData = image.pngData() else {
-            throw ShortcutAppIntentError("Image could not be converted to PNG")
+            throw ShortcutAppIntentError(L10n.AppIntents.GetCameraSnapshot.Error.pngConversion)
         }
 
         let filename = "\(camera.entityId)_snapshot.png"

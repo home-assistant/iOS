@@ -1,5 +1,6 @@
 import Foundation
 import PromiseKit
+import Shared
 
 struct ShortcutAppIntentError: LocalizedError {
     let errorDescription: String?
@@ -25,7 +26,7 @@ extension Promise {
 
     func timeout(seconds: TimeInterval) -> Promise<T> {
         let timeout = after(seconds: seconds).then {
-            Promise<T>(error: ShortcutAppIntentError("Timed out after \(Int(seconds)) seconds"))
+            Promise<T>(error: ShortcutAppIntentError(L10n.AppIntents.Error.timedOut(Int(seconds))))
         }
         return race(self, timeout)
     }

@@ -25,7 +25,13 @@ struct PerformActionAppIntent: AppIntent {
     @Parameter(title: .init("app_intents.server.title", defaultValue: "Server"))
     var server: IntentServerAppEntity
 
-    @Parameter(title: .init("app_intents.perform_action.action.title", defaultValue: "Action"))
+    @Parameter(
+        title: .init("app_intents.perform_action.action.title", defaultValue: "Action"),
+        requestValueDialog: IntentDialog(.init(
+            "app_intents.perform_action.action_parameter_configuration",
+            defaultValue: "Which action?"
+        ))
+    )
     var action: IntentActionEntity
 
     @Parameter(
@@ -45,29 +51,33 @@ struct PerformActionAppIntent: AppIntent {
     )
     var payload: String
 
-    func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
+    func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.syncNetworkInformation()
         guard action.serverId == server.id,
               let server = server.getServer(),
               let api = Current.api(for: server) else {
-            throw ShortcutAppIntentError("No server provided")
+            throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
 
         let payloadDict = try Self.payloadDictionary(from: payload)
         let components = action.actionId.split(separator: ".")
         guard components.count == 2 else {
-            throw ShortcutAppIntentError("Invalid action name")
+            throw ShortcutAppIntentError(L10n.AppIntents.PerformAction.Error.invalidAction)
         }
 
-        try await api.CallService(
-            domain: String(components[0]),
-            service: String(components[1]),
-            serviceData: payloadDict,
-            triggerSource: .AppIntent,
-            shouldLog: true
-        ).async()
+        do {
+            try await api.CallService(
+                domain: String(components[0]),
+                service: String(components[1]),
+                serviceData: payloadDict,
+                triggerSource: .AppIntent,
+                shouldLog: true
+            ).async()
+        } catch {
+            throw ShortcutAppIntentError(L10n.AppIntents.PerformAction.responseFailure(error.localizedDescription))
+        }
 
-        return .result(value: true)
+        return .result(value: L10n.AppIntents.PerformAction.responseSuccess)
     }
 
     private static func payloadDictionary(from payload: String) throws -> [String: Any] {
@@ -78,7 +88,7 @@ struct PerformActionAppIntent: AppIntent {
             with: data,
             options: .allowFragments
         ) as? [String: Any] else {
-            throw ShortcutAppIntentError("Unable to parse action data")
+            throw ShortcutAppIntentError(L10n.AppIntents.PerformAction.Error.invalidPayload)
         }
 
         return jsonObject

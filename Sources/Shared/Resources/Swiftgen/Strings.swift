@@ -287,6 +287,16 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.refresh_warning.title") }
       }
     }
+    public enum AssistPrompt {
+      /// Send a text prompt to Assist
+      public static var description: String { return L10n.tr("Localizable", "app_intents.assist_prompt.description") }
+      /// Assist prompt
+      public static var title: String { return L10n.tr("Localizable", "app_intents.assist_prompt.title") }
+      public enum Prompt {
+        /// Prompt
+        public static var title: String { return L10n.tr("Localizable", "app_intents.assist_prompt.prompt.title") }
+      }
+    }
     public enum Automations {
       public enum Automation {
         /// Automation
@@ -333,6 +343,18 @@ public enum L10n {
       /// Cover
       public static var title: String { return L10n.tr("Localizable", "app_intents.cover.title") }
     }
+    public enum Error {
+      /// Failed servers: %@
+      public static func failedServers(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.error.failed_servers", String(describing: p1))
+      }
+      /// No server provided
+      public static var noServer: String { return L10n.tr("Localizable", "app_intents.error.no_server") }
+      /// Timed out after %d seconds
+      public static func timedOut(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "app_intents.error.timed_out", p1)
+      }
+    }
     public enum Fan {
       /// Fan
       public static var title: String { return L10n.tr("Localizable", "app_intents.fan.title") }
@@ -343,6 +365,20 @@ public enum L10n {
       public enum OnStateIcon {
         /// Icon for on state
         public static var title: String { return L10n.tr("Localizable", "app_intents.fan.on_state_icon.title") }
+      }
+    }
+    public enum GetCameraSnapshot {
+      /// Get a single still frame from a camera
+      public static var description: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.description") }
+      /// Get camera snapshot
+      public static var title: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.title") }
+      public enum Camera {
+        /// Camera
+        public static var title: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.camera.title") }
+      }
+      public enum Error {
+        /// Image could not be converted to PNG
+        public static var pngConversion: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.error.png_conversion") }
       }
     }
     public enum HapticConfirmation {
@@ -406,20 +442,42 @@ public enum L10n {
     public enum PerformAction {
       /// Which action?
       public static var actionParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_configuration") }
-      /// Just to confirm, you wanted ‘%@’?
-      public static func actionParameterConfirmation(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_confirmation", String(describing: p1))
-      }
-      /// There are %@ options matching ‘%@’.
-      public static func actionParameterDisambiguationIntro(_ p1: Any, _ p2: Any) -> String {
-        return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_disambiguation_intro", String(describing: p1), String(describing: p2))
-      }
+      /// Perform an action on a Home Assistant server
+      public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.description") }
       /// Failed: %@
       public static func responseFailure(_ p1: Any) -> String {
         return L10n.tr("Localizable", "app_intents.perform_action.response_failure", String(describing: p1))
       }
       /// Done
       public static var responseSuccess: String { return L10n.tr("Localizable", "app_intents.perform_action.response_success") }
+      /// Perform action
+      public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.title") }
+      public enum Action {
+        /// Action
+        public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.action.title") }
+      }
+      public enum Error {
+        /// Invalid action name
+        public static var invalidAction: String { return L10n.tr("Localizable", "app_intents.perform_action.error.invalid_action") }
+        /// Unable to parse action data
+        public static var invalidPayload: String { return L10n.tr("Localizable", "app_intents.perform_action.error.invalid_payload") }
+      }
+      public enum Payload {
+        /// JSON data to send with the action
+        public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.description") }
+        /// Action data
+        public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.title") }
+      }
+    }
+    public enum RenderTemplate {
+      /// Render a Home Assistant template. Only users with the admin role can perform this action.
+      public static var description: String { return L10n.tr("Localizable", "app_intents.render_template.description") }
+      /// Render template
+      public static var title: String { return L10n.tr("Localizable", "app_intents.render_template.title") }
+      public enum Template {
+        /// Template
+        public static var title: String { return L10n.tr("Localizable", "app_intents.render_template.template.title") }
+      }
     }
     public enum Scenes {
       /// Run Scene
@@ -514,6 +572,26 @@ public enum L10n {
     public enum Switch {
       /// Switch
       public static var title: String { return L10n.tr("Localizable", "app_intents.switch.title") }
+    }
+    public enum UpdateLocation {
+      /// Send a location update to Home Assistant
+      public static var description: String { return L10n.tr("Localizable", "app_intents.update_location.description") }
+      /// Updated location on all servers
+      public static var success: String { return L10n.tr("Localizable", "app_intents.update_location.success") }
+      /// Update location
+      public static var title: String { return L10n.tr("Localizable", "app_intents.update_location.title") }
+      public enum Location {
+        /// Location
+        public static var title: String { return L10n.tr("Localizable", "app_intents.update_location.location.title") }
+      }
+    }
+    public enum UpdateSensors {
+      /// Send a sensor update to Home Assistant
+      public static var description: String { return L10n.tr("Localizable", "app_intents.update_sensors.description") }
+      /// Updated sensors on all servers
+      public static var success: String { return L10n.tr("Localizable", "app_intents.update_sensors.success") }
+      /// Update sensors
+      public static var title: String { return L10n.tr("Localizable", "app_intents.update_sensors.title") }
     }
     public enum WidgetAction {
       /// Which actions?

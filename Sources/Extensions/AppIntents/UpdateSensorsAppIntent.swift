@@ -25,9 +25,9 @@ struct UpdateSensorsAppIntent: AppIntent {
         }
 
         guard failedServers.isEmpty == false else {
-            return .result(value: "Updated sensors on all servers")
+            return .result(value: L10n.AppIntents.UpdateSensors.success)
         }
 
-        return .result(value: "Failed servers: \(failedServers.joined(separator: ", "))")
+        return .result(value: L10n.AppIntents.Error.failedServers(failedServers.joined(separator: ", ")))
     }
 }

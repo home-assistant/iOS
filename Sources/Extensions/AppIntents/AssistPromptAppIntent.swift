@@ -23,7 +23,7 @@ struct AssistPromptAppIntent: AppIntent {
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.syncNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: pipeline.serverId)) else {
-            throw ShortcutAppIntentError("No server provided")
+            throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
 
         guard server.info.version >= .conversationWebhook else {

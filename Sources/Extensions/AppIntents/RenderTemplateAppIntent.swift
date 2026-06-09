@@ -27,7 +27,7 @@ struct RenderTemplateAppIntent: AppIntent {
         await Current.connectivity.syncNetworkInformation()
         guard let server = server.getServer(),
               let connection = Current.api(for: server)?.connection else {
-            throw ShortcutAppIntentError("No server provided")
+            throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
 
         let rendered = try await connection.renderTemplate(template)

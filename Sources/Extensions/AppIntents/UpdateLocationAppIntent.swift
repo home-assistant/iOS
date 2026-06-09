@@ -33,9 +33,9 @@ struct UpdateLocationAppIntent: AppIntent {
         }
 
         guard failedServers.isEmpty == false else {
-            return .result(value: "Updated location on all servers")
+            return .result(value: L10n.AppIntents.UpdateLocation.success)
         }
 
-        return .result(value: "Failed servers: \(failedServers.joined(separator: ", "))")
+        return .result(value: L10n.AppIntents.Error.failedServers(failedServers.joined(separator: ", ")))
     }
 }
