@@ -153,15 +153,6 @@ public enum AppConstants {
         )
     }
 
-    public static func openCameraListDeeplinkURL(serverId: String? = nil) -> URL? {
-        var urlString = "\(AppConstants.deeplinkURL.absoluteString)camera/?"
-        if let serverId {
-            urlString += "serverId=\(serverId)&"
-        }
-        urlString += "\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
-        return URL(string: urlString)
-    }
-
     @available(iOS 16.0, watchOS 9.0, *)
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {

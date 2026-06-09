@@ -680,49 +680,6 @@ public enum L10n {
     public static var snapshotFailed: String { return L10n.tr("Localizable", "camera.snapshot_failed") }
   }
 
-  public enum CameraList {
-    /// Not in a room
-    public static var noArea: String { return L10n.tr("Localizable", "camera_list.no_area") }
-    /// Search cameras
-    public static var searchPlaceholder: String { return L10n.tr("Localizable", "camera_list.search_placeholder") }
-    /// Cameras
-    public static var title: String { return L10n.tr("Localizable", "camera_list.title") }
-    public enum Edit {
-      public enum Off {
-        /// Edit
-        public static var title: String { return L10n.tr("Localizable", "camera_list.edit.off.title") }
-      }
-      public enum On {
-        /// Done
-        public static var title: String { return L10n.tr("Localizable", "camera_list.edit.on.title") }
-      }
-    }
-    public enum Empty {
-      /// No camera entities found in your Home Assistant setup
-      public static var message: String { return L10n.tr("Localizable", "camera_list.empty.message") }
-      /// No Cameras
-      public static var title: String { return L10n.tr("Localizable", "camera_list.empty.title") }
-    }
-    public enum NoResults {
-      /// No cameras match your search
-      public static var message: String { return L10n.tr("Localizable", "camera_list.no_results.message") }
-      /// No Results
-      public static var title: String { return L10n.tr("Localizable", "camera_list.no_results.title") }
-    }
-    public enum Reorder {
-      public enum Section {
-        /// Reorder sections
-        public static var title: String { return L10n.tr("Localizable", "camera_list.reorder.section.title") }
-      }
-    }
-    public enum Unavailable {
-      /// Camera streaming is not available on Mac.
-      public static var message: String { return L10n.tr("Localizable", "camera_list.unavailable.message") }
-      /// Not Available on Mac
-      public static var title: String { return L10n.tr("Localizable", "camera_list.unavailable.title") }
-    }
-  }
-
   public enum CameraPlayer {
     public enum Errors {
       /// No stream available
@@ -735,15 +692,6 @@ public enum L10n {
     public enum Notification {
       /// Tap to open camera
       public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
-    }
-  }
-
-  public enum Cameras {
-    /// Drag and drop to reorder
-    public static var dragToReorder: String { return L10n.tr("Localizable", "cameras.drag_to_reorder") }
-    /// No server found for camera: %@
-    public static func noServerFound(_ p1: Any) -> String {
-      return L10n.tr("Localizable", "cameras.no_server_found", String(describing: p1))
     }
   }
 
@@ -5630,10 +5578,6 @@ public enum L10n {
             public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_camera.configuration.parameter.entity") }
           }
         }
-      }
-      public enum OpenCamerasList {
-        /// Opens a list of all cameras
-        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_cameras_list.description") }
       }
       public enum OpenCover {
         /// Opens the selected cover entity inside the app
