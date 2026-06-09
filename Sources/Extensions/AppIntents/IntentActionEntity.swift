@@ -1,9 +1,9 @@
 import AppIntents
 import HAKit
 import PromiseKit
+import SFSafeSymbols
 import Shared
 import UIKit
-import SFSafeSymbols
 
 @available(iOS 17.0, *)
 struct IntentActionEntity: AppEntity {
@@ -302,10 +302,7 @@ private extension String {
     }
 
     var materialDesignIconData: Data? {
-        guard let icon = MDIIconRenderer.icon(for: self) else {
-            return nil
-        }
-        return MDIIconRenderer.data(for: icon)
+        MDIIconRenderer.iconData(forServersideValue: self)
     }
 }
 
@@ -317,8 +314,30 @@ private extension Locale {
     }
 }
 
+/// Renders Material Design Icons to PNG data for use in `DisplayRepresentation.Image`.
+///
+/// The same icons recur frequently across the action list, and resolving + rendering each one
+/// is expensive (two linear scans over ~7k icons plus a graphics-context render), so results are
+/// memoized by their raw server-side value. `NSCache` is used rather than a plain dictionary
+/// because it is thread-safe (the framework may read `displayRepresentation` off the main thread)
+/// and evicts entries under the memory pressure of the Intents extension.
 private enum MDIIconRenderer {
-    static func icon(for serversideValue: String) -> MaterialDesignIcons? {
+    private static let cache = NSCache<NSString, NSData>()
+
+    static func iconData(forServersideValue serversideValue: String) -> Data? {
+        let key = serversideValue as NSString
+        if let cached = cache.object(forKey: key) {
+            return cached as Data
+        }
+
+        guard let data = icon(for: serversideValue).flatMap(data(for:)) else {
+            return nil
+        }
+        cache.setObject(data as NSData, forKey: key)
+        return data
+    }
+
+    private static func icon(for serversideValue: String) -> MaterialDesignIcons? {
         let iconName = serversideValue.normalizingIconString
         guard MaterialDesignIcons.allCases.contains(where: { $0.name == iconName }) else {
             return nil
@@ -326,7 +345,7 @@ private enum MDIIconRenderer {
         return MaterialDesignIcons(serversideValueNamed: serversideValue)
     }
 
-    static func data(for icon: MaterialDesignIcons) -> Data? {
+    private static func data(for icon: MaterialDesignIcons) -> Data? {
         MaterialDesignIcons.register()
 
         let size = CGSize(width: 64, height: 64)
