@@ -40,7 +40,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call ${service} with data</string>
+					<string>z - (Deprecated) Call ${service} with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>7boBzr</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -289,7 +289,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Call Service</string>
+			<string>z - (Deprecated) Call Service</string>
 			<key>INIntentTitleID</key>
 			<string>qayMH6</string>
 			<key>INIntentType</key>
@@ -321,7 +321,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Send ${location} to Home Assistant</string>
+					<string>z - (Deprecated) Send ${location} to Home Assistant</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>fuRWMi</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -449,7 +449,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Send Location</string>
+			<string>z - (Deprecated) Send Location</string>
 			<key>INIntentTitleID</key>
 			<string>v7TSD5</string>
 			<key>INIntentType</key>
@@ -481,7 +481,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Fire ${eventName} with data</string>
+					<string>z - (Deprecated) Fire ${eventName} with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>HCM8Oe</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -722,7 +722,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Fire Event</string>
+			<string>z - (Deprecated) Fire Event</string>
 			<key>INIntentTitleID</key>
 			<string>lxHlyQ</string>
 			<key>INIntentType</key>
@@ -754,7 +754,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Get image of ${cameraID}</string>
+					<string>z - (Deprecated) Get image of ${cameraID}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>RCQAlr</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -961,7 +961,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Get Camera Image</string>
+			<string>z - (Deprecated) Get Camera Image</string>
 			<key>INIntentTitleID</key>
 			<string>N9iJpK</string>
 			<key>INIntentType</key>
@@ -993,7 +993,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Render the provided template</string>
+					<string>z - (Deprecated) Render the provided template</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>Xq7UuD</string>
 				</dict>
@@ -1196,7 +1196,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Render Template</string>
+			<string>z - (Deprecated) Render Template</string>
 			<key>INIntentTitleID</key>
 			<string>FZ9qkT</string>
 			<key>INIntentType</key>
@@ -1222,7 +1222,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Update Sensors</string>
+					<string>z - (Deprecated) Update Sensors</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>pjQR7t</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -1264,7 +1264,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Update Sensors</string>
+			<string>z - (Deprecated) Update Sensors</string>
 			<key>INIntentTitleID</key>
 			<string>h1xQ53</string>
 			<key>INIntentType</key>
@@ -1298,7 +1298,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Open ${page}</string>
+					<string>z - (Deprecated) Open ${page}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>DFWJB8</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -1368,7 +1368,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>(Legacy) Open Page </string>
+			<string>z - (Deprecated) Open Page</string>
 			<key>INIntentTitleID</key>
 			<string>iMvUhs</string>
 			<key>INIntentType</key>
@@ -1507,7 +1507,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Open Page</string>
+			<string>z - (Deprecated) Open Page</string>
 			<key>INIntentTitleID</key>
 			<string>ns9RRU</string>
 			<key>INIntentType</key>
@@ -1544,7 +1544,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist with "${text}"</string>
+					<string>z - (Deprecated) Assist with "${text}"</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>d65H6l</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -1562,7 +1562,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist with "${text}"</string>
+					<string>z - (Deprecated) Assist with "${text}"</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>uqeIcc</string>
 				</dict>
@@ -1573,7 +1573,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist with "${text}"</string>
+					<string>z - (Deprecated) Assist with "${text}"</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>5b3s58</string>
 				</dict>
@@ -1832,7 +1832,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Assist</string>
+			<string>z - (Deprecated) Assist</string>
 			<key>INIntentTitleID</key>
 			<string>B28HAk</string>
 			<key>INIntentType</key>
@@ -1860,7 +1860,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist in app</string>
+					<string>z - (Deprecated) Assist in app</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>mrwamX</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -1878,7 +1878,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist in app</string>
+					<string>z - (Deprecated) Assist in app</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>s9Gk3c</string>
 				</dict>
@@ -1889,7 +1889,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist in app</string>
+					<string>z - (Deprecated) Assist in app</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>ZG5nuL</string>
 				</dict>
@@ -2153,7 +2153,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>(Legacy) Assist In App </string>
+			<string>z - (Deprecated) Assist In App</string>
 			<key>INIntentTitleID</key>
 			<string>x7FAm9</string>
 			<key>INIntentType</key>

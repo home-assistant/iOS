@@ -117,6 +117,11 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
         return .init(sections: sections)
     }
 
+    func defaultResult() async -> AssistPipelineEntity? {
+        guard let server = Current.servers.all.first else { return nil }
+        return .init(id: "", serverId: server.identifier.rawValue, name: L10n.AppIntents.Assist.PreferredPipeline.title)
+    }
+
     private func pipelines() async throws -> [Server: [Pipeline]] {
         do {
             var result: [Server: [Pipeline]] = [:]
