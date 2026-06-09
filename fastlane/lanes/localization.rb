@@ -467,7 +467,7 @@ lane :push_strings do
   source_directories.each do |directory|
     puts "Enumerating #{directory}..."
     Dir.each_child(directory) do |file|
-      next if ['Frontend.strings', 'Core.strings'].include?(file)
+      next if ['Frontend.strings', 'Core.strings', 'Intents.strings'].include?(file)
 
       lokalise_upload_file!(
         token: token,
