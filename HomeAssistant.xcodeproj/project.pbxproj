@@ -875,16 +875,22 @@
 		428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
 		428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
+		42AC20012FA1000000000001 /* PerformActionAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000001 /* PerformActionAppIntent.swift */; };
 		42AC20012FA1000000000002 /* AssistPromptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000002 /* AssistPromptAppIntent.swift */; };
 		42AC20012FA1000000000003 /* GetCameraSnapshotAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000003 /* GetCameraSnapshotAppIntent.swift */; };
 		42AC20012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */; };
+		42AC20012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */; };
 		42AC20012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */; };
+		42AC20012FA1000000000007 /* IntentActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000007 /* IntentActionEntity.swift */; };
 		42AC20012FA1000000000008 /* IntentCameraEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000008 /* IntentCameraEntity.swift */; };
 		42AC20012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */; };
+		42AC30012FA1000000000001 /* PerformActionAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000001 /* PerformActionAppIntent.swift */; };
 		42AC30012FA1000000000002 /* AssistPromptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000002 /* AssistPromptAppIntent.swift */; };
 		42AC30012FA1000000000003 /* GetCameraSnapshotAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000003 /* GetCameraSnapshotAppIntent.swift */; };
 		42AC30012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */; };
+		42AC30012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */; };
 		42AC30012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */; };
+		42AC30012FA1000000000007 /* IntentActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000007 /* IntentActionEntity.swift */; };
 		42AC30012FA1000000000008 /* IntentCameraEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000008 /* IntentCameraEntity.swift */; };
 		42AC30012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
@@ -2935,10 +2941,13 @@
 		42D334262D105990008D8E78 /* AppPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPanel.swift; sourceTree = "<group>"; };
 		42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBatterySensor.swift; sourceTree = "<group>"; };
 		42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContext.test.swift; sourceTree = "<group>"; };
+		42AC10012FA1000000000001 /* PerformActionAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformActionAppIntent.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000002 /* AssistPromptAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPromptAppIntent.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000003 /* GetCameraSnapshotAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCameraSnapshotAppIntent.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderTemplateAppIntent.swift; sourceTree = "<group>"; };
+		42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateLocationAppIntent.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensorsAppIntent.swift; sourceTree = "<group>"; };
+		42AC10012FA1000000000007 /* IntentActionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentActionEntity.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000008 /* IntentCameraEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentCameraEntity.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutAppIntentSupport.swift; sourceTree = "<group>"; };
 		42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptAppIntent.swift; sourceTree = "<group>"; };
@@ -5447,10 +5456,13 @@
 				4296C3722B91F06D0051B63C /* Widget */,
 				42AC10012FA1000000000003 /* GetCameraSnapshotAppIntent.swift */,
 				403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */,
+				42AC10012FA1000000000007 /* IntentActionEntity.swift */,
 				42AC10012FA1000000000008 /* IntentCameraEntity.swift */,
+				42AC10012FA1000000000001 /* PerformActionAppIntent.swift */,
 				42AC10012FA1000000000002 /* AssistPromptAppIntent.swift */,
 				42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */,
 				42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */,
+				42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */,
 				42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */,
 			);
 			path = AppIntents;
@@ -9242,11 +9254,14 @@
 				42D3E4BA2C5D30CB00444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */,
 				3E4087EB2CD9047B0085DF29 /* ReloadWidgetsAppIntent.swift in Sources */,
+				42AC20012FA1000000000001 /* PerformActionAppIntent.swift in Sources */,
 				42AC20012FA1000000000002 /* AssistPromptAppIntent.swift in Sources */,
 				42AC20012FA1000000000003 /* GetCameraSnapshotAppIntent.swift in Sources */,
 				42AC20012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */,
+				42AC20012FA1000000000007 /* IntentActionEntity.swift in Sources */,
 				42AC20012FA1000000000008 /* IntentCameraEntity.swift in Sources */,
 				42AC20012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */,
+				42AC20012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */,
 				42AC20012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */,
 				421960702CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift in Sources */,
 				42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */,
@@ -9633,11 +9648,14 @@
 				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
+				42AC30012FA1000000000001 /* PerformActionAppIntent.swift in Sources */,
 				42AC30012FA1000000000002 /* AssistPromptAppIntent.swift in Sources */,
 				42AC30012FA1000000000003 /* GetCameraSnapshotAppIntent.swift in Sources */,
 				42AC30012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */,
+				42AC30012FA1000000000007 /* IntentActionEntity.swift in Sources */,
 				42AC30012FA1000000000008 /* IntentCameraEntity.swift in Sources */,
 				42AC30012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */,
+				42AC30012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */,
 				42AC30012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */,
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift in Sources */,
 				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
