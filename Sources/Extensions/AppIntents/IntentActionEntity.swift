@@ -3,6 +3,7 @@ import HAKit
 import PromiseKit
 import Shared
 import UIKit
+import SFSafeSymbols
 
 @available(iOS 17.0, *)
 struct IntentActionEntity: AppEntity {
@@ -16,6 +17,8 @@ struct IntentActionEntity: AppEntity {
     let actionDescription: String?
     let translationKey: String?
     let icon: String?
+    /// Whether the underlying action returns a response (`SupportsResponse.OPTIONAL` / `.ONLY`).
+    let supportsResponse: Bool
 
     var displayRepresentation: DisplayRepresentation {
         .init(
@@ -33,7 +36,7 @@ struct IntentActionEntity: AppEntity {
 
     private var displayRepresentationImage: DisplayRepresentation.Image {
         guard let data = icon?.materialDesignIconData else {
-            return .init(systemName: "bolt")
+            return .init(systemName: SFSymbol.bolt.rawValue)
         }
         return .init(data: data, isTemplate: true)
     }
@@ -106,7 +109,8 @@ struct IntentActionEntityQuery: EntityQuery, EntityStringQuery {
             displayName: definition.displayName,
             actionDescription: definition.displayDescription,
             translationKey: definition.translationKey,
-            icon: definition.icon
+            icon: definition.icon,
+            supportsResponse: definition.supportsResponse
         )
     }
 
@@ -123,7 +127,8 @@ struct IntentActionEntityQuery: EntityQuery, EntityStringQuery {
             displayName: components[1],
             actionDescription: nil,
             translationKey: nil,
-            icon: nil
+            icon: nil,
+            supportsResponse: false
         )
     }
 }
@@ -137,6 +142,7 @@ private struct IntentActionDefinition {
     let descriptionPlaceholders: [String: String]
     let translationKey: String?
     let icon: String?
+    let supportsResponse: Bool
     let translations: [String: String]
 
     var displayName: String {
@@ -189,6 +195,7 @@ private extension HAConnection {
                         descriptionPlaceholders: Self.stringDictionary(from: metadata["description_placeholders"]),
                         translationKey: metadata["translation_key"] as? String,
                         icon: icons[domain]?[service] ?? metadata["icon"] as? String,
+                        supportsResponse: metadata["response"] is [String: Any],
                         translations: translations
                     )
                 }
