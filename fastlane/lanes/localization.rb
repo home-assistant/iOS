@@ -322,20 +322,28 @@ lane :update_strings do
     [path, File.binread(path)]
   end
 
-  lokalise_download_files_async!(
-    token: token,
-    project_id: project_id,
-    unzip_to: resources_dir_full,
-    export_name: 'iOS app strings',
-    export_params: {
-      format: 'ios_sdk',
-      export_empty_as: 'base',
-      export_sort: 'a_z',
-      replace_breaks: false,
-      include_comments: false,
-      include_description: false
-    }
-  )
+  # The iOS app export is the only download that can regenerate Intents.strings, so
+  # wrap it in begin/ensure and restore the snapshot even if the export fails midway.
+  begin
+    lokalise_download_files_async!(
+      token: token,
+      project_id: project_id,
+      unzip_to: resources_dir_full,
+      export_name: 'iOS app strings',
+      export_params: {
+        format: 'ios_sdk',
+        export_empty_as: 'base',
+        export_sort: 'a_z',
+        replace_breaks: false,
+        include_comments: false,
+        include_description: false
+      }
+    )
+  ensure
+    deprecated_intents_files.each do |path, contents|
+      File.binwrite(path, contents)
+    end
+  end
 
   lang_frontend_to_ios = {
     'bg' => 'bg',
@@ -447,12 +455,6 @@ lane :update_strings do
       "#{resources_dir_full}/#{from}.lproj/Core.strings",
       "#{resources_dir_full}/#{to}.lproj/Core.strings"
     )
-  end
-
-  # Restore the deprecated Intents.strings files in case the iOS app export above
-  # regenerated them; they must remain frozen exactly as committed.
-  deprecated_intents_files.each do |path, contents|
-    File.binwrite(path, contents)
   end
 
   sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
