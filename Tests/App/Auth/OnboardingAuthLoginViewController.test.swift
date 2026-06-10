@@ -35,6 +35,31 @@ class OnboardingAuthLoginViewControllerImplTests: XCTestCase {
         XCTAssertEqual(try hang(controller.promise), url)
     }
 
+    func testResolvedServerURLCapturedFromLastNavigation() {
+        // Simulate the server redirecting the login page to a different port before the callback.
+        let redirectedURL = URL(string: "http://example.com:8124/auth/authorize")!
+        let httpExpectation = expectation(description: "http nav")
+        controller.webView(
+            controller.webViewForTests,
+            decidePolicyFor: FakeWKNavigationAction(request: URLRequest(url: redirectedURL)),
+            decisionHandler: { _ in httpExpectation.fulfill() }
+        )
+        wait(for: [httpExpectation], timeout: 10.0)
+
+        let callbackURL = URL(string: "homeassistant://auth-callback?code=code_123")!
+        let callbackExpectation = expectation(description: "callback nav")
+        controller.webView(
+            controller.webViewForTests,
+            decidePolicyFor: FakeWKNavigationAction(request: URLRequest(url: callbackURL)),
+            decisionHandler: { _ in callbackExpectation.fulfill() }
+        )
+        wait(for: [callbackExpectation], timeout: 10.0)
+
+        // webView.url is nil in tests (no real load), so it falls back to the last navigated URL.
+        XCTAssertEqual(controller.resolvedServerURL, redirectedURL)
+        XCTAssertEqual(try hang(controller.promise), callbackURL)
+    }
+
     func testDecisionHandlerWithHttpScheme() {
         let url = URL(string: "http://example.com")!
 
