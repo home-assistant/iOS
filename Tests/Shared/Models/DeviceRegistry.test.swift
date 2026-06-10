@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 @testable import Shared
 import Testing
 
@@ -57,5 +58,38 @@ struct DeviceRegistryTests {
         // Validate computed properties
         #expect(firstEntry.displayName == "Home Assistant Core")
         #expect(firstEntry.isDisabled == false)
+    }
+
+    @Test("Lossy decode skips malformed entries and keeps valid devices")
+    func lossyDecodeSkipsMalformedEntries() throws {
+        let data = HAData.array([
+            deviceData(id: "valid-1", name: "Valid One", identifiers: [["mobile_app", "valid-1"]]),
+            deviceData(id: "bad-identifiers", name: "Bad Device", identifiers: ["mobile_app", "bad-identifiers"]),
+            deviceData(id: "valid-2", name: "Valid Two", identifiers: [["mobile_app", "valid-2"]]),
+        ])
+        var skippedEntries: [DeviceRegistryEntry.SkippedDecode] = []
+
+        let entries = try DeviceRegistryEntry.decodeLossyArray(data: data) { skippedEntries.append($0) }
+
+        #expect(entries.map(\.id) == ["valid-1", "valid-2"])
+        #expect(skippedEntries.count == 1)
+        #expect(skippedEntries.first?.index == 1)
+        #expect(skippedEntries.first?.id == "bad-identifiers")
+        #expect(skippedEntries.first?.name == "Bad Device")
+        #expect(skippedEntries.first?.errorDescription.contains("identifiers") == true)
+    }
+
+    private func deviceData(id: String, name: String, identifiers: Any) -> HAData {
+        .dictionary([
+            "config_entries": [],
+            "config_entries_subentries": [:],
+            "connections": [],
+            "created_at": 0.0,
+            "id": id,
+            "identifiers": identifiers,
+            "labels": [],
+            "modified_at": 1.0,
+            "name": name,
+        ])
     }
 }
