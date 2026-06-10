@@ -72,7 +72,7 @@
 "app_intents.cover.title" = "Cover";
 "app_intents.error.failed_servers" = "Failed servers: %@";
 "app_intents.error.no_server" = "No server provided";
-"app_intents.error.timed_out" = "Timed out after %d seconds";
+"app_intents.error.timed_out" = "Timed out after %li seconds";
 "app_intents.fan.off_state_icon.title" = "Icon for off state";
 "app_intents.fan.on_state_icon.title" = "Icon for on state";
 "app_intents.fan.title" = "Fan";
@@ -97,6 +97,8 @@
 "app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action.title" = "Action";
 "app_intents.perform_action.action_parameter_configuration" = "Which action?";
+"app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
 "app_intents.perform_action.description" = "Perform an action on a Home Assistant server";
 "app_intents.perform_action.error.invalid_action" = "Invalid action name";
 "app_intents.perform_action.error.invalid_payload" = "Unable to parse action data";
@@ -183,10 +185,24 @@
 "assist_pipeline_picker.placeholder" = "Pick pipeline";
 "camera.server_not_found" = "Server not found";
 "camera.snapshot_failed" = "Failed to load camera snapshot";
+"camera_list.edit.off.title" = "Edit";
+"camera_list.edit.on.title" = "Done";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_area" = "Not in a room";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.reorder.section.title" = "Reorder sections";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
+"camera_list.unavailable.message" = "Camera streaming is not available on Mac.";
+"camera_list.unavailable.title" = "Not Available on Mac";
 "camera_player.errors.no_stream_available" = "No stream available";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.unknown" = "Unknown error";
 "camera_player.notification.body" = "Tap to open camera";
+"cameras.drag_to_reorder" = "Drag and drop to reorder";
+"cameras.no_server_found" = "No server found for camera: %@";
 "cancel_label" = "Cancel";
 "carPlay.action.execute.in_progress" = "Executing...";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
@@ -1305,6 +1321,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "tags.allowed.footer" = "Allowed tags can be sent to Home Assistant without asking for approval each time. Swipe left on a tag to delete it.";
 "tags.allowed.title" = "Allowed tags";
 "tags.title" = "Tags";
+"test_flight_communication.badge_title" = "Beta Tester Update";
 "thread.active_operational_data_set.title" = "Active operational data set";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
@@ -1594,7 +1611,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "webrtc_player.known_issues.title" = "Known Issues";
-"test_flight_communication.badge_title" = "Beta Tester Update";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";
@@ -1644,6 +1660,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_camera.configuration.title" = "Open Camera";
 "widgets.controls.open_camera.description" = "Opens the selected camera entity inside the app";
 "widgets.controls.open_camera.pending_configuration" = "Choose camera";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Cover";
 "widgets.controls.open_cover.configuration.title" = "Open Cover";
 "widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";

@@ -77,7 +77,7 @@ When adding a new persistent model, prefer GRDB. Implement `DatabaseTableProtoco
 
 ### HAKit (WebSocket + REST)
 
-`HAKit` is the library for all Home Assistant server communication. Use `HATypedRequest` for typed WebSocket/REST calls. Network requests in `HomeAssistantAPI` (`HAAPI.swift`) still use **PromiseKit** for some flows alongside newer `async/await`. Don't assume the codebase is fully migrated to async/await.
+`HAKit` is the library for all Home Assistant server communication. Use `HATypedRequest` for typed WebSocket/REST calls. Network requests in `HomeAssistantAPI` (`HAAPI.swift`) still use **PromiseKit** for some flows alongside newer `async/await`. Don't assume the codebase is fully migrated to async/await — but **prefer `async/await` for new request flows and avoid introducing new PromiseKit usage** (see [Concurrency](#concurrency)).
 
 ### MagicItem — Cross-Platform Action Abstraction
 
@@ -85,7 +85,11 @@ When adding a new persistent model, prefer GRDB. Implement `DatabaseTableProtoco
 
 ## Swift Conventions
 
-- Use Swift's modern language features (async/await, Combine where appropriate). Note: parts of `HomeAssistantAPI` still use **PromiseKit** — don't assume a full async/await migration.
+### Concurrency
+
+**Prefer Swift Concurrency (`async/await`, `Task`, actors, structured concurrency) for all new asynchronous code. Do not introduce new PromiseKit code.** PromiseKit is a legacy dependency the codebase is moving away from — parts of `HomeAssistantAPI` (`HAAPI.swift`) still use it, so don't assume a full migration, but new work should use `async/await` instead of `Promise`/`Guarantee`. When editing existing PromiseKit code, migrate it to `async/await` where practical rather than extending the PromiseKit usage. Use `Combine` only where an existing reactive pattern already requires it.
+
+- Use Swift's modern language features (`async/await`, structured concurrency, `Combine` where appropriate). Avoid PromiseKit in new code — see [Concurrency](#concurrency) above.
 - SwiftUI preferred for new UI; UIKit where existing patterns require it.
 - Prefer value types (structs) over reference types (classes) when appropriate.
 - Use proper access control (`private`, `fileprivate`, `internal`, `public`).
