@@ -482,6 +482,28 @@ public class HomeAssistantAPI {
         )
     }
 
+    /// Performs a `call_service` over the websocket and returns the action's response.
+    ///
+    /// Unlike `CallService` (which delivers via webhook and discards any response), this awaits the
+    /// websocket result so actions that support a response (`SupportsResponse.OPTIONAL` / `.ONLY`)
+    /// can surface their data. Set `returnResponse` only for actions that support a response.
+    public func callServiceWithResponse(
+        domain: String,
+        service: String,
+        serviceData: [String: Any],
+        returnResponse: Bool
+    ) -> Promise<CallServiceResponse> {
+        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
+        INInteraction(intent: intent, response: nil).donate(completion: nil)
+
+        return connection.send(.callService(
+            domain: domain,
+            service: service,
+            serviceData: serviceData,
+            returnResponse: returnResponse
+        )).promise
+    }
+
     public func turnOnScript(scriptEntityId: String, triggerSource: AppTriggerSource) -> Promise<Void> {
         CallService(domain: Domain.script.rawValue, service: Service.turnOn.rawValue, serviceData: [
             "entity_id": scriptEntityId,

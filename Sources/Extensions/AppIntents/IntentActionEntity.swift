@@ -1,6 +1,7 @@
 import AppIntents
 import HAKit
 import PromiseKit
+import SFSafeSymbols
 import Shared
 import UIKit
 
@@ -16,6 +17,8 @@ struct IntentActionEntity: AppEntity {
     let actionDescription: String?
     let translationKey: String?
     let icon: String?
+    /// Whether the underlying action returns a response (`SupportsResponse.OPTIONAL` / `.ONLY`).
+    let supportsResponse: Bool
 
     var displayRepresentation: DisplayRepresentation {
         .init(
@@ -33,7 +36,7 @@ struct IntentActionEntity: AppEntity {
 
     private var displayRepresentationImage: DisplayRepresentation.Image {
         guard let data = icon?.materialDesignIconData else {
-            return .init(systemName: "bolt")
+            return .init(systemName: SFSymbol.bolt.rawValue)
         }
         return .init(data: data, isTemplate: true)
     }
@@ -106,7 +109,8 @@ struct IntentActionEntityQuery: EntityQuery, EntityStringQuery {
             displayName: definition.displayName,
             actionDescription: definition.displayDescription,
             translationKey: definition.translationKey,
-            icon: definition.icon
+            icon: definition.icon,
+            supportsResponse: definition.supportsResponse
         )
     }
 
@@ -123,7 +127,8 @@ struct IntentActionEntityQuery: EntityQuery, EntityStringQuery {
             displayName: components[1],
             actionDescription: nil,
             translationKey: nil,
-            icon: nil
+            icon: nil,
+            supportsResponse: false
         )
     }
 }
@@ -137,6 +142,7 @@ private struct IntentActionDefinition {
     let descriptionPlaceholders: [String: String]
     let translationKey: String?
     let icon: String?
+    let supportsResponse: Bool
     let translations: [String: String]
 
     var displayName: String {
@@ -189,6 +195,7 @@ private extension HAConnection {
                         descriptionPlaceholders: Self.stringDictionary(from: metadata["description_placeholders"]),
                         translationKey: metadata["translation_key"] as? String,
                         icon: icons[domain]?[service] ?? metadata["icon"] as? String,
+                        supportsResponse: metadata["response"] is [String: Any],
                         translations: translations
                     )
                 }
@@ -295,10 +302,7 @@ private extension String {
     }
 
     var materialDesignIconData: Data? {
-        guard let icon = MDIIconRenderer.icon(for: self) else {
-            return nil
-        }
-        return MDIIconRenderer.data(for: icon)
+        MDIIconRenderer.iconData(forServersideValue: self)
     }
 }
 
@@ -310,8 +314,30 @@ private extension Locale {
     }
 }
 
+/// Renders Material Design Icons to PNG data for use in `DisplayRepresentation.Image`.
+///
+/// The same icons recur frequently across the action list, and resolving + rendering each one
+/// is expensive (two linear scans over ~7k icons plus a graphics-context render), so results are
+/// memoized by their raw server-side value. `NSCache` is used rather than a plain dictionary
+/// because it is thread-safe (the framework may read `displayRepresentation` off the main thread)
+/// and evicts entries under the memory pressure of the Intents extension.
 private enum MDIIconRenderer {
-    static func icon(for serversideValue: String) -> MaterialDesignIcons? {
+    private static let cache = NSCache<NSString, NSData>()
+
+    static func iconData(forServersideValue serversideValue: String) -> Data? {
+        let key = serversideValue as NSString
+        if let cached = cache.object(forKey: key) {
+            return cached as Data
+        }
+
+        guard let data = icon(for: serversideValue).flatMap(data(for:)) else {
+            return nil
+        }
+        cache.setObject(data as NSData, forKey: key)
+        return data
+    }
+
+    private static func icon(for serversideValue: String) -> MaterialDesignIcons? {
         let iconName = serversideValue.normalizingIconString
         guard MaterialDesignIcons.allCases.contains(where: { $0.name == iconName }) else {
             return nil
@@ -319,7 +345,7 @@ private enum MDIIconRenderer {
         return MaterialDesignIcons(serversideValueNamed: serversideValue)
     }
 
-    static func data(for icon: MaterialDesignIcons) -> Data? {
+    private static func data(for icon: MaterialDesignIcons) -> Data? {
         MaterialDesignIcons.register()
 
         let size = CGSize(width: 64, height: 64)

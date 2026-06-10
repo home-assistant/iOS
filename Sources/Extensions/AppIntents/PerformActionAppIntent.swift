@@ -66,13 +66,16 @@ struct PerformActionAppIntent: AppIntent {
         }
 
         do {
-            try await api.CallService(
+            let response = try await api.callServiceWithResponse(
                 domain: String(components[0]),
                 service: String(components[1]),
                 serviceData: payloadDict,
-                triggerSource: .AppIntent,
-                shouldLog: true
+                returnResponse: action.supportsResponse
             ).async()
+
+            if let json = response.jsonString() {
+                return .result(value: json)
+            }
         } catch {
             throw ShortcutAppIntentError(L10n.AppIntents.PerformAction.responseFailure(error.localizedDescription))
         }
