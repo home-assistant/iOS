@@ -34,7 +34,7 @@ public struct CallServiceResponse: HADataDecodable {
 
     /// The `response` value serialized as a JSON string, or nil when there is nothing to serialize.
     public func jsonString() -> String? {
-        guard let response, !(response is NSNull) else { return nil }
+        guard hasResponse, let response else { return nil }
 
         // Wrap primitives so JSONSerialization (which requires a top-level container) can encode them.
         let serializable: Any = (response is [String: Any] || response is [Any]) ? response : ["response": response]

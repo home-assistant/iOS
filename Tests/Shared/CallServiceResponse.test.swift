@@ -1,3 +1,4 @@
+import Foundation
 import HAKit
 @testable import Shared
 import Testing
