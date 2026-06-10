@@ -314,6 +314,14 @@ lane :update_strings do
 
   resources_dir_full = File.expand_path('../Sources/App/Resources')
 
+  # Intents.strings holds the deprecated SiriKit intent definitions that were
+  # migrated to App Intents and removed from the Lokalise upload (see push_strings).
+  # The keys still live on Lokalise, so snapshot the existing files and restore them
+  # after the download to keep the deprecated strings frozen exactly as committed.
+  deprecated_intents_files = Dir.glob("#{resources_dir_full}/*.lproj/Intents.strings").to_h do |path|
+    [path, File.binread(path)]
+  end
+
   lokalise_download_files_async!(
     token: token,
     project_id: project_id,
@@ -439,6 +447,12 @@ lane :update_strings do
       "#{resources_dir_full}/#{from}.lproj/Core.strings",
       "#{resources_dir_full}/#{to}.lproj/Core.strings"
     )
+  end
+
+  # Restore the deprecated Intents.strings files in case the iOS app export above
+  # regenerated them; they must remain frozen exactly as committed.
+  deprecated_intents_files.each do |path, contents|
+    File.binwrite(path, contents)
   end
 
   sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
