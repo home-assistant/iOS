@@ -41,6 +41,7 @@ struct WidgetScripts: Widget {
         .configurationDisplayName(L10n.Widgets.Scripts.title)
         .description(L10n.Widgets.Scripts.description)
         .supportedFamilies(WidgetScriptsSupportedFamilies.families)
+        .disfavoredInCarPlayIfAvailable(for: WidgetScriptsSupportedFamilies.families)
     }
 }
 
