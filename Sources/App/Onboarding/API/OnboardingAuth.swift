@@ -130,8 +130,15 @@ class OnboardingAuth {
                     performPreSteps(checkPoint: .beforeAuth, authDetails: authDetails, sender: sender)
                 }.then { [self] in
                     login.open(authDetails: authDetails, sender: sender)
-                }.then { [self] code in
-                    configuredAPI(authDetails: authDetails, instance: instance, code: code)
+                }.then { [self] result -> Promise<HomeAssistantAPI> in
+                    // The login web view may have been redirected to a different port/scheme; adopt that
+                    // address so the stored server URL (and the token exchange) target the real server.
+                    let adoptedInstance = Self.instance(
+                        instance,
+                        adoptingResolvedURL: result.resolvedURL,
+                        attemptedURL: url
+                    )
+                    return configuredAPI(authDetails: authDetails, instance: adoptedInstance, code: result.code)
                 }.recover { newError -> Promise<HomeAssistantAPI> in
                     if idx == 0 {
                         // we're the first/internal url, so our error should break the placeholder one
@@ -145,6 +152,37 @@ class OnboardingAuth {
         }
 
         return promise
+    }
+
+    /// When the login web view ends on a different URL than the one we started with, adopt that address
+    /// for the slot (internal/external) we attempted. Only same-host port/scheme redirects are adopted —
+    /// a different host is ignored so we never follow an unexpected server.
+    static func instance(
+        _ instance: DiscoveredHomeAssistant,
+        adoptingResolvedURL resolvedURL: URL?,
+        attemptedURL: URL
+    ) -> DiscoveredHomeAssistant {
+        let attemptedBase = attemptedURL.serverBaseURL()
+
+        guard let adoptedBase = resolvedURL?.sameHostRedirectBaseURL(from: attemptedURL) else {
+            if let resolvedBase = resolvedURL?.serverBaseURL(), !resolvedBase.baseIsEqual(to: attemptedBase) {
+                // Different host, or an https->http downgrade we won't follow.
+                Current.Log.warning("Not adopting auth redirect to \(resolvedBase); keeping \(attemptedBase)")
+            }
+            return instance
+        }
+
+        Current.Log.info("Adopting redirected server URL \(adoptedBase) (was \(attemptedBase))")
+
+        return with(instance) {
+            if let url = $0.internalURL, url.serverBaseURL().baseIsEqual(to: attemptedBase) {
+                $0.internalURL = adoptedBase
+            }
+            if let url = $0.externalURL, url.serverBaseURL().baseIsEqual(to: attemptedBase) {
+                $0.externalURL = adoptedBase
+            }
+            $0.internalOrExternalURL = $0.internalURL ?? $0.externalURL ?? adoptedBase
+        }
     }
 
     private func configuredAPI(

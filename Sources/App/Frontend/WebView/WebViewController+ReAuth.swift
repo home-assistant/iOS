@@ -21,16 +21,19 @@ extension WebViewController {
 
             firstly {
                 login.open(authDetails: authDetails, sender: self)
-            }.then { code -> Promise<TokenInfo> in
-                AuthenticationAPI.fetchToken(
-                    authorizationCode: code,
-                    baseURL: baseURL,
+            }.then { result -> Promise<(URL?, TokenInfo)> in
+                // The login web view may have been redirected to a different port/scheme; re-authenticate
+                // against the address it actually ended on, and remember it to update the stored URL.
+                let correctedURL = result.resolvedURL?.sameHostRedirectBaseURL(from: baseURL)
+                return AuthenticationAPI.fetchToken(
+                    authorizationCode: result.code,
+                    baseURL: correctedURL ?? baseURL,
                     exceptions: authDetails.exceptions,
                     clientCertificate: authDetails.clientCertificate
-                )
-            }.done { [weak self] tokenInfo in
+                ).map { (correctedURL, $0) }
+            }.done { [weak self] correctedURL, tokenInfo in
                 guard let self else { return }
-                applyNewToken(tokenInfo)
+                applyNewToken(tokenInfo, correctedURL: correctedURL, urlType: urlType)
             }.catch { [weak self] error in
                 guard let self else { return }
                 if let pmkError = error as? PMKError, pmkError.isCancelled {
@@ -46,9 +49,17 @@ extension WebViewController {
         }
     }
 
-    private func applyNewToken(_ tokenInfo: TokenInfo) {
+    private func applyNewToken(
+        _ tokenInfo: TokenInfo,
+        correctedURL: URL? = nil,
+        urlType: ConnectionInfo.URLType? = nil
+    ) {
         server.update { serverInfo in
             serverInfo.token = tokenInfo
+            if let correctedURL, let urlType {
+                Current.Log.info("Updating \(urlType) URL to redirected address \(correctedURL) during re-auth")
+                serverInfo.connection.set(address: correctedURL, for: urlType)
+            }
         }
 
         connectionState = .unknown
