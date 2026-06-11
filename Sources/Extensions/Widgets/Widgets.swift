@@ -50,8 +50,8 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetOpenPage()
         WidgetGauge()
         WidgetDetails()
-        WidgetScripts()
         WidgetSensors()
+        WidgetScripts()
     }
 }
 
@@ -93,7 +93,7 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetOpenPage()
         WidgetGauge()
         WidgetDetails()
-        WidgetScripts()
         WidgetSensors()
+        WidgetScripts()
     }
 }
