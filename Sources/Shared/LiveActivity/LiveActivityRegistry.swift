@@ -45,7 +45,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Webhook type for reporting a new per-activity push token to HA.
     static let webhookTypeToken = "live_activity_token"
     /// Keys in the token webhook request data dictionary.
-    static let tokenWebhookKeys: Set<String> = ["tag", "push_token"]
+    static let tokenWebhookKeys: Set<String> = ["tag", "push_token", "expires_at"]
+    /// ActivityKit expires Live Activities after eight hours.
+    static let pushTokenTimeToLive: TimeInterval = 8 * 60 * 60
 
     /// Webhook type for reporting that a Live Activity was dismissed.
     static let webhookTypeDismissed = "live_activity_dismissed"
@@ -181,23 +183,6 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             throw error
         }
 
-        // Immediately update with an AlertConfiguration to trigger the expanded Dynamic Island
-        // presentation. Activity.request() only shows the compact view (small pill around the
-        // camera cutout). The expanded "bloom" animation requires an update with an alert config.
-        let alertContent = ActivityContent(
-            state: state,
-            staleDate: computeStaleDate(for: state),
-            relevanceScore: 0.5
-        )
-        // iOS 26 SDK changed AlertConfiguration.sound from optional to non-optional.
-        // Use .default so the expanded Dynamic Island "bloom" has a subtle alert sound.
-        let alertConfig = AlertConfiguration(
-            title: LocalizedStringResource(stringLiteral: title),
-            body: LocalizedStringResource(stringLiteral: state.message),
-            sound: .default
-        )
-        await activity.update(alertContent, alertConfiguration: alertConfig)
-
         let observationTask = makeObservationTask(for: activity)
         await confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
         Current.Log.verbose("LiveActivityRegistry: started activity for tag \(tag), id=\(activity.id)")
@@ -290,7 +275,8 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         AppConstants.Keychain[pushToStartTokenKeychainKey]
     }
 
-    static let pushToStartTokenKeychainKey = "live_activity_token"
+    static let pushToStartRegistrationKey = "push_to_start_live_activity_token"
+    static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
 
     // MARK: - Private — Stale Date
 
@@ -355,11 +341,15 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Report a new activity push token to all connected HA servers.
     /// The token is used by the relay server to send APNs updates directly to this activity.
     private func reportPushToken(_ tokenHex: String, tag: String) async {
+        let expiresAt = Current.date()
+            .addingTimeInterval(Self.pushTokenTimeToLive)
+            .timeIntervalSince1970.rounded(.down)
         let request = WebhookRequest(
             type: Self.webhookTypeToken,
             data: [
                 "tag": tag,
                 "push_token": tokenHex,
+                "expires_at": expiresAt,
             ]
         )
         for server in Current.servers.all {

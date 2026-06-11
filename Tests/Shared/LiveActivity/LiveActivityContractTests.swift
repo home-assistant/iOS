@@ -25,6 +25,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testContentState_codingKeys_areFrozen() {
         let state = HALiveActivityAttributes.ContentState(
             message: "test",
+            title: "Title",
             criticalText: "ct",
             progress: 1,
             progressMax: 2,
@@ -40,6 +41,7 @@ final class LiveActivityContractTests: XCTestCase {
 
         // These keys must match the Android notification field names exactly.
         let expectedKeys: Set<String> = [
+            "title",
             "message",
             "critical_text",
             "progress",
@@ -56,6 +58,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testContentState_roundTrip_preservesAllFields() {
         let original = HALiveActivityAttributes.ContentState(
             message: "Cycle in progress",
+            title: "Washer",
             criticalText: "45 min",
             progress: 2700,
             progressMax: 3600,
@@ -81,7 +84,16 @@ final class LiveActivityContractTests: XCTestCase {
     func testPushToStartTokenKeychainKey_isFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.pushToStartTokenKeychainKey,
-            "live_activity_push_to_start_token"
+            "live_activity_token"
+        )
+    }
+
+    /// Registration app_data key for the push-to-start token.
+    /// Must match what HA core stores for starts before a per-activity token exists.
+    func testPushToStartRegistrationKey_isFrozen() {
+        XCTAssertEqual(
+            LiveActivityRegistry.pushToStartRegistrationKey,
+            "push_to_start_live_activity_token"
         )
     }
 
@@ -99,7 +111,15 @@ final class LiveActivityContractTests: XCTestCase {
     func testTokenWebhookKeys_areFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.tokenWebhookKeys,
-            ["tag", "push_token"]
+            ["tag", "push_token", "expires_at"]
+        )
+    }
+
+    /// The iOS app owns the token expiry window it sends to HA core.
+    func testTokenWebhookExpiry_isEightHours() {
+        XCTAssertEqual(
+            LiveActivityRegistry.pushTokenTimeToLive,
+            8 * 60 * 60
         )
     }
 

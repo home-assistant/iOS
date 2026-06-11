@@ -76,6 +76,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
 
     func testContentState_minimalPayload_usesDefaults() {
         let state = HandlerStartOrUpdateLiveActivity.contentState(from: [:])
+        XCTAssertNil(state.title)
         XCTAssertEqual(state.message, "")
         XCTAssertNil(state.criticalText)
         XCTAssertNil(state.progress)
@@ -88,6 +89,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
 
     func testContentState_fullPayload_mapsAllFields() {
         let payload: [String: Any] = [
+            "title": "Test title",
             "message": "Test message",
             "critical_text": "CRITICAL",
             "progress": 42,
@@ -97,6 +99,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
             "notification_icon_color": "#FF5733",
         ]
         let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        XCTAssertEqual(state.title, "Test title")
         XCTAssertEqual(state.message, "Test message")
         XCTAssertEqual(state.criticalText, "CRITICAL")
         XCTAssertEqual(state.progress, 42)
