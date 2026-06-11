@@ -294,16 +294,23 @@ final class WebViewWindowController {
 
             firstly {
                 login.open(authDetails: authDetails, sender: presenter)
-            }.then { code -> Promise<TokenInfo> in
-                AuthenticationAPI.fetchToken(
-                    authorizationCode: code,
-                    baseURL: baseURL,
+            }.then { result -> Promise<(URL?, TokenInfo)> in
+                // The login web view may have been redirected to a different port/scheme; re-authenticate
+                // against the address it actually ended on, and remember it to update the stored URL.
+                let correctedURL = result.resolvedURL?.sameHostRedirectBaseURL(from: baseURL)
+                return AuthenticationAPI.fetchToken(
+                    authorizationCode: result.code,
+                    baseURL: correctedURL ?? baseURL,
                     exceptions: authDetails.exceptions,
                     clientCertificate: authDetails.clientCertificate
-                )
-            }.done { [weak self] tokenInfo in
+                ).map { (correctedURL, $0) }
+            }.done { [weak self] correctedURL, tokenInfo in
                 server.update { serverInfo in
                     serverInfo.token = tokenInfo
+                    if let correctedURL {
+                        Current.Log.info("Updating \(urlType) URL to redirect \(correctedURL) during re-auth")
+                        serverInfo.connection.set(address: correctedURL, for: urlType)
+                    }
                 }
 
                 if self?.onboardingPreloadWebViewController?.server.identifier == server.identifier {
