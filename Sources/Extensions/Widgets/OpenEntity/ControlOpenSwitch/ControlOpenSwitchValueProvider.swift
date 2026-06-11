@@ -79,7 +79,7 @@ struct SwitchEntityOptionsProvider: DynamicOptionsProvider {
                         entityId: entity.entityId,
                         serverId: entity.serverId,
                         serverName: key.info.name,
-                        displayString: entity.name,
+                        displayString: entity.displayRegistryName,
                         iconName: entity.icon ?? SFSymbol.powerplugOutline.rawValue
                     )
                 }

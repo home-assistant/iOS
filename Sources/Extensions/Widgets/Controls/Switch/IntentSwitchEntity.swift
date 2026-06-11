@@ -102,7 +102,7 @@ struct IntentSwitchAppEntityQuery: EntityQuery, EntityStringQuery {
                     serverId: entity.serverId,
                     areaName: areasMap[entity.entityId]?.name ?? "",
                     deviceName: deviceMap[entity.entityId]?.name ?? "",
-                    displayString: entity.name,
+                    displayString: entity.displayRegistryName,
                     iconName: entity.icon ?? SFSymbol.lightswitchOnFill.rawValue
                 )
             })))

@@ -2,12 +2,27 @@ import Foundation
 import GRDB
 import HAKit
 
+/// The entity "universe" cache, sourced from the REST `/states` endpoint (see `AppEntitiesModel`).
+///
+/// This is distinct from, and complementary to, `EntityRegistryListForDisplay.Entity` (the registry,
+/// from `config/entity_registry/list_for_display`):
+/// - `HAAppEntity` is every entity that currently has a state — including ones with no registry entry
+///   (YAML/template/command-line entities, etc.) — and carries `domain` + `rawDeviceClass`, which the
+///   registry does not. It's what pickers/widgets enumerate as "all selectable entities".
+/// - The registry is config metadata (area, hidden, decimal precision, the user's name) for the
+///   registered, non-disabled subset, and is only consulted to filter/enrich those entities.
+///
+/// For a display name, use `displayRegistryName` (registry name, falling back to the state name) —
+/// not the raw `name` (the live `friendly_name`), which is deliberately file-scoped.
 public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRecord, Equatable {
     public let id: String
     public let entityId: String
     public let serverId: String
     public let domain: String
-    public let name: String
+    /// Live state friendly name (`/states` `friendly_name`). File-scoped on purpose so callers go
+    /// through `displayRegistryName`, which prefers the (more accurate) registry name. The public
+    /// initializer still accepts it, so database decoding and `AppEntitiesModel` construction work.
+    fileprivate let name: String
     public let icon: String?
     public let rawDeviceClass: String?
 
@@ -35,21 +50,30 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
 
     public var isHidden: Bool {
         (
-            try? AppEntityRegistry.config(serverId: serverId).first(where: { $0.entityId == entityId })?.hiddenBy != nil
-        ) ??
-            false
+            try? EntityRegistryListForDisplay.Entity.config(serverId: serverId)
+                .first(where: { $0.entityId == entityId })?.isHidden == true
+        ) ?? false
     }
 
-    public var isDisabled: Bool {
-        (
-            try? AppEntityRegistry.config(serverId: serverId).first(where: { $0.entityId == entityId })?
-                .disabledBy != nil
-        ) ?? false
+    /// The entity's display name: the registry name from `config/entity_registry/list_for_display`
+    /// (`en` — the user's custom name, else the original name) when present, otherwise the live state
+    /// name. Does one DB read per call — for collections use `[HAAppEntity].displayRegistryNames(for:)`
+    /// to resolve names with a single fetch instead of a read per entity.
+    public var displayRegistryName: String {
+        let registryName: String? = (try? Current.database().read { db in
+            try EntityRegistryListForDisplay.Entity
+                .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
+                .filter(Column(DatabaseTables.DisplayEntityRegistry.entityId.rawValue) == entityId)
+                .fetchOne(db)?.name
+        }) ?? nil
+        return registryName ?? name
     }
 
     public enum ConfigInclude {
         case all
         case hidden
+        /// Kept for source compatibility. Disabled entities are no longer stored (the entity
+        /// registry is sourced from `list_for_display`, which omits them), so this has no effect.
         case disabled
     }
 
@@ -64,23 +88,21 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
                 return try HAAppEntity.fetchAll(db)
             }
 
-            let appEntityRegistry = try AppEntityRegistry.fetchAll(db)
+            let registryEntities = try EntityRegistryListForDisplay.Entity.fetchAll(db)
             let allEntities = try HAAppEntity.fetchAll(db)
 
             // Build a dictionary for O(1) registry lookups keyed by "serverId-entityId"
             let registryDict = Dictionary(
-                appEntityRegistry.compactMap { registry -> (String, AppEntityRegistry)? in
-                    guard let entityId = registry.entityId else { return nil }
-                    let key = "\(registry.serverId)-\(entityId)"
-                    return (key, registry)
+                registryEntities.map { registry in
+                    ("\(registry.serverId)-\(registry.entityId)", registry)
                 },
                 uniquingKeysWith: { first, _ in first }
             )
 
             let includeHidden = include.contains(.hidden)
-            let includeDisabled = include.contains(.disabled)
 
-            // Filter entities based on registry hiddenBy and disabledBy values
+            // Filter out hidden entities. Disabled entities are already absent from the registry
+            // (list_for_display omits them), so no separate disabled filter is needed.
             return allEntities.filter { entity in
                 let key = "\(entity.serverId)-\(entity.entityId)"
                 guard let registry = registryDict[key] else {
@@ -88,16 +110,8 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
                     return true
                 }
 
-                let isHidden = registry.hiddenBy != nil
-                let isDisabled = registry.disabledBy != nil
-
                 // Exclude hidden entities unless includeHidden is set
-                if isHidden, !includeHidden {
-                    return false
-                }
-
-                // Exclude disabled entities unless includeDisabled is set
-                if isDisabled, !includeDisabled {
+                if registry.isHidden, !includeHidden {
                     return false
                 }
 
@@ -118,6 +132,29 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
             Current.Log.error("Error fetching entity \(id) for server \(serverId): \(error)")
         }
         return nil
+    }
+}
+
+public extension [HAAppEntity] {
+    /// Maps each entity id to its display name (registry `en`, falling back to the live state name),
+    /// resolved with a single fetch of the server's registry instead of a read per entity. Use this in
+    /// collection/builder paths (widgets, App Intents, search) instead of per-entity `displayRegistryName`.
+    func displayRegistryNames(for serverId: String) -> [String: String] {
+        let registryByEntityId: [String: String]
+        do {
+            let rows = try EntityRegistryListForDisplay.Entity.config(serverId: serverId)
+            registryByEntityId = Dictionary(
+                rows.compactMap { row in row.name.map { (row.entityId, $0) } },
+                uniquingKeysWith: { first, _ in first }
+            )
+        } catch {
+            registryByEntityId = [:]
+        }
+        var result: [String: String] = [:]
+        for entity in self {
+            result[entity.entityId] = registryByEntityId[entity.entityId] ?? entity.name
+        }
+        return result
     }
 }
 

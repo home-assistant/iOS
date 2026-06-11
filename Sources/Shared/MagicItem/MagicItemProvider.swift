@@ -180,7 +180,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
             return .init(
                 id: scriptItem.id,
-                name: scriptItem.name,
+                name: scriptItem.displayRegistryName,
                 iconName: scriptItem.icon ?? MaterialDesignIcons.scriptIcon.name,
                 customization: item.customization
             )
@@ -197,7 +197,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
             return .init(
                 id: sceneItem.id,
-                name: sceneItem.name,
+                name: sceneItem.displayRegistryName,
                 iconName: sceneItem.icon ?? MaterialDesignIcons.paletteIcon.name,
                 customization: item.customization
             )
@@ -213,7 +213,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
             return .init(
                 id: entityItem.id,
-                name: entityItem.name,
+                name: entityItem.displayRegistryName,
                 iconName: entityItem.icon ??
                     Domain(rawValue: entityItem.domain)?.icon(deviceClass: entityItem.rawDeviceClass).name ??
                     MaterialDesignIcons.dotsGridIcon.name,

@@ -74,7 +74,7 @@ struct TodoListAppEntityQuery: EntityQuery, EntityStringQuery {
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
-                    displayString: entity.name,
+                    displayString: entity.displayRegistryName,
                     iconName: entity.icon ?? SFSymbol.checklistChecked.rawValue
                 )
             })

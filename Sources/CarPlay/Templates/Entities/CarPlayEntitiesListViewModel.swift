@@ -78,11 +78,11 @@ final class CarPlayEntitiesListViewModel {
 
     private func refreshExcludedEntityIds() {
         do {
-            let registryEntities = try AppEntityRegistry.config(serverId: server.identifier.rawValue)
+            let registryEntities = try EntityRegistryListForDisplay.Entity.config(serverId: server.identifier.rawValue)
             excludedEntityIds = Set(
                 registryEntities
                     .filter { $0.entityCategory != nil || $0.isHidden }
-                    .compactMap(\.entityId)
+                    .map(\.entityId)
             )
         } catch {
             Current.Log

@@ -70,7 +70,7 @@ struct IntentButtonAppEntityQuery: EntityQuery, EntityStringQuery {
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
-                    displayString: entity.name,
+                    displayString: entity.displayRegistryName,
                     iconName: entity.icon ?? SFSymbol.circleCircle.rawValue
                 )
             })))

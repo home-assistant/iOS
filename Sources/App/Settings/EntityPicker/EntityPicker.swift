@@ -51,7 +51,7 @@ struct EntityPicker: View {
         Button(action: {
             viewModel.showList = true
         }, label: {
-            if let name = selectedEntity?.name {
+            if let name = selectedEntity?.displayRegistryName {
                 Text(name)
             } else {
                 Text(verbatim: L10n.EntityPicker.placeholder)

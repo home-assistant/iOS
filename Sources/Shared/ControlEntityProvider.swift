@@ -75,8 +75,9 @@ public final class ControlEntityProvider {
                 if let string {
                     let deviceMap = entities.devicesMap(for: server.identifier.rawValue)
                     let areasMap = entities.areasMap(for: server.identifier.rawValue)
+                    let displayNames = entities.displayRegistryNames(for: server.identifier.rawValue)
                     entities = entities.filter({ entity in
-                        let matchName = entity.name.range(
+                        let matchName = (displayNames[entity.entityId] ?? entity.entityId).range(
                             of: string,
                             options: [.caseInsensitive, .diacriticInsensitive]
                         ) != nil

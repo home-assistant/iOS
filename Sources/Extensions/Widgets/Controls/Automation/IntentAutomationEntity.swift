@@ -69,7 +69,7 @@ struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     serverName: server.info.name,
-                    displayString: entity.name,
+                    displayString: entity.displayRegistryName,
                     iconName: entity.icon ?? SFSymbol.flowchart.rawValue
                 )
             })))

@@ -6,15 +6,10 @@ public enum StatePrecision {
         if let decimalPlacesForEntityId: Int = {
             do {
                 return try Current.database().read { db in
-                    try AppEntityRegistryListForDisplay
-                        .filter(
-                            Column(DatabaseTables.AppEntityRegistryListForDisplay.id.rawValue) == ServerEntity
-                                .uniqueId(
-                                    serverId: serverId,
-                                    entityId: entityId
-                                )
-                        )
-                        .fetchOne(db)?.registry.decimalPlaces
+                    try EntityRegistryListForDisplay.Entity
+                        .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
+                        .filter(Column(DatabaseTables.DisplayEntityRegistry.entityId.rawValue) == entityId)
+                        .fetchOne(db)?.decimalPlaces
                 }
             } catch {
                 Current.Log.error("Failed to fetch decimal places for entity ID: \(entityId)")

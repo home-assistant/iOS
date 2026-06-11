@@ -23,7 +23,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
                         id: sensor.id,
                         entityId: sensor.entityId,
                         serverId: key.identifier.rawValue,
-                        displayString: sensor.name,
+                        displayString: sensor.displayRegistryName,
                         icon: sensor.icon
                     )
                 }
