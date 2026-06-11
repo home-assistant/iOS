@@ -9,8 +9,11 @@ extension WidgetConfiguration {
         // `WidgetLocation.carPlay` is available on iOS, iPadOS and Mac Catalyst 26+, and unavailable on
         // macOS (CarPlay does not exist there). The `disfavoredLocations(_:for:)` modifier itself is
         // iOS 17+, but the `.carPlay` location requires iOS 26, so guard on the stricter requirement.
+        // Use the `iOS` availability domain (not `iOSApplicationExtension`): this file also compiles
+        // into the non-extension `App` target, where an `iOSApplicationExtension` check does not refine
+        // the `iOS`-only availability of these symbols.
         #if !os(macOS)
-        if #available(iOSApplicationExtension 26.0, *) {
+        if #available(iOS 26.0, *) {
             return self.disfavoredLocations([.carPlay], for: families)
         } else {
             return self
