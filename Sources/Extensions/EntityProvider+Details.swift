@@ -2,20 +2,6 @@ import Foundation
 import GRDB
 
 public extension HAAppEntity {
-    var registryTitle: String? {
-        do {
-            let registryEntity = try Current.database().read { db in
-                try AppEntityRegistry
-                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                    .filter(Column(DatabaseTables.EntityRegistry.entityId.rawValue) == entityId)
-                    .fetchOne(db)
-            }
-            return registryEntity?.name
-        } catch {
-            return nil
-        }
-    }
-
     var area: AppArea? {
         do {
             let areas = try AppArea.fetchAreas(for: serverId)
@@ -32,9 +18,9 @@ public extension HAAppEntity {
     var device: AppDeviceRegistry? {
         do {
             let entityRegistry = try Current.database().read { db in
-                try AppEntityRegistry
-                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                    .filter(Column(DatabaseTables.EntityRegistry.entityId.rawValue) == entityId)
+                try EntityRegistryListForDisplay.Entity
+                    .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
+                    .filter(Column(DatabaseTables.DisplayEntityRegistry.entityId.rawValue) == entityId)
                     .fetchOne(db)
             }
             let deviceId = entityRegistry?.deviceId
@@ -107,8 +93,8 @@ public extension [HAAppEntity] {
         do {
             // Fetch all entity registries for the server
             let entityRegistries = try Current.database().read { db in
-                try AppEntityRegistry
-                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                try EntityRegistryListForDisplay.Entity
+                    .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
                     .fetchAll(db)
             }
 
@@ -126,12 +112,11 @@ public extension [HAAppEntity] {
             var entityToDeviceMap: [String: AppDeviceRegistry] = [:]
 
             for entityRegistry in entityRegistries {
-                guard let entityId = entityRegistry.entityId,
-                      let deviceId = entityRegistry.deviceId,
+                guard let deviceId = entityRegistry.deviceId,
                       let device = devicesByDeviceId[deviceId] else {
                     continue
                 }
-                entityToDeviceMap[entityId] = device
+                entityToDeviceMap[entityRegistry.entityId] = device
             }
 
             return entityToDeviceMap

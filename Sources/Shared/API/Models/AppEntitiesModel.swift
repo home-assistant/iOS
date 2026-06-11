@@ -76,12 +76,33 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
 
     private func handle(appRelatedEntities: Set<HAEntity>, server: Server) async {
         let serverId = server.identifier.rawValue
+
+        // Resolve each entity's display name from the entity registry (`list_for_display` `en`) once,
+        // here at build time, so the name is baked into the persisted `HAAppEntity.name` and readers
+        // never need a per-entity registry lookup (this avoids the N+1 reads a read-time computed
+        // property would cause). Falls back to the live `friendly_name`, then the `entityId`.
+        //
+        // IMPORTANT: this must run AFTER the registry (`list_for_display`) has been saved for this
+        // server, otherwise the name would resolve from a stale/absent registry. `AppDatabaseUpdater`
+        // guarantees the ordering by persisting entities only after the registry step (see
+        // `updateServer`). Resolving at build — rather than writing `friendly_name` rows and patching
+        // `name` afterwards — is also what keeps the skip-write below correct: both the freshly built
+        // and the cached rows carry the same display name, so an unchanged refresh compares equal and
+        // is skipped (no per-cycle rewrite churn).
+        let registryNames: [String: String] = (try? EntityRegistryListForDisplay.Entity.config(serverId: serverId))
+            .map { rows in
+                Dictionary(
+                    rows.compactMap { row in row.name.map { (row.entityId, $0) } },
+                    uniquingKeysWith: { first, _ in first }
+                )
+            } ?? [:]
+
         let appEntities = appRelatedEntities.map({ HAAppEntity(
             id: ServerEntity.uniqueId(serverId: serverId, entityId: $0.entityId),
             entityId: $0.entityId,
             serverId: serverId,
             domain: $0.domain,
-            name: $0.attributes.friendlyName ?? $0.entityId,
+            name: registryNames[$0.entityId] ?? $0.attributes.friendlyName ?? $0.entityId,
             icon: $0.attributes.icon,
             rawDeviceClass: $0.attributes.dictionary["device_class"] as? String
         ) }).sorted(by: { $0.id < $1.id })

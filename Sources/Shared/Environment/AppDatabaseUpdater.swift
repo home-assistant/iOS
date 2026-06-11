@@ -300,37 +300,47 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Runs the full update pipeline for a single server in sequence.
     /// Each phase checks for cancellation to bail out quickly when needed.
     ///
-    /// NOTE: These fetches are deliberately sequential. The registry fetches (steps 2–5) are
-    /// Home Assistant WebSocket requests, and the protocol requires each message `id` on a
-    /// connection to be strictly increasing in transmission order. HAKit assigns ids and enqueues
-    /// the socket write per-request, so issuing these from concurrent tasks lets frames transmit
-    /// out of id order and the server rejects them with `id_reuse`
-    /// ("Identifier values have to increase."). Keep them sequential.
+    /// NOTE: These fetches are deliberately sequential. The registry fetches are Home Assistant
+    /// WebSocket requests, and the protocol requires each message `id` on a connection to be strictly
+    /// increasing in transmission order. HAKit assigns ids and enqueues the socket write per-request,
+    /// so issuing these from concurrent tasks lets frames transmit out of id order and the server
+    /// rejects them with `id_reuse` ("Identifier values have to increase."). Keep them sequential.
+    ///
+    /// NOTE: entity persistence is deliberately deferred until AFTER the entity registry is saved
+    /// (Step 3, not Step 1). `AppEntitiesModel` resolves each entity's display name from the just-saved
+    /// `list_for_display` registry and bakes it into `HAAppEntity.name`, so readers can use `name`
+    /// directly without a per-entity registry lookup. The `/states` fetch itself still happens first
+    /// (Step 1); only the database write is deferred.
     private func updateServer(server: Server) async {
         guard !isUpdateCancelled() else { return }
 
         let totalTimer = ProfilingTimer("Starting full update for server: \(server.info.name)")
 
-        // Step 1: Entities (fetch_states)
+        // Step 1: Fetch entity states (`/states`). Persistence is deferred to Step 3 (after the
+        // registry is saved) so display names can be resolved from `list_for_display`.
+        let fetchedEntities: [HAEntity]?
         do {
-            let timer = ProfilingTimer("Step 1 (Entities)")
-            await updateEntitiesDatabase(server: server)
+            let timer = ProfilingTimer("Step 1 (Entities fetch)")
+            fetchedEntities = await fetchEntities(server: server)
             timer.end()
         }
         if isUpdateCancelled() { return }
 
-        // Step 2: Entities registry list for display
+        // Step 2: Entities registry (from list-for-display)
         do {
-            let timer = ProfilingTimer("Step 2 (Entities Registry List For Display)")
-            await updateEntitiesRegistryListForDisplay(server: server)
-            timer.end()
-        }
-        if isUpdateCancelled() { return }
-
-        // Step 3: Entities registry
-        do {
-            let timer = ProfilingTimer("Step 3 (Entities Registry)")
+            let timer = ProfilingTimer("Step 2 (Entities Registry)")
             await updateEntitiesRegistry(server: server)
+            timer.end()
+        }
+        if isUpdateCancelled() { return }
+
+        // Step 3: Persist entities. Deferred until here (after Step 2) on purpose so `AppEntitiesModel`
+        // resolves each entity's display name from the just-saved registry and bakes it into
+        // `HAAppEntity.name`. HAKit completions fire on the main queue; the Set construction and DB
+        // work happen here, after the await, off the main thread (see `AppEntitiesModel.handle`).
+        if let fetchedEntities {
+            let timer = ProfilingTimer("Step 3 (Entities persist)")
+            await Current.appEntitiesModel().updateModel(Set(fetchedEntities), server: server)
             timer.end()
         }
         if isUpdateCancelled() { return }
@@ -395,28 +405,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    /// Fetches entities' states from the API and forwards results to persistence.
-    private func updateEntitiesDatabase(server: Server) async {
-        // HAKit completions fire on the main queue, so resume with the raw entities and do the
-        // (potentially heavy) Set construction and database work afterwards — off the main thread —
-        // via the awaited `updateModel` below.
-        guard let entities = await fetch(
+    /// Fetches entities' states (`/states`) from the API and returns them. Persistence is deliberately
+    /// deferred to a later step (after the entity registry is saved) so `AppEntitiesModel` can resolve
+    /// each entity's display name from `list_for_display` and bake it into `HAAppEntity.name`; see
+    /// `updateServer`.
+    private func fetchEntities(server: Server) async -> [HAEntity]? {
+        await fetch(
             HATypedRequest<[HAEntity]>.fetchStates(),
             server: server,
             failureText: "Failed to fetch states"
-        ) else { return }
-        guard !isUpdateCancelled() else { return }
-        await Current.appEntitiesModel().updateModel(Set(entities), server: server)
-    }
-
-    /// Fetches entity registry from the API and forwards results to persistence.
-    private func updateEntitiesRegistry(server: Server) async {
-        guard let registryEntries = await fetch(
-            HATypedRequest<[EntityRegistryEntry]>.configEntityRegistryList(),
-            server: server,
-            failureText: "Failed to fetch entity registry"
-        ) else { return }
-        await saveEntityRegistry(registryEntries, serverId: server.identifier.rawValue)
+        )
     }
 
     /// Fetches device registry from the API and forwards results to persistence.
@@ -429,20 +427,20 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         await saveDeviceRegistry(registryEntries, serverId: server.identifier.rawValue)
     }
 
-    /// Fetches entity registry list-for-display from the API and forwards results to persistence.
-    private func updateEntitiesRegistryListForDisplay(server: Server) async {
+    /// Fetches the entity registry (via `list_for_display`) from the API and forwards it to persistence.
+    private func updateEntitiesRegistry(server: Server) async {
         guard let response = await fetch(
             HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay(),
             server: server,
             failureText: "Failed to fetch EntityRegistryListForDisplay"
         ) else { return }
-        await saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
+        await saveEntityRegistry(response, serverId: server.identifier.rawValue)
     }
 
     private func updateAreasDatabase(server: Server) async {
         // Ensure this work happens off the main thread
         await Task.detached(priority: .utility) {
-            let fetchTimer = ProfilingTimer("Step 5.1: fetchAreasAndItsEntities")
+            let fetchTimer = ProfilingTimer("Step 4.1: fetchAreasAndItsEntities")
             let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
             fetchTimer.end()
 
@@ -451,7 +449,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 return
             }
 
-            let saveTimer = ProfilingTimer("Step 5.2: saveAreasToDatabase (count: \(areas.count))")
+            let saveTimer = ProfilingTimer("Step 4.2: saveAreasToDatabase (count: \(areas.count))")
             await self.saveAreasToDatabase(
                 areas: areas,
                 areasAndEntities: areasAndEntities,
@@ -488,7 +486,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         // Ensure model building happens off the main thread
         let appAreas = await Task.detached(priority: .utility) {
-            let modelTimer = ProfilingTimer("Step 5.2.1: Building AppArea models (count: \(areas.count))")
+            let modelTimer = ProfilingTimer("Step 4.2.1: Building AppArea models (count: \(areas.count))")
             let result = areas.enumerated().map { index, area in
                 AppArea(
                     from: area,
@@ -510,7 +508,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         do {
-            let dbTimer = ProfilingTimer("Step 5.2.2: Database write transaction")
+            let dbTimer = ProfilingTimer("Step 4.2.2: Database write transaction")
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
                 Current.database().asyncWrite { db in
                     // Delete all existing areas for this server
@@ -548,110 +546,31 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    /// Persists the entity registry list-for-display for a server.
+    /// Persists the entity registry (from `list_for_display`) for a server.
     /// Deletes all existing records for the server and inserts fresh data in a single transaction.
-    private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) async {
-        // Check for cancellation before starting database work
-        guard !isUpdateCancelled() else {
-            Current.Log.verbose("Skipping EntityRegistryListForDisplay database save - task cancelled")
-            return
-        }
-
-        var entitiesListForDisplay: [AppEntityRegistryListForDisplay] = []
-        entitiesListForDisplay.reserveCapacity(response.entities.count)
-        for registry in response.entities {
-            if registry.decimalPlaces != nil || registry.entityCategory != nil {
-                entitiesListForDisplay.append(
-                    AppEntityRegistryListForDisplay(
-                        id: ServerEntity.uniqueId(serverId: serverId, entityId: registry.entityId),
-                        serverId: serverId,
-                        entityId: registry.entityId,
-                        registry: registry
-                    )
-                )
-            }
-        }
-
-        // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
-        // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.
-        let storedListForDisplay = try? await Current.database().read { db in
-            try AppEntityRegistryListForDisplay
-                .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
-                .fetchAll(db)
-        }
-        if let storedListForDisplay, recordsEqual(entitiesListForDisplay, storedListForDisplay, keyedBy: \.id) {
-            Current.Log
-                .verbose("EntityRegistryListForDisplay unchanged for server \(serverId), skipping database write")
-            return
-        }
-
-        do {
-            try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-                guard let self else {
-                    continuation.resume(throwing: CancellationError())
-                    return
-                }
-                guard !isUpdateCancelled() else {
-                    continuation.resume(throwing: CancellationError())
-                    return
-                }
-                Current.database().asyncWrite { [entitiesListForDisplay] db in
-                    // Delete all existing records for this server
-                    try AppEntityRegistryListForDisplay
-                        .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
-                        .deleteAll(db)
-
-                    // Insert fresh records
-                    for record in entitiesListForDisplay {
-                        try record.insert(db)
-                    }
-                } completion: { _, result in
-                    switch result {
-                    case .success:
-                        continuation.resume()
-                    case let .failure(error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
-        } catch is CancellationError {
-            Current.Log.verbose("EntityRegistryListForDisplay database save cancelled for server \(serverId)")
-        } catch {
-            Current.Log
-                .error("Failed to save EntityRegistryListForDisplay in database, error: \(error.localizedDescription)")
-            Current.clientEventStore.addEvent(.init(
-                text: "Failed to save EntityRegistryListForDisplay in database, error on serverId \(serverId)",
-                type: .database,
-                payload: [
-                    "error": error.localizedDescription,
-                ]
-            ))
-            assertionFailure("Failed to save EntityRegistryListForDisplay in database: \(error)")
-        }
-    }
-
-    /// Persists the entity registry for a server.
-    /// Deletes all existing records for the server and inserts fresh data in a single transaction.
-    private func saveEntityRegistry(_ registryEntries: [EntityRegistryEntry], serverId: String) async {
+    private func saveEntityRegistry(_ response: EntityRegistryListForDisplay, serverId: String) async {
         // If cancelled before touching the DB, bail out early to avoid unnecessary work.
         guard !isUpdateCancelled() else {
             Current.Log.verbose("Skipping entity registry database save - task cancelled")
             return
         }
 
-        let appEntityRegistries = registryEntries.map { entry in
-            AppEntityRegistry(serverId: serverId, registry: entry)
+        // The WebSocket payload has no server id; stamp it on each entity before persisting.
+        let entities = response.entities.map { entity -> EntityRegistryListForDisplay.Entity in
+            var entity = entity
+            entity.serverId = serverId
+            return entity
         }
 
         // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
-        // This is the largest registry, so avoiding a no-op rewrite saves the most DB writer time.
-        // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.
+        // The list-for-display registry is the largest payload, so avoiding a no-op rewrite saves the
+        // most DB writer time. Uses GRDB's async read so the comparison fetch suspends instead of blocking.
         let storedEntityRegistry = try? await Current.database().read { db in
-            try AppEntityRegistry
-                .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+            try EntityRegistryListForDisplay.Entity
+                .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
                 .fetchAll(db)
         }
-        if let storedEntityRegistry, recordsEqual(appEntityRegistries, storedEntityRegistry, keyedBy: \.uniqueId) {
+        if let storedEntityRegistry, recordsEqual(entities, storedEntityRegistry, keyedBy: \.entityId) {
             Current.Log.verbose("Entity registry unchanged for server \(serverId), skipping database write")
             return
         }
@@ -666,15 +585,15 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     continuation.resume(throwing: CancellationError())
                     return
                 }
-                Current.database().asyncWrite { db in
+                Current.database().asyncWrite { [entities] db in
                     // Delete all existing registry entries for this server
-                    try AppEntityRegistry
-                        .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                    try EntityRegistryListForDisplay.Entity
+                        .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
                         .deleteAll(db)
 
                     // Insert fresh registry entries
-                    for registry in appEntityRegistries {
-                        try registry.insert(db)
+                    for entity in entities {
+                        try entity.insert(db)
                     }
                 } completion: { _, result in
                     switch result {
@@ -686,9 +605,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 }
             }
             Current.Log
-                .verbose(
-                    "Successfully saved \(appEntityRegistries.count) entity registry entries for server \(serverId)"
-                )
+                .verbose("Successfully saved \(entities.count) entity registry entries for server \(serverId)")
         } catch is CancellationError {
             Current.Log.verbose("Entity registry database save cancelled for server \(serverId)")
         } catch {

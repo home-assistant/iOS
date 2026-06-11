@@ -56,7 +56,7 @@ struct EntityRowView: View {
         }
         .animation(.easeInOut, value: showIcon)
         .onAppear {
-            title = optionalTitle ?? entity?.registryTitle ?? entity?.name ?? ""
+            title = optionalTitle ?? entity?.name ?? ""
             subtitle = (entity?.contextualSubtitle).orEmpty
             let fallbackIcon = Domain(entityId: (entity?.entityId).orEmpty)?.icon(deviceClass: entity?.rawDeviceClass)
             if let entity {

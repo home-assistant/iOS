@@ -117,27 +117,14 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("AppEntityRegistryListForDisplayTable schema validation")
-    func appEntityRegistryListForDisplayTableSchema() throws {
-        let table = AppEntityRegistryListForDisplayTable()
-        let expectedColumns = DatabaseTables.AppEntityRegistryListForDisplay.allCases.map(\.rawValue)
+    @Test("DisplayEntityRegistryTable schema validation")
+    func displayEntityRegistryTableSchema() throws {
+        let table = DisplayEntityRegistryTable()
+        let expectedColumns = DatabaseTables.DisplayEntityRegistry.allCases.map(\.rawValue)
         try verifyTableSchema(
             table: table,
-            expectedTableName: GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue,
+            expectedTableName: GRDBDatabaseTable.displayEntityRegistry.rawValue,
             expectedColumns: expectedColumns
-        )
-    }
-
-    @Test("AppEntityRegistryTable schema validation")
-    func appEntityRegistryTableSchema() throws {
-        let table = AppEntityRegistryTable()
-        // Note: AppEntityRegistryTable filters out .id from definedColumns
-        let expectedColumns = DatabaseTables.EntityRegistry.allCases.map(\.rawValue)
-        try verifyTableSchema(
-            table: table,
-            expectedTableName: GRDBDatabaseTable.entityRegistry.rawValue,
-            expectedColumns: expectedColumns,
-            filterOutId: true
         )
     }
 
@@ -220,13 +207,13 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 16 tables create successfully together")
+    @Test("All 15 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 16 tables
-        #expect(tables.count == 16, "Should have exactly 16 tables, but found \(tables.count)")
+        // Verify we have exactly 15 tables
+        #expect(tables.count == 15, "Should have exactly 15 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

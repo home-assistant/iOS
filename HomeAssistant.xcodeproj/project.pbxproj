@@ -543,8 +543,6 @@
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */; };
 		420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */; };
-		420C91522F0C7988005D04A6 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
-		420C91532F0C7988005D04A6 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
 		420CFC642D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */; };
 		420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */; };
 		420CFC682D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */; };
@@ -553,8 +551,6 @@
 		420CFC6D2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */; };
 		420CFC702D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */; };
 		420CFC712D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */; };
-		420CFC782D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */; };
-		420CFC792D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */; };
 		420CFC7C2D3F9CCB009A94F3 /* AppPanelTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */; };
 		420CFC7D2D3F9CCB009A94F3 /* AppPanelTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */; };
 		420CFC802D3F9D89009A94F3 /* DatabaseTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */; };
@@ -1203,9 +1199,8 @@
 		42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
 		42FDA9372DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
 		42FDCA272F0C7EB900C92958 /* EntityRegistry.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */; };
-		42FDCA282F0C7EC200C92958 /* entityregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 42FDCA252F0C7BFA00C92958 /* entityregistry.json */; };
-		42FDCA2A2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
-		42FDCA2B2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
+		42FDCA2A2F0C88A100C92958 /* DisplayEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* DisplayEntityRegistryTable.swift */; };
+		42FDCA2B2F0C88A100C92958 /* DisplayEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* DisplayEntityRegistryTable.swift */; };
 		42FF5E912E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */; };
 		42FF5E922E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */; };
 		42FF5E942E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */; };
@@ -2337,13 +2332,11 @@
 		420BE1402F0FE5B000E20584 /* ToastHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastHostingController.swift; sourceTree = "<group>"; };
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
-		420C91512F0C7988005D04A6 /* EntityRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.swift; sourceTree = "<group>"; };
 		420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.test.swift; sourceTree = "<group>"; };
 		420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAppEntityTable.swift; sourceTree = "<group>"; };
 		420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelinesTable.swift; sourceTree = "<group>"; };
-		420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryListForDisplayTable.swift; sourceTree = "<group>"; };
 		420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPanelTable.swift; sourceTree = "<group>"; };
 		420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTables.swift; sourceTree = "<group>"; };
 		420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetTable.swift; sourceTree = "<group>"; };
@@ -3057,8 +3050,7 @@
 		42FCD00F2B9B29740057783F /* ThreadCredentialDetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialDetailsView.swift; sourceTree = "<group>"; };
 		42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsManagementView.swift; sourceTree = "<group>"; };
 		42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClass.swift; sourceTree = "<group>"; };
-		42FDCA252F0C7BFA00C92958 /* entityregistry.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = entityregistry.json; sourceTree = "<group>"; };
-		42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryTable.swift; sourceTree = "<group>"; };
+		42FDCA292F0C88A100C92958 /* DisplayEntityRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayEntityRegistryTable.swift; sourceTree = "<group>"; };
 		42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoList.swift; sourceTree = "<group>"; };
 		42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListProvider.swift; sourceTree = "<group>"; };
 		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
@@ -4743,7 +4735,6 @@
 			isa = PBXGroup;
 			children = (
 				420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */,
-				42FDCA252F0C7BFA00C92958 /* entityregistry.json */,
 				428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */,
 				428DC0012F0C961E003B08D5 /* deviceregistry.json */,
 			);
@@ -4757,7 +4748,7 @@
 				420CFC622D3F9C1F009A94F3 /* Tables */,
 				4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */,
 				42A9C1012FBB000100D0C0DE /* AllowedTag.swift */,
-				42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */,
+				42FDCA292F0C88A100C92958 /* DisplayEntityRegistryTable.swift */,
 				428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */,
 			);
 			path = Database;
@@ -4773,7 +4764,6 @@
 				420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */,
 				AC730012000000000000AA01 /* AppIconShortcutConfigTable.swift */,
 				420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */,
-				420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */,
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
 				4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */,
 				14444A34DA125693568C7035 /* KioskSettingsTable.swift */,
@@ -7160,7 +7150,6 @@
 				D00302BD20D4BEDB004C2CA9 /* Environment.swift */,
 				420A80952E9CF98C00D30A6B /* ImpactFeedbackGeneratorProtocol.swift */,
 				4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */,
-				420C91512F0C7988005D04A6 /* EntityRegistry.swift */,
 				428DBFF72F0C9009003B08D5 /* DeviceRegistryEntry.swift */,
 				D03D893A20E0B2E300D4F28D /* AppConstants.swift */,
 				1101568624D7712F009424C9 /* TagManagerProtocol.swift */,
@@ -8557,7 +8546,6 @@
 			files = (
 				C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */,
 				428DC0022F0C961E003B08D5 /* deviceregistry.json in Resources */,
-				42FDCA282F0C7EC200C92958 /* entityregistry.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8737,13 +8725,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8882,13 +8866,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8925,13 +8905,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -9032,13 +9008,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -9858,14 +9830,13 @@
 				4214388D2CF5F1D700E2D44D /* ServerFixture.swift in Sources */,
 				428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */,
 				B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
-				420CFC782D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */,
 				11C4628324B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				AC730001000000000000AA01 /* AppIconShortcutConfig.swift in Sources */,
 				AC730003000000000000AA01 /* AppIconShortcutConfigTable.swift in Sources */,
 				421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */,
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
-				42FDCA2A2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */,
+				42FDCA2A2F0C88A100C92958 /* DisplayEntityRegistryTable.swift in Sources */,
 				427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
 				115560E927011E3300A8F818 /* HAPanel.swift in Sources */,
@@ -10076,7 +10047,6 @@
 				11B38EF2275C54A300205C7B /* CallServiceIntentHandler.swift in Sources */,
 				42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */,
 				4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */,
-				420C91532F0C7988005D04A6 /* EntityRegistry.swift in Sources */,
 				42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */,
 				429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */,
 				4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */,
@@ -10176,7 +10146,6 @@
 				4297ADA82C89C74A00790812 /* GRDB+Initialization.swift in Sources */,
 				427A7CDC2EBDFB1D00D17841 /* AppAreaTable.swift in Sources */,
 				1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
-				420CFC792D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */,
 				42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */,
 				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */,
@@ -10214,7 +10183,6 @@
 				1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
 				11F855DA24DF6C7A0018013E /* IconDrawable.swift in Sources */,
 				42070EF02BAC52630031E96F /* AssistRequests.swift in Sources */,
-				420C91522F0C7988005D04A6 /* EntityRegistry.swift in Sources */,
 				42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */,
 				11AF4D1F249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
@@ -10285,7 +10253,7 @@
 				399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				42955C222F1A550B00E398E8 /* ExternalBusPayload.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
-				42FDCA2B2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */,
+				42FDCA2B2F0C88A100C92958 /* DisplayEntityRegistryTable.swift in Sources */,
 				11CFD784273662DF0082D557 /* Server.swift in Sources */,
 				42905D852E12B00900250728 /* DesignSystem.swift in Sources */,
 				116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
