@@ -46,11 +46,11 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
-        WidgetScripts()
         WidgetTodoList()
         WidgetGauge()
         WidgetDetails()
         WidgetOpenPage()
+        WidgetScripts()
         WidgetSensors()
     }
 }
@@ -89,11 +89,11 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
-        WidgetScripts()
         WidgetTodoList()
         WidgetGauge()
         WidgetDetails()
-        WidgetSensors()
         WidgetOpenPage()
+        WidgetScripts()
+        WidgetSensors()
     }
 }
