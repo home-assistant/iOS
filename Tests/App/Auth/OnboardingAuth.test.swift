@@ -275,13 +275,24 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(portChanged.internalURL, URL(string: "https://internal.homeassistant:8124"))
         XCTAssertEqual(portChanged.externalURL, instance.externalURL)
 
-        // scheme change → adopted
-        let schemeChanged = OnboardingAuth.instance(
+        // https->http downgrade → NOT adopted (transport must not be downgraded)
+        let downgraded = OnboardingAuth.instance(
             instance,
             adoptingResolvedURL: URL(string: "http://internal.homeassistant:8123"),
             attemptedURL: attempted
         )
-        XCTAssertEqual(schemeChanged.internalURL, URL(string: "http://internal.homeassistant:8123"))
+        XCTAssertEqual(downgraded.internalURL, instance.internalURL)
+
+        // http->https upgrade → adopted
+        var httpInstance = DiscoveredHomeAssistant(manualURL: URL(string: "https://external.homeassistant:8123")!)
+        httpInstance.internalURL = URL(string: "http://internal.homeassistant:8123")!
+        let httpAttempted = try XCTUnwrap(httpInstance.internalURL)
+        let upgraded = OnboardingAuth.instance(
+            httpInstance,
+            adoptingResolvedURL: URL(string: "https://internal.homeassistant:8123"),
+            attemptedURL: httpAttempted
+        )
+        XCTAssertEqual(upgraded.internalURL, URL(string: "https://internal.homeassistant:8123"))
 
         // different host → ignored
         XCTAssertEqual(

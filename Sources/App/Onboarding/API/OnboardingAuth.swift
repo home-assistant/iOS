@@ -166,8 +166,8 @@ class OnboardingAuth {
 
         guard let adoptedBase = resolvedURL?.sameHostRedirectBaseURL(from: attemptedURL) else {
             if let resolvedBase = resolvedURL?.serverBaseURL(), !resolvedBase.baseIsEqual(to: attemptedBase) {
-                Current.Log
-                    .warning("Auth web view ended on a different host (\(resolvedBase)); keeping \(attemptedBase)")
+                // Different host, or an https->http downgrade we won't follow.
+                Current.Log.warning("Not adopting auth redirect to \(resolvedBase); keeping \(attemptedBase)")
             }
             return instance
         }

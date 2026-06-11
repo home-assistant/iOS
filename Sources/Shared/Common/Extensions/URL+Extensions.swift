@@ -58,14 +58,19 @@ public extension URL {
 
     /// When an auth web view (`self`) was redirected away from `attemptedURL`, returns the server base
     /// URL to adopt — but only for a *same-host* redirect that changed the port and/or scheme. Returns
-    /// `nil` when nothing relevant changed, or when the host differs (we never follow a different host
-    /// during authentication).
+    /// `nil` when nothing relevant changed, when the host differs (we never follow a different host
+    /// during authentication), or when the redirect would downgrade `https` to plaintext `http`.
     func sameHostRedirectBaseURL(from attemptedURL: URL) -> URL? {
         let resolvedBase = serverBaseURL()
         let attemptedBase = attemptedURL.serverBaseURL()
 
         guard !resolvedBase.baseIsEqual(to: attemptedBase),
               resolvedBase.host?.lowercased() == attemptedBase.host?.lowercased() else {
+            return nil
+        }
+
+        // Never downgrade the transport: an https URL must not be replaced by a plaintext http one.
+        if attemptedBase.scheme?.lowercased() == "https", resolvedBase.scheme?.lowercased() != "https" {
             return nil
         }
 

@@ -177,12 +177,14 @@ struct URLExtensionsTests {
     }
 
     @Test(
-        "Given no relevant change or a different host then no redirect URL is adopted",
+        "Given no relevant change, a different host, or an https->http downgrade then no redirect URL is adopted",
         arguments: [
             ("https://homeassistant.local:8123", "https://homeassistant.local:8123"), // identical
             ("https://homeassistant.local:8123", "https://homeassistant.local:8123/auth/authorize?x=1"), // path only
             ("https://homeassistant.local:8123", "https://other.local:8124"), // different host (never followed)
             ("https://example.com", "https://example.com:443"), // explicit default port == implicit
+            ("https://homeassistant.local:8123", "http://homeassistant.local:8124"), // downgrade + port change
+            ("https://homeassistant.local:8123", "http://homeassistant.local:8123"), // pure https->http downgrade
         ]
     )
     func sameHostRedirectReturnsNilWhenNotApplicable(attempted: String, resolved: String) throws {
