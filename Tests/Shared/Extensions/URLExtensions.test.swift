@@ -150,4 +150,47 @@ struct URLExtensionsTests {
         #expect(url.isLocal == true, "Private IP \(urlString) should be local")
         #expect(url.isRemote == false, "Private IP \(urlString) should not be remote")
     }
+
+    @Test(
+        "Given a same-host redirect that changed port or scheme then adopts the resolved server base URL",
+        arguments: [
+            // attempted, resolved (with path/query/fragment), expected adopted base
+            (
+                "https://homeassistant.local:8123",
+                "https://homeassistant.local:8124/auth/authorize?response_type=code#x",
+                "https://homeassistant.local:8124"
+            ),
+            (
+                "http://homeassistant.local:8123",
+                "https://homeassistant.local:8123/auth/authorize",
+                "https://homeassistant.local:8123"
+            ),
+            ("https://ha.example.com:443", "https://ha.example.com:8443", "https://ha.example.com:8443"),
+        ]
+    )
+    func sameHostRedirectAdoptsPortOrScheme(attempted: String, resolved: String, expected: String) throws {
+        let attemptedURL = try #require(URL(string: attempted))
+        let resolvedURL = try #require(URL(string: resolved))
+        let expectedURL = try #require(URL(string: expected))
+
+        #expect(resolvedURL.sameHostRedirectBaseURL(from: attemptedURL) == expectedURL)
+    }
+
+    @Test(
+        "Given no relevant change, a different host, or an https->http downgrade then no redirect URL is adopted",
+        arguments: [
+            ("https://homeassistant.local:8123", "https://homeassistant.local:8123"), // identical
+            ("https://homeassistant.local:8123", "https://homeassistant.local:8123/auth/authorize?x=1"), // path only
+            ("https://homeassistant.local:8123", "https://other.local:8124"), // different host (never followed)
+            ("https://example.com", "https://example.com:443"), // explicit default port == implicit
+            ("https://homeassistant.local:8123", "http://homeassistant.local:8124"), // downgrade + port change
+            ("https://homeassistant.local:8123", "http://homeassistant.local:8123"), // pure https->http downgrade
+        ]
+    )
+    func sameHostRedirectReturnsNilWhenNotApplicable(attempted: String, resolved: String) throws {
+        let attemptedURL = try #require(URL(string: attempted))
+        let resolvedURL = try #require(URL(string: resolved))
+
+        #expect(resolvedURL.sameHostRedirectBaseURL(from: attemptedURL) == nil)
+    }
 }
