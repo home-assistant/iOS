@@ -49,10 +49,12 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private actor TaskCoordinator {
         private var currentUpdateTasks: [String: Task<Void, Never>] = [:]
         private var updateQueue: [(serverId: String, task: () async -> Void)] = []
-        // Servers that currently have work queued or running, used to dedupe redundant updates.
+        // Servers that currently have work queued or running, mapped to the strongest pending force
+        // level. Presence dedupes redundant updates; the value lets a forced request upgrade a queued
+        // non-forced one so a user-triggered refresh isn't dropped (and later throttled into a no-op).
         // Mutated only within the actor, so membership always reflects the true queued-or-running set
         // (no gap between dequeue and start that a duplicate could slip through).
-        private var queuedOrRunningServers: Set<String> = []
+        private var pendingForceByServer: [String: Bool] = [:]
         private var isProcessingQueue = false
 
         func setTask(_ task: Task<Void, Never>, for serverId: String) {
@@ -63,24 +65,35 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             currentUpdateTasks.removeValue(forKey: serverId)
         }
 
+        /// The force level the server's queued/running work should run with (default non-forced).
+        func effectiveForce(for serverId: String) -> Bool {
+            pendingForceByServer[serverId] ?? false
+        }
+
         func cancelAllTasks() {
             for (_, task) in currentUpdateTasks {
                 task.cancel()
             }
             currentUpdateTasks.removeAll()
             updateQueue.removeAll()
-            queuedOrRunningServers.removeAll()
+            pendingForceByServer.removeAll()
             isProcessingQueue = false
         }
 
         /// Enqueues a server update task to be processed sequentially.
-        /// Skips servers that already have work queued or in progress.
-        func enqueueUpdate(serverId: String, task: @escaping () async -> Void) {
-            guard !queuedOrRunningServers.contains(serverId) else {
-                Current.Log.verbose("Update for server \(serverId) already queued or running, skipping duplicate")
+        /// Skips servers that already have work queued or in progress, but a forced request upgrades
+        /// an existing non-forced one so the eventual run isn't throttled away.
+        func enqueueUpdate(serverId: String, forceUpdate: Bool, task: @escaping () async -> Void) {
+            if let existingForce = pendingForceByServer[serverId] {
+                if forceUpdate, !existingForce {
+                    pendingForceByServer[serverId] = true
+                    Current.Log.verbose("Upgrading queued update for server \(serverId) to forced")
+                } else {
+                    Current.Log.verbose("Update for server \(serverId) already queued or running, skipping duplicate")
+                }
                 return
             }
-            queuedOrRunningServers.insert(serverId)
+            pendingForceByServer[serverId] = forceUpdate
             updateQueue.append((serverId: serverId, task: task))
 
             // Start processing if not already running
@@ -100,7 +113,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 let queuedUpdate = updateQueue.removeFirst()
                 Current.Log.verbose("Processing queued update for server: \(queuedUpdate.serverId)")
                 await queuedUpdate.task()
-                queuedOrRunningServers.remove(queuedUpdate.serverId)
+                pendingForceByServer.removeValue(forKey: queuedUpdate.serverId)
             }
 
             isProcessingQueue = false
@@ -112,8 +125,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     // Simple adaptive throttling/backoff
     // - Tracks consecutive failures per server to increase delay between attempts.
     // - Tracks per-server last successful (or attempted) update times to avoid over-fetching.
-    // These are read/written from detached update tasks and cleared from `stop()` on the main thread,
-    // so all access is serialized through `throttleLock`.
+    // These are read/written from detached update tasks; `stop()` resets only
+    // `consecutiveFailuresByServer` from the main thread (last-update times are intentionally kept so
+    // throttling survives background/foreground transitions). All access is serialized through `throttleLock`.
     private let throttleLock = NSLock()
     private var consecutiveFailuresByServer: [String: Int] = [:]
     private var perServerLastUpdate: [String: Date] = [:]
@@ -191,10 +205,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             let serverId = server.identifier.rawValue
 
             // Enqueue the update to be processed sequentially
-            await taskCoordinator.enqueueUpdate(serverId: serverId) { [weak self] in
+            await taskCoordinator.enqueueUpdate(serverId: serverId, forceUpdate: forceUpdate) { [weak self] in
                 guard let self else { return }
 
-                Current.Log.verbose("Updating database for server \(server.info.name)\(forceUpdate ? " (forced)" : "")")
+                // Read the effective force at run time so a forced request that arrived while this was
+                // queued (and upgraded the entry) isn't throttled away.
+                let effectiveForce = await taskCoordinator.effectiveForce(for: serverId)
+                Current.Log
+                    .verbose("Updating database for server \(server.info.name)\(effectiveForce ? " (forced)" : "")")
 
                 // Launch the server-specific update task
                 let updateTask = Task { [weak self] in
@@ -206,7 +224,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                         }
                     }
 
-                    await performSingleServerUpdate(server: server, forceUpdate: forceUpdate)
+                    await performSingleServerUpdate(server: server, forceUpdate: effectiveForce)
                 }
 
                 // Store the task for this server
@@ -248,7 +266,10 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             return
         }
 
-        let success = await safeUpdateServer(server: server)
+        // `nil` means the update was cancelled (e.g. app backgrounded); skip tracking entirely so
+        // cancellation isn't recorded as a failure (which would add a spurious backoff penalty, and
+        // could re-add a failure count that `stop()` just cleared).
+        guard let success = await safeUpdateServer(server: server) else { return }
         updateServerTracking(serverId: server.identifier.rawValue, success: success)
     }
 
@@ -264,12 +285,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    /// Wraps a per-server update with cancellation checks and returns whether it succeeded.
-    /// This allows the scheduler to apply backoff on failures and update last-run times on success.
-    private func safeUpdateServer(server: Server) async -> Bool {
-        if isUpdateCancelled() { return false }
+    /// Wraps a per-server update with cancellation checks.
+    /// Returns `nil` if the update was cancelled, otherwise whether it succeeded — letting the
+    /// scheduler apply backoff on failures and update last-run times on success without treating
+    /// cancellation as either.
+    private func safeUpdateServer(server: Server) async -> Bool? {
+        if isUpdateCancelled() { return nil }
         await updateServer(server: server)
-        if isUpdateCancelled() { return false }
+        if isUpdateCancelled() { return nil }
         return true
     }
 

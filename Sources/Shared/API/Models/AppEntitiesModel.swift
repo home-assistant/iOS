@@ -1,7 +1,6 @@
 import Foundation
 import GRDB
 import HAKit
-import PromiseKit
 
 public protocol AppEntitiesModelProtocol {
     func updateModel(_ entities: Set<HAEntity>, server: Server) async
