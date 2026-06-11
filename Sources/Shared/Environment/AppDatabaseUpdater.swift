@@ -573,8 +573,13 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
-        if let stored = try? AppEntityRegistryListForDisplay.config(serverId: serverId),
-           recordsEqual(entitiesListForDisplay, stored, keyedBy: \.id) {
+        // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.
+        let storedListForDisplay = try? await Current.database().read { db in
+            try AppEntityRegistryListForDisplay
+                .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        if let storedListForDisplay, recordsEqual(entitiesListForDisplay, storedListForDisplay, keyedBy: \.id) {
             Current.Log
                 .verbose("EntityRegistryListForDisplay unchanged for server \(serverId), skipping database write")
             return
@@ -640,8 +645,13 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
         // This is the largest registry, so avoiding a no-op rewrite saves the most DB writer time.
-        if let stored = try? AppEntityRegistry.config(serverId: serverId),
-           recordsEqual(appEntityRegistries, stored, keyedBy: \.uniqueId) {
+        // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.
+        let storedEntityRegistry = try? await Current.database().read { db in
+            try AppEntityRegistry
+                .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        if let storedEntityRegistry, recordsEqual(appEntityRegistries, storedEntityRegistry, keyedBy: \.uniqueId) {
             Current.Log.verbose("Entity registry unchanged for server \(serverId), skipping database write")
             return
         }
@@ -708,8 +718,13 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
-        if let stored = try? AppDeviceRegistry.config(serverId: serverId),
-           recordsEqual(appDeviceRegistries, stored, keyedBy: \.deviceId) {
+        // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.
+        let storedDeviceRegistry = try? await Current.database().read { db in
+            try AppDeviceRegistry
+                .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        if let storedDeviceRegistry, recordsEqual(appDeviceRegistries, storedDeviceRegistry, keyedBy: \.deviceId) {
             Current.Log.verbose("Device registry unchanged for server \(serverId), skipping database write")
             return
         }
