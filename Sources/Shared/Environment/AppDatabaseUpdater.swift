@@ -208,13 +208,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             await taskCoordinator.enqueueUpdate(serverId: serverId, forceUpdate: forceUpdate) { [weak self] in
                 guard let self else { return }
 
-                // Read the effective force at run time so a forced request that arrived while this was
-                // queued (and upgraded the entry) isn't throttled away.
-                let effectiveForce = await taskCoordinator.effectiveForce(for: serverId)
-                Current.Log
-                    .verbose("Updating database for server \(server.info.name)\(effectiveForce ? " (forced)" : "")")
+                Current.Log.verbose("Updating database for server \(server.info.name)")
 
-                // Launch the server-specific update task
+                // Launch the server-specific update task. The effective force level is read inside
+                // `performSingleServerUpdate`, immediately before the throttle check, so a forced
+                // request that upgraded this entry is honored even if it arrives after dequeue.
                 let updateTask = Task { [weak self] in
                     guard let self else { return }
                     defer {
@@ -224,7 +222,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                         }
                     }
 
-                    await performSingleServerUpdate(server: server, forceUpdate: effectiveForce)
+                    await performSingleServerUpdate(server: server)
                 }
 
                 // Store the task for this server
@@ -259,8 +257,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     /// Performs an update for a single specific server.
-    private func performSingleServerUpdate(server: Server, forceUpdate: Bool) async {
+    private func performSingleServerUpdate(server: Server) async {
         guard !isUpdateCancelled() else { return }
+        // Read the effective force as late as possible — immediately before the throttle decision —
+        // so a forced request that upgraded this server's queued entry isn't throttled into a no-op.
+        let forceUpdate = await taskCoordinator.effectiveForce(for: server.identifier.rawValue)
         guard shouldUpdateServer(server, forceUpdate: forceUpdate) else {
             Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
             return
@@ -466,6 +467,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         guard lhs.count == rhs.count else { return false }
         let lhsByKey = Dictionary(lhs.map { (key($0), $0) }, uniquingKeysWith: { first, _ in first })
         let rhsByKey = Dictionary(rhs.map { (key($0), $0) }, uniquingKeysWith: { first, _ in first })
+        // If either side had duplicate keys, building the dictionary collapsed entries and the
+        // comparison would be ambiguous. Treat that as "changed" so we never skip a write on bad data.
+        guard lhsByKey.count == lhs.count, rhsByKey.count == rhs.count else { return false }
         return lhsByKey == rhsByKey
     }
 
