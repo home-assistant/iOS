@@ -131,7 +131,7 @@ public struct EntityRegistryEntry: Codable, HADataDecodable {
 
 // MARK: - Database Model
 
-public struct AppEntityRegistry: Codable, FetchableRecord, PersistableRecord {
+public struct AppEntityRegistry: Codable, FetchableRecord, PersistableRecord, Equatable {
     public static var databaseTableName: String = GRDBDatabaseTable.entityRegistry.rawValue
 
     public let serverId: String

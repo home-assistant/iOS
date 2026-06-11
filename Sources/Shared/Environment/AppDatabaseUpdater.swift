@@ -20,21 +20,42 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     // MARK: - Cancellation Helper
 
+    // Cached foreground state. `UIApplication.applicationState` is a main-thread-only API, but
+    // `isUpdateCancelled()` runs on background tasks and is called at every step/continuation.
+    // We mirror the foreground state here via lifecycle notifications (delivered on the main thread)
+    // and read it through a lock, so the hot cancellation path never touches UIKit off the main thread.
+    private let foregroundLock = NSLock()
+    private var _isForeground = true
+
+    private var isForeground: Bool {
+        foregroundLock.lock()
+        defer { foregroundLock.unlock() }
+        return _isForeground
+    }
+
+    private func setForeground(_ value: Bool) {
+        foregroundLock.lock()
+        defer { foregroundLock.unlock() }
+        _isForeground = value
+    }
+
     /// Centralized cancellation check that can be customized in the future.
     /// Returns `true` if the current task has been cancelled or the app is no longer in the foreground.
     private func isUpdateCancelled() -> Bool {
-        Task.isCancelled || !Current.isForegroundApp()
+        Task.isCancelled || !isForeground
     }
 
     // Actor for thread-safe task management and queuing
     private actor TaskCoordinator {
         private var currentUpdateTasks: [String: Task<Void, Never>] = [:]
         private var updateQueue: [(serverId: String, task: () async -> Void)] = []
+        // Servers that currently have work queued or running, mapped to the strongest pending force
+        // level. Presence dedupes redundant updates; the value lets a forced request upgrade a queued
+        // non-forced one so a user-triggered refresh isn't dropped (and later throttled into a no-op).
+        // Mutated only within the actor, so membership always reflects the true queued-or-running set
+        // (no gap between dequeue and start that a duplicate could slip through).
+        private var pendingForceByServer: [String: Bool] = [:]
         private var isProcessingQueue = false
-
-        func getTask(for serverId: String) -> Task<Void, Never>? {
-            currentUpdateTasks[serverId]
-        }
 
         func setTask(_ task: Task<Void, Never>, for serverId: String) {
             currentUpdateTasks[serverId] = task
@@ -44,23 +65,35 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             currentUpdateTasks.removeValue(forKey: serverId)
         }
 
+        /// The force level the server's queued/running work should run with (default non-forced).
+        func effectiveForce(for serverId: String) -> Bool {
+            pendingForceByServer[serverId] ?? false
+        }
+
         func cancelAllTasks() {
             for (_, task) in currentUpdateTasks {
                 task.cancel()
             }
             currentUpdateTasks.removeAll()
             updateQueue.removeAll()
+            pendingForceByServer.removeAll()
             isProcessingQueue = false
         }
 
-        /// Enqueues a server update task to be processed sequentially
-        func enqueueUpdate(serverId: String, task: @escaping () async -> Void) {
-            // Check if this server is already in the queue
-            if updateQueue.contains(where: { $0.serverId == serverId }) {
-                Current.Log.verbose("Update for server \(serverId) already queued, skipping duplicate")
+        /// Enqueues a server update task to be processed sequentially.
+        /// Skips servers that already have work queued or in progress, but a forced request upgrades
+        /// an existing non-forced one so the eventual run isn't throttled away.
+        func enqueueUpdate(serverId: String, forceUpdate: Bool, task: @escaping () async -> Void) {
+            if let existingForce = pendingForceByServer[serverId] {
+                if forceUpdate, !existingForce {
+                    pendingForceByServer[serverId] = true
+                    Current.Log.verbose("Upgrading queued update for server \(serverId) to forced")
+                } else {
+                    Current.Log.verbose("Update for server \(serverId) already queued or running, skipping duplicate")
+                }
                 return
             }
-
+            pendingForceByServer[serverId] = forceUpdate
             updateQueue.append((serverId: serverId, task: task))
 
             // Start processing if not already running
@@ -80,6 +113,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 let queuedUpdate = updateQueue.removeFirst()
                 Current.Log.verbose("Processing queued update for server: \(queuedUpdate.serverId)")
                 await queuedUpdate.task()
+                pendingForceByServer.removeValue(forKey: queuedUpdate.serverId)
             }
 
             isProcessingQueue = false
@@ -91,6 +125,10 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     // Simple adaptive throttling/backoff
     // - Tracks consecutive failures per server to increase delay between attempts.
     // - Tracks per-server last successful (or attempted) update times to avoid over-fetching.
+    // These are read/written from detached update tasks; `stop()` resets only
+    // `consecutiveFailuresByServer` from the main thread (last-update times are intentionally kept so
+    // throttling survives background/foreground transitions). All access is serialized through `throttleLock`.
+    private let throttleLock = NSLock()
     private var consecutiveFailuresByServer: [String: Int] = [:]
     private var perServerLastUpdate: [String: Date] = [:]
     // Base throttle applied to all servers; backoff is added on top of this.
@@ -99,16 +137,44 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     static var shared = AppDatabaseUpdater()
 
     init() {
-        NotificationCenter.default.addObserver(
+        let center = NotificationCenter.default
+        center.addObserver(
             self,
             selector: #selector(enterBackground),
             name: UIApplication.didEnterBackgroundNotification,
             object: nil
         )
+        center.addObserver(
+            self,
+            selector: #selector(didBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+        center.addObserver(
+            self,
+            selector: #selector(willResignActive),
+            name: UIApplication.willResignActiveNotification,
+            object: nil
+        )
+
+        // Seed the cached foreground state on the main thread. `didBecomeActiveNotification`
+        // won't re-fire if the app is already active when the observer is registered.
+        DispatchQueue.main.async { [weak self] in
+            self?.setForeground(Current.isForegroundApp())
+        }
     }
 
     @objc private func enterBackground() {
+        setForeground(false)
         stop()
+    }
+
+    @objc private func didBecomeActive() {
+        setForeground(true)
+    }
+
+    @objc private func willResignActive() {
+        setForeground(false)
     }
 
     /// Cancels any in-flight work and clears transient state.
@@ -119,7 +185,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         // Reset backoff tracking to free memory and avoid stale penalties
+        throttleLock.lock()
         consecutiveFailuresByServer.removeAll()
+        throttleLock.unlock()
     }
 
     /// Starts an update for a specific server in the background.
@@ -137,12 +205,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             let serverId = server.identifier.rawValue
 
             // Enqueue the update to be processed sequentially
-            await taskCoordinator.enqueueUpdate(serverId: serverId) { [weak self] in
+            await taskCoordinator.enqueueUpdate(serverId: serverId, forceUpdate: forceUpdate) { [weak self] in
                 guard let self else { return }
 
-                Current.Log.verbose("Updating database for server \(server.info.name)\(forceUpdate ? " (forced)" : "")")
+                Current.Log.verbose("Updating database for server \(server.info.name)")
 
-                // Launch the server-specific update task
+                // Launch the server-specific update task. The effective force level is read inside
+                // `performSingleServerUpdate`, immediately before the throttle check, so a forced
+                // request that upgraded this entry is honored even if it arrives after dequeue.
                 let updateTask = Task { [weak self] in
                     guard let self else { return }
                     defer {
@@ -152,7 +222,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                         }
                     }
 
-                    await performSingleServerUpdate(server: server, forceUpdate: forceUpdate)
+                    await performSingleServerUpdate(server: server)
                 }
 
                 // Store the task for this server
@@ -174,8 +244,11 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         // Per-server throttle with exponential backoff
-        if let last = perServerLastUpdate[server.identifier.rawValue] {
-            let failures = consecutiveFailuresByServer[server.identifier.rawValue] ?? 0
+        throttleLock.lock()
+        defer { throttleLock.unlock() }
+        let serverId = server.identifier.rawValue
+        if let last = perServerLastUpdate[serverId] {
+            let failures = consecutiveFailuresByServer[serverId] ?? 0
             let backoff = min(pow(2.0, Double(failures)) * 10.0, 300.0) // 10s, 20s, 40s... up to 5m
             let threshold = -(baseThrottleSeconds + backoff)
             return last.timeIntervalSinceNow <= threshold
@@ -184,19 +257,27 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     /// Performs an update for a single specific server.
-    private func performSingleServerUpdate(server: Server, forceUpdate: Bool) async {
+    private func performSingleServerUpdate(server: Server) async {
         guard !isUpdateCancelled() else { return }
+        // Read the effective force as late as possible — immediately before the throttle decision —
+        // so a forced request that upgraded this server's queued entry isn't throttled into a no-op.
+        let forceUpdate = await taskCoordinator.effectiveForce(for: server.identifier.rawValue)
         guard shouldUpdateServer(server, forceUpdate: forceUpdate) else {
             Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
             return
         }
 
-        let success = await safeUpdateServer(server: server)
+        // `nil` means the update was cancelled (e.g. app backgrounded); skip tracking entirely so
+        // cancellation isn't recorded as a failure (which would add a spurious backoff penalty, and
+        // could re-add a failure count that `stop()` just cleared).
+        guard let success = await safeUpdateServer(server: server) else { return }
         updateServerTracking(serverId: server.identifier.rawValue, success: success)
     }
 
     /// Updates per-server tracking after an update attempt completes.
     private func updateServerTracking(serverId: String, success: Bool) {
+        throttleLock.lock()
+        defer { throttleLock.unlock() }
         if success {
             perServerLastUpdate[serverId] = Date()
             consecutiveFailuresByServer[serverId] = 0
@@ -205,17 +286,26 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    /// Wraps a per-server update with cancellation checks and returns whether it succeeded.
-    /// This allows the scheduler to apply backoff on failures and update last-run times on success.
-    private func safeUpdateServer(server: Server) async -> Bool {
-        if isUpdateCancelled() { return false }
+    /// Wraps a per-server update with cancellation checks.
+    /// Returns `nil` if the update was cancelled, otherwise whether it succeeded — letting the
+    /// scheduler apply backoff on failures and update last-run times on success without treating
+    /// cancellation as either.
+    private func safeUpdateServer(server: Server) async -> Bool? {
+        if isUpdateCancelled() { return nil }
         await updateServer(server: server)
-        if isUpdateCancelled() { return false }
+        if isUpdateCancelled() { return nil }
         return true
     }
 
     /// Runs the full update pipeline for a single server in sequence.
     /// Each phase checks for cancellation to bail out quickly when needed.
+    ///
+    /// NOTE: These fetches are deliberately sequential. The registry fetches (steps 2–5) are
+    /// Home Assistant WebSocket requests, and the protocol requires each message `id` on a
+    /// connection to be strictly increasing in transmission order. HAKit assigns ids and enqueues
+    /// the socket write per-request, so issuing these from concurrent tasks lets frames transmit
+    /// out of id order and the server rejects them with `id_reuse`
+    /// ("Identifier values have to increase."). Keep them sequential.
     private func updateServer(server: Server) async {
         guard !isUpdateCancelled() else { return }
 
@@ -266,168 +356,87 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         Current.Log.info("✅ [Profiling] Full update for server \(server.info.name) completed")
     }
 
-    /// Fetches entities' states from the API and forwards results to persistence.
-    /// Early-exits on cancellation and resumes continuations to avoid leaks.
-    private func updateEntitiesDatabase(server: Server) async {
-        guard !isUpdateCancelled() else { return }
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+    /// Sends a typed request for `server` and returns the decoded payload, or `nil` on cancellation,
+    /// missing API, or failure. Logs and records a client event on failure. Centralizes the
+    /// continuation/error boilerplate shared by every fetch step below.
+    private func fetch<T>(
+        _ request: HATypedRequest<T>,
+        server: Server,
+        failureText: String
+    ) async -> T? {
+        guard !isUpdateCancelled() else { return nil }
+        return await withCheckedContinuation { (continuation: CheckedContinuation<T?, Never>) in
             guard let api = Current.api(for: server) else {
                 Current.Log.error("No API available for server \(server.info.name)")
-                continuation.resume()
+                continuation.resume(returning: nil)
                 return
             }
             // If cancelled after acquiring API, resume the continuation to avoid hanging.
             if self.isUpdateCancelled() {
-                continuation.resume()
+                continuation.resume(returning: nil)
                 return
             }
-            api.connection.send(HATypedRequest<[HAEntity]>.fetchStates()) { result in
+            api.connection.send(request) { result in
                 switch result {
-                case let .success(entities):
-                    Current.appEntitiesModel().updateModel(Set(entities), server: server)
+                case let .success(value):
+                    continuation.resume(returning: value)
                 case let .failure(error):
-                    Current.Log.error("Failed to fetch states: \(error)")
+                    Current.Log.error("\(failureText): \(error)")
                     Current.clientEventStore.addEvent(.init(
-                        text: "Failed to fetch states on server \(server.info.name)",
+                        text: "\(failureText) on server \(server.info.name)",
                         type: .networkRequest,
                         payload: [
                             "error": error.localizedDescription,
                         ]
                     ))
+                    continuation.resume(returning: nil)
                 }
-                continuation.resume()
             }
         }
+    }
+
+    /// Fetches entities' states from the API and forwards results to persistence.
+    private func updateEntitiesDatabase(server: Server) async {
+        // HAKit completions fire on the main queue, so resume with the raw entities and do the
+        // (potentially heavy) Set construction and database work afterwards — off the main thread —
+        // via the awaited `updateModel` below.
+        guard let entities = await fetch(
+            HATypedRequest<[HAEntity]>.fetchStates(),
+            server: server,
+            failureText: "Failed to fetch states"
+        ) else { return }
+        guard !isUpdateCancelled() else { return }
+        await Current.appEntitiesModel().updateModel(Set(entities), server: server)
     }
 
     /// Fetches entity registry from the API and forwards results to persistence.
-    /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesRegistry(server: Server) async {
-        guard !isUpdateCancelled() else { return }
-        let registryEntries: [EntityRegistryEntry]? =
-            await withCheckedContinuation { (continuation: CheckedContinuation<
-                [EntityRegistryEntry]?,
-                Never
-            >) in
-                guard let api = Current.api(for: server) else {
-                    Current.Log.error("No API available for server \(server.info.name)")
-                    continuation.resume(returning: nil)
-                    return
-                }
-                // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if self.isUpdateCancelled() {
-                    continuation.resume(returning: nil)
-                    return
-                }
-                api.connection.send(.configEntityRegistryList()) { result in
-                    switch result {
-                    case let .success(entries):
-                        Current.Log.verbose("Successfully fetched entity registry for server \(server.info.name)")
-                        continuation.resume(returning: entries)
-                    case let .failure(error):
-                        Current.Log.error("Failed to fetch entity registry: \(error)")
-                        Current.clientEventStore.addEvent(.init(
-                            text: "Failed to fetch entity registry on server \(server.info.name)",
-                            type: .networkRequest,
-                            payload: [
-                                "error": error.localizedDescription,
-                            ]
-                        ))
-                        continuation.resume(returning: nil)
-                    }
-                }
-            }
-
-        if let registryEntries {
-            await saveEntityRegistry(registryEntries, serverId: server.identifier.rawValue)
-        }
+        guard let registryEntries = await fetch(
+            HATypedRequest<[EntityRegistryEntry]>.configEntityRegistryList(),
+            server: server,
+            failureText: "Failed to fetch entity registry"
+        ) else { return }
+        await saveEntityRegistry(registryEntries, serverId: server.identifier.rawValue)
     }
 
     /// Fetches device registry from the API and forwards results to persistence.
-    /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateDevicesRegistry(server: Server) async {
-        guard !isUpdateCancelled() else { return }
-        let registryEntries: [DeviceRegistryEntry]? =
-            await withCheckedContinuation { (continuation: CheckedContinuation<
-                [DeviceRegistryEntry]?,
-                Never
-            >) in
-                guard let api = Current.api(for: server) else {
-                    Current.Log.error("No API available for server \(server.info.name)")
-                    continuation.resume(returning: nil)
-                    return
-                }
-                // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if self.isUpdateCancelled() {
-                    continuation.resume(returning: nil)
-                    return
-                }
-                api.connection.send(.configDeviceRegistryList()) { result in
-                    switch result {
-                    case let .success(entries):
-                        Current.Log.verbose("Successfully fetched device registry for server \(server.info.name)")
-                        continuation.resume(returning: entries)
-                    case let .failure(error):
-                        Current.Log.error("Failed to fetch device registry: \(error)")
-                        Current.clientEventStore.addEvent(.init(
-                            text: "Failed to fetch device registry on server \(server.info.name)",
-                            type: .networkRequest,
-                            payload: [
-                                "error": error.localizedDescription,
-                            ]
-                        ))
-                        continuation.resume(returning: nil)
-                    }
-                }
-            }
-
-        if let registryEntries {
-            await saveDeviceRegistry(registryEntries, serverId: server.identifier.rawValue)
-        }
+        guard let registryEntries = await fetch(
+            HATypedRequest<[DeviceRegistryEntry]>.configDeviceRegistryList(),
+            server: server,
+            failureText: "Failed to fetch device registry"
+        ) else { return }
+        await saveDeviceRegistry(registryEntries, serverId: server.identifier.rawValue)
     }
 
     /// Fetches entity registry list-for-display from the API and forwards results to persistence.
-    /// Early-exits on cancellation and resumes continuations to avoid leaks.
     private func updateEntitiesRegistryListForDisplay(server: Server) async {
-        guard !isUpdateCancelled() else { return }
-        let response: EntityRegistryListForDisplay? =
-            await withCheckedContinuation { (continuation: CheckedContinuation<
-                EntityRegistryListForDisplay?,
-                Never
-            >) in
-                guard let api = Current.api(for: server) else {
-                    Current.Log.error("No API available for server \(server.info.name)")
-                    continuation.resume(returning: nil)
-                    return
-                }
-                // If cancelled after acquiring API, resume the continuation to avoid hanging.
-                if self.isUpdateCancelled() {
-                    continuation.resume(returning: nil)
-                    return
-                }
-                api.connection.send(
-                    HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay()
-                ) { result in
-                    switch result {
-                    case let .success(response):
-                        continuation.resume(returning: response)
-                    case let .failure(error):
-                        Current.Log.error("Failed to fetch EntityRegistryListForDisplay: \(error)")
-                        Current.clientEventStore.addEvent(.init(
-                            text: "Failed to fetch EntityRegistryListForDisplay on server \(server.info.name)",
-                            type: .networkRequest,
-                            payload: [
-                                "error": error.localizedDescription,
-                            ]
-                        ))
-                        continuation.resume(returning: nil)
-                    }
-                }
-            }
-
-        if let response {
-            await saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
-        }
+        guard let response = await fetch(
+            HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay(),
+            server: server,
+            failureText: "Failed to fetch EntityRegistryListForDisplay"
+        ) else { return }
+        await saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
     }
 
     private func updateAreasDatabase(server: Server) async {
@@ -450,6 +459,18 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             )
             saveTimer.end()
         }.value
+    }
+
+    /// Order-independent equality of two record arrays, keyed by a unique identifier.
+    /// Used to skip a no-op delete+reinsert when the freshly fetched data matches what's stored.
+    private func recordsEqual<T: Equatable>(_ lhs: [T], _ rhs: [T], keyedBy key: (T) -> String) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+        let lhsByKey = Dictionary(lhs.map { (key($0), $0) }, uniquingKeysWith: { first, _ in first })
+        let rhsByKey = Dictionary(rhs.map { (key($0), $0) }, uniquingKeysWith: { first, _ in first })
+        // If either side had duplicate keys, building the dictionary collapsed entries and the
+        // comparison would be ambiguous. Treat that as "changed" so we never skip a write on bad data.
+        guard lhsByKey.count == lhs.count, rhsByKey.count == rhs.count else { return false }
+        return lhsByKey == rhsByKey
     }
 
     /// Persists areas and their entity relationships for a server.
@@ -479,6 +500,14 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             modelTimer.end()
             return result
         }.value
+
+        // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
+        if let storedAreas = try? await Current.database().read({ db in
+            try AppArea.filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId).fetchAll(db)
+        }), recordsEqual(appAreas, storedAreas, keyedBy: \.id) {
+            Current.Log.verbose("Areas unchanged for server \(serverId), skipping database write")
+            return
+        }
 
         do {
             let dbTimer = ProfilingTimer("Step 5.2.2: Database write transaction")
@@ -542,6 +571,20 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 )
             }
         }
+
+        // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
+        // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.
+        let storedListForDisplay = try? await Current.database().read { db in
+            try AppEntityRegistryListForDisplay
+                .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        if let storedListForDisplay, recordsEqual(entitiesListForDisplay, storedListForDisplay, keyedBy: \.id) {
+            Current.Log
+                .verbose("EntityRegistryListForDisplay unchanged for server \(serverId), skipping database write")
+            return
+        }
+
         do {
             try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
                 guard let self else {
@@ -598,6 +641,19 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         let appEntityRegistries = registryEntries.map { entry in
             AppEntityRegistry(serverId: serverId, registry: entry)
+        }
+
+        // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
+        // This is the largest registry, so avoiding a no-op rewrite saves the most DB writer time.
+        // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.
+        let storedEntityRegistry = try? await Current.database().read { db in
+            try AppEntityRegistry
+                .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        if let storedEntityRegistry, recordsEqual(appEntityRegistries, storedEntityRegistry, keyedBy: \.uniqueId) {
+            Current.Log.verbose("Entity registry unchanged for server \(serverId), skipping database write")
+            return
         }
 
         do {
@@ -659,6 +715,18 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         let appDeviceRegistries = registryEntries.map { entry in
             AppDeviceRegistry(serverId: serverId, registry: entry)
+        }
+
+        // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
+        // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.
+        let storedDeviceRegistry = try? await Current.database().read { db in
+            try AppDeviceRegistry
+                .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        if let storedDeviceRegistry, recordsEqual(appDeviceRegistries, storedDeviceRegistry, keyedBy: \.deviceId) {
+            Current.Log.verbose("Device registry unchanged for server \(serverId), skipping database write")
+            return
         }
 
         do {

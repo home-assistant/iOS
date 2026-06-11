@@ -11,7 +11,7 @@ public struct EntityRegistryListForDisplay: HADataDecodable {
         self.entities = try data.decode("entities")
     }
 
-    public struct Entity: HADataDecodable, Codable, FetchableRecord, PersistableRecord {
+    public struct Entity: HADataDecodable, Codable, FetchableRecord, PersistableRecord, Equatable {
         public let entityId: String
         public let entityCategory: Int?
         public let decimalPlaces: Int?
@@ -24,7 +24,7 @@ public struct EntityRegistryListForDisplay: HADataDecodable {
     }
 }
 
-public struct AppEntityRegistryListForDisplay: Codable, FetchableRecord, PersistableRecord {
+public struct AppEntityRegistryListForDisplay: Codable, FetchableRecord, PersistableRecord, Equatable {
     /// serverId-entityId
     public let id: String
     public let serverId: String
