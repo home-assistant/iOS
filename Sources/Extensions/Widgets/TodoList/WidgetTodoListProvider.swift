@@ -47,7 +47,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
                     return SelectedList(
                         serverId: entity.serverId,
                         entityId: entity.entityId,
-                        displayString: entity.displayRegistryName
+                        displayString: entity.name
                     )
                 }
             }
@@ -58,7 +58,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
                 return SelectedList(
                     serverId: entity.serverId,
                     entityId: entity.entityId,
-                    displayString: entity.displayRegistryName
+                    displayString: entity.name
                 )
             }
         }

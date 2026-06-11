@@ -300,21 +300,28 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Runs the full update pipeline for a single server in sequence.
     /// Each phase checks for cancellation to bail out quickly when needed.
     ///
-    /// NOTE: These fetches are deliberately sequential. The registry fetches (steps 2–5) are
-    /// Home Assistant WebSocket requests, and the protocol requires each message `id` on a
-    /// connection to be strictly increasing in transmission order. HAKit assigns ids and enqueues
-    /// the socket write per-request, so issuing these from concurrent tasks lets frames transmit
-    /// out of id order and the server rejects them with `id_reuse`
-    /// ("Identifier values have to increase."). Keep them sequential.
+    /// NOTE: These fetches are deliberately sequential. The registry fetches are Home Assistant
+    /// WebSocket requests, and the protocol requires each message `id` on a connection to be strictly
+    /// increasing in transmission order. HAKit assigns ids and enqueues the socket write per-request,
+    /// so issuing these from concurrent tasks lets frames transmit out of id order and the server
+    /// rejects them with `id_reuse` ("Identifier values have to increase."). Keep them sequential.
+    ///
+    /// NOTE: entity persistence is deliberately deferred until AFTER the entity registry is saved
+    /// (Step 3, not Step 1). `AppEntitiesModel` resolves each entity's display name from the just-saved
+    /// `list_for_display` registry and bakes it into `HAAppEntity.name`, so readers can use `name`
+    /// directly without a per-entity registry lookup. The `/states` fetch itself still happens first
+    /// (Step 1); only the database write is deferred.
     private func updateServer(server: Server) async {
         guard !isUpdateCancelled() else { return }
 
         let totalTimer = ProfilingTimer("Starting full update for server: \(server.info.name)")
 
-        // Step 1: Entities (fetch_states)
+        // Step 1: Fetch entity states (`/states`). Persistence is deferred to Step 3 (after the
+        // registry is saved) so display names can be resolved from `list_for_display`.
+        let fetchedEntities: [HAEntity]?
         do {
-            let timer = ProfilingTimer("Step 1 (Entities)")
-            await updateEntitiesDatabase(server: server)
+            let timer = ProfilingTimer("Step 1 (Entities fetch)")
+            fetchedEntities = await fetchEntities(server: server)
             timer.end()
         }
         if isUpdateCancelled() { return }
@@ -327,19 +334,30 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
         if isUpdateCancelled() { return }
 
-        // Step 3: Devices registry
+        // Step 3: Persist entities. Deferred until here (after Step 2) on purpose so `AppEntitiesModel`
+        // resolves each entity's display name from the just-saved registry and bakes it into
+        // `HAAppEntity.name`. HAKit completions fire on the main queue; the Set construction and DB
+        // work happen here, after the await, off the main thread (see `AppEntitiesModel.handle`).
+        if let fetchedEntities {
+            let timer = ProfilingTimer("Step 3 (Entities persist)")
+            await Current.appEntitiesModel().updateModel(Set(fetchedEntities), server: server)
+            timer.end()
+        }
+        if isUpdateCancelled() { return }
+
+        // Step 4: Devices registry
         do {
-            let timer = ProfilingTimer("Step 3 (Devices Registry)")
+            let timer = ProfilingTimer("Step 4 (Devices Registry)")
             await updateDevicesRegistry(server: server)
             timer.end()
         }
         if isUpdateCancelled() { return }
 
-        // Step 4: Areas with their entities
+        // Step 5: Areas with their entities
         // IMPORTANT: This must be executed after entities and device registry
         // since we rely on that data to map entities to areas
         do {
-            let timer = ProfilingTimer("Step 4 (Areas)")
+            let timer = ProfilingTimer("Step 5 (Areas)")
             await updateAreasDatabase(server: server)
             timer.end()
         }
@@ -387,18 +405,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    /// Fetches entities' states from the API and forwards results to persistence.
-    private func updateEntitiesDatabase(server: Server) async {
-        // HAKit completions fire on the main queue, so resume with the raw entities and do the
-        // (potentially heavy) Set construction and database work afterwards — off the main thread —
-        // via the awaited `updateModel` below.
-        guard let entities = await fetch(
+    /// Fetches entities' states (`/states`) from the API and returns them. Persistence is deliberately
+    /// deferred to a later step (after the entity registry is saved) so `AppEntitiesModel` can resolve
+    /// each entity's display name from `list_for_display` and bake it into `HAAppEntity.name`; see
+    /// `updateServer`.
+    private func fetchEntities(server: Server) async -> [HAEntity]? {
+        await fetch(
             HATypedRequest<[HAEntity]>.fetchStates(),
             server: server,
             failureText: "Failed to fetch states"
-        ) else { return }
-        guard !isUpdateCancelled() else { return }
-        await Current.appEntitiesModel().updateModel(Set(entities), server: server)
+        )
     }
 
     /// Fetches device registry from the API and forwards results to persistence.

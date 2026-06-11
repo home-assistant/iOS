@@ -79,7 +79,7 @@ struct LightEntityOptionsProvider: DynamicOptionsProvider {
                         entityId: entity.entityId,
                         serverId: entity.serverId,
                         serverName: key.info.name,
-                        displayString: entity.displayRegistryName,
+                        displayString: entity.name,
                         iconName: entity.icon ?? SFSymbol.lightbulb.rawValue
                     )
                 }

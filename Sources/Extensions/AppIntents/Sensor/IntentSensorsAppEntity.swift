@@ -63,7 +63,7 @@ struct IntentSensorsAppEntityQuery: EntityQuery {
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
-                    displayString: entity.displayRegistryName,
+                    displayString: entity.name,
                     icon: entity.icon
                 )
             })))

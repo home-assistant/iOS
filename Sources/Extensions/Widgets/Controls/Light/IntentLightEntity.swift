@@ -102,7 +102,7 @@ struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
                     serverId: entity.serverId,
                     areaName: areasMap[entity.entityId]?.name,
                     deviceName: deviceMap[entity.entityId]?.name,
-                    displayString: entity.displayRegistryName,
+                    displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.lightbulbFill.rawValue
                 )
             })))

@@ -71,7 +71,7 @@ struct CameraPlayerView: View {
         }
         .onAppear {
             appEntity = HAAppEntity.entity(id: cameraEntityId, serverId: server.identifier.rawValue)
-            name = appEntity?.displayRegistryName ?? cameraName
+            name = appEntity?.name ?? cameraName
         }
         .statusBarHidden(true)
         .modify { view in

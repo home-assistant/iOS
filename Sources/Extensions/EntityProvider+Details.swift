@@ -45,7 +45,7 @@ public extension HAAppEntity {
         }
         if let deviceName = device?.name,
            !deviceName.isEmpty,
-           deviceName.range(of: displayRegistryName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
+           deviceName.range(of: name, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
             if !subtitle.isEmpty {
                 subtitle += " • "
             }

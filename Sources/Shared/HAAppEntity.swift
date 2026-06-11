@@ -12,17 +12,20 @@ import HAKit
 /// - The registry is config metadata (area, hidden, decimal precision, the user's name) for the
 ///   registered, non-disabled subset, and is only consulted to filter/enrich those entities.
 ///
-/// For a display name, use `displayRegistryName` (registry name, falling back to the state name) —
-/// not the raw `name` (the live `friendly_name`), which is deliberately file-scoped.
+/// `name` holds the **resolved display name**: the registry name (`list_for_display` `en`) when the
+/// entity has a registry row, otherwise the live `friendly_name`, otherwise the `entityId`. It is
+/// resolved once, at write time, by `AppEntitiesModel` (see `handle(appRelatedEntities:server:)`), so
+/// readers can use `name` directly — there is no per-read registry lookup.
 public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRecord, Equatable {
     public let id: String
     public let entityId: String
     public let serverId: String
     public let domain: String
-    /// Live state friendly name (`/states` `friendly_name`). File-scoped on purpose so callers go
-    /// through `displayRegistryName`, which prefers the (more accurate) registry name. The public
-    /// initializer still accepts it, so database decoding and `AppEntitiesModel` construction work.
-    fileprivate let name: String
+    /// The entity's resolved **display name**, persisted in the database. `AppEntitiesModel` populates
+    /// this at write time with the registry name (`list_for_display` `en`) when one exists, falling back
+    /// to the live `friendly_name`, then the `entityId`. Readers should use this directly — it is already
+    /// the name to show, so no per-read registry lookup is needed.
+    public let name: String
     public let icon: String?
     public let rawDeviceClass: String?
 
@@ -46,27 +49,6 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
 
     public var deviceClass: DeviceClass {
         DeviceClass(rawValue: rawDeviceClass ?? "") ?? .unknown
-    }
-
-    public var isHidden: Bool {
-        (
-            try? EntityRegistryListForDisplay.Entity.config(serverId: serverId)
-                .first(where: { $0.entityId == entityId })?.isHidden == true
-        ) ?? false
-    }
-
-    /// The entity's display name: the registry name from `config/entity_registry/list_for_display`
-    /// (`en` — the user's custom name, else the original name) when present, otherwise the live state
-    /// name. Does one DB read per call — for collections use `[HAAppEntity].displayRegistryNames(for:)`
-    /// to resolve names with a single fetch instead of a read per entity.
-    public var displayRegistryName: String {
-        let registryName: String? = (try? Current.database().read { db in
-            try EntityRegistryListForDisplay.Entity
-                .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
-                .filter(Column(DatabaseTables.DisplayEntityRegistry.entityId.rawValue) == entityId)
-                .fetchOne(db)?.name
-        }) ?? nil
-        return registryName ?? name
     }
 
     public enum ConfigInclude {
@@ -132,29 +114,6 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
             Current.Log.error("Error fetching entity \(id) for server \(serverId): \(error)")
         }
         return nil
-    }
-}
-
-public extension [HAAppEntity] {
-    /// Maps each entity id to its display name (registry `en`, falling back to the live state name),
-    /// resolved with a single fetch of the server's registry instead of a read per entity. Use this in
-    /// collection/builder paths (widgets, App Intents, search) instead of per-entity `displayRegistryName`.
-    func displayRegistryNames(for serverId: String) -> [String: String] {
-        let registryByEntityId: [String: String]
-        do {
-            let rows = try EntityRegistryListForDisplay.Entity.config(serverId: serverId)
-            registryByEntityId = Dictionary(
-                rows.compactMap { row in row.name.map { (row.entityId, $0) } },
-                uniquingKeysWith: { first, _ in first }
-            )
-        } catch {
-            registryByEntityId = [:]
-        }
-        var result: [String: String] = [:]
-        for entity in self {
-            result[entity.entityId] = registryByEntityId[entity.entityId] ?? entity.name
-        }
-        return result
     }
 }
 

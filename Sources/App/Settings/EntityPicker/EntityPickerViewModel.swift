@@ -188,10 +188,6 @@ final class EntityPickerViewModel: ObservableObject {
             // Resolve area entity id set if filtering by area
             let areaEntityIds: Set<String>? = areaFilter.flatMap { areaIdToEntityIds[$0] }
 
-            // Resolve display names once (registry name, falling back to the state name) for search.
-            let displayNames = serverScopedEntities
-                .displayRegistryNames(for: serverScopedEntities.first?.serverId ?? "")
-
             // First, filter entities by domain, area, and search
             let filteredEntities = serverScopedEntities.filter { entity in
                 // Filter by domain if set
@@ -200,10 +196,11 @@ final class EntityPickerViewModel: ObservableObject {
                 // Filter by area if set
                 if let areaEntityIds, !areaEntityIds.contains(entity.entityId) { return false }
 
-                // Filter by search term (only when 3+ chars)
+                // Filter by search term (only when 3+ chars). `entity.name` is the resolved display
+                // name (registry name, falling back to the state name), baked in at write time.
                 if searchTerm.count > 2 {
                     let lower = searchTerm.lowercased()
-                    if !(displayNames[entity.entityId] ?? entity.entityId).lowercased().contains(lower),
+                    if !entity.name.lowercased().contains(lower),
                        !entity.entityId.lowercased().contains(lower) {
                         return false
                     }

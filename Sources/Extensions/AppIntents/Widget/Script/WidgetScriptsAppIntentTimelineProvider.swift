@@ -39,7 +39,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                     entityId: script.entityId,
                     serverId: serverCollection.key.identifier.rawValue,
                     serverName: serverCollection.key.info.name,
-                    name: script.displayRegistryName,
+                    name: script.name,
                     icon: script.icon ?? ""
                 )
             }
@@ -84,7 +84,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                             entityId: script.entityId,
                             serverId: server.identifier.rawValue,
                             serverName: server.info.name,
-                            name: script.displayRegistryName,
+                            name: script.name,
                             icon: script.icon ?? ""
                         )
                     }

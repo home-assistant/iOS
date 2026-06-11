@@ -143,7 +143,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     serverName: server.info.name,
-                    displayString: entity.displayRegistryName,
+                    displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue
                 )
             })))
