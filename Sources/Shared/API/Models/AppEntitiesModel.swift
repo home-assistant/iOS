@@ -4,7 +4,7 @@ import HAKit
 import PromiseKit
 
 public protocol AppEntitiesModelProtocol {
-    func updateModel(_ entities: Set<HAEntity>, server: Server)
+    func updateModel(_ entities: Set<HAEntity>, server: Server) async
 }
 
 public enum HAAppUsedContent {
@@ -36,7 +36,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
     /// ServerId: Int
     private var lastEntitiesCount: [String: Int] = [:]
 
-    public func updateModel(_ entities: Set<HAEntity>, server: Server) {
+    public func updateModel(_ entities: Set<HAEntity>, server: Server) async {
         // Only update database after a few seconds or if the entities count changed
         // First check for time to avoid unnecessary filtering to check count
         if !checkLastDatabaseUpdateRecently(server: server) {
@@ -46,7 +46,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
                     "Updating App Entities for \(server.info.name) checkLastDatabaseUpdateLessThanMinuteAgo false, lastDatabaseUpdate \(String(describing: lastDatabaseUpdate)) "
                 )
             updateLastUpdate(entitiesCount: appRelatedEntities.count, server: server)
-            handle(appRelatedEntities: appRelatedEntities, server: server)
+            await handle(appRelatedEntities: appRelatedEntities, server: server)
         } else {
             let appRelatedEntities = filterDomains(entities)
             if lastEntitiesCount[server.identifier.rawValue] != appRelatedEntities.count {
@@ -55,7 +55,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
                         "Updating App Entities for \(server.info.name) entities count diff, count: last \(lastEntitiesCount), new \(appRelatedEntities.count)"
                     )
                 updateLastUpdate(entitiesCount: appRelatedEntities.count, server: server)
-                handle(appRelatedEntities: appRelatedEntities, server: server)
+                await handle(appRelatedEntities: appRelatedEntities, server: server)
             }
         }
     }
@@ -75,11 +75,12 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         return Date().timeIntervalSince(lastDate) < 15
     }
 
-    private func handle(appRelatedEntities: Set<HAEntity>, server: Server) {
+    private func handle(appRelatedEntities: Set<HAEntity>, server: Server) async {
+        let serverId = server.identifier.rawValue
         let appEntities = appRelatedEntities.map({ HAAppEntity(
-            id: ServerEntity.uniqueId(serverId: server.identifier.rawValue, entityId: $0.entityId),
+            id: ServerEntity.uniqueId(serverId: serverId, entityId: $0.entityId),
             entityId: $0.entityId,
-            serverId: server.identifier.rawValue,
+            serverId: serverId,
             domain: $0.domain,
             name: $0.attributes.friendlyName ?? $0.entityId,
             icon: $0.attributes.icon,
@@ -87,9 +88,11 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         ) }).sorted(by: { $0.id < $1.id })
 
         do {
-            let cachedEntities = try Current.database().read { db in
+            // Uses GRDB's async read/write so the database work is performed off the main thread
+            // (HAKit completions fire on the main queue), keeping the UI responsive during refreshes.
+            let cachedEntities = try await Current.database().read { db in
                 try HAAppEntity
-                    .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                    .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
                     .orderByPrimaryKey()
                     .fetchAll(db)
             }
@@ -98,8 +101,9 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
                     .verbose(
                         "Updating App Entities for \(server.info.name), cached entities were different than new entities"
                     )
-                try Current.database().write { db in
-                    try HAAppEntity.deleteAll(db, ids: cachedEntities.map(\.id))
+                let idsToDelete = cachedEntities.map(\.id)
+                try await Current.database().write { db in
+                    try HAAppEntity.deleteAll(db, ids: idsToDelete)
                     for entity in appEntities {
                         try entity.insert(db)
                     }
