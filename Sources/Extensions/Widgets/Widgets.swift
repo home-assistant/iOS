@@ -47,9 +47,9 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetCustom()
         WidgetAssist()
         WidgetTodoList()
+        WidgetOpenPage()
         WidgetGauge()
         WidgetDetails()
-        WidgetOpenPage()
         WidgetScripts()
         WidgetSensors()
     }
@@ -90,9 +90,9 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetCustom()
         WidgetAssist()
         WidgetTodoList()
+        WidgetOpenPage()
         WidgetGauge()
         WidgetDetails()
-        WidgetOpenPage()
         WidgetScripts()
         WidgetSensors()
     }
