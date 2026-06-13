@@ -73,36 +73,7 @@ extension WebViewController {
             }
 
             // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-            let request: URLRequest
-
-            if Current.settingsStore.restoreLastURL,
-               let initialURL, initialURL.baseIsEqual(to: webviewURL) {
-                Current.Log.info("restoring initial url path: \(initialURL.path)")
-                request = URLRequest(url: initialURL)
-            } else if let currentURL = webView.url, currentURL.path.count > 1 {
-                // Preserve the current path when the base URL changes (e.g., switching between internal/external)
-                var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
-                components?.path = currentURL.path
-                if let query = currentURL.query {
-                    // Preserve external_auth if present, add other query items
-                    var queryItems = components?.queryItems ?? []
-                    let currentQueryItems = URLComponents(url: currentURL, resolvingAgainstBaseURL: false)?
-                        .queryItems ?? []
-                    for item in currentQueryItems where item.name != "external_auth" {
-                        queryItems.append(item)
-                    }
-                    components?.queryItems = queryItems
-                }
-                components?.fragment = currentURL.fragment
-                let newURL = components?.url ?? webviewURL
-                Current.Log.info("preserving current path on base URL change: \(newURL.path)")
-                request = URLRequest(url: newURL)
-            } else {
-                Current.Log.info("loading default url path: \(webviewURL.path)")
-                request = URLRequest(url: webviewURL)
-            }
-
-            load(request: request)
+            load(request: activeURLRequest(for: webviewURL))
         }
 
         if Current.isCatalyst {
@@ -112,6 +83,51 @@ extension WebViewController {
                 loadBlock()
             }
         }
+    }
+
+    /// Picks the request `loadActiveURLIfNeeded()` should load into a blank/stale webview. Priority:
+    /// 1. An explicit `open(inline:)` URL (notification/deep link) targeting the active server — must
+    ///    win so cold-start navigation isn't discarded (#4145).
+    /// 2. The restored "last URL" when `restoreLastURL` is enabled.
+    /// 3. The current path re-based onto `webviewURL` when only the base changed (internal/external).
+    /// 4. The server's default URL.
+    private func activeURLRequest(for webviewURL: URL) -> URLRequest {
+        if let prioritizedURL = Self.prioritizedInlineURL(
+            pendingOpenInlineURL: pendingOpenInlineURL,
+            webviewURL: webviewURL
+        ) {
+            Current.Log.info("loading explicitly requested url path: \(prioritizedURL.path)")
+            return URLRequest(url: prioritizedURL)
+        }
+
+        if Current.settingsStore.restoreLastURL,
+           let initialURL, initialURL.baseIsEqual(to: webviewURL) {
+            Current.Log.info("restoring initial url path: \(initialURL.path)")
+            return URLRequest(url: initialURL)
+        }
+
+        if let currentURL = webView.url, currentURL.path.count > 1 {
+            // Preserve the current path when the base URL changes (e.g., switching between internal/external)
+            var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
+            components?.path = currentURL.path
+            if let query = currentURL.query {
+                // Preserve external_auth if present, add other query items
+                var queryItems = components?.queryItems ?? []
+                let currentQueryItems = URLComponents(url: currentURL, resolvingAgainstBaseURL: false)?
+                    .queryItems ?? []
+                for item in currentQueryItems where item.name != "external_auth" {
+                    queryItems.append(item)
+                }
+                components?.queryItems = queryItems
+            }
+            components?.fragment = currentURL.fragment
+            let newURL = components?.url ?? webviewURL
+            Current.Log.info("preserving current path on base URL change: \(newURL.path)")
+            return URLRequest(url: newURL)
+        }
+
+        Current.Log.info("loading default url path: \(webviewURL.path)")
+        return URLRequest(url: webviewURL)
     }
 
     func showNoActiveURLError() {
@@ -180,5 +196,20 @@ extension WebViewController {
         // Update runs in background automatically, returns immediately
         Current.appDatabaseUpdater.update(server: server, forceUpdate: false)
         Current.panelsUpdater.update()
+    }
+
+    /// When an explicit `open(inline:)` URL is pending and targets the active server, it must be
+    /// loaded instead of the default/restored URL so a cold-start `loadActiveURLIfNeeded()` race
+    /// can't discard a notification's or deep link's URL (#4145). Returns `nil` when there is
+    /// nothing to prioritize and the normal restore/default logic should run.
+    ///
+    /// The match is by `baseIsEqual` (scheme/host/port) only — enough to confirm the pending URL
+    /// belongs to the active server; the path is intentionally not compared, since the whole point
+    /// is to load the pending path rather than the default one.
+    static func prioritizedInlineURL(pendingOpenInlineURL: URL?, webviewURL: URL) -> URL? {
+        guard let pendingOpenInlineURL, pendingOpenInlineURL.baseIsEqual(to: webviewURL) else {
+            return nil
+        }
+        return pendingOpenInlineURL
     }
 }

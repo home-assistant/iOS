@@ -38,6 +38,14 @@ extension WebViewController {
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         refreshControl.endRefreshing()
+
+        // A committed navigation truly failed; stop forcing the requested URL so the default can take
+        // over. Only on a *real* failure — a `.cancelled` error just means a newer load superseded an
+        // in-flight one, and clearing then would revive the cold-start race (#4145).
+        if !error.isCancelled {
+            pendingOpenInlineURL = nil
+        }
+
         if let err = error as? URLError {
             if err.code != .cancelled {
                 Current.Log.error("Failure during nav: \(err)")
@@ -77,6 +85,9 @@ extension WebViewController {
         if shouldShowError {
             latestLoadError = error
             showEmptyState()
+            // The requested URL won't load; stop forcing it (see note in didFail). `shouldShowError`
+            // is already false for cancellations, so a superseded load keeps its pending URL (#4145).
+            pendingOpenInlineURL = nil
         }
     }
 
@@ -86,6 +97,13 @@ extension WebViewController {
 
         // in case the view appears again, don't reload
         initialURL = nil
+
+        // the explicit navigation has landed; stop forcing it on subsequent active-URL loads (#4145).
+        // skip about:blank, which `showNoActiveURLError()` loads — clearing then would drop the
+        // pending URL before the real navigation gets a chance to run.
+        if webView.url?.absoluteString != "about:blank" {
+            pendingOpenInlineURL = nil
+        }
 
         updateWebViewSettings(reason: .load)
     }
