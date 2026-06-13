@@ -22,6 +22,11 @@ import Foundation
     var frontmostApplicationDidChangeNotification: Notification.Name { get }
 
     var activationPolicy: MacBridgeActivationPolicy { get set }
+
+    /// Brings the app to the foreground. macOS does not automatically foreground a backgrounded Catalyst app when a
+    /// widget tap / deep link URL is delivered, so this must be called explicitly from those entry points.
+    func activate()
+
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration)
     func configureStatusItem(title: String)
 

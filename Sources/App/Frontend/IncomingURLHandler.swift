@@ -35,6 +35,11 @@ class IncomingURLHandler {
         }
         guard let host = url.host else { return true }
         if let requestedAction = IncomingURLAction(rawValue: host.lowercased()) {
+            #if targetEnvironment(macCatalyst)
+            // macOS does not foreground a backgrounded Catalyst app when a widget tap / deep link URL is delivered,
+            // so explicitly bring the app to the front for any recognized deep link (e.g. widget taps).
+            Current.macBridge.activate()
+            #endif
             switch requestedAction {
             case .xCallbackURL:
                 return Manager.shared.handleOpen(url: url)
