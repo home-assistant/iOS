@@ -40,5 +40,5 @@ struct WidgetGauge: Widget {
 
 @available(iOS 17, *)
 enum WidgetGaugeSupportedFamilies {
-    static let families: [WidgetFamily] = [.accessoryCircular]
+    static let families: [WidgetFamily] = [.accessoryCircular, .systemSmall]
 }
