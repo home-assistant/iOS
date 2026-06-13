@@ -28,6 +28,9 @@ extension WebViewController {
                     )
                 return
             }
+            // Remember this as the authoritative URL so a racing `loadActiveURLIfNeeded()` on cold
+            // start can't replace it with the default server URL, discarding the navigation (#4145).
+            pendingOpenInlineURL = url
             load(request: URLRequest(url: url))
         } else {
             openURLInBrowser(url, self)

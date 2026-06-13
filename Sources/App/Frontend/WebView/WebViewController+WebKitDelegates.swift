@@ -87,6 +87,9 @@ extension WebViewController {
         // in case the view appears again, don't reload
         initialURL = nil
 
+        // the explicit navigation has landed; stop forcing it on subsequent active-URL loads (#4145)
+        pendingOpenInlineURL = nil
+
         updateWebViewSettings(reason: .load)
     }
 

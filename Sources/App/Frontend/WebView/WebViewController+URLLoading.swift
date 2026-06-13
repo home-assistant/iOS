@@ -75,8 +75,16 @@ extension WebViewController {
             // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
             let request: URLRequest
 
-            if Current.settingsStore.restoreLastURL,
-               let initialURL, initialURL.baseIsEqual(to: webviewURL) {
+            if let prioritizedURL = Self.prioritizedInlineURL(
+                pendingOpenInlineURL: pendingOpenInlineURL,
+                webviewURL: webviewURL
+            ) {
+                // An explicit notification/deep-link navigation is pending; it must win over the
+                // default/restored URL so cold-start navigation isn't discarded (#4145).
+                Current.Log.info("loading explicitly requested url path: \(prioritizedURL.path)")
+                request = URLRequest(url: prioritizedURL)
+            } else if Current.settingsStore.restoreLastURL,
+                      let initialURL, initialURL.baseIsEqual(to: webviewURL) {
                 Current.Log.info("restoring initial url path: \(initialURL.path)")
                 request = URLRequest(url: initialURL)
             } else if let currentURL = webView.url, currentURL.path.count > 1 {
@@ -180,5 +188,16 @@ extension WebViewController {
         // Update runs in background automatically, returns immediately
         Current.appDatabaseUpdater.update(server: server, forceUpdate: false)
         Current.panelsUpdater.update()
+    }
+
+    /// When an explicit `open(inline:)` URL is pending and targets the active server, it must be
+    /// loaded instead of the default/restored URL so a cold-start `loadActiveURLIfNeeded()` race
+    /// can't discard a notification's or deep link's URL (#4145). Returns `nil` when there is
+    /// nothing to prioritize and the normal restore/default logic should run.
+    static func prioritizedInlineURL(pendingOpenInlineURL: URL?, webviewURL: URL) -> URL? {
+        guard let pendingOpenInlineURL, pendingOpenInlineURL.baseIsEqual(to: webviewURL) else {
+            return nil
+        }
+        return pendingOpenInlineURL
     }
 }
