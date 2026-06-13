@@ -194,6 +194,10 @@ extension WebViewController {
     /// loaded instead of the default/restored URL so a cold-start `loadActiveURLIfNeeded()` race
     /// can't discard a notification's or deep link's URL (#4145). Returns `nil` when there is
     /// nothing to prioritize and the normal restore/default logic should run.
+    ///
+    /// The match is by `baseIsEqual` (scheme/host/port) only — enough to confirm the pending URL
+    /// belongs to the active server; the path is intentionally not compared, since the whole point
+    /// is to load the pending path rather than the default one.
     static func prioritizedInlineURL(pendingOpenInlineURL: URL?, webviewURL: URL) -> URL? {
         guard let pendingOpenInlineURL, pendingOpenInlineURL.baseIsEqual(to: webviewURL) else {
             return nil

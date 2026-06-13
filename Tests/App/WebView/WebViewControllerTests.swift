@@ -174,6 +174,28 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.pendingOpenInlineURL, url)
     }
 
+    func testRealProvisionalNavigationFailureClearsPendingURL() {
+        let sut = makeSUT()
+        sut.setupEmptyState()
+        sut.pendingOpenInlineURL = URL(string: "https://example.com:8123/frigate")!
+
+        sut.webView(sut.webView, didFailProvisionalNavigation: nil, withError: URLError(.timedOut))
+
+        XCTAssertNil(sut.pendingOpenInlineURL)
+    }
+
+    func testCancelledProvisionalNavigationKeepsPendingURL() {
+        // A cancellation means a newer load superseded an in-flight one — clearing then would
+        // revive the cold-start race, so the pending URL must survive (#4145).
+        let sut = makeSUT()
+        let pending = URL(string: "https://example.com:8123/frigate")!
+        sut.pendingOpenInlineURL = pending
+
+        sut.webView(sut.webView, didFailProvisionalNavigation: nil, withError: URLError(.cancelled))
+
+        XCTAssertEqual(sut.pendingOpenInlineURL, pending)
+    }
+
     private func makeSUT() -> WebViewController {
         let sut = WebViewController(server: .fake())
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))

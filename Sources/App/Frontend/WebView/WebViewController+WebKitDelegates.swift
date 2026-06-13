@@ -46,6 +46,10 @@ extension WebViewController {
             if !error.isCancelled {
                 latestLoadError = error
                 showEmptyState()
+                // The requested URL won't load; stop forcing it so the default URL can take over.
+                // Only on a *real* failure — a `.cancelled` error means a newer load (often this very
+                // navigation) superseded an in-flight one, and clearing then would revive the race (#4145).
+                pendingOpenInlineURL = nil
             }
         }
     }
@@ -77,6 +81,9 @@ extension WebViewController {
         if shouldShowError {
             latestLoadError = error
             showEmptyState()
+            // The requested URL won't load; stop forcing it (see note in didFail). `shouldShowError`
+            // is already false for cancellations, so a superseded load keeps its pending URL (#4145).
+            pendingOpenInlineURL = nil
         }
     }
 
@@ -87,8 +94,12 @@ extension WebViewController {
         // in case the view appears again, don't reload
         initialURL = nil
 
-        // the explicit navigation has landed; stop forcing it on subsequent active-URL loads (#4145)
-        pendingOpenInlineURL = nil
+        // the explicit navigation has landed; stop forcing it on subsequent active-URL loads (#4145).
+        // skip about:blank, which `showNoActiveURLError()` loads — clearing then would drop the
+        // pending URL before the real navigation gets a chance to run.
+        if webView.url?.absoluteString != "about:blank" {
+            pendingOpenInlineURL = nil
+        }
 
         updateWebViewSettings(reason: .load)
     }
