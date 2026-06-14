@@ -662,6 +662,7 @@
 		423B5E0B2D677B9B0000CB95 /* WidgetCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688A2D40F9B7005911E4 /* WidgetCustom.swift */; };
 		423B5E0C2D677BA70000CB95 /* WidgetCustomTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */; };
 		423B5E0D2D677BB90000CB95 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
+		CA40A11000000000000000B1 /* WidgetCarPlayLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */; };
 		423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44EF2C17238200766A99 /* ChatBubbleView.swift */; };
 		423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */; };
 		423F45212C19D89100766A99 /* AssistDefaultComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F45202C19D89100766A99 /* AssistDefaultComplication.swift */; };
@@ -684,6 +685,7 @@
 		424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
+		CA40A11000000000000000B2 /* WidgetCarPlayLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayQuickAccessTemplate.swift */; };
 		42514C1A2F3E217E008EB858 /* WidgetTodoListAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42514C192F3E217E008EB858 /* WidgetTodoListAppIntent.swift */; };
@@ -2461,6 +2463,7 @@
 		424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInBrowser.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
+		CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCarPlayLocation.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
 		424DD0592B3509170057E456 /* CarPlayQuickAccessTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayQuickAccessTemplate.swift; sourceTree = "<group>"; };
 		42514C192F3E217E008EB858 /* WidgetTodoListAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListAppIntent.swift; sourceTree = "<group>"; };
@@ -3817,6 +3820,7 @@
 				420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */,
 				424A7F452B188946008C8DF3 /* WidgetBackground.swift */,
 				424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */,
+				CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */,
 				4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */,
 				42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */,
 				422C95E62F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift */,
@@ -9131,6 +9135,7 @@
 				42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */,
 				422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
 				424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */,
+				CA40A11000000000000000B2 /* WidgetCarPlayLocation.swift in Sources */,
 				115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */,
 				115560EE27012F7300A8F818 /* WidgetOpenPage.swift in Sources */,
 				427647202C8F36950027B21F /* ControlLightsValueProvider.swift in Sources */,
@@ -9331,6 +9336,7 @@
 				423178482FBB000100814230 /* AllowedTagsView.swift in Sources */,
 				42FCCFFE2B9B1C310057783F /* ThreadCredentialsSharing+build.swift in Sources */,
 				423B5E0D2D677BB90000CB95 /* WidgetContentMargin.swift in Sources */,
+				CA40A11000000000000000B1 /* WidgetCarPlayLocation.swift in Sources */,
 				42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */,
 				4240DF472E1D148F00FB0DE6 /* DeviceNameView.swift in Sources */,
 				4210CD032F155C4500B71FB9 /* AssistConfiguration.swift in Sources */,

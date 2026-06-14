@@ -23,6 +23,7 @@ struct WidgetAssist: Widget {
         .configurationDisplayName(L10n.Widgets.Assist.title)
         .description(L10n.Widgets.Assist.description)
         .supportedFamilies(supportedFamilies)
+        .disfavoredInCarPlayIfAvailable(for: supportedFamilies)
     }
 
     private var supportedFamilies: [WidgetFamily] {
