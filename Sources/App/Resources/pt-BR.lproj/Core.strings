@@ -94,22 +94,22 @@
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Em casa";
 "component::improv_ble::config::abort::already_configured" = "Dispositivo já está configurado";
 "component::improv_ble::config::abort::cannot_connect" = "Falha ao conectar";
-"component::improv_ble::config::abort::characteristic_missing" = "The device is either already connected to Wi-Fi, or no longer able to connect to Wi-Fi. If you want to connect it to another network, try factory resetting it first.";
+"component::improv_ble::config::abort::characteristic_missing" = "O dispositivo já está conectado ao Wi-Fi ou não consegue mais se conectar ao Wi-Fi. Se você quiser conectá-lo a outra rede, tente primeiro restaurá-lo para as configurações de fábrica.";
 "component::improv_ble::config::abort::no_devices_found" = "Nenhum dispositivo encontrado na rede";
-"component::improv_ble::config::abort::provision_successful" = "The device has successfully connected to the Wi-Fi network.";
+"component::improv_ble::config::abort::provision_successful" = "O dispositivo se conectou com sucesso à rede Wi-Fi.";
 "component::improv_ble::config::abort::provision_successful_url" = "The device has successfully connected to the Wi-Fi network.\
 \
 Please finish the setup by following the [setup instructions]({url}).";
 "component::improv_ble::config::abort::unknown" = "Erro inesperado";
-"component::improv_ble::config::error::unable_to_connect" = "The device could not connect to the Wi-Fi network. Check that the SSID and password are correct and try again.";
-"component::improv_ble::config::flow_title" = "{name}";
-"component::improv_ble::config::progress::authorize" = "The device requires authorization, please press its authorization button or consult the device's manual for how to proceed.";
-"component::improv_ble::config::progress::provisioning" = "The device is connecting to the Wi-Fi network.";
+"component::improv_ble::config::error::unable_to_connect" = "O dispositivo não conseguiu se conectar à rede Wi-Fi. Verifique se o SSID e a senha estão corretos e tente novamente.";
+"component::improv_ble::config::flow_title" = "{name} {manufacturer} {model}";
+"component::improv_ble::config::progress::authorize" = "O dispositivo requer autorização. Pressione o botão de autorização ou consulte o manual do dispositivo para saber como proceder.";
+"component::improv_ble::config::progress::provisioning" = "O dispositivo está se conectando à rede Wi-Fi.";
 "component::improv_ble::config::step::bluetooth_confirm::description" = "Deseja configurar {name}?";
 "component::improv_ble::config::step::identify::description" = "The device is now identifying itself, for example by blinking or beeping.";
 "component::improv_ble::config::step::main_menu::description" = "Choose next step.";
 "component::improv_ble::config::step::main_menu::menu_options::identify" = "Identify device";
-"component::improv_ble::config::step::main_menu::menu_options::provision" = "Connect device to a Wi-Fi network";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Conectar dispositivo a uma rede Wi-Fi";
 "component::improv_ble::config::step::provision::data::password" = "Senha";
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
 "component::improv_ble::config::step::provision::description" = "Enter Wi-Fi credentials to connect the device to your network.";
@@ -143,7 +143,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Habilitado";
 "component::lock::entity_component::_::state::locked" = "Trancado";
 "component::lock::entity_component::_::state::unlocked" = "Destrancado";
-"component::lock::title" = "Trancar";
+"component::lock::title" = "Fechadura";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "Desligado";
 "component::lutron_caseta::device_automation::trigger_subtype::on" = "Ligado";
 "component::media_player::entity_component::_::state::idle" = "Ocioso";

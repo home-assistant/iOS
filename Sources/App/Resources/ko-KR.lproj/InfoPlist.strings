@@ -5,7 +5,7 @@
 "NSLocalNetworkUsageDescription" = "Home Assistant 인스턴스를 찾아 통신하세요.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  앱이 백그라운드 작업을 수행할 수 있도록 위치 접근 권한을 '항상'으로 허용해야 합니다. \n\n ⚠️  이 권한이 없으면 앱은 백그라운드에서 사용할 연결(로컬 또는 원격)을 결정할 수 없어 항상 원격 연결을 사용합니다.";
 "NSLocationAlwaysUsageDescription" = "iBeacon, 지오펜스, 백그라운드 위치 업데이트 및 정확한 보고와 같은 기능을 사용하려면 항상 사용자의 위치에 액세스할 수 있어야 합니다.";
-"NSLocationUsageDescription" = "활성화하면 기기 위치가 Home Assistant 서버로 전송되어 디바이스 추적기로 사용됩니다.";
+"NSLocationUsageDescription" = "활성화하면 기기 위치가 Home Assistant 서버로 전송되어 기기 추적기로 사용됩니다.";
 "NSLocationWhenInUseUsageDescription" = "이 앱은 Home Assistant 설치에 직접 연결하기 위해 위치 접근 권한이 필요합니다. \n \n 1️⃣ 위치는 로컬 네트워크에 연결되어 있는지 확인하는 데에만 사용됩니다. \n \n 2️⃣ 누구와도 공유되지 않습니다. \n \n 3️⃣ 이를 허용하지 않으면 앱은 항상 인터넷을 통해 연결합니다. 설정되어 있지 않은 경우 데이터를 보호하기 위해 연결을 거부합니다.";
 "NSMicrophoneUsageDescription" = "Home Assistant 프런트엔드를 사용하여 오디오를 녹음하세요.";
 "NSMotionUsageDescription" = "움직임 활동은 현재 움직임 활동 유형으로 위치 업데이트를 개선하고 기본 만보계 데이터를 제공하는 데 사용됩니다.";
@@ -14,4 +14,4 @@
 "NSSiriUsageDescription" = "Siri를 사용하여 생성된 바로 가기가 앱과 상호 작용할 수 있도록 합니다.";
 "NSSpeechRecognitionUsageDescription" = "Assist에 텍스트를 받아쓰는 데 사용됩니다.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "위치 보내기";
-"TemporaryFullAccuracyReasonManualUpdate" = "현재 위치를 디바이스 추적기에 사용할 수 있도록 완전한 정확도를 부여하세요.";
+"TemporaryFullAccuracyReasonManualUpdate" = "현재 위치를 기기 추적기에 사용할 수 있도록 전체 정확도를 허용하세요.";
