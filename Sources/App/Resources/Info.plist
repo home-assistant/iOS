@@ -170,7 +170,7 @@
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
-					<string>HomeAssistantSceneDelegate</string>
+					<string>WebView</string>
 				</dict>
 				<dict>
 					<key>UISceneClassName</key>

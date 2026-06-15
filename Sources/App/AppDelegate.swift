@@ -217,10 +217,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             if activity == .webView {
                 // The primary window is owned by SwiftUI's `WindowGroup { ContainerView() }` (see `HAApp`).
-                // Return a delegate-less config (the "WebView" entry was removed from Info.plist) so SwiftUI
-                // hosts this scene; auxiliary scenes below keep their Info.plist-bound delegates.
+                // Return the delegate-less `WebView` config so SwiftUI hosts this scene; auxiliary scenes
+                // keep their Info.plist-bound delegates. The name MUST stay `WebView` (the shipped config
+                // name) — persisted scene sessions reference it, and renaming it blanks the window on upgrade.
                 return UISceneConfiguration(
-                    name: "HomeAssistantSceneDelegate",
+                    name: "WebView",
                     sessionRole: connectingSceneSession.role
                 )
             }
