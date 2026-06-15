@@ -3,11 +3,6 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// The top-level content of the app's main window.
-///
-/// Decides — based on onboarding state — whether to render the onboarding flow or the Home Assistant web
-/// frontend, and swaps between them as that state changes. This is the SwiftUI replacement for the
-/// root-view-controller swapping that `WebViewWindowController` performed.
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
@@ -34,6 +29,7 @@ struct ContainerView: View {
                 RecoveredServerReauthHostingView(server: server, state: state)
             }
         }
+        .navigationTitle(" ") // Remove default macOS title
         .onAppear {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
@@ -101,10 +97,6 @@ struct ContainerView: View {
                 .injectingViewControllerProvider()
             }
         }
-        #if targetEnvironment(macCatalyst)
-        // Hide the macOS window title so it doesn't overlap the WebView's custom status-bar buttons.
-        .background(TitlebarConfigurator())
-        #endif
     }
 
     /// Re-evaluates the web view after a forced cover (onboarding permissions) is dismissed, mirroring the

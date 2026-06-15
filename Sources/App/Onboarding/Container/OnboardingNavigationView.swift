@@ -41,6 +41,7 @@ struct OnboardingNavigationView: View {
                     OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
                 case .secondary:
                     OnboardingServersListView(onboardingStyle: onboardingStyle)
+                        .navigationTitle(L10n.Settings.ConnectionSection.addServer)
                 case .required:
                     OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
                 }
