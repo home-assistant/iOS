@@ -1,3 +1,4 @@
+import PromiseKit
 import Shared
 import SwiftUI
 import UIKit
@@ -24,6 +25,8 @@ struct HAApp: App {
     var body: some Scene {
         WindowGroup {
             ContainerView()
+                .onOpenURL { handleIncoming(url: $0) }
+                .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
         }
         .handlesExternalEvents(matching: [SceneActivity.webView.activityIdentifier])
 
@@ -44,5 +47,18 @@ struct HAApp: App {
             AssistWindowView()
         }
         .handlesExternalEvents(matching: [SceneActivity.assist.activityIdentifier])
+    }
+
+    /// Routes deep links (`homeassistant://…`) and universal / NFC web links into `IncomingURLHandler` once
+    /// the app coordinator is available — replacing the deleted `WebViewSceneDelegate`'s
+    /// `scene(_:openURLContexts:)` / `scene(_:continue:)` under the SwiftUI lifecycle.
+    private func handleIncoming(url: URL) {
+        Current.sceneManager.appCoordinator.done { IncomingURLHandler(coordinator: $0).handle(url: url) }
+    }
+
+    private func handleIncoming(userActivity: NSUserActivity) {
+        Current.sceneManager.appCoordinator.done {
+            IncomingURLHandler(coordinator: $0).handle(userActivity: userActivity)
+        }
     }
 }
