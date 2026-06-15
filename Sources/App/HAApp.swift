@@ -11,7 +11,8 @@ import UIKit
 /// stay on the UIKit delegates.
 ///
 /// **Window ownership:** SwiftUI `WindowGroup`s host the primary window (`ContainerView`: onboarding vs.
-/// web frontend) plus Settings, About and Assist. Each scene is matched to its group with
+/// web frontend) plus Settings, About and Assist. The primary group is the default (ungated) one so it hosts
+/// the cold-launch / restored scene; Settings, About and Assist are matched to their group with
 /// `handlesExternalEvents` against the `SceneActivity` that `SceneManager.activateAnyScene` activates (via
 /// `NSUserActivity.targetContentIdentifier`). `WindowGroup(id:)`/`openWindow` aren't used because they're
 /// iOS 16+; `handlesExternalEvents` is iOS 14+ and works with the existing `requestSceneSessionActivation`
@@ -23,12 +24,15 @@ struct HAApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
+        // Primary window — intentionally NOT gated by `handlesExternalEvents`: it's the default group, so it
+        // hosts the cold-launch (and restored) scene, which carries no matching activity. Gating it here
+        // makes no group claim the launch scene → blank window. It also catches any unmatched activation
+        // (e.g. `activateAnyScene(for: .webView)`); the auxiliary groups below claim their own activities.
         WindowGroup {
             ContainerView()
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
         }
-        .handlesExternalEvents(matching: [SceneActivity.webView.activityIdentifier])
 
         WindowGroup {
             SettingsView()
