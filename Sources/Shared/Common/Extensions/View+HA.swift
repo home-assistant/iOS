@@ -1,6 +1,10 @@
 import Foundation
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
+#if !os(macOS)
 public extension View {
     func embeddedInHostingController() -> UIHostingController<some View> {
         let provider = ViewControllerProvider()
@@ -42,3 +46,20 @@ public extension View {
         ViewControllerWrapper(viewController, configure: configure)
     }
 }
+#else
+// Native macOS: AppKit equivalents. `ViewControllerWrapper`/`embed` are
+// UIKit-only and intentionally not available here.
+public extension View {
+    func embeddedInHostingController() -> NSHostingController<some View> {
+        let provider = ViewControllerProvider()
+        let hostingAccessingView = environmentObject(provider)
+        let hostingController = NSHostingController(rootView: hostingAccessingView)
+        provider.viewController = hostingController
+        return hostingController
+    }
+}
+
+public final class ViewControllerProvider: ObservableObject {
+    public fileprivate(set) weak var viewController: NSViewController?
+}
+#endif

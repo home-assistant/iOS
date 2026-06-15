@@ -6,7 +6,11 @@
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
+#if __has_include(<UIKit/UIKit.h>)
 #import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
 
 //! Project version number for Shared.
 FOUNDATION_EXPORT double SharedVersionNumber;

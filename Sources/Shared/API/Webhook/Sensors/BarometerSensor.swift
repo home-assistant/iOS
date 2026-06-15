@@ -18,6 +18,7 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 
     override func observe() {
         super.observe()
+        #if !os(macOS)
         guard !isObserving else { return }
         guard Current.barometer.isAvailable(), Current.barometer.isAuthorized() else { return }
 
@@ -42,16 +43,19 @@ final class BarometerSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
         #if DEBUG
         notifyObservation?()
         #endif
+        #endif
     }
 
     override func stopObserving() {
         super.stopObserving()
+        #if !os(macOS)
         guard isObserving else { return }
         Current.barometer.stopUpdates()
         observationQueue = nil
         lastSignaledPressureKpa = nil
         latestPressureKpa = nil
         isObserving = false
+        #endif
     }
 }
 
@@ -68,6 +72,10 @@ public class BarometerSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
+        #if os(macOS)
+        // Barometer (CMAltimeter) is unavailable on macOS
+        return .init(error: BarometerError.unavailable)
+        #else
         let signaler: BarometerSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
         // If the signaler is actively observing, use its cached pressure to avoid
@@ -84,6 +92,7 @@ public class BarometerSensor: SensorProvider {
         }.map { data in
             [Self.pressureSensor(fromKpa: data.pressure.doubleValue)]
         }
+        #endif
     }
 
     static func pressureSensor(fromKpa kpa: Double) -> WebhookSensor {
@@ -99,6 +108,7 @@ public class BarometerSensor: SensorProvider {
         )
     }
 
+    #if !os(macOS)
     private func latestBarometerData() -> Promise<CMAltitudeData> {
         guard Current.barometer.isAuthorized() else {
             return .init(error: BarometerError.unauthorized)
@@ -134,4 +144,5 @@ public class BarometerSensor: SensorProvider {
 
         return promise
     }
+    #endif
 }

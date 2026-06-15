@@ -173,6 +173,11 @@ public class AppEnvironment {
     public lazy var isForegroundApp = {
         self.application?().applicationState == .active
     }
+    #elseif os(macOS)
+    public var appDatabaseUpdater: AppDatabaseUpdaterProtocol = AppDatabaseUpdater.shared
+
+    /// macOS apps keep running while inactive, so they are always considered foreground.
+    public lazy var isForegroundApp = { true }
     #endif
 
     public var style: Style = .init()
@@ -320,6 +325,8 @@ public class AppEnvironment {
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
     #elseif os(watchOS)
     public var isAppExtension = false
+    #elseif os(macOS)
+    public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
     #endif
     public var isAppStore: Bool = {
         do {

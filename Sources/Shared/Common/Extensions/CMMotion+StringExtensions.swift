@@ -4,6 +4,7 @@ import Foundation
 // Don't translate these strings as they are sent to HA and we don't want to cause people to have to write
 // automations expecting localized strings.
 
+#if !os(macOS)
 extension CMMotionActivity {
     var activityTypes: [String] {
         var types: [String] = []
@@ -45,6 +46,7 @@ extension CMMotionActivity {
         return icons
     }
 }
+#endif
 
 extension CMMotionActivityConfidence {
     var description: String {

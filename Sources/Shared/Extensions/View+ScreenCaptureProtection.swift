@@ -9,7 +9,7 @@ public struct ScreenCaptureProtectionModifier: ViewModifier {
     }
 
     public func body(content: Content) -> some View {
-        #if !os(watchOS)
+        #if !os(watchOS) && !os(macOS)
         content
             .blur(radius: isScreenCaptured ? blurRadius : 0)
             .animation(.easeInOut(duration: 0.2), value: isScreenCaptured)

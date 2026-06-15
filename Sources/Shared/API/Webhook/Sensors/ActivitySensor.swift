@@ -15,7 +15,11 @@ public class ActivitySensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        firstly {
+        #if os(macOS)
+        // Motion activity (CMMotionActivityManager) is unavailable on macOS
+        return .init(error: ActivityError.unavailable)
+        #else
+        return firstly {
             Self.latestMotionActivity()
         }.map { activity in
             with(WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue)) {
@@ -29,8 +33,10 @@ public class ActivitySensor: SensorProvider {
         }.map {
             [$0]
         }
+        #endif
     }
 
+    #if !os(macOS)
     private static func latestMotionActivity() -> Promise<CMMotionActivity> {
         guard Current.motion.isAuthorized() else {
             return .init(error: ActivityError.unauthorized)
@@ -56,4 +62,5 @@ public class ActivitySensor: SensorProvider {
         }
         return promise
     }
+    #endif
 }

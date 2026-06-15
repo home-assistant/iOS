@@ -1,8 +1,16 @@
 import Foundation
 import ObjectMapper
 import RealmSwift
+#if canImport(UIColor_Hex_Swift)
 import UIColor_Hex_Swift
+#else
+import UIColorHexSwift
+#endif
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 #if os(watchOS)
 import ClockKit
 #endif

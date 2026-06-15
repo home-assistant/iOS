@@ -1,7 +1,14 @@
+#if canImport(CarPlay)
 import CarPlay
+#endif
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
+#if !os(macOS)
 public enum CarPlayIconContext {
     case `default`
     case assistStateIndicator
@@ -124,3 +131,4 @@ public extension UIImage {
         )
     }
 }
+#endif

@@ -1,5 +1,6 @@
 import SwiftUI
 
+#if !os(macOS)
 /// A specialized UIHostingController for displaying dynamic island toasts.
 ///
 /// This controller extends UIHostingController to provide dynamic status bar visibility control.
@@ -27,3 +28,4 @@ public class ToastHostingController: UIHostingController<ToastView> {
         isStatusBarHidden
     }
 }
+#endif

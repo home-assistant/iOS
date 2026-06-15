@@ -1,7 +1,11 @@
 #if os(iOS)
 import Foundation
 import PromiseKit
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public class PeriodicUpdateManager {
     public let applicationStateGetter: () -> UIApplication.State

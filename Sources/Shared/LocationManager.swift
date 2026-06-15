@@ -303,10 +303,12 @@ extension LocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         postPermissionChangeNotification()
 
+        #if !os(macOS)
         if manager.authorizationStatus == .authorizedWhenInUse {
             // If we just got when-in-use authorization, we can now request always authorization
             manager.requestAlwaysAuthorization()
         }
+        #endif
     }
 
     /**

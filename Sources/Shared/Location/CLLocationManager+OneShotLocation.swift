@@ -190,7 +190,9 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         super.init()
 
+        #if !os(macOS)
         locationManager.allowsBackgroundLocationUpdates = !Current.isAppExtension
+        #endif
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate = self
 

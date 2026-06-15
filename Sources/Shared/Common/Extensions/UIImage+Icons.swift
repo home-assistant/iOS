@@ -1,4 +1,8 @@
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public extension UIImage {
     convenience init(size: CGSize, color: UIColor) {

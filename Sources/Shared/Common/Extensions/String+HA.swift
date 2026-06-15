@@ -1,6 +1,10 @@
 import CoreGraphics
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public extension String {
     var djb2hash: Int {

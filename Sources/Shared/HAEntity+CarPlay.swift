@@ -2,7 +2,11 @@ import Foundation
 import HAKit
 import PromiseKit
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public extension HAEntity {
     func onPress(for api: HomeAssistantAPI) -> Promise<Void> {

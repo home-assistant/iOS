@@ -2,7 +2,11 @@ import CoreLocation
 import CoreMotion
 import Foundation
 import KeychainAccess
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 import Version
 
 public class SettingsStore {

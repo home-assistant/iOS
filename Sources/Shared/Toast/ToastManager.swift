@@ -22,6 +22,7 @@ import SwiftUI
 ///     ToastManager.shared.hide(id: "my-toast")
 /// }
 /// ```
+#if !os(macOS)
 @available(iOS 18, *)
 @MainActor
 public final class ToastManager {
@@ -145,3 +146,38 @@ public final class ToastManager {
         #endif
     }
 }
+#else
+/// No-op implementation for macOS, where the Dynamic Island toast (an iPhone-only feature) is unavailable.
+@MainActor
+public final class ToastManager {
+    /// The shared singleton instance of the toast manager.
+    public static let shared = ToastManager()
+
+    public static var toastComponentVersion = 1
+    public init() {}
+
+    public func show(
+        id: String,
+        symbol: String,
+        symbolFont: Font = .system(size: 35),
+        symbolForegroundStyle: (Color, Color),
+        title: String,
+        message: String? = nil,
+        duration: TimeInterval? = nil
+    ) {
+        // Dynamic Island toasts are not supported on macOS.
+    }
+
+    public func show(toast: Toast, duration: TimeInterval? = nil) {
+        // Dynamic Island toasts are not supported on macOS.
+    }
+
+    public func hide(id: String) {
+        // Dynamic Island toasts are not supported on macOS.
+    }
+
+    public func hideCurrentToast() {
+        // Dynamic Island toasts are not supported on macOS.
+    }
+}
+#endif

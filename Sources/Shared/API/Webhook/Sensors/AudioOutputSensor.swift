@@ -18,6 +18,7 @@ final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, Sensor
 
     override func observe() {
         super.observe()
+        #if !os(macOS)
         guard !isObserving else { return }
         NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)
             .sink { [weak self] _ in
@@ -25,6 +26,7 @@ final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, Sensor
             }
             .store(in: &cancellables)
         isObserving = true
+        #endif
     }
 
     override func stopObserving() {

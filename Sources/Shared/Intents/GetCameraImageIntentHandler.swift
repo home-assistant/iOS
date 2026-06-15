@@ -1,8 +1,14 @@
 import Foundation
 import Intents
+#if canImport(MobileCoreServices)
 import MobileCoreServices
+#endif
 import PromiseKit
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
     typealias Intent = GetCameraImageIntent

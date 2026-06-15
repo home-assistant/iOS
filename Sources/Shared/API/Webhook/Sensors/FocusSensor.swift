@@ -23,6 +23,9 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
         cancellable = Current.focusStatus.trigger.observe { [weak self] _ in
             #if os(watchOS)
             self?.signal()
+            #elseif os(macOS)
+            // isForegroundApp is unavailable on macOS; always propagate the update
+            self?.signal()
             #else
             // this means that we will double-update the focus sensor if the app is running
             // this feels less likely to happen, but allows us to keep the in-app visual state right

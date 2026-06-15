@@ -36,6 +36,9 @@ public struct LabsLabel: View {
             showInfo = true
         }
         .sheet(isPresented: $showInfo) {
+            #if os(macOS)
+            infoSheet
+            #else
             if #available(iOS 16.0, *) {
                 infoSheet
                     .presentationDetents([.medium, .large])
@@ -43,10 +46,40 @@ public struct LabsLabel: View {
             } else {
                 infoSheet
             }
+            #endif
         }
     }
 
     private var infoSheet: some View {
+        #if os(macOS)
+        NavigationView {
+            ScrollView {
+                VStack {
+                    Text(info ?? "")
+                        .padding(DesignSystem.Spaces.two)
+                    Spacer()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationTitle("Labs")
+            .safeAreaInset(edge: .bottom) {
+                Button(action: {
+                    openURL(AppConstants.WebURLs.issues)
+                }, label: {
+                    Text(L10n.Experimental.Badge.ReportIssueButton.title)
+                })
+                .buttonStyle(.primaryButton)
+                .padding(.horizontal)
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    CloseButton {
+                        showInfo = false
+                    }
+                }
+            }
+        }
+        #else
         NavigationView {
             ScrollView {
                 VStack {
@@ -76,6 +109,7 @@ public struct LabsLabel: View {
                 }
             }
         }
+        #endif
     }
 }
 

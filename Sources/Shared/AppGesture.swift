@@ -1,5 +1,9 @@
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public enum HAGestureActionCategory: String, CaseIterable {
     case homeAssistant
@@ -174,6 +178,7 @@ public enum AppGesture: CaseIterable, Codable {
         }
     }
 
+    #if !os(macOS)
     public var direction: UISwipeGestureRecognizer.Direction? {
         switch self {
         case .swipeRight:
@@ -194,6 +199,7 @@ public enum AppGesture: CaseIterable, Codable {
             nil
         }
     }
+    #endif
 }
 
 public extension [AppGesture: HAGestureAction] {
@@ -209,6 +215,7 @@ public extension [AppGesture: HAGestureAction] {
         ]
     }
 
+    #if !os(macOS)
     func getAction(for gesture: UISwipeGestureRecognizer, numberOfTouches: Int) -> HAGestureAction {
         switch gesture.direction {
         case .down:
@@ -254,4 +261,5 @@ public extension [AppGesture: HAGestureAction] {
             return .none
         }
     }
+    #endif
 }

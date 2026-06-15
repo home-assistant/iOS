@@ -6,7 +6,11 @@ import Intents
 import ObjectMapper
 import PromiseKit
 import RealmSwift
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 import Version
 #if os(iOS)
 import Reachability
@@ -309,10 +313,12 @@ public class HomeAssistantAPI {
         connectWebSocketIfNeeded()
 
         return firstly { () -> Promise<Void> in
+            #if !os(macOS)
             guard !Current.isAppExtension else {
                 Current.Log.info("skipping registration changes in extension")
                 return Promise<Void>.value(())
             }
+            #endif
 
             return updateRegistration().asVoid().recover { [self] error -> Promise<Void> in
                 switch error as? WebhookError {
@@ -341,11 +347,17 @@ public class HomeAssistantAPI {
         }.then { [self] () -> Promise<Void> in
             var promises: [Promise<Void>] = []
 
+            #if !os(macOS)
             if !Current.isAppExtension {
                 promises.append(getConfig())
                 promises.append(Current.modelManager.fetch(apis: [self]))
                 promises.append(updateComplications(passively: false).asVoid())
             }
+            #else
+            promises.append(getConfig())
+            promises.append(Current.modelManager.fetch(apis: [self]))
+            promises.append(updateComplications(passively: false).asVoid())
+            #endif
 
             promises.append(UpdateSensors(trigger: reason.updateSensorTrigger).asVoid())
 
@@ -1485,3 +1497,45 @@ extension HomeAssistantAPI: HAConnectionDelegate {
         connection.disconnect()
     }
 }
+
+#if os(macOS)
+// HAKit's PromiseKit extensions (the HAKit/PromiseKit subspec) are not linked into the native
+// macOS target; replicate the same bridging API so shared call sites compile unchanged.
+extension HAConnection {
+    /// Send a request, wrapped in a Promise.
+    /// - SeeAlso: `HAConnection.send(_:completion:)`
+    func send(_ request: HARequest) -> (promise: Promise<HAData>, cancel: () -> Void) {
+        let (promise, seal) = Promise<HAData>.pending()
+        let token = send(request, completion: { result in
+            switch result {
+            case let .success(data): seal.fulfill(data)
+            case let .failure(error): seal.reject(error)
+            }
+        })
+        return (promise: promise, cancel: token.cancel)
+    }
+
+    /// Send a typed request, wrapped in a Promise.
+    /// - SeeAlso: `HAConnection.send(_:completion:)`
+    func send<T>(_ request: HATypedRequest<T>) -> (promise: Promise<T>, cancel: () -> Void) {
+        let (promise, seal) = Promise<T>.pending()
+        let token = send(request, completion: { result in
+            switch result {
+            case let .success(data): seal.fulfill(data)
+            case let .failure(error): seal.reject(error)
+            }
+        })
+        return (promise: promise, cancel: token.cancel)
+    }
+}
+
+extension HACache {
+    /// Wrap a once subscription in a Guarantee.
+    /// - SeeAlso: `HACache.once(_:)`
+    func once() -> (promise: Guarantee<ValueType>, cancel: () -> Void) {
+        let (guarantee, seal) = Guarantee<ValueType>.pending()
+        let token = once(seal)
+        return (promise: guarantee, cancel: token.cancel)
+    }
+}
+#endif

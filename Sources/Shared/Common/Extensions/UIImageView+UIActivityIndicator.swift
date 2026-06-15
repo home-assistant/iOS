@@ -1,6 +1,10 @@
 #if os(iOS)
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 private var activityIndicatorAssociationKey: UInt8 = 0
 

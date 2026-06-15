@@ -1,5 +1,9 @@
 import ObjectiveC.runtime
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public struct Style {
     #if os(iOS)

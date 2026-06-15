@@ -1,6 +1,10 @@
 import Alamofire
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 class MJPEGStreamerSessionDelegate: SessionDelegate {
     static let didReceiveResponse: Notification.Name = .init(rawValue: "MJPEGStreamerSessionDelegateDidReceiveResponse")

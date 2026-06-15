@@ -1,7 +1,11 @@
 #if os(iOS)
 import GRDB
 import RealmSwift
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 import XCGLogger
 import ZIPFoundation
 

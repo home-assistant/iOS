@@ -1,11 +1,15 @@
+#if canImport(Communicator)
 import Communicator
+#endif
 import Foundation
 import ObjectMapper
 import PromiseKit
 import RealmSwift
 #if os(watchOS)
 import ClockKit
+#if canImport(WatchKit)
 import WatchKit
+#endif
 #endif
 
 public enum WatchContext: String, CaseIterable {
@@ -20,6 +24,7 @@ public enum WatchContext: String, CaseIterable {
 }
 
 public extension HomeAssistantAPI {
+    #if !os(macOS)
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
     private static var watchContext: Content {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
@@ -107,4 +112,15 @@ public extension HomeAssistantAPI {
             return Current.webhooks.send(identifier: .updateComplications, server: server, request: request)
         }
     }
+    #else
+    static func SyncWatchContext() -> NSError? {
+        // Watch connectivity does not exist on native macOS
+        nil
+    }
+
+    func updateComplications(passively: Bool) -> Promise<Void> {
+        // Watch complications do not exist on native macOS
+        .value(())
+    }
+    #endif
 }

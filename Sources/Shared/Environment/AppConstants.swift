@@ -1,6 +1,10 @@
 import Foundation
 import KeychainAccess
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 import Version
 
 /// Contains shared constants

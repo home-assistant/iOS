@@ -1,5 +1,6 @@
 import SwiftUI
 
+#if !os(macOS)
 /// Extracting Main Window to retrieve the window scene and create the overlay window for our dynamic island based
 /// toasts!
 @available(iOS 18, *)
@@ -18,3 +19,4 @@ public struct WindowExtractor: UIViewRepresentable {
 
     public func updateUIView(_ uiView: UIView, context: Context) {}
 }
+#endif

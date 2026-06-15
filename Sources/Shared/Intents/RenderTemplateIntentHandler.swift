@@ -1,7 +1,11 @@
 import Foundation
 import Intents
 import PromiseKit
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
     typealias Intent = RenderTemplateIntent

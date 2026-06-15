@@ -1604,6 +1604,343 @@
 		JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
 		JARVIS0002000000000005 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
 		JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
+		FAB000000000000000000007 /* MacAppEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB000000000000000000001 /* MacAppEntry.swift */; };
+		FAB000000000000000000008 /* MacWebViewHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB000000000000000000002 /* MacWebViewHost.swift */; };
+		FAB000000000000000000009 /* MacRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB000000000000000000003 /* MacRootView.swift */; };
+		FAB200000000000000000001 /* ServerInfoMirrorTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A21762F7EA57600BD40B7 /* ServerInfoMirrorTable.swift */; };
+		FAB200000000000000000002 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		FAB200000000000000000003 /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
+		FAB200000000000000000004 /* AppIconShortcutConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730011000000000000AA01 /* AppIconShortcutConfig.swift */; };
+		FAB200000000000000000005 /* AppIconShortcutConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730012000000000000AA01 /* AppIconShortcutConfigTable.swift */; };
+		FAB200000000000000000006 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
+		FAB200000000000000000007 /* AppArea+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CDE2EBDFB4200D17841 /* AppArea+Queries.swift */; };
+		FAB200000000000000000008 /* ExternalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4C92D103ABB00245021 /* ExternalLink.swift */; };
+		FAB200000000000000000009 /* ServersPickerPillList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F161422D661CBA003DDC75 /* ServersPickerPillList.swift */; };
+		FAB20000000000000000000A /* GRDB+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */; };
+		FAB20000000000000000000B /* AppAreaTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CDB2EBDFB1D00D17841 /* AppAreaTable.swift */; };
+		FAB20000000000000000000C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
+		FAB20000000000000000000D /* AppEntityRegistryListForDisplayTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */; };
+		FAB20000000000000000000E /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
+		FAB20000000000000000000F /* FrontmostAppSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */; };
+		FAB200000000000000000010 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
+		FAB200000000000000000011 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
+		FAB200000000000000000012 /* LabsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C01D912F73C24800EFCFE7 /* LabsLabel.swift */; };
+		FAB200000000000000000013 /* HomeViewConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCBA2F0C0143005189AA /* HomeViewConfigurationTable.swift */; };
+		FAB200000000000000000014 /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
+		FAB200000000000000000015 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
+		FAB200000000000000000016 /* AssistPipelinesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */; };
+		FAB200000000000000000017 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
+		FAB200000000000000000018 /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
+		FAB200000000000000000019 /* ClientCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D086962F43659100DD730C /* ClientCertificate.swift */; };
+		FAB20000000000000000001A /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
+		FAB20000000000000000001B /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
+		FAB20000000000000000001C /* MagicItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCF2C639AB700D9C4E2 /* MagicItem.swift */; };
+		FAB20000000000000000001D /* HAPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E727011E3300A8F818 /* HAPanel.swift */; };
+		FAB20000000000000000001E /* LiveActivityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD0A2F6B89C6008EF72F /* LiveActivityRegistry.swift */; };
+		FAB20000000000000000001F /* HALiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD092F6B89C6008EF72F /* HALiveActivityAttributes.swift */; };
+		FAB200000000000000000020 /* DatabaseTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */; };
+		FAB200000000000000000021 /* HACoreAudioObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */; };
+		FAB200000000000000000022 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
+		FAB200000000000000000023 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
+		FAB200000000000000000024 /* AppleLikeBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */; };
+		FAB200000000000000000025 /* View+ScreenCaptureProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */; };
+		FAB200000000000000000026 /* AuthRequestMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723343225DBACF0031D629 /* AuthRequestMessage.swift */; };
+		FAB200000000000000000027 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DD2CED213BCA8900C3D9F7 /* URL+Extensions.swift */; };
+		FAB200000000000000000028 /* PrivacyNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */; };
+		FAB200000000000000000029 /* XCGLogger+Export.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BA5EC82759AC0300FC40E8 /* XCGLogger+Export.swift */; };
+		FAB20000000000000000002A /* CarPlayAssistDebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC581B2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift */; };
+		FAB20000000000000000002B /* FireEventIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B22150892A004AB261 /* FireEventIntentHandler.swift */; };
+		FAB20000000000000000002C /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
+		FAB20000000000000000002D /* ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1120C5832749C6350046C38B /* ServerProviding.swift */; };
+		FAB20000000000000000002E /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
+		FAB20000000000000000002F /* Reachability+NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */; };
+		FAB200000000000000000030 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
+		FAB200000000000000000031 /* IconDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F855D424DF6C7A0018013E /* IconDrawable.swift */; };
+		FAB200000000000000000032 /* AssistRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283383F2BA1B17C004798C2 /* AssistRequests.swift */; };
+		FAB200000000000000000033 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
+		FAB200000000000000000034 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
+		FAB200000000000000000035 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
+		FAB200000000000000000036 /* ConnectivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D1E249C8AF0006C74C0 /* ConnectivitySensor.swift */; };
+		FAB200000000000000000037 /* RenderTemplateIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplateIntentHandler.swift */; };
+		FAB200000000000000000038 /* KeyedDecodingContainer+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */; };
+		FAB200000000000000000039 /* XCGLogger+UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */; };
+		FAB20000000000000000003A /* DisplaySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110ED56225A563D600489AF7 /* DisplaySensor.swift */; };
+		FAB20000000000000000003B /* MagicItem+Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424151F92CD8EF2200D7A6F9 /* MagicItem+Migration.swift */; };
+		FAB20000000000000000003C /* PanelsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DE75D12D105F3000FF379F /* PanelsUpdater.swift */; };
+		FAB20000000000000000003D /* With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D15249C8082006C74C0 /* With.swift */; };
+		FAB20000000000000000003E /* IntentHandlerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */; };
+		FAB20000000000000000003F /* HACoreBlahObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620024F9C3F7000795C6 /* HACoreBlahObject.swift */; };
+		FAB200000000000000000040 /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
+		FAB200000000000000000041 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
+		FAB200000000000000000042 /* HACoreAudioObjectDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */; };
+		FAB200000000000000000043 /* LastUpdateSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D24249D1931006C74C0 /* LastUpdateSensor.swift */; };
+		FAB200000000000000000044 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
+		FAB200000000000000000045 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
+		FAB200000000000000000046 /* AuthenticationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */; };
+		FAB200000000000000000047 /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
+		FAB200000000000000000048 /* View+RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */; };
+		FAB200000000000000000049 /* View+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE572D9D48120047C00C /* View+HA.swift */; };
+		FAB20000000000000000004A /* UIBarButtonItem+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */; };
+		FAB20000000000000000004B /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
+		FAB20000000000000000004C /* PickAServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2E7B227500DAD00CF144C /* PickAServerError.swift */; };
+		FAB20000000000000000004D /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
+		FAB20000000000000000004E /* HandlerLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD0E2F6B8A19008EF72F /* HandlerLiveActivity.swift */; };
+		FAB20000000000000000004F /* HandlerShowCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF93F267D34AD0040A7E3 /* HandlerShowCamera.swift */; };
+		FAB200000000000000000050 /* HandlerHideCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF944267D34AD0040A7E3 /* HandlerHideCamera.swift */; };
+		FAB200000000000000000051 /* Version+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C9249E62E700B05222 /* Version+HA.swift */; };
+		FAB200000000000000000052 /* WidgetsKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */; };
+		FAB200000000000000000053 /* LegacyModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4824C5116F00404AF8 /* LegacyModelManager.swift */; };
+		FAB200000000000000000054 /* SnapshottablePreviewConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C62BA02D8A3792002C0001 /* SnapshottablePreviewConfigurations.swift */; };
+		FAB200000000000000000055 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
+		FAB200000000000000000056 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
+		FAB200000000000000000057 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
+		FAB200000000000000000058 /* MobileAppRegistrationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6872E652226842100C475D1 /* MobileAppRegistrationResponse.swift */; };
+		FAB200000000000000000059 /* UIColor+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */; };
+		FAB20000000000000000005A /* InputOutputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */; };
+		FAB20000000000000000005B /* WatchBatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */; };
+		FAB20000000000000000005C /* URLSessionTask+WebhookPersisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */; };
+		FAB20000000000000000005D /* NotificationAttachmentParserCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F25D25871D6000F61F7C /* NotificationAttachmentParserCamera.swift */; };
+		FAB20000000000000000005E /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
+		FAB20000000000000000005F /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
+		FAB200000000000000000060 /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
+		FAB200000000000000000061 /* BatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D1B249C8AA0006C74C0 /* BatterySensor.swift */; };
+		FAB200000000000000000062 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
+		FAB200000000000000000063 /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
+		FAB200000000000000000064 /* PassThroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1362F0FE50C00E20584 /* PassThroughWindow.swift */; };
+		FAB200000000000000000065 /* WindowExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1392F0FE50C00E20584 /* WindowExtractor.swift */; };
+		FAB200000000000000000066 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1382F0FE50C00E20584 /* ToastView.swift */; };
+		FAB200000000000000000067 /* ToastHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1402F0FE5B000E20584 /* ToastHostingController.swift */; };
+		FAB200000000000000000068 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1372F0FE50C00E20584 /* Toast.swift */; };
+		FAB200000000000000000069 /* UNNotificationContent+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */; };
+		FAB20000000000000000006A /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
+		FAB20000000000000000006B /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
+		FAB20000000000000000006C /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
+		FAB20000000000000000006D /* AppPanelTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */; };
+		FAB20000000000000000006E /* GetCameraImageIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC3221D047400370A59 /* GetCameraImageIntentHandler.swift */; };
+		FAB20000000000000000006F /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
+		FAB200000000000000000070 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
+		FAB200000000000000000071 /* PeriodicUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */; };
+		FAB200000000000000000072 /* GeocoderSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D21249C924B006C74C0 /* GeocoderSensor.swift */; };
+		FAB200000000000000000073 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
+		FAB200000000000000000074 /* Bool+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D996E42D89863A001737A0 /* Bool+HA.swift */; };
+		FAB200000000000000000075 /* Server+Fakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */; };
+		FAB200000000000000000076 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A5C2D36A47E00C37304 /* CloseButton.swift */; };
+		FAB200000000000000000077 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
+		FAB200000000000000000078 /* ExternalBusPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB72F0FF8EB00FA249B /* ExternalBusPayload.swift */; };
+		FAB200000000000000000079 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		FAB20000000000000000007A /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
+		FAB20000000000000000007B /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CFD783273662DF0082D557 /* Server.swift */; };
+		FAB20000000000000000007C /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
+		FAB20000000000000000007D /* UserDefaultsValueSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */; };
+		FAB20000000000000000007E /* AppSessionValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238DCA32DD1F1E300126434 /* AppSessionValues.swift */; };
+		FAB20000000000000000007F /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
+		FAB200000000000000000080 /* LocalPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3BD2C26192210005237E6 /* LocalPushManager.swift */; };
+		FAB200000000000000000081 /* ThreadClientProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD00A2B9B25BC0057783F /* ThreadClientProtocol.swift */; };
+		FAB200000000000000000082 /* AppPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D334262D105990008D8E78 /* AppPanel.swift */; };
+		FAB200000000000000000083 /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
+		FAB200000000000000000084 /* WebhookResponseLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628724B109C000031902 /* WebhookResponseLocation.swift */; };
+		FAB200000000000000000085 /* PedometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D18249C8253006C74C0 /* PedometerSensor.swift */; };
+		FAB200000000000000000086 /* MobileAppRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6872E612226837A00C475D1 /* MobileAppRegistrationRequest.swift */; };
+		FAB200000000000000000087 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
+		FAB200000000000000000088 /* PushProviderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */; };
+		FAB200000000000000000089 /* SiriIntents+ConvenienceInits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */; };
+		FAB20000000000000000008A /* DiscoveredHomeAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAEE1D8F44DC00A0D225 /* DiscoveredHomeAssistant.swift */; };
+		FAB20000000000000000008B /* WebhookResponseUpdateComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */; };
+		FAB20000000000000000008C /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4298587D2EB1025E00E33710 /* LocationManager.swift */; };
+		FAB20000000000000000008D /* SecurityExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* SecurityExceptions.swift */; };
+		FAB20000000000000000008E /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EABD2F0FFB1900FA249B /* ToastManager.swift */; };
+		FAB20000000000000000008F /* ToastShowPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */; };
+		FAB200000000000000000090 /* ToastHidePayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */; };
+		FAB200000000000000000091 /* ServerAlerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA55B25B36630005061A0 /* ServerAlerter.swift */; };
+		FAB200000000000000000092 /* GuaranteedMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */; };
+		FAB200000000000000000093 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
+		FAB200000000000000000094 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D893A20E0B2E300D4F28D /* AppConstants.swift */; };
+		FAB200000000000000000095 /* IconDrawable+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE913263325790099F7D8 /* IconDrawable+Settings.swift */; };
+		FAB200000000000000000096 /* CustomServerTrustManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */; };
+		FAB200000000000000000097 /* Realm+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */; };
+		FAB200000000000000000098 /* Float+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8B82D8AC63300F5D084 /* Float+HA.swift */; };
+		FAB200000000000000000099 /* HAAPI+RequestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */; };
+		FAB20000000000000000009A /* HACancellable+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6C267EFC15003DF674 /* HACancellable+App.swift */; };
+		FAB20000000000000000009B /* LocalizedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E730F2518457C004006D8 /* LocalizedManager.swift */; };
+		FAB20000000000000000009C /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
+		FAB20000000000000000009D /* ClientCertificateSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42175EC22F436E7E001073AF /* ClientCertificateSessionDelegate.swift */; };
+		FAB20000000000000000009E /* SendLocationIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B42150898A004AB261 /* SendLocationIntentHandler.swift */; };
+		FAB20000000000000000009F /* AppDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */; };
+		FAB2000000000000000000A0 /* PerServerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1120C57E274638330046C38B /* PerServerContainer.swift */; };
+		FAB2000000000000000000A1 /* Image+SharedAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */; };
+		FAB2000000000000000000A2 /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
+		FAB2000000000000000000A3 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
+		FAB2000000000000000000A4 /* SubscribeEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672334C225DE1490031D629 /* SubscribeEvents.swift */; };
+		FAB2000000000000000000A5 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
+		FAB2000000000000000000A6 /* NSMutableAttributedString+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1168BF2F2718070400DD4D15 /* NSMutableAttributedString+Additions.swift */; };
+		FAB2000000000000000000A7 /* Dictionary+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */; };
+		FAB2000000000000000000A8 /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
+		FAB2000000000000000000A9 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
+		FAB2000000000000000000AA /* OpenPageIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E4270116AF00A8F818 /* OpenPageIntentHandler.swift */; };
+		FAB2000000000000000000AB /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
+		FAB2000000000000000000AC /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
+		FAB2000000000000000000AD /* MaterialDesignIcons+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */; };
+		FAB2000000000000000000AE /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
+		FAB2000000000000000000AF /* NotificationsCommandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */; };
+		FAB2000000000000000000B0 /* Promise+RetryNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */; };
+		FAB2000000000000000000B1 /* ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CB20D778B50034574D /* ClientEvent.swift */; };
+		FAB2000000000000000000B2 /* WatchConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */; };
+		FAB2000000000000000000B3 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00302BD20D4BEDB004C2CA9 /* Environment.swift */; };
+		FAB2000000000000000000B4 /* RealmZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE36A120CF593E001494E3 /* RealmZone.swift */; };
+		FAB2000000000000000000B5 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
+		FAB2000000000000000000B6 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
+		FAB2000000000000000000B7 /* Alamofire+EncryptedResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */; };
+		FAB2000000000000000000B8 /* HACoreMediaObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620324F9C453000795C6 /* HACoreMediaObjectSystem.swift */; };
+		FAB2000000000000000000B9 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CFD78027364F450082D557 /* Identifier.swift */; };
+		FAB2000000000000000000BA /* CLError+DebugDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */; };
+		FAB2000000000000000000BB /* UpdateSensorsIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensorsIntentHandler.swift */; };
+		FAB2000000000000000000BC /* WebhookSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */; };
+		FAB2000000000000000000BD /* OnboardingStateObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E16399250B1B760076D612 /* OnboardingStateObservation.swift */; };
+		FAB2000000000000000000BE /* WebhookResponseUpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628124B053A800031902 /* WebhookResponseUpdateSensors.swift */; };
+		FAB2000000000000000000BF /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
+		FAB2000000000000000000C0 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
+		FAB2000000000000000000C1 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
+		FAB2000000000000000000C2 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
+		FAB2000000000000000000C3 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
+		FAB2000000000000000000C4 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		FAB2000000000000000000C5 /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
+		FAB2000000000000000000C6 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
+		FAB2000000000000000000C7 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
+		FAB2000000000000000000C8 /* ThreadCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD82B9B19F70057783F /* ThreadCredential.swift */; };
+		FAB2000000000000000000C9 /* IconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F855D524DF6C7A0018013E /* IconImageView.swift */; };
+		FAB2000000000000000000CA /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
+		FAB2000000000000000000CB /* UIView+StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4827128A970071C2AA /* UIView+StackView.swift */; };
+		FAB2000000000000000000CC /* MatterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6B5902949178700B8B552 /* MatterWrapper.swift */; };
+		FAB2000000000000000000CD /* ClientEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */; };
+		FAB2000000000000000000CE /* MobileAppConfigPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */; };
+		FAB2000000000000000000CF /* UIScreen+PerfectCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */; };
+		FAB2000000000000000000D0 /* AppGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278CB822D01F09400CFAAC9 /* AppGesture.swift */; };
+		FAB2000000000000000000D1 /* FocusSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC8272676F44E00452430 /* FocusSensor.swift */; };
+		FAB2000000000000000000D2 /* WatchBackgroundRefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */; };
+		FAB2000000000000000000D3 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
+		FAB2000000000000000000D4 /* WebsiteDataStoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */; };
+		FAB2000000000000000000D5 /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
+		FAB2000000000000000000D6 /* FocusStatusIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */; };
+		FAB2000000000000000000D7 /* AppArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CD82EBDFB1700D17841 /* AppArea.swift */; };
+		FAB2000000000000000000D8 /* WebhookResponseUnhandled.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628D24B128EF00031902 /* WebhookResponseUnhandled.swift */; };
+		FAB2000000000000000000D9 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4B271295AD0071C2AA /* Style.swift */; };
+		FAB2000000000000000000DA /* AppDeviceRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */; };
+		FAB2000000000000000000DB /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116570762702B0F6003906A7 /* DiskCache.swift */; };
+		FAB2000000000000000000DC /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
+		FAB2000000000000000000DD /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723349225DDF410031D629 /* Event.swift */; };
+		FAB2000000000000000000DE /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
+		FAB2000000000000000000DF /* ImpactFeedbackGeneratorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420A80952E9CF98C00D30A6B /* ImpactFeedbackGeneratorProtocol.swift */; };
+		FAB2000000000000000000E0 /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
+		FAB2000000000000000000E1 /* LocationHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911E2151F90300A326DC /* LocationHistory.swift */; };
+		FAB2000000000000000000E2 /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44092104224600C74314 /* TokenInfo.swift */; };
+		FAB2000000000000000000E3 /* MaterialDesignIcons+Encodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */; };
+		FAB2000000000000000000E4 /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
+		FAB2000000000000000000E5 /* HAppEntityTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */; };
+		FAB2000000000000000000E6 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
+		FAB2000000000000000000E7 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
+		FAB2000000000000000000E8 /* HACoreMediaObjectCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620624F9C492000795C6 /* HACoreMediaObjectCamera.swift */; };
+		FAB2000000000000000000E9 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
+		FAB2000000000000000000EA /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
+		FAB2000000000000000000EB /* WatchConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */; };
+		FAB2000000000000000000EC /* AllowedTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9C1012FBB000100D0C0DE /* AllowedTag.swift */; };
+		FAB2000000000000000000ED /* AllowedTagTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9C1042FBB000100D0C0DE /* AllowedTagTable.swift */; };
+		FAB2000000000000000000EE /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694524E771AB004AA96D /* Color+Hex.swift */; };
+		FAB2000000000000000000EF /* NSItemProvider+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */; };
+		FAB2000000000000000000F0 /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
+		FAB2000000000000000000F1 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884792122A65800CCB501 /* SettingsStore.swift */; };
+		FAB2000000000000000000F2 /* FocusStatusWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82C267708CA00452430 /* FocusStatusWrapper.swift */; };
+		FAB2000000000000000000F3 /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
+		FAB2000000000000000000F4 /* WebhookUpdateLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */; };
+		FAB2000000000000000000F5 /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
+		FAB2000000000000000000F6 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
+		FAB2000000000000000000F7 /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
+		FAB2000000000000000000F8 /* MJPEGStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */; };
+		FAB2000000000000000000F9 /* BaseColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B2637D2E16A1DC0042DF10 /* BaseColors.swift */; };
+		FAB2000000000000000000FA /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
+		FAB2000000000000000000FB /* CoreStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */; };
+		FAB2000000000000000000FC /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C131CF2D66084C00AF48E6 /* PillView.swift */; };
+		FAB2000000000000000000FD /* WebhookResponseServiceCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628A24B1230E00031902 /* WebhookResponseServiceCall.swift */; };
+		FAB2000000000000000000FE /* UIImage+Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */; };
+		FAB2000000000000000000FF /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
+		FAB200000000000000000100 /* MagicItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AABA2C6CE1D0004CCC9D /* MagicItemProvider.swift */; };
+		FAB200000000000000000101 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
+		FAB200000000000000000102 /* CallServiceIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B02150891B004AB261 /* CallServiceIntentHandler.swift */; };
+		FAB200000000000000000103 /* ExternalLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */; };
+		FAB200000000000000000104 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
+		FAB200000000000000000105 /* MobileAppConfigPushCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */; };
+		FAB200000000000000000106 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
+		FAB200000000000000000107 /* Color+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420AE9DF2CA559FE0020E9CB /* Color+hex.swift */; };
+		FAB200000000000000000108 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
+		FAB200000000000000000109 /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
+		FAB20000000000000000010A /* RealmPersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */; };
+		FAB20000000000000000010B /* NotificationAttachmentErrorImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F27D258725D300F61F7C /* NotificationAttachmentErrorImage.swift */; };
+		FAB20000000000000000010C /* MDIMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148A44F24E9AF9200345050 /* MDIMigration.swift */; };
+		FAB20000000000000000010D /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
+		FAB20000000000000000010E /* ConnectivityWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110ED58E25A6743900489AF7 /* ConnectivityWrapper.swift */; };
+		FAB20000000000000000010F /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
+		FAB200000000000000000110 /* DeviceRegistryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFF72F0C9009003B08D5 /* DeviceRegistryEntry.swift */; };
+		FAB200000000000000000111 /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
+		FAB200000000000000000112 /* NotificationAttachmentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F22525871C3100F61F7C /* NotificationAttachmentParser.swift */; };
+		FAB200000000000000000113 /* HAAreasRegistryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */; };
+		FAB200000000000000000114 /* CustomWidgetTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */; };
+		FAB200000000000000000115 /* AssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068D2BA9D93500D452F9 /* AssistService.swift */; };
+		FAB200000000000000000116 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
+		FAB200000000000000000117 /* CarPlayConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */; };
+		FAB200000000000000000118 /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
+		FAB200000000000000000119 /* HACoreBlahProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261FC24F9B81A000795C6 /* HACoreBlahProperty.swift */; };
+		FAB20000000000000000011A /* ThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD72B9B19F70057783F /* ThreadClientService.swift */; };
+		FAB20000000000000000011B /* TagManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* TagManagerProtocol.swift */; };
+		FAB20000000000000000011C /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
+		FAB20000000000000000011D /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
+		FAB20000000000000000011E /* WebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182524AF9A0500E6525C /* WebhookManager.swift */; };
+		FAB20000000000000000011F /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
+		FAB200000000000000000120 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; };
+		FAB200000000000000000121 /* ConfigResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* ConfigResponse.swift */; };
+		FAB200000000000000000122 /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
+		FAB200000000000000000123 /* AppEntitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */; };
+		FAB200000000000000000124 /* MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F855D324DF6C7A0018013E /* MaterialDesignIcons.swift */; };
+		FAB200000000000000000125 /* CollapsibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD0052B9B1D9E0057783F /* CollapsibleView.swift */; };
+		FAB200000000000000000126 /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
+		FAB200000000000000000127 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
+		FAB200000000000000000128 /* NotificationAttachmentParserURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F26D25871D8200F61F7C /* NotificationAttachmentParserURL.swift */; };
+		FAB200000000000000000129 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1105CE1B272B9CB300F33BD8 /* ServerManager.swift */; };
+		FAB20000000000000000012A /* ServerManagerPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C95E812F7EDAAA00112233 /* ServerManagerPersistence.swift */; };
+		FAB20000000000000000012B /* ServerManagerMirrorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C95E842F7EDB1000112233 /* ServerManagerMirrorStore.swift */; };
+		FAB20000000000000000012C /* LocationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */; };
+		FAB20000000000000000012D /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
+		FAB20000000000000000012E /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
+		FAB20000000000000000012F /* SensorProviderDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */; };
+		FAB200000000000000000130 /* DeviceWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */; };
+		FAB200000000000000000131 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14444A34DA125693568C7035 /* KioskSettingsTable.swift */; };
+		FAB200000000000000000132 /* CallServiceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94616AE6CF9100E44C576B8D /* CallServiceResponse.swift */; };
+		FAB200000000000000000133 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (codegen, ); }; };
+		FAB200000000000000000135 /* CrossPlatformUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB200000000000000000134 /* CrossPlatformUI.swift */; };
+		FAB200000000000000000136 /* Frontend.strings in Resources */ = {isa = PBXBuildFile; fileRef = 116570582702A3B9003906A7 /* Frontend.strings */; };
+		FAB200000000000000000137 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
+		FAB200000000000000000138 /* MaterialDesignIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */; };
+		FAB200000000000000000139 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
+		FAB20000000000000000013A /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
+		FAB20000000000000000013B /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
+		FAB20000000000000000013C /* Pods-iOS-Shared-iOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = ADC769271BB34C474C2D1E24 /* Pods-iOS-Shared-iOS-metadata.plist */; };
+		FAB20000000000000000013D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FAB200000000000000000141 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FAB20000000000000000013F /* Alamofire */; };
+		FAB200000000000000000145 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000143 /* GRDB */; };
+		FAB200000000000000000149 /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000147 /* HAKit */; };
+		FAB20000000000000000014D /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = FAB20000000000000000014B /* Starscream */; };
+		FAB200000000000000000151 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = FAB20000000000000000014F /* KeychainAccess */; };
+		FAB200000000000000000155 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000153 /* ObjectMapper */; };
+		FAB200000000000000000159 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000157 /* PromiseKit */; };
+		FAB20000000000000000015D /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FAB20000000000000000015B /* RealmSwift */; };
+		FAB200000000000000000161 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = FAB20000000000000000015F /* Reachability */; };
+		FAB200000000000000000165 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000163 /* SFSafeSymbols */; };
+		FAB200000000000000000169 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000167 /* Sodium */; };
+		FAB20000000000000000016D /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FAB20000000000000000016B /* UIColorHexSwift */; };
+		FAB200000000000000000171 /* Version in Frameworks */ = {isa = PBXBuildFile; productRef = FAB20000000000000000016F /* Version */; };
+		FAB200000000000000000175 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000173 /* XCGLogger */; };
+		FAB200000000000000000177 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000176 /* SharedPush */; };
+		FAB200000000000000000179 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200000000000000000178 /* ZIPFoundation */; };
+		FAB400000000000000000002 /* HACache+PromiseKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB400000000000000000001 /* HACache+PromiseKit.swift */; };
+		FAB400000000000000000004 /* HAConnection+PromiseKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB400000000000000000003 /* HAConnection+PromiseKit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3524,6 +3861,15 @@
 		JARVIS0001000000000001 /* TodoListAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListAppEntity.swift; sourceTree = "<group>"; };
 		JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListRefreshAppIntent.swift; sourceTree = "<group>"; };
 		JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemCompleteAppIntent.swift; sourceTree = "<group>"; };
+		FAB000000000000000000001 /* MacAppEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppEntry.swift; sourceTree = "<group>"; };
+		FAB000000000000000000002 /* MacWebViewHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWebViewHost.swift; sourceTree = "<group>"; };
+		FAB000000000000000000003 /* MacRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacRootView.swift; sourceTree = "<group>"; };
+		FAB000000000000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAB000000000000000000005 /* Home Assistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAB200000000000000000134 /* CrossPlatformUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossPlatformUI.swift; path = Sources/Shared/Common/CrossPlatform/CrossPlatformUI.swift; sourceTree = SOURCE_ROOT; };
+		FAB200000000000000000183 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAB400000000000000000001 /* HACache+PromiseKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "HACache+PromiseKit.swift"; path = "Sources/Shared/Vendor/HAKitPromiseKit/HACache+PromiseKit.swift"; sourceTree = SOURCE_ROOT; };
+		FAB400000000000000000003 /* HAConnection+PromiseKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "HAConnection+PromiseKit.swift"; path = "Sources/Shared/Vendor/HAKitPromiseKit/HAConnection+PromiseKit.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3708,6 +4054,36 @@
 			files = (
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
 				61495A70232316478717CF27 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB00000000000000000000B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB20000000000000000017B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAB200000000000000000141 /* Alamofire in Frameworks */,
+				FAB200000000000000000145 /* GRDB in Frameworks */,
+				FAB200000000000000000149 /* HAKit in Frameworks */,
+				FAB20000000000000000014D /* Starscream in Frameworks */,
+				FAB200000000000000000151 /* KeychainAccess in Frameworks */,
+				FAB200000000000000000155 /* ObjectMapper in Frameworks */,
+				FAB200000000000000000159 /* PromiseKit in Frameworks */,
+				FAB20000000000000000015D /* RealmSwift in Frameworks */,
+				FAB200000000000000000161 /* Reachability in Frameworks */,
+				FAB200000000000000000165 /* SFSafeSymbols in Frameworks */,
+				FAB200000000000000000169 /* Sodium in Frameworks */,
+				FAB20000000000000000016D /* UIColorHexSwift in Frameworks */,
+				FAB200000000000000000171 /* Version in Frameworks */,
+				FAB200000000000000000175 /* XCGLogger in Frameworks */,
+				FAB200000000000000000177 /* SharedPush in Frameworks */,
+				FAB200000000000000000179 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6866,6 +7242,8 @@
 		B657A8E71CA646EB00121384 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				FAB200000000000000000183 /* Shared.framework */,
+				FAB000000000000000000005 /* Home Assistant.app */,
 				B657A8E61CA646EB00121384 /* Home Assistant Δ.app */,
 				B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */,
 				B657A9071CA646EB00121384 /* HomeAssistant-Tests-UI.xctest */,
@@ -6911,6 +7289,7 @@
 				B679B1FA1E1F3D020071D366 /* Utilities */,
 				11A71C6924A463EE00D9565F /* ZoneManager */,
 				B69933961E232AF50054453D /* Resources */,
+				FAB000000000000000000006 /* macOS */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -7222,6 +7601,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				FAB200000000000000000134 /* CrossPlatformUI.swift */,
 				A95FDD0B2F6B89C6008EF72F /* LiveActivity */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
@@ -7578,6 +7958,17 @@
 			path = Templates;
 			sourceTree = "<group>";
 		};
+		FAB000000000000000000006 /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				FAB000000000000000000001 /* MacAppEntry.swift */,
+				FAB000000000000000000002 /* MacWebViewHost.swift */,
+				FAB000000000000000000003 /* MacRootView.swift */,
+				FAB000000000000000000004 /* Info.plist */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -7601,6 +7992,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D892920E0A85300D4F28D /* Shared.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB20000000000000000017C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAB20000000000000000013D /* Shared.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7984,6 +8383,59 @@
 			productReference = D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		FAB00000000000000000000D /* App-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAB00000000000000000000E /* Build configuration list for PBXNativeTarget "App-macOS" */;
+			buildPhases = (
+				FAB00000000000000000000A /* Sources */,
+				FAB00000000000000000000B /* Frameworks */,
+				FAB00000000000000000000C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "App-macOS";
+			productName = "App-macOS";
+			productReference = FAB000000000000000000005 /* Home Assistant.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FAB20000000000000000017E /* Shared-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAB20000000000000000017F /* Build configuration list for PBXNativeTarget "Shared-macOS" */;
+			buildPhases = (
+				FAB20000000000000000017A /* Sources */,
+				FAB20000000000000000017B /* Frameworks */,
+				FAB20000000000000000017C /* Headers */,
+				FAB20000000000000000017D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Shared-macOS";
+			packageProductDependencies = (
+				FAB20000000000000000013F /* Alamofire */,
+				FAB200000000000000000143 /* GRDB */,
+				FAB200000000000000000147 /* HAKit */,
+				FAB20000000000000000014B /* Starscream */,
+				FAB20000000000000000014F /* KeychainAccess */,
+				FAB200000000000000000153 /* ObjectMapper */,
+				FAB200000000000000000157 /* PromiseKit */,
+				FAB20000000000000000015B /* RealmSwift */,
+				FAB20000000000000000015F /* Reachability */,
+				FAB200000000000000000163 /* SFSafeSymbols */,
+				FAB200000000000000000167 /* Sodium */,
+				FAB20000000000000000016B /* UIColorHexSwift */,
+				FAB20000000000000000016F /* Version */,
+				FAB200000000000000000173 /* XCGLogger */,
+				FAB200000000000000000176 /* SharedPush */,
+				FAB200000000000000000178 /* ZIPFoundation */,
+			);
+			productName = Shared;
+			productReference = FAB200000000000000000183 /* Shared.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -8212,6 +8664,20 @@
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */,
+				FAB20000000000000000013E /* XCRemoteSwiftPackageReference "Alamofire" */,
+				FAB200000000000000000142 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				FAB200000000000000000146 /* XCRemoteSwiftPackageReference "HAKit" */,
+				FAB20000000000000000014A /* XCRemoteSwiftPackageReference "Starscream" */,
+				FAB20000000000000000014E /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				FAB200000000000000000152 /* XCRemoteSwiftPackageReference "ObjectMapper" */,
+				FAB200000000000000000156 /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				FAB20000000000000000015A /* XCRemoteSwiftPackageReference "realm-swift" */,
+				FAB20000000000000000015E /* XCRemoteSwiftPackageReference "Reachability.swift" */,
+				FAB200000000000000000162 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
+				FAB200000000000000000166 /* XCRemoteSwiftPackageReference "swift-sodium" */,
+				FAB20000000000000000016A /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */,
+				FAB20000000000000000016E /* XCRemoteSwiftPackageReference "Version" */,
+				FAB200000000000000000172 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -8221,6 +8687,8 @@
 				B657A8E51CA646EB00121384 /* App */,
 				B6CC5D812159D10D00833E5D /* WatchApp */,
 				11DE9D8225B6103C0081C0ED /* Launcher */,
+				FAB00000000000000000000D /* App-macOS */,
+				FAB20000000000000000017E /* Shared-macOS */,
 				D03D891620E0A85200D4F28D /* Shared-iOS */,
 				B67CE82322200D420034C1D0 /* Shared-watchOS */,
 				46C62B872D8A3687002C0001 /* SharedTesting */,
@@ -8558,6 +9026,27 @@
 				C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */,
 				428DC0022F0C961E003B08D5 /* deviceregistry.json in Resources */,
 				42FDCA282F0C7EC200C92958 /* entityregistry.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB00000000000000000000C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB20000000000000000017D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAB200000000000000000136 /* Frontend.strings in Resources */,
+				FAB200000000000000000137 /* Localizable.strings in Resources */,
+				FAB200000000000000000138 /* MaterialDesignIcons.ttf in Resources */,
+				FAB200000000000000000139 /* Colors.xcassets in Resources */,
+				FAB20000000000000000013A /* Core.strings in Resources */,
+				FAB20000000000000000013B /* SharedAssets.xcassets in Resources */,
+				FAB20000000000000000013C /* Pods-iOS-Shared-iOS-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10550,6 +11039,333 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAB00000000000000000000A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAB000000000000000000007 /* MacAppEntry.swift in Sources */,
+				FAB000000000000000000008 /* MacWebViewHost.swift in Sources */,
+				FAB000000000000000000009 /* MacRootView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB20000000000000000017A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAB400000000000000000002 /* HACache+PromiseKit.swift in Sources */,
+				FAB400000000000000000004 /* HAConnection+PromiseKit.swift in Sources */,
+				FAB200000000000000000001 /* ServerInfoMirrorTable.swift in Sources */,
+				FAB200000000000000000002 /* Sizes.swift in Sources */,
+				FAB200000000000000000003 /* UIColor+CSS3+Hex.swift in Sources */,
+				FAB200000000000000000004 /* AppIconShortcutConfig.swift in Sources */,
+				FAB200000000000000000005 /* AppIconShortcutConfigTable.swift in Sources */,
+				FAB200000000000000000006 /* SensorProvider.swift in Sources */,
+				FAB200000000000000000007 /* AppArea+Queries.swift in Sources */,
+				FAB200000000000000000008 /* ExternalLink.swift in Sources */,
+				FAB200000000000000000009 /* ServersPickerPillList.swift in Sources */,
+				FAB20000000000000000000A /* GRDB+Initialization.swift in Sources */,
+				FAB20000000000000000000B /* AppAreaTable.swift in Sources */,
+				FAB20000000000000000000C /* WebhookResponseHandler.swift in Sources */,
+				FAB20000000000000000000D /* AppEntityRegistryListForDisplayTable.swift in Sources */,
+				FAB20000000000000000000E /* AppTriggerSource.swift in Sources */,
+				FAB20000000000000000000F /* FrontmostAppSensor.swift in Sources */,
+				FAB200000000000000000010 /* ModalCloseButton.swift in Sources */,
+				FAB200000000000000000011 /* SharedPlist.swift in Sources */,
+				FAB200000000000000000012 /* LabsLabel.swift in Sources */,
+				FAB200000000000000000013 /* HomeViewConfigurationTable.swift in Sources */,
+				FAB200000000000000000014 /* Promise+WebhookJson.swift in Sources */,
+				FAB200000000000000000015 /* Domain.swift in Sources */,
+				FAB200000000000000000016 /* AssistPipelinesTable.swift in Sources */,
+				FAB200000000000000000017 /* UIViewController+Extensions.swift in Sources */,
+				FAB200000000000000000018 /* HATypedRequest+App.swift in Sources */,
+				FAB200000000000000000019 /* ClientCertificate.swift in Sources */,
+				FAB20000000000000000001A /* DeviceClassProvider.swift in Sources */,
+				FAB20000000000000000001B /* CardView.swift in Sources */,
+				FAB20000000000000000001C /* MagicItem.swift in Sources */,
+				FAB20000000000000000001D /* HAPanel.swift in Sources */,
+				FAB20000000000000000001E /* LiveActivityRegistry.swift in Sources */,
+				FAB20000000000000000001F /* HALiveActivityAttributes.swift in Sources */,
+				FAB200000000000000000020 /* DatabaseTables.swift in Sources */,
+				FAB200000000000000000021 /* HACoreAudioObjectSystem.swift in Sources */,
+				FAB200000000000000000022 /* TokenManager.swift in Sources */,
+				FAB200000000000000000023 /* WatchHelpers.swift in Sources */,
+				FAB200000000000000000024 /* AppleLikeBottomSheet.swift in Sources */,
+				FAB200000000000000000025 /* View+ScreenCaptureProtection.swift in Sources */,
+				FAB200000000000000000026 /* AuthRequestMessage.swift in Sources */,
+				FAB200000000000000000027 /* URL+Extensions.swift in Sources */,
+				FAB200000000000000000028 /* PrivacyNoteView.swift in Sources */,
+				FAB200000000000000000029 /* XCGLogger+Export.swift in Sources */,
+				FAB20000000000000000002A /* CarPlayAssistDebugSettings.swift in Sources */,
+				FAB20000000000000000002B /* FireEventIntentHandler.swift in Sources */,
+				FAB20000000000000000002C /* Service.swift in Sources */,
+				FAB20000000000000000002D /* ServerProviding.swift in Sources */,
+				FAB20000000000000000002E /* HAAPI.swift in Sources */,
+				FAB20000000000000000002F /* Reachability+NetworkType.swift in Sources */,
+				FAB200000000000000000030 /* DeviceBattery.swift in Sources */,
+				FAB200000000000000000031 /* IconDrawable.swift in Sources */,
+				FAB200000000000000000032 /* AssistRequests.swift in Sources */,
+				FAB200000000000000000033 /* EntityRegistry.swift in Sources */,
+				FAB200000000000000000034 /* FrontendStrings.swift in Sources */,
+				FAB200000000000000000035 /* CLLocation+Extensions.swift in Sources */,
+				FAB200000000000000000036 /* ConnectivitySensor.swift in Sources */,
+				FAB200000000000000000037 /* RenderTemplateIntentHandler.swift in Sources */,
+				FAB200000000000000000038 /* KeyedDecodingContainer+JSON.swift in Sources */,
+				FAB200000000000000000039 /* XCGLogger+UNNotification.swift in Sources */,
+				FAB20000000000000000003A /* DisplaySensor.swift in Sources */,
+				FAB20000000000000000003B /* MagicItem+Migration.swift in Sources */,
+				FAB20000000000000000003C /* PanelsUpdater.swift in Sources */,
+				FAB20000000000000000003D /* With.swift in Sources */,
+				FAB20000000000000000003E /* IntentHandlerFactory.swift in Sources */,
+				FAB20000000000000000003F /* HACoreBlahObject.swift in Sources */,
+				FAB200000000000000000040 /* View+ConditionalModifier.swift in Sources */,
+				FAB200000000000000000041 /* WebSocketMessage.swift in Sources */,
+				FAB200000000000000000042 /* HACoreAudioObjectDevice.swift in Sources */,
+				FAB200000000000000000043 /* LastUpdateSensor.swift in Sources */,
+				FAB200000000000000000044 /* BackgroundTask.swift in Sources */,
+				FAB200000000000000000045 /* AuthenticationAPI.swift in Sources */,
+				FAB200000000000000000046 /* AuthenticationRoutes.swift in Sources */,
+				FAB200000000000000000047 /* ProcessInfo+BackgroundTask.swift in Sources */,
+				FAB200000000000000000048 /* View+RoundedCorner.swift in Sources */,
+				FAB200000000000000000049 /* View+HA.swift in Sources */,
+				FAB20000000000000000004A /* UIBarButtonItem+Additions.swift in Sources */,
+				FAB20000000000000000004B /* HAEntity+DeviceClass.swift in Sources */,
+				FAB20000000000000000004C /* PickAServerError.swift in Sources */,
+				FAB20000000000000000004D /* EntityProvider+Details.swift in Sources */,
+				FAB20000000000000000004E /* HandlerLiveActivity.swift in Sources */,
+				FAB20000000000000000004F /* HandlerShowCamera.swift in Sources */,
+				FAB200000000000000000050 /* HandlerHideCamera.swift in Sources */,
+				FAB200000000000000000051 /* Version+HA.swift in Sources */,
+				FAB200000000000000000052 /* WidgetsKind.swift in Sources */,
+				FAB200000000000000000053 /* LegacyModelManager.swift in Sources */,
+				FAB200000000000000000054 /* SnapshottablePreviewConfigurations.swift in Sources */,
+				FAB200000000000000000055 /* FrontendStrings+Values.swift in Sources */,
+				FAB200000000000000000056 /* EntityIconColorProvider.swift in Sources */,
+				FAB200000000000000000057 /* CMMotion+StringExtensions.swift in Sources */,
+				FAB200000000000000000058 /* MobileAppRegistrationResponse.swift in Sources */,
+				FAB200000000000000000059 /* UIColor+HA.swift in Sources */,
+				FAB20000000000000000005A /* InputOutputDeviceSensor.swift in Sources */,
+				FAB20000000000000000005B /* WatchBatterySensor.swift in Sources */,
+				FAB20000000000000000005C /* URLSessionTask+WebhookPersisted.swift in Sources */,
+				FAB20000000000000000005D /* NotificationAttachmentParserCamera.swift in Sources */,
+				FAB20000000000000000005E /* AssistIntentHandler.swift in Sources */,
+				FAB20000000000000000005F /* Bonjour.swift in Sources */,
+				FAB200000000000000000060 /* CLLocation+Sanitize.swift in Sources */,
+				FAB200000000000000000061 /* BatterySensor.swift in Sources */,
+				FAB200000000000000000062 /* ConnectionInfo.swift in Sources */,
+				FAB200000000000000000063 /* CarPlayConfig.swift in Sources */,
+				FAB200000000000000000064 /* PassThroughWindow.swift in Sources */,
+				FAB200000000000000000065 /* WindowExtractor.swift in Sources */,
+				FAB200000000000000000066 /* ToastView.swift in Sources */,
+				FAB200000000000000000067 /* ToastHostingController.swift in Sources */,
+				FAB200000000000000000068 /* Toast.swift in Sources */,
+				FAB200000000000000000069 /* UNNotificationContent+Additions.swift in Sources */,
+				FAB20000000000000000006A /* Color+Codable.swift in Sources */,
+				FAB20000000000000000006B /* ActivitySensor.swift in Sources */,
+				FAB20000000000000000006C /* Haptics.swift in Sources */,
+				FAB20000000000000000006D /* AppPanelTable.swift in Sources */,
+				FAB20000000000000000006E /* GetCameraImageIntentHandler.swift in Sources */,
+				FAB20000000000000000006F /* Data+Hexadecimal.swift in Sources */,
+				FAB200000000000000000070 /* ObjectMapperTransformers.swift in Sources */,
+				FAB200000000000000000071 /* PeriodicUpdateManager.swift in Sources */,
+				FAB200000000000000000072 /* GeocoderSensor.swift in Sources */,
+				FAB200000000000000000073 /* NotificationAction.swift in Sources */,
+				FAB200000000000000000074 /* Bool+HA.swift in Sources */,
+				FAB200000000000000000075 /* Server+Fakes.swift in Sources */,
+				FAB200000000000000000076 /* CloseButton.swift in Sources */,
+				FAB200000000000000000077 /* MobileAppConfig.swift in Sources */,
+				FAB200000000000000000078 /* ExternalBusPayload.swift in Sources */,
+				FAB200000000000000000079 /* Strings.swift in Sources */,
+				FAB20000000000000000007A /* AppEntityRegistryTable.swift in Sources */,
+				FAB20000000000000000007B /* Server.swift in Sources */,
+				FAB20000000000000000007C /* DesignSystem.swift in Sources */,
+				FAB20000000000000000007D /* UserDefaultsValueSync.swift in Sources */,
+				FAB20000000000000000007E /* AppSessionValues.swift in Sources */,
+				FAB20000000000000000007F /* AssistConfigurationTable.swift in Sources */,
+				FAB200000000000000000080 /* LocalPushManager.swift in Sources */,
+				FAB200000000000000000081 /* ThreadClientProtocol.swift in Sources */,
+				FAB200000000000000000082 /* AppPanel.swift in Sources */,
+				FAB200000000000000000083 /* TodoListItem.swift in Sources */,
+				FAB200000000000000000084 /* WebhookResponseLocation.swift in Sources */,
+				FAB200000000000000000085 /* PedometerSensor.swift in Sources */,
+				FAB200000000000000000086 /* MobileAppRegistrationRequest.swift in Sources */,
+				FAB200000000000000000087 /* HAEntity+CarPlay.swift in Sources */,
+				FAB200000000000000000088 /* PushProviderConfiguration.swift in Sources */,
+				FAB200000000000000000089 /* SiriIntents+ConvenienceInits.swift in Sources */,
+				FAB20000000000000000008A /* DiscoveredHomeAssistant.swift in Sources */,
+				FAB20000000000000000008B /* WebhookResponseUpdateComplications.swift in Sources */,
+				FAB20000000000000000008C /* LocationManager.swift in Sources */,
+				FAB20000000000000000008D /* SecurityExceptions.swift in Sources */,
+				FAB20000000000000000008E /* ToastManager.swift in Sources */,
+				FAB20000000000000000008F /* ToastShowPayload.swift in Sources */,
+				FAB200000000000000000090 /* ToastHidePayload.swift in Sources */,
+				FAB200000000000000000091 /* ServerAlerter.swift in Sources */,
+				FAB200000000000000000092 /* GuaranteedMessages.swift in Sources */,
+				FAB200000000000000000093 /* ActiveStateManager.swift in Sources */,
+				FAB200000000000000000094 /* AppConstants.swift in Sources */,
+				FAB200000000000000000095 /* IconDrawable+Settings.swift in Sources */,
+				FAB200000000000000000096 /* CustomServerTrustManager.swift in Sources */,
+				FAB200000000000000000097 /* Realm+Initialization.swift in Sources */,
+				FAB200000000000000000098 /* Float+HA.swift in Sources */,
+				FAB200000000000000000099 /* HAAPI+RequestHelpers.swift in Sources */,
+				FAB20000000000000000009A /* HACancellable+App.swift in Sources */,
+				FAB20000000000000000009B /* LocalizedManager.swift in Sources */,
+				FAB20000000000000000009C /* Updater.swift in Sources */,
+				FAB20000000000000000009D /* ClientCertificateSessionDelegate.swift in Sources */,
+				FAB20000000000000000009E /* SendLocationIntentHandler.swift in Sources */,
+				FAB20000000000000000009F /* AppDatabaseUpdater.swift in Sources */,
+				FAB2000000000000000000A0 /* PerServerContainer.swift in Sources */,
+				FAB2000000000000000000A1 /* Image+SharedAssets.swift in Sources */,
+				FAB2000000000000000000A2 /* ControlEntityProvider.swift in Sources */,
+				FAB2000000000000000000A3 /* HAButton.swift in Sources */,
+				FAB2000000000000000000A4 /* SubscribeEvents.swift in Sources */,
+				FAB2000000000000000000A5 /* HAAppEntity.swift in Sources */,
+				FAB2000000000000000000A6 /* NSMutableAttributedString+Additions.swift in Sources */,
+				FAB2000000000000000000A7 /* Dictionary+Additions.swift in Sources */,
+				FAB2000000000000000000A8 /* LocalPushEvent.swift in Sources */,
+				FAB2000000000000000000A9 /* ServerFixture.swift in Sources */,
+				FAB2000000000000000000AA /* OpenPageIntentHandler.swift in Sources */,
+				FAB2000000000000000000AB /* CLLocationManager+OneShotLocation.swift in Sources */,
+				FAB2000000000000000000AC /* EntityColorAttributesParser.swift in Sources */,
+				FAB2000000000000000000AD /* MaterialDesignIcons+CarPlay.swift in Sources */,
+				FAB2000000000000000000AE /* SheetCloseButton.swift in Sources */,
+				FAB2000000000000000000AF /* NotificationsCommandManager.swift in Sources */,
+				FAB2000000000000000000B0 /* Promise+RetryNetworking.swift in Sources */,
+				FAB2000000000000000000B1 /* ClientEvent.swift in Sources */,
+				FAB2000000000000000000B2 /* WatchConfig.swift in Sources */,
+				FAB2000000000000000000B3 /* Environment.swift in Sources */,
+				FAB2000000000000000000B4 /* RealmZone.swift in Sources */,
+				FAB2000000000000000000B5 /* EntityRegistryListForDisplay.swift in Sources */,
+				FAB2000000000000000000B6 /* StreamCameraResponse.swift in Sources */,
+				FAB2000000000000000000B7 /* Alamofire+EncryptedResponses.swift in Sources */,
+				FAB2000000000000000000B8 /* HACoreMediaObjectSystem.swift in Sources */,
+				FAB2000000000000000000B9 /* Identifier.swift in Sources */,
+				FAB2000000000000000000BA /* CLError+DebugDescription.swift in Sources */,
+				FAB2000000000000000000BB /* UpdateSensorsIntentHandler.swift in Sources */,
+				FAB2000000000000000000BC /* WebhookSensor.swift in Sources */,
+				FAB2000000000000000000BD /* OnboardingStateObservation.swift in Sources */,
+				FAB2000000000000000000BE /* WebhookResponseUpdateSensors.swift in Sources */,
+				FAB2000000000000000000BF /* DeviceWrapperBatteryObserver.swift in Sources */,
+				FAB2000000000000000000C0 /* WatchComplication.swift in Sources */,
+				FAB2000000000000000000C1 /* AreasService.swift in Sources */,
+				FAB2000000000000000000C2 /* DeviceClass.swift in Sources */,
+				FAB2000000000000000000C3 /* BaseSensorUpdateSignaler.swift in Sources */,
+				FAB2000000000000000000C4 /* Assets.swift in Sources */,
+				FAB2000000000000000000C5 /* HAProgressView.swift in Sources */,
+				FAB2000000000000000000C6 /* StatePrecision.swift in Sources */,
+				FAB2000000000000000000C7 /* LocationPermissionSensor.swift in Sources */,
+				FAB2000000000000000000C8 /* ThreadCredential.swift in Sources */,
+				FAB2000000000000000000C9 /* IconImageView.swift in Sources */,
+				FAB2000000000000000000CA /* NotificationCategory.swift in Sources */,
+				FAB2000000000000000000CB /* UIView+StackView.swift in Sources */,
+				FAB2000000000000000000CC /* MatterWrapper.swift in Sources */,
+				FAB2000000000000000000CD /* ClientEventStore.swift in Sources */,
+				FAB2000000000000000000CE /* MobileAppConfigPush.swift in Sources */,
+				FAB2000000000000000000CF /* UIScreen+PerfectCornerRadius.swift in Sources */,
+				FAB2000000000000000000D0 /* AppGesture.swift in Sources */,
+				FAB2000000000000000000D1 /* FocusSensor.swift in Sources */,
+				FAB2000000000000000000D2 /* WatchBackgroundRefreshScheduler.swift in Sources */,
+				FAB2000000000000000000D3 /* HAButtonStyles.swift in Sources */,
+				FAB2000000000000000000D4 /* WebsiteDataStoreHandler.swift in Sources */,
+				FAB2000000000000000000D5 /* SensorContainer.swift in Sources */,
+				FAB2000000000000000000D6 /* FocusStatusIntentHandler.swift in Sources */,
+				FAB2000000000000000000D7 /* AppArea.swift in Sources */,
+				FAB2000000000000000000D8 /* WebhookResponseUnhandled.swift in Sources */,
+				FAB2000000000000000000D9 /* Style.swift in Sources */,
+				FAB2000000000000000000DA /* AppDeviceRegistryTable.swift in Sources */,
+				FAB2000000000000000000DB /* DiskCache.swift in Sources */,
+				FAB2000000000000000000DC /* URLComponents+WidgetAuthenticity.swift in Sources */,
+				FAB2000000000000000000DD /* Event.swift in Sources */,
+				FAB2000000000000000000DE /* WebhookSensorId.swift in Sources */,
+				FAB2000000000000000000DF /* ImpactFeedbackGeneratorProtocol.swift in Sources */,
+				FAB2000000000000000000E0 /* HATextField.swift in Sources */,
+				FAB2000000000000000000E1 /* LocationHistory.swift in Sources */,
+				FAB2000000000000000000E2 /* TokenInfo.swift in Sources */,
+				FAB2000000000000000000E3 /* MaterialDesignIcons+Encodable.swift in Sources */,
+				FAB2000000000000000000E4 /* WidgetInteractionType.swift in Sources */,
+				FAB2000000000000000000E5 /* HAppEntityTable.swift in Sources */,
+				FAB2000000000000000000E6 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
+				FAB2000000000000000000E7 /* HACornerRadius.swift in Sources */,
+				FAB2000000000000000000E8 /* HACoreMediaObjectCamera.swift in Sources */,
+				FAB2000000000000000000E9 /* WebhookRequest.swift in Sources */,
+				FAB2000000000000000000EA /* Guarantee+Additions.swift in Sources */,
+				FAB2000000000000000000EB /* WatchConfigTable.swift in Sources */,
+				FAB2000000000000000000EC /* AllowedTag.swift in Sources */,
+				FAB2000000000000000000ED /* AllowedTagTable.swift in Sources */,
+				FAB2000000000000000000EE /* Color+Hex.swift in Sources */,
+				FAB2000000000000000000EF /* NSItemProvider+Additions.swift in Sources */,
+				FAB2000000000000000000F0 /* AssistChatItem.swift in Sources */,
+				FAB2000000000000000000F1 /* SettingsStore.swift in Sources */,
+				FAB2000000000000000000F2 /* FocusStatusWrapper.swift in Sources */,
+				FAB2000000000000000000F3 /* SettingsButton.swift in Sources */,
+				FAB2000000000000000000F4 /* WebhookUpdateLocation.swift in Sources */,
+				FAB2000000000000000000F5 /* CLKComplication+Strings.swift in Sources */,
+				FAB2000000000000000000F6 /* StorageSensor.swift in Sources */,
+				FAB2000000000000000000F7 /* HAUsagePredictionCommonControl.swift in Sources */,
+				FAB2000000000000000000F8 /* MJPEGStreamer.swift in Sources */,
+				FAB2000000000000000000F9 /* BaseColors.swift in Sources */,
+				FAB2000000000000000000FA /* InteractiveImmediateMessages.swift in Sources */,
+				FAB2000000000000000000FB /* CoreStrings+Values.swift in Sources */,
+				FAB2000000000000000000FC /* PillView.swift in Sources */,
+				FAB2000000000000000000FD /* WebhookResponseServiceCall.swift in Sources */,
+				FAB2000000000000000000FE /* UIImage+Icons.swift in Sources */,
+				FAB2000000000000000000FF /* AssistModel.swift in Sources */,
+				FAB200000000000000000100 /* MagicItemProvider.swift in Sources */,
+				FAB200000000000000000101 /* String+HA.swift in Sources */,
+				FAB200000000000000000102 /* CallServiceIntentHandler.swift in Sources */,
+				FAB200000000000000000103 /* ExternalLinkButton.swift in Sources */,
+				FAB200000000000000000104 /* LogbookEntry.swift in Sources */,
+				FAB200000000000000000105 /* MobileAppConfigPushCategory.swift in Sources */,
+				FAB200000000000000000106 /* CoreStrings.swift in Sources */,
+				FAB200000000000000000107 /* Color+hex.swift in Sources */,
+				FAB200000000000000000108 /* ActiveSensor.swift in Sources */,
+				FAB200000000000000000109 /* AssistInAppIntentHandler.swift in Sources */,
+				FAB20000000000000000010A /* RealmPersistable.swift in Sources */,
+				FAB20000000000000000010B /* NotificationAttachmentErrorImage.swift in Sources */,
+				FAB20000000000000000010C /* MDIMigration.swift in Sources */,
+				FAB20000000000000000010D /* LocalNotificationDispatcher.swift in Sources */,
+				FAB20000000000000000010E /* ConnectivityWrapper.swift in Sources */,
+				FAB20000000000000000010F /* MacBridgeProtocol.swift in Sources */,
+				FAB200000000000000000110 /* DeviceRegistryEntry.swift in Sources */,
+				FAB200000000000000000111 /* AppVersionSensor.swift in Sources */,
+				FAB200000000000000000112 /* NotificationAttachmentParser.swift in Sources */,
+				FAB200000000000000000113 /* HAAreasRegistryResponse.swift in Sources */,
+				FAB200000000000000000114 /* CustomWidgetTable.swift in Sources */,
+				FAB200000000000000000115 /* AssistService.swift in Sources */,
+				FAB200000000000000000116 /* NotificationIdentifier.swift in Sources */,
+				FAB200000000000000000117 /* CarPlayConfigTable.swift in Sources */,
+				FAB200000000000000000118 /* INImage+MaterialDesignIcons.swift in Sources */,
+				FAB200000000000000000119 /* HACoreBlahProperty.swift in Sources */,
+				FAB20000000000000000011A /* ThreadClientService.swift in Sources */,
+				FAB20000000000000000011B /* TagManagerProtocol.swift in Sources */,
+				FAB20000000000000000011C /* AudioOutputSensor.swift in Sources */,
+				FAB20000000000000000011D /* BarometerSensor.swift in Sources */,
+				FAB20000000000000000011E /* WebhookManager.swift in Sources */,
+				FAB20000000000000000011F /* UIImageView+UIActivityIndicator.swift in Sources */,
+				FAB200000000000000000120 /* Intents.intentdefinition in Sources */,
+				FAB200000000000000000121 /* ConfigResponse.swift in Sources */,
+				FAB200000000000000000122 /* NotificationAttachmentManager.swift in Sources */,
+				FAB200000000000000000123 /* AppEntitiesModel.swift in Sources */,
+				FAB200000000000000000124 /* MaterialDesignIcons.swift in Sources */,
+				FAB200000000000000000125 /* CollapsibleView.swift in Sources */,
+				FAB200000000000000000126 /* DataWidgetsUpdater.swift in Sources */,
+				FAB200000000000000000127 /* CrashReporter.swift in Sources */,
+				FAB200000000000000000128 /* NotificationAttachmentParserURL.swift in Sources */,
+				FAB200000000000000000129 /* ServerManager.swift in Sources */,
+				FAB20000000000000000012A /* ServerManagerPersistence.swift in Sources */,
+				FAB20000000000000000012B /* ServerManagerMirrorStore.swift in Sources */,
+				FAB20000000000000000012C /* LocationTrigger.swift in Sources */,
+				FAB20000000000000000012D /* CustomWidget.swift in Sources */,
+				FAB20000000000000000012E /* UNNotificationContent+ClientEvent.swift in Sources */,
+				FAB20000000000000000012F /* SensorProviderDependencies.swift in Sources */,
+				FAB200000000000000000130 /* DeviceWrapper.swift in Sources */,
+				FAB200000000000000000131 /* KioskSettingsTable.swift in Sources */,
+				FAB200000000000000000132 /* CallServiceResponse.swift in Sources */,
+				FAB200000000000000000133 /* Intents.intentdefinition in Sources */,
+				FAB200000000000000000135 /* CrossPlatformUI.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -12174,6 +12990,144 @@
 			};
 			name = Release;
 		};
+		FAB00000000000000000000F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Sources/App/macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_NAME = "Home Assistant";
+				PROVISIONING_SUFFIX = .Mac;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Debug;
+		};
+		FAB000000000000000000010 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Sources/App/macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_NAME = "Home Assistant";
+				PROVISIONING_SUFFIX = .Mac;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Release;
+		};
+		FAB000000000000000000011 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Sources/App/macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_NAME = "Home Assistant";
+				PROVISIONING_SUFFIX = .Mac;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Beta;
+		};
+		FAB200000000000000000180 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				INTENTS_CODEGEN_LANGUAGE = Swift;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_MODULE_NAME = Shared;
+				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_SUFFIX = .Shared;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Debug;
+		};
+		FAB200000000000000000181 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				INTENTS_CODEGEN_LANGUAGE = Swift;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_MODULE_NAME = Shared;
+				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_SUFFIX = .Shared;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Release;
+		};
+		FAB200000000000000000182 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				INTENTS_CODEGEN_LANGUAGE = Swift;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_MODULE_NAME = Shared;
+				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_SUFFIX = .Shared;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Beta;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -12377,6 +13331,26 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		FAB00000000000000000000E /* Build configuration list for PBXNativeTarget "App-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAB00000000000000000000F /* Debug */,
+				FAB000000000000000000010 /* Release */,
+				FAB000000000000000000011 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAB20000000000000000017F /* Build configuration list for PBXNativeTarget "Shared-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAB200000000000000000180 /* Debug */,
+				FAB200000000000000000181 /* Release */,
+				FAB200000000000000000182 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -12425,6 +13399,118 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.15.0;
+			};
+		};
+		FAB20000000000000000013E /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.8.1;
+			};
+		};
+		FAB200000000000000000142 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 7.8.0;
+			};
+		};
+		FAB200000000000000000146 /* XCRemoteSwiftPackageReference "HAKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/home-assistant/HAKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.4.14;
+			};
+		};
+		FAB20000000000000000014A /* XCRemoteSwiftPackageReference "Starscream" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bgoncal/Starscream";
+			requirement = {
+				kind = revision;
+				revision = aaaf609d07eb487b2fccbe77f6267cf0843e2b19;
+			};
+		};
+		FAB20000000000000000014E /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				kind = exactVersion;
+				version = 4.2.2;
+			};
+		};
+		FAB200000000000000000152 /* XCRemoteSwiftPackageReference "ObjectMapper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tristanhimmelman/ObjectMapper.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		FAB200000000000000000156 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mxcl/PromiseKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = 8.1.2;
+			};
+		};
+		FAB20000000000000000015A /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 10.35.0;
+			};
+		};
+		FAB20000000000000000015E /* XCRemoteSwiftPackageReference "Reachability.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ashleymills/Reachability.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		FAB200000000000000000162 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.3.0;
+			};
+		};
+		FAB200000000000000000166 /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/zacwest/swift-sodium.git";
+			requirement = {
+				branch = "xcode-14.0.1";
+				kind = branch;
+			};
+		};
+		FAB20000000000000000016A /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yeahdongcn/UIColor-Hex-Swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.1.9;
+			};
+		};
+		FAB20000000000000000016E /* XCRemoteSwiftPackageReference "Version" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mrackwitz/Version.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.8.0;
+			};
+		};
+		FAB200000000000000000172 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/DaveWoodCom/XCGLogger.git";
+			requirement = {
+				kind = exactVersion;
+				version = 7.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -12496,6 +13582,86 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTestingCustomDump;
+		};
+		FAB20000000000000000013F /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB20000000000000000013E /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		FAB200000000000000000143 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB200000000000000000142 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		FAB200000000000000000147 /* HAKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB200000000000000000146 /* XCRemoteSwiftPackageReference "HAKit" */;
+			productName = HAKit;
+		};
+		FAB20000000000000000014B /* Starscream */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB20000000000000000014A /* XCRemoteSwiftPackageReference "Starscream" */;
+			productName = Starscream;
+		};
+		FAB20000000000000000014F /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB20000000000000000014E /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		FAB200000000000000000153 /* ObjectMapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB200000000000000000152 /* XCRemoteSwiftPackageReference "ObjectMapper" */;
+			productName = ObjectMapper;
+		};
+		FAB200000000000000000157 /* PromiseKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB200000000000000000156 /* XCRemoteSwiftPackageReference "PromiseKit" */;
+			productName = PromiseKit;
+		};
+		FAB20000000000000000015B /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB20000000000000000015A /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		FAB20000000000000000015F /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB20000000000000000015E /* XCRemoteSwiftPackageReference "Reachability.swift" */;
+			productName = Reachability;
+		};
+		FAB200000000000000000163 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB200000000000000000162 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+		FAB200000000000000000167 /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB200000000000000000166 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		FAB20000000000000000016B /* UIColorHexSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB20000000000000000016A /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
+			productName = UIColorHexSwift;
+		};
+		FAB20000000000000000016F /* Version */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB20000000000000000016E /* XCRemoteSwiftPackageReference "Version" */;
+			productName = Version;
+		};
+		FAB200000000000000000173 /* XCGLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB200000000000000000172 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = XCGLogger;
+		};
+		FAB200000000000000000176 /* SharedPush */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */;
+			productName = SharedPush;
+		};
+		FAB200000000000000000178 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

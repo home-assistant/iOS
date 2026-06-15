@@ -1,4 +1,8 @@
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public extension UIColor {
     var isLight: Bool {
@@ -9,9 +13,18 @@ public extension UIColor {
          Note: This algorithm is taken from a formula for converting RGB values to YIQ values.
          This brightness value gives a perceived brightness for a color.
          */
+        #if canImport(UIKit)
         if !getRed(&red, green: &green, blue: &blue, alpha: nil) {
             return false
         }
+        #else
+        // NSColor.getRed(...) returns Void and traps outside an RGB color space,
+        // so convert explicitly first.
+        guard let rgb = usingColorSpace(.sRGB) else { return false }
+        red = rgb.redComponent
+        green = rgb.greenComponent
+        blue = rgb.blueComponent
+        #endif
 
         let brightness = (red * 299.0 + green * 587.0 + blue * 114.0) / 1000.0
         return brightness > 0.875

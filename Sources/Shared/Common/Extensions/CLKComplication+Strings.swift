@@ -1,8 +1,14 @@
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 #if os(watchOS)
 import ClockKit
+#if canImport(WatchKit)
 import WatchKit
+#endif
 #endif
 
 public enum ComplicationGroup: String, Comparable {

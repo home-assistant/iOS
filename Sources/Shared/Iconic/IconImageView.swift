@@ -9,7 +9,11 @@
 //  For more information see https://github.com/home-assistant/Iconic
 //
 
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 #if os(iOS) || os(tvOS)
 /** An Image View subclass, capable of rendering icons. Only supported for iOS and tvOS. */

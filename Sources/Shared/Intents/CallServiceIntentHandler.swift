@@ -2,7 +2,11 @@ import Foundation
 import HAKit
 import Intents
 import PromiseKit
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     typealias Intent = CallServiceIntent

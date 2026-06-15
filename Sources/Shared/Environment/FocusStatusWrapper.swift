@@ -34,16 +34,22 @@ public class FocusStatusWrapper {
 
     private var lastStatus: Status? {
         willSet {
+            #if !os(macOS)
             precondition(Current.isAppExtension)
+            #endif
         }
     }
 
     public lazy var isAvailable: () -> Bool = { [weak self] in
+        #if !os(macOS)
         if Current.isAppExtension {
             return self?.lastStatus != nil
         } else {
             return true
         }
+        #else
+        return true
+        #endif
     }
 
     public var authorizationStatus: () -> AuthorizationStatus = {
@@ -75,16 +81,22 @@ public class FocusStatusWrapper {
     }
 
     public func update(fromReceived status: INFocusStatus?) {
+        #if !os(macOS)
         precondition(Current.isAppExtension)
+        #endif
         lastStatus = status.flatMap { Status(focusStatus: $0) }
         trigger.value = Current.date()
     }
 
     public lazy var status: () -> Status = { [weak self] in
+        #if !os(macOS)
         if Current.isAppExtension, let lastStatus = self?.lastStatus {
             return lastStatus
         } else {
             return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
         }
+        #else
+        return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
+        #endif
     }
 }

@@ -117,14 +117,19 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     private var maxWidth: CGFloat {
+        #if !os(macOS)
         if UIDevice.current.userInterfaceIdiom == .phone {
             .infinity
         } else {
             400
         }
+        #else
+        400
+        #endif
     }
 
     private var perfectCornerRadius: CGFloat {
+        #if !os(macOS)
         let cornerRadius: CGFloat = {
             if UIDevice.current.userInterfaceIdiom == .phone {
                 return UIScreen.main.displayCornerRadius - DesignSystem.Spaces.one
@@ -132,6 +137,9 @@ public struct AppleLikeBottomSheet<Content: View>: View {
                 return 50
             }
         }()
+        #else
+        let cornerRadius: CGFloat = 50
+        #endif
         let minimumCornerRadius = DesignSystem.CornerRadius.one
         return cornerRadius > minimumCornerRadius ? cornerRadius : minimumCornerRadius
     }

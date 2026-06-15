@@ -3,7 +3,9 @@ import Foundation
 import CoreTelephony
 import Reachability
 #endif
+#if canImport(Communicator)
 import Communicator
+#endif
 import NetworkExtension
 
 /// Wrapper around CoreTelephony, Reachability
@@ -76,6 +78,18 @@ public class ConnectivityWrapper {
             object: nil
         )
     }
+    #elseif os(macOS)
+    init() {
+        // TODO(mac-port): retrieve real network information (e.g. CoreWLAN/SystemConfiguration)
+        self.hasWiFi = { true }
+        self.currentWiFiSSID = { nil }
+        self.currentWiFiBSSID = { nil }
+        self.connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
+        self.simpleNetworkType = { .unknown }
+        self.cellularNetworkType = { .unknown }
+        self.currentNetworkHardwareAddress = { nil }
+        self.networkAttributes = { [:] }
+    }
     #else
     init() {
         self.hasWiFi = { true }
@@ -114,6 +128,9 @@ public class ConnectivityWrapper {
     public func syncNetworkInformation(completion: (() -> Void)? = nil) {
         #if targetEnvironment(macCatalyst)
         // macOS uses macBridge to retrieve network information
+        completion?()
+        #elseif os(macOS)
+        // TODO(mac-port): NEHotspotNetwork is unavailable on macOS; retrieve SSID/BSSID natively
         completion?()
         #else
         NEHotspotNetwork.fetchCurrent { hotspotNetwork in

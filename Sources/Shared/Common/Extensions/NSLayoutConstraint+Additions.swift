@@ -1,4 +1,8 @@
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public extension NSLayoutConstraint {
     static func aspectRatioConstraint(on view: UIView, size: CGSize) -> NSLayoutConstraint? {

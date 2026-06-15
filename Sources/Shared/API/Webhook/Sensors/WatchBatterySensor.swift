@@ -1,4 +1,6 @@
+#if canImport(Communicator)
 import Communicator
+#endif
 import Foundation
 import PromiseKit
 
@@ -10,7 +12,7 @@ final class WatchBatterySensor: SensorProvider {
 
     func sensors() -> Promise<[WebhookSensor]> {
         var sensors: [WebhookSensor] = []
-        #if !os(watchOS)
+        #if !os(watchOS) && !os(macOS)
         switch Communicator.shared.currentWatchState {
         case .paired:
 

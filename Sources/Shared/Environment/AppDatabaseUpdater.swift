@@ -1,7 +1,11 @@
 import Foundation
 import GRDB
 import HAKit
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 // MARK: - AppDatabaseUpdater
 

@@ -1,5 +1,6 @@
 import SwiftUI
 
+#if !os(macOS)
 @available(iOS 18, *)
 public extension View {
     @ViewBuilder
@@ -191,3 +192,4 @@ public struct ToastView: View {
         window.isPresented
     }
 }
+#endif

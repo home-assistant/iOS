@@ -1,7 +1,11 @@
 import Foundation
 import GRDB
 import PromiseKit
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
 public protocol PanelsUpdaterProtocol {
     func update()

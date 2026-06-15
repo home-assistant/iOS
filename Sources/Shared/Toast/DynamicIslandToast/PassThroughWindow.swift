@@ -1,7 +1,12 @@
 import Combine
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 
+#if !os(macOS)
 @available(iOS 18, *)
 /// Custom UIWindow that passes through touches in transparent/non-interactive areas
 public class PassThroughWindow: UIWindow, ObservableObject {
@@ -40,3 +45,4 @@ public class PassThroughWindow: UIWindow, ObservableObject {
         }
     }
 }
+#endif

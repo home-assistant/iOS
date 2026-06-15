@@ -1,4 +1,6 @@
+#if canImport(Communicator)
 import Communicator
+#endif
 import Foundation
 import PromiseKit
 import UserNotifications

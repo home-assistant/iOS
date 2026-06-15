@@ -1,8 +1,14 @@
 import Alamofire
 import Foundation
+#if canImport(MobileCoreServices)
 import MobileCoreServices
+#endif
 import PromiseKit
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 import UserNotifications
 
 public enum NotificationAttachmentManagerServiceError: Error {
