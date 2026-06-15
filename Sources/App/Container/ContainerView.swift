@@ -41,6 +41,11 @@ struct ContainerView: View {
             coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
             coordinator.onShowDownloadManager = { viewModel.presentDownloadManager($0) }
             coordinator.onShowOnboardingPermissions = { viewModel.presentOnboardingPermissions(server: $0, steps: $1) }
+            coordinator.onSelectServer = { prompt, includeSettings in
+                viewModel.presentServerSelect(prompt: prompt, includeSettings: includeSettings) {
+                    coordinator.completeServerSelection($0)
+                }
+            }
             Current.sceneManager.registerAppCoordinator(coordinator)
             viewModel.presentLaunchMessagesIfNeeded(isShowingWebView: isShowingWebView)
         }
@@ -67,6 +72,17 @@ struct ContainerView: View {
                         .presentationDetents([.medium, .large])
                     #endif
                 }
+            case let .serverSelect(prompt, includeSettings, onSelect):
+                ServerSelectView(prompt: prompt, includeSettings: includeSettings, selectAction: onSelect)
+                    .modify { view in
+                        if #available(iOS 16.4, *) {
+                            view
+                                .presentationDetents([.medium, .large])
+                                .presentationBackground(Color(uiColor: .systemBackground))
+                        } else {
+                            view
+                        }
+                    }
             }
         }
         .fullScreenCover(item: $viewModel.fullScreenCover, onDismiss: { refreshWebView() }) { cover in

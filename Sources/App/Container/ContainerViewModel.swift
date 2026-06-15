@@ -14,6 +14,7 @@ final class ContainerViewModel: ObservableObject {
         case settings
         case assistSettings
         case downloadManager(DownloadManagerViewModel)
+        case serverSelect(prompt: String?, includeSettings: Bool, onSelect: (Server) -> Void)
 
         var id: String {
             switch self {
@@ -22,6 +23,7 @@ final class ContainerViewModel: ObservableObject {
             case .settings: return "settings"
             case .assistSettings: return "assistSettings"
             case .downloadManager: return "downloadManager"
+            case .serverSelect: return "serverSelect"
             }
         }
     }
@@ -86,5 +88,10 @@ final class ContainerViewModel: ObservableObject {
     /// Presents the forced onboarding-permissions decision as a full-screen cover.
     func presentOnboardingPermissions(server: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID]) {
         fullScreenCover = .onboardingPermissions(server: server, steps: steps)
+    }
+
+    /// Presents the server picker as a sheet (e.g. a server-less deep link, or the "show servers" gesture).
+    func presentServerSelect(prompt: String?, includeSettings: Bool, onSelect: @escaping (Server) -> Void) {
+        presentedSheet = .serverSelect(prompt: prompt, includeSettings: includeSettings, onSelect: onSelect)
     }
 }

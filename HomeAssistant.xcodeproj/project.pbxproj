@@ -1590,16 +1590,16 @@
 		FA11C0DE0000000000000002 /* HAApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000001 /* HAApp.swift */; };
 		FA11C0DE0000000000000004 /* SceneManagerEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000003 /* SceneManagerEnvironmentKey.swift */; };
 		FA11C0DE0000000000000006 /* HomeAssistantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000005 /* HomeAssistantView.swift */; };
-		FA11C0DE0000000000000057 /* FrontendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000056 /* FrontendView.swift */; };
-		FA11C0DE0000000000000059 /* StatusBarForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */; };
-		FA11C0DE000000000000005B /* WebFrontend.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE000000000000005A /* WebFrontend.swift */; };
-		FA11C0DE0000000000000055 /* WebFrontendOverlayState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */; };
 		FA11C0DE0000000000000008 /* HomeAssistantViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000007 /* HomeAssistantViewTests.swift */; };
 		FA11C0DE0000000000000021 /* OnboardingStateObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000020 /* OnboardingStateObservable.swift */; };
 		FA11C0DE0000000000000023 /* ContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000022 /* ContainerView.swift */; };
 		FA11C0DE0000000000000041 /* WebViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000040 /* WebViewControllerTests.swift */; };
 		FA11C0DE0000000000000051 /* AppContainerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000050 /* AppContainerCoordinator.swift */; };
 		FA11C0DE0000000000000053 /* ContainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000052 /* ContainerViewModel.swift */; };
+		FA11C0DE0000000000000055 /* WebFrontendOverlayState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */; };
+		FA11C0DE0000000000000057 /* FrontendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000056 /* FrontendView.swift */; };
+		FA11C0DE0000000000000059 /* StatusBarForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */; };
+		FA11C0DE000000000000005B /* WebFrontend.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE000000000000005A /* WebFrontend.swift */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
 		FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */; };
 		FD3BC66C29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */; };
@@ -3520,16 +3520,16 @@
 		FA11C0DE0000000000000001 /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000003 /* SceneManagerEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManagerEnvironmentKey.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000005 /* HomeAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantView.swift; sourceTree = "<group>"; };
-		FA11C0DE0000000000000056 /* FrontendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendView.swift; sourceTree = "<group>"; };
-		FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarForwardingNavigationController.swift; sourceTree = "<group>"; };
-		FA11C0DE000000000000005A /* WebFrontend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFrontend.swift; sourceTree = "<group>"; };
-		FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFrontendOverlayState.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000007 /* HomeAssistantViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantViewTests.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000020 /* OnboardingStateObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStateObservable.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000022 /* ContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerView.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000040 /* WebViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerTests.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000050 /* AppContainerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainerCoordinator.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000052 /* ContainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewModel.swift; sourceTree = "<group>"; };
+		FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFrontendOverlayState.swift; sourceTree = "<group>"; };
+		FA11C0DE0000000000000056 /* FrontendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendView.swift; sourceTree = "<group>"; };
+		FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarForwardingNavigationController.swift; sourceTree = "<group>"; };
+		FA11C0DE000000000000005A /* WebFrontend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFrontend.swift; sourceTree = "<group>"; };
 		FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSecretExitGestureView.swift; sourceTree = "<group>"; };
 		FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
@@ -4103,7 +4103,6 @@
 		11AD2E2A2528FDB700FBC437 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
-				FA11C0DE0000000000000030 /* Container */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				42A9C0012FBB000100D0C0DE /* TagApprovalBottomSheet.swift */,
 				42B18FD42F38C11F00A1537A /* WebView */,
@@ -6915,9 +6914,10 @@
 		B657A8E81CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				4210CCF62F153B7D00B71FB9 /* Cameras */,
-				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				FA11C0DE0000000000000001 /* HAApp.swift */,
+				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
+				FA11C0DE0000000000000030 /* Container */,
+				4210CCF62F153B7D00B71FB9 /* Cameras */,
 				FA11C0DE0000000000000010 /* Environment */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */,
@@ -7580,8 +7580,8 @@
 			isa = PBXGroup;
 			children = (
 				FA11C0DE0000000000000022 /* ContainerView.swift */,
-				FA11C0DE0000000000000050 /* AppContainerCoordinator.swift */,
 				FA11C0DE0000000000000052 /* ContainerViewModel.swift */,
+				FA11C0DE0000000000000050 /* AppContainerCoordinator.swift */,
 				FA11C0DE0000000000000020 /* OnboardingStateObservable.swift */,
 				420EC8D22FE037CD00C2ED53 /* OnboardingHostingView.swift */,
 				420EC8D42FE037E400C2ED53 /* RecoveredServerReauthHostingView.swift */,

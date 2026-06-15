@@ -21,6 +21,10 @@ final class AppContainerCoordinator: AppCoordinator {
     var onShowDownloadManager: ((DownloadManagerViewModel) -> Void)?
     /// Set by `ContainerView` to present the forced onboarding-permissions decision as a full-screen cover.
     var onShowOnboardingPermissions: ((Server, [OnboardingPermissionsNavigationViewModel.StepID]) -> Void)?
+    /// Set by `ContainerView` to present the server picker as a sheet. The picked server is delivered back
+    /// via `completeServerSelection(_:)` (the completion can't be forwarded through this non-escaping hook).
+    var onSelectServer: ((String?, Bool) -> Void)?
+    private var pendingServerSelection: ((Server) -> Void)?
 
     private var pendingOpen: (server: Identifier<Server>, seal: (any WebFrontend) -> Void)?
 
@@ -86,15 +90,15 @@ final class AppContainerCoordinator: AppCoordinator {
     }
 
     func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void) {
-        let serverSelectView = UIHostingController(rootView: ServerSelectView(
-            prompt: prompt,
-            includeSettings: includeSettings,
-            selectAction: completion
-        ))
-        serverSelectView.view.backgroundColor = .clear
-        serverSelectView.modalPresentationStyle = .overFullScreen
-        serverSelectView.modalTransitionStyle = .crossDissolve
-        present(serverSelectView, animated: false, completion: nil)
+        pendingServerSelection = completion
+        onSelectServer?(prompt, includeSettings)
+    }
+
+    /// Called by `ContainerView`'s server-picker sheet when the user picks a server.
+    func completeServerSelection(_ server: Server) {
+        let completion = pendingServerSelection
+        pendingServerSelection = nil
+        completion?(server)
     }
 
     func presentInvitation(url inviteURL: URL?) {
