@@ -2,6 +2,7 @@
 
 import SharedTesting
 
+import SwiftUI
 import Testing
 import WidgetKit
 
@@ -43,6 +44,27 @@ struct WidgetsSnapshotTests {
                     height: size.height
                 )
             )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func gaugeWidgetSystemSmallSnapshot() {
+        let size = snapshotSize(for: .systemSmall)
+        let entry = WidgetGaugeEntry(
+            gaugeType: .normal,
+            value: 0.84,
+            valueLabel: "84%",
+            label: nil,
+            min: "0",
+            max: "100",
+            runScript: false,
+            script: nil,
+            showConfirmationNotification: true
+        )
+        assertLightDarkSnapshots(
+            of: WidgetGaugeView(entry: entry)
+                .environment(\.widgetFamily, .systemSmall),
+            layout: .fixed(width: size.width, height: size.height)
+        )
     }
 
     private func snapshotSize(for family: WidgetFamily) -> CGSize {
