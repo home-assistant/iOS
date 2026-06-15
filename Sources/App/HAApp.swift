@@ -51,6 +51,13 @@ struct HAApp: App {
             AssistWindowView()
         }
         .handlesExternalEvents(matching: [SceneActivity.assist.activityIdentifier])
+
+        // The "add server" flow (Catalyst/iPad separate window, activated from the servers list). Hosted via
+        // `OnboardingHostingView` so the `.secondary` flow gets its `ViewControllerProvider`.
+        WindowGroup {
+            OnboardingHostingView(onboardingStyle: .secondary)
+        }
+        .handlesExternalEvents(matching: [SceneActivity.onboarding.activityIdentifier])
     }
 
     /// Routes deep links (`homeassistant://…`) and universal / NFC web links into `IncomingURLHandler` once

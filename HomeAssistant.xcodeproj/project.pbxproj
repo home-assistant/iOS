@@ -715,7 +715,6 @@
 		4256A70D2F5ECBB3003D464F /* SpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */; };
 		425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425762742E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
-		425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */; };
 		4259959A2F44708F0023D6A6 /* View+ScreenCaptureProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */; };
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425EB4FD2F5F0ACB0067A678 /* TTSVoicePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425EB4FC2F5F0ACB0067A678 /* TTSVoicePickerView.swift */; };
@@ -2499,7 +2498,6 @@
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
 		4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriber.swift; sourceTree = "<group>"; };
 		425762722E71A8B800AE5083 /* ModalCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalCloseButton.swift; sourceTree = "<group>"; };
-		425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneDelegate.swift; sourceTree = "<group>"; };
 		425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ScreenCaptureProtection.swift"; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425EB4FC2F5F0ACB0067A678 /* TTSVoicePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSVoicePickerView.swift; sourceTree = "<group>"; };
@@ -4362,7 +4360,6 @@
 				FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */,
 				42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */,
 				42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */,
-				425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -9592,7 +9589,6 @@
 				427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */,
 				46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
-				425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */,
 				42FA833F2F4722F40050095A /* WebViewController+URLLoading.swift in Sources */,
 				42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
