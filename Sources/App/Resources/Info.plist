@@ -170,13 +170,13 @@
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
-					<string>WebView</string>
+					<string>Onboarding</string>
 				</dict>
 				<dict>
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
-					<string>Onboarding</string>
+					<string>WebView</string>
 				</dict>
 				<dict>
 					<key>UISceneClassName</key>
