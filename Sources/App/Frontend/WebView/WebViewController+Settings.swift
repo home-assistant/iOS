@@ -76,7 +76,10 @@ extension WebViewController {
     /// edge-to-edge / full-screen; otherwise the web view runs truly edge-to-edge (no bar).
     func updateThemedStatusBar() {
         let edgeToEdge = Current.settingsStore.edgeToEdge || Current.settingsStore.fullScreen
-        overlayState?.statusBarColor = (edgeToEdge || Current.isCatalyst) ? nil : themedStatusBarColor()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            overlayState?.statusBarColor = (edgeToEdge || Current.isCatalyst) ? nil : themedStatusBarColor()
+        }
     }
 
     func setupPullToRefresh() {

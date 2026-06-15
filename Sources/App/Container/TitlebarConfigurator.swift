@@ -4,7 +4,7 @@ import SwiftUI
 /// Hides the macOS window titlebar for the SwiftUI-hosted primary window, replicating what
 /// `WebViewSceneDelegate` did before SwiftUI took ownership of this scene. Without it the window title
 /// overlaps the WebView's custom status-bar buttons.
-private struct TitlebarConfigurator: UIViewRepresentable {
+struct TitlebarConfigurator: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView { TitlebarConfiguringView() }
     func updateUIView(_ uiView: UIView, context: Context) {}
 }
