@@ -110,7 +110,7 @@ extension WebViewController {
             // Preserve the current path when the base URL changes (e.g., switching between internal/external)
             var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
             components?.path = currentURL.path
-            if let query = currentURL.query {
+            if currentURL.query != nil {
                 // Preserve external_auth if present, add other query items
                 var queryItems = components?.queryItems ?? []
                 let currentQueryItems = URLComponents(url: currentURL, resolvingAgainstBaseURL: false)?

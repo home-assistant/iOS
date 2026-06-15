@@ -37,7 +37,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// priority over the automatic active-URL load. On cold start the webview begins blank, so
     /// `loadActiveURLIfNeeded()` — fired from `viewWillAppear` and the HA-connect notification — would
     /// otherwise race with and overwrite this navigation with the default server URL, discarding the
-    /// requested URL (#4145). Cleared once a navigation finishes (`didFinish`).
+    /// requested URL (#4145).
+    ///
+    /// Cleared when a navigation finishes (`didFinish`, ignoring the `about:blank` page that
+    /// `showNoActiveURLError()` loads) or genuinely fails (`didFail` / `didFailProvisionalNavigation`).
+    /// Intentionally *kept* on `.cancelled` errors: a cancellation just means a newer load superseded an
+    /// in-flight one, so clearing then would revive the race.
     var pendingOpenInlineURL: URL?
 
     var statusBarButtonsStack: UIStackView?
