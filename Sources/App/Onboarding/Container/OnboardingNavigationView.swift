@@ -1,7 +1,7 @@
 import Shared
 import SwiftUI
 
-enum OnboardingStyle: Equatable {
+enum OnboardingStyle: Hashable {
     case initial
     case required
     case secondary
@@ -70,8 +70,8 @@ struct OnboardingNavigationView: View {
         if onboardingStyle == .secondary {
             dismiss()
         } else {
-            Current.sceneManager.webViewWindowControllerPromise.done { windowController in
-                windowController.setup()
+            Current.sceneManager.appCoordinator.done { coordinator in
+                coordinator.setup()
             }
         }
     }

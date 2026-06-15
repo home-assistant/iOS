@@ -1,3 +1,4 @@
+import PromiseKit
 import Shared
 import SwiftUI
 import UIKit
@@ -93,10 +94,10 @@ extension WebViewController {
     func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
         if #available(iOS 17.0, *) {
             let viewModel = DownloadManagerViewModel()
-            let downloadManager = DownloadManagerView(viewModel: viewModel)
-            let downloadController = UIHostingController(rootView: downloadManager)
-            presentOverlayController(controller: downloadController, animated: true)
             download.delegate = viewModel
+            // Present via `ContainerView`'s sheet (SwiftUI) instead of a UIKit overlay; the same view model
+            // instance must back the sheet and the download delegate.
+            Current.sceneManager.appCoordinator.done { $0.showDownloadManager(viewModel) }
         }
     }
 

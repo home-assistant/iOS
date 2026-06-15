@@ -62,7 +62,7 @@ struct ServerSelectView: View {
                     if includeSettings {
                         SettingsButton(tint: Color.haPrimary) {
                             dismiss()
-                            Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                            Current.sceneManager.webViewControllerPromise
                                 .done { controller in
                                     controller.showSettingsViewController()
                                 }
@@ -134,7 +134,7 @@ struct ServerSelectViewRow: View {
     }
 
     private func updateSelectionIndicator() {
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
+        Current.sceneManager.webViewControllerPromise.done { controller in
             selected = controller.server == server
         }
     }

@@ -23,17 +23,14 @@ extension WebViewController {
         webView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
-        // Create the top constraint based on edge-to-edge setting
-        // On iOS (not Catalyst), edge-to-edge mode pins the webview to the top of the view
-        // On Catalyst, we always show the status bar buttons, so we pin to statusBarView
-        // Also use edge-to-edge behavior when fullScreen is enabled (status bar hidden)
-        let edgeToEdge = (Current.settingsStore.edgeToEdge || Current.settingsStore.fullScreen) && !Current.isCatalyst
-        if edgeToEdge {
-            webViewTopConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
-            statusBarView.isHidden = true
-        } else {
+        if Current.isCatalyst {
+            // Catalyst always shows the native status-bar buttons; pin the web view below them.
             webViewTopConstraint = webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor)
-            statusBarView.isHidden = false
+        } else {
+            // iOS: the web view is always edge-to-edge. `HomeAssistantView` (SwiftUI) draws the themed
+            // status-bar bar and honours the edge-to-edge setting; the web content insets itself via CSS.
+            statusBarView.isHidden = true
+            webViewTopConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
         }
         webViewTopConstraint?.isActive = true
     }

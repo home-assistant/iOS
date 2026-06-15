@@ -15,7 +15,7 @@ final class BluetoothPermissionViewModel: NSObject, ObservableObject, CBCentralM
         DispatchQueue.main.async { [weak self] in
             switch central.state {
             case .poweredOn:
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                Current.sceneManager.webViewControllerPromise
                     .done { controller in
                         controller.webViewExternalMessageHandler.scanImprov()
                         self?.shouldDismiss = true

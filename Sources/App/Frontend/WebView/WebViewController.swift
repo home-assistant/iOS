@@ -23,9 +23,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
-    var emptyStateView: WebViewEmptyStateWrapperView?
-    let emptyStateTransitionDuration: TimeInterval = 0.3
-
     var statusBarView: UIView?
     var webViewTopConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
@@ -43,6 +40,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     var connectionState: FrontEndConnectionState = .unknown
+
+    /// Set by `FrontendView`; lets connection/URL state drive SwiftUI overlays in `HomeAssistantView`
+    /// instead of UIKit modals presented from here.
+    var overlayState: WebFrontendOverlayState?
 
     var loadActiveURLIfNeededInProgress = false
 
@@ -247,7 +248,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         setupWebViewConstraints(statusBarView: statusBarView)
         setupPullToRefresh()
-        setupEmptyState()
 
         NotificationCenter.default.addObserver(
             self,

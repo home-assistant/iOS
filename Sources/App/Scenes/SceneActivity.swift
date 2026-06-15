@@ -17,11 +17,16 @@ enum SceneActivity: CaseIterable {
     }
 
     var activity: NSUserActivity {
-        .init(activityType: activityIdentifier)
+        let activity = NSUserActivity(activityType: activityIdentifier)
+        // `targetContentIdentifier` is what SwiftUI `handlesExternalEvents(matching:)` matches against, so
+        // scenes activated for this activity route to the right `WindowGroup` (e.g. Settings) in `HAApp`.
+        activity.targetContentIdentifier = activityIdentifier
+        return activity
     }
 
     func activity(with userInfo: [AnyHashable: Any]) -> NSUserActivity {
         let activity = NSUserActivity(activityType: activityIdentifier)
+        activity.targetContentIdentifier = activityIdentifier
         activity.userInfo = userInfo
         return activity
     }
