@@ -211,10 +211,10 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 enum GaugeTypeAppEnum: String, Codable, Sendable, AppEnum {
-    /// Represents a `Gauge` with style `accessoryCircular` and min/max labels.
+    /// A circular gauge whose tinted arc fills `0…value` over a dim track, with min/max labels.
     case normal
 
-    /// Represents a `Gauge` with style `accessoryCircular` that has no min / max labels set.
+    /// A circular gauge whose tinted arc fills `0…value` over a dim track, with no min/max labels.
     case singleLabel
 
     /// Represents a `Gauge` with style `accessoryCircularCapacity`.

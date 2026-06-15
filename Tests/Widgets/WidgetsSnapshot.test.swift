@@ -48,22 +48,83 @@ struct WidgetsSnapshotTests {
 
     @available(iOS 18, *)
     @MainActor @Test func gaugeWidgetSystemSmallSnapshot() {
-        let size = snapshotSize(for: .systemSmall)
-        let entry = WidgetGaugeEntry(
+        assertGaugeSnapshot(
             gaugeType: .normal,
-            value: 0.84,
-            valueLabel: "84%",
-            label: nil,
             min: "0",
             max: "100",
+            family: .systemSmall
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func gaugeWidgetSystemSmallSingleLabelSnapshot() {
+        assertGaugeSnapshot(
+            gaugeType: .singleLabel,
+            label: "Battery",
+            family: .systemSmall
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func gaugeWidgetSystemSmallCapacitySnapshot() {
+        assertGaugeSnapshot(
+            gaugeType: .capacity,
+            family: .systemSmall
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func gaugeWidgetAccessoryCircularSnapshot() {
+        assertGaugeSnapshot(
+            gaugeType: .normal,
+            min: "0",
+            max: "100",
+            family: .accessoryCircular
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func gaugeWidgetAccessoryCircularCapacitySnapshot() {
+        assertGaugeSnapshot(
+            gaugeType: .capacity,
+            family: .accessoryCircular
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor private func assertGaugeSnapshot(
+        gaugeType: GaugeTypeAppEnum,
+        label: String? = nil,
+        min: String? = nil,
+        max: String? = nil,
+        family: WidgetFamily,
+        fileID: StaticString = #fileID,
+        filePath: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) {
+        let size = snapshotSize(for: family)
+        let entry = WidgetGaugeEntry(
+            gaugeType: gaugeType,
+            value: 0.84,
+            valueLabel: "84%",
+            label: label,
+            min: min,
+            max: max,
             runScript: false,
             script: nil,
             showConfirmationNotification: true
         )
         assertLightDarkSnapshots(
             of: WidgetGaugeView(entry: entry)
-                .environment(\.widgetFamily, .systemSmall),
-            layout: .fixed(width: size.width, height: size.height)
+                .environment(\.widgetFamily, family),
+            layout: .fixed(width: size.width, height: size.height),
+            fileID: fileID,
+            file: filePath,
+            testName: testName,
+            line: line,
+            column: column
         )
     }
 
@@ -75,6 +136,8 @@ struct WidgetsSnapshotTests {
             CGSize(width: 350, height: 160)
         case .systemLarge:
             CGSize(width: 350, height: 310)
+        case .accessoryCircular:
+            CGSize(width: 72, height: 72)
         default:
             CGSize(width: 600, height: 600)
         }
