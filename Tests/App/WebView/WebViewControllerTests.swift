@@ -4,6 +4,7 @@ import UIKit
 import WebKit
 import XCTest
 
+@MainActor
 final class WebViewControllerTests: XCTestCase {
     func testMakeWebViewConfigurationRequiresUserActionForAudioPlayback() {
         let config = WebViewController.makeWebViewConfiguration()

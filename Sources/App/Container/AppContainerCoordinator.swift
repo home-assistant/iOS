@@ -26,16 +26,16 @@ final class AppContainerCoordinator: AppCoordinator {
     var onSelectServer: ((String?, Bool) -> Void)?
     private var pendingServerSelection: ((Server) -> Void)?
 
-    private var pendingOpen: (server: Identifier<Server>, seal: (any WebFrontend) -> Void)?
+    /// Seals for in-flight `open(server:)` requests, keyed by server. Keyed + arrayed so concurrent opens
+    /// (same or different servers) don't overwrite each other and leave callers hanging.
+    private var pendingOpens: [Identifier<Server>: [(any WebFrontend) -> Void]] = [:]
 
     /// Called by `ContainerView` whenever the active `WebFrontendView` (re)creates its frontend.
-    /// Resolves a pending `open(server:)` once the requested server's frontend appears.
+    /// Resolves every pending `open(server:)` for the server whose frontend just appeared.
     func setFrontend(_ frontend: any WebFrontend) {
         self.frontend = frontend
-        if let pending = pendingOpen, pending.server == frontend.server.identifier {
-            pendingOpen = nil
-            pending.seal(frontend)
-        }
+        let seals = pendingOpens.removeValue(forKey: frontend.server.identifier) ?? []
+        seals.forEach { $0(frontend) }
     }
 
     var window: UIWindow? { frontend?.presentationWindow }
@@ -84,7 +84,7 @@ final class AppContainerCoordinator: AppCoordinator {
             return .value(current)
         }
         let (promise, seal) = Guarantee<any WebFrontend>.pending()
-        pendingOpen = (server.identifier, seal)
+        pendingOpens[server.identifier, default: []].append(seal)
         onOpenServer?(server)
         return promise
     }

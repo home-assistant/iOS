@@ -62,6 +62,7 @@ struct ContainerView: View {
                 }
             case .settings:
                 SettingsView().injectingViewControllerProvider()
+                    .onDisappear { refreshWebViewIfDisconnected() }
             case .assistSettings:
                 AssistSettingsView()
             case let .downloadManager(viewModel):
@@ -110,6 +111,12 @@ struct ContainerView: View {
     /// old `presentOverlayController`'s `onDisappear { refresh() }`.
     private func refreshWebView() {
         Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
+    }
+
+    /// Re-evaluates the web view after Settings closes, but only when it isn't connected — so closing Settings
+    /// on a healthy page doesn't reload it, while the no-active-URL / connection block still re-evaluates.
+    private func refreshWebViewIfDisconnected() {
+        Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
     }
 
     private var isShowingWebView: Bool {
