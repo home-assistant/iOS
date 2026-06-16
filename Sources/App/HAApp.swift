@@ -8,17 +8,20 @@ struct HAApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
+        // Main Onboarding + Home Assistant Frontend
         WindowGroup {
             ContainerView()
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
         }
 
+        // Mac Settings
         WindowGroup {
             SettingsView()
         }
         .handlesExternalEvents(matching: [SceneActivity.settings.activityIdentifier])
 
+        // Mac About
         WindowGroup {
             NavigationView {
                 AboutView()
@@ -27,11 +30,13 @@ struct HAApp: App {
         }
         .handlesExternalEvents(matching: [SceneActivity.about.activityIdentifier])
 
+        // Mac Assist
         WindowGroup {
             AssistWindowView()
         }
         .handlesExternalEvents(matching: [SceneActivity.assist.activityIdentifier])
 
+        // Mac Onboarding
         WindowGroup {
             OnboardingHostingView(onboardingStyle: .secondary)
         }

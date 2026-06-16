@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Benachrichtigungskategorien sind veraltet";
 "alerts.navigation_error.message" = "Diese Seite kann nicht angezeigt werden, da sie sich außerhalb deines Home Assistant-Servers befindet oder die Seite nicht gefunden wurde.";
 "alerts.navigation_error.title" = "Navigationsfehler";
-"alerts.open_url_from_deep_link.message" = "Soll der Link (%@) aus der Mitteilung wirklich geöffnet werden?";
-"alerts.open_url_from_notification.message" = "Adresse aus der Benachrichtigung (%@) öffnen?";
+"alerts.open_url_from_deep_link.message" = "Auf den Server tippen, um die Deep-Link-URL (%@) zu öffnen?";
+"alerts.open_url_from_notification.message" = "URL (%@) aus der Benachrichtigung öffnen?";
 "alerts.open_url_from_notification.title" = "Adresse öffnen?";
 "alerts.prompt.cancel" = "Abbrechen";
 "alerts.prompt.ok" = "OK";

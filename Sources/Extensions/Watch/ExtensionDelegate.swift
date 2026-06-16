@@ -39,6 +39,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         setupWatchCommunicator()
 
+        // Re-apply any watch-local "Always use" URL choices to the persisted servers (their
+        // connection info doesn't carry the override across launches/syncs).
+        WatchServerSync.applyURLOverrides()
+
         // schedule the next background refresh
         Current.backgroundRefreshScheduler.schedule().cauterize()
     }
@@ -245,10 +249,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     private func updateContext(_ content: Content) {
         let realm = Current.realm()
-
-        if let servers = content["servers"] as? Data {
-            Current.servers.restoreState(servers)
-        }
 
         if let complicationsDictionary = content["complications"] as? [[String: Any]] {
             let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }

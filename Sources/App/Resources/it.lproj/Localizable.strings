@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Le categorie di notifica sono obsolete";
 "alerts.navigation_error.message" = "Questa pagina non può essere visualizzata perché è esterna al server Home Assistant oppure non è stata trovata.";
 "alerts.navigation_error.title" = "Errore di navigazione";
-"alerts.open_url_from_deep_link.message" = "Aprire l'URL (%@) trovato nella notifica?";
-"alerts.open_url_from_notification.message" = "Aprire l'URL () trovato nella notifica?%@";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Aprire l'URL?";
 "alerts.prompt.cancel" = "Annulla";
 "alerts.prompt.ok" = "OK";

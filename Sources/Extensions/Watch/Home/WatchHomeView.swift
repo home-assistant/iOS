@@ -6,6 +6,7 @@ struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
+    @State private var showSettings = false
     @State private var openFolderId: String?
 
     var body: some View {
@@ -37,6 +38,9 @@ struct WatchHomeView: View {
                 fatalError("Assist launched without serverId or pipelineId")
             }
         })
+        .sheet(isPresented: $showSettings) {
+            WatchSettingsView()
+        }
         .onAppear {
             Task {
                 await viewModel.fetchNetworkInfo()
@@ -210,8 +214,19 @@ struct WatchHomeView: View {
         VStack(spacing: .zero) {
             appVersion
             ssidLabel
+            settingsButton
         }
         .listRowBackground(Color.clear)
+    }
+
+    private var settingsButton: some View {
+        Button {
+            showSettings = true
+        } label: {
+            Image(systemSymbol: .gearshapeFill)
+        }
+        .circularGlassOrLegacyBackground()
+        .padding(DesignSystem.Spaces.one)
     }
 
     private var appVersion: some View {

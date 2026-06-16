@@ -1,7 +1,6 @@
 import Alamofire
 import Foundation
 
-#if !os(watchOS)
 /// Custom SessionDelegate that handles client certificate authentication (mTLS)
 public class ClientCertificateSessionDelegate: SessionDelegate {
     private let server: Server
@@ -47,4 +46,3 @@ public class ClientCertificateSessionDelegate: SessionDelegate {
         }
     }
 }
-#endif

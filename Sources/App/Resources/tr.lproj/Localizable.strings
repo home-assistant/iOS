@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Bildirim Kategorileri kullanımdan kaldırıldı";
 "alerts.navigation_error.message" = "Bu sayfa, Home Assistant sunucunuzun dışında olduğu veya sayfa bulunamadığı için görüntülenemiyor.";
 "alerts.navigation_error.title" = "Yönlendirme Hatası";
-"alerts.open_url_from_deep_link.message" = "URL ( %@ ) derin bağlantıdan açılsın mı?";
-"alerts.open_url_from_notification.message" = "Bildirimde bulunan URL ( %@ ) açılsın mı?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "URL Aç?";
 "alerts.prompt.cancel" = "İptal";
 "alerts.prompt.ok" = "Tamam";

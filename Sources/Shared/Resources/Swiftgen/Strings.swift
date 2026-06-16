@@ -236,7 +236,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "alerts.navigation_error.title") }
     }
     public enum OpenUrlFromDeepLink {
-      /// Open URL (%@) from deep link?
+      /// Tap server to open (%@) deep link URL?
       public static func message(_ p1: Any) -> String {
         return L10n.tr("Localizable", "alerts.open_url_from_deep_link.message", String(describing: p1))
       }
@@ -5510,11 +5510,59 @@ public enum L10n {
       }
     }
     public enum Settings {
+      /// Auto
+      public static var auto: String { return L10n.tr("Localizable", "watch.settings.auto") }
+      /// Updated %@
+      public static func lastUpdated(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "watch.settings.last_updated", String(describing: p1))
+      }
+      /// No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.
+      public static var noServers: String { return L10n.tr("Localizable", "watch.settings.no_servers") }
+      /// Refresh
+      public static var refresh: String { return L10n.tr("Localizable", "watch.settings.refresh") }
+      /// Settings
+      public static var title: String { return L10n.tr("Localizable", "watch.settings.title") }
+      public enum ClientCertificate {
+        /// Available on this Watch
+        public static var availableOnWatch: String { return L10n.tr("Localizable", "watch.settings.client_certificate.available_on_watch") }
+        /// Open Home Assistant on your iPhone to import the certificate, then refresh here.
+        public static var importInstructions: String { return L10n.tr("Localizable", "watch.settings.client_certificate.import_instructions") }
+        /// Not configured
+        public static var `none`: String { return L10n.tr("Localizable", "watch.settings.client_certificate.none") }
+        public enum RemoveFromWatch {
+          /// The certificate will be removed from this Watch only. Your iPhone keeps it, and refreshing re-adds it to the Watch.
+          public static var message: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.message") }
+          /// Remove
+          public static var remove: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.remove") }
+          /// Remove from this Watch?
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.title") }
+        }
+      }
       public enum NoItems {
         public enum Phone {
           /// No items configured, please choose items below.
           public static var title: String { return L10n.tr("Localizable", "watch.settings.no_items.phone.title") }
         }
+      }
+      public enum PerformAction {
+        /// Apple Watch
+        public static var appleWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.apple_watch") }
+        /// Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer") }
+        /// iPhone
+        public static var iphone: String { return L10n.tr("Localizable", "watch.settings.perform_action.iphone") }
+        /// Perform action using
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.perform_action.title") }
+      }
+      public enum Servers {
+        /// Servers
+        public static var header: String { return L10n.tr("Localizable", "watch.settings.servers.header") }
+      }
+      public enum UrlOverride {
+        /// Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.url_override.footer") }
+        /// Always use
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.url_override.title") }
       }
     }
   }

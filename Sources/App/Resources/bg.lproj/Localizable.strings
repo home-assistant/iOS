@@ -45,7 +45,7 @@
 "alerts.deprecations.notification_category.title" = "Категориите за известия са остарели";
 "alerts.navigation_error.message" = "This page cannot be displayed because it's outside your Home Assistant server or the page was not found.";
 "alerts.navigation_error.title" = "Navigation Error";
-"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
 "alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Open URL?";
 "alerts.prompt.cancel" = "Cancel";

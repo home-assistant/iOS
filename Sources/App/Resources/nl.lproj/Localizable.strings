@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Notificatie Categorie is verouderd";
 "alerts.navigation_error.message" = "Deze pagina kan niet worden weergegeven omdat deze zich buiten je Home Assistant-server bevindt of omdat de pagina niet is gevonden.";
 "alerts.navigation_error.title" = "Navigatiefout";
-"alerts.open_url_from_deep_link.message" = "URL ( %@ ) openen vanuit deep link?";
-"alerts.open_url_from_notification.message" = "Open gevonden URL ( %@ ) in melding?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "URL openen?";
 "alerts.prompt.cancel" = "Annuleren";
 "alerts.prompt.ok" = "OK";

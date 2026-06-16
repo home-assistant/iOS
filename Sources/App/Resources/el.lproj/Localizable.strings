@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Οι κατηγορίες ειδοποιήσεων έχουν καταργηθεί";
 "alerts.navigation_error.message" = "Αυτή η σελίδα δεν μπορεί να εμφανιστεί επειδή βρίσκεται εκτός του Home Assistant server σας ή επειδή η σελίδα δεν βρέθηκε.";
 "alerts.navigation_error.title" = "Σφάλμα πλοήγησης";
-"alerts.open_url_from_deep_link.message" = "Άνοιγμα διεύθυνσης URL (%@) από βαθιά σύνδεση;";
-"alerts.open_url_from_notification.message" = "Άνοιγμα διεύθυνσης URL ( %@ ) που βρέθηκε στην ειδοποίηση;";
+"alerts.open_url_from_deep_link.message" = "Πάτημα server για άνοιγμα (%@) deep link URL;";
+"alerts.open_url_from_notification.message" = "Ανοιγμα διεύθυνσης URL ( %@ ) που βρέθηκε στην ειδοποίηση;";
 "alerts.open_url_from_notification.title" = "Άνοιγμα διεύθυνσης URL;";
 "alerts.prompt.cancel" = "Ακύρωση";
 "alerts.prompt.ok" = "Εντάξει";
