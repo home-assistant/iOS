@@ -38,6 +38,16 @@ struct HomeAssistantView: View, WebFrontendView {
         }
     }
 
+    /// The macOS (Catalyst) title-bar buttons, drawn over the native status-bar view in the top safe-area
+    /// inset. Published only on Catalyst (nil on iOS), so this is empty everywhere else.
+    @ViewBuilder
+    private var macStatusBarButtons: some View {
+        if let macStatusBar = overlayState.macStatusBar {
+            MacStatusBarButtonsView(content: macStatusBar)
+                .ignoresSafeArea(edges: .top)
+        }
+    }
+
     var body: some View {
         ZStack {
             FrontendView(server: server, onWebViewController: onWebViewController, overlayState: overlayState)
@@ -62,6 +72,7 @@ struct HomeAssistantView: View, WebFrontendView {
             }
         }
         .overlay(alignment: .top) { themedStatusBar }
+        .overlay(alignment: .top) { macStatusBarButtons }
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.showsNoActiveURL)
     }

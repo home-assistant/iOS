@@ -29,7 +29,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var latestLoadError: Error?
 
     var initialURL: URL?
-    var statusBarButtonsStack: UIStackView?
     var lastNavigationWasServerError = false
     var reconnectBackgroundTimer: Timer? {
         willSet {

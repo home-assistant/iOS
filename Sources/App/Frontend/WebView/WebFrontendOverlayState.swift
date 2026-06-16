@@ -18,6 +18,11 @@ final class WebFrontendOverlayState: ObservableObject {
     /// Catalyst (where the native status-bar view handles it).
     @Published var statusBarColor: UIColor?
 
+    /// Server context + actions for the macOS (Catalyst) title-bar buttons, rendered by `MacStatusBarButtonsView`
+    /// as a SwiftUI overlay in `HomeAssistantView`. Nil on iOS (no window title bar) and until the Catalyst
+    /// `WebViewController` publishes it.
+    @Published var macStatusBar: MacStatusBarButtonsContent?
+
     /// Data + actions to render `WebViewEmptyStateView` as a SwiftUI overlay. Built by `WebViewController`,
     /// which owns the connection state and the actions (retry / settings / error details / re-auth).
     struct EmptyStateContent {
@@ -30,5 +35,19 @@ final class WebFrontendOverlayState: ObservableObject {
         let errorDetailsAction: () -> Void
         let reauthAction: (ConnectionInfo.URLType) -> Void
         let dismissAction: () -> Void
+    }
+
+    /// Data + actions to render `MacStatusBarButtonsView`. Built by `WebViewController`, which owns the web
+    /// view the navigation / copy / paste / reload actions drive.
+    struct MacStatusBarButtonsContent {
+        let server: Server
+        let servers: [Server]
+        let refresh: () -> Void
+        let openServer: (Server) -> Void
+        let openInSafari: () -> Void
+        let goBack: () -> Void
+        let goForward: () -> Void
+        let copy: () -> Void
+        let paste: () -> Void
     }
 }

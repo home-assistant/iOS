@@ -904,7 +904,7 @@
 		429C33C32F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
-		42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */; };
+		FA11C0DE0000000000000071 /* MacStatusBarButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000070 /* MacStatusBarButtonsView.swift */; };
 		42A1860A2E1D310D004B729A /* HATextField.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A186092E1D310D004B729A /* HATextField.test.swift */; };
 		42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2AB7F2C80751E00C5608D /* ControlAssist.swift */; };
 		42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A32F372EEA393700B323F1 /* CarPlayLockConfirmation.swift */; };
@@ -1154,7 +1154,6 @@
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
-		42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */; };
 		42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */; };
 		42F958992BB4684700497981 /* WidgetAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F958972BB4681E00497981 /* WidgetAssist.swift */; };
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
@@ -2643,7 +2642,7 @@
 		429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPickerViewModel.test.swift; sourceTree = "<group>"; };
 		429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAUsagePredictionCommonControl.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
-		42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarButtonsConfigurator.swift; sourceTree = "<group>"; };
+		FA11C0DE0000000000000070 /* MacStatusBarButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacStatusBarButtonsView.swift; sourceTree = "<group>"; };
 		42A186092E1D310D004B729A /* HATextField.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.test.swift; sourceTree = "<group>"; };
 		42A2AB7F2C80751E00C5608D /* ControlAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAssist.swift; sourceTree = "<group>"; };
 		42A32F372EEA393700B323F1 /* CarPlayLockConfirmation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayLockConfirmation.swift; sourceTree = "<group>"; };
@@ -3017,7 +3016,6 @@
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
-		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
 		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
 		42F958972BB4681E00497981 /* WidgetAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssist.swift; sourceTree = "<group>"; };
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
@@ -6320,8 +6318,7 @@
 		42F73F582E264A7A00B704A9 /* StatusBar */ = {
 			isa = PBXGroup;
 			children = (
-				42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */,
-				42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */,
+				FA11C0DE0000000000000070 /* MacStatusBarButtonsView.swift */,
 			);
 			path = StatusBar;
 			sourceTree = "<group>";
@@ -9545,7 +9542,7 @@
 				425390DB2E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift in Sources */,
 				42DF7DDB2EC5372E003F3C4A /* SettingsView.swift in Sources */,
 				113199DC28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift in Sources */,
-				42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */,
+				FA11C0DE0000000000000071 /* MacStatusBarButtonsView.swift in Sources */,
 				42175EBF2F436804001073AF /* OnboardingAuthStepClientCertificate.swift in Sources */,
 				42F5C0862F02BCC700C50310 /* SwitchIntent.swift in Sources */,
 				5D4737422F241342009A70EA /* FolderDetailView.swift in Sources */,
@@ -9649,7 +9646,6 @@
 				11F55ECD25D3A364003977AC /* NotificationRateLimitView.swift in Sources */,
 				4210CCEB2F152AD000B71FB9 /* CameraPlayerView.swift in Sources */,
 				3E4087F02CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
-				42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */,
 				42DC44362E1C0791001046C1 /* WebRTCVideoPlayerView.swift in Sources */,
 				4278CB812D01E61D00CFAAC9 /* GesturesSetupView.swift in Sources */,
 				42FF5E922E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */,

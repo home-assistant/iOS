@@ -22,50 +22,29 @@ extension WebViewController {
         ])
 
         if Current.isCatalyst {
-            setupStatusBarButtons(in: statusBarView)
+            publishMacStatusBarButtons()
         }
         return statusBarView
     }
 
-    func setupStatusBarButtons(in statusBarView: UIView) {
-        // Remove existing stack if present
-        if let statusBarButtonsStack {
-            statusBarButtonsStack.removeFromSuperview()
-            self.statusBarButtonsStack = nil
-        }
-
-        let configuration = StatusBarButtonsConfigurator.Configuration(
-            server: server,
-            servers: Current.servers.all,
-            actions: .init(
-                refresh: { [weak self] in
-                    self?.refresh()
-                },
-                openServer: { [weak self] server in
-                    self?.openServer(server)
-                },
-                openInSafari: { [weak self] in
-                    self?.openServerInSafari()
-                },
-                goBack: { [weak self] in
-                    self?.goBack()
-                },
-                goForward: { [weak self] in
-                    self?.goForward()
-                },
-                copy: { [weak self] in
-                    self?.copyCurrentSelectedContent()
-                },
-                paste: { [weak self] in
-                    self?.pasteContent()
-                }
+    /// Publishes the macOS (Catalyst) title-bar button configuration to `overlayState`, where
+    /// `HomeAssistantView` renders it as the SwiftUI `MacStatusBarButtonsView` overlay. Dispatched async to
+    /// avoid mutating published state during a SwiftUI view-update pass (`viewDidLoad` can run inside one).
+    func publishMacStatusBarButtons() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            overlayState?.macStatusBar = WebFrontendOverlayState.MacStatusBarButtonsContent(
+                server: server,
+                servers: Current.servers.all,
+                refresh: { [weak self] in self?.refresh() },
+                openServer: { [weak self] server in self?.openServer(server) },
+                openInSafari: { [weak self] in self?.openServerInSafari() },
+                goBack: { [weak self] in self?.goBack() },
+                goForward: { [weak self] in self?.goForward() },
+                copy: { [weak self] in self?.copyCurrentSelectedContent() },
+                paste: { [weak self] in self?.pasteContent() }
             )
-        )
-
-        statusBarButtonsStack = StatusBarButtonsConfigurator.setupButtons(
-            in: statusBarView,
-            configuration: configuration
-        )
+        }
     }
 
     func openServer(_ server: Server) {
