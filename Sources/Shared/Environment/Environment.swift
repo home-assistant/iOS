@@ -206,6 +206,17 @@ public class AppEnvironment {
         _cachedApis[identifier] = api
     }
 
+    /// Evicts cached API instances so they are rebuilt on next access. Needed when a server's
+    /// connection configuration changes in a way that affects the URLSession delegates created at
+    /// `HomeAssistantAPI` init time — e.g. when an mTLS client certificate is added or removed.
+    public func resetAPICache(for identifiers: [Identifier<Server>]) {
+        cachedApisLock.lock()
+        defer { cachedApisLock.unlock() }
+        for identifier in identifiers {
+            _cachedApis[identifier] = nil
+        }
+    }
+
     public var apis: [HomeAssistantAPI] { servers.all.compactMap(api(for:)) }
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()

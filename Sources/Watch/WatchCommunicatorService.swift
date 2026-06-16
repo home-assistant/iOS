@@ -3,6 +3,8 @@ import Foundation
 import ObjectMapper
 import PromiseKit
 import Shared
+import SwiftUI
+import UIKit
 
 final class WatchCommunicatorService {
     enum WatchAssistCommunicatorError: Error {
@@ -16,6 +18,14 @@ final class WatchCommunicatorService {
     // [sessionKey: [chunkIndex: Data]]
     private var audioChunks: [String: [Int: Data]] = [:]
     private var audioChunkCounts: [String: Int] = [:]
+
+    private var didBecomeActiveObserver: NSObjectProtocol?
+
+    deinit {
+        if let didBecomeActiveObserver {
+            NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+        }
+    }
 
     func setup() {
         Current.servers.add(observer: self)
@@ -36,6 +46,15 @@ final class WatchCommunicatorService {
         }
 
         setupMessages()
+
+        // Present any client-certificate import the watch requested while the app was backgrounded.
+        didBecomeActiveObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.presentPendingClientCertImportIfPossible()
+        }
 
         Context.observations.store[.init(queue: .main)] = { context in
             Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
@@ -75,8 +94,116 @@ final class WatchCommunicatorService {
                 handleAssistAudioChunkedMessage(message)
             case .magicItemPressed:
                 magicItemPressed(message: message)
+            case .serversConfigSync:
+                handleServersConfigSync(message: message)
+            case .clientCertImportRequest:
+                handleClientCertImportRequest(message: message)
             }
         }
+    }
+
+    private func handleServersConfigSync(message: InteractiveImmediateMessage) {
+        // Reply with the server configuration AND any mTLS client certificate bundles inline,
+        // mirroring how the watch configuration is delivered — a single, synchronous round-trip.
+        var content: [String: Any] = ["servers": Current.servers.restorableState()]
+        if let certificates = clientCertificateTransferData() {
+            content["clientCertificates"] = certificates
+        }
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.serversConfigSyncResponse.rawValue,
+            content: content
+        ))
+    }
+
+    // MARK: - mTLS client certificate transfer (phone → watch)
+
+    /// Gather the client certificate bundle(s) for all configured servers, encoded as
+    /// `[ClientCertificateTransferItem]`, to be delivered inline in the `serversConfigSync` reply.
+    /// The watch has a separate Keychain, so the phone re-sends the original bundle + password.
+    private func clientCertificateTransferData() -> Data? {
+        let manager = ClientCertificateManager.shared
+
+        let items: [ClientCertificateTransferItem] = Current.servers.all.compactMap { server in
+            guard let cert = server.info.connection.clientCertificate else { return nil }
+            return manager.transferMaterial(for: cert.keychainIdentifier)
+        }
+
+        // De-duplicate by identifier — the same certificate can be shared across servers.
+        let unique = Array(
+            Dictionary(items.map { ($0.keychainIdentifier, $0) }, uniquingKeysWith: { first, _ in first }).values
+        )
+
+        guard !unique.isEmpty else {
+            Current.Log.info("[mTLS] No client certificate material available to include for watch")
+            return nil
+        }
+
+        Current.Log.info("[mTLS] Including \(unique.count) client certificate(s) in watch reply")
+        return try? JSONEncoder().encode(unique)
+    }
+
+    // MARK: - mTLS client certificate import (requested from the watch)
+
+    private var pendingCertImportServerId: String?
+
+    /// The watch asked us to present the client-certificate import screen for a server. We can't
+    /// foreground the iPhone app from here, so remember the request and present it now (if the app
+    /// is active) or the next time the app becomes active.
+    private func handleClientCertImportRequest(message: InteractiveImmediateMessage) {
+        pendingCertImportServerId = message.content["serverId"] as? String
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.clientCertImportRequestResponse.rawValue,
+            content: ["acknowledged": true]
+        ))
+        DispatchQueue.main.async { [weak self] in
+            self?.presentPendingClientCertImportIfPossible()
+        }
+    }
+
+    private func presentPendingClientCertImportIfPossible() {
+        guard let serverId = pendingCertImportServerId else { return }
+        guard UIApplication.shared.applicationState == .active else {
+            Current.Log.info("[mTLS] Client certificate import requested; will present when the app is active")
+            return
+        }
+        guard let server = Current.servers.server(forServerIdentifier: serverId) else {
+            Current.Log.error("[mTLS] Client certificate import requested for unknown server: \(serverId)")
+            pendingCertImportServerId = nil
+            return
+        }
+        guard let presenter = Self.topViewController(), presenter.presentedViewController == nil else {
+            // Something is already presented; retry on the next activation.
+            return
+        }
+
+        pendingCertImportServerId = nil
+        Current.Log.info("[mTLS] Presenting client certificate import for server \(server.info.name)")
+
+        let importView = ClientCertificateOnboardingView(
+            onImport: { [weak presenter] certificate in
+                server.update { $0.connection.clientCertificate = certificate }
+                Current.Log.info("[mTLS] Imported client certificate on iPhone for watch: \(certificate.displayName)")
+                presenter?.dismiss(animated: true)
+            },
+            onCancel: { [weak presenter] in
+                presenter?.dismiss(animated: true)
+            }
+        )
+
+        let host = UIHostingController(rootView: NavigationView { importView }.navigationViewStyle(.stack))
+        host.modalPresentationStyle = .formSheet
+        presenter.present(host, animated: true)
+    }
+
+    private static func topViewController() -> UIViewController? {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let scene = scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
+        let window = scene?.windows.first { $0.isKeyWindow } ?? scene?.windows.first
+        var top = window?.rootViewController
+        while let presented = top?.presentedViewController {
+            top = presented
+        }
+        return top
     }
 
     private func handleAssistAudioChunkedMessage(_ message: InteractiveImmediateMessage) {
@@ -435,6 +562,8 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         _ = HomeAssistantAPI.SyncWatchContext()
+        // Servers + client certificates are delivered on demand via the `serversConfigSync` reply
+        // (watch Home refresh); no proactive push needed here.
     }
 }
 

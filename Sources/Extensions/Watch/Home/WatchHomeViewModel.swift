@@ -49,6 +49,8 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         isLoading = true
+        // Pull servers + any mTLS client certificates as part of the refresh (delivered inline).
+        WatchServerSync.request()
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfig.rawValue,
             reply: { [weak self] message in

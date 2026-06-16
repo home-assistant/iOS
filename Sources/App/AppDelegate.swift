@@ -154,6 +154,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupDebugSwift() {
         #if DEBUG
+        // Opt-in via the "-EnableDebugSwift" launch argument (off by default). DebugSwift's
+        // network monitor swizzles URLSessionConfiguration and intercepts every request, which
+        // breaks mTLS / self-signed-certificate flows such as onboarding on the simulator.
+        guard ProcessInfo.processInfo.arguments.contains("-EnableDebugSwift") else { return }
         debugSwift.setup()
         debugSwift.show()
         #endif
