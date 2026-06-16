@@ -233,7 +233,7 @@ struct ConnectionErrorDetailsView: View {
     }
 
     private func openSettings() {
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
+        Current.sceneManager.webViewControllerPromise.done { controller in
             controller.showSettingsViewController()
         }
     }

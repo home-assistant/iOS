@@ -27,6 +27,11 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
     }
 
     @MainActor func testHandleExternalMessageConfigScreenShowShowSettings() {
+        let coordinator = MockAppCoordinator()
+        let settingsShown = expectation(description: "showSettings called")
+        coordinator.onShowSettings = { settingsShown.fulfill() }
+        Current.sceneManager.registerAppCoordinator(coordinator)
+
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -35,7 +40,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ]
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertNotNil(mockWebViewController.overlayedController)
+        wait(for: [settingsShown], timeout: 1)
+        XCTAssertTrue(coordinator.showSettingsCalled)
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
@@ -207,6 +213,11 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
     }
 
     @MainActor func testHandleExternalMessageOpenVoiceDeviceSettingsShowsSettings() {
+        let coordinator = MockAppCoordinator()
+        let assistSettingsShown = expectation(description: "showAssistSettings called")
+        coordinator.onShowAssistSettings = { assistSettingsShown.fulfill() }
+        Current.sceneManager.registerAppCoordinator(coordinator)
+
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -216,8 +227,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertNotNil(mockWebViewController.overlayedController)
-        XCTAssertEqual(mockWebViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
+        wait(for: [assistSettingsShown], timeout: 1)
+        XCTAssertTrue(coordinator.showAssistSettingsCalled)
     }
 
     private func externalBusMessage(from script: String) throws -> [String: Any] {

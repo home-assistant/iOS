@@ -36,6 +36,7 @@ struct WidgetOpenPage: Widget {
         .configurationDisplayName(L10n.Widgets.OpenPage.title)
         .description(L10n.Widgets.OpenPage.description)
         .supportedFamilies(WidgetOpenPageSupportedFamilies.families)
+        .disfavoredInCarPlayIfAvailable(for: WidgetOpenPageSupportedFamilies.families)
         .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
             Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
         }

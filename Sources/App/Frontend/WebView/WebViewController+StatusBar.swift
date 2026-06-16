@@ -69,8 +69,8 @@ extension WebViewController {
     }
 
     func openServer(_ server: Server) {
-        Current.sceneManager.webViewWindowControllerPromise.done { controller in
-            controller.open(server: server)
+        Current.sceneManager.appCoordinator.done { coordinator in
+            coordinator.open(server: server)
         }
     }
 

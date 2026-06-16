@@ -171,8 +171,6 @@
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
 					<string>Onboarding</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).OnboardingSceneDelegate</string>
 				</dict>
 				<dict>
 					<key>UISceneClassName</key>
@@ -180,31 +178,25 @@
 					<key>UISceneConfigurationName</key>
 					<string>WebView</string>
 					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).WebViewSceneDelegate</string>
+					<string>WebViewSceneDelegate</string>
 				</dict>
 				<dict>
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
 					<string>Settings</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SettingsSceneDelegate</string>
 				</dict>
 				<dict>
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
 					<string>About</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).AboutSceneDelegate</string>
 				</dict>
 				<dict>
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
 					<string>Assist</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).AssistSceneDelegate</string>
 				</dict>
 			</array>
 		</dict>

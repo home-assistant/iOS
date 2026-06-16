@@ -51,8 +51,8 @@ struct ServerPickerView: View {
             if let onSelect {
                 onSelect(server)
             } else {
-                Current.sceneManager.webViewWindowControllerPromise.done { windowController in
-                    windowController.open(server: server)
+                Current.sceneManager.appCoordinator.done { coordinator in
+                    coordinator.open(server: server)
                 }
             }
         }
