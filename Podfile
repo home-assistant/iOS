@@ -37,12 +37,9 @@ pod 'XCGLogger'
 
 # Keep Starscream reference even though HAKit already install it, because it defines our fork with the necessary fix
 pod 'Starscream', git: 'https://github.com/bgoncal/starscream', tag: '4.0.9'
-# LOCAL DEV (applewatch-mtls): consume the local HAKit working tree, which enables mTLS client
-# identity on watchOS. Before merging, publish a HAKit tag with these changes and switch back to:
-#   pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.15'
-pod 'HAKit', path: '/Users/brunopantaleao/Projects/HAKit'
-pod 'HAKit/PromiseKit', path: '/Users/brunopantaleao/Projects/HAKit'
-pod 'HAKit/Mocks', path: '/Users/brunopantaleao/Projects/HAKit'
+HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.15`)
+HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.15`)
+HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.15`)
 
 def test_pods
   pod 'OHHTTPStubs/Swift'
