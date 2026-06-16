@@ -21,27 +21,18 @@ struct IntentLightEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: .init(stringLiteral: subtitle)
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
     }
 
-    private var subtitle: String {
-        var subtitle = ""
-        if let areaName {
-            subtitle += areaName
-        }
-
-        if let deviceName,
-           deviceName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != displayString.lowercased()
-           .trimmingCharacters(in: .whitespacesAndNewlines) {
-            if subtitle.isEmpty {
-                subtitle += deviceName
-            } else {
-                subtitle += " → \(deviceName)"
-            }
-        }
-
-        return subtitle
+    private var subtitle: String? {
+        EntityContextSubtitle.make(
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
     }
 
     init(
@@ -65,26 +56,37 @@ struct IntentLightEntity: AppEntity {
 
 @available(iOS 18.0, *)
 struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
+    #if WIDGET_EXTENSION
+    @IntentParameterDependency<ControlLightsConfiguration>(\.$server)
+    var config
+    #endif
+
     func entities(for identifiers: [String]) async throws -> [IntentLightEntity] {
         getLightEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentLightEntity> {
-        let lightsPerServer = getLightEntities(matching: string)
-
-        return .init(sections: lightsPerServer.map { (key: Server, value: [IntentLightEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value
-            )
-        })
+        collection(for: getLightEntities(matching: string))
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentLightEntity> {
-        let lightsPerServer = getLightEntities()
+        collection(for: getLightEntities())
+    }
 
-        return .init(sections: lightsPerServer.map { (key: Server, value: [IntentLightEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+    /// Scopes the list to the server picked in the configuration (flat list). When no server is
+    /// selected (e.g. a widget configured before this option existed), falls back to grouping
+    /// every server's entities into sections.
+    private func collection(
+        for entitiesPerServer: [(Server, [IntentLightEntity])]
+    ) -> IntentItemCollection<IntentLightEntity> {
+        #if WIDGET_EXTENSION
+        if let server = config?.server {
+            let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
+            return .init(items: items)
+        }
+        #endif
+        return .init(sections: entitiesPerServer.map { server, items in
+            .init(.init(stringLiteral: server.info.name), items: items)
         })
     }
 

@@ -7,11 +7,16 @@ struct AssistPipelineAddList: View {
     @State private var assistConfigs: [AssistPipelines] = []
     @State private var assistServices: [AssistServiceProtocol] = []
     @State private var searchTerm = ""
+    @State private var selectedServerId: String?
 
     let itemToAdd: (MagicItem) -> Void
 
     var body: some View {
         List {
+            if Current.servers.all.count > 1 {
+                serverPicker
+            }
+
             if isLoading {
                 Section {
                     HStack {
@@ -21,20 +26,20 @@ struct AssistPipelineAddList: View {
                     }
                     .padding()
                 }
-            } else if assistConfigs.isEmpty {
+            } else if selectedConfig?.pipelines.isEmpty ?? true {
                 Section {
                     Text(L10n.AssistPipelinePicker.noPipelines)
                         .foregroundColor(.secondary)
                 }
             }
 
-            ForEach(assistConfigs, id: \.serverId) { config in
-                Section(serverName(serverId: config.serverId)) {
-                    ForEach(filteredPipelines(config.pipelines), id: \.id) { pipeline in
+            if let selectedConfig {
+                Section {
+                    ForEach(filteredPipelines(selectedConfig.pipelines), id: \.id) { pipeline in
                         Button {
                             itemToAdd(.init(
                                 id: pipeline.id,
-                                serverId: config.serverId,
+                                serverId: selectedConfig.serverId,
                                 type: .assistPipeline,
                                 customization: .init(iconColor: MagicItem.defaultAssistIconColorHex)
                             ))
@@ -60,7 +65,27 @@ struct AssistPipelineAddList: View {
         .searchable(text: $searchTerm)
         .onAppear {
             fetchPipelines()
+            if selectedServerId == nil {
+                selectedServerId = Current.servers.all.first?.identifier.rawValue
+            }
         }
+    }
+
+    private var selectedConfig: AssistPipelines? {
+        assistConfigs.first(where: { $0.serverId == selectedServerId })
+    }
+
+    @ViewBuilder
+    private var serverPicker: some View {
+        EntityFilterPickerView(
+            title: L10n.EntityPicker.Filter.Server.title,
+            pickerItems: Current.servers.all
+                .sorted(by: { $0.info.sortOrder < $1.info.sortOrder })
+                .map { EntityFilterPickerView.PickerItem(id: $0.identifier.rawValue, title: $0.info.name) },
+            selectedItemId: $selectedServerId
+        )
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
 
     private func filteredPipelines(_ pipelines: [Pipeline]) -> [Pipeline] {
@@ -68,10 +93,6 @@ struct AssistPipelineAddList: View {
             return pipelines.filter { $0.name.lowercased().contains(searchTerm.lowercased()) }
         }
         return pipelines
-    }
-
-    private func serverName(serverId: String) -> String {
-        Current.servers.all.first(where: { $0.identifier.rawValue == serverId })?.info.name ?? serverId
     }
 
     private func fetchPipelines() {

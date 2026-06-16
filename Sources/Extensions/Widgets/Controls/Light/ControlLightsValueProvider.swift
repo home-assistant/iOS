@@ -98,6 +98,10 @@ struct ControlLightsConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init("widgets.lights.description", defaultValue: "Turn on/off Light")
 
     @Parameter(
+        title: .init("app_intents.server.title", defaultValue: "Server")
+    )
+    var server: IntentServerAppEntity?
+    @Parameter(
         title: .init("app_intents.lights.light.title", defaultValue: "Light")
     )
     var light: IntentLightEntity?

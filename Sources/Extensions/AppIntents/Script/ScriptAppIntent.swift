@@ -84,10 +84,25 @@ struct IntentScriptEntity: AppEntity {
     var entityId: String
     var serverId: String
     var serverName: String
+    var areaName: String?
+    var deviceName: String?
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(displayString)")
+        DisplayRepresentation(
+            title: "\(displayString)",
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+        )
+    }
+
+    private var subtitle: String? {
+        EntityContextSubtitle.make(
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
     }
 
     init(
@@ -95,6 +110,8 @@ struct IntentScriptEntity: AppEntity {
         entityId: String,
         serverId: String,
         serverName: String,
+        areaName: String? = nil,
+        deviceName: String? = nil,
         displayString: String,
         iconName: String
     ) {
@@ -102,6 +119,8 @@ struct IntentScriptEntity: AppEntity {
         self.entityId = entityId
         self.serverId = serverId
         self.serverName = serverName
+        self.areaName = areaName
+        self.deviceName = deviceName
         self.displayString = displayString
         self.iconName = iconName
     }
@@ -119,7 +138,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
         return .init(sections: scriptsPerServer.map { (key: Server, value: [IntentScriptEntity]) in
             .init(
                 .init(stringLiteral: key.info.name),
-                items: value.filter({ $0.displayString.lowercased().contains(string.lowercased()) })
+                items: value.filter { $0.displayString.lowercased().contains(string.lowercased()) }
             )
         })
     }
@@ -137,12 +156,16 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: [.script]).getEntities(matching: string)
 
         for (server, values) in entities {
+            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let areasMap = values.areasMap(for: server.identifier.rawValue)
             scriptEntities.append((server, values.map({ entity in
                 IntentScriptEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     serverName: server.info.name,
+                    areaName: areasMap[entity.entityId]?.name,
+                    deviceName: deviceMap[entity.entityId]?.name,
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue
                 )
