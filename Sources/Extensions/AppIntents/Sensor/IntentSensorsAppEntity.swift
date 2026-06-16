@@ -13,23 +13,42 @@ struct IntentSensorsAppEntity: AppEntity {
     var id: String
     var entityId: String
     var serverId: String
+    var areaName: String?
+    var deviceName: String?
     var displayString: String
     var icon: String?
 
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(displayString)")
+        DisplayRepresentation(
+            title: "\(displayString)",
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+        )
+    }
+
+    private var subtitle: String? {
+        EntityContextSubtitle.make(
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
     }
 
     init(
         id: String,
         entityId: String,
         serverId: String,
+        areaName: String? = nil,
+        deviceName: String? = nil,
         displayString: String,
         icon: String?
     ) {
         self.id = id
         self.entityId = entityId
         self.serverId = serverId
+        self.areaName = areaName
+        self.deviceName = deviceName
         self.displayString = displayString
         self.icon = icon
     }
@@ -37,15 +56,29 @@ struct IntentSensorsAppEntity: AppEntity {
 
 @available(iOS 17.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct IntentSensorsAppEntityQuery: EntityQuery {
+    @IntentParameterDependency<WidgetSensorsAppIntent>(\.$server)
+    var config
+
     func entities(for identifiers: [IntentSensorsAppEntity.ID]) async throws -> [IntentSensorsAppEntity] {
         getSensorEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentSensorsAppEntity> {
-        let sensorsPerServer = getSensorEntities()
+        collection(for: getSensorEntities())
+    }
 
-        return .init(sections: sensorsPerServer.map { (key: Server, value: [IntentSensorsAppEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+    /// Scopes the list to the server picked in the configuration (flat list). When no server is
+    /// selected (e.g. a widget configured before this option existed), falls back to grouping
+    /// every server's entities into sections.
+    private func collection(
+        for entitiesPerServer: [(Server, [IntentSensorsAppEntity])]
+    ) -> IntentItemCollection<IntentSensorsAppEntity> {
+        if let server = config?.server {
+            let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
+            return .init(items: items)
+        }
+        return .init(sections: entitiesPerServer.map { server, items in
+            .init(.init(stringLiteral: server.info.name), items: items)
         })
     }
 
@@ -58,11 +91,15 @@ struct IntentSensorsAppEntityQuery: EntityQuery {
         let entities = ControlEntityProvider(domains: WidgetSensorsConfig.domains).getEntities(matching: string)
 
         for (server, values) in entities {
+            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let areasMap = values.areasMap(for: server.identifier.rawValue)
             sensorEntities.append((server, values.map({ entity in
                 IntentSensorsAppEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
+                    areaName: areasMap[entity.entityId]?.name,
+                    deviceName: deviceMap[entity.entityId]?.name,
                     displayString: entity.name,
                     icon: entity.icon
                 )

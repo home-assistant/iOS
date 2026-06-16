@@ -1,6 +1,48 @@
 import Foundation
 import GRDB
 
+/// Builds the secondary "context" line (`Area • Device`) shown under an entity name in pickers.
+///
+/// This is the single source of truth shared by the in-app `EntityPicker` and every AppIntent
+/// based picker (widgets, controls, App Shortcuts) so the context shown stays consistent across
+/// the whole app, matching how Home Assistant core/frontend present entities.
+public enum EntityContextSubtitle {
+    /// - Parameters:
+    ///   - areaName: The area the entity belongs to, if any.
+    ///   - deviceName: The device the entity belongs to, if any. Omitted when it merely repeats the entity name.
+    ///   - entityName: The entity's resolved display name (used to avoid echoing it as the device name).
+    ///   - entityId: The entity id, used as a last-resort context when no area/device is available.
+    ///   - domain: The entity's domain. Used to decide whether the entity id fallback is meaningful.
+    ///   - fallbackToEntityId: When `true`, returns the entity id if no area/device context exists.
+    /// - Returns: The context line, or `nil` when there's nothing meaningful to show (so callers can
+    ///   omit the subtitle entirely — e.g. a script/scene/automation with no area or device).
+    public static func make(
+        areaName: String?,
+        deviceName: String?,
+        entityName: String,
+        entityId: String,
+        domain: Domain?,
+        fallbackToEntityId: Bool = true
+    ) -> String? {
+        var parts: [String] = []
+        if let areaName, !areaName.isEmpty {
+            parts.append(areaName)
+        }
+        if let deviceName, !deviceName.isEmpty,
+           deviceName.range(of: entityName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
+            parts.append(deviceName)
+        }
+        guard parts.isEmpty else {
+            return parts.joined(separator: " • ")
+        }
+        // No area/device context available.
+        if let domain, [.script, .scene, .automation].contains(domain) {
+            return nil
+        }
+        return fallbackToEntityId ? entityId : nil
+    }
+}
+
 public extension HAAppEntity {
     var area: AppArea? {
         do {
@@ -37,28 +79,15 @@ public extension HAAppEntity {
         }
     }
 
-    /// area name -> device name
+    /// The secondary context line shown under the entity name (`Area • Device`).
     var contextualSubtitle: String? {
-        var subtitle = ""
-        if let areaName = area?.name, !areaName.isEmpty {
-            subtitle = areaName
-        }
-        if let deviceName = device?.name,
-           !deviceName.isEmpty,
-           deviceName.range(of: name, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
-            if !subtitle.isEmpty {
-                subtitle += " • "
-            }
-            subtitle += deviceName
-        }
-        if subtitle.isEmpty {
-            if let domain = Domain(rawValue: domain), [.script, .scene, .automation].contains(domain) {
-                return nil
-            } else {
-                subtitle = entityId
-            }
-        }
-        return subtitle
+        EntityContextSubtitle.make(
+            areaName: area?.name,
+            deviceName: device?.name,
+            entityName: name,
+            entityId: entityId,
+            domain: Domain(rawValue: domain)
+        )
     }
 }
 

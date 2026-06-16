@@ -21,27 +21,18 @@ struct HAAppEntityAppIntentEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: .init(stringLiteral: subtitle)
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
     }
 
-    private var subtitle: String {
-        var subtitle = ""
-        if let areaName {
-            subtitle += areaName
-        }
-
-        if let deviceName,
-           deviceName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != displayString.lowercased()
-           .trimmingCharacters(in: .whitespacesAndNewlines) {
-            if subtitle.isEmpty {
-                subtitle += deviceName
-            } else {
-                subtitle += " → \(deviceName)"
-            }
-        }
-
-        return subtitle
+    private var subtitle: String? {
+        EntityContextSubtitle.make(
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
     }
 
     init(
