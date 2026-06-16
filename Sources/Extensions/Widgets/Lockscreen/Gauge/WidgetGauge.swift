@@ -43,38 +43,3 @@ struct WidgetGauge: Widget {
 enum WidgetGaugeSupportedFamilies {
     static let families: [WidgetFamily] = [.accessoryCircular, .systemSmall]
 }
-
-@available(iOS 17, *)
-private func widgetGaugePreviewEntry(_ gaugeType: GaugeTypeAppEnum) -> WidgetGaugeEntry {
-    WidgetGaugeEntry(
-        gaugeType: gaugeType,
-        value: 0.84,
-        valueLabel: "84%",
-        label: "Battery",
-        min: "0",
-        max: "100",
-        runScript: false,
-        script: nil,
-        showConfirmationNotification: true
-    )
-}
-
-// Renders with the real WidgetKit chrome — including the Lock Screen's monochrome/vibrant
-// treatment and circular mask — so the gauge can be eyeballed the way it actually appears.
-@available(iOS 18, *)
-#Preview("Lock Screen", as: .accessoryCircular) {
-    WidgetGauge()
-} timeline: {
-    widgetGaugePreviewEntry(.normal)
-    widgetGaugePreviewEntry(.singleLabel)
-    widgetGaugePreviewEntry(.capacity)
-}
-
-@available(iOS 18, *)
-#Preview("Home Screen", as: .systemSmall) {
-    WidgetGauge()
-} timeline: {
-    widgetGaugePreviewEntry(.normal)
-    widgetGaugePreviewEntry(.singleLabel)
-    widgetGaugePreviewEntry(.capacity)
-}
