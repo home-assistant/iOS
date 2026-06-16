@@ -40,9 +40,13 @@ struct HomeAssistantView: View, WebFrontendView {
 
     /// The macOS (Catalyst) title-bar buttons, drawn over the native status-bar view in the top safe-area
     /// inset. Published only on Catalyst (nil on iOS), so this is empty everywhere else.
+    ///
+    /// Guarded on server identity: `macStatusBar` persists across `WebViewController` rebuilds, so during a
+    /// server switch it can briefly hold the previous server's content — including action closures bound to
+    /// the old controller. Rendering only when it matches the shown server avoids flashing stale buttons.
     @ViewBuilder
     private var macStatusBarButtons: some View {
-        if let macStatusBar = overlayState.macStatusBar {
+        if let macStatusBar = overlayState.macStatusBar, macStatusBar.server == server {
             MacStatusBarButtonsView(content: macStatusBar)
                 .ignoresSafeArea(edges: .top)
         }

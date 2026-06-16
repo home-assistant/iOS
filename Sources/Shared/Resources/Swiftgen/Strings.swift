@@ -2245,6 +2245,10 @@ public enum L10n {
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.navigation.go_forward.accessibility_label") }
       }
     }
+    public enum OpenInSafari {
+      /// Open in Safari
+      public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.open_in_safari.accessibility_label") }
+    }
     public enum Paste {
       /// Paste
       public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.paste.accessibility_label") }

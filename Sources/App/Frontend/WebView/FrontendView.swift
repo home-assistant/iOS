@@ -55,9 +55,10 @@ struct FrontendView: UIViewControllerRepresentable {
 
         DispatchQueue.main.async {
             // Reset so a stale overlay from the previous server doesn't flash before the new controller
-            // re-evaluates its active URL.
+            // re-evaluates its active URL / republishes its status-bar buttons.
             overlayState.showsNoActiveURL = false
             overlayState.emptyState = nil
+            overlayState.macStatusBar = nil
         }
 
         let webViewController = makeWebViewController()

@@ -81,6 +81,7 @@ struct MacStatusBarButtonsView: View {
                 .frame(width: Constants.itemSize, height: Constants.itemSize)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(L10n.Mac.OpenInSafari.accessibilityLabel)
         .itemContainer(useMacOS26Styling: useMacOS26Styling, cornerRadius: Constants.cornerRadius)
     }
 
