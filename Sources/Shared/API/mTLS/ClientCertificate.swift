@@ -27,7 +27,23 @@ public struct ClientCertificate: Codable, Equatable {
     }
 }
 
-#if !os(watchOS)
+/// The raw material needed to re-import a client certificate on another device (e.g. the paired
+/// Apple Watch, whose Keychain is separate from the iPhone's). The watch cannot pick a `.p12`
+/// itself, so the iPhone retains the original bundle + password at import time and transfers it.
+public struct ClientCertificateTransferItem: Codable, Equatable {
+    /// Fingerprint-derived identifier, matching `ClientCertificate.keychainIdentifier`.
+    public let keychainIdentifier: String
+    public let displayName: String
+    public let p12Data: Data
+    public let password: String
+
+    public init(keychainIdentifier: String, displayName: String, p12Data: Data, password: String) {
+        self.keychainIdentifier = keychainIdentifier
+        self.displayName = displayName
+        self.p12Data = p12Data
+        self.password = password
+    }
+}
 
 // MARK: - Keychain Operations
 
@@ -130,6 +146,18 @@ public final class ClientCertificateManager {
         let keychainIdentifier = Self.keychainIdentifier(for: certificate, fallbackIdentifier: identifier)
         try storeIdentity(secIdentity, identifier: keychainIdentifier)
         storeIntermediateCertificates(intermediateCerts, for: keychainIdentifier)
+
+        // Retain the original bundle + password so it can later be transferred to the paired Apple
+        // Watch (which has its own Keychain and cannot import a .p12 on its own). Stored alongside
+        // the identity in the Keychain (AfterFirstUnlock), so it shares the identity's protection.
+        storeTransferMaterial(
+            ClientCertificateTransferItem(
+                keychainIdentifier: keychainIdentifier,
+                displayName: displayName,
+                p12Data: p12Data,
+                password: password
+            )
+        )
 
         return ClientCertificate(
             keychainIdentifier: keychainIdentifier,
@@ -313,6 +341,74 @@ public final class ClientCertificateManager {
         SecItemDelete(query as CFDictionary)
     }
 
+    // MARK: - Transfer Material (for syncing to the paired Apple Watch)
+
+    // Service key for the original .p12 + password, stored as a generic-password blob keyed by the
+    // certificate's fingerprint identifier so it can be re-sent to the watch on demand.
+    private static let transferServiceKey = "com.ha-ios.mtls.p12"
+
+    /// Persist the raw bundle + password for later transfer to the paired watch.
+    private func storeTransferMaterial(_ item: ClientCertificateTransferItem) {
+        deleteTransferMaterial(for: item.keychainIdentifier)
+
+        guard let serialized = try? JSONEncoder().encode(item) else {
+            Current.Log.warning("Failed to serialize client certificate transfer material")
+            return
+        }
+
+        let addQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: Self.transferServiceKey,
+            kSecAttrAccount as String: item.keychainIdentifier,
+            kSecValueData as String: serialized,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
+        ]
+        let status = SecItemAdd(addQuery as CFDictionary, nil)
+        if status != errSecSuccess {
+            Current.Log.warning("Failed to store client certificate transfer material: \(status)")
+        }
+    }
+
+    /// Retrieve the raw bundle + password previously stored for this identity, if any.
+    public func transferMaterial(for identifier: String) -> ClientCertificateTransferItem? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: Self.transferServiceKey,
+            kSecAttrAccount as String: identifier,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+        ]
+        var result: CFTypeRef?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+              let data = result as? Data,
+              let item = try? JSONDecoder().decode(ClientCertificateTransferItem.self, from: data) else {
+            return nil
+        }
+        return item
+    }
+
+    private func deleteTransferMaterial(for identifier: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: Self.transferServiceKey,
+            kSecAttrAccount as String: identifier,
+        ]
+        SecItemDelete(query as CFDictionary)
+    }
+
+    /// Returns true if an identity for this certificate already exists in the local Keychain.
+    public func hasIdentity(for certificate: ClientCertificate) -> Bool {
+        (try? retrieveIdentity(for: certificate)) != nil
+    }
+
+    /// Import transfer material (received from the paired iPhone) into the local Keychain.
+    /// The fingerprint-derived identifier is recomputed from the bundle, so it matches the
+    /// `ClientCertificate.keychainIdentifier` already synced in the server configuration.
+    @discardableResult
+    public func importTransferMaterial(_ item: ClientCertificateTransferItem) throws -> ClientCertificate {
+        try importP12(data: item.p12Data, password: item.password, identifier: item.keychainIdentifier)
+    }
+
     /// Delete a certificate from the Keychain
     public func delete(certificate: ClientCertificate) throws {
         let identityQuery: [String: Any] = [
@@ -325,8 +421,9 @@ public final class ClientCertificateManager {
             throw ClientCertificateError.keychainError(status)
         }
 
-        // Also delete any stored intermediate certificates for this identity.
+        // Also delete any stored intermediate certificates and transfer material for this identity.
         deleteIntermediateCertificates(for: certificate.keychainIdentifier)
+        deleteTransferMaterial(for: certificate.keychainIdentifier)
     }
 
     /// Extract expiration date from certificate data (simplified)
@@ -360,4 +457,3 @@ public extension ClientCertificateManager {
         }
     }
 }
-#endif

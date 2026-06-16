@@ -180,6 +180,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         Blob.observations.store[.init(queue: .main)] = { blob in
             Current.Log.verbose("Received blob: \(blob.identifier)")
 
+            if blob.identifier == WatchBlob.clientCertificates.rawValue {
+                self.importClientCertificates(from: blob.content)
+            }
+
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
@@ -248,6 +252,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         if let servers = content["servers"] as? Data {
             Current.servers.restoreState(servers)
+            requestMissingClientCertificatesIfNeeded()
         }
 
         if let complicationsDictionary = content["complications"] as? [[String: Any]] {
@@ -262,6 +267,65 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
 
         updateComplications()
+    }
+
+    // MARK: - mTLS client certificate sync (received from the paired iPhone)
+
+    /// The watch has its own Keychain, separate from the iPhone's, so a configured mTLS client
+    /// certificate is not automatically available here. If a server has a certificate configured
+    /// (synced in its connection info) but we don't yet hold the identity locally, ask the phone
+    /// to send it. Only possible while the phone is reachable; once imported it persists locally.
+    private func requestMissingClientCertificatesIfNeeded() {
+        let missing = Current.servers.all.compactMap { server -> String? in
+            guard let cert = server.info.connection.clientCertificate,
+                  !ClientCertificateManager.shared.hasIdentity(for: cert) else { return nil }
+            return cert.keychainIdentifier
+        }
+
+        guard !missing.isEmpty else { return }
+        guard Communicator.shared.currentReachability == .immediatelyReachable else {
+            Current.Log.info("[mTLS] Missing \(missing.count) client certificate(s) but phone not reachable")
+            return
+        }
+
+        Current.Log.info("[mTLS] Requesting \(missing.count) missing client certificate(s) from phone")
+        Communicator.shared.send(.init(
+            identifier: InteractiveImmediateMessages.clientCertExport.rawValue,
+            content: ["identifiers": Array(Set(missing))],
+            reply: { message in
+                Current.Log.verbose("[mTLS] Client certificate export acknowledged: \(message.content)")
+            }
+        ), errorHandler: { error in
+            Current.Log.error("[mTLS] Failed to request client certificates from phone: \(error)")
+        })
+    }
+
+    private func importClientCertificates(from data: Data) {
+        guard let items = try? JSONDecoder().decode([ClientCertificateTransferItem].self, from: data) else {
+            Current.Log.error("[mTLS] Failed to decode client certificate transfer payload")
+            return
+        }
+
+        var importedIdentifiers = Set<String>()
+        for item in items {
+            do {
+                let cert = try ClientCertificateManager.shared.importTransferMaterial(item)
+                importedIdentifiers.insert(cert.keychainIdentifier)
+                Current.Log.info("[mTLS] Imported client certificate on watch: \(cert.displayName)")
+            } catch {
+                Current.Log.error("[mTLS] Failed to import client certificate on watch: \(error)")
+            }
+        }
+
+        guard !importedIdentifiers.isEmpty else { return }
+
+        // Rebuild any API that was created before the identity existed so its session delegates
+        // (which are configured at init time) pick up the client certificate.
+        let affected = Current.servers.all.filter {
+            guard let id = $0.info.connection.clientCertificate?.keychainIdentifier else { return false }
+            return importedIdentifiers.contains(id)
+        }.map(\.identifier)
+        Current.resetAPICache(for: affected)
     }
 
     private var isUpdatingComplications = false

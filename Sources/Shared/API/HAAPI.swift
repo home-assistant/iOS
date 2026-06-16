@@ -87,7 +87,6 @@ public class HomeAssistantAPI {
         let tokenManager = TokenManager(server: server)
         self.tokenManager = tokenManager
 
-        #if !os(watchOS)
         // Create URLSession for HAKit REST API calls with certificate handling
         Current.Log.info("[mTLS] Creating HAKit URLSession for server: \(server.info.name)")
         Current.Log.info("[mTLS] Has client certificate: \(server.info.connection.clientCertificate != nil)")
@@ -105,16 +104,12 @@ public class HomeAssistantAPI {
             Current.Log.info("[mTLS] Using default URLSession for HAKit")
             hakitURLSession = URLSession(configuration: .ephemeral)
         }
-        #else
-        let hakitURLSession = URLSession(configuration: .ephemeral)
-        #endif
 
         let underlyingConnection = HAKit.connection(
             configuration: .init(
                 connectionInfo: {
                     do {
                         if let activeURL = server.info.connection.activeURL() {
-                            #if !os(watchOS)
                             // Prepare client identity (SecIdentity) for mTLS if configured
                             let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
                             if let clientCert = server.info.connection.clientCertificate {
@@ -137,19 +132,6 @@ public class HomeAssistantAPI {
                                 },
                                 clientIdentity: clientIdentityProvider
                             )
-                            #else
-                            return try .init(
-                                url: activeURL,
-                                userAgent: HomeAssistantAPI.userAgent,
-                                evaluateCertificate: { secTrust, completion in
-                                    completion(
-                                        Swift.Result<Void, Error> {
-                                            try server.info.connection.securityExceptions.evaluate(secTrust)
-                                        }
-                                    )
-                                }
-                            )
-                            #endif
                         } else {
                             Current.clientEventStore.addEvent(.init(
                                 text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
@@ -181,14 +163,10 @@ public class HomeAssistantAPI {
         self.connection = RetryAwareHAConnection(underlying: underlyingConnection)
         connection.delegate = self
 
-        #if !os(watchOS)
         // Use custom delegate that supports client certificates (mTLS)
         let sessionDelegate: SessionDelegate = server.info.connection.clientCertificate != nil
             ? ClientCertificateSessionDelegate(server: server)
             : SessionDelegate()
-        #else
-        let sessionDelegate = SessionDelegate()
-        #endif
 
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
@@ -1259,7 +1237,6 @@ private extension URL {
     }
 }
 
-#if !os(watchOS)
 /// Certificate provider implementation for Home Assistant servers
 private class HomeAssistantCertificateProvider: HACertificateProvider {
     private let server: Server
@@ -1308,7 +1285,6 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
         }
     }
 }
-#endif
 
 /// Prevents pending websocket work from resetting HAKit's reconnect backoff.
 final class RetryAwareHAConnection: HAConnection {

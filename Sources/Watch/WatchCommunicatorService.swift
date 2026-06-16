@@ -75,8 +75,48 @@ final class WatchCommunicatorService {
                 handleAssistAudioChunkedMessage(message)
             case .magicItemPressed:
                 magicItemPressed(message: message)
+            case .clientCertExport:
+                handleClientCertExport(message: message)
             }
         }
+    }
+
+    // MARK: - mTLS client certificate transfer (phone → watch)
+
+    /// Gather the client certificate material for the given identifiers (or all configured servers
+    /// when nil) and transfer it to the watch as a Blob. The watch has a separate Keychain and
+    /// cannot import a .p12 itself, so the phone re-sends the original bundle + password.
+    func transferClientCertificates(identifiers: [String]? = nil) {
+        let manager = ClientCertificateManager.shared
+        let wanted = identifiers.map(Set.init)
+
+        let items: [ClientCertificateTransferItem] = Current.servers.all.compactMap { server in
+            guard let cert = server.info.connection.clientCertificate else { return nil }
+            if let wanted, !wanted.contains(cert.keychainIdentifier) { return nil }
+            return manager.transferMaterial(for: cert.keychainIdentifier)
+        }
+
+        // De-duplicate by identifier — the same certificate can be shared across servers.
+        let unique = Array(
+            Dictionary(items.map { ($0.keychainIdentifier, $0) }, uniquingKeysWith: { first, _ in first }).values
+        )
+
+        guard !unique.isEmpty, let data = try? JSONEncoder().encode(unique) else {
+            Current.Log.info("[mTLS] No client certificate material available to transfer to watch")
+            return
+        }
+
+        Current.Log.info("[mTLS] Transferring \(unique.count) client certificate(s) to watch")
+        _ = Communicator.shared.transfer(Blob(identifier: WatchBlob.clientCertificates.rawValue, content: data))
+    }
+
+    private func handleClientCertExport(message: InteractiveImmediateMessage) {
+        let identifiers = message.content["identifiers"] as? [String]
+        transferClientCertificates(identifiers: identifiers)
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.clientCertExportResponse.rawValue,
+            content: ["sent": true]
+        ))
     }
 
     private func handleAssistAudioChunkedMessage(_ message: InteractiveImmediateMessage) {
@@ -435,6 +475,8 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         _ = HomeAssistantAPI.SyncWatchContext()
+        // Keep the watch's copy of any mTLS client certificate(s) in sync with the server config.
+        transferClientCertificates()
     }
 }
 
