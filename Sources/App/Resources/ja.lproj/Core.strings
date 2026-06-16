@@ -218,7 +218,7 @@
 "component::sensor::entity_component::_::state::on" = "オン";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "待機中";
 "component::shelly::entity::sensor::valve_status::state::closed" = "閉";
-"component::shelly::selector::ble_scanner_mode::options::active" = "アクティブ";
+"component::shelly::selector::ble_scanner_mode::options::active" = "アクティブ（デバイスのバッテリー消費量が多いが、更新速度が速い）";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "無効";
 "component::siren::entity_component::_::state::off" = "オフ";
 "component::siren::entity_component::_::state::on" = "オン";

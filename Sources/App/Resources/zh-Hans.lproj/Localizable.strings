@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "通知类别已弃用";
 "alerts.navigation_error.message" = "此页面无法显示，因为它位于您的 Home Assistant 服务器之外，或者找不到该页面。";
 "alerts.navigation_error.title" = "导航错误";
-"alerts.open_url_from_deep_link.message" = "打开深层链接中的网址 (%@) ？";
-"alerts.open_url_from_notification.message" = "打开通知中找到的网址 (%@) ？";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "打开网址 ？";
 "alerts.prompt.cancel" = "取消";
 "alerts.prompt.ok" = "确定";

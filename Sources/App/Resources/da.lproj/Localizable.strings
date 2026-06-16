@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Notifikationskategorier udfases";
 "alerts.navigation_error.message" = "Denne side kan ikke vises, fordi den er uden for din Home Assistant-server, eller fordi siden ikke blev fundet.";
 "alerts.navigation_error.title" = "Navigationsfejl";
-"alerts.open_url_from_deep_link.message" = "Åbn URL (%@) fra dybt link?";
-"alerts.open_url_from_notification.message" = "Åbn webadresse (%@) der blev fundet i notifikationen?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Åbn webadresse?";
 "alerts.prompt.cancel" = "Annullér";
 "alerts.prompt.ok" = "OK";

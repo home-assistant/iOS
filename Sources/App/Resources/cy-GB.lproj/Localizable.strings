@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
 "alerts.navigation_error.message" = "This page cannot be displayed because it's outside your Home Assistant server or the page was not found.";
 "alerts.navigation_error.title" = "Navigation Error";
-"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
-"alerts.open_url_from_notification.message" = "Mae URL agored %@ wedi'i ganfod yn yr hysbysiad?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Agor URL?";
 "alerts.prompt.cancel" = "Canslo";
 "alerts.prompt.ok" = "Iawn";

@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Les categories de notificació estan obsoletes";
 "alerts.navigation_error.message" = "No es pot mostrar la pàgina perquè es troba fóra del vostre servidor de Home Assistant o bé, la pàgina no existeix.";
 "alerts.navigation_error.title" = "Error de navegació";
-"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
-"alerts.open_url_from_notification.message" = "Obrir l'adreça (%@) trobada a la notificació?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Obrir adreça?";
 "alerts.prompt.cancel" = "Cancel·lar";
 "alerts.prompt.ok" = "D'acord";
