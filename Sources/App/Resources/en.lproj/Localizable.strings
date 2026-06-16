@@ -1594,7 +1594,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Placeholder";
+"watch.settings.client_certificate.available_on_watch" = "Available on this Watch";
+"watch.settings.client_certificate.none" = "Not configured";
+"watch.settings.last_updated" = "Updated %@";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
+"watch.settings.no_servers" = "No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.";
+"watch.settings.servers.header" = "Servers";
+"watch.settings.title" = "Settings";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Widget.title" = "Widget";

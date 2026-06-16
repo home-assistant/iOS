@@ -9,6 +9,9 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case watchConfig
     /// Watch → phone: request the client certificate(s) (mTLS) it is missing locally.
     case clientCertExport
+    /// Watch → phone: ask the phone to re-push the synchronized server configuration (and any
+    /// mTLS client certificates) so the watch's read-only settings reflect the latest state.
+    case serversConfigSync
 }
 
 public enum InteractiveImmediateResponses: String, CaseIterable {
@@ -25,6 +28,8 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case emptyWatchConfigResponse
     /// Phone → watch: acknowledgement that the requested client certificate(s) are being sent (via Blob).
     case clientCertExportResponse
+    /// Phone → watch: acknowledgement that the server configuration re-sync was triggered.
+    case serversConfigSyncResponse
 }
 
 /// Identifiers for `Communicator` `Blob` transfers (used for larger payloads than messages allow).

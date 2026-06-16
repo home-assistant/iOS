@@ -25,7 +25,8 @@ public extension HomeAssistantAPI {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
 
         #if os(iOS)
-        content[WatchContext.servers.rawValue] = Current.servers.restorableState()
+        // Servers are delivered on demand via the `serversConfigSync` interactive message (see
+        // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
         content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
 
         #if targetEnvironment(simulator)

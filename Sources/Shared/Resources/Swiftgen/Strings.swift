@@ -5510,11 +5510,29 @@ public enum L10n {
       }
     }
     public enum Settings {
+      /// Updated %@
+      public static func lastUpdated(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "watch.settings.last_updated", String(describing: p1))
+      }
+      /// No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.
+      public static var noServers: String { return L10n.tr("Localizable", "watch.settings.no_servers") }
+      /// Settings
+      public static var title: String { return L10n.tr("Localizable", "watch.settings.title") }
+      public enum ClientCertificate {
+        /// Available on this Watch
+        public static var availableOnWatch: String { return L10n.tr("Localizable", "watch.settings.client_certificate.available_on_watch") }
+        /// Not configured
+        public static var `none`: String { return L10n.tr("Localizable", "watch.settings.client_certificate.none") }
+      }
       public enum NoItems {
         public enum Phone {
           /// No items configured, please choose items below.
           public static var title: String { return L10n.tr("Localizable", "watch.settings.no_items.phone.title") }
         }
+      }
+      public enum Servers {
+        /// Servers
+        public static var header: String { return L10n.tr("Localizable", "watch.settings.servers.header") }
       }
     }
   }

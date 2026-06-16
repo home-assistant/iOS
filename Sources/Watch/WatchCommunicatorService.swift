@@ -77,8 +77,20 @@ final class WatchCommunicatorService {
                 magicItemPressed(message: message)
             case .clientCertExport:
                 handleClientCertExport(message: message)
+            case .serversConfigSync:
+                handleServersConfigSync(message: message)
             }
         }
+    }
+
+    private func handleServersConfigSync(message: InteractiveImmediateMessage) {
+        // Reply with the server configuration inline, mirroring how the watch configuration is
+        // delivered, and push any mTLS client certificates over the (separate) Blob channel.
+        transferClientCertificates()
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.serversConfigSyncResponse.rawValue,
+            content: ["servers": Current.servers.restorableState()]
+        ))
     }
 
     // MARK: - mTLS client certificate transfer (phone → watch)
