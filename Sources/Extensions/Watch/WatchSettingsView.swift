@@ -3,10 +3,10 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Read-only watch settings. Lists the servers synchronized from the iPhone and, for each, shows
-/// the connection details we already display on iOS (including mTLS client-certificate status).
-/// Nothing here can be edited — the watch can only read the synced configuration or ask the phone
-/// to push a fresh copy.
+/// Watch settings. Lists servers synchronized from the paired iPhone and shows connectivity details
+/// (including mTLS client-certificate status). It also provides watch-local preferences like where
+/// actions run (iPhone vs Watch) and per-server URL overrides; server configuration itself remains
+/// managed on the iPhone.
 struct WatchSettingsView: View {
     @StateObject private var viewModel = WatchSettingsViewModel()
     @State private var performActionTarget = WatchUserDefaults.shared.performActionTarget
