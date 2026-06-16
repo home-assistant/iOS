@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Aviseringskategorier är utfasade";
 "alerts.navigation_error.message" = "Den här sidan kan inte visas eftersom den ligger utanför din Home Assistant-server eller eftersom sidan inte hittades.";
 "alerts.navigation_error.title" = "Navigeringsfel";
-"alerts.open_url_from_deep_link.message" = "Öppna URL (%@) från djuplänk?";
-"alerts.open_url_from_notification.message" = "Öppna URL (%@) från aviseringen?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Öppna URL?";
 "alerts.prompt.cancel" = "Avbryt";
 "alerts.prompt.ok" = "OK";

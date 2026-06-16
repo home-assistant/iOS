@@ -45,7 +45,7 @@
 "alerts.deprecations.notification_category.title" = "通知カテゴリは非推奨になりました";
 "alerts.navigation_error.message" = "このページは Home Assistant サーバーの外部にあるか、ページが見つからなかったため、表示できません。";
 "alerts.navigation_error.title" = "ナビゲーションエラー";
-"alerts.open_url_from_deep_link.message" = "ディープリンクからURL (%@) を開きますか？";
+"alerts.open_url_from_deep_link.message" = "サーバーをタップして（%@）のディープリンクURLを開きますか？";
 "alerts.open_url_from_notification.message" = "通知で見つかったURL (%@) を開きますか？";
 "alerts.open_url_from_notification.title" = "URLを開く？";
 "alerts.prompt.cancel" = "キャンセル";

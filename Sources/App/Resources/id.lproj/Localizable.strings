@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Kategori Notifikasi tidak digunakan lagi";
 "alerts.navigation_error.message" = "Halaman ini tidak dapat ditampilkan karena berada di luar server Home Assistant Anda atau halaman tidak ditemukan.";
 "alerts.navigation_error.title" = "Kesalahan Navigasi";
-"alerts.open_url_from_deep_link.message" = "Buka URL (%@) dari tautan dalam?";
-"alerts.open_url_from_notification.message" = "Buka URL (%@) yang ditemukan dalam notifikasi?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Buka URL?";
 "alerts.prompt.cancel" = "Batalkan";
 "alerts.prompt.ok" = "Oke";

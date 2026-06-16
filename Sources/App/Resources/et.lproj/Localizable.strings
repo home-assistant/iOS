@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Teavituste kategooriad on aegunud";
 "alerts.navigation_error.message" = "Seda lehte ei saa kuvada kuna see asub väljaspool Home Assistant serverit või lehte ei leitud.";
 "alerts.navigation_error.title" = "Navigeerimisviga";
-"alerts.open_url_from_deep_link.message" = "Kas avada URL ( %@ ) sügavast lingist?";
-"alerts.open_url_from_notification.message" = "Kas avada teavitusest leitud URL-i (%@)?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Kas avada URL?";
 "alerts.prompt.cancel" = "Loobu";
 "alerts.prompt.ok" = "Sobib";

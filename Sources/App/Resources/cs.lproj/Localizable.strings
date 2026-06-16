@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Kategorie oznámení jsou zastaralé";
 "alerts.navigation_error.message" = "Tuto stránku nelze zobrazit, protože se nachází mimo server vašeho Home Assistanta nebo stránka nebyla nalezena.";
 "alerts.navigation_error.title" = "Chyba navigace";
-"alerts.open_url_from_deep_link.message" = "Otevřít URL (%@) z přímého odkazu?";
-"alerts.open_url_from_notification.message" = "Otevřít URL (%@) nalezenou v oznámení?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Otevřít URL?";
 "alerts.prompt.cancel" = "Zrušit";
 "alerts.prompt.ok" = "OK";

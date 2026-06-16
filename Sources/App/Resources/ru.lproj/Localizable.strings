@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Категории уведомлений устарели";
 "alerts.navigation_error.message" = "Эта страница не может быть отображена, так как она находится за пределами вашего сервера Home Assistant или страница не найдена.";
 "alerts.navigation_error.title" = "Ошибка навигации";
-"alerts.open_url_from_deep_link.message" = "Открыть URL (%@) из глубокой ссылки?";
-"alerts.open_url_from_notification.message" = "Открыть веб-адрес (%@) из уведомления?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Открыть URL?";
 "alerts.prompt.cancel" = "Отмена";
 "alerts.prompt.ok" = "ОК";

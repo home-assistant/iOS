@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "알림 카테고리는 더 이상 사용되지 않습니다.";
 "alerts.navigation_error.message" = "이 페이지가 Home Assistant 서버 외부에 있거나 페이지를 찾을 수 없어 표시할 수 없습니다.";
 "alerts.navigation_error.title" = "탐색 오류";
-"alerts.open_url_from_deep_link.message" = "딥 링크에서 URL(%@)을 여시겠습니까?";
-"alerts.open_url_from_notification.message" = "알림에서 URL(%@)을 여시겠습니까?";
+"alerts.open_url_from_deep_link.message" = "서버를 탭하여 (%@) 딥 링크 URL을 여시겠습니까?";
+"alerts.open_url_from_notification.message" = "알림에서 찾은 URL(%@)을 여시겠습니까?";
 "alerts.open_url_from_notification.title" = "URL을 여시겠습니까?";
 "alerts.prompt.cancel" = "취소";
 "alerts.prompt.ok" = "OK";

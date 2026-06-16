@@ -45,7 +45,7 @@
 "alerts.deprecations.notification_category.title" = "通知類別已停用";
 "alerts.navigation_error.message" = "此頁面無法顯示，因為它位於 Home Assistant 伺服器之外，或找不到該頁面。";
 "alerts.navigation_error.title" = "導航錯誤";
-"alerts.open_url_from_deep_link.message" = "由 deep link 開啟 URL (%@)？";
+"alerts.open_url_from_deep_link.message" = "點選伺服器以開啟 (%@) 深層連結網址？";
 "alerts.open_url_from_notification.message" = "開啟通知訊息中的網址（%@）？";
 "alerts.open_url_from_notification.title" = "是否打開網址?";
 "alerts.prompt.cancel" = "取消";

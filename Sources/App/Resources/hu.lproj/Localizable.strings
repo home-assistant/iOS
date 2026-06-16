@@ -45,8 +45,8 @@
 "alerts.deprecations.notification_category.title" = "Az értesítési kategóriák elavultak";
 "alerts.navigation_error.message" = "Ez az oldal nem jeleníthető meg, mert a Home Assistant szerveren kívül található vagy az oldal nem található.";
 "alerts.navigation_error.title" = "Navigációs hiba";
-"alerts.open_url_from_deep_link.message" = "URL (%@) megnyitása mély linkről?";
-"alerts.open_url_from_notification.message" = "Megnyítja az értesítésben található %@ URL-t?";
+"alerts.open_url_from_deep_link.message" = "Tap server to open (%@) deep link URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Megnyitja az URL-t?";
 "alerts.prompt.cancel" = "Mégse";
 "alerts.prompt.ok" = "OK";

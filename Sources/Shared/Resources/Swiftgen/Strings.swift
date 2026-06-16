@@ -236,7 +236,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "alerts.navigation_error.title") }
     }
     public enum OpenUrlFromDeepLink {
-      /// Open URL (%@) from deep link?
+      /// Tap server to open (%@) deep link URL?
       public static func message(_ p1: Any) -> String {
         return L10n.tr("Localizable", "alerts.open_url_from_deep_link.message", String(describing: p1))
       }
