@@ -60,9 +60,9 @@ final class WebViewGestureHandler {
     }
 
     private func showServersList() {
-        Current.sceneManager.webViewWindowControllerPromise.done { controller in
-            controller.selectServer(includeSettings: true) { server in
-                controller.open(server: server)
+        Current.sceneManager.appCoordinator.done { coordinator in
+            coordinator.selectServer(prompt: nil, includeSettings: true) { server in
+                coordinator.open(server: server)
             }
         }
     }
@@ -142,9 +142,10 @@ final class WebViewGestureHandler {
 
         let nextServer = servers[nextIndex]
 
-        Current.sceneManager.webViewWindowControllerPromise.done { controller in
-            controller.open(server: nextServer).done { controller in
-                let hud = MBProgressHUD.showAdded(to: controller.view, animated: true)
+        Current.sceneManager.appCoordinator.done { coordinator in
+            coordinator.open(server: nextServer).done { frontend in
+                guard let window = frontend.presentationWindow else { return }
+                let hud = MBProgressHUD.showAdded(to: window, animated: true)
                 hud.isUserInteractionEnabled = false
                 hud.mode = .text
                 hud.label.text = nextServer.info.name

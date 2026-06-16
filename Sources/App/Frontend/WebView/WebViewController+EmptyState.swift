@@ -5,56 +5,6 @@ import UIKit
 // MARK: - Empty State
 
 extension WebViewController {
-    func setupEmptyState() {
-        let emptyState = WebViewEmptyStateWrapperView(
-            style: emptyStateStyle(for: connectionState),
-            server: server,
-            showsErrorDetailsButton: shouldShowErrorDetailsButton,
-            retryAction: { [weak self] in
-                self?.hideEmptyState()
-                self?.refresh()
-            },
-            settingsAction: { [weak self] in
-                self?.showSettingsViewController()
-            },
-            errorDetailsAction: { [weak self] in
-                self?.presentLatestLoadErrorDetails()
-            },
-            reauthAction: { [weak self] urlType in
-                self?.performReauthentication(using: urlType)
-            },
-            dismissAction: { [weak self] in
-                self?.hideEmptyState()
-            }
-        )
-
-        // On iOS 16+, parenting the empty state's UIHostingController as a child of self lets the
-        // SwiftUI safe-area plumbing reflect the real layout (#4572). On iOS 15 the same call
-        // triggers a UIKit safe-area-inflation bug that oversizes the native statusBarView and
-        // breaks WKWebView hit-testing for the entire WebViewController (#4499). Skip the
-        // child-VC parenting on iOS 15 — the empty state still renders, it just doesn't get the
-        // iOS-16-specific SwiftUI safe-area propagation #4572 added.
-        if #available(iOS 16.0, *) {
-            addChild(emptyState.hostingViewController)
-        }
-        view.addSubview(emptyState)
-
-        emptyState.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            emptyState.leftAnchor.constraint(equalTo: view.leftAnchor),
-            emptyState.rightAnchor.constraint(equalTo: view.rightAnchor),
-            emptyState.topAnchor.constraint(equalTo: view.topAnchor),
-            emptyState.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
-
-        emptyState.alpha = 0
-        emptyStateView = emptyState
-        if #available(iOS 16.0, *) {
-            emptyState.hostingViewController.didMove(toParent: self)
-        }
-    }
-
     func emptyStateStyle(for connectionState: FrontEndConnectionState) -> WebViewEmptyStateStyle {
         switch connectionState {
         case .authInvalid:
@@ -64,14 +14,14 @@ extension WebViewController {
         }
     }
 
+    /// Shows the disconnected/unauthenticated empty state as a SwiftUI overlay in `HomeAssistantView` (via
+    /// `overlayState`) rather than an alpha-animated subview, so app-level sheets can float over it.
     func showEmptyState() {
-        emptyStateView?.update(
-            style: emptyStateStyle(for: connectionState),
-            showsErrorDetailsButton: shouldShowErrorDetailsButton
-        )
-        UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
-            self.emptyStateView?.alpha = 1
-        }, completion: nil)
+        overlayState?.emptyState = makeEmptyStateContent()
+    }
+
+    @objc func hideEmptyState() {
+        overlayState?.emptyState = nil
     }
 
     var shouldShowErrorDetailsButton: Bool {
@@ -87,12 +37,6 @@ extension WebViewController {
             )),
             animated: true
         )
-    }
-
-    @objc func hideEmptyState() {
-        UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
-            self.emptyStateView?.alpha = 0
-        }, completion: nil)
     }
 
     // To avoid keeping the empty state on screen when user is disconnected in background
@@ -131,5 +75,27 @@ extension WebViewController {
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
+    }
+
+    private func makeEmptyStateContent() -> WebFrontendOverlayState.EmptyStateContent {
+        WebFrontendOverlayState.EmptyStateContent(
+            style: emptyStateStyle(for: connectionState),
+            server: server,
+            showsErrorDetailsButton: shouldShowErrorDetailsButton,
+            availableReauthURLTypes: availableReauthURLTypes(for: server),
+            retryAction: { [weak self] in
+                self?.hideEmptyState()
+                self?.refresh()
+            },
+            settingsAction: { [weak self] in self?.showSettingsViewController() },
+            errorDetailsAction: { [weak self] in self?.presentLatestLoadErrorDetails() },
+            reauthAction: { [weak self] urlType in self?.performReauthentication(using: urlType) },
+            dismissAction: { [weak self] in self?.hideEmptyState() }
+        )
+    }
+
+    /// Available URL types for re-authentication, ordered by preference: remote UI > external > internal.
+    private func availableReauthURLTypes(for server: Server) -> [ConnectionInfo.URLType] {
+        [.remoteUI, .external, .internal].filter { server.info.connection.address(for: $0) != nil }
     }
 }

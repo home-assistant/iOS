@@ -255,9 +255,11 @@ class MenuManager {
                 Current.sceneManager.activateAnyScene(for: .webView)
                 callbackInfo.activate()
 
+                // Under the SwiftUI `App` lifecycle `UIApplication.shared.delegate` is SwiftUI's internal
+                // delegate, which doesn't respond to `checkForUpdate(_:)`; target our recorded instance.
                 UIApplication.shared.sendAction(
                     #selector(AppDelegate.checkForUpdate(_:)),
-                    to: UIApplication.shared.delegate,
+                    to: AppDelegate.shared,
                     from: callbackInfo,
                     for: nil
                 )
