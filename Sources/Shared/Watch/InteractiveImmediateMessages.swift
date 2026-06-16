@@ -7,11 +7,13 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case assistPipelinesFetch
     case assistAudioDataChunked
     case watchConfig
-    /// Watch → phone: request the client certificate(s) (mTLS) it is missing locally.
-    case clientCertExport
-    /// Watch → phone: ask the phone to re-push the synchronized server configuration (and any
-    /// mTLS client certificates) so the watch's read-only settings reflect the latest state.
+    /// Watch → phone: ask the phone for the latest server configuration. The phone replies with the
+    /// encoded servers and any mTLS client certificate bundles inline (see WatchCommunicatorService).
     case serversConfigSync
+    /// Watch → phone: ask the phone to present the client-certificate (mTLS) import screen so the
+    /// user can supply a `.p12` + password for the given server. The phone can't foreground itself,
+    /// so the screen appears the next time the user opens the iPhone app.
+    case clientCertImportRequest
 }
 
 public enum InteractiveImmediateResponses: String, CaseIterable {
@@ -26,15 +28,9 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case assistError
     case watchConfigResponse
     case emptyWatchConfigResponse
-    /// Phone → watch: acknowledgement that the requested client certificate(s) are being sent (via Blob).
-    case clientCertExportResponse
-    /// Phone → watch: acknowledgement that the server configuration re-sync was triggered.
+    /// Phone → watch: reply to `serversConfigSync`, carrying the servers (and any client
+    /// certificates) inline.
     case serversConfigSyncResponse
-}
-
-/// Identifiers for `Communicator` `Blob` transfers (used for larger payloads than messages allow).
-public enum WatchBlob: String, CaseIterable {
-    /// Phone → watch: the raw client certificate bundle(s) for mTLS, as encoded
-    /// `[ClientCertificateTransferItem]`. The watch imports these into its own Keychain.
-    case clientCertificates
+    /// Phone → watch: acknowledgement that the client-certificate import screen will be presented.
+    case clientCertImportRequestResponse
 }

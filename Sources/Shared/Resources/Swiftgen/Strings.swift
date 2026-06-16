@@ -5516,13 +5516,25 @@ public enum L10n {
       }
       /// No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.
       public static var noServers: String { return L10n.tr("Localizable", "watch.settings.no_servers") }
+      /// Refresh
+      public static var refresh: String { return L10n.tr("Localizable", "watch.settings.refresh") }
       /// Settings
       public static var title: String { return L10n.tr("Localizable", "watch.settings.title") }
       public enum ClientCertificate {
         /// Available on this Watch
         public static var availableOnWatch: String { return L10n.tr("Localizable", "watch.settings.client_certificate.available_on_watch") }
+        /// Open Home Assistant on your iPhone to import the certificate, then refresh here.
+        public static var importInstructions: String { return L10n.tr("Localizable", "watch.settings.client_certificate.import_instructions") }
         /// Not configured
         public static var `none`: String { return L10n.tr("Localizable", "watch.settings.client_certificate.none") }
+        public enum RemoveFromWatch {
+          /// The certificate will be removed from this Watch only. Your iPhone keeps it, and refreshing re-adds it to the Watch.
+          public static var message: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.message") }
+          /// Remove
+          public static var remove: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.remove") }
+          /// Remove from this Watch?
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.title") }
+        }
       }
       public enum NoItems {
         public enum Phone {

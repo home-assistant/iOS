@@ -180,10 +180,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         Blob.observations.store[.init(queue: .main)] = { blob in
             Current.Log.verbose("Received blob: \(blob.identifier)")
 
-            if blob.identifier == WatchBlob.clientCertificates.rawValue {
-                self.importClientCertificates(from: blob.content)
-            }
-
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
@@ -262,36 +258,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
 
         updateComplications()
-    }
-
-    // MARK: - mTLS client certificate sync (received from the paired iPhone)
-
-    private func importClientCertificates(from data: Data) {
-        guard let items = try? JSONDecoder().decode([ClientCertificateTransferItem].self, from: data) else {
-            Current.Log.error("[mTLS] Failed to decode client certificate transfer payload")
-            return
-        }
-
-        var importedIdentifiers = Set<String>()
-        for item in items {
-            do {
-                let cert = try ClientCertificateManager.shared.importTransferMaterial(item)
-                importedIdentifiers.insert(cert.keychainIdentifier)
-                Current.Log.info("[mTLS] Imported client certificate on watch: \(cert.displayName)")
-            } catch {
-                Current.Log.error("[mTLS] Failed to import client certificate on watch: \(error)")
-            }
-        }
-
-        guard !importedIdentifiers.isEmpty else { return }
-
-        // Rebuild any API that was created before the identity existed so its session delegates
-        // (which are configured at init time) pick up the client certificate.
-        let affected = Current.servers.all.filter {
-            guard let id = $0.info.connection.clientCertificate?.keychainIdentifier else { return false }
-            return importedIdentifiers.contains(id)
-        }.map(\.identifier)
-        Current.resetAPICache(for: affected)
     }
 
     private var isUpdatingComplications = false

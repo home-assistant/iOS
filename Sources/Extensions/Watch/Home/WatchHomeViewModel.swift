@@ -49,33 +49,14 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         isLoading = true
-        requestServersSync()
+        // Pull servers + any mTLS client certificates as part of the refresh (delivered inline).
+        WatchServerSync.request()
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfig.rawValue,
             reply: { [weak self] message in
                 self?.handleMessageResponse(message)
             }
         ))
-    }
-
-    /// Ask the phone for the latest server configuration as part of the home refresh, mirroring how
-    /// the watch configuration is fetched. The phone replies with the encoded servers inline; any
-    /// mTLS client certificates are pushed separately over the Blob channel.
-    @MainActor
-    private func requestServersSync() {
-        guard Communicator.shared.currentReachability == .immediatelyReachable else { return }
-        Communicator.shared.send(.init(
-            identifier: InteractiveImmediateMessages.serversConfigSync.rawValue,
-            reply: { message in
-                guard let serversData = message.content["servers"] as? Data else { return }
-                DispatchQueue.main.async {
-                    WatchUserDefaults.shared.set(Date(), key: .serversUpdatedAt)
-                    Current.servers.restoreState(serversData)
-                }
-            }
-        ), errorHandler: { error in
-            Current.Log.error("Failed to request servers sync during home refresh: \(error)")
-        })
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {

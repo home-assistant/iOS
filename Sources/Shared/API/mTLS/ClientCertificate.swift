@@ -409,6 +409,28 @@ public final class ClientCertificateManager {
         try importP12(data: item.p12Data, password: item.password, identifier: item.keychainIdentifier)
     }
 
+    /// Decode an encoded `[ClientCertificateTransferItem]` payload (received from the paired iPhone)
+    /// and import each into the local Keychain. Returns the keychain identifiers actually imported.
+    @discardableResult
+    public func importTransferPayload(_ data: Data) -> [String] {
+        guard let items = try? JSONDecoder().decode([ClientCertificateTransferItem].self, from: data) else {
+            Current.Log.error("[mTLS] Failed to decode client certificate transfer payload")
+            return []
+        }
+
+        var imported: [String] = []
+        for item in items {
+            do {
+                let certificate = try importTransferMaterial(item)
+                imported.append(certificate.keychainIdentifier)
+                Current.Log.info("[mTLS] Imported client certificate into local Keychain: \(certificate.displayName)")
+            } catch {
+                Current.Log.error("[mTLS] Failed to import client certificate into local Keychain: \(error)")
+            }
+        }
+        return imported
+    }
+
     /// Delete a certificate from the Keychain
     public func delete(certificate: ClientCertificate) throws {
         let identityQuery: [String: Any] = [
