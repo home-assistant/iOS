@@ -19,8 +19,13 @@ final class WatchCommunicatorService {
     private var audioChunks: [String: [Int: Data]] = [:]
     private var audioChunkCounts: [String: Int] = [:]
 
-    private var didBecomeActiveObserver: NSObjectProtocol?
+private var didBecomeActiveObserver: NSObjectProtocol?
 
+deinit {
+    if let didBecomeActiveObserver {
+        NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+    }
+}
     func setup() {
         Current.servers.add(observer: self)
 
