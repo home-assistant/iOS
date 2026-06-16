@@ -177,6 +177,8 @@
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
 					<string>WebView</string>
+					<key>UISceneDelegateClassName</key>
+					<string>WebViewSceneDelegate</string>
 				</dict>
 				<dict>
 					<key>UISceneClassName</key>
