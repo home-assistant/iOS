@@ -143,6 +143,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
+        resetStaleSceneSessionsIfNeeded()
+
         lifecycleManager.didFinishLaunching()
         setupDebugSwift()
 
@@ -150,6 +152,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkForAlerts()
 
         return true
+    }
+
+    /// Programmatic equivalent of the reinstall that already fixes the blank-window-on-upgrade bug: on the
+    /// first launch of the SwiftUI-lifecycle build, tear down the primary scene session persisted by the old
+    /// `WebViewSceneDelegate` build. That session's cached configuration is bound to a delegate class that no
+    /// longer exists, so iOS reconnects it as a connected-but-unhosted (blank) scene that SwiftUI's
+    /// `WindowGroup` never adopts. Destroying it forces iOS to create a fresh, SwiftUI-owned scene.
+    ///
+    /// Runs exactly once (gated via `prefs`), and only against the primary `.windowApplication` `WebView`
+    /// session — never CarPlay (`.carTemplateApplication`, still backed by `CarPlaySceneDelegate`) or the
+    /// auxiliary Settings/About/Assist windows.
+    private func resetStaleSceneSessionsIfNeeded() {
+        let didResetKey = "didResetScenesForSwiftUILifecycle"
+        guard !prefs.bool(forKey: didResetKey) else { return }
+
+        let staleSessions = UIApplication.shared.openSessions.filter { session in
+            session.role == .windowApplication
+                && session.configuration.name == SceneActivity.webView.configurationName
+        }
+
+        guard !staleSessions.isEmpty else {
+            // Fresh install / nothing to migrate: arm the flag so the destruction path never runs again.
+            prefs.set(true, forKey: didResetKey)
+            return
+        }
+
+        for session in staleSessions {
+            Current.Log.info("Destroying stale pre-migration scene session \(session.persistentIdentifier)")
+            UIApplication.shared.requestSceneSessionDestruction(session, options: nil) { error in
+                Current.Log.error("Failed to destroy stale scene session: \(error.localizedDescription)")
+            }
+        }
+
+        prefs.set(true, forKey: didResetKey)
     }
 
     private func setupDebugSwift() {
@@ -228,6 +264,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             return activity.configuration
         }
+    }
+
+    func application(_ application: UIApplication, didDiscardSceneSessions sessions: Set<UISceneSession>) {
+        // Let iOS release each discarded session's saved state so a stale session can't be rehydrated later.
+        // Deliberately minimal: this can fire on a background cleanup callback, so don't touch Realm/GRDB or
+        // `Current` services synchronously here.
+        Current.Log.info("Discarded \(sessions.count) scene session(s)")
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
