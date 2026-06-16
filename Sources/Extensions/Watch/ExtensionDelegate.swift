@@ -39,6 +39,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         setupWatchCommunicator()
 
+        // Re-apply any watch-local "Always use" URL choices to the persisted servers (their
+        // connection info doesn't carry the override across launches/syncs).
+        WatchServerSync.applyURLOverrides()
+
         // schedule the next background refresh
         Current.backgroundRefreshScheduler.schedule().cauterize()
     }

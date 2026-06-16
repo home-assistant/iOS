@@ -124,7 +124,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
         fetchNetworkInfo { [weak self] in
             guard let self else { return }
-            if Communicator.shared.currentReachability == .immediatelyReachable {
+            if shouldUsePhone {
                 executeMagicItemUsingiPhone(magicItem: magicItem) { success in
                     // Avoid haptics in background
                     guard self.isLessThan30Seconds(from: timeTriggered) else {
@@ -145,6 +145,19 @@ final class WatchMagicViewRowViewModel: ObservableObject {
                 }
             }
             startTimeoutTimerWhichResetsState(completion: completion)
+        }
+    }
+
+    /// Resolve where to run the action from the user's "Perform action using" preference: always the
+    /// iPhone, always the Watch (direct), or automatically (iPhone when reachable, else direct).
+    private var shouldUsePhone: Bool {
+        switch WatchUserDefaults.shared.performActionTarget {
+        case .iPhone:
+            return true
+        case .appleWatch:
+            return false
+        case .auto:
+            return Communicator.shared.currentReachability == .immediatelyReachable
         }
     }
 

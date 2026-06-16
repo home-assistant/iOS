@@ -39,7 +39,7 @@ struct WatchHomeView: View {
             }
         })
         .sheet(isPresented: $showSettings) {
-            WatchServerInfoView()
+            WatchSettingsView()
         }
         .onAppear {
             Task {
@@ -212,9 +212,9 @@ struct WatchHomeView: View {
 
     private var footer: some View {
         VStack(spacing: .zero) {
-            settingsButton
             appVersion
             ssidLabel
+            settingsButton
         }
         .listRowBackground(Color.clear)
     }
@@ -223,12 +223,10 @@ struct WatchHomeView: View {
         Button {
             showSettings = true
         } label: {
-            Label(L10n.Watch.Settings.title, systemSymbol: .gearshape)
-                .font(.footnote)
-                .frame(maxWidth: .infinity)
+            Image(systemSymbol: .gearshapeFill)
         }
-        .buttonStyle(.bordered)
-        .padding(.bottom, DesignSystem.Spaces.one)
+        .circularGlassOrLegacyBackground()
+        .padding(DesignSystem.Spaces.one)
     }
 
     private var appVersion: some View {

@@ -5510,6 +5510,8 @@ public enum L10n {
       }
     }
     public enum Settings {
+      /// Auto
+      public static var auto: String { return L10n.tr("Localizable", "watch.settings.auto") }
       /// Updated %@
       public static func lastUpdated(_ p1: Any) -> String {
         return L10n.tr("Localizable", "watch.settings.last_updated", String(describing: p1))
@@ -5542,9 +5544,25 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "watch.settings.no_items.phone.title") }
         }
       }
+      public enum PerformAction {
+        /// Apple Watch
+        public static var appleWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.apple_watch") }
+        /// Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer") }
+        /// iPhone
+        public static var iphone: String { return L10n.tr("Localizable", "watch.settings.perform_action.iphone") }
+        /// Perform action using
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.perform_action.title") }
+      }
       public enum Servers {
         /// Servers
         public static var header: String { return L10n.tr("Localizable", "watch.settings.servers.header") }
+      }
+      public enum UrlOverride {
+        /// Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.url_override.footer") }
+        /// Always use
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.url_override.title") }
       }
     }
   }

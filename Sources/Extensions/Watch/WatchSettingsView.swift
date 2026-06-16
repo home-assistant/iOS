@@ -7,15 +7,32 @@ import SwiftUI
 /// the connection details we already display on iOS (including mTLS client-certificate status).
 /// Nothing here can be edited — the watch can only read the synced configuration or ask the phone
 /// to push a fresh copy.
-struct WatchServerInfoView: View {
-    @StateObject private var viewModel = WatchServerInfoViewModel()
+struct WatchSettingsView: View {
+    @StateObject private var viewModel = WatchSettingsViewModel()
+    @State private var performActionTarget = WatchUserDefaults.shared.performActionTarget
 
     var body: some View {
         NavigationView {
             List {
                 serversSection
+                performActionSection
             }
             .navigationTitle(Text(verbatim: L10n.Watch.Settings.title))
+        }
+    }
+
+    private var performActionSection: some View {
+        Section {
+            Picker(L10n.Watch.Settings.PerformAction.title, selection: $performActionTarget) {
+                Text(verbatim: L10n.Watch.Settings.auto).tag(WatchActionTarget.auto)
+                Text(verbatim: L10n.Watch.Settings.PerformAction.iphone).tag(WatchActionTarget.iPhone)
+                Text(verbatim: L10n.Watch.Settings.PerformAction.appleWatch).tag(WatchActionTarget.appleWatch)
+            }
+            .onChange(of: performActionTarget) { newValue in
+                WatchUserDefaults.shared.performActionTarget = newValue
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Settings.PerformAction.footer)
         }
     }
 
@@ -63,9 +80,18 @@ struct WatchServerDetailView: View {
     @State private var certRefreshToken = UUID()
     @State private var showImportInstructions = false
     @State private var showRemoveFromWatchConfirmation = false
+    /// `nil` = automatic; otherwise the URL the Watch is forced to use for this server.
+    @State private var urlOverride: ConnectionInfo.URLType?
+
+    init(server: Server) {
+        self.server = server
+        let raw = WatchUserDefaults.shared.urlOverrideRawValue(forServerId: server.identifier.rawValue)
+        _urlOverride = State(initialValue: raw.flatMap(ConnectionInfo.URLType.init(rawValue:)))
+    }
 
     var body: some View {
         List {
+            urlOverrideSection
             connectionSection
             statusSection
             clientCertificateSection
@@ -84,6 +110,39 @@ struct WatchServerDetailView: View {
             }
         } message: {
             Text(verbatim: L10n.Watch.Settings.ClientCertificate.importInstructions)
+        }
+    }
+
+    /// Number of distinct URLs configured for this server (internal / external / remote-UI).
+    private var configuredURLCount: Int {
+        [ConnectionInfo.URLType.internal, .external, .remoteUI]
+            .compactMap { connection.address(for: $0) }
+            .count
+    }
+
+    @ViewBuilder
+    private var urlOverrideSection: some View {
+        // Only meaningful when there's a choice of URLs to force.
+        if configuredURLCount > 1 {
+            Section {
+                Picker(L10n.Watch.Settings.UrlOverride.title, selection: $urlOverride) {
+                    Text(verbatim: L10n.Watch.Settings.auto)
+                        .tag(ConnectionInfo.URLType?.none)
+                    Text(verbatim: L10n.Settings.ConnectionSection.InternalBaseUrl.title)
+                        .tag(ConnectionInfo.URLType?.some(.internal))
+                    Text(verbatim: L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
+                        .tag(ConnectionInfo.URLType?.some(.external))
+                }
+                .onChange(of: urlOverride) { newValue in
+                    WatchUserDefaults.shared.setURLOverrideRawValue(
+                        newValue?.rawValue,
+                        forServerId: server.identifier.rawValue
+                    )
+                    WatchServerSync.applyURLOverrides()
+                }
+            } footer: {
+                Text(verbatim: L10n.Watch.Settings.UrlOverride.footer)
+            }
         }
     }
 
@@ -219,31 +278,6 @@ struct WatchServerDetailView: View {
     }
 }
 
-final class WatchServerInfoViewModel: ObservableObject {
-    @Published private(set) var servers: [Server] = []
-    @Published private(set) var lastUpdated: Date?
-
-    init() {
-        Current.servers.add(observer: self)
-        reload()
-    }
-
-    private func reload() {
-        let all = Current.servers.all
-        let updatedAt = WatchUserDefaults.shared.date(for: .serversUpdatedAt)
-        DispatchQueue.main.async { [weak self] in
-            self?.servers = all
-            self?.lastUpdated = updatedAt
-        }
-    }
-}
-
-extension WatchServerInfoViewModel: ServerObserver {
-    func serversDidChange(_ serverManager: ServerManager) {
-        reload()
-    }
-}
-
 extension Notification.Name {
     /// Posted on the watch once client certificate(s) received from the paired iPhone have been
     /// imported into the local Keychain, so any visible mTLS status can refresh.
@@ -275,9 +309,28 @@ enum WatchServerSync {
         if let serversData = message.content["servers"] as? Data {
             WatchUserDefaults.shared.set(Date(), key: .serversUpdatedAt)
             Current.servers.restoreState(serversData)
+            applyURLOverrides()
         }
         if let certificatesData = message.content["clientCertificates"] as? Data {
             importCertificates(certificatesData)
+        }
+    }
+
+    /// Re-apply each server's watch-local "Always use" URL choice. `ConnectionInfo` is overwritten on
+    /// every sync, so the override (stored in `WatchUserDefaults`) must be re-applied to the live
+    /// servers. Run on launch, after each sync, and whenever the picker changes.
+    static func applyURLOverrides() {
+        var changed: [Identifier<Server>] = []
+        for server in Current.servers.all {
+            let desired = WatchUserDefaults.shared
+                .urlOverrideRawValue(forServerId: server.identifier.rawValue)
+                .flatMap(ConnectionInfo.URLType.init(rawValue:))
+            guard server.info.connection.overrideActiveURLType != desired else { continue }
+            server.update { $0.connection.overrideActiveURLType = desired }
+            changed.append(server.identifier)
+        }
+        if !changed.isEmpty {
+            Current.resetAPICache(for: changed)
         }
     }
 
