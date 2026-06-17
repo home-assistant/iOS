@@ -428,7 +428,7 @@ class IncomingURLHandler {
         }
 
         return Promise { seal in
-            item.execute(on: server, source: .AppShortcut) { success in
+            item.execute(on: server, source: .AppShortcut) { success, _ in
                 if success {
                     seal.fulfill(())
                 } else {
@@ -465,7 +465,7 @@ class IncomingURLHandler {
             }
             return Promise { seal in
                 MagicItem(id: scriptId, serverId: serverId, type: .script)
-                    .execute(on: server, source: .AppShortcut) { success in
+                    .execute(on: server, source: .AppShortcut) { success, _ in
                         if !success {
                             Current.Log.error("Failed to execute App Icon Shortcut run script action id: \(scriptId)")
                             seal.reject(HomeAssistantAPI.APIError.notConfigured)
