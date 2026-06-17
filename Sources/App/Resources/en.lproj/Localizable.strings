@@ -1609,10 +1609,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Perform action using";
 "watch.settings.refresh" = "Refresh";
-"watch.settings.url_override.footer" = "Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.";
-"watch.settings.url_override.title" = "Always use";
 "watch.settings.servers.header" = "Servers";
 "watch.settings.title" = "Settings";
+"watch.settings.url_override.footer" = "Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.";
+"watch.settings.url_override.title" = "Always use";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Widget.title" = "Widget";
