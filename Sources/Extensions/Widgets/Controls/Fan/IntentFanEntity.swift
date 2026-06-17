@@ -21,27 +21,18 @@ struct IntentFanEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: .init(stringLiteral: subtitle)
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
     }
 
-    private var subtitle: String {
-        var subtitle = ""
-        if let areaName {
-            subtitle += areaName
-        }
-
-        if let deviceName,
-           deviceName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != displayString.lowercased()
-           .trimmingCharacters(in: .whitespacesAndNewlines) {
-            if subtitle.isEmpty {
-                subtitle += deviceName
-            } else {
-                subtitle += " → \(deviceName)"
-            }
-        }
-
-        return subtitle
+    private var subtitle: String? {
+        EntityContextSubtitle.make(
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
     }
 
     init(
@@ -65,26 +56,37 @@ struct IntentFanEntity: AppEntity {
 
 @available(iOS 18.0, *)
 struct IntentFanAppEntityQuery: EntityQuery, EntityStringQuery {
+    #if WIDGET_EXTENSION
+    @IntentParameterDependency<ControlFanConfiguration>(\.$server)
+    var config
+    #endif
+
     func entities(for identifiers: [String]) async throws -> [IntentFanEntity] {
         await getFanEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentFanEntity> {
-        let fansPerServer = await getFanEntities(matching: string)
-
-        return .init(sections: fansPerServer.map { (key: Server, value: [IntentFanEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value
-            )
-        })
+        await collection(for: getFanEntities(matching: string))
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentFanEntity> {
-        let fansPerServer = await getFanEntities()
+        await collection(for: getFanEntities())
+    }
 
-        return .init(sections: fansPerServer.map { (key: Server, value: [IntentFanEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+    /// Scopes the list to the server picked in the configuration (flat list). When no server is
+    /// selected (e.g. a widget configured before this option existed), falls back to grouping
+    /// every server's entities into sections.
+    private func collection(
+        for entitiesPerServer: [(Server, [IntentFanEntity])]
+    ) -> IntentItemCollection<IntentFanEntity> {
+        #if WIDGET_EXTENSION
+        if let server = config?.server {
+            let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
+            return .init(items: items)
+        }
+        #endif
+        return .init(sections: entitiesPerServer.map { server, items in
+            .init(.init(stringLiteral: server.info.name), items: items)
         })
     }
 

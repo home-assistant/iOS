@@ -339,7 +339,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             completion()
             return
         }
-        magicItem.execute(on: server, source: .CarPlay) { success in
+        magicItem.execute(on: server, source: .CarPlay) { success, _ in
             if !success {
                 Current.Log.error("Failed executing quick access magic item id: \(magicItem.id)")
             }

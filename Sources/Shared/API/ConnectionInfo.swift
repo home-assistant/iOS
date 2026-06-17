@@ -85,7 +85,6 @@ public struct ConnectionInfo: Codable, Equatable {
     public var securityExceptions: SecurityExceptions = .init()
     public func evaluate(_ challenge: URLAuthenticationChallenge)
         -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-        #if !os(watchOS)
         // Handle client certificate challenge for mTLS
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
             if let cert = clientCertificate {
@@ -102,7 +101,6 @@ public struct ConnectionInfo: Codable, Equatable {
                 return (.performDefaultHandling, nil)
             }
         }
-        #endif
 
         // Handle server trust and other challenges
         return securityExceptions.evaluate(challenge)

@@ -135,7 +135,7 @@
 "component::lawn_mower::entity_component::_::state::paused" = "Peatatud";
 "component::light::entity_component::_::state::off" = "Väljas";
 "component::light::entity_component::_::state::on" = "Sees";
-"component::light::title" = "Tuled";
+"component::light::title" = "Valgus";
 "component::litterrobot::entity::sensor::status_code::state::off" = "Väljas";
 "component::litterrobot::entity::sensor::status_code::state::p" = "Peatatud";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "Väljas";

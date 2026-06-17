@@ -79,12 +79,6 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenPage()
         ControlOpenEntity()
         ControlOpenCamera()
-        ControlOpenCoverEntity()
-        ControlOpenInputBoolean()
-        ControlOpenLight()
-        ControlOpenLock()
-        ControlOpenSensor()
-        ControlOpenSwitch()
         // Widgets
         WidgetCommonlyUsedEntities()
         WidgetCustom()
