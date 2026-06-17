@@ -83,7 +83,13 @@ struct IntentSensorsAppEntityQuery: EntityQuery {
     }
 
     func defaultResult() async -> IntentSensorsAppEntity? {
-        getSensorEntities().flatMap(\.1).first
+        let entitiesPerServer = getSensorEntities()
+        // Respect the server chosen in the configuration so we don't default to a sensor from a
+        // different server than the one selected.
+        if let server = config?.server {
+            return entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1.first
+        }
+        return entitiesPerServer.flatMap(\.1).first
     }
 
     private func getSensorEntities(matching string: String? = nil) -> [(Server, [IntentSensorsAppEntity])] {

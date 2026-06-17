@@ -39,7 +39,12 @@ public enum EntityContextSubtitle {
         if let domain, [.script, .scene, .automation].contains(domain) {
             return nil
         }
-        return fallbackToEntityId ? entityId : nil
+        // Fall back to the entity id, but only when it carries something to show — placeholders and
+        // pending-configuration entities pass an empty id, which would otherwise render a blank line.
+        guard fallbackToEntityId, !entityId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return nil
+        }
+        return entityId
     }
 }
 

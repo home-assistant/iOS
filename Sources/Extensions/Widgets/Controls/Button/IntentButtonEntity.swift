@@ -56,8 +56,10 @@ struct IntentButtonEntity: AppEntity {
 
 @available(iOS 18.0, *)
 struct IntentButtonAppEntityQuery: EntityQuery, EntityStringQuery {
+    #if WIDGET_EXTENSION
     @IntentParameterDependency<ControlButtonConfiguration>(\.$server)
     var config
+    #endif
 
     func entities(for identifiers: [String]) async throws -> [IntentButtonEntity] {
         await getButtonEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
@@ -77,10 +79,12 @@ struct IntentButtonAppEntityQuery: EntityQuery, EntityStringQuery {
     private func collection(
         for entitiesPerServer: [(Server, [IntentButtonEntity])]
     ) -> IntentItemCollection<IntentButtonEntity> {
+        #if WIDGET_EXTENSION
         if let server = config?.server {
             let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
             return .init(items: items)
         }
+        #endif
         return .init(sections: entitiesPerServer.map { server, items in
             .init(.init(stringLiteral: server.info.name), items: items)
         })
