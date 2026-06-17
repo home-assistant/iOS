@@ -102,6 +102,7 @@ struct SettingsView: View {
                     item.destinationView
                 }
         }
+        .tint(.haPrimary)
     }
 
     private var iOSViewLegacy: some View {
@@ -109,6 +110,7 @@ struct SettingsView: View {
             iOSListContent
                 .navigationViewStyle(.stack)
         }
+        .tint(.haPrimary)
     }
 
     private var iOSListContent: some View {
