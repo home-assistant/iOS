@@ -6,9 +6,6 @@ PODS:
   - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
-  - GRDB.swift (7.8.0):
-    - GRDB.swift/standard (= 7.8.0)
-  - GRDB.swift/standard (7.8.0)
   - HAKit (0.4.16):
     - HAKit/Core (= 0.4.16)
   - HAKit/Core (0.4.16):
@@ -72,7 +69,6 @@ DEPENDENCIES:
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
-  - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v7.8.0`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
@@ -125,9 +121,6 @@ EXTERNAL SOURCES:
   EMTLoadingIndicator:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  GRDB.swift:
-    :git: https://github.com/groue/GRDB.swift.git
-    :tag: v7.8.0
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.16
@@ -151,9 +144,6 @@ CHECKOUT OPTIONS:
   EMTLoadingIndicator:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  GRDB.swift:
-    :git: https://github.com/groue/GRDB.swift.git
-    :tag: v7.8.0
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.16
@@ -173,7 +163,6 @@ SPEC CHECKSUMS:
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
-  GRDB.swift: 682e07f771a9100f0bdf40fd0bed57b83ca08e29
   HAKit: b148d9c04b81337eb5f1fc48ef96fc5d9364e87a
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
@@ -195,6 +184,6 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: d1a073db63d720ea647bcb14f7c483b318598be4
+PODFILE CHECKSUM: 02dcc3c2935f2a72aa00c50b9f46b4140a41f2cb
 
 COCOAPODS: 1.15.2
