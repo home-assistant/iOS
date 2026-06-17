@@ -499,21 +499,9 @@
 		4203961E2EF16A4700C9DF74 /* IntentButtonEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396192EF16A4700C9DF74 /* IntentButtonEntity.swift */; };
 		420396392EF16A4700C9DF74 /* ControlOpenCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203961F2EF16A4700C9DF74 /* ControlOpenCamera.swift */; };
 		4203963A2EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396202EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift */; };
-		4203963B2EF16A4700C9DF74 /* ControlOpenCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396222EF16A4700C9DF74 /* ControlOpenCoverEntity.swift */; };
-		4203963C2EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396232EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift */; };
 		4203963D2EF16A4700C9DF74 /* ControlOpenEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396252EF16A4700C9DF74 /* ControlOpenEntity.swift */; };
 		4203963E2EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396262EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift */; };
 		4203963F2EF16A4700C9DF74 /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396272EF16A4700C9DF74 /* OpenEntityAppIntent.swift */; };
-		420396402EF16A4700C9DF74 /* ControlOpenInputBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396292EF16A4700C9DF74 /* ControlOpenInputBoolean.swift */; };
-		420396412EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962A2EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift */; };
-		420396422EF16A4700C9DF74 /* ControlOpenLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962C2EF16A4700C9DF74 /* ControlOpenLight.swift */; };
-		420396432EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962D2EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift */; };
-		420396442EF16A4700C9DF74 /* ControlOpenLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962F2EF16A4700C9DF74 /* ControlOpenLock.swift */; };
-		420396452EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396302EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift */; };
-		420396462EF16A4700C9DF74 /* ControlOpenSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396322EF16A4700C9DF74 /* ControlOpenSensor.swift */; };
-		420396472EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396332EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift */; };
-		420396482EF16A4700C9DF74 /* ControlOpenSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396352EF16A4700C9DF74 /* ControlOpenSwitch.swift */; };
-		420396492EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396362EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift */; };
 		420461692C8F29440062E89F /* ControlLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420461682C8F29440062E89F /* ControlLight.swift */; };
 		4206DE5A2E25055E00142E85 /* WebsiteDataStoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */; };
 		4206DE5C2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE5B2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift */; };
@@ -744,22 +732,10 @@
 		4269107F2F9B981700E4477B /* WebViewEmptyStateStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4269107E2F9B981700E4477B /* WebViewEmptyStateStyle.swift */; };
 		426910832F9B981700E4477B /* WebViewEmptyStateView+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426910822F9B981700E4477B /* WebViewEmptyStateView+Previews.swift */; };
 		4269F48B2FADE46300164A52 /* AssistPromptMagicItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4269F48A2FADE46300164A52 /* AssistPromptMagicItemView.swift */; };
-		426AB2342EF2A7D400FD5D46 /* ControlOpenSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396352EF16A4700C9DF74 /* ControlOpenSwitch.swift */; };
-		426AB2352EF2A7D400FD5D46 /* ControlOpenCoverEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396232EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift */; };
-		426AB2362EF2A7D400FD5D46 /* ControlOpenInputBooleanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962A2EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift */; };
 		426AB2372EF2A7D400FD5D46 /* ControlOpenCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203961F2EF16A4700C9DF74 /* ControlOpenCamera.swift */; };
-		426AB2382EF2A7D400FD5D46 /* ControlOpenLockValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396302EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift */; };
-		426AB2392EF2A7D400FD5D46 /* ControlOpenLightValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962D2EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift */; };
-		426AB23A2EF2A7D400FD5D46 /* ControlOpenSensorValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396332EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift */; };
-		426AB23B2EF2A7D400FD5D46 /* ControlOpenSwitchValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396362EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift */; };
-		426AB23C2EF2A7D400FD5D46 /* ControlOpenCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396222EF16A4700C9DF74 /* ControlOpenCoverEntity.swift */; };
 		426AB23D2EF2A7D400FD5D46 /* ControlOpenEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396252EF16A4700C9DF74 /* ControlOpenEntity.swift */; };
 		426AB23E2EF2A7D400FD5D46 /* ControlOpenCameraValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396202EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift */; };
-		426AB23F2EF2A7D400FD5D46 /* ControlOpenInputBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396292EF16A4700C9DF74 /* ControlOpenInputBoolean.swift */; };
-		426AB2402EF2A7D400FD5D46 /* ControlOpenSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396322EF16A4700C9DF74 /* ControlOpenSensor.swift */; };
-		426AB2412EF2A7D400FD5D46 /* ControlOpenLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962F2EF16A4700C9DF74 /* ControlOpenLock.swift */; };
 		426AB2422EF2A7D400FD5D46 /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396272EF16A4700C9DF74 /* OpenEntityAppIntent.swift */; };
-		426AB2432EF2A7D400FD5D46 /* ControlOpenLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962C2EF16A4700C9DF74 /* ControlOpenLight.swift */; };
 		426AB2442EF2A7D400FD5D46 /* ControlOpenEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396262EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift */; };
 		426B73E52DCCE2C7003F778E /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C42D393F0E0062D905 /* EntityPicker.swift */; };
@@ -2303,21 +2279,9 @@
 		420396192EF16A4700C9DF74 /* IntentButtonEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentButtonEntity.swift; sourceTree = "<group>"; };
 		4203961F2EF16A4700C9DF74 /* ControlOpenCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCamera.swift; sourceTree = "<group>"; };
 		420396202EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCameraValueProvider.swift; sourceTree = "<group>"; };
-		420396222EF16A4700C9DF74 /* ControlOpenCoverEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCoverEntity.swift; sourceTree = "<group>"; };
-		420396232EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCoverEntityValueProvider.swift; sourceTree = "<group>"; };
 		420396252EF16A4700C9DF74 /* ControlOpenEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenEntity.swift; sourceTree = "<group>"; };
 		420396262EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenEntityValueProvider.swift; sourceTree = "<group>"; };
 		420396272EF16A4700C9DF74 /* OpenEntityAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenEntityAppIntent.swift; sourceTree = "<group>"; };
-		420396292EF16A4700C9DF74 /* ControlOpenInputBoolean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenInputBoolean.swift; sourceTree = "<group>"; };
-		4203962A2EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenInputBooleanValueProvider.swift; sourceTree = "<group>"; };
-		4203962C2EF16A4700C9DF74 /* ControlOpenLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenLight.swift; sourceTree = "<group>"; };
-		4203962D2EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenLightValueProvider.swift; sourceTree = "<group>"; };
-		4203962F2EF16A4700C9DF74 /* ControlOpenLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenLock.swift; sourceTree = "<group>"; };
-		420396302EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenLockValueProvider.swift; sourceTree = "<group>"; };
-		420396322EF16A4700C9DF74 /* ControlOpenSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenSensor.swift; sourceTree = "<group>"; };
-		420396332EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenSensorValueProvider.swift; sourceTree = "<group>"; };
-		420396352EF16A4700C9DF74 /* ControlOpenSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenSwitch.swift; sourceTree = "<group>"; };
-		420396362EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenSwitchValueProvider.swift; sourceTree = "<group>"; };
 		420461682C8F29440062E89F /* ControlLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlLight.swift; sourceTree = "<group>"; };
 		4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataStoreHandler.swift; sourceTree = "<group>"; };
 		4206DE5B2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebViewExternalMessageHandler.swift; sourceTree = "<group>"; };
@@ -4624,15 +4588,6 @@
 			path = ControlOpenCamera;
 			sourceTree = "<group>";
 		};
-		420396242EF16A4700C9DF74 /* ControlOpenCoverEntity */ = {
-			isa = PBXGroup;
-			children = (
-				420396222EF16A4700C9DF74 /* ControlOpenCoverEntity.swift */,
-				420396232EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift */,
-			);
-			path = ControlOpenCoverEntity;
-			sourceTree = "<group>";
-		};
 		420396282EF16A4700C9DF74 /* ControlOpenEntity */ = {
 			isa = PBXGroup;
 			children = (
@@ -4643,62 +4598,11 @@
 			path = ControlOpenEntity;
 			sourceTree = "<group>";
 		};
-		4203962B2EF16A4700C9DF74 /* ControlOpenInputBoolean */ = {
-			isa = PBXGroup;
-			children = (
-				420396292EF16A4700C9DF74 /* ControlOpenInputBoolean.swift */,
-				4203962A2EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift */,
-			);
-			path = ControlOpenInputBoolean;
-			sourceTree = "<group>";
-		};
-		4203962E2EF16A4700C9DF74 /* ControlOpenLight */ = {
-			isa = PBXGroup;
-			children = (
-				4203962C2EF16A4700C9DF74 /* ControlOpenLight.swift */,
-				4203962D2EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift */,
-			);
-			path = ControlOpenLight;
-			sourceTree = "<group>";
-		};
-		420396312EF16A4700C9DF74 /* ControlOpenLock */ = {
-			isa = PBXGroup;
-			children = (
-				4203962F2EF16A4700C9DF74 /* ControlOpenLock.swift */,
-				420396302EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift */,
-			);
-			path = ControlOpenLock;
-			sourceTree = "<group>";
-		};
-		420396342EF16A4700C9DF74 /* ControlOpenSensor */ = {
-			isa = PBXGroup;
-			children = (
-				420396322EF16A4700C9DF74 /* ControlOpenSensor.swift */,
-				420396332EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift */,
-			);
-			path = ControlOpenSensor;
-			sourceTree = "<group>";
-		};
-		420396372EF16A4700C9DF74 /* ControlOpenSwitch */ = {
-			isa = PBXGroup;
-			children = (
-				420396352EF16A4700C9DF74 /* ControlOpenSwitch.swift */,
-				420396362EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift */,
-			);
-			path = ControlOpenSwitch;
-			sourceTree = "<group>";
-		};
 		420396382EF16A4700C9DF74 /* OpenEntity */ = {
 			isa = PBXGroup;
 			children = (
 				420396212EF16A4700C9DF74 /* ControlOpenCamera */,
-				420396242EF16A4700C9DF74 /* ControlOpenCoverEntity */,
 				420396282EF16A4700C9DF74 /* ControlOpenEntity */,
-				4203962B2EF16A4700C9DF74 /* ControlOpenInputBoolean */,
-				4203962E2EF16A4700C9DF74 /* ControlOpenLight */,
-				420396312EF16A4700C9DF74 /* ControlOpenLock */,
-				420396342EF16A4700C9DF74 /* ControlOpenSensor */,
-				420396372EF16A4700C9DF74 /* ControlOpenSwitch */,
 			);
 			path = OpenEntity;
 			sourceTree = "<group>";
@@ -9234,22 +9138,10 @@
 				1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */,
 				420396392EF16A4700C9DF74 /* ControlOpenCamera.swift in Sources */,
 				4203963A2EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift in Sources */,
-				4203963B2EF16A4700C9DF74 /* ControlOpenCoverEntity.swift in Sources */,
-				4203963C2EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift in Sources */,
 				4203963D2EF16A4700C9DF74 /* ControlOpenEntity.swift in Sources */,
 				4203963E2EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift in Sources */,
 				4203963F2EF16A4700C9DF74 /* OpenEntityAppIntent.swift in Sources */,
 				42514C1D2F3E21B0008EB858 /* WidgetTodoListView.swift in Sources */,
-				420396402EF16A4700C9DF74 /* ControlOpenInputBoolean.swift in Sources */,
-				420396412EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift in Sources */,
-				420396422EF16A4700C9DF74 /* ControlOpenLight.swift in Sources */,
-				420396432EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift in Sources */,
-				420396442EF16A4700C9DF74 /* ControlOpenLock.swift in Sources */,
-				420396452EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift in Sources */,
-				420396462EF16A4700C9DF74 /* ControlOpenSensor.swift in Sources */,
-				420396472EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift in Sources */,
-				420396482EF16A4700C9DF74 /* ControlOpenSwitch.swift in Sources */,
-				420396492EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift in Sources */,
 				3E02C0E82CA7FCF400102131 /* WidgetSensors.swift in Sources */,
 				4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */,
 				3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
@@ -9413,22 +9305,10 @@
 				42DF7DDE2EC53D50003F3C4A /* SettingsItem.swift in Sources */,
 				61FB3A85078071FD96D7CCDE /* WhatsNewModels.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
-				426AB2342EF2A7D400FD5D46 /* ControlOpenSwitch.swift in Sources */,
-				426AB2352EF2A7D400FD5D46 /* ControlOpenCoverEntityValueProvider.swift in Sources */,
-				426AB2362EF2A7D400FD5D46 /* ControlOpenInputBooleanValueProvider.swift in Sources */,
 				426AB2372EF2A7D400FD5D46 /* ControlOpenCamera.swift in Sources */,
-				426AB2382EF2A7D400FD5D46 /* ControlOpenLockValueProvider.swift in Sources */,
-				426AB2392EF2A7D400FD5D46 /* ControlOpenLightValueProvider.swift in Sources */,
-				426AB23A2EF2A7D400FD5D46 /* ControlOpenSensorValueProvider.swift in Sources */,
-				426AB23B2EF2A7D400FD5D46 /* ControlOpenSwitchValueProvider.swift in Sources */,
-				426AB23C2EF2A7D400FD5D46 /* ControlOpenCoverEntity.swift in Sources */,
 				426AB23D2EF2A7D400FD5D46 /* ControlOpenEntity.swift in Sources */,
 				426AB23E2EF2A7D400FD5D46 /* ControlOpenCameraValueProvider.swift in Sources */,
-				426AB23F2EF2A7D400FD5D46 /* ControlOpenInputBoolean.swift in Sources */,
-				426AB2402EF2A7D400FD5D46 /* ControlOpenSensor.swift in Sources */,
-				426AB2412EF2A7D400FD5D46 /* ControlOpenLock.swift in Sources */,
 				426AB2422EF2A7D400FD5D46 /* OpenEntityAppIntent.swift in Sources */,
-				426AB2432EF2A7D400FD5D46 /* ControlOpenLight.swift in Sources */,
 				426AB2442EF2A7D400FD5D46 /* ControlOpenEntityValueProvider.swift in Sources */,
 				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
 				422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
