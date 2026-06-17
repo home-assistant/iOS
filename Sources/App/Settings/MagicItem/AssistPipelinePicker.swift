@@ -10,8 +10,6 @@ struct AssistPipelinePicker: View {
     @Binding private var selectedServerId: String?
     @Binding private var selectedPipelineId: String?
     @State private var searchTerm = ""
-    /// Server used to filter the list inside the sheet (separate from the committed `selectedServerId`).
-    @State private var filterServerId: String?
 
     @State private var assistServices: [AssistServiceProtocol] = []
 
@@ -36,21 +34,6 @@ struct AssistPipelinePicker: View {
         .sheet(isPresented: $showList) {
             NavigationView {
                 List {
-                    if Current.servers.all.count > 1 {
-                        EntityFilterPickerView(
-                            title: L10n.EntityPicker.Filter.Server.title,
-                            pickerItems: Current.servers.all
-                                .sorted(by: { $0.info.sortOrder < $1.info.sortOrder })
-                                .map { EntityFilterPickerView.PickerItem(
-                                    id: $0.identifier.rawValue,
-                                    title: $0.info.name
-                                ) },
-                            selectedItemId: $filterServerId
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                    }
-
                     if isLoading {
                         Section {
                             HStack {
@@ -60,22 +43,28 @@ struct AssistPipelinePicker: View {
                             }
                             .padding()
                         }
-                    } else if filteredConfig?.pipelines.isEmpty ?? true {
+                    } else if assistConfigs.isEmpty {
                         Section {
                             Text(L10n.AssistPipelinePicker.noPipelines)
                                 .foregroundColor(.secondary)
                         }
                     }
 
-                    if let filteredConfig {
-                        Section {
-                            ForEach(filteredPipelines(filteredConfig.pipelines), id: \.id) { pipeline in
+                    ForEach(assistConfigs, id: \.serverId) { config in
+                        Section(serverName(serverId: config.serverId)) {
+                            ForEach(config.pipelines.filter({ pipeline in
+                                if searchTerm.count > 2 {
+                                    return pipeline.name.lowercased().contains(searchTerm.lowercased())
+                                } else {
+                                    return true
+                                }
+                            }), id: \.id) { pipeline in
                                 Button(action: {
                                     selectedPipelineId = pipeline.id
-                                    selectedServerId = filteredConfig.serverId
+                                    selectedServerId = config.serverId
                                     showList = false
                                 }, label: {
-                                    if selectedPipelineId == pipeline.id, selectedServerId == filteredConfig.serverId {
+                                    if selectedPipelineId == pipeline.id, selectedServerId == config.serverId {
                                         Label(pipeline.name, systemSymbol: .checkmark)
                                     } else {
                                         Text(pipeline.name)
@@ -89,9 +78,6 @@ struct AssistPipelinePicker: View {
                 .searchable(text: $searchTerm)
                 .onAppear {
                     fetchPipelines()
-                    if filterServerId == nil {
-                        filterServerId = selectedServerId ?? Current.servers.all.first?.identifier.rawValue
-                    }
                 }
                 .navigationViewStyle(.stack)
                 .toolbar {
@@ -112,21 +98,16 @@ struct AssistPipelinePicker: View {
         }
     }
 
-    private var filteredConfig: AssistPipelines? {
-        assistConfigs.first(where: { $0.serverId == filterServerId })
-    }
-
-    private func filteredPipelines(_ pipelines: [Pipeline]) -> [Pipeline] {
-        if searchTerm.count > 2 {
-            return pipelines.filter { $0.name.lowercased().contains(searchTerm.lowercased()) }
-        }
-        return pipelines
-    }
-
     private func nameForSelectedPipeline() -> String? {
         guard let selectedServerId, let selectedPipelineId else { return nil }
         return assistConfigs.first(where: { $0.serverId == selectedServerId })?.pipelines
             .first(where: { $0.id == selectedPipelineId })?.name
+    }
+
+    private func serverName(serverId: String) -> String {
+        Current.servers.all.first(where: { server in
+            server.identifier.rawValue == serverId
+        })?.info.name ?? "Unknown server"
     }
 
     private func fetchPipelines() {
