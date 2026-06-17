@@ -73,6 +73,19 @@ struct WatchMagicViewRow: View {
                 break
             }
         }
+        .alert(
+            Text(verbatim: L10n.Watch.Home.Run.Error.title),
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )
+        ) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            if let errorMessage = viewModel.errorMessage {
+                Text(verbatim: errorMessage)
+            }
+        }
     }
 
     private var iconColor: UIColor {
