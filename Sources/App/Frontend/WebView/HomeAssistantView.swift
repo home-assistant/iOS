@@ -26,15 +26,15 @@ struct HomeAssistantView: View, WebFrontendView {
         overlayState.statusBarColor == nil ? .all : [.horizontal, .bottom]
     }
 
-    /// A theme-colored bar filling the top safe-area inset above the web view. Shown only when `overlayState`
-    /// publishes a color (iOS, edge-to-edge off), in which case the web view's top is inset to sit below it.
+    /// A theme-colored layer filling the top safe-area inset above the web view. Shown only when
+    /// `overlayState` publishes a color (iOS, edge-to-edge off), in which case the web view's top is inset to
+    /// sit below it. Drawn full-bleed behind the web view so only the otherwise-uncovered status-bar inset
+    /// shows the color — the web view (opaque) covers everything below the top inset.
     @ViewBuilder
     private var themedStatusBar: some View {
         if let color = overlayState.statusBarColor {
             Color(uiColor: color)
-                .frame(maxWidth: .infinity)
-                .frame(height: 0)
-                .ignoresSafeArea(edges: .top)
+                .ignoresSafeArea()
         }
     }
 
@@ -61,7 +61,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 .transition(.opacity)
             }
         }
-        .overlay(alignment: .top) { themedStatusBar }
+        .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.showsNoActiveURL)
     }
