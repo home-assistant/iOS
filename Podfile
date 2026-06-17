@@ -30,7 +30,6 @@ pod 'Improv-iOS', '~> 0.0.6'
 pod 'SFSafeSymbols', '~> 5.3'
 
 pod 'RealmSwift'
-# GRDB.swift is integrated via Swift Package Manager (see HomeAssistant.xcodeproj), not CocoaPods.
 pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
