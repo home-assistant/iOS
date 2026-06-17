@@ -5037,6 +5037,12 @@ public enum L10n {
             return L10n.tr("Localizable", "watch.home.run.confirmation.title", String(describing: p1))
           }
         }
+        public enum Error {
+          /// The action couldn't be run. The Apple Watch may not be able to reach this server directly.
+          public static var message: String { return L10n.tr("Localizable", "watch.home.run.error.message") }
+          /// Couldn't run action
+          public static var title: String { return L10n.tr("Localizable", "watch.home.run.error.title") }
+        }
       }
     }
     public enum Labels {

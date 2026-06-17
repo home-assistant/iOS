@@ -31,6 +31,8 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     @Published private(set) var state: RowState = .idle
     @Published var showConfirmationDialog = false
+    /// Set when an execution fails, so the failure isn't silent. Presented as an alert by the row.
+    @Published var errorMessage: String?
 
     @Published private(set) var item: MagicItem
     @Published private(set) var itemInfo: MagicItem.Info
@@ -55,6 +57,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     private func executeItemAction() {
+        errorMessage = nil
         state = .loading
         executeMagicItem { [weak self] response in
             DispatchQueue.main.async { [weak self] in
@@ -100,21 +103,35 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             .verbose(
                 "Sending \(InteractiveImmediateMessages.magicItemPressed.rawValue) message \(itemMessage)"
             )
-        Communicator.shared.send(itemMessage, errorHandler: { error in
+        Communicator.shared.send(itemMessage, errorHandler: { [weak self] error in
             Current.Log.error("Received error when sending immediate message \(error)")
+            self?.presentError(error)
             completion(false)
         })
     }
 
     private func executeMagicItemUsingAPI(magicItem: MagicItem, completion: @escaping (Bool) -> Void) {
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
+            presentError(nil)
             completion(false)
             return
         }
         Current.Log.error("Executing watch magic item directly via API")
 
-        magicItem.execute(on: server, source: .Watch) { success in
+        magicItem.execute(on: server, source: .Watch) { [weak self] success, error in
+            if !success {
+                self?.presentError(error)
+            }
             completion(success)
+        }
+    }
+
+    /// Surface a failure to the user instead of letting it fail silently. Uses the underlying
+    /// error's description when available (e.g. a connection / TLS / "no active URL" error).
+    private func presentError(_ error: Error?) {
+        let message = error?.localizedDescription ?? L10n.Watch.Home.Run.Error.message
+        DispatchQueue.main.async { [weak self] in
+            self?.errorMessage = message
         }
     }
 
