@@ -21,7 +21,6 @@ end
 
 plugin 'cocoapods-acknowledgements'
 
-# Alamofire is integrated via Swift Package Manager (see HomeAssistant.xcodeproj), not CocoaPods.
 pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
 pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
