@@ -26,7 +26,6 @@ pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit', '~> 8.1.1'
 pod 'Improv-iOS', '~> 0.0.6'
-pod 'SFSafeSymbols', '~> 5.3'
 
 pod 'RealmSwift'
 pod 'UIColor_Hex_Swift'
