@@ -1,5 +1,4 @@
 PODS:
-  - Alamofire (5.8.1)
   - CallbackURLKit (2.3.0):
     - CallbackURLKit/Core (= 2.3.0)
   - CallbackURLKit/Core (2.3.0)
@@ -64,7 +63,6 @@ PODS:
     - ObjcExceptionBridging
 
 DEPENDENCIES:
-  - Alamofire (~> 5.8)
   - CallbackURLKit
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
@@ -92,7 +90,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Alamofire
     - CallbackURLKit
     - Improv-iOS
     - KeychainAccess
@@ -158,7 +155,6 @@ CHECKOUT OPTIONS:
     :tag: 4.0.9
 
 SPEC CHECKSUMS:
-  Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
@@ -184,6 +180,6 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 02dcc3c2935f2a72aa00c50b9f46b4140a41f2cb
+PODFILE CHECKSUM: 2e2ffc31268592c8a86550e30cbe4972d031e776
 
 COCOAPODS: 1.15.2
