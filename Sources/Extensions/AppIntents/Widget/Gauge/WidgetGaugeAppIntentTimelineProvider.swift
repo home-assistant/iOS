@@ -10,12 +10,33 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Intent = WidgetGaugeAppIntent
 
     func snapshot(for configuration: WidgetGaugeAppIntent, in context: Context) async -> WidgetGaugeEntry {
+        // `context.isPreview` is WidgetKit's hook for the widget gallery, which renders with a
+        // default (unconfigured) configuration. Unlike the other widgets (whose templates default
+        // to "?"), the gauge's value template defaults to 0.0 — a numeric fill that renders as an
+        // empty arc. Return a representative sample for the gallery; live widgets are unaffected.
+        if context.isPreview {
+            return Self.previewSample(for: configuration)
+        }
         do {
             return try await entry(for: configuration, in: context)
         } catch {
             Current.Log.debug("Using placeholder for gauge widget snapshot")
             return placeholder(in: context)
         }
+    }
+
+    static func previewSample(for configuration: WidgetGaugeAppIntent) -> WidgetGaugeEntry {
+        .init(
+            gaugeType: configuration.gaugeType,
+            value: 0.67,
+            valueLabel: "67%",
+            label: nil,
+            min: "0",
+            max: "100",
+            runScript: false,
+            script: nil,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
     }
 
     func timeline(for configuration: WidgetGaugeAppIntent, in context: Context) async -> Timeline<Entry> {

@@ -134,6 +134,10 @@ private struct GaugeArcView: View {
     private static let endLabelRadiusRatio: CGFloat = 0.78
     /// sin(45°) == cos(45°); the arc's open ends are on the bottom diagonals.
     private static let sinCos45: CGFloat = 0.7071
+    /// Nudge the whole composition down (as a fraction of the view's size) so the open-bottom 270°
+    /// arc reads as vertically centered. The arc is top-weighted — its drawn span reaches the top
+    /// but stops short of the bottom — so a centered circle otherwise hugs the top edge.
+    private static let verticalCenteringRatio: CGFloat = 0.07
 
     var body: some View {
         GeometryReader { proxy in
@@ -149,6 +153,7 @@ private struct GaugeArcView: View {
                 endLabels(size: size, lineWidth: lineWidth)
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
+            .offset(y: size * Self.verticalCenteringRatio)
         }
     }
 
