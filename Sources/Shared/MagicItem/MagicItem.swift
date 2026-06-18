@@ -398,7 +398,7 @@ public extension MagicItem {
     /// sockets are denied by NECP policy on real watch devices (see Starscream #957 / Apple DTS thread
     /// 127232) — so it executes via the Home Assistant REST API over `URLSession`, which is the only
     /// networking watchOS reliably supports and which inherits our mTLS client-certificate handling.
-    /// Every other platform executes over the WebSocket connection.
+    /// Other platforms use the existing implementation (webhook / WebSocket depending on item type).
     ///
     /// `currentItemState` is used only for the lock domain, since it can't be toggled.
     func execute(
