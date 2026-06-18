@@ -7,105 +7,85 @@ struct WidgetGaugeView: View {
     @Environment(\.widgetFamily) private var family
     var entry: WidgetGaugeEntry
 
-    /// Intrinsic size (points) of the accessory gauge. That style is Lock-Screen-sized and ignores
-    /// its frame, so on the Home Screen (`.systemSmall`) we scale it up by `tileSize / this`.
+    /// Intrinsic size (points) of the native accessory gauge. That style is Lock-Screen-sized and
+    /// ignores its frame, so on the Home Screen (`.systemSmall`) we scale it up by `tileSize / this`.
     private static let accessoryCircularIntrinsicSize: CGFloat = 74
-    /// Inset around the gauge within the `.systemSmall` tile. Shared by both the custom arc and the
-    /// native capacity gauge, so adjusting it scales every style by the same factor — they stay the
-    /// same size relative to each other.
+    /// Inset around the gauge within the `.systemSmall` tile. Shared by the custom arc and the native
+    /// capacity gauge, so adjusting it scales every style by the same factor — they stay the same
+    /// size relative to each other.
     private static let systemSmallPadding: CGFloat = 10
+    /// Scale the frame-filling arc down so it matches the native accessory gauge's footprint (used by
+    /// `.capacity`) on the Home Screen, where the accessory style is scaled up into the larger tile.
+    /// A ratio (not a fixed inset), so the match holds across tile sizes.
+    private static let arcScale: CGFloat = 0.72
+    /// On the Lock Screen the arc fills its accessory frame edge-to-edge, which the system's circular
+    /// mask would clip and which is larger than the native gauge. Inset it to the native footprint so
+    /// it stays within the circular safe area and matches the `.capacity` style.
+    private static let accessoryArcScale: CGFloat = 0.73
 
     var body: some View {
-        switch family {
-        case .systemSmall:
-            homeScreen
-        default:
-            // The Lock Screen (and other accessory families) keep the system's native accessory
-            // gauge — the partial-fill treatment is Home-Screen-only for now.
-            nativeGauge
-        }
-    }
-
-    /// On the Home Screen, `.normal` and `.singleLabel` draw a partial-fill arc (tint over `0…value`
-    /// with a dim track). `.capacity` keeps the native style, which already fills `0…value` itself.
-    @ViewBuilder private var homeScreen: some View {
         switch entry.gaugeType {
         case .normal:
-            styledArc(GaugeArcView(
+            arc(GaugeArcView(
                 value: entry.value,
                 centerLabel: entry.valueLabel,
                 minLabel: entry.min,
                 maxLabel: entry.max
             ))
         case .singleLabel:
-            styledArc(GaugeArcView(
+            arc(GaugeArcView(
                 value: entry.value,
                 centerLabel: entry.valueLabel,
                 topLabel: entry.label
             ))
         case .capacity:
-            scaledNativeGauge
+            capacity
         }
     }
 
-    /// Scale the frame-filling arc down so it matches the native accessory gauge's footprint (used
-    /// by `.capacity`), keeping every gauge style the same size on the Home Screen. The accessory
-    /// gauge insets its ring within the tile; the custom arc otherwise fills it ~1.4× larger. This
-    /// is a ratio (not a fixed inset), so the match holds across tile sizes.
-    private static let arcScale: CGFloat = 0.72
+    /// The partial-fill arc (`.normal` / `.singleLabel`), styled per family. On the Home Screen it's
+    /// scaled to the native footprint, padded, and brand-tinted (full color). On the Lock Screen it
+    /// fills the accessory frame and inherits the system tint, so the bright-fill / dim-track band
+    /// survives the monochrome vibrant rendering.
+    @ViewBuilder private func arc(_ gauge: some View) -> some View {
+        switch family {
+        case .systemSmall:
+            gauge
+                .scaleEffect(Self.arcScale)
+                .padding(Self.systemSmallPadding)
+                .tint(Color.haPrimary)
+        default:
+            gauge
+                .scaleEffect(Self.accessoryArcScale)
+        }
+    }
 
-    /// Pads the frame-filling arc within the tile and tints it with the brand color (the Home Screen
-    /// renders full-color, so the fill would otherwise be black).
-    private func styledArc(_ gauge: some View) -> some View {
-        gauge
-            .scaleEffect(Self.arcScale)
+    /// `.capacity` keeps the native gauge on both surfaces; on the Home Screen it's scaled up to fill
+    /// the square tile. Widgets render to a static image, so the scaled strokes/text stay crisp;
+    /// `scaleEffect` ignores layout bounds, hence `.clipped()` to guard against bleed.
+    @ViewBuilder private var capacity: some View {
+        switch family {
+        case .systemSmall:
+            GeometryReader { proxy in
+                nativeCapacityGauge
+                    .scaleEffect(min(proxy.size.width, proxy.size.height) / Self.accessoryCircularIntrinsicSize)
+                    .frame(width: proxy.size.width, height: proxy.size.height)
+            }
+            .clipped()
             .padding(Self.systemSmallPadding)
             .tint(Color.haPrimary)
+        default:
+            nativeCapacityGauge
+        }
     }
 
-    /// The native accessory gauge has a fixed Lock-Screen intrinsic size and won't grow on its own,
-    /// so on the Home Screen it's scaled up to fill the square tile. Widgets render to a static
-    /// image, so the scaled strokes/text stay crisp; `scaleEffect` ignores layout bounds, hence
-    /// `.clipped()` to guard against bleed.
-    private var scaledNativeGauge: some View {
-        GeometryReader { proxy in
-            nativeGauge
-                .scaleEffect(min(proxy.size.width, proxy.size.height) / Self.accessoryCircularIntrinsicSize)
-                .frame(width: proxy.size.width, height: proxy.size.height)
+    private var nativeCapacityGauge: some View {
+        Gauge(value: entry.value) {
+            placeholderText(entry.valueLabel)
+        } currentValueLabel: {
+            placeholderText(entry.valueLabel)
         }
-        .clipped()
-        .padding(Self.systemSmallPadding)
-        .tint(Color.haPrimary)
-    }
-
-    @ViewBuilder private var nativeGauge: some View {
-        switch entry.gaugeType {
-        case .normal:
-            Gauge(value: entry.value) {
-                placeholderText(entry.valueLabel)
-            } currentValueLabel: {
-                placeholderText(entry.valueLabel)
-            } minimumValueLabel: {
-                placeholderText(entry.min)
-            } maximumValueLabel: {
-                placeholderText(entry.max)
-            }
-            .gaugeStyle(.accessoryCircular)
-        case .singleLabel:
-            Gauge(value: entry.value) {
-                placeholderText(entry.label)
-            } currentValueLabel: {
-                placeholderText(entry.valueLabel)
-            }
-            .gaugeStyle(.accessoryCircular)
-        case .capacity:
-            Gauge(value: entry.value) {
-                placeholderText(entry.valueLabel)
-            } currentValueLabel: {
-                placeholderText(entry.valueLabel)
-            }
-            .gaugeStyle(.accessoryCircularCapacity)
-        }
+        .gaugeStyle(.accessoryCircularCapacity)
     }
 
     @ViewBuilder private func placeholderText(_ text: String?) -> some View {
@@ -119,7 +99,8 @@ struct WidgetGaugeView: View {
 }
 
 /// A circular gauge whose tinted arc fills only `0…value`, leaving the remainder as a dim track —
-/// matching Apple's Batteries widget. Used on the full-color Home Screen.
+/// matching Apple's Batteries widget. Used on both the Home Screen (full color) and the Lock Screen,
+/// where the system's vibrant rendering keeps the bright-fill / dim-track band in monochrome.
 @available(iOS 17.0, *)
 private struct GaugeArcView: View {
     /// Gauge value in `0…1`.

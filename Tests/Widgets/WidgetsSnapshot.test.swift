@@ -74,6 +74,33 @@ struct WidgetsSnapshotTests {
     }
 
     @available(iOS 18, *)
+    @MainActor @Test func gaugeWidgetAccessoryCircularSnapshot() {
+        assertGaugeSnapshot(
+            gaugeType: .normal,
+            min: "0",
+            max: "100",
+            family: .accessoryCircular
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func gaugeWidgetAccessoryCircularSingleLabelSnapshot() {
+        assertGaugeSnapshot(
+            gaugeType: .singleLabel,
+            label: "Battery",
+            family: .accessoryCircular
+        )
+    }
+
+    @available(iOS 18, *)
+    @MainActor @Test func gaugeWidgetAccessoryCircularCapacitySnapshot() {
+        assertGaugeSnapshot(
+            gaugeType: .capacity,
+            family: .accessoryCircular
+        )
+    }
+
+    @available(iOS 18, *)
     @MainActor private func assertGaugeSnapshot(
         gaugeType: GaugeTypeAppEnum,
         label: String? = nil,
@@ -118,6 +145,8 @@ struct WidgetsSnapshotTests {
             CGSize(width: 350, height: 160)
         case .systemLarge:
             CGSize(width: 350, height: 310)
+        case .accessoryCircular:
+            CGSize(width: 72, height: 72)
         default:
             CGSize(width: 600, height: 600)
         }
