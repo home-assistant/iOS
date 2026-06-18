@@ -44,8 +44,8 @@ struct WidgetGaugeView: View {
     }
 
     /// The partial-fill arc (`.normal` / `.singleLabel`), styled per family. On the Home Screen it's
-    /// scaled to the native footprint, padded, and brand-tinted (full color). On the Lock Screen it
-    /// fills the accessory frame and inherits the system tint, so the bright-fill / dim-track band
+    /// scaled to the native footprint, padded, and brand-tinted (full color). On the Lock Screen it's
+    /// inset to the native footprint and inherits the system tint, so the bright-fill / dim-track band
     /// survives the monochrome vibrant rendering.
     @ViewBuilder private func arc(_ gauge: some View) -> some View {
         switch family {
