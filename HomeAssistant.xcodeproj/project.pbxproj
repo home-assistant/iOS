@@ -898,6 +898,7 @@
 		42A1F0B42E000000000000B4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A42E000000000000A4 /* Alamofire */; };
 		42A1F0B52E000000000000B5 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A52E000000000000A5 /* Alamofire */; };
 		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
+		42A1F0B72E000000000000B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A72E000000000000A7 /* Alamofire */; };
 		42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2AB7F2C80751E00C5608D /* ControlAssist.swift */; };
 		42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A32F372EEA393700B323F1 /* CarPlayLockConfirmation.swift */; };
 		42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
@@ -3708,6 +3709,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */,
+				42A1F0B72E000000000000B7 /* Alamofire in Frameworks */,
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				403FFD6242C8A6021379C555 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */,
@@ -7978,6 +7980,7 @@
 			packageProductDependencies = (
 				E516764DF55905E4F0FE2003 /* GRDB */,
 				CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */,
+				42A1F0A72E000000000000A7 /* Alamofire */,
 			);
 			productName = "WatchApp Extension";
 			productReference = B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */;
@@ -12558,6 +12561,11 @@
 			productName = Alamofire;
 		};
 		42A1F0A62E000000000000A6 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		42A1F0A72E000000000000A7 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
