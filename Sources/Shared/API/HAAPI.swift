@@ -92,18 +92,7 @@ public class HomeAssistantAPI {
         Current.Log.info("[mTLS] Has client certificate: \(server.info.connection.clientCertificate != nil)")
         Current.Log.info("[mTLS] Has security exceptions: \(server.info.connection.securityExceptions.hasExceptions)")
 
-        let hakitURLSession: URLSession
-        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
-            // Use HAKit's certificate provider protocol
-            Current.Log.info("[mTLS] Using HAKit certificate provider")
-            let certificateProvider = HomeAssistantCertificateProvider(server: server)
-            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
-            let configuration = URLSessionConfiguration.ephemeral
-            hakitURLSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
-        } else {
-            Current.Log.info("[mTLS] Using default URLSession for HAKit")
-            hakitURLSession = URLSession(configuration: .ephemeral)
-        }
+        let hakitURLSession = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
 
         let underlyingConnection = HAKit.connection(
             configuration: .init(
@@ -179,6 +168,21 @@ public class HomeAssistantAPI {
         removeOldDownloadDirectory()
 
         Current.sensors.register(observer: self)
+    }
+
+    /// Builds a `URLSession` that presents this server's client certificate and honors its security
+    /// exceptions (mTLS), or a plain ephemeral session when neither is configured. Reused by HAKit's
+    /// REST calls and, on watchOS, by direct REST execution (where WebSocket transport is unavailable).
+    static func makeCertificateAwareURLSession(server: Server) -> URLSession {
+        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
+            Current.Log.info("[mTLS] Using HAKit certificate provider")
+            let certificateProvider = HomeAssistantCertificateProvider(server: server)
+            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
+            return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+        } else {
+            Current.Log.info("[mTLS] Using default URLSession for HAKit")
+            return URLSession(configuration: .ephemeral)
+        }
     }
 
     convenience init?() {
