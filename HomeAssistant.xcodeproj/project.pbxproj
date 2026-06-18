@@ -1215,6 +1215,7 @@
 		504A2C862F8133E6002A3C0E /* CarPlayTabsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504A2C852F8133E6002A3C0E /* CarPlayTabsSelectionView.swift */; };
 		51B609B13F56C4F17CEF2BE4 /* KioskConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */; };
 		54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */; };
+		577142E05D7B54FFFEB61CED /* WidgetGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */; };
 		58213D5B1792311CD4CA261D /* Pods_iOS_Extensions_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6DA82FEEE2DDC3B2CC20DA3 /* Pods_iOS_Extensions_NotificationService.framework */; };
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
 		5D4737422F241342009A70EA /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4737412F241342009A70EA /* FolderDetailView.swift */; };
@@ -1561,6 +1562,7 @@
 		D234820A53471DE7B485A445 /* Pods_Tests_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA48C686F844D08C426A8D74 /* Pods_Tests_App.framework */; };
 		D46379541BA5FD96D6E7D328 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402432B9CC897C6278B08A79 /* KioskSettings.swift */; };
 		D6F87818FFB55C006563EBBB /* RealmResultsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208A5362BE60377368ACB1D6 /* RealmResultsObserver.swift */; };
+		D73456479437738B202696E1 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9112C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift */; };
 		D87EC7A89E0515C4CAB93220 /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
 		D8B4F2A61E9C73058AF2D49E /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A3E91F5B8D42A6E0F13B74 /* KioskSettingsViewModel.swift */; };
 		D9A6697AF4D05BB8DE822A54 /* Pods_iOS_Extensions_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CA7FF55788E7084DA5E4B3 /* Pods_iOS_Extensions_Share.framework */; };
@@ -9700,6 +9702,8 @@
 				D6F87818FFB55C006563EBBB /* RealmResultsObserver.swift in Sources */,
 				8411EA28D9F5FEF26D01A39E /* CameraZoomGestureOverlay.swift in Sources */,
 				D9BF1EFF40733A4A1D03B9C8 /* CustomWidgetIntentHelper.swift in Sources */,
+				577142E05D7B54FFFEB61CED /* WidgetGaugeView.swift in Sources */,
+				D73456479437738B202696E1 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
