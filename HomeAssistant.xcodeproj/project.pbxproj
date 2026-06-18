@@ -23,12 +23,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		A23A4D2702C94EF9B6296171 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7FBFE016210544989AFC7F64 /* SFSafeSymbols */; };
-		50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = EBD991757B454B819925F6B9 /* SFSafeSymbols */; };
-		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
-		9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */; };
-		223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */; };
-		13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C8FA7E5B23954D258050DD72 /* SFSafeSymbols */; };
 		00345F0517E14EC186DFB25D /* TestFlightCommunicationEngine.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */; };
 		00C267608DCC88B783816CBF /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
 		01783C74005B40978CE7508B /* NotificationIdentifierField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC7EF1136575D0E7A17091 /* NotificationIdentifierField.swift */; };
@@ -446,6 +440,7 @@
 		12D447D93F82395EF40487B5 /* Pods-iOS-Shared-iOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = ADC769271BB34C474C2D1E24 /* Pods-iOS-Shared-iOS-metadata.plist */; };
 		12FC58D695EB7AF41673476E /* WebViewController+Kiosk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A39058730A6B3E876D8848 /* WebViewController+Kiosk.swift */; };
 		13A43381205AA9A649AFA8E5 /* YamlPreviewSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B833A17275EC47FA65A3235A /* YamlPreviewSection.swift */; };
+		13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C8FA7E5B23954D258050DD72 /* SFSafeSymbols */; };
 		14A4AE0E492F4BADB1E8A3CA /* TestFlightCommunicationCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666F733264F8449E8E7CB985 /* TestFlightCommunicationCatalog.swift */; };
 		177E4B39B7BA296CCB68A27D /* Pods-iOS-Extensions-Widgets-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6723A4E97E50C3C9141428D0 /* Pods-iOS-Extensions-Widgets-metadata.plist */; };
 		19F4C1F65664780F4E721699 /* KioskClockScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D793A057CBFD32530A7193 /* KioskClockScreensaverView.swift */; };
@@ -454,6 +449,7 @@
 		1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */; };
 		1E9DE26E93988560ACF01A4A /* NotificationCategoryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C700605E488301BAD78A5B27 /* NotificationCategoryEditorView.swift */; };
 		21316D8EAC0226B0CD48FF30 /* Pods_iOS_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22F619E232C3F0E98A9346D /* Pods_iOS_App.framework */; };
+		223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */; };
 		2281600CB792D88059A71F4C /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00AE2FDC80CA2FFDFCA2B2B /* KioskModeManager.swift */; };
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
 		26FD843EADBEDFCBBB44D612 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 3932B484D8AF4C056AB1A84D /* GRDB */; };
@@ -1220,6 +1216,7 @@
 		494DBDBB52DF51EA226CF9FC /* NotificationCategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6ACBDCC2C47510C37E4C8 /* NotificationCategoryListView.swift */; };
 		498C0EF747C141F3E3204BBE /* ComplicationListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862436CFE6E3F4B31500EFB2 /* ComplicationListViewModel.swift */; };
 		5002BDAF2FEE000100BEEF01 /* WhatsNewEngine.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5002BDAE2FEE000100BEEF01 /* WhatsNewEngine.test.swift */; };
+		50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = EBD991757B454B819925F6B9 /* SFSafeSymbols */; };
 		504A2C862F8133E6002A3C0E /* CarPlayTabsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504A2C852F8133E6002A3C0E /* CarPlayTabsSelectionView.swift */; };
 		51B609B13F56C4F17CEF2BE4 /* KioskConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825E1E44BA9ABF1BF53733D3 /* KioskConstants.swift */; };
 		54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */; };
@@ -1253,8 +1250,10 @@
 		94802EABC64FDEEC9F875310 /* CallServiceResponse.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */; };
 		95DBCBEFC224D24AD4122119 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = AA067465CCE282820A8F106C /* GRDB */; };
 		999549244371450BC98C700E /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 608CFDA223EBCDF01B946093 /* Pods_iOS_Extensions_PushProvider.framework */; };
+		9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */; };
 		9D57ECBD5431BC00BDC16F1E /* NotificationActionEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F913E441276235B7A2D7B29 /* NotificationActionEditorView.swift */; };
 		A1619F1ED93FB8B0E7E53C38 /* KioskLifecycleBrightness.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373AE72CB925F044BAE18B62 /* KioskLifecycleBrightness.test.swift */; };
+		A23A4D2702C94EF9B6296171 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7FBFE016210544989AFC7F64 /* SFSafeSymbols */; };
 		A2F3A140CDD1EF1AEA6DFAB9 /* DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* DatabaseTableProtocol.test.swift */; };
 		A47A58B70C53DADB13857F23 /* WhatsNewEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5ACE5BCADFD9765F5283BF7 /* WhatsNewEngine.swift */; };
 		A596C4D1E125E6863C7D2034 /* ComplicationEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512A72C5F1BCC979E74F7629 /* ComplicationEditViewModel.swift */; };
@@ -1580,7 +1579,9 @@
 		D9BF1EFF40733A4A1D03B9C8 /* CustomWidgetIntentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7FF77B68D19A4AD68F8FE3 /* CustomWidgetIntentHelper.swift */; };
 		DA6F4C18D66EDBA5DCEAE833 /* DatabaseMigration.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F0EF22A0B9F20AAEE4CCA /* DatabaseMigration.test.swift */; };
 		DB54626ADCE0C32094C8C0B9 /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFD0D30836C69840AB63A8A /* LoadingButton.swift */; };
+		DE8048842D9FB6C90459E229 /* QuickActionWindowSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */; };
 		DEFBE1A5E9A005B0A5392D27 /* KioskLocalization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4593A60DBF019E6C91AAA7 /* KioskLocalization.test.swift */; };
+		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		E3A02409794174F002C8BB4F /* IconSearchPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC23DE131CA8813C2DBD657 /* IconSearchPicker.swift */; };
 		E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */; };
 		E92E09E3A93650D56E3C5093 /* KioskScreensaverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CDCFDB29D283A7902A3ABE /* KioskScreensaverViewController.swift */; };
@@ -1604,7 +1605,6 @@
 		FA11C0DE0000000000000061 /* MockAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000060 /* MockAppCoordinator.swift */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
 		FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */; };
-		DE8048842D9FB6C90459E229 /* QuickActionWindowSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */; };
 		FD3BC66C29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */; };
 		FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */; };
 		FE626519D14570FF70598F85 /* Pods_iOS_Extensions_Matter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02DC1D2083B5FBC480E4C51D /* Pods_iOS_Extensions_Matter.framework */; };
@@ -2247,6 +2247,7 @@
 		14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationEngine.test.swift; sourceTree = "<group>"; };
 		1861EB0361816DC9260D1F5E /* ComplicationFamilySelectView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ComplicationFamilySelectView.swift; sourceTree = "<group>"; };
 		1945E8E386664E5A88668E77 /* WebViewController+ReAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+ReAuth.swift"; sourceTree = "<group>"; };
+		1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionWindowSceneDelegate.swift; sourceTree = "<group>"; };
 		1BAC899D24EB43716158A4F8 /* Pods-iOS-Extensions-NotificationContent.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.beta.xcconfig"; sourceTree = "<group>"; };
 		1FAFCDC6866E158B337576C2 /* Pods-iOS-Extensions-Share.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Share.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Share/Pods-iOS-Extensions-Share.debug.xcconfig"; sourceTree = "<group>"; };
 		1FF3A67FB1C2B548C6C7730C /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3523,7 +3524,6 @@
 		FCE1C6F8FA2181C936758465 /* KioskSecretExitGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSecretExitGestureView.swift; sourceTree = "<group>"; };
 		FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
-		1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionWindowSceneDelegate.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 		FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListTemplate.swift; sourceTree = "<group>"; };
 		FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListTemplate.swift; sourceTree = "<group>"; };
@@ -12455,20 +12455,20 @@
 				minimumVersion = 1.15.0;
 			};
 		};
-		CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/groue/GRDB.swift.git";
-			requirement = {
-				kind = exactVersion;
-				version = 7.8.0;
-			};
-		};
 		5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.3.0;
+			};
+		};
+		CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 7.8.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -12488,6 +12488,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
+		};
+		294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
 		};
 		3932B484D8AF4C056AB1A84D /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12606,6 +12611,11 @@
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
+		7FBFE016210544989AFC7F64 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
 		8BF085C5243838861E8635E7 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
@@ -12631,6 +12641,21 @@
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
+		C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+		C8FA7E5B23954D258050DD72 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+		CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
 		D615F032BC3C6F39F533EA25 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
@@ -12642,31 +12667,6 @@
 			productName = GRDB;
 		};
 		EBD991757B454B819925F6B9 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		C8FA7E5B23954D258050DD72 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		7FBFE016210544989AFC7F64 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
