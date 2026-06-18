@@ -5,7 +5,7 @@ import SFSafeSymbols
 import Shared
 
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
-struct IntentSceneEntity: AppEntity {
+struct IntentSceneEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Scene")
 
     static let defaultQuery = IntentSceneAppEntityQuery()
@@ -21,17 +21,7 @@ struct IntentSceneEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
-        )
-    }
-
-    private var subtitle: String? {
-        EntityContextSubtitle.make(
-            areaName: areaName,
-            deviceName: deviceName,
-            entityName: displayString,
-            entityId: entityId,
-            domain: Domain(entityId: entityId)
+            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
     }
 

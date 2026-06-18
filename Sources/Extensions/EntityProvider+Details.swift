@@ -57,6 +57,36 @@ public enum EntityContextSubtitle {
     }
 }
 
+/// A type that carries enough about an entity to render the shared context line (`Area • Device`).
+///
+/// Conformers get `contextSubtitle` for free, so every AppIntent entity / picker row produces the
+/// exact same context — there's no per-type reimplementation to drift out of sync. The formatting
+/// itself still lives in `EntityContextSubtitle.make` (the single source of truth); this protocol is
+/// just the shared, hard-to-get-wrong way to call it.
+public protocol EntityContextRepresentable {
+    /// The entity id (e.g. `light.kitchen`). Also used to derive the domain.
+    var entityId: String { get }
+    /// The entity's resolved display name.
+    var displayString: String { get }
+    /// The area the entity belongs to, if known.
+    var areaName: String? { get }
+    /// The device the entity belongs to, if known.
+    var deviceName: String? { get }
+}
+
+public extension EntityContextRepresentable {
+    /// The shared `Area • Device` context line for this entity. See `EntityContextSubtitle.make`.
+    var contextSubtitle: String? {
+        EntityContextSubtitle.make(
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
+    }
+}
+
 public extension HAAppEntity {
     var area: AppArea? {
         do {
