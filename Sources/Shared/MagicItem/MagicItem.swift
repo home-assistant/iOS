@@ -156,12 +156,24 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public let name: String
         public let iconName: String
         public let customization: Customization?
+        /// Optional secondary "context" line shown under the name on configuration screens
+        /// (`[Server • ]Area • Device`). `nil` when there's nothing meaningful to show, or for item
+        /// types without entity context (folders, assist pipelines/prompts). Populated by
+        /// `MagicItemProvider.getInfo`; not used when rendering the item itself on a widget/watch face.
+        public let contextSubtitle: String?
 
-        public init(id: String, name: String, iconName: String, customization: Customization? = nil) {
+        public init(
+            id: String,
+            name: String,
+            iconName: String,
+            customization: Customization? = nil,
+            contextSubtitle: String? = nil
+        ) {
             self.id = id
             self.name = name
             self.iconName = iconName
             self.customization = customization
+            self.contextSubtitle = contextSubtitle
         }
     }
 
