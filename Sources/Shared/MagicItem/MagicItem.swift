@@ -398,7 +398,8 @@ public extension MagicItem {
     /// sockets are denied by NECP policy on real watch devices (see Starscream #957 / Apple DTS thread
     /// 127232) — so it executes via the Home Assistant REST API over `URLSession`, which is the only
     /// networking watchOS reliably supports and which inherits our mTLS client-certificate handling.
-    /// Other platforms use the existing implementation (webhook / WebSocket depending on item type).
+    /// Every other platform executes through the existing `HomeAssistantAPI` paths: scripts and scenes
+    /// via the webhook API (`CallService`) and entity/lock actions over the WebSocket connection.
     ///
     /// `currentItemState` is used only for the lock domain, since it can't be toggled.
     func execute(
@@ -647,7 +648,13 @@ public extension MagicItem {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
-        request.httpBody = try? JSONSerialization.data(withJSONObject: serviceCall.data, options: [])
+        // Surface (rather than silently drop) encoding failures before starting the request.
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: serviceCall.data, options: [])
+        } catch {
+            completion(false, error)
+            return
+        }
 
         Current.Log.info("Executing magic item \(id) via REST: POST \(url.absoluteString)")
 
