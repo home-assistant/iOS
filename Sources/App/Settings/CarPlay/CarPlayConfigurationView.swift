@@ -235,7 +235,9 @@ struct CarPlayConfigurationView: View {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .accent))
             VStack(alignment: .leading, spacing: 2) {
                 Text(title(for: item, info: info))
-                if let subtitle = subtitle(for: item) {
+                // Assist-prompt items show their prompt text; everything else shows the
+                // Server • Area • Device context line.
+                if let subtitle = subtitle(for: item) ?? info.contextSubtitle {
                     Text(subtitle)
                         .font(.caption)
                         .foregroundStyle(.secondary)

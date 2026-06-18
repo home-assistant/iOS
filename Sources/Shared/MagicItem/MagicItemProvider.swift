@@ -11,6 +11,10 @@ public protocol MagicItemProviderProtocol {
 
 final class MagicItemProvider: MagicItemProviderProtocol {
     var entitiesPerServer: [String: [HAAppEntity]] = [:]
+    /// Per-server entity→area and entity→device lookups, built once when entities are loaded so
+    /// `getInfo` can attach the "Server • Area • Device" context line without a DB read per item.
+    private var areasPerServer: [String: [String: AppArea]] = [:]
+    private var devicesPerServer: [String: [String: AppDeviceRegistry]] = [:]
 
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
         loadAppEntities { [weak self] in
@@ -148,12 +152,18 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
         servers.forEach { [weak self] server in
             do {
+                let serverId = server.identifier.rawValue
                 let entities: [HAAppEntity] = try Current.database().read { db in
                     try HAAppEntity
-                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
                         .fetchAll(db)
                 }
-                self?.entitiesPerServer[server.identifier.rawValue] = entities
+                self?.entitiesPerServer[serverId] = entities
+                // Build the entity→area / entity→device lookups once per server (each is a small,
+                // fixed number of DB reads) so `getInfo` can attach the context line per item without
+                // a per-item database read.
+                self?.areasPerServer[serverId] = entities.areasMap(for: serverId)
+                self?.devicesPerServer[serverId] = entities.devicesMap(for: serverId)
             } catch {
                 Current.Log.error("Failed to load covers from database: \(error.localizedDescription)")
             }
@@ -182,7 +192,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 id: scriptItem.id,
                 name: scriptItem.name,
                 iconName: scriptItem.icon ?? MaterialDesignIcons.scriptIcon.name,
-                customization: item.customization
+                customization: item.customization,
+                contextSubtitle: entityContextSubtitle(for: scriptItem)
             )
         case .scene:
             guard let scenesForServer = entitiesPerServer[item.serverId]?
@@ -199,7 +210,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 id: sceneItem.id,
                 name: sceneItem.name,
                 iconName: sceneItem.icon ?? MaterialDesignIcons.paletteIcon.name,
-                customization: item.customization
+                customization: item.customization,
+                contextSubtitle: entityContextSubtitle(for: sceneItem)
             )
         case .entity:
             guard let entitiesForServer = entitiesPerServer[item.serverId],
@@ -217,7 +229,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 iconName: entityItem.icon ??
                     Domain(rawValue: entityItem.domain)?.icon(deviceClass: entityItem.rawDeviceClass).name ??
                     MaterialDesignIcons.dotsGridIcon.name,
-                customization: item.customization
+                customization: item.customization,
+                contextSubtitle: entityContextSubtitle(for: entityItem)
             )
         case .folder:
             return .init(
@@ -261,6 +274,23 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
 
         return nil
+    }
+
+    /// Builds the "Server • Area • Device" context line for an entity-backed item, reusing the
+    /// per-server maps built in `loadAppEntities` (no per-item DB read). The server segment is only
+    /// included when more than one server is configured, matching the entity picker.
+    private func entityContextSubtitle(for entity: HAAppEntity) -> String? {
+        let serverName = Current.servers.all.count > 1
+            ? Current.servers.server(for: .init(rawValue: entity.serverId))?.info.name
+            : nil
+        return EntityContextSubtitle.make(
+            serverName: serverName,
+            areaName: areasPerServer[entity.serverId]?[entity.entityId]?.name,
+            deviceName: devicesPerServer[entity.serverId]?[entity.entityId]?.name,
+            entityName: entity.name,
+            entityId: entity.entityId,
+            domain: Domain(rawValue: entity.domain)
+        )
     }
 
     private func normalizeCarPlayItems(_ items: [MagicItem]) -> [MagicItem] {

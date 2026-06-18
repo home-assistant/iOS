@@ -1443,6 +1443,8 @@
 "watch.home.cancel_and_use_cache.title" = "Ακύρωση και χρήση μνήμης cache";
 "watch.home.loading.skip.title" = "Παράλειψη";
 "watch.home.run.confirmation.title" = "Θέλετε σίγουρα να εκτελέσετε το \"%@\";";
+"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
+"watch.home.run.error.title" = "Couldn't run action";
 "watch.labels.complication_group.circular_small.description" = "Χρησιμοποιήστε κυκλικές μικρές σύνθετες πληροφορίες για την εμφάνιση περιεχομένου στις γωνίες της χρωματικής πρόσοψης ρολογιού.";
 "watch.labels.complication_group.circular_small.name" = "Κυκλικό μικρό";
 "watch.labels.complication_group.extra_large.description" = "Χρησιμοποιήστε τις πολύ μεγάλες σύνθετες πληροφορίες για να εμφανίσετε περιεχόμενο στις όψεις ρολογιών X-Large.";

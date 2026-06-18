@@ -1443,6 +1443,8 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "watch.home.cancel_and_use_cache.title" = "Annulla e usa la cache";
 "watch.home.loading.skip.title" = "Salta";
 "watch.home.run.confirmation.title" = "Sei sicuro di voler eseguire \"%@\"?";
+"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
+"watch.home.run.error.title" = "Couldn't run action";
 "watch.labels.complication_group.circular_small.description" = "Usa piccole complicazioni circolari per visualizzare il contenuto negli angoli del quadrante a colori.";
 "watch.labels.complication_group.circular_small.name" = "Circolare Piccolo";
 "watch.labels.complication_group.extra_large.description" = "Usa le complicazioni extra large per visualizzare i contenuti sul quadrante X-Large.";

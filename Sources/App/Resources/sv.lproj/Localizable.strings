@@ -1438,6 +1438,8 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.home.cancel_and_use_cache.title" = "Avbryt och använd cache";
 "watch.home.loading.skip.title" = "Hoppa över";
 "watch.home.run.confirmation.title" = "Är du säker på att du vill köra \"%@\"?";
+"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
+"watch.home.run.error.title" = "Couldn't run action";
 "watch.labels.complication_group.circular_small.description" = "Använd cirkulära små komplikationer för att visa innehåll i hörnen av urtavlan Färger.";
 "watch.labels.complication_group.circular_small.name" = "Cirkulär liten";
 "watch.labels.complication_group.extra_large.description" = "Använd de extra stora komplikationerna för att visa innehåll på X-Large-urtavlorna.";

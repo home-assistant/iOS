@@ -1442,6 +1442,8 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "watch.home.cancel_and_use_cache.title" = "Mégse és gyorsítótár használata";
 "watch.home.loading.skip.title" = "Kihagyás";
 "watch.home.run.confirmation.title" = "Biztosan futtatni szeretné: \"%@\"?";
+"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
+"watch.home.run.error.title" = "Couldn't run action";
 "watch.labels.complication_group.circular_small.description" = "Használj kör alakú kis modulokat a tartalom megjelenítéséhez a színes órafelület sarkában.";
 "watch.labels.complication_group.circular_small.name" = "Kör alakú kicsi";
 "watch.labels.complication_group.extra_large.description" = "Használj extra nagy modulokat a tartalom megjelenítéséhez az X-Large órafelületeken.";
