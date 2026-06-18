@@ -4202,11 +4202,11 @@ public enum L10n {
         }
       }
     }
-    public enum MacNativeFeatures {
-      /// This will open Safari instead of the App webview, while keeping the native features such as widgets working.
-      public static var footer: String { return L10n.tr("Localizable", "settings_details.mac_native_features.footer") }
-      /// Native Features Only (Experimental)
-      public static var title: String { return L10n.tr("Localizable", "settings_details.mac_native_features.title") }
+    public enum MacOpenInBrowser {
+      /// Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.
+      public static var footer: String { return L10n.tr("Localizable", "settings_details.mac_open_in_browser.footer") }
+      /// Open Home Assistant UI in browser
+      public static var title: String { return L10n.tr("Localizable", "settings_details.mac_open_in_browser.title") }
     }
     public enum Notifications {
       /// Use the mobile_app notify service to send notifications to your device.

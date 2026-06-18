@@ -2,28 +2,43 @@ import PromiseKit
 import Shared
 import UIKit
 
-/// Minimal scene delegate whose sole responsibility is forwarding Home-screen quick actions
-/// (app-icon shortcuts / `UIApplicationShortcutItem`) into `IncomingURLHandler.handle(shortcutItem:)`.
+/// Scene delegate for the primary `"WebView"` scene under the SwiftUI `App` lifecycle. It covers two
+/// behaviours the SwiftUI lifecycle cannot express on its own:
 ///
-/// Under the SwiftUI `App` lifecycle the app-delegate-level `application(_:performActionFor:)`
-/// is never called, so quick actions must be received at the scene level. This delegate is attached
-/// to the `"WebView"` scene configuration in `AppDelegate.application(_:configurationForConnecting:options:)`.
+/// 1. Forwarding Home-screen quick actions (app-icon shortcuts / `UIApplicationShortcutItem`) into
+///    `IncomingURLHandler.handle(shortcutItem:)`. The app-delegate-level `application(_:performActionFor:)`
+///    is never called under the SwiftUI lifecycle, so quick actions must be received at the scene level.
+/// 2. Honouring the Mac "Open Home Assistant UI in browser" setting (`macNativeFeaturesOnly`): on a plain
+///    app-icon launch it opens Home Assistant in the user's default browser and destroys the otherwise-empty
+///    webview window.
 ///
-/// It deliberately does **not** create or own a `UIWindow` — SwiftUI's `WindowGroup` (see `HAApp`)
-/// keeps hosting `ContainerView`. Adding this delegate must not change scene/window setup, only route
-/// the shortcut item, mirroring how `HAApp` re-wires `.onOpenURL` via the same `appCoordinator` bridge.
+/// Both behaviours previously lived in the now-removed `WebViewSceneDelegate`. This delegate is attached to
+/// the `"WebView"` scene configuration in `AppDelegate.application(_:configurationForConnecting:options:)`.
+/// In the normal (non-browser) case it does not create or own a `UIWindow` — SwiftUI's `WindowGroup`
+/// (see `HAApp`) keeps hosting `ContainerView`.
 final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        // Cold launch: the app was launched by tapping a quick action.
+        guard let windowScene = scene as? UIWindowScene else { return }
+
+        // Cold launch via a quick action: the app was launched by tapping an app-icon shortcut.
         // This getter does not exist on macOS 10.15, so check that it responds before accessing it.
-        guard let windowScene = scene as? UIWindowScene,
-              connectionOptions.responds(to: #selector(getter: UIScene.ConnectionOptions.shortcutItem)),
-              let shortcutItem = connectionOptions.shortcutItem else { return }
-        self.windowScene(windowScene, performActionFor: shortcutItem, completionHandler: { _ in })
+        if connectionOptions.responds(to: #selector(getter: UIScene.ConnectionOptions.shortcutItem)),
+           let shortcutItem = connectionOptions.shortcutItem {
+            self.windowScene(windowScene, performActionFor: shortcutItem, completionHandler: { _ in })
+            return
+        }
+
+        // "Open Home Assistant UI in browser" (Mac): when the app is opened by tapping its icon, open
+        // Home Assistant in the default browser and destroy the empty webview window so none is left behind.
+        if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly,
+           let url = Current.servers.all.first?.info.connection.activeURL() {
+            URLOpener.shared.open(url, options: [:], completionHandler: nil)
+            UIApplication.shared.requestSceneSessionDestruction(session, options: nil, errorHandler: nil)
+        }
     }
 
     func windowScene(
