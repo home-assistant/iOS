@@ -10,8 +10,10 @@ struct WidgetGaugeView: View {
     /// Intrinsic size (points) of the accessory gauge. That style is Lock-Screen-sized and ignores
     /// its frame, so on the Home Screen (`.systemSmall`) we scale it up by `tileSize / this`.
     private static let accessoryCircularIntrinsicSize: CGFloat = 74
-    /// Inset around the gauge within the `.systemSmall` tile.
-    private static let systemSmallPadding: CGFloat = 16
+    /// Inset around the gauge within the `.systemSmall` tile. Shared by both the custom arc and the
+    /// native capacity gauge, so adjusting it scales every style by the same factor — they stay the
+    /// same size relative to each other.
+    private static let systemSmallPadding: CGFloat = 10
 
     var body: some View {
         switch family {
@@ -46,10 +48,17 @@ struct WidgetGaugeView: View {
         }
     }
 
+    /// Scale the frame-filling arc down so it matches the native accessory gauge's footprint (used
+    /// by `.capacity`), keeping every gauge style the same size on the Home Screen. The accessory
+    /// gauge insets its ring within the tile; the custom arc otherwise fills it ~1.4× larger. This
+    /// is a ratio (not a fixed inset), so the match holds across tile sizes.
+    private static let arcScale: CGFloat = 0.72
+
     /// Pads the frame-filling arc within the tile and tints it with the brand color (the Home Screen
     /// renders full-color, so the fill would otherwise be black).
     private func styledArc(_ gauge: some View) -> some View {
         gauge
+            .scaleEffect(Self.arcScale)
             .padding(Self.systemSmallPadding)
             .tint(Color.haPrimary)
     }
