@@ -228,7 +228,6 @@ struct SettingsView: View {
                 }
             }
         }
-        .tint(.haPrimary)
         .navigationTitle(L10n.Settings.NavigationBar.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

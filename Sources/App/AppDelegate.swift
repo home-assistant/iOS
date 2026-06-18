@@ -221,13 +221,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             if activity == .webView {
                 // The primary window is owned by SwiftUI's `WindowGroup { ContainerView() }` (see `HAApp`).
-                // Return the delegate-less `WebView` config so SwiftUI hosts this scene; auxiliary scenes
-                // keep their Info.plist-bound delegates. The name MUST stay `WebView` (the shipped config
-                // name) — persisted scene sessions reference it, and renaming it blanks the window on upgrade.
-                return UISceneConfiguration(
+                // The name MUST stay `WebView` (the shipped config name) — persisted scene sessions reference
+                // it, and renaming it blanks the window on upgrade. `QuickActionWindowSceneDelegate` only
+                // forwards Home-screen quick actions (it never owns a window), so SwiftUI still hosts the
+                // scene; it restores quick-action handling lost when `WebViewSceneDelegate` was removed.
+                let configuration = UISceneConfiguration(
                     name: "WebView",
                     sessionRole: connectingSceneSession.role
                 )
+                configuration.delegateClass = QuickActionWindowSceneDelegate.self
+                return configuration
             }
 
             return activity.configuration
