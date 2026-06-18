@@ -275,7 +275,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         AppConstants.Keychain[pushToStartTokenKeychainKey]
     }
 
-    static let pushToStartRegistrationKey = "push_to_start_live_activity_token"
+    static let pushToStartRegistrationKey = "start_live_activity_token"
     static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
 
     // MARK: - Private — Stale Date

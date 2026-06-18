@@ -93,7 +93,7 @@ final class LiveActivityContractTests: XCTestCase {
     func testPushToStartRegistrationKey_isFrozen() {
         XCTAssertEqual(
             LiveActivityRegistry.pushToStartRegistrationKey,
-            "push_to_start_live_activity_token"
+            "start_live_activity_token"
         )
     }
 
