@@ -1443,6 +1443,8 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "watch.home.cancel_and_use_cache.title" = "Cancelar e usar cache";
 "watch.home.loading.skip.title" = "Pular";
 "watch.home.run.confirmation.title" = "Tem certeza de que deseja executar \"%@\"?";
+"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
+"watch.home.run.error.title" = "Couldn't run action";
 "watch.labels.complication_group.circular_small.description" = "Use pequenas complicações circulares para exibir o conteúdo nos cantos do mostrador do relógio em cores.";
 "watch.labels.complication_group.circular_small.name" = "Circular Pequeno";
 "watch.labels.complication_group.extra_large.description" = "Use as complicações extra grandes para exibir conteúdo nos mostradores extra grandes.";
