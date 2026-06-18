@@ -1442,6 +1442,8 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "watch.home.cancel_and_use_cache.title" = "Batalkan dan gunakan cache";
 "watch.home.loading.skip.title" = "Lewati";
 "watch.home.run.confirmation.title" = "Yakin ingin menjalankan \"%@\"?";
+"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
+"watch.home.run.error.title" = "Couldn't run action";
 "watch.labels.complication_group.circular_small.description" = "Gunakan komplikasi kecil melingkar untuk menampilkan konten di sudut face Warna.";
 "watch.labels.complication_group.circular_small.name" = "Lingkaran Kecil";
 "watch.labels.complication_group.extra_large.description" = "Gunakan komplikasi ekstra besar untuk menampilkan konten pada wajah jam Ekstra Besar.";
