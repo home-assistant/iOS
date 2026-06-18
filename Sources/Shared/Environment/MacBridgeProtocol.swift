@@ -25,6 +25,9 @@ import Foundation
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration)
     func configureStatusItem(title: String)
 
+    /// Brings app to the foreground
+    func activateApp()
+
     func setLoginItem(forBundleIdentifier: String, enabled: Bool) -> Bool
     func isLoginItemEnabled(forBundleIdentifier identifier: String) -> Bool
 }

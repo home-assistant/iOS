@@ -234,6 +234,7 @@ final class SceneManager {
         ) { error in
             Current.Log.error(error)
         }
+        bringAppToFrontIfNeeded()
     }
 
     public func activateAnyScene(for activity: SceneActivity, with userInfo: [AnyHashable: Any]) {
@@ -244,6 +245,13 @@ final class SceneManager {
         ) { error in
             Current.Log.error(error)
         }
+        bringAppToFrontIfNeeded()
+    }
+
+    private func bringAppToFrontIfNeeded() {
+        #if targetEnvironment(macCatalyst)
+        Current.macBridge.activateApp()
+        #endif
     }
 
     public func scene<DelegateType: UIWindowSceneDelegate>(
