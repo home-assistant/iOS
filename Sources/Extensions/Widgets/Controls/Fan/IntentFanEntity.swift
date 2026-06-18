@@ -5,7 +5,7 @@ import SFSafeSymbols
 import Shared
 
 @available(iOS 18.0, *)
-struct IntentFanEntity: AppEntity {
+struct IntentFanEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Fan")
 
     static let defaultQuery = IntentFanAppEntityQuery()
@@ -21,17 +21,7 @@ struct IntentFanEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
-        )
-    }
-
-    private var subtitle: String? {
-        EntityContextSubtitle.make(
-            areaName: areaName,
-            deviceName: deviceName,
-            entityName: displayString,
-            entityId: entityId,
-            domain: Domain(entityId: entityId)
+            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
     }
 

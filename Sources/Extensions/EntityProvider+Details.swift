@@ -1,22 +1,28 @@
 import Foundation
 import GRDB
 
-/// Builds the secondary "context" line (`Area • Device`) shown under an entity name in pickers.
+/// Builds the secondary "context" line (e.g. `Area • Device`, optionally prefixed with the server
+/// name) shown under an entity name in pickers and configuration screens.
 ///
-/// This is the single source of truth shared by the in-app `EntityPicker` and every AppIntent
-/// based picker (widgets, controls, App Shortcuts) so the context shown stays consistent across
-/// the whole app, matching how Home Assistant core/frontend present entities.
+/// This is the single source of truth shared by the in-app `EntityPicker`, every AppIntent based
+/// picker (widgets, controls, App Shortcuts) and the Watch/Widgets/CarPlay/App-Icon configuration
+/// screens, so the context shown stays consistent across the whole app, matching how Home Assistant
+/// core/frontend present entities.
 public enum EntityContextSubtitle {
     /// - Parameters:
+    ///   - serverName: The server the entity belongs to. Pass this only when more than one server is
+    ///     configured — it's prepended as the first segment; pass `nil` to omit it (single-server).
     ///   - areaName: The area the entity belongs to, if any.
     ///   - deviceName: The device the entity belongs to, if any. Omitted when it merely repeats the entity name.
     ///   - entityName: The entity's resolved display name (used to avoid echoing it as the device name).
-    ///   - entityId: The entity id, used as a last-resort context when no area/device is available.
+    ///   - entityId: The entity id, used as a last-resort context when no other context is available.
     ///   - domain: The entity's domain. Used to decide whether the entity id fallback is meaningful.
-    ///   - fallbackToEntityId: When `true`, returns the entity id if no area/device context exists.
-    /// - Returns: The context line, or `nil` when there's nothing meaningful to show (so callers can
-    ///   omit the subtitle entirely — e.g. a script/scene/automation with no area or device).
+    ///   - fallbackToEntityId: When `true`, returns the entity id if no other context exists.
+    /// - Returns: The context line (e.g. `Home • Living Room • Thermostat`), or `nil` when there's
+    ///   nothing meaningful to show (so callers can omit the subtitle entirely — e.g. a
+    ///   script/scene/automation with no server/area/device context).
     public static func make(
+        serverName: String? = nil,
         areaName: String?,
         deviceName: String?,
         entityName: String,
@@ -25,6 +31,9 @@ public enum EntityContextSubtitle {
         fallbackToEntityId: Bool = true
     ) -> String? {
         var parts: [String] = []
+        if let serverName, !serverName.isEmpty {
+            parts.append(serverName)
+        }
         if let areaName, !areaName.isEmpty {
             parts.append(areaName)
         }
@@ -45,6 +54,36 @@ public enum EntityContextSubtitle {
             return nil
         }
         return entityId
+    }
+}
+
+/// A type that carries enough about an entity to render the shared context line (`Area • Device`).
+///
+/// Conformers get `contextSubtitle` for free, so every AppIntent entity / picker row produces the
+/// exact same context — there's no per-type reimplementation to drift out of sync. The formatting
+/// itself still lives in `EntityContextSubtitle.make` (the single source of truth); this protocol is
+/// just the shared, hard-to-get-wrong way to call it.
+public protocol EntityContextRepresentable {
+    /// The entity id (e.g. `light.kitchen`). Also used to derive the domain.
+    var entityId: String { get }
+    /// The entity's resolved display name.
+    var displayString: String { get }
+    /// The area the entity belongs to, if known.
+    var areaName: String? { get }
+    /// The device the entity belongs to, if known.
+    var deviceName: String? { get }
+}
+
+public extension EntityContextRepresentable {
+    /// The shared `Area • Device` context line for this entity. See `EntityContextSubtitle.make`.
+    var contextSubtitle: String? {
+        EntityContextSubtitle.make(
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
     }
 }
 
