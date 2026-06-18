@@ -26,6 +26,7 @@ struct WidgetGauge: Widget {
         .configurationDisplayName(L10n.Widgets.Gauge.title)
         .description(L10n.Widgets.Gauge.descriptionWithWarning)
         .supportedFamilies(WidgetGaugeSupportedFamilies.families)
+        .disfavoredInCarPlayIfAvailable(for: WidgetGaugeSupportedFamilies.families)
     }
 
     private func intent(for entry: WidgetGaugeEntry) -> ScriptAppIntent? {

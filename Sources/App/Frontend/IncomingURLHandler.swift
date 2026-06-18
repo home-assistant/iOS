@@ -6,10 +6,10 @@ import Shared
 import SwiftUI
 
 class IncomingURLHandler {
-    private(set) weak var windowController: WebViewWindowController!
+    private(set) weak var coordinator: AppCoordinator!
 
-    init(windowController: WebViewWindowController) {
-        self.windowController = windowController
+    init(coordinator: AppCoordinator) {
+        self.coordinator = coordinator
         registerCallbackURLKitHandlers()
     }
 
@@ -83,7 +83,7 @@ class IncomingURLHandler {
                     Current.Log.error("No server found for open camera URL: \(url)")
                     return false
                 }
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                Current.sceneManager.webViewControllerPromise
                     .done { webViewController in
                         let view = CameraPlayerView(
                             server: server,
@@ -119,11 +119,11 @@ class IncomingURLHandler {
                 }
 
                 if
-                    let presenting = windowController.presentedViewController,
+                    let presenting = coordinator.presentedViewController,
                     presenting is SFSafariViewController {
                     // Dismiss my.* controller if it's on top - we don't get any other indication
-                    presenting.dismiss(animated: true, completion: { [windowController] in
-                        windowController?.openSelectingServer(
+                    presenting.dismiss(animated: true, completion: { [coordinator] in
+                        coordinator?.openSelectingServer(
                             from: .deeplink,
                             urlString: rawURL,
                             skipConfirm: true,
@@ -132,7 +132,7 @@ class IncomingURLHandler {
                         )
                     })
                 } else if let server {
-                    windowController.open(
+                    coordinator.open(
                         from: .deeplink,
                         server: server,
                         urlString: rawURL,
@@ -140,7 +140,7 @@ class IncomingURLHandler {
                         isComingFromAppIntent: isComingFromAppIntent
                     )
                 } else {
-                    windowController.openSelectingServer(
+                    coordinator.openSelectingServer(
                         from: .deeplink,
                         urlString: rawURL,
                         skipConfirm: isFromWidget,
@@ -165,7 +165,7 @@ class IncomingURLHandler {
                     $0.identifier.rawValue == serverId
                 }) ?? Current.servers.all.first else { return false }
 
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                Current.sceneManager.webViewControllerPromise
                     .done { webViewController in
                         webViewController.webViewExternalMessageHandler.showAssist(
                             server: server,
@@ -174,7 +174,7 @@ class IncomingURLHandler {
                         )
                     }
             case .createCustomWidget:
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                Current.sceneManager.webViewControllerPromise
                     .done { webViewController in
                         let mainView = CustomWidgetsListView()
                             .toolbar {
@@ -216,8 +216,8 @@ class IncomingURLHandler {
 
                 let inviteUrl = URL(string: urlParam.orEmpty)
 
-                Current.sceneManager.webViewWindowControllerPromise.done { windowController in
-                    windowController.presentInvitation(url: inviteUrl)
+                Current.sceneManager.appCoordinator.done { coordinator in
+                    coordinator.presentInvitation(url: inviteUrl)
                 }
             }
         } else {
@@ -236,7 +236,7 @@ class IncomingURLHandler {
             let pipeline = assistInAppIntent.pipeline
             let autoStartRecording = Bool(exactly: assistInAppIntent.withVoice ?? 0) ?? false
 
-            windowController.webViewControllerPromise.pipe { result in
+            Current.sceneManager.webViewControllerPromise.pipe { result in
                 switch result {
                 case let .fulfilled(webView):
                     webView.webViewExternalMessageHandler.showAssist(
@@ -274,7 +274,7 @@ class IncomingURLHandler {
 
                     let urlString = "/" + path
                     if let server = Current.servers.server(for: panel) {
-                        windowController.open(
+                        coordinator.open(
                             from: .deeplink,
                             server: server,
                             urlString: urlString,
@@ -282,7 +282,7 @@ class IncomingURLHandler {
                             isComingFromAppIntent: false
                         )
                     } else {
-                        windowController.openSelectingServer(
+                        coordinator.openSelectingServer(
                             from: .deeplink,
                             urlString: urlString,
                             skipConfirm: true,
@@ -424,16 +424,16 @@ class IncomingURLHandler {
             return .init(error: HomeAssistantAPI.APIError.notConfigured)
         }
 
-        if let info = provider.getInfo(for: item) {
+        if let info = provider.getInfo(for: item), let window = coordinator.window {
             Current.sceneManager.showFullScreenConfirm(
                 icon: item.icon(info: info),
                 text: item.name(info: info),
-                onto: .value(windowController.window)
+                onto: .value(window)
             )
         }
 
         return Promise { seal in
-            item.execute(on: server, source: .AppShortcut) { success in
+            item.execute(on: server, source: .AppShortcut) { success, _ in
                 if success {
                     seal.fulfill(())
                 } else {
@@ -470,7 +470,7 @@ class IncomingURLHandler {
             }
             return Promise { seal in
                 MagicItem(id: scriptId, serverId: serverId, type: .script)
-                    .execute(on: server, source: .AppShortcut) { success in
+                    .execute(on: server, source: .AppShortcut) { success, _ in
                         if !success {
                             Current.Log.error("Failed to execute App Icon Shortcut run script action id: \(scriptId)")
                             seal.reject(HomeAssistantAPI.APIError.notConfigured)
@@ -521,13 +521,13 @@ class IncomingURLHandler {
             }
         ))
 
-        windowController?.webViewControllerPromise.done {
+        Current.sceneManager.webViewControllerPromise.done {
             $0.present(alert, animated: true, completion: nil)
         }
     }
 
     private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
-        windowController?.webViewControllerPromise.done { webViewController in
+        Current.sceneManager.webViewControllerPromise.done { webViewController in
             let view = TagApprovalBottomSheet(
                 tag: tag,
                 onAllowOnce: { [weak self] in
@@ -556,10 +556,11 @@ class IncomingURLHandler {
 
     private func showTagReadConfirmation(type: TagManagerHandleResult.HandledType) {
         let (icon, text) = tagConfirmationContent(type: type)
+        guard let window = coordinator.window else { return }
         Current.sceneManager.showFullScreenConfirm(
             icon: icon,
             text: text,
-            onto: .value(windowController.window)
+            onto: .value(window)
         )
     }
 
@@ -581,7 +582,7 @@ class IncomingURLHandler {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-        windowController?.webViewControllerPromise.done {
+        Current.sceneManager.webViewControllerPromise.done {
             $0.present(alert, animated: true, completion: nil)
         }
     }
@@ -601,7 +602,7 @@ class IncomingURLHandler {
         }
 
         // not animated in because it looks weird during the app launch animation
-        windowController?.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
+        coordinator?.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
 
         return true
     }

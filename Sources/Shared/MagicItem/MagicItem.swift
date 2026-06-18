@@ -385,15 +385,25 @@ public extension MagicItem {
         on server: Server,
         source: AppTriggerSource,
         currentItemState: String = "",
-        completion: @escaping (Bool) -> Void
+        completion: @escaping (Bool, Error?) -> Void
     ) {
+        // Fail fast (and audibly) when there's no usable connection — e.g. the watch can't resolve
+        // an active URL because it isn't on the internal network and no external/cloud URL exists.
+        // Previously this path returned without ever calling `completion`, which surfaced as a
+        // silent failure (the caller's UI just timed out).
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available while executing magic item \(id)")
+            completion(false, ServerConnectionError.noActiveURL(server.info.name))
+            return
+        }
+
         do {
-            if let request: Promise<Void> = try {
+            let request: Promise<Void>? = try {
                 switch type {
                 case .script:
                     let domain = Domain.script.rawValue
                     let service = id.replacingOccurrences(of: "\(domain).", with: "")
-                    return Current.api(for: server)?.CallService(
+                    return api.CallService(
                         domain: domain,
                         service: service,
                         serviceData: [:],
@@ -402,7 +412,7 @@ public extension MagicItem {
                     )
                 case .scene:
                     let domain = Domain.scene.rawValue
-                    return Current.api(for: server)?.CallService(
+                    return api.CallService(
                         domain: domain,
                         service: Service.turnOn.rawValue,
                         serviceData: [
@@ -425,23 +435,27 @@ public extension MagicItem {
                     // Folders and assist items don't execute direct actions
                     return nil
                 }
-            }() {
-                request.pipe(to: { result in
-                    switch result {
-                    case .fulfilled:
-                        Current.Log.verbose("Success executing magic item \(id)")
-                        completion(true)
-                    case let .rejected(error):
-                        Current.Log.error("Error while executing magic item \(id): \(error.localizedDescription)")
-                        completion(false)
-                    }
-                })
-            } else {
-                Current.Log.error("No request available while executing magic item \(id)")
+            }()
+
+            guard let request else {
+                // Nothing to execute for this item type (e.g. folder) — treat as a no-op success.
+                completion(true, nil)
+                return
             }
+
+            request.pipe(to: { result in
+                switch result {
+                case .fulfilled:
+                    Current.Log.verbose("Success executing magic item \(id)")
+                    completion(true, nil)
+                case let .rejected(error):
+                    Current.Log.error("Error while executing magic item \(id): \(error.localizedDescription)")
+                    completion(false, error)
+                }
+            })
         } catch {
             Current.Log.error("Error while executing magic item (2): \(error.localizedDescription)")
-            completion(false)
+            completion(false, error)
         }
     }
 

@@ -1,21 +1,17 @@
 PODS:
-  - Alamofire (5.8.1)
   - CallbackURLKit (2.3.0):
     - CallbackURLKit/Core (= 2.3.0)
   - CallbackURLKit/Core (2.3.0)
   - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
-  - GRDB.swift (7.8.0):
-    - GRDB.swift/standard (= 7.8.0)
-  - GRDB.swift/standard (7.8.0)
-  - HAKit (0.4.14):
-    - HAKit/Core (= 0.4.14)
-  - HAKit/Core (0.4.14):
+  - HAKit (0.4.16):
+    - HAKit/Core (= 0.4.16)
+  - HAKit/Core (0.4.16):
     - Starscream (~> 4.0.4)
-  - HAKit/Mocks (0.4.14):
+  - HAKit/Mocks (0.4.16):
     - HAKit/Core
-  - HAKit/PromiseKit (0.4.14):
+  - HAKit/PromiseKit (0.4.16):
     - HAKit/Core
     - PromiseKit (~> 8.1.1)
   - Improv-iOS (0.0.6)
@@ -53,7 +49,6 @@ PODS:
   - Realm/Headers (10.35.0)
   - RealmSwift (10.35.0):
     - Realm (= 10.35.0)
-  - SFSafeSymbols (5.3.0)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
   - SwiftFormat/CLI (0.53.1)
@@ -67,15 +62,13 @@ PODS:
     - ObjcExceptionBridging
 
 DEPENDENCIES:
-  - Alamofire (~> 5.8)
   - CallbackURLKit
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
-  - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v7.8.0`)
-  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.14`)
-  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.14`)
-  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.14`)
+  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
+  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
+  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - Improv-iOS (~> 0.0.6)
   - KeychainAccess
   - MBProgressHUD (~> 1.2.0)
@@ -84,7 +77,6 @@ DEPENDENCIES:
   - PromiseKit (~> 8.1.1)
   - ReachabilitySwift
   - RealmSwift
-  - SFSafeSymbols (~> 5.3)
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/bgoncal/starscream`, tag `4.0.9`)
   - SwiftFormat/CLI (= 0.53.1)
@@ -96,7 +88,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Alamofire
     - CallbackURLKit
     - Improv-iOS
     - KeychainAccess
@@ -107,7 +98,6 @@ SPEC REPOS:
     - ReachabilitySwift
     - Realm
     - RealmSwift
-    - SFSafeSymbols
     - SwiftFormat
     - SwiftGen
     - SwiftLint
@@ -125,12 +115,9 @@ EXTERNAL SOURCES:
   EMTLoadingIndicator:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  GRDB.swift:
-    :git: https://github.com/groue/GRDB.swift.git
-    :tag: v7.8.0
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.14
+    :tag: 0.4.16
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -151,12 +138,9 @@ CHECKOUT OPTIONS:
   EMTLoadingIndicator:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  GRDB.swift:
-    :git: https://github.com/groue/GRDB.swift.git
-    :tag: v7.8.0
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.14
+    :tag: 0.4.16
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -168,13 +152,11 @@ CHECKOUT OPTIONS:
     :tag: 4.0.9
 
 SPEC CHECKSUMS:
-  Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
-  GRDB.swift: 682e07f771a9100f0bdf40fd0bed57b83ca08e29
-  HAKit: 347164dfd7b727986812902288b904f54bdf9de3
+  HAKit: b148d9c04b81337eb5f1fc48ef96fc5d9364e87a
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -185,7 +167,6 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
   RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
-  SFSafeSymbols: c0244d55ef543c7b2c01f3af2d3d2dd9e26dd00c
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
@@ -195,6 +176,6 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 63209440b17ff6d23dca34a6c8fe5c61067dbac6
+PODFILE CHECKSUM: 55479b0abe48dd07759cf6270d2220cbdcb9df10
 
 COCOAPODS: 1.15.2

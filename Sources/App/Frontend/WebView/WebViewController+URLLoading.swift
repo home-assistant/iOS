@@ -119,29 +119,19 @@ extension WebViewController {
         load(request: URLRequest(url: URL(string: "about:blank")!))
         Current.Log.info("Loading about:blank in webview due to no activeURL")
 
-        // Alert the user that there's no URL that the App can use
-        let controller = ConnectionSecurityLevelBlockView(server: server).embeddedInHostingController()
-        controller.modalPresentationStyle = .fullScreen
-        controller.isModalInPresentation = true
-        controller.view.tag = WebViewControllerOverlayedViewTags.noActiveURLError.rawValue
-        controller.modalTransitionStyle = .crossDissolve
+        // Cancel any disconnected empty-state the about:blank load may have scheduled — the no-active-URL
+        // overlay is the correct screen here, and the two are mutually exclusive.
+        emptyStateTimer?.invalidate()
+        emptyStateTimer = nil
+        hideEmptyState()
 
-        guard ![
-            WebViewControllerOverlayedViewTags.noActiveURLError.rawValue,
-            WebViewControllerOverlayedViewTags.settingsView.rawValue,
-            WebViewControllerOverlayedViewTags.onboardingPermissions.rawValue,
-        ].contains(presentedViewController?.view.tag ?? -1) else {
-            Current.Log.info("'No active URL' screen was not presented because of high priority view already visible")
-            return
-        }
-
-        presentOverlayController(controller: controller, animated: true)
+        // Drive the SwiftUI no-active-URL overlay in `HomeAssistantView` instead of presenting a UIKit modal,
+        // so an app-level Settings sheet can float over it without tearing it down.
+        overlayState?.showsNoActiveURL = true
     }
 
     func hideNoActiveURLError() {
-        if presentedViewController?.view.tag == WebViewControllerOverlayedViewTags.noActiveURLError.rawValue {
-            presentedViewController?.dismiss(animated: true)
-        }
+        overlayState?.showsNoActiveURL = false
     }
 
     @objc func scheduleReconnectBackgroundTimer() {

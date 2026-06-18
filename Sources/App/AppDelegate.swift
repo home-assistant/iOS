@@ -23,9 +23,15 @@ let keychain = AppConstants.Keychain
 let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
 private extension UIApplication {
+    /// Under the SwiftUI `App` lifecycle `UIApplication.shared.delegate` is SwiftUI's own internal
+    /// delegate — not the `@UIApplicationDelegateAdaptor`-managed `AppDelegate` — so the bare
+    /// `delegate as! AppDelegate` cast aborts. Resolve via the recorded `AppDelegate.shared`.
     var typedDelegate: AppDelegate {
-        // swiftlint:disable:next force_cast
-        delegate as! AppDelegate
+        guard let appDelegate = AppDelegate.shared else {
+            // swiftlint:disable:next force_cast
+            return delegate as! AppDelegate
+        }
+        return appDelegate
     }
 }
 
@@ -39,11 +45,20 @@ extension AppEnvironment {
     }
 }
 
-@main
+// `@main` is on `HAApp`; this delegate is installed via `@UIApplicationDelegateAdaptor`.
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    /// Set from `init` so the adaptor-managed delegate stays reachable; see `UIApplication.typedDelegate`.
+    private(set) static var shared: AppDelegate?
+
     let sceneManager = SceneManager()
     private let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
+
+    override init() {
+        super.init()
+        AppDelegate.shared = self
+    }
+
     #if DEBUG
     private let debugSwift = DebugSwift()
     #endif
@@ -139,6 +154,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupDebugSwift() {
         #if DEBUG
+        // Opt-in via the "-EnableDebugSwift" launch argument (off by default). DebugSwift's
+        // network monitor swizzles URLSessionConfiguration and intercepts every request, which
+        // breaks mTLS / self-signed-certificate flows such as onboarding on the simulator.
+        guard ProcessInfo.processInfo.arguments.contains("-EnableDebugSwift") else { return }
         debugSwift.setup()
         debugSwift.show()
         #endif
@@ -169,9 +188,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        let delegate: Guarantee<WebViewSceneDelegate> = sceneManager.scene(for: .init(activity: .webView))
-        delegate.done {
-            $0.urlHandler?.handle(url: url)
+        // The primary window is SwiftUI-hosted now, so route through the coordinator (like the other
+        // `webViewWindowControllerPromise` consumers) instead of looking up a UIKit scene delegate.
+        sceneManager.appCoordinator.done { coordinator in
+            IncomingURLHandler(coordinator: coordinator).handle(url: url)
         }
     }
 
@@ -198,6 +218,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let activity = options.userActivities
                 .compactMap { SceneActivity(activityIdentifier: $0.activityType) }
                 .first ?? .webView
+
+            if activity == .webView {
+                // The primary window is owned by SwiftUI's `WindowGroup { ContainerView() }` (see `HAApp`).
+                // The name MUST stay `WebView` (the shipped config name) — persisted scene sessions reference
+                // it, and renaming it blanks the window on upgrade. `QuickActionWindowSceneDelegate` only
+                // forwards Home-screen quick actions (it never owns a window), so SwiftUI still hosts the
+                // scene; it restores quick-action handling lost when `WebViewSceneDelegate` was removed.
+                let configuration = UISceneConfiguration(
+                    name: "WebView",
+                    sessionRole: connectingSceneSession.role
+                )
+                configuration.delegateClass = QuickActionWindowSceneDelegate.self
+                return configuration
+            }
+
             return activity.configuration
         }
     }
@@ -289,7 +324,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ))
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
 
-            sceneManager.webViewWindowControllerPromise.done {
+            sceneManager.appCoordinator.done {
                 $0.present(alert, animated: true, completion: nil)
             }
         }.catch { [sceneManager] error in
@@ -303,7 +338,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 )
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
 
-                sceneManager.webViewWindowControllerPromise.done {
+                sceneManager.appCoordinator.done {
                     $0.present(alert, animated: true, completion: nil)
                 }
             }
@@ -314,7 +349,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         firstly {
             Current.serverAlerter.check(dueToUserInteraction: false)
         }.done { [sceneManager] alert in
-            sceneManager.webViewWindowControllerPromise.done { controller in
+            sceneManager.appCoordinator.done { controller in
                 controller.show(alert: alert)
             }
         }.catch { error in
@@ -358,7 +393,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: { _ in
                     userDefaults.set(true, forKey: seenKey)
                 }))
-                sceneManager.webViewWindowControllerPromise.done {
+                sceneManager.appCoordinator.done {
                     $0.present(alert)
                 }
             }.catch { error in

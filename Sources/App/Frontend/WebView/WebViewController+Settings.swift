@@ -15,14 +15,13 @@ extension WebViewController {
         webView?.backgroundColor = cachedColors[.primaryBackgroundColor]
         webView?.scrollView.backgroundColor = cachedColors[.primaryBackgroundColor]
 
-        // Use the stored reference instead of searching by tag
+        // Catalyst keeps the native status-bar view (it holds the window buttons); colour it to match.
         if let statusBarView {
-            let backgroundColor = server.info.version < .canUseAppThemeForStatusBar
-                ? cachedColors[.appHeaderBackgroundColor]
-                : cachedColors[.appThemeColor]
-            statusBarView.backgroundColor = backgroundColor
+            statusBarView.backgroundColor = themedStatusBarColor()
             statusBarView.isOpaque = true
         }
+        // iOS draws the themed status-bar bar in SwiftUI (`HomeAssistantView`) — refresh its colour/visibility.
+        updateThemedStatusBar()
 
         refreshControl.tintColor = cachedColors[.primaryColor]
 
@@ -60,35 +59,26 @@ extension WebViewController {
     }
 
     func updateEdgeToEdgeLayout() {
-        guard let statusBarView else { return }
+        // The web view is always edge-to-edge now (see `setupWebViewConstraints`); only the SwiftUI themed
+        // status-bar bar reacts to the edge-to-edge / full-screen setting.
+        updateThemedStatusBar()
+    }
 
-        // Edge-to-edge mode only applies to iOS (not Catalyst)
-        // Also use edge-to-edge behavior when fullScreen is enabled (status bar hidden)
-        let edgeToEdge = (Current.settingsStore.edgeToEdge || Current.settingsStore.fullScreen) && !Current.isCatalyst
+    /// The themed colour for the top status-bar area (web app theme, or header background on older cores).
+    func themedStatusBarColor() -> UIColor {
+        let cachedColors = ThemeColors.cachedThemeColors(for: traitCollection)
+        return server.info.version < .canUseAppThemeForStatusBar
+            ? cachedColors[.appHeaderBackgroundColor]
+            : cachedColors[.appThemeColor]
+    }
 
-        // Deactivate the current constraint
-        webViewTopConstraint?.isActive = false
-
-        // Create the new constraint based on edge-to-edge setting
-        if edgeToEdge {
-            webViewTopConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
-            statusBarView.isHidden = true
-        } else {
-            webViewTopConstraint = webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor)
-            statusBarView.isHidden = false
-        }
-        webViewTopConstraint?.isActive = true
-
-        // Force layout update
-        view.setNeedsLayout()
-        view.layoutIfNeeded()
-
-        // Refresh styling to ensure statusBarView has proper background color
-        styleUI()
-
-        // Animate the layout change
-        UIView.animate(withDuration: 0.25) {
-            self.view.layoutIfNeeded()
+    /// Publishes the themed status-bar bar to SwiftUI. Shown only on iOS when the user hasn't enabled
+    /// edge-to-edge / full-screen; otherwise the web view runs truly edge-to-edge (no bar).
+    func updateThemedStatusBar() {
+        let edgeToEdge = Current.settingsStore.edgeToEdge || Current.settingsStore.fullScreen
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            overlayState?.statusBarColor = (edgeToEdge || Current.isCatalyst) ? nil : themedStatusBarColor()
         }
     }
 

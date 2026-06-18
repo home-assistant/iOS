@@ -1,3 +1,4 @@
+import PromiseKit
 import Shared
 import SwiftUI
 import UIKit
@@ -29,23 +30,10 @@ extension WebViewController {
     }
 
     func showOnboardingPermissions(steps: [OnboardingPermissionsNavigationViewModel.StepID]) {
-        let controller = NavigationView {
-            OnboardingPermissionsNavigationView(onboardingServer: server, steps: steps)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton { [weak self] in
-                            self?.dismiss(animated: true)
-                        }
-                    }
-                }
-                .onDisappear { [weak self] in
-                    self?.refresh()
-                }
-        }.navigationViewStyle(.stack).embeddedInHostingController()
-
-        // Prevent controller on being dismissed on swipe down
-        controller.isModalInPresentation = true
-        controller.view.tag = WebViewControllerOverlayedViewTags.onboardingPermissions.rawValue
-        presentOverlayController(controller: controller, animated: true)
+        // Present the forced decision as a full-screen cover via `ContainerView` (SwiftUI). It can't be
+        // swiped away, has a close button, and the web view refreshes when it's dismissed.
+        Current.sceneManager.appCoordinator.done { [server] in
+            $0.showOnboardingPermissions(server: server, steps: steps)
+        }
     }
 }

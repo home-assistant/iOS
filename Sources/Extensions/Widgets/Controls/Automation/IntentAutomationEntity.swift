@@ -14,10 +14,25 @@ struct IntentAutomationEntity: AppEntity {
     var entityId: String
     var serverId: String
     var serverName: String
+    var areaName: String?
+    var deviceName: String?
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(displayString)")
+        DisplayRepresentation(
+            title: "\(displayString)",
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+        )
+    }
+
+    private var subtitle: String? {
+        EntityContextSubtitle.make(
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
     }
 
     init(
@@ -25,6 +40,8 @@ struct IntentAutomationEntity: AppEntity {
         entityId: String,
         serverId: String,
         serverName: String,
+        areaName: String? = nil,
+        deviceName: String? = nil,
         displayString: String,
         iconName: String
     ) {
@@ -32,6 +49,8 @@ struct IntentAutomationEntity: AppEntity {
         self.entityId = entityId
         self.serverId = serverId
         self.serverName = serverName
+        self.areaName = areaName
+        self.deviceName = deviceName
         self.displayString = displayString
         self.iconName = iconName
     }
@@ -47,7 +66,7 @@ struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
         .init(sections: getAutomationEntities(matching: string).map { (key: Server, value: [IntentAutomationEntity]) in
             .init(
                 .init(stringLiteral: key.info.name),
-                items: value.filter({ $0.displayString.lowercased().contains(string.lowercased()) })
+                items: value.filter { $0.displayString.lowercased().contains(string.lowercased()) }
             )
         })
     }
@@ -63,12 +82,16 @@ struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: [.automation]).getEntities(matching: string)
 
         for (server, values) in entities {
+            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let areasMap = values.areasMap(for: server.identifier.rawValue)
             automationEntities.append((server, values.map({ entity in
                 IntentAutomationEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     serverName: server.info.name,
+                    areaName: areasMap[entity.entityId]?.name,
+                    deviceName: deviceMap[entity.entityId]?.name,
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.flowchart.rawValue
                 )
