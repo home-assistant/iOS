@@ -26,6 +26,7 @@ struct WidgetGauge: Widget {
         .configurationDisplayName(L10n.Widgets.Gauge.title)
         .description(L10n.Widgets.Gauge.descriptionWithWarning)
         .supportedFamilies(WidgetGaugeSupportedFamilies.families)
+        .disfavoredInCarPlayIfAvailable(for: WidgetGaugeSupportedFamilies.families)
     }
 
     private func intent(for entry: WidgetGaugeEntry) -> ScriptAppIntent? {
@@ -40,5 +41,5 @@ struct WidgetGauge: Widget {
 
 @available(iOS 17, *)
 enum WidgetGaugeSupportedFamilies {
-    static let families: [WidgetFamily] = [.accessoryCircular]
+    static let families: [WidgetFamily] = [.accessoryCircular, .systemSmall]
 }

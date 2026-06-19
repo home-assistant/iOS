@@ -41,42 +41,23 @@ extension AppDeviceRegistry {
     }
 }
 
-extension AppEntityRegistry {
+extension EntityRegistryListForDisplay.Entity {
     static func makeTest(
         areaId: String?,
-        entityId: String?,
+        entityId: String,
         deviceId: String?,
         hiddenBy: String?,
-        disabledBy: String?,
-        serverId: String = "test-server",
-        uniqueId: String? = nil
-    ) -> AppEntityRegistry {
-        let entry = EntityRegistryEntry(
-            uniqueId: uniqueId ?? UUID().uuidString,
+        disabledBy: String? = nil,
+        serverId: String = "test-server"
+    ) -> EntityRegistryListForDisplay.Entity {
+        EntityRegistryListForDisplay.Entity(
+            serverId: serverId,
             entityId: entityId,
-            platform: nil,
-            configEntryId: nil,
             deviceId: deviceId,
-            areaId: areaId,
-            disabledBy: disabledBy,
-            hiddenBy: hiddenBy,
             entityCategory: nil,
-            name: nil,
-            originalName: nil,
-            icon: nil,
-            originalIcon: nil,
-            aliases: nil,
-            labels: nil,
-            deviceClass: nil,
-            originalDeviceClass: nil,
-            capabilities: nil,
-            supportedFeatures: nil,
-            unitOfMeasurement: nil,
-            options: nil,
-            translationKey: nil,
-            hasEntityName: nil
+            areaId: areaId,
+            hidden: hiddenBy != nil ? true : nil
         )
-        return AppEntityRegistry(serverId: serverId, registry: entry)
     }
 }
 

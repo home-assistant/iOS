@@ -92,6 +92,10 @@ struct ControlSwitchConfiguration: ControlConfigurationIntent {
     )
 
     @Parameter(
+        title: .init("app_intents.server.title", defaultValue: "Server")
+    )
+    var server: IntentServerAppEntity?
+    @Parameter(
         title: .init("widgets.controls.switch.title", defaultValue: "Switch")
     )
     var entity: IntentSwitchEntity?

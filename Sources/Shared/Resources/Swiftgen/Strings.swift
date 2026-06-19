@@ -124,6 +124,61 @@ public enum L10n {
     }
   }
 
+  public enum ActionsConfigurator {
+    /// New Action
+    public static var title: String { return L10n.tr("Localizable", "actions_configurator.title") }
+    public enum Action {
+      /// Create automation
+      public static var createAutomation: String { return L10n.tr("Localizable", "actions_configurator.action.create_automation") }
+      /// Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.
+      public static var footer: String { return L10n.tr("Localizable", "actions_configurator.action.footer") }
+      /// Execute
+      public static var title: String { return L10n.tr("Localizable", "actions_configurator.action.title") }
+    }
+    public enum Rows {
+      public enum BackgroundColor {
+        /// Background Color
+        public static var title: String { return L10n.tr("Localizable", "actions_configurator.rows.background_color.title") }
+      }
+      public enum Icon {
+        /// Icon
+        public static var title: String { return L10n.tr("Localizable", "actions_configurator.rows.icon.title") }
+      }
+      public enum IconColor {
+        /// Icon Color
+        public static var title: String { return L10n.tr("Localizable", "actions_configurator.rows.icon_color.title") }
+      }
+      public enum Name {
+        /// Name
+        public static var title: String { return L10n.tr("Localizable", "actions_configurator.rows.name.title") }
+      }
+      public enum Text {
+        /// Text
+        public static var title: String { return L10n.tr("Localizable", "actions_configurator.rows.text.title") }
+      }
+      public enum TextColor {
+        /// Text Color
+        public static var title: String { return L10n.tr("Localizable", "actions_configurator.rows.text_color.title") }
+      }
+    }
+    public enum TriggerExample {
+      /// Share Contents
+      public static var share: String { return L10n.tr("Localizable", "actions_configurator.trigger_example.share") }
+      /// Example Trigger
+      public static var title: String { return L10n.tr("Localizable", "actions_configurator.trigger_example.title") }
+    }
+    public enum VisualSection {
+      /// The appearance of this action is controlled by the scene configuration.
+      public static var sceneDefined: String { return L10n.tr("Localizable", "actions_configurator.visual_section.scene_defined") }
+      /// You can also change these by customizing the Scene attributes: %@
+      public static func sceneHintFooter(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "actions_configurator.visual_section.scene_hint_footer", String(describing: p1))
+      }
+      /// The appearance of this action is controlled by the server configuration.
+      public static var serverDefined: String { return L10n.tr("Localizable", "actions_configurator.visual_section.server_defined") }
+    }
+  }
+
   public enum Alert {
     public enum Confirmation {
       public enum DeleteEntities {
@@ -138,6 +193,14 @@ public enum L10n {
   }
 
   public enum Alerts {
+    public enum ActionAutomationEditor {
+      public enum Unavailable {
+        /// To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2
+        public static var body: String { return L10n.tr("Localizable", "alerts.action_automation_editor.unavailable.body") }
+        /// Please update Home Assistant
+        public static var title: String { return L10n.tr("Localizable", "alerts.action_automation_editor.unavailable.title") }
+      }
+    }
     public enum Alert {
       /// OK
       public static var ok: String { return L10n.tr("Localizable", "alerts.alert.ok") }
@@ -173,7 +236,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "alerts.navigation_error.title") }
     }
     public enum OpenUrlFromDeepLink {
-      /// Open URL (%@) from deep link?
+      /// Tap server to open (%@) deep link URL?
       public static func message(_ p1: Any) -> String {
         return L10n.tr("Localizable", "alerts.open_url_from_deep_link.message", String(describing: p1))
       }
@@ -224,6 +287,16 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.refresh_warning.title") }
       }
     }
+    public enum AssistPrompt {
+      /// Send a text prompt to Assist
+      public static var description: String { return L10n.tr("Localizable", "app_intents.assist_prompt.description") }
+      /// Assist prompt
+      public static var title: String { return L10n.tr("Localizable", "app_intents.assist_prompt.title") }
+      public enum Prompt {
+        /// Prompt
+        public static var title: String { return L10n.tr("Localizable", "app_intents.assist_prompt.prompt.title") }
+      }
+    }
     public enum Automations {
       public enum Automation {
         /// Automation
@@ -270,6 +343,18 @@ public enum L10n {
       /// Cover
       public static var title: String { return L10n.tr("Localizable", "app_intents.cover.title") }
     }
+    public enum Error {
+      /// Failed servers: %@
+      public static func failedServers(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.error.failed_servers", String(describing: p1))
+      }
+      /// No server provided
+      public static var noServer: String { return L10n.tr("Localizable", "app_intents.error.no_server") }
+      /// Timed out after %li seconds
+      public static func timedOut(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "app_intents.error.timed_out", p1)
+      }
+    }
     public enum Fan {
       /// Fan
       public static var title: String { return L10n.tr("Localizable", "app_intents.fan.title") }
@@ -280,6 +365,20 @@ public enum L10n {
       public enum OnStateIcon {
         /// Icon for on state
         public static var title: String { return L10n.tr("Localizable", "app_intents.fan.on_state_icon.title") }
+      }
+    }
+    public enum GetCameraSnapshot {
+      /// Get a single still frame from a camera
+      public static var description: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.description") }
+      /// Get camera snapshot
+      public static var title: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.title") }
+      public enum Camera {
+        /// Camera
+        public static var title: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.camera.title") }
+      }
+      public enum Error {
+        /// Image could not be converted to PNG
+        public static var pngConversion: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.error.png_conversion") }
       }
     }
     public enum HapticConfirmation {
@@ -339,6 +438,54 @@ public enum L10n {
     public enum OpenStateIcon {
       /// Icon for open state
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_state_icon.title") }
+    }
+    public enum PerformAction {
+      /// Which action?
+      public static var actionParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_configuration") }
+      /// Just to confirm, you wanted ‘%@’?
+      public static func actionParameterConfirmation(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_confirmation", String(describing: p1))
+      }
+      /// There are %@ options matching ‘%@’.
+      public static func actionParameterDisambiguationIntro(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_disambiguation_intro", String(describing: p1), String(describing: p2))
+      }
+      /// Perform an action on a Home Assistant server
+      public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.description") }
+      /// Failed: %@
+      public static func responseFailure(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.perform_action.response_failure", String(describing: p1))
+      }
+      /// Done
+      public static var responseSuccess: String { return L10n.tr("Localizable", "app_intents.perform_action.response_success") }
+      /// Perform action
+      public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.title") }
+      public enum Action {
+        /// Action
+        public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.action.title") }
+      }
+      public enum Error {
+        /// Invalid action name
+        public static var invalidAction: String { return L10n.tr("Localizable", "app_intents.perform_action.error.invalid_action") }
+        /// Unable to parse action data
+        public static var invalidPayload: String { return L10n.tr("Localizable", "app_intents.perform_action.error.invalid_payload") }
+      }
+      public enum Payload {
+        /// JSON data to send with the action
+        public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.description") }
+        /// Action data
+        public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.title") }
+      }
+    }
+    public enum RenderTemplate {
+      /// Render a Home Assistant template. Only users with the admin role can perform this action.
+      public static var description: String { return L10n.tr("Localizable", "app_intents.render_template.description") }
+      /// Render template
+      public static var title: String { return L10n.tr("Localizable", "app_intents.render_template.title") }
+      public enum Template {
+        /// Template
+        public static var title: String { return L10n.tr("Localizable", "app_intents.render_template.template.title") }
+      }
     }
     public enum Scenes {
       /// Run Scene
@@ -433,6 +580,30 @@ public enum L10n {
     public enum Switch {
       /// Switch
       public static var title: String { return L10n.tr("Localizable", "app_intents.switch.title") }
+    }
+    public enum UpdateLocation {
+      /// Send a location update to Home Assistant
+      public static var description: String { return L10n.tr("Localizable", "app_intents.update_location.description") }
+      /// Updated location on all servers
+      public static var success: String { return L10n.tr("Localizable", "app_intents.update_location.success") }
+      /// Update location
+      public static var title: String { return L10n.tr("Localizable", "app_intents.update_location.title") }
+      public enum Location {
+        /// Location
+        public static var title: String { return L10n.tr("Localizable", "app_intents.update_location.location.title") }
+      }
+    }
+    public enum UpdateSensors {
+      /// Send a sensor update to Home Assistant
+      public static var description: String { return L10n.tr("Localizable", "app_intents.update_sensors.description") }
+      /// Updated sensors on all servers
+      public static var success: String { return L10n.tr("Localizable", "app_intents.update_sensors.success") }
+      /// Update sensors
+      public static var title: String { return L10n.tr("Localizable", "app_intents.update_sensors.title") }
+    }
+    public enum WidgetAction {
+      /// Which actions?
+      public static var actionsParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.widget_action.actions_parameter_configuration") }
     }
   }
 
@@ -663,6 +834,20 @@ public enum L10n {
   }
 
   public enum CarPlay {
+    public enum Action {
+      public enum Execute {
+        /// Executing...
+        public static var inProgress: String { return L10n.tr("Localizable", "carPlay.action.execute.in_progress") }
+      }
+      public enum Intro {
+        public enum Item {
+          /// Tap to continue on your iPhone
+          public static var body: String { return L10n.tr("Localizable", "carPlay.action.intro.item.body") }
+          /// Create your first action
+          public static var title: String { return L10n.tr("Localizable", "carPlay.action.intro.item.title") }
+        }
+      }
+    }
     public enum Config {
       public enum Tabs {
         /// Tabs
@@ -849,6 +1034,8 @@ public enum L10n {
         public static var previous: String { return L10n.tr("Localizable", "carPlay.navigation.button.previous") }
       }
       public enum Tab {
+        /// Actions
+        public static var actions: String { return L10n.tr("Localizable", "carPlay.navigation.tab.actions") }
         /// Areas
         public static var areas: String { return L10n.tr("Localizable", "carPlay.navigation.tab.areas") }
         /// Control
@@ -859,11 +1046,23 @@ public enum L10n {
         public static var settings: String { return L10n.tr("Localizable", "carPlay.navigation.tab.settings") }
       }
     }
+    public enum NoActions {
+      /// Open iOS Companion App to create actions for CarPlay.
+      public static var title: String { return L10n.tr("Localizable", "carPlay.no_actions.title") }
+    }
     public enum NoEntities {
       /// No CarPlay compatible entities available.
       public static var title: String { return L10n.tr("Localizable", "carPlay.no_entities.title") }
     }
     public enum Notification {
+      public enum Action {
+        public enum Intro {
+          /// Tap to create your first iOS Action
+          public static var body: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.body") }
+          /// Create iOS Action
+          public static var title: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.title") }
+        }
+      }
       public enum QuickAccess {
         public enum Intro {
           /// Tap to create your CarPlay configuration.
@@ -1896,6 +2095,11 @@ public enum L10n {
     }
   }
 
+  public enum LegacyActions {
+    /// Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.
+    public static var disclaimer: String { return L10n.tr("Localizable", "legacy_actions.disclaimer") }
+  }
+
   public enum LiveActivity {
     /// No active Live Activities
     public static var emptyState: String { return L10n.tr("Localizable", "live_activity.empty_state") }
@@ -2107,6 +2311,16 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "magic_item.icon_name.title") }
     }
     public enum ItemType {
+      public enum Action {
+        public enum List {
+          /// iOS Actions
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.action.list.title") }
+          public enum Warning {
+            /// We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.
+            public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.action.list.warning.title") }
+          }
+        }
+      }
       public enum App {
         public enum List {
           /// App
@@ -2173,6 +2387,12 @@ public enum L10n {
   }
 
   public enum Menu {
+    public enum Actions {
+      /// Configure…
+      public static var configure: String { return L10n.tr("Localizable", "menu.actions.configure") }
+      /// Actions
+      public static var title: String { return L10n.tr("Localizable", "menu.actions.title") }
+    }
     public enum Application {
       /// About %@
       public static func about(_ p1: Any) -> String {
@@ -3529,6 +3749,10 @@ public enum L10n {
       /// Edit Template
       public static var title: String { return L10n.tr("Localizable", "settings.template_edit.title") }
     }
+    public enum TestFlightCommunication {
+      /// Beta Tester Updates
+      public static var title: String { return L10n.tr("Localizable", "settings.test_flight_communication.title") }
+    }
     public enum WhatsNew {
       /// What's new?
       public static var title: String { return L10n.tr("Localizable", "settings.whats_new.title") }
@@ -3598,6 +3822,62 @@ public enum L10n {
   public enum SettingsDetails {
     /// Learn more
     public static var learnMore: String { return L10n.tr("Localizable", "settings_details.learn_more") }
+    public enum Actions {
+      /// Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.
+      public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.footer") }
+      /// Actions
+      public static var title: String { return L10n.tr("Localizable", "settings_details.actions.title") }
+      public enum ActionsSynced {
+        /// No Synced Actions
+        public static var empty: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.empty") }
+        /// Actions defined in .yaml are not editable on device.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.footer") }
+        /// Actions may be also defined in the .yaml configuration.
+        public static var footerNoActions: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.footer_no_actions") }
+        /// Synced Actions
+        public static var header: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.header") }
+      }
+      public enum CarPlay {
+        public enum Available {
+          /// Show in CarPlay
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.carPlay.available.title") }
+        }
+      }
+      public enum Learn {
+        public enum Button {
+          /// Introduction to iOS Actions
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.learn.button.title") }
+        }
+      }
+      public enum Scenes {
+        /// Customize
+        public static var customizeAction: String { return L10n.tr("Localizable", "settings_details.actions.scenes.customize_action") }
+        /// No Scenes
+        public static var empty: String { return L10n.tr("Localizable", "settings_details.actions.scenes.empty") }
+        /// When enabled, Scenes display alongside actions. When performed, they trigger scene changes.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.scenes.footer") }
+        /// Select All
+        public static var selectAll: String { return L10n.tr("Localizable", "settings_details.actions.scenes.select_all") }
+        /// Scene Actions
+        public static var title: String { return L10n.tr("Localizable", "settings_details.actions.scenes.title") }
+      }
+      public enum ServerControlled {
+        public enum Update {
+          /// Update server Actions
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.server_controlled.update.title") }
+        }
+      }
+      public enum UseCustomColors {
+        /// Use custom colors
+        public static var title: String { return L10n.tr("Localizable", "settings_details.actions.use_custom_colors.title") }
+      }
+      public enum Watch {
+        public enum Available {
+          /// Show in Watch
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.watch.available.title") }
+        }
+      }
+    }
     public enum General {
       /// Basic App configuration, App Icon and web page settings.
       public static var body: String { return L10n.tr("Localizable", "settings_details.general.body") }
@@ -3753,6 +4033,10 @@ public enum L10n {
         /// Security Warning
         public static var title: String { return L10n.tr("Localizable", "settings_details.http.warning.title") }
       }
+    }
+    public enum LegacyActions {
+      /// (Legacy) iOS Actions
+      public static var title: String { return L10n.tr("Localizable", "settings_details.legacy_actions.title") }
     }
     public enum Location {
       /// Location
@@ -3910,11 +4194,11 @@ public enum L10n {
         }
       }
     }
-    public enum MacNativeFeatures {
-      /// This will open Safari instead of the App webview, while keeping the native features such as widgets working.
-      public static var footer: String { return L10n.tr("Localizable", "settings_details.mac_native_features.footer") }
-      /// Native Features Only (Experimental)
-      public static var title: String { return L10n.tr("Localizable", "settings_details.mac_native_features.title") }
+    public enum MacOpenInBrowser {
+      /// Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.
+      public static var footer: String { return L10n.tr("Localizable", "settings_details.mac_open_in_browser.footer") }
+      /// Open Home Assistant UI in browser
+      public static var title: String { return L10n.tr("Localizable", "settings_details.mac_open_in_browser.title") }
     }
     public enum Notifications {
       /// Use the mobile_app notify service to send notifications to your device.
@@ -4236,6 +4520,11 @@ public enum L10n {
     }
   }
 
+  public enum TestFlightCommunication {
+    /// Beta Tester Update
+    public static var badgeTitle: String { return L10n.tr("Localizable", "test_flight_communication.badge_title") }
+  }
+
   public enum Thread {
     public enum ActiveOperationalDataSet {
       /// Active operational data set
@@ -4372,6 +4661,10 @@ public enum L10n {
         /// Called service
         public static var title: String { return L10n.tr("Localizable", "url_handler.call_service.success.title") }
       }
+    }
+    public enum Error {
+      /// Action Not Found
+      public static var actionNotFound: String { return L10n.tr("Localizable", "url_handler.error.action_not_found") }
     }
     public enum FireEvent {
       public enum Confirm {
@@ -4735,6 +5028,12 @@ public enum L10n {
           public static func title(_ p1: Any) -> String {
             return L10n.tr("Localizable", "watch.home.run.confirmation.title", String(describing: p1))
           }
+        }
+        public enum Error {
+          /// The action couldn't be run. The Apple Watch may not be able to reach this server directly.
+          public static var message: String { return L10n.tr("Localizable", "watch.home.run.error.message") }
+          /// Couldn't run action
+          public static var title: String { return L10n.tr("Localizable", "watch.home.run.error.title") }
         }
       }
     }
@@ -5209,11 +5508,59 @@ public enum L10n {
       }
     }
     public enum Settings {
+      /// Auto
+      public static var auto: String { return L10n.tr("Localizable", "watch.settings.auto") }
+      /// Updated %@
+      public static func lastUpdated(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "watch.settings.last_updated", String(describing: p1))
+      }
+      /// No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.
+      public static var noServers: String { return L10n.tr("Localizable", "watch.settings.no_servers") }
+      /// Refresh
+      public static var refresh: String { return L10n.tr("Localizable", "watch.settings.refresh") }
+      /// Settings
+      public static var title: String { return L10n.tr("Localizable", "watch.settings.title") }
+      public enum ClientCertificate {
+        /// Available on this Watch
+        public static var availableOnWatch: String { return L10n.tr("Localizable", "watch.settings.client_certificate.available_on_watch") }
+        /// Open Home Assistant on your iPhone to import the certificate, then refresh here.
+        public static var importInstructions: String { return L10n.tr("Localizable", "watch.settings.client_certificate.import_instructions") }
+        /// Not configured
+        public static var `none`: String { return L10n.tr("Localizable", "watch.settings.client_certificate.none") }
+        public enum RemoveFromWatch {
+          /// The certificate will be removed from this Watch only. Your iPhone keeps it, and refreshing re-adds it to the Watch.
+          public static var message: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.message") }
+          /// Remove
+          public static var remove: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.remove") }
+          /// Remove from this Watch?
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.title") }
+        }
+      }
       public enum NoItems {
         public enum Phone {
           /// No items configured, please choose items below.
           public static var title: String { return L10n.tr("Localizable", "watch.settings.no_items.phone.title") }
         }
+      }
+      public enum PerformAction {
+        /// Apple Watch
+        public static var appleWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.apple_watch") }
+        /// Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer") }
+        /// iPhone
+        public static var iphone: String { return L10n.tr("Localizable", "watch.settings.perform_action.iphone") }
+        /// Perform action using
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.perform_action.title") }
+      }
+      public enum Servers {
+        /// Servers
+        public static var header: String { return L10n.tr("Localizable", "watch.settings.servers.header") }
+      }
+      public enum UrlOverride {
+        /// Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.url_override.footer") }
+        /// Always use
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.url_override.title") }
       }
     }
   }
@@ -5300,6 +5647,18 @@ public enum L10n {
         public static var nothing: String { return L10n.tr("Localizable", "widgets.action.name.nothing") }
         /// Run Script
         public static var runScript: String { return L10n.tr("Localizable", "widgets.action.name.run_script") }
+      }
+    }
+    public enum Actions {
+      /// Perform Home Assistant actions.
+      public static var description: String { return L10n.tr("Localizable", "widgets.actions.description") }
+      /// No Actions Configured
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.actions.not_configured") }
+      /// Actions
+      public static var title: String { return L10n.tr("Localizable", "widgets.actions.title") }
+      public enum Parameters {
+        /// Action
+        public static var action: String { return L10n.tr("Localizable", "widgets.actions.parameters.action") }
       }
     }
     public enum Assist {

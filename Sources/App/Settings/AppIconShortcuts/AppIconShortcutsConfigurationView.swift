@@ -91,8 +91,16 @@ struct AppIconShortcutsConfigurationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info))
-            Text(item.name(info: info))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.name(info: info))
+                if let contextSubtitle = info.contextSubtitle {
+                    Text(contextSubtitle)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemSymbol: .line3Horizontal)
                 .foregroundStyle(.gray)
         }

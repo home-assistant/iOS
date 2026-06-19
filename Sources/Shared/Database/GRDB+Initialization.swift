@@ -58,14 +58,12 @@ public extension DatabaseQueue {
             AppIconShortcutConfigTable(),
             AssistPipelinesTable(),
             ServerInfoMirrorTable(),
-            AppEntityRegistryListForDisplayTable(),
-            AppEntityRegistryTable(),
+            DisplayEntityRegistryTable(),
             AppDeviceRegistryTable(),
             AppPanelTable(),
             CustomWidgetTable(),
             AppAreaTable(),
             HomeViewConfigurationTable(),
-            CameraListConfigurationTable(),
             AssistConfigurationTable(),
             KioskSettingsTable(),
             AllowedTagTable(),
@@ -73,19 +71,30 @@ public extension DatabaseQueue {
     }
 
     internal static func deleteOldTables(database: DatabaseQueue) {
-        do {
-            /*
-             ClientEvent used to be saved in GRDB, but because of a problem of one process holding
-             lock on the database and causing crash 0xdead10cc now it is saved as a json file
-             More information: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
-             */
-            try database.write { db in
-                try db.drop(table: GRDBDatabaseTable.clientEvent.rawValue)
+        /*
+         Tables that existed in earlier versions and are no longer used:
+         - clientEvent: used to be saved in GRDB, but because of a problem of one process holding
+           a lock on the database and causing crash 0xdead10cc it is now saved as a json file.
+           More information: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
+         - appEntityRegistryListForDisplay and entityRegistry: both replaced by `displayEntityRegistry`,
+           which is sourced from config/entity_registry/list_for_display. ("entityRegistry" was the
+           former full-registry table; it has no enum case anymore, hence the string literal.)
+         */
+        let obsoleteTables = [
+            GRDBDatabaseTable.clientEvent.rawValue,
+            GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue,
+            "entityRegistry",
+        ]
+        for tableName in obsoleteTables {
+            do {
+                try database.write { db in
+                    try db.drop(table: tableName)
+                }
+            } catch {
+                Current.Log.verbose(
+                    "Failed or not needed to drop obsolete GRDB table \(tableName), error: \(error.localizedDescription)"
+                )
             }
-        } catch {
-            let errorMessage =
-                "Failed or not needed delete client event GRDB info, error: \(error.localizedDescription)"
-            Current.Log.verbose(errorMessage)
         }
     }
 }

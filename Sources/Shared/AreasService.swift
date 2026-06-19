@@ -59,9 +59,9 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func fetchEntitiesFromDatabase(serverId: String) -> [AppEntityRegistry] {
+    private func fetchEntitiesFromDatabase(serverId: String) -> [EntityRegistryListForDisplay.Entity] {
         do {
-            return try AppEntityRegistry.config(serverId: serverId)
+            return try EntityRegistryListForDisplay.Entity.config(serverId: serverId)
         } catch {
             Current.Log.error("Failed to fetch entities from database: \(error.localizedDescription)")
             return []
@@ -79,7 +79,7 @@ final class AreasService: AreasServiceProtocol {
 
     private func getAllEntitiesFromArea(
         devicesAndAreas: [AppDeviceRegistry],
-        entitiesAndAreas: [AppEntityRegistry]
+        entitiesAndAreas: [EntityRegistryListForDisplay.Entity]
     ) -> [String: Set<String>] {
         /// area_id : Set<device_id>
         var areasAndDevicesDict: [String: Set<String>] = [:]
@@ -101,7 +101,7 @@ final class AreasService: AreasServiceProtocol {
 
         // Single pass through entities: add to areas and build device->entities mapping
         for entity in entitiesAndAreas {
-            guard let entityId = entity.entityId else { continue }
+            let entityId = entity.entityId
 
             // Add entity directly to its area
             if let areaId = entity.areaId {
@@ -128,7 +128,7 @@ final class AreasService: AreasServiceProtocol {
     /// For testing purposes only
     public func testGetAllEntitiesFromArea(
         devicesAndAreas: [AppDeviceRegistry],
-        entitiesAndAreas: [AppEntityRegistry]
+        entitiesAndAreas: [EntityRegistryListForDisplay.Entity]
     ) -> [String: Set<String>] {
         getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
     }

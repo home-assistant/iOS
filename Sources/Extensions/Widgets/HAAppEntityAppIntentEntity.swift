@@ -5,7 +5,7 @@ import Shared
 import WidgetKit
 
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
-struct HAAppEntityAppIntentEntity: AppEntity {
+struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Entity")
 
     static let defaultQuery = HAAppEntityAppIntentEntityQuery()
@@ -21,27 +21,8 @@ struct HAAppEntityAppIntentEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: .init(stringLiteral: subtitle)
+            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
-    }
-
-    private var subtitle: String {
-        var subtitle = ""
-        if let areaName {
-            subtitle += areaName
-        }
-
-        if let deviceName,
-           deviceName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != displayString.lowercased()
-           .trimmingCharacters(in: .whitespacesAndNewlines) {
-            if subtitle.isEmpty {
-                subtitle += deviceName
-            } else {
-                subtitle += " → \(deviceName)"
-            }
-        }
-
-        return subtitle
     }
 
     init(

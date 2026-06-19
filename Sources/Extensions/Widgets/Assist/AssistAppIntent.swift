@@ -28,7 +28,7 @@ struct AssistAppIntent: AppIntent {
             guard let server = Current.servers.all
                 .first(where: { $0.identifier.rawValue == pipeline.serverId }) ?? Current
                 .servers.all.first else { return }
-            Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+            Current.sceneManager.webViewControllerPromise
                 .done { webViewController in
                     webViewController.webViewExternalMessageHandler.showAssist(
                         server: server,

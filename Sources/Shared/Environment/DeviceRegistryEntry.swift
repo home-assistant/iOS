@@ -112,7 +112,7 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
 
 // MARK: - Database Model
 
-public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord {
+public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Equatable {
     public static var databaseTableName: String = GRDBDatabaseTable.deviceRegistry.rawValue
     public let serverId: String
 

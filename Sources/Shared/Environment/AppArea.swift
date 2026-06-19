@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 import HAKit
 
-public struct AppArea: Codable, FetchableRecord, PersistableRecord {
+public struct AppArea: Codable, FetchableRecord, PersistableRecord, Equatable {
     /// serverId-areaId
     public let id: String
     public let serverId: String

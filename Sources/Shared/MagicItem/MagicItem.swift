@@ -156,12 +156,24 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public let name: String
         public let iconName: String
         public let customization: Customization?
+        /// Optional secondary "context" line shown under the name on configuration screens
+        /// (`[Server • ]Area • Device`). `nil` when there's nothing meaningful to show, or for item
+        /// types without entity context (folders, assist pipelines/prompts). Populated by
+        /// `MagicItemProvider.getInfo`; not used when rendering the item itself on a widget/watch face.
+        public let contextSubtitle: String?
 
-        public init(id: String, name: String, iconName: String, customization: Customization? = nil) {
+        public init(
+            id: String,
+            name: String,
+            iconName: String,
+            customization: Customization? = nil,
+            contextSubtitle: String? = nil
+        ) {
             self.id = id
             self.name = name
             self.iconName = iconName
             self.customization = customization
+            self.contextSubtitle = contextSubtitle
         }
     }
 
@@ -380,20 +392,58 @@ public extension MagicItem {
         Color.haPrimary.hex() ?? Color.brand50.hex() ?? ""
     }
 
-    // currentItemState is used only for lock domain since it can't be toggled
+    /// Single entry point for executing a magic item.
+    ///
+    /// Behavior depends on the platform: watchOS cannot use HAKit's WebSocket transport — raw/stream
+    /// sockets are denied by NECP policy on real watch devices (see Starscream #957 / Apple DTS thread
+    /// 127232) — so it executes via the Home Assistant REST API over `URLSession`, which is the only
+    /// networking watchOS reliably supports and which inherits our mTLS client-certificate handling.
+    /// Every other platform executes through the existing `HomeAssistantAPI` paths: scripts and scenes
+    /// via the webhook API (`CallService`) and entity/lock actions over the WebSocket connection.
+    ///
+    /// `currentItemState` is used only for the lock domain, since it can't be toggled.
     func execute(
         on server: Server,
         source: AppTriggerSource,
         currentItemState: String = "",
-        completion: @escaping (Bool) -> Void
+        completion: @escaping (Bool, Error?) -> Void
     ) {
+        #if os(watchOS)
+        executeViaREST(on: server, currentItemState: currentItemState, completion: completion)
+        #else
+        executeViaWebSocket(
+            on: server,
+            source: source,
+            currentItemState: currentItemState,
+            completion: completion
+        )
+        #endif
+    }
+
+    #if !os(watchOS)
+    private func executeViaWebSocket(
+        on server: Server,
+        source: AppTriggerSource,
+        currentItemState: String,
+        completion: @escaping (Bool, Error?) -> Void
+    ) {
+        // Fail fast (and audibly) when there's no usable connection — e.g. the watch can't resolve
+        // an active URL because it isn't on the internal network and no external/cloud URL exists.
+        // Previously this path returned without ever calling `completion`, which surfaced as a
+        // silent failure (the caller's UI just timed out).
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available while executing magic item \(id)")
+            completion(false, ServerConnectionError.noActiveURL(server.info.name))
+            return
+        }
+
         do {
-            if let request: Promise<Void> = try {
+            let request: Promise<Void>? = try {
                 switch type {
                 case .script:
                     let domain = Domain.script.rawValue
                     let service = id.replacingOccurrences(of: "\(domain).", with: "")
-                    return Current.api(for: server)?.CallService(
+                    return api.CallService(
                         domain: domain,
                         service: service,
                         serviceData: [:],
@@ -402,7 +452,7 @@ public extension MagicItem {
                     )
                 case .scene:
                     let domain = Domain.scene.rawValue
-                    return Current.api(for: server)?.CallService(
+                    return api.CallService(
                         domain: domain,
                         service: Service.turnOn.rawValue,
                         serviceData: [
@@ -425,23 +475,27 @@ public extension MagicItem {
                     // Folders and assist items don't execute direct actions
                     return nil
                 }
-            }() {
-                request.pipe(to: { result in
-                    switch result {
-                    case .fulfilled:
-                        Current.Log.verbose("Success executing magic item \(id)")
-                        completion(true)
-                    case let .rejected(error):
-                        Current.Log.error("Error while executing magic item \(id): \(error.localizedDescription)")
-                        completion(false)
-                    }
-                })
-            } else {
-                Current.Log.error("No request available while executing magic item \(id)")
+            }()
+
+            guard let request else {
+                // Nothing to execute for this item type (e.g. folder) — treat as a no-op success.
+                completion(true, nil)
+                return
             }
+
+            request.pipe(to: { result in
+                switch result {
+                case .fulfilled:
+                    Current.Log.verbose("Success executing magic item \(id)")
+                    completion(true, nil)
+                case let .rejected(error):
+                    Current.Log.error("Error while executing magic item \(id): \(error.localizedDescription)")
+                    completion(false, error)
+                }
+            })
         } catch {
             Current.Log.error("Error while executing magic item (2): \(error.localizedDescription)")
-            completion(false)
+            completion(false, error)
         }
     }
 
@@ -476,4 +530,180 @@ public extension MagicItem {
             return .value
         }
     }
+    #endif
+
+    #if os(watchOS)
+    /// The Home Assistant `call_service` (domain / service / data) that running this item performs.
+    private struct WatchServiceCall {
+        let domain: String
+        let service: String
+        let data: [String: Any]
+    }
+
+    /// watchOS executes via the REST API — see `execute(on:source:currentItemState:completion:)`.
+    /// The request reuses the server's mTLS-aware `URLSession` and bearer token (token refresh already
+    /// works over `URLSession` on the watch), so no WebSocket is involved.
+    private func executeViaREST(
+        on server: Server,
+        currentItemState: String,
+        completion: @escaping (Bool, Error?) -> Void
+    ) {
+        let serviceCall: WatchServiceCall?
+        do {
+            serviceCall = try resolveServiceCall(currentItemState: currentItemState)
+        } catch {
+            Current.Log.error("Error resolving service for magic item \(id): \(error.localizedDescription)")
+            completion(false, error)
+            return
+        }
+
+        guard let serviceCall else {
+            // Item types without a direct action (folder/assist) — treat as a no-op success.
+            completion(true, nil)
+            return
+        }
+
+        var connectionInfo = server.info.connection
+        guard let baseURL = connectionInfo.activeURL() else {
+            Current.Log.error("No active URL while executing magic item \(id) on watch")
+            completion(false, ServerConnectionError.noActiveURL(server.info.name))
+            return
+        }
+
+        let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+        tokenManager.bearerToken.done { token, _ in
+            self.sendRESTServiceCall(
+                baseURL: baseURL,
+                server: server,
+                token: token,
+                serviceCall: serviceCall,
+                completion: completion
+            )
+        }.catch { error in
+            Current.Log.error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
+            completion(false, error)
+        }
+    }
+
+    /// Maps this item to the service call it performs, mirroring the WebSocket path. Returns nil for
+    /// item types that don't map to a service (folder, assist, no-op lock state).
+    private func resolveServiceCall(currentItemState: String) throws -> WatchServiceCall? {
+        switch type {
+        case .script:
+            let domain = Domain.script.rawValue
+            let service = id.replacingOccurrences(of: "\(domain).", with: "")
+            return WatchServiceCall(domain: domain, service: service, data: [:])
+        case .scene:
+            return WatchServiceCall(
+                domain: Domain.scene.rawValue,
+                service: Service.turnOn.rawValue,
+                data: ["entity_id": id]
+            )
+        case .entity:
+            guard let domain else {
+                throw MagicItemError.unknownDomain
+            }
+            if domain == .lock {
+                guard let state = Domain.State(rawValue: currentItemState) else { return nil }
+                switch state {
+                case .unlocking, .unlocked, .opening:
+                    return WatchServiceCall(
+                        domain: Domain.lock.rawValue,
+                        service: Service.lock.rawValue,
+                        data: ["entity_id": id]
+                    )
+                case .locked, .locking:
+                    return WatchServiceCall(
+                        domain: Domain.lock.rawValue,
+                        service: Service.unlock.rawValue,
+                        data: ["entity_id": id]
+                    )
+                default:
+                    return nil
+                }
+            } else {
+                guard let action = domain.mainAction else { return nil }
+                return WatchServiceCall(domain: domain.rawValue, service: action.rawValue, data: ["entity_id": id])
+            }
+        case .folder, .assistPipeline, .assistPrompt, .unsupported:
+            return nil
+        }
+    }
+
+    private func sendRESTServiceCall(
+        baseURL: URL,
+        server: Server,
+        token: String,
+        serviceCall: WatchServiceCall,
+        completion: @escaping (Bool, Error?) -> Void
+    ) {
+        let url = baseURL
+            .appendingPathComponent("api")
+            .appendingPathComponent("services")
+            .appendingPathComponent(serviceCall.domain)
+            .appendingPathComponent(serviceCall.service)
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
+        // Surface (rather than silently drop) encoding failures before starting the request.
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: serviceCall.data, options: [])
+        } catch {
+            completion(false, error)
+            return
+        }
+
+        Current.Log.info("Executing magic item \(id) via REST: POST \(url.absoluteString)")
+
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        let task = session.dataTask(with: request) { [session] data, response, error in
+            // The session strongly retains its delegate until invalidated; do it once the task ends.
+            defer { session.finishTasksAndInvalidate() }
+
+            if let error {
+                Current.Log.error("REST execution of magic item \(self.id) failed: \(error.localizedDescription)")
+                completion(false, error)
+                return
+            }
+
+            guard let http = response as? HTTPURLResponse else {
+                completion(false, WatchRESTExecutionError.invalidResponse)
+                return
+            }
+
+            if (200 ..< 300).contains(http.statusCode) {
+                Current.Log.verbose("Success executing magic item \(self.id) via REST")
+                completion(true, nil)
+            } else {
+                let body = data.flatMap { String(data: $0, encoding: .utf8) }
+                Current.Log.error(
+                    "REST execution of magic item \(self.id) returned \(http.statusCode): \(body ?? "<no body>")"
+                )
+                completion(false, WatchRESTExecutionError.httpStatus(http.statusCode, body: body))
+            }
+        }
+        task.resume()
+    }
+
+    private enum WatchRESTExecutionError: LocalizedError {
+        case invalidResponse
+        case httpStatus(_ statusCode: Int, body: String?)
+
+        var errorDescription: String? {
+            switch self {
+            case .invalidResponse:
+                return L10n.Watch.Home.Run.Error.message
+            case let .httpStatus(_, body):
+                // Home Assistant returns a human-readable message on failure; surface it when present.
+                if let body, !body.isEmpty {
+                    return body
+                }
+                return L10n.Watch.Home.Run.Error.message
+            }
+        }
+    }
+    #endif
 }

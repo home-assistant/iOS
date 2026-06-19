@@ -210,6 +210,101 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
 
+    func testInternalPortRedirectIsAdopted() throws {
+        Current.connectivity.currentWiFiSSID = { nil }
+
+        // Login web view ended up on a different port than the URL we started the internal attempt with.
+        let result = auth(
+            internalLoginResult: .value(.init(
+                code: "code1",
+                resolvedURL: URL(string: "https://internal.homeassistant:8124")
+            ))
+        )
+        let server = try hang(result)
+
+        let connectionInfo = server.info.connection
+        // internal URL adopts the redirected port; external is left untouched
+        XCTAssertEqual(connectionInfo.address(for: .internal), URL(string: "https://internal.homeassistant:8124"))
+        XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
+    }
+
+    func testHostChangeDuringLoginIsNotAdopted() throws {
+        Current.connectivity.currentWiFiSSID = { nil }
+
+        // Different host should never be adopted; keep the original internal URL.
+        let result = auth(
+            internalLoginResult: .value(.init(
+                code: "code1",
+                resolvedURL: URL(string: "https://different.homeassistant:8124")
+            ))
+        )
+        let server = try hang(result)
+
+        let connectionInfo = server.info.connection
+        XCTAssertEqual(connectionInfo.address(for: .internal), instance.internalURL)
+        XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
+    }
+
+    func testInstanceAdoptingResolvedURL() throws {
+        var instance = DiscoveredHomeAssistant(manualURL: URL(string: "https://external.homeassistant:8123")!)
+        instance.internalURL = URL(string: "https://internal.homeassistant:8123")!
+        let attempted = try XCTUnwrap(instance.internalURL)
+
+        // nil resolved → unchanged
+        XCTAssertEqual(
+            OnboardingAuth.instance(instance, adoptingResolvedURL: nil, attemptedURL: attempted),
+            instance
+        )
+
+        // identical base → unchanged
+        XCTAssertEqual(
+            OnboardingAuth.instance(
+                instance,
+                adoptingResolvedURL: URL(string: "https://internal.homeassistant:8123/auth/authorize?x=1"),
+                attemptedURL: attempted
+            ),
+            instance
+        )
+
+        // port change on the matching slot → adopted, other slot untouched
+        let portChanged = OnboardingAuth.instance(
+            instance,
+            adoptingResolvedURL: URL(string: "https://internal.homeassistant:8124/auth/authorize"),
+            attemptedURL: attempted
+        )
+        XCTAssertEqual(portChanged.internalURL, URL(string: "https://internal.homeassistant:8124"))
+        XCTAssertEqual(portChanged.externalURL, instance.externalURL)
+
+        // https->http downgrade → NOT adopted (transport must not be downgraded)
+        let downgraded = OnboardingAuth.instance(
+            instance,
+            adoptingResolvedURL: URL(string: "http://internal.homeassistant:8123"),
+            attemptedURL: attempted
+        )
+        XCTAssertEqual(downgraded.internalURL, instance.internalURL)
+
+        // http->https upgrade → adopted
+        var httpInstance = DiscoveredHomeAssistant(manualURL: URL(string: "https://external.homeassistant:8123")!)
+        httpInstance.internalURL = URL(string: "http://internal.homeassistant:8123")!
+        let httpAttempted = try XCTUnwrap(httpInstance.internalURL)
+        let upgraded = OnboardingAuth.instance(
+            httpInstance,
+            adoptingResolvedURL: URL(string: "https://internal.homeassistant:8123"),
+            attemptedURL: httpAttempted
+        )
+        XCTAssertEqual(upgraded.internalURL, URL(string: "https://internal.homeassistant:8123"))
+
+        // different host → ignored
+        XCTAssertEqual(
+            OnboardingAuth.instance(
+                instance,
+                adoptingResolvedURL: URL(string: "https://elsewhere.homeassistant:8124"),
+                attemptedURL: attempted
+            ),
+            instance
+        )
+    }
+
     func testOrderPostCommands() throws {
         let postBefore1 = Promise<Void>.pending()
         let postRegister1 = Promise<Void>.pending()
@@ -282,8 +377,8 @@ class OnboardingAuthTests: XCTestCase {
         includeInternal: Bool = true,
         includeExternal: Bool = true,
         preBeforeAuth: [Promise<Void>] = [.value(()), .value(()), .value(())],
-        internalLoginResult: Promise<String> = .value("code1"),
-        externalLoginResult: Promise<String> = .value("code1"),
+        internalLoginResult: Promise<OnboardingAuthLoginResult> = .value(.init(code: "code1", resolvedURL: nil)),
+        externalLoginResult: Promise<OnboardingAuthLoginResult> = .value(.init(code: "code1", resolvedURL: nil)),
         tokenResult: Promise<TokenInfo> = .value(TokenInfo(
             accessToken: "access_token1",
             refreshToken: "refresh_token1",
@@ -347,7 +442,7 @@ class OnboardingAuthTests: XCTestCase {
         auth.postSteps = postSteps
 
         var expectedDetails: [OnboardingAuthDetails] = []
-        var loginResults: [Promise<String>] = []
+        var loginResults: [Promise<OnboardingAuthLoginResult>] = []
 
         if includeInternal, let internalURL = instance.internalURL {
             expectedDetails.append(try! .init(baseURL: internalURL))
@@ -365,7 +460,7 @@ class OnboardingAuthTests: XCTestCase {
         )
         auth.tokenExchange = FakeOnboardingAuthTokenExchange(
             result: tokenResult,
-            expectedCode: internalLoginResult.value ?? externalLoginResult.value
+            expectedCode: internalLoginResult.value?.code ?? externalLoginResult.value?.code
         )
 
         return auth.authenticate(to: instance, sender: UIViewController())
@@ -392,16 +487,16 @@ protocol FakeAuthStepResultable {
 }
 
 class FakeOnboardingAuthLogin: OnboardingAuthLogin {
-    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<String> {
+    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<OnboardingAuthLoginResult> {
         let expected = expectedDetails.removeFirst()
         XCTAssertEqual(authDetails, expected)
         return results.removeFirst()
     }
 
     var expectedDetails: [OnboardingAuthDetails]
-    var results: [Promise<String>]
+    var results: [Promise<OnboardingAuthLoginResult>]
 
-    init(expectedDetails: [OnboardingAuthDetails?], results: [Promise<String>]) {
+    init(expectedDetails: [OnboardingAuthDetails?], results: [Promise<OnboardingAuthLoginResult>]) {
         self.expectedDetails = expectedDetails.compactMap { $0 }
         self.results = results
     }

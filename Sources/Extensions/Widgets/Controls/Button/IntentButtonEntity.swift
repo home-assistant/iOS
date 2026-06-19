@@ -5,7 +5,7 @@ import SFSafeSymbols
 import Shared
 
 @available(iOS 18.0, *)
-struct IntentButtonEntity: AppEntity {
+struct IntentButtonEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Button")
 
     static let defaultQuery = IntentButtonAppEntityQuery()
@@ -14,22 +14,31 @@ struct IntentButtonEntity: AppEntity {
     var id: String
     var entityId: String
     var serverId: String
+    var areaName: String?
+    var deviceName: String?
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(displayString)")
+        DisplayRepresentation(
+            title: "\(displayString)",
+            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
+        )
     }
 
     init(
         id: String,
         entityId: String,
         serverId: String,
+        areaName: String? = nil,
+        deviceName: String? = nil,
         displayString: String,
         iconName: String
     ) {
         self.id = id
         self.entityId = entityId
         self.serverId = serverId
+        self.areaName = areaName
+        self.deviceName = deviceName
         self.displayString = displayString
         self.iconName = iconName
     }
@@ -37,26 +46,37 @@ struct IntentButtonEntity: AppEntity {
 
 @available(iOS 18.0, *)
 struct IntentButtonAppEntityQuery: EntityQuery, EntityStringQuery {
+    #if WIDGET_EXTENSION
+    @IntentParameterDependency<ControlButtonConfiguration>(\.$server)
+    var config
+    #endif
+
     func entities(for identifiers: [String]) async throws -> [IntentButtonEntity] {
         await getButtonEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentButtonEntity> {
-        let buttonsPerServer = await getButtonEntities()
-
-        return .init(sections: buttonsPerServer.map { (key: Server, value: [IntentButtonEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value.filter({ $0.displayString.lowercased().contains(string.lowercased()) })
-            )
-        })
+        await collection(for: getButtonEntities(matching: string))
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentButtonEntity> {
-        let buttonsPerServer = await getButtonEntities()
+        await collection(for: getButtonEntities())
+    }
 
-        return .init(sections: buttonsPerServer.map { (key: Server, value: [IntentButtonEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+    /// Scopes the list to the server picked in the configuration (flat list). When no server is
+    /// selected (e.g. a widget configured before this option existed), falls back to grouping
+    /// every server's entities into sections.
+    private func collection(
+        for entitiesPerServer: [(Server, [IntentButtonEntity])]
+    ) -> IntentItemCollection<IntentButtonEntity> {
+        #if WIDGET_EXTENSION
+        if let server = config?.server {
+            let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
+            return .init(items: items)
+        }
+        #endif
+        return .init(sections: entitiesPerServer.map { server, items in
+            .init(.init(stringLiteral: server.info.name), items: items)
         })
     }
 
@@ -65,11 +85,15 @@ struct IntentButtonAppEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: [.button, .inputButton]).getEntities(matching: string)
 
         for (server, values) in entities {
+            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let areasMap = values.areasMap(for: server.identifier.rawValue)
             buttonEntities.append((server, values.map({ entity in
                 IntentButtonEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
+                    areaName: areasMap[entity.entityId]?.name,
+                    deviceName: deviceMap[entity.entityId]?.name,
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.circleCircle.rawValue
                 )

@@ -121,6 +121,30 @@ public struct AnyCodable: Codable {
     }
 }
 
+extension AnyCodable: Equatable {
+    /// Structural equality over the value cases produced by `init(from:)`. A type mismatch
+    /// (including Int vs Double) compares unequal. Arrays compare element-wise (ordered);
+    /// dictionaries compare order-independently.
+    public static func == (lhs: AnyCodable, rhs: AnyCodable) -> Bool {
+        switch (lhs.value, rhs.value) {
+        case let (lhs as Bool, rhs as Bool):
+            return lhs == rhs
+        case let (lhs as Int, rhs as Int):
+            return lhs == rhs
+        case let (lhs as Double, rhs as Double):
+            return lhs == rhs
+        case let (lhs as String, rhs as String):
+            return lhs == rhs
+        case let (lhs as [Any], rhs as [Any]):
+            return lhs.map(AnyCodable.init) == rhs.map(AnyCodable.init)
+        case let (lhs as [String: Any], rhs as [String: Any]):
+            return lhs.mapValues(AnyCodable.init) == rhs.mapValues(AnyCodable.init)
+        default:
+            return false
+        }
+    }
+}
+
 public extension ClientEvent.EventType {
     var displayText: String {
         switch self {

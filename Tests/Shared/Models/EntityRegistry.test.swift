@@ -1,62 +1,110 @@
 import Foundation
+import GRDB
+import HAKit
 @testable import Shared
 import Testing
 
 @Suite("Entity Registry Tests")
 struct EntityRegistryTests {
-    @Test("Decode entity registry entry from JSON file")
-    func decodeEntityRegistryFromFile() async throws {
-        let bundle = Bundle(for: ClientEventTests.self)
+    @Test("isHidden reflects the hidden flag")
+    func isHiddenReflectsFlag() {
+        #expect(EntityRegistryListForDisplay.Entity(entityId: "x", hidden: true).isHidden == true)
+        #expect(EntityRegistryListForDisplay.Entity(entityId: "x", hidden: false).isHidden == false)
+        #expect(EntityRegistryListForDisplay.Entity(entityId: "x").isHidden == false)
+    }
 
-        guard let url = bundle.url(forResource: "entityregistry", withExtension: "json") else {
-            Issue.record("Could not find entityregistry.json in any bundle. Make sure it's added to the test target.")
-            return
+    @Test("serverId defaults to empty and is assignable before persistence")
+    func serverIdAssignable() {
+        var entity = EntityRegistryListForDisplay.Entity(entityId: "x")
+        #expect(entity.serverId == "")
+        entity.serverId = "server-1"
+        #expect(entity.serverId == "server-1")
+    }
+
+    @Test("Retains display fields and the raw entity category index")
+    func retainsFields() {
+        let entity = EntityRegistryListForDisplay.Entity(
+            entityId: "sensor.temperature",
+            deviceId: "device-123",
+            name: "Temperatura",
+            entityCategory: 1,
+            decimalPlaces: 1,
+            areaId: "bedroom"
+        )
+
+        #expect(entity.entityId == "sensor.temperature")
+        #expect(entity.deviceId == "device-123")
+        #expect(entity.name == "Temperatura")
+        #expect(entity.entityCategory == 1)
+        #expect(entity.decimalPlaces == 1)
+        #expect(entity.areaId == "bedroom")
+    }
+}
+
+@Suite("AppEntitiesModel display-name resolution")
+struct AppEntitiesModelNameResolutionTests {
+    private func makeEntity(_ entityId: String, friendlyName: String?) throws -> HAEntity {
+        var attributes: [String: Any] = [:]
+        if let friendlyName {
+            attributes["friendly_name"] = friendlyName
+        }
+        return try HAEntity(
+            entityId: entityId,
+            state: "on",
+            lastChanged: Date(),
+            lastUpdated: Date(),
+            attributes: attributes,
+            context: .init(id: "context", userId: "user", parentId: nil)
+        )
+    }
+
+    /// `AppEntitiesModel` bakes the registry display name (`list_for_display` `en`) into
+    /// `HAAppEntity.name` at write time, falling back to the live `friendly_name`, then the entity id.
+    /// A second pass with identical data leaves the names stable — the skip-write compares
+    /// display-name vs display-name, so an unchanged refresh does not churn the table.
+    @Test("name resolves to registry en, else friendly_name, else entityId; and is idempotent")
+    func resolvesAndPersistsDisplayName() async throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        try HAppEntityTable().createIfNeeded(database: database)
+        try DisplayEntityRegistryTable().createIfNeeded(database: database)
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let serverId = "name-resolution-test"
+        let server = Server.fake(identifier: .init(rawValue: serverId))
+
+        // Seed the registry: "light.kitchen" has a custom name (`en`); the others have no registry row.
+        try await database.write { db in
+            var registry = EntityRegistryListForDisplay.Entity(entityId: "light.kitchen", name: "Custom Kitchen")
+            registry.serverId = serverId
+            try registry.insert(db)
         }
 
-        let jsonData = try Data(contentsOf: url)
+        let entities: Set<HAEntity> = try [
+            makeEntity("light.kitchen", friendlyName: "Kitchen Light"),
+            makeEntity("switch.pump", friendlyName: "Pump"),
+            makeEntity("sensor.untitled", friendlyName: nil),
+        ]
 
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let entries = try decoder.decode([EntityRegistryEntry].self, from: jsonData)
-
-        #expect(entries.count == 4913, "Expected 4913 entries, found \(entries.count)")
-
-        // Validate the first entry
-        let firstEntry = try #require(entries.first, "Expected at least one entry in the registry")
-
-        #expect(firstEntry.areaId == nil)
-        #expect(firstEntry.configEntryId == "27f48e744a782b41f674111ff39e84e5")
-        #expect(firstEntry.deviceId == "45bb06f969341e46077016df63f2054f")
-        #expect(firstEntry.disabledBy == nil)
-        #expect(firstEntry.entityCategory == "config")
-        #expect(firstEntry.entityId == "update.home_assistant_supervisor_update")
-        #expect(firstEntry.hasEntityName == true)
-        #expect(firstEntry.hiddenBy == nil)
-        #expect(firstEntry.icon == nil)
-        #expect(firstEntry.labels == [])
-        #expect(firstEntry.name == nil)
-        #expect(firstEntry.originalName == "Update")
-        #expect(firstEntry.platform == "hassio")
-        #expect(firstEntry.translationKey == "update")
-        #expect(firstEntry.uniqueId == "home_assistant_supervisor_version_latest")
-
-        // Validate the options dictionary structure
-        let options = try #require(firstEntry.options, "Expected options to be present")
-        #expect(options.keys.contains("conversation"), "Expected 'conversation' key in options")
-
-        if let conversationOptions = options["conversation"] {
-            #expect(
-                conversationOptions.keys.contains("should_expose"),
-                "Expected 'should_expose' key in conversation options"
-            )
+        func storedNames() async throws -> [String: String] {
+            let rows = try await database.read { db in
+                try HAAppEntity
+                    .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
+                    .fetchAll(db)
+            }
+            return Dictionary(uniqueKeysWithValues: rows.map { ($0.entityId, $0.name) })
         }
 
-        // Validate computed properties
-        #expect(firstEntry.displayName == "Update")
-        #expect(firstEntry.displayIcon == nil)
-        #expect(firstEntry.isDisabled == false)
-        #expect(firstEntry.isHidden == false)
-        #expect(firstEntry.isConfiguration == true)
-        #expect(firstEntry.isDiagnostic == false)
+        await AppEntitiesModel().updateModel(entities, server: server)
+        let names = try await storedNames()
+        #expect(names["light.kitchen"] == "Custom Kitchen") // registry `en` preferred over friendly_name
+        #expect(names["switch.pump"] == "Pump") // falls back to friendly_name
+        #expect(names["sensor.untitled"] == "sensor.untitled") // falls back to entityId
+
+        // Idempotent: a second pass with identical data + registry keeps the resolved names stable.
+        await AppEntitiesModel().updateModel(entities, server: server)
+        let namesAfterSecondPass = try await storedNames()
+        #expect(namesAfterSecondPass == names)
     }
 }

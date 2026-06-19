@@ -44,45 +44,47 @@ enum SettingsItem: String, Hashable, CaseIterable {
         }
     }
 
+    private static let iconSize: CGFloat = 24
+
     var icon: some View {
         Group {
             switch self {
             case .servers:
-                MaterialDesignIconsImage(icon: .serverIcon, size: 24)
+                MaterialDesignIconsImage(icon: .serverIcon, size: Self.iconSize)
             case .general:
-                MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: Self.iconSize)
             case .gestures:
-                MaterialDesignIconsImage(icon: .gestureIcon, size: 24)
+                MaterialDesignIconsImage(icon: .gestureIcon, size: Self.iconSize)
             case .kiosk:
-                MaterialDesignIconsImage(icon: .tabletIcon, size: 24)
+                MaterialDesignIconsImage(icon: .tabletIcon, size: Self.iconSize)
             case .location:
-                MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: 24)
+                MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: Self.iconSize)
             case .notifications:
-                MaterialDesignIconsImage(icon: .bellOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .bellOutlineIcon, size: Self.iconSize)
             case .liveActivities:
-                MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: Self.iconSize)
             case .sensors:
-                MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: 24)
+                MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: Self.iconSize)
             case .nfc:
-                MaterialDesignIconsImage(icon: .nfcVariantIcon, size: 24)
+                MaterialDesignIconsImage(icon: .nfcVariantIcon, size: Self.iconSize)
             case .widgets:
-                MaterialDesignIconsImage(icon: .widgetsIcon, size: 24)
+                MaterialDesignIconsImage(icon: .widgetsIcon, size: Self.iconSize)
             case .appIconShortcuts:
-                MaterialDesignIconsImage(icon: .applicationIcon, size: 24)
+                MaterialDesignIconsImage(icon: .applicationIcon, size: Self.iconSize)
             case .watch:
-                MaterialDesignIconsImage(icon: .watchVariantIcon, size: 24)
+                MaterialDesignIconsImage(icon: .watchVariantIcon, size: Self.iconSize)
             case .carPlay:
-                MaterialDesignIconsImage(icon: .carBackIcon, size: 24)
+                MaterialDesignIconsImage(icon: .carBackIcon, size: Self.iconSize)
             case .complications:
-                MaterialDesignIconsImage(icon: .chartDonutIcon, size: 24)
+                MaterialDesignIconsImage(icon: .chartDonutIcon, size: Self.iconSize)
             case .help:
-                MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: Self.iconSize)
             case .privacy:
-                MaterialDesignIconsImage(icon: .lockOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .lockOutlineIcon, size: Self.iconSize)
             case .debugging:
-                MaterialDesignIconsImage(icon: .bugIcon, size: 24)
+                MaterialDesignIconsImage(icon: .bugIcon, size: Self.iconSize)
             case .whatsNew:
-                MaterialDesignIconsImage(icon: .starIcon, size: 24)
+                MaterialDesignIconsImage(icon: .starIcon, size: Self.iconSize)
             }
         }
     }

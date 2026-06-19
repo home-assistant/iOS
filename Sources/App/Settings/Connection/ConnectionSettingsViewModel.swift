@@ -249,7 +249,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
         } else {
-            Current.sceneManager.webViewWindowControllerPromise.done {
+            Current.sceneManager.appCoordinator.done {
                 $0.open(server: self.server)
             }
         }

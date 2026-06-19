@@ -88,7 +88,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             return
         }
 
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+        Current.sceneManager.webViewControllerPromise
             .done { webViewController in
                 let view = CameraPlayerView(
                     server: self.cameraServer(from: userInfo, fallback: webViewController.server),
@@ -183,7 +183,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }
 
     @objc private func hideCameraFromNotification() {
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+        Current.sceneManager.webViewControllerPromise
             .done { webViewController in
                 guard let cameraOverlayController = self.cameraOverlayController,
                       webViewController.overlayedController === cameraOverlayController else {
@@ -412,7 +412,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if let url = urlString(from: response) {
             Current.Log.info("launching URL \(url)")
-            Current.sceneManager.webViewWindowControllerPromise.done {
+            Current.sceneManager.appCoordinator.done {
                 $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
             }
         }
@@ -432,7 +432,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if response.notification.request.identifier == NotificationIdentifier.carPlayIntro.rawValue {
             Current.Log.info("Launching CarPlay configuration screen")
-            Current.sceneManager.webViewWindowControllerPromise.done {
+            Current.sceneManager.appCoordinator.done {
                 let carPlayView = CarPlayConfigurationView().embeddedInHostingController()
                 $0.present(carPlayView)
             }
@@ -526,8 +526,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         .navigationViewStyle(.stack)
         let hostingController = rootView.embeddedInHostingController()
 
-        Current.sceneManager.webViewWindowControllerPromise.done {
-            var rootViewController = $0.window.rootViewController
+        Current.sceneManager.appCoordinator.done {
+            var rootViewController = $0.window?.rootViewController
             if let navigationController = rootViewController as? UINavigationController {
                 rootViewController = navigationController.viewControllers.first
             }

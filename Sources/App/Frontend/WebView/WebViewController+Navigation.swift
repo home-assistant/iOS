@@ -94,14 +94,7 @@ extension WebViewController {
 
     func showSettingsViewController() {
         getLatestConfig()
-        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            Current.sceneManager.activateAnyScene(for: .settings)
-        } else {
-            // Use SwiftUI SettingsView wrapped in hosting controller
-            let settingsView = SettingsView().embeddedInHostingController()
-            settingsView.view.tag = WebViewControllerOverlayedViewTags.settingsView.rawValue
-            presentOverlayController(controller: settingsView, animated: true)
-        }
+        Current.sceneManager.appCoordinator.done { $0.showSettings() }
     }
 
     func getLatestConfig() {
