@@ -147,6 +147,11 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return
         }
 
+        guard Current.isTestFlight else {
+            Current.Log.info("LiveActivityRegistry: start gated to TestFlight, skipping tag \(tag)")
+            return
+        }
+
         // START path — guard against duplicates with reservation
         guard reserve(id: tag) else {
             if reserved.contains(tag) {
