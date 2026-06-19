@@ -1,24 +1,39 @@
 import AppKit
 
 class MacBridgeStatusItem: NSObject, NSMenuDelegate {
-    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    private var statusItem: NSStatusItem?
     private var lastConfiguration: MacBridgeStatusItemConfiguration?
 
-    override init() {
-        super.init()
-        statusItem.button?.imagePosition = .imageLeading
-        statusItem.button?.target = self
-        statusItem.button?.action = #selector(statusItemTapped(_:))
-        statusItem.button?.sendAction(on: [.leftMouseUp, .leftMouseDown, .rightMouseDown])
+    /// Returns the status item, creating and wiring it on first use.
+    ///
+    /// `NSStatusBar`/`NSStatusItem` are main-thread-only. This bridge is owned by `Current`, whose backing
+    /// `AppEnvironment` is created lazily on the first touch of `Current` anywhere — which, under the SwiftUI
+    /// app lifecycle, can be a background thread (e.g. an early `Current.Log` call). Creating the item and
+    /// wiring its button's `target`/`action` off the main thread leaves the button rendering its image (set
+    /// from `buildMenu`, which runs on main) yet never receiving clicks, so the icon looks inert. Deferring
+    /// creation to here — first reached via `configure(using:)` on the main-thread `buildMenu` path — keeps
+    /// all of it on the main thread without the deadlock risk of a synchronous main-thread hop during the
+    /// `Current` initialiser.
+    @discardableResult
+    private func ensureStatusItem() -> NSStatusItem {
+        if let statusItem { return statusItem }
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        item.button?.imagePosition = .imageLeading
+        item.button?.target = self
+        item.button?.action = #selector(statusItemTapped(_:))
+        item.button?.sendAction(on: [.leftMouseUp, .leftMouseDown, .rightMouseDown])
+        statusItem = item
+        return item
     }
 
     func configure(title: String) {
-        statusItem.button?.title = title
+        ensureStatusItem().button?.title = title
     }
 
     func configure(using configuration: MacBridgeStatusItemConfiguration) {
         lastConfiguration = configuration
 
+        let statusItem = ensureStatusItem()
         statusItem.isVisible = configuration.isVisible
         statusItem.button?.setAccessibilityLabel(configuration.accessibilityLabel)
 
@@ -28,12 +43,15 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
     }
 
     @objc private func statusItemTapped(_ sender: NSStatusBarButton) {
-        guard let configuration = lastConfiguration, let event = NSApp.currentEvent else { return }
+        // `NSApp.currentEvent` is the click event during this action, but fall back to the button window's
+        // current event so a configured item never silently drops a click if it's momentarily nil.
+        guard let configuration = lastConfiguration,
+              let event = NSApp.currentEvent ?? sender.window?.currentEvent else { return }
 
         if event.isRightClickEquivalentEvent {
             let mainMenu = menu(for: configuration.items)
             mainMenu.delegate = self
-            statusItem.menu = mainMenu
+            ensureStatusItem().menu = mainMenu
             sender.performClick(sender)
         } else if event.type == .leftMouseUp {
             // leftMouseDown also fires, but we only want to do that for ctrl-clicks
@@ -42,7 +60,7 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
     }
 
     func menuDidClose(_ menu: NSMenu) {
-        statusItem.menu = nil
+        statusItem?.menu = nil
     }
 
     private func modifierKeys(for uglyMask: Int) -> NSEvent.ModifierFlags {
