@@ -232,6 +232,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             for key in [
                 "tag", "critical_text", "progress", "progress_max", "chronometer",
                 "when", "when_relative", "notification_icon", "notification_icon_color",
+                "silent",
             ] {
                 if let value = data[key] {
                     homeassistant[key] = value
@@ -244,6 +245,16 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 homeassistant["message"] = message
             }
             payload["homeassistant"] = homeassistant
+
+            if data["silent"] as? Bool == true {
+                payload.mutateInside("aps") { aps in
+                    aps.mutateInside("alert") { alert in
+                        alert["body"] = nil
+                        alert["title"] = ""
+                    }
+                    aps["sound"] = nil
+                }
+            }
         }
 
         if registrationInfo["os_version"]?.starts(with: "10.15") == true {

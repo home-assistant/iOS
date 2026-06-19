@@ -588,11 +588,8 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "live_activity.end_all.button" = "Összes aktivitás befejezése";
 "live_activity.end_all.confirm.button" = "Összes befejezése";
 "live_activity.end_all.confirm.title" = "Befejezi az összes élő aktivitást?";
-"live_activity.frequent_updates.footer" = "Lehetővé teszi a Home Assistant számára, hogy az élő aktivitásokat másodpercenként egyszer frissítse. Engedélyezés: Beállítások › %@ › Élő aktivitások.";
 "live_activity.frequent_updates.title" = "Gyakori frissítések";
-"live_activity.privacy.message" = "Az élő aktivitás tartalma látható a zárolási képernyőn és a Dynamic Island területen Face ID vagy Touch ID nélkül is. Körültekintően válassza meg, mit jelenít meg.";
 "live_activity.section.active" = "Aktív aktivitások";
-"live_activity.section.privacy" = "Adatvédelem";
 "live_activity.section.status" = "Állapot";
 "live_activity.status.enabled" = "Engedélyezve";
 "live_activity.status.open_settings" = "Beállítások megnyitása";
