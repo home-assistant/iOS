@@ -659,6 +659,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.application.preferences" = "Preferences…";
 "menu.file.update_sensors" = "Update Sensors";
 "menu.help.help" = "%@ Help";
+"menu.status_item.open" = "Open %1$@";
+"menu.status_item.open_settings" = "Open Settings…";
 "menu.status_item.quit" = "Quit";
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.find" = "Find";
