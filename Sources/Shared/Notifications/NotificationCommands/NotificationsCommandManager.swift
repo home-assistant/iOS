@@ -116,7 +116,7 @@ private struct HandlerLocationUpdate: NotificationCommandHandler {
 
 private struct HandlerClearNotification: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Current.Log.verbose("clearing notification for \(payload)")
+        Current.Log.verbose("Clearing notification for \(payload)")
         let keys = ["tag", "collapseId"].compactMap { payload[$0] as? String }
         if !keys.isEmpty {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
@@ -127,9 +127,10 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
         // ActivityKit is unavailable in the PushProvider extension and Mac Catalyst, so guard accordingly.
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
+        if #available(iOS 17.2, *), let tag = payload["tag"] as? String {
             return Promise<Void> { seal in
                 Task {
+                    Current.Log.verbose("Clearing live activity for \(payload)")
                     await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
                     // https://stackoverflow.com/a/56657888/6324550
                     DispatchQueue.main.async { seal.fulfill(()) }
