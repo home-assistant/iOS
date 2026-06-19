@@ -1,6 +1,7 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import ActivityKit
 import Foundation
+import PromiseKit
 
 /// Stale date offset for all Live Activity content updates.
 /// Activities are marked stale after 30 minutes if no further updates arrive.
@@ -45,7 +46,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Webhook type for reporting a new per-activity push token to HA.
     static let webhookTypeToken = "live_activity_token"
     /// Keys in the token webhook request data dictionary.
-    static let tokenWebhookKeys: Set<String> = ["tag", "push_token"]
+    static let tokenWebhookKeys: Set<String> = ["tag", "push_token", "expires_at"]
+    /// ActivityKit expires Live Activities after eight hours.
+    static let pushTokenTimeToLive: TimeInterval = 8 * 60 * 60
 
     /// Webhook type for reporting that a Live Activity was dismissed.
     static let webhookTypeDismissed = "live_activity_dismissed"
@@ -144,6 +147,11 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return
         }
 
+        guard Current.isTestFlight else {
+            Current.Log.info("LiveActivityRegistry: start gated to TestFlight, skipping tag \(tag)")
+            return
+        }
+
         // START path — guard against duplicates with reservation
         guard reserve(id: tag) else {
             if reserved.contains(tag) {
@@ -180,23 +188,6 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             cancelReservation(id: tag)
             throw error
         }
-
-        // Immediately update with an AlertConfiguration to trigger the expanded Dynamic Island
-        // presentation. Activity.request() only shows the compact view (small pill around the
-        // camera cutout). The expanded "bloom" animation requires an update with an alert config.
-        let alertContent = ActivityContent(
-            state: state,
-            staleDate: computeStaleDate(for: state),
-            relevanceScore: 0.5
-        )
-        // iOS 26 SDK changed AlertConfiguration.sound from optional to non-optional.
-        // Use .default so the expanded Dynamic Island "bloom" has a subtle alert sound.
-        let alertConfig = AlertConfiguration(
-            title: LocalizedStringResource(stringLiteral: title),
-            body: LocalizedStringResource(stringLiteral: state.message),
-            sound: .default
-        )
-        await activity.update(alertContent, alertConfiguration: alertConfig)
 
         let observationTask = makeObservationTask(for: activity)
         await confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
@@ -290,7 +281,8 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         AppConstants.Keychain[pushToStartTokenKeychainKey]
     }
 
-    static let pushToStartTokenKeychainKey = "live_activity_token"
+    static let pushToStartRegistrationKey = "start_live_activity_token"
+    static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
 
     // MARK: - Private — Stale Date
 
@@ -355,11 +347,15 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Report a new activity push token to all connected HA servers.
     /// The token is used by the relay server to send APNs updates directly to this activity.
     private func reportPushToken(_ tokenHex: String, tag: String) async {
+        let expiresAt = Current.date()
+            .addingTimeInterval(Self.pushTokenTimeToLive)
+            .timeIntervalSince1970.rounded(.down)
         let request = WebhookRequest(
             type: Self.webhookTypeToken,
             data: [
                 "tag": tag,
                 "push_token": tokenHex,
+                "expires_at": expiresAt,
             ]
         )
         for server in Current.servers.all {
@@ -388,6 +384,123 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         for api in Current.apis {
             api.updateRegistration().catch { error in
                 Current.Log.error("LiveActivityRegistry: failed to report push-to-start token: \(error)")
+            }
+        }
+    }
+}
+
+/// Cross-process hand-off for ending Live Activities. The PushProvider extension has
+/// no working ActivityKit, so it enqueues a tag and posts a Darwin signal; the app
+/// drains the queue and ends the activity. The persisted queue is the durable path —
+/// Darwin does not wake a suspended app, so the app also drains at launch/foreground.
+enum LiveActivityPendingEnd {
+    // Namespaced by App Group id so dev/beta/release installs never cross-signal.
+    static var darwinNotificationName: String {
+        AppConstants.AppGroupID + ".liveActivityPendingEnd"
+    }
+
+    private static let storeKey = "liveActivityPendingEndTags"
+    private static let lock = NSLock()
+
+    static func append(tag: String) {
+        guard isValidTag(tag) else {
+            Current.Log.error("LiveActivityPendingEnd: rejected invalid tag '\(tag)'")
+            return
+        }
+        lock.lock()
+        defer { lock.unlock() }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        var tags = Set(defaults.stringArray(forKey: storeKey) ?? [])
+        tags.insert(tag)
+        defaults.set(Array(tags), forKey: storeKey)
+        Current.Log.verbose("LiveActivityPendingEnd: enqueued '\(tag)', pending=\(tags.count)")
+    }
+
+    static func drainAll() -> [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [] }
+        let observed = Set(defaults.stringArray(forKey: storeKey) ?? [])
+        guard !observed.isEmpty else { return [] }
+        // Subtract only what we read, so a concurrent extension append isn't clobbered.
+        let remaining = Set(defaults.stringArray(forKey: storeKey) ?? []).subtracting(observed)
+        if remaining.isEmpty {
+            defaults.removeObject(forKey: storeKey)
+        } else {
+            defaults.set(Array(remaining), forKey: storeKey)
+        }
+        return Array(observed)
+    }
+
+    // Payload-less wake; the tags travel via the App Group store above.
+    static func postDarwinSignal() {
+        CFNotificationCenterPostNotification(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            CFNotificationName(rawValue: darwinNotificationName as CFString),
+            nil,
+            nil,
+            true
+        )
+    }
+
+    // Mirrors HandlerStartOrUpdateLiveActivity.isValidTag.
+    static func isValidTag(_ tag: String) -> Bool {
+        guard !tag.isEmpty, tag.count <= 64 else { return false }
+        let allowed = CharacterSet(
+            charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+        )
+        return tag.unicodeScalars.allSatisfy { allowed.contains($0) }
+    }
+}
+
+/// App-side drain for `LiveActivityPendingEnd`. Retain one instance to keep the Darwin
+/// observer registered.
+@available(iOS 17.2, *)
+public final class LiveActivityPendingEndObserver {
+    public init() {
+        let callback: CFNotificationCallback = { _, observer, _, _, _ in
+            // C callback can't capture self; re-derive it (see DeviceWrapperBatteryObserver).
+            guard let observer else { return }
+            Unmanaged<LiveActivityPendingEndObserver>.fromOpaque(observer)
+                .takeUnretainedValue()
+                .drain()
+        }
+        CFNotificationCenterAddObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            callback,
+            LiveActivityPendingEnd.darwinNotificationName as CFString,
+            nil,
+            .coalesce
+        )
+    }
+
+    deinit {
+        CFNotificationCenterRemoveObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            nil,
+            nil
+        )
+    }
+
+    public func drain() {
+        Self.drain()
+    }
+
+    public static func drain() {
+        let tags = LiveActivityPendingEnd.drainAll()
+        guard !tags.isEmpty else { return }
+        Current.Log.verbose("LiveActivityPendingEnd: draining \(tags.count) tag(s) in app")
+        // Background task so the async dismissal finishes even when backgrounded.
+        _ = Current.backgroundTask(withName: "live-activity-pending-end") { _ in
+            Promise<Void> { seal in
+                Task {
+                    for tag in tags {
+                        await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
+                    }
+                    DispatchQueue.main.async { seal.fulfill(()) }
+                }
             }
         }
     }

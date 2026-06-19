@@ -588,11 +588,8 @@
 "live_activity.end_all.button" = "すべてのアクティビティを終了する";
 "live_activity.end_all.confirm.button" = "すべて終了";
 "live_activity.end_all.confirm.title" = "ライブアクティビティをすべて終了しますか？";
-"live_activity.frequent_updates.footer" = "Home Assistantがライブアクティビティを1秒に1回更新できるようにします。設定で有効にしてください。 \u203A %@ \u203A ライブイベント。";
 "live_activity.frequent_updates.title" = "頻繁な更新";
-"live_activity.privacy.message" = "ライブアクティビティコンテンツは、Face IDやTouch IDを使用しなくても、ロック画面とダイナミックアイランドに表示されます。表示する内容を慎重に選択してください。";
 "live_activity.section.active" = "アクティブな活動";
-"live_activity.section.privacy" = "プライバシー";
 "live_activity.section.status" = "ステータス";
 "live_activity.status.enabled" = "有効";
 "live_activity.status.open_settings" = "設定を開く";

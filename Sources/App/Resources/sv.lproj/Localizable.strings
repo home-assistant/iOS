@@ -586,11 +586,8 @@
 "live_activity.end_all.button" = "Avsluta alla aktiviteter";
 "live_activity.end_all.confirm.button" = "Avsluta alla";
 "live_activity.end_all.confirm.title" = "Avsluta alla Live-aktiviteter?";
-"live_activity.frequent_updates.footer" = "Tillåter Home Assistant att uppdatera Live-aktiviteter upp till en gång per sekund. Aktivera i Inställningar \u203A %@ \u203A Liveaktiviteter.";
 "live_activity.frequent_updates.title" = "Frekventa uppdateringar";
-"live_activity.privacy.message" = "Live Activity-innehåll är synligt på din låsskärm och Dynamic Island utan Face ID eller Touch ID. Välj vad du visar noggrant.";
 "live_activity.section.active" = "Aktiva aktiviteter";
-"live_activity.section.privacy" = "Integritet";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Aktiverad";
 "live_activity.status.open_settings" = "Öppna inställningar";

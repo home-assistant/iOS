@@ -588,11 +588,8 @@
 "live_activity.end_all.button" = "모든 활동 종료";
 "live_activity.end_all.confirm.button" = "모두 종료";
 "live_activity.end_all.confirm.title" = "모든 라이브 활동을 종료하시겠습니까?";
-"live_activity.frequent_updates.footer" = "Home Assistant가 초당 최대 한 번 실시간 활동을 업데이트할 수 있도록 허용합니다. 설정 \u203A %@ \u203A 실시간 활동에서 활성화하세요.";
 "live_activity.frequent_updates.title" = "빈번한 업데이트";
-"live_activity.privacy.message" = "실시간 현황 콘텐츠는 Face ID 또는 Touch ID 없이도 잠금 화면 및 다이내믹 아일랜드에서 볼 수 있습니다. 표시할 내용을 신중하게 선택하세요.";
 "live_activity.section.active" = "활성 활동";
-"live_activity.section.privacy" = "개인정보 보호";
 "live_activity.section.status" = "상태";
 "live_activity.status.enabled" = "활성화";
 "live_activity.status.open_settings" = "Settings 열기";

@@ -24,7 +24,7 @@ struct HALockScreenView: View {
                 iconContainer
 
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                    Text(attributes.title)
+                    Text(state.title ?? attributes.title)
                         .font(.title3.weight(.semibold))
                         .foregroundStyle(primaryTextColor)
                         .lineLimit(1)
