@@ -2412,6 +2412,12 @@ public enum L10n {
       }
     }
     public enum StatusItem {
+      /// Open %1$@
+      public static func open(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "menu.status_item.open", String(describing: p1))
+      }
+      /// Open Settings…
+      public static var openSettings: String { return L10n.tr("Localizable", "menu.status_item.open_settings") }
       /// Quit
       public static var quit: String { return L10n.tr("Localizable", "menu.status_item.quit") }
       /// Toggle %1$@

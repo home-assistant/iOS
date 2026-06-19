@@ -286,17 +286,6 @@ class MenuManager {
         )
     }
 
-    private func preferencesMenu() -> AppMacBridgeStatusItemMenuItem {
-        .init(
-            name: L10n.Menu.Application.preferences,
-            keyEquivalentModifier: [.command],
-            keyEquivalent: ","
-        ) { callbackInfo in
-            Current.sceneManager.activateAnyScene(for: .settings)
-            callbackInfo.activate()
-        }
-    }
-
     private func helpMenus() -> [UIMenu] {
         let title = L10n.Menu.Help.help(appName)
 
@@ -367,14 +356,21 @@ class MenuManager {
         )
     }
 
-    private func toggleMenu() -> AppMacBridgeStatusItemMenuItem {
-        .init(name: L10n.Menu.StatusItem.toggle(appName)) { callbackInfo in
-            if callbackInfo.isActive {
-                callbackInfo.deactivate()
-            } else {
-                Current.sceneManager.activateAnyScene(for: .webView)
-                callbackInfo.activate()
-            }
+    private func openAppMenu() -> AppMacBridgeStatusItemMenuItem {
+        .init(name: L10n.Menu.StatusItem.open(appName)) { callbackInfo in
+            Current.sceneManager.activateAnyScene(for: .webView)
+            callbackInfo.activate()
+        }
+    }
+
+    private func openSettingsMenu() -> AppMacBridgeStatusItemMenuItem {
+        .init(
+            name: L10n.Menu.StatusItem.openSettings,
+            keyEquivalentModifier: [.command],
+            keyEquivalent: ","
+        ) { callbackInfo in
+            Current.sceneManager.activateAnyScene(for: .settings)
+            callbackInfo.activate()
         }
     }
 
@@ -397,10 +393,10 @@ class MenuManager {
         }
 
         var menuItems = [AppMacBridgeStatusItemMenuItem]()
-        menuItems.append(toggleMenu())
+        menuItems.append(openAppMenu())
+        menuItems.append(openSettingsMenu())
         menuItems.append(.separator())
         menuItems.append(contentsOf: aboutMenu())
-        menuItems.append(preferencesMenu())
         menuItems.append(quitMenu())
 
         Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
