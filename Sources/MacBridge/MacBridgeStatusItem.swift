@@ -111,11 +111,21 @@ class MacBridgeStatusItemCallbackInfoImpl: MacBridgeStatusItemCallbackInfo {
     }
 
     var isActive: Bool {
-        NSApp.isActive
+        // Only treat the app as "active" (and therefore something to hide on the next click) when it
+        // actually has a visible standard window. In menu-bar (`.accessory`) mode `NSApp.isActive` can be
+        // true with no visible window — which previously made the status-item click hide the app instead of
+        // showing it, so the icon appeared to do nothing.
+        NSApp.isActive && NSApp.windows.contains { $0.isVisible && !$0.isMiniaturized && $0.level == .normal }
     }
 
     func activate() {
         NSApp.activate(ignoringOtherApps: true)
+        // `NSApp.activate` un-hides the app but doesn't reliably bring a closed/ordered-out window back in
+        // accessory mode, so surface an existing standard window here. A brand-new window (when none exists)
+        // is created by the scene-activation request in `SceneManager.activateAnyScene`.
+        NSApp.windows
+            .first { $0.level == .normal && !$0.isMiniaturized }?
+            .makeKeyAndOrderFront(nil)
     }
 
     func deactivate() {
