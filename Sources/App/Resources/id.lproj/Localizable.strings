@@ -1220,6 +1220,8 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "settings_details.location.zones.radius.title" = "Radius";
 "settings_details.mac_native_features.footer" = "Ini akan membuka Safari dan bukan Webview Aplikasi, namun tetap menjaga fitur asli seperti widget tetap berfungsi.";
 "settings_details.mac_native_features.title" = "Hanya Fitur Asli (Eksperimental)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Setel ulang lencana ke 0 setiap kali aplikasi diluncurkan.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Otomatis";
 "settings_details.notifications.badge_section.button.title" = "Setel Ulang Lencana";

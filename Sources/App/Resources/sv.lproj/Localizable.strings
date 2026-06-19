@@ -1216,6 +1216,8 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.location.zones.radius.title" = "Radie";
 "settings_details.mac_native_features.footer" = "Detta öppnar Safari istället för App-webbvyn, samtidigt som de inbyggda funktionerna (t.ex. widgets) fungerar.";
 "settings_details.mac_native_features.title" = "Endast inbyggda funktioner (experimentell)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Återställer brickan till 0 varje gång appen startas.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatiskt";
 "settings_details.notifications.badge_section.button.title" = "Nollställ brickan";

@@ -1221,6 +1221,8 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "settings_details.location.zones.radius.title" = "Radius";
 "settings_details.mac_native_features.footer" = "Dette åbner Safari i stedet for appens webvisning, mens de indbyggede funktioner som f.eks. widgets forbliver aktive.";
 "settings_details.mac_native_features.title" = "Kun indbyggede funktioner (eksperimentel)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Nulstiller mærket til 0, hver gang du starter appen.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisk";
 "settings_details.notifications.badge_section.button.title" = "Nulstil badge";

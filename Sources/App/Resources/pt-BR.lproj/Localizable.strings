@@ -1221,6 +1221,8 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.location.zones.radius.title" = "Raio";
 "settings_details.mac_native_features.footer" = "Isso abrirá o Safari em vez do aplicativo webview, mantendo os recursos nativos, como widgets, funcionando.";
 "settings_details.mac_native_features.title" = "Somente recursos nativos (experimental)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Redefine o selo para 0 toda vez que você inicia o aplicativo.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticamente";
 "settings_details.notifications.badge_section.button.title" = "Redefinir emblema";

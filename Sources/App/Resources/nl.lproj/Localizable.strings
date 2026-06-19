@@ -1221,6 +1221,8 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings_details.location.zones.radius.title" = "Radius";
 "settings_details.mac_native_features.footer" = "Hierdoor wordt Safari geopend in plaats van de webview van de app, terwijl de native functies zoals widgets blijven werken.";
 "settings_details.mac_native_features.title" = "Alleen native functies (Experimenteel)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Zet de badge elke keer op 0 als je de app start.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisch";
 "settings_details.notifications.badge_section.button.title" = "Badge resetten";
