@@ -559,11 +559,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.button" = "End All";
 "live_activity.end_all.confirm.title" = "End all Live Activities?";
-"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
 "live_activity.frequent_updates.title" = "Frequent Updates";
-"live_activity.privacy.message" = "실시간 현황 콘텐츠는 Face ID 또는 Touch ID 없이도 잠금 화면 및 다이내믹 아일랜드에서 볼 수 있습니다. 표시할 내용을 신중하게 선택하십시오.";
 "live_activity.section.active" = "Active Activities";
-"live_activity.section.privacy" = "Privacy";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Enabled";
 "live_activity.status.open_settings" = "Open Settings";
