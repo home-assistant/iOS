@@ -1220,6 +1220,8 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings_details.location.zones.radius.title" = "半径";
 "settings_details.mac_native_features.footer" = "これにより、ウィジェットなどのネイティブ機能は動作したまま、アプリの Web ビューではなく Safari が開きます。";
 "settings_details.mac_native_features.title" = "ネイティブ機能のみ（実験的）";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "アプリを起動するたびにバッジを、0にリセットします。";
 "settings_details.notifications.badge_section.automatic_setting.title" = "自動的に";
 "settings_details.notifications.badge_section.button.title" = "バッジをリセット";
@@ -1442,8 +1444,8 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "watch.home.cancel_and_use_cache.title" = "キャンセルしてキャッシュを使用する";
 "watch.home.loading.skip.title" = "スキップ";
 "watch.home.run.confirmation.title" = "「 %@ 」を実行してもよろしいですか?";
-"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
-"watch.home.run.error.title" = "Couldn't run action";
+"watch.home.run.error.message" = "アクションを実行できませんでした。Apple Watchからは、このサーバーに直接アクセスできない可能性があります。";
+"watch.home.run.error.title" = "アクションを実行できませんでした";
 "watch.labels.complication_group.circular_small.description" = "円形の小さなコンプリケーションを使用して、カラー ウォッチフェイスの隅にコンテンツを表示します。";
 "watch.labels.complication_group.circular_small.name" = "サーキュラー スモール";
 "watch.labels.complication_group.extra_large.description" = "X-Largeウォッチフェイスにコンテンツを表示するために、特大サイズのコンプリケーションを使用します。";
