@@ -14,10 +14,6 @@ struct HAApp: App {
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
         }
-        // Without this, `activateAnyScene(for: .webView)` (e.g. tapping the macOS menu-bar item) requests a
-        // new scene carrying `targetContentIdentifier == "ha.webview"`; with no `WindowGroup` advertising that
-        // identifier SwiftUI can't bind the scene to a group and no window appears. Matching it here — like the
-        // other groups below — routes the activation to this group so the window becomes visible.
         .handlesExternalEvents(matching: [SceneActivity.webView.activityIdentifier])
 
         // Mac Settings
