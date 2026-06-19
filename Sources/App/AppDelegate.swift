@@ -416,6 +416,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
 
+    private var liveActivityPendingEndObserver: Any?
+
     private func setupLiveActivityReattachment() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
@@ -423,6 +425,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // This avoids a lazy-init race if a push notification handler accesses it
             // concurrently from a background thread.
             guard let registry = Current.liveActivityRegistry else { return }
+
+            // Register before draining so ends enqueued while the app was gone aren't missed.
+            let pendingEndObserver = LiveActivityPendingEndObserver()
+            liveActivityPendingEndObserver = pendingEndObserver
+            pendingEndObserver.drain()
 
             Task {
                 // Re-attach observation tasks (push token + lifecycle) to any Live Activities

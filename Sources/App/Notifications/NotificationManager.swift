@@ -66,6 +66,12 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
         localPushManager.scheduleAppOpenLocalPushRetries()
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            // Catch ends enqueued by the extension while the app was suspended.
+            LiveActivityPendingEndObserver.drain()
+        }
+        #endif
     }
 
     @objc private func showCameraFromNotification(_ notification: Notification) {
