@@ -1218,6 +1218,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings_details.location.zones.radius.title" = "Poloměr";
 "settings_details.mac_native_features.footer" = "Tím se místo webového zobrazení aplikace otevře Safari, přičemž nativní funkce, jako jsou widgety, zůstanou funkční.";
 "settings_details.mac_native_features.title" = "Jen nativní funkce (experimentální)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Při každém spuštění aplikace resetuje odznak na hodnotu 0.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticky";
 "settings_details.notifications.badge_section.button.title" = "Resetovat odznak";
@@ -1440,8 +1442,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.home.cancel_and_use_cache.title" = "Zrušit a použít mezipaměť";
 "watch.home.loading.skip.title" = "Přeskočit";
 "watch.home.run.confirmation.title" = "Opravdu chcete spustit \"%@\"?";
-"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
-"watch.home.run.error.title" = "Couldn't run action";
+"watch.home.run.error.message" = "Akci se nepodařilo spustit. Apple Watch se pravděpodobně nebudou moci k tomuto serveru připojit přímo.";
+"watch.home.run.error.title" = "Akci se nepodařilo spustit";
 "watch.labels.complication_group.circular_small.description" = "Použije malé kruhové komplikace k zobrazení obsahu v rozích ciferníku Color.";
 "watch.labels.complication_group.circular_small.name" = "Malé kruhové";
 "watch.labels.complication_group.extra_large.description" = "Použije extra velké komplikace k zobrazení obsahu na ciferníku X-Large.";

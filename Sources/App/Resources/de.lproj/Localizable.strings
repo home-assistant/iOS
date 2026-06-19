@@ -1218,6 +1218,8 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings_details.location.zones.radius.title" = "Radius";
 "settings_details.mac_native_features.footer" = "Dadurch wird Safari anstelle der App-Webansicht geöffnet, während native Funktionen wie Widgets weiterhin funktionieren.";
 "settings_details.mac_native_features.title" = "Nur native Funktionen (experimentell)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Setzt das Badge bei jedem Start der App auf 0 zurück.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisch";
 "settings_details.notifications.badge_section.button.title" = "Badge zurücksetzen";
@@ -1441,8 +1443,8 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.home.cancel_and_use_cache.title" = "Abbrechen und Cache verwenden";
 "watch.home.loading.skip.title" = "Überspringen";
 "watch.home.run.confirmation.title" = "Möchtest du „%@“ wirklich ausführen?";
-"watch.home.run.error.message" = "The action couldn't be run. The Apple Watch may not be able to reach this server directly.";
-"watch.home.run.error.title" = "Couldn't run action";
+"watch.home.run.error.message" = "Die Aktion konnte nicht ausgeführt werden. Die Apple Watch kann diesen Server möglicherweise nicht direkt erreichen.";
+"watch.home.run.error.title" = "Aktion konnte nicht ausgeführt werden";
 "watch.labels.complication_group.circular_small.description" = "Verwende kreisförmige kleine Komplikationen, um den Inhalt in den Ecken des Zifferblatts Farben anzuzeigen.";
 "watch.labels.complication_group.circular_small.name" = "Kreisförmig klein";
 "watch.labels.complication_group.extra_large.description" = "Nutze die extra großen Komplikationen, um Inhalte auf den X-Large Zifferblättern anzuzeigen.";

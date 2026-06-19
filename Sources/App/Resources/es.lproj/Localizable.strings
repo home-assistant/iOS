@@ -1218,6 +1218,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.location.zones.radius.title" = "Radio";
 "settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
 "settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automáticamente";
 "settings_details.notifications.badge_section.button.title" = "Restablecer la insignia";

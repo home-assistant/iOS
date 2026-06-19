@@ -1218,6 +1218,8 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "settings_details.location.zones.radius.title" = "Raggio";
 "settings_details.mac_native_features.footer" = "In questo modo si aprirà Safari invece della webview dell'app, mantenendo le funzioni native come i widget.";
 "settings_details.mac_native_features.title" = "Solo funzionalità native (sperimentale)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Reimposta il badge a 0 ogni volta che avvii l'app.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticamente";
 "settings_details.notifications.badge_section.button.title" = "Reset badge";

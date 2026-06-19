@@ -1218,6 +1218,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.location.zones.radius.title" = "Raadius";
 "settings_details.mac_native_features.footer" = "See avab rakenduse veebivaate asemel Safari, hoides samal ajal kohalikud funktsioonid, näiteks vidinad, töös.";
 "settings_details.mac_native_features.title" = "Ainult kohalikud funktsioonid (katseline)";
+"settings_details.mac_open_in_browser.footer" = "Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.";
+"settings_details.mac_open_in_browser.title" = "Open Home Assistant UI in browser";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Lähtestab märgi väärtusele 0 iga kord kui rakenduse käivitub.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaatselt";
 "settings_details.notifications.badge_section.button.title" = "Lähtesta märk";
