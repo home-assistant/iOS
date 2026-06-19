@@ -62,9 +62,7 @@ struct LiveActivitySettingsView: View {
                 }
             }
 
-            #if DEBUG
             samplesSection
-            #endif
         }
         .navigationTitle(L10n.LiveActivity.title)
         .task { await loadActivities() }
@@ -120,9 +118,8 @@ struct LiveActivitySettingsView: View {
         UIDevice.current.userInterfaceIdiom != .pad
     }
 
-    // MARK: - Samples (DEBUG builds only)
+    // MARK: - Samples
 
-    #if DEBUG
     //
     // Two sections: Static (fixed snapshots to verify layout) and Animated (multi-stage
     // self-updating sequences to simulate real HA automation behavior).
@@ -592,7 +589,6 @@ struct LiveActivitySettingsView: View {
             ]
         )
     }
-    #endif
 
     // MARK: - Data
 
