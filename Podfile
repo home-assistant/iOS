@@ -12,7 +12,7 @@ end
 if ENV['ONLY_SUPPORT_MODULES']
   # some of our CI scripts only need e.g. SwiftLint
   # this allows us to skip a lot of installation when unnecessary
-  platform :ios, '15.0'
+  platform :ios, '16.0'
   support_modules
   workspace 'abstract.workspace'
 
@@ -47,7 +47,7 @@ def shared_fwk_pods
 end
 
 abstract_target 'iOS' do
-  platform :ios, '15.0'
+  platform :ios, '16.0'
 
   pod 'MBProgressHUD', '~> 1.2.0'
   pod 'ReachabilitySwift'
@@ -87,7 +87,7 @@ abstract_target 'iOS' do
 end
 
 abstract_target 'watchOS' do
-  platform :watchos, '8.0'
+  platform :watchos, '9.0'
 
   target 'Shared-watchOS' do
     shared_fwk_pods
@@ -99,10 +99,29 @@ abstract_target 'watchOS' do
 end
 
 post_install do |installer|
+  # Xcode 27 beta regression: SwiftUI's `@State` became macro-backed, and the
+  # macro expansion mangles backtick-escaped keyword property names — e.g.
+  # `@State public var `where`` expands to the invalid identifier `_ `where``,
+  # producing hundreds of cascading parse errors in RealmSwift/SwiftUI.swift.
+  # Rename the (app-unused) `where` stored property to a non-keyword so the
+  # macro expands cleanly. The public `where:` initializer label is untouched.
+  realm_swiftui = File.join(installer.sandbox.root, 'RealmSwift', 'RealmSwift', 'SwiftUI.swift')
+  if File.exist?(realm_swiftui)
+    original = File.read(realm_swiftui)
+    patched = original
+              .gsub('@State public var `where`:', '@State public var whereQuery:')
+              .gsub('self.where = ', 'self.whereQuery = ')
+    if patched != original
+      File.chmod(0o644, realm_swiftui) # CocoaPods marks pod sources read-only
+      File.write(realm_swiftui, patched)
+      puts '-> Patched RealmSwift/SwiftUI.swift for Xcode 27 @State macro compatibility'
+    end
+  end
+
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '8.0'
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '9.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
 
       config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO' unless target.name.include? 'Firebase'
 
