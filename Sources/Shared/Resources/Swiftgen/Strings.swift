@@ -2121,6 +2121,96 @@ public enum L10n {
       /// Frequent Updates
       public static var title: String { return L10n.tr("Localizable", "live_activity.frequent_updates.title") }
     }
+    public enum Sample {
+      public enum Alarm {
+        /// Short 60-second countdown, no progress bar. Red communicates urgency — watch the timer count down in real time.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.alarm.note") }
+        /// Alarm · 60 sec Countdown
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.alarm.title") }
+      }
+      public enum AllFields {
+        /// Every content-state field active at once: icon, live countdown, and progress bar. Confirms no layout collisions.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.note") }
+        /// All Fields · Max Load
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.title") }
+      }
+      public enum Delivery {
+        /// message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.delivery.note") }
+        /// Package Delivery · All Text Fields
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.delivery.title") }
+      }
+      public enum Dishwasher {
+        /// The only sample that tests start → update → end. After it ends, the final "Done" state lingers on the lock screen (up to 4 h).
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.note") }
+        /// Dishwasher · Full Lifecycle, Ends Itself
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.title") }
+      }
+      public enum Ev {
+        /// Numeric percentage in criticalText updates alongside the progress bar; color shifts from green to yellow-green as the charge nears full.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.ev.note") }
+        /// EV Charging · Numeric %
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.ev.title") }
+      }
+      public enum Media {
+        /// Progress (playback position) and a live countdown (time left in track) update together. The track change resets both.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.media.note") }
+        /// Media Player · Progress + Timer
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.media.title") }
+      }
+      public enum NoIcon {
+        /// No icon and no color, so the progress bar uses the default HA-blue tint. criticalText shows in the Dynamic Island compact trailing only.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.note") }
+        /// No Icon · Default Color
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.title") }
+      }
+      public enum Plain {
+        /// Minimum viable layout — only the message field is set. Verifies the bare layout renders without icon, progress, or timer.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.plain.note") }
+        /// Plain Message
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.plain.title") }
+      }
+      public enum RateLimit {
+        /// Six updates 2 s apart. On iOS 18 the system renders ~one per 15 s — some are silently dropped and the counter skips. On the simulator and iOS 17 all six render.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.note") }
+        /// Rate Limit · 6 Rapid Updates
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.title") }
+      }
+      public enum Security {
+        /// No progress bar — state is communicated entirely through color and icon. Escalates orange (motion) → red (person) → green (all clear).
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.security.note") }
+        /// Security Escalation · Color + Icon
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.security.title") }
+      }
+      public enum Washing {
+        /// Progress advances through five named stages; criticalText tracks the current stage. The icon swaps to a check on completion.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.washing.note") }
+        /// Washing Machine · Stage Labels
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.washing.title") }
+      }
+    }
+    public enum Samples {
+      /// Start drives the activity through several updates. Lock the screen to watch them live.
+      public static var animatedFooter: String { return L10n.tr("Localizable", "live_activity.samples.animated_footer") }
+      /// Sample · Animated
+      public static var animatedTitle: String { return L10n.tr("Localizable", "live_activity.samples.animated_title") }
+      /// Copied
+      public static var copied: String { return L10n.tr("Localizable", "live_activity.samples.copied") }
+      /// Copy
+      public static var copy: String { return L10n.tr("Localizable", "live_activity.samples.copy") }
+      /// Start runs this sample locally on-device. The YAML triggers the same Live Activity from an automation or script — point it at your device's notify action.
+      public static var detailFooter: String { return L10n.tr("Localizable", "live_activity.samples.detail_footer") }
+      /// Start
+      public static var start: String { return L10n.tr("Localizable", "live_activity.samples.start") }
+      /// Started — lock the screen to watch
+      public static var started: String { return L10n.tr("Localizable", "live_activity.samples.started") }
+      /// Fixed state — no updates after start. Good for checking layout at a glance.
+      public static var staticFooter: String { return L10n.tr("Localizable", "live_activity.samples.static_footer") }
+      /// Sample · Static
+      public static var staticTitle: String { return L10n.tr("Localizable", "live_activity.samples.static_title") }
+      /// Samples
+      public static var title: String { return L10n.tr("Localizable", "live_activity.samples.title") }
+    }
     public enum Section {
       /// Active Activities
       public static var active: String { return L10n.tr("Localizable", "live_activity.section.active") }
