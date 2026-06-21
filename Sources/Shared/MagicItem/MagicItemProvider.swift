@@ -242,6 +242,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         case .assistPipeline, .assistPrompt:
             let pipelineId = item.assistPipelineId ?? item.id
             let pipelineName: String = {
+                if pipelineId.isEmpty {
+                    return L10n.AppIntents.Assist.PreferredPipeline.title
+                }
                 let configs = (try? AssistPipelines.config()) ?? []
                 let pipeline = configs
                     .first(where: { $0.serverId == item.serverId })?

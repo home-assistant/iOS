@@ -35,7 +35,7 @@ struct AssistPromptAppIntent: AppIntent {
 
         let result = try await AssistPromptRunner(server: server).assist(
             prompt: prompt,
-            pipelineId: pipeline.id.isEmpty ? nil : pipeline.id
+            pipelineId: pipeline.pipelineId
         )
         return .result(value: result)
     }
