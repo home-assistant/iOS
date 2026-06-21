@@ -612,7 +612,8 @@ private struct LiveActivitySample: Identifiable {
         var criticalText: String?
         var progress: Int?
         var progressMax: Int?
-        /// Seconds remaining at the moment the stage is applied (maps to `when` + `when_relative: true`). `nil` = no timer.
+        /// Seconds remaining at the moment the stage is applied (maps to `when` + `when_relative: true`).
+        /// `nil` = no timer.
         var countdownSeconds: Double?
         var icon: String?
         var color: String?
