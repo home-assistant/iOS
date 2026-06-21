@@ -325,7 +325,7 @@ struct LiveActivitySettingsView: View {
                         criticalText: "1 / 12",
                         progress: 42,
                         progressMax: 100,
-                        countdownSeconds: 2 * 60,
+                        countdownSeconds: 2 * 60 - 5,
                         icon: "mdi:music-note",
                         color: "#9C27B0"
                     ),
@@ -335,7 +335,7 @@ struct LiveActivitySettingsView: View {
                         criticalText: "1 / 12",
                         progress: 67,
                         progressMax: 100,
-                        countdownSeconds: 2 * 60,
+                        countdownSeconds: 2 * 60 - 10,
                         icon: "mdi:music-note",
                         color: "#9C27B0"
                     ),
@@ -532,13 +532,12 @@ struct LiveActivitySettingsView: View {
     /// Single-stage samples start and stay put; multi-stage ones self-update on their delays.
     private func start(_ sample: LiveActivitySample) {
         guard let first = sample.stages.first else { return }
-        let anchor = Date()
         Task {
             let attributes = HALiveActivityAttributes(tag: sample.tag, title: sample.title)
             guard let activity = try? Activity<HALiveActivityAttributes>.request(
                 attributes: attributes,
                 content: ActivityContent(
-                    state: first.contentState(anchoredTo: anchor),
+                    state: first.contentState(),
                     staleDate: Date().addingTimeInterval(30 * 60)
                 ),
                 pushType: nil
@@ -548,7 +547,7 @@ struct LiveActivitySettingsView: View {
             for stage in sample.stages.dropFirst() {
                 try? await Task.sleep(nanoseconds: UInt64(stage.delay * 1_000_000_000))
                 await activity.update(ActivityContent(
-                    state: stage.contentState(anchoredTo: anchor),
+                    state: stage.contentState(),
                     staleDate: Date().addingTimeInterval(30 * 60)
                 ))
                 await loadActivities()
@@ -557,7 +556,7 @@ struct LiveActivitySettingsView: View {
             if sample.endsItself, let last = sample.stages.last {
                 await activity.end(
                     ActivityContent(
-                        state: last.contentState(anchoredTo: anchor),
+                        state: last.contentState(),
                         staleDate: Date().addingTimeInterval(30 * 60)
                     ),
                     dismissalPolicy: .default
@@ -613,19 +612,21 @@ private struct LiveActivitySample: Identifiable {
         var criticalText: String?
         var progress: Int?
         var progressMax: Int?
-        /// Relative countdown length in seconds (maps to `when` + `when_relative: true`). `nil` = no timer.
+        /// Seconds remaining at the moment the stage is applied (maps to `when` + `when_relative: true`). `nil` = no timer.
         var countdownSeconds: Double?
         var icon: String?
         var color: String?
 
-        func contentState(anchoredTo start: Date) -> HALiveActivityAttributes.ContentState {
+        func contentState() -> HALiveActivityAttributes.ContentState {
+            // countdownEnd is relative to now so the local demo matches `when_relative: true`,
+            // where each update means "seconds remaining" from the moment it is received.
             HALiveActivityAttributes.ContentState(
                 message: message,
                 criticalText: criticalText,
                 progress: progress,
                 progressMax: progressMax,
                 chronometer: countdownSeconds == nil ? nil : true,
-                countdownEnd: countdownSeconds.map { start.addingTimeInterval($0) },
+                countdownEnd: countdownSeconds.map { Date().addingTimeInterval($0) },
                 icon: icon,
                 color: color
             )
