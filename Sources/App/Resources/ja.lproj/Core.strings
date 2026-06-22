@@ -97,9 +97,9 @@
 "component::improv_ble::config::abort::characteristic_missing" = "デバイスはすでに Wi-Fi に接続されているか、Wi-Fi に接続できなくなっています。別のネットワークに接続する場合は、まず出荷時設定にリセットしてみてください。";
 "component::improv_ble::config::abort::no_devices_found" = "ネットワーク上にデバイスが見つかりません";
 "component::improv_ble::config::abort::provision_successful" = "デバイスは Wi-Fi ネットワークに正常に接続されました。";
-"component::improv_ble::config::abort::provision_successful_url" = "デバイスは Wi-Fi ネットワークに正常に接続されました。 \
+"component::improv_ble::config::abort::provision_successful_url" = "このデバイスはWi-Fiネットワークへの接続に成功しました。\
 \
-セットアップを完了するには、 {url}にアクセスしてください。";
+[セットアップ手順]({url})に従って、セットアップを完了してください。";
 "component::improv_ble::config::abort::unknown" = "予期しないエラー";
 "component::improv_ble::config::error::unable_to_connect" = "デバイスは Wi-Fi ネットワークに接続できませんでした。 SSIDとパスワードが正しいことを確認して、もう一度お試しください。";
 "component::improv_ble::config::flow_title" = "{name}";
