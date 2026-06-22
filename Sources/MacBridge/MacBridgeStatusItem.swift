@@ -3,28 +3,13 @@ import AppKit
 class MacBridgeStatusItem: NSObject, NSMenuDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private var lastConfiguration: MacBridgeStatusItemConfiguration?
-    private var eventMonitor: Any?
+
+    /// Holding any of these while clicking the status item opens the menu instead of toggling the app.
+    private let menuModifiers: NSEvent.ModifierFlags = [.control, .option, .command]
 
     override init() {
         super.init()
         statusItem.button?.imagePosition = .imageLeading
-        statusItem.button?.target = self
-        statusItem.button?.action = #selector(statusItemTapped(_:))
-        statusItem.button?.sendAction(on: [.leftMouseUp, .leftMouseDown, .rightMouseDown])
-        self.eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [
-            .leftMouseUp,
-            .leftMouseDown,
-            .rightMouseDown,
-        ]) {
-            [weak self] event in
-            self?.handleStatusItemEvent(event) == true ? nil : event
-        }
-    }
-
-    deinit {
-        if let eventMonitor {
-            NSEvent.removeMonitor(eventMonitor)
-        }
     }
 
     func configure(title: String) {
@@ -40,16 +25,30 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
         let image = NSImage(cgImage: configuration.image, size: configuration.imageSize)
         image.isTemplate = true
         statusItem.button?.image = image
+
+        // A status item only routes a click to us once it has a menu assigned, and on modern macOS
+        // the mouse button can't be read back in `menuWillOpen`. We therefore discriminate on the
+        // modifier keys (which do read reliably there): a control/option/command + click opens the
+        // menu, while a plain click runs the primary action (toggle the app).
+        let menu = menu(for: configuration.items)
+        menu.delegate = self
+        statusItem.menu = menu
     }
 
-    @objc private func statusItemTapped(_ sender: NSStatusBarButton) {
-        guard let configuration = lastConfiguration, let event = NSApp.currentEvent else { return }
+    func menuWillOpen(_ menu: NSMenu) {
+        guard NSEvent.modifierFlags.isDisjoint(with: menuModifiers) else {
+            // control / option / command + click: let the menu open.
+            return
+        }
 
-        handle(configuration: configuration, event: event, sender: sender)
-    }
+        // Plain click: suppress the menu and run the primary action (toggle the app) instead.
+        menu.cancelTrackingWithoutAnimation()
 
-    func menuDidClose(_ menu: NSMenu) {
-        statusItem.menu = nil
+        guard let configuration = lastConfiguration else { return }
+        let button = statusItem.button
+        DispatchQueue.main.async {
+            configuration.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: button))
+        }
     }
 
     private func modifierKeys(for uglyMask: Int) -> NSEvent.ModifierFlags {
@@ -107,38 +106,6 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
     @objc private func actionTapped(_ sender: NSMenuItem) {
         guard let representedObject = sender.representedObject as? MacBridgeStatusItemMenuItem else { return }
         representedObject.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: sender))
-    }
-
-    private func handleStatusItemEvent(_ event: NSEvent) -> Bool {
-        guard event.type != .leftMouseDown || event.isRightClickEquivalentEvent else {
-            return false
-        }
-
-        guard let button = statusItem.button,
-              let window = button.window,
-              button.bounds.contains(button.convert(event.locationInWindow, from: nil)),
-              event.window === window,
-              let configuration = lastConfiguration else {
-            return false
-        }
-
-        handle(configuration: configuration, event: event, sender: button)
-        return true
-    }
-
-    private func handle(
-        configuration: MacBridgeStatusItemConfiguration,
-        event: NSEvent,
-        sender: NSStatusBarButton
-    ) {
-        if event.isRightClickEquivalentEvent {
-            let mainMenu = menu(for: configuration.items)
-            mainMenu.delegate = self
-            statusItem.menu = mainMenu
-            sender.performClick(sender)
-        } else if event.type == .leftMouseUp {
-            configuration.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: sender))
-        }
     }
 }
 
