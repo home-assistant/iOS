@@ -107,6 +107,10 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         controller.onVideoStarted = { [weak self] in
             self?.handleVideoStarted()
         }
+        controller.onVideoSizeChanged = { [weak self] size in
+            guard size.width > 0, size.height > 0 else { return }
+            self?.lastSize = size
+        }
 
         addChild(controller)
         view.addSubview(controller.view)
