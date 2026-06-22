@@ -941,6 +941,7 @@
 		42AC30012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */; };
 		42AC30012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */; };
 		42AC30012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */; };
+		42AC30012FA1000000000010 /* OpenAppSettingsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000010 /* OpenAppSettingsAppIntent.swift */; };
 		42AC30012FA1000000000007 /* IntentActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000007 /* IntentActionEntity.swift */; };
 		42AC30012FA1000000000008 /* IntentCameraEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000008 /* IntentCameraEntity.swift */; };
 		42AC30012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */; };
@@ -2843,6 +2844,7 @@
 		42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderTemplateAppIntent.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateLocationAppIntent.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensorsAppIntent.swift; sourceTree = "<group>"; };
+		42AC10012FA1000000000010 /* OpenAppSettingsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAppSettingsAppIntent.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000007 /* IntentActionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentActionEntity.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000008 /* IntentCameraEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentCameraEntity.swift; sourceTree = "<group>"; };
 		42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutAppIntentSupport.swift; sourceTree = "<group>"; };
@@ -5398,6 +5400,7 @@
 				42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */,
 				42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */,
 				42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */,
+				42AC10012FA1000000000010 /* OpenAppSettingsAppIntent.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -9666,6 +9669,7 @@
 				42AC30012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */,
 				42AC30012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */,
 				42AC30012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */,
+				42AC30012FA1000000000010 /* OpenAppSettingsAppIntent.swift in Sources */,
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift in Sources */,
 				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				42FA83432F4723260050095A /* WebViewController+Alerts.swift in Sources */,
