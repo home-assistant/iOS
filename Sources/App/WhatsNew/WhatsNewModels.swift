@@ -169,37 +169,81 @@ enum WhatsNewIcon: Equatable {
     case materialDesign(MaterialDesignIcon)
 }
 
-enum WhatsNewItemId: Hashable {
-    case whatsNewValidationIntro
-    case whatsNewValidationPlatforms
-    case dropSupportForOldOSPlaceholder2
+/// A native article presented when a What's New item is tapped: a header icon, title, rich (Markdown) body,
+/// and an optional action button that opens a link in a Safari sheet.
+struct ArticleMessage: Equatable {
+    struct Action: Equatable {
+        let title: String
+        let url: URL
+
+        init(title: String, url: URL) {
+            self.title = title
+            self.url = url
+        }
+    }
+
+    let icon: WhatsNewIcon
+    let title: String
+    let body: String
+    let action: Action?
+
+    init(icon: WhatsNewIcon, title: String, body: String, action: Action? = nil) {
+        self.icon = icon
+        self.title = title
+        self.body = body
+        self.action = action
+    }
+}
+
+/// What happens when a What's New item is tapped. Both destinations are pushed onto the navigation stack.
+enum WhatsNewItemDestination: Equatable {
+    /// Opens the URL directly in an in-app Safari view.
+    case link(URL)
+    /// Shows a native article screen.
+    case article(ArticleMessage)
 }
 
 struct WhatsNewItem: Identifiable, Equatable {
-    let id: WhatsNewItemId
+    let id: String
     let title: String
     let body: String
     let icon: WhatsNewIcon
-    /// Optional link opened in an in-app Safari view when the user taps the item. When `nil`, the item is
-    /// not interactive.
-    let link: URL?
+    /// Optional destination opened when the user taps the item. When `nil`, the item is not interactive.
+    let destination: WhatsNewItemDestination?
 
     init(
-        id: WhatsNewItemId,
+        id: String,
         title: String,
         body: String,
         icon: WhatsNewIcon,
-        link: URL? = nil
+        destination: WhatsNewItemDestination? = nil
     ) {
         self.id = id
         self.title = title
         self.body = body
         self.icon = icon
-        self.link = link
+        self.destination = destination
     }
 }
 
+/// Stable identifier for a What's New release, used to track whether it has already been shown.
+/// Keep the raw value stable for a given release so it is presented only once — independent of any later
+/// changes to its targeted platforms, app version, or OS requirements.
+///
+/// ```swift
+/// extension WhatsNewReleaseId {
+///     static let dropOldOSSupport = WhatsNewReleaseId("drop-old-os-support-2026-06")
+/// }
+/// ```
+struct WhatsNewReleaseId: RawRepresentable, Hashable {
+    let rawValue: String
+    init(_ rawValue: String) { self.rawValue = rawValue }
+    init(rawValue: String) { self.rawValue = rawValue }
+}
+
 struct WhatsNewRelease: Identifiable, Equatable {
+    /// Stable identity used for seen-state tracking. A release is shown at most once per `id`.
+    let id: WhatsNewReleaseId
     let version: WhatsNewAppVersion
     let targetPlatforms: [WhatsNewTargetPlatform]
     /// Optional operating-system constraints. When `nil`, the release shows on every OS version of its
@@ -209,23 +253,8 @@ struct WhatsNewRelease: Identifiable, Equatable {
     let title: String?
     let items: [WhatsNewItem]
 
-    var id: String {
-        releaseID
-    }
-
-    var releaseID: String {
-        let platforms = Set(targetPlatforms)
-            .map(\.rawValue)
-            .sorted()
-            .joined(separator: ",")
-        var releaseID = "\(version)-\(platforms)"
-        if let osRequirements {
-            releaseID += "-\(osRequirements)"
-        }
-        return releaseID
-    }
-
     init(
+        id: WhatsNewReleaseId,
         version: WhatsNewAppVersion,
         targetPlatforms: [WhatsNewTargetPlatform],
         osRequirements: WhatsNewOSRequirements? = nil,
@@ -234,6 +263,7 @@ struct WhatsNewRelease: Identifiable, Equatable {
     ) {
         precondition(!targetPlatforms.isEmpty)
         precondition(!items.isEmpty)
+        self.id = id
         self.version = version
         self.targetPlatforms = targetPlatforms
         self.osRequirements = osRequirements

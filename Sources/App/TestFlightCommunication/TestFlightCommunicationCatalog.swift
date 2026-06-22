@@ -5,6 +5,11 @@ import Shared
 /// Set `message` when there is something to communicate to testers on a matching platform. Leave it `nil`
 /// when there is nothing to communicate.
 ///
+/// The message is shown only when its `id` is unseen and the current environment matches: the current
+/// platform must be in `targetPlatforms`, and — when supplied — the app `version` must match exactly and the
+/// OS version must fall within `osRequirements`. Leave `version` / `osRequirements` unset to target every
+/// build and OS version of the matching platforms.
+///
 /// Example:
 /// ```swift
 /// static let message: TestFlightMessage? = TestFlightMessage(
@@ -18,6 +23,9 @@ import Shared
 ///             icon: .sfSymbol(.testtube2)
 ///         ),
 ///     ],
+///     osRequirements: WhatsNewOSRequirements(
+///         iOS: WhatsNewOSVersionRange(minimum: WhatsNewOSVersion(major: 26))
+///     ),
 ///     callToAction: .init(
 ///         title: "Fill out the feedback survey",
 ///         url: URL(string: "https://forms.example.com/beta-feedback")!

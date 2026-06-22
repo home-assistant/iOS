@@ -28,9 +28,9 @@ final class WhatsNewEngine {
         let platform = currentPlatform()
         let osVersion = currentOSVersion()
 
-        guard release.version == appVersion,
+        guard !hasSeenRelease(release.id.rawValue),
               release.matches(platform: platform, osVersion: osVersion),
-              !hasSeenRelease(release.releaseID) else {
+              release.version == appVersion else {
             return nil
         }
 
@@ -45,6 +45,6 @@ final class WhatsNewEngine {
     }
 
     func markSeen(_ release: WhatsNewRelease) {
-        Current.settingsStore.markWhatsNewSeen(releaseID: release.releaseID)
+        Current.settingsStore.markWhatsNewSeen(releaseID: release.id.rawValue)
     }
 }

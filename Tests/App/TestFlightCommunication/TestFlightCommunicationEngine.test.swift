@@ -1,6 +1,7 @@
 @testable import HomeAssistant
 @testable import Shared
 import Testing
+import Version
 
 @Suite(.serialized)
 struct TestFlightCommunicationEngineTests {
@@ -108,6 +109,60 @@ struct TestFlightCommunicationEngineTests {
         #expect(engine.latestMessage() == nil)
     }
 
+    @Test func messageToShowRespectsAppVersionWhenSpecified() {
+        let message = Self.message(
+            id: .init("versioned"),
+            targetPlatforms: [.iPhone],
+            version: .init(major: 2026, minor: 6, patch: 1)
+        )
+
+        let matchingEngine = TestFlightCommunicationEngine(
+            message: message,
+            isTestFlight: { true },
+            currentPlatform: { .iPhone },
+            currentVersion: { Version(major: 2026, minor: 6, patch: 1) },
+            currentOSVersion: { WhatsNewOSVersion(major: 26) },
+            hasSeenMessage: { _ in false }
+        )
+        #expect(matchingEngine.messageToShow() == message)
+
+        let mismatchedEngine = TestFlightCommunicationEngine(
+            message: message,
+            isTestFlight: { true },
+            currentPlatform: { .iPhone },
+            currentVersion: { Version(major: 2026, minor: 6, patch: 0) },
+            currentOSVersion: { WhatsNewOSVersion(major: 26) },
+            hasSeenMessage: { _ in false }
+        )
+        #expect(mismatchedEngine.messageToShow() == nil)
+    }
+
+    @Test func messageToShowRespectsOSRequirementsWhenSpecified() {
+        let message = Self.message(
+            id: .init("os-gated"),
+            targetPlatforms: [.iPhone],
+            osRequirements: WhatsNewOSRequirements(iOS: WhatsNewOSVersionRange(minimum: WhatsNewOSVersion(major: 26)))
+        )
+
+        let withinRangeEngine = TestFlightCommunicationEngine(
+            message: message,
+            isTestFlight: { true },
+            currentPlatform: { .iPhone },
+            currentOSVersion: { WhatsNewOSVersion(major: 26, minor: 1) },
+            hasSeenMessage: { _ in false }
+        )
+        #expect(withinRangeEngine.messageToShow() == message)
+
+        let belowRangeEngine = TestFlightCommunicationEngine(
+            message: message,
+            isTestFlight: { true },
+            currentPlatform: { .iPhone },
+            currentOSVersion: { WhatsNewOSVersion(major: 18, minor: 4) },
+            hasSeenMessage: { _ in false }
+        )
+        #expect(belowRangeEngine.messageToShow() == nil)
+    }
+
     @Test func settingsStorePersistsSeenMessageIDsWithoutDroppingExistingValues() {
         Current.settingsStore.prefs.removeObject(forKey: seenTestFlightMessageIDsKey)
         defer { Current.settingsStore.prefs.removeObject(forKey: seenTestFlightMessageIDsKey) }
@@ -122,7 +177,9 @@ struct TestFlightCommunicationEngineTests {
 
     private static func message(
         id: TestFlightMessageId,
-        targetPlatforms: [WhatsNewTargetPlatform]
+        targetPlatforms: [WhatsNewTargetPlatform],
+        version: WhatsNewAppVersion? = nil,
+        osRequirements: WhatsNewOSRequirements? = nil
     ) -> TestFlightMessage {
         TestFlightMessage(
             id: id,
@@ -135,7 +192,9 @@ struct TestFlightCommunicationEngineTests {
                     icon: .sfSymbol(.checkmark)
                 ),
             ],
-            targetPlatforms: targetPlatforms
+            targetPlatforms: targetPlatforms,
+            version: version,
+            osRequirements: osRequirements
         )
     }
 }

@@ -9,7 +9,6 @@ struct WhatsNewView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var didRecordView = false
-    @State private var presentedLink: IdentifiableURL?
 
     var body: some View {
         NavigationView {
@@ -35,10 +34,6 @@ struct WhatsNewView: View {
             .onAppear {
                 recordViewIfNeeded()
             }
-            .sheet(item: $presentedLink) { link in
-                SafariWebView(url: link.url)
-                    .ignoresSafeArea()
-            }
         }
         .navigationViewStyle(.stack)
     }
@@ -57,9 +52,7 @@ struct WhatsNewView: View {
     private var items: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.four) {
             ForEach(Array(release.items.enumerated()), id: \.element.id) { offset, item in
-                WhatsNewItemRow(item: item, iconColor: WhatsNewColors.iconColor(for: offset)) { url in
-                    presentedLink = IdentifiableURL(url: url)
-                }
+                WhatsNewItemRow(item: item, iconColor: WhatsNewColors.iconColor(for: offset))
             }
         }
     }
@@ -84,17 +77,35 @@ struct WhatsNewView: View {
 private struct WhatsNewItemRow: View {
     let item: WhatsNewItem
     let iconColor: UIColor
-    let onSelectLink: (URL) -> Void
+
+    @State private var presentedURL: IdentifiableURL?
 
     var body: some View {
-        if let link = item.link {
-            Button {
-                onSelectLink(link)
-            } label: {
-                content(showsLinkAffordance: true)
+        if let destination = item.destination {
+            switch destination {
+            case let .link(url):
+                // Presented as a sheet: SFSafariViewController has its own close button, which would
+                // collide with a navigation back button if pushed.
+                Button {
+                    presentedURL = IdentifiableURL(url: url)
+                } label: {
+                    content(showsLinkAffordance: true)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint(L10n.WhatsNew.Item.opensLinkHint)
+                .sheet(item: $presentedURL) { item in
+                    SafariWebView(url: item.url)
+                        .ignoresSafeArea()
+                }
+            case let .article(article):
+                NavigationLink {
+                    WhatsNewArticleView(article: article)
+                } label: {
+                    content(showsLinkAffordance: true)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint(L10n.WhatsNew.Item.opensArticleHint)
             }
-            .buttonStyle(.plain)
-            .accessibilityHint(L10n.WhatsNew.Item.opensLinkHint)
         } else {
             content(showsLinkAffordance: false)
         }
@@ -128,6 +139,62 @@ private struct WhatsNewItemRow: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
+    }
+}
+
+private struct WhatsNewArticleView: View {
+    let article: ArticleMessage
+
+    @State private var presentedURL: IdentifiableURL?
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.four) {
+                WhatsNewIconView(icon: article.icon, color: .haPrimary)
+                    .frame(width: 56, height: 56)
+                    .accessibilityHidden(true)
+
+                Text(article.title)
+                    .font(.title2.bold())
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                articleBody
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, DesignSystem.Spaces.four)
+            .padding(.top, DesignSystem.Spaces.two)
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .bottom) {
+            if let action = article.action {
+                Button {
+                    presentedURL = IdentifiableURL(url: action.url)
+                } label: {
+                    Text(action.title)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.primaryButton)
+                .padding([.horizontal, .bottom])
+            }
+        }
+        .sheet(item: $presentedURL) { item in
+            SafariWebView(url: item.url)
+                .ignoresSafeArea()
+        }
+    }
+
+    private var articleBody: Text {
+        if let attributed = try? AttributedString(
+            markdown: article.body,
+            options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        ) {
+            return Text(attributed)
+        }
+        return Text(article.body)
     }
 }
 
