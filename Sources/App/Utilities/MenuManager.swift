@@ -119,6 +119,27 @@ enum StatusItemTitleRenderer {
     }
 }
 
+/// Shared decision for what the macOS status item should do when "activated" (icon click or the
+/// "Toggle" menu item). When the user enabled "Open Home Assistant UI in browser"
+/// (`macNativeFeaturesOnly`) there is no in-app web view to toggle — it is destroyed at launch by
+/// `QuickActionWindowSceneDelegate` — so any "show me Home Assistant" affordance must open the default
+/// browser instead of spawning a web-view window. The preference is read live on every call because
+/// flipping it does not reconfigure the status item (it posts no `menuRelatedSettingDidChange`).
+enum StatusItemPrimaryAction {
+    /// Opens Home Assistant in the default browser when the browser preference is on.
+    /// - Returns: `true` if it handled the action (browser opened), `false` to fall through to the
+    ///   normal toggle/activate behaviour.
+    static func openInBrowserIfNeeded() -> Bool {
+        guard Current.settingsStore.macNativeFeaturesOnly else { return false }
+        // Prefer the server shown in the menu-bar title; its getter already falls back to the first
+        // server, so this also covers users without a configured menu-bar template.
+        let server = Current.settingsStore.menuItemTemplate?.server ?? Current.servers.all.first
+        guard let url = server?.info.connection.activeURL() else { return false }
+        URLOpener.shared.open(url, options: [:], completionHandler: nil)
+        return true
+    }
+}
+
 class MenuManager {
     let builder: UIMenuBuilder
 
@@ -369,6 +390,7 @@ class MenuManager {
 
     private func toggleMenu() -> AppMacBridgeStatusItemMenuItem {
         .init(name: L10n.Menu.StatusItem.toggle(appName)) { callbackInfo in
+            if StatusItemPrimaryAction.openInBrowserIfNeeded() { return }
             if callbackInfo.isActive {
                 callbackInfo.deactivate()
             } else {
@@ -410,6 +432,7 @@ class MenuManager {
             accessibilityLabel: appName,
             items: menuItems,
             primaryActionHandler: { callbackInfo in
+                if StatusItemPrimaryAction.openInBrowserIfNeeded() { return }
                 if callbackInfo.isActive {
                     callbackInfo.deactivate()
                 } else if callbackInfo.hasWindows {
@@ -539,6 +562,7 @@ final class StatusItemManager {
 
     private func toggleMenu() -> AppMacBridgeStatusItemMenuItem {
         .init(name: L10n.Menu.StatusItem.toggle(appName)) { callbackInfo in
+            if StatusItemPrimaryAction.openInBrowserIfNeeded() { return }
             if callbackInfo.isActive {
                 callbackInfo.deactivate()
             } else {
@@ -579,6 +603,7 @@ final class StatusItemManager {
             accessibilityLabel: appName,
             items: menuItems,
             primaryActionHandler: { callbackInfo in
+                if StatusItemPrimaryAction.openInBrowserIfNeeded() { return }
                 if callbackInfo.isActive {
                     callbackInfo.deactivate()
                 } else if callbackInfo.hasWindows {

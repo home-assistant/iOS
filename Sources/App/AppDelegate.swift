@@ -142,6 +142,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #if targetEnvironment(macCatalyst)
         statusItemManager.configure()
+        // Dock icon: when "Open Home Assistant UI in browser" is on there is no in-app web view, so a
+        // reopen with no windows (Dock icon click) should open the browser instead of creating a window.
+        Current.macBridge.setReopenHandler { StatusItemPrimaryAction.openInBrowserIfNeeded() }
         #endif
 
         checkForUpdate()

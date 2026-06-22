@@ -28,6 +28,11 @@ import Foundation
     /// Brings app to the foreground
     func activateApp()
 
+    /// Registers a handler invoked when the app is reopened with no visible windows (e.g. the user
+    /// clicks the Dock icon). Return `true` from the handler if it fully handled the reopen, which
+    /// suppresses AppKit's default window creation.
+    func setReopenHandler(_ handler: @escaping () -> Bool)
+
     func setLoginItem(forBundleIdentifier: String, enabled: Bool) -> Bool
     func isLoginItemEnabled(forBundleIdentifier identifier: String) -> Bool
 }
