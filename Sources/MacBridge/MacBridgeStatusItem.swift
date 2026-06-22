@@ -11,7 +11,11 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
         statusItem.button?.target = self
         statusItem.button?.action = #selector(statusItemTapped(_:))
         statusItem.button?.sendAction(on: [.leftMouseUp, .leftMouseDown, .rightMouseDown])
-        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseUp, .leftMouseDown, .rightMouseDown]) {
+        self.eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [
+            .leftMouseUp,
+            .leftMouseDown,
+            .rightMouseDown,
+        ]) {
             [weak self] event in
             self?.handleStatusItemEvent(event) == true ? nil : event
         }
