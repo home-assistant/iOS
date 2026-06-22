@@ -3,6 +3,7 @@ import AppKit
 class MacBridgeStatusItem: NSObject, NSMenuDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private var lastConfiguration: MacBridgeStatusItemConfiguration?
+    private var eventMonitor: Any?
 
     override init() {
         super.init()
@@ -10,6 +11,16 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
         statusItem.button?.target = self
         statusItem.button?.action = #selector(statusItemTapped(_:))
         statusItem.button?.sendAction(on: [.leftMouseUp, .leftMouseDown, .rightMouseDown])
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseUp, .leftMouseDown, .rightMouseDown]) {
+            [weak self] event in
+            self?.handleStatusItemEvent(event) == true ? nil : event
+        }
+    }
+
+    deinit {
+        if let eventMonitor {
+            NSEvent.removeMonitor(eventMonitor)
+        }
     }
 
     func configure(title: String) {
@@ -30,15 +41,7 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
     @objc private func statusItemTapped(_ sender: NSStatusBarButton) {
         guard let configuration = lastConfiguration, let event = NSApp.currentEvent else { return }
 
-        if event.isRightClickEquivalentEvent {
-            let mainMenu = menu(for: configuration.items)
-            mainMenu.delegate = self
-            statusItem.menu = mainMenu
-            sender.performClick(sender)
-        } else if event.type == .leftMouseUp {
-            // leftMouseDown also fires, but we only want to do that for ctrl-clicks
-            configuration.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: sender))
-        }
+        handle(configuration: configuration, event: event, sender: sender)
     }
 
     func menuDidClose(_ menu: NSMenu) {
@@ -101,6 +104,38 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
         guard let representedObject = sender.representedObject as? MacBridgeStatusItemMenuItem else { return }
         representedObject.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: sender))
     }
+
+    private func handleStatusItemEvent(_ event: NSEvent) -> Bool {
+        guard event.type != .leftMouseDown || event.isRightClickEquivalentEvent else {
+            return false
+        }
+
+        guard let button = statusItem.button,
+              let window = button.window,
+              button.bounds.contains(button.convert(event.locationInWindow, from: nil)),
+              event.window === window,
+              let configuration = lastConfiguration else {
+            return false
+        }
+
+        handle(configuration: configuration, event: event, sender: button)
+        return true
+    }
+
+    private func handle(
+        configuration: MacBridgeStatusItemConfiguration,
+        event: NSEvent,
+        sender: NSStatusBarButton
+    ) {
+        if event.isRightClickEquivalentEvent {
+            let mainMenu = menu(for: configuration.items)
+            mainMenu.delegate = self
+            statusItem.menu = mainMenu
+            sender.performClick(sender)
+        } else if event.type == .leftMouseUp {
+            configuration.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: sender))
+        }
+    }
 }
 
 class MacBridgeStatusItemCallbackInfoImpl: MacBridgeStatusItemCallbackInfo {
@@ -111,11 +146,27 @@ class MacBridgeStatusItemCallbackInfoImpl: MacBridgeStatusItemCallbackInfo {
     }
 
     var isActive: Bool {
-        NSApp.isActive
+        normalAppWindows.contains { window in
+            window.isVisible && !window.isMiniaturized
+        }
+    }
+
+    var hasWindows: Bool {
+        !normalAppWindows.isEmpty
+    }
+
+    private var normalAppWindows: [NSWindow] {
+        NSApp.windows.filter { window in
+            window.level == .normal &&
+                window.canBecomeKey
+        }
     }
 
     func activate() {
-        NSApp.activate(ignoringOtherApps: true)
+        showAppWindows()
+        DispatchQueue.main.async { [weak self] in
+            self?.showAppWindows()
+        }
     }
 
     func deactivate() {
@@ -124,5 +175,19 @@ class MacBridgeStatusItemCallbackInfoImpl: MacBridgeStatusItemCallbackInfo {
 
     func terminate() {
         NSApp.terminate(sender)
+    }
+
+    private func showAppWindows() {
+        NSApp.unhide(sender)
+
+        for window in normalAppWindows {
+            if window.isMiniaturized {
+                window.deminiaturize(sender)
+            }
+            window.makeKeyAndOrderFront(sender)
+            window.orderFrontRegardless()
+        }
+
+        NSApp.activate(ignoringOtherApps: true)
     }
 }
