@@ -40,6 +40,14 @@ class CameraViewController: UIViewController, NotificationCategory {
         return button
     }()
 
+    private lazy var loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .white
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+
     #if DEBUG
     private lazy var streamTypeLabel: UILabel = {
         let label = UILabel()
@@ -76,6 +84,13 @@ class CameraViewController: UIViewController, NotificationCategory {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        view.addSubview(loadingIndicator)
+        NSLayoutConstraint.activate([
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+        loadingIndicator.startAnimating()
 
         view.addSubview(muteButton)
         muteButton.isHidden = true
@@ -117,6 +132,7 @@ class CameraViewController: UIViewController, NotificationCategory {
 
                 viewController.didMove(toParent: self)
 
+                view.bringSubviewToFront(loadingIndicator)
                 view.bringSubviewToFront(muteButton)
                 #if DEBUG
                 view.bringSubviewToFront(streamTypeLabel)
@@ -161,6 +177,9 @@ class CameraViewController: UIViewController, NotificationCategory {
         .none
     }
 
+    // We draw our own centered loader, so suppress the system one.
+    var hidesSystemLoadingIndicator: Bool { true }
+
     var mediaPlayPauseButtonFrame: CGRect? { nil }
 
     func mediaPlay() {
@@ -187,6 +206,14 @@ class CameraViewController: UIViewController, NotificationCategory {
 
     private func updateMuteIcon() {
         muteButton.setImage(UIImage(systemSymbol: isMuted ? .speakerSlashFill : .speakerWave3), for: .normal)
+    }
+
+    private func setLoading(_ loading: Bool) {
+        if loading {
+            loadingIndicator.startAnimating()
+        } else {
+            loadingIndicator.stopAnimating()
+        }
     }
 
     @objc private func toggleMute() {
@@ -257,7 +284,7 @@ class CameraViewController: UIViewController, NotificationCategory {
                 }.get { [weak self, extensionContext] controller in
                     // configure it -- this isn't part of the one-level-up chain because it would run for each one
                     var lastState: CameraStreamHandlerState?
-                    controller.didUpdateState = { state in
+                    controller.didUpdateState = { [weak self] state in
                         guard lastState != state else {
                             return
                         }
@@ -265,8 +292,10 @@ class CameraViewController: UIViewController, NotificationCategory {
                         switch state {
                         case .playing:
                             extensionContext?.mediaPlayingStarted()
+                            self?.setLoading(false)
                         case .paused:
                             extensionContext?.mediaPlayingPaused()
+                            self?.setLoading(true)
                         }
 
                         lastState = state
