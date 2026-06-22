@@ -186,7 +186,7 @@ struct TestFlightCommunicationEngineTests {
             title: "Beta update",
             items: [
                 WhatsNewItem(
-                    id: .whatsNewValidationIntro,
+                    id: "whatsNewValidationIntro",
                     title: "What to test",
                     body: "Something new to validate.",
                     icon: .sfSymbol(.checkmark)

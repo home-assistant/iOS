@@ -284,7 +284,7 @@ struct WhatsNewEngineTests {
             osRequirements: osRequirements,
             items: [
                 WhatsNewItem(
-                    id: .whatsNewValidationIntro,
+                    id: "whatsNewValidationIntro",
                     title: "Native release notes",
                     body: "A user-facing change.",
                     icon: .sfSymbol(.checkmark)
