@@ -216,7 +216,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         if magicItem.type == .assistPipeline {
             return assistIntent(
                 serverId: magicItem.serverId,
-                pipelineId: magicItem.id,
+                pipelineId: magicItem.assistPipelineId ?? magicItem.id,
                 startListening: true
             )
         }

@@ -30,13 +30,17 @@ struct AssistPipelineAddList: View {
 
             ForEach(assistConfigs, id: \.serverId) { config in
                 Section(serverName(serverId: config.serverId)) {
-                    ForEach(filteredPipelines(config.pipelines), id: \.id) { pipeline in
+                    ForEach(filteredPipelines(pipelines(for: config)), id: \.id) { pipeline in
                         Button {
+                            // MagicItem identity is keyed on `id`, so "Preferred" can't reuse the empty
+                            // pipeline id — give it a UUID and carry the marker in `assistPipelineId`.
+                            let isPreferred = pipeline.id.isEmpty
                             itemToAdd(.init(
-                                id: pipeline.id,
+                                id: isPreferred ? UUID().uuidString : pipeline.id,
                                 serverId: config.serverId,
                                 type: .assistPipeline,
-                                customization: .init(iconColor: MagicItem.defaultAssistIconColorHex)
+                                customization: .init(iconColor: MagicItem.defaultAssistIconColorHex),
+                                assistPipelineId: isPreferred ? "" : nil
                             ))
                         } label: {
                             HStack {
@@ -61,6 +65,11 @@ struct AssistPipelineAddList: View {
         .onAppear {
             fetchPipelines()
         }
+    }
+
+    private func pipelines(for config: AssistPipelines) -> [Pipeline] {
+        guard !config.pipelines.isEmpty else { return [] }
+        return [.init(id: "", name: L10n.AppIntents.Assist.PreferredPipeline.title)] + config.pipelines
     }
 
     private func filteredPipelines(_ pipelines: [Pipeline]) -> [Pipeline] {

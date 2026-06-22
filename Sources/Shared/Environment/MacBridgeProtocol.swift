@@ -34,6 +34,7 @@ import Foundation
 
 @objc(MacBridgeStatusItemCallbackInfo) public protocol MacBridgeStatusItemCallbackInfo {
     var isActive: Bool { get }
+    var hasWindows: Bool { get }
     func activate()
     func deactivate()
     func terminate()

@@ -14,6 +14,7 @@ struct HAApp: App {
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
         }
+        .handlesExternalEvents(matching: [SceneActivity.webView.activityIdentifier])
 
         // Mac Settings
         WindowGroup {

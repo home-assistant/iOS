@@ -63,15 +63,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let debugSwift = DebugSwift()
     #endif
     private var zoneManager: ZoneManager?
-    private var titleSubscription: MenuManagerTitleSubscription? {
-        didSet {
-            if oldValue != titleSubscription {
-                oldValue?.cancel()
-            }
-        }
-    }
-
-    private var shouldRefreshTitleSubscription = false
+    #if targetEnvironment(macCatalyst)
+    private let statusItemManager = StatusItemManager()
+    #endif
 
     private var watchCommunicatorService: WatchCommunicatorService?
 
@@ -146,6 +140,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         lifecycleManager.didFinishLaunching()
         setupDebugSwift()
 
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.configure()
+        #endif
+
         checkForUpdate()
         checkForAlerts()
 
@@ -167,14 +165,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if builder.system == .main {
             let manager = MenuManager(builder: builder)
             manager.update()
-
-            #if targetEnvironment(macCatalyst)
-            titleSubscription = manager.subscribeStatusItemTitle(
-                existing: shouldRefreshTitleSubscription ? nil : titleSubscription,
-                update: Current.macBridge.configureStatusItem(title:)
-            )
-            shouldRefreshTitleSubscription = false
-            #endif
         }
     }
 
@@ -494,15 +484,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc private func menuRelatedSettingDidChange(_ note: Notification) {
         UIMenuSystem.main.setNeedsRebuild()
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.configure()
+        #endif
     }
 
     @objc private func apiDidConnect(_ note: Notification) {
-        // When API reconnects, rebuild the menu to refresh the status item title subscription
-        // Force refresh by setting the flag that will cause the subscription to be recreated
-        #if targetEnvironment(macCatalyst)
-        shouldRefreshTitleSubscription = true
-        #endif
         UIMenuSystem.main.setNeedsRebuild()
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.apiDidConnect()
+        #endif
     }
 
     private func setupUIApplicationShortcutItems() {
