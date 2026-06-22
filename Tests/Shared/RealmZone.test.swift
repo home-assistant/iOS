@@ -211,4 +211,45 @@ class RealmZoneTests: XCTestCase {
         )
         XCTAssertNil(insideDisabled, "zone with TrackingEnabled = false should be excluded")
     }
+
+    func testZonesOfLocationSortsEqualRadiusByDistanceToCenter() throws {
+        let executionIdentifier = UUID().uuidString
+
+        let realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
+        Current.realm = { realm }
+        addTeardownBlock { Current.realm = Realm.live }
+
+        let zones = [
+            with(RLMZone()) {
+                $0.entityId = "far_center"
+                $0.serverIdentifier = "fake1"
+                // gus's, mission bay
+                $0.Latitude = 37.774299403042754
+                $0.Longitude = -122.3914772411471
+                $0.Radius = 200.0
+            },
+            with(RLMZone()) {
+                $0.entityId = "near_center"
+                $0.serverIdentifier = "fake1"
+                // slightly to the south, so its center is closer to the user below
+                $0.Latitude = 37.773399403042754
+                $0.Longitude = -122.3914772411471
+                $0.Radius = 200.0
+            },
+        ]
+
+        try realm.write {
+            realm.add(zones)
+        }
+
+        let server1 = Server.fake(identifier: "fake1")
+
+        // user sits inside both equal-radius zones but nearer to near_center's center
+        let location = CLLocation(latitude: 37.773399403042754, longitude: -122.3914772411471)
+        XCTAssertEqual(
+            RLMZone.zones(of: location, in: server1).map(\.entityId),
+            ["near_center", "far_center"],
+            "equal-radius zones should be ordered by distance to the zone center"
+        )
+    }
 }
