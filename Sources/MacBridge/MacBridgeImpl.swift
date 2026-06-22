@@ -97,6 +97,10 @@ import SystemConfiguration
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
 
+    func setReopenHandler(_ handler: @escaping () -> Bool) {
+        MacBridgeAppDelegateHandler.reopenHandler = handler
+    }
+
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration) {
         statusItem?.configure(using: configuration)
     }
