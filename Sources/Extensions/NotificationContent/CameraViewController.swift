@@ -76,8 +76,8 @@ class CameraViewController: UIViewController, NotificationCategory {
         }.recover { [entityId] error -> Promise<StreamCameraResponse> in
             Current.Log.info("falling back due to no streaming info for \(entityId) due to \(error)")
             return .value(StreamCameraResponse(fallbackEntityID: entityId))
-        }.then { [weak self, api] result -> Promise<Void> in
-            let controllers = Self.possibleControllers
+        }.then { [weak self, api, entityId] result -> Promise<Void> in
+            var controllers = Self.possibleControllers
                 .compactMap { controllerClass -> () -> Promise<UIViewController & CameraStreamHandler> in
                     {
                         do {
@@ -87,6 +87,13 @@ class CameraViewController: UIViewController, NotificationCategory {
                         }
                     }
                 }
+
+            // Prefer WebRTC; it rejects when unsupported so the chain falls through to HLS then MJPEG.
+            if #available(iOS 16.0, *) {
+                controllers.insert({ () -> Promise<UIViewController & CameraStreamHandler> in
+                    .value(CameraStreamWebRTCViewController(api: api, cameraEntityId: entityId))
+                }, at: 0)
+            }
 
             return self?.viewController(from: controllers).asVoid() ?? .value(())
         }

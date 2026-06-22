@@ -427,6 +427,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
+"extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC stream unavailable";
 "gestures.1_finger.title" = "Using one finger";
 "gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";

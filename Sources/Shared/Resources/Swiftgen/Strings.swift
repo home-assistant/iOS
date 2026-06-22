@@ -1592,6 +1592,8 @@ public enum L10n {
           public static func other(_ p1: Int) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)
           }
+          /// WebRTC stream unavailable
+          public static var webrtcUnavailable: String { return L10n.tr("Localizable", "extensions.notification_content.error.request.webrtc_unavailable") }
         }
       }
     }

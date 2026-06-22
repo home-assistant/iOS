@@ -895,6 +895,7 @@
 		42A1F0B22E000000000000B2 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A22E000000000000A2 /* Alamofire */; };
 		42A1F0B32E000000000000B3 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A32E000000000000A3 /* Alamofire */; };
 		42A1F0B42E000000000000B4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A42E000000000000A4 /* Alamofire */; };
+		42FA000000000000000C0002 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0001 /* WebRTC */; };
 		42A1F0B52E000000000000B5 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A52E000000000000A5 /* Alamofire */; };
 		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
 		42A1F0B72E000000000000B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A72E000000000000A7 /* Alamofire */; };
@@ -1428,6 +1429,10 @@
 		B62CD2A6225B099D008DF3C5 /* WebhookSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
 		B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDC8216442BB00123C50 /* CameraViewController.swift */; };
+		42FA000000000000000C0004 /* CameraStreamWebRTCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA000000000000000C0003 /* CameraStreamWebRTCViewController.swift */; };
+		42FA000000000000000C0005 /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */; };
+		42FA000000000000000C0006 /* WebRTCViewPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */; };
+		42FA000000000000000C0007 /* WebRTCVideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425390D82E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift */; };
 		B63CCDCB216442C200123C50 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCA216442C200123C50 /* MapViewController.swift */; };
 		B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B641BC1F1E2097EF002CCBC1 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC1D1E2097EF002CCBC1 /* AboutView.swift */; };
@@ -3319,6 +3324,7 @@
 		B630F295238C9A1200C6E4BE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B63CCDC8216442BB00123C50 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		42FA000000000000000C0003 /* CameraStreamWebRTCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamWebRTCViewController.swift; sourceTree = "<group>"; };
 		B63CCDCA216442C200123C50 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		B63CCDCE2164714900123C50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
 		B63CCDDE21649AE400123C50 /* BayArea.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BayArea.gpx; sourceTree = "<group>"; };
@@ -3630,6 +3636,7 @@
 			files = (
 				B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */,
 				42A1F0B42E000000000000B4 /* Alamofire in Frameworks */,
+				42FA000000000000000C0002 /* WebRTC in Frameworks */,
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
 				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
 				AB3E076F146799C008ACB0EA /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */,
@@ -6828,6 +6835,7 @@
 				B678DB351EA9999C0045312F /* MainInterface.storyboard */,
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
 				B63CCDC8216442BB00123C50 /* CameraViewController.swift */,
+				42FA000000000000000C0003 /* CameraStreamWebRTCViewController.swift */,
 				B63CCDCA216442C200123C50 /* MapViewController.swift */,
 				110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */,
 				110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */,
@@ -7791,6 +7799,7 @@
 			packageProductDependencies = (
 				3932B484D8AF4C056AB1A84D /* GRDB */,
 				42A1F0A42E000000000000A4 /* Alamofire */,
+				42FA000000000000000C0001 /* WebRTC */,
 			);
 			productName = NotificationContentExtension;
 			productReference = B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */;
@@ -9374,6 +9383,10 @@
 				11169CAA262FCE43005EF90A /* ImageAttachmentViewController.swift in Sources */,
 				110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */,
 				B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */,
+				42FA000000000000000C0004 /* CameraStreamWebRTCViewController.swift in Sources */,
+				42FA000000000000000C0005 /* WebRTCClient.swift in Sources */,
+				42FA000000000000000C0006 /* WebRTCViewPlayerViewModel.swift in Sources */,
+				42FA000000000000000C0007 /* WebRTCVideoPlayerViewController.swift in Sources */,
 				110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
 				11F01A80263D050D002AC33B /* NotificationLoadingViewController.swift in Sources */,
@@ -12613,6 +12626,11 @@
 			productName = FirebaseMessaging;
 		};
 		42DC44322E1C06E5001046C1 /* WebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */;
+			productName = WebRTC;
+		};
+		42FA000000000000000C0001 /* WebRTC */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */;
 			productName = WebRTC;
