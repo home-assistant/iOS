@@ -3,6 +3,7 @@ import AVFoundation
 import AVKit
 import KeychainAccess
 import PromiseKit
+import SFSafeSymbols
 import Shared
 import UIKit
 import UserNotifications
@@ -26,6 +27,33 @@ class CameraViewController: UIViewController, NotificationCategory {
     let entityId: String
     let api: HomeAssistantAPI
 
+    private var isMuted = true
+
+    private lazy var muteButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.tintColor = .white
+        button.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        button.layer.cornerRadius = 18
+        button.setPreferredSymbolConfiguration(.init(pointSize: 15, weight: .semibold), forImageIn: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(toggleMute), for: .touchUpInside)
+        return button
+    }()
+
+    #if DEBUG
+    private lazy var streamTypeLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = .systemFont(ofSize: 11, weight: .semibold)
+        label.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        label.textAlignment = .center
+        label.layer.cornerRadius = 4
+        label.clipsToBounds = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    #endif
+
     required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String,
               entityId.starts(with: "camera.") else {
@@ -44,6 +72,28 @@ class CameraViewController: UIViewController, NotificationCategory {
 
     deinit {
         activeViewController?.pause()
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view.addSubview(muteButton)
+        muteButton.isHidden = true
+        NSLayoutConstraint.activate([
+            muteButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            muteButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -8),
+            muteButton.widthAnchor.constraint(equalToConstant: 36),
+            muteButton.heightAnchor.constraint(equalToConstant: 36),
+        ])
+
+        #if DEBUG
+        view.addSubview(streamTypeLabel)
+        NSLayoutConstraint.activate([
+            streamTypeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            streamTypeLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
+            streamTypeLabel.heightAnchor.constraint(equalToConstant: 22),
+        ])
+        #endif
     }
 
     var activeViewController: (UIViewController & CameraStreamHandler)? {
@@ -66,6 +116,12 @@ class CameraViewController: UIViewController, NotificationCategory {
                 ])
 
                 viewController.didMove(toParent: self)
+
+                view.bringSubviewToFront(muteButton)
+                #if DEBUG
+                view.bringSubviewToFront(streamTypeLabel)
+                #endif
+                updateOverlays()
             }
         }
     }
@@ -99,8 +155,10 @@ class CameraViewController: UIViewController, NotificationCategory {
         }
     }
 
+    // No system play/pause button: the stream auto-plays once it starts. The only control is the
+    // mute/unmute button overlaid in the top-trailing corner.
     var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType {
-        .overlay
+        .none
     }
 
     var mediaPlayPauseButtonFrame: CGRect? { nil }
@@ -112,6 +170,45 @@ class CameraViewController: UIViewController, NotificationCategory {
     func mediaPause() {
         activeViewController?.pause()
     }
+
+    private func updateOverlays() {
+        guard let active = activeViewController else {
+            muteButton.isHidden = true
+            return
+        }
+        active.setMuted(isMuted)
+        muteButton.isHidden = !active.hasAudio
+        updateMuteIcon()
+
+        #if DEBUG
+        streamTypeLabel.text = " \(debugStreamName(for: active)) "
+        #endif
+    }
+
+    private func updateMuteIcon() {
+        muteButton.setImage(UIImage(systemSymbol: isMuted ? .speakerSlashFill : .speakerWave3), for: .normal)
+    }
+
+    @objc private func toggleMute() {
+        isMuted.toggle()
+        activeViewController?.setMuted(isMuted)
+        updateMuteIcon()
+    }
+
+    #if DEBUG
+    private func debugStreamName(for controller: UIViewController & CameraStreamHandler) -> String {
+        if #available(iOS 16.0, *), controller is CameraStreamWebRTCViewController {
+            return "WebRTC"
+        }
+        if controller is CameraStreamHLSViewController {
+            return "AVPlayer (HLS)"
+        }
+        if controller is CameraStreamMJPEGViewController {
+            return "MJPEG"
+        }
+        return String(describing: type(of: controller))
+    }
+    #endif
 
     enum CameraViewControllerError: LocalizedError {
         case noControllers

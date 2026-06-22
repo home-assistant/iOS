@@ -93,6 +93,15 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         didUpdateState(.paused)
     }
 
+    var hasAudio: Bool { true }
+
+    var isMuted: Bool { viewModel.webRTCClient?.isAudioMuted() ?? true }
+
+    func setMuted(_ muted: Bool) {
+        guard let client = viewModel.webRTCClient else { return }
+        muted ? client.muteAudio() : client.unmuteAudio()
+    }
+
     private func attachPlayer() {
         let controller = WebRTCVideoPlayerViewController(viewModel: viewModel)
         controller.onVideoStarted = { [weak self] in
