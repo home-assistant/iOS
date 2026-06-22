@@ -83,6 +83,6 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
     }
 
     override func configureDevice(named name: String, in room: MatterAddDeviceRequest.Room?) async {
-        // Use this function to configure the (now) commissioned device with the given name and room.
+        Current.settingsStore.matterLastCommissionedDeviceName = name
     }
 }

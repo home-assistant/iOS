@@ -21,6 +21,27 @@ public extension HATypedRequest {
         ))
     }
 
+    /// Performs a `call_service` over the websocket, optionally requesting the action's response.
+    ///
+    /// `returnResponse` must only be `true` for actions that support a response, otherwise Home
+    /// Assistant rejects the call.
+    static func callService(
+        domain: String,
+        service: String,
+        serviceData: [String: Any],
+        returnResponse: Bool
+    ) -> HATypedRequest<CallServiceResponse> {
+        HATypedRequest<CallServiceResponse>(request: .init(
+            type: "call_service",
+            data: [
+                "domain": domain,
+                "service": service,
+                "service_data": serviceData,
+                "return_response": returnResponse,
+            ]
+        ))
+    }
+
     static func toggleDomain(
         domain: Domain,
         entityId: String
@@ -131,12 +152,6 @@ public extension HATypedRequest {
     static func configAreasRegistry() -> HATypedRequest<[HAAreasRegistryResponse]> {
         HATypedRequest<[HAAreasRegistryResponse]>(request: .init(
             type: "config/area_registry/list"
-        ))
-    }
-
-    static func configEntityRegistryList() -> HATypedRequest<[EntityRegistryEntry]> {
-        HATypedRequest<[EntityRegistryEntry]>(request: .init(
-            type: "config/entity_registry/list"
         ))
     }
 

@@ -44,7 +44,17 @@ class OnboardingAuthLoginImplTests: XCTestCase {
         let result = login.open(authDetails: authDetails, sender: sender)
         let viewController = try XCTUnwrap(FakeOnboardingAuthLoginViewController.lastCreated)
         try viewController.resolver.fulfill(XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
-        XCTAssertEqual(try hang(result), "code_123")
+        XCTAssertEqual(try hang(result).code, "code_123")
+    }
+
+    func testSuccessPropagatesResolvedServerURL() throws {
+        let result = login.open(authDetails: authDetails, sender: sender)
+        let viewController = try XCTUnwrap(FakeOnboardingAuthLoginViewController.lastCreated)
+        viewController.resolvedServerURL = URL(string: "http://example.com:8124")
+        try viewController.resolver.fulfill(XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
+        let value = try hang(result)
+        XCTAssertEqual(value.code, "code_123")
+        XCTAssertEqual(value.resolvedURL, URL(string: "http://example.com:8124"))
     }
 
     func testAuthDetailsNormalizeFrontendURLForAuthorizeEndpoint() throws {
@@ -77,6 +87,7 @@ private final class FakeOnboardingAuthLoginViewController: UIViewController, Onb
 
     let resolver: Resolver<URL>
     let promise: Promise<URL>
+    var resolvedServerURL: URL?
 
     required init(authDetails: OnboardingAuthDetails) {
         (self.promise, self.resolver) = Promise<URL>.pending()

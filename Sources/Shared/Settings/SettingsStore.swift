@@ -9,6 +9,7 @@ public class SettingsStore {
     let keychain = AppConstants.Keychain
     let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
     private let seenWhatsNewReleaseIDsKey = "seenWhatsNewReleaseIDs"
+    private let seenTestFlightMessageIDsKey = "seenTestFlightMessageIDs"
 
     /// These will only be posted on the main thread
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
@@ -50,6 +51,10 @@ public class SettingsStore {
         Set(prefs.stringArray(forKey: seenWhatsNewReleaseIDsKey) ?? [])
     }
 
+    private var seenTestFlightMessageIDs: Set<String> {
+        Set(prefs.stringArray(forKey: seenTestFlightMessageIDsKey) ?? [])
+    }
+
     #if os(iOS)
     public var matterLastPreferredNetWorkMacExtendedAddress: String? {
         get {
@@ -75,6 +80,15 @@ public class SettingsStore {
         }
         set {
             keychain["matterLastPreferredNetWorkExtendedPANID"] = newValue
+        }
+    }
+
+    public var matterLastCommissionedDeviceName: String? {
+        get {
+            keychain["matterLastCommissionedDeviceName"]
+        }
+        set {
+            keychain["matterLastCommissionedDeviceName"] = newValue
         }
     }
 
@@ -189,6 +203,14 @@ public class SettingsStore {
 
     public func markWhatsNewSeen(releaseID: String) {
         prefs.set(seenWhatsNewReleaseIDs.union([releaseID]).sorted(), forKey: seenWhatsNewReleaseIDsKey)
+    }
+
+    public func hasSeenTestFlightMessage(messageID: String) -> Bool {
+        seenTestFlightMessageIDs.contains(messageID)
+    }
+
+    public func markTestFlightMessageSeen(messageID: String) {
+        prefs.set(seenTestFlightMessageIDs.union([messageID]).sorted(), forKey: seenTestFlightMessageIDsKey)
     }
 
     public var fullScreen: Bool {

@@ -236,7 +236,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "alerts.navigation_error.title") }
     }
     public enum OpenUrlFromDeepLink {
-      /// Open URL (%@) from deep link?
+      /// Tap server to open (%@) deep link URL?
       public static func message(_ p1: Any) -> String {
         return L10n.tr("Localizable", "alerts.open_url_from_deep_link.message", String(describing: p1))
       }
@@ -287,6 +287,16 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.refresh_warning.title") }
       }
     }
+    public enum AssistPrompt {
+      /// Send a text prompt to Assist
+      public static var description: String { return L10n.tr("Localizable", "app_intents.assist_prompt.description") }
+      /// Assist prompt
+      public static var title: String { return L10n.tr("Localizable", "app_intents.assist_prompt.title") }
+      public enum Prompt {
+        /// Prompt
+        public static var title: String { return L10n.tr("Localizable", "app_intents.assist_prompt.prompt.title") }
+      }
+    }
     public enum Automations {
       public enum Automation {
         /// Automation
@@ -333,6 +343,18 @@ public enum L10n {
       /// Cover
       public static var title: String { return L10n.tr("Localizable", "app_intents.cover.title") }
     }
+    public enum Error {
+      /// Failed servers: %@
+      public static func failedServers(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.error.failed_servers", String(describing: p1))
+      }
+      /// No server provided
+      public static var noServer: String { return L10n.tr("Localizable", "app_intents.error.no_server") }
+      /// Timed out after %li seconds
+      public static func timedOut(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "app_intents.error.timed_out", p1)
+      }
+    }
     public enum Fan {
       /// Fan
       public static var title: String { return L10n.tr("Localizable", "app_intents.fan.title") }
@@ -343,6 +365,20 @@ public enum L10n {
       public enum OnStateIcon {
         /// Icon for on state
         public static var title: String { return L10n.tr("Localizable", "app_intents.fan.on_state_icon.title") }
+      }
+    }
+    public enum GetCameraSnapshot {
+      /// Get a single still frame from a camera
+      public static var description: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.description") }
+      /// Get camera snapshot
+      public static var title: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.title") }
+      public enum Camera {
+        /// Camera
+        public static var title: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.camera.title") }
+      }
+      public enum Error {
+        /// Image could not be converted to PNG
+        public static var pngConversion: String { return L10n.tr("Localizable", "app_intents.get_camera_snapshot.error.png_conversion") }
       }
     }
     public enum HapticConfirmation {
@@ -393,6 +429,12 @@ public enum L10n {
       /// Notify when run
       public static var title: String { return L10n.tr("Localizable", "app_intents.notify_when_run.title") }
     }
+    public enum OpenAppSettings {
+      /// Opens the companion app directly in its settings
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_app_settings.description") }
+      /// Open app settings
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_app_settings.title") }
+    }
     public enum OpenExperimentalDashboard {
       /// Opens the experimental dashboard
       public static var description: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.description") }
@@ -414,12 +456,42 @@ public enum L10n {
       public static func actionParameterDisambiguationIntro(_ p1: Any, _ p2: Any) -> String {
         return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_disambiguation_intro", String(describing: p1), String(describing: p2))
       }
+      /// Perform an action on a Home Assistant server
+      public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.description") }
       /// Failed: %@
       public static func responseFailure(_ p1: Any) -> String {
         return L10n.tr("Localizable", "app_intents.perform_action.response_failure", String(describing: p1))
       }
       /// Done
       public static var responseSuccess: String { return L10n.tr("Localizable", "app_intents.perform_action.response_success") }
+      /// Perform action
+      public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.title") }
+      public enum Action {
+        /// Action
+        public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.action.title") }
+      }
+      public enum Error {
+        /// Invalid action name
+        public static var invalidAction: String { return L10n.tr("Localizable", "app_intents.perform_action.error.invalid_action") }
+        /// Unable to parse action data
+        public static var invalidPayload: String { return L10n.tr("Localizable", "app_intents.perform_action.error.invalid_payload") }
+      }
+      public enum Payload {
+        /// JSON data to send with the action
+        public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.description") }
+        /// Action data
+        public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.title") }
+      }
+    }
+    public enum RenderTemplate {
+      /// Render a Home Assistant template. Only users with the admin role can perform this action.
+      public static var description: String { return L10n.tr("Localizable", "app_intents.render_template.description") }
+      /// Render template
+      public static var title: String { return L10n.tr("Localizable", "app_intents.render_template.title") }
+      public enum Template {
+        /// Template
+        public static var title: String { return L10n.tr("Localizable", "app_intents.render_template.template.title") }
+      }
     }
     public enum Scenes {
       /// Run Scene
@@ -514,6 +586,26 @@ public enum L10n {
     public enum Switch {
       /// Switch
       public static var title: String { return L10n.tr("Localizable", "app_intents.switch.title") }
+    }
+    public enum UpdateLocation {
+      /// Send a location update to Home Assistant
+      public static var description: String { return L10n.tr("Localizable", "app_intents.update_location.description") }
+      /// Updated location on all servers
+      public static var success: String { return L10n.tr("Localizable", "app_intents.update_location.success") }
+      /// Update location
+      public static var title: String { return L10n.tr("Localizable", "app_intents.update_location.title") }
+      public enum Location {
+        /// Location
+        public static var title: String { return L10n.tr("Localizable", "app_intents.update_location.location.title") }
+      }
+    }
+    public enum UpdateSensors {
+      /// Send a sensor update to Home Assistant
+      public static var description: String { return L10n.tr("Localizable", "app_intents.update_sensors.description") }
+      /// Updated sensors on all servers
+      public static var success: String { return L10n.tr("Localizable", "app_intents.update_sensors.success") }
+      /// Update sensors
+      public static var title: String { return L10n.tr("Localizable", "app_intents.update_sensors.title") }
     }
     public enum WidgetAction {
       /// Which actions?
@@ -731,6 +823,10 @@ public enum L10n {
       public static var unableToConnectToServer: String { return L10n.tr("Localizable", "camera_player.errors.unable_to_connect_to_server") }
       /// Unknown error
       public static var unknown: String { return L10n.tr("Localizable", "camera_player.errors.unknown") }
+    }
+    public enum Notification {
+      /// Tap to open camera
+      public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
     }
   }
 
@@ -983,8 +1079,14 @@ public enum L10n {
       }
     }
     public enum QuickAccess {
+      public enum Execute {
+        /// Executing...
+        public static var inProgress: String { return L10n.tr("Localizable", "carPlay.quick_access.execute.in_progress") }
+      }
       public enum Intro {
         public enum Item {
+          /// Tap to continue on your iPhone
+          public static var body: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.body") }
           /// Create your CarPlay configuration
           public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.title") }
         }
@@ -1741,8 +1843,6 @@ public enum L10n {
     public enum Menu {
       /// Allow multiple selection
       public static var allowMultipleSelection: String { return L10n.tr("Localizable", "home_view.menu.allow_multiple_selection") }
-      /// Customize
-      public static var customize: String { return L10n.tr("Localizable", "home_view.menu.customize") }
       /// Reorder
       public static var reorder: String { return L10n.tr("Localizable", "home_view.menu.reorder") }
       /// Settings
@@ -2024,28 +2124,110 @@ public enum L10n {
       }
     }
     public enum FrequentUpdates {
-      /// Allows Home Assistant to update Live Activities up to once per second. Enable in Settings u203A %@ u203A Live Activities.
-      public static func footer(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "live_activity.frequent_updates.footer", String(describing: p1))
-      }
       /// Frequent Updates
       public static var title: String { return L10n.tr("Localizable", "live_activity.frequent_updates.title") }
     }
-    public enum Privacy {
-      /// Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.
-      public static var message: String { return L10n.tr("Localizable", "live_activity.privacy.message") }
+    public enum Sample {
+      public enum Alarm {
+        /// Short 60-second countdown, no progress bar. Red communicates urgency — watch the timer count down in real time.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.alarm.note") }
+        /// Alarm · 60 sec Countdown
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.alarm.title") }
+      }
+      public enum AllFields {
+        /// Every content-state field active at once: icon, live countdown, and progress bar. Confirms no layout collisions.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.note") }
+        /// All Fields · Max Load
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.title") }
+      }
+      public enum Delivery {
+        /// message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.delivery.note") }
+        /// Package Delivery · All Text Fields
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.delivery.title") }
+      }
+      public enum Dishwasher {
+        /// The only sample that tests start → update → end. After it ends, the final "Done" state lingers on the lock screen (up to 4 h).
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.note") }
+        /// Dishwasher · Full Lifecycle, Ends Itself
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.title") }
+      }
+      public enum Ev {
+        /// Numeric percentage in criticalText updates alongside the progress bar; color shifts from green to yellow-green as the charge nears full.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.ev.note") }
+        /// EV Charging · Numeric %
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.ev.title") }
+      }
+      public enum Media {
+        /// Progress (playback position) and a live countdown (time left in track) update together. The track change resets both.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.media.note") }
+        /// Media Player · Progress + Timer
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.media.title") }
+      }
+      public enum NoIcon {
+        /// No icon and no color, so the progress bar uses the default HA-blue tint. criticalText shows in the Dynamic Island compact trailing only.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.note") }
+        /// No Icon · Default Color
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.title") }
+      }
+      public enum Plain {
+        /// Minimum viable layout — only the message field is set. Verifies the bare layout renders without icon, progress, or timer.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.plain.note") }
+        /// Plain Message
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.plain.title") }
+      }
+      public enum RateLimit {
+        /// Six updates 2 s apart. On iOS 18 the system renders ~one per 15 s — some are silently dropped and the counter skips. On the simulator and iOS 17 all six render.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.note") }
+        /// Rate Limit · 6 Rapid Updates
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.title") }
+      }
+      public enum Security {
+        /// No progress bar — state is communicated entirely through color and icon. Escalates orange (motion) → red (person) → green (all clear).
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.security.note") }
+        /// Security Escalation · Color + Icon
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.security.title") }
+      }
+      public enum Washing {
+        /// Progress advances through five named stages; criticalText tracks the current stage. The icon swaps to a check on completion.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.washing.note") }
+        /// Washing Machine · Stage Labels
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.washing.title") }
+      }
+    }
+    public enum Samples {
+      /// Start drives the activity through several updates. Lock the screen to watch them live.
+      public static var animatedFooter: String { return L10n.tr("Localizable", "live_activity.samples.animated_footer") }
+      /// Sample · Animated
+      public static var animatedTitle: String { return L10n.tr("Localizable", "live_activity.samples.animated_title") }
+      /// Copied
+      public static var copied: String { return L10n.tr("Localizable", "live_activity.samples.copied") }
+      /// Copy
+      public static var copy: String { return L10n.tr("Localizable", "live_activity.samples.copy") }
+      /// Start runs this sample locally on-device. The YAML triggers the same Live Activity from an automation or script — point it at your device's notify action.
+      public static var detailFooter: String { return L10n.tr("Localizable", "live_activity.samples.detail_footer") }
+      /// Start
+      public static var start: String { return L10n.tr("Localizable", "live_activity.samples.start") }
+      /// Started — lock the screen to watch
+      public static var started: String { return L10n.tr("Localizable", "live_activity.samples.started") }
+      /// Fixed state — no updates after start. Good for checking layout at a glance.
+      public static var staticFooter: String { return L10n.tr("Localizable", "live_activity.samples.static_footer") }
+      /// Sample · Static
+      public static var staticTitle: String { return L10n.tr("Localizable", "live_activity.samples.static_title") }
+      /// Samples
+      public static var title: String { return L10n.tr("Localizable", "live_activity.samples.title") }
     }
     public enum Section {
       /// Active Activities
       public static var active: String { return L10n.tr("Localizable", "live_activity.section.active") }
-      /// Privacy
-      public static var privacy: String { return L10n.tr("Localizable", "live_activity.section.privacy") }
       /// Status
       public static var status: String { return L10n.tr("Localizable", "live_activity.section.status") }
     }
     public enum Status {
       /// Enabled
       public static var enabled: String { return L10n.tr("Localizable", "live_activity.status.enabled") }
+      /// Not available on iPad
+      public static var notSupported: String { return L10n.tr("Localizable", "live_activity.status.not_supported") }
       /// Open Settings
       public static var openSettings: String { return L10n.tr("Localizable", "live_activity.status.open_settings") }
     }
@@ -2490,6 +2672,10 @@ public enum L10n {
     /// Identifier
     public static var identifier: String { return L10n.tr("Localizable", "notifications_configurator.identifier") }
     public enum Action {
+      public enum ExampleTrigger {
+        /// Example Trigger
+        public static var title: String { return L10n.tr("Localizable", "notifications_configurator.action.example_trigger.title") }
+      }
       public enum Rows {
         public enum AuthenticationRequired {
           /// When the user selects an action with this option, the system prompts the user to unlock the device. After unlocking, Home Assistant will be notified of the selected action.
@@ -2673,8 +2859,16 @@ public enum L10n {
     public enum Invitation {
       /// Accept
       public static var acceptButton: String { return L10n.tr("Localizable", "onboarding.invitation.accept_button") }
-      /// Other options
-      public static var otherOptions: String { return L10n.tr("Localizable", "onboarding.invitation.other_options") }
+      /// Home Assistant address
+      public static var addressTitle: String { return L10n.tr("Localizable", "onboarding.invitation.address_title") }
+      /// Home Assistant is open source home automation that puts local control and privacy first.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.invitation.description") }
+      /// Reject
+      public static var rejectButton: String { return L10n.tr("Localizable", "onboarding.invitation.reject_button") }
+      /// You've been invited
+      public static var screenTitle: String { return L10n.tr("Localizable", "onboarding.invitation.screen_title") }
+      /// Only accept this invite if you trust the person who shared it. Connecting to an unknown server could give it access to data you enter or is sent by the app, such as your location and device information.
+      public static var securityWarning: String { return L10n.tr("Localizable", "onboarding.invitation.security_warning") }
       /// Home Assistant Invite
       public static var title: String { return L10n.tr("Localizable", "onboarding.invitation.title") }
     }
@@ -3651,6 +3845,10 @@ public enum L10n {
       /// Edit Template
       public static var title: String { return L10n.tr("Localizable", "settings.template_edit.title") }
     }
+    public enum TestFlightCommunication {
+      /// Beta Tester Updates
+      public static var title: String { return L10n.tr("Localizable", "settings.test_flight_communication.title") }
+    }
     public enum WhatsNew {
       /// What's new?
       public static var title: String { return L10n.tr("Localizable", "settings.whats_new.title") }
@@ -4098,6 +4296,12 @@ public enum L10n {
       /// Native Features Only (Experimental)
       public static var title: String { return L10n.tr("Localizable", "settings_details.mac_native_features.title") }
     }
+    public enum MacOpenInBrowser {
+      /// Opens Home Assistant in your default browser instead of the in-app web view, while keeping native features such as widgets working.
+      public static var footer: String { return L10n.tr("Localizable", "settings_details.mac_open_in_browser.footer") }
+      /// Open Home Assistant UI in browser
+      public static var title: String { return L10n.tr("Localizable", "settings_details.mac_open_in_browser.title") }
+    }
     public enum Notifications {
       /// Use the mobile_app notify service to send notifications to your device.
       public static var info: String { return L10n.tr("Localizable", "settings_details.notifications.info") }
@@ -4134,6 +4338,10 @@ public enum L10n {
       public enum LocalPush {
         /// Local Push
         public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.title") }
+        public enum Retry {
+          /// Retry Local Push
+          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.retry.title") }
+        }
         public enum Status {
           /// Available (%1$@)
           public static func available(_ p1: Any) -> String {
@@ -4412,6 +4620,11 @@ public enum L10n {
         }
       }
     }
+  }
+
+  public enum TestFlightCommunication {
+    /// Beta Tester Update
+    public static var badgeTitle: String { return L10n.tr("Localizable", "test_flight_communication.badge_title") }
   }
 
   public enum Thread {
@@ -4918,6 +5131,12 @@ public enum L10n {
             return L10n.tr("Localizable", "watch.home.run.confirmation.title", String(describing: p1))
           }
         }
+        public enum Error {
+          /// The action couldn't be run. The Apple Watch may not be able to reach this server directly.
+          public static var message: String { return L10n.tr("Localizable", "watch.home.run.error.message") }
+          /// Couldn't run action
+          public static var title: String { return L10n.tr("Localizable", "watch.home.run.error.title") }
+        }
       }
     }
     public enum Labels {
@@ -5391,11 +5610,59 @@ public enum L10n {
       }
     }
     public enum Settings {
+      /// Auto
+      public static var auto: String { return L10n.tr("Localizable", "watch.settings.auto") }
+      /// Updated %@
+      public static func lastUpdated(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "watch.settings.last_updated", String(describing: p1))
+      }
+      /// No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.
+      public static var noServers: String { return L10n.tr("Localizable", "watch.settings.no_servers") }
+      /// Refresh
+      public static var refresh: String { return L10n.tr("Localizable", "watch.settings.refresh") }
+      /// Settings
+      public static var title: String { return L10n.tr("Localizable", "watch.settings.title") }
+      public enum ClientCertificate {
+        /// Available on this Watch
+        public static var availableOnWatch: String { return L10n.tr("Localizable", "watch.settings.client_certificate.available_on_watch") }
+        /// Open Home Assistant on your iPhone to import the certificate, then refresh here.
+        public static var importInstructions: String { return L10n.tr("Localizable", "watch.settings.client_certificate.import_instructions") }
+        /// Not configured
+        public static var `none`: String { return L10n.tr("Localizable", "watch.settings.client_certificate.none") }
+        public enum RemoveFromWatch {
+          /// The certificate will be removed from this Watch only. Your iPhone keeps it, and refreshing re-adds it to the Watch.
+          public static var message: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.message") }
+          /// Remove
+          public static var remove: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.remove") }
+          /// Remove from this Watch?
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.title") }
+        }
+      }
       public enum NoItems {
         public enum Phone {
           /// No items configured, please choose items below.
           public static var title: String { return L10n.tr("Localizable", "watch.settings.no_items.phone.title") }
         }
+      }
+      public enum PerformAction {
+        /// Apple Watch
+        public static var appleWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.apple_watch") }
+        /// Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer") }
+        /// iPhone
+        public static var iphone: String { return L10n.tr("Localizable", "watch.settings.perform_action.iphone") }
+        /// Perform action using
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.perform_action.title") }
+      }
+      public enum Servers {
+        /// Servers
+        public static var header: String { return L10n.tr("Localizable", "watch.settings.servers.header") }
+      }
+      public enum UrlOverride {
+        /// Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.url_override.footer") }
+        /// Always use
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.url_override.title") }
       }
     }
   }
@@ -5994,6 +6261,11 @@ public enum L10n {
         public static var serverId: String { return L10n.tr("Localizable", "widgets.todo_list.parameter.server_id") }
       }
     }
+  }
+
+  public enum YamlPreview {
+    /// Share Contents
+    public static var share: String { return L10n.tr("Localizable", "yaml_preview.share") }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

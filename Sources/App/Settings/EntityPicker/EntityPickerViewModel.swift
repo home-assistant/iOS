@@ -18,8 +18,6 @@ enum EntityGrouping: String, CaseIterable, Identifiable {
 
 final class EntityPickerViewModel: ObservableObject {
     @Published var entities: [HAAppEntity] = []
-    @Published var registryEntities: [AppEntityRegistryListForDisplay] = []
-    @Published var registryEntriesData: [AppEntityRegistry] = []
     @Published var deviceRegistryData: [AppDeviceRegistry] = []
     @Published var areaData: [AppArea] = []
     @Published var showList = false
@@ -119,8 +117,6 @@ final class EntityPickerViewModel: ObservableObject {
     private func fetchServerData(for serverId: String?) {
         guard let serverId else { return }
         do {
-            registryEntities = try AppEntityRegistryListForDisplay.config(serverId: serverId)
-            registryEntriesData = try AppEntityRegistry.config(serverId: serverId)
             deviceRegistryData = try AppDeviceRegistry.config(serverId: serverId)
             areaData = try AppArea.fetchAreas(for: serverId)
             rebuildAreaCaches()
@@ -200,10 +196,12 @@ final class EntityPickerViewModel: ObservableObject {
                 // Filter by area if set
                 if let areaEntityIds, !areaEntityIds.contains(entity.entityId) { return false }
 
-                // Filter by search term (only when 3+ chars)
+                // Filter by search term (only when 3+ chars). `entity.name` is the resolved display
+                // name (registry name, falling back to the state name), baked in at write time.
                 if searchTerm.count > 2 {
                     let lower = searchTerm.lowercased()
-                    if !entity.name.lowercased().contains(lower), !entity.entityId.lowercased().contains(lower) {
+                    if !entity.name.lowercased().contains(lower),
+                       !entity.entityId.lowercased().contains(lower) {
                         return false
                     }
                 }

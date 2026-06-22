@@ -27,7 +27,6 @@ struct WidgetsBundleLegacy: WidgetBundle {
         }
         #endif
         WidgetAssist()
-        LegacyWidgetActions()
         WidgetOpenPage()
     }
 }
@@ -47,13 +46,12 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
-        WidgetScripts()
         WidgetTodoList()
+        WidgetOpenPage()
         WidgetGauge()
         WidgetDetails()
-        WidgetActions()
-        WidgetOpenPage()
         WidgetSensors()
+        WidgetScripts()
     }
 }
 
@@ -81,26 +79,15 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenPage()
         ControlOpenEntity()
         ControlOpenCamera()
-        ControlOpenCoverEntity()
-        ControlOpenInputBoolean()
-        ControlOpenLight()
-        ControlOpenLock()
-        ControlOpenSensor()
-        ControlOpenSwitch()
-        #if DEBUG
-        ControlOpenCamerasList()
-        #endif
-
         // Widgets
         WidgetCommonlyUsedEntities()
         WidgetCustom()
         WidgetAssist()
-        WidgetScripts()
         WidgetTodoList()
+        WidgetOpenPage()
         WidgetGauge()
         WidgetDetails()
         WidgetSensors()
-        WidgetActions()
-        WidgetOpenPage()
+        WidgetScripts()
     }
 }

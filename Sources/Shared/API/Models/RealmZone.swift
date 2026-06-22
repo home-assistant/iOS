@@ -247,16 +247,29 @@ public final class RLMZone: Object, UpdatableModel {
         "Zone - ID: \(identifier), state: " + (inRegion ? "inside" : "outside")
     }
 
-    public static func zone(of location: CLLocation, in server: Server) -> Self? {
-        Current.realm()
-            .objects(Self.self)
+    public static func zones(
+        of location: CLLocation,
+        in server: Server,
+        includingPassive: Bool = true
+    ) -> [RLMZone] {
+        var results = Current.realm()
+            .objects(RLMZone.self)
             .filter("%K == %@", #keyPath(serverIdentifier), server.identifier.rawValue)
             .filter("TrackingEnabled == true")
+
+        if !includingPassive {
+            results = results.filter("isPassive == false")
+        }
+
+        return results
             .filter { $0.circularRegion.containsWithAccuracy(location) }
             .sorted { zoneA, zoneB in
                 // match the smaller zone over the larger
                 zoneA.Radius < zoneB.Radius
             }
-            .first
+    }
+
+    public static func zone(of location: CLLocation, in server: Server) -> RLMZone? {
+        zones(of: location, in: server).first
     }
 }

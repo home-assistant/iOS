@@ -103,6 +103,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     // MARK: - Payload Parsing
 
     static func contentState(from payload: [String: Any]) -> HALiveActivityAttributes.ContentState {
+        let title = payload["title"] as? String
         let message = payload["message"] as? String ?? ""
         let criticalText = payload["critical_text"] as? String
         // Use NSNumber coercion so both Int and Double JSON values (e.g. 50 vs 50.0) decode correctly.
@@ -126,6 +127,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
 
         return HALiveActivityAttributes.ContentState(
             message: message,
+            title: title,
             criticalText: criticalText,
             progress: progress,
             progressMax: progressMax,

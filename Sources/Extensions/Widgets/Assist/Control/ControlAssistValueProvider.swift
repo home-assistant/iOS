@@ -47,6 +47,10 @@ struct AssistPipelineEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Assist Pipeline")
     static let defaultQuery = AssistPipelineEntityQuery()
 
+    /// Per-server "Preferred" id. Encoding the server id keeps each server's entry uniquely addressable
+    /// (the entity `id` is what App Intents persists), and real pipeline ids never use this prefix.
+    static let preferredIdPrefix = "preferred-pipeline:"
+
     let id: String
     let serverId: String
     let name: String
@@ -54,20 +58,44 @@ struct AssistPipelineEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         .init(title: .init(stringLiteral: name))
     }
+
+    static func preferred(serverId: String) -> AssistPipelineEntity {
+        .init(
+            id: preferredIdPrefix + serverId,
+            serverId: serverId,
+            name: L10n.AppIntents.Assist.PreferredPipeline.title
+        )
+    }
+
+    /// Legacy selections were stored with an empty id, so those count as preferred too.
+    var isPreferred: Bool {
+        id.isEmpty || id.hasPrefix(Self.preferredIdPrefix)
+    }
+
+    var pipelineId: String? {
+        isPreferred ? nil : id
+    }
 }
 
 @available(iOS 16.4, *)
 struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [AssistPipelineEntity] {
         let pipelinesPerServer = try await pipelines()
-        let entities = pipelinesPerServer.flatMap { key, pipelines in
-            pipelines.filter({ identifiers.contains($0.id) }).compactMap { pipeline in
-                AssistPipelineEntity(id: pipeline.id, serverId: key.identifier.rawValue, name: pipeline.name)
+        return identifiers.compactMap { identifier -> AssistPipelineEntity? in
+            if identifier.hasPrefix(AssistPipelineEntity.preferredIdPrefix) {
+                return .preferred(serverId: String(identifier.dropFirst(AssistPipelineEntity.preferredIdPrefix.count)))
             }
-        }
-
-        return entities.filter { entity in
-            identifiers.contains(entity.id)
+            if identifier.isEmpty {
+                // Legacy "Preferred" carried no server; fall back to the first (single-server upgraders).
+                guard let server = Current.servers.all.first else { return nil }
+                return .preferred(serverId: server.identifier.rawValue)
+            }
+            for (server, pipelines) in pipelinesPerServer {
+                if let pipeline = pipelines.first(where: { $0.id == identifier }) {
+                    return .init(id: pipeline.id, serverId: server.identifier.rawValue, name: pipeline.name)
+                }
+            }
+            return nil
         }
     }
 
@@ -76,19 +104,15 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
         var sections = pipelines.map({ server, pipelines in
             IntentItemSection<AssistPipelineEntity>(
                 .init(stringLiteral: server.info.name),
-                items: pipelines.filter { $0.name.contains(string) }.map({ pipeline in
-                    .init(AssistPipelineEntity(
-                        id: pipeline.id,
-                        serverId: server.identifier.rawValue,
-                        name: pipeline.name
-                    ))
-                })
+                items: entities(forServer: server, pipelines: pipelines)
+                    .filter { $0.name.contains(string) }
+                    .map { .init($0) }
             )
         })
         sections.append(.init(
             .init(stringLiteral: L10n.helpLabel),
             items: [.init(.init(
-                id: "",
+                id: "-1",
                 serverId: "",
                 name: L10n.AppIntents.Assist.RefreshWarning.title
             ))]
@@ -101,13 +125,7 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
         var sections = pipelines.map({ server, pipelines in
             IntentItemSection<AssistPipelineEntity>(
                 .init(stringLiteral: server.info.name),
-                items: pipelines.map({ pipeline in
-                    .init(AssistPipelineEntity(
-                        id: pipeline.id,
-                        serverId: server.identifier.rawValue,
-                        name: pipeline.name
-                    ))
-                })
+                items: entities(forServer: server, pipelines: pipelines).map { .init($0) }
             )
         })
         sections.append(.init(
@@ -115,6 +133,17 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
             items: [.init(.init(id: "-1", serverId: "", name: L10n.AppIntents.Assist.RefreshWarning.title))]
         ))
         return .init(sections: sections)
+    }
+
+    func defaultResult() async -> AssistPipelineEntity? {
+        guard let server = Current.servers.all.first else { return nil }
+        return .preferred(serverId: server.identifier.rawValue)
+    }
+
+    private func entities(forServer server: Server, pipelines: [Pipeline]) -> [AssistPipelineEntity] {
+        [.preferred(serverId: server.identifier.rawValue)] + pipelines.map { pipeline in
+            AssistPipelineEntity(id: pipeline.id, serverId: server.identifier.rawValue, name: pipeline.name)
+        }
     }
 
     private func pipelines() async throws -> [Server: [Pipeline]] {
@@ -125,11 +154,9 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
             }
             pipelines.forEach { assistPipeline in
                 guard let server = Current.servers.all
-                    .first(where: { $0.identifier.rawValue == assistPipeline.serverId }) else { return }
+                    .first(where: { $0.identifier.rawValue == assistPipeline.serverId }),
+                    !assistPipeline.pipelines.isEmpty else { return }
                 result[server] = assistPipeline.pipelines
-
-                // Empty id indicates use of preferred pipeline
-                result[server]?.insert(.init(id: "", name: L10n.AppIntents.Assist.PreferredPipeline.title), at: 0)
             }
             return result
         } catch {

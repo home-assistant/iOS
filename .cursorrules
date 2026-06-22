@@ -28,6 +28,7 @@ bundle exec fastlane test
 3. **SF Symbols**: Use `SFSafeSymbols` (`Image(systemSymbol: .house)`) not string-based APIs.
 4. **CocoaPods only**: No Swift Package Manager. Dependencies via `Podfile`.
 5. **Workspace**: Always use `HomeAssistant.xcworkspace`.
+6. **Concurrency**: Prefer Swift Concurrency (`async/await`, `Task`, actors) for new async code. Do not introduce new **PromiseKit** code — it's a legacy dependency being phased out (some of `HomeAssistantAPI` still uses it). Migrate PromiseKit to `async/await` where practical when you touch it.
 
 ### Architecture
 
@@ -44,6 +45,7 @@ bundle exec fastlane test
 - No `force_cast` or `force_try`
 - Use `guard` for early returns
 - SwiftUI preferred for new UI, `@MainActor` on view models
+- Prefer `async/await` over PromiseKit for asynchronous code
 
 ### Testing
 

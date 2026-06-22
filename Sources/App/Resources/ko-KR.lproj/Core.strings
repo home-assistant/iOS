@@ -2,7 +2,7 @@
 "common::state::closed" = "닫힘";
 "common::state::connected" = "연결됨";
 "common::state::disabled" = "비활성화";
-"common::state::disconnected" = "연결해제됨";
+"common::state::disconnected" = "연결 해제됨";
 "common::state::enabled" = "활성화";
 "common::state::home" = "재실";
 "common::state::idle" = "유휴 중";
@@ -18,7 +18,7 @@
 "common::state::yes" = "네";
 "component::airzone::entity::select::sleep_times::state::off" = "꺼짐";
 "component::alert::entity_component::_::state::idle" = "유휴 중";
-"component::alert::entity_component::_::state::on" = "활성화됨";
+"component::alert::entity_component::_::state::on" = "활성화";
 "component::automation::entity_component::_::state::off" = "꺼짐";
 "component::automation::entity_component::_::state::on" = "켜짐";
 "component::binary_sensor::entity_component::_::state::off" = "꺼짐";
@@ -29,8 +29,8 @@
 "component::binary_sensor::entity_component::door::state::on" = "열림";
 "component::binary_sensor::entity_component::garage_door::state::off" = "닫힘";
 "component::binary_sensor::entity_component::garage_door::state::on" = "열림";
-"component::binary_sensor::entity_component::lock::state::off" = "잠금";
-"component::binary_sensor::entity_component::lock::state::on" = "잠금 해제";
+"component::binary_sensor::entity_component::lock::state::off" = "잠김";
+"component::binary_sensor::entity_component::lock::state::on" = "해제";
 "component::binary_sensor::entity_component::opening::state::off" = "닫힘";
 "component::binary_sensor::entity_component::opening::state::on" = "열림";
 "component::binary_sensor::entity_component::presence::state::off" = "외출";
@@ -75,18 +75,18 @@
 "component::google_mail::services::set_vacation::fields::enabled::name" = "활성화";
 "component::group::entity_component::_::state::closed" = "닫힘";
 "component::group::entity_component::_::state::home" = "재실";
-"component::group::entity_component::_::state::locked" = "잠금";
+"component::group::entity_component::_::state::locked" = "잠김";
 "component::group::entity_component::_::state::not_home" = "외출";
 "component::group::entity_component::_::state::off" = "꺼짐";
 "component::group::entity_component::_::state::on" = "켜짐";
 "component::group::entity_component::_::state::open" = "열림";
-"component::group::entity_component::_::state::unlocked" = "잠금 해제";
+"component::group::entity_component::_::state::unlocked" = "해제";
 "component::hdmi_cec::services::standby::name" = "대기 중";
 "component::homekit_controller::entity::select::ecobee_mode::state::away" = "외출";
 "component::homekit_controller::entity::select::ecobee_mode::state::home" = "재실";
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "비활성화";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "연결됨";
-"component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "연결해제됨";
+"component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "연결 해제됨";
 "component::humidifier::entity_component::_::state::off" = "꺼짐";
 "component::humidifier::entity_component::_::state::on" = "켜짐";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "유휴 중";
@@ -97,9 +97,8 @@
 "component::improv_ble::config::abort::characteristic_missing" = "기기가 이미 Wi-Fi에 연결되어 있거나 더 이상 Wi-Fi에 연결할 수 없습니다. 다른 네트워크에 연결하려면 먼저 공장 초기화를 시도해 보세요.";
 "component::improv_ble::config::abort::no_devices_found" = "네트워크에서 기기를 찾을 수 없습니다";
 "component::improv_ble::config::abort::provision_successful" = "기기가 Wi-Fi 네트워크에 성공적으로 연결되었습니다.";
-"component::improv_ble::config::abort::provision_successful_url" = "기기가 Wi-Fi 네트워크에 성공적으로 연결되었습니다. \
-\
- 설정을 완료하려면 {url} 방문하세요.";
+"component::improv_ble::config::abort::provision_successful_url" = "기기가 Wi-Fi 네트워크에 성공적으로 연결되었습니다.\
+[설정 안내]({url})에 따라 설정을 완료하세요.";
 "component::improv_ble::config::abort::unknown" = "예상치 못한 오류가 발생했습니다";
 "component::improv_ble::config::error::unable_to_connect" = "기기를 Wi-Fi 네트워크에 연결할 수 없습니다. SSID와 비밀번호가 올바른지 확인하고 다시 시도하세요.";
 "component::improv_ble::config::flow_title" = "{name}";
@@ -137,19 +136,19 @@
 "component::light::entity_component::_::state::on" = "켜짐";
 "component::light::title" = "조명";
 "component::litterrobot::entity::sensor::status_code::state::off" = "꺼짐";
-"component::litterrobot::entity::sensor::status_code::state::p" = "일시중지됨";
+"component::litterrobot::entity::sensor::status_code::state::p" = "일시중지";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "꺼짐";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::p" = "일시중지";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "활성화";
-"component::lock::entity_component::_::state::locked" = "잠금";
-"component::lock::entity_component::_::state::unlocked" = "잠금 해제";
+"component::lock::entity_component::_::state::locked" = "잠김";
+"component::lock::entity_component::_::state::unlocked" = "해제";
 "component::lock::title" = "잠금장치";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "꺼짐";
 "component::lutron_caseta::device_automation::trigger_subtype::on" = "켜짐";
 "component::media_player::entity_component::_::state::idle" = "유휴 중";
 "component::media_player::entity_component::_::state::off" = "꺼짐";
 "component::media_player::entity_component::_::state::on" = "켜짐";
-"component::media_player::entity_component::_::state::paused" = "일시 정지";
+"component::media_player::entity_component::_::state::paused" = "일시중지";
 "component::media_player::entity_component::_::state::standby" = "대기 중";
 "component::media_player::entity_component::_::state_attributes::is_volume_muted::state::false" = "아니요";
 "component::media_player::entity_component::_::state_attributes::is_volume_muted::state::true" = "네";
@@ -233,9 +232,9 @@
 "component::tessie::entity::select::climate_state_seat_heater_right::state::off" = "꺼짐";
 "component::tessie::entity::select::climate_state_seat_heater_third_row_left::state::off" = "꺼짐";
 "component::tessie::entity::select::climate_state_seat_heater_third_row_right::state::off" = "꺼짐";
-"component::timer::entity_component::_::state::active" = "활성 상태";
+"component::timer::entity_component::_::state::active" = "활성화";
 "component::timer::entity_component::_::state::idle" = "유휴 중";
-"component::timer::entity_component::_::state::paused" = "일시 정지";
+"component::timer::entity_component::_::state::paused" = "일시중지";
 "component::timer::entity_component::_::state_attributes::editable::state::false" = "아니요";
 "component::timer::entity_component::_::state_attributes::editable::state::true" = "네";
 "component::transmission::entity::sensor::transmission_status::state::idle" = "유휴 중";
@@ -263,15 +262,15 @@
 "component::vacuum::entity_component::_::state::idle" = "유휴 중";
 "component::vacuum::entity_component::_::state::off" = "끄기";
 "component::vacuum::entity_component::_::state::on" = "켜기";
-"component::vacuum::entity_component::_::state::paused" = "일시 정지";
+"component::vacuum::entity_component::_::state::paused" = "일시중지";
 "component::valve::entity_component::_::state::closed" = "닫힘";
 "component::valve::entity_component::_::state::open" = "열림";
 "component::water_heater::entity_component::_::state::off" = "꺼짐";
 "component::water_heater::entity_component::_::state_attributes::away_mode::state::off" = "꺼짐";
 "component::water_heater::entity_component::_::state_attributes::away_mode::state::on" = "켜짐";
-"component::whirlpool::entity::sensor::whirlpool_machine::state::pause" = "일시중지됨";
+"component::whirlpool::entity::sensor::whirlpool_machine::state::pause" = "일시중지";
 "component::whirlpool::entity::sensor::whirlpool_machine::state::standby" = "대기 중";
-"component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "활성화됨";
+"component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "활성화";
 "component::wled::entity::select::live_override::state:::0" = "꺼짐";
 "component::wled::entity::select::live_override::state:::1" = "켜짐";
 "component::wolflink::entity::sensor::state::state::aus" = "비활성화";

@@ -94,37 +94,7 @@ extension WebViewController {
 
     func showSettingsViewController() {
         getLatestConfig()
-        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            Current.sceneManager.activateAnyScene(for: .settings)
-        } else {
-            // Use SwiftUI SettingsView wrapped in hosting controller
-            let settingsView = SettingsView().embeddedInHostingController()
-            settingsView.view.tag = WebViewControllerOverlayedViewTags.settingsView.rawValue
-            presentOverlayController(controller: settingsView, animated: true)
-        }
-    }
-
-    func openActionAutomationEditor(actionId: String) {
-        guard server.info.version >= .externalBusCommandAutomationEditor else {
-            showActionAutomationEditorNotAvailable()
-            return
-        }
-        _ = webViewExternalMessageHandler.sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue,
-            payload: [
-                "config": [
-                    "trigger": [
-                        [
-                            "platform": "event",
-                            "event_type": "ios.action_fired",
-                            "event_data": [
-                                "actionID": actionId,
-                            ],
-                        ],
-                    ],
-                ],
-            ]
-        ))
+        Current.sceneManager.appCoordinator.done { $0.showSettings() }
     }
 
     func getLatestConfig() {

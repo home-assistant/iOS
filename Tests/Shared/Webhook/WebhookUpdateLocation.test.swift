@@ -49,6 +49,31 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertNil(json["vertical_accuracy"])
     }
 
+    func testNameOfZoneWithInZones() {
+        Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
+
+        let zone = with(RLMZone()) {
+            $0.entityId = "zone.given_name"
+            $0.serverIdentifier = "server1"
+        }
+        let otherZone = with(RLMZone()) {
+            $0.entityId = "zone.other_name"
+            $0.serverIdentifier = "server1"
+        }
+
+        let model = WebhookUpdateLocation(trigger: .GPSRegionEnter, usingNameOf: zone, inZones: [zone, otherZone])
+        let json = model.toJSON()
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["location_name"] as? String, "given_name")
+        XCTAssertEqual(json["in_zones"] as? [String], ["zone.given_name", "zone.other_name"])
+        XCTAssertNil(json["gps"])
+        XCTAssertNil(json["gps_accuracy"])
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
+    }
+
     func testNameOfZoneWithNoZone() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
@@ -301,6 +326,7 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertEqual(json["gps"] as? [Double], [1.23, 4.56])
         XCTAssertEqual(json["gps_accuracy"] as? Double, 104)
         XCTAssertNil(json["location_name"])
+        XCTAssertNil(json["in_zones"])
         XCTAssertEqual(json["speed"] as? Double, 108)
         XCTAssertEqual(json["altitude"] as? Double, 103)
         XCTAssertEqual(json["course"] as? Double, 106)

@@ -8,8 +8,18 @@ import SwiftUI
 import UserNotifications
 import XCGLogger
 
+#if DEBUG
+private let forceDisableLocalPushForLiveActivityTesting = false
+#endif
+
 class NotificationManager: NSObject, LocalPushManagerDelegate {
     lazy var localPushManager: NotificationManagerLocalPushInterface = {
+        #if DEBUG
+        if forceDisableLocalPushForLiveActivityTesting {
+            return NotificationManagerLocalPushInterfaceDisallowed()
+        }
+        #endif
+
         #if targetEnvironment(simulator)
         return NotificationManagerLocalPushInterfaceDirect(delegate: self)
         #else
@@ -22,6 +32,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }()
 
     var commandManager = NotificationCommandManager()
+    private weak var cameraOverlayController: UIViewController?
 
     override init() {
         super.init()
@@ -29,6 +40,18 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             self,
             selector: #selector(didBecomeActive),
             name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(showCameraFromNotification(_:)),
+            name: NotificationCommandManager.didReceiveShowCameraNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(hideCameraFromNotification),
+            name: NotificationCommandManager.didReceiveHideCameraNotification,
             object: nil
         )
     }
@@ -42,6 +65,144 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         if Current.settingsStore.clearBadgeAutomatically {
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
+        localPushManager.scheduleAppOpenLocalPushRetries()
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            // Catch ends enqueued by the extension while the app was suspended.
+            LiveActivityPendingEndObserver.drain()
+        }
+        #endif
+    }
+
+    @objc private func showCameraFromNotification(_ notification: Notification) {
+        guard UIApplication.shared.applicationState == .active else {
+            scheduleShowCameraFallbackNotification(userInfo: notification.userInfo)
+            return
+        }
+
+        openCamera(from: notification.userInfo)
+    }
+
+    private func openCamera(from userInfo: [AnyHashable: Any]?) {
+        guard #available(iOS 16.0, *) else {
+            Current.Log.info("Ignoring show_camera push command because camera player requires iOS 16")
+            return
+        }
+
+        guard let entityId = cameraEntityId(from: userInfo) else {
+            Current.Log.error("Received show_camera push command without a valid camera entity_id")
+            return
+        }
+
+        Current.sceneManager.webViewControllerPromise
+            .done { webViewController in
+                let view = CameraPlayerView(
+                    server: self.cameraServer(from: userInfo, fallback: webViewController.server),
+                    cameraEntityId: entityId
+                ).embeddedInHostingController()
+                self.cameraOverlayController = view
+                view.modalPresentationStyle = .overFullScreen
+                webViewController.presentOverlayController(controller: view, animated: true)
+            }.catch { error in
+                Current.Log.error("Failed to show camera from push command: \(error)")
+            }
+    }
+
+    private func scheduleShowCameraFallbackNotification(userInfo: [AnyHashable: Any]?) {
+        guard let entityId = cameraEntityId(from: userInfo) else {
+            Current.Log.error("Received show_camera push command without a valid camera entity_id")
+            return
+        }
+
+        let content = UNMutableNotificationContent()
+        content.body = L10n.CameraPlayer.Notification.body
+        content.sound = .default
+        var fallbackUserInfo: [AnyHashable: Any] = [
+            "homeassistant": [
+                "command": "show_camera",
+                "entity_id": entityId,
+            ],
+        ]
+        if let webhookId = webhookId(from: userInfo) {
+            fallbackUserInfo["webhook_id"] = webhookId
+        }
+        content.userInfo = fallbackUserInfo
+
+        Current.userNotificationCenter.add(UNNotificationRequest(
+            identifier: "show_camera.\(entityId)",
+            content: content,
+            trigger: nil
+        )) { error in
+            if let error {
+                Current.Log.error("Failed to schedule show_camera fallback notification: \(error)")
+            }
+        }
+    }
+
+    private func cameraEntityId(from userInfo: [AnyHashable: Any]?) -> String? {
+        guard let userInfo else { return nil }
+
+        if let entityId = userInfo["entity_id"] as? String, entityId.hasPrefix("camera.") {
+            return entityId
+        }
+
+        if let homeassistant = userInfo["homeassistant"] as? [String: Any],
+           let entityId = homeassistant["entity_id"] as? String,
+           entityId.hasPrefix("camera.") {
+            return entityId
+        }
+
+        if let homeassistant = userInfo["homeassistant"] as? [AnyHashable: Any],
+           let entityId = homeassistant["entity_id"] as? String,
+           entityId.hasPrefix("camera.") {
+            return entityId
+        }
+
+        return nil
+    }
+
+    private func webhookId(from userInfo: [AnyHashable: Any]?) -> String? {
+        guard let userInfo else { return nil }
+
+        if let webhookId = userInfo["webhook_id"] as? String {
+            return webhookId
+        }
+
+        if let homeassistant = userInfo["homeassistant"] as? [String: Any] {
+            return homeassistant["webhook_id"] as? String
+        }
+
+        if let homeassistant = userInfo["homeassistant"] as? [AnyHashable: Any] {
+            return homeassistant["webhook_id"] as? String
+        }
+
+        return nil
+    }
+
+    private func cameraServer(from userInfo: [AnyHashable: Any]?, fallback: Server) -> Server {
+        guard let webhookId = webhookId(from: userInfo),
+              let server = Current.servers.server(forWebhookID: webhookId) else {
+            return fallback
+        }
+
+        return server
+    }
+
+    @objc private func hideCameraFromNotification() {
+        Current.sceneManager.webViewControllerPromise
+            .done { webViewController in
+                guard let cameraOverlayController = self.cameraOverlayController,
+                      webViewController.overlayedController === cameraOverlayController else {
+                    Current.Log.info("Ignoring hide_camera push command because no camera is on display")
+                    return
+                }
+
+                webViewController.dismissOverlayController(animated: true) { [weak self] in
+                    self?.cameraOverlayController = nil
+                }
+            }.catch { error in
+                Current.Log.error("Failed to hide camera from push command: \(error)")
+            }
     }
 
     func resetPushID() -> Promise<String> {
@@ -238,6 +399,12 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
 
+        if isShowCameraCommand(userInfo: userInfo), cameraEntityId(from: userInfo) != nil {
+            openCamera(from: userInfo)
+            completionHandler()
+            return
+        }
+
         guard let server = Current.servers.server(for: response.notification.request.content) else {
             Current.Log.info("ignoring push when unable to find server")
             completionHandler()
@@ -251,7 +418,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if let url = urlString(from: response) {
             Current.Log.info("launching URL \(url)")
-            Current.sceneManager.webViewWindowControllerPromise.done {
+            Current.sceneManager.appCoordinator.done {
                 $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
             }
         }
@@ -271,11 +438,29 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if response.notification.request.identifier == NotificationIdentifier.carPlayIntro.rawValue {
             Current.Log.info("Launching CarPlay configuration screen")
-            Current.sceneManager.webViewWindowControllerPromise.done {
+            Current.sceneManager.appCoordinator.done {
                 let carPlayView = CarPlayConfigurationView().embeddedInHostingController()
                 $0.present(carPlayView)
             }
         }
+    }
+
+    private func isShowCameraCommand(userInfo: [AnyHashable: Any]) -> Bool {
+        if userInfo["command"] as? String == "show_camera" {
+            return true
+        }
+
+        if let homeassistant = userInfo["homeassistant"] as? [String: Any],
+           homeassistant["command"] as? String == "show_camera" {
+            return true
+        }
+
+        if let homeassistant = userInfo["homeassistant"] as? [AnyHashable: Any],
+           homeassistant["command"] as? String == "show_camera" {
+            return true
+        }
+
+        return false
     }
 
     public func userNotificationCenter(
@@ -295,7 +480,12 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
            (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
             commandManager.handle(notification.request.content.userInfo).done {
-                completionHandler([])
+                // Play the chime if the notification has sound (non-silent live update),
+                // but never show a banner — the Live Activity widget is the visual feedback.
+                let options: UNNotificationPresentationOptions = notification.request.content.sound != nil
+                    ? [.sound]
+                    : []
+                completionHandler(options)
             }.catch { error in
                 // Unknown command — fall through to normal banner presentation so the user isn't silently swallowed.
                 if case NotificationCommandManager.CommandError.unknownCommand = error {
@@ -342,8 +532,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         .navigationViewStyle(.stack)
         let hostingController = rootView.embeddedInHostingController()
 
-        Current.sceneManager.webViewWindowControllerPromise.done {
-            var rootViewController = $0.window.rootViewController
+        Current.sceneManager.appCoordinator.done {
+            var rootViewController = $0.window?.rootViewController
             if let navigationController = rootViewController as? UINavigationController {
                 rootViewController = navigationController.viewControllers.first
             }

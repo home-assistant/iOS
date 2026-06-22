@@ -44,6 +44,10 @@ public enum AppConstants {
         ]
     }
 
+    public enum Firebase {
+        public static let pushURLString = "https://mobile-apps.home-assistant.io/api/sendPushNotification"
+    }
+
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
@@ -147,15 +151,6 @@ public enum AppConstants {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
         )
-    }
-
-    public static func openCameraListDeeplinkURL(serverId: String? = nil) -> URL? {
-        var urlString = "\(AppConstants.deeplinkURL.absoluteString)camera/?"
-        if let serverId {
-            urlString += "serverId=\(serverId)&"
-        }
-        urlString += "\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
-        return URL(string: urlString)
     }
 
     @available(iOS 16.0, watchOS 9.0, *)
@@ -368,7 +363,7 @@ public extension Version {
     static let canSendDeviceID: Version = .init(minor: 104)
     static let pedometerIconsAvailable: Version = .init(minor: 105)
     static let tagWebhookAvailable: Version = .init(minor: 114, prerelease: "b5")
-    static let actionSyncing: Version = .init(minor: 115, prerelease: "any0")
+    static let mobileAppConfig: Version = .init(minor: 115, prerelease: "any0")
     static let localPushConfirm: Version = .init(major: 2021, minor: 10, prerelease: "any0")
     static let externalBusCommandRestart: Version = .init(major: 2021, minor: 12, prerelease: "b6")
     static let updateLocationGPSOptional: Version = .init(major: 2022, minor: 2, prerelease: "any0")
@@ -386,6 +381,8 @@ public extension Version {
     static let canNavigateMoreInfoDialogThroughFrontend: Version = .init(major: 2026, minor: 1, prerelease: "any0")
     /// Frontend introduces the quickbar with Ctrl+K keyboard shortcut in 2026.2
     static let quickSearchKeyboardShortcut: Version = .init(major: 2026, minor: 2, prerelease: "any0")
+    /// Core accepts `in_zones` in update_location payloads from 2026.6.0.
+    static let inZonesOnLocationUpdate: Version = .init(major: 2026, minor: 6, patch: 0, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

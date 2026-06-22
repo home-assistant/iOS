@@ -31,6 +31,8 @@ struct GeneralSettingsView: View {
             }
             Section {
                 macNativeFeaturesOnly
+            } footer: {
+                Text(L10n.SettingsDetails.MacOpenInBrowser.footer)
             }
             #endif
 
@@ -274,7 +276,11 @@ struct GeneralSettingsView: View {
             Current.settingsStore.macNativeFeaturesOnly = newValue
             redrawView()
         })) {
-            Text(L10n.SettingsDetails.MacNativeFeatures.title)
+            HStack {
+                Text(L10n.SettingsDetails.MacOpenInBrowser.title)
+                Spacer()
+                LabsLabel()
+            }
         }
     }
 

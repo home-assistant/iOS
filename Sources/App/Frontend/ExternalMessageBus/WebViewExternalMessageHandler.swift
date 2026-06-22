@@ -199,20 +199,12 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     // swiftlint:enable cyclomatic_complexity
 
     func showSettingsViewController() {
-        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            Current.sceneManager.activateAnyScene(for: .settings)
-        } else {
-            // Use SwiftUI SettingsView wrapped in hosting controller
-            let settingsView = SettingsView().embeddedInHostingController()
-            webViewController?.presentOverlayController(controller: settingsView, animated: true)
-        }
+        Current.sceneManager.appCoordinator.done { $0.showSettings() }
     }
 
     @MainActor
     private func showAssistSettingsViewController() {
-        let assistSettingsView = AssistSettingsView().embeddedInHostingController()
-        assistSettingsView.modalPresentationStyle = .overFullScreen
-        webViewController?.presentOverlayController(controller: assistSettingsView, animated: true)
+        Current.sceneManager.appCoordinator.done { $0.showAssistSettings() }
     }
 
     func handleHaptic(_ hapticType: String) {
@@ -471,14 +463,23 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             Current.Log.error("WebViewController not available while commissioning matter device")
             return
         }
-        Current.matter.commission(webViewController.server).done {
-            Current.Log.info("Commission call completed")
+        Current.matter.commission(webViewController.server).done { [weak self] deviceName in
+            Current.Log.info("Commission call completed with device name: \(String(describing: deviceName))")
+            self?.communicateMatterCommissioningFinished(deviceName: deviceName, success: true)
         }.catch { [weak self] error in
-            // we don't show a user-visible error because even a successful operation will return 'cancelled'
-            // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
             Current.Log.error(error)
-            self?.webViewController?.refresh()
+            self?.communicateMatterCommissioningFinished(deviceName: nil, success: false)
         }
+    }
+
+    private func communicateMatterCommissioningFinished(deviceName: String?, success: Bool) {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue,
+            payload: [
+                "name": deviceName,
+                "success": success,
+            ]
+        ))
     }
 
     func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
@@ -492,15 +493,14 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
 
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            // On macOS, open Assist in a new window/scene
-            Current.sceneManager.activateAnyScene(
-                for: .assist,
-                with: [
-                    "server": server.identifier.rawValue,
-                    "pipelineId": pipeline,
-                    "autoStartRecording": autoStartRecording,
-                ]
+            // On macOS, open Assist in its own SwiftUI window (see `HAApp`). Its params can't be passed into
+            // a plain `WindowGroup`, so configure the shared model before activating the scene.
+            AssistWindowModel.shared.configure(
+                server: server,
+                preferredPipelineId: pipeline,
+                autoStartRecording: autoStartRecording
             )
+            Current.sceneManager.activateAnyScene(for: .assist)
         } else {
             // On iOS/iPad, present modally as before
             let assistView = UIHostingController(rootView: AssistView.build(

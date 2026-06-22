@@ -3,8 +3,14 @@ import Foundation
 import PromiseKit
 import Shared
 
+struct OnboardingAuthLoginResult {
+    let code: String
+    /// Server base URL the web view ended on; may differ in port/scheme from the URL we started with.
+    let resolvedURL: URL?
+}
+
 protocol OnboardingAuthLogin {
-    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<String>
+    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<OnboardingAuthLoginResult>
 }
 
 class OnboardingAuthLoginImpl: OnboardingAuthLogin {
@@ -14,7 +20,7 @@ class OnboardingAuthLoginImpl: OnboardingAuthLogin {
 
     var loginViewControllerClass: OnboardingAuthLoginViewController.Type = OnboardingAuthLoginViewControllerImpl.self
 
-    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<String> {
+    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<OnboardingAuthLoginResult> {
         Current.Log.verbose(authDetails.url)
 
         let controller = loginViewControllerClass.init(authDetails: authDetails)
@@ -23,7 +29,7 @@ class OnboardingAuthLoginImpl: OnboardingAuthLogin {
 
         return controller.promise.map { url in
             if let code = url.queryItems?["code"] {
-                return code
+                return OnboardingAuthLoginResult(code: code, resolvedURL: controller.resolvedServerURL)
             } else {
                 throw OnboardingAuthLoginError.invalidURL
             }

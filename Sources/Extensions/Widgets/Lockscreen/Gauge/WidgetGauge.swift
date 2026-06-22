@@ -40,5 +40,56 @@ struct WidgetGauge: Widget {
 
 @available(iOS 17, *)
 enum WidgetGaugeSupportedFamilies {
-    static let families: [WidgetFamily] = [.accessoryCircular]
+    static let families: [WidgetFamily] = [.accessoryCircular, .systemSmall]
 }
+
+@available(iOS 17, *)
+#Preview(as: .systemSmall, widget: {
+    WidgetGauge()
+}, timeline: {
+    WidgetGaugeEntry(
+        gaugeType: .normal,
+        value: 0.67,
+        valueLabel: "67%",
+        label: nil,
+        min: "0",
+        max: "100",
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})
+
+@available(iOS 17, *)
+#Preview(as: .systemSmall, widget: {
+    WidgetGauge()
+}, timeline: {
+    WidgetGaugeEntry(
+        gaugeType: .capacity,
+        value: 0.67,
+        valueLabel: "67%",
+        label: nil,
+        min: "0",
+        max: "100",
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})
+
+@available(iOS 17, *)
+#Preview(as: .accessoryCircular, widget: {
+    WidgetGauge()
+}, timeline: {
+    WidgetGaugeEntry(
+        gaugeType: .normal,
+        value: 0.67,
+        valueLabel: "67%",
+        label: nil,
+        min: "0",
+        max: "100",
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})

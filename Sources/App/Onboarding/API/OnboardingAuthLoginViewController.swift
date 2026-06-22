@@ -5,12 +5,18 @@ import WebKit
 
 protocol OnboardingAuthLoginViewController: UIViewController {
     var promise: Promise<URL> { get }
+    /// The server URL the web view actually ended up on (may differ in port/scheme from `authDetails.url`
+    /// when the server issues a redirect during login). Set before `promise` is fulfilled.
+    var resolvedServerURL: URL? { get }
     init(authDetails: OnboardingAuthDetails)
 }
 
-class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLoginViewController, WKNavigationDelegate {
+class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLoginViewController, WKNavigationDelegate,
+    WKUIDelegate {
     let authDetails: OnboardingAuthDetails
     let promise: Promise<URL>
+    private(set) var resolvedServerURL: URL?
+    private var lastNavigatedURL: URL?
     private let resolver: Resolver<URL>
     private let webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
@@ -61,6 +67,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
         super.viewDidLoad()
 
         webView.navigationDelegate = self
+        webView.uiDelegate = self
 
         setContentScrollView(webView.scrollView)
 
@@ -137,13 +144,35 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
 
     func webView(
         _ webView: WKWebView,
+        createWebViewWith configuration: WKWebViewConfiguration,
+        for navigationAction: WKNavigationAction,
+        windowFeatures: WKWindowFeatures
+    ) -> WKWebView? {
+        if navigationAction.targetFrame == nil {
+            guard let url = navigationAction.request.url else {
+                Current.Log.error("Received navigation action without URL for new window")
+                return nil
+            }
+            openURLInBrowser(url, self)
+        }
+        return nil
+    }
+
+    func webView(
+        _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
         if let url = navigationAction.request.url, url.scheme?.hasPrefix("homeassistant") == true {
+            // The web view may have been redirected to a different port/scheme during login; capture
+            // where it actually ended up so the stored server URL reflects the real address.
+            resolvedServerURL = webView.url ?? lastNavigatedURL
             resolver.fulfill(url)
             decisionHandler(.cancel)
         } else {
+            if let url = navigationAction.request.url, url.scheme == "http" || url.scheme == "https" {
+                lastNavigatedURL = url
+            }
             decisionHandler(.allow)
         }
     }

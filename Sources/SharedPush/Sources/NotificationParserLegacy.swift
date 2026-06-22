@@ -80,6 +80,16 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 return .init(LegacyNotificationCommandType.updateComplications.rawValue)
             case .updateWidgets:
                 return .init(LegacyNotificationCommandType.updateWidgets.rawValue)
+            case .showCamera:
+                var homeassistant = [String: Any]()
+
+                if let entityId = data["entity_id"] {
+                    homeassistant["entity_id"] = entityId
+                }
+
+                return .init(LegacyNotificationCommandType.showCamera.rawValue, homeassistant: homeassistant)
+            case .hideCamera:
+                return .init(LegacyNotificationCommandType.hideCamera.rawValue)
             default: return nil
             }
         }()
@@ -234,6 +244,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 "when", "when_relative",
                 NotificationDecorationPayloadKey.notificationIcon.rawValue,
                 NotificationDecorationPayloadKey.notificationIconColor.rawValue,
+                "silent",
             ] {
                 if let value = data[key] {
                     homeassistant[key] = value
@@ -246,6 +257,16 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 homeassistant["message"] = message
             }
             payload["homeassistant"] = homeassistant
+
+            if data["silent"] as? Bool == true {
+                payload.mutateInside("aps") { aps in
+                    aps.mutateInside("alert") { alert in
+                        alert["body"] = nil
+                        alert["title"] = ""
+                    }
+                    aps["sound"] = nil
+                }
+            }
         }
 
         if registrationInfo["os_version"]?.starts(with: "10.15") == true {
@@ -291,6 +312,8 @@ enum LegacyNotificationCommandType: String {
     case clearNotification = "clear_notification"
     case updateComplications = "update_complications"
     case updateWidgets = "update_widgets"
+    case showCamera = "show_camera"
+    case hideCamera = "hide_camera"
 }
 
 enum NotificationDecorationPayloadKey: String, CaseIterable {

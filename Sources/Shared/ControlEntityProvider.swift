@@ -76,6 +76,8 @@ public final class ControlEntityProvider {
                     let deviceMap = entities.devicesMap(for: server.identifier.rawValue)
                     let areasMap = entities.areasMap(for: server.identifier.rawValue)
                     entities = entities.filter({ entity in
+                        // `entity.name` is the resolved display name (registry name, falling back to the
+                        // state name), baked in at write time by `AppEntitiesModel`.
                         let matchName = entity.name.range(
                             of: string,
                             options: [.caseInsensitive, .diacriticInsensitive]

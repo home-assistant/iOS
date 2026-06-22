@@ -249,9 +249,7 @@ struct WatchConfigurationView: View {
 
     @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        if item.type == .action {
-            itemRow(item: item, info: info)
-        } else if item.type == .folder {
+        if item.type == .folder {
             NavigationLink {
                 FolderDetailView(
                     folderId: item.id,
@@ -276,8 +274,16 @@ struct WatchConfigurationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .haPrimary))
-            Text(item.name(info: info))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.name(info: info))
+                if let contextSubtitle = info.contextSubtitle {
+                    Text(contextSubtitle)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemSymbol: .line3Horizontal)
                 .foregroundStyle(.gray)
         }

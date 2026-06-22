@@ -28,6 +28,7 @@ struct OnboardingServersListView: View {
     @State private var autoConnectWorkItem: DispatchWorkItem?
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
     @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
+    @State private var rejectedInvitation = false
 
     private var presentingViewController: UIViewController {
         if let providedController = hostingProvider.viewController, Current.isCatalyst {
@@ -47,6 +48,14 @@ struct OnboardingServersListView: View {
     private let prefillURL: URL?
     private let onboardingStyle: OnboardingStyle
 
+    private var invitationURL: URL? {
+        prefillURL ?? Current.appSessionValues.inviteURL
+    }
+
+    private var shouldShowInvitation: Bool {
+        invitationURL != nil && !rejectedInvitation
+    }
+
     init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false, onboardingStyle: OnboardingStyle) {
         self.prefillURL = prefillURL
         self
@@ -58,12 +67,14 @@ struct OnboardingServersListView: View {
     var body: some View {
         ZStack {
             content
-            centerLoader
-            autoConnectView
+            if !shouldShowInvitation {
+                centerLoader
+                autoConnectView
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom, content: {
-            if autoConnectInstance == nil {
+            if autoConnectInstance == nil, !shouldShowInvitation {
                 manualInputButton
             }
         })
@@ -230,37 +241,41 @@ struct OnboardingServersListView: View {
     }
 
     private var content: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Spaces.two) {
-                if let prefillURL {
-                    prefillURLHeader(url: prefillURL)
-                } else {
-                    if let inviteURL = Current.appSessionValues.inviteURL {
-                        prefillURLHeader(url: inviteURL)
-                        Text(L10n.Onboarding.Invitation.otherOptions)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(DesignSystem.Font.headline)
-                            .padding(.top, DesignSystem.Spaces.two)
-                    } else {
-                        headerView
+        Group {
+            if shouldShowInvitation, let invitationURL {
+                InvitationView(
+                    invitationURL: invitationURL,
+                    isAccepting: viewModel.invitationLoading,
+                    onAccept: {
+                        acceptInvitation(url: invitationURL)
+                    },
+                    onReject: {
+                        rejectInvitation()
                     }
-                    list
-                        .opacity(viewModel.showCenterLoader ? 0 : 1)
-                        .animation(.easeInOut, value: viewModel.showCenterLoader)
+                )
+                .onAppear {
+                    // No need for center loader logic or auto connect in invitation context.
+                    cancelAutoConnect()
+                    hideCenterLoader()
+                }
+            } else {
+                ScrollView {
+                    VStack(spacing: DesignSystem.Spaces.two) {
+                        headerView
+                        list
+                            .opacity(viewModel.showCenterLoader ? 0 : 1)
+                            .animation(.easeInOut, value: viewModel.showCenterLoader)
+                    }
+                    .padding(.horizontal, DesignSystem.Spaces.two)
                 }
             }
-            .padding(.horizontal, DesignSystem.Spaces.two)
         }
     }
 
     private func onAppear() {
         if !screenLoaded {
             screenLoaded = true
-
-            // If no prefill URL (aka invitation link) we move on and look for servers nearby
-            if prefillURL == nil {
-                viewModel.startDiscovery()
-            }
+            startDiscoveryIfNeeded()
         }
     }
 
@@ -278,37 +293,25 @@ struct OnboardingServersListView: View {
             .animation(.easeInOut, value: autoConnectInstance)
     }
 
-    @ViewBuilder
-    private func prefillURLHeader(url: URL) -> some View {
-        AppleLikeListTopRowHeader(
-            image: nil,
-            headerImageAlternativeView: AnyView(
-                Image(uiImage: Asset.logo.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 80, height: 80)
-            ),
-            title: L10n.Onboarding.Invitation.title,
-            subtitle: url.absoluteString
-        )
-        .onAppear {
-            // No need for center loader logic neither auto connect in invitation context
-            cancelAutoConnect()
-            hideCenterLoader()
+    private func startDiscoveryIfNeeded() {
+        guard !shouldShowInvitation else { return }
+        viewModel.startDiscovery()
+    }
+
+    private func acceptInvitation(url: URL) {
+        viewModel.invitationLoading = true
+        viewModel.selectInstance(.init(manualURL: url), presentingController: presentingViewController)
+    }
+
+    private func rejectInvitation() {
+        if onboardingStyle == .secondary {
+            dismiss()
+            return
         }
-        Button {
-            viewModel.selectInstance(.init(manualURL: url), presentingController: presentingViewController)
-            viewModel.invitationLoading = true
-        } label: {
-            ZStack {
-                HAProgressView(colorType: .light)
-                    .opacity(viewModel.invitationLoading ? 1 : 0)
-                Text(L10n.Onboarding.Invitation.acceptButton)
-                    .opacity(viewModel.invitationLoading ? 0 : 1)
-            }
-        }
-        .buttonStyle(.primaryButton)
-        .disabled(viewModel.invitationLoading)
+        rejectedInvitation = true
+        Current.appSessionValues.inviteURL = nil
+        viewModel.showCenterLoader = true
+        viewModel.startDiscovery()
     }
 
     @ViewBuilder

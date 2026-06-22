@@ -55,28 +55,14 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("AppEntityRegistryListForDisplayTable conforms to DatabaseTableProtocol")
-    func appEntityRegistryListForDisplayTableConformance() throws {
-        let table = AppEntityRegistryListForDisplayTable()
-        #expect(table.tableName == GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue)
+    @Test("DisplayEntityRegistryTable conforms to DatabaseTableProtocol")
+    func displayEntityRegistryTableConformance() throws {
+        let table = DisplayEntityRegistryTable()
+        #expect(table.tableName == GRDBDatabaseTable.displayEntityRegistry.rawValue)
         #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
 
-        let expectedColumns = DatabaseTables.AppEntityRegistryListForDisplay.allCases.map(\.rawValue)
+        let expectedColumns = DatabaseTables.DisplayEntityRegistry.allCases.map(\.rawValue)
         #expect(Set(table.definedColumns) == Set(expectedColumns))
-    }
-
-    @Test("AppEntityRegistryTable conforms to DatabaseTableProtocol")
-    func appEntityRegistryTableConformance() throws {
-        let table = AppEntityRegistryTable()
-        #expect(table.tableName == GRDBDatabaseTable.entityRegistry.rawValue)
-        #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
-
-        // Note: AppEntityRegistryTable filters out .id from definedColumns
-        let expectedColumns = DatabaseTables.EntityRegistry.allCases
-            .filter { $0 != .id }
-            .map(\.rawValue)
-        #expect(Set(table.definedColumns) == Set(expectedColumns))
-        #expect(!table.definedColumns.contains("id"), "definedColumns should not contain 'id'")
     }
 
     @Test("AppDeviceRegistryTable conforms to DatabaseTableProtocol")
@@ -133,16 +119,6 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("CameraListConfigurationTable conforms to DatabaseTableProtocol")
-    func cameraListConfigurationTableConformance() throws {
-        let table = CameraListConfigurationTable()
-        #expect(table.tableName == GRDBDatabaseTable.cameraListConfiguration.rawValue)
-        #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
-
-        let expectedColumns = DatabaseTables.CameraListConfiguration.allCases.map(\.rawValue)
-        #expect(Set(table.definedColumns) == Set(expectedColumns))
-    }
-
     @Test("AssistConfigurationTable conforms to DatabaseTableProtocol")
     func assistConfigurationTableConformance() throws {
         let table = AssistConfigurationTable()
@@ -173,10 +149,10 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 17 tables conform to DatabaseTableProtocol")
+    @Test("All 15 tables conform to DatabaseTableProtocol")
     func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 17, "Should have exactly 17 tables")
+        #expect(tables.count == 15, "Should have exactly 15 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName

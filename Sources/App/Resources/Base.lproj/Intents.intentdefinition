@@ -40,7 +40,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call ${service} with data</string>
+					<string>z - (Deprecated) Call ${service} with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>7boBzr</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -289,7 +289,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Call Service</string>
+			<string>z - (Deprecated) Call Service</string>
 			<key>INIntentTitleID</key>
 			<string>qayMH6</string>
 			<key>INIntentType</key>
@@ -321,7 +321,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Send ${location} to Home Assistant</string>
+					<string>z - (Deprecated) Send ${location} to Home Assistant</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>fuRWMi</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -449,7 +449,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Send Location</string>
+			<string>z - (Deprecated) Send Location</string>
 			<key>INIntentTitleID</key>
 			<string>v7TSD5</string>
 			<key>INIntentType</key>
@@ -481,7 +481,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Fire ${eventName} with data</string>
+					<string>z - (Deprecated) Fire ${eventName} with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>HCM8Oe</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -722,7 +722,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Fire Event</string>
+			<string>z - (Deprecated) Fire Event</string>
 			<key>INIntentTitleID</key>
 			<string>lxHlyQ</string>
 			<key>INIntentType</key>
@@ -754,7 +754,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Get image of ${cameraID}</string>
+					<string>z - (Deprecated) Get image of ${cameraID}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>RCQAlr</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -961,7 +961,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Get Camera Image</string>
+			<string>z - (Deprecated) Get Camera Image</string>
 			<key>INIntentTitleID</key>
 			<string>N9iJpK</string>
 			<key>INIntentType</key>
@@ -993,7 +993,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Render the provided template</string>
+					<string>z - (Deprecated) Render the provided template</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>Xq7UuD</string>
 				</dict>
@@ -1196,345 +1196,13 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Render Template</string>
+			<string>z - (Deprecated) Render Template</string>
 			<key>INIntentTitleID</key>
 			<string>FZ9qkT</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
 			<key>INIntentVerb</key>
 			<string>Do</string>
-		</dict>
-		<dict>
-			<key>INIntentCategory</key>
-			<string>generic</string>
-			<key>INIntentConfigurable</key>
-			<true/>
-			<key>INIntentDescription</key>
-			<string>Performs an action defined in the app</string>
-			<key>INIntentDescriptionID</key>
-			<string>tycImk</string>
-			<key>INIntentKeyParameter</key>
-			<string>action</string>
-			<key>INIntentLastParameterTag</key>
-			<integer>4</integer>
-			<key>INIntentManagedParameterCombinations</key>
-			<dict>
-				<key>action</key>
-				<dict>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Perform ${action}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>ypnPyU</string>
-					<key>INIntentParameterCombinationUpdatesLinked</key>
-					<true/>
-				</dict>
-			</dict>
-			<key>INIntentName</key>
-			<string>PerformAction</string>
-			<key>INIntentParameterCombinations</key>
-			<dict>
-				<key>action</key>
-				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<true/>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Perform the action</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>g8g7Af</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>${action}</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>X02YQ2</string>
-				</dict>
-			</dict>
-			<key>INIntentParameters</key>
-			<array>
-				<dict>
-					<key>INIntentParameterConfigurable</key>
-					<true/>
-					<key>INIntentParameterCustomDisambiguation</key>
-					<true/>
-					<key>INIntentParameterDisplayName</key>
-					<string>Action</string>
-					<key>INIntentParameterDisplayNameID</key>
-					<string>Q2Qp4a</string>
-					<key>INIntentParameterDisplayPriority</key>
-					<integer>1</integer>
-					<key>INIntentParameterName</key>
-					<string>action</string>
-					<key>INIntentParameterObjectType</key>
-					<string>IntentAction</string>
-					<key>INIntentParameterObjectTypeNamespace</key>
-					<string>sI7YSe</string>
-					<key>INIntentParameterPromptDialogs</key>
-					<array>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Primary</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${action}’.</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>fkQXDn</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${action}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>jtqxOg</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Which action?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>flUgtx</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Configuration</string>
-						</dict>
-					</array>
-					<key>INIntentParameterSupportsDynamicEnumeration</key>
-					<true/>
-					<key>INIntentParameterSupportsResolution</key>
-					<true/>
-					<key>INIntentParameterTag</key>
-					<integer>4</integer>
-					<key>INIntentParameterType</key>
-					<string>Object</string>
-				</dict>
-			</array>
-			<key>INIntentResponse</key>
-			<dict>
-				<key>INIntentResponseCodes</key>
-				<array>
-					<dict>
-						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Performed ${action}</string>
-						<key>INIntentResponseCodeConciseFormatStringID</key>
-						<string>dFHPYK</string>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Done</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>xhwpj4</string>
-						<key>INIntentResponseCodeName</key>
-						<string>success</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<true/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed: ${error}</string>
-						<key>INIntentResponseCodeConciseFormatStringID</key>
-						<string>EWqRDj</string>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed: ${error}</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>r32M7N</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failure</string>
-					</dict>
-				</array>
-				<key>INIntentResponseLastParameterTag</key>
-				<integer>5</integer>
-				<key>INIntentResponseParameters</key>
-				<array>
-					<dict>
-						<key>INIntentResponseParameterDisplayName</key>
-						<string>Error</string>
-						<key>INIntentResponseParameterDisplayNameID</key>
-						<string>DsasVx</string>
-						<key>INIntentResponseParameterDisplayPriority</key>
-						<integer>1</integer>
-						<key>INIntentResponseParameterName</key>
-						<string>error</string>
-						<key>INIntentResponseParameterTag</key>
-						<integer>4</integer>
-						<key>INIntentResponseParameterType</key>
-						<string>String</string>
-					</dict>
-					<dict>
-						<key>INIntentResponseParameterDisplayName</key>
-						<string>Action</string>
-						<key>INIntentResponseParameterDisplayNameID</key>
-						<string>KM7mXC</string>
-						<key>INIntentResponseParameterDisplayPriority</key>
-						<integer>2</integer>
-						<key>INIntentResponseParameterName</key>
-						<string>action</string>
-						<key>INIntentResponseParameterObjectType</key>
-						<string>IntentAction</string>
-						<key>INIntentResponseParameterObjectTypeNamespace</key>
-						<string>sI7YSe</string>
-						<key>INIntentResponseParameterTag</key>
-						<integer>5</integer>
-						<key>INIntentResponseParameterType</key>
-						<string>Object</string>
-					</dict>
-				</array>
-			</dict>
-			<key>INIntentTitle</key>
-			<string>Perform Action</string>
-			<key>INIntentTitleID</key>
-			<string>kGB23u</string>
-			<key>INIntentType</key>
-			<string>Custom</string>
-			<key>INIntentVerb</key>
-			<string>Run</string>
-		</dict>
-		<dict>
-			<key>INIntentCategory</key>
-			<string>information</string>
-			<key>INIntentDescription</key>
-			<string>View and run actions</string>
-			<key>INIntentDescriptionID</key>
-			<string>f1KX0Q</string>
-			<key>INIntentEligibleForWidgets</key>
-			<true/>
-			<key>INIntentIneligibleForSuggestions</key>
-			<true/>
-			<key>INIntentLastParameterTag</key>
-			<integer>3</integer>
-			<key>INIntentName</key>
-			<string>WidgetActions</string>
-			<key>INIntentParameters</key>
-			<array>
-				<dict>
-					<key>INIntentParameterArraySizes</key>
-					<array>
-						<dict>
-							<key>INIntentParameterArraySizeSize</key>
-							<integer>2</integer>
-							<key>INIntentParameterArraySizeSizeClass</key>
-							<string>Small</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterArraySizeSize</key>
-							<integer>4</integer>
-							<key>INIntentParameterArraySizeSizeClass</key>
-							<string>Medium</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterArraySizeSize</key>
-							<integer>10</integer>
-							<key>INIntentParameterArraySizeSizeClass</key>
-							<string>Large</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterArraySizeSize</key>
-							<integer>20</integer>
-							<key>INIntentParameterArraySizeSizeClass</key>
-							<string>ExtraLarge</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterArraySizeSize</key>
-							<integer>1</integer>
-							<key>INIntentParameterArraySizeSizeClass</key>
-							<string>AccessoryInline</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterArraySizeSize</key>
-							<integer>1</integer>
-							<key>INIntentParameterArraySizeSizeClass</key>
-							<string>AccessoryCorner</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterArraySizeSize</key>
-							<integer>1</integer>
-							<key>INIntentParameterArraySizeSizeClass</key>
-							<string>AccessoryCircular</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterArraySizeSize</key>
-							<integer>2</integer>
-							<key>INIntentParameterArraySizeSizeClass</key>
-							<string>AccessoryRectangular</string>
-						</dict>
-					</array>
-					<key>INIntentParameterConfigurable</key>
-					<true/>
-					<key>INIntentParameterDisplayName</key>
-					<string>Actions</string>
-					<key>INIntentParameterDisplayNameID</key>
-					<string>HoH8wg</string>
-					<key>INIntentParameterDisplayPriority</key>
-					<integer>1</integer>
-					<key>INIntentParameterFixedSizeArray</key>
-					<integer>1</integer>
-					<key>INIntentParameterName</key>
-					<string>actions</string>
-					<key>INIntentParameterObjectType</key>
-					<string>IntentAction</string>
-					<key>INIntentParameterObjectTypeNamespace</key>
-					<string>sI7YSe</string>
-					<key>INIntentParameterPromptDialogs</key>
-					<array>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Which actions?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>8skKro</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Configuration</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Primary</string>
-						</dict>
-					</array>
-					<key>INIntentParameterSupportsDynamicEnumeration</key>
-					<true/>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<true/>
-					<key>INIntentParameterTag</key>
-					<integer>3</integer>
-					<key>INIntentParameterType</key>
-					<string>Object</string>
-				</dict>
-			</array>
-			<key>INIntentResponse</key>
-			<dict>
-				<key>INIntentResponseCodes</key>
-				<array>
-					<dict>
-						<key>INIntentResponseCodeName</key>
-						<string>success</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<true/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeName</key>
-						<string>failure</string>
-					</dict>
-				</array>
-			</dict>
-			<key>INIntentTitle</key>
-			<string>Actions</string>
-			<key>INIntentTitleID</key>
-			<string>ULka1b</string>
-			<key>INIntentType</key>
-			<string>Custom</string>
-			<key>INIntentVerb</key>
-			<string>Open</string>
 		</dict>
 		<dict>
 			<key>INIntentCategory</key>
@@ -1554,7 +1222,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Update Sensors</string>
+					<string>z - (Deprecated) Update Sensors</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>pjQR7t</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -1596,7 +1264,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Update Sensors</string>
+			<string>z - (Deprecated) Update Sensors</string>
 			<key>INIntentTitleID</key>
 			<string>h1xQ53</string>
 			<key>INIntentType</key>
@@ -1630,7 +1298,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Open ${page}</string>
+					<string>z - (Deprecated) Open ${page}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>DFWJB8</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -1700,7 +1368,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>(Legacy) Open Page </string>
+			<string>z - (Deprecated) Open Page</string>
 			<key>INIntentTitleID</key>
 			<string>iMvUhs</string>
 			<key>INIntentType</key>
@@ -1839,7 +1507,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Open Page</string>
+			<string>z - (Deprecated) Open Page</string>
 			<key>INIntentTitleID</key>
 			<string>ns9RRU</string>
 			<key>INIntentType</key>
@@ -1876,7 +1544,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist with "${text}"</string>
+					<string>z - (Deprecated) Assist with "${text}"</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>d65H6l</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -1894,7 +1562,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist with "${text}"</string>
+					<string>z - (Deprecated) Assist with "${text}"</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>uqeIcc</string>
 				</dict>
@@ -1905,7 +1573,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist with "${text}"</string>
+					<string>z - (Deprecated) Assist with "${text}"</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>5b3s58</string>
 				</dict>
@@ -2164,7 +1832,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Assist</string>
+			<string>z - (Deprecated) Assist</string>
 			<key>INIntentTitleID</key>
 			<string>B28HAk</string>
 			<key>INIntentType</key>
@@ -2192,7 +1860,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist in app</string>
+					<string>z - (Deprecated) Assist in app</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>mrwamX</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -2210,7 +1878,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist in app</string>
+					<string>z - (Deprecated) Assist in app</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>s9Gk3c</string>
 				</dict>
@@ -2221,7 +1889,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Assist in app</string>
+					<string>z - (Deprecated) Assist in app</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>ZG5nuL</string>
 				</dict>
@@ -2485,7 +2153,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>(Legacy) Assist In App </string>
+			<string>z - (Deprecated) Assist In App</string>
 			<key>INIntentTitleID</key>
 			<string>x7FAm9</string>
 			<key>INIntentType</key>
@@ -2496,69 +2164,6 @@
 	</array>
 	<key>INTypes</key>
 	<array>
-		<dict>
-			<key>INTypeDisplayName</key>
-			<string>Action</string>
-			<key>INTypeDisplayNameID</key>
-			<string>cLmTme</string>
-			<key>INTypeLastPropertyTag</key>
-			<integer>101</integer>
-			<key>INTypeName</key>
-			<string>IntentAction</string>
-			<key>INTypeProperties</key>
-			<array>
-				<dict>
-					<key>INTypePropertyDefault</key>
-					<true/>
-					<key>INTypePropertyDisplayPriority</key>
-					<integer>1</integer>
-					<key>INTypePropertyName</key>
-					<string>identifier</string>
-					<key>INTypePropertyTag</key>
-					<integer>1</integer>
-					<key>INTypePropertyType</key>
-					<string>String</string>
-				</dict>
-				<dict>
-					<key>INTypePropertyDefault</key>
-					<true/>
-					<key>INTypePropertyDisplayPriority</key>
-					<integer>2</integer>
-					<key>INTypePropertyName</key>
-					<string>displayString</string>
-					<key>INTypePropertyTag</key>
-					<integer>2</integer>
-					<key>INTypePropertyType</key>
-					<string>String</string>
-				</dict>
-				<dict>
-					<key>INTypePropertyDefault</key>
-					<true/>
-					<key>INTypePropertyDisplayPriority</key>
-					<integer>3</integer>
-					<key>INTypePropertyName</key>
-					<string>pronunciationHint</string>
-					<key>INTypePropertyTag</key>
-					<integer>3</integer>
-					<key>INTypePropertyType</key>
-					<string>String</string>
-				</dict>
-				<dict>
-					<key>INTypePropertyDefault</key>
-					<true/>
-					<key>INTypePropertyDisplayPriority</key>
-					<integer>4</integer>
-					<key>INTypePropertyName</key>
-					<string>alternativeSpeakableMatches</string>
-					<key>INTypePropertySupportsMultipleValues</key>
-					<true/>
-					<key>INTypePropertyTag</key>
-					<integer>4</integer>
-					<key>INTypePropertyType</key>
-					<string>SpeakableString</string>
-				</dict>
-			</array>
-		</dict>
 		<dict>
 			<key>INTypeDisplayName</key>
 			<string>Page</string>

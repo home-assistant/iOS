@@ -73,6 +73,19 @@ struct WatchMagicViewRow: View {
                 break
             }
         }
+        .alert(
+            Text(verbatim: L10n.Watch.Home.Run.Error.title),
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )
+        ) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            if let errorMessage = viewModel.errorMessage {
+                Text(verbatim: errorMessage)
+            }
+        }
     }
 
     private var iconColor: UIColor {
@@ -160,8 +173,8 @@ struct WatchMagicViewRow: View {
             )
         )
         WatchMagicViewRow(
-            item: .init(id: "1", serverId: "1", type: .action),
-            itemInfo: .init(id: "1", name: "New Action", iconName: "earth")
+            item: .init(id: "scene.one", serverId: "1", type: .scene),
+            itemInfo: .init(id: "1", name: "New scene", iconName: "earth")
         )
     }
     .background(Color.red)

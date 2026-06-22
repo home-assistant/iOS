@@ -25,6 +25,7 @@ enum CustomWidgetIntentHelper {
             ))
             return nil
         }
+        Current.Log.verbose("\(intentName): resolved connection, serverId: \(serverId)")
         return connection
     }
 }

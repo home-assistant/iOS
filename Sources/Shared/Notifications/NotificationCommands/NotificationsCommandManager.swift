@@ -1,4 +1,5 @@
 import Communicator
+import Foundation
 import PromiseKit
 import UserNotifications
 import WidgetKit
@@ -12,6 +13,14 @@ public class NotificationCommandManager {
         .init(rawValue: "didUpdateComplicationsNotification")
     }
 
+    public static var didReceiveShowCameraNotification: Notification.Name {
+        .init(rawValue: "didReceiveShowCameraNotification")
+    }
+
+    public static var didReceiveHideCameraNotification: Notification.Name {
+        .init(rawValue: "didReceiveHideCameraNotification")
+    }
+
     public enum CommandError: Error {
         case notCommand
         case unknownCommand
@@ -22,6 +31,8 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
+        register(command: "show_camera", handler: HandlerShowCamera())
+        register(command: "hide_camera", handler: HandlerHideCamera())
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
@@ -41,8 +52,12 @@ public class NotificationCommandManager {
     }
 
     public func handle(_ payload: [AnyHashable: Any]) -> Promise<Void> {
-        guard let hadict = payload["homeassistant"] as? [String: Any] else {
+        guard var hadict = payload["homeassistant"] as? [String: Any] else {
             return .init(error: CommandError.notCommand)
+        }
+
+        if let webhookId = payload["webhook_id"] as? String {
+            hadict["webhook_id"] = webhookId
         }
 
         // Support data.live_update: true — the same field Android uses for Live Updates.
@@ -101,20 +116,25 @@ private struct HandlerLocationUpdate: NotificationCommandHandler {
 
 private struct HandlerClearNotification: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Current.Log.verbose("clearing notification for \(payload)")
+        Current.Log.verbose("Clearing notification for \(payload)")
         let keys = ["tag", "collapseId"].compactMap { payload[$0] as? String }
         if !keys.isEmpty {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
 
-        // Also end any Live Activity whose tag matches — same YAML works on both iOS and Android.
-        // Bridged into the returned Promise so the background fetch window stays open until
-        // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
-        // ActivityKit is unavailable in the PushProvider extension and Mac Catalyst, so guard accordingly.
+        // ActivityKit works only in the app, not the PushProvider extension, so the extension
+        // hands the end off via the App Group queue + a Darwin signal for the app to drain.
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
+        if #available(iOS 17.2, *), let tag = payload["tag"] as? String, !tag.isEmpty {
+            if Current.isAppExtension {
+                Current.Log.verbose("Handing off live activity end for tag \(tag) to the app")
+                LiveActivityPendingEnd.append(tag: tag)
+                LiveActivityPendingEnd.postDarwinSignal()
+                return .value(())
+            }
             return Promise<Void> { seal in
                 Task {
+                    Current.Log.verbose("Clearing live activity for \(payload)")
                     await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
                     // https://stackoverflow.com/a/56657888/6324550
                     DispatchQueue.main.async { seal.fulfill(()) }

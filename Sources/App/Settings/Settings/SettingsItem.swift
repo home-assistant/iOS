@@ -16,7 +16,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case watch
     case carPlay
     case complications
-    case actions
     case help
     case privacy
     case debugging
@@ -38,7 +37,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .watch: return L10n.Settings.DetailsSection.WatchRowConfiguration.title
         case .carPlay: return "CarPlay"
         case .complications: return L10n.Settings.DetailsSection.WatchRowComplications.title
-        case .actions: return L10n.SettingsDetails.LegacyActions.title
         case .help: return L10n.helpLabel
         case .privacy: return L10n.SettingsDetails.Privacy.title
         case .debugging: return L10n.Settings.Debugging.title
@@ -46,47 +44,47 @@ enum SettingsItem: String, Hashable, CaseIterable {
         }
     }
 
+    private static let iconSize: CGFloat = 24
+
     var icon: some View {
         Group {
             switch self {
             case .servers:
-                MaterialDesignIconsImage(icon: .serverIcon, size: 24)
+                MaterialDesignIconsImage(icon: .serverIcon, size: Self.iconSize)
             case .general:
-                MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: Self.iconSize)
             case .gestures:
-                MaterialDesignIconsImage(icon: .gestureIcon, size: 24)
+                MaterialDesignIconsImage(icon: .gestureIcon, size: Self.iconSize)
             case .kiosk:
-                MaterialDesignIconsImage(icon: .tabletIcon, size: 24)
+                MaterialDesignIconsImage(icon: .tabletIcon, size: Self.iconSize)
             case .location:
-                MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: 24)
+                MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: Self.iconSize)
             case .notifications:
-                MaterialDesignIconsImage(icon: .bellOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .bellOutlineIcon, size: Self.iconSize)
             case .liveActivities:
-                MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: Self.iconSize)
             case .sensors:
-                MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: 24)
+                MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: Self.iconSize)
             case .nfc:
-                MaterialDesignIconsImage(icon: .nfcVariantIcon, size: 24)
+                MaterialDesignIconsImage(icon: .nfcVariantIcon, size: Self.iconSize)
             case .widgets:
-                MaterialDesignIconsImage(icon: .widgetsIcon, size: 24)
+                MaterialDesignIconsImage(icon: .widgetsIcon, size: Self.iconSize)
             case .appIconShortcuts:
-                MaterialDesignIconsImage(icon: .applicationIcon, size: 24)
+                MaterialDesignIconsImage(icon: .applicationIcon, size: Self.iconSize)
             case .watch:
-                MaterialDesignIconsImage(icon: .watchVariantIcon, size: 24)
+                MaterialDesignIconsImage(icon: .watchVariantIcon, size: Self.iconSize)
             case .carPlay:
-                MaterialDesignIconsImage(icon: .carBackIcon, size: 24)
+                MaterialDesignIconsImage(icon: .carBackIcon, size: Self.iconSize)
             case .complications:
-                MaterialDesignIconsImage(icon: .chartDonutIcon, size: 24)
-            case .actions:
-                MaterialDesignIconsImage(icon: .gamepadVariantOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .chartDonutIcon, size: Self.iconSize)
             case .help:
-                MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: Self.iconSize)
             case .privacy:
-                MaterialDesignIconsImage(icon: .lockOutlineIcon, size: 24)
+                MaterialDesignIconsImage(icon: .lockOutlineIcon, size: Self.iconSize)
             case .debugging:
-                MaterialDesignIconsImage(icon: .bugIcon, size: 24)
+                MaterialDesignIconsImage(icon: .bugIcon, size: Self.iconSize)
             case .whatsNew:
-                MaterialDesignIconsImage(icon: .starIcon, size: 24)
+                MaterialDesignIconsImage(icon: .starIcon, size: Self.iconSize)
             }
         }
     }
@@ -138,8 +136,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
             CarPlayConfigurationView(needsNavigationController: false)
         case .complications:
             SettingsComplicationsView()
-        case .actions:
-            ActionsSettingsView()
         case .help:
             EmptyView()
         case .privacy:
@@ -153,25 +149,40 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     static var allVisibleCases: [SettingsItem] {
         allCases.filter { item in
+            if item == .liveActivities {
+                return canShowLiveActivities
+            }
+
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
-            if item == .servers || item == .gestures || item == .kiosk || item == .watch || item == .carPlay ||
-                item == .appIconShortcuts ||
-                item == .complications || item == .nfc || item == .help ||
-                item == .whatsNew {
+            let hiddenItems: [SettingsItem] = [
+                .servers,
+                .gestures,
+                .kiosk,
+                .watch,
+                .carPlay,
+                .appIconShortcuts,
+                .complications,
+                .nfc,
+                .help,
+                .whatsNew,
+            ]
+
+            if hiddenItems.contains(item) {
                 return false
             }
             #endif
-            // Live Activities are shown in DebugView
-            if item == .liveActivities {
-                return false
-            }
+
             return true
         }
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .location, .notifications, .kiosk]
+        var items: [SettingsItem] = [.general, .gestures, .location, .notifications, .kiosk]
+        if canShowLiveActivities {
+            items.append(.liveActivities)
+        }
+        return items
     }
 
     static var integrationItems: [SettingsItem] {
@@ -186,12 +197,20 @@ enum SettingsItem: String, Hashable, CaseIterable {
         [.carPlay]
     }
 
-    static var legacyItems: [SettingsItem] {
-        [.actions]
-    }
-
     static var helpItems: [SettingsItem] {
         [.help, .privacy, .debugging]
+    }
+
+    private static var canShowLiveActivities: Bool {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            return Current.isTestFlight
+        } else {
+            return false
+        }
+        #else
+        return false
+        #endif
     }
 }
 

@@ -91,6 +91,10 @@ struct ControlFanConfiguration: ControlConfigurationIntent {
     )
 
     @Parameter(
+        title: .init("app_intents.server.title", defaultValue: "Server")
+    )
+    var server: IntentServerAppEntity?
+    @Parameter(
         title: .init("app_intents.fan.title", defaultValue: "Fan")
     )
     var fan: IntentFanEntity?

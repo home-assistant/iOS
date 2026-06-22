@@ -6,6 +6,7 @@ struct SettingsView: View {
     @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
+    @State private var testFlightMessage: TestFlightMessage?
     @State private var isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
@@ -165,15 +166,6 @@ struct SettingsView: View {
                 }
             }
 
-            // Legacy section
-            Section {
-                ForEach(SettingsItem.legacyItems, id: \.self) { item in
-                    NavigationLink(destination: item.destinationView) {
-                        settingsItemLabel(item)
-                    }
-                }
-            }
-
             // Help section
             Section {
                 ForEach(SettingsItem.helpItems, id: \.self) { item in
@@ -204,6 +196,21 @@ struct SettingsView: View {
                         whatsNewRelease = latestRelease
                     } label: {
                         settingsItemLabel(.whatsNew)
+                    }
+                }
+            }
+
+            if let latestMessage = TestFlightCommunicationEngine().latestMessage() {
+                // Beta Tester Updates
+                Section {
+                    Button {
+                        testFlightMessage = latestMessage
+                    } label: {
+                        Label {
+                            Text(L10n.Settings.TestFlightCommunication.title)
+                        } icon: {
+                            Image(systemSymbol: .testtube2)
+                        }
                     }
                 }
             }
@@ -254,6 +261,11 @@ struct SettingsView: View {
                 WhatsNewEngine().markSeen(release)
             }
         }
+        .sheet(item: $testFlightMessage) { message in
+            TestFlightCommunicationView(message: message) {
+                TestFlightCommunicationEngine().markSeen(message)
+            }
+        }
     }
 
     private var translationKeysWarningSection: some View {
@@ -292,7 +304,7 @@ struct SettingsView: View {
         Label {
             HStack(spacing: DesignSystem.Spaces.one) {
                 Text(item.title)
-                if item == .kiosk {
+                if [.kiosk, .liveActivities].contains(item) {
                     LabsLabel()
                 }
             }

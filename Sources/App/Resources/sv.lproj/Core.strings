@@ -218,7 +218,7 @@ Besök {url} för att avsluta installationen.";
 "component::sensor::entity_component::_::state::on" = "På";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Inaktiv";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Stängd";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Aktiv";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Aktiv (högre batteriförbrukning på enheten, uppdaterar snabbast)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Inaktiverad";
 "component::siren::entity_component::_::state::off" = "Av";
 "component::siren::entity_component::_::state::on" = "På";

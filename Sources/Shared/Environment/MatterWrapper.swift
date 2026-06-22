@@ -49,25 +49,30 @@ public class MatterWrapper {
         set { Current.settingsStore.prefs.set(newValue?.rawValue, forKey: "lastCommissionServerID") }
     }
 
-    public lazy var commission: (_ server: Server) -> Promise<Void> = { [self] server in
+    public lazy var commission: (_ server: Server) -> Promise<String?> = { [self] server in
         #if canImport(MatterSupport)
         guard #available(iOS 16.4, *) else {
-            return .value(())
+            return .value(nil)
         }
 
         lastCommissionServerIdentifier = server.identifier
+        Current.settingsStore.matterLastCommissionedDeviceName = nil
 
         let request = MatterAddDeviceRequest(
             topology: .init(ecosystemName: "Home Assistant", homes: []),
             shouldScanNetworks: true
         )
 
-        return Promise<Void> { seal in
+        return Promise<String?> { seal in
             Task {
                 do {
                     try await request.perform()
+                    let deviceName = Current.settingsStore.matterLastCommissionedDeviceName
+                    // Reset device name after reading it, so that if the user tries to pair another device without
+                    // going through the flow again, we won't have a stale name hanging around
+                    Current.settingsStore.matterLastCommissionedDeviceName = nil
                     Current.Log.info("Matter pairing finished (native flow manually closed or pairing succeeded)")
-                    seal.fulfill(())
+                    seal.fulfill(deviceName)
                 } catch {
                     Current.Log.error("Matter pairing failed: \(error)")
                     seal.reject(error)
@@ -75,7 +80,7 @@ public class MatterWrapper {
             }
         }
         #else
-        return .value(())
+        return .value(nil)
         #endif
     }
     #endif

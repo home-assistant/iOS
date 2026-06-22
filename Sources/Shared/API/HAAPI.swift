@@ -87,34 +87,18 @@ public class HomeAssistantAPI {
         let tokenManager = TokenManager(server: server)
         self.tokenManager = tokenManager
 
-        #if !os(watchOS)
         // Create URLSession for HAKit REST API calls with certificate handling
         Current.Log.info("[mTLS] Creating HAKit URLSession for server: \(server.info.name)")
         Current.Log.info("[mTLS] Has client certificate: \(server.info.connection.clientCertificate != nil)")
         Current.Log.info("[mTLS] Has security exceptions: \(server.info.connection.securityExceptions.hasExceptions)")
 
-        let hakitURLSession: URLSession
-        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
-            // Use HAKit's certificate provider protocol
-            Current.Log.info("[mTLS] Using HAKit certificate provider")
-            let certificateProvider = HomeAssistantCertificateProvider(server: server)
-            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
-            let configuration = URLSessionConfiguration.ephemeral
-            hakitURLSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
-        } else {
-            Current.Log.info("[mTLS] Using default URLSession for HAKit")
-            hakitURLSession = URLSession(configuration: .ephemeral)
-        }
-        #else
-        let hakitURLSession = URLSession(configuration: .ephemeral)
-        #endif
+        let hakitURLSession = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
 
         let underlyingConnection = HAKit.connection(
             configuration: .init(
                 connectionInfo: {
                     do {
                         if let activeURL = server.info.connection.activeURL() {
-                            #if !os(watchOS)
                             // Prepare client identity (SecIdentity) for mTLS if configured
                             let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
                             if let clientCert = server.info.connection.clientCertificate {
@@ -137,19 +121,6 @@ public class HomeAssistantAPI {
                                 },
                                 clientIdentity: clientIdentityProvider
                             )
-                            #else
-                            return try .init(
-                                url: activeURL,
-                                userAgent: HomeAssistantAPI.userAgent,
-                                evaluateCertificate: { secTrust, completion in
-                                    completion(
-                                        Swift.Result<Void, Error> {
-                                            try server.info.connection.securityExceptions.evaluate(secTrust)
-                                        }
-                                    )
-                                }
-                            )
-                            #endif
                         } else {
                             Current.clientEventStore.addEvent(.init(
                                 text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
@@ -181,14 +152,10 @@ public class HomeAssistantAPI {
         self.connection = RetryAwareHAConnection(underlying: underlyingConnection)
         connection.delegate = self
 
-        #if !os(watchOS)
         // Use custom delegate that supports client certificates (mTLS)
         let sessionDelegate: SessionDelegate = server.info.connection.clientCertificate != nil
             ? ClientCertificateSessionDelegate(server: server)
             : SessionDelegate()
-        #else
-        let sessionDelegate = SessionDelegate()
-        #endif
 
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
@@ -201,6 +168,21 @@ public class HomeAssistantAPI {
         removeOldDownloadDirectory()
 
         Current.sensors.register(observer: self)
+    }
+
+    /// Builds a `URLSession` that presents this server's client certificate and honors its security
+    /// exceptions (mTLS), or a plain ephemeral session when neither is configured. Reused by HAKit's
+    /// REST calls and, on watchOS, by direct REST execution (where WebSocket transport is unavailable).
+    static func makeCertificateAwareURLSession(server: Server) -> URLSession {
+        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
+            Current.Log.info("[mTLS] Using HAKit certificate provider")
+            let certificateProvider = HomeAssistantCertificateProvider(server: server)
+            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
+            return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+        } else {
+            Current.Log.info("[mTLS] Using default URLSession for HAKit")
+            return URLSession(configuration: .ephemeral)
+        }
     }
 
     convenience init?() {
@@ -482,6 +464,28 @@ public class HomeAssistantAPI {
         )
     }
 
+    /// Performs a `call_service` over the websocket and returns the action's response.
+    ///
+    /// Unlike `CallService` (which delivers via webhook and discards any response), this awaits the
+    /// websocket result so actions that support a response (`SupportsResponse.OPTIONAL` / `.ONLY`)
+    /// can surface their data. Set `returnResponse` only for actions that support a response.
+    public func callServiceWithResponse(
+        domain: String,
+        service: String,
+        serviceData: [String: Any],
+        returnResponse: Bool
+    ) -> Promise<CallServiceResponse> {
+        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
+        INInteraction(intent: intent, response: nil).donate(completion: nil)
+
+        return connection.send(.callService(
+            domain: domain,
+            service: service,
+            serviceData: serviceData,
+            returnResponse: returnResponse
+        )).promise
+    }
+
     public func turnOnScript(scriptEntityId: String, triggerSource: AppTriggerSource) -> Promise<Void> {
         CallService(domain: Domain.script.rawValue, service: Service.turnOn.rawValue, serviceData: [
             "entity_id": scriptEntityId,
@@ -548,7 +552,7 @@ public class HomeAssistantAPI {
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
         firstly { () -> Promise<MobileAppConfig> in
-            if server.info.version < .actionSyncing {
+            if server.info.version < .mobileAppConfig {
                 let old: Promise<MobileAppConfigPush> = requestImmutable(
                     path: "ios/push",
                     callingFunctionName: "\(#function)"
@@ -593,7 +597,7 @@ public class HomeAssistantAPI {
         with(MobileAppRegistrationRequest()) {
             if let pushID = Current.settingsStore.pushID {
                 var appData: [String: Any] = [
-                    "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                    "push_url": AppConstants.Firebase.pushURLString,
                     "push_token": pushID,
                 ]
 
@@ -601,8 +605,8 @@ public class HomeAssistantAPI {
                 if #available(iOS 17.2, *) {
                     // Push-to-start token (stored in Keychain at launch, updated via stream).
                     // The relay server uses this token to start a Live Activity entirely via APNs.
-                    if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
-                        appData["live_activity_token"] = pushToStartToken
+                    if Current.isTestFlight, let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
+                        appData[LiveActivityRegistry.pushToStartRegistrationKey] = pushToStartToken
                         appData["live_activity_push_to_start_apns_environment"] = Current.apnsEnvironment
                     }
                 }
@@ -646,6 +650,7 @@ public class HomeAssistantAPI {
     ) -> Promise<Void> {
         let update: WebhookUpdateLocation
         let location: CLLocation?
+        let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
         let localMetadata = WebhookResponseLocation.localMetdata(
             trigger: updateType,
             zone: zone
@@ -656,11 +661,18 @@ public class HomeAssistantAPI {
             update = .init(trigger: updateType, location: rawLocation, zone: zone)
             location = rawLocation
         case .zoneOnly:
-            if updateType == .BeaconRegionEnter {
-                update = .init(trigger: updateType, usingNameOf: zone)
-            } else if let rawLocation {
-                // note this is a different zone than the event - e.g. the zone may be the one we are exiting
-                update = .init(trigger: updateType, usingNameOf: RLMZone.zone(of: rawLocation, in: server))
+            let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
+            if updateType == .BeaconRegionEnter || rawLocation != nil {
+                update = .init(
+                    trigger: updateType,
+                    usingNameOf: locationNameZone(
+                        for: updateType,
+                        from: inZones,
+                        fallbackZone: zone,
+                        supportsInZones: supportsInZones
+                    ),
+                    inZones: supportsInZones ? inZones : nil
+                )
             } else {
                 update = .init(trigger: updateType)
             }
@@ -702,6 +714,35 @@ public class HomeAssistantAPI {
                 )
             )
         }.asVoid()
+    }
+
+    private func zones(
+        for updateType: LocationUpdateTrigger,
+        location rawLocation: CLLocation?,
+        fallbackZone zone: RLMZone?
+    ) -> [RLMZone] {
+        if updateType == .BeaconRegionEnter {
+            return zone.flatMap { $0.TrackingEnabled ? [$0] : nil } ?? []
+        } else if let rawLocation {
+            return RLMZone.zones(of: rawLocation, in: server)
+        } else {
+            return []
+        }
+    }
+
+    private func locationNameZone(
+        for updateType: LocationUpdateTrigger,
+        from zones: [RLMZone],
+        fallbackZone zone: RLMZone?,
+        supportsInZones: Bool
+    ) -> RLMZone? {
+        if supportsInZones {
+            return zones.first { !$0.isPassive }
+        } else if updateType == .BeaconRegionEnter {
+            return zone
+        } else {
+            return zones.first
+        }
     }
 
     public var sharedEventDeviceInfo: [String: String] {
@@ -752,30 +793,6 @@ public class HomeAssistantAPI {
         }
 
         return (eventType: "mobile_app_notification_action", eventData: eventData)
-    }
-
-    public func actionEvent(
-        actionID: String,
-        actionName: String,
-        source: AppTriggerSource
-    ) -> (eventType: String, eventData: [String: String]) {
-        var eventData = sharedEventDeviceInfo
-        eventData["actionName"] = actionName
-        eventData["actionID"] = actionID
-        eventData["triggerSource"] = source.description
-
-        return (eventType: "ios.action_fired", eventData: eventData)
-    }
-
-    public func actionScene(
-        actionID: String,
-        source: AppTriggerSource
-    ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
-        (
-            serviceDomain: Domain.scene.rawValue,
-            serviceName: Service.turnOn.rawValue,
-            serviceData: ["entity_id": actionID]
-        )
     }
 
     public func tagEvent(
@@ -875,37 +892,6 @@ public class HomeAssistantAPI {
             Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
             return CreateEvent(eventType: action.eventType, eventData: action.eventData)
         }).asVoid()
-    }
-
-    public func HandleAction(actionID: String, source: AppTriggerSource) -> Promise<Void> {
-        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
-            Current.Log.error("couldn't find action with id \(actionID)")
-            return .init(error: HomeAssistantAPI.APIError.cantBuildURL)
-        }
-
-        let intent = PerformActionIntent(action: action)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        switch action.triggerType {
-        case .event:
-            let actionInfo = actionEvent(actionID: action.ID, actionName: action.Name, source: source)
-            Current.Log.verbose("Sending action: \(actionInfo.eventType) payload: \(actionInfo.eventData)")
-
-            return CreateEvent(
-                eventType: actionInfo.eventType,
-                eventData: actionInfo.eventData
-            )
-        case .scene:
-            let serviceInfo = actionScene(actionID: action.ID, source: source)
-            Current.Log.verbose("activating scene: \(action.ID)")
-
-            return CallService(
-                domain: serviceInfo.serviceDomain,
-                service: serviceInfo.serviceName,
-                serviceData: serviceInfo.serviceData,
-                triggerSource: source
-            )
-        }
     }
 
     public func executeActionForDomainType(domain: Domain, entityId: String, state: String) -> Promise<Void> {
@@ -1255,7 +1241,6 @@ private extension URL {
     }
 }
 
-#if !os(watchOS)
 /// Certificate provider implementation for Home Assistant servers
 private class HomeAssistantCertificateProvider: HACertificateProvider {
     private let server: Server
@@ -1304,7 +1289,6 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
         }
     }
 }
-#endif
 
 /// Prevents pending websocket work from resetting HAKit's reconnect backoff.
 final class RetryAwareHAConnection: HAConnection {

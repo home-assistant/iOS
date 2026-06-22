@@ -23,9 +23,15 @@ let keychain = AppConstants.Keychain
 let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
 private extension UIApplication {
+    /// Under the SwiftUI `App` lifecycle `UIApplication.shared.delegate` is SwiftUI's own internal
+    /// delegate — not the `@UIApplicationDelegateAdaptor`-managed `AppDelegate` — so the bare
+    /// `delegate as! AppDelegate` cast aborts. Resolve via the recorded `AppDelegate.shared`.
     var typedDelegate: AppDelegate {
-        // swiftlint:disable:next force_cast
-        delegate as! AppDelegate
+        guard let appDelegate = AppDelegate.shared else {
+            // swiftlint:disable:next force_cast
+            return delegate as! AppDelegate
+        }
+        return appDelegate
     }
 }
 
@@ -39,24 +45,27 @@ extension AppEnvironment {
     }
 }
 
-@main
+// `@main` is on `HAApp`; this delegate is installed via `@UIApplicationDelegateAdaptor`.
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    /// Set from `init` so the adaptor-managed delegate stays reachable; see `UIApplication.typedDelegate`.
+    private(set) static var shared: AppDelegate?
+
     let sceneManager = SceneManager()
     private let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
+
+    override init() {
+        super.init()
+        AppDelegate.shared = self
+    }
+
     #if DEBUG
     private let debugSwift = DebugSwift()
     #endif
     private var zoneManager: ZoneManager?
-    private var titleSubscription: MenuManagerTitleSubscription? {
-        didSet {
-            if oldValue != titleSubscription {
-                oldValue?.cancel()
-            }
-        }
-    }
-
-    private var shouldRefreshTitleSubscription = false
+    #if targetEnvironment(macCatalyst)
+    private let statusItemManager = StatusItemManager()
+    #endif
 
     private var watchCommunicatorService: WatchCommunicatorService?
 
@@ -131,6 +140,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         lifecycleManager.didFinishLaunching()
         setupDebugSwift()
 
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.configure()
+        // Dock icon: when "Open Home Assistant UI in browser" is on there is no in-app web view, so a
+        // reopen with no windows (Dock icon click) should open the browser instead of creating a window.
+        Current.macBridge.setReopenHandler { StatusItemPrimaryAction.openInBrowserIfNeeded() }
+        #endif
+
         checkForUpdate()
         checkForAlerts()
 
@@ -139,6 +155,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupDebugSwift() {
         #if DEBUG
+        // Opt-in via the "-EnableDebugSwift" launch argument (off by default). DebugSwift's
+        // network monitor swizzles URLSessionConfiguration and intercepts every request, which
+        // breaks mTLS / self-signed-certificate flows such as onboarding on the simulator.
+        guard ProcessInfo.processInfo.arguments.contains("-EnableDebugSwift") else { return }
         debugSwift.setup()
         debugSwift.show()
         #endif
@@ -148,14 +168,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if builder.system == .main {
             let manager = MenuManager(builder: builder)
             manager.update()
-
-            #if targetEnvironment(macCatalyst)
-            titleSubscription = manager.subscribeStatusItemTitle(
-                existing: shouldRefreshTitleSubscription ? nil : titleSubscription,
-                update: Current.macBridge.configureStatusItem(title:)
-            )
-            shouldRefreshTitleSubscription = false
-            #endif
         }
     }
 
@@ -169,21 +181,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        let delegate: Guarantee<WebViewSceneDelegate> = sceneManager.scene(for: .init(activity: .webView))
-        delegate.done {
-            $0.urlHandler?.handle(url: url)
+        // The primary window is SwiftUI-hosted now, so route through the coordinator (like the other
+        // `webViewWindowControllerPromise` consumers) instead of looking up a UIKit scene delegate.
+        sceneManager.appCoordinator.done { coordinator in
+            IncomingURLHandler(coordinator: coordinator).handle(url: url)
         }
     }
 
     @objc func openPreferences() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         sceneManager.activateAnyScene(for: .settings)
-    }
-
-    @objc func openActionsPreferences() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        let delegate: Guarantee<SettingsSceneDelegate> = sceneManager.scene(for: .init(activity: .settings))
-        delegate.done { $0.pushActions(animated: true) }
     }
 
     @objc func openHelp() {
@@ -204,6 +211,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let activity = options.userActivities
                 .compactMap { SceneActivity(activityIdentifier: $0.activityType) }
                 .first ?? .webView
+
+            if activity == .webView {
+                // The primary window is owned by SwiftUI's `WindowGroup { ContainerView() }` (see `HAApp`).
+                // The name MUST stay `WebView` (the shipped config name) — persisted scene sessions reference
+                // it, and renaming it blanks the window on upgrade. `QuickActionWindowSceneDelegate` only
+                // forwards Home-screen quick actions (it never owns a window), so SwiftUI still hosts the
+                // scene; it restores quick-action handling lost when `WebViewSceneDelegate` was removed.
+                let configuration = UISceneConfiguration(
+                    name: "WebView",
+                    sessionRole: connectingSceneSession.role
+                )
+                configuration.delegateClass = QuickActionWindowSceneDelegate.self
+                return configuration
+            }
+
             return activity.configuration
         }
     }
@@ -295,7 +317,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ))
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
 
-            sceneManager.webViewWindowControllerPromise.done {
+            sceneManager.appCoordinator.done {
                 $0.present(alert, animated: true, completion: nil)
             }
         }.catch { [sceneManager] error in
@@ -309,7 +331,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 )
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
 
-                sceneManager.webViewWindowControllerPromise.done {
+                sceneManager.appCoordinator.done {
                     $0.present(alert, animated: true, completion: nil)
                 }
             }
@@ -320,7 +342,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         firstly {
             Current.serverAlerter.check(dueToUserInteraction: false)
         }.done { [sceneManager] alert in
-            sceneManager.webViewWindowControllerPromise.done { controller in
+            sceneManager.appCoordinator.done { controller in
                 controller.show(alert: alert)
             }
         }.catch { error in
@@ -364,7 +386,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: { _ in
                     userDefaults.set(true, forKey: seenKey)
                 }))
-                sceneManager.webViewWindowControllerPromise.done {
+                sceneManager.appCoordinator.done {
                     $0.present(alert)
                 }
             }.catch { error in
@@ -387,6 +409,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
 
+    private var liveActivityPendingEndObserver: Any?
+
     private func setupLiveActivityReattachment() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
@@ -394,6 +418,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // This avoids a lazy-init race if a push notification handler accesses it
             // concurrently from a background thread.
             guard let registry = Current.liveActivityRegistry else { return }
+
+            // Register before draining so ends enqueued while the app was gone aren't missed.
+            let pendingEndObserver = LiveActivityPendingEndObserver()
+            liveActivityPendingEndObserver = pendingEndObserver
+            pendingEndObserver.drain()
 
             Task {
                 // Re-attach observation tasks (push token + lifecycle) to any Live Activities
@@ -438,7 +467,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func setupModels() {
         // Force Realm migration to happen now
         _ = Realm.live()
-        Action.setupObserver()
         NotificationCategory.setupObserver()
     }
 
@@ -459,15 +487,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc private func menuRelatedSettingDidChange(_ note: Notification) {
         UIMenuSystem.main.setNeedsRebuild()
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.configure()
+        #endif
     }
 
     @objc private func apiDidConnect(_ note: Notification) {
-        // When API reconnects, rebuild the menu to refresh the status item title subscription
-        // Force refresh by setting the flag that will cause the subscription to be recreated
-        #if targetEnvironment(macCatalyst)
-        shouldRefreshTitleSubscription = true
-        #endif
         UIMenuSystem.main.setNeedsRebuild()
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.apiDidConnect()
+        #endif
     }
 
     private func setupUIApplicationShortcutItems() {

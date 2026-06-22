@@ -156,7 +156,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     }
 
     private func notifyFrontend() {
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
+        Current.sceneManager.webViewControllerPromise.done { controller in
             _ = controller.webViewExternalMessageHandler.sendExternalBus(message: .init(
                 command: WebViewExternalBusOutgoingMessage.improvDiscoveredDeviceSetupDone.rawValue
             ))

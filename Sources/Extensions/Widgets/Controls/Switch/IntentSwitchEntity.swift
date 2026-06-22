@@ -5,7 +5,7 @@ import SFSafeSymbols
 import Shared
 
 @available(iOS 18.0, *)
-struct IntentSwitchEntity: AppEntity {
+struct IntentSwitchEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Switch")
 
     static let defaultQuery = IntentSwitchAppEntityQuery()
@@ -21,27 +21,8 @@ struct IntentSwitchEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: .init(stringLiteral: subtitle)
+            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
-    }
-
-    private var subtitle: String {
-        var subtitle = ""
-        if let areaName {
-            subtitle += areaName
-        }
-
-        if let deviceName,
-           deviceName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != displayString.lowercased()
-           .trimmingCharacters(in: .whitespacesAndNewlines) {
-            if subtitle.isEmpty {
-                subtitle += deviceName
-            } else {
-                subtitle += " → \(deviceName)"
-            }
-        }
-
-        return subtitle
     }
 
     init(
@@ -65,26 +46,37 @@ struct IntentSwitchEntity: AppEntity {
 
 @available(iOS 18.0, *)
 struct IntentSwitchAppEntityQuery: EntityQuery, EntityStringQuery {
+    #if WIDGET_EXTENSION
+    @IntentParameterDependency<ControlSwitchConfiguration>(\.$server)
+    var config
+    #endif
+
     func entities(for identifiers: [String]) async throws -> [IntentSwitchEntity] {
         await getSwitchEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentSwitchEntity> {
-        let switchesPerServer = await getSwitchEntities(matching: string)
-
-        return .init(sections: switchesPerServer.map { (key: Server, value: [IntentSwitchEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value
-            )
-        })
+        await collection(for: getSwitchEntities(matching: string))
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentSwitchEntity> {
-        let switchesPerServer = await getSwitchEntities()
+        await collection(for: getSwitchEntities())
+    }
 
-        return .init(sections: switchesPerServer.map { (key: Server, value: [IntentSwitchEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+    /// Scopes the list to the server picked in the configuration (flat list). When no server is
+    /// selected (e.g. a widget configured before this option existed), falls back to grouping
+    /// every server's entities into sections.
+    private func collection(
+        for entitiesPerServer: [(Server, [IntentSwitchEntity])]
+    ) -> IntentItemCollection<IntentSwitchEntity> {
+        #if WIDGET_EXTENSION
+        if let server = config?.server {
+            let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
+            return .init(items: items)
+        }
+        #endif
+        return .init(sections: entitiesPerServer.map { server, items in
+            .init(.init(stringLiteral: server.info.name), items: items)
         })
     }
 

@@ -6,8 +6,6 @@ import Shared
 import UIKit
 
 private extension UIMenu.Identifier {
-    static var haActions: Self { .init(rawValue: "ha.actions") }
-    static var haActionsConfigure: Self { .init(rawValue: "ha.actions.configure") }
     static var haHelp: Self { .init(rawValue: "ha.help") }
     static var haWebViewActions: Self { .init(rawValue: "ha.webViewActions") }
     static var haFile: Self { .init(rawValue: "ha.file") }
@@ -121,15 +119,34 @@ enum StatusItemTitleRenderer {
     }
 }
 
+/// Shared decision for what the macOS status item should do when "activated" (icon click or the
+/// "Toggle" menu item). When the user enabled "Open Home Assistant UI in browser"
+/// (`macNativeFeaturesOnly`) there is no in-app web view to toggle — it is destroyed at launch by
+/// `QuickActionWindowSceneDelegate` — so any "show me Home Assistant" affordance must open the default
+/// browser instead of spawning a web-view window. The preference is read live on every call because
+/// flipping it does not reconfigure the status item (it posts no `menuRelatedSettingDidChange`).
+enum StatusItemPrimaryAction {
+    /// Opens Home Assistant in the default browser when the browser preference is on.
+    /// - Returns: `true` if it handled the action (browser opened), `false` to fall through to the
+    ///   normal toggle/activate behaviour.
+    static func openInBrowserIfNeeded() -> Bool {
+        guard Current.settingsStore.macNativeFeaturesOnly else { return false }
+        // Prefer the server shown in the menu-bar title; its getter already falls back to the first
+        // server, so this also covers users without a configured menu-bar template.
+        let server = Current.settingsStore.menuItemTemplate?.server ?? Current.servers.all.first
+        guard let url = server?.info.connection.activeURL() else { return false }
+        URLOpener.shared.open(url, options: [:], completionHandler: nil)
+        return true
+    }
+}
+
 class MenuManager {
     let builder: UIMenuBuilder
-    let actionsWithImages: [(Action, UIImage)]
 
     // remember: this class is short-lived. it only exists for the duration of creating the menu.
 
     init(builder: UIMenuBuilder) {
         self.builder = builder
-        self.actionsWithImages = Self.actionsWithImages()
         update()
     }
 
@@ -200,12 +217,6 @@ class MenuManager {
 
         builder.replaceChildren(ofMenu: .help) { _ in helpMenus() }
 
-        if builder.menu(for: .haActions) == nil {
-            builder.insertSibling(actionsMenu(), beforeMenu: .window)
-        } else {
-            builder.replace(menu: .haActions, with: actionsMenu())
-        }
-
         if builder.menu(for: .haWebViewActions) == nil {
             builder.insertSibling(webViewActionsMenu(), beforeMenu: .fullscreen)
         } else {
@@ -265,9 +276,11 @@ class MenuManager {
                 Current.sceneManager.activateAnyScene(for: .webView)
                 callbackInfo.activate()
 
+                // Under the SwiftUI `App` lifecycle `UIApplication.shared.delegate` is SwiftUI's internal
+                // delegate, which doesn't respond to `checkForUpdate(_:)`; target our recorded instance.
                 UIApplication.shared.sendAction(
                     #selector(AppDelegate.checkForUpdate(_:)),
-                    to: UIApplication.shared.delegate,
+                    to: AppDelegate.shared,
                     from: callbackInfo,
                     for: nil
                 )
@@ -326,92 +339,6 @@ class MenuManager {
         ]
     }
 
-    private static func actionsWithImages() -> [(Action, UIImage)] {
-        // Action+Observation calls reload, so when they change this all gets run again
-        Current.realm()
-            .objects(Action.self)
-            .sorted(byKeyPath: #keyPath(Action.Position))
-            .map { action -> (Action, UIImage) in
-                let iconRect = CGRect(x: 0, y: 0, width: 28, height: 28)
-
-                let image = UIKit.UIGraphicsImageRenderer(size: iconRect.size).image { _ in
-                    let imageRect = iconRect.insetBy(dx: 3, dy: 3)
-
-                    UIColor(hex: action.BackgroundColor).set()
-                    UIBezierPath(roundedRect: iconRect, cornerRadius: 6.0).fill()
-
-                    MaterialDesignIcons(named: action.IconName)
-                        .image(ofSize: imageRect.size, color: UIColor(hex: action.IconColor))
-                        .draw(in: imageRect)
-                }
-
-                return (action, image)
-            }
-    }
-
-    private func actionsMenu() -> UIMenu {
-        let children = actionsWithImages.map { action, image in
-            UICommand(
-                title: action.Text,
-                image: image,
-                action: #selector(AppDelegate.openMenuUrl(_:)),
-                propertyList: Self.propertyList(for: action.widgetLinkURL)
-            )
-        } + [
-            UIMenu(title: "", image: nil, identifier: .haActionsConfigure, options: [.displayInline], children: [
-                UICommand(
-                    title: L10n.Menu.Actions.configure,
-                    image: nil,
-                    action: #selector(AppDelegate.openActionsPreferences),
-                    propertyList: nil
-                ),
-            ]),
-        ]
-
-        return UIMenu(
-            title: L10n.Menu.Actions.title,
-            image: nil,
-            identifier: .haActions,
-            children: Array(children)
-        )
-    }
-
-    private func actionsMenu() -> AppMacBridgeStatusItemMenuItem {
-        var items = [AppMacBridgeStatusItemMenuItem]()
-        items.append(contentsOf: actionsWithImages.compactMap { action, image in
-            let url = action.widgetLinkURL
-
-            return .init(
-                name: action.Name,
-                image: image
-            ) { callbackInfo in
-                callbackInfo.activate()
-
-                let delegate: Guarantee<WebViewSceneDelegate> = Current.sceneManager.scene(
-                    for: .init(activity: .webView)
-                )
-                delegate.done {
-                    $0.urlHandler?.handle(url: url)
-                }
-            }
-        })
-        if !items.isEmpty {
-            items.append(.separator())
-        }
-        items.append(.init(name: L10n.Menu.Actions.configure) { callbackInfo in
-            callbackInfo.activate()
-
-            UIApplication.shared.sendAction(
-                #selector(AppDelegate.openActionsPreferences),
-                to: UIApplication.shared.delegate,
-                from: nil,
-                for: nil
-            )
-        })
-
-        return AppMacBridgeStatusItemMenuItem(name: L10n.Menu.Actions.title, subitems: items)
-    }
-
     private func webViewActionsMenu() -> UIMenu {
         var commands: [UIMenuElement] = [
             UIKeyCommand(
@@ -463,6 +390,7 @@ class MenuManager {
 
     private func toggleMenu() -> AppMacBridgeStatusItemMenuItem {
         .init(name: L10n.Menu.StatusItem.toggle(appName)) { callbackInfo in
+            if StatusItemPrimaryAction.openInBrowserIfNeeded() { return }
             if callbackInfo.isActive {
                 callbackInfo.deactivate()
             } else {
@@ -493,8 +421,6 @@ class MenuManager {
         var menuItems = [AppMacBridgeStatusItemMenuItem]()
         menuItems.append(toggleMenu())
         menuItems.append(.separator())
-        menuItems.append(actionsMenu())
-        menuItems.append(.separator())
         menuItems.append(contentsOf: aboutMenu())
         menuItems.append(preferencesMenu())
         menuItems.append(quitMenu())
@@ -506,8 +432,11 @@ class MenuManager {
             accessibilityLabel: appName,
             items: menuItems,
             primaryActionHandler: { callbackInfo in
+                if StatusItemPrimaryAction.openInBrowserIfNeeded() { return }
                 if callbackInfo.isActive {
                     callbackInfo.deactivate()
+                } else if callbackInfo.hasWindows {
+                    callbackInfo.activate()
                 } else {
                     Current.sceneManager.activateAnyScene(for: .webView)
                     callbackInfo.activate()
@@ -523,3 +452,168 @@ class MenuManager {
     @available(iOS 16.0, *)
     @objc private func showFindInteraction() {}
 }
+
+#if targetEnvironment(macCatalyst)
+final class StatusItemManager {
+    private var titleSubscription: MenuManagerTitleSubscription? {
+        didSet {
+            if oldValue != titleSubscription {
+                oldValue?.cancel()
+            }
+        }
+    }
+
+    private var shouldRefreshTitleSubscription = false
+
+    private var appName: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "Home Assistant"
+    }
+
+    func configure() {
+        onMain { [self] in
+            configureStatusItem()
+            refreshTitleSubscription()
+        }
+    }
+
+    func apiDidConnect() {
+        onMain { [self] in
+            shouldRefreshTitleSubscription = true
+            refreshTitleSubscription()
+        }
+    }
+
+    private func onMain(_ work: @escaping () -> Void) {
+        if Thread.isMainThread {
+            work()
+        } else {
+            DispatchQueue.main.async(execute: work)
+        }
+    }
+
+    private func refreshTitleSubscription() {
+        titleSubscription = subscribeStatusItemTitle(
+            existing: shouldRefreshTitleSubscription ? nil : titleSubscription,
+            update: Current.macBridge.configureStatusItem(title:)
+        )
+        shouldRefreshTitleSubscription = false
+    }
+
+    private func subscribeStatusItemTitle(
+        existing: MenuManagerTitleSubscription?,
+        update: @escaping (String) -> Void
+    ) -> MenuManagerTitleSubscription? {
+        guard let (server, template) = Current.settingsStore.menuItemTemplate,
+              Current.settingsStore.locationVisibility.isStatusItemVisible,
+              !template.isEmpty else {
+            update("")
+            return nil
+        }
+
+        guard existing == nil || existing?.template != template || existing?.server != server else {
+            return existing
+        }
+
+        existing?.cancel()
+        update("")
+
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available to update status item title")
+            return nil
+        }
+
+        return .init(
+            server: server,
+            template: template,
+            token: StatusItemTitleRenderer.subscribe(api: api, template: template, update: update)
+        )
+    }
+
+    private func aboutMenu() -> [AppMacBridgeStatusItemMenuItem] {
+        [
+            .init(name: L10n.About.title) { callbackInfo in
+                Current.sceneManager.activateAnyScene(for: .about)
+                callbackInfo.activate()
+            },
+            .init(name: L10n.Updater.CheckForUpdatesMenu.title) { callbackInfo in
+                Current.sceneManager.activateAnyScene(for: .webView)
+                callbackInfo.activate()
+
+                UIApplication.shared.sendAction(
+                    #selector(AppDelegate.checkForUpdate(_:)),
+                    to: AppDelegate.shared,
+                    from: callbackInfo,
+                    for: nil
+                )
+            },
+        ]
+    }
+
+    private func preferencesMenu() -> AppMacBridgeStatusItemMenuItem {
+        .init(
+            name: L10n.Menu.Application.preferences,
+            keyEquivalentModifier: [.command],
+            keyEquivalent: ","
+        ) { callbackInfo in
+            Current.sceneManager.activateAnyScene(for: .settings)
+            callbackInfo.activate()
+        }
+    }
+
+    private func toggleMenu() -> AppMacBridgeStatusItemMenuItem {
+        .init(name: L10n.Menu.StatusItem.toggle(appName)) { callbackInfo in
+            if StatusItemPrimaryAction.openInBrowserIfNeeded() { return }
+            if callbackInfo.isActive {
+                callbackInfo.deactivate()
+            } else {
+                Current.sceneManager.activateAnyScene(for: .webView)
+                callbackInfo.activate()
+            }
+        }
+    }
+
+    private func quitMenu() -> AppMacBridgeStatusItemMenuItem {
+        .init(
+            name: L10n.Menu.StatusItem.quit,
+            keyEquivalentModifier: [.command],
+            keyEquivalent: "q"
+        ) { callbackInfo in
+            callbackInfo.terminate()
+        }
+    }
+
+    private func configureStatusItem() {
+        if Current.settingsStore.locationVisibility.isDockVisible {
+            Current.macBridge.activationPolicy = .regular
+        } else {
+            Current.macBridge.activationPolicy = .accessory
+        }
+
+        var menuItems = [AppMacBridgeStatusItemMenuItem]()
+        menuItems.append(toggleMenu())
+        menuItems.append(.separator())
+        menuItems.append(contentsOf: aboutMenu())
+        menuItems.append(preferencesMenu())
+        menuItems.append(quitMenu())
+
+        Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
+            isVisible: Current.settingsStore.locationVisibility.isStatusItemVisible,
+            image: Asset.statusItemIcon.image.cgImage!,
+            imageSize: Asset.statusItemIcon.image.size,
+            accessibilityLabel: appName,
+            items: menuItems,
+            primaryActionHandler: { callbackInfo in
+                if StatusItemPrimaryAction.openInBrowserIfNeeded() { return }
+                if callbackInfo.isActive {
+                    callbackInfo.deactivate()
+                } else if callbackInfo.hasWindows {
+                    callbackInfo.activate()
+                } else {
+                    Current.sceneManager.activateAnyScene(for: .webView)
+                    callbackInfo.activate()
+                }
+            }
+        ))
+    }
+}
+#endif

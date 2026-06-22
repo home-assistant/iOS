@@ -35,6 +35,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasSettingsScreen": !Current.isCatalyst,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
+            "hasMatterStatusReport": Current.matter.isAvailable,
             "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
             "hasBarCodeScanner": true,
             "canTransferThreadCredentialsToKeychain": Current.matter
@@ -71,4 +72,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case improvDiscoveredDevice = "improv/discovered_device"
     case improvDiscoveredDeviceSetupDone = "improv/device_setup_done"
     case navigate = "navigate"
+    case matterCommissionFinish = "matter/commission/finish"
 }

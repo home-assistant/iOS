@@ -17,7 +17,8 @@ public enum AssistRequests {
                 "sample_rate": audioSampleRate,
             ],
         ]
-        if let preferredPipelineId {
+        // An empty pipeline id means "Preferred": omit the key so the backend uses its preferred pipeline.
+        if let preferredPipelineId, !preferredPipelineId.isEmpty {
             data["pipeline"] = preferredPipelineId
         }
         if let conversationId {
@@ -43,7 +44,8 @@ public enum AssistRequests {
                 "text": inputText,
             ],
         ]
-        if let preferredPipelineId {
+        // An empty pipeline id means "Preferred": omit the key so the backend uses its preferred pipeline.
+        if let preferredPipelineId, !preferredPipelineId.isEmpty {
             data["pipeline"] = preferredPipelineId
         }
         if let conversationId {

@@ -218,7 +218,7 @@ Bitte schließe die Einrichtung ab, indem du den [Einrichtungsanweisungen]({url}
 "component::sensor::entity_component::_::state::on" = "Ein";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Leerlauf";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Geschlossen";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Aktiv (höherer Batterieverbrauch des Geräts, schnellste Aktualisierungen)";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Aktiv (höherer Geräte-Batterieverbrauch, schnellste Aktualisierungen)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Deaktiviert";
 "component::siren::entity_component::_::state::off" = "Aus";
 "component::siren::entity_component::_::state::on" = "Ein";

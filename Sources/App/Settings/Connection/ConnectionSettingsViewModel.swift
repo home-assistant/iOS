@@ -15,6 +15,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var version: String = ""
     @Published var websocketState: HAConnectionState?
     @Published var localPushStatus: String = ""
+    @Published var canRetryLocalPush = false
     @Published var loggedInUser: String = ""
     @Published var locationName: String = ""
     @Published var deviceName: String = ""
@@ -76,6 +77,13 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     func updateAppDatabase() {
         server.refreshAppDatabase(forceUpdate: true)
+    }
+
+    func retryLocalPush() {
+        guard canRetryLocalPush else { return }
+
+        Current.notificationManager.localPushManager.retryLocalPush(for: server, reason: .manual)
+        updateLocalPushStatus()
     }
 
     // MARK: - Setup
@@ -141,6 +149,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         locationPrivacy = info.setting(for: .locationPrivacy)
         sensorPrivacy = info.setting(for: .sensorPrivacy)
         updateURLs()
+        updateCanRetryLocalPush()
     }
 
     private func updateURLs() {
@@ -155,6 +164,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     private func updateLocalPushStatus() {
         let manager = Current.notificationManager.localPushManager
+        updateCanRetryLocalPush()
+
         switch manager.status(for: server) {
         case .disabled:
             localPushStatus = L10n.SettingsDetails.Notifications.LocalPush.Status.disabled
@@ -174,6 +185,13 @@ final class ConnectionSettingsViewModel: ObservableObject {
                 localPushStatus = L10n.SettingsDetails.Notifications.LocalPush.Status.available(formatted)
             }
         }
+    }
+
+    private func updateCanRetryLocalPush() {
+        canRetryLocalPush = LocalPushRetryDiagnostics.canRetry(
+            server: server,
+            currentSSID: Current.connectivity.currentWiFiSSID()
+        )
     }
 
     // MARK: - Actions
@@ -231,7 +249,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
         } else {
-            Current.sceneManager.webViewWindowControllerPromise.done {
+            Current.sceneManager.appCoordinator.done {
                 $0.open(server: self.server)
             }
         }

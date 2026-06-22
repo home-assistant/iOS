@@ -218,7 +218,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::sensor::entity_component::_::state::on" = "On";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Idle";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Closed";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Active";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Active (uses more device battery, fastest updates)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Disabled";
 "component::siren::entity_component::_::state::off" = "Off";
 "component::siren::entity_component::_::state::on" = "On";
