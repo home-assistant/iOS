@@ -9,7 +9,12 @@ private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
 
 public protocol LiveActivityRegistryProtocol: AnyObject {
     @available(iOS 17.2, *)
-    func startOrUpdate(tag: String, title: String, state: HALiveActivityAttributes.ContentState) async throws
+    func startOrUpdate(
+        tag: String,
+        title: String,
+        serverWebhookId: String?,
+        state: HALiveActivityAttributes.ContentState
+    ) async throws
     @available(iOS 17.2, *)
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
     @available(iOS 17.2, *)
@@ -122,6 +127,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     public func startOrUpdate(
         tag: String,
         title: String,
+        serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState
     ) async throws {
         // UPDATE path — activity already running with this tag
@@ -170,7 +176,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return
         }
 
-        let attributes = HALiveActivityAttributes(tag: tag, title: title)
+        let attributes = HALiveActivityAttributes(tag: tag, title: title, serverWebhookId: serverWebhookId)
         let activity: Activity<HALiveActivityAttributes>
 
         do {

@@ -21,6 +21,20 @@ public struct HALiveActivityAttributes: ActivityAttributes {
     /// Display title for the activity. Maps to `title` in the notification payload.
     public let title: String
 
+    /// Webhook id of the Home Assistant server that started this activity, so a tap can open
+    /// the originating server when several are configured. Optional: nil for activities created
+    /// before this shipped, or when the start path doesn't supply it.
+    public let serverWebhookId: String?
+
+    /// Static-attribute coding keys. `serverWebhookId` maps to the snake_case `webhook_id` key
+    /// carried in the APNs push-to-start `attributes`. Adding optional fields is safe; renaming
+    /// or removing breaks in-flight activities.
+    enum CodingKeys: String, CodingKey {
+        case tag
+        case title
+        case serverWebhookId = "webhook_id"
+    }
+
     // MARK: - Dynamic State
 
     /// Codable state that can be updated via push or local update.
@@ -57,6 +71,11 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Hex color string for icon accent. Maps to `notification_icon_color`.
         public var color: String?
 
+        /// Path or URL opened when the activity is tapped, mirroring the `url` key from
+        /// actionable notifications. A relative HA path (e.g. `/lovelace/home`) opens that
+        /// page on the originating server; nil just opens the server.
+        public var url: String?
+
         // MARK: - Computed helpers (not sent over wire)
 
         /// Progress as a fraction in [0, 1] for use in SwiftUI ProgressView.
@@ -78,6 +97,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case countdownEnd = "countdown_end"
             case icon
             case color
+            case url
         }
 
         // MARK: - Init
@@ -91,7 +111,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             chronometer: Bool? = nil,
             countdownEnd: Date? = nil,
             icon: String? = nil,
-            color: String? = nil
+            color: String? = nil,
+            url: String? = nil
         ) {
             self.title = title
             self.message = message
@@ -102,6 +123,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.countdownEnd = countdownEnd
             self.icon = icon
             self.color = color
+            self.url = url
         }
 
         // MARK: - Codable
@@ -125,6 +147,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             }
             self.icon = try container.decodeIfPresent(String.self, forKey: .icon)
             self.color = try container.decodeIfPresent(String.self, forKey: .color)
+            self.url = try container.decodeIfPresent(String.self, forKey: .url)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -140,14 +163,16 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             }
             try container.encodeIfPresent(icon, forKey: .icon)
             try container.encodeIfPresent(color, forKey: .color)
+            try container.encodeIfPresent(url, forKey: .url)
         }
     }
 
     // MARK: - Init
 
-    public init(tag: String, title: String) {
+    public init(tag: String, title: String, serverWebhookId: String? = nil) {
         self.tag = tag
         self.title = title
+        self.serverWebhookId = serverWebhookId
     }
 }
 #endif

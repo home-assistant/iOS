@@ -57,6 +57,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                     try await Current.liveActivityRegistry?.startOrUpdate(
                         tag: tag,
                         title: title,
+                        serverWebhookId: payload["webhook_id"] as? String,
                         state: state
                     )
                     seal.fulfill(())
@@ -112,6 +113,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
         let chronometer = payload["chronometer"] as? Bool
         let icon = payload["notification_icon"] as? String
         let color = payload["notification_icon_color"] as? String
+        let url = payload["url"] as? String
 
         // `when` + `when_relative` → absolute countdown end date.
         // Parsed as Double to preserve sub-second Unix timestamps sent by HA.
@@ -134,7 +136,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             chronometer: chronometer,
             countdownEnd: countdownEnd,
             icon: icon,
-            color: color
+            color: color,
+            url: url
         )
     }
 }
