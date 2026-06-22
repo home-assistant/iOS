@@ -32,6 +32,10 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     @Published var isMuted: Bool = true
     @Published var isWebRTCUnsupported: Bool = false
 
+    /// Invoked on offer rejection or ICE failure. Used by the notification extension to fall back;
+    /// the SwiftUI player leaves it `nil` and observes the published properties instead.
+    var onFailure: (() -> Void)?
+
     init(server: Server, cameraEntityId: String) {
         self.server = server
         self.cameraEntityId = cameraEntityId
@@ -84,6 +88,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                         error.localizedDescription.contains("frontend_stream_types") {
                         self?.isWebRTCUnsupported = true
                     }
+                    self?.onFailure?()
                 }
             } handler: { [weak self] _, data in
                 guard let self else { return }
@@ -192,6 +197,9 @@ extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
     func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
         debugPrint(state)
         Current.Log.info("WebRTC connection state changed to: \(state)")
+        if state == .failed {
+            onFailure?()
+        }
     }
 
     func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {

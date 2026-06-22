@@ -289,7 +289,6 @@ final class WebRTCClient: NSObject {
         kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
         kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueTrue,
     ]
-    private var videoCapturer: RTCVideoCapturer?
     private var remoteVideoTrack: RTCVideoTrack?
     private var remoteAudioTrack: RTCAudioTrack?
     private var remoteDataChannel: RTCDataChannel?
@@ -411,14 +410,10 @@ final class WebRTCClient: NSObject {
     }
 
     private func createVideoTrack() -> RTCVideoTrack {
+        // The local track only exists to establish the transceiver we read the remote track from;
+        // we never send video, so there's no capturer. RTCCameraVideoCapturer is also unavailable in
+        // app extensions, which is why a capturer here broke the device build of the notification ext.
         let videoSource = WebRTCClient.factory.videoSource()
-
-        #if targetEnvironment(simulator)
-        videoCapturer = RTCFileVideoCapturer(delegate: videoSource)
-        #else
-        videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
-        #endif
-
         let videoTrack = WebRTCClient.factory.videoTrack(with: videoSource, trackId: "video0")
         return videoTrack
     }

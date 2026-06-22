@@ -422,11 +422,14 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "extensions.map.payload_missing_homeassistant.message" = "Payload didn't contain a homeassistant dictionary!";
 "extensions.map.value_missing_or_uncastable.latitude.message" = "Latitude wasn't found or couldn't be casted to string!";
 "extensions.map.value_missing_or_uncastable.longitude.message" = "Longitude wasn't found or couldn't be casted to string!";
+"extensions.notification_content.camera.mute" = "Mute";
+"extensions.notification_content.camera.unmute" = "Unmute";
 "extensions.notification_content.error.no_entity_id" = "No entity_id found in payload!";
 "extensions.notification_content.error.request.auth_failed" = "Authentication failed!";
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
+"extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC stream unavailable";
 "gestures.1_finger.title" = "Using one finger";
 "gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";

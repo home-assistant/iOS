@@ -84,6 +84,14 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         setupVideo()
     }
 
+    var hasAudio: Bool { true }
+
+    var isMuted: Bool { playerViewController.player?.isMuted ?? true }
+
+    func setMuted(_ muted: Bool) {
+        playerViewController.player?.isMuted = muted
+    }
+
     private var aspectRatioConstraint: NSLayoutConstraint? {
         willSet {
             aspectRatioConstraint?.isActive = false

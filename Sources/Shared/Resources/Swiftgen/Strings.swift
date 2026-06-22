@@ -429,6 +429,12 @@ public enum L10n {
       /// Notify when run
       public static var title: String { return L10n.tr("Localizable", "app_intents.notify_when_run.title") }
     }
+    public enum OpenAppSettings {
+      /// Opens the companion app directly in its settings
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_app_settings.description") }
+      /// Open app settings
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_app_settings.title") }
+    }
     public enum OpenExperimentalDashboard {
       /// Opens the experimental dashboard
       public static var description: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.description") }
@@ -1570,6 +1576,12 @@ public enum L10n {
       }
     }
     public enum NotificationContent {
+      public enum Camera {
+        /// Mute
+        public static var mute: String { return L10n.tr("Localizable", "extensions.notification_content.camera.mute") }
+        /// Unmute
+        public static var unmute: String { return L10n.tr("Localizable", "extensions.notification_content.camera.unmute") }
+      }
       public enum Error {
         /// No entity_id found in payload!
         public static var noEntityId: String { return L10n.tr("Localizable", "extensions.notification_content.error.no_entity_id") }
@@ -1586,6 +1598,8 @@ public enum L10n {
           public static func other(_ p1: Int) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)
           }
+          /// WebRTC stream unavailable
+          public static var webrtcUnavailable: String { return L10n.tr("Localizable", "extensions.notification_content.error.request.webrtc_unavailable") }
         }
       }
     }
