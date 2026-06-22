@@ -106,12 +106,12 @@ struct GaugeArcView: View {
                 homeAssistantLogo
             }
             if let topLabel {
-                Text(topLabel)
+                Text(verbatim: topLabel)
                     .font(DesignSystem.Font.title3)
                     .foregroundStyle(.secondary)
             }
             if let centerLabel {
-                Text(centerLabel)
+                Text(verbatim: centerLabel)
                     .font(DesignSystem.Font.largeTitle.bold())
                     .foregroundStyle(.primary)
             }
@@ -160,7 +160,7 @@ struct GaugeArcView: View {
     }
 
     private func endLabel(_ text: String) -> some View {
-        Text(text)
+        Text(verbatim: text)
             .font(DesignSystem.Font.body)
             .foregroundStyle(.secondary)
     }
