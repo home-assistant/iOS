@@ -6186,6 +6186,10 @@ public enum L10n {
     public static func versionFormat(_ p1: Any) -> String {
       return L10n.tr("Localizable", "whats_new.version_format", String(describing: p1))
     }
+    public enum Item {
+      /// Opens a link
+      public static var opensLinkHint: String { return L10n.tr("Localizable", "whats_new.item.opens_link_hint") }
+    }
   }
 
   public enum Widgets {

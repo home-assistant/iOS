@@ -1825,6 +1825,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "webrtc_player.known_issues.title" = "Known Issues";
+"whats_new.item.opens_link_hint" = "Opens a link";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.assist" = "Assist";

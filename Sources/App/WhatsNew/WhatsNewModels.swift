@@ -173,6 +173,7 @@ enum WhatsNewItemId: Hashable {
     case whatsNewValidationIntro
     case whatsNewValidationPlatforms
     case testFlightIncludeEmail
+    case dropSupportForOldOSPlaceholder2
 }
 
 struct WhatsNewItem: Identifiable, Equatable {
@@ -180,6 +181,23 @@ struct WhatsNewItem: Identifiable, Equatable {
     let title: String
     let body: String
     let icon: WhatsNewIcon
+    /// Optional link opened in an in-app Safari view when the user taps the item. When `nil`, the item is
+    /// not interactive.
+    let link: URL?
+
+    init(
+        id: WhatsNewItemId,
+        title: String,
+        body: String,
+        icon: WhatsNewIcon,
+        link: URL? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.body = body
+        self.icon = icon
+        self.link = link
+    }
 }
 
 struct WhatsNewRelease: Identifiable, Equatable {
@@ -188,6 +206,8 @@ struct WhatsNewRelease: Identifiable, Equatable {
     /// Optional operating-system constraints. When `nil`, the release shows on every OS version of its
     /// target platforms.
     let osRequirements: WhatsNewOSRequirements?
+    /// Optional custom screen title. When `nil`, the view uses the default localized "What's New" title.
+    let title: String?
     let items: [WhatsNewItem]
 
     var id: String {
@@ -210,6 +230,7 @@ struct WhatsNewRelease: Identifiable, Equatable {
         version: WhatsNewAppVersion,
         targetPlatforms: [WhatsNewTargetPlatform],
         osRequirements: WhatsNewOSRequirements? = nil,
+        title: String? = nil,
         items: [WhatsNewItem]
     ) {
         precondition(!targetPlatforms.isEmpty)
@@ -217,6 +238,7 @@ struct WhatsNewRelease: Identifiable, Equatable {
         self.version = version
         self.targetPlatforms = targetPlatforms
         self.osRequirements = osRequirements
+        self.title = title
         self.items = items
     }
 
