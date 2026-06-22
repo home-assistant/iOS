@@ -1,39 +1,41 @@
 import Shared
 
 final class TestFlightCommunicationEngine {
-    private let messages: [TestFlightMessage]
+    private let message: TestFlightMessage?
     private let isTestFlight: () -> Bool
     private let currentPlatform: () -> WhatsNewTargetPlatform
     private let hasSeenMessage: (String) -> Bool
 
     init(
-        messages: [TestFlightMessage] = TestFlightCommunicationCatalog.messages,
+        message: TestFlightMessage? = TestFlightCommunicationCatalog.message,
         isTestFlight: @escaping () -> Bool = { Current.isTestFlight },
         currentPlatform: @escaping () -> WhatsNewTargetPlatform = { .current },
         hasSeenMessage: @escaping (String) -> Bool = {
             Current.settingsStore.hasSeenTestFlightMessage(messageID: $0)
         }
     ) {
-        self.messages = messages
+        self.message = message
         self.isTestFlight = isTestFlight
         self.currentPlatform = currentPlatform
         self.hasSeenMessage = hasSeenMessage
     }
 
-    /// Returns the first unseen message targeting the current platform, or nil if the user is not on TestFlight.
+    /// Returns the message when it targets the current platform and is unseen, or nil if the user is not on
+    /// TestFlight.
     func messageToShow() -> TestFlightMessage? {
-        guard isTestFlight() else { return nil }
+        guard isTestFlight(), let message else { return nil }
         let platform = currentPlatform()
-        return messages.first(where: {
-            $0.targetPlatforms.contains(platform) && !hasSeenMessage($0.id.rawValue)
-        })
+        guard message.targetPlatforms.contains(platform), !hasSeenMessage(message.id.rawValue) else {
+            return nil
+        }
+        return message
     }
 
-    /// Returns the latest message for the current platform regardless of seen state, or nil if not on TestFlight.
+    /// Returns the message for the current platform regardless of seen state, or nil if not on TestFlight.
     func latestMessage() -> TestFlightMessage? {
-        guard isTestFlight() else { return nil }
+        guard isTestFlight(), let message else { return nil }
         let platform = currentPlatform()
-        return messages.last(where: { $0.targetPlatforms.contains(platform) })
+        return message.targetPlatforms.contains(platform) ? message : nil
     }
 
     func markSeen(_ message: TestFlightMessage) {
