@@ -5,7 +5,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case servers
     case general
     case gestures
-    case kiosk
     case location
     case notifications
     case liveActivities
@@ -26,7 +25,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .servers: return L10n.Settings.ConnectionSection.servers
         case .general: return L10n.SettingsDetails.General.title
         case .gestures: return L10n.Gestures.Screen.title
-        case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
@@ -55,8 +53,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: Self.iconSize)
             case .gestures:
                 MaterialDesignIconsImage(icon: .gestureIcon, size: Self.iconSize)
-            case .kiosk:
-                MaterialDesignIconsImage(icon: .tabletIcon, size: Self.iconSize)
             case .location:
                 MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: Self.iconSize)
             case .notifications:
@@ -107,8 +103,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
             GeneralSettingsView()
         case .gestures:
             GesturesSetupView()
-        case .kiosk:
-            KioskSettingsView()
         case .location:
             LocationSettingsView()
         case .notifications:
@@ -158,7 +152,6 @@ enum SettingsItem: String, Hashable, CaseIterable {
             let hiddenItems: [SettingsItem] = [
                 .servers,
                 .gestures,
-                .kiosk,
                 .watch,
                 .carPlay,
                 .appIconShortcuts,
@@ -178,7 +171,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var generalItems: [SettingsItem] {
-        var items: [SettingsItem] = [.general, .gestures, .location, .notifications, .kiosk]
+        var items: [SettingsItem] = [.general, .gestures, .location, .notifications]
         if canShowLiveActivities {
             items.append(.liveActivities)
         }

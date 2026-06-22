@@ -20,7 +20,6 @@ public enum GRDBDatabaseTable: String {
     case appArea
     case homeViewConfiguration
     case assistConfiguration
-    case kioskSettings
     case allowedTags
 
     // Dropped since 2025.2, now saved as json file
@@ -168,12 +167,6 @@ public enum DatabaseTables {
         case muteTTS
         case enableOnDeviceTTS
         case onDeviceTTSVoiceIdentifier
-    }
-
-    // Kiosk mode settings (stored as JSON blob)
-    public enum KioskSettings: String, CaseIterable {
-        case id
-        case settingsJSON
     }
 
     public enum AllowedTag: String, CaseIterable {
