@@ -72,8 +72,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         public var color: String?
 
         /// Path or URL opened when the activity is tapped, mirroring the `url` key from
-        /// actionable notifications. A relative HA path (e.g. `/lovelace/home`) opens that
-        /// page on the originating server; nil just opens the server.
+        /// actionable notifications. Resolved like a notification tap: a relative HA path
+        /// (e.g. `/lovelace/home`) opens in the frontend, an external URL opens in the
+        /// browser. Nil just opens the originating server.
         public var url: String?
 
         // MARK: - Computed helpers (not sent over wire)

@@ -109,7 +109,12 @@ class IncomingURLHandler {
                     }
                 }()
 
-                guard let rawURL = components.url?.absoluteString else {
+                // An explicit `url` query param (e.g. from a Live Activity tap) carries the raw
+                // destination so it resolves exactly like a notification's url: relative HA paths
+                // open in the frontend, external URLs open in the in-app browser.
+                let explicitDestination = queryParameters?.first(where: { $0.name == "url" })?.value
+
+                guard let rawURL = explicitDestination ?? components.url?.absoluteString else {
                     return false
                 }
 

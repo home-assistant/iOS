@@ -24,10 +24,11 @@ struct HALiveActivityConfiguration: Widget {
         }
     }
 
-    /// Deep link opened when the activity is tapped. Opens the server that started the activity
-    /// and, when the state carries a `url` (mirroring actionable notifications), navigates to that
-    /// HA path. Returns `nil` — no tap target, so the system just launches the app — when there is
-    /// no server id or it no longer maps to a known server.
+    /// Deep link opened when the activity is tapped. Opens the server that started the activity;
+    /// when the state carries a `url` (mirroring actionable notifications) it resolves exactly like
+    /// a notification tap — a relative HA path opens in the frontend, an external URL in the browser.
+    /// Returns `nil` — no tap target, so the system just launches the app — when there is no server
+    /// id or it no longer maps to a known server.
     private static func tapURL(
         attributes: HALiveActivityAttributes,
         state: HALiveActivityAttributes.ContentState
@@ -37,13 +38,15 @@ struct HALiveActivityConfiguration: Widget {
             let server = Current.servers.server(forWebhookID: webhookId) else { return nil }
         let serverId = server.identifier.rawValue
 
-        if let path = state.url, !path.isEmpty {
-            let normalized = path.hasPrefix("/") ? String(path.dropFirst()) : path
-            return AppConstants.navigateDeeplinkURL(
-                path: normalized,
-                serverId: serverId,
-                avoidUnnecessaryReload: true
-            )?.withWidgetAuthenticity()
+        // Carry the raw `url` so the app resolves it exactly like a notification tap: a relative
+        // HA path opens in the frontend, an external URL opens in the in-app browser.
+        if let raw = state.url, !raw.isEmpty {
+            var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)navigate")
+            components?.queryItems = [
+                URLQueryItem(name: "server", value: serverId),
+                URLQueryItem(name: "url", value: raw),
+            ]
+            return components?.url?.withWidgetAuthenticity()
         }
         return AppConstants.openPageDeeplinkURL(path: "", serverId: serverId)
     }
