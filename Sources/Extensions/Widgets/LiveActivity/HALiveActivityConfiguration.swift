@@ -38,13 +38,14 @@ struct HALiveActivityConfiguration: Widget {
             let server = Current.servers.server(forWebhookID: webhookId) else { return nil }
         let serverId = server.identifier.rawValue
 
-        // Carry the raw `url` so the app resolves it exactly like a notification tap: a relative
-        // HA path opens in the frontend, an external URL opens in the in-app browser.
-        if let raw = state.url, !raw.isEmpty {
+        // The destination is normalized centrally (AppConstants.normalizedNavigationDestination,
+        // applied by the app's URL handler), so pass `url` through as-is: a relative HA path opens
+        // in the frontend, an external URL opens in the browser.
+        if let rawInput = state.url, !rawInput.isEmpty {
             var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)navigate")
             components?.queryItems = [
                 URLQueryItem(name: "server", value: serverId),
-                URLQueryItem(name: "url", value: raw),
+                URLQueryItem(name: "url", value: rawInput),
             ]
             return components?.url?.withWidgetAuthenticity()
         }
