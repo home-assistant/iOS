@@ -92,6 +92,8 @@
 "app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
 "app_intents.notify_when_run.title" = "Notify when run";
+"app_intents.open_app_settings.description" = "Opens the companion app directly in its settings";
+"app_intents.open_app_settings.title" = "Open app settings";
 "app_intents.open_experimental_dashboard.description" = "Opens the experimental dashboard";
 "app_intents.open_experimental_dashboard.title" = "Open Experimental Dashboard";
 "app_intents.open_state_icon.title" = "Icon for open state";
