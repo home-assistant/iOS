@@ -35,7 +35,8 @@ import Shared
 ///                 icon: .sfSymbol(.iphoneSlash),
 ///                 title: "Support changes",
 ///                 body: "A longer **Markdown** explanation of the change.",
-///                 action: .init(title: "Read the full announcement", url: URL(string: "https://www.home-assistant.io/blog/")!)
+///                 action: .init(title: "Read the full announcement", url: URL(string:
+/// "https://www.home-assistant.io/blog/")!)
 ///             ))
 ///         ),
 ///     ]
@@ -63,8 +64,14 @@ enum WhatsNewCatalog {
         version: WhatsNewAppVersion(major: 2026, minor: 6, patch: 1),
         targetPlatforms: [.iPhone, .iPad, .mac],
         osRequirements: WhatsNewOSRequirements(
-            iOS: WhatsNewOSVersionRange(minimum: WhatsNewOSVersion(major: 15), maximum: .init(major: 15, minor: 9, patch: 9)),
-            macOS: WhatsNewOSVersionRange(minimum: WhatsNewOSVersion(major: 10), maximum: .init(major: 11, minor: 9, patch: 9))
+            iOS: WhatsNewOSVersionRange(
+                minimum: WhatsNewOSVersion(major: 15),
+                maximum: .init(major: 15, minor: 9, patch: 9)
+            ),
+            macOS: WhatsNewOSVersionRange(
+                minimum: WhatsNewOSVersion(major: 10),
+                maximum: .init(major: 11, minor: 9, patch: 9)
+            )
         ),
         title: L10n.WhatsNew.AppSupportUpdate.title,
         items: [
