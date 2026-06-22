@@ -6186,6 +6186,14 @@ public enum L10n {
     public static func versionFormat(_ p1: Any) -> String {
       return L10n.tr("Localizable", "whats_new.version_format", String(describing: p1))
     }
+    public enum AppSupportUpdate {
+      /// This is the last update for iOS 15, watchOS 8 and macOS 11, tap to read more.
+      public static var itemBody: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_body") }
+      /// iOS 15, watchOS 8 and macOS 11 support will end
+      public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_title") }
+      /// App support update
+      public static var title: String { return L10n.tr("Localizable", "whats_new.app_support_update.title") }
+    }
     public enum Item {
       /// Opens an article
       public static var opensArticleHint: String { return L10n.tr("Localizable", "whats_new.item.opens_article_hint") }
