@@ -80,7 +80,7 @@ enum WhatsNewCatalog {
                 title: L10n.WhatsNew.AppSupportUpdate.itemTitle,
                 body: L10n.WhatsNew.AppSupportUpdate.itemBody,
                 icon: .sfSymbol(.iphoneSlash),
-                destination: .link(AppConstants.WebURLs.homeAssistant) // TODO: Update with blog post link
+                destination: .link(AppConstants.WebURLs.appleDropSupportiOS15)
             ),
         ]
     )
