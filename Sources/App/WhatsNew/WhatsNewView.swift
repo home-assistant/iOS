@@ -9,6 +9,7 @@ struct WhatsNewView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var didRecordView = false
+    @State private var presentedLink: IdentifiableURL?
 
     var body: some View {
         NavigationView {
@@ -34,13 +35,17 @@ struct WhatsNewView: View {
             .onAppear {
                 recordViewIfNeeded()
             }
+            .sheet(item: $presentedLink) { link in
+                SafariWebView(url: link.url)
+                    .ignoresSafeArea()
+            }
         }
         .navigationViewStyle(.stack)
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            Text(L10n.WhatsNew.title)
+            Text(release.title ?? L10n.WhatsNew.title)
                 .font(.title.bold())
                 .foregroundStyle(.primary)
                 .multilineTextAlignment(.center)
@@ -52,7 +57,9 @@ struct WhatsNewView: View {
     private var items: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.four) {
             ForEach(Array(release.items.enumerated()), id: \.element.id) { offset, item in
-                WhatsNewItemRow(item: item, iconColor: WhatsNewColors.iconColor(for: offset))
+                WhatsNewItemRow(item: item, iconColor: WhatsNewColors.iconColor(for: offset)) { url in
+                    presentedLink = IdentifiableURL(url: url)
+                }
             }
         }
     }
@@ -77,11 +84,26 @@ struct WhatsNewView: View {
 private struct WhatsNewItemRow: View {
     let item: WhatsNewItem
     let iconColor: UIColor
+    let onSelectLink: (URL) -> Void
 
     var body: some View {
-        HStack(alignment: .center, spacing: DesignSystem.Spaces.three) {
+        if let link = item.link {
+            Button {
+                onSelectLink(link)
+            } label: {
+                content(showsLinkAffordance: true)
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint(L10n.WhatsNew.Item.opensLinkHint)
+        } else {
+            content(showsLinkAffordance: false)
+        }
+    }
+
+    private func content(showsLinkAffordance: Bool) -> some View {
+        HStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
             WhatsNewIconView(icon: item.icon, color: iconColor)
-                .frame(width: 48, height: 48)
+                .frame(width: 46, height: 46)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
@@ -96,9 +118,22 @@ private struct WhatsNewItemRow: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+
+            if showsLinkAffordance {
+                Image(systemSymbol: .chevronForward)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
+}
+
+private struct IdentifiableURL: Identifiable {
+    let url: URL
+    var id: String { url.absoluteString }
 }
 
 private struct WhatsNewIconView: View {
