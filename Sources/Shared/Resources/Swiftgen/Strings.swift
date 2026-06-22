@@ -6187,6 +6187,8 @@ public enum L10n {
       return L10n.tr("Localizable", "whats_new.version_format", String(describing: p1))
     }
     public enum Item {
+      /// Opens an article
+      public static var opensArticleHint: String { return L10n.tr("Localizable", "whats_new.item.opens_article_hint") }
       /// Opens a link
       public static var opensLinkHint: String { return L10n.tr("Localizable", "whats_new.item.opens_link_hint") }
     }
