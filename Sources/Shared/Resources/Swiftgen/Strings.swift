@@ -1576,6 +1576,12 @@ public enum L10n {
       }
     }
     public enum NotificationContent {
+      public enum Camera {
+        /// Mute
+        public static var mute: String { return L10n.tr("Localizable", "extensions.notification_content.camera.mute") }
+        /// Unmute
+        public static var unmute: String { return L10n.tr("Localizable", "extensions.notification_content.camera.unmute") }
+      }
       public enum Error {
         /// No entity_id found in payload!
         public static var noEntityId: String { return L10n.tr("Localizable", "extensions.notification_content.error.no_entity_id") }
@@ -1592,6 +1598,8 @@ public enum L10n {
           public static func other(_ p1: Int) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)
           }
+          /// WebRTC stream unavailable
+          public static var webrtcUnavailable: String { return L10n.tr("Localizable", "extensions.notification_content.error.request.webrtc_unavailable") }
         }
       }
     }
