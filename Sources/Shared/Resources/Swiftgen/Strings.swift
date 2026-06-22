@@ -429,6 +429,12 @@ public enum L10n {
       /// Notify when run
       public static var title: String { return L10n.tr("Localizable", "app_intents.notify_when_run.title") }
     }
+    public enum OpenAppSettings {
+      /// Opens the companion app directly in its settings
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_app_settings.description") }
+      /// Open app settings
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_app_settings.title") }
+    }
     public enum OpenExperimentalDashboard {
       /// Opens the experimental dashboard
       public static var description: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.description") }
