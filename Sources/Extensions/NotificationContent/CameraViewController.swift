@@ -206,6 +206,10 @@ class CameraViewController: UIViewController, NotificationCategory {
 
     private func updateMuteIcon() {
         muteButton.setImage(UIImage(systemSymbol: isMuted ? .speakerSlashFill : .speakerWave3), for: .normal)
+        // Label reflects the action the button performs, so VoiceOver conveys both purpose and state.
+        muteButton.accessibilityLabel = isMuted
+            ? L10n.Extensions.NotificationContent.Camera.unmute
+            : L10n.Extensions.NotificationContent.Camera.mute
     }
 
     private func setLoading(_ loading: Bool) {

@@ -81,11 +81,12 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
     }
 
     func play() {
-        if playerViewController == nil {
-            attachPlayer()
-            startTimeout()
-        }
-        didUpdateState(.playing)
+        // Only (re)start if we're not already connected/connecting. Don't report `.playing` here —
+        // the stream is loading until the first frame arrives (handleVideoStarted reports playing).
+        guard playerViewController == nil else { return }
+        didUpdateState(.paused)
+        attachPlayer()
+        startTimeout()
     }
 
     func pause() {
@@ -161,6 +162,9 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         timeoutWorkItem = nil
         guard !hasResolved else { return }
         hasResolved = true
+        // Tear down the peer connection now rather than waiting for deinit, so we don't keep a
+        // failed/timed-out connection alive while the cascade falls back to HLS/MJPEG.
+        viewModel.webRTCClient?.closeConnection()
         seal.reject(WebRTCError.unavailable)
     }
 }
