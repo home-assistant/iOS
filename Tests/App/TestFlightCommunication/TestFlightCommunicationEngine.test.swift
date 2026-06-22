@@ -6,39 +6,48 @@ import Testing
 struct TestFlightCommunicationEngineTests {
     private let seenTestFlightMessageIDsKey = "seenTestFlightMessageIDs"
 
-    @Test func messageToShowReturnsFirstUnseenMessageForCurrentPlatform() {
-        let firstMessage = Self.message(id: .init("first"), targetPlatforms: [.iPhone, .iPad])
-        let secondMessage = Self.message(id: .init("second"), targetPlatforms: [.iPhone])
+    @Test func messageToShowReturnsMessageForCurrentPlatform() {
+        let message = Self.message(id: .init("msg"), targetPlatforms: [.iPhone, .iPad])
 
         let engine = TestFlightCommunicationEngine(
-            messages: [firstMessage, secondMessage],
+            message: message,
             isTestFlight: { true },
             currentPlatform: { .iPhone },
             hasSeenMessage: { _ in false }
         )
 
-        #expect(engine.messageToShow() == firstMessage)
+        #expect(engine.messageToShow() == message)
     }
 
-    @Test func messageToShowSkipsSeenMessagesAndReturnsNextUnseen() {
-        let seenMessage = Self.message(id: .init("seen"), targetPlatforms: [.iPhone])
-        let unseenMessage = Self.message(id: .init("unseen"), targetPlatforms: [.iPhone])
+    @Test func messageToShowReturnsNilWhenNoMessageIsConfigured() {
+        let engine = TestFlightCommunicationEngine(
+            message: nil,
+            isTestFlight: { true },
+            currentPlatform: { .iPhone },
+            hasSeenMessage: { _ in false }
+        )
+
+        #expect(engine.messageToShow() == nil)
+    }
+
+    @Test func messageToShowReturnsNilWhenMessageWasSeen() {
+        let message = Self.message(id: .init("seen"), targetPlatforms: [.iPhone])
 
         let engine = TestFlightCommunicationEngine(
-            messages: [seenMessage, unseenMessage],
+            message: message,
             isTestFlight: { true },
             currentPlatform: { .iPhone },
             hasSeenMessage: { $0 == "seen" }
         )
 
-        #expect(engine.messageToShow() == unseenMessage)
+        #expect(engine.messageToShow() == nil)
     }
 
     @Test func messageToShowReturnsNilWhenNotOnTestFlight() {
         let message = Self.message(id: .init("msg"), targetPlatforms: [.iPhone])
 
         let engine = TestFlightCommunicationEngine(
-            messages: [message],
+            message: message,
             isTestFlight: { false },
             currentPlatform: { .iPhone },
             hasSeenMessage: { _ in false }
@@ -51,7 +60,7 @@ struct TestFlightCommunicationEngineTests {
         let message = Self.message(id: .init("mac-only"), targetPlatforms: [.mac])
 
         let engine = TestFlightCommunicationEngine(
-            messages: [message],
+            message: message,
             isTestFlight: { true },
             currentPlatform: { .iPhone },
             hasSeenMessage: { _ in false }
@@ -60,39 +69,37 @@ struct TestFlightCommunicationEngineTests {
         #expect(engine.messageToShow() == nil)
     }
 
-    @Test func messageToShowReturnsNilWhenAllMessagesAreSeen() {
-        let message = Self.message(id: .init("seen"), targetPlatforms: [.iPhone])
+    @Test func latestMessageReturnsMessageForCurrentPlatformIgnoringSeenState() {
+        let message = Self.message(id: .init("latest"), targetPlatforms: [.iPhone, .iPad])
 
         let engine = TestFlightCommunicationEngine(
-            messages: [message],
-            isTestFlight: { true },
-            currentPlatform: { .iPhone },
-            hasSeenMessage: { _ in true }
-        )
-
-        #expect(engine.messageToShow() == nil)
-    }
-
-    @Test func latestMessageReturnsLastMessageForCurrentPlatform() {
-        let firstMessage = Self.message(id: .init("first"), targetPlatforms: [.iPhone])
-        let latestMessage = Self.message(id: .init("latest"), targetPlatforms: [.iPhone, .iPad])
-        let macOnlyMessage = Self.message(id: .init("mac"), targetPlatforms: [.mac])
-
-        let engine = TestFlightCommunicationEngine(
-            messages: [firstMessage, latestMessage, macOnlyMessage],
+            message: message,
             isTestFlight: { true },
             currentPlatform: { .iPad },
             hasSeenMessage: { _ in true }
         )
 
-        #expect(engine.latestMessage() == latestMessage)
+        #expect(engine.latestMessage() == message)
+    }
+
+    @Test func latestMessageReturnsNilWhenPlatformDoesNotMatch() {
+        let message = Self.message(id: .init("mac-only"), targetPlatforms: [.mac])
+
+        let engine = TestFlightCommunicationEngine(
+            message: message,
+            isTestFlight: { true },
+            currentPlatform: { .iPad },
+            hasSeenMessage: { _ in true }
+        )
+
+        #expect(engine.latestMessage() == nil)
     }
 
     @Test func latestMessageReturnsNilWhenNotOnTestFlight() {
         let message = Self.message(id: .init("msg"), targetPlatforms: [.iPhone])
 
         let engine = TestFlightCommunicationEngine(
-            messages: [message],
+            message: message,
             isTestFlight: { false },
             currentPlatform: { .iPhone },
             hasSeenMessage: { _ in false }
