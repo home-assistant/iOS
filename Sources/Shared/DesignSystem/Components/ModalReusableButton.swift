@@ -58,10 +58,9 @@ public struct ModalReusableButton: View {
         }
     }
 }
-#endif
-
 #Preview {
     ModalReusableButton(icon: .sfSymbol(.heart), action: {
         /* no-op */
     })
 }
+#endif
