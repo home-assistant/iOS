@@ -495,7 +495,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return subtitle(for: magicItem)
         }
 
-        return entityContextSubtitle(for: magicItem, stateSubtitle: nil, entityToAreaMap: entityToAreaMap)
+        return entityContextSubtitle(
+            for: magicItem,
+            stateSubtitle: nil,
+            entityToAreaMap: entityToAreaMap
+        )
     }
 
     private func entityContextSubtitle(
@@ -505,13 +509,32 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     ) -> String? {
         let serverName = subtitle(for: magicItem)
         let areaName = area(for: magicItem, entityToAreaMap: entityToAreaMap)
+        let stateSubtitle = stateSubtitleWithoutArea(stateSubtitle, areaName: areaName)
+        let serverSubtitle = shouldShowServerInEntitySubtitle ? serverName : nil
 
-        let subtitle = [stateSubtitle, serverName, areaName]
+        let subtitle = [stateSubtitle, serverSubtitle, areaName]
             .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
             .joined(separator: " • ")
 
         return subtitle.isEmpty ? nil : subtitle
+    }
+
+    private var shouldShowServerInEntitySubtitle: Bool {
+        Set(currentItems.filter { $0.type == .entity }.map(\.serverId)).count > 1
+    }
+
+    private func stateSubtitleWithoutArea(_ stateSubtitle: String?, areaName: String?) -> String? {
+        guard let stateSubtitle = stateSubtitle?.trimmingCharacters(in: .whitespacesAndNewlines),
+              let areaName = areaName?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !areaName.isEmpty else {
+            return stateSubtitle
+        }
+
+        let areaSuffix = " • \(areaName)"
+        guard stateSubtitle.hasSuffix(areaSuffix) else { return stateSubtitle }
+
+        return String(stateSubtitle.dropLast(areaSuffix.count))
     }
 
     private func isAssistItem(_ magicItem: MagicItem) -> Bool {
