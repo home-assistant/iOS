@@ -10,6 +10,7 @@ struct KioskSettingsTests {
         let settings = KioskSettings(
             enabled: true,
             requireAuthentication: true,
+            acceptRemoteCommands: false,
             serverId: "server-1",
             dashboard: "lovelace/home",
             keepScreenOn: true,
@@ -56,6 +57,7 @@ struct KioskSettingsTests {
 
         #expect(loaded?.enabled == false)
         #expect(loaded?.requireAuthentication == false)
+        #expect(loaded?.acceptRemoteCommands == true)
         #expect(loaded?.autoReload == .never)
         #expect(loaded?.settingsEntryPosition == .bottomTrailing)
         #expect(loaded?.screensaver == KioskScreensaverSettings())
@@ -71,7 +73,11 @@ struct KioskSettingsTests {
         }
         for timeout in KioskScreensaverTimeout.allCases {
             #expect(!timeout.title.isEmpty)
-            #expect(timeout.timeInterval > 0)
+            if timeout == .pushNotificationControlled {
+                #expect(timeout.timeInterval == nil)
+            } else {
+                #expect((timeout.timeInterval ?? 0) > 0)
+            }
         }
         for interval in KioskAutoReloadInterval.allCases {
             #expect(!interval.title.isEmpty)

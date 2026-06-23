@@ -32,6 +32,7 @@ public final class ToastManager {
     private var overlayWindow: PassThroughWindow?
     private var overlayController: ToastHostingController?
     private var autoDismissTask: Task<Void, Never>?
+    private var statusBarHiddenBeforeToast = false
     public init() {}
 
     /// Shows a toast with the specified parameters.
@@ -76,6 +77,10 @@ public final class ToastManager {
         autoDismissTask?.cancel()
         autoDismissTask = nil
 
+        if overlayWindow?.isPresented != true {
+            statusBarHiddenBeforeToast = currentStatusBarHidden()
+        }
+
         // Create or get the overlay window
         ensureOverlayWindow()
 
@@ -110,10 +115,21 @@ public final class ToastManager {
         autoDismissTask = nil
 
         overlayWindow?.isPresented = false
-        overlayController?.isStatusBarHidden = false
+        overlayController?.isStatusBarHidden = statusBarHiddenBeforeToast
     }
 
     // MARK: - Private Methods
+
+    private func currentStatusBarHidden() -> Bool {
+        #if os(iOS)
+        return Current.application?().connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }?
+            .statusBarManager?.isStatusBarHidden ?? false
+        #else
+        return false
+        #endif
+    }
 
     private func ensureOverlayWindow() {
         #if os(iOS)

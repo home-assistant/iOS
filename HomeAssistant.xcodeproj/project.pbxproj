@@ -91,6 +91,7 @@
 		11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6A267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift */; };
 		11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */; };
 		11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */; };
+		B71A57000000000000000002 /* KioskPushCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71A57000000000000000001 /* KioskPushCommand.swift */; };
 		11195F72267F01E4003DF674 /* HACancellable+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6C267EFC15003DF674 /* HACancellable+App.swift */; };
 		11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6C267EFC15003DF674 /* HACancellable+App.swift */; };
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
@@ -1094,6 +1095,7 @@
 		42DFE8742EFAE33D0058DADB /* AssistWavesAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */; };
 		42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42E000042FEE100100BEEF01 /* LocalPushRetryDiagnosticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E000032FEE100100BEEF01 /* LocalPushRetryDiagnosticsTests.swift */; };
+		B71A57000000000000000004 /* KioskPushCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71A57000000000000000003 /* KioskPushCommandTests.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
@@ -1965,6 +1967,7 @@
 		11195F6C267EFC15003DF674 /* HACancellable+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HACancellable+App.swift"; sourceTree = "<group>"; };
 		11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceDirect.swift; sourceTree = "<group>"; };
 		11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceUnsupported.swift; sourceTree = "<group>"; };
+		B71A57000000000000000001 /* KioskPushCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskPushCommand.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		1120C57E274638330046C38B /* PerServerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerServerContainer.swift; sourceTree = "<group>"; };
 		1120C5832749C6350046C38B /* ServerProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerProviding.swift; sourceTree = "<group>"; };
@@ -2985,6 +2988,7 @@
 		42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsView.swift; sourceTree = "<group>"; };
 		42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistWavesAnimation.swift; sourceTree = "<group>"; };
 		42E000032FEE100100BEEF01 /* LocalPushRetryDiagnosticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushRetryDiagnosticsTests.swift; sourceTree = "<group>"; };
+		B71A57000000000000000003 /* KioskPushCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskPushCommandTests.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E28A732FEACDEA00B65504 /* CarPlayEditItemFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEditItemFlow.swift; sourceTree = "<group>"; };
 		42E28A702FEABEBD00B65504 /* ModalReusableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalReusableButton.swift; sourceTree = "<group>"; };
@@ -4030,6 +4034,7 @@
 				11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */,
 				11B92A7F266F23CD00786588 /* NotificationManagerLocalPushInterfaceExtension.swift */,
 				11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */,
+				B71A57000000000000000001 /* KioskPushCommand.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -6260,6 +6265,7 @@
 			isa = PBXGroup;
 			children = (
 				42E000032FEE100100BEEF01 /* LocalPushRetryDiagnosticsTests.swift */,
+				B71A57000000000000000003 /* KioskPushCommandTests.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -9471,6 +9477,7 @@
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				4263A6662EFB291D0089C338 /* LightIntent.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
+				B71A57000000000000000002 /* KioskPushCommand.swift in Sources */,
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
 				4285C5532D35658000DADE45 /* TileCard.swift in Sources */,
@@ -9833,6 +9840,7 @@
 				5002BDAF2FEE000100BEEF01 /* WhatsNewEngine.test.swift in Sources */,
 				00345F0517E14EC186DFB25D /* TestFlightCommunicationEngine.test.swift in Sources */,
 				42E000042FEE100100BEEF01 /* LocalPushRetryDiagnosticsTests.swift in Sources */,
+				B71A57000000000000000004 /* KioskPushCommandTests.swift in Sources */,
 				4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */,
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
 				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,

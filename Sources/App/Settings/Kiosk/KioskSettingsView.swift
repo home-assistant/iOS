@@ -24,6 +24,14 @@ struct KioskSettingsView: View {
             }
 
             Section {
+                Toggle(isOn: $viewModel.settings.acceptRemoteCommands) {
+                    KioskRow.label(L10n.Kiosk.AcceptRemoteCommands.title, systemSymbol: .antennaRadiowavesLeftAndRight)
+                }
+            } footer: {
+                Text(L10n.Kiosk.AcceptRemoteCommands.footer)
+            }
+
+            Section {
                 KioskRow.picker(
                     L10n.Kiosk.Display.server,
                     icon: .serverIcon,

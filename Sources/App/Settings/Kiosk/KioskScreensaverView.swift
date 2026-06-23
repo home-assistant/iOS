@@ -90,6 +90,16 @@ final class KioskScreensaverController: ObservableObject {
         NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)
             .sink { [weak self] _ in self?.idleTimer?.invalidate() }
             .store(in: &cancellables)
+
+        Current.kiosk.screensaverCommandPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] command in
+                switch command {
+                case .show: self?.show()
+                case .hide: self?.wake()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     deinit {
@@ -99,6 +109,13 @@ final class KioskScreensaverController: ObservableObject {
     func recordActivity() {
         guard !isActive else { return }
         restartIdleTimer()
+    }
+
+    func show() {
+        guard isEnabled else { return }
+        idleTimer?.invalidate()
+        idleTimer = nil
+        isActive = true
     }
 
     func wake() {
@@ -118,9 +135,9 @@ final class KioskScreensaverController: ObservableObject {
     private func restartIdleTimer() {
         idleTimer?.invalidate()
         idleTimer = nil
-        guard isEnabled, !isActive else { return }
+        guard isEnabled, !isActive, let interval = screensaver.timeToStart.timeInterval else { return }
         idleTimer = Timer.scheduledTimer(
-            withTimeInterval: screensaver.timeToStart.timeInterval,
+            withTimeInterval: interval,
             repeats: false
         ) { [weak self] _ in
             guard let self, isEnabled else { return }

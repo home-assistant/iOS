@@ -507,6 +507,11 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return
         }
 
+        if let options = kioskPushPresentationOptions(for: notification) {
+            completionHandler(options)
+            return
+        }
+
         var methods: UNNotificationPresentationOptions = [.badge, .sound, .list, .banner]
         if let presentationOptions = notification.request.content.userInfo["presentation_options"] as? [String] {
             methods = []
@@ -524,6 +529,48 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             }
         }
         return completionHandler(methods)
+    }
+
+    private func kioskPushPresentationOptions(
+        for notification: UNNotification
+    ) -> UNNotificationPresentationOptions? {
+        let message = notification.request.content.body
+        guard KioskPushCommand.isKioskCommand(message: message) else {
+            return nil
+        }
+
+        guard Current.kiosk.settings.acceptRemoteCommands else {
+            Current.Log.info("Ignoring kiosk remote command (disabled in settings): \(message)")
+            return nil
+        }
+
+        if let command = KioskPushCommand(message: message) {
+            if let screensaverCommand = command.screensaverCommand {
+                Current.kiosk.requestScreensaver(screensaverCommand)
+            }
+
+            if #available(iOS 18, *) {
+                let identifier = notification.request.identifier
+                let symbol = command.symbol.rawValue
+                let colors = (command.symbolForegroundStyle.primary, command.symbolForegroundStyle.secondary)
+                let title = command.localizedString
+                let subtitle = command.localizedSubtitle
+                Task { @MainActor in
+                    ToastManager.shared.show(
+                        id: identifier,
+                        symbol: symbol,
+                        symbolForegroundStyle: colors,
+                        title: title,
+                        message: subtitle,
+                        duration: 4
+                    )
+                }
+            }
+        } else {
+            Current.Log.warning("Received unhandled kiosk push command: \(message)")
+        }
+
+        return []
     }
 
     public func userNotificationCenter(

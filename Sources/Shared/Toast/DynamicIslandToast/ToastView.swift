@@ -83,7 +83,7 @@ public struct DynamicIslandToastViewModifier: ViewModifier {
 
 @available(iOS 18, *)
 public struct ToastView: View {
-    public var window: PassThroughWindow
+    @ObservedObject public var window: PassThroughWindow
     public var body: some View {
         GeometryReader {
             let safeArea = $0.safeAreaInsets
