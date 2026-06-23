@@ -83,6 +83,10 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+
         refresh()
     }
 
