@@ -40,8 +40,14 @@ struct KioskView: View {
                     debugWatermark
                 }
             }
-            .overlay(alignment: settingsEntryAlignment) {
-                settingsEntryButton
+            .overlay {
+                ZStack(alignment: settingsEntryAlignment) {
+                    Color.clear
+                        .allowsHitTesting(false)
+                    settingsEntryButton
+                        .padding(DesignSystem.Spaces.two)
+                }
+                .ignoresSafeArea()
             }
             .overlay {
                 if screensaver.isActive {
@@ -87,11 +93,6 @@ struct KioskView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(L10n.Kiosk.title)
-        .padding({
-            switch kiosk.settings.settingsEntryPosition {
-            case .bottomLeading, .bottomTrailing: [.horizontal]
-            case .topLeading, .topTrailing: [.horizontal, .top]
-            }}(), DesignSystem.Spaces.two)
     }
 
     private var debugWatermark: some View {

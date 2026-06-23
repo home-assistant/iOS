@@ -430,7 +430,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func showToast(payload: ToastShowPayload) {
         if #available(iOS 18, *) {
-            ToastManager.shared.show(
+            ToastPresenter.shared.show(
                 id: payload.id,
                 symbol: SFSymbol.infoCircleFill.rawValue,
                 symbolForegroundStyle: (.white, .haPrimary),
@@ -446,7 +446,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func hideToast(id: String) {
         if #available(iOS 18, *) {
-            ToastManager.shared.hide(id: id)
+            ToastPresenter.shared.hide(id: id)
         } else {
             Current.Log.verbose("Not hiding toast with id \(id), Toast not available on this OS version.")
         }

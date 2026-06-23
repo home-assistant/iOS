@@ -541,6 +541,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "improv.wifi.alert.ssid_placeholder" = "Network Name";
 "improv.wifi.alert.title" = "Connect to WiFi";
 "intents.server_required_for_value" = "Select a server before picking this value.";
+"kiosk.accept_remote_commands.footer" = "When enabled, this device responds to kiosk commands sent through push notifications, such as showing or hiding the screensaver.";
+"kiosk.accept_remote_commands.title" = "Accept kiosk remote commands";
 "kiosk.authentication.footer" = "When enabled, changing kiosk mode settings requires device biometry or passcode. This prevents others from leaving kiosk mode or changing its configuration.";
 "kiosk.authentication.locked_title" = "Kiosk settings are locked";
 "kiosk.authentication.reason" = "Authenticate to access kiosk mode settings.";
@@ -569,6 +571,11 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.enabled" = "Enabled";
 "kiosk.hide_status_bar" = "Hide status bar";
 "kiosk.keep_screen_on" = "Keep screen on";
+"kiosk.push_command.hide_camera" = "Hiding camera";
+"kiosk.push_command.hide_screensaver" = "Hiding screensaver";
+"kiosk.push_command.show_camera" = "Showing camera";
+"kiosk.push_command.show_screensaver" = "Showing screensaver";
+"kiosk.push_command.subtitle" = "Kiosk command";
 "kiosk.remove_header_and_sidebar" = "Hide sidebar and top bar controls";
 "kiosk.screensaver.body" = "Show a screensaver after a period of inactivity to protect the display and save power.";
 "kiosk.screensaver.clock_style.large" = "Large";
@@ -593,6 +600,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.timeout.minutes_15" = "15 minutes";
 "kiosk.screensaver.timeout.minutes_30" = "30 minutes";
 "kiosk.screensaver.timeout.minutes_5" = "5 minutes";
+"kiosk.screensaver.timeout.push_notification_controlled" = "Push notification controlled";
 "kiosk.screensaver.timeout.seconds_30" = "30 seconds";
 "kiosk.screensaver.title" = "Screensaver";
 "kiosk.title" = "Kiosk mode";

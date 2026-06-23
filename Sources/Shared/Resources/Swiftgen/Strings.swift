@@ -1987,6 +1987,12 @@ public enum L10n {
     public static var removeHeaderAndSidebar: String { return L10n.tr("Localizable", "kiosk.remove_header_and_sidebar") }
     /// Kiosk mode
     public static var title: String { return L10n.tr("Localizable", "kiosk.title") }
+    public enum AcceptRemoteCommands {
+      /// When enabled, this device responds to kiosk commands sent through push notifications, such as showing or hiding the screensaver.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.accept_remote_commands.footer") }
+      /// Accept kiosk remote commands
+      public static var title: String { return L10n.tr("Localizable", "kiosk.accept_remote_commands.title") }
+    }
     public enum Authentication {
       /// When enabled, changing kiosk mode settings requires device biometry or passcode. This prevents others from leaving kiosk mode or changing its configuration.
       public static var footer: String { return L10n.tr("Localizable", "kiosk.authentication.footer") }
@@ -2045,6 +2051,18 @@ public enum L10n {
       /// Display
       public static var title: String { return L10n.tr("Localizable", "kiosk.display.title") }
     }
+    public enum PushCommand {
+      /// Hiding camera
+      public static var hideCamera: String { return L10n.tr("Localizable", "kiosk.push_command.hide_camera") }
+      /// Hiding screensaver
+      public static var hideScreensaver: String { return L10n.tr("Localizable", "kiosk.push_command.hide_screensaver") }
+      /// Showing camera
+      public static var showCamera: String { return L10n.tr("Localizable", "kiosk.push_command.show_camera") }
+      /// Showing screensaver
+      public static var showScreensaver: String { return L10n.tr("Localizable", "kiosk.push_command.show_screensaver") }
+      /// Kiosk command
+      public static var subtitle: String { return L10n.tr("Localizable", "kiosk.push_command.subtitle") }
+    }
     public enum Screensaver {
       /// Show a screensaver after a period of inactivity to protect the display and save power.
       public static var body: String { return L10n.tr("Localizable", "kiosk.screensaver.body") }
@@ -2101,6 +2119,8 @@ public enum L10n {
         public static var minutes30: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.minutes_30") }
         /// 5 minutes
         public static var minutes5: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.minutes_5") }
+        /// Push notification controlled
+        public static var pushNotificationControlled: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.push_notification_controlled") }
         /// 30 seconds
         public static var seconds30: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.seconds_30") }
       }

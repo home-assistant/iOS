@@ -2,6 +2,11 @@ import Combine
 import Foundation
 import GRDB
 
+public enum KioskScreensaverCommand: Equatable {
+    case show
+    case hide
+}
+
 /// Holds the live kiosk mode configuration for the running app.
 ///
 /// The configuration is loaded from GRDB on creation and kept up to date through a
@@ -19,6 +24,15 @@ public final class KioskModeManager: ObservableObject {
         $settings.eraseToAnyPublisher()
     }
 
+    public var screensaverCommandPublisher: AnyPublisher<KioskScreensaverCommand, Never> {
+        screensaverCommandSubject.eraseToAnyPublisher()
+    }
+
+    public func requestScreensaver(_ command: KioskScreensaverCommand) {
+        screensaverCommandSubject.send(command)
+    }
+
+    private let screensaverCommandSubject = PassthroughSubject<KioskScreensaverCommand, Never>()
     private var observation: AnyDatabaseCancellable?
 
     public init() {
