@@ -61,7 +61,7 @@ struct KioskScreensaverSettingsView: View {
 
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                     HStack {
-                        KioskRow.label(L10n.Kiosk.Screensaver.dimLevel, icon: .brightness6Icon)
+                        KioskRow.label(L10n.Kiosk.Screensaver.dimmingLevel, icon: .brightness6Icon)
                         Spacer()
                         Text(dimLevelPercentage)
                             .foregroundStyle(.secondary)
