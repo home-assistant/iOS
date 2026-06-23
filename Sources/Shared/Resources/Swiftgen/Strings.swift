@@ -1069,14 +1069,6 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.title") }
         }
       }
-      public enum QuickAccess {
-        public enum Intro {
-          /// Tap to create your CarPlay configuration.
-          public static var body: String { return L10n.tr("Localizable", "carPlay.notification.quick_access.intro.body") }
-          /// Create CarPlay configuration
-          public static var title: String { return L10n.tr("Localizable", "carPlay.notification.quick_access.intro.title") }
-        }
-      }
     }
     public enum QuickAccess {
       public enum AddItem {
@@ -1098,14 +1090,6 @@ public enum L10n {
       public enum Execute {
         /// Executing...
         public static var inProgress: String { return L10n.tr("Localizable", "carPlay.quick_access.execute.in_progress") }
-      }
-      public enum Intro {
-        public enum Item {
-          /// Tap to continue on your iPhone
-          public static var body: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.body") }
-          /// Create your CarPlay configuration
-          public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.title") }
-        }
       }
     }
     public enum State {

@@ -41,20 +41,6 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var activeAssistSession: AnyObject?
     private var addItemFlow: CarPlayAddItemFlow?
 
-    private lazy var introduceQuickAccessListItem: CPListItem = {
-        let item = CPListItem(
-            text: L10n.CarPlay.QuickAccess.Intro.Item.title,
-            detailText: L10n.CarPlay.QuickAccess.Intro.Item.body,
-            image: MaterialDesignIcons.homeLightningBoltIcon
-                .carPlayIcon()
-        )
-        item.handler = { [weak self] _, completion in
-            self?.viewModel.sendIntroNotification()
-            completion()
-        }
-        return item
-    }()
-
     init(viewModel: CarPlayQuickAccessViewModel) {
         self.viewModel = viewModel
 
@@ -67,7 +53,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         template.tabSystemItem = .more
 
         self.viewModel.templateProvider = self
-        presentIntroductionItem()
+        presentEmptyState()
     }
 
     // A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
@@ -169,15 +155,15 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         currentLayout = layout
         pruneLastKnownEntities(for: items)
         guard !items.isEmpty else {
-            presentIntroductionItem()
+            presentEmptyState()
             return
         }
         refreshCurrentPresentation()
     }
 
-    private func presentIntroductionItem() {
+    private func presentEmptyState() {
         template.trailingNavigationBarButtons = []
-        template.updateSections([.init(items: [introduceQuickAccessListItem, makeAddItemRow()])])
+        template.updateSections([.init(items: [makeAddItemRow()])])
     }
 
     private func refreshCurrentPresentation() {
