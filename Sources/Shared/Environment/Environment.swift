@@ -313,6 +313,12 @@ public class AppEnvironment {
 
     public var onboardingObservation = OnboardingStateObservation()
 
+    public lazy var kiosk = KioskModeManager()
+
+    /// The current kiosk mode configuration. Always available, defaulting to a disabled
+    /// configuration when nothing has been persisted yet.
+    public var kioskSettings: KioskSettings { kiosk.settings }
+
     public var isPerformingSingleShotLocationQuery = false
 
     public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()

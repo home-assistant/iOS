@@ -23,6 +23,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0841CA8F012D390039FA46A9 /* KioskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80244E5EBD91B74A271BFE69 /* KioskView.swift */; };
+		EF407595A931C19EBCCC9E87 /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
+		7F5261AFA361C741413A782D /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
 		7EB1B6B52775DAF12C3B2B27 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FD2BAEEAE31310280CB33D /* KioskSettings.swift */; };
 		70E2B868FFDDA96DAF138814 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FD2BAEEAE31310280CB33D /* KioskSettings.swift */; };
 		1AA7D3A6102D7CC4601EEC6F /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */; };
@@ -1899,6 +1902,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		80244E5EBD91B74A271BFE69 /* KioskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskView.swift; sourceTree = "<group>"; };
+		1CCF41D72CA895DB501333EF /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
 		45FD2BAEEAE31310280CB33D /* KioskSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.swift; sourceTree = "<group>"; };
 		E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsViewModel.swift; sourceTree = "<group>"; };
 		22AA95E1438BC6A0DE7EF820 /* KioskSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsView.swift; sourceTree = "<group>"; };
@@ -3744,6 +3749,7 @@
 		1BED35828D71BF63D3023009 /* Kiosk */ = {
 			isa = PBXGroup;
 			children = (
+				80244E5EBD91B74A271BFE69 /* KioskView.swift */,
 				45FD2BAEEAE31310280CB33D /* KioskSettings.swift */,
 				E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */,
 				22AA95E1438BC6A0DE7EF820 /* KioskSettingsView.swift */,
@@ -7107,6 +7113,7 @@
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {
 			isa = PBXGroup;
 			children = (
+				1CCF41D72CA895DB501333EF /* KioskModeManager.swift */,
 				D00302BD20D4BEDB004C2CA9 /* Environment.swift */,
 				420A80952E9CF98C00D30A6B /* ImpactFeedbackGeneratorProtocol.swift */,
 				4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */,
@@ -9316,6 +9323,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0841CA8F012D390039FA46A9 /* KioskView.swift in Sources */,
 				1AA7D3A6102D7CC4601EEC6F /* KioskSettingsViewModel.swift in Sources */,
 				E864AF283C52DCFA11B83545 /* KioskSettingsView.swift in Sources */,
 				5D5F19CD200C051E13C940E2 /* KioskScreensaverSettingsView.swift in Sources */,
@@ -9833,6 +9841,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F5261AFA361C741413A782D /* KioskModeManager.swift in Sources */,
 				70E2B868FFDDA96DAF138814 /* KioskSettings.swift in Sources */,
 				6DA03BF83C5D5A6159263BE6 /* KioskSettingsTable.swift in Sources */,
 				118F046A24CB895B00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
@@ -10145,6 +10154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF407595A931C19EBCCC9E87 /* KioskModeManager.swift in Sources */,
 				7EB1B6B52775DAF12C3B2B27 /* KioskSettings.swift in Sources */,
 				857D6560D8A33C20A009A615 /* KioskSettingsTable.swift in Sources */,
 				427A21772F7EA57600BD40B7 /* ServerInfoMirrorTable.swift in Sources */,
