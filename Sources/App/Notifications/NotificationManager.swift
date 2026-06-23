@@ -447,14 +447,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         } else {
             completionHandler()
         }
-
-        if response.notification.request.identifier == NotificationIdentifier.carPlayIntro.rawValue {
-            Current.Log.info("Launching CarPlay configuration screen")
-            Current.sceneManager.appCoordinator.done {
-                let carPlayView = CarPlayConfigurationView().embeddedInHostingController()
-                $0.present(carPlayView)
-            }
-        }
     }
 
     private func isShowCameraCommand(userInfo: [AnyHashable: Any]) -> Bool {

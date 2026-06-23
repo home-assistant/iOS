@@ -46,10 +46,7 @@ class CarPlaySceneDelegate: UIResponder {
     private var latestStates: HACachedStates?
     private var latestStatesServerId: String?
     private var latestQuickAccessStatesPerServer: [String: HACachedStates] = [:]
-
-    private var preferredServerId: String {
-        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
-    }
+    private var quickAccessSubscriptionKey: [String: [String]] = [:]
 
     deinit {
         entitiesSubscriptionToken?.cancel()
@@ -64,9 +61,9 @@ class CarPlaySceneDelegate: UIResponder {
     private func setTemplates(config: CarPlayConfig?) {
         var visibleTemplates: [any CarPlayTemplateProvider] = []
         if let config {
+            subscribeToQuickAccessEntitiesChanges(configEntities: config.quickAccessItems)
             guard config != cachedConfig else { return }
             cachedConfig = config
-            subscribeToQuickAccessEntitiesChanges(configEntities: cachedConfig?.quickAccessItems ?? [])
 
             // Tabs can be removed from the configuration while their template instances are still
             // cached on the scene delegate. Clear those references before rebuilding so hidden
@@ -101,6 +98,7 @@ class CarPlaySceneDelegate: UIResponder {
                 }
             }
         } else {
+            subscribeToQuickAccessEntitiesChanges(configEntities: [])
             buildQuickAccessTab()
             buildServerTab()
             visibleTemplates = allTemplates
@@ -142,7 +140,7 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private func subscribeToEntitiesChanges() {
-        guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else { return }
+        guard let server = CarPlayPreferredServer.current else { return }
         entitiesSubscriptionToken?.cancel()
         latestStates = nil
         latestStatesServerId = nil
@@ -170,29 +168,50 @@ class CarPlaySceneDelegate: UIResponder {
 
     // Quick access entities may not be from the same server that is selected as default in CarPlay
     private func subscribeToQuickAccessEntitiesChanges(configEntities: [MagicItem]) {
-        quickAccessEntitiesSubscriptionTokens.forEach({ $0?.cancel() })
         let entityItems = configEntities.filter({ $0.type == .entity })
-        guard !entityItems.isEmpty else {
-            Current.Log.info("No quick access entities to subscribe to")
+        let entityItemsByServer = Dictionary(grouping: entityItems, by: \.serverId)
+        let subscriptionKey = entityItemsByServer.mapValues { items in
+            Array(Set(items.map(\.id))).sorted()
+        }
+
+        guard subscriptionKey != quickAccessSubscriptionKey else {
+            replayQuickAccessStates()
             return
         }
 
-        let servers = Set(entityItems.map(\.serverId))
+        quickAccessSubscriptionKey = subscriptionKey
+        quickAccessEntitiesSubscriptionTokens.forEach({ $0?.cancel() })
+        quickAccessEntitiesSubscriptionTokens = []
+
+        guard !entityItems.isEmpty else {
+            Current.Log.info("No quick access entities to subscribe to")
+            latestQuickAccessStatesPerServer = [:]
+            return
+        }
+
+        let servers = Set(entityItemsByServer.keys)
         latestQuickAccessStatesPerServer = latestQuickAccessStatesPerServer.filter { servers.contains($0.key) }
 
-        servers.forEach { serverId in
+        entityItemsByServer.forEach { serverId, serverEntityItems in
             guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { return }
+            guard let api = Current.api(for: server) else {
+                Current.Log
+                    .error("No API available to subscribe to CarPlay quick access entities for server \(serverId)")
+                return
+            }
+
             var filter: [String: Any] = [:]
             if server.info.version > .canSubscribeEntitiesChangesWithFilter {
                 filter = [
                     "include": [
-                        "entities": entityItems.filter({ $0.serverId == serverId }).map(\.id),
+                        "entities": serverEntityItems.map(\.id),
                     ],
                 ]
             }
 
+            api.connectWebSocketIfNeeded()
             quickAccessEntitiesSubscriptionTokens.append(
-                Current.api(for: server)?.connection.caches.states(filter)
+                api.connection.caches.states(filter)
                     .subscribe { [weak self] _, states in
                         self?.latestQuickAccessStatesPerServer[serverId] = states
                         self?.quickAccessListTemplate?.entitiesStateChange(

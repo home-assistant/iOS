@@ -985,6 +985,8 @@ public enum L10n {
     public enum Labels {
       /// Already added
       public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carPlay.labels.already_added_server") }
+      /// No areas available
+      public static var emptyAreaList: String { return L10n.tr("Localizable", "carPlay.labels.empty_area_list") }
       /// No domains available
       public static var emptyDomainList: String { return L10n.tr("Localizable", "carPlay.labels.empty_domain_list") }
       /// No servers available. Add a server in the app.
@@ -1016,6 +1018,22 @@ public enum L10n {
               /// Restart App
               public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.button.title") }
             }
+          }
+        }
+        public enum MainServer {
+          /// Main server
+          public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.main_server.title") }
+        }
+        public enum Troubleshooting {
+          /// Troubleshooting
+          public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.title") }
+          public enum AssistAudio {
+            /// Assist audio
+            public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist_audio.title") }
+          }
+          public enum ForceClose {
+            /// Force close app
+            public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.force_close.title") }
           }
         }
       }
@@ -1069,27 +1087,39 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.title") }
         }
       }
-      public enum QuickAccess {
-        public enum Intro {
-          /// Tap to create your CarPlay configuration.
-          public static var body: String { return L10n.tr("Localizable", "carPlay.notification.quick_access.intro.body") }
-          /// Create CarPlay configuration
-          public static var title: String { return L10n.tr("Localizable", "carPlay.notification.quick_access.intro.title") }
-        }
-      }
     }
     public enum QuickAccess {
+      public enum AddItem {
+        /// Back
+        public static var back: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.back") }
+        /// Add item
+        public static var button: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.button") }
+        /// Add item
+        public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.title") }
+        public enum Confirmation {
+          /// For more customization, configure Quick Access in the Home Assistant app on your iPhone.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.footer") }
+          /// Add without confirmation
+          public static var noConfirmation: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.no_confirmation") }
+          /// Require confirmation
+          public static var require: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.require") }
+        }
+      }
+      public enum EditItem {
+        /// Edit
+        public static var button: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.button") }
+        /// Remove or edit items
+        public static var subtitle: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.subtitle") }
+        /// Edit
+        public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.title") }
+        public enum Confirmation {
+          /// Don't require confirmation
+          public static var noConfirmation: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.confirmation.no_confirmation") }
+        }
+      }
       public enum Execute {
         /// Executing...
         public static var inProgress: String { return L10n.tr("Localizable", "carPlay.quick_access.execute.in_progress") }
-      }
-      public enum Intro {
-        public enum Item {
-          /// Tap to continue on your iPhone
-          public static var body: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.body") }
-          /// Create your CarPlay configuration
-          public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.title") }
-        }
       }
     }
     public enum State {
