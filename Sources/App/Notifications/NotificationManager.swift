@@ -478,8 +478,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         guard let command = KioskPushCommand(message: message) else {
-            Current.Log.warning("Received unhandled kiosk push command: \(message)")
-            return []
+            Current.Log.warning("Unhandled kiosk push command, using default presentation: \(message)")
+            return nil
         }
 
         performKioskCommand(command, userInfo: content.userInfo)
