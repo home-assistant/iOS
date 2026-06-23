@@ -232,7 +232,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             for key in [
                 "tag", "critical_text", "progress", "progress_max", "chronometer",
                 "when", "when_relative", "notification_icon", "notification_icon_color",
-                "silent",
+                "silent", "url",
             ] {
                 if let value = data[key] {
                     homeassistant[key] = value

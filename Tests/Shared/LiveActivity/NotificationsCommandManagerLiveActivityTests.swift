@@ -49,6 +49,39 @@ final class NotificationsCommandManagerLiveActivityTests: XCTestCase {
         XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].title, "Command Title")
     }
 
+    func testHandle_liveActivity_forwardsServerWebhookId() {
+        // webhook_id rides at the OUTER payload level; it must reach startOrUpdate so the
+        // activity can later open the server that started it.
+        let payload: [AnyHashable: Any] = [
+            "webhook_id": "wh-123",
+            "homeassistant": [
+                "command": "live_activity",
+                "tag": "cmd-tag",
+                "title": "Command Title",
+                "message": "Hello",
+            ] as [String: Any],
+        ]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].serverWebhookId, "wh-123")
+    }
+
+    func testHandle_liveActivity_forwardsUrlIntoContentState() {
+        // `url` (mirroring actionable notifications) must reach the content-state so a tap can
+        // deep-link to that page. On local push it is promoted into `homeassistant` by
+        // NotificationParserLegacy; here it arrives in the command dict directly.
+        let payload = makePayload([
+            "command": "live_activity",
+            "tag": "cmd-tag",
+            "title": "Command Title",
+            "message": "Hello",
+            "url": "/lovelace/laundry",
+        ])
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].state.url, "/lovelace/laundry")
+    }
+
     // MARK: - live_update: true data flag routing (Android-compat)
 
     func testHandle_liveActivityFlag_callsStartOrUpdate() {
