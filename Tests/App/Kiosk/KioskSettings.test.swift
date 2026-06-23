@@ -1,0 +1,88 @@
+import GRDB
+@testable import Shared
+import Testing
+
+struct KioskSettingsTests {
+    @Test func roundTripsThroughDatabase() throws {
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+
+        let settings = KioskSettings(
+            enabled: true,
+            requireAuthentication: true,
+            serverId: "server-1",
+            dashboard: "lovelace/home",
+            keepScreenOn: true,
+            removeHeaderAndSidebar: true,
+            hideStatusBar: true,
+            autoReload: .minutes5,
+            settingsEntryPosition: .topLeading,
+            screensaver: KioskScreensaverSettings(
+                enabled: true,
+                mode: .clock,
+                clockStyle: .small,
+                showDate: false,
+                showSeconds: true,
+                timeToStart: .minutes10,
+                dimLevel: 0.3
+            )
+        )
+
+        try database.write { db in
+            try settings.insert(db, onConflict: .replace)
+        }
+        let loaded = try database.read { db in
+            try KioskSettings.fetchOne(db)
+        }
+
+        #expect(loaded == settings)
+    }
+
+    @Test func decodesDefaultsWhenColumnsAreMissing() throws {
+        // A row with only the primary key must decode with defaults (resilient decoder), so additive
+        // schema migrations don't break existing installs.
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+        try database.write { db in
+            try db.execute(
+                sql: "INSERT INTO \(GRDBDatabaseTable.kioskSettings.rawValue) (id) VALUES (?)",
+                arguments: [KioskSettings.kioskSettingsId]
+            )
+        }
+
+        let loaded = try database.read { db in
+            try KioskSettings.fetchOne(db)
+        }
+
+        #expect(loaded?.enabled == false)
+        #expect(loaded?.requireAuthentication == false)
+        #expect(loaded?.autoReload == .never)
+        #expect(loaded?.settingsEntryPosition == .bottomTrailing)
+        #expect(loaded?.screensaver == KioskScreensaverSettings())
+    }
+
+    @Test func enumMetadataIsComplete() {
+        for mode in KioskScreensaverMode.allCases {
+            #expect(!mode.title.isEmpty)
+            #expect(mode.id == mode.rawValue)
+        }
+        for style in KioskClockStyle.allCases {
+            #expect(!style.title.isEmpty)
+        }
+        for timeout in KioskScreensaverTimeout.allCases {
+            #expect(!timeout.title.isEmpty)
+            #expect(timeout.timeInterval > 0)
+        }
+        for interval in KioskAutoReloadInterval.allCases {
+            #expect(!interval.title.isEmpty)
+            if interval == .never {
+                #expect(interval.timeInterval == nil)
+            } else {
+                #expect((interval.timeInterval ?? 0) > 0)
+            }
+        }
+        for position in KioskCornerPosition.allCases {
+            #expect(!position.title.isEmpty)
+        }
+    }
+}

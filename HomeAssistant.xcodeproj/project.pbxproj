@@ -23,6 +23,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		84C3F46E5A5854A3E3A71DF6 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447F72016096B5B3FC87F055 /* KioskSettings.test.swift */; };
 		42FA000000000000000C0002 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0001 /* WebRTC */; };
 		42FA000000000000000C0005 /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */; };
 		42FA000000000000000C0006 /* WebRTCViewPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */; };
@@ -1909,6 +1910,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		447F72016096B5B3FC87F055 /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
 		71373DD7455D9CE893EB450B /* KioskScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskScreensaverView.swift; sourceTree = "<group>"; };
 		80244E5EBD91B74A271BFE69 /* KioskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskView.swift; sourceTree = "<group>"; };
 		1CCF41D72CA895DB501333EF /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
@@ -3757,6 +3759,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B45BC7B1F36F7DAA48E961CA /* Kiosk */ = {
+			isa = PBXGroup;
+			children = (
+				447F72016096B5B3FC87F055 /* KioskSettings.test.swift */,
+			);
+			path = Kiosk;
+			sourceTree = "<group>";
+		};
 		1BED35828D71BF63D3023009 /* Kiosk */ = {
 			isa = PBXGroup;
 			children = (
@@ -6885,6 +6895,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				B45BC7B1F36F7DAA48E961CA /* Kiosk */,
 				429C33BE2F17988D0033EF5E /* EntityPicker */,
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
@@ -9753,6 +9764,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84C3F46E5A5854A3E3A71DF6 /* KioskSettings.test.swift in Sources */,
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				46BA6A4E2D734EBB002C2262 /* SnapshotTestingHelper.swift in Sources */,
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
