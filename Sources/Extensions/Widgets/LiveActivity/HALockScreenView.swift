@@ -184,23 +184,30 @@ enum HAActivityVisualStyle {
     /// system background resolves to the wrong appearance; overridable via `background_color`.
     private static let defaultBackgroundHex = "#000000"
 
+    /// Treats nil, empty, or whitespace-only as "unset" so the caller's default applies — an empty
+    /// `background_color`/`text_color` would otherwise parse to transparent via UIColor(hex:).
+    private static func normalized(_ hex: String?) -> String? {
+        let trimmed = hex?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return (trimmed?.isEmpty == false) ? trimmed : nil
+    }
+
     static func uiColor(from color: String?) -> UIColor {
         UIColor(hex: color ?? haBlueHex)
     }
 
     static func backgroundColor(from hex: String?) -> Color {
-        Color(uiColor: UIColor(hex: hex ?? defaultBackgroundHex))
+        Color(uiColor: UIColor(hex: normalized(hex) ?? defaultBackgroundHex))
     }
 
     static func prefersLightText(onBackground hex: String?) -> Bool {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
-        UIColor(hex: hex ?? defaultBackgroundHex).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        UIColor(hex: normalized(hex) ?? defaultBackgroundHex).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return (0.299 * red + 0.587 * green + 0.114 * blue) < 0.6
     }
 
     /// Explicit `text_color` if set, else a light/dark default chosen to contrast the background.
     static func foregroundColor(textColor: String?, onBackground backgroundHex: String?) -> Color {
-        if let textColor, !textColor.isEmpty {
+        if let textColor = normalized(textColor) {
             return Color(uiColor: UIColor(hex: textColor))
         }
         return prefersLightText(onBackground: backgroundHex) ? .white : .black
