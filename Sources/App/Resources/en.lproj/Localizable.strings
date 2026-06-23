@@ -569,6 +569,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.mode.clock" = "Clock";
 "kiosk.screensaver.mode.dim" = "Dim";
 "kiosk.screensaver.mode.title" = "Mode";
+"kiosk.screensaver.preview" = "Preview";
 "kiosk.screensaver.show_date" = "Show date";
 "kiosk.screensaver.show_seconds" = "Show seconds";
 "kiosk.screensaver.time_to_start" = "Time to start";

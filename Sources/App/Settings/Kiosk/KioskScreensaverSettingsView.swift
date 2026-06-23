@@ -1,8 +1,10 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
 struct KioskScreensaverSettingsView: View {
     @ObservedObject var viewModel: KioskSettingsViewModel
+    @State private var showPreview = false
 
     private var screensaver: Binding<KioskScreensaverSettings> {
         $viewModel.settings.screensaver
@@ -67,6 +69,19 @@ struct KioskScreensaverSettingsView: View {
                     }
                     Slider(value: screensaver.dimLevel, in: 0 ... 1, step: 0.05)
                 }
+            }
+
+            Section {
+                Button {
+                    showPreview = true
+                } label: {
+                    KioskRow.label(L10n.Kiosk.Screensaver.preview, systemSymbol: .eye)
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $showPreview) {
+            KioskScreensaverView(settings: screensaver.wrappedValue) {
+                showPreview = false
             }
         }
     }
