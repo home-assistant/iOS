@@ -98,8 +98,14 @@ class IncomingURLHandler {
                 let queryParameters = components.queryItems
                 let isFromWidget = components.popWidgetAuthenticity()
                 let serverId = components.queryItems?.first(where: { $0.name == "serverId" })?.value as? String
-                let server = components.popWidgetServer(isFromWidget: isFromWidget) ?? Current.servers.all
-                    .first(where: { $0.identifier.rawValue == serverId })
+                // Strip `webhook_id` (a sender that couldn't resolve the server defers it to here)
+                // so it doesn't leak into the navigated path.
+                let webhookId = queryParameters?.first(where: { $0.name == "webhook_id" })?.value
+                components.queryItems = components.queryItems?.filter { $0.name != "webhook_id" }
+                if components.queryItems?.isEmpty == true { components.queryItems = nil }
+                let server = components.popWidgetServer(isFromWidget: isFromWidget)
+                    ?? Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
+                    ?? webhookId.flatMap { Current.servers.server(forWebhookID: $0) }
                 let isComingFromAppIntent: Bool = {
                     if let value = queryParameters?
                         .first(where: { $0.name == AppConstants.QueryItems.isComingFromAppIntent.rawValue })?.value {
@@ -114,9 +120,9 @@ class IncomingURLHandler {
                 // open in the frontend, external URLs open in the in-app browser.
                 let explicitDestination = queryParameters?.first(where: { $0.name == "url" })?.value
 
-                guard let rawURL = explicitDestination ?? components.url?.absoluteString else {
-                    return false
-                }
+                // A url-less tap (only a server, e.g. via webhook_id) opens that server's root
+                // instead of being dropped when `components.url` is nil.
+                let rawURL = explicitDestination ?? components.url?.absoluteString ?? ""
 
                 if
                     let presenting = coordinator.presentedViewController,
