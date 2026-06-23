@@ -33,7 +33,7 @@ struct HALiveActivityConfiguration: Widget {
     ) -> URL? {
         let webhookId = attributes.serverWebhookId
         Current.Log.verbose(
-            "LiveActivity tapURL: serverWebhookId=\(webhookId ?? "nil"), hasURL=\(state.url?.isEmpty == false)"
+            "LiveActivity tapURL: hasServerWebhookId=\(webhookId != nil), hasURL=\(state.url?.isEmpty == false)"
         )
 
         var items: [URLQueryItem] = []

@@ -120,9 +120,9 @@ class IncomingURLHandler {
                 // open in the frontend, external URLs open in the in-app browser.
                 let explicitDestination = queryParameters?.first(where: { $0.name == "url" })?.value
 
-                guard let rawURL = explicitDestination ?? components.url?.absoluteString else {
-                    return false
-                }
+                // A url-less tap (only a server, e.g. via webhook_id) opens that server's root
+                // instead of being dropped when `components.url` is nil.
+                let rawURL = explicitDestination ?? components.url?.absoluteString ?? ""
 
                 if
                     let presenting = coordinator.presentedViewController,
