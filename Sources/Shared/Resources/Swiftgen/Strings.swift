@@ -2014,6 +2014,8 @@ public enum L10n {
       public static var dimLevel: String { return L10n.tr("Localizable", "kiosk.screensaver.dim_level") }
       /// Enabled
       public static var enabled: String { return L10n.tr("Localizable", "kiosk.screensaver.enabled") }
+      /// Preview
+      public static var preview: String { return L10n.tr("Localizable", "kiosk.screensaver.preview") }
       /// Show date
       public static var showDate: String { return L10n.tr("Localizable", "kiosk.screensaver.show_date") }
       /// Show seconds
