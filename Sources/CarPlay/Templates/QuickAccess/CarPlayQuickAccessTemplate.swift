@@ -246,11 +246,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                     entity: entity,
                     magicItem: magicItem,
                     magicItemInfo: info,
-                    area: entityToAreaMap[entity.entityId]
+                    area: area(for: magicItem, entityToAreaMap: entityToAreaMap)
                 )
                 let listItem = entityProvider.template
                 if isExecuting(magicItem) {
                     listItem.setDetailText(CarPlayEntityListItem.executingSubtitle)
+                } else {
+                    listItem.setDetailText(rowDisplayItem.subtitle)
                 }
                 listItem.handler = { [weak self] _, _ in
                     self?.itemTap(
@@ -493,13 +495,23 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return subtitle(for: magicItem)
         }
 
-        let serverName = subtitle(for: magicItem)
-        let areaName = entityToAreaMap[magicItem.id]
+        return entityContextSubtitle(for: magicItem, stateSubtitle: nil, entityToAreaMap: entityToAreaMap)
+    }
 
-        return [serverName, areaName]
+    private func entityContextSubtitle(
+        for magicItem: MagicItem,
+        stateSubtitle: String?,
+        entityToAreaMap: [String: String]
+    ) -> String? {
+        let serverName = subtitle(for: magicItem)
+        let areaName = area(for: magicItem, entityToAreaMap: entityToAreaMap)
+
+        let subtitle = [stateSubtitle, serverName, areaName]
             .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
             .joined(separator: " • ")
+
+        return subtitle.isEmpty ? nil : subtitle
     }
 
     private func isAssistItem(_ magicItem: MagicItem) -> Bool {
@@ -576,7 +588,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 return nil
             }
 
-            let area = entityToAreaMap[entity.entityId]
+            let area = area(for: magicItem, entityToAreaMap: entityToAreaMap)
             let entityProvider = CarPlayEntityListItem(
                 serverId: magicItem.serverId,
                 entity: entity,
@@ -591,7 +603,14 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 image: content.image,
                 iconColor: content.iconColor,
                 title: content.title,
-                subtitle: renderedSubtitle(for: magicItem, defaultSubtitle: content.subtitle),
+                subtitle: renderedSubtitle(
+                    for: magicItem,
+                    defaultSubtitle: entityContextSubtitle(
+                        for: magicItem,
+                        stateSubtitle: content.subtitle,
+                        entityToAreaMap: entityToAreaMap
+                    )
+                ),
                 currentState: entityProvider.entity.state
             )
         case .assistPipeline, .assistPrompt:
@@ -622,20 +641,25 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func entityToAreaMap() -> [String: String] {
         var entityToAreaMap: [String: String] = [:]
         for server in Current.servers.all {
+            let serverId = server.identifier.rawValue
             let areas: [AppArea]
             do {
-                areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+                areas = try AppArea.fetchAreas(for: serverId)
             } catch {
                 Current.Log.error("Failed to fetch areas for CarPlay quick access: \(error.localizedDescription)")
                 areas = []
             }
             for area in areas {
                 for entityId in area.entities {
-                    entityToAreaMap[entityId] = area.name
+                    entityToAreaMap[entityCacheKey(serverId: serverId, entityId: entityId)] = area.name
                 }
             }
         }
         return entityToAreaMap
+    }
+
+    private func area(for magicItem: MagicItem, entityToAreaMap: [String: String]) -> String? {
+        entityToAreaMap[entityCacheKey(serverId: magicItem.serverId, entityId: magicItem.id)]
     }
 
     private func presentAssistSession(magicItem: MagicItem, info: MagicItem.Info) {
