@@ -55,7 +55,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         improvManager: ImprovManager.shared
     )
 
-    private var kioskSettingsCancellable: AnyCancellable?
+    private var kioskCancellables = Set<AnyCancellable>()
 
     /// Handler for gestures over the webview
     let webViewGestureHandler = WebViewGestureHandler()
@@ -74,7 +74,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || (Current.kioskSettings.enabled && Current.kioskSettings.hideStatusBar)
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
@@ -319,14 +319,26 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
 extension WebViewController {
     func setupKioskModeObservation() {
-        kioskSettingsCancellable = Current.kiosk.settingsPublisher
+        Current.kiosk.settingsPublisher
             .map { $0.enabled && $0.removeHeaderAndSidebar }
             .removeDuplicates()
-            .dropFirst() // The initial value is pushed once the frontend connects.
+            .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.updateFrontendKioskMode()
             }
+            .store(in: &kioskCancellables)
+
+        // Re-evaluate the status bar visibility (the initial state is read when the view appears).
+        Current.kiosk.settingsPublisher
+            .map { $0.enabled && $0.hideStatusBar }
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.setNeedsStatusBarAppearanceUpdate()
+            }
+            .store(in: &kioskCancellables)
     }
 
     func updateFrontendKioskMode() {

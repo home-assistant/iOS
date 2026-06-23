@@ -68,18 +68,6 @@ struct KioskScreensaverSettingsView: View {
                     Slider(value: screensaver.dimLevel, in: 0 ... 1, step: 0.05)
                 }
             }
-
-            Section(L10n.Kiosk.Screensaver.ConfigurationAccess.title) {
-                KioskRow.picker(
-                    L10n.Kiosk.Screensaver.ConfigurationAccess.position,
-                    icon: .cogOutlineIcon,
-                    selection: screensaver.settingsEntryPosition
-                ) {
-                    ForEach(KioskCornerPosition.allCases) { position in
-                        Text(position.title).tag(position)
-                    }
-                }
-            }
         }
     }
 

@@ -75,6 +75,18 @@ struct KioskSettingsView: View {
                     KioskRow.label(L10n.Kiosk.Screensaver.title, icon: .weatherNightIcon)
                 }
             }
+
+            Section(L10n.Kiosk.Screensaver.ConfigurationAccess.title) {
+                KioskRow.picker(
+                    L10n.Kiosk.Screensaver.ConfigurationAccess.position,
+                    icon: .cogOutlineIcon,
+                    selection: screensaver.settingsEntryPosition
+                ) {
+                    ForEach(KioskCornerPosition.allCases) { position in
+                        Text(position.title).tag(position)
+                    }
+                }
+            }
         }
         .onChange(of: viewModel.settings.serverId) { _ in
             viewModel.serverDidChange()
