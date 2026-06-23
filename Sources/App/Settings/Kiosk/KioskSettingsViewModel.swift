@@ -21,6 +21,7 @@ final class KioskSettingsViewModel: ObservableObject {
     private func setupAutoSave() {
         $settings
             .dropFirst() // Skip the value emitted for the current state
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self, !self.isInitialLoad else { return }
                 save()
