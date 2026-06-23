@@ -13,6 +13,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
     public var removeHeaderAndSidebar: Bool
     public var hideStatusBar: Bool
     public var autoReload: KioskAutoReloadInterval
+    public var settingsEntryPosition: KioskCornerPosition
     public var screensaver: KioskScreensaverSettings
 
     public init(
@@ -25,6 +26,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         removeHeaderAndSidebar: Bool = false,
         hideStatusBar: Bool = false,
         autoReload: KioskAutoReloadInterval = .never,
+        settingsEntryPosition: KioskCornerPosition = .bottomTrailing,
         screensaver: KioskScreensaverSettings = KioskScreensaverSettings()
     ) {
         self.id = id
@@ -36,6 +38,7 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.removeHeaderAndSidebar = removeHeaderAndSidebar
         self.hideStatusBar = hideStatusBar
         self.autoReload = autoReload
+        self.settingsEntryPosition = settingsEntryPosition
         self.screensaver = screensaver
     }
 
@@ -50,6 +53,10 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.removeHeaderAndSidebar = try container.decodeIfPresent(Bool.self, forKey: .removeHeaderAndSidebar) ?? false
         self.hideStatusBar = try container.decodeIfPresent(Bool.self, forKey: .hideStatusBar) ?? false
         self.autoReload = try container.decodeIfPresent(KioskAutoReloadInterval.self, forKey: .autoReload) ?? .never
+        self.settingsEntryPosition = try container.decodeIfPresent(
+            KioskCornerPosition.self,
+            forKey: .settingsEntryPosition
+        ) ?? .bottomTrailing
         self.screensaver = try container.decodeIfPresent(
             KioskScreensaverSettings.self,
             forKey: .screensaver
@@ -71,7 +78,6 @@ public struct KioskScreensaverSettings: Codable, Equatable {
     public var showSeconds: Bool
     public var timeToStart: KioskScreensaverTimeout
     public var dimLevel: Double
-    public var settingsEntryPosition: KioskCornerPosition
 
     public init(
         enabled: Bool = false,
@@ -80,8 +86,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         showDate: Bool = true,
         showSeconds: Bool = false,
         timeToStart: KioskScreensaverTimeout = .minutes5,
-        dimLevel: Double = 0.1,
-        settingsEntryPosition: KioskCornerPosition = .bottomTrailing
+        dimLevel: Double = 0.1
     ) {
         self.enabled = enabled
         self.mode = mode
@@ -90,7 +95,6 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         self.showSeconds = showSeconds
         self.timeToStart = timeToStart
         self.dimLevel = dimLevel
-        self.settingsEntryPosition = settingsEntryPosition
     }
 }
 
@@ -198,7 +202,7 @@ public enum KioskScreensaverTimeout: String, Codable, CaseIterable, Identifiable
     }
 }
 
-public enum KioskCornerPosition: String, Codable, CaseIterable, Identifiable {
+public enum KioskCornerPosition: String, Codable, CaseIterable, Identifiable, DatabaseValueConvertible {
     case topLeading
     case topTrailing
     case bottomLeading

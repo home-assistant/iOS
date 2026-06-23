@@ -80,7 +80,7 @@ struct KioskSettingsView: View {
                 KioskRow.picker(
                     L10n.Kiosk.Screensaver.ConfigurationAccess.position,
                     icon: .cogOutlineIcon,
-                    selection: $viewModel.settings.screensaver.settingsEntryPosition
+                    selection: $viewModel.settings.settingsEntryPosition
                 ) {
                     ForEach(KioskCornerPosition.allCases) { position in
                         Text(position.title).tag(position)

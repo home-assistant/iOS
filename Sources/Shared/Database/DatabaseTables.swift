@@ -186,6 +186,7 @@ public enum DatabaseTables {
         case removeHeaderAndSidebar
         case hideStatusBar
         case autoReload
+        case settingsEntryPosition
         case screensaver
     }
 }
