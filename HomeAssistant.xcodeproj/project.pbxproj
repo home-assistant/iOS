@@ -1611,7 +1611,6 @@
 		FA11C0DE0000000000000053 /* ContainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000052 /* ContainerViewModel.swift */; };
 		FA11C0DE0000000000000055 /* WebFrontendOverlayState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */; };
 		FA11C0DE0000000000000057 /* FrontendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000056 /* FrontendView.swift */; };
-		FA11C0DE0000000000000059 /* StatusBarForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */; };
 		FA11C0DE000000000000005B /* WebFrontend.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE000000000000005A /* WebFrontend.swift */; };
 		FA11C0DE0000000000000061 /* MockAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000060 /* MockAppCoordinator.swift */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
@@ -3529,7 +3528,6 @@
 		FA11C0DE0000000000000052 /* ContainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewModel.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFrontendOverlayState.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000056 /* FrontendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendView.swift; sourceTree = "<group>"; };
-		FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarForwardingNavigationController.swift; sourceTree = "<group>"; };
 		FA11C0DE000000000000005A /* WebFrontend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFrontend.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000060 /* MockAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAppCoordinator.swift; sourceTree = "<group>"; };
 		FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -5869,7 +5867,6 @@
 				42BE698B2C4691E000745ECA /* Views */,
 				FA11C0DE0000000000000005 /* HomeAssistantView.swift */,
 				FA11C0DE0000000000000056 /* FrontendView.swift */,
-				FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */,
 				FA11C0DE000000000000005A /* WebFrontend.swift */,
 				FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
@@ -9604,7 +9601,6 @@
 				FA11C0DE0000000000000004 /* SceneManagerEnvironmentKey.swift in Sources */,
 				FA11C0DE0000000000000006 /* HomeAssistantView.swift in Sources */,
 				FA11C0DE0000000000000057 /* FrontendView.swift in Sources */,
-				FA11C0DE0000000000000059 /* StatusBarForwardingNavigationController.swift in Sources */,
 				FA11C0DE000000000000005B /* WebFrontend.swift in Sources */,
 				FA11C0DE0000000000000055 /* WebFrontendOverlayState.swift in Sources */,
 				FA11C0DE0000000000000021 /* OnboardingStateObservable.swift in Sources */,
