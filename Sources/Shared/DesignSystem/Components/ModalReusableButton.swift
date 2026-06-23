@@ -14,7 +14,7 @@ public struct ModalReusableButton: View {
 
     private let imageSize: CGSize = .init(width: 16, height: 16)
 
-    /// When alternative action is set, the button will execute this action instead of dismissing the view.
+    /// A reusable icon-only button intended for modal headers/toolbars (executes `action` when tapped).
     public init(
         tint: Color = Color.secondary,
         icon: Icon,
