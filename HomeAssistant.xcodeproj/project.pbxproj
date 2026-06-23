@@ -23,6 +23,11 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		42FA000000000000000C0002 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0001 /* WebRTC */; };
+		42FA000000000000000C0005 /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */; };
+		42FA000000000000000C0006 /* WebRTCViewPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */; };
+		42FA000000000000000C0007 /* WebRTCVideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425390D82E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift */; };
+		42FA000000000000000C0009 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0008 /* SFSafeSymbols */; };
 		DFB59CC17BC47B8A6949B81C /* KioskScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71373DD7455D9CE893EB450B /* KioskScreensaverView.swift */; };
 		0841CA8F012D390039FA46A9 /* KioskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80244E5EBD91B74A271BFE69 /* KioskView.swift */; };
 		EF407595A931C19EBCCC9E87 /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
@@ -77,6 +82,7 @@
 		110ED5CA25A6826800489AF7 /* MacBridgeNetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110ED5AC25A6826300489AF7 /* MacBridgeNetworkMonitor.swift */; };
 		110FB44C2499C1A3000865B4 /* CameraStreamHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */; };
 		110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */; };
+		42FA000000000000000C0004 /* CameraStreamWebRTCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA000000000000000C0003 /* CameraStreamWebRTCViewController.swift */; };
 		110FB4502499CE34000865B4 /* CameraStreamMJPEGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */; };
 		110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */; };
 		1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
@@ -1946,6 +1952,7 @@
 		110ED5AC25A6826300489AF7 /* MacBridgeNetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeNetworkMonitor.swift; sourceTree = "<group>"; };
 		110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHandler.swift; sourceTree = "<group>"; };
 		110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSViewController.swift; sourceTree = "<group>"; };
+		42FA000000000000000C0003 /* CameraStreamWebRTCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamWebRTCViewController.swift; sourceTree = "<group>"; };
 		110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamMJPEGViewController.swift; sourceTree = "<group>"; };
 		110FB4512499DB3A000865B4 /* map_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = map_notification.apns; sourceTree = "<group>"; };
 		110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationErrorViewController.swift; sourceTree = "<group>"; };
@@ -3620,6 +3627,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42FA000000000000000C0002 /* WebRTC in Frameworks */,
+				42FA000000000000000C0009 /* SFSafeSymbols in Frameworks */,
 				B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */,
 				42A1F0B42E000000000000B4 /* Alamofire in Frameworks */,
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
@@ -6795,6 +6804,7 @@
 				B63CCDCA216442C200123C50 /* MapViewController.swift */,
 				110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */,
 				110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */,
+				42FA000000000000000C0003 /* CameraStreamWebRTCViewController.swift */,
 				110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */,
 				110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */,
 				11169CA9262FCE43005EF90A /* ImageAttachmentViewController.swift */,
@@ -7744,6 +7754,8 @@
 			);
 			name = "Extensions-NotificationContent";
 			packageProductDependencies = (
+				42FA000000000000000C0001 /* WebRTC */,
+				42FA000000000000000C0008 /* SFSafeSymbols */,
 				3932B484D8AF4C056AB1A84D /* GRDB */,
 				42A1F0A42E000000000000A4 /* Alamofire */,
 			);
@@ -9308,12 +9320,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42FA000000000000000C0005 /* WebRTCClient.swift in Sources */,
+				42FA000000000000000C0006 /* WebRTCViewPlayerViewModel.swift in Sources */,
+				42FA000000000000000C0007 /* WebRTCVideoPlayerViewController.swift in Sources */,
 				B63CCDCB216442C200123C50 /* MapViewController.swift in Sources */,
 				11169CBB262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift in Sources */,
 				11169CAA262FCE43005EF90A /* ImageAttachmentViewController.swift in Sources */,
 				110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */,
 				B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */,
 				110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */,
+				42FA000000000000000C0004 /* CameraStreamWebRTCViewController.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
 				11F01A80263D050D002AC33B /* NotificationLoadingViewController.swift in Sources */,
 				11169CEC262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift in Sources */,
@@ -12445,6 +12461,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		42FA000000000000000C0001 /* WebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */;
+			productName = WebRTC;
+		};
+		42FA000000000000000C0008 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
 		067B845F1477358424F0C5FD /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;

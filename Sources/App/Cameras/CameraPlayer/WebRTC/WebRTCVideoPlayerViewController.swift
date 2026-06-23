@@ -8,6 +8,7 @@ class WebRTCVideoPlayerViewController: UIViewController {
     private var remoteVideoView: RTCMTLVideoView!
 
     var onVideoStarted: (() -> Void)?
+    var onVideoSizeChanged: ((CGSize) -> Void)?
 
     init(viewModel: WebRTCViewPlayerViewModel) {
         self.viewModel = viewModel
@@ -55,6 +56,7 @@ extension WebRTCVideoPlayerViewController: RTCVideoViewDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.viewModel.showLoader = false
             self?.onVideoStarted?()
+            self?.onVideoSizeChanged?(size)
         }
     }
 }

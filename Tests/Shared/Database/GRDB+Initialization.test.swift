@@ -54,6 +54,7 @@ struct GRDBInitializationTests {
             GRDBDatabaseTable.homeViewConfiguration.rawValue,
             GRDBDatabaseTable.assistConfiguration.rawValue,
             GRDBDatabaseTable.allowedTags.rawValue,
+            GRDBDatabaseTable.kioskSettings.rawValue,
         ]
 
         for expectedName in expectedTableNames {

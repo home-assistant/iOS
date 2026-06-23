@@ -421,6 +421,18 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             Current.sceneManager.appCoordinator.done {
                 $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
             }
+        } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let entityId = userInfo["entity_id"] as? String,
+                  let entityURL = AppConstants.openEntityDeeplinkURL(
+                      entityId: entityId,
+                      serverId: server.identifier.rawValue
+                  ) {
+            // No tap action was specified, so open the notification's entity on the server it
+            // came from.
+            Current.Log.info("opening entity \(entityId) from notification tap")
+            Current.sceneManager.appCoordinator.done { _ in
+                URLOpener.shared.open(entityURL, options: [:], completionHandler: nil)
+            }
         }
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {

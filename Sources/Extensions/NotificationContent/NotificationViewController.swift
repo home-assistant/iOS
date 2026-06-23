@@ -123,7 +123,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 return .value(())
             }
 
-            if controller.mediaPlayPauseButtonType == .none, let view = self?.view {
+            if controller.mediaPlayPauseButtonType == .none, !controller.hidesSystemLoadingIndicator,
+               let view = self?.view {
                 // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
                 hud = {
                     let hud = MBProgressHUD.showAdded(to: view, animated: true)
@@ -167,6 +168,9 @@ protocol NotificationCategory: NSObjectProtocol {
     init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws
     func start() -> Promise<Void>
 
+    // Return true to suppress the system loading HUD because the controller shows its own indicator.
+    var hidesSystemLoadingIndicator: Bool { get }
+
     // Implementing this method and returning a button type other that "None" will
     // make the notification attempt to draw a play/pause button correctly styled
     // for that type.
@@ -180,4 +184,8 @@ protocol NotificationCategory: NSObjectProtocol {
     // Called when the user taps the play or pause button.
     func mediaPlay()
     func mediaPause()
+}
+
+extension NotificationCategory {
+    var hidesSystemLoadingIndicator: Bool { false }
 }

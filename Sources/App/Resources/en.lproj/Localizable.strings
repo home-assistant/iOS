@@ -422,11 +422,14 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "extensions.map.payload_missing_homeassistant.message" = "Payload didn't contain a homeassistant dictionary!";
 "extensions.map.value_missing_or_uncastable.latitude.message" = "Latitude wasn't found or couldn't be casted to string!";
 "extensions.map.value_missing_or_uncastable.longitude.message" = "Longitude wasn't found or couldn't be casted to string!";
+"extensions.notification_content.camera.mute" = "Mute";
+"extensions.notification_content.camera.unmute" = "Unmute";
 "extensions.notification_content.error.no_entity_id" = "No entity_id found in payload!";
 "extensions.notification_content.error.request.auth_failed" = "Authentication failed!";
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
+"extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC stream unavailable";
 "gestures.1_finger.title" = "Using one finger";
 "gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
@@ -587,7 +590,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.button" = "End All";
 "live_activity.end_all.confirm.title" = "End all Live Activities?";
+"live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
 "live_activity.frequent_updates.title" = "Frequent Updates";
+"live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
 "live_activity.sample.alarm.note" = "Short 60-second countdown, no progress bar. Red communicates urgency — watch the timer count down in real time.";
 "live_activity.sample.alarm.title" = "Alarm · 60 sec Countdown";
 "live_activity.sample.all_fields.note" = "Every content-state field active at once: icon, live countdown, and progress bar. Confirms no layout collisions.";
@@ -621,6 +626,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.samples.static_title" = "Sample · Static";
 "live_activity.samples.title" = "Samples";
 "live_activity.section.active" = "Active Activities";
+"live_activity.section.privacy" = "Privacy";
 "live_activity.section.status" = "Status";
 "live_activity.status.enabled" = "Enabled";
 "live_activity.status.not_supported" = "Not available on iPad";

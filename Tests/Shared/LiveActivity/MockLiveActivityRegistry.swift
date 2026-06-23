@@ -12,6 +12,8 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
     struct StartOrUpdateCall: Equatable {
         let tag: String
         let title: String
+        let serverWebhookId: String?
+        let state: HALiveActivityAttributes.ContentState
     }
 
     struct EndCall {
@@ -33,13 +35,16 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
     func startOrUpdate(
         tag: String,
         title: String,
+        serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState
     ) async throws {
         if let error = startOrUpdateError {
             startOrUpdateError = nil
             throw error
         }
-        startOrUpdateCalls.append(StartOrUpdateCall(tag: tag, title: title))
+        startOrUpdateCalls.append(
+            StartOrUpdateCall(tag: tag, title: title, serverWebhookId: serverWebhookId, state: state)
+        )
     }
 
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async {

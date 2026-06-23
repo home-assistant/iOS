@@ -108,6 +108,16 @@ public enum AppConstants {
         }
     }
 
+    /// Roots a scheme-less, slash-less navigation path (`map/0` → `/map/0`) so an HA path that is
+    /// missing its leading slash still resolves in the frontend. Anything already rooted, or that
+    /// carries a scheme — `https://`, `mailto:`, or the app's own `homeassistant://` deep links —
+    /// is returned unchanged, so external URLs open in the browser and deep links are handled by
+    /// the URL handler as deep links rather than being coerced into a path.
+    public static func normalizedNavigationDestination(_ raw: String) -> String {
+        guard !raw.hasPrefix("/"), URL(string: raw)?.scheme == nil else { return raw }
+        return "/" + raw
+    }
+
     public static func invitationURL(serverURL: URL) -> URL? {
         guard let encodedURLString = serverURL.absoluteString
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {

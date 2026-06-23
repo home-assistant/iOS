@@ -20,6 +20,26 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertEqual(typeName, "HALiveActivityAttributes")
     }
 
+    /// The originating server id is carried as the snake_case `webhook_id` key in the
+    /// push-to-start `attributes`. The relay sends it so a tap can open that server.
+    func testAttributes_serverWebhookId_encodesAsWebhookId() throws {
+        let attributes = HALiveActivityAttributes(tag: "t", title: "Title", serverWebhookId: "wh-123")
+        let data = try JSONEncoder().encode(attributes)
+        let dict = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        XCTAssertEqual(dict["webhook_id"] as? String, "wh-123")
+        XCTAssertNil(dict["serverWebhookId"], "must use the snake_case wire key")
+    }
+
+    /// Activities created before this shipped (or by a relay that omits it) must still decode,
+    /// with a nil server id — the field stays optional.
+    func testAttributes_missingWebhookId_decodesAsNil() throws {
+        let json = Data(#"{"tag":"t","title":"Title"}"#.utf8)
+        let decoded = try JSONDecoder().decode(HALiveActivityAttributes.self, from: json)
+        XCTAssertNil(decoded.serverWebhookId)
+        XCTAssertEqual(decoded.tag, "t")
+        XCTAssertEqual(decoded.title, "Title")
+    }
+
     /// CodingKeys define the JSON field names in APNs content-state payloads.
     /// Adding new optional fields is safe; renaming or removing breaks in-flight activities.
     func testContentState_codingKeys_areFrozen() {
@@ -32,7 +52,8 @@ final class LiveActivityContractTests: XCTestCase {
             chronometer: true,
             countdownEnd: Date(timeIntervalSince1970: 0),
             icon: "mdi:test",
-            color: "#FF0000"
+            color: "#FF0000",
+            url: "/lovelace/0"
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970
@@ -50,6 +71,7 @@ final class LiveActivityContractTests: XCTestCase {
             "countdown_end",
             "icon",
             "color",
+            "url",
         ]
         XCTAssertEqual(Set(dict.keys), expectedKeys)
     }
@@ -65,7 +87,8 @@ final class LiveActivityContractTests: XCTestCase {
             chronometer: true,
             countdownEnd: Date(timeIntervalSince1970: 1_700_000_000),
             icon: "mdi:washing-machine",
-            color: "#2196F3"
+            color: "#2196F3",
+            url: "/lovelace/laundry"
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970
