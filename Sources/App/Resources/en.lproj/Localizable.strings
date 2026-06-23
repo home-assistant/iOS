@@ -256,6 +256,7 @@
 "carPlay.debug.settings.tts_playback.playback_strategy" = "Playback strategy";
 "carPlay.debug.settings.tts_playback.title" = "TTS Playback";
 "carPlay.labels.already_added_server" = "Already added";
+"carPlay.labels.empty_area_list" = "No areas available";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
 "carPlay.labels.select_server" = "Select server";

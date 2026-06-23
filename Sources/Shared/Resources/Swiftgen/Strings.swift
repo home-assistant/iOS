@@ -985,6 +985,8 @@ public enum L10n {
     public enum Labels {
       /// Already added
       public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carPlay.labels.already_added_server") }
+      /// No areas available
+      public static var emptyAreaList: String { return L10n.tr("Localizable", "carPlay.labels.empty_area_list") }
       /// No domains available
       public static var emptyDomainList: String { return L10n.tr("Localizable", "carPlay.labels.empty_domain_list") }
       /// No servers available. Add a server in the app.

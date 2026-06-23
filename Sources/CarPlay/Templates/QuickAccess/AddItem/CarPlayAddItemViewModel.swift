@@ -8,6 +8,12 @@ import Shared
 final class CarPlayAddItemViewModel {
     private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
 
+    /// Memoized compatible entities per server. `compatibleEntities(serverId:)` reads every cached entity and
+    /// the registry, and the picker calls it once per navigation step (domains, areas, entity lists), so the
+    /// cache avoids repeating those full-table reads. The cached GRDB data is stable for the lifetime of a
+    /// single add/edit flow (the view model is created fresh each time the flow starts).
+    private var compatibleEntitiesCache: [String: [HAAppEntity]] = [:]
+
     var servers: [Server] {
         Current.servers.all
     }
@@ -145,6 +151,10 @@ final class CarPlayAddItemViewModel {
     /// Entities on the server eligible for Quick Access: a CarPlay-supported domain, not hidden and not
     /// configuration/diagnostic. Sorted by display name.
     private func compatibleEntities(serverId: String) -> [HAAppEntity] {
+        if let cached = compatibleEntitiesCache[serverId] {
+            return cached
+        }
+
         let excludedEntityIds = excludedEntityIds(serverId: serverId)
 
         let entities: [HAAppEntity]
@@ -155,13 +165,15 @@ final class CarPlayAddItemViewModel {
             return []
         }
 
-        return entities
+        let compatible = entities
             .filter { entity in
                 entity.serverId == serverId
                     && !excludedEntityIds.contains(entity.entityId)
                     && (entity.resolvedDomain?.isCarPlaySupported ?? false)
             }
             .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        compatibleEntitiesCache[serverId] = compatible
+        return compatible
     }
 
     private func excludedEntityIds(serverId: String) -> Set<String> {

@@ -120,7 +120,7 @@ final class CarPlayAddItemFlow {
         return section(
             header: L10n.CarPlay.Navigation.Tab.areas,
             rows: rows,
-            emptyMessage: L10n.CarPlay.Labels.emptyDomainList
+            emptyMessage: L10n.CarPlay.Labels.emptyAreaList
         )
     }
 
