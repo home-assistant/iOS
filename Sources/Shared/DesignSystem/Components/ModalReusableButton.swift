@@ -8,7 +8,6 @@ public struct ModalReusableButton: View {
         case mdi(MaterialDesignIcons)
     }
 
-    @Environment(\.dismiss) private var dismiss
     private let action: () -> Void
     private let tint: Color
     private let icon: Icon
