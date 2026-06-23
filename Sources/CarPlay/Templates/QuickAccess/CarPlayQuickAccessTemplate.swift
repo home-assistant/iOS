@@ -19,6 +19,14 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let currentState: String
     }
 
+    private struct CondensedDisplayItem {
+        let image: UIImage
+        let iconColor: UIColor?
+        let title: String
+        let subtitle: String?
+        let handler: (@escaping () -> Void) -> Void
+    }
+
     private let viewModel: CarPlayQuickAccessViewModel
 
     private let paginatedList = CarPlayPaginatedListTemplate(
@@ -211,21 +219,25 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func presentEmptyState() {
-        template.trailingNavigationBarButtons = []
-        template.updateSections([.init(items: [makeAddItemRow()])])
+        if #available(iOS 26.0, *), currentLayout == .grid {
+            paginatedList.updateItems(items: rowItems(displayItems: actionDisplayItems(includeEdit: false)))
+        } else {
+            template.trailingNavigationBarButtons = []
+            template.updateSections([.init(items: [makeAddItemRow()])])
+        }
     }
 
     private func refreshCurrentPresentation() {
-        guard !currentItems.isEmpty else { return }
-        let addItemRow = makeAddItemRow()
-        let editItemRow = makeEditItemRow()
+        guard !currentItems.isEmpty else {
+            presentEmptyState()
+            return
+        }
+
         if #available(iOS 26.0, *), currentLayout == .grid {
-            var items: [any CPListTemplateItem] = rowItems(items: currentItems)
-            items.append(addItemRow)
-            items.append(editItemRow)
-            paginatedList.updateItems(items: items)
+            let displayItems = gridItems(items: currentItems) + actionDisplayItems(includeEdit: true)
+            paginatedList.updateItems(items: rowItems(displayItems: displayItems))
         } else {
-            paginatedList.updateItems(items: listItems(items: currentItems) + [addItemRow, editItemRow])
+            paginatedList.updateItems(items: listItems(items: currentItems) + [makeAddItemRow(), makeEditItemRow()])
         }
     }
 
@@ -299,11 +311,73 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     @available(iOS 26.0, *)
-    private func rowItems(items: [MagicItem]) -> [any CPListTemplateItem] {
+    private func gridItems(items: [MagicItem]) -> [CondensedDisplayItem] {
         let entityToAreaMap = entityToAreaMap()
-        let displayItems = items.compactMap { rowDisplayItem(for: $0, entityToAreaMap: entityToAreaMap) }
+        return items.compactMap { magicItem in
+            guard let displayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
+                return nil
+            }
 
-        return stride(from: 0, to: displayItems.count, by: CarPlayCondensedEntitiesGroup.size).map { startIndex in
+            return CondensedDisplayItem(
+                image: displayItem.image,
+                iconColor: displayItem.iconColor,
+                title: displayItem.title,
+                subtitle: displayItem.subtitle,
+                handler: { [weak self] completion in
+                    guard let self else {
+                        completion()
+                        return
+                    }
+
+                    if isAssistItem(displayItem.magicItem) {
+                        presentAssistSession(magicItem: displayItem.magicItem, info: displayItem.info)
+                    } else {
+                        itemTap(
+                            magicItem: displayItem.magicItem,
+                            info: displayItem.info,
+                            currentItemState: displayItem.currentState,
+                            executionStarted: { [weak self] in self?.beginExecuting(displayItem.magicItem) },
+                            executionFinished: { [weak self] in self?.endExecuting(displayItem.magicItem) }
+                        )
+                    }
+                    completion()
+                }
+            )
+        }
+    }
+
+    @available(iOS 26.0, *)
+    private func actionDisplayItems(includeEdit: Bool) -> [CondensedDisplayItem] {
+        var items = [CondensedDisplayItem(
+            image: MaterialDesignIcons.plusCircleOutlineIcon.carPlayIcon(),
+            iconColor: nil,
+            title: L10n.CarPlay.QuickAccess.AddItem.button,
+            subtitle: nil,
+            handler: { [weak self] completion in
+                self?.presentAddItemFlow()
+                completion()
+            }
+        )]
+
+        if includeEdit {
+            items.append(CondensedDisplayItem(
+                image: MaterialDesignIcons.pencilCircleOutlineIcon.carPlayIcon(),
+                iconColor: nil,
+                title: L10n.CarPlay.QuickAccess.EditItem.button,
+                subtitle: L10n.CarPlay.QuickAccess.EditItem.subtitle,
+                handler: { [weak self] completion in
+                    self?.presentEditItemFlow()
+                    completion()
+                }
+            ))
+        }
+
+        return items
+    }
+
+    @available(iOS 26.0, *)
+    private func rowItems(displayItems: [CondensedDisplayItem]) -> [any CPListTemplateItem] {
+        stride(from: 0, to: displayItems.count, by: CarPlayCondensedEntitiesGroup.size).map { startIndex in
             let pageItems = Array(displayItems[startIndex ..< min(
                 startIndex + CarPlayCondensedEntitiesGroup.size,
                 displayItems.count
@@ -323,29 +397,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 condensedElements: elements,
                 allowsMultipleLines: true
             )
-            rowItem.listImageRowHandler = { [weak self] _, index, completion in
+            rowItem.listImageRowHandler = { _, index, completion in
                 guard pageItems.indices.contains(index) else {
                     completion()
                     return
                 }
 
-                let selectedItem = pageItems[index]
-                if self?.isAssistItem(selectedItem.magicItem) == true {
-                    self?.presentAssistSession(
-                        magicItem: selectedItem.magicItem,
-                        info: selectedItem.info
-                    )
-                    completion()
-                } else {
-                    self?.itemTap(
-                        magicItem: selectedItem.magicItem,
-                        info: selectedItem.info,
-                        currentItemState: selectedItem.currentState,
-                        executionStarted: { [weak self] in self?.beginExecuting(selectedItem.magicItem) },
-                        executionFinished: { [weak self] in self?.endExecuting(selectedItem.magicItem) }
-                    )
-                    completion()
-                }
+                pageItems[index].handler(completion)
             }
             return rowItem
         }

@@ -1018,6 +1018,22 @@ public enum L10n {
             }
           }
         }
+        public enum MainServer {
+          /// Main server
+          public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.main_server.title") }
+        }
+        public enum Troubleshooting {
+          /// Troubleshooting
+          public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.title") }
+          public enum AssistAudio {
+            /// Assist audio
+            public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist_audio.title") }
+          }
+          public enum ForceClose {
+            /// Force close app
+            public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.force_close.title") }
+          }
+        }
       }
       public enum Tab {
         /// Settings

@@ -266,6 +266,10 @@
 "carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
 "carPlay.labels.settings.advanced.section.button.title" = "Restart App";
 "carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.settings.main_server.title" = "Main server";
+"carPlay.labels.settings.troubleshooting.assist_audio.title" = "Assist audio";
+"carPlay.labels.settings.troubleshooting.force_close.title" = "Force close app";
+"carPlay.labels.settings.troubleshooting.title" = "Troubleshooting";
 "carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carPlay.navigation.button.next" = "Next";
