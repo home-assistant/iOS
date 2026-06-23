@@ -570,7 +570,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             Current.Log.warning("Received unhandled kiosk push command: \(message)")
         }
 
-        return []
+        return KioskPushCommand(message: message) == nil ? nil : []
     }
 
     public func userNotificationCenter(
