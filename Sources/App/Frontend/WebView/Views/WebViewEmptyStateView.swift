@@ -128,14 +128,48 @@ struct WebViewEmptyStateView: View {
     @ViewBuilder
     private var serverSelection: some View {
         if style.showsServerPicker, Current.servers.all.count > 1 {
-            ServerPickerView(server: server, onSelect: serverSelectionAction)
-            #if targetEnvironment(macCatalyst)
-                .padding()
-            #endif
-                // Using .secondarySystemBackground to visually distinguish the server selection view
-                .background(Color(uiColor: .secondarySystemBackground))
-                .clipShape(Capsule())
+            if Current.isCatalyst {
+                macServerSelection
+            } else {
+                ServerPickerView(server: server, onSelect: serverSelectionAction)
+                    // Using .secondarySystemBackground to visually distinguish the server selection view
+                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(Capsule())
+            }
         }
+    }
+
+    private var macServerSelection: some View {
+        Menu {
+            ForEach(Current.servers.all, id: \.identifier) { availableServer in
+                Button {
+                    selectServer(availableServer)
+                } label: {
+                    Label(
+                        availableServer.info.name,
+                        systemSymbol: availableServer.identifier == server.identifier ? .checkmark : .serverRack
+                    )
+                }
+            }
+        } label: {
+            HStack(spacing: DesignSystem.Spaces.one) {
+                Image(systemSymbol: .serverRack)
+                    .foregroundStyle(Color.haPrimary)
+
+                Text(server.info.name)
+                    .font(.callout)
+                    .lineLimit(1)
+
+                Image(systemSymbol: .chevronUpChevronDown)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .padding(.vertical, DesignSystem.Spaces.one)
+            .background(Color(uiColor: .secondarySystemBackground))
+            .clipShape(.capsule)
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
@@ -255,6 +289,16 @@ struct WebViewEmptyStateView: View {
 
     private var canShowErrorDetailsButton: Bool {
         style == .disconnected && showsErrorDetailsButton && errorDetailsAction != nil
+    }
+
+    private func selectServer(_ server: Server) {
+        if let serverSelectionAction {
+            serverSelectionAction(server)
+        } else {
+            Current.sceneManager.appCoordinator.done { coordinator in
+                coordinator.open(server: server)
+            }
+        }
     }
 
     private var resolvedLeadingHeaderAccessory: WebViewEmptyStateStyle.HeaderAccessory {

@@ -1098,7 +1098,6 @@
 		42E0D82C2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		42E0D82D2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		42E28A712FEABEBD00B65504 /* ModalReusableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E28A702FEABEBD00B65504 /* ModalReusableButton.swift */; };
-		42E28A722FEABEBD00B65504 /* ModalReusableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E28A702FEABEBD00B65504 /* ModalReusableButton.swift */; };
 		42E3B8B92D8AC63300F5D084 /* Float+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8B82D8AC63300F5D084 /* Float+HA.swift */; };
 		42E3B8BA2D8AC63300F5D084 /* Float+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8B82D8AC63300F5D084 /* Float+HA.swift */; };
 		42E3B8C02D8ACE0400F5D084 /* OptionalsDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */; };
@@ -9686,7 +9685,6 @@
 				864FFB19D2954B698B31E350 /* WebViewController+ReAuth.swift in Sources */,
 				423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
 				42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */,
-				42E28A722FEABEBD00B65504 /* ModalReusableButton.swift in Sources */,
 				42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */,
 				4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
