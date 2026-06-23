@@ -21,6 +21,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
     private let webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
+        configuration.defaultWebpagePreferences.preferredContentMode = Current.isCatalyst ? .desktop : .mobile
 
         return WKWebView(frame: .zero, configuration: configuration)
     }()
