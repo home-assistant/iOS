@@ -1,15 +1,28 @@
 import Shared
 import SwiftUI
+import UIKit
 
 struct ConditionalContainerView: View {
     @StateObject private var kiosk = Current.kiosk
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        if kiosk.settings.enabled {
-            KioskView()
-        } else {
-            ContainerView()
+        Group {
+            if kiosk.settings.enabled {
+                KioskView()
+            } else {
+                ContainerView()
+            }
         }
+        .onAppear { applyKeepScreenOn() }
+        .onChange(of: kiosk.shouldKeepScreenOn) { _ in applyKeepScreenOn() }
+        .onChange(of: scenePhase) { phase in
+            if phase == .active { applyKeepScreenOn() }
+        }
+    }
+
+    private func applyKeepScreenOn() {
+        UIApplication.shared.isIdleTimerDisabled = kiosk.shouldKeepScreenOn
     }
 }
 

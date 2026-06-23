@@ -10,6 +10,10 @@ import GRDB
 public final class KioskModeManager: ObservableObject {
     @Published public private(set) var settings: KioskSettings
 
+    public var shouldKeepScreenOn: Bool {
+        settings.enabled && settings.keepScreenOn
+    }
+
     private var observation: AnyDatabaseCancellable?
 
     public init() {
