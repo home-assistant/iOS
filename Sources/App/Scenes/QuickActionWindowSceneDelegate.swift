@@ -11,8 +11,11 @@ import UIKit
 /// 2. Honouring the Mac "Open Home Assistant UI in browser" setting (`macNativeFeaturesOnly`): on a plain
 ///    app-icon launch it opens Home Assistant in the user's default browser and destroys the otherwise-empty
 ///    webview window.
+/// 3. Persisting and restoring the Mac window size and position across launches via `WindowScenesManager`.
+///    The SwiftUI `WindowGroup` lifecycle does not restore the previous window geometry on its own, so the
+///    scene lifecycle is forwarded to `WindowScenesManager` (which saves the latest frame and re-applies it).
 ///
-/// Both behaviours previously lived in the now-removed `WebViewSceneDelegate`. This delegate is attached to
+/// All three behaviours previously lived in the now-removed `WebViewSceneDelegate`. This delegate is attached to
 /// the `"WebView"` scene configuration in `AppDelegate.application(_:configurationForConnecting:options:)`.
 /// In the normal (non-browser) case it does not create or own a `UIWindow` — SwiftUI's `WindowGroup`
 /// (see `HAApp`) keeps hosting `ContainerView`.
@@ -56,5 +59,18 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     completionHandler(false)
                 }
         }
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+        WindowScenesManager.shared.sceneDidBecomeActive(windowScene)
+    }
+
+    func sceneWillResignActive(_ scene: UIScene) {
+        WindowScenesManager.shared.sceneWillResignActive(scene)
+    }
+
+    func sceneDidDisconnect(_ scene: UIScene) {
+        WindowScenesManager.shared.didDiscardScene(scene)
     }
 }
