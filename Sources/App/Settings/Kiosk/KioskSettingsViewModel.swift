@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import LocalAuthentication
 import Shared
 
 @MainActor
@@ -9,6 +10,7 @@ final class KioskSettingsViewModel: ObservableObject {
     @Published var panels: [AppPanel] = []
     @Published var showError = false
     @Published private(set) var errorMessage: String?
+    @Published private(set) var isUnlocked = true
 
     private var cancellables = Set<AnyCancellable>()
     private var isInitialLoad = true
@@ -43,8 +45,35 @@ final class KioskSettingsViewModel: ObservableObject {
         if settings.serverId == nil {
             settings.serverId = servers.first?.identifier.rawValue
         }
+        isUnlocked = !settings.requireAuthentication
         reloadPanels()
         isInitialLoad = false
+    }
+
+    func authenticateIfNeeded() {
+        guard settings.requireAuthentication, !isUnlocked else { return }
+        authenticate()
+    }
+
+    func authenticate() {
+        let context = LAContext()
+        var error: NSError?
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
+            Current.Log.error("Kiosk authentication unavailable: \(error?.localizedDescription ?? "unknown")")
+            isUnlocked = true
+            return
+        }
+        context.evaluatePolicy(
+            .deviceOwnerAuthentication,
+            localizedReason: L10n.Kiosk.Authentication.reason
+        ) { [weak self] success, error in
+            if let error {
+                Current.Log.error("Kiosk authentication failed: \(error.localizedDescription)")
+            }
+            Task { @MainActor in
+                self?.isUnlocked = success
+            }
+        }
     }
 
     func reloadPanels() {

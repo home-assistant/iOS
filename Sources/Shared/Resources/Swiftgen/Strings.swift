@@ -1952,8 +1952,14 @@ public enum L10n {
     public enum Authentication {
       /// When enabled, changing kiosk mode settings requires device biometry or passcode. This prevents others from leaving kiosk mode or changing its configuration.
       public static var footer: String { return L10n.tr("Localizable", "kiosk.authentication.footer") }
+      /// Kiosk settings are locked
+      public static var lockedTitle: String { return L10n.tr("Localizable", "kiosk.authentication.locked_title") }
+      /// Authenticate to access kiosk mode settings.
+      public static var reason: String { return L10n.tr("Localizable", "kiosk.authentication.reason") }
       /// Authentication
       public static var title: String { return L10n.tr("Localizable", "kiosk.authentication.title") }
+      /// Unlock
+      public static var unlockButton: String { return L10n.tr("Localizable", "kiosk.authentication.unlock_button") }
     }
     public enum AutoReload {
       /// 1 hour

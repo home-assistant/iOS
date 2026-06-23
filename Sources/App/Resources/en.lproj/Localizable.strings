@@ -528,7 +528,10 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "improv.wifi.alert.title" = "Connect to WiFi";
 "intents.server_required_for_value" = "Select a server before picking this value.";
 "kiosk.authentication.footer" = "When enabled, changing kiosk mode settings requires device biometry or passcode. This prevents others from leaving kiosk mode or changing its configuration.";
+"kiosk.authentication.locked_title" = "Kiosk settings are locked";
+"kiosk.authentication.reason" = "Authenticate to access kiosk mode settings.";
 "kiosk.authentication.title" = "Authentication";
+"kiosk.authentication.unlock_button" = "Unlock";
 "kiosk.auto_reload.hours_1" = "1 hour";
 "kiosk.auto_reload.minutes_1" = "1 minute";
 "kiosk.auto_reload.minutes_10" = "10 minutes";

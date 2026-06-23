@@ -79,6 +79,35 @@ struct KioskSettingsView: View {
         .onChange(of: viewModel.settings.serverId) { _ in
             viewModel.serverDidChange()
         }
+        .overlay {
+            if !viewModel.isUnlocked {
+                lockOverlay
+            }
+        }
+        .onAppear {
+            viewModel.authenticateIfNeeded()
+        }
+    }
+
+    private var lockOverlay: some View {
+        ZStack {
+            Color(uiColor: .systemGroupedBackground)
+            VStack(spacing: DesignSystem.Spaces.two) {
+                Spacer()
+                Image(systemSymbol: .lockFill)
+                    .font(.system(size: 72))
+                    .foregroundStyle(.secondary)
+                Text(L10n.Kiosk.Authentication.lockedTitle)
+                    .font(.title.bold())
+                    .multilineTextAlignment(.center)
+                Spacer()
+                Button(L10n.Kiosk.Authentication.unlockButton) {
+                    viewModel.authenticate()
+                }
+                .buttonStyle(.primaryButton)
+            }
+            .padding(DesignSystem.Spaces.two)
+        }
     }
 }
 
