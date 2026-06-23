@@ -1,53 +1,21 @@
-import CoreNFC
 import Foundation
 import PromiseKit
 import Shared
+#if !targetEnvironment(macCatalyst)
+import CoreNFC
+#endif
 
-class iOSTagManager: TagManager {
+class TagActivityManager: TagManager {
     var isNFCAvailable: Bool {
-        // We need both iOS 13 and NFC
-        if Current.isCatalyst {
-            // NFC doesn't work on Catalyst but _does_ crash occasionally asking
-            return false
-        } else {
-            return NFCNDEFReaderSession.readingAvailable
-        }
+        false
     }
 
     func readNFC() -> Promise<String> {
-        let reader = NFCReader()
-        var readerRetain: NFCReader? = reader
-
-        return firstly {
-            reader.promise
-        }.ensure {
-            withExtendedLifetime(readerRetain) {
-                readerRetain = nil
-            }
-        }.then {
-            Self.identifier(from: $0)
-        }
+        .init(error: TagManagerError.nfcUnavailable)
     }
 
     func writeNFC(value: String) -> Promise<String> {
-        guard let uriPayload = NFCNDEFPayload.wellKnownTypeURIPayload(url: Self.url(for: value)),
-              let aarPayload = NFCNDEFPayload.androidPackage(payload: "io.homeassistant.companion.android") else {
-            return .init(error: TagManagerError.notHomeAssistantTag)
-        }
-
-        let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [aarPayload])
-        var writerRetain: NFCWriter? = writer
-
-        return firstly {
-            writer.promise
-        }.ensure {
-            withExtendedLifetime(writerRetain) {
-                writerRetain = nil
-            }
-        }.then { message in
-            // we use the same logic as reading, so we can be sure the identifier is right
-            Self.identifier(from: message)
-        }
+        .init(error: TagManagerError.nfcUnavailable)
     }
 
     func handle(userActivity: NSUserActivity) -> TagManagerHandleResult {
@@ -58,7 +26,7 @@ class iOSTagManager: TagManager {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
 
         if let tag = Self.identifier(from: url) {
-            let type = Self.handledType(from: userActivity)
+            let type = handledType(from: userActivity)
             if AllowedTag.contains(tag) {
                 fireEvent(tag: tag).cauterize()
                 return .handled(type)
@@ -75,7 +43,11 @@ class iOSTagManager: TagManager {
         return .unhandled
     }
 
-    private static func url(for identifier: String) -> URL {
+    func handledType(from userActivity: NSUserActivity) -> TagManagerHandleResult.HandledType {
+        .generic
+    }
+
+    fileprivate static func url(for identifier: String) -> URL {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "www.home-assistant.io"
@@ -83,7 +55,7 @@ class iOSTagManager: TagManager {
         return components.url!
     }
 
-    private static func identifier(from url: URL) -> String? {
+    fileprivate static func identifier(from url: URL) -> String? {
         guard isSupportedTagHost(url.host?.lowercased()) else {
             return nil
         }
@@ -110,8 +82,51 @@ class iOSTagManager: TagManager {
         }
         return hosts.contains(host)
     }
+}
 
-    private static func handledType(from userActivity: NSUserActivity) -> TagManagerHandleResult.HandledType {
+#if !targetEnvironment(macCatalyst)
+class iOSTagManager: TagActivityManager {
+    override var isNFCAvailable: Bool {
+        NFCNDEFReaderSession.readingAvailable
+    }
+
+    override func readNFC() -> Promise<String> {
+        let reader = NFCReader()
+        var readerRetain: NFCReader? = reader
+
+        return firstly {
+            reader.promise
+        }.ensure {
+            withExtendedLifetime(readerRetain) {
+                readerRetain = nil
+            }
+        }.then {
+            Self.identifier(from: $0)
+        }
+    }
+
+    override func writeNFC(value: String) -> Promise<String> {
+        guard let uriPayload = NFCNDEFPayload.wellKnownTypeURIPayload(url: Self.url(for: value)),
+              let aarPayload = NFCNDEFPayload.androidPackage(payload: "io.homeassistant.companion.android") else {
+            return .init(error: TagManagerError.notHomeAssistantTag)
+        }
+
+        let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [aarPayload])
+        var writerRetain: NFCWriter? = writer
+
+        return firstly {
+            writer.promise
+        }.ensure {
+            withExtendedLifetime(writerRetain) {
+                writerRetain = nil
+            }
+        }.then { message in
+            // we use the same logic as reading, so we can be sure the identifier is right
+            Self.identifier(from: message)
+        }
+    }
+
+    override func handledType(from userActivity: NSUserActivity) -> TagManagerHandleResult.HandledType {
         let ndefRecord = userActivity.ndefMessagePayload.records.first
         if ndefRecord == nil || ndefRecord?.typeNameFormat == .empty {
             /*
@@ -140,3 +155,4 @@ class iOSTagManager: TagManager {
         }
     }
 }
+#endif
