@@ -11,6 +11,7 @@ struct HAApp: App {
         // Main Onboarding + Home Assistant Frontend
         WindowGroup {
             ConditionalContainerView()
+                .toastOverlay()
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
         }

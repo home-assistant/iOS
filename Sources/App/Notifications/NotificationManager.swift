@@ -491,7 +491,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             let title = command.localizedString
             let subtitle = command.localizedSubtitle
             Task { @MainActor in
-                ToastManager.shared.show(
+                ToastPresenter.shared.show(
                     id: identifier,
                     symbol: symbol,
                     symbolForegroundStyle: colors,

@@ -1,89 +1,43 @@
 import SwiftUI
 
-@available(iOS 18, *)
 public extension View {
+    /// Renders the currently presented `ToastPresenter.shared` toast as a top overlay. Attach once at
+    /// the app root. The overlay is non-interactive, so it never blocks touches to the content beneath.
     @ViewBuilder
-    func dynamicIslandToast(isPresented: Binding<Bool>, value: Toast) -> some View {
-        modifier(
-            DynamicIslandToastViewModifier(
-                isPresented: isPresented,
-                value: value
-            )
-        )
-    }
-}
-
-// Code snippet from Kavsoft, go support the creator if you like it:
-// https://www.patreon.com/posts/swiftui-dynamic-147414349
-/// Helper View Modifier
-@available(iOS 18, *)
-public struct DynamicIslandToastViewModifier: ViewModifier {
-    @Binding public var isPresented: Bool
-    public var value: Toast
-    /// View Properties
-    @State private var overlayWindow: PassThroughWindow?
-    @State private var overlayController: ToastHostingController?
-    public func body(content: Content) -> some View {
-        content
-            .background(WindowExtractor { mainWindow in
-                createOverlayWindow(mainWindow)
-            })
-            .onChange(of: isPresented, initial: true) { _, newValue in
-                guard let overlayWindow else { return }
-                if newValue {
-                    /// Setting Current Toast
-                    overlayWindow.toast = value
-                }
-
-                overlayWindow.isPresented = newValue
-                /// Updating Status Bar
-                overlayController?.isStatusBarHidden = newValue
-            }
-            /// If the toast is closed outside we need to update the isPresented Property as well!
-            .onChange(of: overlayWindow?.isPresented) { _, newValue in
-                if let newValue, let overlayWindow,
-                   overlayWindow.toast?.id == value.id, newValue != isPresented {
-                    isPresented = false
-                }
-
-                /// Add More Logic according to your needs!
-            }
-    }
-
-    private func createOverlayWindow(_ mainWindow: UIWindow) {
-        guard let windowScene = mainWindow.windowScene else { return }
-
-        if let window = windowScene.windows.first(where: { $0.tag == 1009 }) as? PassThroughWindow {
-            print("Using Already Existing Window!")
-            overlayWindow = window
-            overlayController = window.rootViewController as? ToastHostingController
+    func toastOverlay() -> some View {
+        if #available(iOS 18, *) {
+            modifier(ToastOverlayModifier())
         } else {
-            let overlayWindow = PassThroughWindow(windowScene: windowScene)
-            overlayWindow.backgroundColor = .clear
-            overlayWindow.isHidden = false
-            overlayWindow.isUserInteractionEnabled = true
-            overlayWindow.tag = 1009
-            createRootController(overlayWindow)
-
-            self.overlayWindow = overlayWindow
+            self
         }
     }
-
-    private func createRootController(_ window: PassThroughWindow) {
-        let hostingController = ToastHostingController(
-            rootView: ToastView(window: window)
-        )
-
-        hostingController.view.backgroundColor = .clear
-        window.rootViewController = hostingController
-
-        overlayController = hostingController
-    }
 }
 
 @available(iOS 18, *)
+private struct ToastOverlayModifier: ViewModifier {
+    @ObservedObject private var presenter = ToastPresenter.shared
+
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                ToastView(toast: presenter.toast, isExpanded: presenter.toast != nil)
+                    .allowsHitTesting(false)
+            }
+    }
+}
+
+// Animation adapted from Kavsoft's SwiftUI Dynamic Island toast:
+// https://www.patreon.com/posts/swiftui-dynamic-147414349
+@available(iOS 18, *)
 public struct ToastView: View {
-    @ObservedObject public var window: PassThroughWindow
+    public let toast: Toast?
+    public let isExpanded: Bool
+
+    public init(toast: Toast?, isExpanded: Bool) {
+        self.toast = toast
+        self.isExpanded = isExpanded
+    }
+
     public var body: some View {
         GeometryReader {
             let safeArea = $0.safeAreaInsets
@@ -136,14 +90,6 @@ public struct ToastView: View {
                 }
                 .geometryGroup()
                 .contentShape(.rect)
-                .gesture(
-                    DragGesture().onEnded { value in
-                        if value.translation.height < 0 {
-                            /// Dismiss
-                            window.isPresented = false
-                        }
-                    }
-                )
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .ignoresSafeArea()
@@ -154,7 +100,7 @@ public struct ToastView: View {
     /// Toast View Content
     @ViewBuilder
     func ToastContent(_ haveDynamicIsland: Bool) -> some View {
-        if let toast = window.toast {
+        if let toast {
             HStack(spacing: 10) {
                 Image(systemName: toast.symbol)
                     .font(toast.symbolFont)
@@ -185,9 +131,5 @@ public struct ToastView: View {
             .blur(radius: isExpanded ? 0 : 5)
             .opacity(isExpanded ? 1 : 0)
         }
-    }
-
-    var isExpanded: Bool {
-        window.isPresented
     }
 }

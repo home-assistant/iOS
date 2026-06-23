@@ -854,14 +854,11 @@
 		429481EB2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */; };
 		429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EC2DA943E700A8B468 /* ListPicker.swift */; };
 		429481EF2DA94B9900A8B468 /* ListPickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EE2DA94B9900A8B468 /* ListPickerTests.swift */; };
-		42955C1F2F1A54B700E398E8 /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EABD2F0FFB1900FA249B /* ToastManager.swift */; };
+		B71A57000000000000000011 /* ToastPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71A57000000000000000010 /* ToastPresenter.swift */; };
 		42955C202F1A54B700E398E8 /* ToastShowPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */; };
 		42955C212F1A54B700E398E8 /* ToastHidePayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */; };
 		42955C222F1A550B00E398E8 /* ExternalBusPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB72F0FF8EB00FA249B /* ExternalBusPayload.swift */; };
-		42955C232F1A552A00E398E8 /* PassThroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1362F0FE50C00E20584 /* PassThroughWindow.swift */; };
-		42955C242F1A552A00E398E8 /* WindowExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1392F0FE50C00E20584 /* WindowExtractor.swift */; };
 		42955C252F1A552A00E398E8 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1382F0FE50C00E20584 /* ToastView.swift */; };
-		42955C262F1A552A00E398E8 /* ToastHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1402F0FE5B000E20584 /* ToastHostingController.swift */; };
 		42955C272F1A552A00E398E8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1372F0FE50C00E20584 /* Toast.swift */; };
 		42955C3A2F20E2E800E398E8 /* ConnectivityCheckState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42955C372F20E2E800E398E8 /* ConnectivityCheckState.swift */; };
 		42955C3B2F20E2E800E398E8 /* ConnectivityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42955C362F20E2E800E398E8 /* ConnectivityChecker.swift */; };
@@ -2335,11 +2332,8 @@
 		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		420B10082B1D129B00D383D8 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		420BE1362F0FE50C00E20584 /* PassThroughWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughWindow.swift; sourceTree = "<group>"; };
 		420BE1372F0FE50C00E20584 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		420BE1382F0FE50C00E20584 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
-		420BE1392F0FE50C00E20584 /* WindowExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowExtractor.swift; sourceTree = "<group>"; };
-		420BE1402F0FE5B000E20584 /* ToastHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastHostingController.swift; sourceTree = "<group>"; };
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
 		420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.test.swift; sourceTree = "<group>"; };
@@ -2953,7 +2947,7 @@
 		42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastShowPayload.swift; sourceTree = "<group>"; };
 		42D6EAB72F0FF8EB00FA249B /* ExternalBusPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalBusPayload.swift; sourceTree = "<group>"; };
 		42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastHidePayload.swift; sourceTree = "<group>"; };
-		42D6EABD2F0FFB1900FA249B /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
+		B71A57000000000000000010 /* ToastPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastPresenter.swift; sourceTree = "<group>"; };
 		42D996E42D89863A001737A0 /* Bool+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+HA.swift"; sourceTree = "<group>"; };
 		42DC44342E1C0791001046C1 /* WebRTCVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerView.swift; sourceTree = "<group>"; };
 		42DC8B772E14027000D9999E /* SearchingServersAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingServersAnimationView.swift; sourceTree = "<group>"; };
@@ -4713,11 +4707,8 @@
 		420BE13A2F0FE50C00E20584 /* DynamicIslandToast */ = {
 			isa = PBXGroup;
 			children = (
-				420BE1402F0FE5B000E20584 /* ToastHostingController.swift */,
-				420BE1362F0FE50C00E20584 /* PassThroughWindow.swift */,
 				420BE1372F0FE50C00E20584 /* Toast.swift */,
 				420BE1382F0FE50C00E20584 /* ToastView.swift */,
-				420BE1392F0FE50C00E20584 /* WindowExtractor.swift */,
 			);
 			path = DynamicIslandToast;
 			sourceTree = "<group>";
@@ -6205,7 +6196,7 @@
 			isa = PBXGroup;
 			children = (
 				420BE13A2F0FE50C00E20584 /* DynamicIslandToast */,
-				42D6EABD2F0FFB1900FA249B /* ToastManager.swift */,
+				B71A57000000000000000010 /* ToastPresenter.swift */,
 			);
 			path = Toast;
 			sourceTree = "<group>";
@@ -10321,10 +10312,7 @@
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
 				424151FC2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
-				42955C232F1A552A00E398E8 /* PassThroughWindow.swift in Sources */,
-				42955C242F1A552A00E398E8 /* WindowExtractor.swift in Sources */,
 				42955C252F1A552A00E398E8 /* ToastView.swift in Sources */,
-				42955C262F1A552A00E398E8 /* ToastHostingController.swift in Sources */,
 				42955C272F1A552A00E398E8 /* Toast.swift in Sources */,
 				11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */,
@@ -10363,7 +10351,7 @@
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				4298587E2EB1025E00E33710 /* LocationManager.swift in Sources */,
 				11B6774D28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
-				42955C1F2F1A54B700E398E8 /* ToastManager.swift in Sources */,
+				B71A57000000000000000011 /* ToastPresenter.swift in Sources */,
 				42955C202F1A54B700E398E8 /* ToastShowPayload.swift in Sources */,
 				42955C212F1A54B700E398E8 /* ToastHidePayload.swift in Sources */,
 				110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */,
