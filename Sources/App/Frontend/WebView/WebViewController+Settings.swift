@@ -48,7 +48,7 @@ extension WebViewController {
         }
 
         if reason == .settingChange {
-            // Status-bar / home-indicator hiding is now driven from SwiftUI; only the edge-to-edge bar reacts.
+            setNeedsUpdateOfHomeIndicatorAutoHidden()
             updateEdgeToEdgeLayout()
         }
     }

@@ -76,8 +76,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
-    // Status-bar / home-indicator *hiding* is driven from SwiftUI (`HomeAssistantView`); only the status-bar
-    // *style* stays here, as SwiftUI has no equivalent.
+    override var prefersHomeIndicatorAutoHidden: Bool {
+        Current.settingsStore.fullScreen
+    }
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         underlyingPreferredStatusBarStyle
     }
