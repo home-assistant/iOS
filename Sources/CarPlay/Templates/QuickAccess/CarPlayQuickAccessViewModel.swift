@@ -32,14 +32,4 @@ final class CarPlayQuickAccessViewModel {
             return supportedItems.filter { $0.type != .assistPipeline && $0.type != .assistPrompt }
         }
     }
-
-    func sendIntroNotification() {
-        Current.notificationDispatcher.send(
-            .init(
-                id: NotificationIdentifier.carPlayIntro,
-                title: L10n.CarPlay.Notification.QuickAccess.Intro.title,
-                body: L10n.CarPlay.Notification.QuickAccess.Intro.body
-            )
-        )
-    }
 }
