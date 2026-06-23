@@ -1,3 +1,4 @@
+import Combine
 import Shared
 import SwiftUI
 import UIKit
@@ -14,6 +15,10 @@ struct HomeAssistantView: View, WebFrontendView {
 
     /// Published by the embedded `WebViewController`; drives the SwiftUI overlays below.
     @StateObject private var overlayState = WebFrontendOverlayState()
+
+    /// Drives status-bar / home-indicator hiding from full-screen and kiosk settings (the status-bar
+    /// *style* stays on `WebViewController`, as SwiftUI has no equivalent).
+    @StateObject private var chrome = WebViewChromeState()
 
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.server = server
@@ -64,5 +69,49 @@ struct HomeAssistantView: View, WebFrontendView {
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.showsNoActiveURL)
+        .statusBarHidden(chrome.statusBarHidden)
+        .modify { view in
+            if #available(iOS 16.0, *) {
+                view.persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
+            } else {
+                view
+            }
+        }
+    }
+}
+
+/// Observes the settings that drive system-chrome hiding (full-screen, kiosk hide-status-bar) so
+/// `HomeAssistantView` can hide the status bar / home indicator in SwiftUI rather than via UIKit overrides
+/// on `WebViewController`.
+@MainActor
+final class WebViewChromeState: ObservableObject {
+    @Published private(set) var statusBarHidden: Bool
+    @Published private(set) var homeIndicatorHidden: Bool
+
+    private var cancellables = Set<AnyCancellable>()
+
+    init() {
+        statusBarHidden = Self.resolveStatusBarHidden()
+        homeIndicatorHidden = Current.settingsStore.fullScreen
+
+        Current.kiosk.settingsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.refresh() }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: SettingsStore.webViewRelatedSettingDidChange)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.refresh() }
+            .store(in: &cancellables)
+    }
+
+    private func refresh() {
+        statusBarHidden = Self.resolveStatusBarHidden()
+        homeIndicatorHidden = Current.settingsStore.fullScreen
+    }
+
+    private static func resolveStatusBarHidden() -> Bool {
+        Current.settingsStore.fullScreen
+            || (Current.kioskSettings.enabled && Current.kioskSettings.hideStatusBar)
     }
 }

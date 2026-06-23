@@ -19,39 +19,15 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertNil(controller.initialURL)
     }
 
-    func testMakeNavigationControllerHidesBarAndWrapsTheWebViewController() {
-        let server = Server.fake()
-        let representable = FrontendView(
-            server: server,
-            onWebViewController: { _ in },
-            overlayState: WebFrontendOverlayState()
-        )
-        let webViewController = representable.makeWebViewController()
+    func testEachFrontendViewWiresItsControllerToItsOwnOverlayState() {
+        let overlayStateA = WebFrontendOverlayState()
+        let overlayStateB = WebFrontendOverlayState()
 
-        let navigationController = FrontendView.makeNavigationController(
-            rootViewController: webViewController
-        )
+        let controllerA = FrontendView(server: Server.fake(), overlayState: overlayStateA).makeWebViewController()
+        let controllerB = FrontendView(server: Server.fake(), overlayState: overlayStateB).makeWebViewController()
 
-        XCTAssertTrue(navigationController.isNavigationBarHidden)
-        XCTAssertEqual(navigationController.viewControllers.count, 1)
-        XCTAssertIdentical(navigationController.topViewController, webViewController)
-    }
-
-    func testNavigationControllerForwardsStatusBarAndHomeIndicatorPreferencesToTopController() {
-        let server = Server.fake()
-        let representable = FrontendView(
-            server: server,
-            onWebViewController: { _ in },
-            overlayState: WebFrontendOverlayState()
-        )
-        let webViewController = representable.makeWebViewController()
-
-        let navigationController = FrontendView.makeNavigationController(
-            rootViewController: webViewController
-        )
-
-        XCTAssertIdentical(navigationController.childForStatusBarHidden, webViewController)
-        XCTAssertIdentical(navigationController.childForStatusBarStyle, webViewController)
-        XCTAssertIdentical(navigationController.childForHomeIndicatorAutoHidden, webViewController)
+        XCTAssertIdentical(controllerA.overlayState, overlayStateA)
+        XCTAssertIdentical(controllerB.overlayState, overlayStateB)
+        XCTAssertNotIdentical(controllerA.overlayState, controllerB.overlayState)
     }
 }
