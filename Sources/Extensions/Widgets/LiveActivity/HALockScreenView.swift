@@ -113,22 +113,26 @@ struct HALockScreenView: View {
         HAActivityVisualStyle.color(from: state.color)
     }
 
-    /// Light text reads better on dark backgrounds; pick by the resolved background's luma so the
-    /// forced-black default and any custom `background_color` stay legible.
+    /// Luma of the resolved background — drives element opacities and the auto-contrast default.
     private var useLightText: Bool {
         HAActivityVisualStyle.prefersLightText(onBackground: state.backgroundColor)
     }
 
+    /// Explicit `text_color`, else the auto-contrast default.
+    private var foreground: Color {
+        HAActivityVisualStyle.foregroundColor(textColor: state.textColor, onBackground: state.backgroundColor)
+    }
+
     private var primaryTextColor: Color {
-        useLightText ? .white : .black
+        foreground
     }
 
     private var secondaryTextColor: Color {
-        useLightText ? .white.opacity(0.8) : .black.opacity(0.72)
+        foreground.opacity(useLightText ? 0.8 : 0.72)
     }
 
     private var trackColor: Color {
-        useLightText ? .white.opacity(0.14) : .black.opacity(0.08)
+        foreground.opacity(useLightText ? 0.14 : 0.08)
     }
 }
 
@@ -192,6 +196,14 @@ enum HAActivityVisualStyle {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         UIColor(hex: hex ?? defaultBackgroundHex).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return (0.299 * red + 0.587 * green + 0.114 * blue) < 0.6
+    }
+
+    /// Explicit `text_color` if set, else a light/dark default chosen to contrast the background.
+    static func foregroundColor(textColor: String?, onBackground backgroundHex: String?) -> Color {
+        if let textColor, !textColor.isEmpty {
+            return Color(uiColor: UIColor(hex: textColor))
+        }
+        return prefersLightText(onBackground: backgroundHex) ? .white : .black
     }
 
     static func color(from color: String?) -> Color {

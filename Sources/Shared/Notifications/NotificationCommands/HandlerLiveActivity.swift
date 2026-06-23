@@ -115,6 +115,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
         let color = payload["notification_icon_color"] as? String
         let url = payload["url"] as? String
         let backgroundColor = payload["background_color"] as? String
+        let textColor = payload["text_color"] as? String
 
         // `when` + `when_relative` → absolute countdown end date.
         // Parsed as Double to preserve sub-second Unix timestamps sent by HA.
@@ -139,7 +140,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             icon: icon,
             color: color,
             url: url,
-            backgroundColor: backgroundColor
+            backgroundColor: backgroundColor,
+            textColor: textColor
         )
     }
 }

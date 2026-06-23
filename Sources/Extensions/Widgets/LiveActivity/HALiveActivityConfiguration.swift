@@ -48,7 +48,7 @@ struct HALiveActivityConfiguration: Widget {
     }
 
     private static func foregroundColor(for state: HALiveActivityAttributes.ContentState) -> Color {
-        HAActivityVisualStyle.prefersLightText(onBackground: state.backgroundColor) ? .white : .black
+        HAActivityVisualStyle.foregroundColor(textColor: state.textColor, onBackground: state.backgroundColor)
     }
 }
 #endif
