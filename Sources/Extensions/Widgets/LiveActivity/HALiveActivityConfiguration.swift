@@ -24,32 +24,30 @@ struct HALiveActivityConfiguration: Widget {
         }
     }
 
-    /// Deep link opened when the activity is tapped. Opens the server that started the activity;
-    /// when the state carries a `url` (mirroring actionable notifications) it resolves exactly like
-    /// a notification tap — a relative HA path opens in the frontend, an external URL in the browser.
-    /// Returns `nil` — no tap target, so the system just launches the app — when there is no server
-    /// id or it no longer maps to a known server.
+    /// The widget extension can't reliably resolve the server on a physical device, so it forwards
+    /// `webhook_id` and `url` for the app to resolve and navigate, instead of resolving here and
+    /// bailing the whole tap (url included) on failure.
     private static func tapURL(
         attributes: HALiveActivityAttributes,
         state: HALiveActivityAttributes.ContentState
     ) -> URL? {
-        guard
-            let webhookId = attributes.serverWebhookId,
-            let server = Current.servers.server(forWebhookID: webhookId) else { return nil }
-        let serverId = server.identifier.rawValue
+        let webhookId = attributes.serverWebhookId
+        Current.Log.verbose(
+            "LiveActivity tapURL: hasServerWebhookId=\(webhookId != nil), hasURL=\(state.url?.isEmpty == false)"
+        )
 
-        // The destination is normalized centrally (AppConstants.normalizedNavigationDestination,
-        // applied by the app's URL handler), so pass `url` through as-is: a relative HA path opens
-        // in the frontend, an external URL opens in the browser.
-        if let rawInput = state.url, !rawInput.isEmpty {
-            var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)navigate")
-            components?.queryItems = [
-                URLQueryItem(name: "server", value: serverId),
-                URLQueryItem(name: "url", value: rawInput),
-            ]
-            return components?.url?.withWidgetAuthenticity()
+        var items: [URLQueryItem] = []
+        if let webhookId, !webhookId.isEmpty {
+            items.append(URLQueryItem(name: "webhook_id", value: webhookId))
         }
-        return AppConstants.openPageDeeplinkURL(path: "", serverId: serverId)
+        if let rawInput = state.url, !rawInput.isEmpty {
+            items.append(URLQueryItem(name: "url", value: rawInput))
+        }
+        guard !items.isEmpty else { return nil }
+
+        var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)navigate")
+        components?.queryItems = items
+        return components?.url?.withWidgetAuthenticity()
     }
 }
 #endif

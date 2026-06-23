@@ -16,24 +16,11 @@ public struct ModalCloseButton: View {
     }
 
     public var body: some View {
-        Button(action: {
-            tapAction()
-        }, label: {
-            Image(systemSymbol: .xmark)
-                .resizable()
-                .frame(width: 16, height: 16)
-                .modify { view in
-                    if #available(iOS 26.0, *) {
-                        view
-                            .padding(DesignSystem.Spaces.oneAndHalf)
-                            .glassEffect(.clear.interactive(), in: .circle)
-                    } else {
-                        view
-                    }
-                }
-        })
-        .buttonStyle(.plain)
-        .foregroundStyle(tint)
+        ModalReusableButton(
+            tint: tint,
+            icon: .sfSymbol(.xmark),
+            action: tapAction
+        )
     }
 
     private func tapAction() {
@@ -43,5 +30,11 @@ public struct ModalCloseButton: View {
             dismiss()
         }
     }
+}
+
+#Preview {
+    ModalCloseButton(alternativeAction: {
+        /* no-op */
+    })
 }
 #endif

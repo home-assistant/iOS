@@ -97,7 +97,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        #if targetEnvironment(simulator)
+        #if targetEnvironment(macCatalyst)
+        Current.tags = TagActivityManager()
+        #elseif targetEnvironment(simulator)
         Current.tags = SimulatorTagManager()
         #else
         Current.tags = iOSTagManager()

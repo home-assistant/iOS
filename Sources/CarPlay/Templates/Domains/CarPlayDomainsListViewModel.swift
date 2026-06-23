@@ -14,10 +14,6 @@ final class CarPlayDomainsListViewModel {
 
     var entitiesListTemplate: CarPlayEntitiesListTemplate?
 
-    private var preferredServerId: String {
-        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
-    }
-
     func update(entities: HACachedStates) {
         guard !Current.servers.all.isEmpty else {
             templateProvider?.template.updateSections([])
@@ -49,7 +45,7 @@ final class CarPlayDomainsListViewModel {
     }
 
     func listItemHandler(domain: String) {
-        guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first,
+        guard let server = CarPlayPreferredServer.current,
               let entitiesCachedStates = entities else { return }
         entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: Domain(rawValue: domain)?.localizedDescription ?? domain,
