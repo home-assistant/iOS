@@ -42,18 +42,6 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             name: UIApplication.didBecomeActiveNotification,
             object: nil
         )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(showCameraFromNotification(_:)),
-            name: NotificationCommandManager.didReceiveShowCameraNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(hideCameraFromNotification),
-            name: NotificationCommandManager.didReceiveHideCameraNotification,
-            object: nil
-        )
     }
 
     func setupNotifications() {
@@ -74,23 +62,14 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         #endif
     }
 
-    @objc private func showCameraFromNotification(_ notification: Notification) {
-        guard UIApplication.shared.applicationState == .active else {
-            scheduleShowCameraFallbackNotification(userInfo: notification.userInfo)
-            return
-        }
-
-        openCamera(from: notification.userInfo)
-    }
-
     private func openCamera(from userInfo: [AnyHashable: Any]?) {
         guard #available(iOS 16.0, *) else {
-            Current.Log.info("Ignoring show_camera push command because camera player requires iOS 16")
+            Current.Log.info("Ignoring kiosk_show_camera command because camera player requires iOS 16")
             return
         }
 
         guard let entityId = cameraEntityId(from: userInfo) else {
-            Current.Log.error("Received show_camera push command without a valid camera entity_id")
+            Current.Log.error("Received kiosk_show_camera command without a valid camera entity_id")
             return
         }
 
@@ -106,37 +85,6 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             }.catch { error in
                 Current.Log.error("Failed to show camera from push command: \(error)")
             }
-    }
-
-    private func scheduleShowCameraFallbackNotification(userInfo: [AnyHashable: Any]?) {
-        guard let entityId = cameraEntityId(from: userInfo) else {
-            Current.Log.error("Received show_camera push command without a valid camera entity_id")
-            return
-        }
-
-        let content = UNMutableNotificationContent()
-        content.body = L10n.CameraPlayer.Notification.body
-        content.sound = .default
-        var fallbackUserInfo: [AnyHashable: Any] = [
-            "homeassistant": [
-                "command": "show_camera",
-                "entity_id": entityId,
-            ],
-        ]
-        if let webhookId = webhookId(from: userInfo) {
-            fallbackUserInfo["webhook_id"] = webhookId
-        }
-        content.userInfo = fallbackUserInfo
-
-        Current.userNotificationCenter.add(UNNotificationRequest(
-            identifier: "show_camera.\(entityId)",
-            content: content,
-            trigger: nil
-        )) { error in
-            if let error {
-                Current.Log.error("Failed to schedule show_camera fallback notification: \(error)")
-            }
-        }
     }
 
     private func cameraEntityId(from userInfo: [AnyHashable: Any]?) -> String? {
@@ -188,12 +136,12 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         return server
     }
 
-    @objc private func hideCameraFromNotification() {
+    private func hideCamera() {
         Current.sceneManager.webViewControllerPromise
             .done { webViewController in
                 guard let cameraOverlayController = self.cameraOverlayController,
                       webViewController.overlayedController === cameraOverlayController else {
-                    Current.Log.info("Ignoring hide_camera push command because no camera is on display")
+                    Current.Log.info("Ignoring kiosk_hide_camera command because no camera is on display")
                     return
                 }
 
@@ -399,7 +347,9 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
 
-        if isShowCameraCommand(userInfo: userInfo), cameraEntityId(from: userInfo) != nil {
+        if Current.kiosk.settings.acceptRemoteCommands,
+           KioskPushCommand(message: response.notification.request.content.body) == .showCamera,
+           cameraEntityId(from: userInfo) != nil {
             openCamera(from: userInfo)
             completionHandler()
             return
@@ -447,24 +397,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         } else {
             completionHandler()
         }
-    }
-
-    private func isShowCameraCommand(userInfo: [AnyHashable: Any]) -> Bool {
-        if userInfo["command"] as? String == "show_camera" {
-            return true
-        }
-
-        if let homeassistant = userInfo["homeassistant"] as? [String: Any],
-           homeassistant["command"] as? String == "show_camera" {
-            return true
-        }
-
-        if let homeassistant = userInfo["homeassistant"] as? [AnyHashable: Any],
-           homeassistant["command"] as? String == "show_camera" {
-            return true
-        }
-
-        return false
     }
 
     public func userNotificationCenter(
@@ -534,7 +466,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
     private func kioskPushPresentationOptions(
         for notification: UNNotification
     ) -> UNNotificationPresentationOptions? {
-        let message = notification.request.content.body
+        let content = notification.request.content
+        let message = content.body
         guard KioskPushCommand.isKioskCommand(message: message) else {
             return nil
         }
@@ -544,33 +477,45 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return nil
         }
 
-        if let command = KioskPushCommand(message: message) {
-            if let screensaverCommand = command.screensaverCommand {
-                Current.kiosk.requestScreensaver(screensaverCommand)
-            }
-
-            if #available(iOS 18, *) {
-                let identifier = notification.request.identifier
-                let symbol = command.symbol.rawValue
-                let colors = (command.symbolForegroundStyle.primary, command.symbolForegroundStyle.secondary)
-                let title = command.localizedString
-                let subtitle = command.localizedSubtitle
-                Task { @MainActor in
-                    ToastManager.shared.show(
-                        id: identifier,
-                        symbol: symbol,
-                        symbolForegroundStyle: colors,
-                        title: title,
-                        message: subtitle,
-                        duration: 4
-                    )
-                }
-            }
-        } else {
+        guard let command = KioskPushCommand(message: message) else {
             Current.Log.warning("Received unhandled kiosk push command: \(message)")
+            return []
         }
 
-        return KioskPushCommand(message: message) == nil ? nil : []
+        performKioskCommand(command, userInfo: content.userInfo)
+
+        if #available(iOS 18, *) {
+            let identifier = notification.request.identifier
+            let symbol = command.symbol.rawValue
+            let colors = (command.symbolForegroundStyle.primary, command.symbolForegroundStyle.secondary)
+            let title = command.localizedString
+            let subtitle = command.localizedSubtitle
+            Task { @MainActor in
+                ToastManager.shared.show(
+                    id: identifier,
+                    symbol: symbol,
+                    symbolForegroundStyle: colors,
+                    title: title,
+                    message: subtitle,
+                    duration: 4
+                )
+            }
+        }
+
+        return []
+    }
+
+    private func performKioskCommand(_ command: KioskPushCommand, userInfo: [AnyHashable: Any]) {
+        switch command {
+        case .showScreensaver:
+            Current.kiosk.requestScreensaver(.show)
+        case .hideScreensaver:
+            Current.kiosk.requestScreensaver(.hide)
+        case .showCamera:
+            openCamera(from: userInfo)
+        case .hideCamera:
+            hideCamera()
+        }
     }
 
     public func userNotificationCenter(

@@ -271,8 +271,6 @@
 		11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */; };
 		11ADF940267D34B10040A7E3 /* NotificationsCommandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */; };
 		11ADF941267D34B20040A7E3 /* NotificationsCommandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */; };
-		11ADF942267D34B20040A7E3 /* HandlerShowCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF93F267D34AD0040A7E3 /* HandlerShowCamera.swift */; };
-		11ADF943267D34B20040A7E3 /* HandlerHideCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF944267D34AD0040A7E3 /* HandlerHideCamera.swift */; };
 		11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D16249C8083006C74C0 /* With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D15249C8082006C74C0 /* With.swift */; };
@@ -2142,8 +2140,6 @@
 		11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerProcessor.test.swift; sourceTree = "<group>"; };
 		11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.swift; sourceTree = "<group>"; };
 		11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsCommandManager.swift; sourceTree = "<group>"; };
-		11ADF93F267D34AD0040A7E3 /* HandlerShowCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerShowCamera.swift; sourceTree = "<group>"; };
-		11ADF944267D34AD0040A7E3 /* HandlerHideCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerHideCamera.swift; sourceTree = "<group>"; };
 		11AF1EC62528FB2300AAE364 /* Extension-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-ios.entitlements"; sourceTree = "<group>"; };
 		11AF1EC72528FB2300AAE364 /* Extension-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-catalyst.entitlements"; sourceTree = "<group>"; };
 		11AF1EC92528FB2300AAE364 /* App-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "App-catalyst.entitlements"; sourceTree = "<group>"; };
@@ -4233,8 +4229,6 @@
 			isa = PBXGroup;
 			children = (
 				A95FDD0E2F6B8A19008EF72F /* HandlerLiveActivity.swift */,
-				11ADF93F267D34AD0040A7E3 /* HandlerShowCamera.swift */,
-				11ADF944267D34AD0040A7E3 /* HandlerHideCamera.swift */,
 				11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */,
 			);
 			path = NotificationCommands;
@@ -10308,8 +10302,6 @@
 				11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */,
 				428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				A95FDD0F2F6B8A19008EF72F /* HandlerLiveActivity.swift in Sources */,
-				11ADF942267D34B20040A7E3 /* HandlerShowCamera.swift in Sources */,
-				11ADF943267D34B20040A7E3 /* HandlerHideCamera.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */,

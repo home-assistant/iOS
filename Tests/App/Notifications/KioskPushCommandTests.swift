@@ -1,12 +1,13 @@
 @testable import HomeAssistant
 import SFSafeSymbols
-import Shared
 import XCTest
 
 final class KioskPushCommandTests: XCTestCase {
     func testParsesKnownCommands() {
         XCTAssertEqual(KioskPushCommand(message: "kiosk_show_screensaver"), .showScreensaver)
         XCTAssertEqual(KioskPushCommand(message: "kiosk_hide_screensaver"), .hideScreensaver)
+        XCTAssertEqual(KioskPushCommand(message: "kiosk_show_camera"), .showCamera)
+        XCTAssertEqual(KioskPushCommand(message: "kiosk_hide_camera"), .hideCamera)
     }
 
     func testParsingTrimsWhitespaceAndIgnoresCase() {
@@ -30,16 +31,13 @@ final class KioskPushCommandTests: XCTestCase {
     func testRawValuesAreStableTokens() {
         XCTAssertEqual(KioskPushCommand.showScreensaver.rawValue, "kiosk_show_screensaver")
         XCTAssertEqual(KioskPushCommand.hideScreensaver.rawValue, "kiosk_hide_screensaver")
+        XCTAssertEqual(KioskPushCommand.showCamera.rawValue, "kiosk_show_camera")
+        XCTAssertEqual(KioskPushCommand.hideCamera.rawValue, "kiosk_hide_camera")
     }
 
     func testEveryCommandResolvesASymbol() {
         for command in KioskPushCommand.allCases {
             XCTAssertFalse(command.symbol.rawValue.isEmpty, "\(command) has no symbol")
         }
-    }
-
-    func testScreensaverCommandMapping() {
-        XCTAssertEqual(KioskPushCommand.showScreensaver.screensaverCommand, .show)
-        XCTAssertEqual(KioskPushCommand.hideScreensaver.screensaverCommand, .hide)
     }
 }

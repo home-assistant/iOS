@@ -2052,8 +2052,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "kiosk.display.title") }
     }
     public enum PushCommand {
+      /// Hiding camera
+      public static var hideCamera: String { return L10n.tr("Localizable", "kiosk.push_command.hide_camera") }
       /// Hiding screensaver
       public static var hideScreensaver: String { return L10n.tr("Localizable", "kiosk.push_command.hide_screensaver") }
+      /// Showing camera
+      public static var showCamera: String { return L10n.tr("Localizable", "kiosk.push_command.show_camera") }
       /// Showing screensaver
       public static var showScreensaver: String { return L10n.tr("Localizable", "kiosk.push_command.show_screensaver") }
       /// Kiosk command

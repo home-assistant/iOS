@@ -571,7 +571,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.enabled" = "Enabled";
 "kiosk.hide_status_bar" = "Hide status bar";
 "kiosk.keep_screen_on" = "Keep screen on";
+"kiosk.push_command.hide_camera" = "Hiding camera";
 "kiosk.push_command.hide_screensaver" = "Hiding screensaver";
+"kiosk.push_command.show_camera" = "Showing camera";
 "kiosk.push_command.show_screensaver" = "Showing screensaver";
 "kiosk.push_command.subtitle" = "Kiosk command";
 "kiosk.remove_header_and_sidebar" = "Hide sidebar and top bar controls";

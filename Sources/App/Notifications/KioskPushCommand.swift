@@ -6,6 +6,8 @@ import SwiftUI
 enum KioskPushCommand: String, CaseIterable {
     case showScreensaver = "kiosk_show_screensaver"
     case hideScreensaver = "kiosk_hide_screensaver"
+    case showCamera = "kiosk_show_camera"
+    case hideCamera = "kiosk_hide_camera"
 
     static let prefix = "kiosk_"
 
@@ -27,20 +29,15 @@ enum KioskPushCommand: String, CaseIterable {
             return L10n.Kiosk.PushCommand.showScreensaver
         case .hideScreensaver:
             return L10n.Kiosk.PushCommand.hideScreensaver
+        case .showCamera:
+            return L10n.Kiosk.PushCommand.showCamera
+        case .hideCamera:
+            return L10n.Kiosk.PushCommand.hideCamera
         }
     }
 
     var localizedSubtitle: String {
         L10n.Kiosk.PushCommand.subtitle
-    }
-
-    var screensaverCommand: KioskScreensaverCommand? {
-        switch self {
-        case .showScreensaver:
-            return .show
-        case .hideScreensaver:
-            return .hide
-        }
     }
 
     var symbol: SFSymbol {
@@ -49,6 +46,10 @@ enum KioskPushCommand: String, CaseIterable {
             return .moonStarsFill
         case .hideScreensaver:
             return .sunMaxFill
+        case .showCamera:
+            return .videoFill
+        case .hideCamera:
+            return .videoSlashFill
         }
     }
 
@@ -58,6 +59,10 @@ enum KioskPushCommand: String, CaseIterable {
             return (.white, .indigo)
         case .hideScreensaver:
             return (.white, .orange)
+        case .showCamera:
+            return (.white, .blue)
+        case .hideCamera:
+            return (.white, .gray)
         }
     }
 }
