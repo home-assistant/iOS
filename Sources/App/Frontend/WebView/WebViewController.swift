@@ -57,6 +57,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var kioskCancellables = Set<AnyCancellable>()
 
+    /// Periodically reloads the page while kiosk mode's "Auto reload" is set to an interval.
+    private var autoReloadTimer: Timer?
+
     /// Handler for gestures over the webview
     let webViewGestureHandler = WebViewGestureHandler()
 
@@ -182,6 +185,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         removeEmptyStateObservations()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
+        autoReloadTimer?.invalidate()
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {
@@ -339,6 +343,25 @@ extension WebViewController {
                 self?.setNeedsStatusBarAppearanceUpdate()
             }
             .store(in: &kioskCancellables)
+
+        // (Re)schedule the auto-reload timer. Not dropped, so the initial value arms it on cold start.
+        Current.kiosk.settingsPublisher
+            .map { $0.enabled ? $0.autoReload : .never }
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] interval in
+                self?.applyAutoReload(interval)
+            }
+            .store(in: &kioskCancellables)
+    }
+
+    private func applyAutoReload(_ interval: KioskAutoReloadInterval) {
+        autoReloadTimer?.invalidate()
+        autoReloadTimer = nil
+        guard let seconds = interval.timeInterval else { return }
+        autoReloadTimer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { [weak self] _ in
+            self?.reload()
+        }
     }
 
     func updateFrontendKioskMode() {
