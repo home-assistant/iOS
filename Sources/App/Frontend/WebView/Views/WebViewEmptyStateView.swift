@@ -145,14 +145,12 @@ struct WebViewEmptyStateView: View {
             Color.clear
                 .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
         case .settings:
-            Button(action: {
-                settingsAction?()
-            }) {
-                Image(systemSymbol: .gearshape)
-                    .font(.title3)
-                    .foregroundStyle(Color.secondary)
-                    .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
-            }
+            ModalReusableButton(
+                icon: .sfSymbol(.gearshape),
+                action: {
+                    settingsAction?()
+                }
+            )
             .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
         case .close:
             ModalCloseButton {
@@ -292,5 +290,86 @@ struct WebViewEmptyStateView: View {
                 }
             }
         }
+    }
+}
+
+#Preview("Disconnected") {
+    WebViewEmptyStatePreview.view(style: .disconnected)
+}
+
+#Preview("Disconnected With Error Details") {
+    WebViewEmptyStatePreview.view(
+        style: .disconnected,
+        showsErrorDetailsButton: true,
+        errorDetailsAction: {}
+    )
+}
+
+#Preview("Unauthenticated") {
+    WebViewEmptyStatePreview.view(
+        style: .unauthenticated,
+        availableReauthURLTypes: [.external],
+        reauthAction: { _ in }
+    )
+}
+
+#Preview("Unauthenticated Multiple URLs") {
+    WebViewEmptyStatePreview.view(
+        style: .unauthenticated,
+        availableReauthURLTypes: [.remoteUI, .external, .internal],
+        reauthAction: { _ in }
+    )
+}
+
+#Preview("Recovered Server Reauthentication") {
+    WebViewEmptyStatePreview.view(
+        style: .recoveredServerNeedingReauthentication,
+        availableReauthURLTypes: [.remoteUI, .external],
+        recoveredServerReauthAction: { _, completion in
+            completion(.success(()))
+        }
+    )
+}
+
+#Preview("Recovered Server Reauthentication Dark") {
+    WebViewEmptyStatePreview.view(
+        style: .recoveredServerNeedingReauthentication,
+        availableReauthURLTypes: [.remoteUI, .external],
+        recoveredServerReauthAction: { _, completion in
+            completion(.failure(NSError(
+                domain: "Preview",
+                code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Reauthentication failed."]
+            )))
+        }
+    )
+    .preferredColorScheme(.dark)
+}
+
+private enum WebViewEmptyStatePreview {
+    static func view(
+        style: WebViewEmptyStateStyle,
+        showsErrorDetailsButton: Bool = false,
+        availableReauthURLTypes: [ConnectionInfo.URLType] = [],
+        errorDetailsAction: (() -> Void)? = nil,
+        reauthAction: ((ConnectionInfo.URLType) -> Void)? = nil,
+        recoveredServerReauthAction: ((
+            ConnectionInfo.URLType,
+            @escaping (Swift.Result<Void, Error>) -> Void
+        ) -> Void)? = nil
+    ) -> some View {
+        WebViewEmptyStateView(
+            style: style,
+            server: ServerFixture.standard,
+            showsErrorDetailsButton: showsErrorDetailsButton,
+            availableReauthURLTypes: availableReauthURLTypes,
+            retryAction: {},
+            settingsAction: {},
+            errorDetailsAction: errorDetailsAction,
+            reauthAction: reauthAction,
+            recoveredServerReauthAction: recoveredServerReauthAction,
+            serverSelectionAction: { _ in },
+            dismissAction: {}
+        )
     }
 }
