@@ -6,11 +6,6 @@ platform :mac do
 
     specifiers = provisioning_profile_specifiers(sdk: 'macosx')
     developer_id_app_path = build_mac_app(
-      # Force the Mac Catalyst (macOS) variant. Without this gym archives for
-      # `generic/platform=iOS`, producing an iOS archive whose only valid export
-      # methods are the iOS set. The macOS-only `developer-id` method was tolerated
-      # by older Xcode but is rejected by Xcode 26.4.1's stricter -exportArchive.
-      catalyst_platform: 'macos',
       export_method: 'developer-id',
       skip_package_dependencies_resolution: true,
       skip_profile_detection: true,
@@ -23,7 +18,6 @@ platform :mac do
       }
     )
     app_store_pkg_path = build_mac_app(
-      catalyst_platform: 'macos',
       archive_path: lane_context[SharedValues::XCODEBUILD_ARCHIVE],
       export_method: 'app-store',
       skip_package_dependencies_resolution: true,
