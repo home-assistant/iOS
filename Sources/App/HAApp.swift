@@ -10,7 +10,7 @@ struct HAApp: App {
     var body: some Scene {
         // Main Onboarding + Home Assistant Frontend
         WindowGroup {
-            ContainerView()
+            ConditionalContainerView()
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
         }

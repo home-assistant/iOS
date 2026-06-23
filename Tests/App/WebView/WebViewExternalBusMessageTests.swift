@@ -57,8 +57,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue,
             "matter/commission/finish"
         )
+        XCTAssertEqual(
+            WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue,
+            "kiosk_mode/set"
+        )
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 8)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 9)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {

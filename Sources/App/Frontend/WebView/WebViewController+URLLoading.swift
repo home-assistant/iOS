@@ -73,36 +73,7 @@ extension WebViewController {
             }
 
             // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-            let request: URLRequest
-
-            if Current.settingsStore.restoreLastURL,
-               let initialURL, initialURL.baseIsEqual(to: webviewURL) {
-                Current.Log.info("restoring initial url path: \(initialURL.path)")
-                request = URLRequest(url: initialURL)
-            } else if let currentURL = webView.url, currentURL.path.count > 1 {
-                // Preserve the current path when the base URL changes (e.g., switching between internal/external)
-                var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
-                components?.path = currentURL.path
-                if let query = currentURL.query {
-                    // Preserve external_auth if present, add other query items
-                    var queryItems = components?.queryItems ?? []
-                    let currentQueryItems = URLComponents(url: currentURL, resolvingAgainstBaseURL: false)?
-                        .queryItems ?? []
-                    for item in currentQueryItems where item.name != "external_auth" {
-                        queryItems.append(item)
-                    }
-                    components?.queryItems = queryItems
-                }
-                components?.fragment = currentURL.fragment
-                let newURL = components?.url ?? webviewURL
-                Current.Log.info("preserving current path on base URL change: \(newURL.path)")
-                request = URLRequest(url: newURL)
-            } else {
-                Current.Log.info("loading default url path: \(webviewURL.path)")
-                request = URLRequest(url: webviewURL)
-            }
-
-            load(request: request)
+            load(request: URLRequest(url: resolvedLoadURL(for: webviewURL)))
         }
 
         if Current.isCatalyst {
@@ -112,6 +83,57 @@ extension WebViewController {
                 loadBlock()
             }
         }
+    }
+
+    /// Determines which URL to load for the active server: the kiosk dashboard (when applicable), the
+    /// restored last URL, the preserved current path on a base-URL change, or the server default.
+    private func resolvedLoadURL(for webviewURL: URL) -> URL {
+        if let kioskURL = kioskDashboardURL(for: webviewURL) {
+            // In kiosk mode the configured dashboard takes precedence over restore/last-path behavior.
+            Current.Log.info("loading kiosk dashboard path: \(kioskURL.path)")
+            return kioskURL
+        }
+        if Current.settingsStore.restoreLastURL, let initialURL, initialURL.baseIsEqual(to: webviewURL) {
+            Current.Log.info("restoring initial url path: \(initialURL.path)")
+            return initialURL
+        }
+        if let currentURL = webView.url, currentURL.path.count > 1 {
+            // Preserve the current path when the base URL changes (e.g., switching between internal/external)
+            var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
+            components?.path = currentURL.path
+            if currentURL.query != nil {
+                // Preserve external_auth if present, add other query items
+                var queryItems = components?.queryItems ?? []
+                let currentQueryItems = URLComponents(url: currentURL, resolvingAgainstBaseURL: false)?
+                    .queryItems ?? []
+                for item in currentQueryItems where item.name != "external_auth" {
+                    queryItems.append(item)
+                }
+                components?.queryItems = queryItems
+            }
+            components?.fragment = currentURL.fragment
+            let newURL = components?.url ?? webviewURL
+            Current.Log.info("preserving current path on base URL change: \(newURL.path)")
+            return newURL
+        }
+        Current.Log.info("loading default url path: \(webviewURL.path)")
+        return webviewURL
+    }
+
+    /// The URL of the kiosk-configured dashboard for this server, or `nil` when kiosk mode is off, this
+    /// isn't the kiosk server, or no specific dashboard was chosen (in which case the server default loads).
+    private func kioskDashboardURL(for webviewURL: URL) -> URL? {
+        let kiosk = Current.kioskSettings
+        guard kiosk.enabled,
+              kiosk.serverId == nil || kiosk.serverId == server.identifier.rawValue,
+              let dashboard = kiosk.dashboard, !dashboard.isEmpty else {
+            return nil
+        }
+        let path = dashboard.hasPrefix("/") ? dashboard : "/" + dashboard
+        guard let url = server.info.connection.webviewURL(from: path), url.baseIsEqual(to: webviewURL) else {
+            return nil
+        }
+        return url
     }
 
     func showNoActiveURLError() {

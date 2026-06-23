@@ -133,10 +133,20 @@ final class OnboardingStateObservable: ObservableObject {
         if let style = OnboardingNavigation.requiredOnboardingStyle {
             return .onboarding(style)
         }
-        if let server = Current.servers.all.first {
+        if let server = preferredInitialServer() {
             return .webView(server)
         }
         return .onboarding(.initial)
+    }
+
+    /// The server to show at launch: the kiosk-configured server when kiosk mode is enabled, otherwise the
+    /// first registered server.
+    private static func preferredInitialServer() -> Server? {
+        let kiosk = Current.kioskSettings
+        if kiosk.enabled, let server = Current.servers.server(forServerIdentifier: kiosk.serverId) {
+            return server
+        }
+        return Current.servers.all.first
     }
 
     /// The server shown at launch (preferring one that doesn't need re-auth), if it requires re-auth after a

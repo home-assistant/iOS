@@ -55,6 +55,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         improvManager: ImprovManager.shared
     )
 
+    private var kioskCancellables = Set<AnyCancellable>()
+
+    /// Periodically reloads the page while kiosk mode's "Auto reload" is set to an interval.
+    private var autoReloadTimer: Timer?
+
     /// Handler for gestures over the webview
     let webViewGestureHandler = WebViewGestureHandler()
 
@@ -72,11 +77,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen || kioskPrefersStatusBarHidden
+        Current.settingsStore.fullScreen || (Current.kioskSettings.enabled && Current.kioskSettings.hideStatusBar)
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
-        Current.settingsStore.fullScreen || kioskPrefersHomeIndicatorAutoHidden
+        Current.settingsStore.fullScreen
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -180,6 +185,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         removeEmptyStateObservations()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
+        autoReloadTimer?.invalidate()
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {
@@ -197,6 +203,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         becomeFirstResponder()
 
         observeConnectionNotifications()
+        setupKioskModeObservation()
 
         let statusBarView = setupStatusBarView()
 
@@ -271,7 +278,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
-        setupKioskMode()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -291,12 +297,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
-
-        // Refresh kiosk status bar state when view appears (e.g., after settings modal dismisses)
-        if KioskModeManager.shared.isKioskModeActive {
-            setNeedsStatusBarAppearanceUpdate()
-            navigationController?.setNeedsStatusBarAppearanceUpdate()
-        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -316,5 +316,59 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             let action = Current.settingsStore.gestures[.shake] ?? .openDebug
             webViewGestureHandler.handleGestureAction(action)
         }
+    }
+}
+
+// MARK: - Kiosk mode
+
+extension WebViewController {
+    func setupKioskModeObservation() {
+        Current.kiosk.settingsPublisher
+            .map { $0.enabled && $0.removeHeaderAndSidebar }
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateFrontendKioskMode()
+            }
+            .store(in: &kioskCancellables)
+
+        // Re-evaluate the status bar visibility (the initial state is read when the view appears).
+        Current.kiosk.settingsPublisher
+            .map { $0.enabled && $0.hideStatusBar }
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.setNeedsStatusBarAppearanceUpdate()
+            }
+            .store(in: &kioskCancellables)
+
+        // (Re)schedule the auto-reload timer. Not dropped, so the initial value arms it on cold start.
+        Current.kiosk.settingsPublisher
+            .map { $0.enabled ? $0.autoReload : .never }
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] interval in
+                self?.applyAutoReload(interval)
+            }
+            .store(in: &kioskCancellables)
+    }
+
+    private func applyAutoReload(_ interval: KioskAutoReloadInterval) {
+        autoReloadTimer?.invalidate()
+        autoReloadTimer = nil
+        guard let seconds = interval.timeInterval else { return }
+        autoReloadTimer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { [weak self] _ in
+            self?.reload()
+        }
+    }
+
+    func updateFrontendKioskMode() {
+        let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
+        _ = webViewExternalMessageHandler.sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue,
+            payload: ["enable": enable]
+        ))
     }
 }

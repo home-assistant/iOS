@@ -14,7 +14,16 @@ final class KioskSettingsTable: DatabaseTableProtocol {
             try database.write { db in
                 try db.create(table: tableName) { t in
                     t.primaryKey(DatabaseTables.KioskSettings.id.rawValue, .text).notNull()
-                    t.column(DatabaseTables.KioskSettings.settingsJSON.rawValue, .jsonText).notNull()
+                    t.column(DatabaseTables.KioskSettings.enabled.rawValue, .boolean)
+                    t.column(DatabaseTables.KioskSettings.requireAuthentication.rawValue, .boolean)
+                    t.column(DatabaseTables.KioskSettings.serverId.rawValue, .text)
+                    t.column(DatabaseTables.KioskSettings.dashboard.rawValue, .text)
+                    t.column(DatabaseTables.KioskSettings.keepScreenOn.rawValue, .boolean)
+                    t.column(DatabaseTables.KioskSettings.removeHeaderAndSidebar.rawValue, .boolean)
+                    t.column(DatabaseTables.KioskSettings.hideStatusBar.rawValue, .boolean)
+                    t.column(DatabaseTables.KioskSettings.autoReload.rawValue, .text)
+                    t.column(DatabaseTables.KioskSettings.settingsEntryPosition.rawValue, .text)
+                    t.column(DatabaseTables.KioskSettings.screensaver.rawValue, .jsonText)
                 }
             }
         } else {

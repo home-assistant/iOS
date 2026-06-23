@@ -5,7 +5,7 @@ import UIKit
 /// The Home Assistant web frontend as a SwiftUI view, wrapping the UIKit `WebViewController`.
 ///
 /// Returns the same `StatusBarForwardingNavigationController` the old `WebViewWindowController` used as the
-/// WebView root, so kiosk / full-screen status-bar and home-indicator forwarding behaves identically. The
+/// WebView root, so full-screen status-bar and home-indicator forwarding behaves identically. The
 /// embedded `WebViewController` presents its own overlays / alerts / re-auth from `self`, so — unlike
 /// `embeddedInHostingController()` — no `ViewControllerProvider` injection is needed here. Hosted by
 /// `HomeAssistantView`, which layers SwiftUI overlays on top in a `ZStack`.

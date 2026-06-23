@@ -56,7 +56,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             case .gestures:
                 MaterialDesignIconsImage(icon: .gestureIcon, size: Self.iconSize)
             case .kiosk:
-                MaterialDesignIconsImage(icon: .tabletIcon, size: Self.iconSize)
+                MaterialDesignIconsImage(icon: .tabletDashboardIcon, size: Self.iconSize)
             case .location:
                 MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: Self.iconSize)
             case .notifications:
@@ -155,6 +155,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
+            // Kiosk mode is unsupported on macOS.
             let hiddenItems: [SettingsItem] = [
                 .servers,
                 .gestures,
