@@ -28,7 +28,13 @@ extension WebViewController {
         guard gesture.state == .ended else {
             return
         }
-        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: gesture.numberOfTouches)
+        // Use `numberOfTouchesRequired` instead of `numberOfTouches`: once the swipe reaches the
+        // `.ended` state the fingers have already lifted, so `numberOfTouches` reports 0 and the
+        // multi-finger (2 and 3 fingers) gestures would resolve to `.none`.
+        let action = Current.settingsStore.gestures.getAction(
+            for: gesture,
+            numberOfTouches: gesture.numberOfTouchesRequired
+        )
         webViewGestureHandler.handleGestureAction(action)
     }
 
