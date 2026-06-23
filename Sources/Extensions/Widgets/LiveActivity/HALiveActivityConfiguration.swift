@@ -6,17 +6,14 @@ import WidgetKit
 
 @available(iOS 17.2, *)
 struct HALiveActivityConfiguration: Widget {
-    /// Adaptive Lock Screen surface that matches the current system appearance.
-    private static let lockScreenBackground = Color(uiColor: .systemBackground)
-
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: HALiveActivityAttributes.self) { context in
             HALockScreenView(
                 attributes: context.attributes,
                 state: context.state
             )
-            .activityBackgroundTint(Self.lockScreenBackground)
-            .activitySystemActionForegroundColor(Color.primary)
+            .activityBackgroundTint(HAActivityVisualStyle.backgroundColor(from: context.state.backgroundColor))
+            .activitySystemActionForegroundColor(Self.foregroundColor(for: context.state))
             .widgetURL(Self.tapURL(attributes: context.attributes, state: context.state))
         } dynamicIsland: { context in
             makeHADynamicIsland(attributes: context.attributes, state: context.state)
@@ -48,6 +45,10 @@ struct HALiveActivityConfiguration: Widget {
         var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)navigate")
         components?.queryItems = items
         return components?.url?.withWidgetAuthenticity()
+    }
+
+    private static func foregroundColor(for state: HALiveActivityAttributes.ContentState) -> Color {
+        HAActivityVisualStyle.prefersLightText(onBackground: state.backgroundColor) ? .white : .black
     }
 }
 #endif

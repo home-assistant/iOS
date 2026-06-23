@@ -10,8 +10,6 @@ import WidgetKit
 /// Keep layout tight and avoid decorative spacing.
 @available(iOS 17.2, *)
 struct HALockScreenView: View {
-    @Environment(\.colorScheme) private var colorScheme
-
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
 
@@ -67,10 +65,10 @@ struct HALockScreenView: View {
         if state.icon != nil {
             ZStack {
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
-                    .fill(accentColor.opacity(colorScheme == .dark ? 0.2 : 0.14))
+                    .fill(accentColor.opacity(useLightText ? 0.2 : 0.14))
                     .overlay {
                         RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
-                            .strokeBorder(accentColor.opacity(colorScheme == .dark ? 0.3 : 0.18))
+                            .strokeBorder(accentColor.opacity(useLightText ? 0.3 : 0.18))
                     }
 
                 iconView
@@ -115,16 +113,22 @@ struct HALockScreenView: View {
         HAActivityVisualStyle.color(from: state.color)
     }
 
+    /// Light text reads better on dark backgrounds; pick by the resolved background's luma so the
+    /// forced-black default and any custom `background_color` stay legible.
+    private var useLightText: Bool {
+        HAActivityVisualStyle.prefersLightText(onBackground: state.backgroundColor)
+    }
+
     private var primaryTextColor: Color {
-        colorScheme == .dark ? .white : .black
+        useLightText ? .white : .black
     }
 
     private var secondaryTextColor: Color {
-        colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.72)
+        useLightText ? .white.opacity(0.8) : .black.opacity(0.72)
     }
 
     private var trackColor: Color {
-        colorScheme == .dark ? .white.opacity(0.14) : .black.opacity(0.08)
+        useLightText ? .white.opacity(0.14) : .black.opacity(0.08)
     }
 }
 
@@ -172,8 +176,22 @@ enum HAActivityVisualStyle {
     /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
     private static let haBlueHex = "#03A9F4"
 
+    /// Default Lock Screen background. Forced (not adaptive) to avoid a start-up flash where the
+    /// system background resolves to the wrong appearance; overridable via `background_color`.
+    private static let defaultBackgroundHex = "#000000"
+
     static func uiColor(from color: String?) -> UIColor {
         UIColor(hex: color ?? haBlueHex)
+    }
+
+    static func backgroundColor(from hex: String?) -> Color {
+        Color(uiColor: UIColor(hex: hex ?? defaultBackgroundHex))
+    }
+
+    static func prefersLightText(onBackground hex: String?) -> Bool {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        UIColor(hex: hex ?? defaultBackgroundHex).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        return (0.299 * red + 0.587 * green + 0.114 * blue) < 0.6
     }
 
     static func color(from color: String?) -> Color {
