@@ -40,6 +40,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var pendingExecutingClearWorkItems: [String: DispatchWorkItem] = [:]
     private var activeAssistSession: AnyObject?
     private var addItemFlow: CarPlayAddItemFlow?
+    private var editItemFlow: CarPlayEditItemFlow?
 
     init(viewModel: CarPlayQuickAccessViewModel) {
         self.viewModel = viewModel
@@ -71,12 +72,60 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         return item
     }
 
+    private func makeEditItemRow() -> CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.QuickAccess.EditItem.button,
+            detailText: L10n.CarPlay.QuickAccess.EditItem.subtitle,
+            image: MaterialDesignIcons.pencilCircleOutlineIcon.carPlayIcon()
+        )
+        item.handler = { [weak self] _, completion in
+            self?.presentEditItemFlow()
+            completion()
+        }
+        return item
+    }
+
     private func presentAddItemFlow() {
         let flow = CarPlayAddItemFlow(interfaceController: interfaceController) { [weak self] in
             // Defer release so the flow isn't deallocated mid-callback.
             DispatchQueue.main.async { self?.addItemFlow = nil }
         }
         addItemFlow = flow
+        flow.start()
+    }
+
+    private func presentEditItemFlow() {
+        let entityToAreaMap = entityToAreaMap()
+        let flow = CarPlayEditItemFlow(
+            interfaceController: interfaceController,
+            itemDisplay: { [weak self] item in
+                guard let self,
+                      let displayItem = rowDisplayItem(for: item, entityToAreaMap: entityToAreaMap) else {
+                    let info = self?.info(for: item) ?? .init(
+                        id: item.id,
+                        name: item.id,
+                        iconName: "",
+                        customization: nil
+                    )
+                    return (
+                        title: item.name(info: info),
+                        subtitle: self?.subtitle(for: item),
+                        image: item.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
+                    )
+                }
+
+                return (
+                    title: displayItem.title,
+                    subtitle: editSubtitle(for: item, entityToAreaMap: entityToAreaMap) ?? displayItem.subtitle,
+                    image: displayItem.image
+                )
+            },
+            onFinish: { [weak self] in
+                // Defer release so the flow isn't deallocated mid-callback.
+                DispatchQueue.main.async { self?.editItemFlow = nil }
+            }
+        )
+        editItemFlow = flow
         flow.start()
     }
 
@@ -169,12 +218,14 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func refreshCurrentPresentation() {
         guard !currentItems.isEmpty else { return }
         let addItemRow = makeAddItemRow()
+        let editItemRow = makeEditItemRow()
         if #available(iOS 26.0, *), currentLayout == .grid {
             var items: [any CPListTemplateItem] = rowItems(items: currentItems)
             items.append(addItemRow)
+            items.append(editItemRow)
             paginatedList.updateItems(items: items)
         } else {
-            paginatedList.updateItems(items: listItems(items: currentItems) + [addItemRow])
+            paginatedList.updateItems(items: listItems(items: currentItems) + [addItemRow, editItemRow])
         }
     }
 
@@ -435,6 +486,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func subtitle(for magicItem: MagicItem) -> String? {
         Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId })?.info.name
+    }
+
+    private func editSubtitle(for magicItem: MagicItem, entityToAreaMap: [String: String]) -> String? {
+        guard magicItem.type == .entity else {
+            return subtitle(for: magicItem)
+        }
+
+        let serverName = subtitle(for: magicItem)
+        let areaName = entityToAreaMap[magicItem.id]
+
+        return [serverName, areaName]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .joined(separator: " • ")
     }
 
     private func isAssistItem(_ magicItem: MagicItem) -> Bool {

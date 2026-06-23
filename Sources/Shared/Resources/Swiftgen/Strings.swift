@@ -1087,6 +1087,18 @@ public enum L10n {
           public static var require: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.require") }
         }
       }
+      public enum EditItem {
+        /// Edit
+        public static var button: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.button") }
+        /// Remove or edit items
+        public static var subtitle: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.subtitle") }
+        /// Edit
+        public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.title") }
+        public enum Confirmation {
+          /// Don't require confirmation
+          public static var noConfirmation: String { return L10n.tr("Localizable", "carPlay.quick_access.edit_item.confirmation.no_confirmation") }
+        }
+      }
       public enum Execute {
         /// Executing...
         public static var inProgress: String { return L10n.tr("Localizable", "carPlay.quick_access.execute.in_progress") }

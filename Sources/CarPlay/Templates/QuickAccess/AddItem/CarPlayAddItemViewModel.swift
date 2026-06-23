@@ -12,6 +12,15 @@ final class CarPlayAddItemViewModel {
         Current.servers.all
     }
 
+    var quickAccessItems: [MagicItem] {
+        do {
+            return try CarPlayConfig.config()?.quickAccessItems ?? []
+        } catch {
+            Current.Log.error("Failed to fetch CarPlay quick access items: \(error.localizedDescription)")
+            return []
+        }
+    }
+
     func domains(serverId: String) -> [Domain] {
         let domains = Set(compatibleEntities(serverId: serverId).compactMap(\.resolvedDomain))
         return domains.sorted(by: { d1, d2 in
@@ -84,6 +93,52 @@ final class CarPlayAddItemViewModel {
             Current.Log.info("Added entity \(entityId) to CarPlay quick access from car")
         } catch {
             Current.Log.error("Failed to add entity to CarPlay quick access: \(error.localizedDescription)")
+        }
+    }
+
+    func deleteItemFromQuickAccess(_ item: MagicItem) {
+        do {
+            var config = try CarPlayConfig.config() ?? CarPlayConfig()
+            guard let index = config.quickAccessItems.firstIndex(where: { $0.contentEquals(item) }) ??
+                config.quickAccessItems.firstIndex(where: {
+                    $0.serverUniqueId == item.serverUniqueId && $0.type == item.type
+                }) else {
+                Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay quick access")
+                return
+            }
+            config.quickAccessItems.remove(at: index)
+            try Current.database().write { db in
+                try config.insert(db, onConflict: .replace)
+            }
+            Current.Log.info("Removed item \(item.serverUniqueId) from CarPlay quick access from car")
+        } catch {
+            Current.Log.error("Failed to remove item from CarPlay quick access: \(error.localizedDescription)")
+        }
+    }
+
+    func updateItemConfirmation(_ item: MagicItem, requiresConfirmation: Bool) {
+        do {
+            var config = try CarPlayConfig.config() ?? CarPlayConfig()
+            guard let index = config.quickAccessItems.firstIndex(where: { $0.contentEquals(item) }) ??
+                config.quickAccessItems.firstIndex(where: {
+                    $0.serverUniqueId == item.serverUniqueId && $0.type == item.type
+                }) else {
+                Current.Log.error("Failed to find item \(item.serverUniqueId) in CarPlay quick access")
+                return
+            }
+
+            var updatedItem = config.quickAccessItems[index]
+            updatedItem.customization = updatedItem.customization ?? .init()
+            updatedItem.customization?.requiresConfirmation = requiresConfirmation
+            config.quickAccessItems[index] = updatedItem
+
+            try Current.database().write { db in
+                try config.insert(db, onConflict: .replace)
+            }
+            Current.Log.info("Updated item \(item.serverUniqueId) confirmation in CarPlay quick access from car")
+        } catch {
+            Current.Log
+                .error("Failed to update item confirmation in CarPlay quick access: \(error.localizedDescription)")
         }
     }
 

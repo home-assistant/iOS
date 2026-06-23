@@ -286,6 +286,10 @@
 "carPlay.quick_access.add_item.confirmation.require" = "Require confirmation";
 "carPlay.quick_access.add_item.title" = "Add item";
 "carPlay.quick_access.execute.in_progress" = "Executing...";
+"carPlay.quick_access.edit_item.button" = "Edit";
+"carPlay.quick_access.edit_item.confirmation.no_confirmation" = "Don't require confirmation";
+"carPlay.quick_access.edit_item.subtitle" = "Remove or edit items";
+"carPlay.quick_access.edit_item.title" = "Edit";
 "carPlay.state.loading.title" = "Loading…";
 "carPlay.tabs.active.delete_action.title" = "Swipe left to remove tab";
 "carPlay.tabs.active.title" = "Active";
