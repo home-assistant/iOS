@@ -91,8 +91,8 @@ final class WebViewChromeState: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        statusBarHidden = Self.resolveStatusBarHidden()
-        homeIndicatorHidden = Current.settingsStore.fullScreen
+        self.statusBarHidden = Self.resolveStatusBarHidden()
+        self.homeIndicatorHidden = Current.settingsStore.fullScreen
 
         Current.kiosk.settingsPublisher
             .receive(on: DispatchQueue.main)
