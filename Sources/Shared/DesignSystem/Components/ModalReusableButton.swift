@@ -1,14 +1,15 @@
 #if !os(watchOS)
-import SwiftUI
 import SFSafeSymbols
+import SwiftUI
 
 public struct ModalReusableButton: View {
     public enum Icon {
         case sfSymbol(SFSymbol)
         case mdi(MaterialDesignIcons)
     }
+
     @Environment(\.dismiss) private var dismiss
-    private let action: (() -> Void)
+    private let action: () -> Void
     private let tint: Color
     private let icon: Icon
 
@@ -47,18 +48,17 @@ public struct ModalReusableButton: View {
     private var image: some View {
         Group {
             switch icon {
-            case .sfSymbol(let sFSymbol):
+            case let .sfSymbol(sFSymbol):
                 Image(systemSymbol: sFSymbol)
                     .resizable()
                     .frame(width: imageSize.width, height: imageSize.height)
-            case .mdi(let materialDesignIcons):
+            case let .mdi(materialDesignIcons):
                 Image(uiImage: materialDesignIcons.image(ofSize: imageSize, color: UIColor(tint)))
             }
         }
     }
 }
 #endif
-
 
 #Preview {
     ModalReusableButton(icon: .sfSymbol(.heart), action: {
