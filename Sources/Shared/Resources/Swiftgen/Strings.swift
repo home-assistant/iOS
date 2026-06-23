@@ -1945,7 +1945,7 @@ public enum L10n {
     public static var hideStatusBar: String { return L10n.tr("Localizable", "kiosk.hide_status_bar") }
     /// Keep screen on
     public static var keepScreenOn: String { return L10n.tr("Localizable", "kiosk.keep_screen_on") }
-    /// Hide header and sidebar
+    /// Hide sidebar and top bar controls
     public static var removeHeaderAndSidebar: String { return L10n.tr("Localizable", "kiosk.remove_header_and_sidebar") }
     /// Kiosk mode
     public static var title: String { return L10n.tr("Localizable", "kiosk.title") }

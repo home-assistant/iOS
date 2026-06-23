@@ -14,6 +14,11 @@ public final class KioskModeManager: ObservableObject {
         settings.enabled && settings.keepScreenOn
     }
 
+    /// Emits the current configuration and every subsequent change, for observers outside this module.
+    public var settingsPublisher: AnyPublisher<KioskSettings, Never> {
+        $settings.eraseToAnyPublisher()
+    }
+
     private var observation: AnyDatabaseCancellable?
 
     public init() {

@@ -55,6 +55,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         improvManager: ImprovManager.shared
     )
 
+    private var kioskSettingsCancellable: AnyCancellable?
+
     /// Handler for gestures over the webview
     let webViewGestureHandler = WebViewGestureHandler()
 
@@ -197,6 +199,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         becomeFirstResponder()
 
         observeConnectionNotifications()
+        setupKioskModeObservation()
 
         let statusBarView = setupStatusBarView()
 
@@ -309,5 +312,28 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             let action = Current.settingsStore.gestures[.shake] ?? .openDebug
             webViewGestureHandler.handleGestureAction(action)
         }
+    }
+}
+
+// MARK: - Kiosk mode
+
+extension WebViewController {
+    func setupKioskModeObservation() {
+        kioskSettingsCancellable = Current.kiosk.settingsPublisher
+            .map { $0.enabled && $0.removeHeaderAndSidebar }
+            .removeDuplicates()
+            .dropFirst() // The initial value is pushed once the frontend connects.
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateFrontendKioskMode()
+            }
+    }
+
+    func updateFrontendKioskMode() {
+        let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
+        _ = webViewExternalMessageHandler.sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue,
+            payload: ["enable": enable]
+        ))
     }
 }

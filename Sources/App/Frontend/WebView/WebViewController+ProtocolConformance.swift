@@ -73,6 +73,9 @@ extension WebViewController: WebViewControllerProtocol {
         switch resolvedState {
         case .connected:
             hideEmptyState()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                self?.updateFrontendKioskMode()
+            }
         case .authInvalid:
             showEmptyState()
         case .disconnected, .unknown:
