@@ -21,6 +21,7 @@ public enum GRDBDatabaseTable: String {
     case homeViewConfiguration
     case assistConfiguration
     case allowedTags
+    case kioskSettings
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -171,5 +172,20 @@ public enum DatabaseTables {
 
     public enum AllowedTag: String, CaseIterable {
         case tag
+    }
+
+    // Kiosk mode configuration (single row). Column names must match
+    // `KioskSettings`'s stored properties so GRDB's Codable mapping lines up.
+    public enum KioskSettings: String, CaseIterable {
+        case id
+        case enabled
+        case requireAuthentication
+        case serverId
+        case dashboard
+        case keepScreenOn
+        case removeHeaderAndSidebar
+        case hideStatusBar
+        case autoReload
+        case screensaver
     }
 }
