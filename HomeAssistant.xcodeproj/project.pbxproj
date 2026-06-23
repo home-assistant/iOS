@@ -23,6 +23,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		DFB59CC17BC47B8A6949B81C /* KioskScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71373DD7455D9CE893EB450B /* KioskScreensaverView.swift */; };
 		0841CA8F012D390039FA46A9 /* KioskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80244E5EBD91B74A271BFE69 /* KioskView.swift */; };
 		EF407595A931C19EBCCC9E87 /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
 		7F5261AFA361C741413A782D /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
@@ -1902,6 +1903,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		71373DD7455D9CE893EB450B /* KioskScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskScreensaverView.swift; sourceTree = "<group>"; };
 		80244E5EBD91B74A271BFE69 /* KioskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskView.swift; sourceTree = "<group>"; };
 		1CCF41D72CA895DB501333EF /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
 		45FD2BAEEAE31310280CB33D /* KioskSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.swift; sourceTree = "<group>"; };
@@ -3749,6 +3751,7 @@
 		1BED35828D71BF63D3023009 /* Kiosk */ = {
 			isa = PBXGroup;
 			children = (
+				71373DD7455D9CE893EB450B /* KioskScreensaverView.swift */,
 				80244E5EBD91B74A271BFE69 /* KioskView.swift */,
 				45FD2BAEEAE31310280CB33D /* KioskSettings.swift */,
 				E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */,
@@ -9323,6 +9326,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFB59CC17BC47B8A6949B81C /* KioskScreensaverView.swift in Sources */,
 				0841CA8F012D390039FA46A9 /* KioskView.swift in Sources */,
 				1AA7D3A6102D7CC4601EEC6F /* KioskSettingsViewModel.swift in Sources */,
 				E864AF283C52DCFA11B83545 /* KioskSettingsView.swift in Sources */,

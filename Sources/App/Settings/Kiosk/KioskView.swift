@@ -27,13 +27,25 @@ struct ConditionalContainerView: View {
 }
 
 struct KioskView: View {
+    @StateObject private var screensaver = KioskScreensaverController()
+
     var body: some View {
         ContainerView()
+            .background(KioskActivityDetector { screensaver.recordActivity() })
             .overlay(alignment: .bottomLeading) {
                 if Current.isDebug {
                     debugWatermark
                 }
             }
+            .overlay {
+                if screensaver.isActive {
+                    KioskScreensaverView(settings: screensaver.screensaver) {
+                        screensaver.wake()
+                    }
+                    .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.4), value: screensaver.isActive)
     }
 
     private var debugWatermark: some View {
