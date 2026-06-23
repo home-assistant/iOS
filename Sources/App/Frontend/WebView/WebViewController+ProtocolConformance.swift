@@ -73,6 +73,7 @@ extension WebViewController: WebViewControllerProtocol {
         switch resolvedState {
         case .connected:
             hideEmptyState()
+            // Short delay so frontend is loaded
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                 self?.updateFrontendKioskMode()
             }
