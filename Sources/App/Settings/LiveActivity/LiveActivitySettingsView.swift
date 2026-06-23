@@ -201,6 +201,20 @@ struct LiveActivitySettingsView: View {
                     color: "#03A9F4"
                 )]
             ),
+            LiveActivitySample(
+                id: "custom-colors",
+                name: L10n.LiveActivity.Sample.CustomColors.title,
+                note: L10n.LiveActivity.Sample.CustomColors.note,
+                tag: "debug-colors",
+                title: "Movie Night",
+                stages: [.init(
+                    message: "Theater mode · Lights dimmed",
+                    icon: "mdi:movie-open",
+                    color: "#FFD166",
+                    backgroundColor: "#0B1E3F",
+                    textColor: "#FFD166"
+                )]
+            ),
         ]
     }
 
@@ -617,6 +631,8 @@ private struct LiveActivitySample: Identifiable {
         var countdownSeconds: Double?
         var icon: String?
         var color: String?
+        var backgroundColor: String?
+        var textColor: String?
 
         func contentState() -> HALiveActivityAttributes.ContentState {
             // countdownEnd is relative to now so the local demo matches `when_relative: true`,
@@ -629,7 +645,9 @@ private struct LiveActivitySample: Identifiable {
                 chronometer: countdownSeconds == nil ? nil : true,
                 countdownEnd: countdownSeconds.map { Date().addingTimeInterval($0) },
                 icon: icon,
-                color: color
+                color: color,
+                backgroundColor: backgroundColor,
+                textColor: textColor
             )
         }
     }
@@ -671,6 +689,10 @@ private struct LiveActivitySample: Identifiable {
             }
             if let icon = stage.icon { lines.append("\(sub)notification_icon: \"\(icon)\"") }
             if let color = stage.color { lines.append("\(sub)notification_icon_color: \"\(color)\"") }
+            if let backgroundColor = stage.backgroundColor {
+                lines.append("\(sub)background_color: \"\(backgroundColor)\"")
+            }
+            if let textColor = stage.textColor { lines.append("\(sub)text_color: \"\(textColor)\"") }
             return lines
         }
 
