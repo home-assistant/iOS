@@ -10,11 +10,6 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
-  # `xcodebuild -showBuildSettings` runs cold (SPM resolution is skipped), so for this
-  # large workspace it exceeds 60s on the macOS leg. When it times out, gym can't read
-  # SUPPORTS_MACCATALYST, assumes the project is iOS-only, archives `generic/platform=iOS`,
-  # and the resulting iOS archive fails to export the macOS `developer-id` method on
-  # Xcode 26.4.1. Give the probe enough time to complete. See home-assistant/iOS#4807.
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 180
   HOMEBREW_NO_INSTALL_CLEANUP: TRUE
   BUNDLE_PATH: vendor/bundle
