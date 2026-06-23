@@ -2019,7 +2019,7 @@ public enum L10n {
       /// Show a screensaver after a period of inactivity to protect the display and save power.
       public static var body: String { return L10n.tr("Localizable", "kiosk.screensaver.body") }
       /// Dim level
-      public static var dimLevel: String { return L10n.tr("Localizable", "kiosk.screensaver.dim_level") }
+      public static var dimmingLevel: String { return L10n.tr("Localizable", "kiosk.screensaver.dimming_level") }
       /// Enabled
       public static var enabled: String { return L10n.tr("Localizable", "kiosk.screensaver.enabled") }
       /// Preview
