@@ -422,14 +422,14 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "extensions.map.payload_missing_homeassistant.message" = "Payload enthielt kein Home Assistant Dictionary!";
 "extensions.map.value_missing_or_uncastable.latitude.message" = "Breitengrad wurde nicht gefunden oder konnte nicht in eine Zeichenfolge (String) übersetzt werden!";
 "extensions.map.value_missing_or_uncastable.longitude.message" = "Längengrad wurde nicht gefunden oder konnte nicht in eine Zeichenfolge (String) übersetzt werden!";
-"extensions.notification_content.camera.mute" = "Mute";
-"extensions.notification_content.camera.unmute" = "Unmute";
+"extensions.notification_content.camera.mute" = "Stummschalten";
+"extensions.notification_content.camera.unmute" = "Stummschaltung aufheben";
 "extensions.notification_content.error.no_entity_id" = "Keine entity_id in der Payload gefunden!";
 "extensions.notification_content.error.request.auth_failed" = "Authentifizierung fehlgeschlagen!";
 "extensions.notification_content.error.request.entity_not_found" = "Entität '%@' nicht gefunden!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-Stream nicht verfügbar";
 "extensions.notification_content.error.request.other" = "Kein HTTP-200 (OK) Statuscode erhalten (%li)";
-"extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC stream unavailable";
+"extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC-Stream nicht verfügbar";
 "gestures.1_finger.title" = "Mit einem Finger";
 "gestures.2_fingers.title" = "Mit zwei Fingern";
 "gestures.2_fingers_swipe_down.title" = "2 👆 nach unten wischen";
