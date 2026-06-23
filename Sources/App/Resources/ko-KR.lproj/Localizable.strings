@@ -422,14 +422,14 @@
 "extensions.map.payload_missing_homeassistant.message" = "페이로드에 Home Assistant 사전이 포함되어 있지 않습니다!";
 "extensions.map.value_missing_or_uncastable.latitude.message" = "위도를 찾을 수 없거나 문자열로 변환할 수 없습니다!";
 "extensions.map.value_missing_or_uncastable.longitude.message" = "경도를 찾을 수 없거나 문자열로 변환할 수 없습니다!";
-"extensions.notification_content.camera.mute" = "Mute";
-"extensions.notification_content.camera.unmute" = "Unmute";
+"extensions.notification_content.camera.mute" = "음소거";
+"extensions.notification_content.camera.unmute" = "음소거 해제";
 "extensions.notification_content.error.no_entity_id" = "페이로드에서 entity_id 찾을 수 없습니다!";
 "extensions.notification_content.error.request.auth_failed" = "인증 실패!";
 "extensions.notification_content.error.request.entity_not_found" = "엔티티 '%@'를 찾을 수 없습니다!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 스트림을 사용할 수 없음";
 "extensions.notification_content.error.request.other" = "200이 아닌 상태 코드를 받았습니다(%li)";
-"extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC stream unavailable";
+"extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC 스트림을 사용할 수 없음";
 "gestures.1_finger.title" = "한 손가락 사용";
 "gestures.2_fingers.title" = "두 손가락 사용";
 "gestures.2_fingers_swipe_down.title" = "2 👆 아래로 스와이프";
