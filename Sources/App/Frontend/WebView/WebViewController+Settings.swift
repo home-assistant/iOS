@@ -48,7 +48,6 @@ extension WebViewController {
         }
 
         if reason == .settingChange {
-            setNeedsStatusBarAppearanceUpdate()
             setNeedsUpdateOfHomeIndicatorAutoHidden()
             updateEdgeToEdgeLayout()
         }

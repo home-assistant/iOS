@@ -735,7 +735,6 @@
 		4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		4269107F2F9B981700E4477B /* WebViewEmptyStateStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4269107E2F9B981700E4477B /* WebViewEmptyStateStyle.swift */; };
-		426910832F9B981700E4477B /* WebViewEmptyStateView+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426910822F9B981700E4477B /* WebViewEmptyStateView+Previews.swift */; };
 		4269F48B2FADE46300164A52 /* AssistPromptMagicItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4269F48A2FADE46300164A52 /* AssistPromptMagicItemView.swift */; };
 		426AB2372EF2A7D400FD5D46 /* ControlOpenCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203961F2EF16A4700C9DF74 /* ControlOpenCamera.swift */; };
 		426AB23D2EF2A7D400FD5D46 /* ControlOpenEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396252EF16A4700C9DF74 /* ControlOpenEntity.swift */; };
@@ -1101,6 +1100,7 @@
 		42E0D82C2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		42E0D82D2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		42E28A742FEACDEA00B65504 /* CarPlayEditItemFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E28A732FEACDEA00B65504 /* CarPlayEditItemFlow.swift */; };
+		42E28A712FEABEBD00B65504 /* ModalReusableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E28A702FEABEBD00B65504 /* ModalReusableButton.swift */; };
 		42E3B8B92D8AC63300F5D084 /* Float+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8B82D8AC63300F5D084 /* Float+HA.swift */; };
 		42E3B8BA2D8AC63300F5D084 /* Float+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8B82D8AC63300F5D084 /* Float+HA.swift */; };
 		42E3B8C02D8ACE0400F5D084 /* OptionalsDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */; };
@@ -1615,7 +1615,6 @@
 		FA11C0DE0000000000000053 /* ContainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000052 /* ContainerViewModel.swift */; };
 		FA11C0DE0000000000000055 /* WebFrontendOverlayState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */; };
 		FA11C0DE0000000000000057 /* FrontendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000056 /* FrontendView.swift */; };
-		FA11C0DE0000000000000059 /* StatusBarForwardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */; };
 		FA11C0DE000000000000005B /* WebFrontend.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE000000000000005A /* WebFrontend.swift */; };
 		FA11C0DE0000000000000061 /* MockAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000060 /* MockAppCoordinator.swift */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
@@ -2517,7 +2516,6 @@
 		426490762C0F2403002155CC /* WatchAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAudioRecorder.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		4269107E2F9B981700E4477B /* WebViewEmptyStateStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewEmptyStateStyle.swift; sourceTree = "<group>"; };
-		426910822F9B981700E4477B /* WebViewEmptyStateView+Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewEmptyStateView+Previews.swift"; sourceTree = "<group>"; };
 		4269F48A2FADE46300164A52 /* AssistPromptMagicItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPromptMagicItemView.swift; sourceTree = "<group>"; };
 		426BB0C42D393F0E0062D905 /* EntityPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPicker.swift; sourceTree = "<group>"; };
 		426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelinePicker.swift; sourceTree = "<group>"; };
@@ -2989,6 +2987,7 @@
 		42E000032FEE100100BEEF01 /* LocalPushRetryDiagnosticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushRetryDiagnosticsTests.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E28A732FEACDEA00B65504 /* CarPlayEditItemFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEditItemFlow.swift; sourceTree = "<group>"; };
+		42E28A702FEABEBD00B65504 /* ModalReusableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalReusableButton.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
 		42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAProgressView.swift; sourceTree = "<group>"; };
@@ -3537,7 +3536,6 @@
 		FA11C0DE0000000000000052 /* ContainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewModel.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFrontendOverlayState.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000056 /* FrontendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendView.swift; sourceTree = "<group>"; };
-		FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarForwardingNavigationController.swift; sourceTree = "<group>"; };
 		FA11C0DE000000000000005A /* WebFrontend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFrontend.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000060 /* MockAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAppCoordinator.swift; sourceTree = "<group>"; };
 		FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -5879,7 +5877,6 @@
 				42BE698B2C4691E000745ECA /* Views */,
 				FA11C0DE0000000000000005 /* HomeAssistantView.swift */,
 				FA11C0DE0000000000000056 /* FrontendView.swift */,
-				FA11C0DE0000000000000058 /* StatusBarForwardingNavigationController.swift */,
 				FA11C0DE000000000000005A /* WebFrontend.swift */,
 				FA11C0DE0000000000000054 /* WebFrontendOverlayState.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
@@ -6029,7 +6026,6 @@
 				42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */,
 				42E5542C2E128AE4008A160D /* ServerPickerView.swift */,
 				4269107E2F9B981700E4477B /* WebViewEmptyStateStyle.swift */,
-				426910822F9B981700E4477B /* WebViewEmptyStateView+Previews.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -6089,6 +6085,7 @@
 				4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */,
 				42B74A5C2D36A47E00C37304 /* CloseButton.swift */,
 				425762722E71A8B800AE5083 /* ModalCloseButton.swift */,
+				42E28A702FEABEBD00B65504 /* ModalReusableButton.swift */,
 				42CB330E2DAE530400491DCE /* SettingsButton.swift */,
 				42C131CF2D66084C00AF48E6 /* PillView.swift */,
 				427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */,
@@ -9627,7 +9624,6 @@
 				FA11C0DE0000000000000004 /* SceneManagerEnvironmentKey.swift in Sources */,
 				FA11C0DE0000000000000006 /* HomeAssistantView.swift in Sources */,
 				FA11C0DE0000000000000057 /* FrontendView.swift in Sources */,
-				FA11C0DE0000000000000059 /* StatusBarForwardingNavigationController.swift in Sources */,
 				FA11C0DE000000000000005B /* WebFrontend.swift in Sources */,
 				FA11C0DE0000000000000055 /* WebFrontendOverlayState.swift in Sources */,
 				FA11C0DE0000000000000021 /* OnboardingStateObservable.swift in Sources */,
@@ -9761,7 +9757,6 @@
 				421D89A22EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				42F5C0872F02BCCD00C50310 /* IntentSwitchEntity.swift in Sources */,
-				426910832F9B981700E4477B /* WebViewEmptyStateView+Previews.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				3E02C0F32CA8032500102131 /* WidgetSensorsAppIntent.swift in Sources */,
 				421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */,
@@ -10466,6 +10461,7 @@
 				42A9C1052FBB000100D0C0DE /* AllowedTagTable.swift in Sources */,
 				42DC8B792E169FA300D9999E /* Color+Hex.swift in Sources */,
 				11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */,
+				42E28A712FEABEBD00B65504 /* ModalReusableButton.swift in Sources */,
 				4264906B2C0F1B5F002155CC /* AssistChatItem.swift in Sources */,
 				D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */,
 				115BC82E2677093900452430 /* FocusStatusWrapper.swift in Sources */,

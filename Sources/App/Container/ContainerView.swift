@@ -23,6 +23,7 @@ struct ContainerView: View {
                     coordinator.setFrontend(webViewController)
                     Current.sceneManager.setWebViewController(webViewController)
                 }
+                .id(server.identifier.rawValue)
             case .recoveredServerImport:
                 RecoveredServersImportView(onImport: { state.completeRecoveredServerImport() })
             case let .recoveredServerReauth(server):

@@ -76,10 +76,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
-    override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen || (Current.kioskSettings.enabled && Current.kioskSettings.hideStatusBar)
-    }
-
     override var prefersHomeIndicatorAutoHidden: Bool {
         Current.settingsStore.fullScreen
     }
@@ -330,17 +326,6 @@ extension WebViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.updateFrontendKioskMode()
-            }
-            .store(in: &kioskCancellables)
-
-        // Re-evaluate the status bar visibility (the initial state is read when the view appears).
-        Current.kiosk.settingsPublisher
-            .map { $0.enabled && $0.hideStatusBar }
-            .removeDuplicates()
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.setNeedsStatusBarAppearanceUpdate()
             }
             .store(in: &kioskCancellables)
 
