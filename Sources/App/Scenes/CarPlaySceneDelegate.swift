@@ -47,10 +47,6 @@ class CarPlaySceneDelegate: UIResponder {
     private var latestStatesServerId: String?
     private var latestQuickAccessStatesPerServer: [String: HACachedStates] = [:]
 
-    private var preferredServerId: String {
-        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
-    }
-
     deinit {
         entitiesSubscriptionToken?.cancel()
         quickAccessEntitiesSubscriptionTokens.forEach({ $0?.cancel() })
@@ -142,7 +138,7 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private func subscribeToEntitiesChanges() {
-        guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else { return }
+        guard let server = CarPlayPreferredServer.current else { return }
         entitiesSubscriptionToken?.cancel()
         latestStates = nil
         latestStatesServerId = nil

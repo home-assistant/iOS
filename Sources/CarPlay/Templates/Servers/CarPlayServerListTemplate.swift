@@ -5,8 +5,6 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
-    static let carPlayPreferredServerKey = "carPlay-server"
-
     private let viewModel: CarPlayServerListViewModel
 
     var template: CPListTemplate
@@ -87,7 +85,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             self?.viewModel.setServer(server: server)
             completion()
         }
-        serverItem.accessoryType = viewModel.preferredServerId == server.identifier.rawValue ? .cloud : .none
+        serverItem.accessoryType = CarPlayPreferredServer.id == server.identifier.rawValue ? .cloud : .none
         return serverItem
     }
 

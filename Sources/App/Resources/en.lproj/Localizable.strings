@@ -281,6 +281,12 @@
 "carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
 "carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
+"carPlay.quick_access.add_item.back" = "Back";
+"carPlay.quick_access.add_item.button" = "Add item";
+"carPlay.quick_access.add_item.confirmation.footer" = "For more customization, configure Quick Access in the Home Assistant app on your iPhone.";
+"carPlay.quick_access.add_item.confirmation.no_confirmation" = "Add without confirmation";
+"carPlay.quick_access.add_item.confirmation.require" = "Require confirmation";
+"carPlay.quick_access.add_item.title" = "Add item";
 "carPlay.quick_access.execute.in_progress" = "Executing...";
 "carPlay.quick_access.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";

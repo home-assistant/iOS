@@ -1079,6 +1079,22 @@ public enum L10n {
       }
     }
     public enum QuickAccess {
+      public enum AddItem {
+        /// Back
+        public static var back: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.back") }
+        /// Add item
+        public static var button: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.button") }
+        /// Add item
+        public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.title") }
+        public enum Confirmation {
+          /// For more customization, configure Quick Access in the Home Assistant app on your iPhone.
+          public static var footer: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.footer") }
+          /// Add without confirmation
+          public static var noConfirmation: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.no_confirmation") }
+          /// Require confirmation
+          public static var require: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.require") }
+        }
+      }
       public enum Execute {
         /// Executing...
         public static var inProgress: String { return L10n.tr("Localizable", "carPlay.quick_access.execute.in_progress") }

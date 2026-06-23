@@ -39,10 +39,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var executingStartedAt: [String: Date] = [:]
     private var pendingExecutingClearWorkItems: [String: DispatchWorkItem] = [:]
     private var activeAssistSession: AnyObject?
-
-    private var preferredServerId: String {
-        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
-    }
+    private var addItemFlow: CarPlayAddItemFlow?
 
     private lazy var introduceQuickAccessListItem: CPListItem = {
         let item = CPListItem(
@@ -71,6 +68,30 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
         self.viewModel.templateProvider = self
         presentIntroductionItem()
+    }
+
+    // A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
+    // is a list row appended to the end of the Quick Access list instead.
+    private func makeAddItemRow() -> CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.QuickAccess.AddItem.button,
+            detailText: nil,
+            image: MaterialDesignIcons.plusCircleOutlineIcon.carPlayIcon()
+        )
+        item.handler = { [weak self] _, completion in
+            self?.presentAddItemFlow()
+            completion()
+        }
+        return item
+    }
+
+    private func presentAddItemFlow() {
+        let flow = CarPlayAddItemFlow(interfaceController: interfaceController) { [weak self] in
+            // Defer release so the flow isn't deallocated mid-callback.
+            DispatchQueue.main.async { self?.addItemFlow = nil }
+        }
+        addItemFlow = flow
+        flow.start()
     }
 
     func templateWillDisappear(template: CPTemplate) {
@@ -156,15 +177,18 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func presentIntroductionItem() {
         template.trailingNavigationBarButtons = []
-        template.updateSections([.init(items: [introduceQuickAccessListItem])])
+        template.updateSections([.init(items: [introduceQuickAccessListItem, makeAddItemRow()])])
     }
 
     private func refreshCurrentPresentation() {
         guard !currentItems.isEmpty else { return }
+        let addItemRow = makeAddItemRow()
         if #available(iOS 26.0, *), currentLayout == .grid {
-            paginatedList.updateItems(items: rowItems(items: currentItems))
+            var items: [any CPListTemplateItem] = rowItems(items: currentItems)
+            items.append(addItemRow)
+            paginatedList.updateItems(items: items)
         } else {
-            paginatedList.updateItems(items: listItems(items: currentItems))
+            paginatedList.updateItems(items: listItems(items: currentItems) + [addItemRow])
         }
     }
 
