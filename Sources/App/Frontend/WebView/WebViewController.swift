@@ -351,12 +351,18 @@ extension WebViewController {
         autoReloadTimer = nil
         guard let seconds = interval.timeInterval else { return }
         autoReloadTimer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            switch connectionState {
-            case .connected, .authInvalid:
-                reload()
-            case .disconnected, .unknown:
-                recoverDisconnectedFrontend()
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                switch connectionState {
+                case .connected:
+                    reload()
+                case .disconnected, .unknown:
+                    if overlayState?.emptyState != nil {
+                        recoverDisconnectedFrontend()
+                    }
+                case .authInvalid:
+                    break
+                }
             }
         }
     }
