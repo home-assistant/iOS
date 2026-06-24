@@ -396,10 +396,14 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 "tag": tag,
             ]
         )
-        for server in Current.servers.all {
-            Current.webhooks.sendEphemeral(server: server, request: request).cauterize()
+        let sends = Current.servers.all.map { Current.webhooks.sendEphemeral(server: $0, request: request) }
+        // Forget the tag only once every server confirms the release. If any send fails (e.g. the
+        // device is offline when the activity ends), keep it so reattach() retries on next launch.
+        when(fulfilled: sends).done { [weak self] in
+            Task { await self?.forgetReportedTokenTag(tag) }
+        }.catch { error in
+            Current.Log.verbose("LiveActivityRegistry: dismiss not confirmed for tag \(tag), will retry: \(error)")
         }
-        forgetReportedTokenTag(tag)
     }
 
     /// Report the push-to-start token to all HA servers via registration update.
