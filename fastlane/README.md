@@ -85,6 +85,14 @@ Download latest localization files from Lokalize
 
 Upload localized strings to Lokalise
 
+### delete_lokalise_keys
+
+```sh
+[bundle exec] fastlane delete_lokalise_keys
+```
+
+Delete keys completely from the iOS app Lokalise project
+
 ### unused_strings
 
 ```sh
