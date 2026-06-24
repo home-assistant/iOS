@@ -27,20 +27,26 @@ jobs:
       - name: Detect unused L10n strings
         id: detect
         run: |
-          OUTPUT=$(python3 Tools/detect_unused_strings.py 2>&1 || true)
+          # The detector exits 1 both when unused keys are found AND on real
+          # errors, so branch on its output markers and fail on anything else
+          # rather than blanket-swallowing failures with `|| true`.
+          OUTPUT=$(python3 Tools/detect_unused_strings.py 2>&1) || CODE=$?
+          CODE=${CODE:-0}
           echo "$OUTPUT"
 
           if printf '%s\n' "$OUTPUT" | grep -q "Total unused:"; then
             echo "has_unused=true" >> "$GITHUB_OUTPUT"
-          else
+            # Last non-empty line is the comma-separated list of unused keys.
+            KEYS=$(printf '%s\n' "$OUTPUT" | awk 'NF { last = $0 } END { print last }')
+            echo "keys<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$KEYS" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          elif printf '%s\n' "$OUTPUT" | grep -q "No unused strings found"; then
             echo "has_unused=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::detect_unused_strings.py failed (exit ${CODE})"
+            exit 1
           fi
-
-          # Last non-empty line is the comma-separated list of unused keys.
-          KEYS=$(printf '%s\n' "$OUTPUT" | awk 'NF { last = $0 } END { print last }')
-          echo "keys<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$KEYS" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
 
   # Reuse the existing Lokalise delete + iOS cleanup-PR pipeline for the detected keys.
   delete:
