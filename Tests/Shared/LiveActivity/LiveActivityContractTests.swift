@@ -53,7 +53,9 @@ final class LiveActivityContractTests: XCTestCase {
             countdownEnd: Date(timeIntervalSince1970: 0),
             icon: "mdi:test",
             color: "#FF0000",
-            url: "/lovelace/0"
+            url: "/lovelace/0",
+            backgroundColor: "#000000",
+            textColor: "#FFFFFF"
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970
@@ -72,6 +74,8 @@ final class LiveActivityContractTests: XCTestCase {
             "icon",
             "color",
             "url",
+            "background_color",
+            "text_color",
         ]
         XCTAssertEqual(Set(dict.keys), expectedKeys)
     }
@@ -88,7 +92,9 @@ final class LiveActivityContractTests: XCTestCase {
             countdownEnd: Date(timeIntervalSince1970: 1_700_000_000),
             icon: "mdi:washing-machine",
             color: "#2196F3",
-            url: "/lovelace/laundry"
+            url: "/lovelace/laundry",
+            backgroundColor: "#101820",
+            textColor: "#FFFFFF"
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970

@@ -2338,6 +2338,12 @@ public enum L10n {
         /// All Fields · Max Load
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.title") }
       }
+      public enum CustomColors {
+        /// Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.note") }
+        /// Custom Colors · Background + Text
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.title") }
+      }
       public enum Delivery {
         /// message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.delivery.note") }

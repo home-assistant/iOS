@@ -77,6 +77,14 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// browser. Nil just opens the originating server.
         public var url: String?
 
+        /// Lock Screen background color, parsed like `notification_icon_color`. Defaults to black;
+        /// text auto-contrasts with it. Maps to `background_color`.
+        public var backgroundColor: String?
+
+        /// Lock Screen text/foreground color, parsed like `notification_icon_color`.
+        /// Overrides the auto-contrast default. Maps to `text_color`.
+        public var textColor: String?
+
         // MARK: - Computed helpers (not sent over wire)
 
         /// Progress as a fraction in [0, 1] for use in SwiftUI ProgressView.
@@ -99,6 +107,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case icon
             case color
             case url
+            case backgroundColor = "background_color"
+            case textColor = "text_color"
         }
 
         // MARK: - Init
@@ -113,7 +123,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             countdownEnd: Date? = nil,
             icon: String? = nil,
             color: String? = nil,
-            url: String? = nil
+            url: String? = nil,
+            backgroundColor: String? = nil,
+            textColor: String? = nil
         ) {
             self.title = title
             self.message = message
@@ -125,6 +137,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.icon = icon
             self.color = color
             self.url = url
+            self.backgroundColor = backgroundColor
+            self.textColor = textColor
         }
 
         // MARK: - Codable
@@ -149,6 +163,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.icon = try container.decodeIfPresent(String.self, forKey: .icon)
             self.color = try container.decodeIfPresent(String.self, forKey: .color)
             self.url = try container.decodeIfPresent(String.self, forKey: .url)
+            self.backgroundColor = try container.decodeIfPresent(String.self, forKey: .backgroundColor)
+            self.textColor = try container.decodeIfPresent(String.self, forKey: .textColor)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -165,6 +181,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             try container.encodeIfPresent(icon, forKey: .icon)
             try container.encodeIfPresent(color, forKey: .color)
             try container.encodeIfPresent(url, forKey: .url)
+            try container.encodeIfPresent(backgroundColor, forKey: .backgroundColor)
+            try container.encodeIfPresent(textColor, forKey: .textColor)
         }
     }
 

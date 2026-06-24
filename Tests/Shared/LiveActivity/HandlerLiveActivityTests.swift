@@ -85,6 +85,8 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(state.countdownEnd)
         XCTAssertNil(state.icon)
         XCTAssertNil(state.color)
+        XCTAssertNil(state.backgroundColor)
+        XCTAssertNil(state.textColor)
     }
 
     func testContentState_fullPayload_mapsAllFields() {
@@ -97,6 +99,8 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
             "chronometer": true,
             "notification_icon": "mdi:home",
             "notification_icon_color": "#FF5733",
+            "background_color": "#101820",
+            "text_color": "#FFFFFF",
         ]
         let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
         XCTAssertEqual(state.title, "Test title")
@@ -107,6 +111,8 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(state.chronometer, true)
         XCTAssertEqual(state.icon, "mdi:home")
         XCTAssertEqual(state.color, "#FF5733")
+        XCTAssertEqual(state.backgroundColor, "#101820")
+        XCTAssertEqual(state.textColor, "#FFFFFF")
         XCTAssertNil(state.countdownEnd)
     }
 

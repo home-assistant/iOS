@@ -675,6 +675,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.sample.alarm.title" = "Alarm · 60 sec Countdown";
 "live_activity.sample.all_fields.note" = "Every content-state field active at once: icon, live countdown, and progress bar. Confirms no layout collisions.";
 "live_activity.sample.all_fields.title" = "All Fields · Max Load";
+"live_activity.sample.custom_colors.note" = "Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.";
+"live_activity.sample.custom_colors.title" = "Custom Colors · Background + Text";
 "live_activity.sample.delivery.note" = "message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.";
 "live_activity.sample.delivery.title" = "Package Delivery · All Text Fields";
 "live_activity.sample.dishwasher.note" = "The only sample that tests start → update → end. After it ends, the final \"Done\" state lingers on the lock screen (up to 4 h).";
