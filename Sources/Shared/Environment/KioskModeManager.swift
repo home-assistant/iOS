@@ -14,6 +14,7 @@ public enum KioskScreensaverCommand: Equatable {
 /// (and in `Current.kioskSettings`) without manual refreshes.
 public final class KioskModeManager: ObservableObject {
     @Published public private(set) var settings: KioskSettings
+    @Published public private(set) var isCameraOverlayVisible = false
 
     public var shouldKeepScreenOn: Bool {
         settings.enabled && settings.keepScreenOn
@@ -28,8 +29,16 @@ public final class KioskModeManager: ObservableObject {
         screensaverCommandSubject.eraseToAnyPublisher()
     }
 
+    public var cameraOverlayVisiblePublisher: AnyPublisher<Bool, Never> {
+        $isCameraOverlayVisible.eraseToAnyPublisher()
+    }
+
     public func requestScreensaver(_ command: KioskScreensaverCommand) {
         screensaverCommandSubject.send(command)
+    }
+
+    public func setCameraOverlayVisible(_ visible: Bool) {
+        isCameraOverlayVisible = visible
     }
 
     private let screensaverCommandSubject = PassthroughSubject<KioskScreensaverCommand, Never>()

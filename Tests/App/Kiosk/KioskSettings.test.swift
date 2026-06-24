@@ -1,3 +1,4 @@
+import Foundation
 import GRDB
 @testable import Shared
 import Testing
@@ -25,6 +26,7 @@ struct KioskSettingsTests {
                 showDate: false,
                 showSeconds: true,
                 timeToStart: .minutes10,
+                dimEnabled: true,
                 dimLevel: 0.3
             )
         )
@@ -61,6 +63,28 @@ struct KioskSettingsTests {
         #expect(loaded?.autoReload == .never)
         #expect(loaded?.settingsEntryPosition == .bottomTrailing)
         #expect(loaded?.screensaver == KioskScreensaverSettings())
+    }
+
+    @Test func decodesDefaultsWhenScreensaverFieldsAreMissing() throws {
+        let decoder = JSONDecoder()
+        let data = Data(
+            """
+            {
+              "enabled": true,
+              "mode": "clock",
+              "clockStyle": "small",
+              "showDate": false,
+              "showSeconds": true,
+              "timeToStart": "minutes10",
+              "dimLevel": 0.3
+            }
+            """.utf8
+        )
+
+        let settings = try decoder.decode(KioskScreensaverSettings.self, from: data)
+
+        #expect(settings.dimEnabled == false)
+        #expect(settings.dimLevel == 0.3)
     }
 
     @Test func enumMetadataIsComplete() {

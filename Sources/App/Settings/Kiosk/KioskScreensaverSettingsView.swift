@@ -59,15 +59,21 @@ struct KioskScreensaverSettingsView: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                    HStack {
-                        KioskRow.label(L10n.Kiosk.Screensaver.dimmingLevel, icon: .brightness6Icon)
-                        Spacer()
-                        Text(dimLevelPercentage)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
+                Toggle(isOn: screensaver.dimEnabled) {
+                    KioskRow.label(L10n.Kiosk.Screensaver.dim, icon: .brightness6Icon)
+                }
+
+                if screensaver.wrappedValue.dimEnabled {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                        HStack {
+                            KioskRow.label(L10n.Kiosk.Screensaver.dimmingLevel, icon: .brightness6Icon)
+                            Spacer()
+                            Text(dimLevelPercentage)
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+                        Slider(value: screensaver.dimLevel, in: 0 ... 1, step: 0.05)
                     }
-                    Slider(value: screensaver.dimLevel, in: 0 ... 1, step: 0.05)
                 }
             }
 
