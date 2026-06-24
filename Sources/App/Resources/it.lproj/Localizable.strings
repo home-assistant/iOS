@@ -1838,7 +1838,6 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "widgets.controls.scripts.placeholder_title" = "Scegli lo script";
 "widgets.controls.switch.description" = "Accendi/spegni il tuo interruttore";
 "widgets.controls.switch.pending_configuration" = "Scegli interruttore";
-"widgets.controls.switch.placeholder_title" = "Scegli interruttore";
 "widgets.controls.switch.title" = "Interruttore";
 "widgets.custom.intent_activate_failed.body" = "Prova di nuovo";
 "widgets.custom.intent_activate_failed.title" = "Impossibile 'attivare' l'entità";

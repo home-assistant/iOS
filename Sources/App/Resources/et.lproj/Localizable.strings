@@ -1838,7 +1838,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.controls.scripts.placeholder_title" = "Vali skript";
 "widgets.controls.switch.description" = "Lüliti sisse/välja";
 "widgets.controls.switch.pending_configuration" = "Vali lüliti";
-"widgets.controls.switch.placeholder_title" = "Vali lüliti";
 "widgets.controls.switch.title" = "Lüliti";
 "widgets.custom.intent_activate_failed.body" = "Proovi uuesti";
 "widgets.custom.intent_activate_failed.title" = "Olemi \"aktiveerimine\" nurjus";

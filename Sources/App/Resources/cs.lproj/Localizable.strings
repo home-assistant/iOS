@@ -1838,7 +1838,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.controls.scripts.placeholder_title" = "Vybrat skript";
 "widgets.controls.switch.description" = "Zapne/Vypne spínač.";
 "widgets.controls.switch.pending_configuration" = "Vybrat spínač";
-"widgets.controls.switch.placeholder_title" = "Vybrat spínač";
 "widgets.controls.switch.title" = "Spínač";
 "widgets.custom.intent_activate_failed.body" = "Zkuste to znovu";
 "widgets.custom.intent_activate_failed.title" = "Selhání entity: \"activate\"";

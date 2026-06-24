@@ -1833,7 +1833,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.controls.scripts.placeholder_title" = "Välj skript";
 "widgets.controls.switch.description" = "Slå på/av brytare";
 "widgets.controls.switch.pending_configuration" = "Välj brytare";
-"widgets.controls.switch.placeholder_title" = "Välj brytare";
 "widgets.controls.switch.title" = "Brytare";
 "widgets.custom.intent_activate_failed.body" = "Försök igen";
 "widgets.custom.intent_activate_failed.title" = "Det gick inte att \"aktivera\" entiteten";
