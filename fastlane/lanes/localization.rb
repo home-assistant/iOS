@@ -609,6 +609,69 @@ lane :delete_lokalise_keys do
   UI.success("Deleted #{found.count} key(s) from Lokalise project #{project_id}.")
 end
 
+LOCALIZABLE_STRINGS_GLOB = 'Sources/App/Resources/*.lproj/Localizable.strings'.freeze
+
+# Index of the last physical line of the .strings entry starting at `start`.
+# Entries may span lines via trailing-backslash continuation; the last line ends with ';'.
+def strings_entry_end(lines, start)
+  i = start
+  i += 1 while i < lines.length - 1 && !lines[i].rstrip.end_with?(';')
+  i
+end
+
+# Key names defined in the file (one capture per entry-start line).
+def strings_keys(lines)
+  lines.filter_map do |line|
+    match = line.match(/\A"((?:[^"\\]|\\.)*)" = /)
+    match && match[1]
+  end
+end
+
+# Lines with every entry whose key is in key_set removed (the whole multi-line entry).
+def reject_strings_keys(lines, key_set)
+  kept = []
+  i = 0
+  while i < lines.length
+    match = lines[i].match(/\A"((?:[^"\\]|\\.)*)" = /)
+    drop = !match.nil? && key_set.include?(match[1])
+    last = drop ? strings_entry_end(lines, i) : i
+    kept.concat(lines[i..last]) unless drop
+    i = last + 1
+  end
+  kept
+end
+
+# Removes the requested keys from a single Localizable.strings file.
+# Returns the requested keys that were present (and removed) in this file.
+def remove_strings_keys!(path:, key_set:)
+  lines = File.readlines(path, encoding: 'UTF-8')
+  present = strings_keys(lines).select { |key| key_set.include?(key) }.uniq
+  return [] if present.empty?
+
+  File.write(path, reject_strings_keys(lines, key_set).join, encoding: 'UTF-8')
+  UI.message("#{File.basename(File.dirname(path))}: removed #{present.length} key(s)")
+  present
+end
+
+desc 'Remove keys from all Localizable.strings files and regenerate SwiftGen output'
+lane :delete_local_strings do
+  raw_keys = ENV.fetch('LOKALISE_DELETE_KEYS') do
+    prompt(text: 'Keys to delete (comma or newline separated)')
+  end
+  key_names = raw_keys.split(/[,\n]/).map(&:strip).reject(&:empty?).uniq
+  UI.user_error!('No keys provided to delete.') if key_names.empty?
+
+  key_set = key_names.to_set
+  files = Dir.glob(File.expand_path("../#{LOCALIZABLE_STRINGS_GLOB}"))
+  UI.user_error!('No Localizable.strings files found.') if files.empty?
+
+  removed = files.flat_map { |path| remove_strings_keys!(path: path, key_set: key_set) }.uniq
+  missing = key_names - removed
+  UI.important("Not found in any Localizable.strings: #{missing.join(', ')}") unless missing.empty?
+
+  sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
+end
+
 desc 'Find unused localized strings'
 lane :unused_strings do
   files = [

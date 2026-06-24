@@ -98,6 +98,13 @@ jobs:
           echo "$OUTPUT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+          # Last non-empty line is the comma-separated list of unused keys,
+          # ready to paste into the "Lokalise: Delete Keys" workflow.
+          KEYS=$(printf '%s\n' "$OUTPUT" | awk 'NF { last = $0 } END { print last }')
+          echo "keys<<EOF" >> $GITHUB_OUTPUT
+          echo "$KEYS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
           # Check if any unused strings were found
           if echo "$OUTPUT" | grep -q "Total unused:"; then
             COUNT=$(echo "$OUTPUT" | grep "Total unused:" | grep -oE '[0-9]+')
@@ -129,8 +136,14 @@ jobs:
 
             </details>
 
-            To clean up these strings, manually remove them from the `Localizable.strings` files
-            and regenerate `Strings.swift` using SwiftGen.
+            To remove them, run the
+            [Lokalise: Delete Keys](${{ github.event.repository.html_url }}/actions/workflows/delete_lokalise_keys.yml)
+            workflow — it deletes the keys from Lokalise and opens a PR removing them from
+            `Localizable.strings` and regenerating `Strings.swift`. Copy-paste these keys into the **keys** input:
+
+            ```
+            ${{ steps.detect.outputs.keys }}
+            ```
 
   test:
     needs: check-swiftlint-disables

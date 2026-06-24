@@ -37,3 +37,44 @@ jobs:
           LOKALISE_DELETE_KEYS: ${{ inputs.keys }}
           LOKALISE_DELETE_DRY_RUN: ${{ inputs.dry_run }}
           LOKALISE_DELETE_CONFIRMATION: ${{ inputs.confirmation }}
+
+  # Only after a real (non-dry-run) deletion succeeds: remove the same keys from
+  # the local Localizable.strings files, regenerate Strings.swift via SwiftGen,
+  # and open a PR. The PR's own CI build flags any leftover L10n references.
+  open_cleanup_pr:
+    needs: delete_keys
+    if: ${{ inputs.dry_run == false }}
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
+      - name: Install Gems
+        run: bundle install --jobs 4 --retry 3
+      - name: Install Pods
+        run: ONLY_SUPPORT_MODULES=1 bundle exec pod install --repo-update
+      - name: Remove keys from Localizable.strings and regenerate
+        run: bundle exec fastlane delete_local_strings
+        env:
+          LOKALISE_DELETE_KEYS: ${{ inputs.keys }}
+      - name: Commit changes
+        run: |
+          git config --global user.name 'Home Assistant Bot'
+          git config --global user.email 'hello@home-assistant.io'
+          git add Sources/\*.strings
+          git add Sources/\*.swift
+          git commit -m "Delete unused localized strings" || true
+          git checkout -- .
+          git clean -xfd
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
+        with:
+          base: main
+          branch: create-pull-request/delete_lokalise_keys
+          title: "Delete unused localized strings"
+          body: |
+            Automatically created by @${{ github.actor }} after deleting these keys from Lokalise:
+            ```
+            ${{ inputs.keys }}
+            ```
+          token: ${{ secrets.REPO_SCOPED_TOKEN }}
