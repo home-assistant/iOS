@@ -1,0 +1,57 @@
+name: "Auto delete unused strings (iOS & Lokalise)"
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: only list the unused keys that would be deleted."
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Detect unused L10n keys with the same script the CI unused-strings check uses.
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      has_unused: ${{ steps.detect.outputs.has_unused }}
+      keys: ${{ steps.detect.outputs.keys }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v5.3.0
+        with:
+          python-version: '3.x'
+      - name: Detect unused L10n strings
+        id: detect
+        run: |
+          OUTPUT=$(python3 Tools/detect_unused_strings.py 2>&1 || true)
+          echo "$OUTPUT"
+
+          if printf '%s\n' "$OUTPUT" | grep -q "Total unused:"; then
+            echo "has_unused=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_unused=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          # Last non-empty line is the comma-separated list of unused keys.
+          KEYS=$(printf '%s\n' "$OUTPUT" | awk 'NF { last = $0 } END { print last }')
+          echo "keys<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$KEYS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+  # Reuse the existing Lokalise delete + iOS cleanup-PR pipeline for the detected keys.
+  delete:
+    needs: detect
+    if: ${{ needs.detect.outputs.has_unused == 'true' }}
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/delete_lokalise_keys.yml
+    with:
+      keys: ${{ needs.detect.outputs.keys }}
+      dry_run: ${{ inputs.dry_run }}
+      confirmation: ${{ inputs.dry_run == false && 'DELETE' || '' }}
+    secrets: inherit
