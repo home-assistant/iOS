@@ -30,4 +30,21 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertIdentical(controllerB.overlayState, overlayStateB)
         XCTAssertNotIdentical(controllerA.overlayState, controllerB.overlayState)
     }
+
+    func testFrontendViewWiresResetActionToController() {
+        var resetCalled = false
+        let reconnectManager = WebViewReconnectManager()
+
+        let controller = FrontendView(
+            server: Server.fake(),
+            resetFrontendAction: { resetCalled = true },
+            reconnectManager: reconnectManager,
+            overlayState: WebFrontendOverlayState()
+        ).makeWebViewController()
+
+        controller.resetFrontendAction?()
+
+        XCTAssertTrue(resetCalled)
+        XCTAssertIdentical(controller.reconnectManager, reconnectManager)
+    }
 }

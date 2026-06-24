@@ -2,23 +2,29 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// Hosts the UIKit `WebViewController` as a SwiftUI view. One instance per server: `ContainerView` keys the
-/// host by server identity, so a server switch builds a fresh controller and discards the previous one.
+/// Hosts the UIKit `WebViewController` as a SwiftUI view. A server switch or SwiftUI identity reset builds a
+/// fresh controller and discards the previous one.
 struct FrontendView: UIViewControllerRepresentable {
     let server: Server
     var restorationType: WebViewRestorationType?
     var onWebViewController: ((WebViewController) -> Void)?
+    var resetFrontendAction: (() -> Void)?
+    var reconnectManager: WebViewReconnectManager?
     let overlayState: WebFrontendOverlayState
 
     init(
         server: Server,
         restorationType: WebViewRestorationType? = nil,
         onWebViewController: ((WebViewController) -> Void)? = nil,
+        resetFrontendAction: (() -> Void)? = nil,
+        reconnectManager: WebViewReconnectManager? = nil,
         overlayState: WebFrontendOverlayState
     ) {
         self.server = server
         self.restorationType = restorationType
         self.onWebViewController = onWebViewController
+        self.resetFrontendAction = resetFrontendAction
+        self.reconnectManager = reconnectManager
         self.overlayState = overlayState
     }
 
@@ -37,6 +43,8 @@ struct FrontendView: UIViewControllerRepresentable {
         let controller = WebViewController(server: server)
         controller.initialURL = restorationType?.initialURL
         controller.overlayState = overlayState
+        controller.resetFrontendAction = resetFrontendAction
+        controller.reconnectManager = reconnectManager
         return controller
     }
 }

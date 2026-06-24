@@ -18,10 +18,18 @@ extension WebViewController {
     /// `overlayState`) rather than an alpha-animated subview, so app-level sheets can float over it.
     func showEmptyState() {
         overlayState?.emptyState = makeEmptyStateContent()
+        if connectionState == .disconnected || connectionState == .unknown {
+            reconnectManager?.start { [weak self] in
+                self?.recoverDisconnectedFrontend()
+            }
+        } else {
+            reconnectManager?.stop()
+        }
     }
 
     @objc func hideEmptyState() {
         overlayState?.emptyState = nil
+        reconnectManager?.stop()
     }
 
     var shouldShowErrorDetailsButton: Bool {
@@ -37,6 +45,15 @@ extension WebViewController {
             )),
             animated: true
         )
+    }
+
+    func recoverDisconnectedFrontend() {
+        if let resetFrontendAction {
+            resetFrontendAction()
+        } else {
+            hideEmptyState()
+            refresh()
+        }
     }
 
     // To avoid keeping the empty state on screen when user is disconnected in background
@@ -84,8 +101,7 @@ extension WebViewController {
             showsErrorDetailsButton: shouldShowErrorDetailsButton,
             availableReauthURLTypes: availableReauthURLTypes(for: server),
             retryAction: { [weak self] in
-                self?.hideEmptyState()
-                self?.refresh()
+                self?.recoverDisconnectedFrontend()
             },
             settingsAction: { [weak self] in self?.showSettingsViewController() },
             errorDetailsAction: { [weak self] in self?.presentLatestLoadErrorDetails() },
