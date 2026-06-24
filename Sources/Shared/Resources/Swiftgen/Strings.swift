@@ -32,8 +32,6 @@ public enum L10n {
   public static var errorLabel: String { return L10n.tr("Localizable", "error_label") }
   /// Help
   public static var helpLabel: String { return L10n.tr("Localizable", "help_label") }
-  /// Not in a room
-  public static var noArea: String { return L10n.tr("Localizable", "no_area") }
   /// No
   public static var noLabel: String { return L10n.tr("Localizable", "no_label") }
   /// OK
@@ -128,8 +126,6 @@ public enum L10n {
     /// New Action
     public static var title: String { return L10n.tr("Localizable", "actions_configurator.title") }
     public enum Action {
-      /// Create automation
-      public static var createAutomation: String { return L10n.tr("Localizable", "actions_configurator.action.create_automation") }
       /// Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.
       public static var footer: String { return L10n.tr("Localizable", "actions_configurator.action.footer") }
       /// Execute
@@ -168,14 +164,10 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "actions_configurator.trigger_example.title") }
     }
     public enum VisualSection {
-      /// The appearance of this action is controlled by the scene configuration.
-      public static var sceneDefined: String { return L10n.tr("Localizable", "actions_configurator.visual_section.scene_defined") }
       /// You can also change these by customizing the Scene attributes: %@
       public static func sceneHintFooter(_ p1: Any) -> String {
         return L10n.tr("Localizable", "actions_configurator.visual_section.scene_hint_footer", String(describing: p1))
       }
-      /// The appearance of this action is controlled by the server configuration.
-      public static var serverDefined: String { return L10n.tr("Localizable", "actions_configurator.visual_section.server_defined") }
     }
   }
 
@@ -607,10 +599,6 @@ public enum L10n {
       /// Update sensors
       public static var title: String { return L10n.tr("Localizable", "app_intents.update_sensors.title") }
     }
-    public enum WidgetAction {
-      /// Which actions?
-      public static var actionsParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.widget_action.actions_parameter_configuration") }
-    }
   }
 
   public enum Assist {
@@ -765,18 +753,7 @@ public enum L10n {
     public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
   }
 
-  public enum Camera {
-    /// Server not found
-    public static var serverNotFound: String { return L10n.tr("Localizable", "camera.server_not_found") }
-    /// Failed to load camera snapshot
-    public static var snapshotFailed: String { return L10n.tr("Localizable", "camera.snapshot_failed") }
-  }
-
   public enum CameraList {
-    /// Not in a room
-    public static var noArea: String { return L10n.tr("Localizable", "camera_list.no_area") }
-    /// Search cameras
-    public static var searchPlaceholder: String { return L10n.tr("Localizable", "camera_list.search_placeholder") }
     /// Cameras
     public static var title: String { return L10n.tr("Localizable", "camera_list.title") }
     public enum Edit {
@@ -831,8 +808,6 @@ public enum L10n {
   }
 
   public enum Cameras {
-    /// Drag and drop to reorder
-    public static var dragToReorder: String { return L10n.tr("Localizable", "cameras.drag_to_reorder") }
     /// No server found for camera: %@
     public static func noServerFound(_ p1: Any) -> String {
       return L10n.tr("Localizable", "cameras.no_server_found", String(describing: p1))
@@ -1999,8 +1974,6 @@ public enum L10n {
   public enum Kiosk {
     /// Lock the app into a single dashboard for wall panels and shared devices.
     public static var body: String { return L10n.tr("Localizable", "kiosk.body") }
-    /// Enable Kiosk Mode
-    public static var enableButton: String { return L10n.tr("Localizable", "kiosk.enable_button") }
     /// Enabled
     public static var enabled: String { return L10n.tr("Localizable", "kiosk.enabled") }
     /// Hide status bar
@@ -2030,14 +2003,6 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "kiosk.active.title") }
     }
     public enum Auth {
-      /// Authenticate
-      public static var authenticateButton: String { return L10n.tr("Localizable", "kiosk.auth.authenticate_button") }
-      /// Authentication is required to access kiosk settings. Verify your identity to continue.
-      public static var gateDescription: String { return L10n.tr("Localizable", "kiosk.auth.gate_description") }
-      /// Kiosk Mode Active
-      public static var gateTitle: String { return L10n.tr("Localizable", "kiosk.auth.gate_title") }
-      /// Go Back
-      public static var goBackButton: String { return L10n.tr("Localizable", "kiosk.auth.go_back_button") }
       /// Authentication Required
       public static var `required`: String { return L10n.tr("Localizable", "kiosk.auth.required") }
     }
@@ -2090,8 +2055,6 @@ public enum L10n {
       public static var section: String { return L10n.tr("Localizable", "kiosk.brightness.section") }
     }
     public enum Clock {
-      /// 24-Hour Format
-      public static var _24hour: String { return L10n.tr("Localizable", "kiosk.clock.24hour") }
       /// Clock Display
       public static var section: String { return L10n.tr("Localizable", "kiosk.clock.section") }
       /// Show Date
@@ -2115,14 +2078,10 @@ public enum L10n {
         }
       }
       public enum Style {
-        /// Analog
-        public static var analog: String { return L10n.tr("Localizable", "kiosk.clock.style.analog") }
         /// Digital
         public static var digital: String { return L10n.tr("Localizable", "kiosk.clock.style.digital") }
         /// Large
         public static var large: String { return L10n.tr("Localizable", "kiosk.clock.style.large") }
-        /// Minimal
-        public static var minimal: String { return L10n.tr("Localizable", "kiosk.clock.style.minimal") }
       }
     }
     public enum Corner {
@@ -2190,10 +2149,6 @@ public enum L10n {
       public static var enabled: String { return L10n.tr("Localizable", "kiosk.screensaver.enabled") }
       /// Mode
       public static var mode: String { return L10n.tr("Localizable", "kiosk.screensaver.mode") }
-      /// Pixel Shift (OLED)
-      public static var pixelShift: String { return L10n.tr("Localizable", "kiosk.screensaver.pixel_shift") }
-      /// Pixel shift helps prevent burn-in on OLED displays by slightly moving content periodically.
-      public static var pixelShiftFooter: String { return L10n.tr("Localizable", "kiosk.screensaver.pixel_shift_footer") }
       /// Preview
       public static var preview: String { return L10n.tr("Localizable", "kiosk.screensaver.preview") }
       /// Screensaver
@@ -2237,20 +2192,6 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.mode.title") }
       }
       public enum Timeout {
-        /// 10 minutes
-        public static var _10min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.10min") }
-        /// 15 minutes
-        public static var _15min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.15min") }
-        /// 1 minute
-        public static var _1min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.1min") }
-        /// 2 minutes
-        public static var _2min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.2min") }
-        /// 30 minutes
-        public static var _30min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.30min") }
-        /// 30 seconds
-        public static var _30sec: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.30sec") }
-        /// 5 minutes
-        public static var _5min: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.5min") }
         /// 1 hour
         public static var hours1: String { return L10n.tr("Localizable", "kiosk.screensaver.timeout.hours_1") }
         /// 1 minute
@@ -2274,20 +2215,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "kiosk.section.title") }
     }
     public enum Security {
-      /// Device Authentication
-      public static var deviceAuth: String { return L10n.tr("Localizable", "kiosk.security.device_auth") }
-      /// Exit Gesture Corner
-      public static var gestureCorner: String { return L10n.tr("Localizable", "kiosk.security.gesture_corner") }
       /// Tap the %1$@ corner %2$@ times to access kiosk settings when locked.
       public static func gestureFooter(_ p1: Any, _ p2: Any) -> String {
         return L10n.tr("Localizable", "kiosk.security.gesture_footer", String(describing: p1), String(describing: p2))
       }
       /// Hide Status Bar
       public static var hideStatusBar: String { return L10n.tr("Localizable", "kiosk.security.hide_status_bar") }
-      /// Prevent Auto-Lock
-      public static var preventAutolock: String { return L10n.tr("Localizable", "kiosk.security.prevent_autolock") }
-      /// Secret Exit Gesture
-      public static var secretGesture: String { return L10n.tr("Localizable", "kiosk.security.secret_gesture") }
       /// Security & Display
       public static var section: String { return L10n.tr("Localizable", "kiosk.security.section") }
       /// Taps Required: %li
@@ -4148,8 +4081,6 @@ public enum L10n {
         public static var empty: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.empty") }
         /// Actions defined in .yaml are not editable on device.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.footer") }
-        /// Actions may be also defined in the .yaml configuration.
-        public static var footerNoActions: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.footer_no_actions") }
         /// Synced Actions
         public static var header: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.header") }
       }
@@ -4166,8 +4097,6 @@ public enum L10n {
         }
       }
       public enum Scenes {
-        /// Customize
-        public static var customizeAction: String { return L10n.tr("Localizable", "settings_details.actions.scenes.customize_action") }
         /// No Scenes
         public static var empty: String { return L10n.tr("Localizable", "settings_details.actions.scenes.empty") }
         /// When enabled, Scenes display alongside actions. When performed, they trigger scene changes.
@@ -4983,10 +4912,6 @@ public enum L10n {
         /// Called service
         public static var title: String { return L10n.tr("Localizable", "url_handler.call_service.success.title") }
       }
-    }
-    public enum Error {
-      /// Action Not Found
-      public static var actionNotFound: String { return L10n.tr("Localizable", "url_handler.error.action_not_found") }
     }
     public enum FireEvent {
       public enum Confirm {
@@ -6037,16 +5962,12 @@ public enum L10n {
       public enum Automations {
         /// Choose automation
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.automations.pending_configuration") }
-        /// Choose automation
-        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.automations.placeholder_title") }
       }
       public enum Button {
         /// Press button
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.button.description") }
         /// Choose button
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.button.pending_configuration") }
-        /// Choose button
-        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.button.placeholder_title") }
         /// Button
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.button.title") }
       }
@@ -6055,8 +5976,6 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.cover.description") }
         /// Choose cover
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.cover.pending_configuration") }
-        /// Choose cover
-        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.cover.placeholder_title") }
         /// Cover
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.cover.title") }
       }
@@ -6065,8 +5984,6 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.fan.description") }
         /// Choose fan
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.fan.pending_configuration") }
-        /// Choose fan
-        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.fan.placeholder_title") }
         /// Fan
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.fan.title") }
       }
@@ -6075,8 +5992,6 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.light.description") }
         /// Choose light
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.light.pending_configuration") }
-        /// Choose Light
-        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.light.placeholder_title") }
         /// Light
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.light.title") }
       }
@@ -6229,8 +6144,6 @@ public enum L10n {
       public enum Scenes {
         /// Choose scene
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.scenes.pending_configuration") }
-        /// Choose scene
-        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.scenes.placeholder_title") }
       }
       public enum Script {
         /// Run script
@@ -6241,8 +6154,6 @@ public enum L10n {
       public enum Scripts {
         /// Choose script
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.scripts.pending_configuration") }
-        /// Choose script
-        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.scripts.placeholder_title") }
       }
       public enum Switch {
         /// Turn on/off your switch
