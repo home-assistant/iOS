@@ -47,7 +47,7 @@ struct AssistSettingsView: View {
         NavigationView {
             Form {
                 muteToggle
-                experimental
+                labs
             }
             .onChange(of: viewModel.configuration.enableOnDeviceSTT) { isEnabled in
                 guard isEnabled, !supportedSTTLocales.isEmpty else { return }
@@ -80,7 +80,7 @@ struct AssistSettingsView: View {
     }
 
     @ViewBuilder
-    private var experimental: some View {
+    private var labs: some View {
         if #available(iOS 17.0, *) {
             Section {
                 Toggle(isOn: $viewModel.configuration.enableOnDeviceSTT) {
@@ -113,7 +113,10 @@ struct AssistSettingsView: View {
                     }
                 }
             } header: {
-                Text(L10n.Assist.Settings.Section.Experimental.title)
+                HStack {
+                    Text(L10n.Assist.Settings.Section.Labs.title)
+                    LabsLabel()
+                }
             } footer: {
                 if viewModel.configuration.enableOnDeviceTTS {
                     Text(L10n.Assist.Settings.OnDeviceTts.footer)
