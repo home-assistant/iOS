@@ -6243,8 +6243,6 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.switch.description") }
         /// Choose switch
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.switch.pending_configuration") }
-        /// Choose switch
-        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.switch.placeholder_title") }
         /// Switch
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.switch.title") }
       }

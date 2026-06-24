@@ -1838,7 +1838,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.scripts.placeholder_title" = "Choose script";
 "widgets.controls.switch.description" = "Turn on/off your switch";
 "widgets.controls.switch.pending_configuration" = "Choose switch";
-"widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Switch";
 "widgets.custom.intent_activate_failed.body" = "Por favor, inténtalo de nuevo";
 "widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";

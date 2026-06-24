@@ -1838,7 +1838,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.controls.scripts.placeholder_title" = "Escolha o script";
 "widgets.controls.switch.description" = "Ligue/desligue seu interruptor";
 "widgets.controls.switch.pending_configuration" = "Choose switch";
-"widgets.controls.switch.placeholder_title" = "Escolha o interruptor";
 "widgets.controls.switch.title" = "Interruptor";
 "widgets.custom.intent_activate_failed.body" = "Por favor, tente novamente";
 "widgets.custom.intent_activate_failed.title" = "Falha ao 'ativar' a entidade";

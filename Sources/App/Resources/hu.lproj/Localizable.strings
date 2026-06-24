@@ -1837,7 +1837,6 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "widgets.controls.scripts.placeholder_title" = "Szkript kiválasztása";
 "widgets.controls.switch.description" = "A kapcsoló be- és kikapcsolása";
 "widgets.controls.switch.pending_configuration" = "Kapcsoló kiválasztása";
-"widgets.controls.switch.placeholder_title" = "Válasszon kapcsolót";
 "widgets.controls.switch.title" = "Kapcsoló";
 "widgets.custom.intent_activate_failed.body" = "Kérjük, próbálja újra";
 "widgets.custom.intent_activate_failed.title" = "Nem sikerült 'aktiválni' az entitást";

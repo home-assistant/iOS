@@ -1839,7 +1839,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.controls.scripts.placeholder_title" = "Skript auswählen";
 "widgets.controls.switch.description" = "Schalte deinen Schalter ein/aus";
 "widgets.controls.switch.pending_configuration" = "Schalter auswählen";
-"widgets.controls.switch.placeholder_title" = "Schalter auswählen";
 "widgets.controls.switch.title" = "Schalter";
 "widgets.custom.intent_activate_failed.body" = "Bitte erneut versuchen";
 "widgets.custom.intent_activate_failed.title" = "Entität konnte nicht „aktiviert“ werden";

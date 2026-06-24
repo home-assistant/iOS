@@ -1838,7 +1838,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "widgets.controls.scripts.placeholder_title" = "Kies script";
 "widgets.controls.switch.description" = "Zet je schakelaar aan of uit";
 "widgets.controls.switch.pending_configuration" = "Schakelaar kiezen";
-"widgets.controls.switch.placeholder_title" = "Kies schakelaar";
 "widgets.controls.switch.title" = "Schakelaar";
 "widgets.custom.intent_activate_failed.body" = "Probeer het opnieuw";
 "widgets.custom.intent_activate_failed.title" = "Kan entiteit niet 'activeren'";

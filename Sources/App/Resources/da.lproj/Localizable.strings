@@ -1838,7 +1838,6 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "widgets.controls.scripts.placeholder_title" = "Vælg script";
 "widgets.controls.switch.description" = "Tænd/sluk din kontakt";
 "widgets.controls.switch.pending_configuration" = "Vælg kontakt";
-"widgets.controls.switch.placeholder_title" = "Vælg kontakt";
 "widgets.controls.switch.title" = "Kontakt";
 "widgets.custom.intent_activate_failed.body" = "Prøv igen";
 "widgets.custom.intent_activate_failed.title" = "Kunne ikke 'aktivere' entiteten";
