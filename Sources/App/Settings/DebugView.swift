@@ -130,7 +130,7 @@ struct DebugView: View {
                 } label: {
                     linkContent(
                         image: .init(systemSymbol: .speakerWave2Fill),
-                        title: "Media playback"
+                        title: "WKWebView Media Playback"
                     )
                 }
 
@@ -635,7 +635,7 @@ private struct MediaTypesRequiringUserActionForPlaybackView: View {
                 Text("Select which frontend media types require a user action before playback.")
             }
         }
-        .navigationTitle("Media playback")
+        .navigationTitle("WKWebView Media Playback")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Force close required", isPresented: $showRestartAlert) {
             Button(L10n.okLabel, role: .cancel) {}
