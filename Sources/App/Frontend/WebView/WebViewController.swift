@@ -45,6 +45,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// instead of UIKit modals presented from here.
     var overlayState: WebFrontendOverlayState?
 
+    /// Set by `FrontendView` so retry can rebuild the SwiftUI-hosted web view when WebKit is stuck.
+    var resetFrontendAction: (() -> Void)?
+
+    /// Owns disconnected empty-state recovery timing. Kept in `HomeAssistantView` so attempts survive reset.
+    var reconnectManager: WebViewReconnectManager?
+
     var loadActiveURLIfNeededInProgress = false
 
     /// Track the timestamp of the last pull-to-refresh action
@@ -345,7 +351,13 @@ extension WebViewController {
         autoReloadTimer = nil
         guard let seconds = interval.timeInterval else { return }
         autoReloadTimer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { [weak self] _ in
-            self?.reload()
+            guard let self else { return }
+            switch connectionState {
+            case .connected, .authInvalid:
+                reload()
+            case .disconnected, .unknown:
+                recoverDisconnectedFrontend()
+            }
         }
     }
 

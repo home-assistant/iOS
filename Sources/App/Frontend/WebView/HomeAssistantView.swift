@@ -20,6 +20,11 @@ struct HomeAssistantView: View, WebFrontendView {
     /// *style* stays on `WebViewController`, as SwiftUI has no equivalent).
     @StateObject private var chrome = WebViewChromeState()
 
+    @StateObject private var reconnectManager = WebViewReconnectManager()
+
+    /// Changing this forces SwiftUI to discard the current `FrontendView` and create a fresh `WebViewController`.
+    @State private var webViewResetID = UUID()
+
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.server = server
         self.onWebViewController = onWebViewController
@@ -45,8 +50,15 @@ struct HomeAssistantView: View, WebFrontendView {
 
     var body: some View {
         ZStack {
-            FrontendView(server: server, onWebViewController: onWebViewController, overlayState: overlayState)
-                .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
+            FrontendView(
+                server: server,
+                onWebViewController: onWebViewController,
+                resetFrontendAction: resetWebFrontend,
+                reconnectManager: reconnectManager,
+                overlayState: overlayState
+            )
+            .id(webViewResetID)
+            .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
 
             if overlayState.showsNoActiveURL {
                 ConnectionSecurityLevelBlockView(server: server)
@@ -77,6 +89,12 @@ struct HomeAssistantView: View, WebFrontendView {
                 view
             }
         }
+    }
+
+    private func resetWebFrontend() {
+        overlayState.emptyState = nil
+        overlayState.showsNoActiveURL = false
+        webViewResetID = UUID()
     }
 }
 

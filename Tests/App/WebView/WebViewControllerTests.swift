@@ -92,6 +92,24 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.latestLoadError)
     }
 
+    func testDisconnectedRetryUsesResetFrontendAction() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        var resetCalled = false
+        sut.overlayState = overlayState
+        sut.connectionState = .disconnected
+        sut.resetFrontendAction = { [weak sut] in
+            resetCalled = true
+            sut?.overlayState?.emptyState = nil
+        }
+
+        sut.showEmptyState()
+        overlayState.emptyState?.retryAction()
+
+        XCTAssertTrue(resetCalled)
+        XCTAssertNil(overlayState.emptyState)
+    }
+
     private func makeSUT() -> WebViewController {
         let sut = WebViewController(server: .fake())
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
