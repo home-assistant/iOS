@@ -33,6 +33,8 @@ def lokalise_request_class(http_method)
     Net::HTTP::Get
   when :post
     Net::HTTP::Post
+  when :delete
+    Net::HTTP::Delete
   else
     raise ArgumentError, "Unsupported Lokalise HTTP method: #{http_method}"
   end
@@ -282,6 +284,63 @@ def lokalise_follow_bundle_redirect!(response, redirects_remaining)
   lokalise_download_bundle_body!(response['location'], redirects_remaining - 1)
 end
 
+# All names a key answers to. key_name is a plain string, or a per-platform
+# object ({ ios:, android:, web:, other: }) when per-platform names are enabled.
+def lokalise_key_names(key)
+  name = key['key_name']
+  case name
+  when String then [name]
+  when Hash then name.values.compact
+  else []
+  end
+end
+
+LOKALISE_KEYS_PAGE_LIMIT = 500
+
+# Resolve requested key names to { name => key_id }, exact match only.
+# filter_keys narrows the query but can match partially, so we still match
+# names exactly locally before returning. Pages until a short page is returned.
+def lokalise_find_key_ids!(token:, project_id:, key_names:)
+  found = {}
+  page = 1
+  filter = URI.encode_www_form_component(key_names.join(','))
+  loop do
+    keys = lokalise_keys_page!(token: token, project_id: project_id, filter: filter, page: page)
+    lokalise_collect_key_ids!(keys: keys, key_names: key_names, found: found)
+    break if keys.length < LOKALISE_KEYS_PAGE_LIMIT
+
+    page += 1
+  end
+  found
+end
+
+def lokalise_keys_page!(token:, project_id:, filter:, page:)
+  response = lokalise_request!(
+    project_id: project_id,
+    token: token,
+    http_method: :get,
+    path: "/keys?limit=#{LOKALISE_KEYS_PAGE_LIMIT}&page=#{page}&filter_keys=#{filter}"
+  )
+  response['keys'] || []
+end
+
+def lokalise_collect_key_ids!(keys:, key_names:, found:)
+  keys.each do |key|
+    match = key_names.find { |name| lokalise_key_names(key).include?(name) }
+    found[match] = key['key_id'] if match
+  end
+end
+
+def lokalise_delete_keys!(token:, project_id:, key_ids:)
+  lokalise_request!(
+    project_id: project_id,
+    token: token,
+    http_method: :delete,
+    path: '/keys',
+    body: { keys: key_ids }
+  )
+end
+
 desc 'Download latest localization files from Lokalize'
 lane :update_strings do
   token = ENV.fetch('LOKALISE_API_TOKEN') do
@@ -493,6 +552,57 @@ lane :push_strings do
       )
     end
   end
+end
+
+desc 'Delete keys completely from the iOS app Lokalise project'
+lane :delete_lokalise_keys do
+  token = ENV.fetch('LOKALISE_API_TOKEN') do
+    prompt(
+      text: 'API token',
+      secure_text: true
+    )
+  end
+
+  project_id = ENV.fetch('LOKALISE_PROJECT_ID') do
+    prompt(
+      text: 'Project ID',
+      secure_text: true
+    )
+  end
+
+  raw_keys = ENV.fetch('LOKALISE_DELETE_KEYS') do
+    prompt(text: 'Keys to delete (comma or newline separated)')
+  end
+  key_names = raw_keys.split(/[,\n]/).map(&:strip).reject(&:empty?).uniq
+  UI.user_error!('No keys provided to delete.') if key_names.empty?
+
+  dry_run = ENV.fetch('LOKALISE_DELETE_DRY_RUN', 'true').to_s.strip.downcase != 'false'
+  confirmation = ENV.fetch('LOKALISE_DELETE_CONFIRMATION', '').to_s.strip
+
+  UI.message("Resolving #{key_names.count} key(s) in Lokalise project #{project_id}...")
+  found = lokalise_find_key_ids!(token: token, project_id: project_id, key_names: key_names)
+
+  missing = key_names - found.keys
+  UI.important("Not found (skipped): #{missing.join(', ')}") unless missing.empty?
+
+  if found.empty?
+    UI.message('No matching keys found. Nothing to delete.')
+    next
+  end
+
+  found.each { |name, id| UI.message("  #{name} -> #{id}") }
+
+  if dry_run
+    UI.important(
+      "DRY RUN: would delete #{found.count} key(s). Re-run with dry_run=false and confirmation=DELETE to proceed."
+    )
+    next
+  end
+
+  UI.user_error!("Confirmation required: set confirmation to 'DELETE' to proceed.") unless confirmation == 'DELETE'
+
+  lokalise_delete_keys!(token: token, project_id: project_id, key_ids: found.values)
+  UI.success("Deleted #{found.count} key(s) from Lokalise project #{project_id}.")
 end
 
 desc 'Find unused localized strings'
