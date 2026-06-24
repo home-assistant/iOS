@@ -11,6 +11,7 @@ struct LiveActivitySettingsView: View {
     @State private var authorizationEnabled: Bool = false
     @State private var frequentUpdatesEnabled: Bool = false
     @State private var showEndAllConfirmation = false
+    @State private var didSync = false
 
     // MARK: Body
 
@@ -58,9 +59,33 @@ struct LiveActivitySettingsView: View {
                 }
             }
 
+            Section {
+                Button {
+                    syncActivities()
+                } label: {
+                    Label(L10n.LiveActivity.Sync.button, systemSymbol: .arrowTriangle2Circlepath)
+                }
+
+                if didSync {
+                    Label(L10n.LiveActivity.Sync.done, systemSymbol: .checkmarkCircleFill)
+                        .foregroundStyle(.green)
+                        .font(.subheadline)
+                }
+            } footer: {
+                Text(L10n.LiveActivity.Sync.footer)
+            }
+
             samplesSection
         }
         .task { await loadActivities() }
+    }
+
+    private func syncActivities() {
+        Task {
+            await Current.liveActivityRegistry?.reattach()
+            await loadActivities()
+            didSync = true
+        }
     }
 
     // MARK: - Sections

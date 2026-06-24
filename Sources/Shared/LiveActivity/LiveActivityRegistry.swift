@@ -224,15 +224,32 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         }
     }
 
-    /// Re-attach observation tasks to any Live Activities that survived process termination.
-    /// Call this at app launch before any notification handlers are invoked.
+    /// Re-attach observation tasks to any Live Activities that survived process termination,
+    /// then sync Core: release the push token for any activity Core still thinks is live but
+    /// is no longer running (e.g. it ended during an app update, so its dismissal was never
+    /// observed). Call this at app launch before any notification handlers are invoked.
     public func reattach() async {
+        var runningTags: Set<String> = []
         for activity in Activity<HALiveActivityAttributes>.activities {
             let tag = activity.attributes.tag
+            runningTags.insert(tag)
             guard entries[tag] == nil else { continue }
             let observationTask = makeObservationTask(for: activity)
             entries[tag] = Entry(activity: activity, observationTask: observationTask)
             Current.Log.verbose("LiveActivityRegistry: reattached activity for tag \(tag), id=\(activity.id)")
+        }
+        await releaseStaleTokens(runningTags: runningTags)
+    }
+
+    /// Tell Core to drop tokens for activities that are no longer running. Without this, an
+    /// activity that ended while the app wasn't running (its `.dismissed` state unobserved)
+    /// leaves Core pushing to a dead token until it expires (8 h).
+    private func releaseStaleTokens(runningTags: Set<String>) async {
+        let stale = reportedTokenTags().subtracting(runningTags)
+        guard !stale.isEmpty else { return }
+        Current.Log.verbose("LiveActivityRegistry: releasing \(stale.count) stale Live Activity token(s) at launch")
+        for tag in stale {
+            await reportActivityDismissed(tag: tag)
         }
     }
 
@@ -367,6 +384,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         for server in Current.servers.all {
             Current.webhooks.sendEphemeral(server: server, request: request).cauterize()
         }
+        rememberReportedTokenTag(tag)
     }
 
     /// Notify HA servers that the Live Activity was dismissed or ended externally.
@@ -378,8 +396,13 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 "tag": tag,
             ]
         )
-        for server in Current.servers.all {
-            Current.webhooks.sendEphemeral(server: server, request: request).cauterize()
+        let sends = Current.servers.all.map { Current.webhooks.sendEphemeral(server: $0, request: request) }
+        // Forget the tag only once every server confirms the release. If any send fails (e.g. the
+        // device is offline when the activity ends), keep it so reattach() retries on next launch.
+        when(fulfilled: sends).done { [weak self] in
+            Task { await self?.forgetReportedTokenTag(tag) }
+        }.catch { error in
+            Current.Log.verbose("LiveActivityRegistry: dismiss not confirmed for tag \(tag), will retry: \(error)")
         }
     }
 
@@ -392,6 +415,31 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 Current.Log.error("LiveActivityRegistry: failed to report push-to-start token: \(error)")
             }
         }
+    }
+
+    // MARK: - Private — Reported-token bookkeeping (App Group)
+
+    /// Tags we currently hold a per-activity push token for in Core. Persisted across launches
+    /// so `reattach()` can release tokens for activities that ended while the app wasn't running.
+    private static let reportedTokenTagsKey = "liveActivityReportedTokenTags"
+
+    private func reportedTokenTags() -> Set<String> {
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [] }
+        return Set(defaults.stringArray(forKey: Self.reportedTokenTagsKey) ?? [])
+    }
+
+    private func rememberReportedTokenTag(_ tag: String) {
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        var tags = Set(defaults.stringArray(forKey: Self.reportedTokenTagsKey) ?? [])
+        guard tags.insert(tag).inserted else { return }
+        defaults.set(Array(tags), forKey: Self.reportedTokenTagsKey)
+    }
+
+    private func forgetReportedTokenTag(_ tag: String) {
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        var tags = Set(defaults.stringArray(forKey: Self.reportedTokenTagsKey) ?? [])
+        guard tags.remove(tag) != nil else { return }
+        defaults.set(Array(tags), forKey: Self.reportedTokenTagsKey)
     }
 }
 

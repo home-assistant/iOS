@@ -2437,6 +2437,14 @@ public enum L10n {
       /// Open Settings
       public static var openSettings: String { return L10n.tr("Localizable", "live_activity.status.open_settings") }
     }
+    public enum Sync {
+      /// Sync with Home Assistant
+      public static var button: String { return L10n.tr("Localizable", "live_activity.sync.button") }
+      /// Synced
+      public static var done: String { return L10n.tr("Localizable", "live_activity.sync.done") }
+      /// Reports running Live Activities to Home Assistant and releases tokens for any that have ended. Runs automatically when the app opens.
+      public static var footer: String { return L10n.tr("Localizable", "live_activity.sync.footer") }
+    }
   }
 
   public enum LocationChangeNotification {
