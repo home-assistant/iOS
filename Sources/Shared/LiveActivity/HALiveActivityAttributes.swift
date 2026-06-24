@@ -85,6 +85,10 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Overrides the auto-contrast default. Maps to `text_color`.
         public var textColor: String?
 
+        /// Hex tint for the progress bar, parsed like `notification_icon_color`. Falls back to
+        /// `notification_icon_color` when omitted. Maps to `progress_bar_color`.
+        public var progressBarColor: String?
+
         // MARK: - Computed helpers (not sent over wire)
 
         /// Progress as a fraction in [0, 1] for use in SwiftUI ProgressView.
@@ -109,6 +113,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case url
             case backgroundColor = "background_color"
             case textColor = "text_color"
+            case progressBarColor = "progress_bar_color"
         }
 
         // MARK: - Init
@@ -125,7 +130,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             color: String? = nil,
             url: String? = nil,
             backgroundColor: String? = nil,
-            textColor: String? = nil
+            textColor: String? = nil,
+            progressBarColor: String? = nil
         ) {
             self.title = title
             self.message = message
@@ -139,6 +145,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.url = url
             self.backgroundColor = backgroundColor
             self.textColor = textColor
+            self.progressBarColor = progressBarColor
         }
 
         // MARK: - Codable
@@ -165,6 +172,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.url = try container.decodeIfPresent(String.self, forKey: .url)
             self.backgroundColor = try container.decodeIfPresent(String.self, forKey: .backgroundColor)
             self.textColor = try container.decodeIfPresent(String.self, forKey: .textColor)
+            self.progressBarColor = try container.decodeIfPresent(String.self, forKey: .progressBarColor)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -183,6 +191,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             try container.encodeIfPresent(url, forKey: .url)
             try container.encodeIfPresent(backgroundColor, forKey: .backgroundColor)
             try container.encodeIfPresent(textColor, forKey: .textColor)
+            try container.encodeIfPresent(progressBarColor, forKey: .progressBarColor)
         }
     }
 

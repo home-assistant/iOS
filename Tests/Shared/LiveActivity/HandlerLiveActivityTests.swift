@@ -87,6 +87,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(state.color)
         XCTAssertNil(state.backgroundColor)
         XCTAssertNil(state.textColor)
+        XCTAssertNil(state.progressBarColor)
     }
 
     func testContentState_fullPayload_mapsAllFields() {
@@ -101,6 +102,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
             "notification_icon_color": "#FF5733",
             "background_color": "#101820",
             "text_color": "#FFFFFF",
+            "progress_bar_color": "#FF9800",
         ]
         let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
         XCTAssertEqual(state.title, "Test title")
@@ -113,6 +115,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(state.color, "#FF5733")
         XCTAssertEqual(state.backgroundColor, "#101820")
         XCTAssertEqual(state.textColor, "#FFFFFF")
+        XCTAssertEqual(state.progressBarColor, "#FF9800")
         XCTAssertNil(state.countdownEnd)
     }
 

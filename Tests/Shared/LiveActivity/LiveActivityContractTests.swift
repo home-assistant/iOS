@@ -55,7 +55,8 @@ final class LiveActivityContractTests: XCTestCase {
             color: "#FF0000",
             url: "/lovelace/0",
             backgroundColor: "#000000",
-            textColor: "#FFFFFF"
+            textColor: "#FFFFFF",
+            progressBarColor: "#FF9800"
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970
@@ -76,6 +77,7 @@ final class LiveActivityContractTests: XCTestCase {
             "url",
             "background_color",
             "text_color",
+            "progress_bar_color",
         ]
         XCTAssertEqual(Set(dict.keys), expectedKeys)
     }
@@ -94,7 +96,8 @@ final class LiveActivityContractTests: XCTestCase {
             color: "#2196F3",
             url: "/lovelace/laundry",
             backgroundColor: "#101820",
-            textColor: "#FFFFFF"
+            textColor: "#FFFFFF",
+            progressBarColor: "#FF9800"
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970
