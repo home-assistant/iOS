@@ -10,6 +10,7 @@ final class CarPlayAddItemFlow {
         case areas(Server)
         case domains(Server)
         case entities(server: Server, title: String, entities: [HAAppEntity])
+        case assist(Server)
     }
 
     private weak var interfaceController: CPInterfaceController?
@@ -80,6 +81,8 @@ final class CarPlayAddItemFlow {
             return domainsSection(server: server)
         case let .entities(server, title, entities):
             return entitiesSection(server: server, title: title, entities: entities)
+        case let .assist(server):
+            return assistSection(server: server)
         }
     }
 
@@ -101,7 +104,21 @@ final class CarPlayAddItemFlow {
             title: L10n.CarPlay.Navigation.Tab.domains,
             image: MaterialDesignIcons.devicesIcon.carPlayIcon()
         ) { [weak self] in self?.go(to: .domains(server)) }
-        return section(header: server.info.name, rows: [areas, control])
+        var rows = [areas, control]
+
+        if #available(iOS 26.4, *) {
+            let assist = navigationRow(
+                title: L10n.Widgets.Action.Name.assist,
+                image: MaterialDesignIcons.microphoneIcon.carPlayIcon()
+            ) { [weak self] in self?.go(to: .assist(server)) }
+            let assistPrompt = navigationRow(
+                title: L10n.MagicItem.ItemType.AssistPrompt.title,
+                image: MaterialDesignIcons.messageProcessingOutlineIcon.carPlayIcon()
+            ) { [weak self] in self?.presentAssistPromptInfo() }
+            rows.append(contentsOf: [assist, assistPrompt])
+        }
+
+        return section(header: server.info.name, rows: rows)
     }
 
     private func areasSection(server: Server) -> CPListSection {
@@ -154,6 +171,35 @@ final class CarPlayAddItemFlow {
         return section(header: title, rows: rows, emptyMessage: L10n.CarPlay.NoEntities.title)
     }
 
+    private func assistSection(server: Server) -> CPListSection {
+        let serverId = server.identifier.rawValue
+        let rows = viewModel.assistPipelines(serverId: serverId).map { pipeline -> CPListItem in
+            navigationRow(
+                title: pipeline.name,
+                image: MaterialDesignIcons.microphoneIcon.carPlayIcon()
+            ) { [weak self] in
+                self?.commitAssistPipeline(server: server, pipeline: pipeline)
+            }
+        }
+        return section(
+            header: L10n.Widgets.Action.Name.assist,
+            rows: rows,
+            emptyMessage: L10n.CarPlay.Labels.emptyAssistList
+        )
+    }
+
+    private func presentAssistPromptInfo() {
+        let okAction = CPAlertAction(title: L10n.okLabel, style: .default) { [weak self] _ in
+            self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+        }
+        let actionSheet = CPActionSheetTemplate(
+            title: L10n.MagicItem.ItemType.AssistPrompt.title,
+            message: L10n.CarPlay.QuickAccess.AddItem.AssistPrompt.message,
+            actions: [okAction]
+        )
+        interfaceController?.presentTemplate(actionSheet, animated: true, completion: nil)
+    }
+
     private func presentConfirmation(server: Server, entity: HAAppEntity) {
         let requireAction = CPAlertAction(
             title: L10n.CarPlay.QuickAccess.AddItem.Confirmation.require,
@@ -189,6 +235,15 @@ final class CarPlayAddItemFlow {
             requiresConfirmation: requiresConfirmation
         )
         interfaceController?.dismissTemplate(animated: true, completion: nil)
+        interfaceController?.popToRootTemplate(animated: true, completion: nil)
+        onFinish()
+    }
+
+    private func commitAssistPipeline(server: Server, pipeline: Pipeline) {
+        viewModel.addAssistPipelineToQuickAccess(
+            pipeline: pipeline,
+            serverId: server.identifier.rawValue
+        )
         interfaceController?.popToRootTemplate(animated: true, completion: nil)
         onFinish()
     }

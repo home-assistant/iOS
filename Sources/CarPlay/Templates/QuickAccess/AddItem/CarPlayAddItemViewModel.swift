@@ -63,6 +63,26 @@ final class CarPlayAddItemViewModel {
             .filter { area.entities.contains($0.entityId) }
     }
 
+    func assistPipelines(serverId: String) -> [Pipeline] {
+        let configs: [AssistPipelines]
+        do {
+            configs = try AssistPipelines.config() ?? []
+        } catch {
+            Current.Log.error("Failed to fetch assist pipelines for CarPlay add item: \(error.localizedDescription)")
+            return []
+        }
+        guard let config = configs.first(where: { $0.serverId == serverId }) else { return [] }
+
+        let usablePipelines = config.pipelines.filter(\.hasSpeechToTextAndTextToSpeech)
+        guard !usablePipelines.isEmpty else { return [] }
+
+        let preferredQualifies = usablePipelines.contains { $0.id == config.preferredPipeline }
+        let preferred: [Pipeline] = preferredQualifies
+            ? [.init(id: "", name: L10n.AppIntents.Assist.PreferredPipeline.title)]
+            : []
+        return preferred + usablePipelines
+    }
+
     func icon(for entity: HAAppEntity) -> MaterialDesignIcons {
         let fallback = entity.resolvedDomain?.icon() ?? .dotsGridIcon
         return MaterialDesignIcons(serversideValueNamed: entity.icon ?? "", fallback: fallback)
@@ -99,6 +119,28 @@ final class CarPlayAddItemViewModel {
             Current.Log.info("Added entity \(entityId) to CarPlay quick access from car")
         } catch {
             Current.Log.error("Failed to add entity to CarPlay quick access: \(error.localizedDescription)")
+        }
+    }
+
+    func addAssistPipelineToQuickAccess(pipeline: Pipeline, serverId: String) {
+        let isPreferred = pipeline.id.isEmpty
+        let item = MagicItem(
+            id: isPreferred ? UUID().uuidString : pipeline.id,
+            serverId: serverId,
+            type: .assistPipeline,
+            customization: .init(iconColor: MagicItem.defaultAssistIconColorHex),
+            assistPipelineId: isPreferred ? "" : nil
+        )
+
+        do {
+            var config = try CarPlayConfig.config() ?? CarPlayConfig()
+            config.quickAccessItems.append(item)
+            try Current.database().write { db in
+                try config.insert(db, onConflict: .replace)
+            }
+            Current.Log.info("Added assist pipeline \(item.id) to CarPlay quick access from car")
+        } catch {
+            Current.Log.error("Failed to add assist pipeline to CarPlay quick access: \(error.localizedDescription)")
         }
     }
 
@@ -194,5 +236,13 @@ final class CarPlayAddItemViewModel {
 private extension HAAppEntity {
     var resolvedDomain: Domain? {
         Domain(rawValue: domain)
+    }
+}
+
+private extension Pipeline {
+    var hasSpeechToTextAndTextToSpeech: Bool {
+        let stt = sttEngine?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let tts = ttsEngine?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return !stt.isEmpty && !tts.isEmpty
     }
 }
