@@ -126,6 +126,15 @@ struct DebugView: View {
                 }
 
                 NavigationLink {
+                    MediaTypesRequiringUserActionForPlaybackView()
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .speakerWave2Fill),
+                        title: "Media playback"
+                    )
+                }
+
+                NavigationLink {
                     DatabaseExplorerView()
                 } label: {
                     linkContent(
@@ -593,6 +602,57 @@ struct DebugView: View {
                 continuation.resume()
             }
         }
+    }
+}
+
+private struct MediaTypesRequiringUserActionForPlaybackView: View {
+    @State private var selectedMediaTypes: Set<SettingsStore.MediaTypeRequiringUserActionForPlayback>
+    @State private var showRestartAlert = false
+
+    init() {
+        _selectedMediaTypes = State(initialValue: Current.settingsStore.mediaTypesRequiringUserActionForPlayback)
+    }
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(SettingsStore.MediaTypeRequiringUserActionForPlayback.allCases, id: \.self) { mediaType in
+                    Button {
+                        toggle(mediaType)
+                    } label: {
+                        HStack {
+                            Text(mediaType.title)
+                            Spacer()
+                            if selectedMediaTypes.contains(mediaType) {
+                                Image(systemSymbol: .checkmark)
+                                    .foregroundStyle(Color.haPrimary)
+                            }
+                        }
+                    }
+                    .foregroundStyle(Color(uiColor: .label))
+                }
+            } footer: {
+                Text("Select which frontend media types require a user action before playback.")
+            }
+        }
+        .navigationTitle("Media playback")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("Force close required", isPresented: $showRestartAlert) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            Text("Force close and reopen the app for this change to take effect.")
+        }
+    }
+
+    private func toggle(_ mediaType: SettingsStore.MediaTypeRequiringUserActionForPlayback) {
+        if selectedMediaTypes.contains(mediaType) {
+            selectedMediaTypes.remove(mediaType)
+        } else {
+            selectedMediaTypes.insert(mediaType)
+        }
+
+        Current.settingsStore.mediaTypesRequiringUserActionForPlayback = selectedMediaTypes
+        showRestartAlert = true
     }
 }
 

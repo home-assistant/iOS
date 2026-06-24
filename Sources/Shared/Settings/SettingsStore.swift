@@ -159,6 +159,20 @@ public class SettingsStore {
         ]
     }
 
+    public enum MediaTypeRequiringUserActionForPlayback: String, CaseIterable, Hashable {
+        case audio
+        case video
+
+        public var title: String {
+            switch self {
+            case .audio:
+                return "Audio"
+            case .video:
+                return "Video"
+            }
+        }
+    }
+
     public var pageZoom: PageZoom {
         get {
             if let pageZoom = PageZoom(preference: prefs.integer(forKey: "page_zoom")) {
@@ -541,6 +555,19 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "toastsHandledByApp")
+        }
+    }
+
+    public var mediaTypesRequiringUserActionForPlayback: Set<MediaTypeRequiringUserActionForPlayback> {
+        get {
+            let rawValues = prefs.stringArray(forKey: "mediaTypesRequiringUserActionForPlayback") ?? [
+                MediaTypeRequiringUserActionForPlayback.audio.rawValue,
+            ]
+            return Set(rawValues.compactMap(MediaTypeRequiringUserActionForPlayback.init(rawValue:)))
+        }
+        set {
+            let rawValues = newValue.map(\.rawValue).sorted()
+            prefs.set(rawValues, forKey: "mediaTypesRequiringUserActionForPlayback")
         }
     }
 
