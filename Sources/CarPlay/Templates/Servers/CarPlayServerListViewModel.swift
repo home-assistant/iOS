@@ -8,6 +8,8 @@ final class CarPlayServerListViewModel {
     weak var templateProvider: CarPlayServersListTemplate?
     weak var interfaceController: CPInterfaceController?
     private var pendingTabs: [CarPlayTab]?
+    private var pendingLayout: CarPlayQuickAccessLayout?
+    private var pendingServer: Server?
 
     func removeServerObserver() {
         Current.servers.remove(observer: self)
@@ -22,6 +24,31 @@ final class CarPlayServerListViewModel {
         CarPlayPreferredServer.select(server)
         templateProvider?.update()
         templateProvider?.sceneDelegate?.setup()
+    }
+
+    func beginServerSelection() {
+        pendingServer = CarPlayPreferredServer.current
+    }
+
+    func isServerActive(_ server: Server) -> Bool {
+        (pendingServer ?? CarPlayPreferredServer.current)?.identifier == server.identifier
+    }
+
+    func setServer(_ server: Server) {
+        pendingServer = server
+    }
+
+    func commitServerSelection() {
+        guard let pendingServer else {
+            return
+        }
+        self.pendingServer = nil
+
+        guard pendingServer.identifier != CarPlayPreferredServer.current?.identifier else {
+            return
+        }
+
+        setServer(server: pendingServer)
     }
 
     var tabs: [CarPlayTab] {
@@ -94,10 +121,31 @@ final class CarPlayServerListViewModel {
         }
     }
 
-    func setQuickAccessLayout(_ layout: CarPlayQuickAccessLayout) {
+    func beginLayoutSelection() {
+        pendingLayout = quickAccessLayout
+    }
+
+    func isLayoutActive(_ layout: CarPlayQuickAccessLayout) -> Bool {
+        (pendingLayout ?? quickAccessLayout) == layout
+    }
+
+    func setLayout(_ layout: CarPlayQuickAccessLayout) {
+        pendingLayout = layout
+    }
+
+    func commitLayoutSelection() {
+        guard let pendingLayout else {
+            return
+        }
+        self.pendingLayout = nil
+
+        guard pendingLayout != quickAccessLayout else {
+            return
+        }
+
         do {
             var config = try CarPlayConfig.config() ?? CarPlayConfig()
-            config.quickAccessLayout = layout
+            config.quickAccessLayout = pendingLayout
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
             }

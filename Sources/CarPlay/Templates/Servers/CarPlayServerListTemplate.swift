@@ -7,6 +7,8 @@ import Shared
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayServerListViewModel
     private weak var tabsSelectionTemplate: CPListTemplate?
+    private weak var layoutSelectionTemplate: CPListTemplate?
+    private weak var serverSelectionTemplate: CPListTemplate?
 
     var template: CPListTemplate
     weak var sceneDelegate: CarPlaySceneDelegate?
@@ -29,6 +31,16 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         if template == tabsSelectionTemplate {
             viewModel.commitTabSelection()
             tabsSelectionTemplate = nil
+        }
+
+        if template == layoutSelectionTemplate {
+            viewModel.commitLayoutSelection()
+            layoutSelectionTemplate = nil
+        }
+
+        if template == serverSelectionTemplate {
+            viewModel.commitServerSelection()
+            serverSelectionTemplate = nil
         }
 
         if template == self.template {
@@ -120,16 +132,20 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         return item
     }
 
-    private func serverItem(server: Server) -> CPListItem {
-        let isSelected = CarPlayPreferredServer.id == server.identifier.rawValue
+    private func serverItem(server: Server, template: CPListTemplate) -> CPListItem {
         let serverItem = CPListItem(
             text: server.info.name,
             detailText: nil,
-            image: isSelected ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+            image: viewModel.isServerActive(server) ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
         )
-        serverItem.handler = { [weak self] _, completion in
-            self?.viewModel.setServer(server: server)
-            self?.interfaceController?.popTemplate(animated: true, completion: nil)
+        serverItem.handler = { [weak self, weak template] _, completion in
+            guard let self, let template else {
+                completion()
+                return
+            }
+
+            viewModel.setServer(server)
+            template.updateSections([serverSelectionSection(template: template)])
             completion()
         }
         serverItem.accessoryType = .none
@@ -137,15 +153,17 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func presentServerSelection() {
+        viewModel.beginServerSelection()
         let selectionTemplate = CPListTemplate(title: L10n.CarPlay.Labels.Settings.MainServer.title, sections: [])
-        selectionTemplate.updateSections([serverSelectionSection()])
+        serverSelectionTemplate = selectionTemplate
+        selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
         interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
     }
 
-    private func serverSelectionSection() -> CPListSection {
+    private func serverSelectionSection(template: CPListTemplate) -> CPListSection {
         let servers = Current.servers.all
             .filter { $0.info.connection.activeURL() != nil }
-            .map { serverItem(server: $0) }
+            .map { serverItem(server: $0, template: template) }
 
         guard !servers.isEmpty else {
             return CPListSection(items: [
@@ -157,22 +175,32 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func presentLayoutSelection() {
-        let selectionTemplate = CPListTemplate(title: L10n.Carplay.Tab.QuickAccess.layout, sections: [
-            CPListSection(items: CarPlayQuickAccessLayout.allCases.map { layoutItem(layout: $0) }),
-        ])
+        viewModel.beginLayoutSelection()
+        let selectionTemplate = CPListTemplate(title: L10n.Carplay.Tab.QuickAccess.layout, sections: [])
+        layoutSelectionTemplate = selectionTemplate
+        selectionTemplate.updateSections([layoutSelectionSection(template: selectionTemplate)])
         interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
     }
 
-    private func layoutItem(layout: CarPlayQuickAccessLayout) -> CPListItem {
+    private func layoutSelectionSection(template: CPListTemplate) -> CPListSection {
+        CPListSection(items: CarPlayQuickAccessLayout.allCases.map { layoutItem(layout: $0, template: template) })
+    }
+
+    private func layoutItem(layout: CarPlayQuickAccessLayout, template: CPListTemplate) -> CPListItem {
         let item = CPListItem(
             text: layout.name,
             detailText: nil,
-            image: viewModel.quickAccessLayout == layout ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+            image: viewModel.isLayoutActive(layout) ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
         )
         item.accessoryType = .none
-        item.handler = { [weak self] _, completion in
-            self?.viewModel.setQuickAccessLayout(layout)
-            self?.interfaceController?.popTemplate(animated: true, completion: nil)
+        item.handler = { [weak self, weak template] _, completion in
+            guard let self, let template else {
+                completion()
+                return
+            }
+
+            viewModel.setLayout(layout)
+            template.updateSections([layoutSelectionSection(template: template)])
             completion()
         }
         return item
