@@ -40,11 +40,14 @@ jobs:
 
   # Only after a real (non-dry-run) deletion succeeds: remove the same keys from
   # the local Localizable.strings files, regenerate Strings.swift via SwiftGen,
-  # and open a PR. The PR's own CI build flags any leftover L10n references.
+  # and open a PR. Uses the default GITHUB_TOKEN (same as download_localized_strings).
   open_cleanup_pr:
     needs: delete_keys
     if: ${{ inputs.dry_run == false }}
     runs-on: macos-15
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
@@ -77,4 +80,3 @@ jobs:
             ```
             ${{ inputs.keys }}
             ```
-          token: ${{ secrets.REPO_SCOPED_TOKEN }}
