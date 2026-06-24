@@ -188,7 +188,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         // Avoid interrupting background audio when the frontend loads media-capable elements.
-        config.mediaTypesRequiringUserActionForPlayback = .audio
+        config.mediaTypesRequiringUserActionForPlayback = Current.settingsStore
+            .mediaTypesRequiringUserActionForPlayback
+            .wkMediaTypes
         return config
     }
 
@@ -312,6 +314,21 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             let action = Current.settingsStore.gestures[.shake] ?? .openDebug
             webViewGestureHandler.handleGestureAction(action)
         }
+    }
+}
+
+private extension Set<SettingsStore.MediaTypeRequiringUserActionForPlayback> {
+    var wkMediaTypes: WKAudiovisualMediaTypes {
+        var mediaTypes: WKAudiovisualMediaTypes = []
+
+        if contains(.audio) {
+            mediaTypes.insert(.audio)
+        }
+        if contains(.video) {
+            mediaTypes.insert(.video)
+        }
+
+        return mediaTypes
     }
 }
 
