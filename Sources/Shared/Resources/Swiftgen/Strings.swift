@@ -987,6 +987,8 @@ public enum L10n {
       public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carPlay.labels.already_added_server") }
       /// No areas available
       public static var emptyAreaList: String { return L10n.tr("Localizable", "carPlay.labels.empty_area_list") }
+      /// No Assist pipelines with both speech-to-text and text-to-speech available
+      public static var emptyAssistList: String { return L10n.tr("Localizable", "carPlay.labels.empty_assist_list") }
       /// No domains available
       public static var emptyDomainList: String { return L10n.tr("Localizable", "carPlay.labels.empty_domain_list") }
       /// No servers available. Add a server in the app.
@@ -1104,6 +1106,10 @@ public enum L10n {
         public static var button: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.button") }
         /// Add item
         public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.title") }
+        public enum AssistPrompt {
+          /// Assist prompts can only be created in the Home Assistant app on your iPhone.
+          public static var message: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.assist_prompt.message") }
+        }
         public enum Confirmation {
           /// For more customization, configure Quick Access in the Home Assistant app on your iPhone.
           public static var footer: String { return L10n.tr("Localizable", "carPlay.quick_access.add_item.confirmation.footer") }

@@ -257,6 +257,7 @@
 "carPlay.debug.settings.tts_playback.title" = "TTS Playback";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_area_list" = "No areas available";
+"carPlay.labels.empty_assist_list" = "No Assist pipelines with both speech-to-text and text-to-speech available";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
 "carPlay.labels.select_server" = "Select server";
@@ -286,6 +287,7 @@
 "carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
 "carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
+"carPlay.quick_access.add_item.assist_prompt.message" = "Assist prompts can only be created in the Home Assistant app on your iPhone.";
 "carPlay.quick_access.add_item.back" = "Back";
 "carPlay.quick_access.add_item.button" = "Add item";
 "carPlay.quick_access.add_item.confirmation.footer" = "For more customization, configure Quick Access in the Home Assistant app on your iPhone.";
