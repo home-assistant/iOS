@@ -2172,6 +2172,8 @@ public enum L10n {
     public enum Screensaver {
       /// Show a screensaver after a period of inactivity to protect the display and save power.
       public static var body: String { return L10n.tr("Localizable", "kiosk.screensaver.body") }
+      /// Dim
+      public static var dim: String { return L10n.tr("Localizable", "kiosk.screensaver.dim") }
       /// Dim Level: %li%%
       public static func dimLevel(_ p1: Int) -> String {
         return L10n.tr("Localizable", "kiosk.screensaver.dim_level", p1)

@@ -78,11 +78,17 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
                 let view = CameraPlayerView(
                     server: self.cameraServer(from: userInfo, fallback: webViewController.server),
                     cameraEntityId: entityId
-                ).embeddedInHostingController()
+                )
+                .onDisappear {
+                    Current.kiosk.setCameraOverlayVisible(false)
+                }
+                .embeddedInHostingController()
                 self.cameraOverlayController = view
                 view.modalPresentationStyle = .overFullScreen
+                Current.kiosk.setCameraOverlayVisible(true)
                 webViewController.presentOverlayController(controller: view, animated: true)
             }.catch { error in
+                Current.kiosk.setCameraOverlayVisible(false)
                 Current.Log.error("Failed to show camera from push command: \(error)")
             }
     }
@@ -142,11 +148,13 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
                 guard let cameraOverlayController = self.cameraOverlayController,
                       webViewController.overlayedController === cameraOverlayController else {
                     Current.Log.info("Ignoring kiosk_hide_camera command because no camera is on display")
+                    Current.kiosk.setCameraOverlayVisible(false)
                     return
                 }
 
                 webViewController.dismissOverlayController(animated: true) { [weak self] in
                     self?.cameraOverlayController = nil
+                    Current.kiosk.setCameraOverlayVisible(false)
                 }
             }.catch { error in
                 Current.Log.error("Failed to hide camera from push command: \(error)")

@@ -81,6 +81,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
     public var showDate: Bool
     public var showSeconds: Bool
     public var timeToStart: KioskScreensaverTimeout
+    public var dimEnabled: Bool
     public var dimLevel: Double
 
     public init(
@@ -90,6 +91,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         showDate: Bool = true,
         showSeconds: Bool = false,
         timeToStart: KioskScreensaverTimeout = .minutes5,
+        dimEnabled: Bool = false,
         dimLevel: Double = 0.1
     ) {
         self.enabled = enabled
@@ -98,7 +100,23 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         self.showDate = showDate
         self.showSeconds = showSeconds
         self.timeToStart = timeToStart
+        self.dimEnabled = dimEnabled
         self.dimLevel = dimLevel
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.enabled = try container.decodeIfPresent(Bool.self, forKey: .enabled) ?? false
+        self.mode = try container.decodeIfPresent(KioskScreensaverMode.self, forKey: .mode) ?? .clock
+        self.clockStyle = try container.decodeIfPresent(KioskClockStyle.self, forKey: .clockStyle) ?? .large
+        self.showDate = try container.decodeIfPresent(Bool.self, forKey: .showDate) ?? true
+        self.showSeconds = try container.decodeIfPresent(Bool.self, forKey: .showSeconds) ?? false
+        self.timeToStart = try container.decodeIfPresent(
+            KioskScreensaverTimeout.self,
+            forKey: .timeToStart
+        ) ?? .minutes5
+        self.dimEnabled = try container.decodeIfPresent(Bool.self, forKey: .dimEnabled) ?? false
+        self.dimLevel = try container.decodeIfPresent(Double.self, forKey: .dimLevel) ?? 0.1
     }
 }
 

@@ -75,6 +75,8 @@ final class KioskScreensaverController: ObservableObject {
     @Published private(set) var screensaver = KioskScreensaverSettings()
 
     private var isEnabled = false
+    private var isCameraOverlayVisible = false
+    private var brightnessBeforeDimming: CGFloat?
     private var idleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
@@ -85,10 +87,24 @@ final class KioskScreensaverController: ObservableObject {
             .store(in: &cancellables)
 
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-            .sink { [weak self] _ in self?.restartIdleTimer() }
+            .sink { [weak self] _ in
+                self?.restartIdleTimer()
+                self?.updateBrightness()
+            }
             .store(in: &cancellables)
         NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)
-            .sink { [weak self] _ in self?.idleTimer?.invalidate() }
+            .sink { [weak self] _ in
+                self?.idleTimer?.invalidate()
+                self?.restoreBrightness()
+            }
+            .store(in: &cancellables)
+
+        Current.kiosk.cameraOverlayVisiblePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] visible in
+                self?.isCameraOverlayVisible = visible
+                self?.updateBrightness()
+            }
             .store(in: &cancellables)
 
         Current.kiosk.screensaverCommandPublisher
@@ -104,6 +120,7 @@ final class KioskScreensaverController: ObservableObject {
 
     deinit {
         idleTimer?.invalidate()
+        restoreBrightness()
     }
 
     func recordActivity() {
@@ -116,10 +133,12 @@ final class KioskScreensaverController: ObservableObject {
         idleTimer?.invalidate()
         idleTimer = nil
         isActive = true
+        updateBrightness()
     }
 
     func wake() {
         isActive = false
+        updateBrightness()
         restartIdleTimer()
     }
 
@@ -130,6 +149,7 @@ final class KioskScreensaverController: ObservableObject {
             isActive = false
         }
         restartIdleTimer()
+        updateBrightness()
     }
 
     private func restartIdleTimer() {
@@ -142,7 +162,43 @@ final class KioskScreensaverController: ObservableObject {
         ) { [weak self] _ in
             guard let self, isEnabled else { return }
             isActive = true
+            updateBrightness()
         }
+    }
+
+    private func updateBrightness() {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        guard shouldDimBrightness else {
+            restoreBrightness()
+            return
+        }
+
+        if brightnessBeforeDimming == nil {
+            brightnessBeforeDimming = UIScreen.main.brightness
+        }
+
+        UIScreen.main.brightness = CGFloat(min(max(screensaver.dimLevel, 0), 1))
+        #endif
+    }
+
+    private var shouldDimBrightness: Bool {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        UIApplication.shared.applicationState == .active &&
+            isEnabled &&
+            isActive &&
+            screensaver.dimEnabled &&
+            !isCameraOverlayVisible
+        #else
+        false
+        #endif
+    }
+
+    private func restoreBrightness() {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        guard let brightnessBeforeDimming else { return }
+        UIScreen.main.brightness = brightnessBeforeDimming
+        self.brightnessBeforeDimming = nil
+        #endif
     }
 }
 
