@@ -77,7 +77,10 @@ final class WebViewReconnectManager: ObservableObject {
         let delay = configuration.delay(forAttempt: attempt)
         attempt += 1
 
-        Current.Log.info("Hard resetting disconnected web frontend after empty state backoff attempt \(attemptNumber), delay \(delay)s")
+        Current.Log
+            .info(
+                "Hard resetting disconnected web frontend after empty state backoff attempt \(attemptNumber), delay \(delay)s"
+            )
         reconnectAction?()
         scheduleNextAttempt()
     }

@@ -1,5 +1,5 @@
-@testable import HomeAssistant
 import Foundation
+@testable import HomeAssistant
 import XCTest
 
 @MainActor
