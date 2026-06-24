@@ -276,6 +276,28 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func testOnDeviceSTT_listeningStateChangeFalseWithPendingTranscript_submitsToAssistService() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        mockTranscriber.simulateTranscriptUpdate("Turn on the lights", isFinal: false)
+        await Task.yield()
+        mockTranscriber.simulateListeningStateChange(false)
+        await Task.yield()
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "Turn on the lights", pipelineId: "", expectTTS: true)
+        )
+        XCTAssertEqual(sut.inputText, "")
+        XCTAssertFalse(sut.isRecording)
+    }
+
+    @MainActor
     func testOnDeviceSTT_stopStreaming_callsStopListeningOnTranscriber() {
         let mockTranscriber = MockSpeechTranscriber()
         sut = makeSut(speechTranscriber: mockTranscriber)

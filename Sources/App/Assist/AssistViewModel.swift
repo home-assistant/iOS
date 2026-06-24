@@ -245,6 +245,11 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
     }
 
+    @MainActor private func submitPendingTranscriptionIfNeeded() {
+        guard isRecording, !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        assistWithTextExpectingTTS()
+    }
+
     @MainActor func stopStreaming() {
         isRecording = false
         canSendAudioData = false
@@ -350,6 +355,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         transcriber.onListeningStateChange = { [weak self] listening in
             Task { @MainActor [weak self] in
                 guard let self, !listening else { return }
+                self.submitPendingTranscriptionIfNeeded()
                 self.isRecording = false
             }
         }

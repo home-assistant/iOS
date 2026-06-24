@@ -176,7 +176,7 @@
 "assist.settings.on_device_tts.quality.premium" = "Premium";
 "assist.settings.on_device_tts.title" = "On-device TTS";
 "assist.settings.on_device_tts.voice" = "Voice";
-"assist.settings.section.experimental.title" = "Experimental";
+"assist.settings.section.labs.title" = "More";
 "assist.settings.title" = "Assist Settings";
 "assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
 "assist.settings.tts_mute.toggle" = "Mute voice responses";
