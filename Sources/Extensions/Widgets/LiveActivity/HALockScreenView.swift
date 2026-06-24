@@ -48,7 +48,7 @@ struct HALockScreenView: View {
             if let fraction = state.progressFraction {
                 HAActivityProgressBar(
                     fraction: fraction,
-                    fillColor: accentColor,
+                    fillColor: barColor,
                     trackColor: trackColor,
                     height: 10
                 )
@@ -111,6 +111,11 @@ struct HALockScreenView: View {
     /// Accent color from ContentState, fallback to Home Assistant primary blue.
     private var accentColor: Color {
         HAActivityVisualStyle.color(from: state.color)
+    }
+
+    /// Progress bar tint: `progress_bar_color`, else the icon color, else HA blue.
+    private var barColor: Color {
+        HAActivityVisualStyle.color(from: state.progressBarColor ?? state.color)
     }
 
     /// Luma of the resolved background — drives element opacities and the auto-contrast default.

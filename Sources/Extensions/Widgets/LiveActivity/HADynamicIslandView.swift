@@ -173,7 +173,7 @@ struct HAExpandedBottomView: View {
             if let fraction = state.progressFraction {
                 HAActivityProgressBar(
                     fraction: fraction,
-                    fillColor: accentColor,
+                    fillColor: barColor,
                     trackColor: .white.opacity(0.16),
                     height: 8
                 )
@@ -182,9 +182,9 @@ struct HAExpandedBottomView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// Accent color from ContentState, fallback to Home Assistant primary blue.
-    private var accentColor: Color {
-        HAActivityVisualStyle.color(from: state.color)
+    /// Progress bar tint: `progress_bar_color`, else the icon color, else HA blue.
+    private var barColor: Color {
+        HAActivityVisualStyle.color(from: state.progressBarColor ?? state.color)
     }
 }
 #endif
