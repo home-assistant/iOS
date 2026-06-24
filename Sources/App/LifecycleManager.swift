@@ -76,6 +76,17 @@ class LifecycleManager {
     @objc private func willEnterForeground() {
         isActive = true
         syncNetworkInformation()
+        syncLiveActivities()
+    }
+
+    /// Reconcile running Live Activities with Core on every foreground, releasing tokens for any
+    /// that ended while the app was backgrounded so Core stops pushing to them.
+    private func syncLiveActivities() {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            Task { await Current.liveActivityRegistry?.reattach() }
+        }
+        #endif
     }
 
     @objc private func didEnterBackground() {

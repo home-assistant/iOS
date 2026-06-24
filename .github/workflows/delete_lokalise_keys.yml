@@ -1,0 +1,39 @@
+name: "Lokalise: Delete Keys"
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+    inputs:
+      keys:
+        description: "Key names to delete (comma or newline separated). Must match exactly."
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run: only list the keys that would be deleted."
+        required: false
+        type: boolean
+        default: true
+      confirmation:
+        description: "Type DELETE to confirm. Required when dry_run is false."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  delete_keys:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+      - uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74  # v1.314.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+      - name: Delete keys from Lokalise
+        run: bundle exec fastlane delete_lokalise_keys
+        env:
+          HOMEASSISTANT_LOKALIZE_PROJECT_ID: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_ID }}
+          HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.LOKALISE_TOKEN }}
+          LOKALISE_DELETE_KEYS: ${{ inputs.keys }}
+          LOKALISE_DELETE_DRY_RUN: ${{ inputs.dry_run }}
+          LOKALISE_DELETE_CONFIRMATION: ${{ inputs.confirmation }}
