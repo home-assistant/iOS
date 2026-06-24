@@ -16,6 +16,23 @@ on:
         description: "Type DELETE to confirm. Required when dry_run is false."
         required: false
         type: string
+  # Callable by other workflows (e.g. auto_delete_unused_strings.yml) to reuse the
+  # same Lokalise delete + iOS cleanup-PR pipeline.
+  workflow_call:
+    inputs:
+      keys:
+        description: "Key names to delete (comma or newline separated). Must match exactly."
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run: only list the keys that would be deleted."
+        required: false
+        type: boolean
+        default: true
+      confirmation:
+        description: "Type DELETE to confirm. Required when dry_run is false."
+        required: false
+        type: string
 
 permissions:
   contents: read
