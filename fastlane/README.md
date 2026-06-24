@@ -93,6 +93,14 @@ Upload localized strings to Lokalise
 
 Delete keys completely from the iOS app Lokalise project
 
+### delete_local_strings
+
+```sh
+[bundle exec] fastlane delete_local_strings
+```
+
+Remove keys from all Localizable.strings files and regenerate SwiftGen output
+
 ### unused_strings
 
 ```sh
