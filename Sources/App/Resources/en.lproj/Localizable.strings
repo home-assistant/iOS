@@ -712,6 +712,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.status.not_supported" = "Not available on iPad";
 "live_activity.status.open_settings" = "Open Settings";
 "live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
+"live_activity.sync.button" = "Sync with Home Assistant";
+"live_activity.sync.done" = "Synced";
+"live_activity.sync.footer" = "Reports running Live Activities to Home Assistant and releases tokens for any that have ended. Runs automatically when the app opens.";
 "live_activity.title" = "Live Activities";
 "location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
