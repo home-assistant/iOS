@@ -298,14 +298,14 @@ end
 LOKALISE_KEYS_PAGE_LIMIT = 500
 
 # Resolve requested key names to { name => key_id }, exact match only.
-# filter_keys narrows the query but can match partially, so we still match
-# names exactly locally before returning. Pages until a short page is returned.
+# We page through every key and match names locally rather than relying on the
+# Lokalise `filter_keys` query param: its matching semantics are loosely defined
+# (and a comma-joined value is unreliable), which is too risky for a destructive op.
 def lokalise_find_key_ids!(token:, project_id:, key_names:)
   found = {}
   page = 1
-  filter = URI.encode_www_form_component(key_names.join(','))
   loop do
-    keys = lokalise_keys_page!(token: token, project_id: project_id, filter: filter, page: page)
+    keys = lokalise_keys_page!(token: token, project_id: project_id, page: page)
     lokalise_collect_key_ids!(keys: keys, key_names: key_names, found: found)
     break if keys.length < LOKALISE_KEYS_PAGE_LIMIT
 
@@ -314,12 +314,12 @@ def lokalise_find_key_ids!(token:, project_id:, key_names:)
   found
 end
 
-def lokalise_keys_page!(token:, project_id:, filter:, page:)
+def lokalise_keys_page!(token:, project_id:, page:)
   response = lokalise_request!(
     project_id: project_id,
     token: token,
     http_method: :get,
-    path: "/keys?limit=#{LOKALISE_KEYS_PAGE_LIMIT}&page=#{page}&filter_keys=#{filter}"
+    path: "/keys?limit=#{LOKALISE_KEYS_PAGE_LIMIT}&page=#{page}"
   )
   response['keys'] || []
 end
@@ -594,12 +594,16 @@ lane :delete_lokalise_keys do
 
   if dry_run
     UI.important(
-      "DRY RUN: would delete #{found.count} key(s). Re-run with dry_run=false and confirmation=DELETE to proceed."
+      "DRY RUN: would delete #{found.count} key(s). Re-run with " \
+      'LOKALISE_DELETE_DRY_RUN=false and LOKALISE_DELETE_CONFIRMATION=DELETE to proceed ' \
+      '(via the workflow, set the dry_run and confirmation inputs).'
     )
     next
   end
 
-  UI.user_error!("Confirmation required: set confirmation to 'DELETE' to proceed.") unless confirmation == 'DELETE'
+  unless confirmation == 'DELETE'
+    UI.user_error!("Confirmation required: set LOKALISE_DELETE_CONFIRMATION to 'DELETE' to proceed.")
+  end
 
   lokalise_delete_keys!(token: token, project_id: project_id, key_ids: found.values)
   UI.success("Deleted #{found.count} key(s) from Lokalise project #{project_id}.")
