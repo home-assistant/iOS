@@ -101,7 +101,7 @@ private struct PixelShiftContainer<Content: View>: View {
         return boxPositions[index]
     }
 
-    private static var positions: [CGSize] {
+    private static let positions: [CGSize] = {
         let distance: CGFloat = 12
         return [
             CGSize(width: 0, height: -distance),
@@ -113,7 +113,7 @@ private struct PixelShiftContainer<Content: View>: View {
             CGSize(width: -distance, height: 0),
             CGSize(width: -distance, height: -distance),
         ]
-    }
+    }()
 }
 
 // MARK: - Idle controller
