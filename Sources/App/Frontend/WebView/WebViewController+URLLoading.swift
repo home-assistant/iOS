@@ -136,6 +136,17 @@ extension WebViewController {
         return url
     }
 
+    /// Navigates the web view to the kiosk-configured dashboard for the current server (or the server
+    /// default when no specific dashboard is set), so picking a dashboard in kiosk settings updates the
+    /// web view live. Server changes are handled by rebuilding the web view, not here.
+    func applyKioskDashboard() {
+        guard Current.kioskSettings.enabled, let webviewURL = server.info.connection.webviewURL() else { return }
+        let target = kioskDashboardURL(for: webviewURL) ?? webviewURL
+        guard webView.url?.absoluteString != target.absoluteString else { return }
+        Current.Log.info("applying kiosk dashboard to web view: \(target.path)")
+        load(request: URLRequest(url: target))
+    }
+
     func showNoActiveURLError() {
         // Load about:blank in webview to prevent any current connections
         load(request: URLRequest(url: URL(string: "about:blank")!))

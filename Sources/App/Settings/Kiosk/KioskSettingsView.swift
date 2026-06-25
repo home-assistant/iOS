@@ -82,6 +82,11 @@ struct KioskSettingsView: View {
                 } label: {
                     KioskRow.label(L10n.Kiosk.Screensaver.title, icon: .weatherNightIcon)
                 }
+                NavigationLink {
+                    KioskSensorsView()
+                } label: {
+                    KioskRow.label(L10n.Kiosk.Sensors.title, icon: .motionSensorIcon)
+                }
             }
 
             Section(L10n.Kiosk.Screensaver.ConfigurationAccess.title) {

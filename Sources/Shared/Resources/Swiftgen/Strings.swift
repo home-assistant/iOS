@@ -2232,6 +2232,14 @@ public enum L10n {
         return L10n.tr("Localizable", "kiosk.security.taps_required", p1)
       }
     }
+    public enum Sensors {
+      /// Report kiosk mode, brightness, and volume to Home Assistant.
+      public static var body: String { return L10n.tr("Localizable", "kiosk.sensors.body") }
+      /// These sensors also appear in the app's sensor settings. Enabling or disabling them here keeps both places in sync.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.sensors.footer") }
+      /// Sensors
+      public static var title: String { return L10n.tr("Localizable", "kiosk.sensors.title") }
+    }
   }
 
   public enum LegacyActions {

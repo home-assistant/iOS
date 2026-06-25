@@ -58,9 +58,21 @@ public final class KioskModeManager: ObservableObject {
             },
             onChange: { [weak self] settings in
                 // ValueObservation notifies on the main queue by default.
-                Current.Log.info("Kiosk settings changed, enabled: \(settings?.enabled ?? false)")
-                self?.settings = settings ?? KioskSettings()
+                let settings = settings ?? KioskSettings()
+                Current.Log.info("Kiosk settings changed, enabled: \(settings.enabled)")
+                self?.settings = settings
+                self?.syncKioskSensorsEnabled(with: settings)
             }
         )
+    }
+
+    /// The kiosk brightness and volume sensors only make sense on a device acting as a kiosk, so we
+    /// keep them enabled only while kiosk mode is enabled. This runs for the observation's initial
+    /// value and every subsequent change, and is idempotent so it won't fire spurious updates.
+    private func syncKioskSensorsEnabled(with settings: KioskSettings) {
+        for sensorId in [WebhookSensorId.kioskBrightness, .kioskVolume] {
+            guard Current.sensors.isEnabled(uniqueID: sensorId.rawValue) != settings.enabled else { continue }
+            Current.sensors.setEnabled(settings.enabled, forUniqueID: sensorId.rawValue)
+        }
     }
 }
