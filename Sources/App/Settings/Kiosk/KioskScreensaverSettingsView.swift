@@ -41,8 +41,20 @@ struct KioskScreensaverSettingsView: View {
                             Text(style.title).tag(style)
                         }
                     }
+                    boldnessSlider(
+                        title: L10n.Kiosk.Screensaver.clockBoldness,
+                        icon: .formatBoldIcon,
+                        value: screensaver.clockFontWeight
+                    )
                     Toggle(isOn: screensaver.showDate) {
                         KioskRow.label(L10n.Kiosk.Screensaver.showDate, icon: .calendarOutlineIcon)
+                    }
+                    if screensaver.wrappedValue.showDate {
+                        boldnessSlider(
+                            title: L10n.Kiosk.Screensaver.dateBoldness,
+                            icon: .formatBoldIcon,
+                            value: screensaver.dateFontWeight
+                        )
                     }
                     Toggle(isOn: screensaver.showSeconds) {
                         KioskRow.label(L10n.Kiosk.Screensaver.showSeconds, icon: .timerOutlineIcon)
@@ -102,5 +114,23 @@ struct KioskScreensaverSettingsView: View {
     private var dimLevelPercentage: String {
         let percentage = Int((screensaver.wrappedValue.dimLevel * 100).rounded())
         return "\(percentage)%"
+    }
+
+    @ViewBuilder
+    private func boldnessSlider(
+        title: String,
+        icon: MaterialDesignIcons,
+        value: Binding<Double>
+    ) -> some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+            HStack {
+                KioskRow.label(title, icon: icon)
+                Spacer()
+                Text("\(Int((value.wrappedValue * 100).rounded()))%")
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
+            Slider(value: value, in: 0 ... 1, step: 0.05)
+        }
     }
 }

@@ -84,6 +84,8 @@ public struct KioskScreensaverSettings: Codable, Equatable {
     public var dimEnabled: Bool
     public var dimLevel: Double
     public var pixelShiftEnabled: Bool
+    public var clockFontWeight: Double
+    public var dateFontWeight: Double
 
     public init(
         enabled: Bool = false,
@@ -94,7 +96,9 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         timeToStart: KioskScreensaverTimeout = .minutes5,
         dimEnabled: Bool = false,
         dimLevel: Double = 0.1,
-        pixelShiftEnabled: Bool = false
+        pixelShiftEnabled: Bool = false,
+        clockFontWeight: Double = 0.15,
+        dateFontWeight: Double = 0.4
     ) {
         self.enabled = enabled
         self.mode = mode
@@ -105,6 +109,8 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         self.dimEnabled = dimEnabled
         self.dimLevel = dimLevel
         self.pixelShiftEnabled = pixelShiftEnabled
+        self.clockFontWeight = clockFontWeight
+        self.dateFontWeight = dateFontWeight
     }
 
     public init(from decoder: Decoder) throws {
@@ -121,6 +127,8 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         self.dimEnabled = try container.decodeIfPresent(Bool.self, forKey: .dimEnabled) ?? false
         self.dimLevel = try container.decodeIfPresent(Double.self, forKey: .dimLevel) ?? 0.1
         self.pixelShiftEnabled = try container.decodeIfPresent(Bool.self, forKey: .pixelShiftEnabled) ?? false
+        self.clockFontWeight = try container.decodeIfPresent(Double.self, forKey: .clockFontWeight) ?? 0.15
+        self.dateFontWeight = try container.decodeIfPresent(Double.self, forKey: .dateFontWeight) ?? 0.4
     }
 }
 

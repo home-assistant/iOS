@@ -87,6 +87,8 @@ struct KioskSettingsTests {
         #expect(settings.dimEnabled == false)
         #expect(settings.dimLevel == 0.3)
         #expect(settings.pixelShiftEnabled == false)
+        #expect(settings.clockFontWeight == 0.15)
+        #expect(settings.dateFontWeight == 0.4)
     }
 
     @Test func enumMetadataIsComplete() {
