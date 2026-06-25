@@ -173,6 +173,7 @@
 "assist.settings.on_device_tts.title" = "Sintesi vocale integrata nel dispositivo";
 "assist.settings.on_device_tts.voice" = "Voce";
 "assist.settings.section.experimental.title" = "Sperimentale";
+"assist.settings.section.labs.title" = "More";
 "assist.settings.title" = "Impostazioni \"Assistente\"";
 "assist.settings.tts_mute.footer" = "Se abilitata, la funzione Assist non riprodurrà le risposte audio anche se nella pipeline è configurata la sintesi vocale. Le risposte testuali continueranno comunque a essere visualizzate.";
 "assist.settings.tts_mute.toggle" = "Disattiva le risposte vocali";
@@ -248,6 +249,7 @@
 "carPlay.debug.settings.tts_playback.title" = "Riproduzione TTS";
 "carPlay.labels.already_added_server" = "Già aggiunto";
 "carPlay.labels.empty_area_list" = "No areas available";
+"carPlay.labels.empty_assist_list" = "No Assist pipelines with both speech-to-text and text-to-speech available";
 "carPlay.labels.empty_domain_list" = "Nessun dominio disponibile";
 "carPlay.labels.no_servers_available" = "Nessun server disponibile. Aggiungere un server nell'app.";
 "carPlay.labels.select_server" = "Seleziona server";
@@ -277,6 +279,7 @@
 "carPlay.notification.action.intro.title" = "Crea azione iOS";
 "carPlay.notification.quick_access.intro.body" = "Toccare per creare la tua configurazione di CarPlay.";
 "carPlay.notification.quick_access.intro.title" = "Creare la configurazione di CarPlay";
+"carPlay.quick_access.add_item.assist_prompt.message" = "Assist prompts can only be created in the Home Assistant app on your iPhone.";
 "carPlay.quick_access.add_item.back" = "Back";
 "carPlay.quick_access.add_item.button" = "Add item";
 "carPlay.quick_access.add_item.confirmation.footer" = "For more customization, configure Quick Access in the Home Assistant app on your iPhone.";
@@ -601,6 +604,7 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "kiosk.screensaver.clock_style.title" = "Clock style";
 "kiosk.screensaver.configuration_access.position" = "Kiosk settings entry position";
 "kiosk.screensaver.configuration_access.title" = "Configuration access";
+"kiosk.screensaver.dim" = "Dim";
 "kiosk.screensaver.dim_level" = "Dim Level: %li%%";
 "kiosk.screensaver.dimming_level" = "Dim level";
 "kiosk.screensaver.enabled" = "Enabled";
@@ -644,6 +648,8 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "live_activity.sample.alarm.title" = "Alarm · 60 sec Countdown";
 "live_activity.sample.all_fields.note" = "Every content-state field active at once: icon, live countdown, and progress bar. Confirms no layout collisions.";
 "live_activity.sample.all_fields.title" = "All Fields · Max Load";
+"live_activity.sample.custom_colors.note" = "Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.";
+"live_activity.sample.custom_colors.title" = "Custom Colors · Background + Text";
 "live_activity.sample.delivery.note" = "message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.";
 "live_activity.sample.delivery.title" = "Package Delivery · All Text Fields";
 "live_activity.sample.dishwasher.note" = "The only sample that tests start → update → end. After it ends, the final \"Done\" state lingers on the lock screen (up to 4 h).";
@@ -679,6 +685,9 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "live_activity.status.not_supported" = "Not available on iPad";
 "live_activity.status.open_settings" = "Open Settings";
 "live_activity.subtitle" = "Real-time Home Assistant updates on your Lock Screen and Dynamic Island.";
+"live_activity.sync.button" = "Sync with Home Assistant";
+"live_activity.sync.done" = "Synced";
+"live_activity.sync.footer" = "Reports running Live Activities to Home Assistant and releases tokens for any that have ended. Runs automatically when the app opens.";
 "live_activity.title" = "Live Activities";
 "location_change_notification.app_shortcut.body" = "Posizione aggiornata tramite App Shortcut";
 "location_change_notification.background_fetch.body" = "Invio della posizione attuale attivata da recupero in background";

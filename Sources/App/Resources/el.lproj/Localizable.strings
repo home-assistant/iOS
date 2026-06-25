@@ -173,6 +173,7 @@
 "assist.settings.on_device_tts.title" = "Κείμενο σε ομιλία στη συσκευή";
 "assist.settings.on_device_tts.voice" = "Φωνή";
 "assist.settings.section.experimental.title" = "Πειραματικό";
+"assist.settings.section.labs.title" = "More";
 "assist.settings.title" = "Ρυθμίσεις Assist";
 "assist.settings.tts_mute.footer" = "Οταν είναι ενεργοποιημένο, το Assist δεν θα αναπαράγει απαντήσεις ήχου, ακόμη και αν το pipeline έχει διαμορφωμένη τη μετατροπή κειμένου σε ομιλία. Θα εξακολουθείτε να βλέπετε απαντήσεις κειμένου.";
 "assist.settings.tts_mute.toggle" = "Σίγαση φωνητικών απαντήσεων";
@@ -248,6 +249,7 @@
 "carPlay.debug.settings.tts_playback.title" = "Αναπαραγωγή TTS";
 "carPlay.labels.already_added_server" = "Εχει ήδη προστεθεί";
 "carPlay.labels.empty_area_list" = "No areas available";
+"carPlay.labels.empty_assist_list" = "No Assist pipelines with both speech-to-text and text-to-speech available";
 "carPlay.labels.empty_domain_list" = "Δεν υπάρχουν διαθέσιμα domains";
 "carPlay.labels.no_servers_available" = "Δεν υπάρχουν διαθέσιμοι servers. Προσθέστε έναν server στην εφαρμογή.";
 "carPlay.labels.select_server" = "Επιλογή server";
@@ -277,6 +279,7 @@
 "carPlay.notification.action.intro.title" = "Δημιουργία ενέργειας iOS";
 "carPlay.notification.quick_access.intro.body" = "Πατήστε για να δημιουργήσετε τη διαμόρφωση του CarPlay σας.";
 "carPlay.notification.quick_access.intro.title" = "Δημιουργία διαμόρφωσης CarPlay";
+"carPlay.quick_access.add_item.assist_prompt.message" = "Assist prompts can only be created in the Home Assistant app on your iPhone.";
 "carPlay.quick_access.add_item.back" = "Back";
 "carPlay.quick_access.add_item.button" = "Add item";
 "carPlay.quick_access.add_item.confirmation.footer" = "For more customization, configure Quick Access in the Home Assistant app on your iPhone.";
@@ -601,6 +604,7 @@
 "kiosk.screensaver.clock_style.title" = "Clock style";
 "kiosk.screensaver.configuration_access.position" = "Kiosk settings entry position";
 "kiosk.screensaver.configuration_access.title" = "Configuration access";
+"kiosk.screensaver.dim" = "Dim";
 "kiosk.screensaver.dim_level" = "Επίπεδο αμυδρότητας: %li%%";
 "kiosk.screensaver.dimming_level" = "Dim level";
 "kiosk.screensaver.enabled" = "Enabled";
@@ -644,6 +648,8 @@
 "live_activity.sample.alarm.title" = "Συναγερμός · Αντίστροφη μέτρηση 60 δευτερολέπτων";
 "live_activity.sample.all_fields.note" = "Ολα τα πεδία κατάστασης περιεχομένου είναι ενεργά ταυτόχρονα: εικονίδιο, ζωντανή αντίστροφη μέτρηση και γραμμή προόδου. Επιβεβαιώνεται ότι δεν υπάρχουν συγκρούσεις στη διάταξη.";
 "live_activity.sample.all_fields.title" = "Ολα τα πεδία · Μέγιστο φορτίο";
+"live_activity.sample.custom_colors.note" = "Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.";
+"live_activity.sample.custom_colors.title" = "Custom Colors · Background + Text";
 "live_activity.sample.delivery.note" = "Τα message, criticalText και icon αλλάζουν σε κάθε ενημέρωση — χωρίς γραμμή προόδου. Αλλάζει η ίδια η κατηγορία κατάστασης, όχι απλώς μια τιμή.";
 "live_activity.sample.delivery.title" = "Παράδοση δεμάτων · Ολα τα πεδία κειμένου";
 "live_activity.sample.dishwasher.note" = "Το μόνο δείγμα στο οποίο οι δοκιμές ξεκινούν → ενημερώνονται → ολοκληρώνονται. Μετά την ολοκλήρωσή του, η τελική κατάσταση \"Done\" παραμένει στην οθόνη κλειδώματος (έως και 4 ώρες).";
@@ -679,6 +685,9 @@
 "live_activity.status.not_supported" = "Πλασματική αναφορά κατανάλωσης";
 "live_activity.status.open_settings" = "Ανοιγμα ρυθμίσεων";
 "live_activity.subtitle" = "Ενημερώσεις του Home Assistant σε πραγματικό χρόνο στην οθόνη κλειδώματος και στο Dynamic Island.";
+"live_activity.sync.button" = "Sync with Home Assistant";
+"live_activity.sync.done" = "Synced";
+"live_activity.sync.footer" = "Reports running Live Activities to Home Assistant and releases tokens for any that have ended. Runs automatically when the app opens.";
 "live_activity.title" = "Ζωντανές δραστηριότητες";
 "location_change_notification.app_shortcut.body" = "Η τοποθεσία ενημερώθηκε μέσω συντόμευσης εφαρμογής";
 "location_change_notification.background_fetch.body" = "Η τρέχουσα παράδοση τοποθεσίας πυροδοτήθηκε μέσω λήψης φόντου";

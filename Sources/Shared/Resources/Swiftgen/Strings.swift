@@ -718,6 +718,10 @@ public enum L10n {
         }
       }
       public enum Section {
+        public enum Experimental {
+          /// Experimental
+          public static var title: String { return L10n.tr("Localizable", "assist.settings.section.experimental.title") }
+        }
         public enum Labs {
           /// More
           public static var title: String { return L10n.tr("Localizable", "assist.settings.section.labs.title") }
