@@ -272,7 +272,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         )
 
         wait(for: [firstSend], timeout: 1)
-        let message = try externalBusMessage(from: try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
         XCTAssertEqual(message["type"] as? String, "command")
         XCTAssertEqual(message["command"] as? String, WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue)
         XCTAssertEqual((message["payload"] as? [String: Any])?["enable"] as? Bool, true)
@@ -292,7 +292,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         )
 
         wait(for: [firstSend], timeout: 1)
-        let firstMessage = try externalBusMessage(from: try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let firstMessage = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
         let firstID = try XCTUnwrap(firstMessage["id"] as? Int)
 
         // Frontend reports it couldn't handle the command yet; expect a retry with a fresh id.
@@ -306,7 +306,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ])
 
         wait(for: [retrySend], timeout: 1)
-        let retryMessage = try externalBusMessage(from: try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let retryMessage = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
         let retryID = try XCTUnwrap(retryMessage["id"] as? Int)
         XCTAssertNotEqual(retryID, firstID)
         XCTAssertEqual(retryMessage["command"] as? String, WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue)
@@ -327,7 +327,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         wait(for: [firstSend], timeout: 1)
         XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
-        let firstMessage = try externalBusMessage(from: try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let firstMessage = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
         let firstID = try XCTUnwrap(firstMessage["id"] as? Int)
 
         // The single allowed attempt was rejected, so the handler must give up rather than send again.
