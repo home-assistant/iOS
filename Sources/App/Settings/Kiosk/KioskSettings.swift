@@ -56,8 +56,6 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.keepScreenOn = try container.decodeIfPresent(Bool.self, forKey: .keepScreenOn) ?? false
         self.removeHeaderAndSidebar = try container.decodeIfPresent(Bool.self, forKey: .removeHeaderAndSidebar) ?? false
         self.hideStatusBar = try container.decodeIfPresent(Bool.self, forKey: .hideStatusBar) ?? false
-        // Intervals under 10 minutes were removed; a stored value that no longer resolves falls back to
-        // `.never` (the feature is in beta, so we don't migrate the removed values).
         self.autoReload = try container.decodeIfPresent(String.self, forKey: .autoReload)
             .flatMap(KioskAutoReloadInterval.init(rawValue:)) ?? .never
         self.settingsEntryPosition = try container.decodeIfPresent(
