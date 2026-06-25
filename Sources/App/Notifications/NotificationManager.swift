@@ -525,10 +525,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return nil
         }
 
-        guard performKioskCommand(command, userInfo: content.userInfo) else {
-            // Couldn't execute (e.g. missing payload value) — show the standard notification instead.
-            return nil
-        }
+        performKioskCommand(command, userInfo: content.userInfo)
 
         if #available(iOS 18, *) {
             let identifier = notification.request.identifier
@@ -551,8 +548,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         return []
     }
 
-    /// Returns `false` when a recognized command can't be carried out (e.g. missing payload value).
-    private func performKioskCommand(_ command: KioskPushCommand, userInfo: [AnyHashable: Any]) -> Bool {
+    private func performKioskCommand(_ command: KioskPushCommand, userInfo: [AnyHashable: Any]) {
         switch command {
         case .showScreensaver:
             Current.kiosk.requestScreensaver(.show)
@@ -563,19 +559,18 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         case .hideCamera:
             hideCamera()
         case .setBrightness:
-            guard let level = command.level(from: userInfo) else {
+            if let level = command.level(from: userInfo) {
+                setScreenBrightness(level)
+            } else {
                 Current.Log.error("Ignoring \(command.rawValue): missing or invalid level in payload")
-                return false
             }
-            setScreenBrightness(level)
         case .setVolume:
-            guard let level = command.level(from: userInfo) else {
+            if let level = command.level(from: userInfo) {
+                setSystemVolume(level)
+            } else {
                 Current.Log.error("Ignoring \(command.rawValue): missing or invalid volume in payload")
-                return false
             }
-            setSystemVolume(level)
         }
-        return true
     }
 
     public func userNotificationCenter(
