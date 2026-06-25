@@ -12,7 +12,7 @@ struct KioskScreensaverView: View {
             Color.black
                 .opacity(settings.mode == .dim ? (1 - clampedDimLevel) : 1)
 
-            PixelShiftContainer(enabled: settings.pixelShiftEnabled) {
+            PixelShiftContainer(enabled: settings.pixelShiftEnabled && settings.mode == .clock) {
                 content
             }
         }
@@ -75,30 +75,13 @@ struct KioskScreensaverView: View {
 
 // MARK: - Pixel shift
 
-private struct PixelShiftContainer<Content: View>: View {
-    let enabled: Bool
-    @ViewBuilder var content: () -> Content
+private enum PixelShift {
+    static let interval: TimeInterval = 60
 
-    private static var interval: TimeInterval { 60 }
-
-    var body: some View {
-        if enabled {
-            TimelineView(.periodic(from: Date(), by: Self.interval)) { context in
-                let shift = Self.offset(for: context.date)
-                content()
-                    .offset(x: shift.width, y: shift.height)
-                    .animation(.easeInOut(duration: 2), value: shift)
-            }
-        } else {
-            content()
-        }
-    }
-
-    private static func offset(for date: Date) -> CGSize {
-        let boxPositions = positions
+    static func offset(for date: Date) -> CGSize {
         let step = Int(date.timeIntervalSinceReferenceDate / interval)
-        let index = ((step % boxPositions.count) + boxPositions.count) % boxPositions.count
-        return boxPositions[index]
+        let index = ((step % positions.count) + positions.count) % positions.count
+        return positions[index]
     }
 
     private static let positions: [CGSize] = {
@@ -114,6 +97,24 @@ private struct PixelShiftContainer<Content: View>: View {
             CGSize(width: -distance, height: -distance),
         ]
     }()
+}
+
+private struct PixelShiftContainer<Content: View>: View {
+    let enabled: Bool
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        if enabled {
+            TimelineView(.periodic(from: Date(), by: PixelShift.interval)) { context in
+                let shift = PixelShift.offset(for: context.date)
+                content()
+                    .offset(x: shift.width, y: shift.height)
+                    .animation(.easeInOut(duration: 2), value: shift)
+            }
+        } else {
+            content()
+        }
+    }
 }
 
 // MARK: - Idle controller
