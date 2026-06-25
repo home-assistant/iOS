@@ -27,7 +27,8 @@ struct KioskSettingsTests {
                 showSeconds: true,
                 timeToStart: .minutes10,
                 dimEnabled: true,
-                dimLevel: 0.3
+                dimLevel: 0.3,
+                pixelShiftEnabled: true
             )
         )
 
@@ -85,6 +86,7 @@ struct KioskSettingsTests {
 
         #expect(settings.dimEnabled == false)
         #expect(settings.dimLevel == 0.3)
+        #expect(settings.pixelShiftEnabled == false)
     }
 
     @Test func enumMetadataIsComplete() {

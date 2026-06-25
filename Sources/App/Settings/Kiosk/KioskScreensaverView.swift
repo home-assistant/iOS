@@ -12,13 +12,20 @@ struct KioskScreensaverView: View {
             Color.black
                 .opacity(settings.mode == .dim ? (1 - clampedDimLevel) : 1)
 
-            if settings.mode == .clock {
-                clockView
+            PixelShiftContainer(enabled: settings.pixelShiftEnabled && settings.mode == .clock) {
+                content
             }
         }
         .ignoresSafeArea()
         .contentShape(Rectangle())
         .onTapGesture(perform: onWake)
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if settings.mode == .clock {
+            clockView
+        }
     }
 
     private var clampedDimLevel: Double {
@@ -62,6 +69,50 @@ struct KioskScreensaverView: View {
         case .large: return 120
         case .medium: return 84
         case .small: return 56
+        }
+    }
+}
+
+// MARK: - Pixel shift
+
+private enum PixelShift {
+    static let interval: TimeInterval = 60
+
+    static func offset(for date: Date) -> CGSize {
+        let step = Int(date.timeIntervalSinceReferenceDate / interval)
+        let index = ((step % positions.count) + positions.count) % positions.count
+        return positions[index]
+    }
+
+    private static let positions: [CGSize] = {
+        let distance: CGFloat = 12
+        return [
+            CGSize(width: 0, height: -distance),
+            CGSize(width: distance, height: -distance),
+            CGSize(width: distance, height: 0),
+            CGSize(width: distance, height: distance),
+            CGSize(width: 0, height: distance),
+            CGSize(width: -distance, height: distance),
+            CGSize(width: -distance, height: 0),
+            CGSize(width: -distance, height: -distance),
+        ]
+    }()
+}
+
+private struct PixelShiftContainer<Content: View>: View {
+    let enabled: Bool
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        if enabled {
+            TimelineView(.periodic(from: Date(), by: PixelShift.interval)) { context in
+                let shift = PixelShift.offset(for: context.date)
+                content()
+                    .offset(x: shift.width, y: shift.height)
+                    .animation(.easeInOut(duration: 2), value: shift)
+            }
+        } else {
+            content()
         }
     }
 }
