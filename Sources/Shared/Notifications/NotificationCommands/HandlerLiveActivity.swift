@@ -28,6 +28,12 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                 do {
                     let request = try Self.makeRequest(from: payload)
 
+                    // Record the disclosure on both start paths. settingsStore is App-Group-backed,
+                    // so the extension's write is visible to the app's Settings screen — without this
+                    // a Live Activity started via the extension hand-off (drained straight through the
+                    // registry, bypassing this handler) would never set the flag.
+                    Self.showPrivacyDisclosureIfNeeded()
+
                     // PushProvider (NEAppPushProvider) runs in a separate OS process — ActivityKit is
                     // unavailable there, and (unlike APNs) a notification delivered over the local-push
                     // channel is never re-delivered to the main app. So instead of dropping the request,
@@ -44,8 +50,6 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                         seal.fulfill(())
                         return
                     }
-
-                    Self.showPrivacyDisclosureIfNeeded()
 
                     try await Current.liveActivityRegistry?.startOrUpdate(
                         tag: request.tag,
