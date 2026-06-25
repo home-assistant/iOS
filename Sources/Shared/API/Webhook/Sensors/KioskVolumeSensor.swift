@@ -1,9 +1,12 @@
 import AVFoundation
+import Combine
 import Foundation
 import PromiseKit
 
 final class KioskVolumeSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     private var observation: NSKeyValueObservation?
+    private var cancellable: AnyCancellable?
+    private let volumeChanges = PassthroughSubject<Void, Never>()
     private let signal: () -> Void
 
     init(signal: @escaping () -> Void) {
@@ -23,8 +26,15 @@ final class KioskVolumeSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorPro
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.ambient, options: [.mixWithOthers])
         try? session.setActive(true)
+        // Holding the volume buttons fires many KVO changes in quick succession; debounce so we send a
+        // single sensor update once the volume settles, instead of a burst of webhooks.
+        cancellable = volumeChanges
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.signal()
+            }
         observation = session.observe(\.outputVolume, options: [.new]) { [weak self] _, _ in
-            self?.signal()
+            self?.volumeChanges.send()
         }
         #endif
         isObserving = true
@@ -35,6 +45,8 @@ final class KioskVolumeSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorPro
         guard isObserving else { return }
         observation?.invalidate()
         observation = nil
+        cancellable?.cancel()
+        cancellable = nil
         #if os(iOS) && !targetEnvironment(macCatalyst)
         // Release the audio session we activated for volume observation, letting other audio resume.
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)

@@ -20,7 +20,10 @@ final class KioskBrightnessSensorUpdateSignaler: BaseSensorUpdateSignaler, Senso
         super.observe()
         guard !isObserving else { return }
         #if os(iOS) && !targetEnvironment(macCatalyst)
+        // Control Center / hardware changes can fire many notifications in quick succession; debounce so
+        // we send a single sensor update once the brightness settles, instead of a burst of webhooks.
         cancellable = NotificationCenter.default.publisher(for: UIScreen.brightnessDidChangeNotification)
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.signal()
             }
