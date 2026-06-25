@@ -37,7 +37,7 @@ final class KioskBrightnessSensorUpdateSignaler: BaseSensorUpdateSignaler, Senso
     }
 }
 
-/// Reports the current screen brightness as a percentage. iOS/iPadOS only.
+/// Reports the current screen brightness as a percentage. Enabled only while kiosk mode is enabled, iOS/iPadOS only.
 final class KioskBrightnessSensor: SensorProvider {
     let request: SensorProviderRequest
     init(request: SensorProviderRequest) {

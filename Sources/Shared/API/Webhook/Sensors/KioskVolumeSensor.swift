@@ -17,10 +17,13 @@ final class KioskVolumeSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorPro
         super.observe()
         guard !isObserving else { return }
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        // Observe the shared session's output volume. Reading the value is always accurate; live
-        // notifications are best-effort and we intentionally avoid activating the session so we
-        // don't interrupt any audio the user (or Home Assistant) may be playing.
-        observation = AVAudioSession.sharedInstance().observe(\.outputVolume, options: [.new]) { [weak self] _, _ in
+        // `outputVolume` only emits KVO changes while the app's audio session is active, so activate
+        // a non-intrusive ambient session that mixes with other audio purely to receive volume
+        // change callbacks. It's deactivated again in `stopObserving()` when the sensor is disabled.
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(.ambient, options: [.mixWithOthers])
+        try? session.setActive(true)
+        observation = session.observe(\.outputVolume, options: [.new]) { [weak self] _, _ in
             self?.signal()
         }
         #endif
@@ -32,11 +35,15 @@ final class KioskVolumeSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorPro
         guard isObserving else { return }
         observation?.invalidate()
         observation = nil
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        // Release the audio session we activated for volume observation, letting other audio resume.
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        #endif
         isObserving = false
     }
 }
 
-/// Reports the device output volume as a number between 0 and 100. iOS/iPadOS only.
+/// Reports the device output volume as a percentage. Enabled only while kiosk mode is enabled, iOS/iPadOS only.
 final class KioskVolumeSensor: SensorProvider {
     let request: SensorProviderRequest
     init(request: SensorProviderRequest) {
@@ -47,12 +54,14 @@ final class KioskVolumeSensor: SensorProvider {
         var sensors: [WebhookSensor] = []
         #if os(iOS) && !targetEnvironment(macCatalyst)
         let volume = Int((AVAudioSession.sharedInstance().outputVolume * 100).rounded())
-        sensors.append(WebhookSensor(
+        sensors.append(with(WebhookSensor(
             name: "Kiosk Volume",
             uniqueID: WebhookSensorId.kioskVolume.rawValue,
             icon: "mdi:volume-high",
             state: volume
-        ))
+        )) {
+            $0.UnitOfMeasurement = "%"
+        })
 
         // Set up our observer for volume changes
         let _: KioskVolumeSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)

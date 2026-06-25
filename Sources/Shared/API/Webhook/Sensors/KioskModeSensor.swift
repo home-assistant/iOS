@@ -20,6 +20,7 @@ final class KioskModeSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
             .map(\.enabled)
             .removeDuplicates()
             .dropFirst()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.signal()
             }
