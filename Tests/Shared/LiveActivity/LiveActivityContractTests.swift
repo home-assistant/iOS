@@ -148,10 +148,10 @@ final class LiveActivityContractTests: XCTestCase {
     }
 
     /// The iOS app owns the token expiry window it sends to HA core.
-    func testTokenWebhookExpiry_isEightHours() {
+    func testTokenWebhookExpiry_isTwelveHours() {
         XCTAssertEqual(
             LiveActivityRegistry.pushTokenTimeToLive,
-            8 * 60 * 60
+            12 * 60 * 60
         )
     }
 
