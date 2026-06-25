@@ -176,7 +176,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     private func setSystemVolume(_ level: Float) {
         let clamped = min(max(level, 0), 1)
         Current.sceneManager.webViewControllerPromise
-            .done { [weak self] webViewController in
+            .done(on: .main) { [weak self] webViewController in
                 guard let self else { return }
                 if volumeControlView.superview == nil {
                     webViewController.view.addSubview(volumeControlView)

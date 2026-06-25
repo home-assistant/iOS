@@ -52,6 +52,10 @@ enum KioskPushCommand: String, CaseIterable {
         if let value = numericValue(userInfo[key]) {
             return value
         }
+        if let homeassistant = userInfo["homeassistant"] as? [String: Any],
+           let value = numericValue(homeassistant[key]) {
+            return value
+        }
         if let homeassistant = userInfo["homeassistant"] as? [AnyHashable: Any],
            let value = numericValue(homeassistant[key]) {
             return value
