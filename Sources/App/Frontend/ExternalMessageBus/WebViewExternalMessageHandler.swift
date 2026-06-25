@@ -710,28 +710,33 @@ extension WebViewExternalMessageHandler {
             return
         }
         pending.attemptsRemaining -= 1
-        pendingCommands[pending.messageID] = pending
-
-        // No error result within the window means the frontend handled the command.
-        let acknowledgementWorkItem = DispatchWorkItem { [weak self, weak pending] in
-            guard let self, let pending else { return }
-            Current.Log.verbose("External bus command \(pending.command) (id \(pending.messageID)) acknowledged")
-            pendingCommands[pending.messageID] = nil
-        }
-        pending.acknowledgementWorkItem = acknowledgementWorkItem
-        DispatchQueue.main.asyncAfter(
-            deadline: .now() + pending.acknowledgementTimeout,
-            execute: acknowledgementWorkItem
-        )
+        let attemptID = pending.messageID
+        pendingCommands[attemptID] = pending
 
         sendExternalBus(message: .init(
-            id: pending.messageID,
+            id: attemptID,
             command: pending.command,
             payload: pending.payload
-        )).catch { [weak self] error in
+        )).done { [weak self, weak pending] in
+            // Start the acknowledgement timer only once the command actually reached the frontend, so a
+            // send failure always routes to `catch` below regardless of timing. The frontend stays
+            // silent on success, so no error result within the window counts as acknowledged.
+            guard let self, let pending, pendingCommands[attemptID] === pending else { return }
+            let acknowledgementWorkItem = DispatchWorkItem { [weak self, weak pending] in
+                guard let self, let pending, pendingCommands[attemptID] === pending else { return }
+                Current.Log.verbose("External bus command \(pending.command) (id \(attemptID)) acknowledged")
+                pendingCommands[attemptID] = nil
+            }
+            pending.acknowledgementWorkItem = acknowledgementWorkItem
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + pending.acknowledgementTimeout,
+                execute: acknowledgementWorkItem
+            )
+        }.catch { [weak self, weak pending] error in
             // The frontend never saw the command, so no error result is coming — retry now.
+            guard let self, let pending, pendingCommands[attemptID] === pending else { return }
             Current.Log.error("External bus command \(pending.command) failed to send: \(error)")
-            self?.retryExternalBusCommand(pending)
+            retryExternalBusCommand(pending)
         }
     }
 
@@ -740,18 +745,23 @@ extension WebViewExternalMessageHandler {
         pending.acknowledgementWorkItem?.cancel()
         pendingCommands[pending.messageID] = nil
 
+        // Re-key under a fresh id and stay registered through the delay so a newer command can still
+        // supersede this one; the delayed attempt bails out if that happened.
         pending.messageID = nextOutgoingMessageID
         nextOutgoingMessageID += 1
+        let retryID = pending.messageID
+        pendingCommands[retryID] = pending
 
         DispatchQueue.main.asyncAfter(deadline: .now() + pending.retryDelay) { [weak self] in
-            // `pending` is strongly captured to keep it alive; it isn't in `pendingCommands` right now.
-            self?.attemptExternalBusCommand(pending)
+            guard let self, pendingCommands[retryID] === pending else { return }
+            attemptExternalBusCommand(pending)
         }
     }
 
     private func cancelPendingCommands(matching command: String) {
-        for (id, pending) in pendingCommands where pending.command == command {
-            pending.acknowledgementWorkItem?.cancel()
+        let ids = pendingCommands.filter { $0.value.command == command }.map(\.key)
+        for id in ids {
+            pendingCommands[id]?.acknowledgementWorkItem?.cancel()
             pendingCommands[id] = nil
         }
     }
