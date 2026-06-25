@@ -6,11 +6,12 @@ import UIKit
 struct ConditionalContainerView: View {
     @StateObject private var kiosk = Current.kiosk
     @Environment(\.scenePhase) private var scenePhase
+    @State private var showKioskSettings = false
 
     var body: some View {
         Group {
             if kiosk.settings.enabled {
-                KioskView()
+                KioskView(showSettings: $showKioskSettings)
             } else {
                 ContainerView()
             }
@@ -19,6 +20,19 @@ struct ConditionalContainerView: View {
         .onChange(of: kiosk.shouldKeepScreenOn) { _ in applyKeepScreenOn() }
         .onChange(of: scenePhase) { phase in
             if phase == .active { applyKeepScreenOn() }
+        }
+        // Hosted here, above the kiosk/container swap, so toggling kiosk mode from within the
+        // settings screen swaps the view underneath without dismissing the settings sheet itself.
+        .sheet(isPresented: $showKioskSettings) {
+            NavigationView {
+                KioskSettingsView()
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            CloseButton { showKioskSettings = false }
+                        }
+                    }
+            }
+            .navigationViewStyle(.stack)
         }
     }
 
@@ -30,7 +44,7 @@ struct ConditionalContainerView: View {
 struct KioskView: View {
     @StateObject private var screensaver = KioskScreensaverController()
     @StateObject private var kiosk = Current.kiosk
-    @State private var showSettings = false
+    @Binding var showSettings: Bool
 
     var body: some View {
         ContainerView()
@@ -58,17 +72,6 @@ struct KioskView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.4), value: screensaver.isActive)
-            .sheet(isPresented: $showSettings) {
-                NavigationView {
-                    KioskSettingsView()
-                        .toolbar {
-                            ToolbarItem(placement: .cancellationAction) {
-                                CloseButton { showSettings = false }
-                            }
-                        }
-                }
-                .navigationViewStyle(.stack)
-            }
     }
 
     private var settingsEntryAlignment: Alignment {
