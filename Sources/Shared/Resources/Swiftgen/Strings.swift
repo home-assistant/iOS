@@ -2149,6 +2149,10 @@ public enum L10n {
       public static var enabled: String { return L10n.tr("Localizable", "kiosk.screensaver.enabled") }
       /// Mode
       public static var mode: String { return L10n.tr("Localizable", "kiosk.screensaver.mode") }
+      /// Pixel shift (OLED)
+      public static var pixelShift: String { return L10n.tr("Localizable", "kiosk.screensaver.pixel_shift") }
+      /// Slowly nudges the clock by a few pixels to help prevent burn-in on OLED displays.
+      public static var pixelShiftFooter: String { return L10n.tr("Localizable", "kiosk.screensaver.pixel_shift_footer") }
       /// Preview
       public static var preview: String { return L10n.tr("Localizable", "kiosk.screensaver.preview") }
       /// Screensaver

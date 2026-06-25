@@ -47,6 +47,13 @@ struct KioskScreensaverSettingsView: View {
                     Toggle(isOn: screensaver.showSeconds) {
                         KioskRow.label(L10n.Kiosk.Screensaver.showSeconds, icon: .timerOutlineIcon)
                     }
+                    Toggle(isOn: screensaver.pixelShiftEnabled) {
+                        KioskRow.label(
+                            L10n.Kiosk.Screensaver.pixelShift,
+                            subtitle: L10n.Kiosk.Screensaver.pixelShiftFooter,
+                            icon: .arrowAllIcon
+                        )
+                    }
                 }
 
                 KioskRow.picker(

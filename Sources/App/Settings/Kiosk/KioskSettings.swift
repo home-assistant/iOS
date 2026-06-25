@@ -83,6 +83,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
     public var timeToStart: KioskScreensaverTimeout
     public var dimEnabled: Bool
     public var dimLevel: Double
+    public var pixelShiftEnabled: Bool
 
     public init(
         enabled: Bool = false,
@@ -92,7 +93,8 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         showSeconds: Bool = false,
         timeToStart: KioskScreensaverTimeout = .minutes5,
         dimEnabled: Bool = false,
-        dimLevel: Double = 0.1
+        dimLevel: Double = 0.1,
+        pixelShiftEnabled: Bool = false
     ) {
         self.enabled = enabled
         self.mode = mode
@@ -102,6 +104,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         self.timeToStart = timeToStart
         self.dimEnabled = dimEnabled
         self.dimLevel = dimLevel
+        self.pixelShiftEnabled = pixelShiftEnabled
     }
 
     public init(from decoder: Decoder) throws {
@@ -117,6 +120,7 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         ) ?? .minutes5
         self.dimEnabled = try container.decodeIfPresent(Bool.self, forKey: .dimEnabled) ?? false
         self.dimLevel = try container.decodeIfPresent(Double.self, forKey: .dimLevel) ?? 0.1
+        self.pixelShiftEnabled = try container.decodeIfPresent(Bool.self, forKey: .pixelShiftEnabled) ?? false
     }
 }
 
