@@ -5,10 +5,22 @@ import UIKit
 
 struct ConditionalContainerView: View {
     @StateObject private var kiosk = Current.kiosk
+    @ObservedObject private var appSettings = AppSettingsPresenter.shared
     @Environment(\.scenePhase) private var scenePhase
     @State private var showKioskSettings = false
 
     var body: some View {
+        content
+            .sheet(isPresented: $appSettings.isPresented) {
+                SettingsView()
+                    .injectingViewControllerProvider()
+                    .onDisappear {
+                        Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
+                    }
+            }
+    }
+
+    private var content: some View {
         Group {
             if kiosk.settings.enabled {
                 KioskView(showSettings: $showKioskSettings)
@@ -21,8 +33,6 @@ struct ConditionalContainerView: View {
         .onChange(of: scenePhase) { phase in
             if phase == .active { applyKeepScreenOn() }
         }
-        // Hosted here, above the kiosk/container swap, so toggling kiosk mode from within the
-        // settings screen swaps the view underneath without dismissing the settings sheet itself.
         .sheet(isPresented: $showKioskSettings) {
             NavigationView {
                 KioskSettingsView()
