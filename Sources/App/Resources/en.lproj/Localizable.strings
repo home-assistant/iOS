@@ -637,6 +637,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.security.hide_status_bar" = "Hide Status Bar";
 "kiosk.security.section" = "Security & Display";
 "kiosk.security.taps_required" = "Taps Required: %li";
+"kiosk.sensors.body" = "Report kiosk mode, brightness, and volume to Home Assistant.";
+"kiosk.sensors.footer" = "These sensors also appear in the app's sensor settings. Enabling or disabling them here keeps both places in sync.";
+"kiosk.sensors.title" = "Sensors";
 "kiosk.title" = "Kiosk Mode";
 "legacy_actions.disclaimer" = "Legacy iOS Actions are not the recommended way to interact with Home Assistant anymore, please use Scripts, Scenes and Automations directly in your Widgets, Apple Watch and CarPlay.";
 "live_activity.empty_state" = "No active Live Activities";
