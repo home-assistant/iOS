@@ -54,6 +54,13 @@ public class HomeAssistantAPI {
     public var server: Server
     public internal(set) var connection: HAConnection
 
+    private var rejectedReconnectAttempts = 0
+    private var rejectedReconnectWorkItem: DispatchWorkItem?
+
+    /// Backoff (seconds) for reconnect attempts after a rejected websocket; its count also bounds the
+    /// number of attempts. Overridable for tests.
+    static var rejectedReconnectDelays: [TimeInterval] = [0, 5, 10]
+
     public static var clientVersionDescription: String {
         "\(AppConstants.version) (\(AppConstants.build))"
     }
@@ -1455,13 +1462,57 @@ extension HomeAssistantAPI: SensorObserver {
 
 extension HomeAssistantAPI: HAConnectionDelegate {
     public func connection(_ connection: HAConnection, didTransitionTo state: HAConnectionState) {
-        guard case let .disconnected(reason: .waitingToReconnect(lastError: error, atLatest: _, retryCount: _)) = state,
-              let tokenFetchFailure = error as? TokenFetchFailure,
-              tokenFetchFailure.shouldDisconnectPermanently else {
+        switch state {
+        case .ready:
+            resetRejectedReconnectRecovery()
+        case .disconnected(reason: .rejected):
+            scheduleRejectedReconnectRecoveryIfNeeded()
+        case let .disconnected(reason: .waitingToReconnect(lastError: error, atLatest: _, retryCount: _)):
+            guard let tokenFetchFailure = error as? TokenFetchFailure,
+                  tokenFetchFailure.shouldDisconnectPermanently else {
+                return
+            }
+            Current.Log.info("stopping websocket reconnects after fatal auth token fetch failure")
+            connection.disconnect()
+        case .connecting, .authenticating, .disconnected(reason: .disconnected):
+            break
+        }
+    }
+
+    /// Recovers from a rejected websocket (`auth: invalid`): HAKit won't auto-reconnect a rejected
+    /// connection, so we explicitly `connect()` (re-resolving the URL and refreshing the token), bounded by
+    /// a backoff budget so a genuinely-invalid token can't loop on Home Assistant's auth-ban endpoint.
+    private func scheduleRejectedReconnectRecoveryIfNeeded() {
+        guard rejectedReconnectAttempts < Self.rejectedReconnectDelays.count else {
+            Current.Log.error("websocket rejected; giving up after \(rejectedReconnectAttempts) attempts")
+            // Drop any still-pending final attempt so we don't fire another `connect()` after giving up.
+            rejectedReconnectWorkItem?.cancel()
+            rejectedReconnectWorkItem = nil
             return
         }
 
-        Current.Log.info("stopping websocket reconnects after fatal auth token fetch failure")
-        connection.disconnect()
+        let delay = Self.rejectedReconnectDelays[rejectedReconnectAttempts]
+        rejectedReconnectAttempts += 1
+        let attempt = rejectedReconnectAttempts
+
+        Current.Log.info("websocket rejected; scheduling reconnect attempt \(attempt) in \(delay)s")
+
+        rejectedReconnectWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            guard case .disconnected(reason: .rejected) = connection.state else { return }
+            Current.Log.info("retrying websocket connect after rejection (attempt \(attempt))")
+            connection.connect()
+        }
+        rejectedReconnectWorkItem = workItem
+        // Schedule on the connection's callback queue so reading `connection.state` and calling `connect()`
+        // stay serialized with HAKit's own delegate callbacks instead of racing across queues.
+        connection.callbackQueue.asyncAfter(deadline: .now() + delay, execute: workItem)
+    }
+
+    private func resetRejectedReconnectRecovery() {
+        rejectedReconnectWorkItem?.cancel()
+        rejectedReconnectWorkItem = nil
+        rejectedReconnectAttempts = 0
     }
 }

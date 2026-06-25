@@ -83,6 +83,117 @@ class HAAPITokenFetchFailureTests: XCTestCase {
 
         XCTAssertEqual(connection.state, expectedState)
     }
+
+    func testConnectionDelegateRecoversFromRejectedStateWhenReconnectSucceeds() {
+        let priorDelays = HomeAssistantAPI.rejectedReconnectDelays
+        HomeAssistantAPI.rejectedReconnectDelays = [0, 0, 0]
+        defer { HomeAssistantAPI.rejectedReconnectDelays = priorDelays }
+
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        connection.delegate = api
+        api.connection = connection
+
+        connection.setState(.disconnected(reason: .rejected), waitForQueue: false)
+        drainMainQueue(cycles: 10)
+
+        // HAKit won't auto-reconnect a rejected connection, but our delegate explicitly retries; the
+        // mock's connect() succeeds, so the rejection is recovered instead of dead-ending the socket.
+        XCTAssertEqual(connection.state, .ready(version: "1.0-mock"))
+    }
+
+    func testConnectionDelegateGivesUpAfterExhaustingRejectedReconnectBudget() {
+        let priorDelays = HomeAssistantAPI.rejectedReconnectDelays
+        HomeAssistantAPI.rejectedReconnectDelays = [0, 0, 0]
+        defer { HomeAssistantAPI.rejectedReconnectDelays = priorDelays }
+
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = RejectingMockConnection()
+        connection.delegate = api
+        api.connection = connection
+
+        connection.setState(.disconnected(reason: .rejected))
+        drainMainQueue(cycles: 20)
+
+        // One reconnect per backoff entry, then we stop — a genuinely-invalid token must not loop forever
+        // (which would keep tripping HA's auth-ban endpoint).
+        XCTAssertEqual(connection.connectCount, 3)
+        XCTAssertEqual(connection.state, .disconnected(reason: .rejected))
+    }
+}
+
+/// A minimal `HAConnection` whose `connect()` always lands back in the rejected state, used to exercise
+/// the reconnect-budget cap. `HAMockConnection` is `public` (not `open`), so it can't be subclassed here.
+private final class RejectingMockConnection: HAConnection {
+    weak var delegate: HAConnectionDelegate?
+    var configuration: HAConnectionConfiguration = .fake
+    var callbackQueue: DispatchQueue = .main
+    private(set) var connectCount = 0
+    lazy var caches: HACachesContainer = .init(connection: self)
+
+    private(set) var state: HAConnectionState = .disconnected(reason: .disconnected) {
+        didSet {
+            callbackQueue.async { [self, state] in
+                delegate?.connection(self, didTransitionTo: state)
+            }
+        }
+    }
+
+    func setState(_ state: HAConnectionState) {
+        self.state = state
+    }
+
+    func connect() {
+        connectCount += 1
+        state = .disconnected(reason: .rejected)
+    }
+
+    func disconnect() {
+        state = .disconnected(reason: .disconnected)
+    }
+
+    private func noopCancellable() -> HACancellable { HAMockCancellable {} }
+
+    func send(_ request: HARequest, completion: @escaping (Result<HAData, HAError>) -> Void) -> HACancellable {
+        noopCancellable()
+    }
+
+    func send<T>(
+        _ request: HATypedRequest<T>,
+        completion: @escaping (Result<T, HAError>) -> Void
+    ) -> HACancellable {
+        noopCancellable()
+    }
+
+    func subscribe(
+        to request: HARequest,
+        handler: @escaping (HACancellable, HAData) -> Void
+    ) -> HACancellable {
+        noopCancellable()
+    }
+
+    func subscribe(
+        to request: HARequest,
+        initiated: @escaping (Result<HAData, HAError>) -> Void,
+        handler: @escaping (HACancellable, HAData) -> Void
+    ) -> HACancellable {
+        noopCancellable()
+    }
+
+    func subscribe<T>(
+        to request: HATypedSubscription<T>,
+        handler: @escaping (HACancellable, T) -> Void
+    ) -> HACancellable {
+        noopCancellable()
+    }
+
+    func subscribe<T>(
+        to request: HATypedSubscription<T>,
+        initiated: @escaping (Result<HAData, HAError>) -> Void,
+        handler: @escaping (HACancellable, T) -> Void
+    ) -> HACancellable {
+        noopCancellable()
+    }
 }
 
 class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
@@ -147,6 +258,9 @@ class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
 
     func testRetryAwareConnectionDoesNotReconnectWhileBackoffIsActive() {
         let underlying = HAMockConnection()
+        // The mock otherwise flips to `.connecting` on any send; disable that so the test observes only
+        // RetryAwareHAConnection's own connect gating, not the mock's behavior.
+        underlying.automaticallyTransitionToConnecting = false
         let connection = RetryAwareHAConnection(underlying: underlying)
         let expectedState = HAConnectionState.disconnected(reason: .waitingToReconnect(
             lastError: URLError(.cannotConnectToHost),
@@ -173,6 +287,9 @@ class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
 
     func testRetryAwareConnectionDoesNotConnectRestRequests() {
         let underlying = HAMockConnection()
+        // The mock otherwise flips to `.connecting` on any send; disable that so the test observes only
+        // RetryAwareHAConnection's own connect gating, not the mock's behavior.
+        underlying.automaticallyTransitionToConnecting = false
         let connection = RetryAwareHAConnection(underlying: underlying)
 
         _ = connection.send(.init(type: .rest(.get, "config")), completion: { _ in })

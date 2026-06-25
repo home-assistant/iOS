@@ -551,11 +551,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.authentication.title" = "Authentication";
 "kiosk.authentication.unlock_button" = "Unlock";
 "kiosk.auto_reload.hours_1" = "1 hour";
-"kiosk.auto_reload.minutes_1" = "1 minute";
 "kiosk.auto_reload.minutes_10" = "10 minutes";
 "kiosk.auto_reload.minutes_15" = "15 minutes";
 "kiosk.auto_reload.minutes_30" = "30 minutes";
-"kiosk.auto_reload.minutes_5" = "5 minutes";
 "kiosk.auto_reload.never" = "Never";
 "kiosk.auto_reload.subtitle" = "The time between automatic page reloads.";
 "kiosk.auto_reload.title" = "Auto reload";

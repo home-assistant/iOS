@@ -56,7 +56,8 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.keepScreenOn = try container.decodeIfPresent(Bool.self, forKey: .keepScreenOn) ?? false
         self.removeHeaderAndSidebar = try container.decodeIfPresent(Bool.self, forKey: .removeHeaderAndSidebar) ?? false
         self.hideStatusBar = try container.decodeIfPresent(Bool.self, forKey: .hideStatusBar) ?? false
-        self.autoReload = try container.decodeIfPresent(KioskAutoReloadInterval.self, forKey: .autoReload) ?? .never
+        self.autoReload = try container.decodeIfPresent(String.self, forKey: .autoReload)
+            .flatMap(KioskAutoReloadInterval.init(rawValue:)) ?? .never
         self.settingsEntryPosition = try container.decodeIfPresent(
             KioskCornerPosition.self,
             forKey: .settingsEntryPosition
@@ -148,8 +149,6 @@ public struct KioskScreensaverSettings: Codable, Equatable {
 
 public enum KioskAutoReloadInterval: String, Codable, CaseIterable, Identifiable, DatabaseValueConvertible {
     case never
-    case minutes1
-    case minutes5
     case minutes10
     case minutes15
     case minutes30
@@ -160,8 +159,6 @@ public enum KioskAutoReloadInterval: String, Codable, CaseIterable, Identifiable
     public var timeInterval: TimeInterval? {
         switch self {
         case .never: return nil
-        case .minutes1: return 60
-        case .minutes5: return 5 * 60
         case .minutes10: return 10 * 60
         case .minutes15: return 15 * 60
         case .minutes30: return 30 * 60
@@ -172,8 +169,6 @@ public enum KioskAutoReloadInterval: String, Codable, CaseIterable, Identifiable
     public var title: String {
         switch self {
         case .never: return L10n.Kiosk.AutoReload.never
-        case .minutes1: return L10n.Kiosk.AutoReload.minutes1
-        case .minutes5: return L10n.Kiosk.AutoReload.minutes5
         case .minutes10: return L10n.Kiosk.AutoReload.minutes10
         case .minutes15: return L10n.Kiosk.AutoReload.minutes15
         case .minutes30: return L10n.Kiosk.AutoReload.minutes30

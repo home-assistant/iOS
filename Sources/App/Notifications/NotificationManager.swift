@@ -56,8 +56,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         localPushManager.scheduleAppOpenLocalPushRetries()
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
-            // Catch ends enqueued by the extension while the app was suspended.
+            // Catch ends and starts enqueued by the extension while the app was suspended.
             LiveActivityPendingEndObserver.drain()
+            LiveActivityPendingStartObserver.drain()
         }
         #endif
     }
@@ -354,6 +355,16 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
+
+        // A tap must still run any HA command the notification carries. willPresent covers the
+        // foreground path; this covers taps from the background/lock screen. Notably, a
+        // `live_update` Live Activity start delivered over local push is handled by the
+        // PushProvider extension (which can't touch ActivityKit), so without this a tap would
+        // never start the activity. Fire-and-forget: it's independent of the tap routing below.
+        if let hadict = userInfo["homeassistant"] as? [String: Any],
+           (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
+            commandManager.handle(userInfo).cauterize()
+        }
 
         if Current.kiosk.settings.acceptRemoteCommands,
            KioskPushCommand(message: response.notification.request.content.body) == .showCamera,
