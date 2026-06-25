@@ -59,6 +59,7 @@ enum WhatsNewIcon: Equatable {
 enum WhatsNewItemId: Hashable {
     case whatsNewValidationIntro
     case whatsNewValidationPlatforms
+    case testFlightIncludeEmail
 }
 
 struct WhatsNewItem: Identifiable, Equatable {
