@@ -178,8 +178,8 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         Current.sceneManager.webViewControllerPromise
             .done { [weak self] webViewController in
                 guard let self else { return }
-                if self.volumeControlView.superview == nil {
-                    webViewController.view.addSubview(self.volumeControlView)
+                if volumeControlView.superview == nil {
+                    webViewController.view.addSubview(volumeControlView)
                 }
                 // The slider only exists once the view is in the hierarchy, so read it on the next loop.
                 DispatchQueue.main.async {
