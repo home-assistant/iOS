@@ -308,6 +308,17 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     static let pushToStartRegistrationKey = "start_live_activity_token"
     static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
 
+    /// Registration key carrying how many seconds HA should keep waiting for this device to
+    /// report a Live Activity's push token before it may send another start for the same tag.
+    /// Reported so HA need not hard-code the duration — the device owns it.
+    static let startDebounceRegistrationKey = "live_activity_start_debounce"
+
+    /// Value reported under `startDebounceRegistrationKey`. It bounds how long HA suppresses
+    /// duplicate starts, so a push-to-start that silently fails recovers afterwards. Kept below
+    /// `pushTokenTimeToLive` since starting again is pointless once a token could no longer live,
+    /// yet long enough to outlast a realistic offline period (e.g. a flight).
+    static let startSuppressionTimeToLive: TimeInterval = 6 * 60 * 60
+
     // MARK: - Private — Stale Date
 
     /// Compute the appropriate stale date for a Live Activity content update.
@@ -383,7 +394,12 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             ]
         )
         for server in Current.servers.all {
-            Current.webhooks.sendEphemeral(server: server, request: request).cauterize()
+            // Background session: the OS owns this upload and keeps retrying it (up to its 2 h
+            // resource timeout) across connectivity changes even if the app is suspended or
+            // terminated — so a momentary drop, or losing foreground time, doesn't lose the token.
+            // Reliable token delivery is what lets Core flush the buffered update and stop sending
+            // starts, so it should not be best-effort like sendEphemeral.
+            Current.webhooks.sendPassive(server: server, request: request).cauterize()
         }
         rememberReportedTokenTag(tag)
     }
