@@ -17,7 +17,7 @@ struct KioskSettingsTests {
             keepScreenOn: true,
             removeHeaderAndSidebar: true,
             hideStatusBar: true,
-            autoReload: .minutes5,
+            autoReload: .minutes10,
             settingsEntryPosition: .topLeading,
             screensaver: KioskScreensaverSettings(
                 enabled: true,
@@ -64,6 +64,34 @@ struct KioskSettingsTests {
         #expect(loaded?.autoReload == .never)
         #expect(loaded?.settingsEntryPosition == .bottomTrailing)
         #expect(loaded?.screensaver == KioskScreensaverSettings())
+    }
+
+    @Test func decodesRemovedOrUnknownAutoReloadIntervalsAsNever() throws {
+        // Intervals under 10 minutes were removed; a stored value that no longer resolves (the removed
+        // sub-10-minute ones, or anything unrecognized) falls back to `.never` instead of failing to decode.
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+
+        func loadAutoReload(storedRawValue: String) throws -> KioskAutoReloadInterval? {
+            try database.write { db in
+                try db.execute(
+                    sql: "INSERT OR REPLACE INTO \(GRDBDatabaseTable.kioskSettings.rawValue) (id, autoReload) "
+                        + "VALUES (?, ?)",
+                    arguments: [KioskSettings.kioskSettingsId, storedRawValue]
+                )
+            }
+            return try database.read { db in try KioskSettings.fetchOne(db)?.autoReload }
+        }
+
+        let fromOneMinute = try loadAutoReload(storedRawValue: "minutes1")
+        let fromFiveMinutes = try loadAutoReload(storedRawValue: "minutes5")
+        let fromThirtyMinutes = try loadAutoReload(storedRawValue: "minutes30")
+        let fromUnknown = try loadAutoReload(storedRawValue: "garbage")
+
+        #expect(fromOneMinute == .never)
+        #expect(fromFiveMinutes == .never)
+        #expect(fromThirtyMinutes == .minutes30)
+        #expect(fromUnknown == .never)
     }
 
     @Test func decodesDefaultsWhenScreensaverFieldsAreMissing() throws {

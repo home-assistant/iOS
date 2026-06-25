@@ -2031,16 +2031,12 @@ public enum L10n {
     public enum AutoReload {
       /// 1 hour
       public static var hours1: String { return L10n.tr("Localizable", "kiosk.auto_reload.hours_1") }
-      /// 1 minute
-      public static var minutes1: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_1") }
       /// 10 minutes
       public static var minutes10: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_10") }
       /// 15 minutes
       public static var minutes15: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_15") }
       /// 30 minutes
       public static var minutes30: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_30") }
-      /// 5 minutes
-      public static var minutes5: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_5") }
       /// Never
       public static var never: String { return L10n.tr("Localizable", "kiosk.auto_reload.never") }
       /// The time between automatic page reloads.
