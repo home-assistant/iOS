@@ -32,40 +32,10 @@ struct KioskScreensaverSettingsView: View {
                 }
 
                 if screensaver.wrappedValue.mode == .clock {
-                    normalizedSlider(
-                        title: L10n.Kiosk.Screensaver.clockSize,
-                        icon: .formatSizeIcon,
-                        value: screensaver.clockFontSize
-                    )
-                    normalizedSlider(
-                        title: L10n.Kiosk.Screensaver.clockBoldness,
-                        icon: .formatBoldIcon,
-                        value: screensaver.clockFontWeight
-                    )
-                    Toggle(isOn: screensaver.showDate) {
-                        KioskRow.label(L10n.Kiosk.Screensaver.showDate, icon: .calendarOutlineIcon)
-                    }
-                    if screensaver.wrappedValue.showDate {
-                        normalizedSlider(
-                            title: L10n.Kiosk.Screensaver.dateSize,
-                            icon: .formatSizeIcon,
-                            value: screensaver.dateFontSize
-                        )
-                        normalizedSlider(
-                            title: L10n.Kiosk.Screensaver.dateBoldness,
-                            icon: .formatBoldIcon,
-                            value: screensaver.dateFontWeight
-                        )
-                    }
-                    Toggle(isOn: screensaver.showSeconds) {
-                        KioskRow.label(L10n.Kiosk.Screensaver.showSeconds, icon: .timerOutlineIcon)
-                    }
-                    Toggle(isOn: screensaver.pixelShiftEnabled) {
-                        KioskRow.label(
-                            L10n.Kiosk.Screensaver.pixelShift,
-                            subtitle: L10n.Kiosk.Screensaver.pixelShiftFooter,
-                            icon: .arrowAllIcon
-                        )
+                    NavigationLink {
+                        KioskScreensaverClockSettingsView(viewModel: viewModel)
+                    } label: {
+                        KioskRow.label(L10n.Kiosk.Screensaver.Clock.title, icon: .clockOutlineIcon)
                     }
                 }
 
@@ -79,21 +49,10 @@ struct KioskScreensaverSettingsView: View {
                     }
                 }
 
-                Toggle(isOn: screensaver.dimEnabled) {
-                    KioskRow.label(L10n.Kiosk.Screensaver.dim, icon: .brightness6Icon)
-                }
-
-                if screensaver.wrappedValue.dimEnabled {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                        HStack {
-                            KioskRow.label(L10n.Kiosk.Screensaver.dimmingLevel, icon: .brightness6Icon)
-                            Spacer()
-                            Text(dimLevelPercentage)
-                                .foregroundStyle(.secondary)
-                                .monospacedDigit()
-                        }
-                        Slider(value: screensaver.dimLevel, in: 0 ... 1, step: 0.05)
-                    }
+                NavigationLink {
+                    KioskScreensaverDimmingSettingsView(viewModel: viewModel)
+                } label: {
+                    KioskRow.label(L10n.Kiosk.Screensaver.Dimming.title, icon: .brightness6Icon)
                 }
             }
 
@@ -111,27 +70,84 @@ struct KioskScreensaverSettingsView: View {
             }
         }
     }
+}
 
-    private var dimLevelPercentage: String {
-        let percentage = Int((screensaver.wrappedValue.dimLevel * 100).rounded())
-        return "\(percentage)%"
+struct KioskScreensaverClockSettingsView: View {
+    @ObservedObject var viewModel: KioskSettingsViewModel
+
+    private var screensaver: Binding<KioskScreensaverSettings> {
+        $viewModel.settings.screensaver
     }
 
-    @ViewBuilder
-    private func normalizedSlider(
-        title: String,
-        icon: MaterialDesignIcons,
-        value: Binding<Double>
-    ) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            HStack {
-                KioskRow.label(title, icon: icon)
-                Spacer()
-                Text("\(Int((value.wrappedValue * 100).rounded()))%")
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
+    var body: some View {
+        List {
+            Section {
+                KioskRow.slider(
+                    L10n.Kiosk.Screensaver.clockSize,
+                    icon: .formatSizeIcon,
+                    value: screensaver.clockFontSize
+                )
+                KioskRow.slider(
+                    L10n.Kiosk.Screensaver.clockBoldness,
+                    icon: .formatBoldIcon,
+                    value: screensaver.clockFontWeight
+                )
+                Toggle(isOn: screensaver.showSeconds) {
+                    KioskRow.label(L10n.Kiosk.Screensaver.showSeconds, icon: .timerOutlineIcon)
+                }
+                Toggle(isOn: screensaver.pixelShiftEnabled) {
+                    KioskRow.label(
+                        L10n.Kiosk.Screensaver.pixelShift,
+                        subtitle: L10n.Kiosk.Screensaver.pixelShiftFooter,
+                        icon: .arrowAllIcon
+                    )
+                }
             }
-            Slider(value: value, in: 0 ... 1, step: 0.05)
+
+            Section {
+                Toggle(isOn: screensaver.showDate) {
+                    KioskRow.label(L10n.Kiosk.Screensaver.showDate, icon: .calendarOutlineIcon)
+                }
+                if screensaver.wrappedValue.showDate {
+                    KioskRow.slider(
+                        L10n.Kiosk.Screensaver.dateSize,
+                        icon: .formatSizeIcon,
+                        value: screensaver.dateFontSize
+                    )
+                    KioskRow.slider(
+                        L10n.Kiosk.Screensaver.dateBoldness,
+                        icon: .formatBoldIcon,
+                        value: screensaver.dateFontWeight
+                    )
+                }
+            }
         }
+        .navigationTitle(L10n.Kiosk.Screensaver.Clock.title)
+    }
+}
+
+struct KioskScreensaverDimmingSettingsView: View {
+    @ObservedObject var viewModel: KioskSettingsViewModel
+
+    private var screensaver: Binding<KioskScreensaverSettings> {
+        $viewModel.settings.screensaver
+    }
+
+    var body: some View {
+        List {
+            Section {
+                Toggle(isOn: screensaver.dimEnabled) {
+                    KioskRow.label(L10n.Kiosk.Screensaver.dim, icon: .brightness6Icon)
+                }
+                if screensaver.wrappedValue.dimEnabled {
+                    KioskRow.slider(
+                        L10n.Kiosk.Screensaver.dimmingLevel,
+                        icon: .brightness6Icon,
+                        value: screensaver.dimLevel
+                    )
+                }
+            }
+        }
+        .navigationTitle(L10n.Kiosk.Screensaver.Dimming.title)
     }
 }

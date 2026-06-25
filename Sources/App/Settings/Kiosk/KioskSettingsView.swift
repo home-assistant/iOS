@@ -171,6 +171,19 @@ enum KioskRow {
                 .fixedMenuOrder()
         }
     }
+
+    static func slider(_ title: String, icon: MaterialDesignIcons, value: Binding<Double>) -> some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+            HStack {
+                label(title, icon: icon)
+                Spacer()
+                Text("\(Int((value.wrappedValue * 100).rounded()))%")
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
+            Slider(value: value, in: 0 ... 1, step: 0.05)
+        }
+    }
 }
 
 private extension View {
