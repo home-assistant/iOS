@@ -53,7 +53,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Keys in the token webhook request data dictionary.
     static let tokenWebhookKeys: Set<String> = ["tag", "push_token", "expires_at"]
     /// ActivityKit expires Live Activities after eight hours.
-    static let pushTokenTimeToLive: TimeInterval = 8 * 60 * 60
+    static let pushTokenTimeToLive: TimeInterval = 12 * 60 * 60
 
     /// Webhook type for reporting that a Live Activity was dismissed.
     static let webhookTypeDismissed = "live_activity_dismissed"
