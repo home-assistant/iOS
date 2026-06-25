@@ -17,6 +17,8 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         mockRegistry = MockLiveActivityRegistry()
         Current.liveActivityRegistry = mockRegistry
         Current.isAppExtension = false
+        // Clear any cross-process hand-off queue left over from a prior test.
+        _ = LiveActivityPendingStart.drainAll()
     }
 
     override func tearDown() {
@@ -152,13 +154,34 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(state.countdownEnd)
     }
 
-    // MARK: - handle(_:) — app extension guard
+    // MARK: - handle(_:) — app extension hand-off
 
-    func testHandle_inAppExtension_skipsRegistryAndFulfills() {
+    func testHandle_inAppExtension_enqueuesHandoffAndSkipsRegistry() throws {
         Current.isAppExtension = true
-        let payload: [String: Any] = ["tag": "test-tag", "title": "Test"]
+        let payload: [String: Any] = [
+            "tag": "test-tag",
+            "title": "Test",
+            "message": "Body",
+            "webhook_id": "wh-1",
+        ]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        // ActivityKit is unavailable in the extension, so the registry is not touched directly...
+        XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
+        // ...instead the request is handed off to the app via the App Group queue.
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.tag, "test-tag")
+        XCTAssertEqual(pending.first?.title, "Test")
+        XCTAssertEqual(pending.first?.serverWebhookId, "wh-1")
+        XCTAssertEqual(pending.first?.state.message, "Body")
+    }
+
+    func testHandle_inAppExtension_invalidTag_doesNotEnqueue() throws {
+        Current.isAppExtension = true
+        let payload: [String: Any] = ["tag": "invalid tag", "title": "Test"]
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
+        XCTAssertTrue(LiveActivityPendingStart.drainAll().isEmpty)
     }
 
     // MARK: - handle(_:) — validation failures fulfill (no rejection)
