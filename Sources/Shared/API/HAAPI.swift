@@ -1485,6 +1485,9 @@ extension HomeAssistantAPI: HAConnectionDelegate {
     private func scheduleRejectedReconnectRecoveryIfNeeded() {
         guard rejectedReconnectAttempts < Self.rejectedReconnectDelays.count else {
             Current.Log.error("websocket rejected; giving up after \(rejectedReconnectAttempts) attempts")
+            // Drop any still-pending final attempt so we don't fire another `connect()` after giving up.
+            rejectedReconnectWorkItem?.cancel()
+            rejectedReconnectWorkItem = nil
             return
         }
 
@@ -1502,7 +1505,9 @@ extension HomeAssistantAPI: HAConnectionDelegate {
             connection.connect()
         }
         rejectedReconnectWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+        // Schedule on the connection's callback queue so reading `connection.state` and calling `connect()`
+        // stay serialized with HAKit's own delegate callbacks instead of racing across queues.
+        connection.callbackQueue.asyncAfter(deadline: .now() + delay, execute: workItem)
     }
 
     private func resetRejectedReconnectRecovery() {

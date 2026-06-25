@@ -258,6 +258,9 @@ class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
 
     func testRetryAwareConnectionDoesNotReconnectWhileBackoffIsActive() {
         let underlying = HAMockConnection()
+        // The mock otherwise flips to `.connecting` on any send; disable that so the test observes only
+        // RetryAwareHAConnection's own connect gating, not the mock's behavior.
+        underlying.automaticallyTransitionToConnecting = false
         let connection = RetryAwareHAConnection(underlying: underlying)
         let expectedState = HAConnectionState.disconnected(reason: .waitingToReconnect(
             lastError: URLError(.cannotConnectToHost),
@@ -284,6 +287,9 @@ class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
 
     func testRetryAwareConnectionDoesNotConnectRestRequests() {
         let underlying = HAMockConnection()
+        // The mock otherwise flips to `.connecting` on any send; disable that so the test observes only
+        // RetryAwareHAConnection's own connect gating, not the mock's behavior.
+        underlying.automaticallyTransitionToConnecting = false
         let connection = RetryAwareHAConnection(underlying: underlying)
 
         _ = connection.send(.init(type: .rest(.get, "config")), completion: { _ in })
