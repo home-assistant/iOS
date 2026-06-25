@@ -258,4 +258,90 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertNotNil(mockWebViewController.overlayedController)
         XCTAssertEqual(mockWebViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
     }
+
+    @MainActor func testSendExternalBusCommandWithRetrySendsCommandWithCorrelatableID() throws {
+        let firstSend = expectation(description: "command sent")
+        mockWebViewController.evaluateJavaScriptExpectation = firstSend
+
+        sut.sendExternalBusCommandWithRetry(
+            command: .kioskModeSet,
+            payload: ["enable": true],
+            maxAttempts: 3,
+            retryDelay: .milliseconds(10),
+            acknowledgementTimeout: .seconds(5)
+        )
+
+        wait(for: [firstSend], timeout: 1)
+        let message = try externalBusMessage(from: try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        XCTAssertEqual(message["type"] as? String, "command")
+        XCTAssertEqual(message["command"] as? String, WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue)
+        XCTAssertEqual((message["payload"] as? [String: Any])?["enable"] as? Bool, true)
+        XCTAssertNotNil(message["id"] as? Int)
+    }
+
+    @MainActor func testSendExternalBusCommandWithRetryRetriesWhenFrontendRejects() throws {
+        let firstSend = expectation(description: "first send")
+        mockWebViewController.evaluateJavaScriptExpectation = firstSend
+
+        sut.sendExternalBusCommandWithRetry(
+            command: .kioskModeSet,
+            payload: ["enable": true],
+            maxAttempts: 3,
+            retryDelay: .milliseconds(10),
+            acknowledgementTimeout: .seconds(5)
+        )
+
+        wait(for: [firstSend], timeout: 1)
+        let firstMessage = try externalBusMessage(from: try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let firstID = try XCTUnwrap(firstMessage["id"] as? Int)
+
+        // Frontend reports it couldn't handle the command yet; expect a retry with a fresh id.
+        let retrySend = expectation(description: "retry send")
+        mockWebViewController.evaluateJavaScriptExpectation = retrySend
+        sut.handleExternalMessage([
+            "type": "result",
+            "id": firstID,
+            "success": false,
+            "error": ["code": "not_ready", "message": "Command handler not ready"],
+        ])
+
+        wait(for: [retrySend], timeout: 1)
+        let retryMessage = try externalBusMessage(from: try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let retryID = try XCTUnwrap(retryMessage["id"] as? Int)
+        XCTAssertNotEqual(retryID, firstID)
+        XCTAssertEqual(retryMessage["command"] as? String, WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue)
+        XCTAssertEqual((retryMessage["payload"] as? [String: Any])?["enable"] as? Bool, true)
+    }
+
+    @MainActor func testSendExternalBusCommandWithRetryGivesUpAfterMaxAttempts() throws {
+        let firstSend = expectation(description: "first send")
+        mockWebViewController.evaluateJavaScriptExpectation = firstSend
+
+        sut.sendExternalBusCommandWithRetry(
+            command: .kioskModeSet,
+            payload: ["enable": true],
+            maxAttempts: 1,
+            retryDelay: .milliseconds(10),
+            acknowledgementTimeout: .seconds(5)
+        )
+
+        wait(for: [firstSend], timeout: 1)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+        let firstMessage = try externalBusMessage(from: try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let firstID = try XCTUnwrap(firstMessage["id"] as? Int)
+
+        // The single allowed attempt was rejected, so the handler must give up rather than send again.
+        let noFurtherSend = expectation(description: "no further send")
+        noFurtherSend.isInverted = true
+        mockWebViewController.evaluateJavaScriptExpectation = noFurtherSend
+        sut.handleExternalMessage([
+            "type": "result",
+            "id": firstID,
+            "success": false,
+            "error": ["code": "not_ready", "message": "Command handler not ready"],
+        ])
+
+        wait(for: [noFurtherSend], timeout: 0.5)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+    }
 }
