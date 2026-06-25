@@ -138,6 +138,15 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             payload["entity_id"] = entityId
         }
 
+        // Pass kiosk command values (kiosk_set_brightness / kiosk_set_volume) through to the client.
+        if let level = data["level"] {
+            payload["level"] = level
+        }
+
+        if let volume = data["volume"] {
+            payload["volume"] = volume
+        }
+
         if let actionData = data["action_data"] {
             payload["homeassistant"] = actionData
             needsCategory = true

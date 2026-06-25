@@ -2,6 +2,7 @@ import CallbackURLKit
 import Communicator
 import FirebaseMessaging
 import Foundation
+import MediaPlayer
 import PromiseKit
 import Shared
 import SwiftUI
@@ -33,6 +34,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     var commandManager = NotificationCommandManager()
     private weak var cameraOverlayController: UIViewController?
+
+    /// Hidden, off-screen volume view; `MPVolumeView` only drives the hardware volume while in a window.
+    private lazy var volumeControlView = MPVolumeView(frame: CGRect(x: -2000, y: -2000, width: 1, height: 1))
 
     override init() {
         super.init()
@@ -158,6 +162,37 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
                 }
             }.catch { error in
                 Current.Log.error("Failed to hide camera from push command: \(error)")
+            }
+    }
+
+    private func setScreenBrightness(_ level: Float) {
+        let clamped = CGFloat(min(max(level, 0), 1))
+        DispatchQueue.main.async {
+            UIScreen.main.brightness = clamped
+            Current.Log.info("Kiosk set screen brightness to \(clamped)")
+        }
+    }
+
+    private func setSystemVolume(_ level: Float) {
+        let clamped = min(max(level, 0), 1)
+        Current.sceneManager.webViewControllerPromise
+            .done { [weak self] webViewController in
+                guard let self else { return }
+                if self.volumeControlView.superview == nil {
+                    webViewController.view.addSubview(self.volumeControlView)
+                }
+                // The slider only exists once the view is in the hierarchy, so read it on the next loop.
+                DispatchQueue.main.async {
+                    guard let slider = self.volumeControlView.subviews.compactMap({ $0 as? UISlider }).first else {
+                        Current.Log.error("Unable to locate system volume slider for kiosk command")
+                        return
+                    }
+                    slider.setValue(clamped, animated: false)
+                    slider.sendActions(for: .touchUpInside)
+                    Current.Log.info("Kiosk set system volume to \(clamped)")
+                }
+            }.catch { error in
+                Current.Log.error("Failed to set volume from push command: \(error)")
             }
     }
 
@@ -490,7 +525,10 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return nil
         }
 
-        performKioskCommand(command, userInfo: content.userInfo)
+        guard performKioskCommand(command, userInfo: content.userInfo) else {
+            // Couldn't execute (e.g. missing payload value) — show the standard notification instead.
+            return nil
+        }
 
         if #available(iOS 18, *) {
             let identifier = notification.request.identifier
@@ -513,7 +551,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         return []
     }
 
-    private func performKioskCommand(_ command: KioskPushCommand, userInfo: [AnyHashable: Any]) {
+    /// Returns `false` when a recognized command can't be carried out (e.g. missing payload value).
+    private func performKioskCommand(_ command: KioskPushCommand, userInfo: [AnyHashable: Any]) -> Bool {
         switch command {
         case .showScreensaver:
             Current.kiosk.requestScreensaver(.show)
@@ -523,7 +562,20 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             openCamera(from: userInfo)
         case .hideCamera:
             hideCamera()
+        case .setBrightness:
+            guard let level = command.level(from: userInfo) else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid level in payload")
+                return false
+            }
+            setScreenBrightness(level)
+        case .setVolume:
+            guard let level = command.level(from: userInfo) else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid volume in payload")
+                return false
+            }
+            setSystemVolume(level)
         }
+        return true
     }
 
     public func userNotificationCenter(
