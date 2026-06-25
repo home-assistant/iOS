@@ -1124,6 +1124,7 @@
 		42F158482CA15FA7009C7201 /* SwitchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158472CA15FA7009C7201 /* SwitchIntent.swift */; };
 		42F161442D661D11003DDC75 /* ServersPickerPillList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F161422D661CBA003DDC75 /* ServersPickerPillList.swift */; };
 		42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */; };
+		42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */; };
 		42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */; };
 		42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */; };
 		42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */; };
@@ -3004,6 +3005,7 @@
 		42F158472CA15FA7009C7201 /* SwitchIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchIntent.swift; sourceTree = "<group>"; };
 		42F161422D661CBA003DDC75 /* ServersPickerPillList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersPickerPillList.swift; sourceTree = "<group>"; };
 		42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIIdentity.test.swift; sourceTree = "<group>"; };
+		42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAPITokenFetchFailure.test.swift; sourceTree = "<group>"; };
 		42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSizeObserver.swift; sourceTree = "<group>"; };
 		42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.swift; sourceTree = "<group>"; };
 		42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayServerListTemplate.swift; sourceTree = "<group>"; };
@@ -7303,6 +7305,7 @@
 				1130A5752751BA1800640E38 /* Server.test.swift */,
 				1130A5772751BDD900640E38 /* ServerManager.test.swift */,
 				42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */,
+				42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */,
 				11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */,
 				480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */,
 				114CBAEA2839FC2500A9BAFF /* SecurityExceptions.test.swift */,
@@ -10588,6 +10591,7 @@
 				11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */,
 				1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */,
 				42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */,
+				42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */,
 				11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */,
 				11F2F2A92587288200F61F7C /* NotificationAttachmentParserCamera.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,

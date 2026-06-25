@@ -70,7 +70,11 @@ class LifecycleManager {
             })
         }.cauterize()
 
-        periodicUpdateManager.connectAPI(reason: .cold)
+        // Resolve the network info (SSID) before the first connect so we don't pick the remote URL while on
+        // the home network and get rejected. On Catalyst the completion is invoked synchronously.
+        Current.connectivity.syncNetworkInformation { [periodicUpdateManager] in
+            periodicUpdateManager.connectAPI(reason: .cold)
+        }
     }
 
     @objc private func willEnterForeground() {
