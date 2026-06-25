@@ -23,42 +23,35 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     }
 
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        // PushProvider (NEAppPushProvider) runs in a separate OS process — ActivityKit is
-        // unavailable there. The same notification will be re-delivered to the main app via
-        // UNUserNotificationCenter, where it will be handled correctly.
-        guard !Current.isAppExtension else {
-            Current.Log.verbose("HandlerStartOrUpdateLiveActivity: skipping in app extension, will handle in main app")
-            return .value(())
-        }
-
-        return Promise { seal in
+        Promise { seal in
             Task {
                 do {
-                    guard let tag = payload["tag"] as? String, !tag.isEmpty else {
-                        throw ValidationError.missingTag
-                    }
+                    let request = try Self.makeRequest(from: payload)
 
-                    guard Self.isValidTag(tag) else {
-                        Current.Log
-                            .error(
-                                "HandlerStartOrUpdateLiveActivity: invalid tag '\(tag)' — must be [a-zA-Z0-9_-], max 64 chars"
-                            )
-                        throw ValidationError.invalidTag
-                    }
-
-                    guard let title = payload["title"] as? String, !title.isEmpty else {
-                        throw ValidationError.missingTitle
+                    // PushProvider (NEAppPushProvider) runs in a separate OS process — ActivityKit is
+                    // unavailable there, and (unlike APNs) a notification delivered over the local-push
+                    // channel is never re-delivered to the main app. So instead of dropping the request,
+                    // hand it off to the app via the App Group queue + a Darwin signal, mirroring
+                    // HandlerClearNotification's end hand-off. The app drains it on the signal and at
+                    // launch/foreground. (Darwin can't wake a suspended app, so a local-push start only
+                    // materializes when the app is next active; real-time background starts need APNs.)
+                    if Current.isAppExtension {
+                        Current.Log.verbose(
+                            "HandlerStartOrUpdateLiveActivity: handing off start for tag \(request.tag) to the app"
+                        )
+                        LiveActivityPendingStart.append(request)
+                        LiveActivityPendingStart.postDarwinSignal()
+                        seal.fulfill(())
+                        return
                     }
 
                     Self.showPrivacyDisclosureIfNeeded()
 
-                    let state = Self.contentState(from: payload)
-
                     try await Current.liveActivityRegistry?.startOrUpdate(
-                        tag: tag,
-                        title: title,
-                        serverWebhookId: payload["webhook_id"] as? String,
-                        state: state
+                        tag: request.tag,
+                        title: request.title,
+                        serverWebhookId: request.serverWebhookId,
+                        state: request.state
                     )
                     seal.fulfill(())
                 } catch {
@@ -74,6 +67,29 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                 }
             }
         }
+    }
+
+    /// Validate and parse a notification payload into a serializable start/update request,
+    /// shared by the in-app and extension-handoff paths.
+    static func makeRequest(from payload: [String: Any]) throws -> LiveActivityPendingStart.Request {
+        guard let tag = payload["tag"] as? String, !tag.isEmpty else {
+            throw ValidationError.missingTag
+        }
+        guard isValidTag(tag) else {
+            Current.Log.error(
+                "HandlerStartOrUpdateLiveActivity: invalid tag '\(tag)' — must be [a-zA-Z0-9_-], max 64 chars"
+            )
+            throw ValidationError.invalidTag
+        }
+        guard let title = payload["title"] as? String, !title.isEmpty else {
+            throw ValidationError.missingTitle
+        }
+        return LiveActivityPendingStart.Request(
+            tag: tag,
+            title: title,
+            serverWebhookId: payload["webhook_id"] as? String,
+            state: contentState(from: payload)
+        )
     }
 
     // MARK: - Privacy Disclosure
