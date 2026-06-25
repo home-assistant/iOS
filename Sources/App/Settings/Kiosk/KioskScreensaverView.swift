@@ -46,10 +46,10 @@ struct KioskScreensaverView: View {
     }
 
     private func clockContent(for date: Date) -> some View {
-        VStack(spacing: clockFontSize * 0.1) {
+        VStack(spacing: clockPointSize * 0.1) {
             Text(date.formatted(date: .omitted, time: settings.showSeconds ? .standard : .shortened))
                 .font(.system(
-                    size: clockFontSize,
+                    size: clockPointSize,
                     weight: Self.fontWeight(for: settings.clockFontWeight),
                     design: .rounded
                 ))
@@ -60,7 +60,7 @@ struct KioskScreensaverView: View {
             if settings.showDate {
                 Text(date.formatted(date: .complete, time: .omitted))
                     .font(.system(
-                        size: clockFontSize * 0.22,
+                        size: datePointSize,
                         weight: Self.fontWeight(for: settings.dateFontWeight),
                         design: .rounded
                     ))
@@ -72,12 +72,15 @@ struct KioskScreensaverView: View {
         .padding(DesignSystem.Spaces.three)
     }
 
-    private var clockFontSize: CGFloat {
-        switch settings.clockStyle {
-        case .large: return 120
-        case .medium: return 84
-        case .small: return 56
-        }
+    private var clockPointSize: CGFloat {
+        let clamped = min(max(settings.clockFontSize, 0), 1)
+        return 40 + (200 - 40) * CGFloat(clamped)
+    }
+
+    private var datePointSize: CGFloat {
+        let clamped = min(max(settings.dateFontSize, 0), 1)
+        let ratio = 0.1 + (0.34 - 0.1) * clamped
+        return clockPointSize * CGFloat(ratio)
     }
 
     static func fontWeight(for value: Double) -> Font.Weight {

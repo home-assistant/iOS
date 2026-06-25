@@ -22,13 +22,16 @@ struct KioskSettingsTests {
             screensaver: KioskScreensaverSettings(
                 enabled: true,
                 mode: .clock,
-                clockStyle: .small,
                 showDate: false,
                 showSeconds: true,
                 timeToStart: .minutes10,
                 dimEnabled: true,
                 dimLevel: 0.3,
-                pixelShiftEnabled: true
+                pixelShiftEnabled: true,
+                clockFontWeight: 0.6,
+                dateFontWeight: 0.8,
+                clockFontSize: 0.3,
+                dateFontSize: 0.7
             )
         )
 
@@ -73,7 +76,6 @@ struct KioskSettingsTests {
             {
               "enabled": true,
               "mode": "clock",
-              "clockStyle": "small",
               "showDate": false,
               "showSeconds": true,
               "timeToStart": "minutes10",
@@ -89,6 +91,22 @@ struct KioskSettingsTests {
         #expect(settings.pixelShiftEnabled == false)
         #expect(settings.clockFontWeight == 0.15)
         #expect(settings.dateFontWeight == 0.4)
+        #expect(settings.clockFontSize == 0.5)
+        #expect(settings.dateFontSize == 0.5)
+    }
+
+    @Test func migratesLegacyClockStyleToFontSize() throws {
+        let decoder = JSONDecoder()
+        let expected: [(style: String, fontSize: Double)] = [
+            ("small", 0.1),
+            ("medium", 0.275),
+            ("large", 0.5),
+        ]
+        for (style, fontSize) in expected {
+            let data = Data("{\"clockStyle\": \"\(style)\"}".utf8)
+            let settings = try decoder.decode(KioskScreensaverSettings.self, from: data)
+            #expect(settings.clockFontSize == fontSize)
+        }
     }
 
     @Test func enumMetadataIsComplete() {

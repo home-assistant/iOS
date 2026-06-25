@@ -599,6 +599,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screen_label" = "Screen: %@";
 "kiosk.screensaver.body" = "Show a screensaver after a period of inactivity to protect the display and save power.";
 "kiosk.screensaver.clock_boldness" = "Clock boldness";
+"kiosk.screensaver.clock_size" = "Clock size";
 "kiosk.screensaver.clock_style.large" = "Large";
 "kiosk.screensaver.clock_style.medium" = "Medium";
 "kiosk.screensaver.clock_style.small" = "Small";
@@ -606,6 +607,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.configuration_access.position" = "Kiosk settings entry position";
 "kiosk.screensaver.configuration_access.title" = "Configuration access";
 "kiosk.screensaver.date_boldness" = "Date boldness";
+"kiosk.screensaver.date_size" = "Date size";
 "kiosk.screensaver.dim" = "Dim";
 "kiosk.screensaver.dim_level" = "Dim Level: %li%%";
 "kiosk.screensaver.dimming_level" = "Dim level";

@@ -77,7 +77,6 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
 public struct KioskScreensaverSettings: Codable, Equatable {
     public var enabled: Bool
     public var mode: KioskScreensaverMode
-    public var clockStyle: KioskClockStyle
     public var showDate: Bool
     public var showSeconds: Bool
     public var timeToStart: KioskScreensaverTimeout
@@ -86,11 +85,12 @@ public struct KioskScreensaverSettings: Codable, Equatable {
     public var pixelShiftEnabled: Bool
     public var clockFontWeight: Double
     public var dateFontWeight: Double
+    public var clockFontSize: Double
+    public var dateFontSize: Double
 
     public init(
         enabled: Bool = false,
         mode: KioskScreensaverMode = .clock,
-        clockStyle: KioskClockStyle = .large,
         showDate: Bool = true,
         showSeconds: Bool = false,
         timeToStart: KioskScreensaverTimeout = .minutes5,
@@ -98,11 +98,12 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         dimLevel: Double = 0.1,
         pixelShiftEnabled: Bool = false,
         clockFontWeight: Double = 0.15,
-        dateFontWeight: Double = 0.4
+        dateFontWeight: Double = 0.4,
+        clockFontSize: Double = 0.5,
+        dateFontSize: Double = 0.5
     ) {
         self.enabled = enabled
         self.mode = mode
-        self.clockStyle = clockStyle
         self.showDate = showDate
         self.showSeconds = showSeconds
         self.timeToStart = timeToStart
@@ -111,13 +112,14 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         self.pixelShiftEnabled = pixelShiftEnabled
         self.clockFontWeight = clockFontWeight
         self.dateFontWeight = dateFontWeight
+        self.clockFontSize = clockFontSize
+        self.dateFontSize = dateFontSize
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.enabled = try container.decodeIfPresent(Bool.self, forKey: .enabled) ?? false
         self.mode = try container.decodeIfPresent(KioskScreensaverMode.self, forKey: .mode) ?? .clock
-        self.clockStyle = try container.decodeIfPresent(KioskClockStyle.self, forKey: .clockStyle) ?? .large
         self.showDate = try container.decodeIfPresent(Bool.self, forKey: .showDate) ?? true
         self.showSeconds = try container.decodeIfPresent(Bool.self, forKey: .showSeconds) ?? false
         self.timeToStart = try container.decodeIfPresent(
@@ -129,6 +131,18 @@ public struct KioskScreensaverSettings: Codable, Equatable {
         self.pixelShiftEnabled = try container.decodeIfPresent(Bool.self, forKey: .pixelShiftEnabled) ?? false
         self.clockFontWeight = try container.decodeIfPresent(Double.self, forKey: .clockFontWeight) ?? 0.15
         self.dateFontWeight = try container.decodeIfPresent(Double.self, forKey: .dateFontWeight) ?? 0.4
+        if let clockFontSize = try container.decodeIfPresent(Double.self, forKey: .clockFontSize) {
+            self.clockFontSize = clockFontSize
+        } else {
+            let legacy = try decoder.container(keyedBy: LegacyCodingKeys.self)
+            let legacyStyle = try legacy.decodeIfPresent(KioskClockStyle.self, forKey: .clockStyle)
+            self.clockFontSize = legacyStyle?.legacyNormalizedFontSize ?? 0.5
+        }
+        self.dateFontSize = try container.decodeIfPresent(Double.self, forKey: .dateFontSize) ?? 0.5
+    }
+
+    private enum LegacyCodingKeys: String, CodingKey {
+        case clockStyle
     }
 }
 
@@ -196,6 +210,15 @@ public enum KioskClockStyle: String, Codable, CaseIterable, Identifiable {
         case .large: return L10n.Kiosk.Screensaver.ClockStyle.large
         case .medium: return L10n.Kiosk.Screensaver.ClockStyle.medium
         case .small: return L10n.Kiosk.Screensaver.ClockStyle.small
+        }
+    }
+
+    // Maps the legacy discrete style onto the normalized clock font size slider (40...200pt range).
+    var legacyNormalizedFontSize: Double {
+        switch self {
+        case .large: return 0.5
+        case .medium: return 0.275
+        case .small: return 0.1
         }
     }
 }

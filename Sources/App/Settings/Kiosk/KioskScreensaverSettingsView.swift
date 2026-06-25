@@ -32,16 +32,12 @@ struct KioskScreensaverSettingsView: View {
                 }
 
                 if screensaver.wrappedValue.mode == .clock {
-                    KioskRow.picker(
-                        L10n.Kiosk.Screensaver.ClockStyle.title,
+                    normalizedSlider(
+                        title: L10n.Kiosk.Screensaver.clockSize,
                         icon: .formatSizeIcon,
-                        selection: screensaver.clockStyle
-                    ) {
-                        ForEach(KioskClockStyle.allCases) { style in
-                            Text(style.title).tag(style)
-                        }
-                    }
-                    boldnessSlider(
+                        value: screensaver.clockFontSize
+                    )
+                    normalizedSlider(
                         title: L10n.Kiosk.Screensaver.clockBoldness,
                         icon: .formatBoldIcon,
                         value: screensaver.clockFontWeight
@@ -50,7 +46,12 @@ struct KioskScreensaverSettingsView: View {
                         KioskRow.label(L10n.Kiosk.Screensaver.showDate, icon: .calendarOutlineIcon)
                     }
                     if screensaver.wrappedValue.showDate {
-                        boldnessSlider(
+                        normalizedSlider(
+                            title: L10n.Kiosk.Screensaver.dateSize,
+                            icon: .formatSizeIcon,
+                            value: screensaver.dateFontSize
+                        )
+                        normalizedSlider(
                             title: L10n.Kiosk.Screensaver.dateBoldness,
                             icon: .formatBoldIcon,
                             value: screensaver.dateFontWeight
@@ -117,7 +118,7 @@ struct KioskScreensaverSettingsView: View {
     }
 
     @ViewBuilder
-    private func boldnessSlider(
+    private func normalizedSlider(
         title: String,
         icon: MaterialDesignIcons,
         value: Binding<Double>
