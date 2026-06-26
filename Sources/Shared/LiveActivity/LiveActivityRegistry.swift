@@ -1,6 +1,7 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import ActivityKit
 import Foundation
+import HAKit
 import PromiseKit
 
 /// Stale date offset for all Live Activity content updates.
@@ -9,12 +10,13 @@ private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
 
 public protocol LiveActivityRegistryProtocol: AnyObject {
     @available(iOS 17.2, *)
+    @discardableResult
     func startOrUpdate(
         tag: String,
         title: String,
         serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState
-    ) async throws
+    ) async throws -> Bool
     @available(iOS 17.2, *)
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
     @available(iOS 17.2, *)
@@ -125,12 +127,13 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     // MARK: - Public API
 
     /// Start a new Live Activity for `tag`, or update the existing one if already running.
+    @discardableResult
     public func startOrUpdate(
         tag: String,
         title: String,
         serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState
-    ) async throws {
+    ) async throws -> Bool {
         // UPDATE path — activity already running with this tag
         if let existing = entries[tag] {
             let content = ActivityContent(
@@ -138,7 +141,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 staleDate: computeStaleDate(for: state)
             )
             await existing.activity.update(content)
-            return
+            return true
         }
 
         // Also check system list in case we lost track after crash/relaunch
@@ -151,12 +154,12 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             await live.update(content)
             let observationTask = makeObservationTask(for: live)
             entries[tag] = Entry(activity: live, observationTask: observationTask)
-            return
+            return true
         }
 
         guard Current.isTestFlight else {
             Current.Log.info("LiveActivityRegistry: start gated to TestFlight, skipping tag \(tag)")
-            return
+            return false
         }
 
         // START path — guard against duplicates with reservation
@@ -168,13 +171,13 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                     "LiveActivityRegistry: duplicate start for tag \(tag), will apply latest state on confirm"
                 )
             }
-            return
+            return true
         }
 
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
             cancelReservation(id: tag)
             Current.Log.info("LiveActivityRegistry: activities disabled on this device, skipping start for tag \(tag)")
-            return
+            return false
         }
 
         let attributes = HALiveActivityAttributes(tag: tag, title: title, serverWebhookId: serverWebhookId)
@@ -199,6 +202,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let observationTask = makeObservationTask(for: activity)
         await confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
         Current.Log.verbose("LiveActivityRegistry: started activity for tag \(tag), id=\(activity.id)")
+        return true
     }
 
     /// End and dismiss the Live Activity for `tag`.
@@ -544,6 +548,18 @@ enum LiveActivityPendingStart {
         let title: String
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
+        let confirmID: String?
+    }
+
+    static func confirmLocalPushDelivery(for request: Request) {
+        guard let confirmID = request.confirmID, let webhookID = request.serverWebhookId else { return }
+        guard let server = Current.servers.all.first(where: { $0.info.connection.webhookID == webhookID }),
+              let api = Current.api(for: server) else {
+            Current.Log.error("LiveActivityPendingStart: no server for webhook to confirm local push delivery")
+            return
+        }
+        Current.Log.verbose("LiveActivityPendingStart: confirming local push delivery for tag \(request.tag)")
+        api.connection.send(.localPushConfirm(webhookID: webhookID, confirmID: confirmID)).promise.cauterize()
     }
 
     // Namespaced by App Group id so dev/beta/release installs never cross-signal.
@@ -737,12 +753,15 @@ public final class LiveActivityPendingStartObserver {
                 Task {
                     for request in requests {
                         do {
-                            try await Current.liveActivityRegistry?.startOrUpdate(
+                            let presented = try await Current.liveActivityRegistry?.startOrUpdate(
                                 tag: request.tag,
                                 title: request.title,
                                 serverWebhookId: request.serverWebhookId,
                                 state: request.state
                             )
+                            if presented == true {
+                                LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
+                            }
                         } catch {
                             Current.Log.error(
                                 "LiveActivityPendingStart: startOrUpdate failed for tag \(request.tag): \(error)"

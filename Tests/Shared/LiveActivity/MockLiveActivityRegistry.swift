@@ -30,14 +30,18 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Set to make the next `startOrUpdate` throw.
     var startOrUpdateError: Error?
 
+    /// Value returned by `startOrUpdate` — `true` simulates the activity being presented.
+    var startOrUpdateResult = true
+
     // MARK: - LiveActivityRegistryProtocol
 
+    @discardableResult
     func startOrUpdate(
         tag: String,
         title: String,
         serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState
-    ) async throws {
+    ) async throws -> Bool {
         if let error = startOrUpdateError {
             startOrUpdateError = nil
             throw error
@@ -45,6 +49,7 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
         startOrUpdateCalls.append(
             StartOrUpdateCall(tag: tag, title: title, serverWebhookId: serverWebhookId, state: state)
         )
+        return startOrUpdateResult
     }
 
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async {

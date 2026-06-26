@@ -50,6 +50,10 @@ public class NotificationCommandManager {
             hadict["webhook_id"] = webhookId
         }
 
+        if let confirmID = payload[LocalPushManager.confirmIDUserInfoKey] as? String {
+            hadict[LocalPushManager.confirmIDUserInfoKey] = confirmID
+        }
+
         // Support data.live_update: true — the same field Android uses for Live Updates.
         // A single YAML automation can target both platforms with no platform-specific keys.
         #if os(iOS) && !targetEnvironment(macCatalyst)
