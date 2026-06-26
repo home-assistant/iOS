@@ -50,12 +50,15 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                         return
                     }
 
-                    try await Current.liveActivityRegistry?.startOrUpdate(
+                    let presented = try await Current.liveActivityRegistry?.startOrUpdate(
                         tag: request.tag,
                         title: request.title,
                         serverWebhookId: request.serverWebhookId,
                         state: request.state
                     )
+                    if presented == true {
+                        LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
+                    }
                     seal.fulfill(())
                 } catch {
                     Current.Log.error("HandlerStartOrUpdateLiveActivity: \(error)")
@@ -90,7 +93,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             tag: tag,
             title: title,
             serverWebhookId: payload["webhook_id"] as? String,
-            state: contentState(from: payload)
+            state: contentState(from: payload),
+            confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String
         )
     }
 
