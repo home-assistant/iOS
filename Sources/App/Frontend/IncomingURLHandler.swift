@@ -39,7 +39,10 @@ class IncomingURLHandler {
         // delivered through `onOpenURL` as well as `onContinueUserActivity` under the SwiftUI lifecycle.
         // They are not deep-link actions, so route them to the my-link handler instead of treating the
         // host as an `IncomingURLAction` (which would otherwise show a "not a valid route" error).
-        if host.lowercased() == "my.home-assistant.io" {
+        // Restrict to web schemes since `showMy(for:)` presents an `SFSafariViewController`, which only
+        // supports http/https; this also prevents a crafted `homeassistant://my.home-assistant.io/...`
+        // from reaching Safari.
+        if ["http", "https"].contains(url.scheme?.lowercased()), host.lowercased() == "my.home-assistant.io" {
             return showMy(for: url)
         }
 
