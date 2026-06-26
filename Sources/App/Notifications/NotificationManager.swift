@@ -537,7 +537,23 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         case .reload:
             Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
         case .defaultDashboard:
-            Current.sceneManager.webViewControllerPromise.done { $0.applyKioskDashboard() }
+            returnToKioskDefault()
+        }
+    }
+
+    /// Returns the kiosk to its configured server and dashboard. If the kiosk is pinned to a server
+    /// other than the one on screen, switching to it rebuilds the web view (which loads the kiosk
+    /// dashboard on creation); otherwise the current web view navigates to the configured dashboard.
+    /// Mirrors `OnboardingStateObservable.applyKioskTarget(_:)`.
+    private func returnToKioskDefault() {
+        let serverId = Current.kioskSettings.serverId
+        Current.sceneManager.webViewControllerPromise.done { webViewController in
+            if let serverId, serverId != webViewController.server.identifier.rawValue,
+               let server = Current.servers.server(forServerIdentifier: serverId) {
+                Current.sceneManager.appCoordinator.done { $0.open(server: server) }
+            } else {
+                webViewController.applyKioskDashboard()
+            }
         }
     }
 
