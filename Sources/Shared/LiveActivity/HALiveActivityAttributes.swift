@@ -21,6 +21,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
     /// Display title for the activity. Maps to `title` in the notification payload.
     public let title: String
 
+    public static let defaultTitle = "Home Assistant"
+
     /// Webhook id of the Home Assistant server that started this activity, so a tap can open
     /// the originating server when several are configured. Optional: nil for activities created
     /// before this shipped, or when the start path doesn't supply it.
@@ -201,6 +203,17 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         self.tag = tag
         self.title = title
         self.serverWebhookId = serverWebhookId
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.tag = try container.decode(String.self, forKey: .tag)
+        if let decodedTitle = try container.decodeIfPresent(String.self, forKey: .title), !decodedTitle.isEmpty {
+            self.title = decodedTitle
+        } else {
+            self.title = Self.defaultTitle
+        }
+        self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
     }
 }
 #endif

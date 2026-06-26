@@ -204,16 +204,18 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
     }
 
-    func testHandle_missingTitle_fulfillsWithoutCallingRegistry() {
+    func testHandle_missingTitle_startsWithDefaultTitle() throws {
         let payload: [String: Any] = ["tag": "valid-tag"]
         XCTAssertNoThrow(try hang(sut.handle(payload)))
-        XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].title, HALiveActivityAttributes.defaultTitle)
     }
 
-    func testHandle_emptyTitle_fulfillsWithoutCallingRegistry() {
+    func testHandle_emptyTitle_startsWithDefaultTitle() throws {
         let payload: [String: Any] = ["tag": "valid-tag", "title": ""]
         XCTAssertNoThrow(try hang(sut.handle(payload)))
-        XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].title, HALiveActivityAttributes.defaultTitle)
     }
 
     // MARK: - handle(_:) — successful path

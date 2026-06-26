@@ -18,7 +18,6 @@ import PromiseKit
 struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     private enum ValidationError: Error {
         case missingTag
-        case missingTitle
         case invalidTag
     }
 
@@ -63,7 +62,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                     // Fulfill rather than reject for known validation/auth errors so HA
                     // doesn't treat them as transient failures and retry indefinitely.
                     switch error {
-                    case ValidationError.missingTag, ValidationError.missingTitle, ValidationError.invalidTag:
+                    case ValidationError.missingTag, ValidationError.invalidTag:
                         seal.fulfill(())
                     default:
                         seal.reject(error)
@@ -85,9 +84,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             )
             throw ValidationError.invalidTag
         }
-        guard let title = payload["title"] as? String, !title.isEmpty else {
-            throw ValidationError.missingTitle
-        }
+        let rawTitle = payload["title"] as? String ?? ""
+        let title = rawTitle.isEmpty ? HALiveActivityAttributes.defaultTitle : rawTitle
         return LiveActivityPendingStart.Request(
             tag: tag,
             title: title,
