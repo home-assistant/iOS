@@ -534,6 +534,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             openCamera(from: userInfo)
         case .hideCamera:
             hideCamera()
+        case .reload:
+            Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
         }
     }
 
