@@ -227,6 +227,6 @@ public class LocalPushManager {
 
     private static func isCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
         guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
-        return (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true
+        return (hadict["command"] as? String) != nil
     }
 }

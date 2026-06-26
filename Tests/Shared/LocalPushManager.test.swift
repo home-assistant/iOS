@@ -381,6 +381,56 @@ class LocalPushManagerTests: XCTestCase {
                 .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
         )
     }
+
+    func testLiveActivityCommandSuppressesBannerAndDefersConfirm() throws {
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+            "hass_confirm_id": "test_confirm_id",
+            "data": [
+                "live_update": true,
+                "tag": "test_tag",
+            ],
+        ]))
+
+        let runLoop = expectation(description: "run loop")
+        DispatchQueue.main.async(execute: runLoop.fulfill)
+        waitForExpectations(timeout: 10.0)
+
+        XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
+        XCTAssertTrue(added.isEmpty)
+        XCTAssertFalse(
+            apiConnection.pendingRequests
+                .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        )
+    }
+
+    func testNonLiveActivityCommandSuppressesBannerButConfirms() throws {
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "clear_notification",
+            "hass_confirm_id": "test_confirm_id",
+            "data": [
+                "tag": "test_tag",
+            ],
+        ]))
+
+        let runLoop = expectation(description: "run loop")
+        DispatchQueue.main.async(execute: runLoop.fulfill)
+        waitForExpectations(timeout: 10.0)
+
+        XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
+        XCTAssertTrue(added.isEmpty)
+        let confirm = try XCTUnwrap(
+            apiConnection.pendingRequests
+                .first(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        )
+        XCTAssertEqual(confirm.request.data["confirm_id"] as? String, "test_confirm_id")
+    }
 }
 
 private class FakeNotificationAttachmentManager: NotificationAttachmentManager {
