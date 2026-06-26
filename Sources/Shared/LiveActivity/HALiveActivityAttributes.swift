@@ -21,7 +21,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
     /// Display title for the activity. Maps to `title` in the notification payload.
     public let title: String
 
-    public static let defaultTitle = "Home Assistant"
+public static var defaultTitle: String {
+    L10n.About.Logo.title
+}
 
     /// Webhook id of the Home Assistant server that started this activity, so a tap can open
     /// the originating server when several are configured. Optional: nil for activities created
