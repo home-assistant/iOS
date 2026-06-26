@@ -92,6 +92,11 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(state.progressBarColor)
     }
 
+    func testContentState_emptyTitle_isNil() {
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: ["title": ""])
+        XCTAssertNil(state.title)
+    }
+
     func testContentState_fullPayload_mapsAllFields() {
         let payload: [String: Any] = [
             "title": "Test title",
@@ -209,13 +214,15 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
         XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].title, HALiveActivityAttributes.defaultTitle)
+        XCTAssertNil(mockRegistry.startOrUpdateCalls[0].state.title)
     }
 
-    func testHandle_emptyTitle_startsWithDefaultTitle() throws {
+    func testHandle_emptyTitle_startsWithDefaultTitleAndNilStateTitle() throws {
         let payload: [String: Any] = ["tag": "valid-tag", "title": ""]
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
         XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].title, HALiveActivityAttributes.defaultTitle)
+        XCTAssertNil(mockRegistry.startOrUpdateCalls[0].state.title)
     }
 
     // MARK: - handle(_:) — successful path

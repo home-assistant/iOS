@@ -21,9 +21,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
     /// Display title for the activity. Maps to `title` in the notification payload.
     public let title: String
 
-public static var defaultTitle: String {
-    L10n.About.Logo.title
-}
+    public static var defaultTitle: String { L10n.LiveActivity.defaultTitle }
 
     /// Webhook id of the Home Assistant server that started this activity, so a tap can open
     /// the originating server when several are configured. Optional: nil for activities created
@@ -160,7 +158,11 @@ public static var defaultTitle: String {
         // avoid a ~31-year offset. The encoder is symmetric for round-tripping.
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.title = try container.decodeIfPresent(String.self, forKey: .title)
+            if let decodedTitle = try container.decodeIfPresent(String.self, forKey: .title), !decodedTitle.isEmpty {
+                self.title = decodedTitle
+            } else {
+                self.title = nil
+            }
             self.message = try container.decode(String.self, forKey: .message)
             self.criticalText = try container.decodeIfPresent(String.self, forKey: .criticalText)
             self.progress = try container.decodeIfPresent(Int.self, forKey: .progress)

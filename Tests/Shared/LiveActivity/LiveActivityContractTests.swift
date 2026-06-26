@@ -55,6 +55,20 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertEqual(empty.title, HALiveActivityAttributes.defaultTitle)
     }
 
+    func testContentState_emptyOrMissingTitle_decodesAsNil() throws {
+        let empty = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m","title":""}"#.utf8)
+        )
+        XCTAssertNil(empty.title)
+
+        let missing = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m"}"#.utf8)
+        )
+        XCTAssertNil(missing.title)
+    }
+
     /// CodingKeys define the JSON field names in APNs content-state payloads.
     /// Adding new optional fields is safe; renaming or removing breaks in-flight activities.
     func testContentState_codingKeys_areFrozen() {
