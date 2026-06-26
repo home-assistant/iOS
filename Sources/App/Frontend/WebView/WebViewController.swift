@@ -386,9 +386,9 @@ extension WebViewController {
 
     func updateFrontendKioskMode() {
         let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
-        _ = webViewExternalMessageHandler.sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue,
+        webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+            command: .kioskModeSet,
             payload: ["enable": enable]
-        ))
+        )
     }
 }

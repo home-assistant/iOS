@@ -80,7 +80,11 @@ public class SensorContainer {
 
     public func isEnabled(sensor: WebhookSensor) -> Bool {
         guard let id = sensor.UniqueID else { return false }
-        return !disabledSensorIDs.contains(id)
+        return isEnabled(uniqueID: id)
+    }
+
+    public func isEnabled(uniqueID: String) -> Bool {
+        !disabledSensorIDs.contains(uniqueID)
     }
 
     public func isAllowedToSend(sensor: WebhookSensor, for server: Server) -> Bool {
@@ -94,7 +98,10 @@ public class SensorContainer {
 
     public func setEnabled(_ value: Bool, for sensor: WebhookSensor) {
         guard let id = sensor.UniqueID else { return }
+        setEnabled(value, forUniqueID: id)
+    }
 
+    public func setEnabled(_ value: Bool, forUniqueID id: String) {
         if value {
             disabledSensorIDs.remove(id)
         } else {

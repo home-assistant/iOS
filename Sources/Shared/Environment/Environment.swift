@@ -273,6 +273,9 @@ public class AppEnvironment {
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
         $0.register(provider: BarometerSensor.self)
+        $0.register(provider: KioskModeSensor.self)
+        $0.register(provider: KioskBrightnessSensor.self)
+        $0.register(provider: KioskVolumeSensor.self)
     }
 
     public var localized = LocalizedManager()

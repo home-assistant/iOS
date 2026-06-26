@@ -10,6 +10,7 @@ final class KioskPushCommandTests: XCTestCase {
         XCTAssertEqual(KioskPushCommand(message: "kiosk_hide_camera"), .hideCamera)
         XCTAssertEqual(KioskPushCommand(message: "kiosk_set_brightness"), .setBrightness)
         XCTAssertEqual(KioskPushCommand(message: "kiosk_set_volume"), .setVolume)
+        XCTAssertEqual(KioskPushCommand(message: "kiosk_reload"), .reload)
     }
 
     func testParsingTrimsWhitespaceAndIgnoresCase() {
@@ -37,6 +38,7 @@ final class KioskPushCommandTests: XCTestCase {
         XCTAssertEqual(KioskPushCommand.hideCamera.rawValue, "kiosk_hide_camera")
         XCTAssertEqual(KioskPushCommand.setBrightness.rawValue, "kiosk_set_brightness")
         XCTAssertEqual(KioskPushCommand.setVolume.rawValue, "kiosk_set_volume")
+        XCTAssertEqual(KioskPushCommand.reload.rawValue, "kiosk_reload")
     }
 
     func testEveryCommandResolvesASymbol() {

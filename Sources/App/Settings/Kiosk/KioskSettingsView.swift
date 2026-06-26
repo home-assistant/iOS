@@ -82,6 +82,11 @@ struct KioskSettingsView: View {
                 } label: {
                     KioskRow.label(L10n.Kiosk.Screensaver.title, icon: .weatherNightIcon)
                 }
+                NavigationLink {
+                    KioskSensorsView()
+                } label: {
+                    KioskRow.label(L10n.Kiosk.Sensors.title, icon: .motionSensorIcon)
+                }
             }
 
             Section(L10n.Kiosk.Screensaver.ConfigurationAccess.title) {
@@ -169,6 +174,19 @@ enum KioskRow {
                 .labelsHidden()
                 .pickerStyle(.menu)
                 .fixedMenuOrder()
+        }
+    }
+
+    static func slider(_ title: String, icon: MaterialDesignIcons, value: Binding<Double>) -> some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+            HStack {
+                label(title, icon: icon)
+                Spacer()
+                Text("\(Int((value.wrappedValue * 100).rounded()))%")
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
+            Slider(value: value, in: 0 ... 1, step: 0.05)
         }
     }
 }

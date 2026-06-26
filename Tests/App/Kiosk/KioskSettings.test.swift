@@ -17,18 +17,21 @@ struct KioskSettingsTests {
             keepScreenOn: true,
             removeHeaderAndSidebar: true,
             hideStatusBar: true,
-            autoReload: .minutes5,
+            autoReload: .minutes10,
             settingsEntryPosition: .topLeading,
             screensaver: KioskScreensaverSettings(
                 enabled: true,
                 mode: .clock,
-                clockStyle: .small,
                 showDate: false,
                 showSeconds: true,
                 timeToStart: .minutes10,
                 dimEnabled: true,
                 dimLevel: 0.3,
-                pixelShiftEnabled: true
+                pixelShiftEnabled: true,
+                clockFontWeight: 0.6,
+                dateFontWeight: 0.8,
+                clockFontSize: 0.3,
+                dateFontSize: 0.7
             )
         )
 
@@ -66,6 +69,34 @@ struct KioskSettingsTests {
         #expect(loaded?.screensaver == KioskScreensaverSettings())
     }
 
+    @Test func decodesRemovedOrUnknownAutoReloadIntervalsAsNever() throws {
+        // Intervals under 10 minutes were removed; a stored value that no longer resolves (the removed
+        // sub-10-minute ones, or anything unrecognized) falls back to `.never` instead of failing to decode.
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+
+        func loadAutoReload(storedRawValue: String) throws -> KioskAutoReloadInterval? {
+            try database.write { db in
+                try db.execute(
+                    sql: "INSERT OR REPLACE INTO \(GRDBDatabaseTable.kioskSettings.rawValue) (id, autoReload) "
+                        + "VALUES (?, ?)",
+                    arguments: [KioskSettings.kioskSettingsId, storedRawValue]
+                )
+            }
+            return try database.read { db in try KioskSettings.fetchOne(db)?.autoReload }
+        }
+
+        let fromOneMinute = try loadAutoReload(storedRawValue: "minutes1")
+        let fromFiveMinutes = try loadAutoReload(storedRawValue: "minutes5")
+        let fromThirtyMinutes = try loadAutoReload(storedRawValue: "minutes30")
+        let fromUnknown = try loadAutoReload(storedRawValue: "garbage")
+
+        #expect(fromOneMinute == .never)
+        #expect(fromFiveMinutes == .never)
+        #expect(fromThirtyMinutes == .minutes30)
+        #expect(fromUnknown == .never)
+    }
+
     @Test func decodesDefaultsWhenScreensaverFieldsAreMissing() throws {
         let decoder = JSONDecoder()
         let data = Data(
@@ -73,7 +104,6 @@ struct KioskSettingsTests {
             {
               "enabled": true,
               "mode": "clock",
-              "clockStyle": "small",
               "showDate": false,
               "showSeconds": true,
               "timeToStart": "minutes10",
@@ -87,6 +117,24 @@ struct KioskSettingsTests {
         #expect(settings.dimEnabled == false)
         #expect(settings.dimLevel == 0.3)
         #expect(settings.pixelShiftEnabled == false)
+        #expect(settings.clockFontWeight == 0.15)
+        #expect(settings.dateFontWeight == 0.4)
+        #expect(settings.clockFontSize == 0.5)
+        #expect(settings.dateFontSize == 0.5)
+    }
+
+    @Test func migratesLegacyClockStyleToFontSize() throws {
+        let decoder = JSONDecoder()
+        let expected: [(style: String, fontSize: Double)] = [
+            ("small", 0.1),
+            ("medium", 0.275),
+            ("large", 0.5),
+        ]
+        for (style, fontSize) in expected {
+            let data = Data("{\"clockStyle\": \"\(style)\"}".utf8)
+            let settings = try decoder.decode(KioskScreensaverSettings.self, from: data)
+            #expect(settings.clockFontSize == fontSize)
+        }
     }
 
     @Test func enumMetadataIsComplete() {

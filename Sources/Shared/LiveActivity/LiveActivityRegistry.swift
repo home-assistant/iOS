@@ -52,8 +52,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     static let webhookTypeToken = "live_activity_token"
     /// Keys in the token webhook request data dictionary.
     static let tokenWebhookKeys: Set<String> = ["tag", "push_token", "expires_at"]
-    /// ActivityKit expires Live Activities after eight hours.
-    static let pushTokenTimeToLive: TimeInterval = 8 * 60 * 60
+    /// ActivityKit limits Dynamic Island updates to 12 hours and Live Activities may persist longer; push tokens
+    /// are given a 12-hour TTL to match the Dynamic Island cap.
+    static let pushTokenTimeToLive: TimeInterval = 12 * 60 * 60
 
     /// Webhook type for reporting that a Live Activity was dismissed.
     static let webhookTypeDismissed = "live_activity_dismissed"
@@ -461,6 +462,11 @@ enum LiveActivityPendingEnd {
             Current.Log.error("LiveActivityPendingEnd: rejected invalid tag '\(tag)'")
             return
         }
+        // A newer end supersedes a stale start queued earlier for the same tag. Done before
+        // taking our lock so the two queues are never held simultaneously (no lock-order inversion).
+        if #available(iOS 17.2, *) {
+            LiveActivityPendingStart.remove(tag: tag)
+        }
         lock.lock()
         defer { lock.unlock() }
         guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
@@ -468,6 +474,20 @@ enum LiveActivityPendingEnd {
         tags.insert(tag)
         defaults.set(Array(tags), forKey: storeKey)
         Current.Log.verbose("LiveActivityPendingEnd: enqueued '\(tag)', pending=\(tags.count)")
+    }
+
+    /// Remove a queued end for `tag` (called when a newer start is enqueued for the same tag).
+    static func remove(tag: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        var tags = Set(defaults.stringArray(forKey: storeKey) ?? [])
+        guard tags.remove(tag) != nil else { return }
+        if tags.isEmpty {
+            defaults.removeObject(forKey: storeKey)
+        } else {
+            defaults.set(Array(tags), forKey: storeKey)
+        }
     }
 
     static func drainAll() -> [String] {
@@ -504,6 +524,118 @@ enum LiveActivityPendingEnd {
             charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
         )
         return tag.unicodeScalars.allSatisfy { allowed.contains($0) }
+    }
+}
+
+/// Cross-process hand-off for starting/updating Live Activities. The PushProvider extension
+/// has no working ActivityKit, so when a `live_update` notification arrives over the local-push
+/// channel it serializes the request and posts a Darwin signal; the app drains the queue and
+/// calls `startOrUpdate`. Mirrors `LiveActivityPendingEnd`. The persisted queue is the durable
+/// path — Darwin does not wake a suspended app, so the app also drains at launch/foreground.
+///
+/// ⚠️ A start delivered via local push while the app is suspended therefore only materializes
+/// when the app is next active — not in real time. Real-time background starts require APNs
+/// push-to-start, which the registry already supports.
+@available(iOS 17.2, *)
+enum LiveActivityPendingStart {
+    /// A serialized start/update request mirroring the arguments of `startOrUpdate`.
+    struct Request: Codable {
+        let tag: String
+        let title: String
+        let serverWebhookId: String?
+        let state: HALiveActivityAttributes.ContentState
+    }
+
+    // Namespaced by App Group id so dev/beta/release installs never cross-signal.
+    static var darwinNotificationName: String {
+        AppConstants.AppGroupID + ".liveActivityPendingStart"
+    }
+
+    private static let storeKey = "liveActivityPendingStartRequests"
+    private static let lock = NSLock()
+
+    /// Enqueue a start/update request. Coalesces by tag (the latest state for a tag wins, so a
+    /// burst of updates collapses to the freshest) and cancels any end queued earlier for the
+    /// same tag — last writer wins.
+    static func append(_ request: Request) {
+        guard LiveActivityPendingEnd.isValidTag(request.tag) else {
+            Current.Log.error("LiveActivityPendingStart: rejected invalid tag '\(request.tag)'")
+            return
+        }
+        // A newer start supersedes a stale end queued earlier. Done before taking our lock so the
+        // two queues are never held simultaneously (no lock-order inversion).
+        LiveActivityPendingEnd.remove(tag: request.tag)
+        lock.lock()
+        defer { lock.unlock() }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        var requests = load(from: defaults).filter { $0.tag != request.tag }
+        requests.append(request)
+        store(requests, to: defaults)
+        Current.Log.verbose("LiveActivityPendingStart: enqueued '\(request.tag)', pending=\(requests.count)")
+    }
+
+    /// Remove a queued start for `tag` (called when a newer end is enqueued for the same tag).
+    static func remove(tag: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        let requests = load(from: defaults)
+        let remaining = requests.filter { $0.tag != tag }
+        guard remaining.count != requests.count else { return }
+        if remaining.isEmpty {
+            defaults.removeObject(forKey: storeKey)
+        } else {
+            store(remaining, to: defaults)
+        }
+    }
+
+    static func drainAll() -> [Request] {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [] }
+        let observed = load(from: defaults)
+        guard !observed.isEmpty else { return [] }
+        // Subtract only the tags we read, so a concurrent extension append of a different tag
+        // isn't clobbered (mirrors LiveActivityPendingEnd.drainAll).
+        let observedTags = Set(observed.map(\.tag))
+        let remaining = load(from: defaults).filter { !observedTags.contains($0.tag) }
+        if remaining.isEmpty {
+            defaults.removeObject(forKey: storeKey)
+        } else {
+            store(remaining, to: defaults)
+        }
+        return observed
+    }
+
+    // Payload-less wake; the requests travel via the App Group store above.
+    static func postDarwinSignal() {
+        CFNotificationCenterPostNotification(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            CFNotificationName(rawValue: darwinNotificationName as CFString),
+            nil,
+            nil,
+            true
+        )
+    }
+
+    private static func load(from defaults: UserDefaults) -> [Request] {
+        guard let data = defaults.data(forKey: storeKey) else { return [] }
+        do {
+            return try JSONDecoder().decode([Request].self, from: data)
+        } catch {
+            Current.Log.error("LiveActivityPendingStart: failed to decode queue, dropping it: \(error)")
+            defaults.removeObject(forKey: storeKey)
+            return []
+        }
+    }
+
+    private static func store(_ requests: [Request], to defaults: UserDefaults) {
+        do {
+            let data = try JSONEncoder().encode(requests)
+            defaults.set(data, forKey: storeKey)
+        } catch {
+            Current.Log.error("LiveActivityPendingStart: failed to encode queue: \(error)")
+        }
     }
 }
 
@@ -552,6 +684,70 @@ public final class LiveActivityPendingEndObserver {
                 Task {
                     for tag in tags {
                         await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
+                    }
+                    DispatchQueue.main.async { seal.fulfill(()) }
+                }
+            }
+        }
+    }
+}
+
+/// App-side drain for `LiveActivityPendingStart`. Retain one instance to keep the Darwin
+/// observer registered.
+@available(iOS 17.2, *)
+public final class LiveActivityPendingStartObserver {
+    public init() {
+        let callback: CFNotificationCallback = { _, observer, _, _, _ in
+            // C callback can't capture self; re-derive it (see DeviceWrapperBatteryObserver).
+            guard let observer else { return }
+            Unmanaged<LiveActivityPendingStartObserver>.fromOpaque(observer)
+                .takeUnretainedValue()
+                .drain()
+        }
+        CFNotificationCenterAddObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            callback,
+            LiveActivityPendingStart.darwinNotificationName as CFString,
+            nil,
+            .coalesce
+        )
+    }
+
+    deinit {
+        CFNotificationCenterRemoveObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            nil,
+            nil
+        )
+    }
+
+    public func drain() {
+        Self.drain()
+    }
+
+    public static func drain() {
+        let requests = LiveActivityPendingStart.drainAll()
+        guard !requests.isEmpty else { return }
+        Current.Log.verbose("LiveActivityPendingStart: draining \(requests.count) request(s) in app")
+        // Background task so the async start/update finishes even when backgrounded.
+        _ = Current.backgroundTask(withName: "live-activity-pending-start") { _ in
+            Promise<Void> { seal in
+                Task {
+                    for request in requests {
+                        do {
+                            try await Current.liveActivityRegistry?.startOrUpdate(
+                                tag: request.tag,
+                                title: request.title,
+                                serverWebhookId: request.serverWebhookId,
+                                state: request.state
+                            )
+                        } catch {
+                            Current.Log.error(
+                                "LiveActivityPendingStart: startOrUpdate failed for tag \(request.tag): \(error)"
+                            )
+                        }
                     }
                     DispatchQueue.main.async { seal.fulfill(()) }
                 }

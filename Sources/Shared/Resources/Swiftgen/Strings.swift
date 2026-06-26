@@ -2031,16 +2031,12 @@ public enum L10n {
     public enum AutoReload {
       /// 1 hour
       public static var hours1: String { return L10n.tr("Localizable", "kiosk.auto_reload.hours_1") }
-      /// 1 minute
-      public static var minutes1: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_1") }
       /// 10 minutes
       public static var minutes10: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_10") }
       /// 15 minutes
       public static var minutes15: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_15") }
       /// 30 minutes
       public static var minutes30: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_30") }
-      /// 5 minutes
-      public static var minutes5: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_5") }
       /// Never
       public static var never: String { return L10n.tr("Localizable", "kiosk.auto_reload.never") }
       /// The time between automatic page reloads.
@@ -2131,6 +2127,8 @@ public enum L10n {
       public static var hideCamera: String { return L10n.tr("Localizable", "kiosk.push_command.hide_camera") }
       /// Hiding screensaver
       public static var hideScreensaver: String { return L10n.tr("Localizable", "kiosk.push_command.hide_screensaver") }
+      /// Reloading dashboard
+      public static var reload: String { return L10n.tr("Localizable", "kiosk.push_command.reload") }
       /// Setting brightness
       public static var setBrightness: String { return L10n.tr("Localizable", "kiosk.push_command.set_brightness") }
       /// Setting volume
@@ -2239,6 +2237,14 @@ public enum L10n {
       public static func tapsRequired(_ p1: Int) -> String {
         return L10n.tr("Localizable", "kiosk.security.taps_required", p1)
       }
+    }
+    public enum Sensors {
+      /// Report kiosk mode, brightness, and volume to Home Assistant.
+      public static var body: String { return L10n.tr("Localizable", "kiosk.sensors.body") }
+      /// These sensors also appear in the app's sensor settings. Enabling or disabling them here keeps both places in sync.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.sensors.footer") }
+      /// Sensors
+      public static var title: String { return L10n.tr("Localizable", "kiosk.sensors.title") }
     }
   }
 
