@@ -588,6 +588,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.footer.description" = "When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.";
 "kiosk.hide_status_bar" = "Hide status bar";
 "kiosk.keep_screen_on" = "Keep screen on";
+"kiosk.push_command.default_dashboard" = "Returning to dashboard";
 "kiosk.push_command.hide_camera" = "Hiding camera";
 "kiosk.push_command.hide_screensaver" = "Hiding screensaver";
 "kiosk.push_command.reload" = "Reloading dashboard";
