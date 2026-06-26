@@ -308,12 +308,12 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     static let pushToStartRegistrationKey = "start_live_activity_token"
     static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
 
-    /// Registration key carrying how many seconds HA should keep waiting for this device to
-    /// report a Live Activity's push token before it may send another start for the same tag.
-    /// Reported so HA need not hard-code the duration — the device owns it.
-    static let startDebounceRegistrationKey = "live_activity_start_debounce"
+    /// Registration key carrying how many seconds HA should wait for this device to report a
+    /// Live Activity's push token before it may send another start for the same tag. Reported
+    /// so HA need not hard-code the duration — the device owns it.
+    static let startFailsafeRegistrationKey = "live_activity_start_failsafe"
 
-    /// Value reported under `startDebounceRegistrationKey`. It bounds how long HA suppresses
+    /// Value reported under `startFailsafeRegistrationKey`. Bounds how long HA suppresses
     /// duplicate starts, so a push-to-start that silently fails recovers afterwards. Kept below
     /// `pushTokenTimeToLive` since starting again is pointless once a token could no longer live,
     /// yet long enough to outlast a realistic offline period (e.g. a flight).

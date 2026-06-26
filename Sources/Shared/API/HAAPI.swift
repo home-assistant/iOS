@@ -616,7 +616,7 @@ public class HomeAssistantAPI {
                         appData[LiveActivityRegistry.pushToStartRegistrationKey] = pushToStartToken
                         appData["live_activity_push_to_start_apns_environment"] = Current.apnsEnvironment
                         // Tell HA how long to wait for a per-activity token before retrying a start.
-                        appData[LiveActivityRegistry.startDebounceRegistrationKey] =
+                        appData[LiveActivityRegistry.startFailsafeRegistrationKey] =
                             Int(LiveActivityRegistry.startSuppressionTimeToLive)
                     }
                 }
