@@ -20,8 +20,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var tokens = [HACancellable]()
 
     let refreshControl = UIRefreshControl()
-    let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
-    let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
     var statusBarView: UIView?
     var webViewTopConstraint: NSLayoutConstraint?
@@ -142,21 +140,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     init(server: Server, shouldLoadImmediately: Bool = false) {
         self.server = server
-        self.leftEdgePanGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
-            $0.edges = .left
-        }
-        self.rightEdgeGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
-            $0.edges = .right
-        }
 
         super.init(nibName: nil, bundle: nil)
 
         userActivity = with(NSUserActivity(activityType: "\(AppConstants.BundleID).frontend")) {
             $0.isEligibleForHandoff = true
         }
-
-        leftEdgePanGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
-        rightEdgeGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
 
         if shouldLoadImmediately {
             loadViewIfNeeded()
@@ -249,9 +238,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.isOpaque = false
         view!.addSubview(webView)
 
-        setupGestures(numberOfTouchesRequired: 2)
-        setupGestures(numberOfTouchesRequired: 3)
-        setupEdgeGestures()
         setupURLObserver()
 
         webView.navigationDelegate = self

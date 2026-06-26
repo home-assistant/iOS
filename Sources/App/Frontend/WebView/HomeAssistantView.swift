@@ -22,6 +22,10 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @StateObject private var reconnectManager = WebViewReconnectManager()
 
+    /// Owns the web frontend's swipe/edge gesture recognizers, attaching them to each hosted
+    /// `WebViewController` so gesture handling lives in this SwiftUI layer rather than in `WebViewController`.
+    @StateObject private var gestureManager = WebViewGestureManager()
+
     /// Changing this forces SwiftUI to discard the current `FrontendView` and create a fresh `WebViewController`.
     @State private var webViewResetID = UUID()
 
@@ -57,6 +61,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 reconnectManager: reconnectManager,
                 overlayState: overlayState
             )
+            .webViewGestures(gestureManager)
             .id(webViewResetID)
             .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
 

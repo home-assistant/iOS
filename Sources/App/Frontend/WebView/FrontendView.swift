@@ -12,6 +12,10 @@ struct FrontendView: UIViewControllerRepresentable {
     var reconnectManager: WebViewReconnectManager?
     let overlayState: WebFrontendOverlayState
 
+    /// SwiftUI-owned gesture manager wired in via the `webViewGestures(_:)` modifier. Optional so the
+    /// representable can be constructed without it (e.g. in tests).
+    fileprivate var gestureManager: WebViewGestureManager?
+
     init(
         server: Server,
         restorationType: WebViewRestorationType? = nil,
@@ -30,6 +34,7 @@ struct FrontendView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> WebViewController {
         let webViewController = makeWebViewController()
+        gestureManager?.attach(to: webViewController)
         onWebViewController?(webViewController)
         return webViewController
     }
@@ -46,5 +51,15 @@ struct FrontendView: UIViewControllerRepresentable {
         controller.resetFrontendAction = resetFrontendAction
         controller.reconnectManager = reconnectManager
         return controller
+    }
+}
+
+extension FrontendView {
+    /// Wires the SwiftUI-owned gesture manager so it attaches its swipe/edge recognizers to the hosted
+    /// `WebViewController`. Modifier-style so gesture handling reads declaratively at the call site.
+    func webViewGestures(_ manager: WebViewGestureManager) -> FrontendView {
+        var copy = self
+        copy.gestureManager = manager
+        return copy
     }
 }

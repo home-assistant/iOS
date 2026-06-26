@@ -194,6 +194,29 @@ public enum AppGesture: CaseIterable, Codable {
             nil
         }
     }
+
+    /// Number of simultaneous touches the swipe requires, or `nil` for non-swipe gestures (shake). This is the
+    /// recognizer's *configured* requirement — distinct from a recognizer's live `numberOfTouches`, which is
+    /// unreliable once a discrete swipe has been recognized (the touches have already lifted).
+    public var numberOfTouchesRequired: Int? {
+        switch self {
+        case .swipeRight, .swipeLeft:
+            1
+        case ._2FingersSwipeLeft, ._2FingersSwipeRight:
+            2
+        case ._3FingersSwipeUp, ._3FingersSwipeLeft, ._3FingersSwipeRight:
+            3
+        case .shake:
+            nil
+        }
+    }
+
+    /// The multi-finger swipe gestures (2- and 3-finger), each of which is recognized by a dedicated
+    /// `UISwipeGestureRecognizer`. Single-finger swipes use screen-edge pans and `shake` uses motion events,
+    /// so neither is included here.
+    public static var multiFingerSwipes: [AppGesture] {
+        allCases.filter { $0.direction != nil && ($0.numberOfTouchesRequired ?? 0) >= 2 }
+    }
 }
 
 public extension [AppGesture: HAGestureAction] {
@@ -207,51 +230,5 @@ public extension [AppGesture: HAGestureAction] {
             ._3FingersSwipeLeft: .previousServer,
             .shake: .openDebug,
         ]
-    }
-
-    func getAction(for gesture: UISwipeGestureRecognizer, numberOfTouches: Int) -> HAGestureAction {
-        switch gesture.direction {
-        case .down:
-            switch numberOfTouches {
-            case 1:
-                return .none
-            default:
-                return .none
-            }
-        case .left:
-            switch numberOfTouches {
-            case 1:
-                return Current.settingsStore.gestures[.swipeLeft] ?? .none
-            case 2:
-                return Current.settingsStore.gestures[._2FingersSwipeLeft] ?? .none
-            case 3:
-                return Current.settingsStore.gestures[._3FingersSwipeLeft] ?? .none
-            default:
-                return .none
-            }
-        case .right:
-            switch numberOfTouches {
-            case 1:
-                return Current.settingsStore.gestures[.swipeRight] ?? .none
-            case 2:
-                return Current.settingsStore.gestures[._2FingersSwipeRight] ?? .none
-            case 3:
-                return Current.settingsStore.gestures[._3FingersSwipeRight] ?? .none
-            default:
-                return .none
-            }
-
-        case .up:
-            switch numberOfTouches {
-            case 1:
-                return .none
-            case 3:
-                return Current.settingsStore.gestures[._3FingersSwipeUp] ?? .none
-            default:
-                return .none
-            }
-        default:
-            return .none
-        }
     }
 }

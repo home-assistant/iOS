@@ -246,12 +246,3 @@ extension WebViewController {
         decisionHandler(.grant)
     }
 }
-
-extension WebViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(
-        _ gestureRecognizer: UIGestureRecognizer,
-        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
-    ) -> Bool {
-        true
-    }
-}
