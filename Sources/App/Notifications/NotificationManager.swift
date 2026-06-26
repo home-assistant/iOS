@@ -535,17 +535,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         case .hideCamera:
             hideCamera()
         case .reload:
-            reloadWebView()
+            Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
         }
-    }
-
-    private func reloadWebView() {
-        Current.sceneManager.webViewControllerPromise
-            .done { webViewController in
-                webViewController.refresh()
-            }.catch { error in
-                Current.Log.error("Failed to reload web view from push command: \(error)")
-            }
     }
 
     public func userNotificationCenter(
