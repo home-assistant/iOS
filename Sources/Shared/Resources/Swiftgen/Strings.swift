@@ -2123,6 +2123,8 @@ public enum L10n {
       public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
     }
     public enum PushCommand {
+      /// Returning to dashboard
+      public static var defaultDashboard: String { return L10n.tr("Localizable", "kiosk.push_command.default_dashboard") }
       /// Hiding camera
       public static var hideCamera: String { return L10n.tr("Localizable", "kiosk.push_command.hide_camera") }
       /// Hiding screensaver

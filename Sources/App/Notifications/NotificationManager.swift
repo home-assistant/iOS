@@ -536,6 +536,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             hideCamera()
         case .reload:
             Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
+        case .defaultDashboard:
+            Current.sceneManager.webViewControllerPromise.done { $0.applyKioskDashboard() }
         }
     }
 
