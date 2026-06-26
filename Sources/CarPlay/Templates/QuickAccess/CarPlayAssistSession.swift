@@ -69,10 +69,15 @@ final class CarPlayAssistSession: NSObject {
         ) { [weak self] _ in
             self?.showPlaybackHelp()
         }
+        let closeButton = CPButton(
+            image: makeActionButtonImage(icon: .closeIcon, color: .gray)
+        ) { [weak self] _ in
+            self?.stop()
+        }
 
         let actionButtons: [CPButton] = promptToSend == nil
-            ? [recordButton, helpButton]
-            : [recordButton, replayPromptButton, helpButton]
+            ? [recordButton, helpButton, closeButton]
+            : [recordButton, replayPromptButton, helpButton, closeButton]
 
         let idleState = CPVoiceControlState(
             identifier: VoiceControlStateID.idle.rawValue,
@@ -91,6 +96,8 @@ final class CarPlayAssistSession: NSObject {
             image: MaterialDesignIcons.microphoneIcon.carPlayIcon(color: .haPrimary, context: .assistStateIndicator),
             repeats: true
         )
+        recordingState.actionButtons = [closeButton]
+
         let processingState = CPVoiceControlState(
             identifier: VoiceControlStateID.processing.rawValue,
             titleVariants: [L10n.Assist.Carplay.Processing.title],
@@ -100,12 +107,16 @@ final class CarPlayAssistSession: NSObject {
             ),
             repeats: true
         )
+        processingState.actionButtons = [closeButton]
+
         let respondingState = CPVoiceControlState(
             identifier: VoiceControlStateID.responding.rawValue,
             titleVariants: [L10n.Assist.Carplay.Responding.title],
             image: MaterialDesignIcons.volumeHighIcon.carPlayIcon(color: .haPrimary, context: .assistStateIndicator),
             repeats: true
         )
+        respondingState.actionButtons = [closeButton]
+
         let errorState = CPVoiceControlState(
             identifier: VoiceControlStateID.error.rawValue,
             titleVariants: [L10n.errorLabel],
