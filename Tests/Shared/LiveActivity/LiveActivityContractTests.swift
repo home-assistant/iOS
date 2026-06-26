@@ -155,6 +155,23 @@ final class LiveActivityContractTests: XCTestCase {
         )
     }
 
+    /// Registration app_data key for the start failsafe. Must match the key HA core reads to
+    /// decide how long to wait for a per-activity token before allowing another start.
+    func testStartFailsafeRegistrationKey_isFrozen() {
+        XCTAssertEqual(
+            LiveActivityRegistry.startFailsafeRegistrationKey,
+            "live_activity_start_failsafe"
+        )
+    }
+
+    /// The start failsafe the app reports to HA core, in seconds.
+    func testStartSuppressionTimeToLive_isSixHours() {
+        XCTAssertEqual(
+            LiveActivityRegistry.startSuppressionTimeToLive,
+            6 * 60 * 60
+        )
+    }
+
     /// Webhook type string for reporting a dismissed activity.
     /// Must match the HA core webhook handler name.
     func testWebhookTypeDismissed_isFrozen() {
