@@ -1086,7 +1086,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.sensor_send_type.setting.none" = "なし";
 "settings.connection_section.sensor_send_type.title" = "送信されたセンサー";
 "settings.connection_section.servers" = "サーバー";
-"settings.connection_section.servers_footer" = "デフォルトサーバーを定義するための並べ替え";
 "settings.connection_section.servers_header" = "サーバー";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "バックグラウンドで SSID にアクセスするには、「常に」位置情報の許可と「完全な」位置精度が必要です。ここをタップして設定を変更します。";
 "settings.connection_section.validate_error.edit_url" = "URLの編集";
