@@ -2031,12 +2031,16 @@ public enum L10n {
     public enum AutoReload {
       /// 1 hour
       public static var hours1: String { return L10n.tr("Localizable", "kiosk.auto_reload.hours_1") }
+      /// 1 minute
+      public static var minutes1: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_1") }
       /// 10 minutes
       public static var minutes10: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_10") }
       /// 15 minutes
       public static var minutes15: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_15") }
       /// 30 minutes
       public static var minutes30: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_30") }
+      /// 5 minutes
+      public static var minutes5: String { return L10n.tr("Localizable", "kiosk.auto_reload.minutes_5") }
       /// Never
       public static var never: String { return L10n.tr("Localizable", "kiosk.auto_reload.never") }
       /// The time between automatic page reloads.
@@ -2123,6 +2127,8 @@ public enum L10n {
       public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
     }
     public enum PushCommand {
+      /// Returning to dashboard
+      public static var defaultDashboard: String { return L10n.tr("Localizable", "kiosk.push_command.default_dashboard") }
       /// Hiding camera
       public static var hideCamera: String { return L10n.tr("Localizable", "kiosk.push_command.hide_camera") }
       /// Hiding screensaver
@@ -2139,6 +2145,14 @@ public enum L10n {
     public enum Screensaver {
       /// Show a screensaver after a period of inactivity to protect the display and save power.
       public static var body: String { return L10n.tr("Localizable", "kiosk.screensaver.body") }
+      /// Clock boldness
+      public static var clockBoldness: String { return L10n.tr("Localizable", "kiosk.screensaver.clock_boldness") }
+      /// Clock size
+      public static var clockSize: String { return L10n.tr("Localizable", "kiosk.screensaver.clock_size") }
+      /// Date boldness
+      public static var dateBoldness: String { return L10n.tr("Localizable", "kiosk.screensaver.date_boldness") }
+      /// Date size
+      public static var dateSize: String { return L10n.tr("Localizable", "kiosk.screensaver.date_size") }
       /// Dim
       public static var dim: String { return L10n.tr("Localizable", "kiosk.screensaver.dim") }
       /// Dim Level: %li%%
@@ -2171,6 +2185,10 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.title") }
       /// Screensaver
       public static var toggle: String { return L10n.tr("Localizable", "kiosk.screensaver.toggle") }
+      public enum Clock {
+        /// Clock
+        public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.clock.title") }
+      }
       public enum ClockStyle {
         /// Large
         public static var large: String { return L10n.tr("Localizable", "kiosk.screensaver.clock_style.large") }
@@ -2186,6 +2204,10 @@ public enum L10n {
         public static var position: String { return L10n.tr("Localizable", "kiosk.screensaver.configuration_access.position") }
         /// Configuration access
         public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.configuration_access.title") }
+      }
+      public enum Dimming {
+        /// Dimming
+        public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.dimming.title") }
       }
       public enum Mode {
         /// Blank
@@ -3483,10 +3505,10 @@ public enum L10n {
       public static var refreshServer: String { return L10n.tr("Localizable", "settings.connection_section.refresh_server") }
       /// Servers
       public static var servers: String { return L10n.tr("Localizable", "settings.connection_section.servers") }
-      /// Reorder to define default server
-      public static var serversFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_footer") }
       /// Servers
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
+      /// Drag to reorder your servers. The one at the top is used as the default server.
+      public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
       /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.
       public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
       public enum AlwaysFallbackInternal {

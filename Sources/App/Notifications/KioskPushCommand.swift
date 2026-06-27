@@ -9,6 +9,7 @@ enum KioskPushCommand: String, CaseIterable {
     case showCamera = "kiosk_show_camera"
     case hideCamera = "kiosk_hide_camera"
     case reload = "kiosk_reload"
+    case defaultDashboard = "kiosk_default"
 
     static let prefix = "kiosk_"
 
@@ -36,6 +37,8 @@ enum KioskPushCommand: String, CaseIterable {
             return L10n.Kiosk.PushCommand.hideCamera
         case .reload:
             return L10n.Kiosk.PushCommand.reload
+        case .defaultDashboard:
+            return L10n.Kiosk.PushCommand.defaultDashboard
         }
     }
 
@@ -55,6 +58,8 @@ enum KioskPushCommand: String, CaseIterable {
             return .videoSlashFill
         case .reload:
             return .arrowClockwise
+        case .defaultDashboard:
+            return .houseFill
         }
     }
 
@@ -70,6 +75,8 @@ enum KioskPushCommand: String, CaseIterable {
             return (.white, .gray)
         case .reload:
             return (.white, .green)
+        case .defaultDashboard:
+            return (.white, .teal)
         }
     }
 }

@@ -92,6 +92,11 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(state.progressBarColor)
     }
 
+    func testContentState_emptyTitle_isNil() {
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: ["title": ""])
+        XCTAssertNil(state.title)
+    }
+
     func testContentState_fullPayload_mapsAllFields() {
         let payload: [String: Any] = [
             "title": "Test title",
@@ -204,16 +209,20 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
     }
 
-    func testHandle_missingTitle_fulfillsWithoutCallingRegistry() {
+    func testHandle_missingTitle_startsWithDefaultTitle() throws {
         let payload: [String: Any] = ["tag": "valid-tag"]
         XCTAssertNoThrow(try hang(sut.handle(payload)))
-        XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].title, HALiveActivityAttributes.defaultTitle)
+        XCTAssertNil(mockRegistry.startOrUpdateCalls[0].state.title)
     }
 
-    func testHandle_emptyTitle_fulfillsWithoutCallingRegistry() {
+    func testHandle_emptyTitle_startsWithDefaultTitleAndNilStateTitle() throws {
         let payload: [String: Any] = ["tag": "valid-tag", "title": ""]
         XCTAssertNoThrow(try hang(sut.handle(payload)))
-        XCTAssertTrue(mockRegistry.startOrUpdateCalls.isEmpty)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].title, HALiveActivityAttributes.defaultTitle)
+        XCTAssertNil(mockRegistry.startOrUpdateCalls[0].state.title)
     }
 
     // MARK: - handle(_:) — successful path

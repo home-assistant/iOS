@@ -18,7 +18,6 @@ import PromiseKit
 struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     private enum ValidationError: Error {
         case missingTag
-        case missingTitle
         case invalidTag
     }
 
@@ -51,19 +50,22 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                         return
                     }
 
-                    try await Current.liveActivityRegistry?.startOrUpdate(
+                    let presented = try await Current.liveActivityRegistry?.startOrUpdate(
                         tag: request.tag,
                         title: request.title,
                         serverWebhookId: request.serverWebhookId,
                         state: request.state
                     )
+                    if presented == true {
+                        LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
+                    }
                     seal.fulfill(())
                 } catch {
                     Current.Log.error("HandlerStartOrUpdateLiveActivity: \(error)")
                     // Fulfill rather than reject for known validation/auth errors so HA
                     // doesn't treat them as transient failures and retry indefinitely.
                     switch error {
-                    case ValidationError.missingTag, ValidationError.missingTitle, ValidationError.invalidTag:
+                    case ValidationError.missingTag, ValidationError.invalidTag:
                         seal.fulfill(())
                     default:
                         seal.reject(error)
@@ -85,14 +87,14 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             )
             throw ValidationError.invalidTag
         }
-        guard let title = payload["title"] as? String, !title.isEmpty else {
-            throw ValidationError.missingTitle
-        }
+        let rawTitle = payload["title"] as? String ?? ""
+        let title = rawTitle.isEmpty ? HALiveActivityAttributes.defaultTitle : rawTitle
         return LiveActivityPendingStart.Request(
             tag: tag,
             title: title,
             serverWebhookId: payload["webhook_id"] as? String,
-            state: contentState(from: payload)
+            state: contentState(from: payload),
+            confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String
         )
     }
 
@@ -124,7 +126,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     // MARK: - Payload Parsing
 
     static func contentState(from payload: [String: Any]) -> HALiveActivityAttributes.ContentState {
-        let title = payload["title"] as? String
+        let title = (payload["title"] as? String).flatMap { $0.isEmpty ? nil : $0 }
         let message = payload["message"] as? String ?? ""
         let criticalText = payload["critical_text"] as? String
         // Use NSNumber coercion so both Int and Double JSON values (e.g. 50 vs 50.0) decode correctly.

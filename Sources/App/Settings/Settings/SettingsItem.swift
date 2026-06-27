@@ -234,7 +234,7 @@ struct SettingsServersView: View {
         List {
             Section(
                 header: Text(L10n.Settings.ConnectionSection.serversHeader),
-                footer: Text(L10n.Settings.ConnectionSection.serversFooter)
+                footer: Text(L10n.Settings.ConnectionSection.serversReorderFooter)
             ) {
                 ServersListView()
             }
