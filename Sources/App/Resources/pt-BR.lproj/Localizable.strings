@@ -1087,7 +1087,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.sensor_send_type.setting.none" = "Nenhum";
 "settings.connection_section.sensor_send_type.title" = "Sensores enviados";
 "settings.connection_section.servers" = "Servidores";
-"settings.connection_section.servers_footer" = "Reordenar para definir o servidor padrão";
 "settings.connection_section.servers_header" = "Servidores";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Acessar SSIDs em segundo plano requer permissão de localização 'Sempre' e precisão de localização 'Total'. Toque aqui para alterar suas configurações.";
 "settings.connection_section.validate_error.edit_url" = "Editar URL";

@@ -1087,7 +1087,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.sensor_send_type.setting.none" = "Keine";
 "settings.connection_section.sensor_send_type.title" = "Gesendete Sensordaten";
 "settings.connection_section.servers" = "Server";
-"settings.connection_section.servers_footer" = "Neu anordnen, um den Standardserver festzulegen";
 "settings.connection_section.servers_header" = "Server";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Für den Zugriff auf SSIDs im Hintergrund sind die Standortberechtigung „Immer“ und die Standortgenauigkeit „Vollständig“ erforderlich. Tippe hier, um deine Einstellungen zu ändern.";
 "settings.connection_section.validate_error.edit_url" = "URL bearbeiten";

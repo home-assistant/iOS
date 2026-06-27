@@ -1087,7 +1087,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.sensor_send_type.setting.none" = "Geen";
 "settings.connection_section.sensor_send_type.title" = "Sensoren doorgeven";
 "settings.connection_section.servers" = "Servers";
-"settings.connection_section.servers_footer" = "Herschik om standaardserver te kiezen";
 "settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Voor toegang tot SSID's op de achtergrond is locatietoestemming 'Altijd' en 'Exacte locatie' vereist. Tik hier om je instellingen te wijzigen.";
 "settings.connection_section.validate_error.edit_url" = "Wijzig URL";

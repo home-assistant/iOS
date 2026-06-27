@@ -1082,7 +1082,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.sensor_send_type.setting.none" = "Ingen";
 "settings.connection_section.sensor_send_type.title" = "Sensorer skickade";
 "settings.connection_section.servers" = "Servrar";
-"settings.connection_section.servers_footer" = "Ändra ordning för att definiera standardserver";
 "settings.connection_section.servers_header" = "Servrar";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Åtkomst till SSID:er i bakgrunden kräver 'Alltid'-tillåtelse och 'Maximal' platsnoggrannhet.";
 "settings.connection_section.validate_error.edit_url" = "Redigera URL";

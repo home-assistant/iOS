@@ -1087,7 +1087,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.sensor_send_type.setting.none" = "Noben";
 "settings.connection_section.sensor_send_type.title" = "Senzorji poslani";
 "settings.connection_section.servers" = "Servers";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
 "settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
