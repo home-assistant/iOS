@@ -186,7 +186,9 @@ public class LocalPushManager {
                 Current.Log.info("local push: silent Live Activity command, suppressing banner, deferring confirm")
             } else {
                 Current.Log.info("local push: Live Activity command, presenting alert, deferring confirm")
-                add(UNNotificationRequest(identifier: event.identifier, content: baseContent, trigger: nil)).cauterize()
+                add(UNNotificationRequest(identifier: event.identifier, content: baseContent, trigger: nil))
+                    .done { Current.Log.info("local push: presented Live Activity alert") }
+                    .catch { Current.Log.error("local push: failed to present Live Activity alert: \($0)") }
             }
             return
         }
