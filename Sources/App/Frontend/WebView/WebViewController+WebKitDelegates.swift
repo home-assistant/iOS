@@ -88,6 +88,10 @@ extension WebViewController {
         // in case the view appears again, don't reload
         initialURL = nil
 
+        // Clear the navigation-induced disconnected state so a working frontend isn't covered by a false
+        // disconnected empty state when the websocket was reused across the navigation.
+        restoreConnectedStateAfterSuccessfulFrontendLoad()
+
         updateWebViewSettings(reason: .load)
     }
 

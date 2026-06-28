@@ -110,6 +110,43 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(overlayState.emptyState)
     }
 
+    func testRestoreConnectedStateAfterSuccessfulFrontendLoadClearsNavigationDisconnect() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        // Mimics didStartProvisionalNavigation forcing disconnected + arming the empty-state timer.
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+        XCTAssertEqual(sut.connectionState, .disconnected)
+        XCTAssertNotNil(sut.emptyStateTimer)
+
+        sut.restoreConnectedStateAfterSuccessfulFrontendLoad()
+
+        XCTAssertEqual(sut.connectionState, .connected)
+        XCTAssertTrue(sut.isConnected)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    func testRestoreConnectedStateAfterSuccessfulFrontendLoadKeepsAuthInvalid() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        sut.connectionState = .authInvalid
+
+        sut.restoreConnectedStateAfterSuccessfulFrontendLoad()
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+    }
+
+    func testRestoreConnectedStateAfterSuccessfulFrontendLoadIgnoresNoActiveURLScreen() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        overlayState.showsNoActiveURL = true
+        sut.overlayState = overlayState
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+
+        sut.restoreConnectedStateAfterSuccessfulFrontendLoad()
+
+        XCTAssertEqual(sut.connectionState, .disconnected)
+    }
+
     private func makeSUT() -> WebViewController {
         let sut = WebViewController(server: .fake())
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
