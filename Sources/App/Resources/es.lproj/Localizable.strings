@@ -1089,7 +1089,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.sensor_send_type.setting.none" = "Ninguna";
 "settings.connection_section.sensor_send_type.title" = "Sensores enviados";
 "settings.connection_section.servers" = "Servidores";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
 "settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
