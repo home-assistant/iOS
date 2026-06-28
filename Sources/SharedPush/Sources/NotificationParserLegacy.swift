@@ -232,6 +232,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             for key in [
                 "tag", "critical_text", "progress", "progress_max", "chronometer",
                 "when", "when_relative", "notification_icon", "notification_icon_color",
+                "background_color", "text_color", "progress_bar_color",
                 "silent", "url",
             ] {
                 if let value = data[key] {
