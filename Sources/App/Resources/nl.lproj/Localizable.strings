@@ -590,6 +590,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "kiosk.footer.description" = "Als dit is ingeschakeld, wordt het scherm vergrendeld op het dashboard. Gebruik Face ID, Touch ID of het apparaatwachtwoord om af te sluiten.";
 "kiosk.hide_status_bar" = "Hide status bar";
 "kiosk.keep_screen_on" = "Keep screen on";
+"kiosk.push_command.default_dashboard" = "Returning to dashboard";
 "kiosk.push_command.hide_camera" = "Hiding camera";
 "kiosk.push_command.hide_screensaver" = "Hiding screensaver";
 "kiosk.push_command.reload" = "Reloading dashboard";
@@ -649,6 +650,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "kiosk.sensors.title" = "Sensors";
 "kiosk.title" = "Kioskmodus";
 "legacy_actions.disclaimer" = "Oude iOS-acties zijn niet langer de aanbevolen manier om wat met Home Assistant te doen. Gebruik Scripts, Scènes en Automatiseringen rechtstreeks in je Widgets, Apple Watch en CarPlay.";
+"live_activity.default_title" = "Home Assistant";
 "live_activity.empty_state" = "Geen actieve live activiteiten";
 "live_activity.end_all.button" = "Alle activiteiten beëindigen";
 "live_activity.end_all.confirm.button" = "Alles beëindigen";
@@ -1087,7 +1089,9 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.sensor_send_type.setting.none" = "Geen";
 "settings.connection_section.sensor_send_type.title" = "Sensoren doorgeven";
 "settings.connection_section.servers" = "Servers";
+"settings.connection_section.servers_footer" = "Herschik om standaardserver te kiezen";
 "settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Voor toegang tot SSID's op de achtergrond is locatietoestemming 'Altijd' en 'Exacte locatie' vereist. Tik hier om je instellingen te wijzigen.";
 "settings.connection_section.validate_error.edit_url" = "Wijzig URL";
 "settings.connection_section.validate_error.title" = "Fout bij opslaan van URL";

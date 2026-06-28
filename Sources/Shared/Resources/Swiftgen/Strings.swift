@@ -2272,6 +2272,8 @@ public enum L10n {
   }
 
   public enum LiveActivity {
+    /// Home Assistant
+    public static var defaultTitle: String { return L10n.tr("Localizable", "live_activity.default_title") }
     /// No active Live Activities
     public static var emptyState: String { return L10n.tr("Localizable", "live_activity.empty_state") }
     /// Real-time Home Assistant updates on your Lock Screen and Dynamic Island.
@@ -3505,6 +3507,8 @@ public enum L10n {
       public static var refreshServer: String { return L10n.tr("Localizable", "settings.connection_section.refresh_server") }
       /// Servers
       public static var servers: String { return L10n.tr("Localizable", "settings.connection_section.servers") }
+      /// Reorder to define default server
+      public static var serversFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_footer") }
       /// Servers
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Drag to reorder your servers. The one at the top is used as the default server.
