@@ -34,7 +34,7 @@ enum KioskPushCommand: String, CaseIterable {
             return "level"
         case .setVolume:
             return "volume"
-        case .showScreensaver, .hideScreensaver, .showCamera, .hideCamera, .reload:
+        case .showScreensaver, .hideScreensaver, .showCamera, .hideCamera, .reload, .defaultDashboard:
             return nil
         }
     }
