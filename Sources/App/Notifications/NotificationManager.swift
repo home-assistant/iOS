@@ -33,6 +33,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     var commandManager = NotificationCommandManager()
     private weak var cameraOverlayController: UIViewController?
+    private var displayedCamera: (entityId: String, serverIdentifier: Identifier<Server>)?
 
     override init() {
         super.init()
@@ -76,19 +77,33 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
         Current.sceneManager.webViewControllerPromise
             .done { webViewController in
+                let server = self.cameraServer(from: userInfo, fallback: webViewController.server)
+
+                if let displayedCamera = self.displayedCamera,
+                   displayedCamera.entityId == entityId,
+                   displayedCamera.serverIdentifier == server.identifier,
+                   self.cameraOverlayController != nil {
+                    Current.Log
+                        .info("Ignoring kiosk_show_camera command because camera \(entityId) is already on display")
+                    return
+                }
+
                 let view = CameraPlayerView(
-                    server: self.cameraServer(from: userInfo, fallback: webViewController.server),
+                    server: server,
                     cameraEntityId: entityId
                 )
                 .onDisappear {
+                    self.displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
                 .embeddedInHostingController()
                 self.cameraOverlayController = view
+                self.displayedCamera = (entityId: entityId, serverIdentifier: server.identifier)
                 view.modalPresentationStyle = .overFullScreen
                 Current.kiosk.setCameraOverlayVisible(true)
                 webViewController.presentOverlayController(controller: view, animated: true)
             }.catch { error in
+                self.displayedCamera = nil
                 Current.kiosk.setCameraOverlayVisible(false)
                 Current.Log.error("Failed to show camera from push command: \(error)")
             }
@@ -155,6 +170,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
                 webViewController.dismissOverlayController(animated: true) { [weak self] in
                     self?.cameraOverlayController = nil
+                    self?.displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
             }.catch { error in
