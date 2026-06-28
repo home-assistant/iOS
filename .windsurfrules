@@ -28,6 +28,7 @@ bundle exec fastlane test
 3. **SF Symbols**: Use `SFSafeSymbols` (`Image(systemSymbol: .house)`) not string-based APIs.
 4. **CocoaPods only**: No Swift Package Manager. Dependencies via `Podfile`.
 5. **Workspace**: Always use `HomeAssistant.xcworkspace`.
+6. **Live Activities & push**: When implementing or fixing Live Activities (or push notifications), check BOTH the local push (WebSocket / `NEAppPushProvider`, via `LocalPushManager` + `NotificationParserLegacy`) and remote push (APNs / `Sources/PushServer` relay) flows — they're separate code paths and a field/behavior handled in one is easily dropped in the other. Verify payload fields and alerting (sound/haptics/`silent`) on both, and test both.
 
 ### Architecture
 

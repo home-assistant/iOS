@@ -79,6 +79,15 @@ When adding a new persistent model, prefer GRDB. Implement `DatabaseTableProtoco
 
 `HAKit` is the library for all Home Assistant server communication. Use `HATypedRequest` for typed WebSocket/REST calls. Network requests in `HomeAssistantAPI` (`HAAPI.swift`) still use **PromiseKit** for some flows alongside newer `async/await`. Don't assume the codebase is fully migrated to async/await — but **prefer `async/await` for new request flows and avoid introducing new PromiseKit usage** (see [Concurrency](#concurrency)).
 
+### Live Activities & Push Notifications — Check Both Push Flows
+
+**When implementing or fixing Live Activities (or push notifications), always verify BOTH delivery flows — local push and remote push.** They use different code paths, so a field or behavior handled in one is easily missed in the other.
+
+- **Remote push (APNs/cloud)**: HA → push relay (`Sources/PushServer`) → APNs → app / `Sources/Extensions/NotificationService`. Payload already includes a `homeassistant` dict.
+- **Local push (WebSocket / `NEAppPushProvider`)**: `Sources/Extensions/PushProvider` + `Sources/Shared/Notifications/LocalPush` (`LocalPushManager`, `LocalPushEvent`). The flat `{message, data}` payload is reshaped by `LegacyNotificationParserImpl` (`Sources/SharedPush/Sources/NotificationParserLegacy.swift`), which must explicitly **promote** `data` fields into `homeassistant` — anything not in that list is dropped on this flow only.
+
+Both converge on `NotificationCommandManager` → `HandlerStartOrUpdateLiveActivity` → `LiveActivityRegistry`, rendered by `Sources/Extensions/Widgets/LiveActivity`. When changing payload fields or alerting (sound/haptics/`silent`), confirm it works on both flows, keep the vendored `Sources/PushServer/SharedPush` parser copy in sync, and add tests for both paths.
+
 ### MagicItem — Cross-Platform Action Abstraction
 
 `MagicItem` (`Sources/Shared/MagicItem/MagicItem.swift`) is the shared model for items that can appear in Widgets, Watch, CarPlay, and App Shortcuts. It has a `type` (`.script`, `.scene`, `.entity`, `.action`, `.folder`, `.assistPipeline`) and an optional `action` override. `ItemType.rawValue` is persisted (Codable), so **never change existing raw values**.
