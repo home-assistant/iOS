@@ -10,5 +10,5 @@
 "panel::profile" = "プロファイル";
 "panel::shopping_list" = "ショッピングリスト";
 "panel::states" = "概要";
-"state::default::unavailable" = "利用不可";
+"state::default::unavailable" = "切断";
 "state::default::unknown" = "不明";
