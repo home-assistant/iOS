@@ -103,6 +103,14 @@ Current.servers = FakeServerManager()
 
 **Never assign to `Current.*` properties outside of test code.** This is enforced by a custom SwiftLint rule that will fail CI. In production code, only _read_ from `Current`.
 
+## The WKWebView Frontend
+
+The primary iOS UI is a `WKWebView` (`WebViewController`) that renders the Home Assistant web frontend; native Swift code wraps it with platform integrations. `WebViewController` functionality is spread across many `WebViewController+*.swift` extension files (navigation, gestures, alerts, URL loading, etc.). Native features communicate with the web UI via a JavaScript message bus handled by `WebViewExternalMessageHandler` (messages typed as `WebViewExternalBusMessage` / `WebViewExternalBusOutgoingMessage` in `Sources/App/Frontend/ExternalMessageBus/`) and custom URL schemes / deep links defined in `AppConstants`.
+
+## MagicItem — Cross-Platform Action Abstraction
+
+`MagicItem` (`Sources/Shared/MagicItem/MagicItem.swift`) is the shared model for items that can appear in Widgets, Watch, CarPlay, and App Shortcuts. It has a `type` (`.script`, `.scene`, `.entity`, `.action`, `.folder`, `.assistPipeline`) and an optional `action` override. `ItemType.rawValue` is persisted (Codable), so **never change existing raw values**.
+
 ## Localization
 
 ### How Strings Work
@@ -193,6 +201,18 @@ Or in Xcode: use the `Tests-Unit` scheme with ⌘U.
 - Use `Sources/SharedTesting/` for shared test utilities
 - Tests are excluded from SwiftLint enforcement
 
+### Snapshot Testing
+
+New SwiftUI views should have snapshot tests using helpers from `SharedTesting`:
+
+```swift
+import SharedTesting
+
+func testMyView() {
+    assertLightDarkSnapshots(of: MyView()) // tests both light and dark mode
+}
+```
+
 ## Continuous Integration
 
 CI runs on GitHub Actions (`.github/workflows/ci.yml`):
@@ -239,9 +259,31 @@ Use `HAKit` (the Home Assistant Swift SDK) for server communication:
 
 ### Data Persistence
 
-- **GRDB**: Primary database for structured data (servers, configurations)
-- **Realm**: Legacy data storage (being migrated)
-- **UserDefaults**: Simple preferences and watch communication
+The project uses **two** database layers:
+
+- **GRDB** (`GRDB.swift`): newer layer, accessed via `Current.database()`. Used for Watch config, CarPlay config, widget config, entity registry, panels, etc. When adding a new persistent model, prefer GRDB: implement `DatabaseTableProtocol` (defines `tableName`, `definedColumns`, and `createIfNeeded`) and register it in `DatabaseQueue.tables()` in `GRDB+Initialization.swift`. The protocol's `migrateColumns` helper auto-handles additive migrations.
+- **Realm** (`RealmSwift`): legacy layer, used for older models (actions, zones, sensors, etc.). Access via `Current.realm()`.
+- **UserDefaults**: simple preferences and watch communication.
+
+### Logging
+
+Use `Current.Log` (XCGLogger) — never `print` or `NSLog`:
+
+```swift
+Current.Log.info("Connected to \(server.info.name)")
+Current.Log.error("Failed: \(error.localizedDescription)")
+Current.Log.verbose("Debug detail")
+```
+
+### `with()` Helper
+
+`with(_:update:)` in `Sources/Shared/Common/With.swift` is used for fluent inline initialization:
+
+```swift
+public lazy var webhooks = with(WebhookManager()) {
+    $0.register(responseHandler: ..., for: .updateSensors)
+}
+```
 
 ### UI Patterns
 
@@ -253,8 +295,8 @@ Use `HAKit` (the Home Assistant Swift SDK) for server communication:
 
 ### Assets
 
-- SF Symbols via `SFSafeSymbols` library
-- Material Design Icons available via `MaterialDesignIcons` (auto-generated from JSON)
+- SF Symbols via `SFSafeSymbols` library (`Image(systemSymbol: .house)`), never the string-based API
+- HA domain/entity icons via the `MaterialDesignIcons` enum (auto-generated from JSON); names carry an `Icon` suffix (e.g. `.lightbulbIcon`), and `Domain.icon(deviceClass:state:)` provides domain-appropriate icons
 - Asset catalogs in `Sources/Shared/Assets/SharedAssets.xcassets`
 
 ## Workflow Summary
