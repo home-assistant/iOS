@@ -76,7 +76,8 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         }
 
         Current.sceneManager.webViewControllerPromise
-            .done { webViewController in
+            .done { [weak self] webViewController in
+                guard let self else { return }
                 let server = self.cameraServer(from: userInfo, fallback: webViewController.server)
 
                 if let displayedCamera = self.displayedCamera,
@@ -92,8 +93,8 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
                     server: server,
                     cameraEntityId: entityId
                 )
-                .onDisappear {
-                    self.displayedCamera = nil
+                .onDisappear { [weak self] in
+                    self?.displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
                 .embeddedInHostingController()
@@ -102,8 +103,8 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
                 view.modalPresentationStyle = .overFullScreen
                 Current.kiosk.setCameraOverlayVisible(true)
                 webViewController.presentOverlayController(controller: view, animated: true)
-            }.catch { error in
-                self.displayedCamera = nil
+            }.catch { [weak self] error in
+                self?.displayedCamera = nil
                 Current.kiosk.setCameraOverlayVisible(false)
                 Current.Log.error("Failed to show camera from push command: \(error)")
             }
