@@ -34,6 +34,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     var commandManager = NotificationCommandManager()
     private weak var cameraOverlayController: UIViewController?
+    private var displayedCamera: (entityId: String, serverIdentifier: Identifier<Server>)?
 
     /// Hidden, off-screen volume view; `MPVolumeView` only drives the hardware volume while in a window.
     private lazy var volumeControlView = MPVolumeView(frame: CGRect(x: -2000, y: -2000, width: 1, height: 1))
@@ -79,20 +80,44 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         }
 
         Current.sceneManager.webViewControllerPromise
-            .done { webViewController in
+            .done { [weak self] webViewController in
+                guard let self else { return }
+                let server = cameraServer(from: userInfo, fallback: webViewController.server)
+
+                if let displayedCamera,
+                   displayedCamera.entityId == entityId,
+                   displayedCamera.serverIdentifier == server.identifier,
+                   cameraOverlayController != nil {
+                    Current.Log
+                        .info("Ignoring kiosk_show_camera command because camera \(entityId) is already on display")
+                    return
+                }
+
                 let view = CameraPlayerView(
-                    server: self.cameraServer(from: userInfo, fallback: webViewController.server),
+                    server: server,
                     cameraEntityId: entityId
                 )
-                .onDisappear {
+                .onDisappear { [weak self] in
+                    guard let self else { return }
+                    // Only clear state if this overlay is still the active one. When switching
+                    // directly from one camera to another, the old overlay's onDisappear fires
+                    // after displayedCamera has already been updated for the new camera, so
+                    // clearing unconditionally would wipe the new state and desync the flag.
+                    guard displayedCamera?.entityId == entityId,
+                          displayedCamera?.serverIdentifier == server.identifier else {
+                        return
+                    }
+                    displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
                 .embeddedInHostingController()
-                self.cameraOverlayController = view
+                cameraOverlayController = view
+                displayedCamera = (entityId: entityId, serverIdentifier: server.identifier)
                 view.modalPresentationStyle = .overFullScreen
                 Current.kiosk.setCameraOverlayVisible(true)
                 webViewController.presentOverlayController(controller: view, animated: true)
-            }.catch { error in
+            }.catch { [weak self] error in
+                self?.displayedCamera = nil
                 Current.kiosk.setCameraOverlayVisible(false)
                 Current.Log.error("Failed to show camera from push command: \(error)")
             }
@@ -159,6 +184,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
                 webViewController.dismissOverlayController(animated: true) { [weak self] in
                     self?.cameraOverlayController = nil
+                    self?.displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
             }.catch { error in
