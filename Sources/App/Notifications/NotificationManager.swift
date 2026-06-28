@@ -78,12 +78,12 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         Current.sceneManager.webViewControllerPromise
             .done { [weak self] webViewController in
                 guard let self else { return }
-                let server = self.cameraServer(from: userInfo, fallback: webViewController.server)
+                let server = cameraServer(from: userInfo, fallback: webViewController.server)
 
-                if let displayedCamera = self.displayedCamera,
+                if let displayedCamera,
                    displayedCamera.entityId == entityId,
                    displayedCamera.serverIdentifier == server.identifier,
-                   self.cameraOverlayController != nil {
+                   cameraOverlayController != nil {
                     Current.Log
                         .info("Ignoring kiosk_show_camera command because camera \(entityId) is already on display")
                     return
@@ -99,16 +99,16 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
                     // directly from one camera to another, the old overlay's onDisappear fires
                     // after displayedCamera has already been updated for the new camera, so
                     // clearing unconditionally would wipe the new state and desync the flag.
-                    guard self.displayedCamera?.entityId == entityId,
-                          self.displayedCamera?.serverIdentifier == server.identifier else {
+                    guard displayedCamera?.entityId == entityId,
+                          displayedCamera?.serverIdentifier == server.identifier else {
                         return
                     }
-                    self.displayedCamera = nil
+                    displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
                 .embeddedInHostingController()
-                self.cameraOverlayController = view
-                self.displayedCamera = (entityId: entityId, serverIdentifier: server.identifier)
+                cameraOverlayController = view
+                displayedCamera = (entityId: entityId, serverIdentifier: server.identifier)
                 view.modalPresentationStyle = .overFullScreen
                 Current.kiosk.setCameraOverlayVisible(true)
                 webViewController.presentOverlayController(controller: view, animated: true)
