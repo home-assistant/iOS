@@ -94,7 +94,16 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
                     cameraEntityId: entityId
                 )
                 .onDisappear { [weak self] in
-                    self?.displayedCamera = nil
+                    guard let self else { return }
+                    // Only clear state if this overlay is still the active one. When switching
+                    // directly from one camera to another, the old overlay's onDisappear fires
+                    // after displayedCamera has already been updated for the new camera, so
+                    // clearing unconditionally would wipe the new state and desync the flag.
+                    guard self.displayedCamera?.entityId == entityId,
+                          self.displayedCamera?.serverIdentifier == server.identifier else {
+                        return
+                    }
+                    self.displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
                 .embeddedInHostingController()
