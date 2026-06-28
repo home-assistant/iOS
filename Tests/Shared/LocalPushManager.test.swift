@@ -382,7 +382,35 @@ class LocalPushManagerTests: XCTestCase {
         )
     }
 
-    func testLiveActivityCommandSuppressesBannerAndDefersConfirm() throws {
+    func testSilentLiveActivityCommandSuppressesBannerAndDefersConfirm() throws {
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+            "hass_confirm_id": "test_confirm_id",
+            "data": [
+                "live_update": true,
+                "tag": "test_tag",
+                "silent": true,
+            ],
+        ]))
+
+        let runLoop = expectation(description: "run loop")
+        DispatchQueue.main.async(execute: runLoop.fulfill)
+        waitForExpectations(timeout: 10.0)
+
+        XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
+        XCTAssertTrue(added.isEmpty)
+        XCTAssertFalse(
+            apiConnection.pendingRequests
+                .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        )
+    }
+
+    func testNonSilentLiveActivityCommandPresentsAlertAndDefersConfirm() throws {
+        // A live_update without `silent: true` should alert (sound + haptics) on start/update,
+        // while still deferring the confirm to the live activity presentation path.
         setUpManager(webhookID: "webhook1")
 
         let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
@@ -399,8 +427,9 @@ class LocalPushManagerTests: XCTestCase {
         DispatchQueue.main.async(execute: runLoop.fulfill)
         waitForExpectations(timeout: 10.0)
 
-        XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
-        XCTAssertTrue(added.isEmpty)
+        let request = try XCTUnwrap(added.first?.0)
+        XCTAssertNotNil(request.content.sound)
+        // Confirm is still owned by the live activity path, not sent here.
         XCTAssertFalse(
             apiConnection.pendingRequests
                 .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
