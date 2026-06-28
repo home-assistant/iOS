@@ -1088,7 +1088,6 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.connection_section.sensor_send_type.setting.none" = "Egy sem";
 "settings.connection_section.sensor_send_type.title" = "Elküldött érzékelők";
 "settings.connection_section.servers" = "Szerverek";
-"settings.connection_section.servers_footer" = "Rendezze át a kiszolgálókat az alapértelmezett meghatározásához";
 "settings.connection_section.servers_header" = "Kiszolgálók";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "A háttérben lévő SSID-k eléréséhez a \"Mindig\" helymeghatározási engedély és a \"Teljes\" helymeghatározási pontosság szükséges. A beállítások módosításához koppintson ide.";

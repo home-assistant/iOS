@@ -1089,7 +1089,6 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "settings.connection_section.sensor_send_type.setting.none" = "Nessuno";
 "settings.connection_section.sensor_send_type.title" = "Sensori inviati";
 "settings.connection_section.servers" = "Server";
-"settings.connection_section.servers_footer" = "Riordina per scegliere il server predefinito";
 "settings.connection_section.servers_header" = "Server";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "L'accesso agli SSID in background richiede il permesso di localizzazione \"Sempre\" e la precisione di localizzazione \"Completa\". Tocca qui per cambiare le impostazioni.";

@@ -1089,7 +1089,6 @@
 "settings.connection_section.sensor_send_type.setting.none" = "Κανένα";
 "settings.connection_section.sensor_send_type.title" = "Αποστολή αισθητήρων";
 "settings.connection_section.servers" = "Διακομιστές";
-"settings.connection_section.servers_footer" = "Κάντε αναδιάταξη για να ορίσετε τον προεπιλεγμένο διακομιστή";
 "settings.connection_section.servers_header" = "Διακομιστές";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\" και ακρίβεια τοποθεσίας \"Πλήρης\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";

@@ -1089,7 +1089,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.sensor_send_type.setting.none" = "Nic";
 "settings.connection_section.sensor_send_type.title" = "Odeslané senzory";
 "settings.connection_section.servers" = "Servery";
-"settings.connection_section.servers_footer" = "Přeuspořádat pro definování výchozího serveru";
 "settings.connection_section.servers_header" = "Servery";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Přístup k SSID na pozadí vyžaduje oprávnění k poloze \"Vždy\" a \"Plnou\" přesnost polohy. Klepnutím sem změníte nastavení.";
