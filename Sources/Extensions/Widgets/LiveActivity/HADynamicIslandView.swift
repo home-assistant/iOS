@@ -135,17 +135,19 @@ struct HACompactTrailingView: View {
 @available(iOS 17.2, *)
 struct HAExpandedTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
-
+    private let minimumScaleFactor: CGFloat = 0.7
     var body: some View {
         if let fraction = state.progressFraction {
             Text(HAActivityVisualStyle.percentString(for: fraction))
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(.white)
+                .minimumScaleFactor(minimumScaleFactor)
         } else if let critical = state.criticalText {
             Text(critical)
                 .font(.headline)
                 .foregroundStyle(.white)
                 .lineLimit(1)
+                .minimumScaleFactor(minimumScaleFactor)
         }
     }
 }
@@ -177,6 +179,8 @@ struct HAExpandedBottomView: View {
                     trackColor: .white.opacity(0.16),
                     height: 8
                 )
+            } else if state.chronometer == true, let end = state.countdownEnd {
+                HAActivityTimerProgressBar(end: end, tint: barColor)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

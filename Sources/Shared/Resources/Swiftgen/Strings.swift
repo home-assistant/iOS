@@ -2284,6 +2284,10 @@ public enum L10n {
     public static var subtitle: String { return L10n.tr("Localizable", "live_activity.subtitle") }
     /// Live Activities
     public static var title: String { return L10n.tr("Localizable", "live_activity.title") }
+    public enum Accessibility {
+      /// Progress
+      public static var progress: String { return L10n.tr("Localizable", "live_activity.accessibility.progress") }
+    }
     public enum EndAll {
       /// End All Activities
       public static var button: String { return L10n.tr("Localizable", "live_activity.end_all.button") }
