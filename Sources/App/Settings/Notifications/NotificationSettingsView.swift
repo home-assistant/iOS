@@ -27,6 +27,7 @@ struct NotificationSettingsView: View {
         List {
             overviewSection
             soundsSection
+            historySection
             badgeSection
             categoriesSection
             debugSection
@@ -114,6 +115,18 @@ struct NotificationSettingsView: View {
             }
         } footer: {
             Text(L10n.SettingsDetails.Notifications.Sounds.footer)
+        }
+    }
+
+    private var historySection: some View {
+        Section {
+            NavigationLink {
+                NotificationHistoryView()
+            } label: {
+                Text(L10n.SettingsDetails.Notifications.History.title)
+            }
+        } footer: {
+            Text(L10n.SettingsDetails.Notifications.History.footer)
         }
     }
 

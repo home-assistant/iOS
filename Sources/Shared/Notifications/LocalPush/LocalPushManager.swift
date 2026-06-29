@@ -170,6 +170,12 @@ public class LocalPushManager {
         let baseContent = event.content(server: server)
         var userInfo = baseContent.userInfo
         let isLiveActivity = Self.isLiveActivityCommand(userInfo)
+
+        Current.notificationHistoryStore.record(NotificationHistoryEntry(
+            content: baseContent,
+            kind: isLiveActivity ? .liveActivity : .local
+        ))
+
         if isLiveActivity, let confirmID = event.confirmID {
             userInfo[Self.confirmIDUserInfoKey] = confirmID
         }
@@ -233,8 +239,7 @@ public class LocalPushManager {
     static let confirmIDUserInfoKey = "hass_confirm_id"
 
     private static func isLiveActivityCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
-        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
-        return (hadict["live_update"] as? Bool) == true || (hadict["command"] as? String) == "live_activity"
+        NotificationHistoryEntry.isLiveActivity(userInfo: userInfo)
     }
 
     private static func isCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
