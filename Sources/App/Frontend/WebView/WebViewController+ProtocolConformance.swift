@@ -66,7 +66,6 @@ extension WebViewController: WebViewControllerProtocol {
         } else {
             requestedState
         }
-        isConnected = resolvedState == .connected
         connectionState = resolvedState
 
         // Possible values: connected, disconnected, auth-invalid
@@ -84,20 +83,14 @@ extension WebViewController: WebViewControllerProtocol {
         }
     }
 
-    /// Called after a main-frame load finishes successfully.
-    ///
-    /// `didStartProvisionalNavigation` pessimistically forces `.disconnected` on every navigation so the
-    /// empty state can appear if the load hangs. For in-frontend navigations (e.g. dashboard → automations)
-    /// the websocket is reused rather than re-established, so the frontend never re-emits
-    /// `connection-status: connected` — which previously left the 10-second timer to drop a false
-    /// disconnected empty state over a fully working frontend. A successful load means the page is up, so
-    /// optimistically restore the connected state here. The frontend stays authoritative: if its websocket
-    /// actually fails it downgrades us back to `.disconnected`/`.auth-invalid` via the external bus.
-    func restoreConnectedStateAfterSuccessfulFrontendLoad() {
-        // Don't override an auth-invalid state (a successful reload of an auth-invalid page is still invalid)
-        // or the no-active-URL screen (about:blank is loaded there and is not a connected frontend).
-        guard connectionState != .authInvalid, overlayState?.showsNoActiveURL != true else { return }
-        updateFrontendConnectionState(state: FrontEndConnectionState.connected.rawValue)
+    /// Marks the connection disconnected because we are about to hard-reload the web view (`reload()` /
+    /// `refresh()`), which tears down the current frontend and its websocket. This arms the grace timer so
+    /// the disconnected empty state appears if the connection doesn't come back; the frontend reports
+    /// `.connected` again once its websocket is ready, clearing it. Soft navigations and app backgrounding do
+    /// NOT call this — only an explicit reload does.
+    func markDisconnectedForHardReload() {
+        // A reload of an auth-invalid page is still auth-invalid; let `updateFrontendConnectionState` keep it.
+        updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
     }
 
     func navigateToPath(path: String) {
@@ -127,6 +120,7 @@ extension WebViewController: WebViewControllerProtocol {
                 if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                     reload()
                 } else {
+                    markDisconnectedForHardReload()
                     load(request: URLRequest(url: webviewURL))
                 }
                 hideNoActiveURLError()

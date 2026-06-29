@@ -56,44 +56,6 @@ extension WebViewController {
         }
     }
 
-    // To avoid keeping the empty state on screen when user is disconnected in background
-    // due to inactivity, we reset the empty state timer
-    @objc func resetEmptyStateTimerWithLatestConnectedState() {
-        let state: FrontEndConnectionState = if connectionState == .authInvalid {
-            .authInvalid
-        } else {
-            isConnected ? .connected : .disconnected
-        }
-        updateFrontendConnectionState(state: state.rawValue)
-    }
-
-    func emptyStateObservations() {
-        // Hide empty state when enter background
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(hideEmptyState),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
-
-        // Show empty state again if after entering foreground it is not connected
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(resetEmptyStateTimerWithLatestConnectedState),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
-    }
-
-    func removeEmptyStateObservations() {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(
-            self,
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
-    }
-
     private func makeEmptyStateContent() -> WebFrontendOverlayState.EmptyStateContent {
         WebFrontendOverlayState.EmptyStateContent(
             style: emptyStateStyle(for: connectionState),

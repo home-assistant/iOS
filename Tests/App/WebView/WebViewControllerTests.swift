@@ -29,16 +29,6 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(style, .disconnected)
     }
 
-    func testResetEmptyStateTimerKeepsAuthInvalidConnectionState() {
-        let sut = makeSUT()
-        sut.connectionState = .authInvalid
-        sut.isConnected = false
-
-        sut.resetEmptyStateTimerWithLatestConnectedState()
-
-        XCTAssertEqual(sut.connectionState, .authInvalid)
-    }
-
     func testUpdateFrontendConnectionStateDoesNotDowngradeAuthInvalidToDisconnected() {
         let sut = makeSUT()
         sut.connectionState = .authInvalid
@@ -110,41 +100,26 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(overlayState.emptyState)
     }
 
-    func testRestoreConnectedStateAfterSuccessfulFrontendLoadClearsNavigationDisconnect() {
+    func testReloadMarksDisconnectedAndArmsTimer() {
         let sut = makeSUT()
         sut.overlayState = WebFrontendOverlayState()
-        // Mimics didStartProvisionalNavigation forcing disconnected + arming the empty-state timer.
-        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.connected.rawValue)
+        XCTAssertEqual(sut.connectionState, .connected)
+
+        // A hard reload tears down the frontend, so it is a legitimate disconnect trigger.
+        sut.reload()
+
         XCTAssertEqual(sut.connectionState, .disconnected)
         XCTAssertNotNil(sut.emptyStateTimer)
-
-        sut.restoreConnectedStateAfterSuccessfulFrontendLoad()
-
-        XCTAssertEqual(sut.connectionState, .connected)
-        XCTAssertTrue(sut.isConnected)
-        XCTAssertNil(sut.emptyStateTimer)
     }
 
-    func testRestoreConnectedStateAfterSuccessfulFrontendLoadKeepsAuthInvalid() {
+    func testMarkDisconnectedForHardReloadKeepsAuthInvalid() {
         let sut = makeSUT()
-        sut.overlayState = WebFrontendOverlayState()
         sut.connectionState = .authInvalid
 
-        sut.restoreConnectedStateAfterSuccessfulFrontendLoad()
+        sut.markDisconnectedForHardReload()
 
         XCTAssertEqual(sut.connectionState, .authInvalid)
-    }
-
-    func testRestoreConnectedStateAfterSuccessfulFrontendLoadIgnoresNoActiveURLScreen() {
-        let sut = makeSUT()
-        let overlayState = WebFrontendOverlayState()
-        overlayState.showsNoActiveURL = true
-        sut.overlayState = overlayState
-        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
-
-        sut.restoreConnectedStateAfterSuccessfulFrontendLoad()
-
-        XCTAssertEqual(sut.connectionState, .disconnected)
     }
 
     private func makeSUT() -> WebViewController {
