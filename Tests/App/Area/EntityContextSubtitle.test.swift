@@ -7,6 +7,7 @@ import Testing
 private extension AppArea {
     static func makeTest(
         name: String,
+        floorId: String? = nil,
         floorName: String? = nil,
         entities: Set<String> = [],
         serverId: String = "test-server"
@@ -21,7 +22,7 @@ private extension AppArea {
             icon: nil,
             sortOrder: nil,
             entities: entities,
-            floorId: floorName,
+            floorId: floorId,
             floorName: floorName
         )
     }

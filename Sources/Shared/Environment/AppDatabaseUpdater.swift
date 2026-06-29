@@ -484,13 +484,18 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             return
         }
 
+        // Build a floorId -> name lookup once so resolving each area's floor is O(1) instead of a
+        // linear scan through the floors array per area.
+        let floorNamesById = Dictionary(
+            (Current.areasProvider().floors[serverId] ?? []).map { ($0.floorId, $0.name) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
         // Ensure model building happens off the main thread
         let appAreas = await Task.detached(priority: .utility) {
             let modelTimer = ProfilingTimer("Step 4.2.1: Building AppArea models (count: \(areas.count))")
             let result = areas.enumerated().map { index, area in
-                let floorName = area.floorId.flatMap { floorId in
-                    Current.areasProvider().floor(for: floorId, serverId: serverId)?.name
-                }
+                let floorName = area.floorId.flatMap { floorNamesById[$0] }
                 return AppArea(
                     from: area,
                     serverId: serverId,

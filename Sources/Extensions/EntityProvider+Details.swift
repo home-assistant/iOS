@@ -215,19 +215,24 @@ public extension [HAAppEntity] {
     /// - Parameter serverId: The server identifier to filter areas by.
     /// - Returns: A dictionary mapping entity IDs to their disambiguating floor name.
     func floorNamesMap(for serverId: String) -> [String: String] {
-        let areas = (try? AppArea.fetchAreas(for: serverId)) ?? []
-        let duplicated = areas.duplicatedAreaNames()
-        var entityToFloorMap: [String: String] = [:]
-        for area in areas {
-            guard let floorName = area.floorName, !floorName.isEmpty,
-                  duplicated.contains(area.name.normalizedForAreaComparison) else {
-                continue
+        do {
+            let areas = try AppArea.fetchAreas(for: serverId)
+            let duplicated = areas.duplicatedAreaNames()
+            var entityToFloorMap: [String: String] = [:]
+            for area in areas {
+                guard let floorName = area.floorName, !floorName.isEmpty,
+                      duplicated.contains(area.name.normalizedForAreaComparison) else {
+                    continue
+                }
+                for entityId in area.entities {
+                    entityToFloorMap[entityId] = floorName
+                }
             }
-            for entityId in area.entities {
-                entityToFloorMap[entityId] = floorName
-            }
+            return entityToFloorMap
+        } catch {
+            Current.Log.error("Failed to fetch areas for floor mapping: \(error)")
+            return [:]
         }
-        return entityToFloorMap
     }
 
     /// Creates a mapping from entity IDs to their associated devices for a given server.

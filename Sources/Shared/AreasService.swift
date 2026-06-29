@@ -55,7 +55,13 @@ final class AreasService: AreasServiceProtocol {
             )
         }
         self.areas[server.identifier.rawValue] = areas
-        await fetchFloors(for: server, connection: connection)
+        // Only fetch the floor registry when at least one area references a floor — otherwise the
+        // floor names would never be used and the request is a wasted round-trip.
+        if areas.contains(where: { $0.floorId != nil }) {
+            await fetchFloors(for: server, connection: connection)
+        } else {
+            floors[server.identifier.rawValue] = []
+        }
         if areas.isEmpty {
             Current.Log.verbose("No areas found on the server.")
             return [:]
