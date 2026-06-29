@@ -5497,6 +5497,15 @@
 			path = ConnectionSecurityLevelBlock;
 			sourceTree = "<group>";
 		};
+		42991E5C2FF337A200C2C76B /* LocalPush */ = {
+			isa = PBXGroup;
+			children = (
+				42991E582FF3357000C2C76B /* LiveActivityPendingEnd.swift */,
+				42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */,
+			);
+			path = LocalPush;
+			sourceTree = "<group>";
+		};
 		429AFE5A2DB7BE3200AF0836 /* General */ = {
 			isa = PBXGroup;
 			children = (
@@ -6574,8 +6583,7 @@
 			children = (
 				A95FDD092F6B89C6008EF72F /* HALiveActivityAttributes.swift */,
 				A95FDD0A2F6B89C6008EF72F /* LiveActivityRegistry.swift */,
-				42991E582FF3357000C2C76B /* LiveActivityPendingEnd.swift */,
-				42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */,
+				42991E5C2FF337A200C2C76B /* LocalPush */,
 			);
 			path = LiveActivity;
 			sourceTree = "<group>";
