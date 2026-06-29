@@ -398,12 +398,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             ]
         )
         for server in Current.servers.all {
-            // Background session: the OS owns this upload and keeps retrying it (up to its 2 h
-            // resource timeout) across connectivity changes even if the app is suspended or
-            // terminated — so a momentary drop, or losing foreground time, doesn't lose the token.
-            // Reliable token delivery is what lets Core flush the buffered update and stop sending
-            // starts, so it should not be best-effort like sendEphemeral.
-            Current.webhooks.sendPassive(server: server, request: request).cauterize()
+            Current.webhooks.sendEphemeral(server: server, request: request).cauterize()
         }
         rememberReportedTokenTag(tag)
     }
