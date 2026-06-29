@@ -16,10 +16,11 @@ struct WebViewJavascriptCommandsTests {
             code: 'KeyE',
             keyCode: 69,
             which: 69,
+            metaKey: false,
             bubbles: true,
             cancelable: true
         });
-        document.dispatchEvent(event);
+        (document.body || document.documentElement || document).dispatchEvent(event);
         """)
     }
 
@@ -34,7 +35,7 @@ struct WebViewJavascriptCommandsTests {
             bubbles: true,
             cancelable: true
         });
-        document.dispatchEvent(event);
+        (document.body || document.documentElement || document).dispatchEvent(event);
         """)
     }
 
@@ -45,10 +46,11 @@ struct WebViewJavascriptCommandsTests {
             code: 'KeyD',
             keyCode: 68,
             which: 68,
+            metaKey: false,
             bubbles: true,
             cancelable: true
         });
-        document.dispatchEvent(event);
+        (document.body || document.documentElement || document).dispatchEvent(event);
         """)
     }
 
@@ -59,10 +61,11 @@ struct WebViewJavascriptCommandsTests {
             code: 'KeyC',
             keyCode: 67,
             which: 67,
+            metaKey: false,
             bubbles: true,
             cancelable: true
         });
-        document.dispatchEvent(event);
+        (document.body || document.documentElement || document).dispatchEvent(event);
         """)
     }
 
@@ -73,10 +76,11 @@ struct WebViewJavascriptCommandsTests {
             code: 'KeyA',
             keyCode: 65,
             which: 65,
+            metaKey: false,
             bubbles: true,
             cancelable: true
         });
-        document.dispatchEvent(event);
+        (document.body || document.documentElement || document).dispatchEvent(event);
         """)
     }
 }
