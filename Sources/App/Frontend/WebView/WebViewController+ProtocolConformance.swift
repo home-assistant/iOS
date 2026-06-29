@@ -83,13 +83,9 @@ extension WebViewController: WebViewControllerProtocol {
         }
     }
 
-    /// Marks the connection disconnected because we are about to hard-reload the web view (`reload()` /
-    /// `refresh()`), which tears down the current frontend and its websocket. This arms the grace timer so
-    /// the disconnected empty state appears if the connection doesn't come back; the frontend reports
-    /// `.connected` again once its websocket is ready, clearing it. Soft navigations and app backgrounding do
-    /// NOT call this — only an explicit reload does.
+    /// A hard reload (`reload()`/`refresh()`) tears down the frontend and its websocket, so mark disconnected
+    /// and arm the grace timer until the frontend reports `.connected` again.
     func markDisconnectedForHardReload() {
-        // A reload of an auth-invalid page is still auth-invalid; let `updateFrontendConnectionState` keep it.
         updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
     }
 

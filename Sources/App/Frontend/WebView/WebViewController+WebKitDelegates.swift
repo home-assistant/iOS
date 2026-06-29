@@ -8,10 +8,8 @@ import WebKit
 
 extension WebViewController {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        // Intentionally does NOT mark the connection as disconnected. A navigation starting (in-frontend
-        // soft navigation, redirect, etc.) does not mean we lost the connection. Disconnection is driven only
-        // by the frontend (`connection-status` via the external bus) or by an explicit hard reload
-        // (`reload()`/`refresh()`), so a working frontend is never covered by a false disconnected empty state.
+        // Deliberately does not mark disconnected: a navigation starting isn't a lost connection. Only the
+        // frontend (via the external bus) or a hard reload (`reload()`/`refresh()`) sets disconnected.
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
     }
 
