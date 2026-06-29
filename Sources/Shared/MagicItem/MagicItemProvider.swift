@@ -15,6 +15,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     /// `getInfo` can attach the "Server • Area • Device" context line without a DB read per item.
     private var areasPerServer: [String: [String: AppArea]] = [:]
     private var devicesPerServer: [String: [String: AppDeviceRegistry]] = [:]
+    private var floorNamesPerServer: [String: [String: String]] = [:]
 
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
         loadAppEntities { [weak self] in
@@ -164,6 +165,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 // a per-item database read.
                 self?.areasPerServer[serverId] = entities.areasMap(for: serverId)
                 self?.devicesPerServer[serverId] = entities.devicesMap(for: serverId)
+                self?.floorNamesPerServer[serverId] = entities.floorNamesMap(for: serverId)
             } catch {
                 Current.Log.error("Failed to load covers from database: \(error.localizedDescription)")
             }
@@ -288,6 +290,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             : nil
         return EntityContextSubtitle.make(
             serverName: serverName,
+            floorName: floorNamesPerServer[entity.serverId]?[entity.entityId],
             areaName: areasPerServer[entity.serverId]?[entity.entityId]?.name,
             deviceName: devicesPerServer[entity.serverId]?[entity.entityId]?.name,
             entityName: entity.name,

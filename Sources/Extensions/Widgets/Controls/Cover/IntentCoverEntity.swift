@@ -16,6 +16,7 @@ struct IntentCoverEntity: AppEntity, EntityContextRepresentable {
     var serverId: String
     var areaName: String?
     var deviceName: String?
+    var floorName: String?
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
@@ -31,6 +32,7 @@ struct IntentCoverEntity: AppEntity, EntityContextRepresentable {
         serverId: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        floorName: String? = nil,
         displayString: String,
         iconName: String
     ) {
@@ -39,6 +41,7 @@ struct IntentCoverEntity: AppEntity, EntityContextRepresentable {
         self.serverId = serverId
         self.areaName = areaName
         self.deviceName = deviceName
+        self.floorName = floorName
         self.displayString = displayString
         self.iconName = iconName
     }
@@ -87,6 +90,7 @@ struct IntentCoverAppEntityQuery: EntityQuery, EntityStringQuery {
         for (server, values) in entities {
             let deviceMap = values.devicesMap(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
+            let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
             coverEntities.append((server, values.map({ entity in
                 IntentCoverEntity(
                     id: entity.id,
@@ -94,6 +98,7 @@ struct IntentCoverAppEntityQuery: EntityQuery, EntityStringQuery {
                     serverId: entity.serverId,
                     areaName: areasMap[entity.entityId]?.name,
                     deviceName: deviceMap[entity.entityId]?.name,
+                    floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.blindsVerticalOpen.rawValue
                 )

@@ -92,4 +92,31 @@ struct AreasServiceTests {
             "2": ["14", "11", "15", "10"],
         ])
     }
+
+    @Test func floorLookupReturnsMatchingFloorForServer() {
+        let service = AreasService()
+        service.floors = [
+            "server-a": [
+                .init(aliases: [], floorId: "ground", name: "Ground Floor"),
+                .init(aliases: [], floorId: "first", name: "First Floor"),
+            ],
+            "server-b": [
+                .init(aliases: [], floorId: "ground", name: "Other Ground"),
+            ],
+        ]
+
+        #expect(service.floor(for: "first", serverId: "server-a")?.name == "First Floor")
+        // Same floorId on a different server resolves to that server's floor.
+        #expect(service.floor(for: "ground", serverId: "server-b")?.name == "Other Ground")
+    }
+
+    @Test func floorLookupReturnsNilForUnknownFloorOrServer() {
+        let service = AreasService()
+        service.floors = [
+            "server-a": [.init(aliases: [], floorId: "ground", name: "Ground Floor")],
+        ]
+
+        #expect(service.floor(for: "attic", serverId: "server-a") == nil)
+        #expect(service.floor(for: "ground", serverId: "unknown-server") == nil)
+    }
 }

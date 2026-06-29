@@ -99,6 +99,8 @@ public enum DatabaseTables {
         case icon
         case sortOrder
         case entities
+        case floorId
+        case floorName
     }
 
     // Home View Configuration (per server)
