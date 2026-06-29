@@ -66,7 +66,6 @@ extension WebViewController: WebViewControllerProtocol {
         } else {
             requestedState
         }
-        isConnected = resolvedState == .connected
         connectionState = resolvedState
 
         // Possible values: connected, disconnected, auth-invalid
@@ -82,6 +81,12 @@ extension WebViewController: WebViewControllerProtocol {
                 self?.showEmptyState()
             }
         }
+    }
+
+    /// A hard reload (`reload()`/`refresh()`) tears down the frontend and its websocket, so mark disconnected
+    /// and arm the grace timer until the frontend reports `.connected` again.
+    func markDisconnectedForHardReload() {
+        updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
     }
 
     func navigateToPath(path: String) {
@@ -111,6 +116,7 @@ extension WebViewController: WebViewControllerProtocol {
                 if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                     reload()
                 } else {
+                    markDisconnectedForHardReload()
                     load(request: URLRequest(url: webviewURL))
                 }
                 hideNoActiveURLError()

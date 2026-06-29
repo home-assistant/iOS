@@ -590,9 +590,12 @@
 "kiosk.footer.description" = "Οταν ενεργοποιηθεί, η οθόνη θα κλειδωθεί στο ταμπλό. Χρησιμοποιήστε το Face ID, το Touch ID ή τον κωδικό πρόσβασης της συσκευής για έξοδο.";
 "kiosk.hide_status_bar" = "Hide status bar";
 "kiosk.keep_screen_on" = "Keep screen on";
+"kiosk.push_command.default_dashboard" = "Returning to dashboard";
 "kiosk.push_command.hide_camera" = "Hiding camera";
 "kiosk.push_command.hide_screensaver" = "Hiding screensaver";
 "kiosk.push_command.reload" = "Reloading dashboard";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Showing camera";
 "kiosk.push_command.show_screensaver" = "Showing screensaver";
 "kiosk.push_command.subtitle" = "Kiosk command";
@@ -649,6 +652,7 @@
 "kiosk.sensors.title" = "Sensors";
 "kiosk.title" = "Λειτουργία κιόσκι";
 "legacy_actions.disclaimer" = "Οι παλαιού τύπου Ενέργειες iOS δεν είναι πλέον ο συνιστώμενος τρόπος αλληλεπίδρασης με το Home Assistant, παρακαλώ χρησιμοποιήστε Σενάρια, Σκηνές και Αυτοματισμούς απευθείας στα Γραφικά στοιχεία, το Apple Watch και το CarPlay.";
+"live_activity.default_title" = "Home Assistant";
 "live_activity.empty_state" = "Δεν υπάρχουν ενεργές ζωντανές δραστηριότητες";
 "live_activity.end_all.button" = "Τερματισμός όλων των δραστηριοτήτων";
 "live_activity.end_all.confirm.button" = "Τερματισμός όλων";
@@ -1088,6 +1092,7 @@
 "settings.connection_section.sensor_send_type.title" = "Αποστολή αισθητήρων";
 "settings.connection_section.servers" = "Διακομιστές";
 "settings.connection_section.servers_header" = "Διακομιστές";
+"settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\" και ακρίβεια τοποθεσίας \"Πλήρης\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
 "settings.connection_section.validate_error.edit_url" = "Επεξεργασία διεύθυνσης URL";
 "settings.connection_section.validate_error.title" = "Σφάλμα αποθήκευσης διεύθυνσης URL";

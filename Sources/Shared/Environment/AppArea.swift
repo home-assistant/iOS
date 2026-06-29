@@ -14,6 +14,10 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord, Equatable {
     public let sortOrder: Int?
     /// Array containing entity Ids that belong to area
     public let entities: Set<String>
+    /// Identifier of the floor this area belongs to, if any.
+    public let floorId: String?
+    /// Resolved display name of the floor this area belongs to, denormalized for rendering.
+    public let floorName: String?
 
     public init(
         id: String,
@@ -24,7 +28,9 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord, Equatable {
         picture: String?,
         icon: String?,
         sortOrder: Int?,
-        entities: Set<String>
+        entities: Set<String>,
+        floorId: String? = nil,
+        floorName: String? = nil
     ) {
         self.id = id
         self.serverId = serverId
@@ -35,13 +41,16 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord, Equatable {
         self.icon = icon
         self.sortOrder = sortOrder
         self.entities = entities
+        self.floorId = floorId
+        self.floorName = floorName
     }
 
     public init(
         from area: HAAreasRegistryResponse,
         serverId: String,
         entities: Set<String>?,
-        sortOrder: Int?
+        sortOrder: Int?,
+        floorName: String? = nil
     ) {
         self.id = "\(serverId)-\(area.areaId)"
         self.serverId = serverId
@@ -52,5 +61,7 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord, Equatable {
         self.icon = area.icon
         self.sortOrder = sortOrder
         self.entities = entities ?? []
+        self.floorId = area.floorId
+        self.floorName = floorName
     }
 }

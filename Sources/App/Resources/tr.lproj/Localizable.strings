@@ -590,9 +590,12 @@
 "kiosk.footer.description" = "Bu özellik etkinleştirildiğinde ekran kontrol panelinde sabitlenir. Çıkmak için Face ID, Touch ID veya cihaz şifresini kullanın.";
 "kiosk.hide_status_bar" = "Hide status bar";
 "kiosk.keep_screen_on" = "Keep screen on";
+"kiosk.push_command.default_dashboard" = "Returning to dashboard";
 "kiosk.push_command.hide_camera" = "Hiding camera";
 "kiosk.push_command.hide_screensaver" = "Hiding screensaver";
 "kiosk.push_command.reload" = "Reloading dashboard";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Showing camera";
 "kiosk.push_command.show_screensaver" = "Showing screensaver";
 "kiosk.push_command.subtitle" = "Kiosk command";
@@ -649,6 +652,7 @@
 "kiosk.sensors.title" = "Sensors";
 "kiosk.title" = "Kiosk Modu";
 "legacy_actions.disclaimer" = "Eski iOS Eylemleri artık Home Assistant ile etkileşim kurmanın önerilen yolu değildir; lütfen Widget'larınızda, Apple Watch'unuzda ve CarPlay'inizde doğrudan Komut Dosyaları, Sahneler ve Otomasyonlar kullanın.";
+"live_activity.default_title" = "Home Assistant";
 "live_activity.empty_state" = "Aktif Canlı Etkinlik Yok";
 "live_activity.end_all.button" = "Tüm Etkinlikleri Sonlandır";
 "live_activity.end_all.confirm.button" = "Tümünü Sonlandır";
@@ -1088,6 +1092,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.sensor_send_type.title" = "Sensörler Gönderildi";
 "settings.connection_section.servers" = "Sunucular";
 "settings.connection_section.servers_header" = "Sunucular";
+"settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "SSID'lere arka planda erişmek için 'Her Zaman' konum izni ve 'Tam' konum doğruluğu gerekir. Ayarlarınızı değiştirmek için buraya dokunun.";
 "settings.connection_section.validate_error.edit_url" = "URL'yi düzenle";
 "settings.connection_section.validate_error.title" = "URL Kaydedilirken Hata Oluştu";

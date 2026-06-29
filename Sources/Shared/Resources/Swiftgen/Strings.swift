@@ -2135,6 +2135,10 @@ public enum L10n {
       public static var hideScreensaver: String { return L10n.tr("Localizable", "kiosk.push_command.hide_screensaver") }
       /// Reloading dashboard
       public static var reload: String { return L10n.tr("Localizable", "kiosk.push_command.reload") }
+      /// Setting brightness
+      public static var setBrightness: String { return L10n.tr("Localizable", "kiosk.push_command.set_brightness") }
+      /// Setting volume
+      public static var setVolume: String { return L10n.tr("Localizable", "kiosk.push_command.set_volume") }
       /// Showing camera
       public static var showCamera: String { return L10n.tr("Localizable", "kiosk.push_command.show_camera") }
       /// Showing screensaver
@@ -2272,6 +2276,8 @@ public enum L10n {
   }
 
   public enum LiveActivity {
+    /// Home Assistant
+    public static var defaultTitle: String { return L10n.tr("Localizable", "live_activity.default_title") }
     /// No active Live Activities
     public static var emptyState: String { return L10n.tr("Localizable", "live_activity.empty_state") }
     /// Real-time Home Assistant updates on your Lock Screen and Dynamic Island.

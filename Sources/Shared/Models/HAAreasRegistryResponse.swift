@@ -8,13 +8,16 @@ public struct HAAreasRegistryResponse: HADataDecodable {
     public let picture: String?
     // e.g. "mdi:sofa"
     public let icon: String?
+    // Identifier of the floor this area belongs to, if any.
+    public let floorId: String?
     public init(data: HAData) throws {
         try self.init(
             aliases: data.decode("aliases"),
             areaId: data.decode("area_id"),
             name: data.decode("name"),
             picture: try? data.decode("picture"),
-            icon: try? data.decode("icon")
+            icon: try? data.decode("icon"),
+            floorId: try? data.decode("floor_id")
         )
     }
 
@@ -23,12 +26,14 @@ public struct HAAreasRegistryResponse: HADataDecodable {
         areaId: String,
         name: String,
         picture: String? = nil,
-        icon: String? = nil
+        icon: String? = nil,
+        floorId: String? = nil
     ) {
         self.aliases = aliases
         self.areaId = areaId
         self.name = name
         self.picture = picture
         self.icon = icon
+        self.floorId = floorId
     }
 }

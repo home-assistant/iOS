@@ -2,6 +2,7 @@ import CallbackURLKit
 import Communicator
 import FirebaseMessaging
 import Foundation
+import MediaPlayer
 import PromiseKit
 import Shared
 import SwiftUI
@@ -33,6 +34,10 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     var commandManager = NotificationCommandManager()
     private weak var cameraOverlayController: UIViewController?
+    private var displayedCamera: (entityId: String, serverIdentifier: Identifier<Server>)?
+
+    /// Hidden, off-screen volume view; `MPVolumeView` only drives the hardware volume while in a window.
+    private lazy var volumeControlView = MPVolumeView(frame: CGRect(x: -2000, y: -2000, width: 1, height: 1))
 
     override init() {
         super.init()
@@ -75,20 +80,44 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         }
 
         Current.sceneManager.webViewControllerPromise
-            .done { webViewController in
+            .done { [weak self] webViewController in
+                guard let self else { return }
+                let server = cameraServer(from: userInfo, fallback: webViewController.server)
+
+                if let displayedCamera,
+                   displayedCamera.entityId == entityId,
+                   displayedCamera.serverIdentifier == server.identifier,
+                   cameraOverlayController != nil {
+                    Current.Log
+                        .info("Ignoring kiosk_show_camera command because camera \(entityId) is already on display")
+                    return
+                }
+
                 let view = CameraPlayerView(
-                    server: self.cameraServer(from: userInfo, fallback: webViewController.server),
+                    server: server,
                     cameraEntityId: entityId
                 )
-                .onDisappear {
+                .onDisappear { [weak self] in
+                    guard let self else { return }
+                    // Only clear state if this overlay is still the active one. When switching
+                    // directly from one camera to another, the old overlay's onDisappear fires
+                    // after displayedCamera has already been updated for the new camera, so
+                    // clearing unconditionally would wipe the new state and desync the flag.
+                    guard displayedCamera?.entityId == entityId,
+                          displayedCamera?.serverIdentifier == server.identifier else {
+                        return
+                    }
+                    displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
                 .embeddedInHostingController()
-                self.cameraOverlayController = view
+                cameraOverlayController = view
+                displayedCamera = (entityId: entityId, serverIdentifier: server.identifier)
                 view.modalPresentationStyle = .overFullScreen
                 Current.kiosk.setCameraOverlayVisible(true)
                 webViewController.presentOverlayController(controller: view, animated: true)
-            }.catch { error in
+            }.catch { [weak self] error in
+                self?.displayedCamera = nil
                 Current.kiosk.setCameraOverlayVisible(false)
                 Current.Log.error("Failed to show camera from push command: \(error)")
             }
@@ -155,10 +184,42 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
                 webViewController.dismissOverlayController(animated: true) { [weak self] in
                     self?.cameraOverlayController = nil
+                    self?.displayedCamera = nil
                     Current.kiosk.setCameraOverlayVisible(false)
                 }
             }.catch { error in
                 Current.Log.error("Failed to hide camera from push command: \(error)")
+            }
+    }
+
+    private func setScreenBrightness(_ level: Float) {
+        let clamped = CGFloat(min(max(level, 0), 1))
+        DispatchQueue.main.async {
+            UIScreen.main.brightness = clamped
+            Current.Log.info("Kiosk set screen brightness to \(clamped)")
+        }
+    }
+
+    private func setSystemVolume(_ level: Float) {
+        let clamped = min(max(level, 0), 1)
+        Current.sceneManager.webViewControllerPromise
+            .done(on: .main) { [weak self] webViewController in
+                guard let self else { return }
+                if volumeControlView.superview == nil {
+                    webViewController.view.addSubview(volumeControlView)
+                }
+                // The slider only exists once the view is in the hierarchy, so read it on the next loop.
+                DispatchQueue.main.async {
+                    guard let slider = self.volumeControlView.subviews.compactMap({ $0 as? UISlider }).first else {
+                        Current.Log.error("Unable to locate system volume slider for kiosk command")
+                        return
+                    }
+                    slider.setValue(clamped, animated: false)
+                    slider.sendActions(for: .touchUpInside)
+                    Current.Log.info("Kiosk set system volume to \(clamped)")
+                }
+            }.catch { error in
+                Current.Log.error("Failed to set volume from push command: \(error)")
             }
     }
 
@@ -534,6 +595,18 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             openCamera(from: userInfo)
         case .hideCamera:
             hideCamera()
+        case .setBrightness:
+            if let level = command.level(from: userInfo) {
+                setScreenBrightness(level)
+            } else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid level in payload")
+            }
+        case .setVolume:
+            if let level = command.level(from: userInfo) {
+                setSystemVolume(level)
+            } else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid volume in payload")
+            }
         case .reload:
             Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
         case .defaultDashboard:

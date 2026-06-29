@@ -590,9 +590,12 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "kiosk.footer.description" = "Ha engedélyezve van, a kijelző zárolva lesz az irányítópultra. A kilépéshez használja a Face ID-t, Touch ID-t vagy az eszköz jelkódját.";
 "kiosk.hide_status_bar" = "Hide status bar";
 "kiosk.keep_screen_on" = "Keep screen on";
+"kiosk.push_command.default_dashboard" = "Returning to dashboard";
 "kiosk.push_command.hide_camera" = "Hiding camera";
 "kiosk.push_command.hide_screensaver" = "Hiding screensaver";
 "kiosk.push_command.reload" = "Reloading dashboard";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Showing camera";
 "kiosk.push_command.show_screensaver" = "Showing screensaver";
 "kiosk.push_command.subtitle" = "Kiosk command";
@@ -649,6 +652,7 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "kiosk.sensors.title" = "Sensors";
 "kiosk.title" = "Kioskmód";
 "legacy_actions.disclaimer" = "A régi iOS műveletek már nem az ajánlott módja a Home Assistanttal való interakciónak, használjon közvetlenül szkripteket, jeleneteket és automatizálásokat a widgetekben, Apple Watch-on és CarPlay-en.";
+"live_activity.default_title" = "Home Assistant";
 "live_activity.empty_state" = "Nincsenek aktív élő aktivitások";
 "live_activity.end_all.button" = "Összes aktivitás befejezése";
 "live_activity.end_all.confirm.button" = "Összes befejezése";
@@ -1087,6 +1091,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.connection_section.sensor_send_type.title" = "Elküldött érzékelők";
 "settings.connection_section.servers" = "Szerverek";
 "settings.connection_section.servers_header" = "Kiszolgálók";
+"settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "A háttérben lévő SSID-k eléréséhez a \"Mindig\" helymeghatározási engedély és a \"Teljes\" helymeghatározási pontosság szükséges. A beállítások módosításához koppintson ide.";
 "settings.connection_section.validate_error.edit_url" = "URL szerkesztése";
 "settings.connection_section.validate_error.title" = "Hiba történt az URL mentésekor";

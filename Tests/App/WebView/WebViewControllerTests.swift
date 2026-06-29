@@ -29,16 +29,6 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(style, .disconnected)
     }
 
-    func testResetEmptyStateTimerKeepsAuthInvalidConnectionState() {
-        let sut = makeSUT()
-        sut.connectionState = .authInvalid
-        sut.isConnected = false
-
-        sut.resetEmptyStateTimerWithLatestConnectedState()
-
-        XCTAssertEqual(sut.connectionState, .authInvalid)
-    }
-
     func testUpdateFrontendConnectionStateDoesNotDowngradeAuthInvalidToDisconnected() {
         let sut = makeSUT()
         sut.connectionState = .authInvalid
@@ -108,6 +98,27 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertTrue(resetCalled)
         XCTAssertNil(overlayState.emptyState)
+    }
+
+    func testMarkDisconnectedForHardReloadArmsTimer() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.connected.rawValue)
+        XCTAssertEqual(sut.connectionState, .connected)
+
+        sut.markDisconnectedForHardReload()
+
+        XCTAssertEqual(sut.connectionState, .disconnected)
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
+    func testMarkDisconnectedForHardReloadKeepsAuthInvalid() {
+        let sut = makeSUT()
+        sut.connectionState = .authInvalid
+
+        sut.markDisconnectedForHardReload()
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
     }
 
     private func makeSUT() -> WebViewController {
