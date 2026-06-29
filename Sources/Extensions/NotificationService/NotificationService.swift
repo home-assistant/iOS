@@ -9,10 +9,9 @@ final class NotificationService: UNNotificationServiceExtension {
     ) {
         Current.Log.info("didReceive \(request), user info \(request.content.userInfo)")
 
-        Current.notificationHistoryStore.record(NotificationHistoryEntry(
-            content: request.content,
-            kind: NotificationHistoryEntry.isLiveActivity(userInfo: request.content.userInfo) ? .liveActivity : .remote
-        ))
+        if !NotificationHistoryEntry.isLiveActivity(userInfo: request.content.userInfo) {
+            Current.notificationHistoryStore.record(NotificationHistoryEntry(content: request.content, kind: .remote))
+        }
 
         guard let server = Current.servers.server(for: request.content), let api = Current.api(for: server) else {
             contentHandler(request.content)
