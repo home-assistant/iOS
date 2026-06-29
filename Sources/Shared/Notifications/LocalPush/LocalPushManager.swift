@@ -238,7 +238,8 @@ public class LocalPushManager {
     static let confirmIDUserInfoKey = "hass_confirm_id"
 
     private static func isLiveActivityCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
-        NotificationHistoryEntry.isLiveActivity(userInfo: userInfo)
+        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
+        return (hadict["live_update"] as? Bool) == true || (hadict["command"] as? String) == "live_activity"
     }
 
     private static func isCommand(_ userInfo: [AnyHashable: Any]) -> Bool {

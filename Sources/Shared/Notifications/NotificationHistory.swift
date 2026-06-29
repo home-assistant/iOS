@@ -5,7 +5,6 @@ public struct NotificationHistoryEntry: Codable, Identifiable, Equatable {
     public enum Kind: String, Codable, CaseIterable {
         case local
         case remote
-        case liveActivity
     }
 
     public var id: String
@@ -60,11 +59,6 @@ public struct NotificationHistoryEntry: Codable, Identifiable, Equatable {
             return subtitle
         }
         return L10n.SettingsDetails.Notifications.History.noContent
-    }
-
-    public static func isLiveActivity(userInfo: [AnyHashable: Any]) -> Bool {
-        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
-        return (hadict["live_update"] as? Bool) == true || (hadict["command"] as? String) == "live_activity"
     }
 
     private static func alertBody(from userInfo: [AnyHashable: Any]) -> String? {
@@ -216,8 +210,6 @@ public extension NotificationHistoryEntry.Kind {
             return L10n.SettingsDetails.Notifications.History.Kind.local
         case .remote:
             return L10n.SettingsDetails.Notifications.History.Kind.remote
-        case .liveActivity:
-            return L10n.SettingsDetails.Notifications.History.Kind.liveActivity
         }
     }
 }

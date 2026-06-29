@@ -27,14 +27,6 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                 do {
                     let request = try Self.makeRequest(from: payload)
 
-                    let payloadUserInfo = payload.reduce(into: [AnyHashable: Any]()) { $0[$1.key] = $1.value }
-                    Current.notificationHistoryStore.record(NotificationHistoryEntry(
-                        kind: .liveActivity,
-                        title: request.title,
-                        body: request.state.message.isEmpty ? nil : request.state.message,
-                        payloadJSON: NotificationHistoryEntry.payloadJSONString(from: payloadUserInfo)
-                    ))
-
                     // Record the disclosure on both start paths. settingsStore is App-Group-backed,
                     // so the extension's write is visible to the app's Settings screen — without this
                     // a Live Activity started via the extension hand-off (drained straight through the

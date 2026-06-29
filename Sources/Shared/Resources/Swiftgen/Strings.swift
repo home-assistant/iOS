@@ -4531,7 +4531,7 @@ public enum L10n {
         public static var clear: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear") }
         /// No notifications yet
         public static var empty: String { return L10n.tr("Localizable", "settings_details.notifications.history.empty") }
-        /// Push notifications received on this device, including local push, remote push, and Live Activities.
+        /// Push notifications received on this device, including local push and remote push.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.history.footer") }
         /// (No content)
         public static var noContent: String { return L10n.tr("Localizable", "settings_details.notifications.history.no_content") }
@@ -4556,8 +4556,6 @@ public enum L10n {
         public enum Kind {
           /// All
           public static var all: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.all") }
-          /// Live Activity
-          public static var liveActivity: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.live_activity") }
           /// Local
           public static var local: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.local") }
           /// Remote

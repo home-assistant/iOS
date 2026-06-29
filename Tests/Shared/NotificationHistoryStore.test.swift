@@ -59,19 +59,6 @@ class NotificationHistoryStoreTests: XCTestCase {
         XCTAssertNotNil(entries.first { $0.id == "id-\(total - 1)" })
     }
 
-    func testIsLiveActivityClassification() {
-        XCTAssertTrue(NotificationHistoryEntry.isLiveActivity(userInfo: ["homeassistant": ["live_update": true]]))
-        XCTAssertTrue(
-            NotificationHistoryEntry
-                .isLiveActivity(userInfo: ["homeassistant": ["command": "live_activity"]])
-        )
-        XCTAssertFalse(
-            NotificationHistoryEntry
-                .isLiveActivity(userInfo: ["homeassistant": ["command": "request_location_update"]])
-        )
-        XCTAssertFalse(NotificationHistoryEntry.isLiveActivity(userInfo: [:]))
-    }
-
     func testInitFromContentExtractsFieldsAndRedactsConfirmID() {
         let content = UNMutableNotificationContent()
         content.title = "Title"

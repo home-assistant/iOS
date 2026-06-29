@@ -1344,9 +1344,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.history.detail.empty" = "No payload";
 "settings_details.notifications.history.detail.payload" = "Payload";
 "settings_details.notifications.history.empty" = "No notifications yet";
-"settings_details.notifications.history.footer" = "Push notifications received on this device, including local push, remote push, and Live Activities.";
+"settings_details.notifications.history.footer" = "Push notifications received on this device, including local push and remote push.";
 "settings_details.notifications.history.kind.all" = "All";
-"settings_details.notifications.history.kind.live_activity" = "Live Activity";
 "settings_details.notifications.history.kind.local" = "Local";
 "settings_details.notifications.history.kind.remote" = "Remote";
 "settings_details.notifications.history.no_content" = "(No content)";
