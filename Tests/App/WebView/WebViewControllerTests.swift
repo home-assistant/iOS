@@ -100,13 +100,13 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(overlayState.emptyState)
     }
 
-    func testReloadMarksDisconnectedAndArmsTimer() {
+    func testMarkDisconnectedForHardReloadArmsTimer() {
         let sut = makeSUT()
         sut.overlayState = WebFrontendOverlayState()
         sut.updateFrontendConnectionState(state: FrontEndConnectionState.connected.rawValue)
         XCTAssertEqual(sut.connectionState, .connected)
 
-        sut.reload()
+        sut.markDisconnectedForHardReload()
 
         XCTAssertEqual(sut.connectionState, .disconnected)
         XCTAssertNotNil(sut.emptyStateTimer)
