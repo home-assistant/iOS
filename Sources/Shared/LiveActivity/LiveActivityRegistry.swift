@@ -368,8 +368,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                     for await state in activity.activityStateUpdates {
                         switch state {
                         case .dismissed, .ended:
+                            let lifecycle = state == .ended ? "ended" : "dismissed"
                             Current.clientEventStore.addEvent(.init(
-                                text: "Live Activity dismissed: \(activity.attributes.tag)",
+                                text: "Live Activity \(lifecycle): \(activity.attributes.tag)",
                                 type: .notification
                             ))
                             await self.reportActivityDismissed(tag: activity.attributes.tag)
@@ -818,27 +819,42 @@ struct WebhookResponseLiveActivityToken: WebhookResponseHandler {
     init(api: HomeAssistantAPI) {}
 
     static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
-        false
+        // A newer token report for the same tag supersedes an older in-flight one, so background
+        // session retries can't deliver a stale token after a newer one. Reports for other tags
+        // are independent and must not cancel each other.
+        guard let currentTag = (current.data as? [String: Any])?["tag"] as? String,
+              let proposedTag = (proposed.data as? [String: Any])?["tag"] as? String else {
+            return false
+        }
+        return currentTag == proposedTag
     }
 
     func handle(
         request: Promise<WebhookRequest>,
         result: Promise<Any>
     ) -> Guarantee<WebhookResponseHandlerResult> {
-        result.done { _ in
-            Current.clientEventStore.addEvent(
-                .init(text: "Live Activity push token sent to Home Assistant", type: .networkRequest)
-            )
-        }.map { _ in
-            WebhookResponseHandlerResult.default
-        }.recover { error in
-            Current.clientEventStore.addEvent(
-                .init(
-                    text: "Live Activity push token failed: \(error.localizedDescription)",
-                    type: .networkRequest
+        firstly {
+            request
+        }.map { request in
+            (request.data as? [String: Any])?["tag"] as? String ?? "unknown"
+        }.then { tag in
+            result.done { _ in
+                Current.clientEventStore.addEvent(
+                    .init(text: "Live Activity push token sent: \(tag)", type: .networkRequest)
                 )
-            )
-            return Guarantee.value(WebhookResponseHandlerResult.default)
+            }.map { _ in
+                WebhookResponseHandlerResult.default
+            }.recover { error in
+                Current.clientEventStore.addEvent(
+                    .init(
+                        text: "Live Activity push token failed: \(tag) — \(error.localizedDescription)",
+                        type: .networkRequest
+                    )
+                )
+                return Guarantee.value(WebhookResponseHandlerResult.default)
+            }
+        }.recover { _ in
+            Guarantee.value(WebhookResponseHandlerResult.default)
         }
     }
 }
