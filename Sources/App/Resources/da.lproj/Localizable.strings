@@ -594,6 +594,8 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "kiosk.push_command.hide_camera" = "Skjuler kamera";
 "kiosk.push_command.hide_screensaver" = "Skjuler pauseskærm";
 "kiosk.push_command.reload" = "Genindlæser betjeningspanel";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Viser kamera";
 "kiosk.push_command.show_screensaver" = "Viser pauseskærm";
 "kiosk.push_command.subtitle" = "Kiosk-kommando";

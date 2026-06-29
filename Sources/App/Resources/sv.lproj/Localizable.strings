@@ -592,6 +592,8 @@
 "kiosk.push_command.hide_camera" = "Dölj kamera";
 "kiosk.push_command.hide_screensaver" = "Dölj skärmsläckare";
 "kiosk.push_command.reload" = "Laddar om kontrollpanel";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Visa kamera";
 "kiosk.push_command.show_screensaver" = "Visa skärmsläckare";
 "kiosk.push_command.subtitle" = "Kioskkommando";

@@ -594,6 +594,8 @@
 "kiosk.push_command.hide_camera" = "Kaamera peitmine";
 "kiosk.push_command.hide_screensaver" = "Ekraanisäästja peitmine";
 "kiosk.push_command.reload" = "Vaate taaslaadimine";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Kaamera kuvamine";
 "kiosk.push_command.show_screensaver" = "Kuvatakse ekraanisäästja";
 "kiosk.push_command.subtitle" = "Kioski käsk";
@@ -1090,7 +1092,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.sensor_send_type.title" = "Saadetud andurid";
 "settings.connection_section.servers" = "Serverid";
 "settings.connection_section.servers_header" = "Serverid";
-"settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
+"settings.connection_section.servers_reorder_footer" = "Lohista, et muuta serverite järjekorda. Ülemine server on vaikimisi server.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Taustal SSID-dele juurdepääsemiseks on vaja asukohaluba „Alati” ja asukoha täielikku täpsust. Sätete muutmiseks puuduta siin.";
 "settings.connection_section.validate_error.edit_url" = "Muuda URL-i";
 "settings.connection_section.validate_error.title" = "Viga URL-i salvestamisel";
