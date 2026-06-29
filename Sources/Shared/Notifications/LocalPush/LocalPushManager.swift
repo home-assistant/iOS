@@ -171,9 +171,10 @@ public class LocalPushManager {
         var userInfo = baseContent.userInfo
         let isLiveActivity = Self.isLiveActivityCommand(userInfo)
 
-        if !isLiveActivity {
-            Current.notificationHistoryStore.record(NotificationHistoryEntry(content: baseContent, kind: .local))
-        }
+        Current.notificationHistoryStore.record(NotificationHistoryEntry(
+            content: baseContent,
+            kind: isLiveActivity ? .liveActivityLocal : .local
+        ))
 
         if isLiveActivity, let confirmID = event.confirmID {
             userInfo[Self.confirmIDUserInfoKey] = confirmID

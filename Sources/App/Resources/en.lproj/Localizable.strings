@@ -1346,9 +1346,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.history.empty" = "No notifications yet";
 "settings_details.notifications.history.footer" = "Push notifications received on this device, including local push and remote push.";
 "settings_details.notifications.history.kind.all" = "All";
+"settings_details.notifications.history.kind.live_activity_local" = "Live Activity (Local)";
+"settings_details.notifications.history.kind.live_activity_remote" = "Live Activity (Remote)";
 "settings_details.notifications.history.kind.local" = "Local";
 "settings_details.notifications.history.kind.remote" = "Remote";
 "settings_details.notifications.history.no_content" = "(No content)";
+"settings_details.notifications.history.remote_live_activity_unavailable" = "Remote Live Activities are delivered straight to the system by iOS, so the app never sees them and can't list them here.";
 "settings_details.notifications.history.title" = "History";
 "settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
 "settings_details.notifications.local_push.retry.title" = "Retry Local Push";

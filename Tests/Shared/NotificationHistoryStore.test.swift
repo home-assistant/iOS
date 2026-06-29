@@ -29,6 +29,11 @@ class NotificationHistoryStoreTests: XCTestCase {
         XCTAssertEqual(entries.first?.body, "World")
     }
 
+    func testRecordsLiveActivityLocalKind() {
+        store.record(NotificationHistoryEntry(kind: .liveActivityLocal, title: "Laundry"))
+        XCTAssertEqual(store.getEntries().first?.kind, .liveActivityLocal)
+    }
+
     func testEntryWrittenCorrectly() {
         let previousDate = Current.date
         defer { Current.date = previousDate }

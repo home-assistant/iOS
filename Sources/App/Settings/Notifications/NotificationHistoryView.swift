@@ -54,12 +54,20 @@ struct NotificationHistoryView: View {
             listItem(entry)
         }
         if filteredEntries.isEmpty {
-            Text(verbatim: L10n.SettingsDetails.Notifications.History.empty)
+            Text(verbatim: emptyStateText)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .multilineTextAlignment(.center)
                 .listRowBackground(Color.clear)
                 .font(.headline)
                 .foregroundColor(.secondary)
         }
+    }
+
+    private var emptyStateText: String {
+        if viewModel.kindFilter == .liveActivityRemote {
+            return L10n.SettingsDetails.Notifications.History.remoteLiveActivityUnavailable
+        }
+        return L10n.SettingsDetails.Notifications.History.empty
     }
 
     private var filteredEntries: [NotificationHistoryEntry] {
@@ -90,9 +98,7 @@ struct NotificationHistoryView: View {
                                 selected: viewModel.kindFilter == nil
                             )
                         }
-                        ForEach(NotificationHistoryEntry.Kind.allCases.sorted { lhs, rhs in
-                            lhs.displayText < rhs.displayText
-                        }, id: \.self) { kind in
+                        ForEach(NotificationHistoryEntry.Kind.allCases, id: \.self) { kind in
                             Button {
                                 viewModel.kindFilter = kind
                             } label: {

@@ -30,9 +30,9 @@ struct NotificationHistoryViewTests {
             NotificationHistoryEntry(
                 id: "3",
                 date: date.addingTimeInterval(-120),
-                kind: .remote,
-                title: "Garage",
-                body: "Door left open"
+                kind: .liveActivityLocal,
+                title: "Laundry",
+                body: "20 minutes remaining"
             ),
         ])
 

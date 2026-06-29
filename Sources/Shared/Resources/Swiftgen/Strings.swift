@@ -4535,6 +4535,8 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.history.footer") }
         /// (No content)
         public static var noContent: String { return L10n.tr("Localizable", "settings_details.notifications.history.no_content") }
+        /// Remote Live Activities are delivered straight to the system by iOS, so the app never sees them and can't list them here.
+        public static var remoteLiveActivityUnavailable: String { return L10n.tr("Localizable", "settings_details.notifications.history.remote_live_activity_unavailable") }
         /// History
         public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.history.title") }
         public enum ClearConfirm {
@@ -4556,6 +4558,10 @@ public enum L10n {
         public enum Kind {
           /// All
           public static var all: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.all") }
+          /// Live Activity (Local)
+          public static var liveActivityLocal: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.live_activity_local") }
+          /// Live Activity (Remote)
+          public static var liveActivityRemote: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.live_activity_remote") }
           /// Local
           public static var local: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.local") }
           /// Remote

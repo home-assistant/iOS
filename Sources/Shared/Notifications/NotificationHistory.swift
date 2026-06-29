@@ -5,6 +5,8 @@ public struct NotificationHistoryEntry: Codable, Identifiable, Equatable {
     public enum Kind: String, Codable, CaseIterable {
         case local
         case remote
+        case liveActivityLocal
+        case liveActivityRemote
     }
 
     public var id: String
@@ -210,6 +212,10 @@ public extension NotificationHistoryEntry.Kind {
             return L10n.SettingsDetails.Notifications.History.Kind.local
         case .remote:
             return L10n.SettingsDetails.Notifications.History.Kind.remote
+        case .liveActivityLocal:
+            return L10n.SettingsDetails.Notifications.History.Kind.liveActivityLocal
+        case .liveActivityRemote:
+            return L10n.SettingsDetails.Notifications.History.Kind.liveActivityRemote
         }
     }
 }
