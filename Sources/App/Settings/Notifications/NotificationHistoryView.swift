@@ -237,14 +237,7 @@ struct NotificationHistoryDetailView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.leading, CGFloat(row.depth) * DesignSystem.Spaces.two)
-        .contentShape(Rectangle())
-        .contextMenu {
-            Button {
-                UIPasteboard.general.string = row.copyText
-            } label: {
-                Label(L10n.copyLabel, systemSymbol: .docOnDoc)
-            }
-        }
+        .textSelection(.enabled)
     }
 
     private var copySection: some View {
@@ -283,14 +276,13 @@ private struct PayloadRow: Identifiable {
     let key: String?
     let value: String?
     let isContainer: Bool
-    let copyText: String
 }
 
 private indirect enum JSONNode {
     case object([(key: String, value: JSONNode)])
     case array([JSONNode])
     case string(String)
-    case number(NSNumber)
+    case number(String)
     case bool(Bool)
     case null
 
@@ -315,7 +307,7 @@ private indirect enum JSONNode {
             if CFGetTypeID(number) == CFBooleanGetTypeID() {
                 self = .bool(number.boolValue)
             } else {
-                self = .number(number)
+                self = .number(number.stringValue)
             }
         } else if let string = value as? String {
             self = .string(string)
@@ -329,36 +321,11 @@ private indirect enum JSONNode {
     private var scalarValue: String? {
         switch self {
         case let .string(string): return string
-        case let .number(number): return number.stringValue
+        case let .number(number): return number
         case let .bool(bool): return bool ? "true" : "false"
         case .null: return "null"
         case .object, .array: return nil
         }
-    }
-
-    private func jsonObject() -> Any {
-        switch self {
-        case let .object(pairs):
-            var dictionary: [String: Any] = [:]
-            for pair in pairs {
-                dictionary[pair.key] = pair.value.jsonObject()
-            }
-            return dictionary
-        case let .array(items):
-            return items.map { $0.jsonObject() }
-        case let .string(string): return string
-        case let .number(number): return number
-        case let .bool(bool): return bool
-        case .null: return NSNull()
-        }
-    }
-
-    func prettyJSON() -> String? {
-        let object = jsonObject()
-        guard JSONSerialization.isValidJSONObject(object) else { return nil }
-        let options: JSONSerialization.WritingOptions = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-        guard let data = try? JSONSerialization.data(withJSONObject: object, options: options) else { return nil }
-        return String(data: data, encoding: .utf8)
     }
 
     func flattened(key: String?, depth: Int, path: String) -> [PayloadRow] {
@@ -367,14 +334,7 @@ private indirect enum JSONNode {
             var rows: [PayloadRow] = []
             var childDepth = depth
             if let key {
-                rows.append(PayloadRow(
-                    id: path,
-                    depth: depth,
-                    key: key,
-                    value: nil,
-                    isContainer: true,
-                    copyText: prettyJSON() ?? key
-                ))
+                rows.append(PayloadRow(id: path, depth: depth, key: key, value: nil, isContainer: true))
                 childDepth += 1
             }
             for pair in pairs {
@@ -385,14 +345,7 @@ private indirect enum JSONNode {
             var rows: [PayloadRow] = []
             var childDepth = depth
             if let key {
-                rows.append(PayloadRow(
-                    id: path,
-                    depth: depth,
-                    key: key,
-                    value: nil,
-                    isContainer: true,
-                    copyText: prettyJSON() ?? key
-                ))
+                rows.append(PayloadRow(id: path, depth: depth, key: key, value: nil, isContainer: true))
                 childDepth += 1
             }
             for (index, item) in items.enumerated() {
@@ -400,14 +353,7 @@ private indirect enum JSONNode {
             }
             return rows
         default:
-            return [PayloadRow(
-                id: path,
-                depth: depth,
-                key: key,
-                value: scalarValue,
-                isContainer: false,
-                copyText: scalarValue ?? ""
-            )]
+            return [PayloadRow(id: path, depth: depth, key: key, value: scalarValue, isContainer: false)]
         }
     }
 }
