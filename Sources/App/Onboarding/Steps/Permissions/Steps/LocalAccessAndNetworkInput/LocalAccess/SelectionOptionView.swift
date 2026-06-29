@@ -113,6 +113,7 @@ private struct SelectionOptionRow: View {
                 Spacer()
             }
             .padding(DesignSystem.Spaces.two)
+            .contentShape(Rectangle())
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(isSelected && option.isRecommended ? Color.haPrimary.opacity(0.1) : Color.clear)
@@ -156,8 +157,9 @@ private struct SelectionIndicator: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview("Single Selection") {
-    @State var selection: String? = "secure"
+    @Previewable @State var selection: String? = "secure"
 
     let options = [
         SelectionOption(
@@ -195,8 +197,9 @@ private struct SelectionIndicator: View {
     .padding()
 }
 
+@available(iOS 17.0, *)
 #Preview("Multiple Selection") {
-    @State var selections: Set<String> = ["option1"]
+    @Previewable @State var selections: Set<String> = ["option1"]
 
     let options = [
         SelectionOption(
