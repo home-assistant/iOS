@@ -614,7 +614,6 @@ public class HomeAssistantAPI {
                     // The relay server uses this token to start a Live Activity entirely via APNs.
                     if Current.isTestFlight, let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
                         appData[LiveActivityRegistry.pushToStartRegistrationKey] = pushToStartToken
-                        appData["live_activity_push_to_start_apns_environment"] = Current.apnsEnvironment
                     }
                 }
                 #endif
