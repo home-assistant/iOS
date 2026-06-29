@@ -238,7 +238,15 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         for activity in Activity<HALiveActivityAttributes>.activities {
             let tag = activity.attributes.tag
             runningTags.insert(tag)
-            guard entries[tag] == nil else { continue }
+            if entries[tag] != nil {
+                // A duplicate for this tag survived from a previous run (Core re-sent a
+                // push-to-start while the app was terminated). Keep the one already adopted and
+                // end the extra. It has no observation task, so ending it fires no dismissal —
+                // Core keeps the survivor's token slot.
+                await activity.end(nil, dismissalPolicy: .immediate)
+                Current.Log.info("LiveActivityRegistry: ended duplicate activity for tag \(tag) on reattach")
+                continue
+            }
             let observationTask = makeObservationTask(for: activity)
             entries[tag] = Entry(activity: activity, observationTask: observationTask)
             Current.Log.verbose("LiveActivityRegistry: reattached activity for tag \(tag), id=\(activity.id)")
@@ -291,7 +299,22 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     public func startObservingRemoteActivityStarts() async {
         for await activity in Activity<HALiveActivityAttributes>.activityUpdates {
             let tag = activity.attributes.tag
-            guard entries[tag] == nil else { continue }
+
+            if let existing = entries[tag] {
+                // Same activity we already track (e.g. one we started locally) — nothing to do.
+                guard existing.activity.id != activity.id else { continue }
+
+                // A different activity for a tag we already track: Core re-sent a push-to-start
+                // because it had no per-activity token yet. Keep this newest one (it carries the
+                // freshest content) and end the prior duplicate. Cancel its observation first so
+                // its lifecycle handler doesn't fire reportActivityDismissed(tag:) — that would
+                // tell Core to drop the very token slot the survivor is about to repopulate.
+                existing.observationTask.cancel()
+                await existing.activity.end(nil, dismissalPolicy: .immediate)
+                Current.Log.info(
+                    "LiveActivityRegistry: collapsed duplicate activity for tag \(tag), keeping id=\(activity.id)"
+                )
+            }
 
             let observationTask = makeObservationTask(for: activity)
             entries[tag] = Entry(activity: activity, observationTask: observationTask)
