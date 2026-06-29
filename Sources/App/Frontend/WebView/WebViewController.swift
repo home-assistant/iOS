@@ -76,10 +76,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// updateFrontendConnectionState in WebViewController+ProtocolConformance.swift)
     var emptyStateTimer: Timer?
 
-    /// Frontend notifies when connection is established or not
-    /// Each navigation resets this to false so we can show the empty state
-    var isConnected = false
-
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersHomeIndicatorAutoHidden: Bool {
@@ -184,7 +180,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     deinit {
-        removeEmptyStateObservations()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
@@ -280,7 +275,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         postOnboardingNotificationPermission()
-        emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
     }
 
