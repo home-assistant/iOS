@@ -3,7 +3,6 @@ import Shared
 import SwiftUI
 
 struct NotificationHistoryView: View {
-    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = NotificationHistoryViewModel()
     @State private var showClearConfirmation = false
 

@@ -77,15 +77,10 @@ public struct NotificationHistoryEntry: Codable, Identifiable, Equatable {
     private static let redactedKeys: Set<String> = ["hass_confirm_id", "webhook_id"]
 
     static func payloadJSONString(from userInfo: [AnyHashable: Any]) -> String? {
-        var dictionary: [String: Any] = [:]
-        for (key, value) in userInfo {
-            guard let key = key as? String, !redactedKeys.contains(key) else { continue }
-            if let safe = jsonSafe(value) {
-                dictionary[key] = safe
-            }
+        guard let dictionary = jsonSafe(userInfo) as? [String: Any], !dictionary.isEmpty,
+              JSONSerialization.isValidJSONObject(dictionary) else {
+            return nil
         }
-
-        guard !dictionary.isEmpty, JSONSerialization.isValidJSONObject(dictionary) else { return nil }
 
         let options: JSONSerialization.WritingOptions = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
         guard let data = try? JSONSerialization.data(withJSONObject: dictionary, options: options) else {
@@ -110,7 +105,7 @@ public struct NotificationHistoryEntry: Codable, Identifiable, Equatable {
         if let dictionary = value as? [AnyHashable: Any] {
             var output: [String: Any] = [:]
             for (key, nested) in dictionary {
-                if let key = key as? String, let safe = jsonSafe(nested) {
+                if let key = key as? String, !redactedKeys.contains(key), let safe = jsonSafe(nested) {
                     output[key] = safe
                 }
             }

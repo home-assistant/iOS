@@ -73,6 +73,7 @@ class NotificationHistoryStoreTests: XCTestCase {
             "aps": ["alert": ["body": "Body"]],
             "hass_confirm_id": "secret-confirm-token",
             "tag": "abc",
+            "homeassistant": ["webhook_id": "secret-nested-hook", "command": "show"],
         ]
         let entry = NotificationHistoryEntry(content: content, kind: .remote)
         XCTAssertEqual(entry.title, "Title")
@@ -82,6 +83,8 @@ class NotificationHistoryStoreTests: XCTestCase {
         XCTAssertTrue(payload.contains("tag"))
         XCTAssertFalse(payload.contains("hass_confirm_id"))
         XCTAssertFalse(payload.contains("secret-confirm-token"))
+        XCTAssertFalse(payload.contains("webhook_id"), "nested webhook_id must be redacted")
+        XCTAssertFalse(payload.contains("secret-nested-hook"))
     }
 
     func testBodyFallsBackToApsAlertString() {
