@@ -625,6 +625,7 @@
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreasService.test.swift */; };
 		422E626E2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626D2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift */; };
+		422E62712CDCF00A00987BD0 /* FloorNamesMap.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E62702CDCF00A00987BD0 /* FloorNamesMap.test.swift */; };
 		422F88132D42806400706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
 		422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
 		422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */; };
@@ -840,6 +841,8 @@
 		428DBFFB2F0C9141003B08D5 /* AppDeviceRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */; };
 		428DBFFC2F0C9141003B08D5 /* AppDeviceRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */; };
 		428DBFFE2F0C95D8003B08D5 /* DeviceRegistry.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */; };
+		428DC0132F0C95D8003B08D5 /* HAAreasRegistryResponse.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0122F0C95D8003B08D5 /* HAAreasRegistryResponse.test.swift */; };
+		428DC0112F0C95D8003B08D5 /* HAFloorRegistryResponse.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0102F0C95D8003B08D5 /* HAFloorRegistryResponse.test.swift */; };
 		428DC0022F0C961E003B08D5 /* deviceregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 428DC0012F0C961E003B08D5 /* deviceregistry.json */; };
 		428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
 		428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
@@ -2420,6 +2423,7 @@
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
 		422E626B2CDCF00A00987BD0 /* AreasService.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.test.swift; sourceTree = "<group>"; };
 		422E626D2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityContextSubtitle.test.swift; sourceTree = "<group>"; };
+		422E62702CDCF00A00987BD0 /* FloorNamesMap.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorNamesMap.test.swift; sourceTree = "<group>"; };
 		422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetToggleAppIntent.swift; sourceTree = "<group>"; };
 		422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetActivateAppIntent.swift; sourceTree = "<group>"; };
 		422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetPressButtonAppIntent.swift; sourceTree = "<group>"; };
@@ -2623,6 +2627,8 @@
 		428DBFF72F0C9009003B08D5 /* DeviceRegistryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRegistryEntry.swift; sourceTree = "<group>"; };
 		428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDeviceRegistryTable.swift; sourceTree = "<group>"; };
 		428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRegistry.test.swift; sourceTree = "<group>"; };
+		428DC0122F0C95D8003B08D5 /* HAAreasRegistryResponse.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAreasRegistryResponse.test.swift; sourceTree = "<group>"; };
+		428DC0102F0C95D8003B08D5 /* HAFloorRegistryResponse.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAFloorRegistryResponse.test.swift; sourceTree = "<group>"; };
 		428DC0012F0C961E003B08D5 /* deviceregistry.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = deviceregistry.json; sourceTree = "<group>"; };
 		428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityProvider+Details.swift"; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
@@ -4757,6 +4763,8 @@
 			children = (
 				420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */,
 				428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */,
+				428DC0122F0C95D8003B08D5 /* HAAreasRegistryResponse.test.swift */,
+				428DC0102F0C95D8003B08D5 /* HAFloorRegistryResponse.test.swift */,
 				428DC0012F0C961E003B08D5 /* deviceregistry.json */,
 			);
 			path = Models;
@@ -4986,6 +4994,7 @@
 			children = (
 				422E626B2CDCF00A00987BD0 /* AreasService.test.swift */,
 				422E626D2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift */,
+				422E62702CDCF00A00987BD0 /* FloorNamesMap.test.swift */,
 			);
 			path = Area;
 			sourceTree = "<group>";
@@ -9896,6 +9905,7 @@
 				42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */,
 				422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */,
 				422E626E2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift in Sources */,
+				422E62712CDCF00A00987BD0 /* FloorNamesMap.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				42B980DC2DC256A300BC5C08 /* SensorRow.test.swift in Sources */,
 				42C5E5AD2F7E74DE004797B5 /* SafeScriptMessageHandlerTests.swift in Sources */,
@@ -10623,6 +10633,8 @@
 				11AF4D2A249D88C5006C74C0 /* ActivitySensor.test.swift in Sources */,
 				11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */,
 				428DBFFE2F0C95D8003B08D5 /* DeviceRegistry.test.swift in Sources */,
+				428DC0132F0C95D8003B08D5 /* HAAreasRegistryResponse.test.swift in Sources */,
+				428DC0112F0C95D8003B08D5 /* HAFloorRegistryResponse.test.swift in Sources */,
 				11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */,
 				11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */,
 				1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */,
