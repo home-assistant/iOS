@@ -594,6 +594,8 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "kiosk.push_command.hide_camera" = "Kamera ausgeblendet";
 "kiosk.push_command.hide_screensaver" = "Bildschirmschoner ausgeblendet";
 "kiosk.push_command.reload" = "Dashboard wird neu geladen";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Kamera eingeblendet";
 "kiosk.push_command.show_screensaver" = "Bildschirmschoner eingeblendet";
 "kiosk.push_command.subtitle" = "Kiosk-Befehl";
@@ -1090,7 +1092,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.sensor_send_type.title" = "Gesendete Sensordaten";
 "settings.connection_section.servers" = "Server";
 "settings.connection_section.servers_header" = "Server";
-"settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
+"settings.connection_section.servers_reorder_footer" = "Reihenfolge per Ziehen ändern. Der oberste wird als Standardserver verwendet.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Für den Zugriff auf SSIDs im Hintergrund sind die Standortberechtigung „Immer“ und die Standortgenauigkeit „Vollständig“ erforderlich. Tippe hier, um deine Einstellungen zu ändern.";
 "settings.connection_section.validate_error.edit_url" = "URL bearbeiten";
 "settings.connection_section.validate_error.title" = "Fehler beim Speichern der URL";

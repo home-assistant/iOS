@@ -594,6 +594,8 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "kiosk.push_command.hide_camera" = "Hiding camera";
 "kiosk.push_command.hide_screensaver" = "Hiding screensaver";
 "kiosk.push_command.reload" = "Reloading dashboard";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Showing camera";
 "kiosk.push_command.show_screensaver" = "Showing screensaver";
 "kiosk.push_command.subtitle" = "Kiosk command";

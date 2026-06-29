@@ -594,6 +594,8 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "kiosk.push_command.hide_camera" = "Skrytí kamery";
 "kiosk.push_command.hide_screensaver" = "Skrytí spořiče obrazovky";
 "kiosk.push_command.reload" = "Znovunačítání ovládacího panelu";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Zobrazení kamery";
 "kiosk.push_command.show_screensaver" = "Zobrazení spořiče obrazovky";
 "kiosk.push_command.subtitle" = "Příkaz kiosku";
@@ -1090,7 +1092,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.sensor_send_type.title" = "Odeslané senzory";
 "settings.connection_section.servers" = "Servery";
 "settings.connection_section.servers_header" = "Servery";
-"settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
+"settings.connection_section.servers_reorder_footer" = "Přetažením změníte pořadí serverů. Server nahoře se používá jako výchozí.";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Přístup k SSID na pozadí vyžaduje oprávnění k poloze \"Vždy\" a \"Plnou\" přesnost polohy. Klepnutím sem změníte nastavení.";
 "settings.connection_section.validate_error.edit_url" = "Upravit URL";
 "settings.connection_section.validate_error.title" = "Chyba při ukládání URL";

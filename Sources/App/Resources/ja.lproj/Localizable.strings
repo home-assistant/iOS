@@ -594,6 +594,8 @@
 "kiosk.push_command.hide_camera" = "カメラをを非表示";
 "kiosk.push_command.hide_screensaver" = "スクリーンセーバーを非表示";
 "kiosk.push_command.reload" = "ダッシュボードの再読み込み";
+"kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "カメラを表示";
 "kiosk.push_command.show_screensaver" = "スクリーンセーバーを表示";
 "kiosk.push_command.subtitle" = "キオスクコマンド";
@@ -1089,7 +1091,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.sensor_send_type.title" = "送信されたセンサー";
 "settings.connection_section.servers" = "サーバー";
 "settings.connection_section.servers_header" = "サーバー";
-"settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
+"settings.connection_section.servers_reorder_footer" = "サーバーの順序を変更するには、ドラッグしてください。一番上にあるサーバーがデフォルトのサーバーとして使用されます。";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "バックグラウンドで SSID にアクセスするには、「常に」位置情報の許可と「完全な」位置精度が必要です。ここをタップして設定を変更します。";
 "settings.connection_section.validate_error.edit_url" = "URLの編集";
 "settings.connection_section.validate_error.title" = "URLの保存中にエラーが発生しました";
