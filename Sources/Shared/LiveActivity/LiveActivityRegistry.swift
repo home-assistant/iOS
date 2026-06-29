@@ -141,6 +141,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 staleDate: computeStaleDate(for: state)
             )
             await existing.activity.update(content)
+            Current.clientEventStore.addEvent(
+                .init(text: "Live Activity updated: \(tag)", type: .notification)
+            )
             return true
         }
 
@@ -152,6 +155,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 staleDate: computeStaleDate(for: state)
             )
             await live.update(content)
+            Current.clientEventStore.addEvent(
+                .init(text: "Live Activity updated: \(tag)", type: .notification)
+            )
             let observationTask = makeObservationTask(for: live)
             entries[tag] = Entry(activity: live, observationTask: observationTask)
             return true
@@ -201,6 +207,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
         let observationTask = makeObservationTask(for: activity)
         await confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
+        Current.clientEventStore.addEvent(
+            .init(text: "Live Activity started: \(tag)", type: .notification)
+        )
         Current.Log.verbose("LiveActivityRegistry: started activity for tag \(tag), id=\(activity.id)")
         return true
     }
@@ -209,6 +218,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     public func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy = .immediate) async {
         if let existing = remove(id: tag) {
             await existing.activity.end(nil, dismissalPolicy: dismissalPolicy)
+            Current.clientEventStore.addEvent(
+                .init(text: "Live Activity ended: \(tag)", type: .notification)
+            )
             Current.Log.verbose("LiveActivityRegistry: ended activity for tag \(tag)")
             return
         }
@@ -295,6 +307,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
             let observationTask = makeObservationTask(for: activity)
             entries[tag] = Entry(activity: activity, observationTask: observationTask)
+            Current.clientEventStore.addEvent(
+                .init(text: "Live Activity started remotely: \(tag)", type: .notification)
+            )
             Current.Log.verbose(
                 "LiveActivityRegistry: observed remotely started activity for tag \(tag), id=\(activity.id)"
             )
@@ -353,6 +368,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                     for await state in activity.activityStateUpdates {
                         switch state {
                         case .dismissed, .ended:
+                            Current.clientEventStore.addEvent(.init(
+                                text: "Live Activity dismissed: \(activity.attributes.tag)",
+                                type: .notification
+                            ))
                             await self.reportActivityDismissed(tag: activity.attributes.tag)
                             _ = await self.remove(id: activity.attributes.tag)
                             return
@@ -386,13 +405,21 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 "expires_at": expiresAt,
             ]
         )
+        Current.clientEventStore.addEvent(
+            .init(text: "Sending Live Activity push token: \(tag)", type: .networkRequest)
+        )
         for server in Current.servers.all {
             // Background session: the OS owns this upload and keeps retrying it (up to its 2 h
             // resource timeout) across connectivity changes even if the app is suspended or
             // terminated — so a momentary drop, or losing foreground time, doesn't lose the token.
             // Reliable token delivery is what lets Core flush the buffered update and stop sending
-            // starts, so it should not be best-effort like sendEphemeral.
-            Current.webhooks.sendPassive(server: server, request: request).cauterize()
+            // starts, so it should not be best-effort like sendEphemeral. The response handler logs
+            // the actual delivery outcome (the promise here only signals enqueue).
+            Current.webhooks.sendPassive(
+                identifier: .liveActivityToken,
+                server: server,
+                request: request
+            ).cauterize()
         }
         rememberReportedTokenTag(tag)
     }
@@ -776,6 +803,42 @@ public final class LiveActivityPendingStartObserver {
                     DispatchQueue.main.async { seal.fulfill(()) }
                 }
             }
+        }
+    }
+}
+
+extension WebhookResponseIdentifier {
+    static var liveActivityToken: Self { .init(rawValue: "liveActivityToken") }
+}
+
+/// Logs the outcome of a Live Activity push-token report. The token is sent on the background
+/// session, so the returned promise only signals that the upload was enqueued — the real delivery
+/// result is delivered here and recorded in the client event log.
+struct WebhookResponseLiveActivityToken: WebhookResponseHandler {
+    init(api: HomeAssistantAPI) {}
+
+    static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
+        false
+    }
+
+    func handle(
+        request: Promise<WebhookRequest>,
+        result: Promise<Any>
+    ) -> Guarantee<WebhookResponseHandlerResult> {
+        result.done { _ in
+            Current.clientEventStore.addEvent(
+                .init(text: "Live Activity push token sent to Home Assistant", type: .networkRequest)
+            )
+        }.map { _ in
+            WebhookResponseHandlerResult.default
+        }.recover { error in
+            Current.clientEventStore.addEvent(
+                .init(
+                    text: "Live Activity push token failed: \(error.localizedDescription)",
+                    type: .networkRequest
+                )
+            )
+            return Guarantee.value(WebhookResponseHandlerResult.default)
         }
     }
 }

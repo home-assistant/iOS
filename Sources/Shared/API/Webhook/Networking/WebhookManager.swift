@@ -107,6 +107,9 @@ public class WebhookManager: NSObject {
         }
 
         register(responseHandler: WebhookResponseUnhandled.self, for: .unhandled)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        register(responseHandler: WebhookResponseLiveActivityToken.self, for: .liveActivityToken)
+        #endif
     }
 
     func register(
