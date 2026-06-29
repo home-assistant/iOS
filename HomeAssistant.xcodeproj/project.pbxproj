@@ -624,6 +624,7 @@
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreasService.test.swift */; };
+		422E626E2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626D2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift */; };
 		422F88132D42806400706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
 		422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
 		422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */; };
@@ -766,6 +767,8 @@
 		427647222C8F36DB0027B21F /* LightIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427647212C8F36DB0027B21F /* LightIntent.swift */; };
 		427647252C8F38590027B21F /* HAAreasRegistryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */; };
 		427647262C8F38590027B21F /* HAAreasRegistryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */; };
+		427647272C8F38590027B21F /* HAFloorRegistryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA702B4EE2E8002729BC /* HAFloorRegistryResponse.swift */; };
+		427647282C8F38590027B21F /* HAFloorRegistryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA702B4EE2E8002729BC /* HAFloorRegistryResponse.swift */; };
 		427692E32B98B82500F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E22B98B82500F24321 /* SharedPush */; };
 		427692E52B98B83200F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E42B98B83200F24321 /* SharedPush */; };
 		4276FEF52FE92903001F9228 /* GaugeArcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4276FEF42FE92903001F9228 /* GaugeArcView.swift */; };
@@ -2416,6 +2419,7 @@
 		422C95E62F45C5CD00650B46 /* WidgetTimelineProviderSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTimelineProviderSupport.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
 		422E626B2CDCF00A00987BD0 /* AreasService.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.test.swift; sourceTree = "<group>"; };
+		422E626D2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityContextSubtitle.test.swift; sourceTree = "<group>"; };
 		422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetToggleAppIntent.swift; sourceTree = "<group>"; };
 		422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetActivateAppIntent.swift; sourceTree = "<group>"; };
 		422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetPressButtonAppIntent.swift; sourceTree = "<group>"; };
@@ -3030,6 +3034,7 @@
 		42F1DA6A2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAreasZonesTemplate.swift; sourceTree = "<group>"; };
 		42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPaginatedListTemplate.swift; sourceTree = "<group>"; };
 		42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAreasRegistryResponse.swift; sourceTree = "<group>"; };
+		42F1DA702B4EE2E8002729BC /* HAFloorRegistryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAFloorRegistryResponse.swift; sourceTree = "<group>"; };
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
@@ -4980,6 +4985,7 @@
 			isa = PBXGroup;
 			children = (
 				422E626B2CDCF00A00987BD0 /* AreasService.test.swift */,
+				422E626D2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift */,
 			);
 			path = Area;
 			sourceTree = "<group>";
@@ -5500,6 +5506,7 @@
 			children = (
 				42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */,
 				42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */,
+				42F1DA702B4EE2E8002729BC /* HAFloorRegistryResponse.swift */,
 				429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */,
 			);
 			path = Models;
@@ -9888,6 +9895,7 @@
 				42FCD0082B9B1ECE0057783F /* SimulatorThreadClientService.swift in Sources */,
 				42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */,
 				422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */,
+				422E626E2CDCF00A00987BD0 /* EntityContextSubtitle.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				42B980DC2DC256A300BC5C08 /* SensorRow.test.swift in Sources */,
 				42C5E5AD2F7E74DE004797B5 /* SafeScriptMessageHandlerTests.swift in Sources */,
@@ -10077,6 +10085,7 @@
 				11B38EF1275C54A300205C7B /* SendLocationIntentHandler.swift in Sources */,
 				1120C580274638330046C38B /* PerServerContainer.swift in Sources */,
 				427647262C8F38590027B21F /* HAAreasRegistryResponse.swift in Sources */,
+				427647272C8F38590027B21F /* HAFloorRegistryResponse.swift in Sources */,
 				42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */,
 				FF79AFA7BB50A4412EA3D90F /* KioskModeSensor.swift in Sources */,
 				72BA28D07496C22E40A84DDB /* KioskBrightnessSensor.swift in Sources */,
@@ -10520,6 +10529,7 @@
 				42DEDA9A2C5B926400E9D29D /* AppVersionSensor.swift in Sources */,
 				11F2F24125871CAF00F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				427647252C8F38590027B21F /* HAAreasRegistryResponse.swift in Sources */,
+				427647282C8F38590027B21F /* HAFloorRegistryResponse.swift in Sources */,
 				420CFC842D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */,
 				42070EEE2BAC523F0031E96F /* AssistService.swift in Sources */,
 				42D3E4BF2C5D321300444BE6 /* NotificationIdentifier.swift in Sources */,

@@ -488,11 +488,15 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         let appAreas = await Task.detached(priority: .utility) {
             let modelTimer = ProfilingTimer("Step 4.2.1: Building AppArea models (count: \(areas.count))")
             let result = areas.enumerated().map { index, area in
-                AppArea(
+                let floorName = area.floorId.flatMap { floorId in
+                    Current.areasProvider().floor(for: floorId, serverId: serverId)?.name
+                }
+                return AppArea(
                     from: area,
                     serverId: serverId,
                     entities: areasAndEntities[area.areaId],
-                    sortOrder: index
+                    sortOrder: index,
+                    floorName: floorName
                 )
             }
             modelTimer.end()
