@@ -66,27 +66,12 @@ struct HomeAssistantView: View, WebFrontendView {
                         server: server,
                         webViewController: webViewController
                     )
-                    .ignoresSafeArea()
+                    .frame(width: .zero, height: .zero)
+                    .allowsHitTesting(false)
                 }
             }
 
-            if overlayState.showsNoActiveURL {
-                ConnectionSecurityLevelBlockView(server: server)
-                    .transition(.opacity)
-            } else if let emptyState = overlayState.emptyState {
-                WebViewEmptyStateView(
-                    style: emptyState.style,
-                    server: emptyState.server,
-                    showsErrorDetailsButton: emptyState.showsErrorDetailsButton,
-                    availableReauthURLTypes: emptyState.availableReauthURLTypes,
-                    retryAction: emptyState.retryAction,
-                    settingsAction: emptyState.settingsAction,
-                    errorDetailsAction: emptyState.errorDetailsAction,
-                    reauthAction: emptyState.reauthAction,
-                    dismissAction: emptyState.dismissAction
-                )
-                .transition(.opacity)
-            }
+
         }
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
@@ -98,6 +83,27 @@ struct HomeAssistantView: View, WebFrontendView {
             } else {
                 view
             }
+        }
+    }
+
+    @ViewBuilder
+    private var emptyStates: some View {
+        if overlayState.showsNoActiveURL {
+            ConnectionSecurityLevelBlockView(server: server)
+                .transition(.opacity)
+        } else if let emptyState = overlayState.emptyState {
+            WebViewEmptyStateView(
+                style: emptyState.style,
+                server: emptyState.server,
+                showsErrorDetailsButton: emptyState.showsErrorDetailsButton,
+                availableReauthURLTypes: emptyState.availableReauthURLTypes,
+                retryAction: emptyState.retryAction,
+                settingsAction: emptyState.settingsAction,
+                errorDetailsAction: emptyState.errorDetailsAction,
+                reauthAction: emptyState.reauthAction,
+                dismissAction: emptyState.dismissAction
+            )
+            .transition(.opacity)
         }
     }
 

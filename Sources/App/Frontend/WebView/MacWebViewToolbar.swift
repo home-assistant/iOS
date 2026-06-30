@@ -6,276 +6,266 @@ import UIKit
 import AppKit
 #endif
 
-struct MacWebViewToolbar: View {
-    fileprivate enum Constants {
-        static let leadingPadding: CGFloat = 80
-        static let buttonHoverScale: CGFloat = 1.16
-        static let buttonPressedScale: CGFloat = 0.90
-        static let navigationShadowRadius: CGFloat = 2
-        static let navigationShadowYOffset: CGFloat = 1
-        static let toolbarIconSize: CGFloat = 12
-        static let previewWidth: CGFloat = 520
-        static let buttonScaleAnimationDuration: TimeInterval = 0.12
-        static let navigationShadowColor = Color.black.opacity(0.18)
-    }
-
+struct MacWebViewToolbar: UIViewControllerRepresentable {
     let server: Server
     weak var webViewController: WebViewController?
 
-    private let macOS26StylingOverride: Bool?
-
-    @StateObject private var serversObserver = ServersObserver()
-
-    init(
-        server: Server,
-        webViewController: WebViewController?,
-        macOS26StylingOverride: Bool? = nil
-    ) {
-        self.server = server
-        self.webViewController = webViewController
-        self.macOS26StylingOverride = macOS26StylingOverride
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
     }
 
-    private var servers: [Server] {
-        serversObserver.servers
-    }
-
-    private var usesMacOS26Styling: Bool {
-        if let macOS26StylingOverride {
-            return macOS26StylingOverride
-        }
-
-        if #available(iOS 26.0, macOS 26.0, *) {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    var body: some View {
-        HStack {
-            leftButtons
-            Spacer()
-            rightButtons
-
-            if servers.count > 1 {
-                serverPicker
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .top)
-        .padding([.top, .trailing], DesignSystem.Spaces.half)
-        .padding(.leading, Constants.leadingPadding)
-    }
-
-    private var leftButtons: some View {
-        HStack {
-            backForwardButtons
-
-            toolbarButton(
-                action: {
-                    webViewController?.refresh()
-                },
-                accessibilityLabel: L10n.Watch.Settings.refresh,
-                symbol: .arrowClockwise
+    func makeUIViewController(context: Context) -> UIViewController {
+        MacWebViewToolbarViewController { [weak coordinator = context.coordinator] viewController in
+            coordinator?.configure(
+                windowScene: viewController.view.window?.windowScene,
+                server: server,
+                webViewController: webViewController
             )
         }
     }
 
-    @ViewBuilder
-    private var backForwardButtons: some View {
-        HStack(spacing: DesignSystem.Spaces.micro) {
-            backButton()
-            forwardButton()
-        }
-    }
-
-    private func backButton() -> some View {
-        toolbarButton(
-            action: {
-                webViewController?.goBack()
-            },
-            accessibilityLabel: L10n.Mac.Navigation.GoBack.accessibilityLabel,
-            symbol: .chevronLeft
+    func updateUIViewController(_ viewController: UIViewController, context: Context) {
+        context.coordinator.configure(
+            windowScene: viewController.view.window?.windowScene,
+            server: server,
+            webViewController: webViewController
         )
     }
 
-    private func forwardButton() -> some View {
-        toolbarButton(
-            action: {
-                webViewController?.goForward()
-            },
-            accessibilityLabel: L10n.Mac.Navigation.GoForward.accessibilityLabel,
-            symbol: .chevronRight
-        )
+    static func dismantleUIViewController(_ viewController: UIViewController, coordinator: Coordinator) {
+        coordinator.removeToolbar()
+    }
+}
+
+private final class MacWebViewToolbarViewController: UIViewController {
+    private let updateToolbar: (MacWebViewToolbarViewController) -> Void
+
+    init(updateToolbar: @escaping (MacWebViewToolbarViewController) -> Void) {
+        self.updateToolbar = updateToolbar
+        super.init(nibName: nil, bundle: nil)
     }
 
-    private var rightButtons: some View {
-        HStack {
-            toolbarButton(
-                action: {
-                    webViewController?.copyCurrentSelectedContent()
-                },
-                accessibilityLabel: L10n.Mac.Copy.accessibilityLabel,
-                symbol: .docOnDoc
-            )
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-            toolbarButton(
-                action: {
-                    webViewController?.pasteContent()
-                },
-                accessibilityLabel: L10n.Mac.Paste.accessibilityLabel,
-                symbol: .docOnClipboard
-            )
-            toolbarButton(
-                action: {
-                    webViewController?.openServerInSafari()
-                },
-                accessibilityLabel: L10n.Mac.OpenInSafari.accessibilityLabel,
-                symbol: .safariFill
-            )
+    override func loadView() {
+        view = UIView()
+        view.isUserInteractionEnabled = false
+        view.backgroundColor = .clear
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateToolbar(self)
+    }
+}
+
+#if targetEnvironment(macCatalyst)
+extension MacWebViewToolbar {
+    @MainActor
+    final class Coordinator: NSObject, NSToolbarDelegate {
+        private enum Constants {
+            static let toolbarIdentifier = NSToolbar.Identifier("io.home-assistant.webview.toolbar")
+            static let highVisibilityPriority = NSToolbarItem.VisibilityPriority.high
+            static let imageCanvasSize = CGSize(width: 18, height: 18)
+            static let symbolPointSize: CGFloat = 13
         }
-    }
 
-    private var serverPicker: some View {
-        Menu {
-            ForEach(servers, id: \.identifier) { server in
-                Button {
-                    openServer(server)
-                } label: {
-                    if server.identifier == self.server.identifier {
-                        Label(server.info.name, systemSymbol: .checkmark)
-                    } else {
-                        Text(server.info.name)
-                    }
+        private weak var webViewController: WebViewController?
+        private weak var titlebar: UITitlebar?
+        private var toolbar: NSToolbar?
+        private var server: Server?
+
+        func configure(
+            windowScene: UIWindowScene?,
+            server: Server,
+            webViewController: WebViewController?
+        ) {
+            self.server = server
+            self.webViewController = webViewController
+
+            guard let titlebar = windowScene?.titlebar else { return }
+            self.titlebar = titlebar
+
+            if toolbar == nil || titlebar.toolbar !== toolbar {
+                let toolbar = NSToolbar(identifier: Constants.toolbarIdentifier)
+                toolbar.delegate = self
+                toolbar.displayMode = .iconOnly
+                toolbar.allowsUserCustomization = false
+                toolbar.autosavesConfiguration = false
+
+                titlebar.titleVisibility = .hidden
+                if #available(macCatalyst 14.0, *) {
+                    titlebar.toolbarStyle = .unifiedCompact
+                    titlebar.separatorStyle = .none
                 }
+                titlebar.toolbar = toolbar
+                self.toolbar = toolbar
             }
-        } label: {
-            HStack(spacing: DesignSystem.Spaces.micro) {
-                Text(server.info.name)
-                    .lineLimit(1)
-                Image(systemSymbol: .chevronDown)
+
+            updateEnabledItems()
+        }
+
+        func removeToolbar() {
+            guard titlebar?.toolbar === toolbar else { return }
+            titlebar?.toolbar = nil
+            toolbar = nil
+        }
+
+        func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+            toolbarItemIdentifiers
+        }
+
+        func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+            toolbarItemIdentifiers
+        }
+
+        func toolbar(
+            _ toolbar: NSToolbar,
+            itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier,
+            willBeInsertedIntoToolbar flag: Bool
+        ) -> NSToolbarItem? {
+            switch itemIdentifier {
+            case .homeAssistantBack:
+                toolbarItem(
+                    identifier: itemIdentifier,
+                    label: L10n.Mac.Navigation.GoBack.accessibilityLabel,
+                    symbol: .chevronLeft,
+                    action: #selector(goBack)
+                )
+            case .homeAssistantForward:
+                toolbarItem(
+                    identifier: itemIdentifier,
+                    label: L10n.Mac.Navigation.GoForward.accessibilityLabel,
+                    symbol: .chevronRight,
+                    action: #selector(goForward)
+                )
+            case .homeAssistantRefresh:
+                toolbarItem(
+                    identifier: itemIdentifier,
+                    label: L10n.Watch.Settings.refresh,
+                    symbol: .arrowClockwise,
+                    action: #selector(refresh)
+                )
+            case .homeAssistantCopy:
+                toolbarItem(
+                    identifier: itemIdentifier,
+                    label: L10n.Mac.Copy.accessibilityLabel,
+                    symbol: .docOnDoc,
+                    action: #selector(copyCurrentSelectedContent)
+                )
+            case .homeAssistantPaste:
+                toolbarItem(
+                    identifier: itemIdentifier,
+                    label: L10n.Mac.Paste.accessibilityLabel,
+                    symbol: .docOnClipboard,
+                    action: #selector(pasteContent)
+                )
+            case .homeAssistantOpenInSafari:
+                toolbarItem(
+                    identifier: itemIdentifier,
+                    label: L10n.Mac.OpenInSafari.accessibilityLabel,
+                    symbol: .safariFill,
+                    action: #selector(openServerInSafari)
+                )
+            default:
+                nil
             }
         }
-        .buttonStyle(ToolbarButtonStyle())
-        .accessibilityLabel(L10n.WebView.ServerSelection.title)
-        .accessibilityValue(server.info.name)
-        .help(L10n.WebView.ServerSelection.title)
-    }
 
-    private func openServer(_ selectedServer: Server) {
-        guard selectedServer.identifier != server.identifier else { return }
-        webViewController?.openServer(selectedServer)
-    }
-
-    @ViewBuilder
-    private func toolbarButton(
-        action: @escaping () -> Void,
-        accessibilityLabel: String,
-        symbol: SFSymbol
-    ) -> some View {
-        Button(action: action) {
-            Image(systemSymbol: symbol)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Constants.toolbarIconSize, height: Constants.toolbarIconSize)
+        private func updateEnabledItems() {
+            toolbar?.items.forEach { item in
+                item.isEnabled = webViewController != nil
+            }
         }
-        .buttonStyle(ToolbarButtonStyle())
-        .accessibilityLabel(accessibilityLabel)
-        .help(accessibilityLabel)
-    }
-}
 
-private struct ToolbarButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .toolbarInteractiveStyle(isPressed: configuration.isPressed)
-    }
-}
+        private var toolbarItemIdentifiers: [NSToolbarItem.Identifier] {
+            [
+                .homeAssistantBack,
+                .homeAssistantForward,
+                .homeAssistantRefresh,
+                .flexibleSpace,
+                .homeAssistantCopy,
+                .homeAssistantPaste,
+                .homeAssistantOpenInSafari,
+            ]
+        }
 
-private extension View {
-    func toolbarInteractiveStyle(
-        isPressed: Bool = false,
-        verticalPadding: CGFloat = DesignSystem.Spaces.half
-    ) -> some View {
-        modifier(ToolbarInteractiveStyleModifier(isPressed: isPressed, verticalPadding: verticalPadding))
-    }
-}
+        private func toolbarItem(
+            identifier: NSToolbarItem.Identifier,
+            label: String,
+            symbol: SFSymbol,
+            action: Selector
+        ) -> NSToolbarItem {
+            let item = NSToolbarItem(itemIdentifier: identifier)
+            item.label = label
+            item.paletteLabel = label
+            item.toolTip = label
+            item.image = toolbarImage(symbol: symbol, accessibilityLabel: label)
+            item.target = self
+            item.action = action
+            item.visibilityPriority = Constants.highVisibilityPriority
+            return item
+        }
 
-private struct ToolbarInteractiveStyleModifier: ViewModifier {
-    let isPressed: Bool
-    let verticalPadding: CGFloat
-
-    @State private var isHovering = false
-    @State private var isCursorPushed = false
-
-    func body(content: Content) -> some View {
-        content
-            .foregroundStyle(.primary)
-            .padding(.vertical, verticalPadding)
-            .padding(.horizontal, DesignSystem.Spaces.one)
-            .background(.regularMaterial, in: .capsule)
-            .scaleEffect(scale)
-            .contentShape(Rectangle())
-            .animation(
-                .easeInOut(duration: MacWebViewToolbar.Constants.buttonScaleAnimationDuration),
-                value: isPressed
+        private func toolbarImage(symbol: SFSymbol, accessibilityLabel: String) -> UIImage {
+            let configuration = UIImage.SymbolConfiguration(
+                pointSize: Constants.symbolPointSize,
+                weight: .regular
             )
-            .animation(
-                .easeInOut(duration: MacWebViewToolbar.Constants.buttonScaleAnimationDuration),
-                value: isHovering
-            )
-            .onHover { handleHover($0) }
-            .onDisappear {
-                popCursorIfNeeded()
+            let symbolImage = UIImage(systemSymbol: symbol)
+                .applyingSymbolConfiguration(configuration) ?? UIImage(systemSymbol: symbol)
+
+            return UIGraphicsImageRenderer(size: Constants.imageCanvasSize).image { _ in
+                symbolImage.draw(in: CGRect(
+                    origin: CGPoint(
+                        x: (Constants.imageCanvasSize.width - symbolImage.size.width) / 2,
+                        y: (Constants.imageCanvasSize.height - symbolImage.size.height) / 2
+                    ),
+                    size: symbolImage.size
+                ))
             }
-    }
+            .withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        }
 
-    private var scale: CGFloat {
-        if isPressed {
-            return MacWebViewToolbar.Constants.buttonPressedScale
-        } else if isHovering {
-            return MacWebViewToolbar.Constants.buttonHoverScale
-        } else {
-            return 1
+        @objc private func goBack() {
+            webViewController?.goBack()
+        }
+
+        @objc private func goForward() {
+            webViewController?.goForward()
+        }
+
+        @objc private func refresh() {
+            webViewController?.refresh()
+        }
+
+        @objc private func copyCurrentSelectedContent() {
+            webViewController?.copyCurrentSelectedContent()
+        }
+
+        @objc private func pasteContent() {
+            webViewController?.pasteContent()
+        }
+
+        @objc private func openServerInSafari() {
+            webViewController?.openServerInSafari()
         }
     }
-
-    private func handleHover(_ inside: Bool) {
-        isHovering = inside
-
-        #if targetEnvironment(macCatalyst)
-        if inside, !isCursorPushed {
-            NSCursor.pointingHand.push()
-            isCursorPushed = true
-        } else if !inside {
-            popCursorIfNeeded()
-        }
-        #endif
-    }
-
-    private func popCursorIfNeeded() {
-        #if targetEnvironment(macCatalyst)
-        guard isCursorPushed else { return }
-        NSCursor.pop()
-        isCursorPushed = false
-        #endif
-    }
 }
 
-#Preview("Mac Web View Toolbar") {
-    MacWebViewToolbar(server: ServerFixture.standard, webViewController: nil)
-        .padding()
-        .frame(width: MacWebViewToolbar.Constants.previewWidth)
-        .background(Color(uiColor: .systemBackground))
+private extension NSToolbarItem.Identifier {
+    static let homeAssistantBack = NSToolbarItem.Identifier("io.home-assistant.webview.back")
+    static let homeAssistantForward = NSToolbarItem.Identifier("io.home-assistant.webview.forward")
+    static let homeAssistantRefresh = NSToolbarItem.Identifier("io.home-assistant.webview.refresh")
+    static let homeAssistantCopy = NSToolbarItem.Identifier("io.home-assistant.webview.copy")
+    static let homeAssistantPaste = NSToolbarItem.Identifier("io.home-assistant.webview.paste")
+    static let homeAssistantOpenInSafari = NSToolbarItem.Identifier("io.home-assistant.webview.open-in-safari")
 }
-
-#Preview("Mac Web View Toolbar - Legacy Styling") {
-    MacWebViewToolbar(
-        server: ServerFixture.standard,
-        webViewController: nil,
-        macOS26StylingOverride: false
-    )
-    .padding()
-    .frame(width: MacWebViewToolbar.Constants.previewWidth)
-    .background(Color(uiColor: .systemBackground))
+#else
+extension MacWebViewToolbar {
+    final class Coordinator: NSObject {}
 }
+#endif
