@@ -71,10 +71,13 @@ extension MacWebViewToolbar {
             static let highVisibilityPriority = NSToolbarItem.VisibilityPriority.high
             static let imageCanvasSize = CGSize(width: 18, height: 18)
             static let symbolPointSize: CGFloat = 13
+            static let serverPickerFontSize: CGFloat = 13
+            static let serverPickerHorizontalPadding: CGFloat = 8
         }
 
         private weak var webViewController: WebViewController?
         private weak var titlebar: UITitlebar?
+        private weak var serverPickerItem: NSMenuToolbarItem?
         private var toolbar: NSToolbar?
         private var server: Server?
 
@@ -106,6 +109,7 @@ extension MacWebViewToolbar {
             }
 
             updateEnabledItems()
+            updateServerPicker()
         }
 
         func removeToolbar() {
@@ -167,9 +171,11 @@ extension MacWebViewToolbar {
                 toolbarItem(
                     identifier: itemIdentifier,
                     label: L10n.Mac.OpenInSafari.accessibilityLabel,
-                    symbol: .safariFill,
+                    symbol: .safari,
                     action: #selector(openServerInSafari)
                 )
+            case .homeAssistantServerPicker:
+                serverPickerToolbarItem(identifier: itemIdentifier)
             default:
                 nil
             }
@@ -177,12 +183,16 @@ extension MacWebViewToolbar {
 
         private func updateEnabledItems() {
             toolbar?.items.forEach { item in
+                guard item.itemIdentifier != .homeAssistantServerPicker else {
+                    item.isEnabled = true
+                    return
+                }
                 item.isEnabled = webViewController != nil
             }
         }
 
         private var toolbarItemIdentifiers: [NSToolbarItem.Identifier] {
-            [
+            var identifiers: [NSToolbarItem.Identifier] = [
                 .homeAssistantBack,
                 .homeAssistantForward,
                 .homeAssistantRefresh,
@@ -191,6 +201,63 @@ extension MacWebViewToolbar {
                 .homeAssistantPaste,
                 .homeAssistantOpenInSafari,
             ]
+            if Current.servers.all.count > 1 {
+                identifiers.append(.homeAssistantServerPicker)
+            }
+            return identifiers
+        }
+
+        private func serverPickerToolbarItem(identifier: NSToolbarItem.Identifier) -> NSMenuToolbarItem {
+            let item = NSMenuToolbarItem(itemIdentifier: identifier)
+            item.showsIndicator = true
+            item.visibilityPriority = Constants.highVisibilityPriority
+            serverPickerItem = item
+
+            updateServerPicker()
+            return item
+        }
+
+        private func updateServerPicker() {
+            guard let serverPickerItem else { return }
+            let title = server?.info.name ?? L10n.WebView.ServerSelection.title
+            serverPickerItem.label = title
+            serverPickerItem.paletteLabel = title
+            serverPickerItem.toolTip = title
+            serverPickerItem.image = serverPickerTitleImage(title: title)
+            serverPickerItem.itemMenu = serverPickerMenu()
+        }
+
+        private func serverPickerTitleImage(title: String) -> UIImage {
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: Constants.serverPickerFontSize, weight: .regular),
+                .foregroundColor: UIColor.label,
+            ]
+            let attributedTitle = NSAttributedString(string: title, attributes: attributes)
+            let textSize = attributedTitle.size()
+            let canvasSize = CGSize(
+                width: ceil(textSize.width) + Constants.serverPickerHorizontalPadding * 2,
+                height: ceil(textSize.height)
+            )
+
+            return UIGraphicsImageRenderer(size: canvasSize).image { _ in
+                attributedTitle.draw(at: CGPoint(x: Constants.serverPickerHorizontalPadding, y: 0))
+            }
+            .withRenderingMode(.alwaysTemplate)
+        }
+
+        private func serverPickerMenu() -> UIMenu {
+            let selectedIdentifier = server?.identifier
+            let actions = Current.servers.all.map { server in
+                UIAction(
+                    title: server.info.name,
+                    state: server.identifier == selectedIdentifier ? .on : .off
+                ) { _ in
+                    Current.sceneManager.appCoordinator.done { coordinator in
+                        coordinator.open(server: server)
+                    }
+                }
+            }
+            return UIMenu(title: L10n.WebView.ServerSelection.title, children: actions)
         }
 
         private func toolbarItem(
@@ -263,6 +330,7 @@ private extension NSToolbarItem.Identifier {
     static let homeAssistantCopy = NSToolbarItem.Identifier("io.home-assistant.webview.copy")
     static let homeAssistantPaste = NSToolbarItem.Identifier("io.home-assistant.webview.paste")
     static let homeAssistantOpenInSafari = NSToolbarItem.Identifier("io.home-assistant.webview.open-in-safari")
+    static let homeAssistantServerPicker = NSToolbarItem.Identifier("io.home-assistant.webview.server-picker")
 }
 #else
 extension MacWebViewToolbar {
