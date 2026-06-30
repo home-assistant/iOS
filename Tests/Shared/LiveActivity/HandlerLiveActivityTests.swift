@@ -260,4 +260,60 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
     }
 }
 
+// MARK: - LiveActivityRegistry token targeting
+
+@available(iOS 17.2, *)
+final class LiveActivityRegistryTokenTargetingTests: XCTestCase {
+    private var servers: FakeServerManager!
+
+    override func setUp() {
+        super.setUp()
+        servers = FakeServerManager()
+        Current.servers = servers
+    }
+
+    override func tearDown() {
+        servers = nil
+        Current.servers = FakeServerManager()
+        super.tearDown()
+    }
+
+    private func addServer(webhookID: String) {
+        let info = with(ServerInfo.fake()) { $0.connection.webhookID = webhookID }
+        _ = servers.add(identifier: .init(rawValue: webhookID), serverInfo: info)
+    }
+
+    /// A per-activity push token must go only to the server whose `webhook_id` started the activity.
+    func testTokenTargetServers_reportsOnlyToOriginServer() {
+        addServer(webhookID: "wh-1")
+        addServer(webhookID: "wh-2")
+        let targets = LiveActivityRegistry.tokenTargetServers(originWebhookID: "wh-2")
+        XCTAssertEqual(targets.map(\.info.connection.webhookID), ["wh-2"])
+    }
+
+    /// Activities created before the origin was recorded carry no `webhook_id`, so their tokens
+    /// still reach every server and existing activities keep working.
+    func testTokenTargetServers_nilOrigin_reportsToAllServers() {
+        addServer(webhookID: "wh-1")
+        addServer(webhookID: "wh-2")
+        let targets = LiveActivityRegistry.tokenTargetServers(originWebhookID: nil)
+        XCTAssertEqual(Set(targets.map(\.info.connection.webhookID)), ["wh-1", "wh-2"])
+    }
+
+    /// If the origin id matches no current server (its server was removed, or the id is unrecognised),
+    /// fall back to every server rather than silently dropping the token.
+    func testTokenTargetServers_unknownOrigin_fallsBackToAllServers() {
+        addServer(webhookID: "wh-1")
+        addServer(webhookID: "wh-2")
+        let targets = LiveActivityRegistry.tokenTargetServers(originWebhookID: "wh-removed")
+        XCTAssertEqual(Set(targets.map(\.info.connection.webhookID)), ["wh-1", "wh-2"])
+    }
+
+    /// With no servers configured there is nowhere to report; the caller skips and remembers nothing.
+    func testTokenTargetServers_noServers_returnsEmpty() {
+        XCTAssertTrue(LiveActivityRegistry.tokenTargetServers(originWebhookID: "wh-1").isEmpty)
+        XCTAssertTrue(LiveActivityRegistry.tokenTargetServers(originWebhookID: nil).isEmpty)
+    }
+}
+
 #endif

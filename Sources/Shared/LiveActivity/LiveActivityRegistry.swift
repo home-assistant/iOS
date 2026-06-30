@@ -448,7 +448,8 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     // MARK: - Private — Webhook Reporting
 
-    /// Report a new activity push token to all connected HA servers.
+    /// Report a new activity push token to the server that started the activity (or to all servers
+    /// when its origin is unknown — see `tokenTargetServers`).
     /// The token is used by the relay server to send APNs updates directly to this activity.
     private func reportPushToken(_ tokenHex: String, for activity: Activity<HALiveActivityAttributes>) async {
         let tag = activity.attributes.tag
@@ -457,6 +458,11 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         // point Core at an activity we are ending and could overwrite the survivor's token slot.
         guard entries[tag]?.activity.id == activity.id else {
             Current.Log.info("LiveActivityRegistry: skipping token report for superseded duplicate, tag \(tag)")
+            return
+        }
+        let targetServers = Self.tokenTargetServers(originWebhookID: activity.attributes.serverWebhookId)
+        guard !targetServers.isEmpty else {
+            Current.Log.warning("LiveActivityRegistry: no servers configured, skipping token report for tag \(tag)")
             return
         }
         let expiresAt = Current.date()
@@ -470,7 +476,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 "expires_at": expiresAt,
             ]
         )
-        for server in Current.servers.all {
+        for server in targetServers {
             // Background session: the OS owns this upload and keeps retrying it (up to its 2 h
             // resource timeout) across connectivity changes even if the app is suspended or
             // terminated — so a momentary drop, or losing foreground time, doesn't lose the token.
@@ -479,6 +485,24 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             Current.webhooks.sendPassive(server: server, request: request).cauterize()
         }
         rememberReportedTokenTag(tag)
+    }
+
+    /// The server(s) a per-activity push token should be reported to. An activity is owned by the
+    /// single server that started it, whose `webhook_id` the relay/handler records in the attributes,
+    /// so only that server should receive the token. Two cases fall back to every server, so a token
+    /// is never silently dropped (no worse than before this was scoped): activities created before
+    /// the origin was recorded carry no `webhook_id`, and an origin id that matches no current server
+    /// (its server was removed, or the id is unrecognised).
+    static func tokenTargetServers(originWebhookID: String?) -> [Server] {
+        let allServers = Current.servers.all
+        guard let originWebhookID else { return allServers }
+        let matches = allServers.filter { $0.info.connection.webhookID == originWebhookID }
+        if !matches.isEmpty { return matches }
+        // Don't log the raw webhook id — it routes/authenticates webhook calls and is sensitive.
+        if !allServers.isEmpty {
+            Current.Log.warning("LiveActivityRegistry: no server matches the activity origin; reporting token to all")
+        }
+        return allServers
     }
 
     /// Notify HA servers that the Live Activity was dismissed or ended externally.
