@@ -24,6 +24,7 @@ struct HomeAssistantView: View, WebFrontendView {
 
     /// Changing this forces SwiftUI to discard the current `FrontendView` and create a fresh `WebViewController`.
     @State private var webViewResetID = UUID()
+    @State private var webViewController: WebViewController?
 
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.server = server
@@ -50,15 +51,24 @@ struct HomeAssistantView: View, WebFrontendView {
 
     var body: some View {
         ZStack {
-            FrontendView(
-                server: server,
-                onWebViewController: onWebViewController,
-                resetFrontendAction: resetWebFrontend,
-                reconnectManager: reconnectManager,
-                overlayState: overlayState
-            )
-            .id(webViewResetID)
-            .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
+            ZStack(alignment: .topLeading) {
+                FrontendView(
+                    server: server,
+                    onWebViewController: handleWebViewController,
+                    resetFrontendAction: resetWebFrontend,
+                    reconnectManager: reconnectManager,
+                    overlayState: overlayState
+                )
+                .id(webViewResetID)
+                .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
+                if Current.isCatalyst {
+                    MacWebViewToolbar(
+                        server: server,
+                        webViewController: webViewController
+                    )
+                    .ignoresSafeArea()
+                }
+            }
 
             if overlayState.showsNoActiveURL {
                 ConnectionSecurityLevelBlockView(server: server)
@@ -95,6 +105,13 @@ struct HomeAssistantView: View, WebFrontendView {
         overlayState.emptyState = nil
         overlayState.showsNoActiveURL = false
         webViewResetID = UUID()
+    }
+
+    private func handleWebViewController(_ controller: WebViewController) {
+        Task { @MainActor in
+            webViewController = controller
+            onWebViewController?(controller)
+        }
     }
 }
 

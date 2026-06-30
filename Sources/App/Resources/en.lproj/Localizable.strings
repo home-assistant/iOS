@@ -728,6 +728,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "mac.copy.accessibility_label" = "Copy";
 "mac.navigation.go_back.accessibility_label" = "Navigate back";
 "mac.navigation.go_forward.accessibility_label" = "Navigate forward";
+"mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Paste";
 "magic_item.action" = "Action";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
