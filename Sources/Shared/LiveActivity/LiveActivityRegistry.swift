@@ -240,33 +240,45 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// observed). Call this at app launch before any notification handlers are invoked.
     public func reattach() async {
         var runningTags: Set<String> = []
+        // Choose the newest surviving activity per tag (by server-stamped `startedAt`) BEFORE observing
+        // any of them. The snapshot order is arbitrary and duplicates exist when Core re-sent a
+        // push-to-start while the app was terminated; observing a loser would report its push token to
+        // Core, pointing it at an activity we are about to end. So losers are ended here, unobserved.
+        var winners: [String: Activity<HALiveActivityAttributes>] = [:]
         for activity in Activity<HALiveActivityAttributes>.activities {
             let tag = activity.attributes.tag
             runningTags.insert(tag)
-            if let existing = entries[tag] {
-                // A duplicate for this tag survived from a previous run (Core re-sent a push-to-start
-                // while the app was terminated). The snapshot order is arbitrary, so keep whichever
-                // was started later by the server-stamped `startedAt` and end the other. Cancelling an
-                // already-adopted loser's observation before ending it stops reportActivityDismissed(tag:)
-                // from firing — Core keeps the survivor's token slot.
-                guard startedLater(activity, than: existing.activity) else {
-                    await activity.end(nil, dismissalPolicy: .immediate)
-                    Current.Log.info("LiveActivityRegistry: ended older duplicate for tag \(tag) on reattach")
-                    continue
-                }
-                existing.observationTask.cancel()
-                await existing.activity.end(nil, dismissalPolicy: .immediate)
-                entries[tag] = Entry(activity: activity, observationTask: makeObservationTask(for: activity))
-                Current.Log.info(
-                    "LiveActivityRegistry: replaced older duplicate for tag \(tag), keeping id=\(activity.id)"
-                )
+            guard let incumbent = winners[tag] else {
+                winners[tag] = activity
                 continue
             }
-            let observationTask = makeObservationTask(for: activity)
-            entries[tag] = Entry(activity: activity, observationTask: observationTask)
-            Current.Log.verbose("LiveActivityRegistry: reattached activity for tag \(tag), id=\(activity.id)")
+            let loser = startedLater(activity, than: incumbent) ? incumbent : activity
+            if loser.id == incumbent.id { winners[tag] = activity }
+            await discardDuplicate(loser, tag: tag)
+            Current.Log.info("LiveActivityRegistry: ended older duplicate for tag \(tag) on reattach")
+        }
+
+        for (tag, winner) in winners {
+            if let existing = entries[tag] {
+                guard existing.activity.id != winner.id else { continue } // already tracking the winner
+                existing.observationTask.cancel()
+                await existing.activity.end(nil, dismissalPolicy: .immediate)
+            }
+            entries[tag] = Entry(activity: winner, observationTask: makeObservationTask(for: winner))
+            Current.Log.verbose("LiveActivityRegistry: reattached newest activity for tag \(tag), id=\(winner.id)")
         }
         await releaseStaleTokens(runningTags: runningTags)
+    }
+
+    /// End a duplicate Live Activity. If we are already tracking it, cancel its observation and drop
+    /// it from `entries` first, so ending it neither reports a dismissal (which would clear the
+    /// surviving duplicate's token slot in Core) nor reports its push token.
+    private func discardDuplicate(_ activity: Activity<HALiveActivityAttributes>, tag: String) async {
+        if let tracked = entries[tag], tracked.activity.id == activity.id {
+            tracked.observationTask.cancel()
+            entries.removeValue(forKey: tag)
+        }
+        await activity.end(nil, dismissalPolicy: .immediate)
     }
 
     /// Tell Core to drop tokens for activities that are no longer running. Without this, an
@@ -319,24 +331,30 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 // Same activity we already track (e.g. one we started locally) — nothing to do.
                 guard existing.activity.id != activity.id else { continue }
 
-                // A different activity for a tag we already track: Core re-sent a push-to-start
-                // because it had no per-activity token yet. Keep whichever was started later by the
-                // server-stamped `startedAt` and end the other, so the survivor is deterministic
-                // regardless of the order activityUpdates delivers a burst. Cancelling the loser's
-                // observation before ending it stops its lifecycle handler from firing
-                // reportActivityDismissed(tag:), which would drop the token slot the survivor repopulates.
+                // A different activity for a tag we already track: Core re-sent a push-to-start because
+                // it had no per-activity token yet. Keep whichever was started later by the server-stamped
+                // `startedAt` and end the other, so the survivor is deterministic regardless of the order
+                // activityUpdates delivers a burst.
                 guard startedLater(activity, than: existing.activity) else {
+                    // This arrival is the older one: end it without ever observing it, so it never
+                    // reports its push token to Core.
                     await activity.end(nil, dismissalPolicy: .immediate)
                     Current.Log.info(
                         "LiveActivityRegistry: dropped older duplicate for tag \(tag), keeping existing id"
                     )
                     continue
                 }
+                // This arrival is newer: adopt it as the tracked entry BEFORE ending the older one.
+                // Cancelling the older one's observation and replacing `entries` first means its token
+                // report is suppressed (see reportPushToken) and ending it fires no dismissal — Core keeps
+                // the token slot the survivor repopulates.
                 existing.observationTask.cancel()
+                entries[tag] = Entry(activity: activity, observationTask: makeObservationTask(for: activity))
                 await existing.activity.end(nil, dismissalPolicy: .immediate)
                 Current.Log.info(
                     "LiveActivityRegistry: collapsed older duplicate for tag \(tag), keeping id=\(activity.id)"
                 )
+                continue
             }
 
             let observationTask = makeObservationTask(for: activity)
@@ -402,7 +420,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                         Current.Log.verbose(
                             "LiveActivityRegistry: new push token for tag \(activity.attributes.tag)"
                         )
-                        await self.reportPushToken(tokenHex, tag: activity.attributes.tag)
+                        await self.reportPushToken(tokenHex, for: activity)
                     }
                 }
 
@@ -432,7 +450,15 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     /// Report a new activity push token to all connected HA servers.
     /// The token is used by the relay server to send APNs updates directly to this activity.
-    private func reportPushToken(_ tokenHex: String, tag: String) async {
+    private func reportPushToken(_ tokenHex: String, for activity: Activity<HALiveActivityAttributes>) async {
+        let tag = activity.attributes.tag
+        // Only report for the activity currently tracked for this tag. A duplicate that has been (or
+        // is about to be) collapsed in favour of a newer start must not push its token: that would
+        // point Core at an activity we are ending and could overwrite the survivor's token slot.
+        guard entries[tag]?.activity.id == activity.id else {
+            Current.Log.info("LiveActivityRegistry: skipping token report for superseded duplicate, tag \(tag)")
+            return
+        }
         let expiresAt = Current.date()
             .addingTimeInterval(Self.pushTokenTimeToLive)
             .timeIntervalSince1970.rounded(.down)
