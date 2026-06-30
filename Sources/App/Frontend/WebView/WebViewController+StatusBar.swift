@@ -2,6 +2,9 @@ import Shared
 import SwiftUI
 import UIKit
 @preconcurrency import WebKit
+#if targetEnvironment(macCatalyst)
+import AppKit
+#endif
 
 // MARK: - Status Bar & Toolbar
 
@@ -21,57 +24,19 @@ extension WebViewController {
             statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
         ])
 
-        if Current.isCatalyst {
-            setupStatusBarButtons(in: statusBarView)
-        }
         return statusBarView
-    }
-
-    func setupStatusBarButtons(in statusBarView: UIView) {
-        // Remove existing stack if present
-        if let statusBarButtonsStack {
-            statusBarButtonsStack.removeFromSuperview()
-            self.statusBarButtonsStack = nil
-        }
-
-        let configuration = StatusBarButtonsConfigurator.Configuration(
-            server: server,
-            servers: Current.servers.all,
-            actions: .init(
-                refresh: { [weak self] in
-                    self?.refresh()
-                },
-                openServer: { [weak self] server in
-                    self?.openServer(server)
-                },
-                openInSafari: { [weak self] in
-                    self?.openServerInSafari()
-                },
-                goBack: { [weak self] in
-                    self?.goBack()
-                },
-                goForward: { [weak self] in
-                    self?.goForward()
-                },
-                copy: { [weak self] in
-                    self?.copyCurrentSelectedContent()
-                },
-                paste: { [weak self] in
-                    self?.pasteContent()
-                }
-            )
-        )
-
-        statusBarButtonsStack = StatusBarButtonsConfigurator.setupButtons(
-            in: statusBarView,
-            configuration: configuration
-        )
     }
 
     func openServer(_ server: Server) {
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.open(server: server)
         }
+    }
+
+    @objc func customizeToolbar() {
+        #if targetEnvironment(macCatalyst)
+        view.window?.windowScene?.titlebar?.toolbar?.runCustomizationPalette(nil)
+        #endif
     }
 
     @objc func openServerInSafari() {
