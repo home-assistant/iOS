@@ -362,6 +362,14 @@ private extension NSToolbarItem.Identifier {
 }
 #else
 extension MacWebViewTitleBar {
-    final class Coordinator: NSObject {}
+    final class Coordinator: NSObject {
+        func configure(
+            windowScene: UIWindowScene?,
+            server: Server,
+            webViewController: WebViewController?
+        ) {}
+
+        func removeToolbar() {}
+    }
 }
 #endif
