@@ -180,7 +180,12 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return false
         }
 
-        let attributes = HALiveActivityAttributes(tag: tag, title: title, serverWebhookId: serverWebhookId)
+        let attributes = HALiveActivityAttributes(
+            tag: tag,
+            title: title,
+            serverWebhookId: serverWebhookId,
+            startedAt: Current.date().timeIntervalSince1970
+        )
         let activity: Activity<HALiveActivityAttributes>
 
         do {
@@ -238,13 +243,23 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         for activity in Activity<HALiveActivityAttributes>.activities {
             let tag = activity.attributes.tag
             runningTags.insert(tag)
-            if entries[tag] != nil {
-                // A duplicate for this tag survived from a previous run (Core re-sent a
-                // push-to-start while the app was terminated). Keep the one already adopted and
-                // end the extra. It has no observation task, so ending it fires no dismissal —
-                // Core keeps the survivor's token slot.
-                await activity.end(nil, dismissalPolicy: .immediate)
-                Current.Log.info("LiveActivityRegistry: ended duplicate activity for tag \(tag) on reattach")
+            if let existing = entries[tag] {
+                // A duplicate for this tag survived from a previous run (Core re-sent a push-to-start
+                // while the app was terminated). The snapshot order is arbitrary, so keep whichever
+                // was started later by the server-stamped `startedAt` and end the other. Cancelling an
+                // already-adopted loser's observation before ending it stops reportActivityDismissed(tag:)
+                // from firing — Core keeps the survivor's token slot.
+                guard startedLater(activity, than: existing.activity) else {
+                    await activity.end(nil, dismissalPolicy: .immediate)
+                    Current.Log.info("LiveActivityRegistry: ended older duplicate for tag \(tag) on reattach")
+                    continue
+                }
+                existing.observationTask.cancel()
+                await existing.activity.end(nil, dismissalPolicy: .immediate)
+                entries[tag] = Entry(activity: activity, observationTask: makeObservationTask(for: activity))
+                Current.Log.info(
+                    "LiveActivityRegistry: replaced older duplicate for tag \(tag), keeping id=\(activity.id)"
+                )
                 continue
             }
             let observationTask = makeObservationTask(for: activity)
@@ -305,14 +320,22 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 guard existing.activity.id != activity.id else { continue }
 
                 // A different activity for a tag we already track: Core re-sent a push-to-start
-                // because it had no per-activity token yet. Keep this newest one (it carries the
-                // freshest content) and end the prior duplicate. Cancel its observation first so
-                // its lifecycle handler doesn't fire reportActivityDismissed(tag:) — that would
-                // tell Core to drop the very token slot the survivor is about to repopulate.
+                // because it had no per-activity token yet. Keep whichever was started later by the
+                // server-stamped `startedAt` and end the other, so the survivor is deterministic
+                // regardless of the order activityUpdates delivers a burst. Cancelling the loser's
+                // observation before ending it stops its lifecycle handler from firing
+                // reportActivityDismissed(tag:), which would drop the token slot the survivor repopulates.
+                guard startedLater(activity, than: existing.activity) else {
+                    await activity.end(nil, dismissalPolicy: .immediate)
+                    Current.Log.info(
+                        "LiveActivityRegistry: dropped older duplicate for tag \(tag), keeping existing id"
+                    )
+                    continue
+                }
                 existing.observationTask.cancel()
                 await existing.activity.end(nil, dismissalPolicy: .immediate)
                 Current.Log.info(
-                    "LiveActivityRegistry: collapsed duplicate activity for tag \(tag), keeping id=\(activity.id)"
+                    "LiveActivityRegistry: collapsed older duplicate for tag \(tag), keeping id=\(activity.id)"
                 )
             }
 
@@ -353,6 +376,18 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return max(end.addingTimeInterval(2), Date().addingTimeInterval(2))
         }
         return Date().addingTimeInterval(kLiveActivityStaleInterval)
+    }
+
+    // MARK: - Private — Duplicate Resolution
+
+    /// Whether `candidate` was started more recently than `current`, by the server-stamped
+    /// `startedAt` (Unix epoch seconds). A missing timestamp sorts oldest; equal timestamps are
+    /// not "later", so the incumbent is kept and needless duplicate churn is avoided.
+    private func startedLater(
+        _ candidate: Activity<HALiveActivityAttributes>,
+        than current: Activity<HALiveActivityAttributes>
+    ) -> Bool {
+        (candidate.attributes.startedAt ?? 0) > (current.attributes.startedAt ?? 0)
     }
 
     // MARK: - Private — Observation
