@@ -63,6 +63,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
                 macTitleBar
             }
+            emptyStates
         }
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
@@ -113,6 +114,7 @@ struct HomeAssistantView: View, WebFrontendView {
     private func resetWebFrontend() {
         overlayState.emptyState = nil
         overlayState.showsNoActiveURL = false
+        webViewController = nil
         webViewResetID = UUID()
     }
 
