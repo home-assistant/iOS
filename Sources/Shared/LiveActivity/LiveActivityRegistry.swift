@@ -448,7 +448,8 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     // MARK: - Private — Webhook Reporting
 
-    /// Report a new activity push token to the server that started the activity.
+    /// Report a new activity push token to the server that started the activity (or to all servers
+    /// when its origin is unknown — see `tokenTargetServers`).
     /// The token is used by the relay server to send APNs updates directly to this activity.
     private func reportPushToken(_ tokenHex: String, for activity: Activity<HALiveActivityAttributes>) async {
         let tag = activity.attributes.tag
@@ -496,11 +497,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let allServers = Current.servers.all
         guard let originWebhookID else { return allServers }
         let matches = allServers.filter { $0.info.connection.webhookID == originWebhookID }
-        guard matches.isEmpty else { return matches }
+        if !matches.isEmpty { return matches }
+        // Don't log the raw webhook id — it routes/authenticates webhook calls and is sensitive.
         if !allServers.isEmpty {
-            Current.Log.warning(
-                "LiveActivityRegistry: no server matches origin \(originWebhookID); reporting token to all servers"
-            )
+            Current.Log.warning("LiveActivityRegistry: no server matches the activity origin; reporting token to all")
         }
         return allServers
     }
