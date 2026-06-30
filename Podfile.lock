@@ -1,7 +1,6 @@
 PODS:
   - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
-  - EMTLoadingIndicator (4.0.0)
   - HAKit (0.4.16):
     - HAKit/Core (= 0.4.16)
   - HAKit/Core (0.4.16):
@@ -59,7 +58,6 @@ PODS:
 DEPENDENCIES:
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
-  - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
@@ -101,9 +99,6 @@ EXTERNAL SOURCES:
   CPDAcknowledgements:
     :branch: master
     :git: https://github.com/CocoaPods/CPDAcknowledgements
-  EMTLoadingIndicator:
-    :branch: master
-    :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.16
@@ -124,9 +119,6 @@ CHECKOUT OPTIONS:
   CPDAcknowledgements:
     :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
     :git: https://github.com/CocoaPods/CPDAcknowledgements
-  EMTLoadingIndicator:
-    :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
-    :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.16
@@ -143,7 +135,6 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   HAKit: ef185a67991484219a7ecd74aab25f186274d7dd
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -162,6 +153,6 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 92d87b5a274e2b51fd9c4adf5a7e895b58f6c0ee
+PODFILE CHECKSUM: 5d8bcbc21196d5c375cc15203a6328f67c09843c
 
 COCOAPODS: 1.15.2

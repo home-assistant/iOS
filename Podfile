@@ -91,7 +91,6 @@ abstract_target 'watchOS' do
   end
 
   target 'WatchExtension-Watch' do
-    pod 'EMTLoadingIndicator', git: 'https://github.com/hirokimu/EMTLoadingIndicator', branch: 'master'
   end
 end
 
