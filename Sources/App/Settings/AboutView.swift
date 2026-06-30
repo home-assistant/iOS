@@ -30,12 +30,10 @@ struct AboutView: View {
             }
 
             Section {
-                if Current.appConfiguration != .beta {
-                    Link(
-                        L10n.About.Beta.title,
-                        destination: Current.isCatalyst ? AppConstants.WebURLs.betaMac : AppConstants.WebURLs.beta
-                    )
-                }
+                Link(
+                    L10n.About.Beta.title,
+                    destination: Current.isCatalyst ? AppConstants.WebURLs.betaMac : AppConstants.WebURLs.beta
+                )
 
                 NavigationLink(destination: AcknowledgementsView()) {
                     Text(L10n.About.Acknowledgements.title)

@@ -29,8 +29,6 @@ public class SettingsStore {
         let baseString = Current.device.identifierForVendor() ?? deviceID
 
         switch Current.appConfiguration {
-        case .beta:
-            return "beta_" + baseString
         case .debug:
             return "debug_" + baseString
         case .fastlaneSnapshot, .release:
