@@ -22,6 +22,7 @@ end
 plugin 'cocoapods-acknowledgements'
 
 pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
+pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit', '~> 8.1.1'
 
 pod 'RealmSwift'

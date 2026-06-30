@@ -1,5 +1,5 @@
 {
-  "originHash" : "8b7c6a799fee8b16020587b0ace5a1c81adb94cb50f78bf4fd7a80a87e2f7444",
+  "originHash" : "2c4caf4fea7b85f421359b2ac5b5ca84036a078052a18172a67419b55b925f5b",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -152,15 +152,6 @@
       "state" : {
         "revision" : "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
         "version" : "2.30910.0"
-      }
-    },
-    {
-      "identity" : "objectmapper",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tristanhimmelman/ObjectMapper.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "6021c6035e83a306047348666f6400dc61445d3b"
       }
     },
     {
