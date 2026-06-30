@@ -74,7 +74,7 @@ enum LiveActivityPendingEnd {
         )
     }
 
-    // Mirrors HandlerStartOrUpdateLiveActivity.isValidTag.
+    // Based on HandlerStartOrUpdateLiveActivity.isValidTag, but also rejects empty tags.
     static func isValidTag(_ tag: String) -> Bool {
         guard !tag.isEmpty, tag.count <= 64 else { return false }
         let allowed = CharacterSet(
