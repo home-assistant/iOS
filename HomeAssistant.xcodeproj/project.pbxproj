@@ -887,6 +887,8 @@
 		42991E662FF4490F00C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E652FF4490F00C2C76B /* ObjectMapper */; };
 		42991E682FF4491D00C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E672FF4491D00C2C76B /* ObjectMapper */; };
 		42991E6A2FF449A200C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E692FF449A200C2C76B /* ObjectMapper */; };
+		42991E6C2FF44A0000C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E6B2FF44A0000C2C76B /* ObjectMapper */; };
+		42991E6E2FF44A0000C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E6D2FF44A0000C2C76B /* ObjectMapper */; };
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
@@ -3720,6 +3722,7 @@
 				420E64BF2D676B2400A31E86 /* SnapshotTesting in Frameworks */,
 				420E64BD2D676B2400A31E86 /* InlineSnapshotTesting in Frameworks */,
 				42A1F0B52E000000000000B5 /* Alamofire in Frameworks */,
+				42991E6E2FF44A0000C2C76B /* ObjectMapper in Frameworks */,
 				4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */,
 				D234820A53471DE7B485A445 /* Pods_Tests_App.framework in Frameworks */,
 				E9D0AE4CC8B1D908D258B791 /* GRDB in Frameworks */,
@@ -3811,6 +3814,7 @@
 			files = (
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
+				42991E6C2FF44A0000C2C76B /* ObjectMapper in Frameworks */,
 				61495A70232316478717CF27 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */,
 				42337621AE73706EB2D88EAE /* GRDB in Frameworks */,
 			);
@@ -7924,6 +7928,7 @@
 				3F08AA27DA3E77F7C8FA1059 /* GRDB */,
 				42A1F0A52E000000000000A5 /* Alamofire */,
 				7FBFE016210544989AFC7F64 /* SFSafeSymbols */,
+				42991E6D2FF44A0000C2C76B /* ObjectMapper */,
 			);
 			productName = HomeAssistantTests;
 			productReference = B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */;
@@ -8118,6 +8123,7 @@
 			packageProductDependencies = (
 				D615F032BC3C6F39F533EA25 /* GRDB */,
 				42A1F0A62E000000000000A6 /* Alamofire */,
+				42991E6B2FF44A0000C2C76B /* ObjectMapper */,
 			);
 			productName = SharedTests;
 			productReference = D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */;
@@ -12317,6 +12323,16 @@
 			productName = ObjectMapper;
 		};
 		42991E692FF449A200C2C76B /* ObjectMapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */;
+			productName = ObjectMapper;
+		};
+		42991E6B2FF44A0000C2C76B /* ObjectMapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */;
+			productName = ObjectMapper;
+		};
+		42991E6D2FF44A0000C2C76B /* ObjectMapper */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */;
 			productName = ObjectMapper;
