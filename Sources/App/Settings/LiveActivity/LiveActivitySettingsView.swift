@@ -76,6 +76,17 @@ struct LiveActivitySettingsView: View {
             }
 
             samplesSection
+
+            Section {
+                Link(destination: AppConstants.WebURLs.liveActivitiesDocs) {
+                    HStack {
+                        Text(L10n.LiveActivity.documentation)
+                        Spacer()
+                        Image(systemSymbol: .arrowUpForwardSquare)
+                            .font(.caption)
+                    }
+                }
+            }
         }
         .task { await loadActivities() }
     }

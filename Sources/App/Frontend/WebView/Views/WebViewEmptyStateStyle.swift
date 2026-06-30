@@ -64,8 +64,10 @@ enum WebViewEmptyStateStyle: Equatable {
 
     var trailingHeaderAccessory: HeaderAccessory {
         switch self {
-        case .disconnected, .unauthenticated:
+        case .disconnected:
             .close
+        case .unauthenticated:
+            .none
         case .recoveredServerNeedingReauthentication:
             .settings
         }
