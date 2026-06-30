@@ -14,7 +14,7 @@ import Foundation
 @available(iOS 17.2, *)
 enum LiveActivityPendingStart {
     /// A serialized start/update request mirroring the arguments of `startOrUpdate`.
-    struct Request: Codable {
+    struct Request: Codable, Equatable {
         let tag: String
         let title: String
         let serverWebhookId: String?
@@ -82,10 +82,10 @@ enum LiveActivityPendingStart {
         guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [] }
         let observed = load(from: defaults)
         guard !observed.isEmpty else { return [] }
-        // Subtract only the tags we read, so a concurrent extension append of a different tag
-        // isn't clobbered (mirrors LiveActivityPendingEnd.drainAll).
-        let observedTags = Set(observed.map(\.tag))
-        let remaining = load(from: defaults).filter { !observedTags.contains($0.tag) }
+        // Subtract only the exact requests we read, so a concurrent extension write — whether a
+        // different tag or a fresher state for a tag we observed — survives instead of being
+        // clobbered (the cross-process queue shares no lock); it drains on the next signal/launch.
+        let remaining = load(from: defaults).filter { !observed.contains($0) }
         if remaining.isEmpty {
             defaults.removeObject(forKey: storeKey)
         } else {
