@@ -906,7 +906,6 @@
 		42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
 		42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */; };
 		42A42A6A2DC37311000ABBAF /* PrivacyView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A42A692DC37311000ABBAF /* PrivacyView.test.swift */; };
-		B7104E0100000000000000D2 /* NotificationHistoryView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7104E0100000000000000D1 /* NotificationHistoryView.test.swift */; };
 		42A42A6C2DC37F09000ABBAF /* AboutView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */; };
 		42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */; };
 		42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */; };
@@ -2677,7 +2676,6 @@
 		42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Codable.swift"; sourceTree = "<group>"; };
 		42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Encodable.swift"; sourceTree = "<group>"; };
 		42A42A692DC37311000ABBAF /* PrivacyView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.test.swift; sourceTree = "<group>"; };
-		B7104E0100000000000000D1 /* NotificationHistoryView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHistoryView.test.swift; sourceTree = "<group>"; };
 		42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.test.swift; sourceTree = "<group>"; };
 		42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalMessageHandler.swift; sourceTree = "<group>"; };
 		42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalMessageHandlerTests.swift; sourceTree = "<group>"; };
@@ -6049,7 +6047,6 @@
 				42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */,
 				42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */,
 				42A7F1202FBC000100BEEF01 /* NFCTagApproval.test.swift */,
-				B7104E0100000000000000D1 /* NotificationHistoryView.test.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -9915,7 +9912,6 @@
 				42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */,
 				42A7F1212FBC000100BEEF01 /* NFCTagApproval.test.swift in Sources */,
 				42A42A6A2DC37311000ABBAF /* PrivacyView.test.swift in Sources */,
-				B7104E0100000000000000D2 /* NotificationHistoryView.test.swift in Sources */,
 				42FCD0082B9B1ECE0057783F /* SimulatorThreadClientService.swift in Sources */,
 				42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */,
 				422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */,

@@ -179,7 +179,7 @@ struct NotificationHistoryView: View {
     }
 }
 
-struct NotificationHistoryDetailView: View {
+private struct NotificationHistoryDetailView: View {
     let entry: NotificationHistoryEntry
 
     @State private var didCopy = false
