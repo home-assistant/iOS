@@ -70,8 +70,6 @@ struct HomeAssistantView: View, WebFrontendView {
                     .allowsHitTesting(false)
                 }
             }
-
-
         }
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
