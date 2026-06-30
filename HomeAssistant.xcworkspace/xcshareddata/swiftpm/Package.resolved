@@ -1,5 +1,5 @@
 {
-  "originHash" : "5dba052ae32874c9548f68bbf06fa235c3391f8914a82aa80579228f7417fcec",
+  "originHash" : "97da907994d3036c3561f73ed946c5bdf6b3f2747f4e8d1c8914353a648e0a67",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "61b85103a1aeed8218f17c794687781505fbbef5",
         "version" : "11.2.0"
+      }
+    },
+    {
+      "identity" : "callbackurlkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/phimage/CallbackURLKit.git",
+      "state" : {
+        "revision" : "28664b3d4f37bb359d5ed729aa463cbedfba5d82",
+        "version" : "2.3.2"
       }
     },
     {
@@ -119,6 +128,15 @@
       }
     },
     {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess.git",
+      "state" : {
+        "revision" : "84e546727d66f1adc5439debad16270d0fdd04e7",
+        "version" : "4.2.2"
+      }
+    },
+    {
       "identity" : "leveldb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/leveldb.git",
@@ -179,6 +197,15 @@
       "state" : {
         "revision" : "0687f71944021d616d34d922343dcef086855920",
         "version" : "600.0.1"
+      }
+    },
+    {
+      "identity" : "uicolor-hex-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/yeahdongcn/UIColor-Hex-Swift.git",
+      "state" : {
+        "revision" : "f37f97bc1a5b545b39ab5330e133e56fa4f38cff",
+        "version" : "5.1.9"
       }
     },
     {

@@ -1,7 +1,4 @@
 PODS:
-  - CallbackURLKit (2.3.0):
-    - CallbackURLKit/Core (= 2.3.0)
-  - CallbackURLKit/Core (2.3.0)
   - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
@@ -15,7 +12,6 @@ PODS:
     - HAKit/Core
     - PromiseKit (~> 8.1.1)
   - Improv-iOS (0.0.6)
-  - KeychainAccess (4.2.2)
   - MBProgressHUD (1.2.0)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
@@ -54,7 +50,6 @@ PODS:
   - SwiftFormat/CLI (0.53.1)
   - SwiftGen (6.5.1)
   - SwiftLint (0.54.0)
-  - UIColor_Hex_Swift (5.1.9)
   - Version (0.8.0)
   - XCGLogger (7.0.1):
     - XCGLogger/Core (= 7.0.1)
@@ -62,7 +57,6 @@ PODS:
     - ObjcExceptionBridging
 
 DEPENDENCIES:
-  - CallbackURLKit
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
@@ -70,7 +64,6 @@ DEPENDENCIES:
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - Improv-iOS (~> 0.0.6)
-  - KeychainAccess
   - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
@@ -82,15 +75,12 @@ DEPENDENCIES:
   - SwiftFormat/CLI (= 0.53.1)
   - SwiftGen (~> 6.5.0)
   - SwiftLint (= 0.54.0)
-  - UIColor_Hex_Swift
   - Version
   - XCGLogger
 
 SPEC REPOS:
   trunk:
-    - CallbackURLKit
     - Improv-iOS
-    - KeychainAccess
     - MBProgressHUD
     - ObjcExceptionBridging
     - OHHTTPStubs
@@ -101,7 +91,6 @@ SPEC REPOS:
     - SwiftFormat
     - SwiftGen
     - SwiftLint
-    - UIColor_Hex_Swift
     - Version
     - XCGLogger
 
@@ -152,13 +141,11 @@ CHECKOUT OPTIONS:
     :tag: 4.0.9
 
 SPEC CHECKSUMS:
-  CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   HAKit: ef185a67991484219a7ecd74aab25f186274d7dd
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
-  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
@@ -172,10 +159,9 @@ SPEC CHECKSUMS:
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
-  UIColor_Hex_Swift: 20cb4e8d51b63e168a9da6933bc5d39cd8fb4ab5
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: e49a34370ffb33387e79fbac036223c420cacd00
+PODFILE CHECKSUM: 92d87b5a274e2b51fd9c4adf5a7e895b58f6c0ee
 
 COCOAPODS: 1.15.2
