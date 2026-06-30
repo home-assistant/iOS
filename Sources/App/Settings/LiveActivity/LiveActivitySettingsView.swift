@@ -23,6 +23,17 @@ struct LiveActivitySettingsView: View {
                 subtitle: L10n.LiveActivity.subtitle
             )
 
+            Section {
+                Link(destination: AppConstants.WebURLs.liveActivitiesDocs) {
+                    HStack {
+                        Text(L10n.LiveActivity.documentation)
+                        Spacer()
+                        Image(systemSymbol: .arrowUpForwardSquare)
+                            .font(.caption)
+                    }
+                }
+            }
+
             statusSection
 
             if activities.isEmpty {
