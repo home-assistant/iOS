@@ -883,6 +883,10 @@
 		42991E5B2FF3359D00C2C76B /* LiveActivityPendingStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */; };
 		42991E5E2FF3EB7400C2C76B /* MacWebViewTitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5D2FF3EB7400C2C76B /* MacWebViewTitleBar.swift */; };
 		42991E612FF4474500C2C76B /* ImproviOS in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E602FF4474500C2C76B /* ImproviOS */; };
+		42991E642FF448CB00C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E632FF448CB00C2C76B /* ObjectMapper */; };
+		42991E662FF4490F00C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E652FF4490F00C2C76B /* ObjectMapper */; };
+		42991E682FF4491D00C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E672FF4491D00C2C76B /* ObjectMapper */; };
+		42991E6A2FF449A200C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E692FF449A200C2C76B /* ObjectMapper */; };
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
@@ -3698,6 +3702,7 @@
 				42E00D112E1E7487006D140D /* SharedPush in Frameworks */,
 				110EC9FD251708D5009C9A1B /* Shared.framework in Frameworks */,
 				11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */,
+				42991E642FF448CB00C2C76B /* ObjectMapper in Frameworks */,
 				42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */,
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
@@ -3742,6 +3747,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42991E682FF4491D00C2C76B /* ObjectMapper in Frameworks */,
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
 				C010F1E50000000000000021 /* UIColorHexSwift in Frameworks */,
 				CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */,
@@ -3770,6 +3776,7 @@
 				9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */,
 				C010F1E50000000000000041 /* UIColorHexSwift in Frameworks */,
 				CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */,
+				42991E6A2FF449A200C2C76B /* ObjectMapper in Frameworks */,
 				42A1F0B72E000000000000B7 /* Alamofire in Frameworks */,
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
@@ -3784,6 +3791,7 @@
 			files = (
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
 				C010F1E50000000000000011 /* UIColorHexSwift in Frameworks */,
+				42991E662FF4490F00C2C76B /* ObjectMapper in Frameworks */,
 				CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */,
 				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
 				1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */,
@@ -7887,6 +7895,7 @@
 				C010F1E50000000000000030 /* UIColorHexSwift */,
 				CEA1C4A10000000000000010 /* KeychainAccess */,
 				42991E602FF4474500C2C76B /* ImproviOS */,
+				42991E632FF448CB00C2C76B /* ObjectMapper */,
 			);
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
@@ -7982,6 +7991,7 @@
 				C8FA7E5B23954D258050DD72 /* SFSafeSymbols */,
 				C010F1E50000000000000020 /* UIColorHexSwift */,
 				CEA1C4A10000000000000030 /* KeychainAccess */,
+				42991E672FF4491D00C2C76B /* ObjectMapper */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -8051,6 +8061,7 @@
 				42A1F0A72E000000000000A7 /* Alamofire */,
 				C010F1E50000000000000040 /* UIColorHexSwift */,
 				CEA1C4A10000000000000050 /* KeychainAccess */,
+				42991E692FF449A200C2C76B /* ObjectMapper */,
 			);
 			productName = "WatchApp Extension";
 			productReference = B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */;
@@ -8082,6 +8093,7 @@
 				294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */,
 				C010F1E50000000000000010 /* UIColorHexSwift */,
 				CEA1C4A10000000000000020 /* KeychainAccess */,
+				42991E652FF4490F00C2C76B /* ObjectMapper */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -8346,6 +8358,7 @@
 				C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */,
 				CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */,
+				42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -12137,6 +12150,14 @@
 				kind = branch;
 			};
 		};
+		42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tristanhimmelman/ObjectMapper.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -12279,6 +12300,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */;
 			productName = ImproviOS;
+		};
+		42991E632FF448CB00C2C76B /* ObjectMapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */;
+			productName = ObjectMapper;
+		};
+		42991E652FF4490F00C2C76B /* ObjectMapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */;
+			productName = ObjectMapper;
+		};
+		42991E672FF4491D00C2C76B /* ObjectMapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */;
+			productName = ObjectMapper;
+		};
+		42991E692FF449A200C2C76B /* ObjectMapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42991E622FF448CB00C2C76B /* XCRemoteSwiftPackageReference "ObjectMapper" */;
+			productName = ObjectMapper;
 		};
 		42A1F0A12E000000000000A1 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

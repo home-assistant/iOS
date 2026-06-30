@@ -14,7 +14,6 @@ PODS:
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - ObjectMapper (4.2.0)
   - OHHTTPStubs/Core (9.1.0)
   - OHHTTPStubs/Default (9.1.0):
     - OHHTTPStubs/Core
@@ -61,7 +60,6 @@ DEPENDENCIES:
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - MBProgressHUD (~> 1.2.0)
-  - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
   - PromiseKit (~> 8.1.1)
   - ReachabilitySwift
@@ -99,9 +97,6 @@ EXTERNAL SOURCES:
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.16
-  ObjectMapper:
-    :branch: master
-    :git: https://github.com/tristanhimmelman/ObjectMapper.git
   Sodium:
     :branch: xcode-14.0.1
     :git: https://github.com/zacwest/swift-sodium.git
@@ -119,9 +114,6 @@ CHECKOUT OPTIONS:
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.16
-  ObjectMapper:
-    :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
-    :git: https://github.com/tristanhimmelman/ObjectMapper.git
   Sodium:
     :commit: c66991f2ea610d437b31656795226c8e52002abd
     :git: https://github.com/zacwest/swift-sodium.git
@@ -135,7 +127,6 @@ SPEC CHECKSUMS:
   HAKit: ef185a67991484219a7ecd74aab25f186274d7dd
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
@@ -149,6 +140,6 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 259053b2dfae410e29c85db0a0da872af81f9722
+PODFILE CHECKSUM: 2349890ec621f5c939998fd2ca09c5b664b06036
 
 COCOAPODS: 1.15.2
