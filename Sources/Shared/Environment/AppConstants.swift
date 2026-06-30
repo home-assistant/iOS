@@ -241,6 +241,20 @@ public enum AppConstants {
         return eventsURL
     }
 
+    public static var notificationHistoryFile: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("databases", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to create Notification History file")
+            }
+        }
+        let historyURL = directoryURL.appendingPathComponent("notificationHistory.json")
+        return historyURL
+    }
+
     public static var widgetsCacheURL: URL = {
         let fileManager = FileManager.default
         let directoryURL = Self.AppGroupContainer.appendingPathComponent("caches/widgets", isDirectory: true)

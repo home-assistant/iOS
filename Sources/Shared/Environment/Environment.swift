@@ -95,6 +95,9 @@ public class AppEnvironment {
     /// Provides the Client Event store used for local logging.
     public var clientEventStore: ClientEventStoreProtocol = ClientEventStore()
 
+    /// Provides the store that records received notifications for the in-app history.
+    public var notificationHistoryStore: NotificationHistoryStoreProtocol = NotificationHistoryStore()
+
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
     /// Provides the Realm given objectTypes to reduce memory usage mostly in extensions.
