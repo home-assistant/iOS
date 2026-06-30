@@ -1,7 +1,7 @@
 import Shared
 import SwiftUI
 
-struct CarPlayAdvancedSettingsView: View {
+struct CarPlayTroubleshootingSettingsView: View {
     @State private var settings: CarPlayAssistDebugSettings
 
     init() {
@@ -41,11 +41,11 @@ struct CarPlayAdvancedSettingsView: View {
 #Preview {
     if #available(iOS 16.0, *) {
         NavigationStack {
-            CarPlayAdvancedSettingsView()
+            CarPlayTroubleshootingSettingsView()
         }
     } else {
         NavigationView {
-            CarPlayAdvancedSettingsView()
+            CarPlayTroubleshootingSettingsView()
         }
     }
 }
