@@ -881,7 +881,7 @@
 		42991E562FF32AF000C2C76B /* HAActivityTimerProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E552FF32AF000C2C76B /* HAActivityTimerProgressBar.swift */; };
 		42991E592FF3357000C2C76B /* LiveActivityPendingEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E582FF3357000C2C76B /* LiveActivityPendingEnd.swift */; };
 		42991E5B2FF3359D00C2C76B /* LiveActivityPendingStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */; };
-		42991E5E2FF3EB7400C2C76B /* MacWebViewToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5D2FF3EB7400C2C76B /* MacWebViewToolbar.swift */; };
+		42991E5E2FF3EB7400C2C76B /* MacWebViewTitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5D2FF3EB7400C2C76B /* MacWebViewTitleBar.swift */; };
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
@@ -2661,7 +2661,7 @@
 		42991E552FF32AF000C2C76B /* HAActivityTimerProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAActivityTimerProgressBar.swift; sourceTree = "<group>"; };
 		42991E582FF3357000C2C76B /* LiveActivityPendingEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityPendingEnd.swift; sourceTree = "<group>"; };
 		42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityPendingStart.swift; sourceTree = "<group>"; };
-		42991E5D2FF3EB7400C2C76B /* MacWebViewToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWebViewToolbar.swift; sourceTree = "<group>"; };
+		42991E5D2FF3EB7400C2C76B /* MacWebViewTitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWebViewTitleBar.swift; sourceTree = "<group>"; };
 		429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorationType.swift; sourceTree = "<group>"; };
 		429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTemplateEditor.swift; sourceTree = "<group>"; };
@@ -5941,7 +5941,7 @@
 				42FA83482F4731F80050095A /* WebViewController+WebViewSetup.swift */,
 				42FA834A2F4731F80050095A /* WebViewController+Onboarding.swift */,
 				420E87112FEC203A00A6A233 /* WebViewReconnectManager.swift */,
-				42991E5D2FF3EB7400C2C76B /* MacWebViewToolbar.swift */,
+				42991E5D2FF3EB7400C2C76B /* MacWebViewTitleBar.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -9760,7 +9760,7 @@
 				429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				42FF5E942E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */,
-				42991E5E2FF3EB7400C2C76B /* MacWebViewToolbar.swift in Sources */,
+				42991E5E2FF3EB7400C2C76B /* MacWebViewTitleBar.swift in Sources */,
 				JARVIS0001000000000003 /* TodoListAppEntity.swift in Sources */,
 				JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */,
 				JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */,

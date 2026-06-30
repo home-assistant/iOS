@@ -61,14 +61,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 )
                 .id(webViewResetID)
                 .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
-                if Current.isCatalyst {
-                    MacWebViewToolbar(
-                        server: server,
-                        webViewController: webViewController
-                    )
-                    .frame(width: .zero, height: .zero)
-                    .allowsHitTesting(false)
-                }
+                macTitleBar
             }
         }
         .background(themedStatusBar)
@@ -81,6 +74,18 @@ struct HomeAssistantView: View, WebFrontendView {
             } else {
                 view
             }
+        }
+    }
+
+    @ViewBuilder
+    private var macTitleBar: some View {
+        if Current.isCatalyst {
+            MacWebViewTitleBar(
+                server: server,
+                webViewController: webViewController
+            )
+            .frame(width: .zero, height: .zero)
+            .allowsHitTesting(false)
         }
     }
 

@@ -6,7 +6,7 @@ import UIKit
 import AppKit
 #endif
 
-struct MacWebViewToolbar: UIViewControllerRepresentable {
+struct MacWebViewTitleBar: UIViewControllerRepresentable {
     let server: Server
     weak var webViewController: WebViewController?
 
@@ -15,7 +15,7 @@ struct MacWebViewToolbar: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context: Context) -> UIViewController {
-        MacWebViewToolbarViewController { [weak coordinator = context.coordinator] viewController in
+        MacWebViewTitleBarViewController { [weak coordinator = context.coordinator] viewController in
             coordinator?.configure(
                 windowScene: viewController.view.window?.windowScene,
                 server: server,
@@ -37,10 +37,10 @@ struct MacWebViewToolbar: UIViewControllerRepresentable {
     }
 }
 
-private final class MacWebViewToolbarViewController: UIViewController {
-    private let updateToolbar: (MacWebViewToolbarViewController) -> Void
+private final class MacWebViewTitleBarViewController: UIViewController {
+    private let updateToolbar: (MacWebViewTitleBarViewController) -> Void
 
-    init(updateToolbar: @escaping (MacWebViewToolbarViewController) -> Void) {
+    init(updateToolbar: @escaping (MacWebViewTitleBarViewController) -> Void) {
         self.updateToolbar = updateToolbar
         super.init(nibName: nil, bundle: nil)
     }
@@ -63,7 +63,7 @@ private final class MacWebViewToolbarViewController: UIViewController {
 }
 
 #if targetEnvironment(macCatalyst)
-extension MacWebViewToolbar {
+extension MacWebViewTitleBar {
     @MainActor
     final class Coordinator: NSObject, NSToolbarDelegate {
         private enum Constants {
