@@ -28,6 +28,13 @@ public struct HALiveActivityAttributes: ActivityAttributes {
     /// before this shipped, or when the start path doesn't supply it.
     public let serverWebhookId: String?
 
+    /// Server send-time of the push-to-start, in Unix epoch seconds, stamped by the push relay.
+    /// When Core re-sends a start before it has a per-activity token, two activities can exist for
+    /// one tag; the registry keeps the one with the largest `startedAt` and dismisses the rest, so
+    /// duplicates collapse to the newest deterministically (ActivityKit exposes no creation order).
+    /// Optional: nil for activities started before this shipped, which then sort oldest.
+    public let startedAt: TimeInterval?
+
     /// Static-attribute coding keys. `serverWebhookId` maps to the snake_case `webhook_id` key
     /// carried in the APNs push-to-start `attributes`. Adding optional fields is safe; renaming
     /// or removing breaks in-flight activities.
@@ -35,6 +42,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         case tag
         case title
         case serverWebhookId = "webhook_id"
+        case startedAt = "started_at"
     }
 
     // MARK: - Dynamic State
@@ -203,10 +211,11 @@ public struct HALiveActivityAttributes: ActivityAttributes {
 
     // MARK: - Init
 
-    public init(tag: String, title: String, serverWebhookId: String? = nil) {
+    public init(tag: String, title: String, serverWebhookId: String? = nil, startedAt: TimeInterval? = nil) {
         self.tag = tag
         self.title = title
         self.serverWebhookId = serverWebhookId
+        self.startedAt = startedAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -218,6 +227,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.title = Self.defaultTitle
         }
         self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
+        self.startedAt = try container.decodeIfPresent(TimeInterval.self, forKey: .startedAt)
     }
 }
 #endif

@@ -180,7 +180,12 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return false
         }
 
-        let attributes = HALiveActivityAttributes(tag: tag, title: title, serverWebhookId: serverWebhookId)
+        let attributes = HALiveActivityAttributes(
+            tag: tag,
+            title: title,
+            serverWebhookId: serverWebhookId,
+            startedAt: Current.date().timeIntervalSince1970
+        )
         let activity: Activity<HALiveActivityAttributes>
 
         do {
@@ -235,15 +240,45 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// observed). Call this at app launch before any notification handlers are invoked.
     public func reattach() async {
         var runningTags: Set<String> = []
+        // Choose the newest surviving activity per tag (by server-stamped `startedAt`) BEFORE observing
+        // any of them. The snapshot order is arbitrary and duplicates exist when Core re-sent a
+        // push-to-start while the app was terminated; observing a loser would report its push token to
+        // Core, pointing it at an activity we are about to end. So losers are ended here, unobserved.
+        var winners: [String: Activity<HALiveActivityAttributes>] = [:]
         for activity in Activity<HALiveActivityAttributes>.activities {
             let tag = activity.attributes.tag
             runningTags.insert(tag)
-            guard entries[tag] == nil else { continue }
-            let observationTask = makeObservationTask(for: activity)
-            entries[tag] = Entry(activity: activity, observationTask: observationTask)
-            Current.Log.verbose("LiveActivityRegistry: reattached activity for tag \(tag), id=\(activity.id)")
+            guard let incumbent = winners[tag] else {
+                winners[tag] = activity
+                continue
+            }
+            let loser = startedLater(activity, than: incumbent) ? incumbent : activity
+            if loser.id == incumbent.id { winners[tag] = activity }
+            await discardDuplicate(loser, tag: tag)
+            Current.Log.info("LiveActivityRegistry: ended older duplicate for tag \(tag) on reattach")
+        }
+
+        for (tag, winner) in winners {
+            if let existing = entries[tag] {
+                guard existing.activity.id != winner.id else { continue } // already tracking the winner
+                existing.observationTask.cancel()
+                await existing.activity.end(nil, dismissalPolicy: .immediate)
+            }
+            entries[tag] = Entry(activity: winner, observationTask: makeObservationTask(for: winner))
+            Current.Log.verbose("LiveActivityRegistry: reattached newest activity for tag \(tag), id=\(winner.id)")
         }
         await releaseStaleTokens(runningTags: runningTags)
+    }
+
+    /// End a duplicate Live Activity. If we are already tracking it, cancel its observation and drop
+    /// it from `entries` first, so ending it neither reports a dismissal (which would clear the
+    /// surviving duplicate's token slot in Core) nor reports its push token.
+    private func discardDuplicate(_ activity: Activity<HALiveActivityAttributes>, tag: String) async {
+        if let tracked = entries[tag], tracked.activity.id == activity.id {
+            tracked.observationTask.cancel()
+            entries.removeValue(forKey: tag)
+        }
+        await activity.end(nil, dismissalPolicy: .immediate)
     }
 
     /// Tell Core to drop tokens for activities that are no longer running. Without this, an
@@ -291,7 +326,36 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     public func startObservingRemoteActivityStarts() async {
         for await activity in Activity<HALiveActivityAttributes>.activityUpdates {
             let tag = activity.attributes.tag
-            guard entries[tag] == nil else { continue }
+
+            if let existing = entries[tag] {
+                // Same activity we already track (e.g. one we started locally) — nothing to do.
+                guard existing.activity.id != activity.id else { continue }
+
+                // A different activity for a tag we already track: Core re-sent a push-to-start because
+                // it had no per-activity token yet. Keep whichever was started later by the server-stamped
+                // `startedAt` and end the other, so the survivor is deterministic regardless of the order
+                // activityUpdates delivers a burst.
+                guard startedLater(activity, than: existing.activity) else {
+                    // This arrival is the older one: end it without ever observing it, so it never
+                    // reports its push token to Core.
+                    await activity.end(nil, dismissalPolicy: .immediate)
+                    Current.Log.info(
+                        "LiveActivityRegistry: dropped older duplicate for tag \(tag), keeping existing id"
+                    )
+                    continue
+                }
+                // This arrival is newer: adopt it as the tracked entry BEFORE ending the older one.
+                // Cancelling the older one's observation and replacing `entries` first means its token
+                // report is suppressed (see reportPushToken) and ending it fires no dismissal — Core keeps
+                // the token slot the survivor repopulates.
+                existing.observationTask.cancel()
+                entries[tag] = Entry(activity: activity, observationTask: makeObservationTask(for: activity))
+                await existing.activity.end(nil, dismissalPolicy: .immediate)
+                Current.Log.info(
+                    "LiveActivityRegistry: collapsed older duplicate for tag \(tag), keeping id=\(activity.id)"
+                )
+                continue
+            }
 
             let observationTask = makeObservationTask(for: activity)
             entries[tag] = Entry(activity: activity, observationTask: observationTask)
@@ -332,6 +396,18 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         return Date().addingTimeInterval(kLiveActivityStaleInterval)
     }
 
+    // MARK: - Private — Duplicate Resolution
+
+    /// Whether `candidate` was started more recently than `current`, by the server-stamped
+    /// `startedAt` (Unix epoch seconds). A missing timestamp sorts oldest; equal timestamps are
+    /// not "later", so the incumbent is kept and needless duplicate churn is avoided.
+    private func startedLater(
+        _ candidate: Activity<HALiveActivityAttributes>,
+        than current: Activity<HALiveActivityAttributes>
+    ) -> Bool {
+        (candidate.attributes.startedAt ?? 0) > (current.attributes.startedAt ?? 0)
+    }
+
     // MARK: - Private — Observation
 
     private func makeObservationTask(for activity: Activity<HALiveActivityAttributes>) -> Task<Void, Never> {
@@ -344,7 +420,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                         Current.Log.verbose(
                             "LiveActivityRegistry: new push token for tag \(activity.attributes.tag)"
                         )
-                        await self.reportPushToken(tokenHex, tag: activity.attributes.tag)
+                        await self.reportPushToken(tokenHex, for: activity)
                     }
                 }
 
@@ -374,7 +450,15 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     /// Report a new activity push token to all connected HA servers.
     /// The token is used by the relay server to send APNs updates directly to this activity.
-    private func reportPushToken(_ tokenHex: String, tag: String) async {
+    private func reportPushToken(_ tokenHex: String, for activity: Activity<HALiveActivityAttributes>) async {
+        let tag = activity.attributes.tag
+        // Only report for the activity currently tracked for this tag. A duplicate that has been (or
+        // is about to be) collapsed in favour of a newer start must not push its token: that would
+        // point Core at an activity we are ending and could overwrite the survivor's token slot.
+        guard entries[tag]?.activity.id == activity.id else {
+            Current.Log.info("LiveActivityRegistry: skipping token report for superseded duplicate, tag \(tag)")
+            return
+        }
         let expiresAt = Current.date()
             .addingTimeInterval(Self.pushTokenTimeToLive)
             .timeIntervalSince1970.rounded(.down)
@@ -450,333 +534,6 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         var tags = Set(defaults.stringArray(forKey: Self.reportedTokenTagsKey) ?? [])
         guard tags.remove(tag) != nil else { return }
         defaults.set(Array(tags), forKey: Self.reportedTokenTagsKey)
-    }
-}
-
-/// Cross-process hand-off for ending Live Activities. The PushProvider extension has
-/// no working ActivityKit, so it enqueues a tag and posts a Darwin signal; the app
-/// drains the queue and ends the activity. The persisted queue is the durable path —
-/// Darwin does not wake a suspended app, so the app also drains at launch/foreground.
-enum LiveActivityPendingEnd {
-    // Namespaced by App Group id so dev/beta/release installs never cross-signal.
-    static var darwinNotificationName: String {
-        AppConstants.AppGroupID + ".liveActivityPendingEnd"
-    }
-
-    private static let storeKey = "liveActivityPendingEndTags"
-    private static let lock = NSLock()
-
-    static func append(tag: String) {
-        guard isValidTag(tag) else {
-            Current.Log.error("LiveActivityPendingEnd: rejected invalid tag '\(tag)'")
-            return
-        }
-        // A newer end supersedes a stale start queued earlier for the same tag. Done before
-        // taking our lock so the two queues are never held simultaneously (no lock-order inversion).
-        if #available(iOS 17.2, *) {
-            LiveActivityPendingStart.remove(tag: tag)
-        }
-        lock.lock()
-        defer { lock.unlock() }
-        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
-        var tags = Set(defaults.stringArray(forKey: storeKey) ?? [])
-        tags.insert(tag)
-        defaults.set(Array(tags), forKey: storeKey)
-        Current.Log.verbose("LiveActivityPendingEnd: enqueued '\(tag)', pending=\(tags.count)")
-    }
-
-    /// Remove a queued end for `tag` (called when a newer start is enqueued for the same tag).
-    static func remove(tag: String) {
-        lock.lock()
-        defer { lock.unlock() }
-        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
-        var tags = Set(defaults.stringArray(forKey: storeKey) ?? [])
-        guard tags.remove(tag) != nil else { return }
-        if tags.isEmpty {
-            defaults.removeObject(forKey: storeKey)
-        } else {
-            defaults.set(Array(tags), forKey: storeKey)
-        }
-    }
-
-    static func drainAll() -> [String] {
-        lock.lock()
-        defer { lock.unlock() }
-        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [] }
-        let observed = Set(defaults.stringArray(forKey: storeKey) ?? [])
-        guard !observed.isEmpty else { return [] }
-        // Subtract only what we read, so a concurrent extension append isn't clobbered.
-        let remaining = Set(defaults.stringArray(forKey: storeKey) ?? []).subtracting(observed)
-        if remaining.isEmpty {
-            defaults.removeObject(forKey: storeKey)
-        } else {
-            defaults.set(Array(remaining), forKey: storeKey)
-        }
-        return Array(observed)
-    }
-
-    // Payload-less wake; the tags travel via the App Group store above.
-    static func postDarwinSignal() {
-        CFNotificationCenterPostNotification(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            CFNotificationName(rawValue: darwinNotificationName as CFString),
-            nil,
-            nil,
-            true
-        )
-    }
-
-    // Mirrors HandlerStartOrUpdateLiveActivity.isValidTag.
-    static func isValidTag(_ tag: String) -> Bool {
-        guard !tag.isEmpty, tag.count <= 64 else { return false }
-        let allowed = CharacterSet(
-            charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
-        )
-        return tag.unicodeScalars.allSatisfy { allowed.contains($0) }
-    }
-}
-
-/// Cross-process hand-off for starting/updating Live Activities. The PushProvider extension
-/// has no working ActivityKit, so when a `live_update` notification arrives over the local-push
-/// channel it serializes the request and posts a Darwin signal; the app drains the queue and
-/// calls `startOrUpdate`. Mirrors `LiveActivityPendingEnd`. The persisted queue is the durable
-/// path — Darwin does not wake a suspended app, so the app also drains at launch/foreground.
-///
-/// ⚠️ A start delivered via local push while the app is suspended therefore only materializes
-/// when the app is next active — not in real time. Real-time background starts require APNs
-/// push-to-start, which the registry already supports.
-@available(iOS 17.2, *)
-enum LiveActivityPendingStart {
-    /// A serialized start/update request mirroring the arguments of `startOrUpdate`.
-    struct Request: Codable {
-        let tag: String
-        let title: String
-        let serverWebhookId: String?
-        let state: HALiveActivityAttributes.ContentState
-        let confirmID: String?
-    }
-
-    static func confirmLocalPushDelivery(for request: Request) {
-        guard let confirmID = request.confirmID, let webhookID = request.serverWebhookId else { return }
-        guard let server = Current.servers.all.first(where: { $0.info.connection.webhookID == webhookID }),
-              let api = Current.api(for: server) else {
-            Current.Log.error("LiveActivityPendingStart: no server for webhook to confirm local push delivery")
-            return
-        }
-        Current.Log.verbose("LiveActivityPendingStart: confirming local push delivery for tag \(request.tag)")
-        api.connection.send(.localPushConfirm(webhookID: webhookID, confirmID: confirmID)).promise.cauterize()
-    }
-
-    // Namespaced by App Group id so dev/beta/release installs never cross-signal.
-    static var darwinNotificationName: String {
-        AppConstants.AppGroupID + ".liveActivityPendingStart"
-    }
-
-    private static let storeKey = "liveActivityPendingStartRequests"
-    private static let lock = NSLock()
-
-    /// Enqueue a start/update request. Coalesces by tag (the latest state for a tag wins, so a
-    /// burst of updates collapses to the freshest) and cancels any end queued earlier for the
-    /// same tag — last writer wins.
-    static func append(_ request: Request) {
-        guard LiveActivityPendingEnd.isValidTag(request.tag) else {
-            Current.Log.error("LiveActivityPendingStart: rejected invalid tag '\(request.tag)'")
-            return
-        }
-        // A newer start supersedes a stale end queued earlier. Done before taking our lock so the
-        // two queues are never held simultaneously (no lock-order inversion).
-        LiveActivityPendingEnd.remove(tag: request.tag)
-        lock.lock()
-        defer { lock.unlock() }
-        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
-        var requests = load(from: defaults).filter { $0.tag != request.tag }
-        requests.append(request)
-        store(requests, to: defaults)
-        Current.Log.verbose("LiveActivityPendingStart: enqueued '\(request.tag)', pending=\(requests.count)")
-    }
-
-    /// Remove a queued start for `tag` (called when a newer end is enqueued for the same tag).
-    static func remove(tag: String) {
-        lock.lock()
-        defer { lock.unlock() }
-        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
-        let requests = load(from: defaults)
-        let remaining = requests.filter { $0.tag != tag }
-        guard remaining.count != requests.count else { return }
-        if remaining.isEmpty {
-            defaults.removeObject(forKey: storeKey)
-        } else {
-            store(remaining, to: defaults)
-        }
-    }
-
-    static func drainAll() -> [Request] {
-        lock.lock()
-        defer { lock.unlock() }
-        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [] }
-        let observed = load(from: defaults)
-        guard !observed.isEmpty else { return [] }
-        // Subtract only the tags we read, so a concurrent extension append of a different tag
-        // isn't clobbered (mirrors LiveActivityPendingEnd.drainAll).
-        let observedTags = Set(observed.map(\.tag))
-        let remaining = load(from: defaults).filter { !observedTags.contains($0.tag) }
-        if remaining.isEmpty {
-            defaults.removeObject(forKey: storeKey)
-        } else {
-            store(remaining, to: defaults)
-        }
-        return observed
-    }
-
-    // Payload-less wake; the requests travel via the App Group store above.
-    static func postDarwinSignal() {
-        CFNotificationCenterPostNotification(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            CFNotificationName(rawValue: darwinNotificationName as CFString),
-            nil,
-            nil,
-            true
-        )
-    }
-
-    private static func load(from defaults: UserDefaults) -> [Request] {
-        guard let data = defaults.data(forKey: storeKey) else { return [] }
-        do {
-            return try JSONDecoder().decode([Request].self, from: data)
-        } catch {
-            Current.Log.error("LiveActivityPendingStart: failed to decode queue, dropping it: \(error)")
-            defaults.removeObject(forKey: storeKey)
-            return []
-        }
-    }
-
-    private static func store(_ requests: [Request], to defaults: UserDefaults) {
-        do {
-            let data = try JSONEncoder().encode(requests)
-            defaults.set(data, forKey: storeKey)
-        } catch {
-            Current.Log.error("LiveActivityPendingStart: failed to encode queue: \(error)")
-        }
-    }
-}
-
-/// App-side drain for `LiveActivityPendingEnd`. Retain one instance to keep the Darwin
-/// observer registered.
-@available(iOS 17.2, *)
-public final class LiveActivityPendingEndObserver {
-    public init() {
-        let callback: CFNotificationCallback = { _, observer, _, _, _ in
-            // C callback can't capture self; re-derive it (see DeviceWrapperBatteryObserver).
-            guard let observer else { return }
-            Unmanaged<LiveActivityPendingEndObserver>.fromOpaque(observer)
-                .takeUnretainedValue()
-                .drain()
-        }
-        CFNotificationCenterAddObserver(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            Unmanaged.passUnretained(self).toOpaque(),
-            callback,
-            LiveActivityPendingEnd.darwinNotificationName as CFString,
-            nil,
-            .coalesce
-        )
-    }
-
-    deinit {
-        CFNotificationCenterRemoveObserver(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            Unmanaged.passUnretained(self).toOpaque(),
-            nil,
-            nil
-        )
-    }
-
-    public func drain() {
-        Self.drain()
-    }
-
-    public static func drain() {
-        let tags = LiveActivityPendingEnd.drainAll()
-        guard !tags.isEmpty else { return }
-        Current.Log.verbose("LiveActivityPendingEnd: draining \(tags.count) tag(s) in app")
-        // Background task so the async dismissal finishes even when backgrounded.
-        _ = Current.backgroundTask(withName: "live-activity-pending-end") { _ in
-            Promise<Void> { seal in
-                Task {
-                    for tag in tags {
-                        await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
-                    }
-                    DispatchQueue.main.async { seal.fulfill(()) }
-                }
-            }
-        }
-    }
-}
-
-/// App-side drain for `LiveActivityPendingStart`. Retain one instance to keep the Darwin
-/// observer registered.
-@available(iOS 17.2, *)
-public final class LiveActivityPendingStartObserver {
-    public init() {
-        let callback: CFNotificationCallback = { _, observer, _, _, _ in
-            // C callback can't capture self; re-derive it (see DeviceWrapperBatteryObserver).
-            guard let observer else { return }
-            Unmanaged<LiveActivityPendingStartObserver>.fromOpaque(observer)
-                .takeUnretainedValue()
-                .drain()
-        }
-        CFNotificationCenterAddObserver(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            Unmanaged.passUnretained(self).toOpaque(),
-            callback,
-            LiveActivityPendingStart.darwinNotificationName as CFString,
-            nil,
-            .coalesce
-        )
-    }
-
-    deinit {
-        CFNotificationCenterRemoveObserver(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            Unmanaged.passUnretained(self).toOpaque(),
-            nil,
-            nil
-        )
-    }
-
-    public func drain() {
-        Self.drain()
-    }
-
-    public static func drain() {
-        let requests = LiveActivityPendingStart.drainAll()
-        guard !requests.isEmpty else { return }
-        Current.Log.verbose("LiveActivityPendingStart: draining \(requests.count) request(s) in app")
-        // Background task so the async start/update finishes even when backgrounded.
-        _ = Current.backgroundTask(withName: "live-activity-pending-start") { _ in
-            Promise<Void> { seal in
-                Task {
-                    for request in requests {
-                        do {
-                            let presented = try await Current.liveActivityRegistry?.startOrUpdate(
-                                tag: request.tag,
-                                title: request.title,
-                                serverWebhookId: request.serverWebhookId,
-                                state: request.state
-                            )
-                            if presented == true {
-                                LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
-                            }
-                        } catch {
-                            Current.Log.error(
-                                "LiveActivityPendingStart: startOrUpdate failed for tag \(request.tag): \(error)"
-                            )
-                        }
-                    }
-                    DispatchQueue.main.async { seal.fulfill(()) }
-                }
-            }
-        }
     }
 }
 #endif
