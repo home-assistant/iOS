@@ -333,7 +333,7 @@ private extension NSToolbarItem.Identifier {
     static let homeAssistantServerPicker = NSToolbarItem.Identifier("io.home-assistant.webview.server-picker")
 }
 #else
-extension MacWebViewToolbar {
+extension MacWebViewTitleBar {
     final class Coordinator: NSObject {}
 }
 #endif
