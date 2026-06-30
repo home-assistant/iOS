@@ -2300,7 +2300,7 @@ public enum L10n {
   public enum LiveActivity {
     /// Home Assistant
     public static var defaultTitle: String { return L10n.tr("Localizable", "live_activity.default_title") }
-    /// Learn more
+    /// Documentation
     public static var documentation: String { return L10n.tr("Localizable", "live_activity.documentation") }
     /// No active Live Activities
     public static var emptyState: String { return L10n.tr("Localizable", "live_activity.empty_state") }
