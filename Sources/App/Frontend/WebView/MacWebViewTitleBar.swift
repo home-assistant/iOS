@@ -96,8 +96,8 @@ extension MacWebViewTitleBar {
                 let toolbar = NSToolbar(identifier: Constants.toolbarIdentifier)
                 toolbar.delegate = self
                 toolbar.displayMode = .iconOnly
-                toolbar.allowsUserCustomization = false
-                toolbar.autosavesConfiguration = false
+                toolbar.allowsUserCustomization = true
+                toolbar.autosavesConfiguration = true
 
                 titlebar.titleVisibility = .hidden
                 if #available(macCatalyst 14.0, *) {
@@ -119,11 +119,11 @@ extension MacWebViewTitleBar {
         }
 
         func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-            toolbarItemIdentifiers
+            defaultItemIdentifiers
         }
 
         func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-            toolbarItemIdentifiers
+            allowedItemIdentifiers
         }
 
         func toolbar(
@@ -175,7 +175,7 @@ extension MacWebViewTitleBar {
                     action: #selector(openServerInSafari)
                 )
             case .homeAssistantServerPicker:
-                serverPickerToolbarItem(identifier: itemIdentifier)
+                serverPickerToolbarItem(identifier: itemIdentifier, willBeInserted: flag)
             default:
                 nil
             }
@@ -191,7 +191,7 @@ extension MacWebViewTitleBar {
             }
         }
 
-        private var toolbarItemIdentifiers: [NSToolbarItem.Identifier] {
+        private var defaultItemIdentifiers: [NSToolbarItem.Identifier] {
             var identifiers: [NSToolbarItem.Identifier] = [
                 .homeAssistantBack,
                 .homeAssistantForward,
@@ -207,12 +207,40 @@ extension MacWebViewTitleBar {
             return identifiers
         }
 
-        private func serverPickerToolbarItem(identifier: NSToolbarItem.Identifier) -> NSMenuToolbarItem {
+        private var allowedItemIdentifiers: [NSToolbarItem.Identifier] {
+            var identifiers: [NSToolbarItem.Identifier] = [
+                .homeAssistantBack,
+                .homeAssistantForward,
+                .homeAssistantRefresh,
+                .homeAssistantCopy,
+                .homeAssistantPaste,
+                .homeAssistantOpenInSafari,
+            ]
+            if Current.servers.all.count > 1 {
+                identifiers.append(.homeAssistantServerPicker)
+            }
+            identifiers.append(contentsOf: [.space, .flexibleSpace])
+            return identifiers
+        }
+
+        private func serverPickerToolbarItem(
+            identifier: NSToolbarItem.Identifier,
+            willBeInserted: Bool
+        ) -> NSMenuToolbarItem {
             let item = NSMenuToolbarItem(itemIdentifier: identifier)
             item.showsIndicator = true
             item.visibilityPriority = Constants.highVisibilityPriority
-            serverPickerItem = item
 
+            guard willBeInserted else {
+                let paletteLabel = L10n.ServersSelection.title
+                item.label = paletteLabel
+                item.paletteLabel = paletteLabel
+                item.toolTip = paletteLabel
+                item.image = toolbarImage(symbol: .serverRack, accessibilityLabel: paletteLabel)
+                return item
+            }
+
+            serverPickerItem = item
             updateServerPicker()
             return item
         }
@@ -221,7 +249,7 @@ extension MacWebViewTitleBar {
             guard let serverPickerItem else { return }
             let title = server?.info.name ?? L10n.WebView.ServerSelection.title
             serverPickerItem.label = title
-            serverPickerItem.paletteLabel = title
+            serverPickerItem.paletteLabel = L10n.ServersSelection.title
             serverPickerItem.toolTip = title
             serverPickerItem.image = serverPickerTitleImage(title: title)
             serverPickerItem.itemMenu = serverPickerMenu()
@@ -333,7 +361,7 @@ private extension NSToolbarItem.Identifier {
     static let homeAssistantServerPicker = NSToolbarItem.Identifier("io.home-assistant.webview.server-picker")
 }
 #else
-extension MacWebViewToolbar {
+extension MacWebViewTitleBar {
     final class Coordinator: NSObject {}
 }
 #endif

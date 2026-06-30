@@ -361,6 +361,14 @@ class MenuManager {
             ))
         }
 
+        #if targetEnvironment(macCatalyst)
+        commands.append(UICommand(
+            title: L10n.Menu.View.customizeToolbar,
+            image: nil,
+            action: #selector(customizeToolbar)
+        ))
+        #endif
+
         return UIMenu(
             title: "",
             image: nil,
@@ -451,6 +459,7 @@ class MenuManager {
     @objc private func updateSensors() {}
     @available(iOS 16.0, *)
     @objc private func showFindInteraction() {}
+    @objc private func customizeToolbar() {}
 }
 
 #if targetEnvironment(macCatalyst)

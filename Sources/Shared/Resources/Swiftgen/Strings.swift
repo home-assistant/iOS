@@ -2707,6 +2707,8 @@ public enum L10n {
       }
     }
     public enum View {
+      /// Customize Toolbar…
+      public static var customizeToolbar: String { return L10n.tr("Localizable", "menu.view.customize_toolbar") }
       /// Find
       public static var find: String { return L10n.tr("Localizable", "menu.view.find") }
       /// Reload Page

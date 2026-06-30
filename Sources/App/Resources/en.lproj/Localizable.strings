@@ -769,6 +769,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.help.help" = "%@ Help";
 "menu.status_item.quit" = "Quit";
 "menu.status_item.toggle" = "Toggle %1$@";
+"menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Find";
 "menu.view.reload_page" = "Reload Page";
 "mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\

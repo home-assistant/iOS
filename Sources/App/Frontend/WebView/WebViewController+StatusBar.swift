@@ -2,6 +2,9 @@ import Shared
 import SwiftUI
 import UIKit
 @preconcurrency import WebKit
+#if targetEnvironment(macCatalyst)
+import AppKit
+#endif
 
 // MARK: - Status Bar & Toolbar
 
@@ -28,6 +31,12 @@ extension WebViewController {
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.open(server: server)
         }
+    }
+
+    @objc func customizeToolbar() {
+        #if targetEnvironment(macCatalyst)
+        view.window?.windowScene?.titlebar?.toolbar?.runCustomizationPalette(nil)
+        #endif
     }
 
     @objc func openServerInSafari() {
