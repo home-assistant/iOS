@@ -143,9 +143,11 @@
 "assist.button.listening.title" = "Listening...";
 "assist.carplay.playback_help.change_playback.detail" = "Choose Download and play if Stream does not play audio in your car.";
 "assist.carplay.playback_help.change_playback.title" = "TTS Playback";
+"assist.carplay.playback_help.go_to_advanced.detail" = "Open Advanced, then Assist.";
+"assist.carplay.playback_help.go_to_advanced.title" = "Advanced > Assist";
 "assist.carplay.playback_help.go_to_troubleshooting.detail" = "Open Troubleshooting, then Assist.";
 "assist.carplay.playback_help.go_to_troubleshooting.title" = "Troubleshooting > Assist";
-"assist.carplay.playback_help.message" = "If you encounter audio playback issues, open CarPlay settings in the Home Assistant Companion app, tap Troubleshooting, open Assist, and change TTS Playback to Download and play.";
+"assist.carplay.playback_help.message" = "If you encounter audio playback issues, open CarPlay settings in the Home Assistant Companion app, tap Advanced, open Assist, and change TTS Playback to Download and play.";
 "assist.carplay.playback_help.open_app.detail" = "Open CarPlay settings in the Home Assistant Companion app.";
 "assist.carplay.playback_help.open_app.title" = "Companion app";
 "assist.carplay.playback_help.title" = "Audio Playback Help";
@@ -254,6 +256,12 @@
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
 "carPlay.labels.select_server" = "Select server";
 "carPlay.labels.servers" = "Servers";
+"carPlay.labels.settings.advanced.assist.section.title" = "Assist";
+"carPlay.labels.settings.advanced.assist.tts_playback.footer" = "In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.";
+"carPlay.labels.settings.advanced.assist.tts_playback.title" = "TTS Playback";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
 "carPlay.labels.settings.main_server.title" = "Main server";
 "carPlay.labels.settings.troubleshooting.assist.section.title" = "Assist";
 "carPlay.labels.settings.troubleshooting.assist.tts_playback.footer" = "In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.";
@@ -361,6 +369,7 @@
 "connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
 "connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
 "connection.permission.internal_url.title" = "Permission access";
+"connection_error.advanced_section.title" = "Advanced";
 "connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Open settings";
 "connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
