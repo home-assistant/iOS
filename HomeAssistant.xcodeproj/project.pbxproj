@@ -878,6 +878,8 @@
 		4298587E2EB1025E00E33710 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4298587D2EB1025E00E33710 /* LocationManager.swift */; };
 		4298587F2EB1025E00E33710 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4298587D2EB1025E00E33710 /* LocationManager.swift */; };
 		429858862EB1066400E33710 /* LocationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429858832EB102D000E33710 /* LocationManagerTests.swift */; };
+		42991E542FF32AF000C2C76B /* HAActivityProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E532FF32AF000C2C76B /* HAActivityProgressBar.swift */; };
+		42991E562FF32AF000C2C76B /* HAActivityTimerProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E552FF32AF000C2C76B /* HAActivityTimerProgressBar.swift */; };
 		42991E592FF3357000C2C76B /* LiveActivityPendingEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E582FF3357000C2C76B /* LiveActivityPendingEnd.swift */; };
 		42991E5B2FF3359D00C2C76B /* LiveActivityPendingStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */; };
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
@@ -2656,6 +2658,8 @@
 		429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStyles.swift; sourceTree = "<group>"; };
 		4298587D2EB1025E00E33710 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		429858832EB102D000E33710 /* LocationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerTests.swift; sourceTree = "<group>"; };
+		42991E532FF32AF000C2C76B /* HAActivityProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAActivityProgressBar.swift; sourceTree = "<group>"; };
+		42991E552FF32AF000C2C76B /* HAActivityTimerProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAActivityTimerProgressBar.swift; sourceTree = "<group>"; };
 		42991E582FF3357000C2C76B /* LiveActivityPendingEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityPendingEnd.swift; sourceTree = "<group>"; };
 		42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityPendingStart.swift; sourceTree = "<group>"; };
 		429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorationType.swift; sourceTree = "<group>"; };
@@ -6594,6 +6598,8 @@
 				A95FDD102F6B8A3E008EF72F /* HADynamicIslandView.swift */,
 				A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */,
 				A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */,
+				42991E532FF32AF000C2C76B /* HAActivityProgressBar.swift */,
+				42991E552FF32AF000C2C76B /* HAActivityTimerProgressBar.swift */,
 			);
 			path = LiveActivity;
 			sourceTree = "<group>";
@@ -9322,6 +9328,8 @@
 				3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
 				42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */,
 				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
+				42991E542FF32AF000C2C76B /* HAActivityProgressBar.swift in Sources */,
+				42991E562FF32AF000C2C76B /* HAActivityTimerProgressBar.swift in Sources */,
 				422F88192D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */,
 				4276471E2C8F2F100027B21F /* IntentLightEntity.swift in Sources */,
 				4273C48D2C8859530065A5B4 /* PageAppEntity.swift in Sources */,
