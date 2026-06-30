@@ -10,7 +10,6 @@ PODS:
   - HAKit/PromiseKit (0.4.16):
     - HAKit/Core
     - PromiseKit (~> 8.1.1)
-  - Improv-iOS (0.0.6)
   - MBProgressHUD (1.2.0)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
@@ -61,7 +60,6 @@ DEPENDENCIES:
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
-  - Improv-iOS (~> 0.0.6)
   - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
@@ -78,7 +76,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Improv-iOS
     - MBProgressHUD
     - ObjcExceptionBridging
     - OHHTTPStubs
@@ -136,7 +133,6 @@ SPEC CHECKSUMS:
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   HAKit: ef185a67991484219a7ecd74aab25f186274d7dd
-  Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
@@ -153,6 +149,6 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 5d8bcbc21196d5c375cc15203a6328f67c09843c
+PODFILE CHECKSUM: 259053b2dfae410e29c85db0a0da872af81f9722
 
 COCOAPODS: 1.15.2
