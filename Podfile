@@ -88,8 +88,7 @@ abstract_target 'watchOS' do
     shared_fwk_pods
   end
 
-  target 'WatchExtension-Watch' do
-  end
+  target 'WatchExtension-Watch'
 end
 
 post_install do |installer|
