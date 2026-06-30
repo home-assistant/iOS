@@ -22,13 +22,11 @@ end
 plugin 'cocoapods-acknowledgements'
 
 pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
-pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit', '~> 8.1.1'
 pod 'Improv-iOS', '~> 0.0.6'
 
 pod 'RealmSwift'
-pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
 
@@ -65,7 +63,6 @@ abstract_target 'iOS' do
   end
 
   target 'App' do
-    pod 'CallbackURLKit'
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
 
     support_modules
