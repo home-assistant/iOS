@@ -12,7 +12,7 @@ struct CarPlayAdvancedSettingsView: View {
         List {
             assistSection
         }
-        .navigationTitle(L10n.CarPlay.Labels.Settings.Advanced.Section.title)
+        .navigationTitle(L10n.CarPlay.Labels.Settings.Troubleshooting.Section.title)
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: settings) { updatedSettings in
             Current.settingsStore.carPlayAssistDebugSettings = updatedSettings
@@ -22,7 +22,7 @@ struct CarPlayAdvancedSettingsView: View {
     private var assistSection: some View {
         Section {
             Picker(
-                L10n.CarPlay.Labels.Settings.Advanced.Assist.TtsPlayback.title,
+                L10n.CarPlay.Labels.Settings.Troubleshooting.Assist.TtsPlayback.title,
                 selection: $settings.ttsPlaybackStrategy
             ) {
                 ForEach(CarPlayAssistTTSPlaybackStrategy.allCases, id: \.self) { strategy in
@@ -31,9 +31,9 @@ struct CarPlayAdvancedSettingsView: View {
             }
             .lineLimit(1)
         } header: {
-            Text(L10n.CarPlay.Labels.Settings.Advanced.Assist.Section.title)
+            Text(L10n.CarPlay.Labels.Settings.Troubleshooting.Assist.Section.title)
         } footer: {
-            Text(L10n.CarPlay.Labels.Settings.Advanced.Assist.TtsPlayback.footer)
+            Text(L10n.CarPlay.Labels.Settings.Troubleshooting.Assist.TtsPlayback.footer)
         }
     }
 }

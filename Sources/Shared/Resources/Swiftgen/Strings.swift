@@ -614,7 +614,7 @@ public enum L10n {
     }
     public enum Carplay {
       public enum PlaybackHelp {
-        /// If you encounter audio playback issues, open CarPlay settings in the Home Assistant Companion app, tap Advanced, open Assist, and change TTS Playback to Download and play.
+        /// If you encounter audio playback issues, open CarPlay settings in the Home Assistant Companion app, tap Troubleshooting, open Assist, and change TTS Playback to Download and play.
         public static var message: String { return L10n.tr("Localizable", "assist.carplay.playback_help.message") }
         /// Audio Playback Help
         public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.title") }
@@ -624,11 +624,11 @@ public enum L10n {
           /// TTS Playback
           public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.change_playback.title") }
         }
-        public enum GoToAdvanced {
-          /// Open Advanced, then Assist.
-          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_advanced.detail") }
-          /// Advanced > Assist
-          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_advanced.title") }
+        public enum GoToTroubleshooting {
+          /// Open Troubleshooting, then Assist.
+          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_troubleshooting.detail") }
+          /// Troubleshooting > Assist
+          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_troubleshooting.title") }
         }
         public enum OpenApp {
           /// Open CarPlay settings in the Home Assistant Companion app.
@@ -977,30 +977,6 @@ public enum L10n {
       /// Servers
       public static var servers: String { return L10n.tr("Localizable", "carPlay.labels.servers") }
       public enum Settings {
-        public enum Advanced {
-          public enum Assist {
-            public enum Section {
-              /// Assist
-              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.section.title") }
-            }
-            public enum TtsPlayback {
-              /// In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.
-              public static var footer: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.tts_playback.footer") }
-              /// TTS Playback
-              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.assist.tts_playback.title") }
-            }
-          }
-          public enum Section {
-            /// Advanced
-            public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.title") }
-            public enum Button {
-              /// Use this option if your server data is not loaded properly.
-              public static var detail: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.button.detail") }
-              /// Restart App
-              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.button.title") }
-            }
-          }
-        }
         public enum MainServer {
           /// Main server
           public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.main_server.title") }
@@ -1008,6 +984,18 @@ public enum L10n {
         public enum Troubleshooting {
           /// Troubleshooting
           public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.title") }
+          public enum Assist {
+            public enum Section {
+              /// Assist
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist.section.title") }
+            }
+            public enum TtsPlayback {
+              /// In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.
+              public static var footer: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist.tts_playback.footer") }
+              /// TTS Playback
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist.tts_playback.title") }
+            }
+          }
           public enum AssistAudio {
             /// Assist audio
             public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist_audio.title") }
@@ -1015,6 +1003,10 @@ public enum L10n {
           public enum ForceClose {
             /// Force close app
             public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.force_close.title") }
+          }
+          public enum Section {
+            /// Troubleshooting
+            public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.section.title") }
           }
         }
       }
@@ -1355,10 +1347,6 @@ public enum L10n {
   }
 
   public enum ConnectionError {
-    public enum AdvancedSection {
-      /// Advanced
-      public static var title: String { return L10n.tr("Localizable", "connection_error.advanced_section.title") }
-    }
     public enum MoreDetailsSection {
       /// More details
       public static var title: String { return L10n.tr("Localizable", "connection_error.more_details_section.title") }

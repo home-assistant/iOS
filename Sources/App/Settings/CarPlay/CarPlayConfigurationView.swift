@@ -329,7 +329,7 @@ struct CarPlayConfigurationView: View {
         NavigationLink {
             CarPlayAdvancedSettingsView()
         } label: {
-            Text(L10n.CarPlay.Labels.Settings.Advanced.Section.title)
+            Text(L10n.CarPlay.Labels.Settings.Troubleshooting.Section.title)
         }
     }
 
