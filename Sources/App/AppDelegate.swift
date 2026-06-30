@@ -458,7 +458,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func setupFirebase() {
         let optionsFile: String = {
             switch Current.appConfiguration {
-            case .beta: return "GoogleService-Info-Beta"
             case .debug, .fastlaneSnapshot: return "GoogleService-Info-Debug"
             case .release: return "GoogleService-Info-Release"
             }

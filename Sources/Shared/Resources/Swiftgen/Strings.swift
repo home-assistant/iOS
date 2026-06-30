@@ -4530,6 +4530,48 @@ public enum L10n {
         /// Synced Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.header") }
       }
+      public enum History {
+        /// Clear
+        public static var clear: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear") }
+        /// No notifications yet
+        public static var empty: String { return L10n.tr("Localizable", "settings_details.notifications.history.empty") }
+        /// Push notifications received on this device, including local push and remote push.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.history.footer") }
+        /// (No content)
+        public static var noContent: String { return L10n.tr("Localizable", "settings_details.notifications.history.no_content") }
+        /// Remote Live Activities are delivered straight to the system by iOS, so the app never sees them and can't list them here.
+        public static var remoteLiveActivityUnavailable: String { return L10n.tr("Localizable", "settings_details.notifications.history.remote_live_activity_unavailable") }
+        /// History
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.history.title") }
+        public enum ClearConfirm {
+          /// This cannot be undone.
+          public static var message: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear_confirm.message") }
+          /// Are you sure you want to clear the notification history?
+          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear_confirm.title") }
+        }
+        public enum Detail {
+          /// Copied!
+          public static var copied: String { return L10n.tr("Localizable", "settings_details.notifications.history.detail.copied") }
+          /// Copy Payload
+          public static var copy: String { return L10n.tr("Localizable", "settings_details.notifications.history.detail.copy") }
+          /// No payload
+          public static var empty: String { return L10n.tr("Localizable", "settings_details.notifications.history.detail.empty") }
+          /// Payload
+          public static var payload: String { return L10n.tr("Localizable", "settings_details.notifications.history.detail.payload") }
+        }
+        public enum Kind {
+          /// All
+          public static var all: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.all") }
+          /// Live Activity (Local)
+          public static var liveActivityLocal: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.live_activity_local") }
+          /// Live Activity (Remote)
+          public static var liveActivityRemote: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.live_activity_remote") }
+          /// Local
+          public static var local: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.local") }
+          /// Remote
+          public static var remote: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.remote") }
+        }
+      }
       public enum LocalPush {
         /// Local Push
         public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.title") }

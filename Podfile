@@ -1,7 +1,7 @@
 use_frameworks!
 inhibit_all_warnings!
 
-project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :release
+project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release
 
 def support_modules
   pod 'SwiftGen', '~> 6.5.0'
