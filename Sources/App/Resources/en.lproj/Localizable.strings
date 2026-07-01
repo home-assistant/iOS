@@ -1259,6 +1259,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.title" = "App Icon";
 "settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Device Name";
+"settings_details.general.edge_to_edge.enabled.title" = "Enable";
+"settings_details.general.edge_to_edge.footer" = "Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.";
+"settings_details.general.edge_to_edge.title" = "Edge to edge display";
 "settings_details.general.full_screen.title" = "Full Screen";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.links.title" = "Links";
