@@ -186,11 +186,13 @@ struct GeneralSettingsView: View {
                     Current.settingsStore.edgeToEdge = newValue
                     redrawView()
                 })) {
-                    HStack {
-                        Text(L10n.SettingsDetails.General.EdgeToEdge.title)
-                        Spacer()
-                        LabsLabel()
-                    }
+                    Text(L10n.SettingsDetails.General.EdgeToEdge.Enabled.title)
+                }
+            } header: {
+                HStack {
+                    Text(L10n.SettingsDetails.General.EdgeToEdge.title)
+                    Spacer()
+                    LabsLabel()
                 }
             } footer: {
                 Text(L10n.SettingsDetails.General.EdgeToEdge.footer)

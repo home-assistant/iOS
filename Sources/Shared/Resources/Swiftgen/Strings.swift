@@ -4300,6 +4300,10 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.footer") }
         /// Edge to edge display
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.title") }
+        public enum Enabled {
+          /// Enabled
+          public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.enabled.title") }
+        }
       }
       public enum FullScreen {
         /// Full Screen
