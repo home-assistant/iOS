@@ -139,6 +139,16 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
+    @Test("MacToolbarConfigTable conforms to DatabaseTableProtocol")
+    func macToolbarConfigTableConformance() throws {
+        let table = MacToolbarConfigTable()
+        #expect(table.tableName == GRDBDatabaseTable.macToolbarConfig.rawValue)
+        #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
+
+        let expectedColumns = DatabaseTables.MacToolbarConfig.allCases.map(\.rawValue)
+        #expect(Set(table.definedColumns) == Set(expectedColumns))
+    }
+
     @Test("AllowedTagTable conforms to DatabaseTableProtocol")
     func allowedTagTableConformance() throws {
         let table = AllowedTagTable()
@@ -149,10 +159,10 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 16 tables conform to DatabaseTableProtocol")
+    @Test("All 17 tables conform to DatabaseTableProtocol")
     func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 16, "Should have exactly 16 tables")
+        #expect(tables.count == 17, "Should have exactly 17 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName
