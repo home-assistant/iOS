@@ -19,6 +19,7 @@
             "alert": {
                 "body": "kiosk_set_volume"
             },
+            "mutable-content": true,
             "sound": "default"
         },
         "volume": 30

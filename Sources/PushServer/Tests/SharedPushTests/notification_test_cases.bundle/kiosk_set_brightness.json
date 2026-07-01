@@ -19,6 +19,7 @@
             "alert": {
                 "body": "kiosk_set_brightness"
             },
+            "mutable-content": true,
             "sound": "default"
         },
         "level": 50
