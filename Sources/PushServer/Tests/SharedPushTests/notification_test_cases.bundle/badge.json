@@ -21,6 +21,7 @@
             "alert": {
                 "body": "test"
             },
+            "mutable-content": true,
             "badge": 3,
             "sound": "default"
         }

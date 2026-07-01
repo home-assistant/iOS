@@ -24,6 +24,8 @@ final class KioskSettingsTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.KioskSettings.hideStatusBar.rawValue, .boolean)
                     t.column(DatabaseTables.KioskSettings.autoReload.rawValue, .text)
                     t.column(DatabaseTables.KioskSettings.settingsEntryPosition.rawValue, .text)
+                    t.column(DatabaseTables.KioskSettings.settingsEntryBackgroundColor.rawValue, .text)
+                    t.column(DatabaseTables.KioskSettings.settingsEntryIconColor.rawValue, .text)
                     t.column(DatabaseTables.KioskSettings.screensaver.rawValue, .jsonText)
                 }
             }

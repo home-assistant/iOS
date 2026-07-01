@@ -2113,24 +2113,32 @@ public enum L10n {
     public enum Corner {
       /// Bottom leading
       public static var bottomLeading: String { return L10n.tr("Localizable", "kiosk.corner.bottom_leading") }
-      /// Bottom Left
-      public static var bottomLeft: String { return L10n.tr("Localizable", "kiosk.corner.bottom_left") }
-      /// Bottom Right
-      public static var bottomRight: String { return L10n.tr("Localizable", "kiosk.corner.bottom_right") }
       /// Bottom trailing
       public static var bottomTrailing: String { return L10n.tr("Localizable", "kiosk.corner.bottom_trailing") }
       /// Top leading
       public static var topLeading: String { return L10n.tr("Localizable", "kiosk.corner.top_leading") }
-      /// Top Left
-      public static var topLeft: String { return L10n.tr("Localizable", "kiosk.corner.top_left") }
-      /// Top Right
-      public static var topRight: String { return L10n.tr("Localizable", "kiosk.corner.top_right") }
       /// Top trailing
       public static var topTrailing: String { return L10n.tr("Localizable", "kiosk.corner.top_trailing") }
     }
     public enum Customization {
       /// Customization
       public static var title: String { return L10n.tr("Localizable", "kiosk.customization.title") }
+    }
+    public enum Customize {
+      /// Customize
+      public static var title: String { return L10n.tr("Localizable", "kiosk.customize.title") }
+      public enum BackgroundColor {
+        /// Background color
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.background_color.title") }
+      }
+      public enum IconColor {
+        /// Icon color
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.icon_color.title") }
+      }
+      public enum Preview {
+        /// Preview
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.preview.title") }
+      }
     }
     public enum Display {
       /// Dashboard
@@ -2228,8 +2236,6 @@ public enum L10n {
       public enum ConfigurationAccess {
         /// Kiosk settings entry position
         public static var position: String { return L10n.tr("Localizable", "kiosk.screensaver.configuration_access.position") }
-        /// Configuration access
-        public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.configuration_access.title") }
       }
       public enum Dimming {
         /// Dimming
@@ -4567,6 +4573,8 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_details.mac_open_in_browser.title") }
     }
     public enum Notifications {
+      /// Documentation
+      public static var documentation: String { return L10n.tr("Localizable", "settings_details.notifications.documentation") }
       /// Use the mobile_app notify service to send notifications to your device.
       public static var info: String { return L10n.tr("Localizable", "settings_details.notifications.info") }
       /// Notifications
@@ -4706,6 +4714,54 @@ public enum L10n {
         public static var resetsIn: String { return L10n.tr("Localizable", "settings_details.notifications.rate_limits.resets_in") }
         /// Total
         public static var total: String { return L10n.tr("Localizable", "settings_details.notifications.rate_limits.total") }
+      }
+      public enum SnoozeActions {
+        /// Quick actions shown on notifications to snooze them for a set amount of time. Snoozing re-shows the notification later; Home Assistant is not notified.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.footer") }
+        /// Snooze Actions
+        public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.header") }
+        /// Snooze 1 hour
+        public static var titleHour: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hour") }
+        /// Snooze 1 hour and %li min
+        public static func titleHourMinutes(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hour_minutes", p1)
+        }
+        /// Snooze %li hours
+        public static func titleHours(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hours", p1)
+        }
+        /// Snooze %li hours and %li min
+        public static func titleHoursMinutes(_ p1: Int, _ p2: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hours_minutes", p1, p2)
+        }
+        /// Snooze %li min
+        public static func titleMinutes(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_minutes", p1)
+        }
+        public enum AddSheet {
+          /// A snooze action for this duration already exists.
+          public static var duplicateWarning: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duplicate_warning") }
+          /// 1 hour
+          public static var durationHour: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hour") }
+          /// 1 hour and %li minutes
+          public static func durationHourMinutes(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hour_minutes", p1)
+          }
+          /// %li hours
+          public static func durationHours(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hours", p1)
+          }
+          /// %li hours and %li minutes
+          public static func durationHoursMinutes(_ p1: Int, _ p2: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hours_minutes", p1, p2)
+          }
+          /// %li minutes
+          public static func minutesLabel(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.minutes_label", p1)
+          }
+          /// New Snooze Action
+          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.title") }
+        }
       }
       public enum Sounds {
         /// Bundled

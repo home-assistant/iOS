@@ -3,6 +3,7 @@ import UserNotifications
 
 public protocol LocalNotificationDispatcherProtocol {
     func send(_ notification: LocalNotificationDispatcher.Notification)
+    func reschedule(_ content: UNNotificationContent, after delay: TimeInterval)
 }
 
 /// Sends local notifications
@@ -49,6 +50,23 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
             if let error {
                 Current.Log
                     .info("Error scheduling notification, id: \(notification.id) error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    /// Re-delivers `content` locally after `delay`, preserving its category/userInfo so any dynamic
+    /// actions (e.g. snooze presets) attached to the original notification still show up.
+    public func reschedule(_ content: UNNotificationContent, after delay: TimeInterval) {
+        // swiftlint:disable:next force_cast
+        let copy = content.mutableCopy() as! UNMutableNotificationContent
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: copy,
+            trigger: UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
+        )
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error {
+                Current.Log.error("Error rescheduling snoozed notification, error: \(error.localizedDescription)")
             }
         }
     }
