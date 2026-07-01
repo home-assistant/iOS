@@ -28,10 +28,9 @@ struct HALockScreenView: View {
                         .lineLimit(1)
 
                     if state.chronometer == true, let end = state.countdownEnd {
-                        Text(timerInterval: Date.now ... end, countsDown: true)
+                        HAActivityChronometerText(end: end)
                             .font(.title3.monospacedDigit().weight(.medium))
                             .foregroundStyle(secondaryTextColor)
-                            .contentTransition(.numericText(countsDown: true))
                     } else {
                         Text(state.message)
                             .font(.body)

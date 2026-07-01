@@ -66,7 +66,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Maximum progress value (raw integer). Maps to `progress_max`.
         public var progressMax: Int?
 
-        /// If true, show a countdown timer instead of static text. Maps to `chronometer`.
+        /// If true, show a ticking timer instead of static text. Maps to `chronometer`.
+        /// Counts down while `countdownEnd` is in the future; counts up from it once it
+        /// has passed (so a `when` at or before now behaves as a count-up chronometer).
         public var chronometer: Bool?
 
         /// Absolute end date for the countdown timer.
