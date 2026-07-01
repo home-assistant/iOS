@@ -2676,6 +2676,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.script.list.title") }
         }
       }
+      public enum ScriptsScenesAutomations {
+        public enum List {
+          /// Scripts, Scenes & Automations
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.scripts_scenes_automations.list.title") }
+        }
+      }
       public enum Selection {
         public enum List {
           /// Item type

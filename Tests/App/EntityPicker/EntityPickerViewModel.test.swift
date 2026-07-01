@@ -45,7 +45,7 @@ private extension AppArea {
 @Suite("EntityPickerViewModel")
 struct EntityPickerViewModelTests {
     private func makeVM(
-        domainFilter: Domain? = nil,
+        domainFilter: [Domain]? = nil,
         selectedServerId: String? = nil,
         entities: [HAAppEntity],
         areas: [AppArea] = []
