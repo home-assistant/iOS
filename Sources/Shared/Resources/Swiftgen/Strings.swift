@@ -2360,7 +2360,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_down.title") }
       }
       public enum CountUp {
-        /// chronometer with when: 0 and when_relative: true resolves to "now", so the timer counts up — showing elapsed time since the activity started. No progress bar: a count-up has no end.
+        /// chronometer with when: 0 and when_relative: true resolves to "now", so the timer counts up — showing elapsed time since the activity started. No progress bar: an unbounded count-up has no end. To count up toward a target, use a negative when instead.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up.note") }
         /// Washing Machine · Count-Up Timer
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up.title") }

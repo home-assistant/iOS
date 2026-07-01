@@ -673,7 +673,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.sample.all_fields.title" = "All Fields · Max Load";
 "live_activity.sample.count_down.note" = "chronometer with when: 2700 and when_relative: true — a 45-minute countdown. The tinted timer bar (progress_bar_color) drains as time runs out.";
 "live_activity.sample.count_down.title" = "Oven Timer · 45 min Countdown";
-"live_activity.sample.count_up.note" = "chronometer with when: 0 and when_relative: true resolves to \"now\", so the timer counts up — showing elapsed time since the activity started. No progress bar: a count-up has no end.";
+"live_activity.sample.count_up.note" = "chronometer with when: 0 and when_relative: true resolves to \"now\", so the timer counts up — showing elapsed time since the activity started. No progress bar: an unbounded count-up has no end. To count up toward a target, use a negative when instead.";
 "live_activity.sample.count_up.title" = "Washing Machine · Count-Up Timer";
 "live_activity.sample.count_up_target.note" = "A negative relative when (when: -1200) counts up toward the target: 0:00 → 20:00, the bar fills, and the timer freezes when it gets there.";
 "live_activity.sample.count_up_target.title" = "Workout · Count-Up to 20 min";
