@@ -163,6 +163,7 @@ extension MacWebViewTitleBar {
                 guard !currentIdentifiers.contains(identifier) else { continue }
                 toolbar.insertItem(withItemIdentifier: identifier, at: toolbar.items.count)
             }
+            updateEnabledItems()
         }
 
         func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {

@@ -5,7 +5,7 @@ import GRDB
 /// Which of these are currently visible (and in what order) is tracked separately by `NSToolbar`
 /// itself via `autosavesConfiguration`; this config only tracks which entities are known/available.
 public struct MacToolbarConfig: Codable, FetchableRecord, PersistableRecord, Equatable {
-    public static var macToolbarConfigId = "mac-toolbar-config"
+    public static let macToolbarConfigId = "mac-toolbar-config"
     public var id = MacToolbarConfig.macToolbarConfigId
     public var items: [MagicItem] = []
 
@@ -16,7 +16,7 @@ public struct MacToolbarConfig: Codable, FetchableRecord, PersistableRecord, Equ
 
     public static func config() throws -> MacToolbarConfig? {
         try Current.database().read { db in
-            try MacToolbarConfig.fetchOne(db)
+            try MacToolbarConfig.fetchOne(db, key: macToolbarConfigId)
         }
     }
 }
