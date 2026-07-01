@@ -1,7 +1,7 @@
-import EMTLoadingIndicator
 import Foundation
 import PromiseKit
 import Shared
+import UIKit
 import UserNotifications
 import WatchKit
 
@@ -15,7 +15,7 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
     @IBOutlet var notificationVideo: WKInterfaceInlineMovie!
     @IBOutlet var notificationMap: WKInterfaceMap!
 
-    private var loadingIndicator: EMTLoadingIndicator?
+    private var loadingIndicator: WatchLoadingIndicator?
     private var activeSubController: NotificationSubController? {
         willSet {
             if activeSubController !== newValue {
@@ -49,14 +49,13 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
         didSet {
             if isLoading {
                 if loadingIndicator == nil {
-                    loadingIndicator = with(EMTLoadingIndicator(
+                    loadingIndicator = with(WatchLoadingIndicator(
                         interfaceController: self,
                         interfaceImage: loadingImage,
                         width: 40,
-                        height: 40,
-                        style: .dot
+                        height: 40
                     )) {
-                        $0.showWait()
+                        $0.show()
                     }
                 }
             } else {
@@ -179,5 +178,87 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
         // if not implemented, this returns `nil` by default, which causes it to not prompt
         // last tested: watchOS 7.5
         []
+    }
+}
+
+final class WatchLoadingIndicator {
+    private weak var controller: WKInterfaceController?
+    private weak var image: WKInterfaceImage?
+    private let size: CGSize
+
+    private static var cache: [Int: UIImage] = [:]
+
+    init(
+        interfaceController: WKInterfaceController?,
+        interfaceImage: WKInterfaceImage?,
+        width: CGFloat,
+        height: CGFloat
+    ) {
+        self.controller = interfaceController
+        self.image = interfaceImage
+        self.size = CGSize(width: width, height: height)
+        image?.setAlpha(0)
+    }
+
+    func show() {
+        image?.setImage(Self.animatedImage(size: size))
+        image?.startAnimating()
+        fade(to: 1)
+    }
+
+    func hide() {
+        image?.stopAnimating()
+        fade(to: 0)
+    }
+
+    private func fade(to alpha: CGFloat) {
+        if let controller, let image {
+            controller.animate(withDuration: 0.3) {
+                image.setAlpha(alpha)
+            }
+        } else {
+            image?.setAlpha(alpha)
+        }
+    }
+
+    private static func animatedImage(size: CGSize) -> UIImage? {
+        let key = Int(size.width) << 16 | Int(size.height)
+        if let cached = cache[key] {
+            return cached
+        }
+
+        let dotCount = 8
+        let center = CGPoint(x: size.width / 2, y: size.height / 2)
+        let dotRadius = size.width / 12
+        let ringRadius = size.width / 2 - dotRadius
+
+        let frames: [UIImage] = (0 ..< dotCount).compactMap { frame in
+            UIGraphicsBeginImageContextWithOptions(size, false, 0)
+            defer { UIGraphicsEndImageContext() }
+            guard let context = UIGraphicsGetCurrentContext() else { return nil }
+
+            for index in 0 ..< dotCount {
+                let angle = CGFloat(index) / CGFloat(dotCount) * .pi * 2 - .pi / 2
+                let position = CGPoint(
+                    x: center.x + ringRadius * cos(angle),
+                    y: center.y + ringRadius * sin(angle)
+                )
+                let phase = CGFloat((index - frame + dotCount) % dotCount) / CGFloat(dotCount)
+                let alpha = 0.2 + 0.8 * (1 - phase)
+                context.setFillColor(UIColor(white: 1, alpha: alpha).cgColor)
+                context.fillEllipse(in: CGRect(
+                    x: position.x - dotRadius,
+                    y: position.y - dotRadius,
+                    width: dotRadius * 2,
+                    height: dotRadius * 2
+                ))
+            }
+
+            return UIGraphicsGetImageFromCurrentImageContext()
+        }
+
+        let animated = UIImage.animatedImage(with: frames, duration: 1)
+        cache[key] = animated
+        return animated
     }
 }

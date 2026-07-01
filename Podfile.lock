@@ -1,7 +1,6 @@
 PODS:
   - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
-  - EMTLoadingIndicator (4.0.0)
   - HAKit (0.4.16):
     - HAKit/Core (= 0.4.16)
   - HAKit/Core (0.4.16):
@@ -11,12 +10,11 @@ PODS:
   - HAKit/PromiseKit (0.4.16):
     - HAKit/Core
     - PromiseKit (~> 8.1.1)
-  - Improv-iOS (0.0.6)
   - MBProgressHUD (1.2.0)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - ObjectMapper (4.2.0)
+  - ObjectMapper (4.4.2)
   - OHHTTPStubs/Core (9.1.0)
   - OHHTTPStubs/Default (9.1.0):
     - OHHTTPStubs/Core
@@ -59,11 +57,9 @@ PODS:
 DEPENDENCIES:
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
-  - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
-  - Improv-iOS (~> 0.0.6)
   - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
@@ -80,7 +76,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Improv-iOS
     - MBProgressHUD
     - ObjcExceptionBridging
     - OHHTTPStubs
@@ -101,9 +96,6 @@ EXTERNAL SOURCES:
   CPDAcknowledgements:
     :branch: master
     :git: https://github.com/CocoaPods/CPDAcknowledgements
-  EMTLoadingIndicator:
-    :branch: master
-    :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.16
@@ -124,14 +116,11 @@ CHECKOUT OPTIONS:
   CPDAcknowledgements:
     :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
     :git: https://github.com/CocoaPods/CPDAcknowledgements
-  EMTLoadingIndicator:
-    :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
-    :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.16
   ObjectMapper:
-    :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
+    :commit: 6021c6035e83a306047348666f6400dc61445d3b
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
   Sodium:
     :commit: c66991f2ea610d437b31656795226c8e52002abd
@@ -143,12 +132,10 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   HAKit: ef185a67991484219a7ecd74aab25f186274d7dd
-  Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
+  ObjectMapper: e6e4d91ff7f2861df7aecc536c92d8363f4c9677
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
@@ -162,6 +149,6 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 92d87b5a274e2b51fd9c4adf5a7e895b58f6c0ee
+PODFILE CHECKSUM: e92a601b330b116cd90222555d91882f89a7e239
 
 COCOAPODS: 1.15.2
