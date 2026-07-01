@@ -269,6 +269,32 @@ public enum Domain: String, CaseIterable {
         }
     }
 
+    /// Localized name of the domain, mapped to the correlated core string when available.
+    public var name: String {
+        switch self {
+        case .button:
+            return CoreStrings.componentButtonTitle
+        case .cover:
+            return CoreStrings.componentCoverTitle
+        case .inputBoolean:
+            return CoreStrings.componentInputBooleanTitle
+        case .inputButton:
+            return CoreStrings.componentInputButtonTitle
+        case .light:
+            return CoreStrings.componentLightTitle
+        case .lock:
+            return CoreStrings.componentLockTitle
+        case .scene:
+            return CoreStrings.componentSceneTitle
+        case .script:
+            return CoreStrings.componentScriptTitle
+        case .switch:
+            return CoreStrings.componentSwitchTitle
+        case .automation, .binarySensor, .camera, .climate, .fan, .person, .sensor, .todo, .zone:
+            return rawValue
+        }
+    }
+
     public var localizedDescription: String {
         CoreStrings.getDomainLocalizedTitle(domain: self)
     }

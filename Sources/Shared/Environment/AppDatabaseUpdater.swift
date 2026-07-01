@@ -13,6 +13,10 @@ public protocol AppDatabaseUpdaterProtocol {
     func update(server: Server, forceUpdate: Bool)
 }
 
+public extension Notification.Name {
+    static let appDatabaseUpdaterDidFinishRoutine = Notification.Name("appDatabaseUpdaterDidFinishRoutine")
+}
+
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     enum UpdateError: Error {
         case noAPI
@@ -364,6 +368,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         totalTimer.end()
         Current.Log.info("✅ [Profiling] Full update for server \(server.info.name) completed")
+        NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishRoutine, object: server)
     }
 
     /// Sends a typed request for `server` and returns the decoded payload, or `nil` on cancellation,

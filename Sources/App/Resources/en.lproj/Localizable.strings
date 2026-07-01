@@ -1926,3 +1926,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.title" = "To-do List";
 "yaml_preview.share" = "Share Contents";
 "yes_label" = "Yes";
+"main_window_group_commands.areas.empty" = "No Areas";
+"main_window_group_commands.areas.title" = "Areas";
+"main_window_group_commands.entities.empty" = "No Entities";
+"main_window_group_commands.entities.title" = "Entities";
+"main_window_group_commands.floor.empty" = "No Floor";
+"main_window_group_commands.other_entities.title" = "Other entities";
