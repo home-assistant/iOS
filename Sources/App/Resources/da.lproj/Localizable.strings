@@ -145,8 +145,8 @@
 "assist.carplay.playback_help.change_playback.title" = "TTS-afspilning";
 "assist.carplay.playback_help.go_to_advanced.detail" = "Åbn Avanceret, og derefter Assist.";
 "assist.carplay.playback_help.go_to_advanced.title" = "Avanceret > Assist";
-"assist.carplay.playback_help.go_to_troubleshooting.detail" = "Open Troubleshooting, then Assist.";
-"assist.carplay.playback_help.go_to_troubleshooting.title" = "Troubleshooting > Assist";
+"assist.carplay.playback_help.go_to_troubleshooting.detail" = "Åbn Fejlfinding, og derefter Assist.";
+"assist.carplay.playback_help.go_to_troubleshooting.title" = "Fejlfinding > Assist";
 "assist.carplay.playback_help.message" = "Hvis du oplever problemer med lydafspilning, skal du åbne CarPlay-indstillingerne i Home Assistant mobil-appen, trykke på Avanceret, åbne Assist og ændre TTS-afspilning til Download og afspil.";
 "assist.carplay.playback_help.open_app.detail" = "Åbn CarPlay-indstillingerne i Home Assistant mobil-appen.";
 "assist.carplay.playback_help.open_app.title" = "Mobil-app";
@@ -264,11 +264,11 @@
 "carPlay.labels.settings.advanced.section.title" = "Avanceret";
 "carPlay.labels.settings.main_server.title" = "Hovedserver";
 "carPlay.labels.settings.troubleshooting.assist.section.title" = "Assist";
-"carPlay.labels.settings.troubleshooting.assist.tts_playback.footer" = "In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.";
-"carPlay.labels.settings.troubleshooting.assist.tts_playback.title" = "TTS Playback";
+"carPlay.labels.settings.troubleshooting.assist.tts_playback.footer" = "I nogle biler afspilles talte svar muligvis ikke, når 'Stream' er valgt. Hvis det sker, kan 'Download og afspil' potentielt løse problemet.";
+"carPlay.labels.settings.troubleshooting.assist.tts_playback.title" = "TTS-afspilning";
 "carPlay.labels.settings.troubleshooting.assist_audio.title" = "Assist-lyd";
 "carPlay.labels.settings.troubleshooting.force_close.title" = "Tving appen til at lukke";
-"carPlay.labels.settings.troubleshooting.section.title" = "Troubleshooting";
+"carPlay.labels.settings.troubleshooting.section.title" = "Fejlfinding";
 "carPlay.labels.settings.troubleshooting.title" = "Fejlfinding";
 "carPlay.labels.tab.settings" = "Indstillinger";
 "carPlay.lock.confirmation.title" = "Er du sikker på, at du vil udføre en låsehandling på %@?";
@@ -660,6 +660,7 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "legacy_actions.disclaimer" = "Forældede iOS-handlinger er ikke længere den anbefalede måde at interagere med Home Assistant på, så brug scripts, scener og automatiseringer direkte i dine widgets, Apple Watch og CarPlay.";
 "live_activity.accessibility.progress" = "Fremskridt";
 "live_activity.default_title" = "Home Assistant";
+"live_activity.documentation" = "Documentation";
 "live_activity.empty_state" = "Ingen aktive Liveaktiviteter";
 "live_activity.end_all.button" = "Afslut alle aktiviteter";
 "live_activity.end_all.confirm.button" = "Afslut alle";
@@ -734,6 +735,7 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "mac.copy.accessibility_label" = "Kopiér";
 "mac.navigation.go_back.accessibility_label" = "Navigér tilbage";
 "mac.navigation.go_forward.accessibility_label" = "Navigér fremad";
+"mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Indsæt";
 "magic_item.action" = "Handling";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
@@ -777,6 +779,7 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "menu.help.help" = "%@-hjælp";
 "menu.status_item.quit" = "Afslut";
 "menu.status_item.toggle" = "Skift %1$@";
+"menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Find";
 "menu.view.reload_page" = "Genindlæs side";
 "mtls.beta.info" = "Dette er en betafunktion. Hvis du oplever problemer, bedes du rapportere dem ved hjælp af knappen nedenfor.\

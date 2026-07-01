@@ -660,6 +660,7 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "legacy_actions.disclaimer" = "Le azioni legacy di iOS non sono più il metodo consigliato per interagire con Home Assistant; ti invitiamo a utilizzare script, scene e automazioni direttamente nei tuoi widget, su Apple Watch e su CarPlay.";
 "live_activity.accessibility.progress" = "Progress";
 "live_activity.default_title" = "Home Assistant";
+"live_activity.documentation" = "Documentation";
 "live_activity.empty_state" = "No active Live Activities";
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.button" = "End All";
@@ -734,6 +735,7 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "mac.copy.accessibility_label" = "Copia";
 "mac.navigation.go_back.accessibility_label" = "Torna indietro";
 "mac.navigation.go_forward.accessibility_label" = "Navigare in avanti";
+"mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Incolla";
 "magic_item.action" = "Azione";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
@@ -777,6 +779,7 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "menu.help.help" = "%@ Aiuto";
 "menu.status_item.quit" = "Esci dall'app";
 "menu.status_item.toggle" = "Attiva/disattiva %1$@";
+"menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Trova";
 "menu.view.reload_page" = "Ricarica la pagina";
 "mtls.beta.info" = "Si tratta di una funzionalità in beta; in caso di problemi, ti preghiamo di segnalarli utilizzando il pulsante qui sotto.\
