@@ -84,9 +84,11 @@ extension WebViewController {
 
     private func injectIntoFocusedElement(_ text: String) {
         let script = "(\(Self.injectTextJS))(\(Self.jsStringLiteral(text)));"
-        webView.evaluateJavaScript(script) { _, error in
+        webView.evaluateJavaScript(script) { result, error in
             if let error {
                 Current.Log.verbose("Insert text into WebView failed: \(error.localizedDescription)")
+            } else if (result as? Bool) != true {
+                Current.Log.verbose("Insert text into WebView found no focused editable element")
             }
         }
     }
