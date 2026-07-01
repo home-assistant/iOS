@@ -481,18 +481,20 @@ extension WebViewController {
         let controller = UIHostingController(rootView: AnyView(
             NavigationView {
                 VStack {
-                    HStack(spacing: DesignSystem.Spaces.half) {
-                        Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
-                        Toggle(isOn: .init(get: {
-                            Current.settingsStore.gestures[.shake] == .openDebug
-                        }, set: { newValue in
-                            Current.settingsStore.gestures[.shake] = newValue ? .openDebug : HAGestureAction.none
-                        }), label: { EmptyView() })
+                    if UIDevice.current.userInterfaceIdiom == .phone {
+                        HStack(spacing: DesignSystem.Spaces.half) {
+                            Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
+                            Toggle(isOn: .init(get: {
+                                Current.settingsStore.gestures[.shake] == .openDebug
+                            }, set: { newValue in
+                                Current.settingsStore.gestures[.shake] = newValue ? .openDebug : HAGestureAction.none
+                            }), label: { EmptyView() })
+                        }
+                        .padding()
+                        .background(Color.haPrimary.opacity(0.2))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
+                        .padding(DesignSystem.Spaces.one)
                     }
-                    .padding()
-                    .background(Color.haPrimary.opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
-                    .padding(DesignSystem.Spaces.one)
                     DebugView()
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {
@@ -503,6 +505,7 @@ extension WebViewController {
                         }
                 }
             }
+                .navigationViewStyle(.stack)
         ))
         presentOverlayController(controller: controller, animated: true)
     }
