@@ -417,9 +417,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
               let newStart = new.chronometerStart,
               let newEnd = new.countdownEnd,
               let previousStart = previous.chronometerStart,
-              let previousEnd = previous.countdownEnd,
-              abs(newEnd.timeIntervalSince(newStart) - previousEnd.timeIntervalSince(previousStart)) < 1
-        else { return new }
+              let previousEnd = previous.countdownEnd else { return new }
+        let newDuration = newEnd.timeIntervalSince(newStart)
+        let previousDuration = previousEnd.timeIntervalSince(previousStart)
+        guard abs(newDuration - previousDuration) < 1 else { return new }
         var carried = new
         carried.chronometerStart = previousStart
         carried.countdownEnd = previousEnd
