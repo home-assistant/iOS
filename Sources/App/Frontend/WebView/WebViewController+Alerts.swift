@@ -505,7 +505,7 @@ extension WebViewController {
                         }
                 }
             }
-                .navigationViewStyle(.stack)
+            .navigationViewStyle(.stack)
         ))
         presentOverlayController(controller: controller, animated: true)
     }
