@@ -75,7 +75,12 @@ extension MacWebViewTitleBar {
             static let serverPickerHorizontalPadding: CGFloat = 8
         }
 
-        private static let gestureActions: [HAGestureAction] = HAGestureAction.allCases.filter { $0 != .none }
+        // Gestures excluding no-op and already existent toolbar actions
+        private static let gestureActions: [HAGestureAction] = HAGestureAction.allCases.filter { ![
+            .none,
+            .nextPage,
+            .backPage
+        ].contains($0) }
 
         private weak var webViewController: WebViewController?
         private weak var titlebar: UITitlebar?
