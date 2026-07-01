@@ -764,6 +764,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Scenes";
 "magic_item.item_type.script.list.title" = "Scripts";
+"magic_item.item_type.scripts_scenes_automations.list.title" = "Scripts, Scenes & Automations";
 "magic_item.item_type.selection.list.title" = "Item type";
 "magic_item.name.title" = "Name";
 "magic_item.name_and_icon.footer" = "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.";

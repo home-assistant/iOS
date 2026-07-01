@@ -298,7 +298,7 @@ struct MagicItemCustomizationView: View {
     private var scriptActionDetails: some View {
         HStack {
             Text(verbatim: L10n.MagicItem.Action.Script.title)
-            EntityPicker(selectedEntity: $viewModel.selectedEntity, domainFilter: .script)
+            EntityPicker(selectedEntity: $viewModel.selectedEntity, domainFilter: [.script])
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .onChange(of: viewModel.selectedEntity) { newValue in
                     guard let newValue else { return }
