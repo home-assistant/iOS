@@ -89,13 +89,15 @@ private struct NotificationSnoozeActionAddView: View {
     var body: some View {
         NavigationView {
             Form {
-                Stepper(value: $minutes, in: 5 ... 1440, step: 5) {
-                    Text(durationLabel)
-                }
-            } footer: {
-                if isDuplicate {
-                    Text(L10n.SettingsDetails.Notifications.SnoozeActions.AddSheet.duplicateWarning)
-                        .foregroundColor(.red)
+                Section {
+                    Stepper(value: $minutes, in: 5 ... 1440, step: 5) {
+                        Text(durationLabel)
+                    }
+                } footer: {
+                    if isDuplicate {
+                        Text(L10n.SettingsDetails.Notifications.SnoozeActions.AddSheet.duplicateWarning)
+                            .foregroundColor(.red)
+                    }
                 }
             }
             .navigationTitle(L10n.SettingsDetails.Notifications.SnoozeActions.AddSheet.title)
