@@ -186,14 +186,12 @@ struct GeneralSettingsView: View {
                     Current.settingsStore.edgeToEdge = newValue
                     redrawView()
                 })) {
-                    Text("Edge to edge display")
+                    Text(L10n.SettingsDetails.General.EdgeToEdge.title)
                 }
             } header: {
-                Text("Experimental")
+                Text(L10n.SettingsDetails.General.EdgeToEdge.sectionHeader)
             } footer: {
-                Text(
-                    "Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues."
-                )
+                Text(L10n.SettingsDetails.General.EdgeToEdge.footer)
             }
         }
     }
