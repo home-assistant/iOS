@@ -178,23 +178,24 @@ struct GeneralSettingsView: View {
 
     @ViewBuilder
     private var edgeToEdge: some View {
-        Section {
-            if !Current.isCatalyst {
+        if !Current.isCatalyst {
+            Section {
                 Toggle(isOn: .init(get: {
                     Current.settingsStore.edgeToEdge
                 }, set: { newValue in
                     Current.settingsStore.edgeToEdge = newValue
                     redrawView()
                 })) {
-                    Text("Edge to edge display")
+                    Text(L10n.SettingsDetails.General.EdgeToEdge.Enabled.title)
                 }
+            } header: {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Text(L10n.SettingsDetails.General.EdgeToEdge.title)
+                    LabsLabel()
+                }
+            } footer: {
+                Text(L10n.SettingsDetails.General.EdgeToEdge.footer)
             }
-        } header: {
-            Text("Experimental")
-        } footer: {
-            Text(
-                "Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues."
-            )
         }
     }
 
