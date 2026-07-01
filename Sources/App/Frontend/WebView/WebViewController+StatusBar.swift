@@ -54,26 +54,114 @@ extension WebViewController {
     }
 
     @objc func copyCurrentSelectedContent() {
-        // Get selected text from the web view
-        webView.evaluateJavaScript("window.getSelection().toString();") { result, error in
-            Current.Log
-                .error(
-                    "Copy selected content result: \(String(describing: result)), error: \(String(describing: error))"
-                )
-            if let selectedText = result as? String, !selectedText.isEmpty {
-                // Copy to clipboard
-                UIPasteboard.general.string = selectedText
-            }
+        readWebViewSelection { selectedText in
+            guard let selectedText, !selectedText.isEmpty else { return }
+            UIPasteboard.general.string = selectedText
+        }
+    }
+
+    @objc func cutCurrentSelectedContent() {
+        readWebViewSelection { [weak self] selectedText in
+            guard let self, let selectedText, !selectedText.isEmpty else { return }
+            UIPasteboard.general.string = selectedText
+            injectIntoFocusedElement("")
         }
     }
 
     @objc func pasteContent() {
-        // Programmatically trigger the standard iOS paste action by calling the paste: selector
-        // This mimics the user selecting "Paste" from the context menu and allows paste to work properly
-        if webView.responds(to: #selector(paste(_:))) {
-            webView.perform(#selector(paste(_:)), with: nil)
+        guard let string = UIPasteboard.general.string, !string.isEmpty else { return }
+        injectIntoFocusedElement(string)
+    }
+
+    private func readWebViewSelection(completion: @escaping (String?) -> Void) {
+        webView.evaluateJavaScript(Self.readSelectionJS) { result, error in
+            if let error {
+                Current.Log.verbose("Read WebView selection failed: \(error.localizedDescription)")
+            }
+            completion(result as? String)
         }
     }
+
+    private func injectIntoFocusedElement(_ text: String) {
+        let script = "(\(Self.injectTextJS))(\(Self.jsStringLiteral(text)));"
+        webView.evaluateJavaScript(script) { _, error in
+            if let error {
+                Current.Log.verbose("Insert text into WebView failed: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private static func jsStringLiteral(_ string: String) -> String {
+        guard let data = try? JSONSerialization.data(withJSONObject: string, options: [.fragmentsAllowed]),
+              let literal = String(data: data, encoding: .utf8) else {
+            return "\"\""
+        }
+        return literal
+    }
+
+    private static let readSelectionJS = """
+    (function() {
+        function fromDocument(doc) {
+            try {
+                var active = doc.activeElement;
+                if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') &&
+                    typeof active.selectionStart === 'number' &&
+                    active.selectionStart !== active.selectionEnd) {
+                    return active.value.substring(active.selectionStart, active.selectionEnd);
+                }
+                if (active && active.tagName === 'IFRAME') {
+                    try {
+                        var innerDoc = active.contentDocument ||
+                            (active.contentWindow && active.contentWindow.document);
+                        if (innerDoc) {
+                            var inner = fromDocument(innerDoc);
+                            if (inner) { return inner; }
+                        }
+                    } catch (error) {}
+                }
+                var selection = doc.getSelection && doc.getSelection();
+                if (selection && selection.toString()) { return selection.toString(); }
+            } catch (error) {}
+            return '';
+        }
+        return fromDocument(document);
+    })();
+    """
+
+    private static let injectTextJS = """
+    function(text) {
+        function intoDocument(doc) {
+            try {
+                var active = doc.activeElement;
+                if (active && active.tagName === 'IFRAME') {
+                    try {
+                        var innerDoc = active.contentDocument ||
+                            (active.contentWindow && active.contentWindow.document);
+                        if (innerDoc && intoDocument(innerDoc)) { return true; }
+                    } catch (error) {}
+                }
+                if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') &&
+                    typeof active.selectionStart === 'number') {
+                    var value = active.value;
+                    var start = active.selectionStart;
+                    var end = active.selectionEnd;
+                    active.value = value.slice(0, start) + text + value.slice(end);
+                    var caret = start + text.length;
+                    active.setSelectionRange(caret, caret);
+                    active.dispatchEvent(new Event('input', { bubbles: true }));
+                    return true;
+                }
+                if (active && active.isContentEditable &&
+                    doc.execCommand('insertText', false, text)) {
+                    return true;
+                }
+                if (doc.execCommand('insertText', false, text)) { return true; }
+            } catch (error) {}
+            return false;
+        }
+        return intoDocument(document);
+    }
+    """
 
     @available(iOS 16.0, *)
     @objc func showFindInteraction() {
