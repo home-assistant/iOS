@@ -4727,6 +4727,8 @@ public enum L10n {
           return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_minutes", p1)
         }
         public enum AddSheet {
+          /// A snooze action for this duration already exists.
+          public static var duplicateWarning: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duplicate_warning") }
           /// 1 hour
           public static var durationHour: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hour") }
           /// 1 hour and %li minutes

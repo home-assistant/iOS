@@ -5,6 +5,7 @@ import UserNotifications
 /// A user-configurable "snooze" quick action shown on notifications, identified on the wire as
 /// `actionIdentifierPrefix + minutes` (e.g. `HA_SNOOZE_5`).
 public struct NotificationSnoozeAction: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
+    public static let databaseTableName = GRDBDatabaseTable.notificationSnoozeAction.rawValue
     public static let actionIdentifierPrefix = "HA_SNOOZE_"
 
     public var id: String

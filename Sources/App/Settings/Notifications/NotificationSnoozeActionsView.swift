@@ -33,7 +33,7 @@ struct NotificationSnoozeActionsView: View {
             viewModel.load()
         }
         .sheet(isPresented: $showingAddSheet) {
-            NotificationSnoozeActionAddView { minutes in
+            NotificationSnoozeActionAddView(existingMinutes: Set(viewModel.actions.map(\.minutes))) { minutes in
                 viewModel.add(minutes: minutes)
             }
             .modify { view in
@@ -59,7 +59,12 @@ struct NotificationSnoozeActionsView: View {
 private struct NotificationSnoozeActionAddView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var minutes = 10
+    let existingMinutes: Set<Int>
     let onAdd: (Int) -> Void
+
+    private var isDuplicate: Bool {
+        existingMinutes.contains(minutes)
+    }
 
     private var durationLabel: String {
         guard minutes >= 60 else {
@@ -87,6 +92,11 @@ private struct NotificationSnoozeActionAddView: View {
                 Stepper(value: $minutes, in: 5 ... 1440, step: 5) {
                     Text(durationLabel)
                 }
+            } footer: {
+                if isDuplicate {
+                    Text(L10n.SettingsDetails.Notifications.SnoozeActions.AddSheet.duplicateWarning)
+                        .foregroundColor(.red)
+                }
             }
             .navigationTitle(L10n.SettingsDetails.Notifications.SnoozeActions.AddSheet.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -101,6 +111,7 @@ private struct NotificationSnoozeActionAddView: View {
                         onAdd(minutes)
                         dismiss()
                     }
+                    .disabled(isDuplicate)
                 }
             }
         }
@@ -135,6 +146,8 @@ final class NotificationSnoozeActionsViewModel: ObservableObject {
     }
 
     func add(minutes: Int) {
+        guard !actions.contains(where: { $0.minutes == minutes }) else { return }
+
         let nextSortOrder = (actions.map(\.sortOrder).max() ?? -1) + 1
         NotificationSnoozeAction.save(NotificationSnoozeAction(minutes: minutes, sortOrder: nextSortOrder))
         load()

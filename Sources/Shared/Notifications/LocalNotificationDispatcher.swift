@@ -66,7 +66,7 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
         )
         UNUserNotificationCenter.current().add(request) { error in
             if let error {
-                Current.Log.info("Error rescheduling snoozed notification, error: \(error.localizedDescription)")
+                Current.Log.error("Error rescheduling snoozed notification, error: \(error.localizedDescription)")
             }
         }
     }

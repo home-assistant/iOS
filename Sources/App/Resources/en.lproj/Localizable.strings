@@ -1391,6 +1391,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.rate_limits.header" = "Rate Limits";
 "settings_details.notifications.rate_limits.resets_in" = "Resets In";
 "settings_details.notifications.rate_limits.total" = "Total";
+"settings_details.notifications.snooze_actions.add_sheet.duplicate_warning" = "A snooze action for this duration already exists.";
 "settings_details.notifications.snooze_actions.add_sheet.duration_hour" = "1 hour";
 "settings_details.notifications.snooze_actions.add_sheet.duration_hour_minutes" = "1 hour and %li minutes";
 "settings_details.notifications.snooze_actions.add_sheet.duration_hours" = "%li hours";
