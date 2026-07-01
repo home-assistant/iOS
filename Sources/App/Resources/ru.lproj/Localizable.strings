@@ -660,6 +660,7 @@
 "legacy_actions.disclaimer" = "Устаревшие действия для iOS больше не рекомендуются для взаимодействия с Home Assistant. Используйте скрипты, сцены и автоматизации непосредственно в виджетах, на Apple Watch и в CarPlay.";
 "live_activity.accessibility.progress" = "Progress";
 "live_activity.default_title" = "Home Assistant";
+"live_activity.documentation" = "Documentation";
 "live_activity.empty_state" = "Нет активностей для эфира активности";
 "live_activity.end_all.button" = "End All Activities";
 "live_activity.end_all.confirm.button" = "End All";
@@ -734,6 +735,7 @@
 "mac.copy.accessibility_label" = "Копировать";
 "mac.navigation.go_back.accessibility_label" = "Перейти назад";
 "mac.navigation.go_forward.accessibility_label" = "Перейти вперед";
+"mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Вставить";
 "magic_item.action" = "Действие";
 "magic_item.action.assist.pipeline.title" = "Обработчик";
@@ -777,6 +779,7 @@
 "menu.help.help" = "%@ Помощь";
 "menu.status_item.quit" = "Выйти";
 "menu.status_item.toggle" = "Переключить %1$@";
+"menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Найти";
 "menu.view.reload_page" = "Перезагрузить страницу";
 "mtls.beta.info" = "Это бета-версия функции. Если у вас возникнут какие-либо проблемы, пожалуйста, сообщите о них, нажав на кнопку ниже.\

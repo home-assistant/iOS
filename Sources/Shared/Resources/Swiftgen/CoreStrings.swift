@@ -48,14 +48,22 @@ public enum CoreStrings {
   public static var commonStateYes: String { return CoreStrings.tr("Core", "common::state::yes") }
   /// Off
   public static var componentAirzoneEntitySelectSleepTimesStateOff: String { return CoreStrings.tr("Core", "component::airzone::entity::select::sleep_times::state::off") }
+  /// Alarm control panel
+  public static var componentAlarmControlPanelTitle: String { return CoreStrings.tr("Core", "component::alarm_control_panel::title") }
   /// Idle
   public static var componentAlertEntityComponentStateIdle: String { return CoreStrings.tr("Core", "component::alert::entity_component::_::state::idle") }
   /// Active
   public static var componentAlertEntityComponentStateOn: String { return CoreStrings.tr("Core", "component::alert::entity_component::_::state::on") }
+  /// Alert
+  public static var componentAlertTitle: String { return CoreStrings.tr("Core", "component::alert::title") }
+  /// Assist satellite
+  public static var componentAssistSatelliteTitle: String { return CoreStrings.tr("Core", "component::assist_satellite::title") }
   /// Off
   public static var componentAutomationEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::automation::entity_component::_::state::off") }
   /// On
   public static var componentAutomationEntityComponentStateOn: String { return CoreStrings.tr("Core", "component::automation::entity_component::_::state::on") }
+  /// Automation
+  public static var componentAutomationTitle: String { return CoreStrings.tr("Core", "component::automation::title") }
   /// Off
   public static var componentBinarySensorEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::binary_sensor::entity_component::_::state::off") }
   /// On
@@ -88,6 +96,8 @@ public enum CoreStrings {
   public static var componentBinarySensorEntityComponentWindowStateOff: String { return CoreStrings.tr("Core", "component::binary_sensor::entity_component::window::state::off") }
   /// Open
   public static var componentBinarySensorEntityComponentWindowStateOn: String { return CoreStrings.tr("Core", "component::binary_sensor::entity_component::window::state::on") }
+  /// Binary sensor
+  public static var componentBinarySensorTitle: String { return CoreStrings.tr("Core", "component::binary_sensor::title") }
   /// Button
   public static var componentButtonTitle: String { return CoreStrings.tr("Core", "component::button::title") }
   /// Off
@@ -98,12 +108,16 @@ public enum CoreStrings {
   public static var componentCalendarEntityComponentStateAttributesAllDayStateFalse: String { return CoreStrings.tr("Core", "component::calendar::entity_component::_::state_attributes::all_day::state::false") }
   /// Yes
   public static var componentCalendarEntityComponentStateAttributesAllDayStateTrue: String { return CoreStrings.tr("Core", "component::calendar::entity_component::_::state_attributes::all_day::state::true") }
+  /// Calendar
+  public static var componentCalendarTitle: String { return CoreStrings.tr("Core", "component::calendar::title") }
   /// Idle
   public static var componentCameraEntityComponentStateIdle: String { return CoreStrings.tr("Core", "component::camera::entity_component::_::state::idle") }
   /// Disabled
   public static var componentCameraEntityComponentStateAttributesMotionDetectionStateFalse: String { return CoreStrings.tr("Core", "component::camera::entity_component::_::state_attributes::motion_detection::state::false") }
   /// Enabled
   public static var componentCameraEntityComponentStateAttributesMotionDetectionStateTrue: String { return CoreStrings.tr("Core", "component::camera::entity_component::_::state_attributes::motion_detection::state::true") }
+  /// Camera
+  public static var componentCameraTitle: String { return CoreStrings.tr("Core", "component::camera::title") }
   /// Off
   public static var componentClimateEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::climate::entity_component::_::state::off") }
   /// Off
@@ -120,6 +134,12 @@ public enum CoreStrings {
   public static var componentClimateEntityComponentStateAttributesSwingModeStateOff: String { return CoreStrings.tr("Core", "component::climate::entity_component::_::state_attributes::swing_mode::state::off") }
   /// On
   public static var componentClimateEntityComponentStateAttributesSwingModeStateOn: String { return CoreStrings.tr("Core", "component::climate::entity_component::_::state_attributes::swing_mode::state::on") }
+  /// Climate
+  public static var componentClimateTitle: String { return CoreStrings.tr("Core", "component::climate::title") }
+  /// Configurator
+  public static var componentConfiguratorTitle: String { return CoreStrings.tr("Core", "component::configurator::title") }
+  /// Counter
+  public static var componentCounterEntityComponentName: String { return CoreStrings.tr("Core", "component::counter::entity_component::_::name") }
   /// No
   public static var componentCounterEntityComponentStateAttributesEditableStateFalse: String { return CoreStrings.tr("Core", "component::counter::entity_component::_::state_attributes::editable::state::false") }
   /// Yes
@@ -130,6 +150,10 @@ public enum CoreStrings {
   public static var componentCoverEntityComponentStateOpen: String { return CoreStrings.tr("Core", "component::cover::entity_component::_::state::open") }
   /// Cover
   public static var componentCoverTitle: String { return CoreStrings.tr("Core", "component::cover::title") }
+  /// Date
+  public static var componentDateTitle: String { return CoreStrings.tr("Core", "component::date::title") }
+  /// Date/Time
+  public static var componentDatetimeTitle: String { return CoreStrings.tr("Core", "component::datetime::title") }
   /// Idle
   public static var componentDelugeEntitySensorStatusStateIdle: String { return CoreStrings.tr("Core", "component::deluge::entity::sensor::status::state::idle") }
   /// Off
@@ -140,12 +164,16 @@ public enum CoreStrings {
   public static var componentDeviceTrackerEntityComponentStateHome: String { return CoreStrings.tr("Core", "component::device_tracker::entity_component::_::state::home") }
   /// Away
   public static var componentDeviceTrackerEntityComponentStateNotHome: String { return CoreStrings.tr("Core", "component::device_tracker::entity_component::_::state::not_home") }
+  /// Device tracker
+  public static var componentDeviceTrackerTitle: String { return CoreStrings.tr("Core", "component::device_tracker::title") }
   /// Off
   public static var componentEcoforestEntitySensorStatusStateOff: String { return CoreStrings.tr("Core", "component::ecoforest::entity::sensor::status::state::off") }
   /// On
   public static var componentEcoforestEntitySensorStatusStateOn: String { return CoreStrings.tr("Core", "component::ecoforest::entity::sensor::status::state::on") }
   /// Standby
   public static var componentEcoforestEntitySensorStatusStateStandBy: String { return CoreStrings.tr("Core", "component::ecoforest::entity::sensor::status::state::stand_by") }
+  /// Event
+  public static var componentEventTitle: String { return CoreStrings.tr("Core", "component::event::title") }
   /// Off
   public static var componentFanEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::fan::entity_component::_::state::off") }
   /// On
@@ -154,10 +182,14 @@ public enum CoreStrings {
   public static var componentFanEntityComponentStateAttributesOscillatingStateFalse: String { return CoreStrings.tr("Core", "component::fan::entity_component::_::state_attributes::oscillating::state::false") }
   /// Yes
   public static var componentFanEntityComponentStateAttributesOscillatingStateTrue: String { return CoreStrings.tr("Core", "component::fan::entity_component::_::state_attributes::oscillating::state::true") }
+  /// Fan
+  public static var componentFanTitle: String { return CoreStrings.tr("Core", "component::fan::title") }
   /// Idle
   public static var componentFritzboxCallmonitorEntitySensorFritzboxCallmonitorStateIdle: String { return CoreStrings.tr("Core", "component::fritzbox_callmonitor::entity::sensor::fritzbox_callmonitor::state::idle") }
   /// Open
   public static var componentGardenaBluetoothEntitySwitchStateName: String { return CoreStrings.tr("Core", "component::gardena_bluetooth::entity::switch::state::name") }
+  /// Geolocation
+  public static var componentGeoLocationTitle: String { return CoreStrings.tr("Core", "component::geo_location::title") }
   /// Enabled
   public static var componentGoogleMailServicesSetVacationFieldsEnabledName: String { return CoreStrings.tr("Core", "component::google_mail::services::set_vacation::fields::enabled::name") }
   /// Closed
@@ -176,6 +208,8 @@ public enum CoreStrings {
   public static var componentGroupEntityComponentStateOpen: String { return CoreStrings.tr("Core", "component::group::entity_component::_::state::open") }
   /// Unlocked
   public static var componentGroupEntityComponentStateUnlocked: String { return CoreStrings.tr("Core", "component::group::entity_component::_::state::unlocked") }
+  /// Group
+  public static var componentGroupTitle: String { return CoreStrings.tr("Core", "component::group::title") }
   /// Standby
   public static var componentHdmiCecServicesStandbyName: String { return CoreStrings.tr("Core", "component::hdmi_cec::services::standby::name") }
   /// Away
@@ -198,6 +232,12 @@ public enum CoreStrings {
   public static var componentHumidifierEntityComponentStateAttributesActionStateOff: String { return CoreStrings.tr("Core", "component::humidifier::entity_component::_::state_attributes::action::state::off") }
   /// Home
   public static var componentHumidifierEntityComponentStateAttributesModeStateHome: String { return CoreStrings.tr("Core", "component::humidifier::entity_component::_::state_attributes::mode::state::home") }
+  /// Humidifier
+  public static var componentHumidifierTitle: String { return CoreStrings.tr("Core", "component::humidifier::title") }
+  /// Image
+  public static var componentImageTitle: String { return CoreStrings.tr("Core", "component::image::title") }
+  /// Image processing
+  public static var componentImageProcessingTitle: String { return CoreStrings.tr("Core", "component::image_processing::title") }
   /// Device is already configured
   public static var componentImprovBleConfigAbortAlreadyConfigured: String { return CoreStrings.tr("Core", "component::improv_ble::config::abort::already_configured") }
   /// Failed to connect
@@ -262,22 +302,32 @@ public enum CoreStrings {
   public static var componentInputDatetimeEntityComponentStateAttributesEditableStateFalse: String { return CoreStrings.tr("Core", "component::input_datetime::entity_component::_::state_attributes::editable::state::false") }
   /// Yes
   public static var componentInputDatetimeEntityComponentStateAttributesEditableStateTrue: String { return CoreStrings.tr("Core", "component::input_datetime::entity_component::_::state_attributes::editable::state::true") }
+  /// Input datetime
+  public static var componentInputDatetimeTitle: String { return CoreStrings.tr("Core", "component::input_datetime::title") }
   /// No
   public static var componentInputNumberEntityComponentStateAttributesEditableStateFalse: String { return CoreStrings.tr("Core", "component::input_number::entity_component::_::state_attributes::editable::state::false") }
   /// Yes
   public static var componentInputNumberEntityComponentStateAttributesEditableStateTrue: String { return CoreStrings.tr("Core", "component::input_number::entity_component::_::state_attributes::editable::state::true") }
+  /// Input number
+  public static var componentInputNumberTitle: String { return CoreStrings.tr("Core", "component::input_number::title") }
   /// No
   public static var componentInputSelectEntityComponentStateAttributesEditableStateFalse: String { return CoreStrings.tr("Core", "component::input_select::entity_component::_::state_attributes::editable::state::false") }
   /// Yes
   public static var componentInputSelectEntityComponentStateAttributesEditableStateTrue: String { return CoreStrings.tr("Core", "component::input_select::entity_component::_::state_attributes::editable::state::true") }
+  /// Input select
+  public static var componentInputSelectTitle: String { return CoreStrings.tr("Core", "component::input_select::title") }
   /// No
   public static var componentInputTextEntityComponentStateAttributesEditableStateFalse: String { return CoreStrings.tr("Core", "component::input_text::entity_component::_::state_attributes::editable::state::false") }
   /// Yes
   public static var componentInputTextEntityComponentStateAttributesEditableStateTrue: String { return CoreStrings.tr("Core", "component::input_text::entity_component::_::state_attributes::editable::state::true") }
+  /// Input text
+  public static var componentInputTextTitle: String { return CoreStrings.tr("Core", "component::input_text::title") }
   /// Idle
   public static var componentIppEntitySensorPrinterStateIdle: String { return CoreStrings.tr("Core", "component::ipp::entity::sensor::printer::state::idle") }
   /// Paused
   public static var componentLawnMowerEntityComponentStatePaused: String { return CoreStrings.tr("Core", "component::lawn_mower::entity_component::_::state::paused") }
+  /// Lawn mower
+  public static var componentLawnMowerTitle: String { return CoreStrings.tr("Core", "component::lawn_mower::title") }
   /// Off
   public static var componentLightEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::light::entity_component::_::state::off") }
   /// On
@@ -324,10 +374,16 @@ public enum CoreStrings {
   public static var componentMediaPlayerEntityComponentStateAttributesShuffleStateFalse: String { return CoreStrings.tr("Core", "component::media_player::entity_component::_::state_attributes::shuffle::state::false") }
   /// On
   public static var componentMediaPlayerEntityComponentStateAttributesShuffleStateTrue: String { return CoreStrings.tr("Core", "component::media_player::entity_component::_::state_attributes::shuffle::state::true") }
+  /// Media player
+  public static var componentMediaPlayerTitle: String { return CoreStrings.tr("Core", "component::media_player::title") }
   /// Off
   public static var componentMqttSelectorSetCaCertOptionsOff: String { return CoreStrings.tr("Core", "component::mqtt::selector::set_ca_cert::options::off") }
   /// Away
   public static var componentNetatmoDeviceAutomationTriggerSubtypeAway: String { return CoreStrings.tr("Core", "component::netatmo::device_automation::trigger_subtype::away") }
+  /// Notifications
+  public static var componentNotifyTitle: String { return CoreStrings.tr("Core", "component::notify::title") }
+  /// Number
+  public static var componentNumberTitle: String { return CoreStrings.tr("Core", "component::number::title") }
   /// Away
   public static var componentOverkizEntityClimateOverkizStateAttributesFanModeStateAway: String { return CoreStrings.tr("Core", "component::overkiz::entity::climate::overkiz::state_attributes::fan_mode::state::away") }
   /// Closed
@@ -346,6 +402,10 @@ public enum CoreStrings {
   public static var componentPersonEntityComponentStateHome: String { return CoreStrings.tr("Core", "component::person::entity_component::_::state::home") }
   /// Away
   public static var componentPersonEntityComponentStateNotHome: String { return CoreStrings.tr("Core", "component::person::entity_component::_::state::not_home") }
+  /// Person
+  public static var componentPersonTitle: String { return CoreStrings.tr("Core", "component::person::title") }
+  /// Plant Monitor
+  public static var componentPlantTitle: String { return CoreStrings.tr("Core", "component::plant::title") }
   /// Home
   public static var componentPlugwiseEntityClimatePlugwiseStateAttributesPresetModeStateHome: String { return CoreStrings.tr("Core", "component::plugwise::entity::climate::plugwise::state_attributes::preset_mode::state::home") }
   /// Off
@@ -360,6 +420,8 @@ public enum CoreStrings {
   public static var componentRemoteEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::remote::entity_component::_::state::off") }
   /// On
   public static var componentRemoteEntityComponentStateOn: String { return CoreStrings.tr("Core", "component::remote::entity_component::_::state::on") }
+  /// Remote
+  public static var componentRemoteTitle: String { return CoreStrings.tr("Core", "component::remote::title") }
   /// Off
   public static var componentRensonEntitySensorBreezeLevelStateOff: String { return CoreStrings.tr("Core", "component::renson::entity::sensor::breeze_level::state::off") }
   /// Off
@@ -390,12 +452,16 @@ public enum CoreStrings {
   public static var componentScheduleEntityComponentStateAttributesEditableStateFalse: String { return CoreStrings.tr("Core", "component::schedule::entity_component::_::state_attributes::editable::state::false") }
   /// Yes
   public static var componentScheduleEntityComponentStateAttributesEditableStateTrue: String { return CoreStrings.tr("Core", "component::schedule::entity_component::_::state_attributes::editable::state::true") }
+  /// Schedule
+  public static var componentScheduleTitle: String { return CoreStrings.tr("Core", "component::schedule::title") }
   /// Off
   public static var componentScriptEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::script::entity_component::_::state::off") }
   /// On
   public static var componentScriptEntityComponentStateOn: String { return CoreStrings.tr("Core", "component::script::entity_component::_::state::on") }
   /// Script
   public static var componentScriptTitle: String { return CoreStrings.tr("Core", "component::script::title") }
+  /// Select
+  public static var componentSelectTitle: String { return CoreStrings.tr("Core", "component::select::title") }
   /// Off
   public static var componentSensiboEntityClimateClimateDeviceStateAttributesSwingModeStateStopped: String { return CoreStrings.tr("Core", "component::sensibo::entity::climate::climate_device::state_attributes::swing_mode::state::stopped") }
   /// Off
@@ -444,6 +510,8 @@ public enum CoreStrings {
   public static var componentSensorEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::sensor::entity_component::_::state::off") }
   /// On
   public static var componentSensorEntityComponentStateOn: String { return CoreStrings.tr("Core", "component::sensor::entity_component::_::state::on") }
+  /// Sensor
+  public static var componentSensorTitle: String { return CoreStrings.tr("Core", "component::sensor::title") }
   /// Idle
   public static var componentSfrBoxEntitySensorDslTrainingStateIdle: String { return CoreStrings.tr("Core", "component::sfr_box::entity::sensor::dsl_training::state::idle") }
   /// Closed
@@ -456,14 +524,20 @@ public enum CoreStrings {
   public static var componentSirenEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::siren::entity_component::_::state::off") }
   /// On
   public static var componentSirenEntityComponentStateOn: String { return CoreStrings.tr("Core", "component::siren::entity_component::_::state::on") }
+  /// Siren
+  public static var componentSirenTitle: String { return CoreStrings.tr("Core", "component::siren::title") }
   /// Sleep
   public static var componentStarlinkEntityBinarySensorPowerSaveIdleName: String { return CoreStrings.tr("Core", "component::starlink::entity::binary_sensor::power_save_idle::name") }
+  /// Sun
+  public static var componentSunTitle: String { return CoreStrings.tr("Core", "component::sun::title") }
   /// Off
   public static var componentSwitchEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::switch::entity_component::_::state::off") }
   /// On
   public static var componentSwitchEntityComponentStateOn: String { return CoreStrings.tr("Core", "component::switch::entity_component::_::state::on") }
   /// Switch
   public static var componentSwitchTitle: String { return CoreStrings.tr("Core", "component::switch::title") }
+  /// Tag
+  public static var componentTagTitle: String { return CoreStrings.tr("Core", "component::tag::title") }
   /// Off
   public static var componentTessieEntitySelectClimateStateSeatHeaterLeftStateOff: String { return CoreStrings.tr("Core", "component::tessie::entity::select::climate_state_seat_heater_left::state::off") }
   /// Off
@@ -478,6 +552,10 @@ public enum CoreStrings {
   public static var componentTessieEntitySelectClimateStateSeatHeaterThirdRowLeftStateOff: String { return CoreStrings.tr("Core", "component::tessie::entity::select::climate_state_seat_heater_third_row_left::state::off") }
   /// Off
   public static var componentTessieEntitySelectClimateStateSeatHeaterThirdRowRightStateOff: String { return CoreStrings.tr("Core", "component::tessie::entity::select::climate_state_seat_heater_third_row_right::state::off") }
+  /// Text
+  public static var componentTextTitle: String { return CoreStrings.tr("Core", "component::text::title") }
+  /// Time
+  public static var componentTimeTitle: String { return CoreStrings.tr("Core", "component::time::title") }
   /// Active
   public static var componentTimerEntityComponentStateActive: String { return CoreStrings.tr("Core", "component::timer::entity_component::_::state::active") }
   /// Idle
@@ -488,6 +566,10 @@ public enum CoreStrings {
   public static var componentTimerEntityComponentStateAttributesEditableStateFalse: String { return CoreStrings.tr("Core", "component::timer::entity_component::_::state_attributes::editable::state::false") }
   /// Yes
   public static var componentTimerEntityComponentStateAttributesEditableStateTrue: String { return CoreStrings.tr("Core", "component::timer::entity_component::_::state_attributes::editable::state::true") }
+  /// Timer
+  public static var componentTimerTitle: String { return CoreStrings.tr("Core", "component::timer::title") }
+  /// To-do list
+  public static var componentTodoTitle: String { return CoreStrings.tr("Core", "component::todo::title") }
   /// Idle
   public static var componentTransmissionEntitySensorTransmissionStatusStateIdle: String { return CoreStrings.tr("Core", "component::transmission::entity::sensor::transmission_status::state::idle") }
   /// Disabled
@@ -532,6 +614,8 @@ public enum CoreStrings {
   public static var componentUpdateEntityComponentStateAttributesInProgressStateFalse: String { return CoreStrings.tr("Core", "component::update::entity_component::_::state_attributes::in_progress::state::false") }
   /// Yes
   public static var componentUpdateEntityComponentStateAttributesInProgressStateTrue: String { return CoreStrings.tr("Core", "component::update::entity_component::_::state_attributes::in_progress::state::true") }
+  /// Update
+  public static var componentUpdateTitle: String { return CoreStrings.tr("Core", "component::update::title") }
   /// Idle
   public static var componentVacuumEntityComponentStateIdle: String { return CoreStrings.tr("Core", "component::vacuum::entity_component::_::state::idle") }
   /// Off
@@ -540,16 +624,24 @@ public enum CoreStrings {
   public static var componentVacuumEntityComponentStateOn: String { return CoreStrings.tr("Core", "component::vacuum::entity_component::_::state::on") }
   /// Paused
   public static var componentVacuumEntityComponentStatePaused: String { return CoreStrings.tr("Core", "component::vacuum::entity_component::_::state::paused") }
+  /// Vacuum
+  public static var componentVacuumTitle: String { return CoreStrings.tr("Core", "component::vacuum::title") }
   /// Closed
   public static var componentValveEntityComponentStateClosed: String { return CoreStrings.tr("Core", "component::valve::entity_component::_::state::closed") }
   /// Open
   public static var componentValveEntityComponentStateOpen: String { return CoreStrings.tr("Core", "component::valve::entity_component::_::state::open") }
+  /// Valve
+  public static var componentValveTitle: String { return CoreStrings.tr("Core", "component::valve::title") }
   /// Off
   public static var componentWaterHeaterEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::water_heater::entity_component::_::state::off") }
   /// Off
   public static var componentWaterHeaterEntityComponentStateAttributesAwayModeStateOff: String { return CoreStrings.tr("Core", "component::water_heater::entity_component::_::state_attributes::away_mode::state::off") }
   /// On
   public static var componentWaterHeaterEntityComponentStateAttributesAwayModeStateOn: String { return CoreStrings.tr("Core", "component::water_heater::entity_component::_::state_attributes::away_mode::state::on") }
+  /// Water heater
+  public static var componentWaterHeaterTitle: String { return CoreStrings.tr("Core", "component::water_heater::title") }
+  /// Weather
+  public static var componentWeatherTitle: String { return CoreStrings.tr("Core", "component::weather::title") }
   /// Paused
   public static var componentWhirlpoolEntitySensorWhirlpoolMachineStatePause: String { return CoreStrings.tr("Core", "component::whirlpool::entity::sensor::whirlpool_machine::state::pause") }
   /// Standby

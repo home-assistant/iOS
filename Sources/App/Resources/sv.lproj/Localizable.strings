@@ -658,6 +658,7 @@
 "legacy_actions.disclaimer" = "Äldre iOS-åtgärder är inte längre det rekommenderade sättet att interagera med Home Assistant. Använd skript, scener och automatiseringar direkt i dina widgetar, Apple Watch och CarPlay.";
 "live_activity.accessibility.progress" = "Progress";
 "live_activity.default_title" = "Home Assistant";
+"live_activity.documentation" = "Documentation";
 "live_activity.empty_state" = "Inga aktiva Live-aktiviteter";
 "live_activity.end_all.button" = "Avsluta alla aktiviteter";
 "live_activity.end_all.confirm.button" = "Avsluta alla";
@@ -732,6 +733,7 @@
 "mac.copy.accessibility_label" = "Kopiera";
 "mac.navigation.go_back.accessibility_label" = "Navigera tillbaka";
 "mac.navigation.go_forward.accessibility_label" = "Navigera framåt";
+"mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Klistra in";
 "magic_item.action" = "Åtgärd";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
@@ -775,6 +777,7 @@
 "menu.help.help" = "%@ Hjälp";
 "menu.status_item.quit" = "Avsluta";
 "menu.status_item.toggle" = "Växla %1$@";
+"menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Hitta";
 "menu.view.reload_page" = "Ladda om sida";
 "mtls.beta.info" = "Detta är en beta-funktion, om du upplever några problem, vänligen rapportera dem med knappen nedan. För närvarande stöds mTLS endast på iOS 17+, det kan uppstå problem relaterade till visning av bilagor till meddelanden, Assist TTS-ljud och det kommer inte att fungera fullt ut på Apple Watch.";
