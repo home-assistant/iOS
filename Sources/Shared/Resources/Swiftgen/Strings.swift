@@ -4298,8 +4298,6 @@ public enum L10n {
       public enum EdgeToEdge {
         /// Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.footer") }
-        /// Experimental
-        public static var sectionHeader: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.section_header") }
         /// Edge to edge display
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.title") }
       }
