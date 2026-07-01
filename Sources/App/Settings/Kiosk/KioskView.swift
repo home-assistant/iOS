@@ -97,12 +97,16 @@ struct KioskView: View {
         Button {
             showSettings = true
         } label: {
-            Image(systemSymbol: .gearshapeFill)
-                .font(.body)
-                .foregroundStyle(.white)
-                .padding(DesignSystem.Spaces.one)
-                .background(.black)
-                .clipShape(.circle)
+            KioskSettingsEntryIcon(
+                backgroundColor: Color(
+                    hex: kiosk.settings.settingsEntryBackgroundColor ?? KioskSettingsEntryIcon
+                        .defaultBackgroundColorHex
+                ),
+                iconColor: Color(
+                    hex: kiosk.settings.settingsEntryIconColor ?? KioskSettingsEntryIcon
+                        .defaultIconColorHex
+                )
+            )
         }
         .buttonStyle(.plain)
         .accessibilityLabel(L10n.Kiosk.title)
@@ -118,5 +122,22 @@ struct KioskView: View {
             .clipShape(Capsule())
             .padding(DesignSystem.Spaces.two)
             .allowsHitTesting(false)
+    }
+}
+
+struct KioskSettingsEntryIcon: View {
+    static let defaultBackgroundColorHex = "000000"
+    static let defaultIconColorHex = "FFFFFF"
+
+    var backgroundColor: Color
+    var iconColor: Color
+
+    var body: some View {
+        Image(systemSymbol: .gearshapeFill)
+            .font(.body)
+            .foregroundStyle(iconColor)
+            .padding(DesignSystem.Spaces.one)
+            .background(backgroundColor)
+            .clipShape(.circle)
     }
 }

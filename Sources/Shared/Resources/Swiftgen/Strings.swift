@@ -2111,26 +2111,34 @@ public enum L10n {
       }
     }
     public enum Corner {
-      /// Bottom leading
-      public static var bottomLeading: String { return L10n.tr("Localizable", "kiosk.corner.bottom_leading") }
-      /// Bottom Left
+      /// Bottom left
       public static var bottomLeft: String { return L10n.tr("Localizable", "kiosk.corner.bottom_left") }
-      /// Bottom Right
+      /// Bottom right
       public static var bottomRight: String { return L10n.tr("Localizable", "kiosk.corner.bottom_right") }
-      /// Bottom trailing
-      public static var bottomTrailing: String { return L10n.tr("Localizable", "kiosk.corner.bottom_trailing") }
-      /// Top leading
-      public static var topLeading: String { return L10n.tr("Localizable", "kiosk.corner.top_leading") }
-      /// Top Left
+      /// Top left
       public static var topLeft: String { return L10n.tr("Localizable", "kiosk.corner.top_left") }
-      /// Top Right
+      /// Top right
       public static var topRight: String { return L10n.tr("Localizable", "kiosk.corner.top_right") }
-      /// Top trailing
-      public static var topTrailing: String { return L10n.tr("Localizable", "kiosk.corner.top_trailing") }
     }
     public enum Customization {
       /// Customization
       public static var title: String { return L10n.tr("Localizable", "kiosk.customization.title") }
+    }
+    public enum Customize {
+      /// Customize
+      public static var title: String { return L10n.tr("Localizable", "kiosk.customize.title") }
+      public enum BackgroundColor {
+        /// Background color
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.background_color.title") }
+      }
+      public enum IconColor {
+        /// Icon color
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.icon_color.title") }
+      }
+      public enum Preview {
+        /// Preview
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.preview.title") }
+      }
     }
     public enum Display {
       /// Dashboard
@@ -2228,8 +2236,6 @@ public enum L10n {
       public enum ConfigurationAccess {
         /// Kiosk settings entry position
         public static var position: String { return L10n.tr("Localizable", "kiosk.screensaver.configuration_access.position") }
-        /// Configuration access
-        public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.configuration_access.title") }
       }
       public enum Dimming {
         /// Dimming
