@@ -2353,6 +2353,18 @@ public enum L10n {
         /// All Fields · Max Load
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.title") }
       }
+      public enum CountDown {
+        /// chronometer with when: 2700 and when_relative: true — a 45-minute countdown. The tinted timer bar (progress_bar_color) drains as time runs out.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_down.note") }
+        /// Oven Timer · 45 min Countdown
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_down.title") }
+      }
+      public enum CountUp {
+        /// chronometer with when: 0 and when_relative: true resolves to "now", so the timer counts up — showing elapsed time since the activity started. No progress bar: a count-up has no end.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up.note") }
+        /// Washing Machine · Count-Up Timer
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up.title") }
+      }
       public enum CustomColors {
         /// Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.note") }

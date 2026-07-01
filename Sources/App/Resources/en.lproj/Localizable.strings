@@ -671,6 +671,10 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.sample.alarm.title" = "Alarm · 60 sec Countdown";
 "live_activity.sample.all_fields.note" = "Every content-state field active at once: icon, live countdown, and progress bar. Confirms no layout collisions.";
 "live_activity.sample.all_fields.title" = "All Fields · Max Load";
+"live_activity.sample.count_down.note" = "chronometer with when: 2700 and when_relative: true — a 45-minute countdown. The tinted timer bar (progress_bar_color) drains as time runs out.";
+"live_activity.sample.count_down.title" = "Oven Timer · 45 min Countdown";
+"live_activity.sample.count_up.note" = "chronometer with when: 0 and when_relative: true resolves to \"now\", so the timer counts up — showing elapsed time since the activity started. No progress bar: a count-up has no end.";
+"live_activity.sample.count_up.title" = "Washing Machine · Count-Up Timer";
 "live_activity.sample.custom_colors.note" = "Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.";
 "live_activity.sample.custom_colors.title" = "Custom Colors · Background + Text";
 "live_activity.sample.delivery.note" = "message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.";

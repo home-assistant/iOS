@@ -222,6 +222,33 @@ struct LiveActivitySettingsView: View {
                 )]
             ),
             LiveActivitySample(
+                id: "count-up",
+                name: L10n.LiveActivity.Sample.CountUp.title,
+                note: L10n.LiveActivity.Sample.CountUp.note,
+                tag: "debug-count-up",
+                title: "Washing Machine",
+                stages: [.init(
+                    message: "Running...",
+                    countdownSeconds: 0,
+                    icon: "mdi:washing-machine",
+                    color: "#FF9800"
+                )]
+            ),
+            LiveActivitySample(
+                id: "count-down",
+                name: L10n.LiveActivity.Sample.CountDown.title,
+                note: L10n.LiveActivity.Sample.CountDown.note,
+                tag: "debug-count-down",
+                title: "Oven Timer",
+                stages: [.init(
+                    message: "Pizza in the oven",
+                    countdownSeconds: 45 * 60,
+                    icon: "mdi:stove",
+                    color: "#F44336",
+                    progressBarColor: "#F44336"
+                )]
+            ),
+            LiveActivitySample(
                 id: "all-fields",
                 name: L10n.LiveActivity.Sample.AllFields.title,
                 note: L10n.LiveActivity.Sample.AllFields.note,
@@ -663,12 +690,13 @@ private struct LiveActivitySample: Identifiable {
         var progress: Int?
         var progressMax: Int?
         /// Seconds remaining at the moment the stage is applied (maps to `when` + `when_relative: true`).
-        /// `nil` = no timer.
+        /// `0` resolves to "now", which renders as a count-up timer. `nil` = no timer.
         var countdownSeconds: Double?
         var icon: String?
         var color: String?
         var backgroundColor: String?
         var textColor: String?
+        var progressBarColor: String?
 
         func contentState() -> HALiveActivityAttributes.ContentState {
             // countdownEnd is relative to now so the local demo matches `when_relative: true`,
@@ -683,7 +711,8 @@ private struct LiveActivitySample: Identifiable {
                 icon: icon,
                 color: color,
                 backgroundColor: backgroundColor,
-                textColor: textColor
+                textColor: textColor,
+                progressBarColor: progressBarColor
             )
         }
     }
@@ -729,6 +758,9 @@ private struct LiveActivitySample: Identifiable {
                 lines.append("\(sub)background_color: \"\(backgroundColor)\"")
             }
             if let textColor = stage.textColor { lines.append("\(sub)text_color: \"\(textColor)\"") }
+            if let progressBarColor = stage.progressBarColor {
+                lines.append("\(sub)progress_bar_color: \"\(progressBarColor)\"")
+            }
             return lines
         }
 
