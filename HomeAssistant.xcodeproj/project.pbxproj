@@ -23,16 +23,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-	CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */ = {isa = PBXBuildFile; productRef = CA11B4CC0000000000000010 /* CallbackURLKit */; };
-	C010F1E50000000000000011 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000010 /* UIColorHexSwift */; };
-	C010F1E50000000000000021 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000020 /* UIColorHexSwift */; };
-	C010F1E50000000000000031 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000030 /* UIColorHexSwift */; };
-	C010F1E50000000000000041 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000040 /* UIColorHexSwift */; };
-	CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
-	CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000020 /* KeychainAccess */; };
-	CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000030 /* KeychainAccess */; };
-	CEA1C4A10000000000000041 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000040 /* KeychainAccess */; };
-	CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000050 /* KeychainAccess */; };
 		00345F0517E14EC186DFB25D /* TestFlightCommunicationEngine.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */; };
 		00C267608DCC88B783816CBF /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
 		01783C74005B40978CE7508B /* NotificationIdentifierField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC7EF1136575D0E7A17091 /* NotificationIdentifierField.swift */; };
@@ -1565,6 +1555,10 @@
 		BB77559927344584B2C0E987 /* OnboardingAuthError.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */; };
 		BD1044995DE13A04C0FA039A /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D9C81015FD7A8FA8716E4F2 /* Pods_iOS_Extensions_Widgets.framework */; };
 		BECCC152A4E3F69A8EF5A6F3 /* TableSchemaTests.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9A0E08E6FEBDDE425D0D4 /* TableSchemaTests.test.swift */; };
+		C010F1E50000000000000011 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000010 /* UIColorHexSwift */; };
+		C010F1E50000000000000021 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000020 /* UIColorHexSwift */; };
+		C010F1E50000000000000031 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000030 /* UIColorHexSwift */; };
+		C010F1E50000000000000041 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000040 /* UIColorHexSwift */; };
 		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
 		C1AE883A374C598B5BCCAE23 /* CustomWidgetIntentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7FF77B68D19A4AD68F8FE3 /* CustomWidgetIntentHelper.swift */; };
 		C2485C745F81BBEB2BEB9DB0 /* KioskVolumeSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90C5ED6BFAE78B948D25DC0 /* KioskVolumeSensor.swift */; };
@@ -1574,9 +1568,15 @@
 		C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */; };
 		CA0CA15000000000000000A2 /* LocationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0CA15000000000000000A1 /* LocationSettingsView.swift */; };
 		CA0CA15000000000000000B2 /* LocationSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0CA15000000000000000B1 /* LocationSettingsViewModel.swift */; };
+		CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */ = {isa = PBXBuildFile; productRef = CA11B4CC0000000000000010 /* CallbackURLKit */; };
 		CA40A11000000000000000B1 /* WidgetCarPlayLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */; };
 		CA40A11000000000000000B2 /* WidgetCarPlayLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */; };
 		CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */; };
+		CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
+		CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000020 /* KeychainAccess */; };
+		CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000030 /* KeychainAccess */; };
+		CEA1C4A10000000000000041 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000040 /* KeychainAccess */; };
+		CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000050 /* KeychainAccess */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
@@ -12093,30 +12093,6 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-	CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */ = {
-		isa = XCRemoteSwiftPackageReference;
-		repositoryURL = "https://github.com/phimage/CallbackURLKit.git";
-		requirement = {
-			kind = exactVersion;
-			version = 2.3.2;
-		};
-	};
-	C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */ = {
-		isa = XCRemoteSwiftPackageReference;
-		repositoryURL = "https://github.com/yeahdongcn/UIColor-Hex-Swift.git";
-		requirement = {
-			kind = exactVersion;
-			version = 5.1.9;
-		};
-	};
-	CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
-		isa = XCRemoteSwiftPackageReference;
-		repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
-		requirement = {
-			kind = exactVersion;
-			version = 4.2.2;
-		};
-	};
 		420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
@@ -12173,6 +12149,30 @@
 				minimumVersion = 5.3.0;
 			};
 		};
+		C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yeahdongcn/UIColor-Hex-Swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.1.9;
+			};
+		};
+		CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/phimage/CallbackURLKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.3.2;
+			};
+		};
+		CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				kind = exactVersion;
+				version = 4.2.2;
+			};
+		};
 		CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRDB.swift.git";
@@ -12184,56 +12184,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-	CA11B4CC0000000000000010 /* CallbackURLKit */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */;
-		productName = CallbackURLKit;
-	};
-	C010F1E50000000000000010 /* UIColorHexSwift */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
-		productName = UIColorHexSwift;
-	};
-	C010F1E50000000000000020 /* UIColorHexSwift */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
-		productName = UIColorHexSwift;
-	};
-	C010F1E50000000000000030 /* UIColorHexSwift */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
-		productName = UIColorHexSwift;
-	};
-	C010F1E50000000000000040 /* UIColorHexSwift */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
-		productName = UIColorHexSwift;
-	};
-	CEA1C4A10000000000000010 /* KeychainAccess */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-		productName = KeychainAccess;
-	};
-	CEA1C4A10000000000000020 /* KeychainAccess */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-		productName = KeychainAccess;
-	};
-	CEA1C4A10000000000000030 /* KeychainAccess */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-		productName = KeychainAccess;
-	};
-	CEA1C4A10000000000000040 /* KeychainAccess */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-		productName = KeychainAccess;
-	};
-	CEA1C4A10000000000000050 /* KeychainAccess */ = {
-		isa = XCSwiftPackageProductDependency;
-		package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-		productName = KeychainAccess;
-	};
 		067B845F1477358424F0C5FD /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
@@ -12416,6 +12366,26 @@
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
+		C010F1E50000000000000010 /* UIColorHexSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
+			productName = UIColorHexSwift;
+		};
+		C010F1E50000000000000020 /* UIColorHexSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
+			productName = UIColorHexSwift;
+		};
+		C010F1E50000000000000030 /* UIColorHexSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
+			productName = UIColorHexSwift;
+		};
+		C010F1E50000000000000040 /* UIColorHexSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
+			productName = UIColorHexSwift;
+		};
 		C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
@@ -12426,10 +12396,40 @@
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
 		};
+		CA11B4CC0000000000000010 /* CallbackURLKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */;
+			productName = CallbackURLKit;
+		};
 		CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
+		};
+		CEA1C4A10000000000000010 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		CEA1C4A10000000000000020 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		CEA1C4A10000000000000030 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		CEA1C4A10000000000000040 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		CEA1C4A10000000000000050 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
 		D615F032BC3C6F39F533EA25 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
