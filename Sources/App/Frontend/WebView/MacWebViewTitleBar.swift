@@ -75,6 +75,8 @@ extension MacWebViewTitleBar {
             static let serverPickerHorizontalPadding: CGFloat = 8
         }
 
+        private static let gestureActions: [HAGestureAction] = HAGestureAction.allCases.filter { $0 != .none }
+
         private weak var webViewController: WebViewController?
         private weak var titlebar: UITitlebar?
         private weak var serverPickerItem: NSMenuToolbarItem?
@@ -177,7 +179,7 @@ extension MacWebViewTitleBar {
             case .homeAssistantServerPicker:
                 serverPickerToolbarItem(identifier: itemIdentifier, willBeInserted: flag)
             default:
-                nil
+                gestureToolbarItem(for: itemIdentifier)
             }
         }
 
@@ -219,6 +221,7 @@ extension MacWebViewTitleBar {
             if Current.servers.all.count > 1 {
                 identifiers.append(.homeAssistantServerPicker)
             }
+            identifiers.append(contentsOf: Self.gestureActions.map { NSToolbarItem.Identifier(gestureAction: $0) })
             identifiers.append(contentsOf: [.space, .flexibleSpace])
             return identifiers
         }
@@ -288,6 +291,49 @@ extension MacWebViewTitleBar {
             return UIMenu(title: L10n.WebView.ServerSelection.title, children: actions)
         }
 
+        private func gestureToolbarItem(for identifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+            guard let action = identifier.gestureAction else { return nil }
+            return toolbarItem(
+                identifier: identifier,
+                label: action.localizedString,
+                symbol: symbol(for: action),
+                action: #selector(performGestureAction(_:))
+            )
+        }
+
+        private func symbol(for action: HAGestureAction) -> SFSymbol {
+            switch action {
+            case .showSidebar:
+                .sidebarLeft
+            case .quickSearch:
+                .magnifyingglass
+            case .searchEntities:
+                .lightbulb
+            case .searchDevices:
+                .memorychip
+            case .searchCommands:
+                .command
+            case .assist:
+                .sparkles
+            case .backPage:
+                .arrowUturnBackward
+            case .nextPage:
+                .arrowUturnForward
+            case .showServersList:
+                .serverRack
+            case .nextServer:
+                .arrowRightToLine
+            case .previousServer:
+                .arrowLeftToLine
+            case .showSettings:
+                .gear
+            case .openDebug:
+                .ladybug
+            case .none:
+                .questionmark
+            }
+        }
+
         private func toolbarItem(
             identifier: NSToolbarItem.Identifier,
             label: String,
@@ -348,6 +394,11 @@ extension MacWebViewTitleBar {
         @objc private func openServerInSafari() {
             webViewController?.openServerInSafari()
         }
+
+        @objc private func performGestureAction(_ sender: NSToolbarItem) {
+            guard let action = sender.itemIdentifier.gestureAction else { return }
+            webViewController?.webViewGestureHandler.handleGestureAction(action)
+        }
     }
 }
 
@@ -359,6 +410,17 @@ private extension NSToolbarItem.Identifier {
     static let homeAssistantPaste = NSToolbarItem.Identifier("io.home-assistant.webview.paste")
     static let homeAssistantOpenInSafari = NSToolbarItem.Identifier("io.home-assistant.webview.open-in-safari")
     static let homeAssistantServerPicker = NSToolbarItem.Identifier("io.home-assistant.webview.server-picker")
+
+    private static let gesturePrefix = "io.home-assistant.webview.gesture."
+
+    init(gestureAction: HAGestureAction) {
+        self.init(Self.gesturePrefix + gestureAction.rawValue)
+    }
+
+    var gestureAction: HAGestureAction? {
+        guard rawValue.hasPrefix(Self.gesturePrefix) else { return nil }
+        return HAGestureAction(rawValue: String(rawValue.dropFirst(Self.gesturePrefix.count)))
+    }
 }
 #else
 extension MacWebViewTitleBar {

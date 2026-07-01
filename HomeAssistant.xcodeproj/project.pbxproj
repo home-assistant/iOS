@@ -883,8 +883,6 @@
 		42991E5B2FF3359D00C2C76B /* LiveActivityPendingStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */; };
 		42991E5E2FF3EB7400C2C76B /* MacWebViewTitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5D2FF3EB7400C2C76B /* MacWebViewTitleBar.swift */; };
 		42991E612FF4474500C2C76B /* ImproviOS in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E602FF4474500C2C76B /* ImproviOS */; };
-		42991E6C2FF44A0000C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E6B2FF44A0000C2C76B /* ObjectMapper */; };
-		42991E6E2FF44A0000C2C76B /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E6D2FF44A0000C2C76B /* ObjectMapper */; };
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
@@ -3717,7 +3715,6 @@
 				420E64BF2D676B2400A31E86 /* SnapshotTesting in Frameworks */,
 				420E64BD2D676B2400A31E86 /* InlineSnapshotTesting in Frameworks */,
 				42A1F0B52E000000000000B5 /* Alamofire in Frameworks */,
-				42991E6E2FF44A0000C2C76B /* ObjectMapper in Frameworks */,
 				4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */,
 				D234820A53471DE7B485A445 /* Pods_Tests_App.framework in Frameworks */,
 				E9D0AE4CC8B1D908D258B791 /* GRDB in Frameworks */,
@@ -3806,7 +3803,6 @@
 			files = (
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
-				42991E6C2FF44A0000C2C76B /* ObjectMapper in Frameworks */,
 				61495A70232316478717CF27 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */,
 				42337621AE73706EB2D88EAE /* GRDB in Frameworks */,
 			);
@@ -7919,7 +7915,6 @@
 				3F08AA27DA3E77F7C8FA1059 /* GRDB */,
 				42A1F0A52E000000000000A5 /* Alamofire */,
 				7FBFE016210544989AFC7F64 /* SFSafeSymbols */,
-				42991E6D2FF44A0000C2C76B /* ObjectMapper */,
 			);
 			productName = HomeAssistantTests;
 			productReference = B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */;
@@ -8111,7 +8106,6 @@
 			packageProductDependencies = (
 				D615F032BC3C6F39F533EA25 /* GRDB */,
 				42A1F0A62E000000000000A6 /* Alamofire */,
-				42991E6B2FF44A0000C2C76B /* ObjectMapper */,
 			);
 			productName = SharedTests;
 			productReference = D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */;
@@ -10647,10 +10641,6 @@
 				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,
 				692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */,
 				BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */,
-				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
-				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,
-				692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */,
-				BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */,
 				11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */,
 				11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */,
 				42FDCA272F0C7EB900C92958 /* EntityRegistry.test.swift in Sources */,
@@ -12285,14 +12275,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */;
 			productName = ImproviOS;
-		};
-		42991E6B2FF44A0000C2C76B /* ObjectMapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ObjectMapper;
-		};
-		42991E6D2FF44A0000C2C76B /* ObjectMapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ObjectMapper;
 		};
 		42A1F0A12E000000000000A1 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
