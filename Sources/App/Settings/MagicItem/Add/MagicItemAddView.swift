@@ -17,10 +17,9 @@ struct MagicItemAddView: View {
     }
 
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = MagicItemAddViewModel()
+    @StateObject private var viewModel: MagicItemAddViewModel
     @State private var selectedEntity: HAAppEntity?
     private let visiblePickerOptions: [PickerOption]
-    private let initialItemType: MagicItemAddType
 
     let context: Context
     let itemToAdd: (MagicItem?) -> Void
@@ -52,10 +51,11 @@ struct MagicItemAddView: View {
             return options
         }()
         self.visiblePickerOptions = resolvedPickerOptions
-        self.initialItemType = initialItemType ?? Self.defaultItemType(
+        let resolvedInitialItemType = initialItemType ?? Self.defaultItemType(
             for: context,
             visiblePickerOptions: resolvedPickerOptions
         )
+        self._viewModel = StateObject(wrappedValue: MagicItemAddViewModel(selectedItemType: resolvedInitialItemType))
     }
 
     var body: some View {
@@ -86,8 +86,6 @@ struct MagicItemAddView: View {
                 }
             }
             .onAppear {
-                autoSelectItemType()
-
                 if viewModel.selectedServerId == nil {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
@@ -136,10 +134,6 @@ struct MagicItemAddView: View {
             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             .padding(.top)
         }
-    }
-
-    private func autoSelectItemType() {
-        viewModel.selectedItemType = initialItemType
     }
 
     private static func defaultItemType(
