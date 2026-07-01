@@ -101,65 +101,179 @@ extension WebViewController {
 
     private static let readSelectionJS = """
     (function() {
-        function fromDocument(doc) {
-            try {
-                var active = doc.activeElement;
-                if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') &&
-                    typeof active.selectionStart === 'number' &&
-                    active.selectionStart !== active.selectionEnd) {
-                    return active.value.substring(active.selectionStart, active.selectionEnd);
-                }
-                if (active && active.tagName === 'IFRAME') {
+        function deepActive(root, roots) {
+            var el = root && root.activeElement;
+            while (el) {
+                if (el.tagName === 'IFRAME' || el.tagName === 'FRAME') {
                     try {
-                        var innerDoc = active.contentDocument ||
-                            (active.contentWindow && active.contentWindow.document);
-                        if (innerDoc) {
-                            var inner = fromDocument(innerDoc);
-                            if (inner) { return inner; }
+                        var idoc = el.contentDocument ||
+                            (el.contentWindow && el.contentWindow.document);
+                        if (!idoc) { return { el: el, root: root, roots: roots }; }
+                        var inner = idoc.activeElement;
+                        if (inner && inner !== idoc.body) {
+                            root = idoc; roots = []; el = inner; continue;
                         }
-                    } catch (error) {}
+                        return { el: idoc.activeElement || idoc.body, root: idoc, roots: [] };
+                    } catch (error) {
+                        return { el: el, root: root, roots: roots };
+                    }
+                } else if (el.shadowRoot) {
+                    var next = el.shadowRoot.activeElement;
+                    if (next) {
+                        roots.push(el.shadowRoot);
+                        root = el.shadowRoot; el = next; continue;
+                    }
+                    break;
                 }
-                var selection = doc.getSelection && doc.getSelection();
-                if (selection && selection.toString()) { return selection.toString(); }
+                break;
+            }
+            return { el: el, root: root, roots: roots };
+        }
+        function docOf(root) {
+            if (!root) { return document; }
+            if (root.nodeType === 9) { return root; }
+            return root.ownerDocument || document;
+        }
+        function rootsForNode(node) {
+            var out = [];
+            var current = node;
+            while (current) {
+                var r = current.getRootNode ? current.getRootNode() : null;
+                if (!r || r.nodeType === 9) { break; }
+                if (r.host) { out.push(r); current = r.host; } else { break; }
+            }
+            return out;
+        }
+        function composedText(sel, roots, doc) {
+            if (!sel || typeof sel.getComposedRanges !== 'function') { return ''; }
+            var ranges = null;
+            try { ranges = sel.getComposedRanges({ shadowRoots: roots || [] }); }
+            catch (error) {
+                try { ranges = sel.getComposedRanges.apply(sel, roots || []); }
+                catch (error2) { ranges = null; }
+            }
+            if (!ranges || !ranges.length) { return ''; }
+            var sr = ranges[0];
+            try {
+                var live = doc.createRange();
+                live.setStart(sr.startContainer, sr.startOffset);
+                live.setEnd(sr.endContainer, sr.endOffset);
+                var composed = live.toString();
+                if (composed) { return composed; }
+            } catch (error3) {}
+            return '';
+        }
+        function selectionText(root, roots) {
+            try {
+                var doc = docOf(root);
+                var win = doc.defaultView || window;
+                var sel = (win.getSelection && win.getSelection()) ||
+                    (doc.getSelection && doc.getSelection());
+                if (!sel) { return ''; }
+                var text = sel.toString();
+                if (text) { return text; }
+                var anchorRoots = [];
+                try {
+                    var node = sel.anchorNode || sel.focusNode;
+                    if (node) { anchorRoots = rootsForNode(node); }
+                } catch (errorA) {}
+                var useRoots = (anchorRoots && anchorRoots.length) ? anchorRoots : (roots || []);
+                return composedText(sel, useRoots, doc);
             } catch (error) {}
             return '';
         }
-        return fromDocument(document);
+        try {
+            var found = deepActive(document, []);
+            var el = found.el;
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') &&
+                typeof el.selectionStart === 'number' &&
+                el.selectionStart !== el.selectionEnd) {
+                return el.value.substring(el.selectionStart, el.selectionEnd);
+            }
+            var scoped = selectionText(found.root, found.roots);
+            if (scoped) { return scoped; }
+            return selectionText(document, []);
+        } catch (error) {}
+        return '';
     })();
     """
 
     private static let injectTextJS = """
     function(text) {
-        function intoDocument(doc) {
-            try {
-                var active = doc.activeElement;
-                if (active && active.tagName === 'IFRAME') {
+        if (text == null) { text = ''; }
+        function deepActive(root) {
+            var el = root && root.activeElement;
+            while (el) {
+                if (el.tagName === 'IFRAME' || el.tagName === 'FRAME') {
                     try {
-                        var innerDoc = active.contentDocument ||
-                            (active.contentWindow && active.contentWindow.document);
-                        if (innerDoc && intoDocument(innerDoc)) { return true; }
-                    } catch (error) {}
+                        var idoc = el.contentDocument ||
+                            (el.contentWindow && el.contentWindow.document);
+                        if (!idoc) { return el; }
+                        var inner = idoc.activeElement;
+                        if (inner && inner !== idoc.body) { root = idoc; el = inner; continue; }
+                        return idoc.activeElement || idoc.body;
+                    } catch (error) { return el; }
+                } else if (el.shadowRoot && el.shadowRoot.activeElement) {
+                    el = el.shadowRoot.activeElement; continue;
                 }
-                if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') &&
-                    typeof active.selectionStart === 'number') {
-                    var value = active.value;
-                    var start = active.selectionStart;
-                    var end = active.selectionEnd;
-                    active.value = value.slice(0, start) + text + value.slice(end);
-                    var caret = start + text.length;
-                    active.setSelectionRange(caret, caret);
-                    active.dispatchEvent(new Event('input', { bubbles: true }));
-                    return true;
-                }
-                if (active && active.isContentEditable &&
-                    doc.execCommand('insertText', false, text)) {
-                    return true;
-                }
-                if (doc.execCommand('insertText', false, text)) { return true; }
-            } catch (error) {}
-            return false;
+                break;
+            }
+            return el;
         }
-        return intoDocument(document);
+        try {
+            var el = deepActive(document);
+            if (!el) { return false; }
+            var tag = el.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA') {
+                var win = (el.ownerDocument && el.ownerDocument.defaultView) || window;
+                var proto = (tag === 'TEXTAREA') ?
+                    win.HTMLTextAreaElement.prototype : win.HTMLInputElement.prototype;
+                var desc = Object.getOwnPropertyDescriptor(proto, 'value');
+                var nativeSet = desc && desc.set;
+                var next, caret = null;
+                if (typeof el.selectionStart === 'number') {
+                    var start = el.selectionStart;
+                    var end = el.selectionEnd;
+                    var current = el.value;
+                    next = current.slice(0, start) + text + current.slice(end);
+                    caret = start + text.length;
+                } else {
+                    next = text;
+                }
+                if (nativeSet) { nativeSet.call(el, next); } else { el.value = next; }
+                if (caret !== null) {
+                    try { el.setSelectionRange(caret, caret); } catch (error) {}
+                }
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+                return true;
+            }
+            var doc = el.ownerDocument || document;
+            if (el.isContentEditable) {
+                try { el.focus(); } catch (error) {}
+                try { if (doc.execCommand('insertText', false, text)) { return true; } }
+                catch (errorE) {}
+                try {
+                    var sel = doc.getSelection && doc.getSelection();
+                    if (sel && sel.rangeCount) {
+                        var range = sel.getRangeAt(0);
+                        range.deleteContents();
+                        var node = doc.createTextNode(text);
+                        range.insertNode(node);
+                        range.setStartAfter(node);
+                        range.setEndAfter(node);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                        el.dispatchEvent(new Event('input', { bubbles: true }));
+                        return true;
+                    }
+                } catch (error) {}
+                return false;
+            }
+            try { if (doc.execCommand('insertText', false, text)) { return true; } }
+            catch (error) {}
+        } catch (error) {}
+        return false;
     }
     """
 
