@@ -169,7 +169,7 @@ struct MainWindowGroupCommands: Commands {
             .map { domainName, entities in
                 AreasCommandDomain(
                     id: domainName,
-                    name: domainName,
+                    name: localizedDomainName(for: domainName),
                     entities: sortedEntities(entities.map(commandEntity(from:)))
                 )
             }
@@ -186,6 +186,11 @@ struct MainWindowGroupCommands: Commands {
 
     private static func domainName(for entityId: String) -> String {
         entityId.split(separator: ".", maxSplits: 1).first.map(String.init) ?? entityId
+    }
+
+    private static func localizedDomainName(for domainName: String) -> String {
+        guard let domain = Domain(rawValue: domainName) else { return domainName }
+        return CoreStrings.getDomainLocalizedTitle(domain: domain)
     }
 
     private static func entityName(for entity: EntityRegistryListForDisplay.Entity) -> String {
