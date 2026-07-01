@@ -2682,6 +2682,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.script.list.title") }
         }
       }
+      public enum ScriptsScenesAutomations {
+        public enum List {
+          /// Scripts, Scenes & Automations
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.scripts_scenes_automations.list.title") }
+        }
+      }
       public enum Selection {
         public enum List {
           /// Item type
@@ -4300,6 +4306,16 @@ public enum L10n {
       public enum DeviceName {
         /// Device Name
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.device_name.title") }
+      }
+      public enum EdgeToEdge {
+        /// Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.footer") }
+        /// Edge to edge display
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.title") }
+        public enum Enabled {
+          /// Enable
+          public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.enabled.title") }
+        }
       }
       public enum FullScreen {
         /// Full Screen

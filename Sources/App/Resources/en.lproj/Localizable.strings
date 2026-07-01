@@ -763,6 +763,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Scenes";
 "magic_item.item_type.script.list.title" = "Scripts";
+"magic_item.item_type.scripts_scenes_automations.list.title" = "Scripts, Scenes & Automations";
 "magic_item.item_type.selection.list.title" = "Item type";
 "magic_item.name.title" = "Name";
 "magic_item.name_and_icon.footer" = "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.";
@@ -1257,6 +1258,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.title" = "App Icon";
 "settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Device Name";
+"settings_details.general.edge_to_edge.enabled.title" = "Enable";
+"settings_details.general.edge_to_edge.footer" = "Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.";
+"settings_details.general.edge_to_edge.title" = "Edge to edge display";
 "settings_details.general.full_screen.title" = "Full Screen";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.links.title" = "Links";
