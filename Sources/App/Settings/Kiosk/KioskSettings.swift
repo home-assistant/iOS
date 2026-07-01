@@ -15,6 +15,8 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
     public var hideStatusBar: Bool
     public var autoReload: KioskAutoReloadInterval
     public var settingsEntryPosition: KioskCornerPosition
+    public var settingsEntryBackgroundColor: String?
+    public var settingsEntryIconColor: String?
     public var screensaver: KioskScreensaverSettings
 
     public init(
@@ -29,6 +31,8 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         hideStatusBar: Bool = false,
         autoReload: KioskAutoReloadInterval = .never,
         settingsEntryPosition: KioskCornerPosition = .bottomTrailing,
+        settingsEntryBackgroundColor: String? = nil,
+        settingsEntryIconColor: String? = nil,
         screensaver: KioskScreensaverSettings = KioskScreensaverSettings()
     ) {
         self.id = id
@@ -42,6 +46,8 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
         self.hideStatusBar = hideStatusBar
         self.autoReload = autoReload
         self.settingsEntryPosition = settingsEntryPosition
+        self.settingsEntryBackgroundColor = settingsEntryBackgroundColor
+        self.settingsEntryIconColor = settingsEntryIconColor
         self.screensaver = screensaver
     }
 
@@ -62,6 +68,11 @@ public struct KioskSettings: Codable, FetchableRecord, PersistableRecord, Equata
             KioskCornerPosition.self,
             forKey: .settingsEntryPosition
         ) ?? .bottomTrailing
+        self.settingsEntryBackgroundColor = try container.decodeIfPresent(
+            String.self,
+            forKey: .settingsEntryBackgroundColor
+        )
+        self.settingsEntryIconColor = try container.decodeIfPresent(String.self, forKey: .settingsEntryIconColor)
         self.screensaver = try container.decodeIfPresent(
             KioskScreensaverSettings.self,
             forKey: .screensaver

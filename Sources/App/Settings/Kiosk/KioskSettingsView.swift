@@ -89,7 +89,7 @@ struct KioskSettingsView: View {
                 }
             }
 
-            Section(L10n.Kiosk.Screensaver.ConfigurationAccess.title) {
+            Section {
                 KioskRow.picker(
                     L10n.Kiosk.Screensaver.ConfigurationAccess.position,
                     icon: .cogOutlineIcon,
@@ -98,6 +98,11 @@ struct KioskSettingsView: View {
                     ForEach(KioskCornerPosition.allCases) { position in
                         Text(position.title).tag(position)
                     }
+                }
+                NavigationLink {
+                    KioskSettingsEntryCustomizationView(viewModel: viewModel)
+                } label: {
+                    KioskRow.label(L10n.Kiosk.Customize.title, icon: .paletteIcon)
                 }
             }
         }
