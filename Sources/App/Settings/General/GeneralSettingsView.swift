@@ -189,10 +189,10 @@ struct GeneralSettingsView: View {
                     Text(L10n.SettingsDetails.General.EdgeToEdge.Enabled.title)
                 }
             } header: {
-                HStack {
+                HStack(spacing: DesignSystem.Spaces.one) {
                     Text(L10n.SettingsDetails.General.EdgeToEdge.title)
-                    Spacer()
                     LabsLabel()
+                    Spacer()
                 }
             } footer: {
                 Text(L10n.SettingsDetails.General.EdgeToEdge.footer)
