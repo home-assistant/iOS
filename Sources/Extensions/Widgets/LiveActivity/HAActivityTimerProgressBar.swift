@@ -13,8 +13,11 @@ struct HAActivityChronometerText: View {
     let end: Date
 
     var body: some View {
-        if end > Date.now {
-            Text(timerInterval: Date.now ... end, countsDown: true)
+        // Capture now once: a second Date.now could advance past `end` between the
+        // comparison and the range construction, re-introducing the range trap.
+        let now = Date.now
+        if end > now {
+            Text(timerInterval: now ... end, countsDown: true)
                 .contentTransition(.numericText(countsDown: true))
         } else {
             Text(end, style: .timer)
@@ -29,11 +32,13 @@ struct HAActivityTimerProgressBar: View {
     let tint: Color
 
     var body: some View {
-        // A count-up chronometer has no bounded interval, and `Date.now ... end` traps for a
+        // A count-up chronometer has no bounded interval, and `now ... end` traps for a
         // past `end` — only render the bar while the countdown is still running.
-        if end > Date.now {
+        // `now` is captured once so the range can't invalidate between check and use.
+        let now = Date.now
+        if end > now {
             ProgressView(
-                timerInterval: Date.now ... end,
+                timerInterval: now ... end,
                 countsDown: true,
                 label: { EmptyView() },
                 currentValueLabel: { EmptyView() }
