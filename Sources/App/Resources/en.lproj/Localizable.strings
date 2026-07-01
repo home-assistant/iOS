@@ -675,6 +675,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.sample.count_down.title" = "Oven Timer · 45 min Countdown";
 "live_activity.sample.count_up.note" = "chronometer with when: 0 and when_relative: true resolves to \"now\", so the timer counts up — showing elapsed time since the activity started. No progress bar: a count-up has no end.";
 "live_activity.sample.count_up.title" = "Washing Machine · Count-Up Timer";
+"live_activity.sample.count_up_target.note" = "A negative relative when (when: -1200) counts up toward the target: 0:00 → 20:00, the bar fills, and the timer freezes when it gets there.";
+"live_activity.sample.count_up_target.title" = "Workout · Count-Up to 20 min";
 "live_activity.sample.custom_colors.note" = "Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.";
 "live_activity.sample.custom_colors.title" = "Custom Colors · Background + Text";
 "live_activity.sample.delivery.note" = "message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.";

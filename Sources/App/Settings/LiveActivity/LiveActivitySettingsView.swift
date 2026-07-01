@@ -235,6 +235,20 @@ struct LiveActivitySettingsView: View {
                 )]
             ),
             LiveActivitySample(
+                id: "count-up-target",
+                name: L10n.LiveActivity.Sample.CountUpTarget.title,
+                note: L10n.LiveActivity.Sample.CountUpTarget.note,
+                tag: "debug-count-up-target",
+                title: "Workout",
+                stages: [.init(
+                    message: "Session in progress",
+                    countdownSeconds: -20 * 60,
+                    icon: "mdi:run",
+                    color: "#4CAF50",
+                    progressBarColor: "#4CAF50"
+                )]
+            ),
+            LiveActivitySample(
                 id: "count-down",
                 name: L10n.LiveActivity.Sample.CountDown.title,
                 note: L10n.LiveActivity.Sample.CountDown.note,
@@ -690,7 +704,8 @@ private struct LiveActivitySample: Identifiable {
         var progress: Int?
         var progressMax: Int?
         /// Seconds remaining at the moment the stage is applied (maps to `when` + `when_relative: true`).
-        /// `0` resolves to "now", which renders as a count-up timer. `nil` = no timer.
+        /// `0` resolves to "now", which renders as an unbounded count-up timer. Negative counts up
+        /// toward `|value|` seconds and freezes there (bounded count-up). `nil` = no timer.
         var countdownSeconds: Double?
         var icon: String?
         var color: String?
@@ -701,13 +716,16 @@ private struct LiveActivitySample: Identifiable {
         func contentState() -> HALiveActivityAttributes.ContentState {
             // countdownEnd is relative to now so the local demo matches `when_relative: true`,
             // where each update means "seconds remaining" from the moment it is received.
-            HALiveActivityAttributes.ContentState(
+            // Negative mirrors the handler's bounded count-up: anchor now, end at now + |value|.
+            let now = Date()
+            return HALiveActivityAttributes.ContentState(
                 message: message,
                 criticalText: criticalText,
                 progress: progress,
                 progressMax: progressMax,
                 chronometer: countdownSeconds == nil ? nil : true,
-                countdownEnd: countdownSeconds.map { Date().addingTimeInterval($0) },
+                countdownEnd: countdownSeconds.map { now.addingTimeInterval(abs($0)) },
+                chronometerStart: (countdownSeconds ?? 0) < 0 ? now : nil,
                 icon: icon,
                 color: color,
                 backgroundColor: backgroundColor,

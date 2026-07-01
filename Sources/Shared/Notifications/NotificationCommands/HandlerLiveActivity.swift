@@ -140,12 +140,21 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
         let textColor = payload["text_color"] as? String
         let progressBarColor = payload["progress_bar_color"] as? String
 
-        // `when` + `when_relative` → absolute countdown end date.
+        // `when` + `when_relative` → absolute timer end date.
         // Parsed as Double to preserve sub-second Unix timestamps sent by HA.
+        // A negative relative `when` is a bounded count-up: the timer counts up from now
+        // toward `|when|` seconds and freezes there — the sign is the direction, the
+        // magnitude is the duration. (Negative values never rendered before this existed,
+        // so the encoding is backward-compatible; Android shows an unbounded count-up.)
         var countdownEnd: Date?
+        var chronometerStart: Date?
         if let when = (payload["when"] as? NSNumber).map(\.doubleValue) {
             let whenRelative = payload["when_relative"] as? Bool ?? false
-            if whenRelative {
+            if whenRelative, when < 0 {
+                let now = Date()
+                chronometerStart = now
+                countdownEnd = now.addingTimeInterval(-when)
+            } else if whenRelative {
                 countdownEnd = Date().addingTimeInterval(when)
             } else {
                 countdownEnd = Date(timeIntervalSince1970: when)
@@ -160,6 +169,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             progressMax: progressMax,
             chronometer: chronometer,
             countdownEnd: countdownEnd,
+            chronometerStart: chronometerStart,
             icon: icon,
             color: color,
             url: url,

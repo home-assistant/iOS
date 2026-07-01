@@ -104,9 +104,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         entries[id] = entry
         if let latestState = pending {
             // A second push arrived while Activity.request() was in-flight — apply the newer state now.
+            let state = Self.carryForwardChronometerAnchor(previous: entry.activity.content.state, new: latestState)
             let content = ActivityContent(
-                state: latestState,
-                staleDate: computeStaleDate(for: latestState)
+                state: state,
+                staleDate: computeStaleDate(for: state)
             )
             await entry.activity.update(content)
         }
@@ -136,6 +137,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     ) async throws -> Bool {
         // UPDATE path — activity already running with this tag
         if let existing = entries[tag] {
+            let state = Self.carryForwardChronometerAnchor(previous: existing.activity.content.state, new: state)
             let content = ActivityContent(
                 state: state,
                 staleDate: computeStaleDate(for: state)
@@ -147,6 +149,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         // Also check system list in case we lost track after crash/relaunch
         if let live = Activity<HALiveActivityAttributes>.activities
             .first(where: { $0.attributes.tag == tag }) {
+            let state = Self.carryForwardChronometerAnchor(previous: live.content.state, new: state)
             let content = ActivityContent(
                 state: state,
                 staleDate: computeStaleDate(for: state)
@@ -394,6 +397,33 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return max(end.addingTimeInterval(2), Date().addingTimeInterval(2))
         }
         return Date().addingTimeInterval(kLiveActivityStaleInterval)
+    }
+
+    // MARK: - Bounded Count-Up Anchor
+
+    /// Preserve a bounded count-up's start anchor across updates.
+    ///
+    /// A bounded count-up is requested with a negative relative `when`, which the handler resolves
+    /// to `chronometerStart = now` and `countdownEnd = now + |when|`. An update that re-sends the
+    /// same `when` re-stamps both from its own receipt time, which would visually reset the elapsed
+    /// timer to 0:00. When the previous state is a bounded count-up of the same duration (within
+    /// 1 s, absorbing parse-time jitter), keep its anchor and end so the timer keeps running;
+    /// a different duration means a new timer and re-anchors as sent.
+    static func carryForwardChronometerAnchor(
+        previous: HALiveActivityAttributes.ContentState,
+        new: HALiveActivityAttributes.ContentState
+    ) -> HALiveActivityAttributes.ContentState {
+        guard new.chronometer == true,
+              let newStart = new.chronometerStart,
+              let newEnd = new.countdownEnd,
+              let previousStart = previous.chronometerStart,
+              let previousEnd = previous.countdownEnd,
+              abs(newEnd.timeIntervalSince(newStart) - previousEnd.timeIntervalSince(previousStart)) < 1
+        else { return new }
+        var carried = new
+        carried.chronometerStart = previousStart
+        carried.countdownEnd = previousEnd
+        return carried
     }
 
     // MARK: - Private — Duplicate Resolution

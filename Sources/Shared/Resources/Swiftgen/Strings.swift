@@ -2365,6 +2365,12 @@ public enum L10n {
         /// Washing Machine · Count-Up Timer
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up.title") }
       }
+      public enum CountUpTarget {
+        /// A negative relative when (when: -1200) counts up toward the target: 0:00 → 20:00, the bar fills, and the timer freezes when it gets there.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.note") }
+        /// Workout · Count-Up to 20 min
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.title") }
+      }
       public enum CustomColors {
         /// Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.note") }
