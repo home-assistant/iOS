@@ -46,6 +46,23 @@ class NotificationHistoryStoreTests: XCTestCase {
         XCTAssertEqual(retrieved?.date.ISO8601Format(), date.ISO8601Format())
     }
 
+    func testDeduplicatesEntriesWithSameID() {
+        // The same notification can be recorded by both the extension and the in-app fallback;
+        // keyed by request identifier, the second record must be a no-op.
+        store.record(NotificationHistoryEntry(id: "req-1", kind: .remote, title: "From extension"))
+        store.record(NotificationHistoryEntry(id: "req-1", kind: .remote, title: "From app fallback"))
+        let entries = store.getEntries()
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries.first?.title, "From extension")
+    }
+
+    func testContentInitUsesProvidedID() {
+        let content = UNMutableNotificationContent()
+        content.title = "Title"
+        let entry = NotificationHistoryEntry(content: content, kind: .remote, id: "req-42")
+        XCTAssertEqual(entry.id, "req-42")
+    }
+
     func testCanClearEntries() {
         store.record(NotificationHistoryEntry(kind: .local))
         XCTAssertTrue(store.getEntries().count != 0)

@@ -38,9 +38,11 @@ public struct NotificationHistoryEntry: Codable, Identifiable, Equatable {
     public init(
         content: UNNotificationContent,
         kind: Kind,
+        id: String = UUID().uuidString,
         date: Date = Current.date()
     ) {
         self.init(
+            id: id,
             date: date,
             kind: kind,
             title: content.title.isEmpty ? nil : content.title,
@@ -133,6 +135,12 @@ final class NotificationHistoryStore: NotificationHistoryStoreProtocol {
         queue.sync {
             coordinatedWrite { entries in
                 var entries = entries
+                // The same notification can reach us from more than one place (e.g. the
+                // Notification Service Extension and the in-app delegate fallback). Entries
+                // are keyed by the notification's request identifier, so skip if already stored.
+                guard !entries.contains(where: { $0.id == entry.id }) else {
+                    return entries
+                }
                 entries.append(entry)
                 if entries.count > Self.entriesCacheLimit {
                     entries = Array(entries.suffix(Self.entriesCacheLimit))

@@ -171,9 +171,12 @@ public class LocalPushManager {
         var userInfo = baseContent.userInfo
         let isLiveActivity = Self.isLiveActivityCommand(userInfo)
 
+        // Key the entry by the event identifier so the in-app delegate fallback dedupes
+        // against it when this local push is also presented while the app is foregrounded.
         Current.notificationHistoryStore.record(NotificationHistoryEntry(
             content: baseContent,
-            kind: isLiveActivity ? .liveActivityLocal : .local
+            kind: isLiveActivity ? .liveActivityLocal : .local,
+            id: event.identifier
         ))
 
         if isLiveActivity, let confirmID = event.confirmID {

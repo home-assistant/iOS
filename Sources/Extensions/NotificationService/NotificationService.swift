@@ -10,7 +10,13 @@ final class NotificationService: UNNotificationServiceExtension {
         Current.Log.info("didReceive \(request), user info \(request.content.userInfo)")
 
         if !Self.isLiveActivity(request.content.userInfo) {
-            Current.notificationHistoryStore.record(NotificationHistoryEntry(content: request.content, kind: .remote))
+            // Key the entry by the request identifier so the in-app delegate fallback can
+            // dedupe against it when the extension did run for this notification.
+            Current.notificationHistoryStore.record(NotificationHistoryEntry(
+                content: request.content,
+                kind: .remote,
+                id: request.identifier
+            ))
         }
 
         guard let server = Current.servers.server(for: request.content), let api = Current.api(for: server) else {

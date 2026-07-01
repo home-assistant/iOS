@@ -371,6 +371,29 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
+    /// Records a delivered notification to the history as a fallback for the Notification Service
+    /// Extension, which iOS does not guarantee to run for every push (execution budget, force-quit,
+    /// resource pressure, payloads without `mutable-content`). Entries are keyed by the request
+    /// identifier, so this is a no-op when the extension already recorded the same notification.
+    private func recordNotificationHistory(for request: UNNotificationRequest) {
+        let userInfo = request.content.userInfo
+        // Internal debug-log notifications aren't user-facing notifications; keep them out.
+        guard userInfo[XCGLogger.notifyUserInfoKey] == nil else { return }
+        // Remote Live Activity updates are intentionally excluded (mirrors the extension, which
+        // records every other remote notification as `.remote`).
+        guard !Self.isLiveActivityRemote(userInfo) else { return }
+        Current.notificationHistoryStore.record(NotificationHistoryEntry(
+            content: request.content,
+            kind: .remote,
+            id: request.identifier
+        ))
+    }
+
+    private static func isLiveActivityRemote(_ userInfo: [AnyHashable: Any]) -> Bool {
+        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
+        return (hadict["live_update"] as? Bool) == true || (hadict["command"] as? String) == "live_activity"
+    }
+
     private func urlString(from response: UNNotificationResponse) -> String? {
         let content = response.notification.request.content
         let urlValue = ["url", "uri", "clickAction"].compactMap { content.userInfo[$0] }.first
@@ -406,6 +429,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
+
+        recordNotificationHistory(for: response.notification.request)
 
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
             Current.Log.info("ignoring dismiss action for notification")
@@ -508,6 +533,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+
+        recordNotificationHistory(for: notification.request)
 
         // Handle commands (including Live Activities) for foreground notifications.
         // didReceiveRemoteNotification handles background pushes via Firebase/APNs,
