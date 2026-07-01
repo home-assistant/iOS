@@ -190,7 +190,7 @@ struct MainWindowGroupCommands: Commands {
 
     private static func localizedDomainName(for domainName: String) -> String {
         guard let domain = Domain(rawValue: domainName) else { return domainName }
-        return CoreStrings.getDomainLocalizedTitle(domain: domain)
+        return domain.name
     }
 
     private static func entityName(for entity: EntityRegistryListForDisplay.Entity) -> String {
