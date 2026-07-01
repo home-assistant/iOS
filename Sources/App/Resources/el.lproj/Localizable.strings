@@ -660,6 +660,7 @@
 "legacy_actions.disclaimer" = "Οι παλαιού τύπου Ενέργειες iOS δεν είναι πλέον ο συνιστώμενος τρόπος αλληλεπίδρασης με το Home Assistant, παρακαλώ χρησιμοποιήστε Σενάρια, Σκηνές και Αυτοματισμούς απευθείας στα Γραφικά στοιχεία, το Apple Watch και το CarPlay.";
 "live_activity.accessibility.progress" = "Progress";
 "live_activity.default_title" = "Home Assistant";
+"live_activity.documentation" = "Documentation";
 "live_activity.empty_state" = "Δεν υπάρχουν ενεργές ζωντανές δραστηριότητες";
 "live_activity.end_all.button" = "Τερματισμός όλων των δραστηριοτήτων";
 "live_activity.end_all.confirm.button" = "Τερματισμός όλων";
@@ -734,6 +735,7 @@
 "mac.copy.accessibility_label" = "Αντιγραφή";
 "mac.navigation.go_back.accessibility_label" = "Πλοήγηση προς τα πίσω";
 "mac.navigation.go_forward.accessibility_label" = "Πλοήγηση προς τα εμπρός";
+"mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Επικόλληση";
 "magic_item.action" = "Ενέργεια";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
@@ -777,6 +779,7 @@
 "menu.help.help" = "%@ Βοήθεια";
 "menu.status_item.quit" = "Έξοδος";
 "menu.status_item.toggle" = "Εναλλαγή %1$@";
+"menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Εύρεση";
 "menu.view.reload_page" = "Επαναφόρτωση σελίδας";
 "mtls.beta.info" = "Αυτή είναι μια λειτουργία beta. Εάν αντιμετωπίσετε οποιοδήποτε πρόβλημα, παρακαλώ αναφέρετέ το χρησιμοποιώντας το παρακάτω κουμπί. \

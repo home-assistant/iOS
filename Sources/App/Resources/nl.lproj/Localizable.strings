@@ -660,6 +660,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "legacy_actions.disclaimer" = "Oude iOS-acties zijn niet langer de aanbevolen manier om wat met Home Assistant te doen. Gebruik Scripts, Scènes en Automatiseringen rechtstreeks in je Widgets, Apple Watch en CarPlay.";
 "live_activity.accessibility.progress" = "Progress";
 "live_activity.default_title" = "Home Assistant";
+"live_activity.documentation" = "Documentation";
 "live_activity.empty_state" = "Geen actieve live activiteiten";
 "live_activity.end_all.button" = "Alle activiteiten beëindigen";
 "live_activity.end_all.confirm.button" = "Alles beëindigen";
@@ -734,6 +735,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "mac.copy.accessibility_label" = "Kopiëren";
 "mac.navigation.go_back.accessibility_label" = "Navigeer terug";
 "mac.navigation.go_forward.accessibility_label" = "Navigeer vooruit";
+"mac.open_in_safari.accessibility_label" = "Open in Safari";
 "mac.paste.accessibility_label" = "Plakken";
 "magic_item.action" = "Actie";
 "magic_item.action.assist.pipeline.title" = "Pijplijn";
@@ -777,6 +779,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "menu.help.help" = "%@ Help";
 "menu.status_item.quit" = "Afsluiten";
 "menu.status_item.toggle" = "Toggle %1$@";
+"menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Vinden";
 "menu.view.reload_page" = "Herlaad pagina";
 "mtls.beta.info" = "Dit is een bètafunctie. Als je problemen ondervindt, meld ze dan via de knop hieronder. \
