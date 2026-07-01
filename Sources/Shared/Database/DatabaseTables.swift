@@ -5,6 +5,7 @@ public enum GRDBDatabaseTable: String {
     case watchConfig
     case assistPipelines
     case carPlayConfig
+    case macToolbarConfig
     case appIconShortcutConfig
     case serverInfoMirror
     // Obsolete: replaced by `displayEntityRegistry`. Kept only so `deleteOldTables` can drop it.
@@ -58,6 +59,12 @@ public enum DatabaseTables {
         case tabs
         case quickAccessItems
         case quickAccessLayout
+    }
+
+    // Mac titlebar/toolbar configuration
+    public enum MacToolbarConfig: String, CaseIterable {
+        case id
+        case items
     }
 
     public enum AppIconShortcutConfig: String, CaseIterable {
