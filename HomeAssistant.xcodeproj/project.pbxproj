@@ -883,6 +883,7 @@
 		42991E592FF3357000C2C76B /* LiveActivityPendingEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E582FF3357000C2C76B /* LiveActivityPendingEnd.swift */; };
 		42991E5B2FF3359D00C2C76B /* LiveActivityPendingStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5A2FF3359D00C2C76B /* LiveActivityPendingStart.swift */; };
 		42991E5E2FF3EB7400C2C76B /* MacWebViewTitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42991E5D2FF3EB7400C2C76B /* MacWebViewTitleBar.swift */; };
+		42991E612FF4474500C2C76B /* ImproviOS in Frameworks */ = {isa = PBXBuildFile; productRef = 42991E602FF4474500C2C76B /* ImproviOS */; };
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
@@ -3691,6 +3692,7 @@
 				50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */,
 				CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */,
 				C010F1E50000000000000031 /* UIColorHexSwift in Frameworks */,
+				42991E612FF4474500C2C76B /* ImproviOS in Frameworks */,
 				CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */,
 				42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */,
 				42A1F0B12E000000000000B1 /* Alamofire in Frameworks */,
@@ -7888,6 +7890,7 @@
 				CA11B4CC0000000000000010 /* CallbackURLKit */,
 				C010F1E50000000000000030 /* UIColorHexSwift */,
 				CEA1C4A10000000000000010 /* KeychainAccess */,
+				42991E602FF4474500C2C76B /* ImproviOS */,
 			);
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
@@ -8346,6 +8349,7 @@
 				CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */,
 				C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */,
 				CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -12130,6 +12134,14 @@
 				minimumVersion = 0.9.19;
 			};
 		};
+		42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/improv-wifi/sdk-iOS.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -12267,6 +12279,11 @@
 		427692E42B98B83200F24321 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedPush;
+		};
+		42991E602FF4474500C2C76B /* ImproviOS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */;
+			productName = ImproviOS;
 		};
 		42A1F0A12E000000000000A1 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

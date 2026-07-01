@@ -1,5 +1,5 @@
 {
-  "originHash" : "97da907994d3036c3561f73ed946c5bdf6b3f2747f4e8d1c8914353a648e0a67",
+  "originHash" : "2c4caf4fea7b85f421359b2ac5b5ca84036a078052a18172a67419b55b925f5b",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -161,6 +161,15 @@
       "state" : {
         "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
         "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/improv-wifi/sdk-iOS.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "937732ba42aeebfaf07434bd4e771fb7796e0489"
       }
     },
     {
