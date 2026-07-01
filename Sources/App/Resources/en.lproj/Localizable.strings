@@ -578,10 +578,10 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.clock.style" = "Clock Style";
 "kiosk.clock.style.digital" = "Digital";
 "kiosk.clock.style.large" = "Large";
-"kiosk.corner.bottom_left" = "Bottom left";
-"kiosk.corner.bottom_right" = "Bottom right";
-"kiosk.corner.top_left" = "Top left";
-"kiosk.corner.top_right" = "Top right";
+"kiosk.corner.bottom_leading" = "Bottom leading";
+"kiosk.corner.bottom_trailing" = "Bottom trailing";
+"kiosk.corner.top_leading" = "Top leading";
+"kiosk.corner.top_trailing" = "Top trailing";
 "kiosk.customization.title" = "Customization";
 "kiosk.customize.background_color.title" = "Background color";
 "kiosk.customize.icon_color.title" = "Icon color";

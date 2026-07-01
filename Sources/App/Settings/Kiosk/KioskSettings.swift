@@ -278,10 +278,10 @@ public enum KioskCornerPosition: String, Codable, CaseIterable, Identifiable, Da
 
     public var title: String {
         switch self {
-        case .topLeading: return L10n.Kiosk.Corner.topLeft
-        case .topTrailing: return L10n.Kiosk.Corner.topRight
-        case .bottomLeading: return L10n.Kiosk.Corner.bottomLeft
-        case .bottomTrailing: return L10n.Kiosk.Corner.bottomRight
+        case .topLeading: return L10n.Kiosk.Corner.topLeading
+        case .topTrailing: return L10n.Kiosk.Corner.topTrailing
+        case .bottomLeading: return L10n.Kiosk.Corner.bottomLeading
+        case .bottomTrailing: return L10n.Kiosk.Corner.bottomTrailing
         }
     }
 }

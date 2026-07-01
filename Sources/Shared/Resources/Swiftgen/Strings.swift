@@ -2111,14 +2111,14 @@ public enum L10n {
       }
     }
     public enum Corner {
-      /// Bottom left
-      public static var bottomLeft: String { return L10n.tr("Localizable", "kiosk.corner.bottom_left") }
-      /// Bottom right
-      public static var bottomRight: String { return L10n.tr("Localizable", "kiosk.corner.bottom_right") }
-      /// Top left
-      public static var topLeft: String { return L10n.tr("Localizable", "kiosk.corner.top_left") }
-      /// Top right
-      public static var topRight: String { return L10n.tr("Localizable", "kiosk.corner.top_right") }
+      /// Bottom leading
+      public static var bottomLeading: String { return L10n.tr("Localizable", "kiosk.corner.bottom_leading") }
+      /// Bottom trailing
+      public static var bottomTrailing: String { return L10n.tr("Localizable", "kiosk.corner.bottom_trailing") }
+      /// Top leading
+      public static var topLeading: String { return L10n.tr("Localizable", "kiosk.corner.top_leading") }
+      /// Top trailing
+      public static var topTrailing: String { return L10n.tr("Localizable", "kiosk.corner.top_trailing") }
     }
     public enum Customization {
       /// Customization
