@@ -192,7 +192,6 @@ struct GeneralSettingsView: View {
                 HStack(spacing: DesignSystem.Spaces.one) {
                     Text(L10n.SettingsDetails.General.EdgeToEdge.title)
                     LabsLabel()
-                    Spacer()
                 }
             } footer: {
                 Text(L10n.SettingsDetails.General.EdgeToEdge.footer)
