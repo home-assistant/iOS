@@ -2709,6 +2709,29 @@ public enum L10n {
     }
   }
 
+  public enum MainWindowGroupCommands {
+    public enum Areas {
+      /// No Areas
+      public static var empty: String { return L10n.tr("Localizable", "main_window_group_commands.areas.empty") }
+      /// Areas
+      public static var title: String { return L10n.tr("Localizable", "main_window_group_commands.areas.title") }
+    }
+    public enum Entities {
+      /// No Entities
+      public static var empty: String { return L10n.tr("Localizable", "main_window_group_commands.entities.empty") }
+      /// Entities
+      public static var title: String { return L10n.tr("Localizable", "main_window_group_commands.entities.title") }
+    }
+    public enum Floor {
+      /// No Floor
+      public static var empty: String { return L10n.tr("Localizable", "main_window_group_commands.floor.empty") }
+    }
+    public enum OtherEntities {
+      /// Other entities
+      public static var title: String { return L10n.tr("Localizable", "main_window_group_commands.other_entities.title") }
+    }
+  }
+
   public enum Menu {
     public enum Actions {
       /// Configure…
