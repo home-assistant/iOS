@@ -25,15 +25,16 @@ struct NotificationSettingsView: View {
 
     var body: some View {
         List {
+            AppleLikeListTopRowHeader(
+                image: .bellIcon,
+                title: L10n.SettingsDetails.Notifications.title,
+                subtitle: L10n.SettingsDetails.Notifications.info
+            )
             overviewSection
-            soundsSection
-            historySection
+            historySnoozeSoundsSection
             badgeSection
-            categoriesSection
             debugSection
         }
-        .navigationTitle(L10n.SettingsDetails.Notifications.title)
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
             // Move the conditional inside the item so it works on iOS 15 too.
@@ -77,9 +78,6 @@ struct NotificationSettingsView: View {
 
     private var overviewSection: some View {
         Section {
-            Text(L10n.SettingsDetails.Notifications.info)
-                .foregroundColor(.primary)
-
             Button {
                 handlePermissionTap()
             } label: {
@@ -97,7 +95,7 @@ struct NotificationSettingsView: View {
 
             Link(destination: URL(string: "https://companion.home-assistant.io/app/ios/notifications")!) {
                 HStack {
-                    Text(L10n.SettingsDetails.learnMore)
+                    Text(L10n.SettingsDetails.Notifications.documentation)
                     Spacer()
                     Image(systemSymbol: .arrowUpForwardSquare)
                         .font(.caption)
@@ -106,27 +104,25 @@ struct NotificationSettingsView: View {
         }
     }
 
-    private var soundsSection: some View {
-        Section {
-            NavigationLink {
-                NotificationSoundsView()
-            } label: {
-                Text(L10n.SettingsDetails.Notifications.Sounds.title)
-            }
-        } footer: {
-            Text(L10n.SettingsDetails.Notifications.Sounds.footer)
-        }
-    }
-
-    private var historySection: some View {
+    private var historySnoozeSoundsSection: some View {
         Section {
             NavigationLink {
                 NotificationHistoryView()
             } label: {
                 Text(L10n.SettingsDetails.Notifications.History.title)
             }
-        } footer: {
-            Text(L10n.SettingsDetails.Notifications.History.footer)
+
+            NavigationLink {
+                NotificationSnoozeActionsView()
+            } label: {
+                Text(L10n.SettingsDetails.Notifications.SnoozeActions.header)
+            }
+
+            NavigationLink {
+                NotificationSoundsView()
+            } label: {
+                Text(L10n.SettingsDetails.Notifications.Sounds.title)
+            }
         }
     }
 
@@ -151,19 +147,6 @@ struct NotificationSettingsView: View {
             )
         } footer: {
             Text(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.description)
-        }
-    }
-
-    private var categoriesSection: some View {
-        Section {
-            NavigationLink {
-                NotificationCategoryListView()
-            } label: {
-                Text(L10n.SettingsDetails.Notifications.Categories.header)
-            }
-            Text(L10n.SettingsDetails.Notifications.Categories.deprecatedNote)
-                .font(.footnote)
-                .foregroundColor(.secondary)
         }
     }
 

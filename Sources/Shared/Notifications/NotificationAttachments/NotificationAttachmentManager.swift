@@ -65,6 +65,8 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
         }.map { content in
             // swiftlint:disable:next force_cast
             content.mutableCopy() as! UNMutableNotificationContent
+        }.get { content in
+            Self.applyDefaultCategoryIfNeeded(to: content)
         }.then { content in
             when(resolved: attachmentPromise.get { attachment in
                 Current.Log.info("adding attachment \(attachment)")
@@ -77,6 +79,24 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
                 // just in case we're not retained by our caller, keep alive through
             }
         }
+    }
+
+    /// Notifications without a category never get a chance to show action buttons, since iOS only
+    /// looks up actions via a registered `UNNotificationCategory` matching `categoryIdentifier`. The
+    /// "DYNAMIC" category is looked up by the content extension at presentation time (see
+    /// `UNNotificationContent.userInfoActions`), so forcing it here is what lets default actions like
+    /// snooze show up even on notifications HA didn't already tag with actions/entity_id/attachments.
+    static func applyDefaultCategoryIfNeeded(to content: UNMutableNotificationContent) {
+        guard content.categoryIdentifier.isEmpty, !NotificationSnoozeAction.enabledActions().isEmpty else {
+            return
+        }
+
+        if let hadict = content.userInfo["homeassistant"] as? [String: Any],
+           (hadict["live_update"] as? Bool) == true || (hadict["command"] as? String) == "live_activity" {
+            return
+        }
+
+        content.categoryIdentifier = "DYNAMIC"
     }
 
     public func downloadAttachment(

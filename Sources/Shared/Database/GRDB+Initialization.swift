@@ -67,6 +67,7 @@ public extension DatabaseQueue {
             AssistConfigurationTable(),
             AllowedTagTable(),
             KioskSettingsTable(),
+            NotificationSnoozeActionTable(),
         ]
     }
 

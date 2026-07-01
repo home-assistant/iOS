@@ -116,7 +116,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         }
 
         var needsCategory = false
-        var needsMutableContent = false
+        var needsMutableContent = true
 
         var payload: [String: Any] = [
             "aps": [
