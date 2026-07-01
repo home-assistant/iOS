@@ -4301,7 +4301,7 @@ public enum L10n {
         /// Edge to edge display
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.title") }
         public enum Enabled {
-          /// Enabled
+          /// Enable
           public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.enabled.title") }
         }
       }
