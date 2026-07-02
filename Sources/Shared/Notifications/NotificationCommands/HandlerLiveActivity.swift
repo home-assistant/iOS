@@ -50,11 +50,15 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                         return
                     }
 
+                    // In-app path handles APNs (foreground willPresent already plays the sound and
+                    // suppresses the banner; background shows the system banner). Alerting is owned
+                    // there, so the ActivityKit alert is only used on the local-push drain path.
                     let presented = try await Current.liveActivityRegistry?.startOrUpdate(
                         tag: request.tag,
                         title: request.title,
                         serverWebhookId: request.serverWebhookId,
-                        state: request.state
+                        state: request.state,
+                        alert: false
                     )
                     if presented == true {
                         LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
@@ -94,7 +98,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             title: title,
             serverWebhookId: payload["webhook_id"] as? String,
             state: contentState(from: payload),
-            confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String
+            confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String,
+            alert: (payload["silent"] as? Bool) != true
         )
     }
 

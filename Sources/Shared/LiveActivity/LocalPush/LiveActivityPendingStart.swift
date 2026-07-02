@@ -20,6 +20,35 @@ enum LiveActivityPendingStart {
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
         let confirmID: String?
+        /// Whether a non-silent update should fire an ActivityKit alert (sound + haptic). Decoded
+        /// with a default so a queue serialized by an older build still drains.
+        let alert: Bool
+
+        init(
+            tag: String,
+            title: String,
+            serverWebhookId: String?,
+            state: HALiveActivityAttributes.ContentState,
+            confirmID: String?,
+            alert: Bool
+        ) {
+            self.tag = tag
+            self.title = title
+            self.serverWebhookId = serverWebhookId
+            self.state = state
+            self.confirmID = confirmID
+            self.alert = alert
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            tag = try container.decode(String.self, forKey: .tag)
+            title = try container.decode(String.self, forKey: .title)
+            serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
+            state = try container.decode(HALiveActivityAttributes.ContentState.self, forKey: .state)
+            confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
+            alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
+        }
     }
 
     static func confirmLocalPushDelivery(for request: Request) {
@@ -228,7 +257,8 @@ public final class LiveActivityPendingStartObserver {
                                 tag: request.tag,
                                 title: request.title,
                                 serverWebhookId: request.serverWebhookId,
-                                state: request.state
+                                state: request.state,
+                                alert: request.alert
                             )
                             if presented == true {
                                 LiveActivityPendingStart.confirmLocalPushDelivery(for: request)

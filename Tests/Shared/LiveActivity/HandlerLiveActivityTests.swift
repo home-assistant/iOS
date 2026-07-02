@@ -208,6 +208,26 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(pending.first?.title, "Test")
         XCTAssertEqual(pending.first?.serverWebhookId, "wh-1")
         XCTAssertEqual(pending.first?.state.message, "Body")
+        // A non-silent update carries alert = true so the drain fires an ActivityKit alert.
+        XCTAssertEqual(pending.first?.alert, true)
+    }
+
+    func testHandle_inAppExtension_silent_handsOffWithAlertFalse() throws {
+        Current.isAppExtension = true
+        let payload: [String: Any] = ["tag": "test-tag", "title": "Test", "silent": true]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.alert, false)
+    }
+
+    func testHandle_inApp_passesAlertFalseToRegistry() throws {
+        // APNs alerting is owned by the notification system (foreground willPresent / system
+        // banner), so the in-app path never fires the ActivityKit alert.
+        let payload: [String: Any] = ["tag": "my-activity", "title": "Test"]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertFalse(mockRegistry.startOrUpdateCalls[0].alert)
     }
 
     func testHandle_inAppExtension_invalidTag_doesNotEnqueue() throws {
