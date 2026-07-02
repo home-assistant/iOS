@@ -1665,8 +1665,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "webrtc_player.known_issues.title" = "Known Issues";
-"whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8 and macOS 11, tap to read more.";
-"whats_new.app_support_update.item_title" = "iOS 15, watchOS 8 and macOS 11 support will end";
+"whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
+"whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
 "whats_new.app_support_update.title" = "App support update";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
