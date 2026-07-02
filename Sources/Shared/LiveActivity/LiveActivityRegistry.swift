@@ -15,7 +15,8 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
         tag: String,
         title: String,
         serverWebhookId: String?,
-        state: HALiveActivityAttributes.ContentState
+        state: HALiveActivityAttributes.ContentState,
+        alert: Bool
     ) async throws -> Bool
     @available(iOS 17.2, *)
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
@@ -133,7 +134,8 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         tag: String,
         title: String,
         serverWebhookId: String?,
-        state: HALiveActivityAttributes.ContentState
+        state: HALiveActivityAttributes.ContentState,
+        alert: Bool
     ) async throws -> Bool {
         // UPDATE path — activity already running with this tag
         if let existing = entries[tag] {
@@ -142,7 +144,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 state: state,
                 staleDate: computeStaleDate(for: state)
             )
-            await existing.activity.update(content)
+            await existing.activity.update(
+                content,
+                alertConfiguration: Self.alertConfiguration(alert, title: title, message: state.message)
+            )
             return true
         }
 
@@ -154,7 +159,10 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 state: state,
                 staleDate: computeStaleDate(for: state)
             )
-            await live.update(content)
+            await live.update(
+                content,
+                alertConfiguration: Self.alertConfiguration(alert, title: title, message: state.message)
+            )
             let observationTask = makeObservationTask(for: live)
             entries[tag] = Entry(activity: live, observationTask: observationTask)
             return true
@@ -211,6 +219,17 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         await confirmReservation(id: tag, entry: Entry(activity: activity, observationTask: observationTask))
         Current.Log.verbose("LiveActivityRegistry: started activity for tag \(tag), id=\(activity.id)")
         return true
+    }
+
+    /// A non-silent update fires an ActivityKit alert (sound + haptic, and pings a paired Apple
+    /// Watch) so a Live Activity refresh is noticed without dispatching a standalone banner.
+    private static func alertConfiguration(
+        _ alert: Bool,
+        title: String,
+        message: String
+    ) -> AlertConfiguration? {
+        guard alert else { return nil }
+        return AlertConfiguration(title: "\(title)", body: "\(message)", sound: .default)
     }
 
     /// End and dismiss the Live Activity for `tag`.

@@ -20,6 +20,50 @@ enum LiveActivityPendingStart {
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
         let confirmID: String?
+        /// Whether a non-silent update should fire an ActivityKit alert (sound + haptic). Decoded
+        /// with a default so a queue serialized by an older build still drains.
+        let alert: Bool
+
+        // Declared explicitly: providing both init(from:) and encode(to:) opts out of synthesis.
+        private enum CodingKeys: String, CodingKey {
+            case tag, title, serverWebhookId, state, confirmID, alert
+        }
+
+        init(
+            tag: String,
+            title: String,
+            serverWebhookId: String?,
+            state: HALiveActivityAttributes.ContentState,
+            confirmID: String?,
+            alert: Bool
+        ) {
+            self.tag = tag
+            self.title = title
+            self.serverWebhookId = serverWebhookId
+            self.state = state
+            self.confirmID = confirmID
+            self.alert = alert
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.tag = try container.decode(String.self, forKey: .tag)
+            self.title = try container.decode(String.self, forKey: .title)
+            self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
+            self.state = try container.decode(HALiveActivityAttributes.ContentState.self, forKey: .state)
+            self.confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
+            self.alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(tag, forKey: .tag)
+            try container.encode(title, forKey: .title)
+            try container.encodeIfPresent(serverWebhookId, forKey: .serverWebhookId)
+            try container.encode(state, forKey: .state)
+            try container.encodeIfPresent(confirmID, forKey: .confirmID)
+            try container.encode(alert, forKey: .alert)
+        }
     }
 
     static func confirmLocalPushDelivery(for request: Request) {
@@ -228,7 +272,8 @@ public final class LiveActivityPendingStartObserver {
                                 tag: request.tag,
                                 title: request.title,
                                 serverWebhookId: request.serverWebhookId,
-                                state: request.state
+                                state: request.state,
+                                alert: request.alert
                             )
                             if presented == true {
                                 LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
