@@ -87,6 +87,8 @@ extension MacWebViewTitleBar {
         private weak var serverPickerItem: NSMenuToolbarItem?
         private var toolbar: NSToolbar?
         private var server: Server?
+        private var macToolbarItems: [MagicItem] = []
+        private var macToolbarConfigObserver: NSObjectProtocol?
 
         func configure(
             windowScene: UIWindowScene?,
@@ -95,6 +97,9 @@ extension MacWebViewTitleBar {
         ) {
             self.server = server
             self.webViewController = webViewController
+
+            loadMacToolbarItems()
+            observeMacToolbarConfigChanges()
 
             guard let titlebar = windowScene?.titlebar else { return }
             self.titlebar = titlebar
@@ -120,9 +125,45 @@ extension MacWebViewTitleBar {
         }
 
         func removeToolbar() {
+            if let macToolbarConfigObserver {
+                NotificationCenter.default.removeObserver(macToolbarConfigObserver)
+                self.macToolbarConfigObserver = nil
+            }
             guard titlebar?.toolbar === toolbar else { return }
             titlebar?.toolbar = nil
             toolbar = nil
+        }
+
+        private func loadMacToolbarItems() {
+            do {
+                macToolbarItems = try MacToolbarConfig.config()?.items ?? []
+            } catch {
+                Current.Log.error("Failed to load Mac toolbar config: \(error.localizedDescription)")
+                macToolbarItems = []
+            }
+        }
+
+        private func observeMacToolbarConfigChanges() {
+            guard macToolbarConfigObserver == nil else { return }
+            macToolbarConfigObserver = NotificationCenter.default.addObserver(
+                forName: .macToolbarConfigDidChange,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                self?.handleMacToolbarConfigChanged()
+            }
+        }
+
+        private func handleMacToolbarConfigChanged() {
+            loadMacToolbarItems()
+            guard let toolbar else { return }
+            let currentIdentifiers = Set(toolbar.items.map(\.itemIdentifier))
+            for item in macToolbarItems {
+                let identifier = NSToolbarItem.Identifier(magicItem: item)
+                guard !currentIdentifiers.contains(identifier) else { continue }
+                toolbar.insertItem(withItemIdentifier: identifier, at: toolbar.items.count)
+            }
+            updateEnabledItems()
         }
 
         func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
@@ -184,7 +225,11 @@ extension MacWebViewTitleBar {
             case .homeAssistantServerPicker:
                 serverPickerToolbarItem(identifier: itemIdentifier, willBeInserted: flag)
             default:
-                gestureToolbarItem(for: itemIdentifier)
+                if let magicItem = macToolbarItem(for: itemIdentifier) {
+                    entityToolbarItem(for: magicItem, identifier: itemIdentifier)
+                } else {
+                    gestureToolbarItem(for: itemIdentifier)
+                }
             }
         }
 
@@ -227,8 +272,13 @@ extension MacWebViewTitleBar {
                 identifiers.append(.homeAssistantServerPicker)
             }
             identifiers.append(contentsOf: Self.gestureActions.map { NSToolbarItem.Identifier(gestureAction: $0) })
+            identifiers.append(contentsOf: macToolbarItems.map { NSToolbarItem.Identifier(magicItem: $0) })
             identifiers.append(contentsOf: [.space, .flexibleSpace])
             return identifiers
+        }
+
+        private func macToolbarItem(for identifier: NSToolbarItem.Identifier) -> MagicItem? {
+            macToolbarItems.first { NSToolbarItem.Identifier(magicItem: $0) == identifier }
         }
 
         private func serverPickerToolbarItem(
@@ -339,6 +389,30 @@ extension MacWebViewTitleBar {
             }
         }
 
+        private func entityToolbarItem(
+            for magicItem: MagicItem,
+            identifier: NSToolbarItem.Identifier
+        ) -> NSToolbarItem {
+            let label = magicItem.displayText ?? magicItem.id
+            let item = NSToolbarItem(itemIdentifier: identifier)
+            item.label = label
+            item.paletteLabel = label
+            item.toolTip = label
+            item.image = entityToolbarImage(for: magicItem)
+            item.target = self
+            item.action = #selector(openEntityToolbarItem(_:))
+            item.visibilityPriority = Constants.highVisibilityPriority
+            return item
+        }
+
+        /// Renders the entity's own MDI icon (captured when it was added, see
+        /// `EntityAddToHandler.addToMacToolbar`) as a template image, matching the other toolbar buttons.
+        private func entityToolbarImage(for magicItem: MagicItem) -> UIImage {
+            let icon = MaterialDesignIcons(named: magicItem.customization?.icon ?? "", fallback: .dotsGridIcon)
+            return icon.image(ofSize: Constants.imageCanvasSize, color: .label)
+                .withRenderingMode(.alwaysTemplate)
+        }
+
         private func toolbarItem(
             identifier: NSToolbarItem.Identifier,
             label: String,
@@ -404,6 +478,17 @@ extension MacWebViewTitleBar {
             guard let action = sender.itemIdentifier.gestureAction else { return }
             webViewController?.webViewGestureHandler.handleGestureAction(action)
         }
+
+        @objc private func openEntityToolbarItem(_ sender: NSToolbarItem) {
+            guard let magicItem = macToolbarItem(for: sender.itemIdentifier),
+                  let url = AppConstants.openEntityDeeplinkURL(
+                      entityId: magicItem.id,
+                      serverId: magicItem.serverId
+                  ) else { return }
+            Current.sceneManager.appCoordinator.done { coordinator in
+                IncomingURLHandler(coordinator: coordinator).handle(url: url)
+            }
+        }
     }
 }
 
@@ -417,6 +502,7 @@ private extension NSToolbarItem.Identifier {
     static let homeAssistantServerPicker = NSToolbarItem.Identifier("io.home-assistant.webview.server-picker")
 
     private static let gesturePrefix = "io.home-assistant.webview.gesture."
+    private static let entityPrefix = "io.home-assistant.webview.entity."
 
     init(gestureAction: HAGestureAction) {
         self.init(Self.gesturePrefix + gestureAction.rawValue)
@@ -425,6 +511,10 @@ private extension NSToolbarItem.Identifier {
     var gestureAction: HAGestureAction? {
         guard rawValue.hasPrefix(Self.gesturePrefix) else { return nil }
         return HAGestureAction(rawValue: String(rawValue.dropFirst(Self.gesturePrefix.count)))
+    }
+
+    init(magicItem: MagicItem) {
+        self.init(Self.entityPrefix + magicItem.serverId + "::" + magicItem.id)
     }
 }
 #else

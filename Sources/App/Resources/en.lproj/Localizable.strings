@@ -1767,6 +1767,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.settings.url_override.title" = "Always use";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
+"web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
 "web_view.empty_state.open_settings_button" = "Open App settings";

@@ -55,6 +55,11 @@ final class EntityAddToHandler {
                     actions.append(CustomWidgetAction())
                 }
 
+                // Mac titlebar/toolbar is available on Mac Catalyst for any entity
+                if Current.isCatalyst, domain != nil {
+                    actions.append(MacToolbarItemAction())
+                }
+
                 seal.fulfill(actions)
             }
         }
@@ -100,6 +105,10 @@ final class EntityAddToHandler {
                     )
                     seal.fulfill(())
 
+                case .macToolbarItem:
+                    addToMacToolbar(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
                 case .none:
                     seal.reject(EntityAddToError.unknownActionType)
                 }
@@ -137,6 +146,40 @@ final class EntityAddToHandler {
         let viewController = watchSettingsView.embeddedInHostingController()
         viewController.overrideUserInterfaceStyle = .dark
         webViewController.presentOverlayController(controller: viewController, animated: true)
+    }
+
+    private func addToMacToolbar(entityId: String, webViewController: WebViewControllerProtocol) {
+        Current.Log.info("Adding entity \(entityId) to Mac toolbar")
+        let serverId = webViewController.server.identifier.rawValue
+
+        do {
+            var config = try MacToolbarConfig.config() ?? MacToolbarConfig()
+            guard !config.items.contains(where: { $0.id == entityId && $0.serverId == serverId }) else {
+                return
+            }
+
+            let appEntity = HAAppEntity.entity(id: entityId, serverId: serverId)
+            let iconName = appEntity?.icon
+                ?? Domain(rawValue: appEntity?.domain ?? "")?.icon(deviceClass: appEntity?.rawDeviceClass).name
+                ?? MaterialDesignIcons.dotsGridIcon.name
+
+            config.items.append(MagicItem(
+                id: entityId,
+                serverId: serverId,
+                type: .entity,
+                customization: .init(icon: iconName),
+                action: .moreInfoDialog,
+                displayText: appEntity?.name
+            ))
+
+            try Current.database().write { db in
+                try config.insert(db, onConflict: .replace)
+            }
+
+            NotificationCenter.default.post(name: .macToolbarConfigDidChange, object: nil)
+        } catch {
+            Current.Log.error("Failed to add entity \(entityId) to Mac toolbar: \(error.localizedDescription)")
+        }
     }
 
     private func openWidgetBuilder(
@@ -283,6 +326,12 @@ final class EntityAddToHandler {
 
         webViewController.presentOverlayController(controller: hostingController, animated: true)
     }
+}
+
+extension Notification.Name {
+    /// Posted whenever `MacToolbarConfig` gains a new entity, so any visible `MacWebViewTitleBar`
+    /// can insert the corresponding item into its toolbar without waiting for the next launch.
+    static let macToolbarConfigDidChange = Notification.Name("macToolbarConfigDidChange")
 }
 
 // MARK: - Error Types
