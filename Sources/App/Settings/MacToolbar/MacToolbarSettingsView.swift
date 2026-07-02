@@ -80,7 +80,7 @@ private struct MacToolbarEntityRow: View {
                     .foregroundColor(.red)
             }
             .buttonStyle(.borderless)
-            .accessibilityLabel(L10n.Settings.MacToolbar.remove)
+            .accessibilityLabel(L10n.Settings.MacToolbar.removeAccessibilityLabel(item.displayText ?? item.id))
             .confirmationDialog(
                 L10n.Settings.MacToolbar.RemoveConfirmation.title(item.displayText ?? item.id),
                 isPresented: $isConfirmingDelete,

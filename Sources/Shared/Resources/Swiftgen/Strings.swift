@@ -4092,6 +4092,10 @@ public enum L10n {
       public static var headerSubtitle: String { return L10n.tr("Localizable", "settings.mac_toolbar.header_subtitle") }
       /// Remove
       public static var remove: String { return L10n.tr("Localizable", "settings.mac_toolbar.remove") }
+      /// Remove %@
+      public static func removeAccessibilityLabel(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.mac_toolbar.remove_accessibility_label", String(describing: p1))
+      }
       /// Toolbar
       public static var title: String { return L10n.tr("Localizable", "settings.mac_toolbar.title") }
       public enum EntitiesSection {

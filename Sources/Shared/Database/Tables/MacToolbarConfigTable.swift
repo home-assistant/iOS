@@ -21,6 +21,13 @@ public struct MacToolbarConfig: Codable, FetchableRecord, PersistableRecord, Equ
     }
 }
 
+public extension Notification.Name {
+    /// Posted whenever `MacToolbarConfig` changes (an entity is added or removed), so any visible
+    /// `MacWebViewTitleBar` can insert or remove the corresponding toolbar item without waiting for
+    /// the next launch.
+    static let macToolbarConfigDidChange = Notification.Name("macToolbarConfigDidChange")
+}
+
 final class MacToolbarConfigTable: DatabaseTableProtocol {
     var tableName: String { GRDBDatabaseTable.macToolbarConfig.rawValue }
 

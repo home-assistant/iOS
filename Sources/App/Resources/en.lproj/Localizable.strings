@@ -1206,6 +1206,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.mac_toolbar.how_to_add.body" = "To add an entity, open its more info dialog in Home Assistant, select the \"Add to\" button, then choose \"Mac Toolbar\".";
 "settings.mac_toolbar.how_to_add.header" = "Adding entities";
 "settings.mac_toolbar.remove" = "Remove";
+"settings.mac_toolbar.remove_accessibility_label" = "Remove %@";
 "settings.mac_toolbar.remove_confirmation.title" = "Remove \"%@\" from the toolbar?";
 "settings.mac_toolbar.title" = "Toolbar";
 "settings.navigation_bar.about_button.title" = "About";
