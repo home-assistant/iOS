@@ -327,12 +327,6 @@ final class EntityAddToHandler {
     }
 }
 
-extension Notification.Name {
-    /// Posted whenever `MacToolbarConfig` gains a new entity, so any visible `MacWebViewTitleBar`
-    /// can insert the corresponding item into its toolbar without waiting for the next launch.
-    static let macToolbarConfigDidChange = Notification.Name("macToolbarConfigDidChange")
-}
-
 // MARK: - Error Types
 
 extension EntityAddToError {

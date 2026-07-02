@@ -1217,6 +1217,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.location_history.detail.explanation" = "The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are additional regions used for sub-100 m zones.";
 "settings.location_history.empty" = "No Location History";
 "settings.location_history.title" = "Location History";
+"settings.mac_toolbar.empty_state" = "You haven't added any entities to the toolbar yet.";
+"settings.mac_toolbar.entities_section.header" = "Added entities";
+"settings.mac_toolbar.header_subtitle" = "Entities you added to the window toolbar for quick access.";
+"settings.mac_toolbar.how_to_add.body" = "To add an entity, open its more info dialog in Home Assistant, select the \"Add to\" button, then choose \"Mac Toolbar\".";
+"settings.mac_toolbar.how_to_add.header" = "Adding entities";
+"settings.mac_toolbar.remove" = "Remove";
+"settings.mac_toolbar.remove_accessibility_label" = "Remove %@";
+"settings.mac_toolbar.remove_confirmation.title" = "Remove \"%@\" from the toolbar?";
+"settings.mac_toolbar.title" = "Toolbar";
 "settings.navigation_bar.about_button.title" = "About";
 "settings.navigation_bar.title" = "Settings";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";

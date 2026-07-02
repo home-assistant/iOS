@@ -890,6 +890,7 @@
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
+		42AC70B0000000000000FA11 /* MacToolbarSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC70B0000000000000FA10 /* MacToolbarSettingsView.swift */; };
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
 		429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */; };
 		429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
@@ -2689,6 +2690,7 @@
 		429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorationType.swift; sourceTree = "<group>"; };
 		429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTemplateEditor.swift; sourceTree = "<group>"; };
+		42AC70B0000000000000FA10 /* MacToolbarSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacToolbarSettingsView.swift; sourceTree = "<group>"; };
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
 		429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorDetailsView.swift; sourceTree = "<group>"; };
 		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
@@ -5557,6 +5559,14 @@
 			path = General;
 			sourceTree = "<group>";
 		};
+		42AC70B0000000000000FA12 /* MacToolbar */ = {
+			isa = PBXGroup;
+			children = (
+				42AC70B0000000000000FA10 /* MacToolbarSettingsView.swift */,
+			);
+			path = MacToolbar;
+			sourceTree = "<group>";
+		};
 		429C33BE2F17988D0033EF5E /* EntityPicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -7031,6 +7041,7 @@
 				A95FDD182F6B8A5B008EF72F /* LiveActivity */,
 				4257EA912F1790DE00D81506 /* EntityPicker */,
 				429AFE5A2DB7BE3200AF0836 /* General */,
+				42AC70B0000000000000FA12 /* MacToolbar */,
 				4211551F2D3525E800A71630 /* AppIcon */,
 				AC730020000000000000AA01 /* AppIconShortcuts */,
 				4278CB862D01F0BE00CFAAC9 /* Gestures */,
@@ -9699,6 +9710,7 @@
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
 				451D63FF25213F1E2AF7C73A /* CarPlayAssistSession.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,
+				42AC70B0000000000000FA11 /* MacToolbarSettingsView.swift in Sources */,
 				42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */,
 				D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */,
 				42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */,
