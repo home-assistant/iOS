@@ -1340,7 +1340,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings_details.notifications.badge_section.automatic_setting.description" = "Zet de badge elke keer op 0 als je de app start.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisch";
 "settings_details.notifications.badge_section.button.title" = "Badge resetten";
-"settings_details.notifications.categories.deprecated_note" = "Categorieën zijn niet langer vereist voor actiegerichte meldingen en zullen in een toekomstige release worden verwijderd.";
 "settings_details.notifications.categories.header" = "Categorieën";
 "settings_details.notifications.categories_synced.empty" = "Geen gesynchroniseerde categorieën";
 "settings_details.notifications.categories_synced.footer" = "Categorieën gedefinieerd in .yaml kunnen niet worden bewerkt op het apparaat.";
