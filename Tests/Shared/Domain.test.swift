@@ -352,4 +352,19 @@ struct DomainFeatureSupportTests {
             #expect(group.count == Set(group).count, "\(name) contains duplicate domains")
         }
     }
+
+    @Test func supportedDomainsAreNotExcludedFromPersistence() {
+        let excluded = Set(Domain.appDatabaseExcluded)
+        let featureLists: [(String, [Domain])] = [
+            ("carPlaySupported", Domain.carPlaySupported),
+            ("watchSupported", Domain.watchSupported),
+            ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
+            ("sensorWidgetSupported", Domain.sensorWidgetSupported),
+        ]
+        for (name, list) in featureLists {
+            for domain in list {
+                #expect(!excluded.contains(domain), "\(name) domain \(domain) must not be in appDatabaseExcluded")
+            }
+        }
+    }
 }
