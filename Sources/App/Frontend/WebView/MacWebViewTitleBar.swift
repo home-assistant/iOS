@@ -156,11 +156,10 @@ extension MacWebViewTitleBar {
 
         private func handleMacToolbarConfigChanged() {
             loadMacToolbarItems()
-            guard let toolbar else { return }
-            let currentIdentifiers = Set(toolbar.items.map(\.itemIdentifier))
+            guard let toolbar, titlebar?.toolbar === toolbar else { return }
             for item in macToolbarItems {
                 let identifier = NSToolbarItem.Identifier(magicItem: item)
-                guard !currentIdentifiers.contains(identifier) else { continue }
+                guard !toolbar.items.contains(where: { $0.itemIdentifier == identifier }) else { continue }
                 toolbar.insertItem(withItemIdentifier: identifier, at: toolbar.items.count)
             }
             updateEnabledItems()
@@ -225,7 +224,8 @@ extension MacWebViewTitleBar {
             case .homeAssistantServerPicker:
                 serverPickerToolbarItem(identifier: itemIdentifier, willBeInserted: flag)
             default:
-                if let magicItem = macToolbarItem(for: itemIdentifier) {
+                if let magicItem = macToolbarItem(for: itemIdentifier)
+                    ?? reconstructedEntityItem(for: itemIdentifier) {
                     entityToolbarItem(for: magicItem, identifier: itemIdentifier)
                 } else {
                     gestureToolbarItem(for: itemIdentifier)
@@ -278,7 +278,21 @@ extension MacWebViewTitleBar {
         }
 
         private func macToolbarItem(for identifier: NSToolbarItem.Identifier) -> MagicItem? {
-            macToolbarItems.first { NSToolbarItem.Identifier(magicItem: $0) == identifier }
+            if let item = macToolbarItems.first(where: { NSToolbarItem.Identifier(magicItem: $0) == identifier }) {
+                return item
+            }
+            guard identifier.magicItemComponents != nil else { return nil }
+            loadMacToolbarItems()
+            return macToolbarItems.first { NSToolbarItem.Identifier(magicItem: $0) == identifier }
+        }
+
+        /// A toolbar sharing our identifier forms a family with the toolbars of other windows; NSToolbar
+        /// synchronously asks every family member's delegate to materialize a newly inserted item. A sibling
+        /// whose cached `macToolbarItems` is stale would otherwise return `nil` here, which makes NSToolbar
+        /// raise an uncatchable assertion. Rebuild a minimal item straight from the identifier so we never do.
+        private func reconstructedEntityItem(for identifier: NSToolbarItem.Identifier) -> MagicItem? {
+            guard let components = identifier.magicItemComponents else { return nil }
+            return MagicItem(id: components.entityId, serverId: components.serverId, type: .entity)
         }
 
         private func serverPickerToolbarItem(
@@ -515,6 +529,13 @@ private extension NSToolbarItem.Identifier {
 
     init(magicItem: MagicItem) {
         self.init(Self.entityPrefix + magicItem.serverId + "::" + magicItem.id)
+    }
+
+    var magicItemComponents: (serverId: String, entityId: String)? {
+        guard rawValue.hasPrefix(Self.entityPrefix) else { return nil }
+        let payload = String(rawValue.dropFirst(Self.entityPrefix.count))
+        guard let separator = payload.range(of: "::") else { return nil }
+        return (String(payload[payload.startIndex ..< separator.lowerBound]), String(payload[separator.upperBound...]))
     }
 }
 #else
