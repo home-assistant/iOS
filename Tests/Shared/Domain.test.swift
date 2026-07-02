@@ -65,8 +65,7 @@ struct DomainTests {
 
         #expect(
             expected.count == Domain.allCases.count,
-            "Expected mapping is missing Domain cases. Update this test when adding or removing a Domain case. "
-                + "Expected \(expected.count), Domain.allCases has \(Domain.allCases.count)."
+            "Domain cases changed; update this test (\(expected.count) mapped vs \(Domain.allCases.count) total)"
         )
 
         for domain in Domain.allCases {
@@ -222,8 +221,7 @@ struct DeviceClassTests {
 
         #expect(
             expected.count == DeviceClass.allCases.count,
-            "Expected mapping is missing DeviceClass cases. Update this test when adding or removing a case. "
-                + "Expected \(expected.count), DeviceClass.allCases has \(DeviceClass.allCases.count)."
+            "DeviceClass cases changed; update this test (\(expected.count) vs \(DeviceClass.allCases.count))"
         )
 
         for deviceClass in DeviceClass.allCases {

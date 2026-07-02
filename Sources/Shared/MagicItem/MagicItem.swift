@@ -261,7 +261,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     domain: domain.rawValue,
                     serverId: magicItem.serverId
                 ))
-            case .toggle:
+            case .toggle, .trigger:
                 interactionType = .appIntent(.toggle(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
