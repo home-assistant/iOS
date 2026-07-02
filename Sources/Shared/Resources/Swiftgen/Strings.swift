@@ -2113,10 +2113,18 @@ public enum L10n {
     public enum Corner {
       /// Bottom leading
       public static var bottomLeading: String { return L10n.tr("Localizable", "kiosk.corner.bottom_leading") }
+      /// Bottom Left
+      public static var bottomLeft: String { return L10n.tr("Localizable", "kiosk.corner.bottom_left") }
+      /// Bottom Right
+      public static var bottomRight: String { return L10n.tr("Localizable", "kiosk.corner.bottom_right") }
       /// Bottom trailing
       public static var bottomTrailing: String { return L10n.tr("Localizable", "kiosk.corner.bottom_trailing") }
       /// Top leading
       public static var topLeading: String { return L10n.tr("Localizable", "kiosk.corner.top_leading") }
+      /// Top Left
+      public static var topLeft: String { return L10n.tr("Localizable", "kiosk.corner.top_left") }
+      /// Top Right
+      public static var topRight: String { return L10n.tr("Localizable", "kiosk.corner.top_right") }
       /// Top trailing
       public static var topTrailing: String { return L10n.tr("Localizable", "kiosk.corner.top_trailing") }
     }
@@ -2236,6 +2244,8 @@ public enum L10n {
       public enum ConfigurationAccess {
         /// Kiosk settings entry position
         public static var position: String { return L10n.tr("Localizable", "kiosk.screensaver.configuration_access.position") }
+        /// Configuration access
+        public static var title: String { return L10n.tr("Localizable", "kiosk.screensaver.configuration_access.title") }
       }
       public enum Dimming {
         /// Dimming
