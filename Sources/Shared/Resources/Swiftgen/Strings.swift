@@ -5585,6 +5585,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
     }
     public enum Health {
+      public enum Error {
+        /// Apple Health authorization was not granted.
+        public static var authorizationFailed: String { return L10n.tr("Localizable", "settings_sensors.health.error.authorization_failed") }
+        /// Apple Health is not available on this device.
+        public static var unavailable: String { return L10n.tr("Localizable", "settings_sensors.health.error.unavailable") }
+      }
       /// Apple Health sensors are opt-in. When enabled, data is read only during existing sensor updates and is cached to reduce battery impact.
       public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.footer") }
       /// Apple Health

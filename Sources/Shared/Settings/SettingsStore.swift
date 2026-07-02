@@ -389,7 +389,13 @@ public class SettingsStore {
     public var healthSensorCache: HealthSensorCache? {
         get {
             guard let data = prefs.data(forKey: "healthSensorCache") else { return nil }
-            return try? JSONDecoder().decode(HealthSensorCache.self, from: data)
+            do {
+                return try JSONDecoder().decode(HealthSensorCache.self, from: data)
+            } catch {
+                Current.Log.error("Failed to decode health sensor cache, dropping it: \(error)")
+                prefs.removeObject(forKey: "healthSensorCache")
+                return nil
+            }
         }
         set {
             if let newValue, let data = try? JSONEncoder().encode(newValue) {

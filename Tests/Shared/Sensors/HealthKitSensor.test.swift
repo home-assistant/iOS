@@ -167,6 +167,13 @@ class HealthKitSensorTests: XCTestCase {
         )
     }
 
+    func testInvalidCachedDataIsCleared() {
+        Current.settingsStore.prefs.set(Data("not-json".utf8), forKey: "healthSensorCache")
+
+        XCTAssertNil(Current.settingsStore.healthSensorCache)
+        XCTAssertNil(Current.settingsStore.prefs.data(forKey: "healthSensorCache"))
+    }
+
     func testDisabledIndividualSensorDoesNotQueryThatMetric() throws {
         Current.settingsStore.healthSensorsEnabled = true
         Current.sensors.setEnabled(false, forUniqueID: HealthKitSensor.Metric.restingHeartRate.uniqueID)

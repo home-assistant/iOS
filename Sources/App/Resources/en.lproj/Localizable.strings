@@ -1684,6 +1684,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_sensors.detail.state" = "State";
 "settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.focus_permission.title" = "Focus Permission";
+"settings_sensors.health.error.authorization_failed" = "Apple Health authorization was not granted.";
+"settings_sensors.health.error.unavailable" = "Apple Health is not available on this device.";
 "settings_sensors.health.footer" = "Apple Health sensors are opt-in. When enabled, data is read only during existing sensor updates and is cached to reduce battery impact.";
 "settings_sensors.health.header" = "Apple Health";
 "settings_sensors.health.status" = "Health Data";

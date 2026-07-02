@@ -645,11 +645,13 @@ public class AppEnvironment {
             ].compactMap { $0 })
 
             let (promise, seal) = Promise<Void>.pending()
-            healthStore.requestAuthorization(toShare: Set<HKSampleType>(), read: types) { _, error in
+            healthStore.requestAuthorization(toShare: Set<HKSampleType>(), read: types) { success, error in
                 if let error {
                     seal.reject(error)
-                } else {
+                } else if success {
                     seal.fulfill(())
+                } else {
+                    seal.reject(HealthKitSensor.HealthKitSensorError.authorizationFailed)
                 }
             }
             return promise

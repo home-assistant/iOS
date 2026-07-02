@@ -2,8 +2,18 @@ import Foundation
 import PromiseKit
 
 public final class HealthKitSensor: SensorProvider {
-    enum HealthKitSensorError: Error {
+    enum HealthKitSensorError: LocalizedError {
+        case authorizationFailed
         case unavailable
+
+        var errorDescription: String? {
+            switch self {
+            case .authorizationFailed:
+                return L10n.SettingsSensors.Health.Error.authorizationFailed
+            case .unavailable:
+                return L10n.SettingsSensors.Health.Error.unavailable
+            }
+        }
     }
 
     public enum Metric: CaseIterable, Codable {
