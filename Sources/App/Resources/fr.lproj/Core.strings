@@ -17,7 +17,7 @@
 "common::state::unlocked" = "Déverrouillé";
 "common::state::yes" = "Oui";
 "component::airzone::entity::select::sleep_times::state::off" = "Désactivé";
-"component::alarm_control_panel::title" = "Centrale d’alarme";
+"component::alarm_control_panel::title" = "Centrale d'alarme";
 "component::alert::entity_component::_::state::idle" = "Inactive";
 "component::alert::entity_component::_::state::on" = "Actif";
 "component::alert::title" = "Alerte";
@@ -111,7 +111,7 @@
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Maison";
 "component::humidifier::title" = "Humidificateur";
 "component::image::title" = "Image";
-"component::image_processing::title" = "Traitement d’image";
+"component::image_processing::title" = "Traitement d'image";
 "component::improv_ble::config::abort::already_configured" = "L'appareil est déjà configuré";
 "component::improv_ble::config::abort::cannot_connect" = "Échec de connexion";
 "component::improv_ble::config::abort::characteristic_missing" = "L'appareil est soit déjà connecté au Wi-Fi, soit il ne parvient plus à se connecter au Wi-Fi. Si vous souhaitez le connecter à un autre réseau, essayez d'abord de le réinitialiser aux paramètres d'usine.";

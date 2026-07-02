@@ -183,19 +183,11 @@ public class LocalPushManager {
         delegate?.localPushManager(self, didReceiveRemoteNotification: userInfo)
 
         if isLiveActivity {
-            // The activity itself is updated via the delegate above. Present an alerting banner
-            // (sound + haptics) when the update is not silent, so a start/update is noticed;
-            // a silent update refreshes the activity quietly. `baseContent` already carries the
-            // sound/empty-alert the parser derived from `silent`. Either way the confirm is owned
-            // by the live activity presentation path, so it stays deferred here.
-            if Self.isSilentLiveActivity(userInfo) {
-                Current.Log.info("local push: silent Live Activity command, suppressing banner, deferring confirm")
-            } else {
-                Current.Log.info("local push: Live Activity command, presenting alert, deferring confirm")
-                add(UNNotificationRequest(identifier: event.identifier, content: baseContent, trigger: nil))
-                    .done { Current.Log.info("local push: presented Live Activity alert") }
-                    .catch { Current.Log.error("local push: failed to present Live Activity alert: \($0)") }
-            }
+            // A live update only starts/updates the Live Activity via the delegate above, silent
+            // or not; it never surfaces a standalone banner (the widget is the only visual
+            // feedback, matching NotificationManager.willPresent). The confirm is owned by the
+            // live activity presentation path, so it stays deferred here.
+            Current.Log.info("local push: Live Activity command, updating activity only, deferring confirm")
             return
         }
 
@@ -246,12 +238,5 @@ public class LocalPushManager {
     private static func isCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
         guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
         return (hadict["command"] as? String) != nil
-    }
-
-    /// Whether a Live Activity update opted out of alerting. Only an explicit `silent: true`
-    /// suppresses the sound/haptics; a missing or `false` value alerts like a normal notification.
-    private static func isSilentLiveActivity(_ userInfo: [AnyHashable: Any]) -> Bool {
-        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
-        return (hadict["silent"] as? Bool) == true
     }
 }

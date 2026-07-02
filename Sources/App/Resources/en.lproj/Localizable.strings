@@ -579,8 +579,12 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.clock.style.digital" = "Digital";
 "kiosk.clock.style.large" = "Large";
 "kiosk.corner.bottom_leading" = "Bottom leading";
+"kiosk.corner.bottom_left" = "Bottom Left";
+"kiosk.corner.bottom_right" = "Bottom Right";
 "kiosk.corner.bottom_trailing" = "Bottom trailing";
 "kiosk.corner.top_leading" = "Top leading";
+"kiosk.corner.top_left" = "Top Left";
+"kiosk.corner.top_right" = "Top Right";
 "kiosk.corner.top_trailing" = "Top trailing";
 "kiosk.customization.title" = "Customization";
 "kiosk.customize.background_color.title" = "Background color";
@@ -616,6 +620,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.screensaver.clock_style.small" = "Small";
 "kiosk.screensaver.clock_style.title" = "Clock style";
 "kiosk.screensaver.configuration_access.position" = "Kiosk settings entry position";
+"kiosk.screensaver.configuration_access.title" = "Configuration access";
 "kiosk.screensaver.date_boldness" = "Date boldness";
 "kiosk.screensaver.date_size" = "Date size";
 "kiosk.screensaver.dim" = "Dim";
@@ -777,6 +782,12 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.require_confirmation.title" = "Require confirmation";
 "magic_item.text_color.title" = "Text color";
 "magic_item.use_custom_colors.title" = "Use custom colors";
+"main_window_group_commands.areas.empty" = "No Areas";
+"main_window_group_commands.areas.title" = "Areas";
+"main_window_group_commands.entities.empty" = "No Entities";
+"main_window_group_commands.entities.title" = "Entities";
+"main_window_group_commands.floor.empty" = "No Floor";
+"main_window_group_commands.other_entities.title" = "Other entities";
 "menu.actions.configure" = "Configure…";
 "menu.actions.title" = "Actions";
 "menu.application.about" = "About %@";
@@ -1349,7 +1360,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatically";
 "settings_details.notifications.badge_section.button.title" = "Reset Badge";
-"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.categories_synced.empty" = "No Synced Categories";
 "settings_details.notifications.categories_synced.footer" = "Categories defined in .yaml are not editable on device.";
@@ -1951,9 +1961,3 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.todo_list.title" = "To-do List";
 "yaml_preview.share" = "Share Contents";
 "yes_label" = "Yes";
-"main_window_group_commands.areas.empty" = "No Areas";
-"main_window_group_commands.areas.title" = "Areas";
-"main_window_group_commands.entities.empty" = "No Entities";
-"main_window_group_commands.entities.title" = "Entities";
-"main_window_group_commands.floor.empty" = "No Floor";
-"main_window_group_commands.other_entities.title" = "Other entities";
