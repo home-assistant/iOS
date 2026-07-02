@@ -2495,6 +2495,8 @@ public enum L10n {
       public static var staticTitle: String { return L10n.tr("Localizable", "live_activity.samples.static_title") }
       /// Samples
       public static var title: String { return L10n.tr("Localizable", "live_activity.samples.title") }
+      /// YAML
+      public static var yamlTitle: String { return L10n.tr("Localizable", "live_activity.samples.yaml_title") }
     }
     public enum Section {
       /// Active Activities

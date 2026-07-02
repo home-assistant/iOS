@@ -728,6 +728,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.samples.static_footer" = "Fixed state — no updates after start. Good for checking layout at a glance.";
 "live_activity.samples.static_title" = "Sample · Static";
 "live_activity.samples.title" = "Samples";
+"live_activity.samples.yaml_title" = "YAML";
 "live_activity.section.active" = "Active Activities";
 "live_activity.section.privacy" = "Privacy";
 "live_activity.section.status" = "Status";

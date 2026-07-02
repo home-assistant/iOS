@@ -899,7 +899,7 @@ private struct LiveActivityYAMLView: View {
                 .padding(16)
         }
         .background(Color(uiColor: .secondarySystemGroupedBackground))
-        .navigationTitle("YAML")
+        .navigationTitle(L10n.LiveActivity.Samples.yamlTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
