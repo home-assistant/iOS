@@ -1130,6 +1130,7 @@
 		42EEEFE22E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE32E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
+		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
 		42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
 		42EF0ACE2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
 		42EF0AD12D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */; };
@@ -3046,6 +3047,7 @@
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
 		42EEEFE12E2791430080E973 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
+		DA5459C05BEB77340680D8C6 /* Domain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.test.swift; sourceTree = "<group>"; };
 		42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetAllCustomWidgetConfirmationAppIntent.swift; sourceTree = "<group>"; };
 		42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateWidgetItemConfirmationStateAppIntent.swift; sourceTree = "<group>"; };
 		42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationView.swift; sourceTree = "<group>"; };
@@ -7387,6 +7389,7 @@
 				114CBAEC283AB92D00A9BAFF /* SecTrust+TestAdditions.swift */,
 				42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */,
 				42EEEFE42E2792B20080E973 /* Service.test.swift */,
+				DA5459C05BEB77340680D8C6 /* Domain.test.swift */,
 				B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */,
 			);
 			path = Shared;
@@ -10679,6 +10682,7 @@
 				11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */,
 				8DFA3DEE4881E59961C3B5E2 /* BarometerSensor.test.swift in Sources */,
 				42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */,
+				17200629C6080FA329C8F802 /* Domain.test.swift in Sources */,
 				42BC58202FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift in Sources */,
 				118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */,
 				114CBAEB2839FC2500A9BAFF /* SecurityExceptions.test.swift in Sources */,

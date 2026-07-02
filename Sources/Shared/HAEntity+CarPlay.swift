@@ -95,6 +95,8 @@ public extension HAEntity {
                 image = .checkboxMarkedOutlineIcon
             case .climate:
                 image = .homeThermometerOutlineIcon
+            default:
+                image = domain.icon(deviceClass: deviceClass.rawValue, state: Domain.State(rawValue: state))
             }
         }
 
