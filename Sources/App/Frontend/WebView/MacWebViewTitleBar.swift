@@ -411,12 +411,22 @@ extension MacWebViewTitleBar {
             let item = NSToolbarItem(itemIdentifier: identifier)
             item.label = label
             item.paletteLabel = label
-            item.toolTip = label
+            item.toolTip = entityToolbarToolTip(for: magicItem, label: label)
             item.image = entityToolbarImage(for: magicItem)
             item.target = self
             item.action = #selector(openEntityToolbarItem(_:))
             item.visibilityPriority = Constants.highVisibilityPriority
             return item
+        }
+
+        /// Hover help for an entity button: the entity name followed by the shared `Area • Device`
+        /// context line (see `HAAppEntity.contextualSubtitle`), matching what pickers show elsewhere.
+        private func entityToolbarToolTip(for magicItem: MagicItem, label: String) -> String {
+            guard let context = HAAppEntity.entity(id: magicItem.id, serverId: magicItem.serverId)?
+                .contextualSubtitle, !context.isEmpty, context != label else {
+                return label
+            }
+            return "\(label) • \(context)"
         }
 
         /// Renders the entity's own MDI icon (captured when it was added, see
