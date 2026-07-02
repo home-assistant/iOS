@@ -412,7 +412,7 @@ public enum Domain: String, CaseIterable {
              .inputNumber, .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote,
              .schedule, .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .valve,
              .wakeWord, .waterHeater, .weather, .counter, .timer:
-            return rawValue
+            return localizedDescription
         }
     }
 
