@@ -529,7 +529,7 @@ public enum Domain: String, CaseIterable {
 // MARK: - Feature supported domains
 
 public extension Domain {
-public static let carPlaySupported: [Domain] = [
+    static let carPlaySupported: [Domain] = [
         .automation,
         .button,
         .cover,
@@ -543,20 +543,20 @@ public static let carPlaySupported: [Domain] = [
         .switch,
     ]
 
-public static let watchSupported: [Domain] = [
+    static let watchSupported: [Domain] = [
         .script,
         .scene,
         .automation,
     ]
 
-public static let commonlyUsedWidgetSupported: [Domain] = [
+    static let commonlyUsedWidgetSupported: [Domain] = [
         .light,
         .switch,
         .cover,
         .fan,
     ]
 
-public static let sensorWidgetSupported: [Domain] = [
+    static let sensorWidgetSupported: [Domain] = [
         .sensor,
         .binarySensor,
         .inputBoolean,
