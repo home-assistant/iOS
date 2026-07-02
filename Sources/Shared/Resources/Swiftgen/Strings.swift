@@ -4610,8 +4610,6 @@ public enum L10n {
         }
       }
       public enum Categories {
-        /// Categories are no longer required for actionable notifications and will be removed in a future release.
-        public static var deprecatedNote: String { return L10n.tr("Localizable", "settings_details.notifications.categories.deprecated_note") }
         /// Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories.header") }
       }
@@ -4734,7 +4732,7 @@ public enum L10n {
         public static var total: String { return L10n.tr("Localizable", "settings_details.notifications.rate_limits.total") }
       }
       public enum SnoozeActions {
-        /// Quick actions shown on notifications to snooze them for a set amount of time. Snoozing re-shows the notification later; Home Assistant is not notified.
+        /// Quick actions shown on notifications to snooze them for a set amount of time. Snoozing re-shows the notification later.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.footer") }
         /// Snooze Actions
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.header") }

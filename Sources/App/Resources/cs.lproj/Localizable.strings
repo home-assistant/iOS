@@ -1340,7 +1340,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings_details.notifications.badge_section.automatic_setting.description" = "Při každém spuštění aplikace resetuje odznak na hodnotu 0.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticky";
 "settings_details.notifications.badge_section.button.title" = "Resetovat odznak";
-"settings_details.notifications.categories.deprecated_note" = "Pro oznámení s akcemi již nejsou kategorie vyžadovány a v budoucích verzích budou odebrány.";
 "settings_details.notifications.categories.header" = "Kategorie";
 "settings_details.notifications.categories_synced.empty" = "Žádné synchronizované kategorie";
 "settings_details.notifications.categories_synced.footer" = "Kategorie definované v .yaml není možné upravit v zařízení.";

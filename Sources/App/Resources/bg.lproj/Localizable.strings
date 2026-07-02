@@ -1340,7 +1340,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.badge_section.automatic_setting.description" = "Нулира значката на 0 всеки път, когато стартирате приложението.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Автоматично";
 "settings_details.notifications.badge_section.button.title" = "Нулиране на значката";
-"settings_details.notifications.categories.deprecated_note" = "Категориите вече не са необходими за известия с действие и ще бъдат премахнати в бъдеща версия.";
 "settings_details.notifications.categories.header" = "Категории";
 "settings_details.notifications.categories_synced.empty" = "Няма синхронизирани категории";
 "settings_details.notifications.categories_synced.footer" = "Категориите, дефинирани в .yaml, не могат да се редактират на устройството.";

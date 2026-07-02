@@ -1340,7 +1340,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings_details.notifications.badge_section.automatic_setting.description" = "Setzt das Badge bei jedem Start der App auf 0 zurück.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisch";
 "settings_details.notifications.badge_section.button.title" = "Badge zurücksetzen";
-"settings_details.notifications.categories.deprecated_note" = "Kategorien sind nicht mehr erforderlich, um Benachrichtigungen zu bearbeiten, und werden in einer zukünftigen Version entfernt.";
 "settings_details.notifications.categories.header" = "Kategorien";
 "settings_details.notifications.categories_synced.empty" = "Keine synchronisierten Kategorien";
 "settings_details.notifications.categories_synced.footer" = "In .yaml definierte Kategorien können auf dem Gerät nicht bearbeitet werden.";

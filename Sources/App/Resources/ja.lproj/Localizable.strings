@@ -1339,7 +1339,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings_details.notifications.badge_section.automatic_setting.description" = "アプリを起動するたびにバッジを、0にリセットします。";
 "settings_details.notifications.badge_section.automatic_setting.title" = "自動的に";
 "settings_details.notifications.badge_section.button.title" = "バッジをリセット";
-"settings_details.notifications.categories.deprecated_note" = "カテゴリーは、実用的な通知としては不要になったので、将来のリリースで削除される予定です。";
 "settings_details.notifications.categories.header" = "カテゴリー";
 "settings_details.notifications.categories_synced.empty" = "同期されたカテゴリはありません";
 "settings_details.notifications.categories_synced.footer" = ".yamlで定義されたカテゴリは、デバイス上では編集できません。";

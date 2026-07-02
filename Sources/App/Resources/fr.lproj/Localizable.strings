@@ -1340,7 +1340,6 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings_details.notifications.badge_section.automatic_setting.description" = "Réinitialise le badge à 0 chaque fois que vous lancez l'application.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatiquement";
 "settings_details.notifications.badge_section.button.title" = "Réinitialiser le badge";
-"settings_details.notifications.categories.deprecated_note" = "Les catégories ne sont plus requises pour les notifications interactives et seront supprimées dans une version future.";
 "settings_details.notifications.categories.header" = "Catégories";
 "settings_details.notifications.categories_synced.empty" = "Aucune catégorie synchronisée";
 "settings_details.notifications.categories_synced.footer" = "Les catégories définies dans .yaml ne sont pas modifiables sur l'appareil.";
