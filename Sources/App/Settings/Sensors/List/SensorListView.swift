@@ -77,13 +77,13 @@ struct SensorListView: View {
     private var sensorsList: some View {
         Section {
             Toggle(isOn: .init(get: {
-                viewModel.visibleSensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
+                viewModel.sensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
             }, set: { newValue in
                 viewModel.updateAllSensors(isEnabled: newValue)
             })) {
                 Text(L10n.SettingsSensors.Sensors.enableAll)
             }
-            ForEach(viewModel.visibleSensors, id: \.UniqueID) { sensor in
+            ForEach(viewModel.sensors, id: \.UniqueID) { sensor in
                 NavigationLink(destination: SensorDetailView(sensor: sensor)) {
                     SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
                 }
@@ -102,21 +102,19 @@ struct SensorListView: View {
 
     private var healthKitSection: some View {
         Section {
-            Toggle(isOn: .init(
-                get: { viewModel.healthSensorsEnabled },
-                set: { newValue in
-                    viewModel.setHealthSensorsEnabled(newValue).done { [viewModel] in
+            Button(action: {
+                viewModel.requestHealthAuthorization().done { [viewModel] in
+                    DispatchQueue.main.async {
                         viewModel.refresh()
-                    }.catch { [viewModel] error in
-                        DispatchQueue.main.async {
-                            viewModel.healthSensorsEnabled = Current.settingsStore.healthSensorsEnabled
-                            viewModel.alertMessage = error.localizedDescription
-                            viewModel.showAlert = true
-                        }
+                    }
+                }.catch { [viewModel] error in
+                    DispatchQueue.main.async {
+                        viewModel.alertMessage = error.localizedDescription
+                        viewModel.showAlert = true
                     }
                 }
-            )) {
-                Text(L10n.SettingsSensors.Health.toggle)
+            }) {
+                Text(L10n.SettingsSensors.Health.requestAccess)
             }
             .disabled(viewModel.healthKitStatus == .unavailable)
 
@@ -220,14 +218,12 @@ struct SensorListView: View {
         }
     }
 
-    private func healthStatusDescription(_ status: SensorListViewModel.HealthKitStatus) -> String {
+    private func healthStatusDescription(_ status: HealthKitSensor.AuthorizationStatus) -> String {
         switch status {
         case .unavailable:
             return L10n.SettingsSensors.Health.Status.unavailable
-        case .notRequested:
-            return L10n.SettingsSensors.Health.Status.notRequested
-        case .requested:
-            return L10n.SettingsSensors.Health.Status.requested
+        case .available:
+            return L10n.SettingsSensors.Health.Status.available
         }
     }
 }

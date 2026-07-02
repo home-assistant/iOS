@@ -362,50 +362,6 @@ public class SettingsStore {
         }
     }
 
-    public var healthSensorsEnabled: Bool {
-        get {
-            prefs.bool(forKey: "healthSensorsEnabled")
-        }
-        set {
-            prefs.set(newValue, forKey: "healthSensorsEnabled")
-            if newValue {
-                healthSensorsHaveBeenEnabled = true
-            }
-            if !newValue {
-                healthSensorCache = nil
-            }
-        }
-    }
-
-    public var healthSensorsHaveBeenEnabled: Bool {
-        get {
-            prefs.bool(forKey: "healthSensorsHaveBeenEnabled")
-        }
-        set {
-            prefs.set(newValue, forKey: "healthSensorsHaveBeenEnabled")
-        }
-    }
-
-    public var healthSensorCache: HealthSensorCache? {
-        get {
-            guard let data = prefs.data(forKey: "healthSensorCache") else { return nil }
-            do {
-                return try JSONDecoder().decode(HealthSensorCache.self, from: data)
-            } catch {
-                Current.Log.error("Failed to decode health sensor cache, dropping it: \(error)")
-                prefs.removeObject(forKey: "healthSensorCache")
-                return nil
-            }
-        }
-        set {
-            if let newValue, let data = try? JSONEncoder().encode(newValue) {
-                prefs.set(data, forKey: "healthSensorCache")
-            } else {
-                prefs.removeObject(forKey: "healthSensorCache")
-            }
-        }
-    }
-
     public struct Privacy {
         public var messaging: Bool
         public var crashes: Bool

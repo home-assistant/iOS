@@ -6,18 +6,11 @@ import PromiseKit
 import Shared
 
 class SensorListViewModel: ObservableObject {
-    enum HealthKitStatus {
-        case unavailable
-        case notRequested
-        case requested
-    }
-
     @Published var sensors: [WebhookSensor] = []
     @Published var lastUpdateDate: Date?
     @Published var motionAuthorizationStatus: CMAuthorizationStatus?
     @Published var focusAuthorizationStatus: FocusStatusWrapper.AuthorizationStatus?
-    @Published var healthKitStatus: HealthKitStatus?
-    @Published var healthSensorsEnabled: Bool = Current.settingsStore.healthSensorsEnabled
+    @Published var healthKitStatus: HealthKitSensor.AuthorizationStatus?
     @Published var periodicUpdateInterval: TimeInterval? = Current.settingsStore.periodicUpdateInterval
     @Published var alertMessage: String?
     @Published var showAlert: Bool = false
@@ -25,12 +18,6 @@ class SensorListViewModel: ObservableObject {
     private var refreshCancellable: AnyCancellable?
     private var motionManager: CMMotionActivityManager?
     private var cancellables = Set<AnyCancellable>()
-
-    var visibleSensors: [WebhookSensor] {
-        sensors.filter { sensor in
-            healthSensorsEnabled || !HealthKitSensor.isHealthSensor(uniqueID: sensor.UniqueID)
-        }
-    }
 
     init() {
         Current.sensors.register(observer: self)
@@ -42,8 +29,7 @@ class SensorListViewModel: ObservableObject {
     }
 
     func updatePermissions() {
-        healthSensorsEnabled = Current.settingsStore.healthSensorsEnabled
-        healthKitStatus = Current.healthKit.isAvailable() ? healthStatusForCurrentSettings() : .unavailable
+        healthKitStatus = Current.healthKit.authorizationStatus()
 
         if Current.motion.isActivityAvailable() {
             motionAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
@@ -77,18 +63,9 @@ class SensorListViewModel: ObservableObject {
         Current.settingsStore.periodicUpdateInterval = interval
     }
 
-    func setHealthSensorsEnabled(_ enabled: Bool) -> Promise<Void> {
-        if enabled {
-            return Current.healthKit.requestReadAuthorization().get { [weak self] in
-                Current.settingsStore.healthSensorsEnabled = true
-                self?.healthSensorsEnabled = true
-                self?.healthKitStatus = .requested
-            }
-        } else {
-            Current.settingsStore.healthSensorsEnabled = false
-            healthSensorsEnabled = false
-            healthKitStatus = healthStatusForCurrentSettings()
-            return .value(())
+    func requestHealthAuthorization() -> Promise<Void> {
+        Current.healthKit.requestReadAuthorization().get { [weak self] in
+            self?.healthKitStatus = Current.healthKit.authorizationStatus()
         }
     }
 
@@ -129,13 +106,9 @@ class SensorListViewModel: ObservableObject {
     }
 
     func updateAllSensors(isEnabled: Bool) {
-        for sensor in visibleSensors {
+        for sensor in sensors {
             Current.sensors.setEnabled(isEnabled, for: sensor)
         }
-    }
-
-    private func healthStatusForCurrentSettings() -> HealthKitStatus {
-        Current.settingsStore.healthSensorsEnabled ? .requested : .notRequested
     }
 }
 

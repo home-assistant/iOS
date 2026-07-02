@@ -1,34 +1,25 @@
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
-import Version
 import XCTest
 
 class SensorListViewModelHealthKitTests: XCTestCase {
     private var originalHealthKit: AppEnvironment.HealthKit!
-    private var previousHealthSensorsEnabled: Any?
-    private var previousHealthSensorsHaveBeenEnabled: Any?
-    private var previousHealthSensorCache: Any?
+    private var previousDisabledSensors: Any?
 
     override func setUp() {
         super.setUp()
 
         originalHealthKit = Current.healthKit
-        previousHealthSensorsEnabled = Current.settingsStore.prefs.object(forKey: "healthSensorsEnabled")
-        previousHealthSensorsHaveBeenEnabled = Current.settingsStore.prefs
-            .object(forKey: "healthSensorsHaveBeenEnabled")
-        previousHealthSensorCache = Current.settingsStore.prefs.object(forKey: "healthSensorCache")
+        previousDisabledSensors = Current.settingsStore.prefs.object(forKey: "disabledSensors")
 
-        Current.settingsStore.prefs.removeObject(forKey: "healthSensorsEnabled")
-        Current.settingsStore.prefs.removeObject(forKey: "healthSensorsHaveBeenEnabled")
-        Current.settingsStore.prefs.removeObject(forKey: "healthSensorCache")
+        Current.settingsStore.prefs.removeObject(forKey: "disabledSensors")
         Current.healthKit.isAvailable = { true }
+        Current.healthKit.authorizationStatus = { .available }
     }
 
     override func tearDown() {
-        restore(previousHealthSensorsEnabled, forKey: "healthSensorsEnabled")
-        restore(previousHealthSensorsHaveBeenEnabled, forKey: "healthSensorsHaveBeenEnabled")
-        restore(previousHealthSensorCache, forKey: "healthSensorCache")
+        restore(previousDisabledSensors, forKey: "disabledSensors")
         Current.healthKit = originalHealthKit
         originalHealthKit = nil
         super.tearDown()
@@ -42,45 +33,34 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         }
     }
 
-    func testEnablingHealthSensorsRequestsAuthorizationBeforeEnabling() throws {
+    func testRequestHealthAuthorizationRefreshesHealthKitStatus() throws {
         var requested = false
+        var status = HealthKitSensor.AuthorizationStatus.unavailable
+        Current.healthKit.authorizationStatus = { status }
         Current.healthKit.requestReadAuthorization = {
-            XCTAssertFalse(Current.settingsStore.healthSensorsEnabled)
             requested = true
+            status = .available
             return .value(())
         }
         let viewModel = SensorListViewModel()
 
-        try hang(viewModel.setHealthSensorsEnabled(true))
+        try hang(viewModel.requestHealthAuthorization())
 
         XCTAssertTrue(requested)
-        XCTAssertTrue(Current.settingsStore.healthSensorsEnabled)
-        XCTAssertTrue(viewModel.healthSensorsEnabled)
+        XCTAssertEqual(viewModel.healthKitStatus, .available)
     }
 
-    func testDisablingHealthSensorsTurnsSettingOffImmediately() throws {
-        Current.settingsStore.healthSensorsEnabled = true
-        Current.settingsStore.healthSensorCache = .init(
-            fetchedAt: Date(),
-            values: [.init(metric: .steps, value: 123)]
-        )
-        var requested = false
-        Current.healthKit.requestReadAuthorization = {
-            requested = true
-            return .value(())
-        }
+    func testUpdatePermissionsUsesHealthKitStatus() {
+        Current.healthKit.authorizationStatus = { .unavailable }
         let viewModel = SensorListViewModel()
 
-        try hang(viewModel.setHealthSensorsEnabled(false))
+        viewModel.updatePermissions()
 
-        XCTAssertFalse(requested)
-        XCTAssertFalse(Current.settingsStore.healthSensorsEnabled)
-        XCTAssertFalse(viewModel.healthSensorsEnabled)
-        XCTAssertNil(Current.settingsStore.healthSensorCache)
+        XCTAssertEqual(viewModel.healthKitStatus, .unavailable)
     }
 
-    func testUpdateAllSensorsDoesNotEnableHealthSensorsMasterToggle() {
-        Current.settingsStore.healthSensorsEnabled = false
+    func testUpdateAllSensorsIncludesHealthSensors() {
+        Current.sensors.setEnabled(false, forUniqueID: HealthKitSensor.Metric.steps.uniqueID)
         let viewModel = SensorListViewModel()
         viewModel.sensors = [
             WebhookSensor(name: "Health Steps", uniqueID: HealthKitSensor.Metric.steps.uniqueID),
@@ -88,7 +68,6 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
         viewModel.updateAllSensors(isEnabled: true)
 
-        XCTAssertFalse(Current.settingsStore.healthSensorsEnabled)
-        XCTAssertFalse(viewModel.healthSensorsEnabled)
+        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: HealthKitSensor.Metric.steps.uniqueID))
     }
 }

@@ -632,6 +632,10 @@ public class AppEnvironment {
             #endif
         }
 
+        public var authorizationStatus: () -> HealthKitSensor.AuthorizationStatus = {
+            Current.healthKit.isAvailable() ? .available : .unavailable
+        }
+
         public var requestReadAuthorization: () -> Promise<Void> = {
             #if canImport(HealthKit) && os(iOS)
             guard Current.healthKit.isAvailable() else {

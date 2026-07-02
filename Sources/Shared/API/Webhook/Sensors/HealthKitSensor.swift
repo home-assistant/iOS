@@ -16,6 +16,11 @@ public final class HealthKitSensor: SensorProvider {
         }
     }
 
+    public enum AuthorizationStatus: Equatable {
+        case unavailable
+        case available
+    }
+
     public enum Metric: CaseIterable, Codable {
         case steps
         case restingHeartRate
@@ -49,7 +54,6 @@ public final class HealthKitSensor: SensorProvider {
         }
     }
 
-    private static let cacheLifetime: TimeInterval = 15 * 60
     public let request: SensorProviderRequest
 
     public init(request: SensorProviderRequest) {
@@ -62,20 +66,8 @@ public final class HealthKitSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        guard Current.settingsStore.healthSensorsEnabled else {
-            if Current.settingsStore.healthSensorsHaveBeenEnabled {
-                return .value(Self.unavailableSensors())
-            } else {
-                return .value([])
-            }
-        }
-
         guard Current.healthKit.isAvailable() else {
             return .value(Self.unavailableSensors())
-        }
-
-        if shouldUseCache, let cached = Current.settingsStore.healthSensorCache, canUseCache(cached) {
-            return .value(Self.sensors(from: cached))
         }
 
         let start = Current.calendar().startOfDay(for: Current.date())
@@ -86,7 +78,7 @@ public final class HealthKitSensor: SensorProvider {
             when(resolved: Metric.allCases.map { metric in
                 value(for: metric, start: start, end: end, restingHeartRateStart: restingHeartRateStart)
             })
-        }.map { results -> HealthSensorCache in
+        }.map { results -> [HealthSensorValue] in
             let values = results.compactMap { result -> HealthSensorValue? in
                 if case let .fulfilled(value) = result {
                     return value
@@ -95,33 +87,8 @@ public final class HealthKitSensor: SensorProvider {
                 }
             }
 
-            return HealthSensorCache(fetchedAt: Current.date(), values: values)
-        }.get { cache in
-            Current.settingsStore.healthSensorCache = cache
+            return values
         }.map(Self.sensors(from:))
-    }
-
-    private var shouldUseCache: Bool {
-        switch request.reason {
-        case .registration:
-            break
-        case let .trigger(reason):
-            if reason == LocationUpdateTrigger.Manual.rawValue {
-                return false
-            }
-        }
-
-        guard let cache = Current.settingsStore.healthSensorCache else {
-            return false
-        }
-
-        return Current.date().timeIntervalSince(cache.fetchedAt) < Self.cacheLifetime
-    }
-
-    private func canUseCache(_ cache: HealthSensorCache) -> Bool {
-        Metric.allCases.allSatisfy { metric in
-            !Current.sensors.isEnabled(uniqueID: metric.uniqueID) || cache.values.contains { $0.metric == metric }
-        }
     }
 
     private func value(
@@ -146,9 +113,9 @@ public final class HealthKitSensor: SensorProvider {
         }
     }
 
-    private static func sensors(from cache: HealthSensorCache) -> [WebhookSensor] {
+    private static func sensors(from values: [HealthSensorValue]) -> [WebhookSensor] {
         Metric.allCases.map { metric in
-            let value = cache.values.first(where: { $0.metric == metric })?.value
+            let value = values.first(where: { $0.metric == metric })?.value
             return sensor(metric: metric, value: value)
         }
     }
@@ -173,16 +140,6 @@ public final class HealthKitSensor: SensorProvider {
             state: state,
             unit: metric.unit
         )
-    }
-}
-
-public struct HealthSensorCache: Codable, Equatable {
-    public let fetchedAt: Date
-    public let values: [HealthSensorValue]
-
-    public init(fetchedAt: Date, values: [HealthSensorValue]) {
-        self.fetchedAt = fetchedAt
-        self.values = values
     }
 }
 

@@ -1686,13 +1686,12 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.health.error.authorization_failed" = "Apple Health authorization was not granted.";
 "settings_sensors.health.error.unavailable" = "Apple Health is not available on this device.";
-"settings_sensors.health.footer" = "Apple Health sensors are opt-in. When enabled, data is read only during existing sensor updates and is cached to reduce battery impact.";
+"settings_sensors.health.footer" = "Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.";
 "settings_sensors.health.header" = "Apple Health";
+"settings_sensors.health.request_access" = "Request Apple Health Access";
 "settings_sensors.health.status" = "Health Data";
-"settings_sensors.health.status.not_requested" = "Not Requested";
-"settings_sensors.health.status.requested" = "Requested";
+"settings_sensors.health.status.available" = "Available";
 "settings_sensors.health.status.unavailable" = "Unavailable";
-"settings_sensors.health.toggle" = "Apple Health Sensors";
 "settings_sensors.last_updated.footer" = "Last Updated %@";
 "settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Failed to load sensors";
