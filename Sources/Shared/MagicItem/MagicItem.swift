@@ -253,31 +253,21 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     startListening: startListening
                 )
             }
-        } else {
-            switch domain {
-            case .button, .inputButton:
+        } else if let mainAction = domain.mainAction {
+            switch mainAction {
+            case .press:
                 interactionType = .appIntent(.press(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
                     serverId: magicItem.serverId
                 ))
-            case .cover, .inputBoolean, .light, .switch:
+            case .toggle:
                 interactionType = .appIntent(.toggle(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
                     serverId: magicItem.serverId
                 ))
-            case .lock:
-                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                    entityId: magicItem.id,
-                    serverId: magicItem.serverId
-                ))
-            case .climate:
-                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                    entityId: magicItem.id,
-                    serverId: magicItem.serverId
-                ))
-            case .scene, .script:
+            case .turnOn where domain == .scene || domain == .script:
                 interactionType = .appIntent(.activate(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
@@ -289,6 +279,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     serverId: magicItem.serverId
                 ))
             }
+        } else {
+            interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                entityId: magicItem.id,
+                serverId: magicItem.serverId
+            ))
         }
 
         return interactionType

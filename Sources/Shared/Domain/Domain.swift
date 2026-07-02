@@ -21,7 +21,45 @@ public enum Domain: String, CaseIterable {
     case person
     case camera
     case todo
-    // TODO: Map more domains
+    case airQuality = "air_quality"
+    case alarmControlPanel = "alarm_control_panel"
+    case alert
+    case assistSatellite = "assist_satellite"
+    case calendar
+    case conversation
+    case date
+    case dateTime = "datetime"
+    case deviceTracker = "device_tracker"
+    case event
+    case geoLocation = "geo_location"
+    case group
+    case humidifier
+    case image
+    case inputDatetime = "input_datetime"
+    case inputNumber = "input_number"
+    case inputSelect = "input_select"
+    case inputText = "input_text"
+    case lawnMower = "lawn_mower"
+    case mediaPlayer = "media_player"
+    case notify
+    case number
+    case remote
+    case schedule
+    case select
+    case siren
+    case stt
+    case sun
+    case text
+    case time
+    case tts
+    case update
+    case vacuum
+    case valve
+    case wakeWord = "wake_word"
+    case waterHeater = "water_heater"
+    case weather
+    case counter
+    case timer
 
     public init?(entityId: String) {
         let domainString = entityId.components(separatedBy: ".").first ?? ""
@@ -231,6 +269,84 @@ public enum Domain: String, CaseIterable {
             image = .cameraIcon
         case .todo:
             image = .checkboxMarkedOutlineIcon
+        case .airQuality:
+            image = .airFilterIcon
+        case .alarmControlPanel:
+            image = .shieldHomeIcon
+        case .alert:
+            image = .alertIcon
+        case .assistSatellite:
+            image = .messageProcessingOutlineIcon
+        case .calendar:
+            image = .calendarIcon
+        case .conversation:
+            image = .forumOutlineIcon
+        case .date:
+            image = .calendarTodayIcon
+        case .dateTime:
+            image = .calendarClockIcon
+        case .deviceTracker:
+            image = .radarIcon
+        case .event:
+            image = .calendarStarIcon
+        case .geoLocation:
+            image = .mapMarkerRadiusIcon
+        case .group:
+            image = .googleCirclesCommunitiesIcon
+        case .humidifier:
+            image = .airHumidifierIcon
+        case .image:
+            image = .imageIcon
+        case .inputDatetime:
+            image = .calendarClockIcon
+        case .inputNumber:
+            image = .numericIcon
+        case .inputSelect:
+            image = .formatListBulletedIcon
+        case .inputText:
+            image = .formTextboxIcon
+        case .lawnMower:
+            image = .robotMowerIcon
+        case .mediaPlayer:
+            image = .castIcon
+        case .notify:
+            image = .messageIcon
+        case .number:
+            image = .numericIcon
+        case .remote:
+            image = .remoteIcon
+        case .schedule:
+            image = .calendarClockIcon
+        case .select:
+            image = .formatListBulletedIcon
+        case .siren:
+            image = .bullhornIcon
+        case .stt:
+            image = .microphoneMessageIcon
+        case .sun:
+            image = .whiteBalanceSunnyIcon
+        case .text:
+            image = .formTextboxIcon
+        case .time:
+            image = .clockOutlineIcon
+        case .tts:
+            image = .speakerMessageIcon
+        case .update:
+            image = .packageUpIcon
+        case .vacuum:
+            image = .robotVacuumIcon
+        case .valve:
+            image = .pipeValveIcon
+        case .wakeWord:
+            image = .microphoneIcon
+        case .waterHeater:
+            image = .waterBoilerIcon
+        case .weather:
+            image = .weatherPartlyCloudyIcon
+        case .counter:
+            image = .counterIcon
+        case .timer:
+            image = .timerOutlineIcon
         }
         return image
     }
@@ -290,7 +406,12 @@ public enum Domain: String, CaseIterable {
             return CoreStrings.componentScriptTitle
         case .switch:
             return CoreStrings.componentSwitchTitle
-        case .automation, .binarySensor, .camera, .climate, .fan, .person, .sensor, .todo, .zone:
+        case .automation, .binarySensor, .camera, .climate, .fan, .person, .sensor, .todo, .zone,
+             .airQuality, .alarmControlPanel, .alert, .assistSatellite, .calendar, .conversation, .date,
+             .dateTime, .deviceTracker, .event, .geoLocation, .group, .humidifier, .image, .inputDatetime,
+             .inputNumber, .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote,
+             .schedule, .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .valve,
+             .wakeWord, .waterHeater, .weather, .counter, .timer:
             return rawValue
         }
     }
@@ -361,11 +482,16 @@ public extension Domain {
             return .press
         case .scene, .script:
             return .turnOn
-        case .cover, .fan, .inputBoolean, .light, .switch:
+        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve:
             return .toggle
         case .lock:
             return nil // Lock requires state-aware action (lock/unlock)
-        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate:
+        case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate,
+             .airQuality, .alarmControlPanel, .alert, .assistSatellite, .calendar, .conversation, .date,
+             .dateTime, .deviceTracker, .event, .geoLocation, .group, .image, .inputDatetime, .inputNumber,
+             .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote, .schedule,
+             .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .wakeWord, .waterHeater,
+             .weather, .counter, .timer:
             return nil // Read-only or complex domains
         }
     }
