@@ -388,10 +388,16 @@ public enum Domain: String, CaseIterable {
     /// Localized name of the domain, mapped to the correlated core string when available.
     public var name: String {
         switch self {
+        case .automation:
+            return CoreStrings.componentAutomationTitle
         case .button:
             return CoreStrings.componentButtonTitle
+        case .climate:
+            return CoreStrings.componentClimateTitle
         case .cover:
             return CoreStrings.componentCoverTitle
+        case .fan:
+            return CoreStrings.componentFanTitle
         case .inputBoolean:
             return CoreStrings.componentInputBooleanTitle
         case .inputButton:
@@ -406,18 +412,89 @@ public enum Domain: String, CaseIterable {
             return CoreStrings.componentScriptTitle
         case .switch:
             return CoreStrings.componentSwitchTitle
-        case .automation, .binarySensor, .camera, .climate, .fan, .person, .sensor, .todo, .zone,
-             .airQuality, .alarmControlPanel, .alert, .assistSatellite, .calendar, .conversation, .date,
-             .dateTime, .deviceTracker, .event, .geoLocation, .group, .humidifier, .image, .inputDatetime,
-             .inputNumber, .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote,
-             .schedule, .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .valve,
-             .wakeWord, .waterHeater, .weather, .counter, .timer:
-            return localizedDescription
+        case .sensor:
+            return CoreStrings.componentSensorTitle
+        case .binarySensor:
+            return CoreStrings.componentBinarySensorTitle
+        case .person:
+            return CoreStrings.componentPersonTitle
+        case .camera:
+            return CoreStrings.componentCameraTitle
+        case .todo:
+            return CoreStrings.componentTodoTitle
+        case .alarmControlPanel:
+            return CoreStrings.componentAlarmControlPanelTitle
+        case .alert:
+            return CoreStrings.componentAlertTitle
+        case .assistSatellite:
+            return CoreStrings.componentAssistSatelliteTitle
+        case .calendar:
+            return CoreStrings.componentCalendarTitle
+        case .date:
+            return CoreStrings.componentDateTitle
+        case .dateTime:
+            return CoreStrings.componentDatetimeTitle
+        case .deviceTracker:
+            return CoreStrings.componentDeviceTrackerTitle
+        case .event:
+            return CoreStrings.componentEventTitle
+        case .geoLocation:
+            return CoreStrings.componentGeoLocationTitle
+        case .group:
+            return CoreStrings.componentGroupTitle
+        case .humidifier:
+            return CoreStrings.componentHumidifierTitle
+        case .image:
+            return CoreStrings.componentImageTitle
+        case .inputDatetime:
+            return CoreStrings.componentInputDatetimeTitle
+        case .inputNumber:
+            return CoreStrings.componentInputNumberTitle
+        case .inputSelect:
+            return CoreStrings.componentInputSelectTitle
+        case .inputText:
+            return CoreStrings.componentInputTextTitle
+        case .lawnMower:
+            return CoreStrings.componentLawnMowerTitle
+        case .mediaPlayer:
+            return CoreStrings.componentMediaPlayerTitle
+        case .notify:
+            return CoreStrings.componentNotifyTitle
+        case .number:
+            return CoreStrings.componentNumberTitle
+        case .remote:
+            return CoreStrings.componentRemoteTitle
+        case .schedule:
+            return CoreStrings.componentScheduleTitle
+        case .select:
+            return CoreStrings.componentSelectTitle
+        case .siren:
+            return CoreStrings.componentSirenTitle
+        case .sun:
+            return CoreStrings.componentSunTitle
+        case .text:
+            return CoreStrings.componentTextTitle
+        case .time:
+            return CoreStrings.componentTimeTitle
+        case .update:
+            return CoreStrings.componentUpdateTitle
+        case .vacuum:
+            return CoreStrings.componentVacuumTitle
+        case .valve:
+            return CoreStrings.componentValveTitle
+        case .waterHeater:
+            return CoreStrings.componentWaterHeaterTitle
+        case .weather:
+            return CoreStrings.componentWeatherTitle
+        case .timer:
+            return CoreStrings.componentTimerTitle
+        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter:
+            return rawValue
         }
     }
 
     public var localizedDescription: String {
-        CoreStrings.getDomainLocalizedTitle(domain: self)
+        name
     }
 
     public var isCarPlaySupported: Bool {
