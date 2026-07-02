@@ -34,6 +34,7 @@ struct SensorListView: View {
                 subtitle: L10n.SettingsSensors.body
             )
             periodicUpdaterRow
+            healthKitSection
             motionFocusPermissionNeededView
             sensorsList
         }
@@ -76,13 +77,13 @@ struct SensorListView: View {
     private var sensorsList: some View {
         Section {
             Toggle(isOn: .init(get: {
-                viewModel.sensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
+                viewModel.visibleSensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
             }, set: { newValue in
                 viewModel.updateAllSensors(isEnabled: newValue)
             })) {
                 Text(L10n.SettingsSensors.Sensors.enableAll)
             }
-            ForEach(viewModel.sensors, id: \.UniqueID) { sensor in
+            ForEach(viewModel.visibleSensors, id: \.UniqueID) { sensor in
                 NavigationLink(destination: SensorDetailView(sensor: sensor)) {
                     SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
                 }
@@ -96,6 +97,41 @@ struct SensorListView: View {
                     Text(" ") +
                     Text(lastUpdate, style: .time)
             }
+        }
+    }
+
+    private var healthKitSection: some View {
+        Section {
+            Toggle(isOn: .init(
+                get: { viewModel.healthSensorsEnabled },
+                set: { newValue in
+                    viewModel.setHealthSensorsEnabled(newValue).done { [viewModel] in
+                        viewModel.refresh()
+                    }.catch { [viewModel] error in
+                        DispatchQueue.main.async {
+                            viewModel.healthSensorsEnabled = Current.settingsStore.healthSensorsEnabled
+                            viewModel.alertMessage = error.localizedDescription
+                            viewModel.showAlert = true
+                        }
+                    }
+                }
+            )) {
+                Text(L10n.SettingsSensors.Health.toggle)
+            }
+            .disabled(viewModel.healthKitStatus == .unavailable)
+
+            if let healthKitStatus = viewModel.healthKitStatus {
+                HStack {
+                    Text(L10n.SettingsSensors.Health.status)
+                    Spacer()
+                    Text(healthStatusDescription(healthKitStatus))
+                        .foregroundColor(.secondary)
+                }
+            }
+        } header: {
+            Text(L10n.SettingsSensors.Health.header)
+        } footer: {
+            Text(L10n.SettingsSensors.Health.footer)
         }
     }
 
@@ -181,6 +217,17 @@ struct SensorListView: View {
             return L10n.SettingsDetails.Location.FocusPermission.enabled
         @unknown default:
             return L10n.SettingsDetails.Location.FocusPermission.needsRequest
+        }
+    }
+
+    private func healthStatusDescription(_ status: SensorListViewModel.HealthKitStatus) -> String {
+        switch status {
+        case .unavailable:
+            return L10n.SettingsSensors.Health.Status.unavailable
+        case .notRequested:
+            return L10n.SettingsSensors.Health.Status.notRequested
+        case .requested:
+            return L10n.SettingsSensors.Health.Status.requested
         }
     }
 }

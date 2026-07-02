@@ -5584,6 +5584,24 @@ public enum L10n {
       /// Focus Permission
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
     }
+    public enum Health {
+      /// Apple Health sensors are opt-in. When enabled, data is read only during existing sensor updates and is cached to reduce battery impact.
+      public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.footer") }
+      /// Apple Health
+      public static var header: String { return L10n.tr("Localizable", "settings_sensors.health.header") }
+      /// Health Data
+      public static var status: String { return L10n.tr("Localizable", "settings_sensors.health.status") }
+      /// Apple Health Sensors
+      public static var toggle: String { return L10n.tr("Localizable", "settings_sensors.health.toggle") }
+      public enum Status {
+        /// Not Requested
+        public static var notRequested: String { return L10n.tr("Localizable", "settings_sensors.health.status.not_requested") }
+        /// Requested
+        public static var requested: String { return L10n.tr("Localizable", "settings_sensors.health.status.requested") }
+        /// Unavailable
+        public static var unavailable: String { return L10n.tr("Localizable", "settings_sensors.health.status.unavailable") }
+      }
+    }
     public enum LastUpdated {
       /// Last Updated %@
       public static func footer(_ p1: Any) -> String {

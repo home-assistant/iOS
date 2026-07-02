@@ -86,6 +86,8 @@
 	<string>Authenticate to access kiosk mode settings.</string>
 	<key>NSFocusStatusUsageDescription</key>
 	<string>Report your focus status as a sensor.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Locate and communicate with your Home Assistant instance.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

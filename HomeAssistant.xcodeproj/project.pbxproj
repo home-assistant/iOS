@@ -3249,6 +3249,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.HealthKit = {
+								enabled = 1;
+							};
 							com.apple.HomeKit = {
 								enabled = 0;
 							};
