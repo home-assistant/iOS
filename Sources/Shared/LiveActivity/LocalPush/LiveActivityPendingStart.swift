@@ -42,12 +42,12 @@ enum LiveActivityPendingStart {
 
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            tag = try container.decode(String.self, forKey: .tag)
-            title = try container.decode(String.self, forKey: .title)
-            serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
-            state = try container.decode(HALiveActivityAttributes.ContentState.self, forKey: .state)
-            confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
-            alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
+            self.tag = try container.decode(String.self, forKey: .tag)
+            self.title = try container.decode(String.self, forKey: .title)
+            self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
+            self.state = try container.decode(HALiveActivityAttributes.ContentState.self, forKey: .state)
+            self.confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
+            self.alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
         }
     }
 
