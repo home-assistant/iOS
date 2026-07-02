@@ -534,6 +534,7 @@ public extension Domain {
         .button,
         .cover,
         .fan,
+        .humidifier,
         .inputBoolean,
         .inputButton,
         .light,
@@ -541,6 +542,7 @@ public extension Domain {
         .scene,
         .script,
         .switch,
+        .valve,
     ]
 
     static let watchSupported: [Domain] = [
@@ -554,6 +556,9 @@ public extension Domain {
         .switch,
         .cover,
         .fan,
+        .inputBoolean,
+        .humidifier,
+        .valve,
     ]
 
     static let sensorWidgetSupported: [Domain] = [
@@ -562,24 +567,27 @@ public extension Domain {
         .inputBoolean,
         .person,
         .lock,
+        .number,
+        .inputNumber,
+        .inputText,
+        .inputSelect,
+        .select,
+        .climate,
+        .weather,
+        .sun,
+        .deviceTracker,
+        .update,
     ]
 
-    static let appDatabasePersisted: [Domain] = [
-        .automation,
-        .scene,
-        .script,
-        .light,
-        .switch,
-        .sensor,
-        .binarySensor,
-        .cover,
-        .button,
-        .inputBoolean,
-        .inputButton,
-        .lock,
-        .camera,
-        .fan,
-        .todo,
+    static let appDatabaseExcluded: [Domain] = [
+        .geoLocation,
+        .conversation,
+        .stt,
+        .tts,
+        .wakeWord,
+        .assistSatellite,
+        .notify,
+        .image,
     ]
 }
 
