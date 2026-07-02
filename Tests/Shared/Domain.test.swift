@@ -305,3 +305,51 @@ struct MagicItemWidgetInteractionTests {
         #expect(readOnly == "widgetURL" || readOnly == "refresh")
     }
 }
+
+struct DomainFeatureSupportTests {
+    @Test func carPlaySupportedMembership() {
+        let expected: Set<Domain> = [
+            .automation, .button, .cover, .fan, .humidifier, .inputBoolean, .inputButton,
+            .light, .lock, .scene, .script, .switch, .valve,
+        ]
+        #expect(Set(Domain.carPlaySupported) == expected, "Domain.carPlaySupported membership changed")
+    }
+
+    @Test func watchSupportedMembership() {
+        let expected: Set<Domain> = [.script, .scene, .automation]
+        #expect(Set(Domain.watchSupported) == expected, "Domain.watchSupported membership changed")
+    }
+
+    @Test func commonlyUsedWidgetSupportedMembership() {
+        let expected: Set<Domain> = [.light, .switch, .cover, .fan, .inputBoolean, .humidifier, .valve]
+        #expect(Set(Domain.commonlyUsedWidgetSupported) == expected, "Domain.commonlyUsedWidgetSupported changed")
+    }
+
+    @Test func sensorWidgetSupportedMembership() {
+        let expected: Set<Domain> = [
+            .sensor, .binarySensor, .inputBoolean, .person, .lock, .number, .inputNumber,
+            .inputText, .inputSelect, .select, .climate, .weather, .sun, .deviceTracker, .update,
+        ]
+        #expect(Set(Domain.sensorWidgetSupported) == expected, "Domain.sensorWidgetSupported membership changed")
+    }
+
+    @Test func appDatabaseExcludedMembership() {
+        let expected: Set<Domain> = [
+            .geoLocation, .conversation, .stt, .tts, .wakeWord, .assistSatellite, .notify, .image,
+        ]
+        #expect(Set(Domain.appDatabaseExcluded) == expected, "Domain.appDatabaseExcluded membership changed")
+    }
+
+    @Test func groupsHaveNoDuplicates() {
+        let groups: [(String, [Domain])] = [
+            ("carPlaySupported", Domain.carPlaySupported),
+            ("watchSupported", Domain.watchSupported),
+            ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
+            ("sensorWidgetSupported", Domain.sensorWidgetSupported),
+            ("appDatabaseExcluded", Domain.appDatabaseExcluded),
+        ]
+        for (name, group) in groups {
+            #expect(group.count == Set(group).count, "\(name) contains duplicate domains")
+        }
+    }
+}
