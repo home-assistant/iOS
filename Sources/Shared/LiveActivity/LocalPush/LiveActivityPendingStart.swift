@@ -49,6 +49,16 @@ enum LiveActivityPendingStart {
             self.confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
             self.alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
         }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(tag, forKey: .tag)
+            try container.encode(title, forKey: .title)
+            try container.encodeIfPresent(serverWebhookId, forKey: .serverWebhookId)
+            try container.encode(state, forKey: .state)
+            try container.encodeIfPresent(confirmID, forKey: .confirmID)
+            try container.encode(alert, forKey: .alert)
+        }
     }
 
     static func confirmLocalPushDelivery(for request: Request) {
