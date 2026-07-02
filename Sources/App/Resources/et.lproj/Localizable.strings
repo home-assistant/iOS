@@ -1340,7 +1340,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.notifications.badge_section.automatic_setting.description" = "Lähtestab märgi väärtusele 0 iga kord kui rakenduse käivitub.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaatselt";
 "settings_details.notifications.badge_section.button.title" = "Lähtesta märk";
-"settings_details.notifications.categories.deprecated_note" = "Kategooriad pole enam tegutsemist võimaldavate teatiste jaoks vajalikud ja need eemaldatakse tulevases väljaandes.";
 "settings_details.notifications.categories.header" = "Kategooriad";
 "settings_details.notifications.categories_synced.empty" = "Sünkroonitud kategooriaid pole";
 "settings_details.notifications.categories_synced.footer" = "Failis .yaml määratletud kategooriaid ei saa seadmes muuta.";

@@ -1335,7 +1335,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.notifications.badge_section.automatic_setting.description" = "Återställer brickan till 0 varje gång appen startas.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatiskt";
 "settings_details.notifications.badge_section.button.title" = "Nollställ brickan";
-"settings_details.notifications.categories.deprecated_note" = "Kategorier krävs inte längre för åtgärds-notiser och ska tas bort i en kommande uppdatering.";
 "settings_details.notifications.categories.header" = "Kategorier";
 "settings_details.notifications.categories_synced.empty" = "Inga synkade kategorier";
 "settings_details.notifications.categories_synced.footer" = "Kategorier definierade i .yaml kan inte redigeras på enheten.";

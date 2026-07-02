@@ -1340,7 +1340,6 @@
 "settings_details.notifications.badge_section.automatic_setting.description" = "Επαναφέρει το σήμα στο 0 κάθε φορά που ξεκινάτε την εφαρμογή.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Αυτόματα";
 "settings_details.notifications.badge_section.button.title" = "Επαναφορά Σήματος";
-"settings_details.notifications.categories.deprecated_note" = "Οι κατηγορίες δεν απαιτούνται πλέον για ειδοποιήσεις με δυνατότητα ενέργειας και θα καταργηθούν σε μελλοντική έκδοση.";
 "settings_details.notifications.categories.header" = "Κατηγορίες";
 "settings_details.notifications.categories_synced.empty" = "Καμία συγχρονισμένη κατηγορία";
 "settings_details.notifications.categories_synced.footer" = "Οι κατηγορίες που ορίζονται στο .yaml δεν είναι επεξεργάσιμες στη συσκευή.";

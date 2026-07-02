@@ -1340,7 +1340,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automáticamente";
 "settings_details.notifications.badge_section.button.title" = "Restablecer la insignia";
-"settings_details.notifications.categories.deprecated_note" = "Las categorías ya no son necesarias para notificaciones accionables y serán eliminadas en una futura versión.";
 "settings_details.notifications.categories.header" = "Categorías";
 "settings_details.notifications.categories_synced.empty" = "No hay categorías sincronizadas";
 "settings_details.notifications.categories_synced.footer" = "Las categorías definidas en .yaml no se pueden editar en el dispositivo.";

@@ -1340,7 +1340,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.notifications.badge_section.automatic_setting.description" = "Redefine o selo para 0 toda vez que você inicia o aplicativo.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticamente";
 "settings_details.notifications.badge_section.button.title" = "Redefinir emblema";
-"settings_details.notifications.categories.deprecated_note" = "As categorias não são mais necessárias para notificações acionáveis e serão removidas em uma versão futura.";
 "settings_details.notifications.categories.header" = "Categorias";
 "settings_details.notifications.categories_synced.empty" = "Nenhuma categoria sincronizada";
 "settings_details.notifications.categories_synced.footer" = "As categorias definidas em .yaml não podem ser editadas no dispositivo.";
