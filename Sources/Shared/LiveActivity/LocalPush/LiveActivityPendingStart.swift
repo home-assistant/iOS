@@ -24,6 +24,11 @@ enum LiveActivityPendingStart {
         /// with a default so a queue serialized by an older build still drains.
         let alert: Bool
 
+        // Declared explicitly: providing both init(from:) and encode(to:) opts out of synthesis.
+        private enum CodingKeys: String, CodingKey {
+            case tag, title, serverWebhookId, state, confirmID, alert
+        }
+
         init(
             tag: String,
             title: String,
