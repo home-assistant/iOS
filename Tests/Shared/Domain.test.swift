@@ -240,3 +240,68 @@ struct DeviceClassTests {
         }
     }
 }
+
+struct DomainMappingTests {
+    @Test func everyDomainMapsToAnExplicitIcon() {
+        for domain in Domain.allCases {
+            #expect(domain.icon() != .bookmarkIcon, "Domain.\(domain) should map to an explicit icon")
+        }
+    }
+
+    @Test func everyDomainHasANonEmptyName() {
+        for domain in Domain.allCases {
+            #expect(!domain.name.isEmpty, "Domain.\(domain).name should not be empty")
+            #expect(!domain.localizedDescription.isEmpty, "Domain.\(domain).localizedDescription should not be empty")
+        }
+    }
+
+    @Test func mainActionMatchesExpectedGrouping() {
+        let toggle: Set<Domain> = [.cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve]
+        let press: Set<Domain> = [.button, .inputButton]
+        let turnOn: Set<Domain> = [.scene, .script]
+        let trigger: Set<Domain> = [.automation]
+
+        for domain in Domain.allCases {
+            let expected: Service?
+            if toggle.contains(domain) {
+                expected = .toggle
+            } else if press.contains(domain) {
+                expected = .press
+            } else if turnOn.contains(domain) {
+                expected = .turnOn
+            } else if trigger.contains(domain) {
+                expected = .trigger
+            } else {
+                expected = nil
+            }
+            #expect(domain.mainAction == expected, "mainAction mismatch for Domain.\(domain)")
+        }
+    }
+}
+
+struct MagicItemWidgetInteractionTests {
+    private func interactionKind(forEntityId id: String) -> String {
+        let item = MagicItem(id: id, serverId: "server-1", type: .entity)
+        guard case let .appIntent(intent) = item.widgetInteractionType else {
+            return "widgetURL"
+        }
+        switch intent {
+        case .toggle: return "toggle"
+        case .press: return "press"
+        case .activate: return "activate"
+        case .script: return "script"
+        case .refresh: return "refresh"
+        }
+    }
+
+    @Test func widgetInteractionRoutesByMainAction() {
+        #expect(interactionKind(forEntityId: "light.kitchen") == "toggle")
+        #expect(interactionKind(forEntityId: "switch.porch") == "toggle")
+        #expect(interactionKind(forEntityId: "button.doorbell") == "press")
+        #expect(interactionKind(forEntityId: "scene.movie") == "activate")
+        #expect(interactionKind(forEntityId: "script.open_gate") == "activate")
+        #expect(interactionKind(forEntityId: "automation.wakeup") == "toggle")
+        let readOnly = interactionKind(forEntityId: "sensor.temperature")
+        #expect(readOnly == "widgetURL" || readOnly == "refresh")
+    }
+}
