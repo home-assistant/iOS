@@ -893,6 +893,7 @@
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
+		42AC70B0000000000000FA11 /* MacToolbarSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC70B0000000000000FA10 /* MacToolbarSettingsView.swift */; };
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
 		429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */; };
 		429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
@@ -1309,6 +1310,7 @@
 		A95FDD152F6B8A3E008EF72F /* HALiveActivityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */; };
 		A95FDD162F6B8A3E008EF72F /* HALockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */; };
 		A95FDD192F6B8A5B008EF72F /* LiveActivitySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */; };
+		54892E08EF4EF24C2D9F6FC8 /* YAMLSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA1071C86C7AFA79F08AF9 /* YAMLSyntaxHighlighter.swift */; };
 		AB3E076F146799C008ACB0EA /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7D8DAEFAD435091FDDD61E7 /* Pods_iOS_Extensions_NotificationContent.framework */; };
 		AC0100000000000000000102 /* MacToolbarConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000101 /* MacToolbarConfigTable.swift */; };
 		AC0100000000000000000103 /* MacToolbarConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000101 /* MacToolbarConfigTable.swift */; };
@@ -2702,6 +2704,7 @@
 		429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorationType.swift; sourceTree = "<group>"; };
 		429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTemplateEditor.swift; sourceTree = "<group>"; };
+		42AC70B0000000000000FA10 /* MacToolbarSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacToolbarSettingsView.swift; sourceTree = "<group>"; };
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
 		429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorDetailsView.swift; sourceTree = "<group>"; };
 		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
@@ -3212,6 +3215,7 @@
 		A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALiveActivityConfiguration.swift; sourceTree = "<group>"; };
 		A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALockScreenView.swift; sourceTree = "<group>"; };
 		A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivitySettingsView.swift; sourceTree = "<group>"; };
+		5BBA1071C86C7AFA79F08AF9 /* YAMLSyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAMLSyntaxHighlighter.swift; sourceTree = "<group>"; };
 		AA48C686F844D08C426A8D74 /* Pods_Tests_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC0100000000000000000101 /* MacToolbarConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacToolbarConfigTable.swift; sourceTree = "<group>"; };
 		AC24B1CAB85767B8171BB850 /* Pods-iOS-Extensions-NotificationContent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.release.xcconfig"; sourceTree = "<group>"; };
@@ -5575,6 +5579,14 @@
 			path = General;
 			sourceTree = "<group>";
 		};
+		42AC70B0000000000000FA12 /* MacToolbar */ = {
+			isa = PBXGroup;
+			children = (
+				42AC70B0000000000000FA10 /* MacToolbarSettingsView.swift */,
+			);
+			path = MacToolbar;
+			sourceTree = "<group>";
+		};
 		429C33BE2F17988D0033EF5E /* EntityPicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -6668,6 +6680,7 @@
 			isa = PBXGroup;
 			children = (
 				A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */,
+				5BBA1071C86C7AFA79F08AF9 /* YAMLSyntaxHighlighter.swift */,
 			);
 			path = LiveActivity;
 			sourceTree = "<group>";
@@ -7052,6 +7065,7 @@
 				A95FDD182F6B8A5B008EF72F /* LiveActivity */,
 				4257EA912F1790DE00D81506 /* EntityPicker */,
 				429AFE5A2DB7BE3200AF0836 /* General */,
+				42AC70B0000000000000FA12 /* MacToolbar */,
 				4211551F2D3525E800A71630 /* AppIcon */,
 				AC730020000000000000AA01 /* AppIconShortcuts */,
 				4278CB862D01F0BE00CFAAC9 /* Gestures */,
@@ -9532,6 +9546,7 @@
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				A95FDD192F6B8A5B008EF72F /* LiveActivitySettingsView.swift in Sources */,
+				54892E08EF4EF24C2D9F6FC8 /* YAMLSyntaxHighlighter.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
 				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
 				42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */,
@@ -9739,6 +9754,7 @@
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
 				451D63FF25213F1E2AF7C73A /* CarPlayAssistSession.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,
+				42AC70B0000000000000FA11 /* MacToolbarSettingsView.swift in Sources */,
 				42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */,
 				D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */,
 				42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */,

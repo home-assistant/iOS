@@ -2354,90 +2354,120 @@ public enum L10n {
       public enum Alarm {
         /// Short 60-second countdown, no progress bar. Red communicates urgency — watch the timer count down in real time.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.alarm.note") }
+        /// A red 60-second countdown that grabs attention.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.alarm.summary") }
         /// Alarm · 60 sec Countdown
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.alarm.title") }
       }
       public enum AllFields {
         /// Every content-state field active at once: icon, live countdown, and progress bar. Confirms no layout collisions.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.note") }
+        /// An icon, a timer, and a progress bar all at once.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.summary") }
         /// All Fields · Max Load
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.title") }
       }
       public enum CountDown {
         /// chronometer with when: 2700 and when_relative: true — a 45-minute countdown. The tinted timer bar (progress_bar_color) drains as time runs out.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_down.note") }
+        /// A 45-minute countdown, like a kitchen timer.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.count_down.summary") }
         /// Oven Timer · 45 min Countdown
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_down.title") }
       }
       public enum CountUp {
         /// chronometer with when: 0 and when_relative: true resolves to "now", so the timer counts up — showing elapsed time since the activity started. No progress bar: an unbounded count-up has no end. To count up toward a target, use a negative when instead.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up.note") }
+        /// A timer that counts up from zero.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.count_up.summary") }
         /// Washing Machine · Count-Up Timer
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up.title") }
       }
       public enum CountUpTarget {
         /// A negative relative when (when: -1200) counts up toward the target: 0:00 → 20:00, the bar fills, and the timer freezes when it gets there.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.note") }
+        /// A timer that counts up toward a 20-minute goal.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.summary") }
         /// Workout · Count-Up to 20 min
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.title") }
       }
       public enum CustomColors {
         /// Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.note") }
+        /// A card with your own background and text colors.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.summary") }
         /// Custom Colors · Background + Text
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.title") }
       }
       public enum Delivery {
         /// message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.delivery.note") }
+        /// A package moving from shipped to delivered.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.delivery.summary") }
         /// Package Delivery · All Text Fields
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.delivery.title") }
       }
       public enum Dishwasher {
         /// The only sample that tests start → update → end. After it ends, the final "Done" state lingers on the lock screen (up to 4 h).
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.note") }
+        /// A full cycle that starts, runs, and finishes on its own.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.summary") }
         /// Dishwasher · Full Lifecycle, Ends Itself
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.title") }
       }
       public enum Ev {
         /// Numeric percentage in criticalText updates alongside the progress bar; color shifts from green to yellow-green as the charge nears full.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.ev.note") }
+        /// A car battery charging up to full.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.ev.summary") }
         /// EV Charging · Numeric %
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.ev.title") }
       }
       public enum Media {
         /// Progress (playback position) and a live countdown (time left in track) update together. The track change resets both.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.media.note") }
+        /// A now-playing track with its position and time left.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.media.summary") }
         /// Media Player · Progress + Timer
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.media.title") }
       }
       public enum NoIcon {
         /// No icon and no color, so the progress bar uses the default HA-blue tint. criticalText shows in the Dynamic Island compact trailing only.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.note") }
+        /// A progress bar in the default color, with no icon.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.summary") }
         /// No Icon · Default Color
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.title") }
       }
       public enum Plain {
         /// Minimum viable layout — only the message field is set. Verifies the bare layout renders without icon, progress, or timer.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.plain.note") }
+        /// A basic message with nothing else.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.plain.summary") }
         /// Plain Message
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.plain.title") }
       }
       public enum RateLimit {
         /// Six updates 2 s apart. On iOS 18 the system renders ~one per 15 s — some are silently dropped and the counter skips. On the simulator and iOS 17 all six render.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.note") }
+        /// Rapid back-to-back updates to test how many show.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.summary") }
         /// Rate Limit · 6 Rapid Updates
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.title") }
       }
       public enum Security {
         /// No progress bar — state is communicated entirely through color and icon. Escalates orange (motion) → red (person) → green (all clear).
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.security.note") }
+        /// A security alert escalating, then all clear.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.security.summary") }
         /// Security Escalation · Color + Icon
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.security.title") }
       }
       public enum Washing {
         /// Progress advances through five named stages; criticalText tracks the current stage. The icon swaps to a check on completion.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.washing.note") }
+        /// A wash cycle moving through each of its stages.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.washing.summary") }
         /// Washing Machine · Stage Labels
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.washing.title") }
       }
@@ -2453,6 +2483,8 @@ public enum L10n {
       public static var copy: String { return L10n.tr("Localizable", "live_activity.samples.copy") }
       /// Start runs this sample locally on-device. The YAML triggers the same Live Activity from an automation or script — point it at your device's notify action.
       public static var detailFooter: String { return L10n.tr("Localizable", "live_activity.samples.detail_footer") }
+      /// Show YAML
+      public static var showYaml: String { return L10n.tr("Localizable", "live_activity.samples.show_yaml") }
       /// Start
       public static var start: String { return L10n.tr("Localizable", "live_activity.samples.start") }
       /// Started — lock the screen to watch
@@ -2463,6 +2495,8 @@ public enum L10n {
       public static var staticTitle: String { return L10n.tr("Localizable", "live_activity.samples.static_title") }
       /// Samples
       public static var title: String { return L10n.tr("Localizable", "live_activity.samples.title") }
+      /// YAML
+      public static var yamlTitle: String { return L10n.tr("Localizable", "live_activity.samples.yaml_title") }
     }
     public enum Section {
       /// Active Activities
@@ -4083,6 +4117,36 @@ public enum L10n {
       public enum Detail {
         /// The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are additional regions used for sub-100 m zones.
         public static var explanation: String { return L10n.tr("Localizable", "settings.location_history.detail.explanation") }
+      }
+    }
+    public enum MacToolbar {
+      /// You haven't added any entities to the toolbar yet.
+      public static var emptyState: String { return L10n.tr("Localizable", "settings.mac_toolbar.empty_state") }
+      /// Entities you added to the window toolbar for quick access.
+      public static var headerSubtitle: String { return L10n.tr("Localizable", "settings.mac_toolbar.header_subtitle") }
+      /// Remove
+      public static var remove: String { return L10n.tr("Localizable", "settings.mac_toolbar.remove") }
+      /// Remove %@
+      public static func removeAccessibilityLabel(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.mac_toolbar.remove_accessibility_label", String(describing: p1))
+      }
+      /// Toolbar
+      public static var title: String { return L10n.tr("Localizable", "settings.mac_toolbar.title") }
+      public enum EntitiesSection {
+        /// Added entities
+        public static var header: String { return L10n.tr("Localizable", "settings.mac_toolbar.entities_section.header") }
+      }
+      public enum HowToAdd {
+        /// To add an entity, open its more info dialog in Home Assistant, select the "Add to" button, then choose "Mac Toolbar".
+        public static var body: String { return L10n.tr("Localizable", "settings.mac_toolbar.how_to_add.body") }
+        /// Adding entities
+        public static var header: String { return L10n.tr("Localizable", "settings.mac_toolbar.how_to_add.header") }
+      }
+      public enum RemoveConfirmation {
+        /// Remove "%@" from the toolbar?
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.mac_toolbar.remove_confirmation.title", String(describing: p1))
+        }
       }
     }
     public enum NavigationBar {

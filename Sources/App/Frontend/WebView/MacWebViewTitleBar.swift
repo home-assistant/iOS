@@ -157,6 +157,15 @@ extension MacWebViewTitleBar {
         private func handleMacToolbarConfigChanged() {
             loadMacToolbarItems()
             guard let toolbar, titlebar?.toolbar === toolbar else { return }
+            let desiredIdentifiers = Set(macToolbarItems.map { NSToolbarItem.Identifier(magicItem: $0) })
+
+            // Remove entity items the user deleted from the config (leave built-in items untouched).
+            for index in toolbar.items.indices.reversed() {
+                let identifier = toolbar.items[index].itemIdentifier
+                guard identifier.isEntityIdentifier, !desiredIdentifiers.contains(identifier) else { continue }
+                toolbar.removeItem(at: index)
+            }
+
             for item in macToolbarItems {
                 let identifier = NSToolbarItem.Identifier(magicItem: item)
                 guard !toolbar.items.contains(where: { $0.itemIdentifier == identifier }) else { continue }
@@ -539,6 +548,10 @@ private extension NSToolbarItem.Identifier {
 
     init(magicItem: MagicItem) {
         self.init(Self.entityPrefix + magicItem.serverId + "::" + magicItem.id)
+    }
+
+    var isEntityIdentifier: Bool {
+        rawValue.hasPrefix(Self.entityPrefix)
     }
 
     var magicItemComponents: (serverId: String, entityId: String)? {

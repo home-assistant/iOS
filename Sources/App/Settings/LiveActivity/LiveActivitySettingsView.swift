@@ -155,9 +155,7 @@ struct LiveActivitySettingsView: View {
                 List {
                     Section {
                         ForEach(staticSamples) { sample in
-                            NavigationLink(sample.name) {
-                                LiveActivitySampleDetailView(sample: sample, onStart: start)
-                            }
+                            sampleLink(sample)
                         }
                     } header: {
                         Text(L10n.LiveActivity.Samples.staticTitle)
@@ -167,9 +165,7 @@ struct LiveActivitySettingsView: View {
 
                     Section {
                         ForEach(animatedSamples) { sample in
-                            NavigationLink(sample.name) {
-                                LiveActivitySampleDetailView(sample: sample, onStart: start)
-                            }
+                            sampleLink(sample)
                         }
                     } header: {
                         Text(L10n.LiveActivity.Samples.animatedTitle)
@@ -182,6 +178,19 @@ struct LiveActivitySettingsView: View {
         }
     }
 
+    private func sampleLink(_ sample: LiveActivitySample) -> some View {
+        NavigationLink {
+            LiveActivitySampleDetailView(sample: sample, onStart: start)
+        } label: {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(sample.name)
+                Text(sample.summary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     // MARK: - Sample catalog
 
     private var staticSamples: [LiveActivitySample] {
@@ -189,6 +198,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "plain",
                 name: L10n.LiveActivity.Sample.Plain.title,
+                summary: L10n.LiveActivity.Sample.Plain.summary,
                 note: L10n.LiveActivity.Sample.Plain.note,
                 tag: "debug-plain",
                 title: "Home Assistant",
@@ -197,6 +207,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "no-icon",
                 name: L10n.LiveActivity.Sample.NoIcon.title,
+                summary: L10n.LiveActivity.Sample.NoIcon.summary,
                 note: L10n.LiveActivity.Sample.NoIcon.note,
                 tag: "debug-no-icon",
                 title: "Script Running",
@@ -210,6 +221,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "alarm",
                 name: L10n.LiveActivity.Sample.Alarm.title,
+                summary: L10n.LiveActivity.Sample.Alarm.summary,
                 note: L10n.LiveActivity.Sample.Alarm.note,
                 tag: "debug-alarm",
                 title: "Security Alarm",
@@ -224,6 +236,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "count-up",
                 name: L10n.LiveActivity.Sample.CountUp.title,
+                summary: L10n.LiveActivity.Sample.CountUp.summary,
                 note: L10n.LiveActivity.Sample.CountUp.note,
                 tag: "debug-count-up",
                 title: "Washing Machine",
@@ -237,6 +250,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "count-up-target",
                 name: L10n.LiveActivity.Sample.CountUpTarget.title,
+                summary: L10n.LiveActivity.Sample.CountUpTarget.summary,
                 note: L10n.LiveActivity.Sample.CountUpTarget.note,
                 tag: "debug-count-up-target",
                 title: "Workout",
@@ -251,6 +265,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "count-down",
                 name: L10n.LiveActivity.Sample.CountDown.title,
+                summary: L10n.LiveActivity.Sample.CountDown.summary,
                 note: L10n.LiveActivity.Sample.CountDown.note,
                 tag: "debug-count-down",
                 title: "Oven Timer",
@@ -265,6 +280,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "all-fields",
                 name: L10n.LiveActivity.Sample.AllFields.title,
+                summary: L10n.LiveActivity.Sample.AllFields.summary,
                 note: L10n.LiveActivity.Sample.AllFields.note,
                 tag: "debug-all",
                 title: "All Fields",
@@ -281,6 +297,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "custom-colors",
                 name: L10n.LiveActivity.Sample.CustomColors.title,
+                summary: L10n.LiveActivity.Sample.CustomColors.summary,
                 note: L10n.LiveActivity.Sample.CustomColors.note,
                 tag: "debug-colors",
                 title: "Movie Night",
@@ -300,6 +317,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "washing",
                 name: L10n.LiveActivity.Sample.Washing.title,
+                summary: L10n.LiveActivity.Sample.Washing.summary,
                 note: L10n.LiveActivity.Sample.Washing.note,
                 tag: "debug-washing",
                 title: "Washing Machine",
@@ -353,6 +371,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "ev",
                 name: L10n.LiveActivity.Sample.Ev.title,
+                summary: L10n.LiveActivity.Sample.Ev.summary,
                 note: L10n.LiveActivity.Sample.Ev.note,
                 tag: "debug-ev",
                 title: "EV Charging",
@@ -397,6 +416,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "media",
                 name: L10n.LiveActivity.Sample.Media.title,
+                summary: L10n.LiveActivity.Sample.Media.summary,
                 note: L10n.LiveActivity.Sample.Media.note,
                 tag: "debug-media",
                 title: "Now Playing",
@@ -445,6 +465,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "delivery",
                 name: L10n.LiveActivity.Sample.Delivery.title,
+                summary: L10n.LiveActivity.Sample.Delivery.summary,
                 note: L10n.LiveActivity.Sample.Delivery.note,
                 tag: "debug-delivery",
                 title: "Package Delivery",
@@ -481,6 +502,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "security",
                 name: L10n.LiveActivity.Sample.Security.title,
+                summary: L10n.LiveActivity.Sample.Security.summary,
                 note: L10n.LiveActivity.Sample.Security.note,
                 tag: "debug-security",
                 title: "Security Alert",
@@ -510,6 +532,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "dishwasher",
                 name: L10n.LiveActivity.Sample.Dishwasher.title,
+                summary: L10n.LiveActivity.Sample.Dishwasher.summary,
                 note: L10n.LiveActivity.Sample.Dishwasher.note,
                 tag: "debug-dishwasher",
                 title: "Dishwasher",
@@ -555,6 +578,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "rate-limit",
                 name: L10n.LiveActivity.Sample.RateLimit.title,
+                summary: L10n.LiveActivity.Sample.RateLimit.summary,
                 note: L10n.LiveActivity.Sample.RateLimit.note,
                 tag: "debug-rapid",
                 title: "Rate Limit Test",
@@ -737,8 +761,10 @@ private struct LiveActivitySample: Identifiable {
 
     /// Stable identifier for SwiftUI identity; not shown to the user.
     let id: String
-    /// Localized display name, used as the row label and detail title.
+    /// Localized display name, used as the row title and detail title.
     let name: String
+    /// Localized short, non-technical one-liner shown as the row subtitle.
+    let summary: String
     /// Localized one-line explanation shown under the Start button.
     let note: String
     let tag: String
@@ -820,7 +846,6 @@ private struct LiveActivitySampleDetailView: View {
     let onStart: (LiveActivitySample) -> Void
 
     @State private var didStart = false
-    @State private var didCopy = false
 
     var body: some View {
         List {
@@ -842,25 +867,10 @@ private struct LiveActivitySampleDetailView: View {
             }
 
             Section {
-                Text(sample.yaml)
-                    .font(.system(.footnote, design: .monospaced))
-                    .textSelection(.enabled)
-            } header: {
-                HStack {
-                    Text("YAML")
-                    Spacer()
-                    Button {
-                        UIPasteboard.general.string = sample.yaml
-                        didCopy = true
-                    } label: {
-                        Label(
-                            didCopy ? L10n.LiveActivity.Samples.copied : L10n.LiveActivity.Samples.copy,
-                            systemSymbol: didCopy ? .checkmark : .docOnDoc
-                        )
-                        .font(.caption)
-                        .textCase(nil)
-                    }
-                    .buttonStyle(.borderless)
+                NavigationLink {
+                    LiveActivityYAMLView(yaml: sample.yaml)
+                } label: {
+                    Label(L10n.LiveActivity.Samples.showYaml, systemSymbol: .curlybraces)
                 }
             } footer: {
                 Text(L10n.LiveActivity.Samples.detailFooter)
@@ -868,6 +878,42 @@ private struct LiveActivitySampleDetailView: View {
         }
         .navigationTitle(sample.name)
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - YAML viewer
+
+@available(iOS 17.2, *)
+private struct LiveActivityYAMLView: View {
+    let yaml: String
+
+    @State private var didCopy = false
+
+    var body: some View {
+        ScrollView(.vertical) {
+            Text(YAMLSyntaxHighlighter.highlight(yaml))
+                .font(.system(.footnote, design: .monospaced))
+                .textSelection(.enabled)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+        }
+        .background(Color(uiColor: .secondarySystemGroupedBackground))
+        .navigationTitle(L10n.LiveActivity.Samples.yamlTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    UIPasteboard.general.string = yaml
+                    withAnimation { didCopy = true }
+                } label: {
+                    Label(
+                        didCopy ? L10n.LiveActivity.Samples.copied : L10n.LiveActivity.Samples.copy,
+                        systemSymbol: didCopy ? .checkmark : .docOnDoc
+                    )
+                }
+            }
+        }
     }
 }
 
