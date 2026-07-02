@@ -5248,14 +5248,92 @@ public enum L10n {
       }
     }
     public enum Config {
+      public enum Add {
+        /// Nothing to add yet. Add scripts, scenes or automations on your iPhone first.
+        public static var empty: String { return L10n.tr("Localizable", "watch.config.add.empty") }
+        /// Entity
+        public static var entity: String { return L10n.tr("Localizable", "watch.config.add.entity") }
+        /// Folder
+        public static var folder: String { return L10n.tr("Localizable", "watch.config.add.folder") }
+        /// New Folder
+        public static var newFolder: String { return L10n.tr("Localizable", "watch.config.add.new_folder") }
+        /// Search
+        public static var searchPlaceholder: String { return L10n.tr("Localizable", "watch.config.add.search_placeholder") }
+        /// Add
+        public static var title: String { return L10n.tr("Localizable", "watch.config.add.title") }
+        public enum Error {
+          /// Couldn't load items from your iPhone. Please try again.
+          public static var fetchFailed: String { return L10n.tr("Localizable", "watch.config.add.error.fetch_failed") }
+        }
+      }
       public enum Assist {
+        /// Pipeline
+        public static var pipeline: String { return L10n.tr("Localizable", "watch.config.assist.pipeline") }
+        /// Preferred
+        public static var preferred: String { return L10n.tr("Localizable", "watch.config.assist.preferred") }
+        /// Save
+        public static var save: String { return L10n.tr("Localizable", "watch.config.assist.save") }
+        /// Select pipeline
+        public static var selectPipeline: String { return L10n.tr("Localizable", "watch.config.assist.select_pipeline") }
         /// Server
         public static var selectServer: String { return L10n.tr("Localizable", "watch.config.assist.select_server") }
+        /// Show Assist
+        public static var show: String { return L10n.tr("Localizable", "watch.config.assist.show") }
+        /// Assist
+        public static var title: String { return L10n.tr("Localizable", "watch.config.assist.title") }
+        public enum Error {
+          /// Couldn't load Assist pipelines from your iPhone.
+          public static var fetchFailed: String { return L10n.tr("Localizable", "watch.config.assist.error.fetch_failed") }
+        }
       }
       public enum Cache {
         public enum Error {
           /// Failed to load watch config from cache.
           public static var message: String { return L10n.tr("Localizable", "watch.config.cache.error.message") }
+        }
+      }
+      public enum Edit {
+        /// Add
+        public static var addButton: String { return L10n.tr("Localizable", "watch.config.edit.add_button") }
+        /// Delete
+        public static var delete: String { return L10n.tr("Localizable", "watch.config.edit.delete") }
+        /// Icon
+        public static var icon: String { return L10n.tr("Localizable", "watch.config.edit.icon") }
+        /// Name
+        public static var namePlaceholder: String { return L10n.tr("Localizable", "watch.config.edit.name_placeholder") }
+        /// Preview
+        public static var preview: String { return L10n.tr("Localizable", "watch.config.edit.preview") }
+        /// Ask before running
+        public static var requireConfirmation: String { return L10n.tr("Localizable", "watch.config.edit.require_confirmation") }
+        /// Save
+        public static var saveButton: String { return L10n.tr("Localizable", "watch.config.edit.save_button") }
+        /// Edit
+        public static var title: String { return L10n.tr("Localizable", "watch.config.edit.title") }
+        public enum Error {
+          /// Keep your iPhone nearby to change what's shown on your watch.
+          public static var notReachable: String { return L10n.tr("Localizable", "watch.config.edit.error.not_reachable") }
+          /// Couldn't save your changes. Please try again.
+          public static var saveFailed: String { return L10n.tr("Localizable", "watch.config.edit.error.save_failed") }
+        }
+        public enum Folder {
+          /// New Folder
+          public static var addTitle: String { return L10n.tr("Localizable", "watch.config.edit.folder.add_title") }
+          /// Edit Folder
+          public static var editTitle: String { return L10n.tr("Localizable", "watch.config.edit.folder.edit_title") }
+        }
+        public enum IconSearch {
+          /// Type at least 2 characters to search.
+          public static var hint: String { return L10n.tr("Localizable", "watch.config.edit.icon_search.hint") }
+          /// Search icons
+          public static var placeholder: String { return L10n.tr("Localizable", "watch.config.edit.icon_search.placeholder") }
+          /// Use default icon
+          public static var useDefault: String { return L10n.tr("Localizable", "watch.config.edit.icon_search.use_default") }
+        }
+        public enum Item {
+          /// Add Item
+          public static var addTitle: String { return L10n.tr("Localizable", "watch.config.edit.item.add_title") }
+          /// Edit Item
+          public static var editTitle: String { return L10n.tr("Localizable", "watch.config.edit.item.edit_title") }
         }
       }
       public enum Error {

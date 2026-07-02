@@ -6,6 +6,8 @@ public enum WatchUserDefaultsKey: String {
     case serversUpdatedAt
     /// Where the watch runs actions (magic items): automatically, always via iPhone, or directly.
     case performActionTarget
+    /// Last selected Assist pipeline display name for the Watch settings summary.
+    case assistPipelineName
 }
 
 /// Where the Apple Watch performs actions such as executing magic items.
@@ -62,5 +64,12 @@ public final class WatchUserDefaults {
         } else {
             userDefaults.removeObject(forKey: key)
         }
+    }
+
+    // MARK: - Assist pipeline display name
+
+    public var assistPipelineName: String? {
+        get { string(for: .assistPipelineName) }
+        set { set(newValue, key: .assistPipelineName) }
     }
 }
