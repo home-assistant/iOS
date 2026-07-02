@@ -1302,6 +1302,7 @@
 		A95FDD152F6B8A3E008EF72F /* HALiveActivityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */; };
 		A95FDD162F6B8A3E008EF72F /* HALockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */; };
 		A95FDD192F6B8A5B008EF72F /* LiveActivitySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */; };
+		54892E08EF4EF24C2D9F6FC8 /* YAMLSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA1071C86C7AFA79F08AF9 /* YAMLSyntaxHighlighter.swift */; };
 		AB3E076F146799C008ACB0EA /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7D8DAEFAD435091FDDD61E7 /* Pods_iOS_Extensions_NotificationContent.framework */; };
 		AC730001000000000000AA01 /* AppIconShortcutConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730011000000000000AA01 /* AppIconShortcutConfig.swift */; };
 		AC730002000000000000AA01 /* AppIconShortcutConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC730011000000000000AA01 /* AppIconShortcutConfig.swift */; };
@@ -3196,6 +3197,7 @@
 		A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALiveActivityConfiguration.swift; sourceTree = "<group>"; };
 		A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALockScreenView.swift; sourceTree = "<group>"; };
 		A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivitySettingsView.swift; sourceTree = "<group>"; };
+		5BBA1071C86C7AFA79F08AF9 /* YAMLSyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAMLSyntaxHighlighter.swift; sourceTree = "<group>"; };
 		AA48C686F844D08C426A8D74 /* Pods_Tests_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC24B1CAB85767B8171BB850 /* Pods-iOS-Extensions-NotificationContent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.release.xcconfig"; sourceTree = "<group>"; };
 		AC730011000000000000AA01 /* AppIconShortcutConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutConfig.swift; sourceTree = "<group>"; };
@@ -6644,6 +6646,7 @@
 			isa = PBXGroup;
 			children = (
 				A95FDD172F6B8A5B008EF72F /* LiveActivitySettingsView.swift */,
+				5BBA1071C86C7AFA79F08AF9 /* YAMLSyntaxHighlighter.swift */,
 			);
 			path = LiveActivity;
 			sourceTree = "<group>";
@@ -9488,6 +9491,7 @@
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				A95FDD192F6B8A5B008EF72F /* LiveActivitySettingsView.swift in Sources */,
+				54892E08EF4EF24C2D9F6FC8 /* YAMLSyntaxHighlighter.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
 				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
 				42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */,
