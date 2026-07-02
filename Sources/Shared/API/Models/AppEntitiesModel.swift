@@ -7,23 +7,7 @@ public protocol AppEntitiesModelProtocol {
 }
 
 public enum HAAppUsedContent {
-    public static let domains: [Domain] = [
-        .automation,
-        .scene,
-        .script,
-        .light,
-        .switch,
-        .sensor,
-        .binarySensor,
-        .cover,
-        .button,
-        .inputBoolean,
-        .inputButton,
-        .lock,
-        .camera,
-        .fan,
-        .todo,
-    ]
+    public static let domains: [Domain] = Domain.appDatabasePersisted
 
     public static var rawValues: [String] = domains.map(\.rawValue)
 }

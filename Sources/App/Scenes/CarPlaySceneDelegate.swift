@@ -6,20 +6,6 @@ import HAKit
 import PromiseKit
 import Shared
 
-enum CarPlaySupportedDomains {
-    static var all: [Domain] = [
-        .light,
-        .button,
-        .cover,
-        .inputBoolean,
-        .inputButton,
-        .lock,
-        .scene,
-        .script,
-        .switch,
-    ]
-}
-
 @available(iOS 16.0, *)
 class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
@@ -30,7 +16,7 @@ class CarPlaySceneDelegate: UIResponder {
     private var serversListTemplate: (any CarPlayTemplateProvider)?
     private var quickAccessListTemplate: (any CarPlayTemplateProvider)?
     private var areasZonesListTemplate: (any CarPlayTemplateProvider)?
-    private var includedDomains: [Domain] = CarPlaySupportedDomains.all
+    private var includedDomains: [Domain] = Domain.carPlaySupported
 
     private var allTemplates: [any CarPlayTemplateProvider] {
         [

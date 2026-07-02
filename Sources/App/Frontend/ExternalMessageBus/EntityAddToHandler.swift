@@ -33,7 +33,7 @@ final class EntityAddToHandler {
                 // CarPlay is available on iPhone only (not iPad) for supported domains
                 #if !targetEnvironment(macCatalyst)
                 if !Current.isCatalyst, UIDevice.current.userInterfaceIdiom == .phone {
-                    let isCarPlaySupported = domain.map { CarPlaySupportedDomains.all.contains($0) } ?? false
+                    let isCarPlaySupported = domain.map { Domain.carPlaySupported.contains($0) } ?? false
                     if isCarPlaySupported {
                         actions.append(CarPlayQuickAccessAction())
                     }
@@ -43,7 +43,7 @@ final class EntityAddToHandler {
                 // Watch is available on iPhone for supported domains
                 #if os(iOS)
                 if !Current.isCatalyst {
-                    let isWatchSupported = domain.map { WatchSupportedDomains.all.contains($0) } ?? false
+                    let isWatchSupported = domain.map { Domain.watchSupported.contains($0) } ?? false
                     if isWatchSupported {
                         actions.append(WatchItemAction())
                     }
