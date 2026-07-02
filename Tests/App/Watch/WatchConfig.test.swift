@@ -262,3 +262,38 @@ struct WatchConfigurationViewModel_test {
         #expect(viewModel.watchConfig.items.count == 2, "Root should still have exactly 2 folders")
     }
 }
+
+struct WatchConfigAvailableItems_test {
+    @Test func encodeDecodeRoundTripPreservesGroupsAndCandidates() throws {
+        let candidate = WatchConfigAvailableItems.Candidate(
+            item: MagicItem(id: "script.open_gate", serverId: "server1", type: .entity),
+            info: .init(id: "server1-script.open_gate", name: "Open Gate", iconName: "mdi:gate"),
+            contextSubtitle: "Living Room • Gate"
+        )
+        let original = WatchConfigAvailableItems(servers: [
+            .init(serverId: "server1", serverName: "Home", candidates: [candidate]),
+            .init(serverId: "server2", serverName: "Cabin", candidates: []),
+        ])
+
+        let data = original.encodeForWatch()
+        let decoded = try #require(WatchConfigAvailableItems.decodeForWatch(data))
+
+        #expect(decoded.servers.count == 2)
+        #expect(decoded.servers[0].serverName == "Home")
+        #expect(decoded.servers[1].candidates.isEmpty, "Empty groups must survive the round-trip")
+        #expect(decoded.allCandidates.count == 1)
+
+        let roundTripped = try #require(decoded.allCandidates.first)
+        #expect(roundTripped.item.id == "script.open_gate")
+        #expect(roundTripped.item.serverId == "server1")
+        // Regression: addable scripts/scenes/automations are stored as `.entity`, matching the iPhone.
+        #expect(roundTripped.item.type == .entity)
+        #expect(roundTripped.info.name == "Open Gate")
+        #expect(roundTripped.info.iconName == "mdi:gate")
+        #expect(roundTripped.contextSubtitle == "Living Room • Gate")
+    }
+
+    @Test func decodeInvalidDataReturnsNil() {
+        #expect(WatchConfigAvailableItems.decodeForWatch(Data([0x00, 0x01, 0x02])) == nil)
+    }
+}

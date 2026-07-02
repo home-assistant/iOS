@@ -7,6 +7,9 @@ struct WatchFolderContentView: View {
     @ObservedObject var viewModel: WatchHomeViewModel
     let onBack: () -> Void
 
+    @State private var isEditing = false
+    @State private var activeSheet: WatchHomeView.HomeSheet?
+
     private var folder: MagicItem? {
         viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == folderId })
     }
@@ -14,11 +17,20 @@ struct WatchFolderContentView: View {
     var body: some View {
         List {
             header
-            ForEach(folder?.items ?? [], id: \.serverUniqueId) { item in
-                WatchMagicViewRow(
-                    item: item,
-                    itemInfo: viewModel.info(for: item)
-                )
+            ForEach(Array((folder?.items ?? []).enumerated()), id: \.offset) { _, item in
+                rowContent(for: item)
+                    .modify { view in
+                        if isEditing {
+                            view
+                        } else {
+                            view.onLongPressGesture { enterEditMode() }
+                        }
+                    }
+            }
+            .onMove(perform: isEditing ? moveItems : nil)
+            .onDelete(perform: isEditing ? deleteItems : nil)
+            if !isEditing {
+                addRow
             }
         }
         .id(viewModel.configVersion)
@@ -34,11 +46,60 @@ struct WatchFolderContentView: View {
                 view.navigationBarHidden(true)
             }
         }
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .add:
+                WatchConfigAddView(viewModel: viewModel, folderId: folderId)
+            case let .edit(editable):
+                NavigationView {
+                    WatchConfigItemEditView(
+                        mode: .edit,
+                        placeholderName: viewModel.info(for: editable.item).name,
+                        item: editable.item,
+                        info: viewModel.info(for: editable.item)
+                    ) { item in
+                        viewModel.updateItem(item, info: viewModel.info(for: editable.item))
+                        activeSheet = nil
+                    } onDelete: {
+                        viewModel.removeItem(editable.item)
+                        viewModel.saveConfig()
+                        activeSheet = nil
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func rowContent(for item: MagicItem) -> some View {
+        if isEditing {
+            Button {
+                activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
+            } label: {
+                WatchConfigItemRow(
+                    item: item,
+                    itemInfo: viewModel.info(for: item),
+                    trailingSymbol: .line3Horizontal
+                )
+            }
+            .buttonStyle(.plain)
+            .watchConfigRowBackground()
+        } else {
+            WatchMagicViewRow(
+                item: item,
+                itemInfo: viewModel.info(for: item),
+                subtitle: viewModel.serverName(for: item)
+            )
+        }
     }
 
     private var header: some View {
         HStack {
             Button {
+                if isEditing {
+                    withAnimation { isEditing = false }
+                    viewModel.saveConfig()
+                }
                 onBack()
             } label: {
                 Image(systemSymbol: .chevronLeft)
@@ -48,8 +109,55 @@ struct WatchFolderContentView: View {
             Text(folder?.displayText ?? L10n.Watch.Configuration.Folder.defaultName)
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            if isEditing {
+                doneButton
+            }
         }
         .listRowBackground(Color.clear)
         .padding(.top, DesignSystem.Spaces.one)
+    }
+
+    private var addRow: some View {
+        Button {
+            if viewModel.isPhoneReachable {
+                activeSheet = .add
+            } else {
+                viewModel.editErrorMessage = L10n.Watch.Config.Edit.Error.notReachable
+            }
+        } label: {
+            Label(L10n.Watch.Config.Add.title, systemSymbol: .plus)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+        }
+        .disabled(!viewModel.isPhoneReachable)
+        .opacity(viewModel.isPhoneReachable ? 1 : 0.4)
+        .watchItemRowStyle()
+    }
+
+    private var doneButton: some View {
+        Button {
+            withAnimation { isEditing = false }
+            viewModel.saveConfig()
+        } label: {
+            Image(systemSymbol: .checkmark)
+        }
+        .buttonStyle(.plain)
+        .circularGlassOrLegacyBackground(tint: .haPrimary)
+    }
+
+    private func enterEditMode() {
+        guard viewModel.isPhoneReachable else {
+            viewModel.editErrorMessage = L10n.Watch.Config.Edit.Error.notReachable
+            return
+        }
+        withAnimation { isEditing = true }
+    }
+
+    private func moveItems(from source: IndexSet, to destination: Int) {
+        viewModel.moveItemWithinFolder(folderId: folderId, from: source, to: destination)
+    }
+
+    private func deleteItems(at offsets: IndexSet) {
+        viewModel.deleteItemInFolder(folderId: folderId, at: offsets)
     }
 }

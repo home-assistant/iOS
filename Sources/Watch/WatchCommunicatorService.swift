@@ -86,6 +86,10 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
             case .watchConfig:
                 watchConfig(message: message)
+            case .watchConfigAvailableItems:
+                watchConfigAvailableItems(message: message)
+            case .watchConfigUpdate:
+                watchConfigUpdate(message: message)
             case .pushAction:
                 pushAction(message: message)
             case .assistPipelinesFetch:
@@ -290,6 +294,68 @@ final class WatchCommunicatorService {
     private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
         message.reply(.init(identifier: responseIdentifier))
+    }
+
+    /// Build the list of items the user can add to the watch configuration and reply to the watch.
+    /// Mirrors the iPhone watch picker (`MagicItemAddView` context `.watch`): scripts, scenes and
+    /// automations, all stored as `type: .entity`.
+    private func watchConfigAvailableItems(message: InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.watchConfigAvailableItemsResponse.rawValue
+        let allowedDomains: Set<String> = [
+            Domain.script.rawValue,
+            Domain.scene.rawValue,
+            Domain.automation.rawValue,
+        ]
+        let magicItemProvider = Current.magicItemProvider()
+        magicItemProvider.loadInformation { entitiesPerServer in
+            let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in
+                let serverId = server.identifier.rawValue
+                // The user picks the server before seeing entities, so drop the server prefix that
+                // `getInfo` adds to the context line when multiple servers are configured.
+                let serverPrefix = "\(server.info.name) • "
+                let candidates: [WatchConfigAvailableItems.Candidate] = (entitiesPerServer[serverId] ?? [])
+                    .filter { allowedDomains.contains($0.domain) }
+                    .compactMap { entity in
+                        let item = MagicItem(id: entity.entityId, serverId: serverId, type: .entity)
+                        guard let info = magicItemProvider.getInfo(for: item) else { return nil }
+                        let context = info.contextSubtitle.map { subtitle in
+                            subtitle.hasPrefix(serverPrefix) ? String(subtitle.dropFirst(serverPrefix.count)) : subtitle
+                        }
+                        return .init(item: item, info: info, contextSubtitle: context)
+                    }
+                return .init(serverId: serverId, serverName: server.info.name, candidates: candidates)
+            }
+            message.reply(.init(
+                identifier: responseIdentifier,
+                content: ["availableItems": WatchConfigAvailableItems(servers: groups).encodeForWatch()]
+            ))
+        }
+    }
+
+    /// Persist a `WatchConfig` edited on the watch. The phone's GRDB is the single source of truth,
+    /// so we write it here (mirroring the iPhone `WatchConfigurationViewModel.save()`) and reply with
+    /// the same payload as `watchConfig`, so the watch refreshes its cache with server-resolved info.
+    /// On decode/DB failure we reply with the last-good persisted config, reverting the watch edit.
+    private func watchConfigUpdate(message: InteractiveImmediateMessage) {
+        guard let data = message.content["config"] as? Data,
+              var config = WatchConfig.decodeForWatch(data) else {
+            Current.Log.error("Watch config update did not include a decodable config, reverting watch")
+            watchConfig(message: message)
+            return
+        }
+        do {
+            try Current.database().write { db in
+                if config.id != WatchConfig.watchConfigId {
+                    try WatchConfig.deleteAll(db)
+                    config.id = WatchConfig.watchConfigId
+                }
+                try config.insert(db, onConflict: .replace)
+            }
+            notifyWatchConfig(message: message, watchConfig: config)
+        } catch {
+            Current.Log.error("Failed to persist watch config sent from watch, error: \(error.localizedDescription)")
+            watchConfig(message: message)
+        }
     }
 
     private func magicItemPressed(message: InteractiveImmediateMessage) {

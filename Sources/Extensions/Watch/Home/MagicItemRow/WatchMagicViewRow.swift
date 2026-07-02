@@ -4,9 +4,11 @@ import SwiftUI
 
 struct WatchMagicViewRow: View {
     @StateObject private var viewModel: WatchMagicViewRowViewModel
+    private let subtitle: String?
 
-    init(item: MagicItem, itemInfo: MagicItem.Info) {
+    init(item: MagicItem, itemInfo: MagicItem.Info, subtitle: String? = nil) {
         self._viewModel = .init(wrappedValue: .init(item: item, itemInfo: itemInfo))
+        self.subtitle = subtitle
     }
 
     var body: some View {
@@ -16,13 +18,22 @@ struct WatchMagicViewRow: View {
             HStack(spacing: DesignSystem.Spaces.one) {
                 iconToDisplay
                     .animation(.bouncy, value: viewModel.state)
-                Text(viewModel.item.name(info: viewModel.itemInfo))
-                    .font(.body.bold())
-                    .foregroundStyle(textColor)
-                    .lineLimit(3)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading)
-                    .padding(.trailing)
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                    Text(viewModel.item.name(info: viewModel.itemInfo))
+                        .font(.body.bold())
+                        .foregroundStyle(textColor)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.7)
+                    if let subtitle, !subtitle.isEmpty {
+                        Text(subtitle)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
+                .padding(.trailing)
             }
             .frame(maxWidth: .infinity)
         }
