@@ -498,7 +498,7 @@ public enum Domain: String, CaseIterable {
     }
 
     public var isCarPlaySupported: Bool {
-        carPlaySupportedDomains.contains(self)
+        Domain.carPlaySupported.contains(self)
     }
 
     public func localizedState(for state: String) -> String {
@@ -526,24 +526,61 @@ public enum Domain: String, CaseIterable {
     }
 }
 
-// MARK: - CarPlay
+// MARK: - Feature supported domains
 
 public extension Domain {
-    var carPlaySupportedDomains: [Domain] {
-        [
-            .automation,
-            .button,
-            .cover,
-            .fan,
-            .inputBoolean,
-            .inputButton,
-            .light,
-            .lock,
-            .scene,
-            .script,
-            .switch,
-        ]
-    }
+    static let carPlaySupported: [Domain] = [
+        .automation,
+        .button,
+        .cover,
+        .fan,
+        .inputBoolean,
+        .inputButton,
+        .light,
+        .lock,
+        .scene,
+        .script,
+        .switch,
+    ]
+
+    static let watchSupported: [Domain] = [
+        .script,
+        .scene,
+        .automation,
+    ]
+
+    static let commonlyUsedWidgetSupported: [Domain] = [
+        .light,
+        .switch,
+        .cover,
+        .fan,
+    ]
+
+    static let sensorWidgetSupported: [Domain] = [
+        .sensor,
+        .binarySensor,
+        .inputBoolean,
+        .person,
+        .lock,
+    ]
+
+    static let appDatabasePersisted: [Domain] = [
+        .automation,
+        .scene,
+        .script,
+        .light,
+        .switch,
+        .sensor,
+        .binarySensor,
+        .cover,
+        .button,
+        .inputBoolean,
+        .inputButton,
+        .lock,
+        .camera,
+        .fan,
+        .todo,
+    ]
 }
 
 // MARK: - Main Action
