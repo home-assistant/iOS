@@ -2353,6 +2353,24 @@ public enum L10n {
         /// All Fields · Max Load
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.title") }
       }
+      public enum CountDown {
+        /// chronometer with when: 2700 and when_relative: true — a 45-minute countdown. The tinted timer bar (progress_bar_color) drains as time runs out.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_down.note") }
+        /// Oven Timer · 45 min Countdown
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_down.title") }
+      }
+      public enum CountUp {
+        /// chronometer with when: 0 and when_relative: true resolves to "now", so the timer counts up — showing elapsed time since the activity started. No progress bar: an unbounded count-up has no end. To count up toward a target, use a negative when instead.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up.note") }
+        /// Washing Machine · Count-Up Timer
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up.title") }
+      }
+      public enum CountUpTarget {
+        /// A negative relative when (when: -1200) counts up toward the target: 0:00 → 20:00, the bar fills, and the timer freezes when it gets there.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.note") }
+        /// Workout · Count-Up to 20 min
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.title") }
+      }
       public enum CustomColors {
         /// Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.note") }

@@ -110,10 +110,9 @@ struct HACompactTrailingView: View {
 
     var body: some View {
         if state.chronometer == true, let end = state.countdownEnd {
-            Text(timerInterval: Date.now ... end, countsDown: true)
+            HAActivityChronometerText(end: end, start: state.chronometerStart)
                 .font(.footnote.monospacedDigit())
                 .foregroundStyle(.white)
-                .contentTransition(.numericText(countsDown: true))
                 .frame(width: Self.compactTrailingTimerWidth)
         } else if let critical = state.criticalText {
             Text(critical)
@@ -161,10 +160,9 @@ struct HAExpandedBottomView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             if state.chronometer == true, let end = state.countdownEnd {
-                Text(timerInterval: Date.now ... end, countsDown: true)
+                HAActivityChronometerText(end: end, start: state.chronometerStart)
                     .font(.title3.monospacedDigit().weight(.medium))
                     .foregroundStyle(.white)
-                    .contentTransition(.numericText(countsDown: true))
             } else {
                 Text(state.message)
                     .font(.body)
@@ -180,7 +178,7 @@ struct HAExpandedBottomView: View {
                     height: 8
                 )
             } else if state.chronometer == true, let end = state.countdownEnd {
-                HAActivityTimerProgressBar(end: end, tint: barColor)
+                HAActivityTimerProgressBar(start: state.chronometerStart, end: end, tint: barColor)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

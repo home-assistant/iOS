@@ -66,14 +66,25 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Maximum progress value (raw integer). Maps to `progress_max`.
         public var progressMax: Int?
 
-        /// If true, show a countdown timer instead of static text. Maps to `chronometer`.
+        /// If true, show a ticking timer instead of static text. Maps to `chronometer`.
+        /// Counts down while `countdownEnd` is in the future; counts up from it once it
+        /// has passed (so a `when` at or before now behaves as a count-up chronometer).
+        /// When `chronometerStart` is also set, counts up from it toward `countdownEnd`
+        /// and freezes there (bounded count-up).
         public var chronometer: Bool?
 
-        /// Absolute end date for the countdown timer.
+        /// Absolute end date for the timer.
         /// Computed from `when` + `when_relative` in the notification payload:
         ///   - `when_relative: true`  → `Date().addingTimeInterval(Double(when))`
+        ///   - `when_relative: true` with a negative `when` → `Date().addingTimeInterval(-Double(when))`
+        ///     (bounded count-up toward `|when|` seconds; see `chronometerStart`)
         ///   - `when_relative: false` → `Date(timeIntervalSince1970: Double(when))`
         public var countdownEnd: Date?
+
+        /// Start anchor for a bounded count-up timer, stamped when a negative relative `when`
+        /// is parsed: the timer shows elapsed time from this date and freezes on reaching
+        /// `countdownEnd`. Nil for countdowns and unbounded count-ups.
+        public var chronometerStart: Date?
 
         /// MDI icon slug for display. Maps to `notification_icon`.
         public var icon: String?
@@ -118,6 +129,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case progressMax = "progress_max"
             case chronometer
             case countdownEnd = "countdown_end"
+            case chronometerStart = "chronometer_start"
             case icon
             case color
             case url
@@ -136,6 +148,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             progressMax: Int? = nil,
             chronometer: Bool? = nil,
             countdownEnd: Date? = nil,
+            chronometerStart: Date? = nil,
             icon: String? = nil,
             color: String? = nil,
             url: String? = nil,
@@ -150,6 +163,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.progressMax = progressMax
             self.chronometer = chronometer
             self.countdownEnd = countdownEnd
+            self.chronometerStart = chronometerStart
             self.icon = icon
             self.color = color
             self.url = url
@@ -181,6 +195,11 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             } else {
                 self.countdownEnd = nil
             }
+            if let timestamp = try container.decodeIfPresent(Double.self, forKey: .chronometerStart) {
+                self.chronometerStart = Date(timeIntervalSince1970: timestamp)
+            } else {
+                self.chronometerStart = nil
+            }
             self.icon = try container.decodeIfPresent(String.self, forKey: .icon)
             self.color = try container.decodeIfPresent(String.self, forKey: .color)
             self.url = try container.decodeIfPresent(String.self, forKey: .url)
@@ -199,6 +218,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             try container.encodeIfPresent(chronometer, forKey: .chronometer)
             if let countdownEnd {
                 try container.encode(countdownEnd.timeIntervalSince1970, forKey: .countdownEnd)
+            }
+            if let chronometerStart {
+                try container.encode(chronometerStart.timeIntervalSince1970, forKey: .chronometerStart)
             }
             try container.encodeIfPresent(icon, forKey: .icon)
             try container.encodeIfPresent(color, forKey: .color)

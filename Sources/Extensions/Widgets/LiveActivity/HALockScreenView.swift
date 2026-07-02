@@ -28,10 +28,9 @@ struct HALockScreenView: View {
                         .lineLimit(1)
 
                     if state.chronometer == true, let end = state.countdownEnd {
-                        Text(timerInterval: Date.now ... end, countsDown: true)
+                        HAActivityChronometerText(end: end, start: state.chronometerStart)
                             .font(.title3.monospacedDigit().weight(.medium))
                             .foregroundStyle(secondaryTextColor)
-                            .contentTransition(.numericText(countsDown: true))
                     } else {
                         Text(state.message)
                             .font(.body)
@@ -53,7 +52,7 @@ struct HALockScreenView: View {
                     height: 10
                 )
             } else if state.chronometer == true, let end = state.countdownEnd {
-                HAActivityTimerProgressBar(end: end, tint: barColor)
+                HAActivityTimerProgressBar(start: state.chronometerStart, end: end, tint: barColor)
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.two)
