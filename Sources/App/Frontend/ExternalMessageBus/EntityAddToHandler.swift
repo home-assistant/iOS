@@ -154,26 +154,25 @@ final class EntityAddToHandler {
 
         do {
             var config = try MacToolbarConfig.config() ?? MacToolbarConfig()
-            guard !config.items.contains(where: { $0.id == entityId && $0.serverId == serverId }) else {
-                return
-            }
 
-            let appEntity = HAAppEntity.entity(id: entityId, serverId: serverId)
-            let iconName = appEntity?.icon
-                ?? Domain(rawValue: appEntity?.domain ?? "")?.icon(deviceClass: appEntity?.rawDeviceClass).name
-                ?? MaterialDesignIcons.dotsGridIcon.name
+            if !config.items.contains(where: { $0.id == entityId && $0.serverId == serverId }) {
+                let appEntity = HAAppEntity.entity(id: entityId, serverId: serverId)
+                let iconName = appEntity?.icon
+                    ?? Domain(rawValue: appEntity?.domain ?? "")?.icon(deviceClass: appEntity?.rawDeviceClass).name
+                    ?? MaterialDesignIcons.dotsGridIcon.name
 
-            config.items.append(MagicItem(
-                id: entityId,
-                serverId: serverId,
-                type: .entity,
-                customization: .init(icon: iconName),
-                action: .moreInfoDialog,
-                displayText: appEntity?.name
-            ))
+                config.items.append(MagicItem(
+                    id: entityId,
+                    serverId: serverId,
+                    type: .entity,
+                    customization: .init(icon: iconName),
+                    action: .moreInfoDialog,
+                    displayText: appEntity?.name
+                ))
 
-            try Current.database().write { db in
-                try config.insert(db, onConflict: .replace)
+                try Current.database().write { db in
+                    try config.insert(db, onConflict: .replace)
+                }
             }
 
             NotificationCenter.default.post(name: .macToolbarConfigDidChange, object: nil)
