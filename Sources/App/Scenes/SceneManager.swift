@@ -1,5 +1,4 @@
 import Foundation
-import MBProgressHUD
 import PromiseKit
 import Shared
 import UIKit
@@ -342,7 +341,7 @@ final class SceneManager {
         onto window: Promise<UIWindow>
     ) {
         window.done { window in
-            let hud = MBProgressHUD.showAdded(to: window, animated: true)
+            let hud = ProgressHUD.showAdded(to: window, animated: true)
             hud.mode = .customView
             hud.backgroundView.style = .blur
             hud.customView = with(IconImageView(frame: .init(x: 0, y: 0, width: 64, height: 64))) {
