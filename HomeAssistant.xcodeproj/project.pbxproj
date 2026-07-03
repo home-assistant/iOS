@@ -111,6 +111,7 @@
 		1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
 		1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
 		1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */; };
+		B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000030 /* Color+Hex.test.swift */; };
 		11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
@@ -2022,6 +2023,7 @@
 		113199DB28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthLoginViewController.swift; sourceTree = "<group>"; };
 		1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.swift"; sourceTree = "<group>"; };
 		1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.test.swift"; sourceTree = "<group>"; };
+		B0B0B0B00000000000000030 /* Color+Hex.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.test.swift"; sourceTree = "<group>"; };
 		11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.swift; sourceTree = "<group>"; };
 		11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.swift; sourceTree = "<group>"; };
 		113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodicUpdateManager.swift; sourceTree = "<group>"; };
@@ -7379,6 +7381,7 @@
 				110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */,
 				11267D0825BBA9FE00F28E5C /* Updater.test.swift */,
 				1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */,
+				B0B0B0B00000000000000030 /* Color+Hex.test.swift */,
 				11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */,
 				11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */,
 				11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */,
@@ -10711,6 +10714,7 @@
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
 				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
 				1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */,
+				B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */,
 				11764A6C26817FC3007D47F3 /* UserDefaultsValueSync.test.swift in Sources */,
 				421125C72F51DE9200971BAD /* StatePrecision.test.swift in Sources */,
 				114CBAED283AB92D00A9BAFF /* SecTrust+TestAdditions.swift in Sources */,
