@@ -1576,8 +1576,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.config.add.search_placeholder" = "Search";
 "watch.config.add.title" = "Add";
 "watch.config.assist.error.fetch_failed" = "Couldn't load Assist pipelines from your iPhone.";
+"watch.config.assist.no_pipelines" = "No Assist pipelines cached yet. Keep your iPhone nearby and tap Reload.";
 "watch.config.assist.pipeline" = "Pipeline";
 "watch.config.assist.preferred" = "Preferred";
+"watch.config.assist.reload" = "Reload";
 "watch.config.assist.save" = "Save";
 "watch.config.assist.select_pipeline" = "Select pipeline";
 "watch.config.assist.select_server" = "Server";

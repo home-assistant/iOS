@@ -1,11 +1,13 @@
 import Communicator
 import Foundation
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
 /// Configure the watch Assist button (whether it shows, and which server + pipeline it uses) directly
-/// on the watch. Self-contained: it reads the current config from the local cache, fetches pipelines
-/// from the paired iPhone, and persists via the shared `watchConfigUpdate` round-trip.
+/// on the watch. Self-contained: it reads the current config and the available pipelines from the
+/// local mirrored database (refreshable from the paired iPhone via Reload), and persists via the
+/// shared `watchConfigUpdate` round-trip.
 struct WatchConfigAssistView: View {
     @StateObject private var viewModel = WatchConfigAssistViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -29,20 +31,13 @@ struct WatchConfigAssistView: View {
                         }
                         .onChange(of: viewModel.selectedServerId) { _ in
                             viewModel.selectedPipelineId = nil
-                            viewModel.fetchPipelines()
+                            viewModel.loadPipelines()
                         }
                     }
                 }
 
                 Section {
-                    if viewModel.isLoadingPipelines {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                    } else if viewModel.pipelines.isEmpty {
-                        Text(verbatim: L10n.Watch.Config.Assist.Error.fetchFailed)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    } else {
+                    if !viewModel.pipelines.isEmpty {
                         Picker(L10n.Watch.Config.Assist.pipeline, selection: $viewModel.selectedPipelineId) {
                             Text(verbatim: L10n.Watch.Config.Assist.preferred)
                                 .tag(Optional(""))
@@ -51,7 +46,12 @@ struct WatchConfigAssistView: View {
                                     .tag(Optional(pipeline.id))
                             }
                         }
+                    } else if !viewModel.isLoadingPipelines {
+                        Text(verbatim: L10n.Watch.Config.Assist.noPipelines)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                     }
+                    reloadButton
                 }
             }
 
@@ -78,7 +78,12 @@ struct WatchConfigAssistView: View {
         .navigationTitle(Text(verbatim: L10n.Watch.Config.Assist.title))
         .onAppear {
             if viewModel.showAssist {
-                viewModel.fetchPipelines()
+                viewModel.loadPipelines()
+            }
+        }
+        .onChange(of: viewModel.showAssist) { isOn in
+            if isOn, viewModel.pipelines.isEmpty {
+                viewModel.loadPipelines()
             }
         }
         .alert(
@@ -94,6 +99,23 @@ struct WatchConfigAssistView: View {
                 Text(verbatim: errorMessage)
             }
         }
+    }
+
+    private var reloadButton: some View {
+        Button {
+            viewModel.refreshFromPhone()
+        } label: {
+            HStack {
+                if viewModel.isLoadingPipelines {
+                    ProgressView()
+                } else {
+                    Label(L10n.Watch.Config.Assist.reload, systemSymbol: .arrowClockwise)
+                }
+                Spacer()
+            }
+            .contentShape(Rectangle())
+        }
+        .disabled(viewModel.isLoadingPipelines)
     }
 }
 
@@ -134,13 +156,25 @@ final class WatchConfigAssistViewModel: ObservableObject {
         }
     }
 
+    /// Local-first: show the pipelines the phone already mirrored to the watch's GRDB (instant, works
+    /// offline). Only reach out to the phone when nothing is cached yet and it's reachable.
     @MainActor
-    func fetchPipelines() {
+    func loadPipelines() {
         guard let serverId = selectedServerId else {
             pipelines = []
             return
         }
-        // Offline: read the pipelines the phone last mirrored to the watch's GRDB.
+        loadPipelinesFromMirror(serverId: serverId)
+        if pipelines.isEmpty, isPhoneReachable {
+            refreshFromPhone()
+        }
+    }
+
+    /// Force a fresh fetch from the paired iPhone (the Reload button). Keeps the cached list on failure
+    /// so a transient connection hiccup doesn't blank the picker.
+    @MainActor
+    func refreshFromPhone() {
+        guard let serverId = selectedServerId else { return }
         guard isPhoneReachable else {
             loadPipelinesFromMirror(serverId: serverId)
             return
@@ -189,12 +223,14 @@ final class WatchConfigAssistViewModel: ObservableObject {
     }
 
     /// Default to "Preferred" (empty id) — the server chooses the pipeline — and fall back to it if a
-    /// previously-selected pipeline no longer exists.
+    /// previously-selected pipeline no longer exists. Only reset when we actually have a list to check
+    /// against, so an empty/offline cache doesn't wipe the saved selection.
     @MainActor
     private func applyDefaultPipelineSelection() {
         if selectedPipelineId == nil {
             selectedPipelineId = ""
-        } else if selectedPipelineId != "", !pipelines.contains(where: { $0.id == selectedPipelineId }) {
+        } else if selectedPipelineId != "", !pipelines.isEmpty,
+                  !pipelines.contains(where: { $0.id == selectedPipelineId }) {
             selectedPipelineId = ""
         }
     }

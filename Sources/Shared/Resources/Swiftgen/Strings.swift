@@ -5331,10 +5331,14 @@ public enum L10n {
         }
       }
       public enum Assist {
+        /// No Assist pipelines cached yet. Keep your iPhone nearby and tap Reload.
+        public static var noPipelines: String { return L10n.tr("Localizable", "watch.config.assist.no_pipelines") }
         /// Pipeline
         public static var pipeline: String { return L10n.tr("Localizable", "watch.config.assist.pipeline") }
         /// Preferred
         public static var preferred: String { return L10n.tr("Localizable", "watch.config.assist.preferred") }
+        /// Reload
+        public static var reload: String { return L10n.tr("Localizable", "watch.config.assist.reload") }
         /// Save
         public static var save: String { return L10n.tr("Localizable", "watch.config.assist.save") }
         /// Select pipeline

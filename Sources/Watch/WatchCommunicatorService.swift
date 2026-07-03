@@ -524,6 +524,12 @@ extension WatchCommunicatorService {
                     }),
                     "preferredPipeline": preferredPipeline,
                 ]))
+            } else if let cached = ((try? AssistPipelines.config()) ?? nil)?
+                .first(where: { $0.serverId == server.identifier.rawValue }), !cached.pipelines.isEmpty {
+                message.reply(.init(identifier: responseIdentifier, content: [
+                    "pipelines": cached.pipelines.map { ["name": $0.name, "id": $0.id] },
+                    "preferredPipeline": cached.preferredPipeline,
+                ]))
             } else {
                 Current.Log
                     .error("Error during fetch Assist pipelines: \(WatchAssistCommunicatorError.pipelinesFetchFailed)")
