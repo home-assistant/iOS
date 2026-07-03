@@ -112,7 +112,6 @@ final class WatchConfigAssistViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     let servers: [Server]
-    private let currentItems: [MagicItem]
 
     var isPhoneReachable: Bool {
         Communicator.shared.currentReachability == .immediatelyReachable
@@ -129,7 +128,6 @@ final class WatchConfigAssistViewModel: ObservableObject {
         self.showAssist = resolved.assist.showAssist
         self.selectedServerId = resolved.assist.serverId
         self.selectedPipelineId = resolved.assist.pipelineId
-        self.currentItems = resolved.items
         self.servers = Current.servers.all
         if selectedServerId == nil {
             self.selectedServerId = servers.first?.identifier.rawValue
@@ -138,8 +136,13 @@ final class WatchConfigAssistViewModel: ObservableObject {
 
     @MainActor
     func fetchPipelines() {
-        guard let serverId = selectedServerId, isPhoneReachable else {
+        guard let serverId = selectedServerId else {
             pipelines = []
+            return
+        }
+        // Offline: read the pipelines the phone last mirrored to the watch's GRDB.
+        guard isPhoneReachable else {
+            loadPipelinesFromMirror(serverId: serverId)
             return
         }
         isLoadingPipelines = true
@@ -153,24 +156,42 @@ final class WatchConfigAssistViewModel: ObservableObject {
             Current.Log.error("Failed to fetch assist pipelines on watch: \(error.localizedDescription)")
             Task { @MainActor in
                 self?.isLoadingPipelines = false
-                self?.errorMessage = L10n.Watch.Config.Assist.Error.fetchFailed
+                self?.loadPipelinesFromMirror(serverId: serverId)
             }
         })
+    }
+
+    /// Populate the picker from the locally-mirrored `AssistPipelines` table (works offline).
+    @MainActor
+    private func loadPipelinesFromMirror(serverId: String) {
+        let mirrored = ((try? AssistPipelines.config()) ?? nil) ?? []
+        pipelines = mirrored
+            .first(where: { $0.serverId == serverId })?
+            .pipelines
+            .map { PipelineOption(id: $0.id, name: $0.name) } ?? []
+        applyDefaultPipelineSelection()
     }
 
     @MainActor
     private func handlePipelinesResponse(_ message: ImmediateMessage) {
         isLoadingPipelines = false
         guard let raw = message.content["pipelines"] as? [[String: String]] else {
-            errorMessage = L10n.Watch.Config.Assist.Error.fetchFailed
+            if let serverId = selectedServerId {
+                loadPipelinesFromMirror(serverId: serverId)
+            }
             return
         }
         pipelines = raw.compactMap { dict in
             guard let id = dict["id"], let name = dict["name"] else { return nil }
             return PipelineOption(id: id, name: name)
         }
-        // Default to "Preferred" (empty id): the server chooses the pipeline. Also fall back to
-        // Preferred if a previously-selected pipeline no longer exists.
+        applyDefaultPipelineSelection()
+    }
+
+    /// Default to "Preferred" (empty id) — the server chooses the pipeline — and fall back to it if a
+    /// previously-selected pipeline no longer exists.
+    @MainActor
+    private func applyDefaultPipelineSelection() {
         if selectedPipelineId == nil {
             selectedPipelineId = ""
         } else if selectedPipelineId != "", !pipelines.contains(where: { $0.id == selectedPipelineId }) {
@@ -180,18 +201,23 @@ final class WatchConfigAssistViewModel: ObservableObject {
 
     @MainActor
     func save(completion: @escaping @MainActor (Bool) -> Void) {
-        guard isPhoneReachable else {
-            errorMessage = L10n.Watch.Config.Edit.Error.notReachable
-            completion(false)
-            return
-        }
-        var config = WatchConfig()
-        config.items = currentItems
+        var config = ((try? WatchConfig.config()) ?? nil) ?? WatchConfig()
         config.assist = .init(
             showAssist: showAssist,
             serverId: showAssist ? selectedServerId : nil,
             pipelineId: showAssist ? selectedPipelineId : nil
         )
+        config.stampModified()
+        // Persist locally first so the change survives even without the phone nearby.
+        persistLocally(config)
+        WatchUserDefaults.shared.assistPipelineName = selectedPipelineName
+        NotificationCenter.default.post(name: .watchConfigDidChange, object: nil)
+
+        // Offline: keep the local edit; it syncs (or prompts on conflict) on the next reload.
+        guard isPhoneReachable else {
+            completion(true)
+            return
+        }
         isSaving = true
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfigUpdate.rawValue,
@@ -205,10 +231,25 @@ final class WatchConfigAssistViewModel: ObservableObject {
             Current.Log.error("Failed to save assist config on watch: \(error.localizedDescription)")
             Task { @MainActor in
                 self?.isSaving = false
-                self?.errorMessage = L10n.Watch.Config.Edit.Error.saveFailed
-                completion(false)
+                // The local copy is already saved; it'll sync on the next reload.
+                completion(true)
             }
         })
+    }
+
+    private func persistLocally(_ config: WatchConfig) {
+        do {
+            try Current.database().write { db in
+                var config = config
+                if config.id != WatchConfig.watchConfigId {
+                    try WatchConfig.deleteAll(db)
+                    config.id = WatchConfig.watchConfigId
+                }
+                try config.insert(db, onConflict: .replace)
+            }
+        } catch {
+            Current.Log.error("Failed to persist assist config locally on watch: \(error.localizedDescription)")
+        }
     }
 
     @MainActor
@@ -223,26 +264,20 @@ final class WatchConfigAssistViewModel: ObservableObject {
               let config = WatchConfig.decodeForWatch(configData),
               let magicItemsInfoData = message.content["magicItemsInfo"] as? [Data] else {
             Current.Log.error("Failed to decode assist config save response on watch")
-            errorMessage = L10n.Watch.Config.Edit.Error.saveFailed
-            completion(false)
+            // The local copy is already saved; it'll sync on the next reload.
+            completion(true)
             return
         }
 
         let magicItemsInfo = magicItemsInfoData.compactMap { MagicItem.Info.decodeForWatch($0) }
 
-        do {
-            try Current.database().write { db in
-                try config.insert(db, onConflict: .replace)
-            }
-            saveItemsInfoInCache(magicItemsInfo)
-            WatchUserDefaults.shared.assistPipelineName = selectedPipelineName
-            NotificationCenter.default.post(name: .watchConfigDidChange, object: nil)
-            completion(true)
-        } catch {
-            Current.Log.error("Failed to save assist config cache on watch: \(error.localizedDescription)")
-            errorMessage = L10n.Watch.Config.Edit.Error.saveFailed
-            completion(false)
-        }
+        persistLocally(config)
+        saveItemsInfoInCache(magicItemsInfo)
+        // The phone accepted our push, so this is now the synced baseline.
+        WatchUserDefaults.shared.lastSyncedModified = config.lastModified
+        WatchUserDefaults.shared.assistPipelineName = selectedPipelineName
+        NotificationCenter.default.post(name: .watchConfigDidChange, object: nil)
+        completion(true)
     }
 
     private func saveItemsInfoInCache(_ itemsInfo: [MagicItem.Info]) {

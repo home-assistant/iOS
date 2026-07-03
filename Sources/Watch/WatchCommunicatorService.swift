@@ -90,6 +90,8 @@ final class WatchCommunicatorService {
                 watchConfigAvailableItems(message: message)
             case .watchConfigUpdate:
                 watchConfigUpdate(message: message)
+            case .watchDatabaseMirror:
+                watchDatabaseMirror(message: message)
             case .pushAction:
                 pushAction(message: message)
             case .assistPipelinesFetch:
@@ -355,6 +357,18 @@ final class WatchCommunicatorService {
         } catch {
             Current.Log.error("Failed to persist watch config sent from watch, error: \(error.localizedDescription)")
             watchConfig(message: message)
+        }
+    }
+
+    /// Reply with a snapshot of the reference GRDB tables the watch needs to configure itself offline.
+    private func watchDatabaseMirror(message: InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.watchDatabaseMirrorResponse.rawValue
+        do {
+            let mirror = try WatchDatabaseMirror.snapshot()
+            message.reply(.init(identifier: responseIdentifier, content: ["mirror": mirror.encodeForWatch()]))
+        } catch {
+            Current.Log.error("Failed to build watch database mirror: \(error.localizedDescription)")
+            message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
         }
     }
 

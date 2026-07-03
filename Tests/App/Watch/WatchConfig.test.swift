@@ -297,3 +297,61 @@ struct WatchConfigAvailableItems_test {
         #expect(WatchConfigAvailableItems.decodeForWatch(Data([0x00, 0x01, 0x02])) == nil)
     }
 }
+
+struct WatchDatabaseMirror_test {
+    @Test func encodeDecodeRoundTripPreservesReferenceTables() throws {
+        let entity = HAAppEntity(
+            id: "server1-script.open_gate",
+            entityId: "script.open_gate",
+            serverId: "server1",
+            domain: "script",
+            name: "Open Gate",
+            icon: "mdi:gate",
+            rawDeviceClass: nil
+        )
+        let area = AppArea(
+            id: "server1-living_room",
+            serverId: "server1",
+            areaId: "living_room",
+            name: "Living Room",
+            aliases: [],
+            picture: nil,
+            icon: nil,
+            sortOrder: 0,
+            entities: ["script.open_gate"]
+        )
+        let pipelines = AssistPipelines(
+            serverId: "server1",
+            preferredPipeline: "pref",
+            pipelines: [Pipeline(id: "pref", name: "Preferred Assistant")]
+        )
+        let original = WatchDatabaseMirror(entities: [entity], areas: [area], pipelines: [pipelines])
+
+        let data = original.encodeForWatch()
+        let decoded = try #require(WatchDatabaseMirror.decodeForWatch(data))
+
+        #expect(decoded.entities == [entity])
+        #expect(decoded.areas == [area])
+        #expect(decoded.pipelines.count == 1)
+        #expect(decoded.pipelines.first?.serverId == "server1")
+        #expect(decoded.pipelines.first?.pipelines.first?.id == "pref")
+    }
+
+    @Test func decodeInvalidDataReturnsNil() {
+        #expect(WatchDatabaseMirror.decodeForWatch(Data([0x00, 0x01, 0x02])) == nil)
+    }
+}
+
+struct WatchConfigLastModified_test {
+    @Test func stampModifiedUsesCurrentDate() {
+        let fixedDate = Date(timeIntervalSince1970: 1_700_000_000)
+        let previousDate = Current.date
+        Current.date = { fixedDate }
+        defer { Current.date = previousDate }
+
+        var config = WatchConfig()
+        #expect(config.lastModified == nil)
+        config.stampModified()
+        #expect(config.lastModified == fixedDate.timeIntervalSince1970)
+    }
+}

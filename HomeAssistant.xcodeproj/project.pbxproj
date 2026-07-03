@@ -1281,6 +1281,7 @@
 		7EB1B6B52775DAF12C3B2B27 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FD2BAEEAE31310280CB33D /* KioskSettings.swift */; };
 		7F5261AFA361C741413A782D /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
 		80474291FF5E5EEA5A700576 /* WatchConfigAvailableItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A00BD46B555768D6DA2E506 /* WatchConfigAvailableItems.swift */; };
+		EEBF4138A6FB2D369C751FF7 /* WatchDatabaseMirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E72B762F8CA5AFD59436EB /* WatchDatabaseMirror.swift */; };
 		8411EA28D9F5FEF26D01A39E /* CameraZoomGestureOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5A1F2C65420338C176B7BD /* CameraZoomGestureOverlay.swift */; };
 		84C3F46E5A5854A3E3A71DF6 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447F72016096B5B3FC87F055 /* KioskSettings.test.swift */; };
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
@@ -1642,6 +1643,7 @@
 		D6F87818FFB55C006563EBBB /* RealmResultsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208A5362BE60377368ACB1D6 /* RealmResultsObserver.swift */; };
 		D73456479437738B202696E1 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9112C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift */; };
 		D763C6E49D16CC2528595DF8 /* WatchConfigAvailableItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A00BD46B555768D6DA2E506 /* WatchConfigAvailableItems.swift */; };
+		66570B5DCBF09CBA986350B4 /* WatchDatabaseMirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E72B762F8CA5AFD59436EB /* WatchDatabaseMirror.swift */; };
 		D87EC7A89E0515C4CAB93220 /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
 		D9A6697AF4D05BB8DE822A54 /* Pods_iOS_Extensions_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CA7FF55788E7084DA5E4B3 /* Pods_iOS_Extensions_Share.framework */; };
 		D9BF1EFF40733A4A1D03B9C8 /* CustomWidgetIntentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7FF77B68D19A4AD68F8FE3 /* CustomWidgetIntentHelper.swift */; };
@@ -3156,6 +3158,7 @@
 		480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificate.test.swift; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		4A00BD46B555768D6DA2E506 /* WatchConfigAvailableItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigAvailableItems.swift; sourceTree = "<group>"; };
+		E2E72B762F8CA5AFD59436EB /* WatchDatabaseMirror.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDatabaseMirror.swift; sourceTree = "<group>"; };
 		4A74A2EF6714F9B13C1DAFBD /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		4F28982D819D8E105E6FB878 /* Pods-Tests-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.release.xcconfig"; sourceTree = "<group>"; };
 		5002BDAE2FEE000100BEEF01 /* WhatsNewEngine.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewEngine.test.swift; sourceTree = "<group>"; };
@@ -5259,6 +5262,7 @@
 			children = (
 				4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */,
 				4A00BD46B555768D6DA2E506 /* WatchConfigAvailableItems.swift */,
+				E2E72B762F8CA5AFD59436EB /* WatchDatabaseMirror.swift */,
 				426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */,
 				4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */,
 			);
@@ -10222,6 +10226,7 @@
 				42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */,
 				4251AAC22C6CE9CB004CCC9D /* WatchConfig.swift in Sources */,
 				D763C6E49D16CC2528595DF8 /* WatchConfigAvailableItems.swift in Sources */,
+				66570B5DCBF09CBA986350B4 /* WatchDatabaseMirror.swift in Sources */,
 				4251AABF2C6CE376004CCC9D /* MagicItem.swift in Sources */,
 				420CFC852D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */,
 				1168BF312718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
@@ -10575,6 +10580,7 @@
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
 				4251AAC12C6CE9C4004CCC9D /* WatchConfig.swift in Sources */,
 				80474291FF5E5EEA5A700576 /* WatchConfigAvailableItems.swift in Sources */,
+				EEBF4138A6FB2D369C751FF7 /* WatchDatabaseMirror.swift in Sources */,
 				D03D893620E0AEFA00D4F28D /* Environment.swift in Sources */,
 				D0EEF2CE214D8AE200D1D360 /* RealmZone.swift in Sources */,
 				42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,

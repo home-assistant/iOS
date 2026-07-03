@@ -131,24 +131,16 @@ struct WatchFolderContentView: View {
         }
         .buttonStyle(.plain)
         .circularGlassOrLegacyBackground()
-        .disabled(!viewModel.isPhoneReachable)
-        .opacity(viewModel.isPhoneReachable ? 1 : 0.4)
     }
 
     private var addRow: some View {
         Button {
-            if viewModel.isPhoneReachable {
-                activeSheet = .add
-            } else {
-                viewModel.editErrorMessage = L10n.Watch.Config.Edit.Error.notReachable
-            }
+            activeSheet = .add
         } label: {
             Label(L10n.Watch.Config.Add.title, systemSymbol: .plus)
                 .frame(maxWidth: .infinity)
                 .contentShape(Rectangle())
         }
-        .disabled(!viewModel.isPhoneReachable)
-        .opacity(viewModel.isPhoneReachable ? 1 : 0.4)
         .watchItemRowStyle()
     }
 
@@ -164,10 +156,6 @@ struct WatchFolderContentView: View {
     }
 
     private func enterEditMode() {
-        guard viewModel.isPhoneReachable else {
-            viewModel.editErrorMessage = L10n.Watch.Config.Edit.Error.notReachable
-            return
-        }
         withAnimation { isEditing = true }
     }
 

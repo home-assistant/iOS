@@ -5356,6 +5356,16 @@ public enum L10n {
           public static var message: String { return L10n.tr("Localizable", "watch.config.cache.error.message") }
         }
       }
+      public enum Conflict {
+        /// Keep Watch Changes
+        public static var keepWatch: String { return L10n.tr("Localizable", "watch.config.conflict.keep_watch") }
+        /// This watch and your iPhone both changed the configuration since they last synced. Which do you want to keep?
+        public static var message: String { return L10n.tr("Localizable", "watch.config.conflict.message") }
+        /// Sync Conflict
+        public static var title: String { return L10n.tr("Localizable", "watch.config.conflict.title") }
+        /// Use iPhone
+        public static var useIphone: String { return L10n.tr("Localizable", "watch.config.conflict.use_iphone") }
+      }
       public enum Edit {
         /// Add
         public static var addButton: String { return L10n.tr("Localizable", "watch.config.edit.add_button") }

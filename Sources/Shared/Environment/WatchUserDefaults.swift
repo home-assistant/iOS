@@ -8,6 +8,9 @@ public enum WatchUserDefaultsKey: String {
     case performActionTarget
     /// Last selected Assist pipeline display name for the Watch settings summary.
     case assistPipelineName
+    /// `WatchConfig.lastModified` of the config the watch and iPhone last agreed on — the baseline for
+    /// offline-edit conflict detection.
+    case lastConfigSyncModified
 }
 
 /// Where the Apple Watch performs actions such as executing magic items.
@@ -35,6 +38,21 @@ public final class WatchUserDefaults {
 
     public func date(for key: WatchUserDefaultsKey) -> Date? {
         userDefaults.object(forKey: key.rawValue) as? Date
+    }
+
+    // MARK: - Offline config sync baseline
+
+    /// `WatchConfig.lastModified` of the last config the watch and iPhone agreed on. `nil` until the
+    /// first successful sync.
+    public var lastSyncedModified: Double? {
+        get { userDefaults.object(forKey: WatchUserDefaultsKey.lastConfigSyncModified.rawValue) as? Double }
+        set {
+            if let newValue {
+                userDefaults.set(newValue, forKey: WatchUserDefaultsKey.lastConfigSyncModified.rawValue)
+            } else {
+                userDefaults.removeObject(forKey: WatchUserDefaultsKey.lastConfigSyncModified.rawValue)
+            }
+        }
     }
 
     // MARK: - Action target

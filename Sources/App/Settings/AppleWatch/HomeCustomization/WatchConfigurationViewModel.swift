@@ -170,6 +170,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     // Returns success boolean
     func save() -> Bool {
         do {
+            watchConfig.stampModified()
             try Current.database().write { db in
                 if watchConfig.id != WatchConfig.watchConfigId {
                     // Previous config needs to be explicit deleted because when WatchConfig was released

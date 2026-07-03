@@ -24,8 +24,9 @@ final class WatchHomeViewModel: ObservableObject {
     @Published var magicItemsInfo: [MagicItem.Info] = []
     /// Changes every time a new config is fetched, used as a `.id()` modifier on lists to force re-render.
     @Published var configVersion = UUID()
-    /// Surfaced when an on-watch edit can't be applied (iPhone unreachable, save/fetch failed).
-    @Published var editErrorMessage: String?
+    /// Set when the watch and iPhone both changed the config since the last sync; the UI prompts the
+    /// user to choose which to keep.
+    @Published var pendingConflict: ConfigConflict?
 
     @MainActor
     func fetchNetworkInfo() async {
@@ -54,10 +55,12 @@ final class WatchHomeViewModel: ObservableObject {
         isLoading = true
         // Pull servers + any mTLS client certificates as part of the refresh (delivered inline).
         WatchServerSync.request()
+        // Refresh the offline reference mirror (entities/areas/pipelines) so configuring works offline.
+        fetchDatabaseMirror()
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfig.rawValue,
             reply: { [weak self] message in
-                self?.handleMessageResponse(message)
+                Task { @MainActor in self?.reconcile(with: message) }
             }
         ))
     }
@@ -72,48 +75,131 @@ final class WatchHomeViewModel: ObservableObject {
         )
     }
 
+    // MARK: - Offline-aware config reconciliation
+
+    /// Handle the phone's reply to a config pull, deciding whether to adopt it, push local offline
+    /// edits, or (when both sides changed) surface a conflict for the user to resolve.
     @MainActor
-    private func handleMessageResponse(_ message: ImmediateMessage) {
+    private func reconcile(with message: ImmediateMessage) {
         switch message.identifier {
         case InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue:
-            clearCacheAndLoad()
+            reconcile(phoneConfig: nil, phoneItemsInfo: [])
         case InteractiveImmediateResponses.watchConfigResponse.rawValue:
-            setupConfig(message)
+            guard let configData = message.content["config"] as? Data,
+                  let phoneConfig = WatchConfig.decodeForWatch(configData),
+                  let infoData = message.content["magicItemsInfo"] as? [Data] else {
+                Current.Log.error("Failed to decode watch config response")
+                loadCache()
+                updateLoading(isLoading: false)
+                return
+            }
+            reconcile(
+                phoneConfig: phoneConfig,
+                phoneItemsInfo: infoData.compactMap { MagicItem.Info.decodeForWatch($0) }
+            )
         default:
-            Current.Log
-                .error("Received unmapped response id for watch config request, id: \(message.identifier)")
+            Current.Log.error("Received unmapped response id for watch config request, id: \(message.identifier)")
             loadCache()
+            updateLoading(isLoading: false)
         }
-        updateLoading(isLoading: false)
     }
 
     @MainActor
-    private func setupConfig(_ message: ImmediateMessage) {
-        guard let configData = message.content["config"] as? Data,
-              let watchConfig = WatchConfig.decodeForWatch(configData) else {
-            Current.Log.error("Failed to get config data from watch config response")
-            return
-        }
+    private func reconcile(phoneConfig: WatchConfig?, phoneItemsInfo: [MagicItem.Info]) {
+        let localConfig = (try? WatchConfig.config()) ?? nil
+        let baseline = WatchUserDefaults.shared.lastSyncedModified ?? 0
+        let phoneModified = phoneConfig?.lastModified ?? 0
+        let localModified = localConfig?.lastModified ?? 0
+        let watchChanged = localConfig != nil && localModified != baseline
+        let phoneChanged = phoneModified != baseline
 
-        guard let magicItemsInfo = message.content["magicItemsInfo"] as? [Data] else {
-            Current.Log.error("Failed to get magicItemsInfo data array from watch config response")
-            return
+        if !watchChanged {
+            // Neither changed, or only the phone changed → take the phone's config.
+            adopt(phoneConfig: phoneConfig, itemsInfo: phoneItemsInfo)
+        } else if !phoneChanged {
+            // Only the watch changed (offline edits) → push them to the phone.
+            pushLocalConfig(localConfig)
+        } else {
+            // Both changed since the last sync → let the user decide.
+            pendingConflict = ConfigConflict(phoneConfig: phoneConfig, phoneItemsInfo: phoneItemsInfo)
+            updateLoading(isLoading: false)
         }
-        let itemsInfo = magicItemsInfo.map({ MagicItem.Info.decodeForWatch($0) })
+    }
 
+    /// Overwrite the local config with the phone's and record it as the synced baseline.
+    @MainActor
+    private func adopt(phoneConfig: WatchConfig?, itemsInfo: [MagicItem.Info]) {
         do {
             try Current.database().write { db in
-                try watchConfig.insert(db, onConflict: .replace)
+                try WatchConfig.deleteAll(db)
+                if var config = phoneConfig {
+                    config.id = WatchConfig.watchConfigId
+                    try config.insert(db, onConflict: .replace)
+                }
             }
-            saveItemsInfoInCache(itemsInfo.compactMap({ $0 }))
+            saveItemsInfoInCache(itemsInfo)
         } catch {
-            Current.Log
-                .error(
-                    "Failed to save watch config and/or magic item info in database on Apple watch, error: \(error.localizedDescription)"
-                )
+            Current.Log.error("Failed to adopt phone watch config: \(error.localizedDescription)")
         }
-
+        WatchUserDefaults.shared.lastSyncedModified = phoneConfig?.lastModified
+        pendingConflict = nil
         loadCache()
+        updateLoading(isLoading: false)
+    }
+
+    /// Push the watch's local config to the phone (source of truth), then adopt the echoed result as
+    /// the new synced baseline.
+    @MainActor
+    func pushLocalConfig(_ config: WatchConfig?) {
+        guard let config else {
+            adopt(phoneConfig: nil, itemsInfo: [])
+            return
+        }
+        Communicator.shared.send(.init(
+            identifier: InteractiveImmediateMessages.watchConfigUpdate.rawValue,
+            content: ["config": config.encodeForWatch()],
+            reply: { [weak self] message in
+                Task { @MainActor in self?.adoptPushReply(message) }
+            }
+        ), errorHandler: { [weak self] error in
+            Current.Log.error("Failed to push watch config: \(error.localizedDescription)")
+            Task { @MainActor in
+                self?.loadCache()
+                self?.updateLoading(isLoading: false)
+            }
+        })
+    }
+
+    @MainActor
+    private func adoptPushReply(_ message: ImmediateMessage) {
+        if message.identifier == InteractiveImmediateResponses.watchConfigResponse.rawValue,
+           let configData = message.content["config"] as? Data,
+           let phoneConfig = WatchConfig.decodeForWatch(configData),
+           let infoData = message.content["magicItemsInfo"] as? [Data] {
+            adopt(phoneConfig: phoneConfig, itemsInfo: infoData.compactMap { MagicItem.Info.decodeForWatch($0) })
+        } else {
+            loadCache()
+            updateLoading(isLoading: false)
+        }
+    }
+
+    /// Refresh the offline reference tables (entities/areas/pipelines) from the phone.
+    private func fetchDatabaseMirror() {
+        guard isPhoneReachable else { return }
+        Communicator.shared.send(.init(
+            identifier: InteractiveImmediateMessages.watchDatabaseMirror.rawValue,
+            reply: { message in
+                guard let data = message.content["mirror"] as? Data,
+                      let mirror = WatchDatabaseMirror.decodeForWatch(data) else { return }
+                do {
+                    try mirror.apply()
+                } catch {
+                    Current.Log.error("Failed to apply watch database mirror: \(error.localizedDescription)")
+                }
+            }
+        ), errorHandler: { error in
+            Current.Log.error("Failed to fetch watch database mirror: \(error.localizedDescription)")
+        })
     }
 
     @MainActor
@@ -146,23 +232,6 @@ final class WatchHomeViewModel: ObservableObject {
         updateLoading(isLoading: false)
     }
 
-    @MainActor
-    private func clearCacheAndLoad() {
-        do {
-            _ = try Current.database().write { db in
-                try WatchConfig.deleteAll(db)
-            }
-        } catch {
-            Current.Log
-                .error(
-                    "Failed to delete watch config and/or magic item info in database on Apple watch, error: \(error.localizedDescription)"
-                )
-        }
-
-        deleteItemsInfoInCache()
-        loadCache()
-    }
-
     private func saveItemsInfoInCache(_ itemsInfo: [MagicItem.Info]) {
         do {
             let fileURL = AppConstants.watchMagicItemsInfo
@@ -172,15 +241,6 @@ final class WatchHomeViewModel: ObservableObject {
                 .verbose("JSON saved successfully for watch magic items info, file URL: \(fileURL.absoluteString)")
         } catch {
             Current.Log.error("Error saving JSON for magic items info: \(error)")
-        }
-    }
-
-    private func deleteItemsInfoInCache() {
-        do {
-            let fileURL = AppConstants.watchMagicItemsInfo
-            try FileManager.default.removeItem(at: fileURL)
-        } catch {
-            Current.Log.error("Error deleting JSON for magic items info: \(error)")
         }
     }
 
@@ -248,11 +308,11 @@ extension WatchHomeViewModel {
         case decodeFailed
     }
 
-    /// Every edit needs an immediate round-trip to the phone (the source of truth), so we require the
-    /// phone to be immediately reachable, matching `WatchServerSync.request()`. These mutation methods
-    /// mirror the iPhone `WatchConfigurationViewModel`; they run on the main thread (SwiftUI event
-    /// handlers) and are deliberately not actor-isolated so they can be called from `onMove`/`onDelete`
-    /// closures and from callback closures, just like the iPhone view model.
+    /// Edits are applied locally first (so they work offline) and pushed to the phone — the source of
+    /// truth — only when it's immediately reachable, matching `WatchServerSync.request()`. The mutation
+    /// methods below mirror the iPhone `WatchConfigurationViewModel`; they run on the main thread
+    /// (SwiftUI event handlers) and are deliberately not actor-isolated so they can be called from
+    /// `onMove`/`onDelete` closures and from callback closures, just like the iPhone view model.
     var isPhoneReachable: Bool {
         Communicator.shared.currentReachability == .immediatelyReachable
     }
@@ -414,58 +474,91 @@ extension WatchHomeViewModel {
 
     // MARK: Persistence
 
-    /// Persist the current working copy to the phone (single source of truth). The phone writes it to
-    /// GRDB and replies with the authoritative config + resolved info, handled by the existing
-    /// `watchConfig` response path. On failure we revert to the persisted config and surface an error.
+    /// Persist the working copy locally so offline edits survive, and — when the phone is reachable —
+    /// push it to the phone (source of truth). Offline edits sync, or prompt on conflict, on the next
+    /// reload.
+    @MainActor
     func saveConfig() {
-        guard isPhoneReachable else {
-            editErrorMessage = L10n.Watch.Config.Edit.Error.notReachable
-            return
-        }
+        watchConfig.stampModified()
+        persistLocalConfig(watchConfig)
+        guard isPhoneReachable else { return }
         isLoading = true
-        Communicator.shared.send(.init(
-            identifier: InteractiveImmediateMessages.watchConfigUpdate.rawValue,
-            content: ["config": watchConfig.encodeForWatch()],
-            reply: { [weak self] message in
-                Task { @MainActor in self?.handleMessageResponse(message) }
+        pushLocalConfig(watchConfig)
+    }
+
+    private func persistLocalConfig(_ config: WatchConfig) {
+        do {
+            try Current.database().write { db in
+                var config = config
+                if config.id != WatchConfig.watchConfigId {
+                    try WatchConfig.deleteAll(db)
+                    config.id = WatchConfig.watchConfigId
+                }
+                try config.insert(db, onConflict: .replace)
             }
-        ), errorHandler: { [weak self] error in
-            Current.Log.error("Failed to send watch config update: \(error.localizedDescription)")
-            Task { @MainActor in
-                self?.isLoading = false
-                self?.editErrorMessage = L10n.Watch.Config.Edit.Error.saveFailed
-                self?.loadCache()
-            }
-        })
+        } catch {
+            Current.Log.error("Failed to persist watch config locally: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: Conflict resolution
+
+    struct ConfigConflict {
+        let phoneConfig: WatchConfig?
+        let phoneItemsInfo: [MagicItem.Info]
+    }
+
+    @MainActor
+    func resolveConflictKeepingWatch() {
+        let local = (try? WatchConfig.config()) ?? nil
+        pendingConflict = nil
+        isLoading = true
+        pushLocalConfig(local)
+    }
+
+    @MainActor
+    func resolveConflictUsingiPhone() {
+        let conflict = pendingConflict
+        pendingConflict = nil
+        isLoading = true
+        adopt(phoneConfig: conflict?.phoneConfig, itemsInfo: conflict?.phoneItemsInfo ?? [])
     }
 
     // MARK: Available items
 
-    /// Ask the phone for the items the user can add (scripts/scenes/automations across all servers).
+    /// Build the list of addable items (scripts/scenes/automations across all servers) from the
+    /// locally-mirrored database, so the add flow works without the phone nearby. Mirrors the
+    /// phone-side `watchConfigAvailableItems` handler; items are stored as `type: .entity`.
     func fetchAvailableItems(
         completion: @escaping (Swift.Result<WatchConfigAvailableItems, WatchConfigEditError>)
             -> Void
     ) {
-        guard isPhoneReachable else {
-            completion(.failure(.notReachable))
-            return
-        }
-        Communicator.shared.send(.init(
-            identifier: InteractiveImmediateMessages.watchConfigAvailableItems.rawValue,
-            reply: { message in
-                DispatchQueue.main.async {
-                    guard let data = message.content["availableItems"] as? Data,
-                          let items = WatchConfigAvailableItems.decodeForWatch(data) else {
-                        completion(.failure(.decodeFailed))
-                        return
+        let allowedDomains: Set<String> = [
+            Domain.script.rawValue,
+            Domain.scene.rawValue,
+            Domain.automation.rawValue,
+        ]
+        let magicItemProvider = Current.magicItemProvider()
+        magicItemProvider.loadInformation { entitiesPerServer in
+            let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in
+                let serverId = server.identifier.rawValue
+                let serverPrefix = "\(server.info.name) • "
+                let candidates: [WatchConfigAvailableItems.Candidate] = (entitiesPerServer[serverId] ?? [])
+                    .filter { allowedDomains.contains($0.domain) }
+                    .compactMap { entity in
+                        let item = MagicItem(id: entity.entityId, serverId: serverId, type: .entity)
+                        guard let info = magicItemProvider.getInfo(for: item) else { return nil }
+                        let context = info.contextSubtitle.map { subtitle in
+                            subtitle.hasPrefix(serverPrefix) ? String(subtitle.dropFirst(serverPrefix.count)) : subtitle
+                        }
+                        return .init(item: item, info: info, contextSubtitle: context)
                     }
-                    completion(.success(items))
-                }
+                return .init(serverId: serverId, serverName: server.info.name, candidates: candidates)
             }
-        ), errorHandler: { error in
-            Current.Log.error("Failed to fetch available watch items: \(error.localizedDescription)")
-            DispatchQueue.main.async { completion(.failure(.sendFailed)) }
-        })
+            DispatchQueue.main.async {
+                completion(.success(WatchConfigAvailableItems(servers: groups)))
+            }
+        }
     }
 
     private func seedInfo(_ info: MagicItem.Info?) {

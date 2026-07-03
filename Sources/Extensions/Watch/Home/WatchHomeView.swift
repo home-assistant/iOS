@@ -72,17 +72,20 @@ struct WatchHomeView: View {
             }
         }
         .alert(
-            Text(verbatim: L10n.Watch.Config.Edit.title),
+            Text(verbatim: L10n.Watch.Config.Conflict.title),
             isPresented: Binding(
-                get: { viewModel.editErrorMessage != nil },
-                set: { if !$0 { viewModel.editErrorMessage = nil } }
+                get: { viewModel.pendingConflict != nil },
+                set: { if !$0 { viewModel.pendingConflict = nil } }
             )
         ) {
-            Button(L10n.okLabel, role: .cancel) {}
-        } message: {
-            if let editErrorMessage = viewModel.editErrorMessage {
-                Text(verbatim: editErrorMessage)
+            Button(L10n.Watch.Config.Conflict.keepWatch) {
+                viewModel.resolveConflictKeepingWatch()
             }
+            Button(L10n.Watch.Config.Conflict.useIphone) {
+                viewModel.resolveConflictUsingiPhone()
+            }
+        } message: {
+            Text(verbatim: L10n.Watch.Config.Conflict.message)
         }
         .onAppear {
             Task {
@@ -171,18 +174,12 @@ struct WatchHomeView: View {
 
     private var addRow: some View {
         Button {
-            if viewModel.isPhoneReachable {
-                activeSheet = .add
-            } else {
-                viewModel.editErrorMessage = L10n.Watch.Config.Edit.Error.notReachable
-            }
+            activeSheet = .add
         } label: {
             Label(L10n.Watch.Config.Add.title, systemSymbol: .plus)
                 .frame(maxWidth: .infinity)
                 .contentShape(Rectangle())
         }
-        .disabled(!viewModel.isPhoneReachable)
-        .opacity(viewModel.isPhoneReachable ? 1 : 0.4)
         .watchItemRowStyle()
     }
 
@@ -236,10 +233,6 @@ struct WatchHomeView: View {
     }
 
     private func enterEditMode() {
-        guard viewModel.isPhoneReachable else {
-            viewModel.editErrorMessage = L10n.Watch.Config.Edit.Error.notReachable
-            return
-        }
         withAnimation { isEditing = true }
     }
 

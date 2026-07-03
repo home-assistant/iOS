@@ -1584,6 +1584,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.config.assist.show" = "Show Assist";
 "watch.config.assist.title" = "Assist";
 "watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"watch.config.conflict.keep_watch" = "Keep Watch Changes";
+"watch.config.conflict.message" = "This watch and your iPhone both changed the configuration since they last synced. Which do you want to keep?";
+"watch.config.conflict.title" = "Sync Conflict";
+"watch.config.conflict.use_iphone" = "Use iPhone";
 "watch.config.edit.add_button" = "Add";
 "watch.config.edit.delete" = "Delete";
 "watch.config.edit.error.not_reachable" = "Keep your iPhone nearby to change what's shown on your watch.";

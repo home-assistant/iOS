@@ -33,8 +33,6 @@ struct WatchHomeFooterView: View {
         }
         .buttonStyle(.plain)
         .circularGlassOrLegacyBackground()
-        .disabled(!viewModel.isPhoneReachable)
-        .opacity(viewModel.isPhoneReachable ? 1 : 0.4)
     }
 
     private var settingsButton: some View {
