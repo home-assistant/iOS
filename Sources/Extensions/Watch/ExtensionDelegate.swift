@@ -246,7 +246,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
-    private func updateContext(_ content: Content) {
+    private func updateContext(_ content: HAWatchConnectivity.Content) {
         let realm = Current.realm()
 
         if let complicationsDictionary = content["complications"] as? [[String: Any]] {
