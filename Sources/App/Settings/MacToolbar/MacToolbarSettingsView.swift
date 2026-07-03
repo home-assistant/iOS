@@ -109,10 +109,10 @@ final class MacToolbarSettingsViewModel: ObservableObject {
     }
 
     func remove(_ item: MagicItem) {
-        persist(items: items.filter { $0 != item })
+        persist(items: items.filter { $0 != item }, change: .removed(item))
     }
 
-    private func persist(items newItems: [MagicItem]) {
+    private func persist(items newItems: [MagicItem], change: MacToolbarConfigChange) {
         do {
             var config = try MacToolbarConfig.config() ?? MacToolbarConfig()
             config.items = newItems
@@ -120,7 +120,11 @@ final class MacToolbarSettingsViewModel: ObservableObject {
                 try config.insert(db, onConflict: .replace)
             }
             items = newItems
-            NotificationCenter.default.post(name: .macToolbarConfigDidChange, object: nil)
+            NotificationCenter.default.post(
+                name: .macToolbarConfigDidChange,
+                object: nil,
+                userInfo: [MacToolbarConfigChange.userInfoKey: change]
+            )
         } catch {
             Current.Log.error("Failed to update Mac toolbar config: \(error.localizedDescription)")
         }
