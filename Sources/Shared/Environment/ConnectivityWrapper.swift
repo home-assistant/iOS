@@ -3,7 +3,6 @@ import Foundation
 import CoreTelephony
 import Reachability
 #endif
-import Communicator
 import NetworkExtension
 
 /// Wrapper around CoreTelephony, Reachability

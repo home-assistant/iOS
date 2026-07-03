@@ -33,6 +33,7 @@ public protocol WCSessionProtocol: AnyObject {
     var isWatchAppInstalledProxy: Bool { get }
     var isComplicationEnabledProxy: Bool { get }
     var remainingComplicationUserInfoTransfersProxy: Int { get }
+    var watchDirectoryURLProxy: URL? { get }
     @discardableResult func transferCurrentComplicationUserInfoProxy(_ userInfo: [String: Any]) -> WCTransferHandle
     #endif
 }
@@ -76,6 +77,7 @@ extension WCSession: WCSessionProtocol {
     public var isWatchAppInstalledProxy: Bool { isWatchAppInstalled }
     public var isComplicationEnabledProxy: Bool { isComplicationEnabled }
     public var remainingComplicationUserInfoTransfersProxy: Int { remainingComplicationUserInfoTransfers }
+    public var watchDirectoryURLProxy: URL? { watchDirectoryURL }
 
     @discardableResult public func transferCurrentComplicationUserInfoProxy(_ userInfo: [String: Any])
         -> WCTransferHandle {

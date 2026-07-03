@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import NetworkExtension
 import PromiseKit
@@ -80,7 +79,7 @@ final class WatchHomeViewModel: ObservableObject {
     /// Handle the phone's reply to a config pull, deciding whether to adopt it, push local offline
     /// edits, or (when both sides changed) surface a conflict for the user to resolve.
     @MainActor
-    private func reconcile(with message: ImmediateMessage) {
+    private func reconcile(with message: HAWatchConnectivity.ImmediateMessage) {
         switch message.identifier {
         case InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue:
             reconcile(phoneConfig: nil, phoneItemsInfo: [])
@@ -171,7 +170,7 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     @MainActor
-    private func adoptPushReply(_ message: ImmediateMessage) {
+    private func adoptPushReply(_ message: HAWatchConnectivity.ImmediateMessage) {
         if message.identifier == InteractiveImmediateResponses.watchConfigResponse.rawValue,
            let configData = message.content["config"] as? Data,
            let phoneConfig = WatchConfig.decodeForWatch(configData),

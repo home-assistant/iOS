@@ -58,6 +58,7 @@ private final class FakeWCSession: WCSessionProtocol {
     var isWatchAppInstalledProxy = true
     var isComplicationEnabledProxy = false
     var remainingComplicationUserInfoTransfersProxy = 50
+    var watchDirectoryURLProxy: URL?
     var transferredComplicationUserInfos: [[String: Any]] = []
     var lastComplicationHandle: FakeTransferHandle?
 
@@ -419,11 +420,11 @@ struct WatchConnectivityWatchState_test {
 
         fake.isWatchAppInstalledProxy = true
         fake.isComplicationEnabledProxy = false
-        #expect(manager.currentWatchState == .paired(.installed))
+        #expect(manager.currentWatchState == .paired(.installed(.notEnabled, nil)))
 
         fake.isComplicationEnabledProxy = true
         fake.remainingComplicationUserInfoTransfersProxy = 7
-        #expect(manager.currentWatchState == .paired(.enabled(numberOfComplicationUpdatesAvailableToday: 7)))
+        #expect(manager.currentWatchState == .paired(.installed(.enabled(numberOfUpdatesAvailableToday: 7), nil)))
     }
 
     @Test func complicationTransferResolvesWithRemainingBudget() throws {

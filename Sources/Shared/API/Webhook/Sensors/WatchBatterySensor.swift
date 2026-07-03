@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import PromiseKit
 

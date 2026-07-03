@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import ObjectMapper
 import PromiseKit
@@ -62,7 +61,7 @@ public extension HomeAssistantAPI {
         }
         #endif
 
-        let context = Context(content: HomeAssistantAPI.watchContext)
+        let context = HAWatchConnectivity.Context(content: HomeAssistantAPI.watchContext)
 
         do {
             try Communicator.shared.sync(context)

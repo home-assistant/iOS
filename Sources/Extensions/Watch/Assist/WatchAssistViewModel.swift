@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import PromiseKit
 import Shared
@@ -59,7 +58,7 @@ final class WatchAssistViewModel: ObservableObject {
     func assist() {
         if assistService.deviceReachable {
             // Extra message just to wake up iPhone from the background
-            Communicator.shared.send(ImmediateMessage(identifier: "wakeup"))
+            Communicator.shared.send(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup"))
             audioRecorder.startRecording()
         } else {
             state = .idle

@@ -77,12 +77,11 @@ public final class WatchConnectivityManager: NSObject {
     public var currentWatchState: HAWatchConnectivity.WatchState {
         guard let session, session.isPairedProxy else { return .notPaired }
         guard session.isWatchAppInstalledProxy else { return .paired(.notInstalled) }
-        if session.isComplicationEnabledProxy {
-            return .paired(.enabled(
-                numberOfComplicationUpdatesAvailableToday: session.remainingComplicationUserInfoTransfersProxy
-            ))
-        }
-        return .paired(.installed)
+        let complicationState: HAWatchConnectivity.WatchState.AppState.ComplicationState =
+            session.isComplicationEnabledProxy
+                ? .enabled(numberOfUpdatesAvailableToday: session.remainingComplicationUserInfoTransfersProxy)
+                : .notEnabled
+        return .paired(.installed(complicationState, session.watchDirectoryURLProxy))
     }
     #endif
 

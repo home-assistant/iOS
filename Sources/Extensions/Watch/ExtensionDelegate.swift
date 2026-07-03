@@ -1,5 +1,4 @@
 import ClockKit
-import Communicator
 import PromiseKit
 import Shared
 import UserNotifications
@@ -147,17 +146,17 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     func setupWatchCommunicator() {
         // This directly mutates the data structure for observations to avoid race conditions.
 
-        Communicator.State.observations.store[.init(queue: .main)] = { state in
+        Communicator.shared.state.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
 
             _ = HomeAssistantAPI.SyncWatchContext()
         }
 
-        Reachability.observations.store[.init(queue: .main)] = { reachability in
+        Communicator.shared.reachability.observations.store[.init(queue: .main)] = { reachability in
             Current.Log.verbose("Reachability changed: \(reachability)")
         }
 
-        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
+        Communicator.shared.interactiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
             Current.Log.verbose("Received message: \(message.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
@@ -165,13 +164,13 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         immediateCommunicatorService = ImmediateCommunicatorService.shared
 
-        ImmediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
+        Communicator.shared.immediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
             Current.Log.verbose("Received message: \(message.identifier)")
             self?.immediateCommunicatorService?.evaluateMessage(message)
             self?.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        GuaranteedMessage.observations.store[.init(queue: .main)] = { message in
+        Communicator.shared.guaranteedMessage.observations.store[.init(queue: .main)] = { message in
             Current.Log.verbose("Received guaranteed message! \(message)")
 
             if message.identifier == GuaranteedMessages.sync.rawValue {
@@ -181,25 +180,25 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Blob.observations.store[.init(queue: .main)] = { blob in
+        Communicator.shared.blob.observations.store[.init(queue: .main)] = { blob in
             Current.Log.verbose("Received blob: \(blob.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Context.observations.store[.init(queue: .main)] = { [weak self] context in
+        Communicator.shared.context.observations.store[.init(queue: .main)] = { [weak self] context in
             Current.Log.verbose("Received context: \(context)")
 
             self?.updateContext(context.content)
         }
 
-        ComplicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
+        Communicator.shared.complicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
             self.updateComplications()
         }
 
-        _ = Communicator.shared
+        Communicator.shared.activate()
     }
 
     private func enqueueForCompletion(_ task: WKWatchConnectivityRefreshBackgroundTask) {

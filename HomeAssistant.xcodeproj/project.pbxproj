@@ -1295,6 +1295,7 @@
 		A7EBE4DCB94E043DCA401BC9 /* HAWatchConnectivityBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE900579D9416BFAA34C5769 /* HAWatchConnectivityBlob.swift */; };
 		BEAB7DADF60B18266F8F5EC0 /* HAWatchConnectivityComplicationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B221C55E9F8D7D035B5A67 /* HAWatchConnectivityComplicationInfo.swift */; };
 		6F9DE026A3E5B29A18ADECCF /* WCSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699711AAB843A3A6B110FED /* WCSessionProtocol.swift */; };
+		89AB31C4E51C6469F64307E1 /* WatchConnectivityAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */; };
 		FE8761059377BD4C45F94035 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A49D68C2121E4EF9253980 /* WatchConnectivityManager.swift */; };
 		B56A9AFECBA6229C0AEEAB4B /* WatchConnectivityManager+Send.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6C0AF840114403CECD9CE2 /* WatchConnectivityManager+Send.swift */; };
 		ABB0897221138DA70FAC3460 /* WatchConnectivityManager+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F583CF6B1B80D904D17CA /* WatchConnectivityManager+Delegate.swift */; };
@@ -1669,6 +1670,7 @@
 		62E5F56FDB83F7C7B3D14A8F /* HAWatchConnectivityBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE900579D9416BFAA34C5769 /* HAWatchConnectivityBlob.swift */; };
 		4B7EE27E39BFC01761838770 /* HAWatchConnectivityComplicationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B221C55E9F8D7D035B5A67 /* HAWatchConnectivityComplicationInfo.swift */; };
 		6B70C616A821B4DA8D783070 /* WCSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699711AAB843A3A6B110FED /* WCSessionProtocol.swift */; };
+		E8EEF4E584B6F9F24A3F24C8 /* WatchConnectivityAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */; };
 		ADA8DA7ECE39D94C88C4AA2E /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A49D68C2121E4EF9253980 /* WatchConnectivityManager.swift */; };
 		3C845E2CAF04CA64B5A640E7 /* WatchConnectivityManager+Send.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6C0AF840114403CECD9CE2 /* WatchConnectivityManager+Send.swift */; };
 		4B17A9AA16801F9C4EBEC1F8 /* WatchConnectivityManager+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F583CF6B1B80D904D17CA /* WatchConnectivityManager+Delegate.swift */; };
@@ -3198,6 +3200,7 @@
 		FE900579D9416BFAA34C5769 /* HAWatchConnectivityBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAWatchConnectivityBlob.swift; sourceTree = "<group>"; };
 		39B221C55E9F8D7D035B5A67 /* HAWatchConnectivityComplicationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAWatchConnectivityComplicationInfo.swift; sourceTree = "<group>"; };
 		0699711AAB843A3A6B110FED /* WCSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCSessionProtocol.swift; sourceTree = "<group>"; };
+		81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityAliases.swift; sourceTree = "<group>"; };
 		C8A49D68C2121E4EF9253980 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		9D6C0AF840114403CECD9CE2 /* WatchConnectivityManager+Send.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchConnectivityManager+Send.swift"; sourceTree = "<group>"; };
 		433F583CF6B1B80D904D17CA /* WatchConnectivityManager+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchConnectivityManager+Delegate.swift"; sourceTree = "<group>"; };
@@ -5316,6 +5319,7 @@
 				FE900579D9416BFAA34C5769 /* HAWatchConnectivityBlob.swift */,
 				39B221C55E9F8D7D035B5A67 /* HAWatchConnectivityComplicationInfo.swift */,
 				0699711AAB843A3A6B110FED /* WCSessionProtocol.swift */,
+				81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */,
 				C8A49D68C2121E4EF9253980 /* WatchConnectivityManager.swift */,
 				9D6C0AF840114403CECD9CE2 /* WatchConnectivityManager+Send.swift */,
 				433F583CF6B1B80D904D17CA /* WatchConnectivityManager+Delegate.swift */,
@@ -10314,6 +10318,7 @@
 				62E5F56FDB83F7C7B3D14A8F /* HAWatchConnectivityBlob.swift in Sources */,
 				4B7EE27E39BFC01761838770 /* HAWatchConnectivityComplicationInfo.swift in Sources */,
 				6B70C616A821B4DA8D783070 /* WCSessionProtocol.swift in Sources */,
+				E8EEF4E584B6F9F24A3F24C8 /* WatchConnectivityAliases.swift in Sources */,
 				ADA8DA7ECE39D94C88C4AA2E /* WatchConnectivityManager.swift in Sources */,
 				3C845E2CAF04CA64B5A640E7 /* WatchConnectivityManager+Send.swift in Sources */,
 				4B17A9AA16801F9C4EBEC1F8 /* WatchConnectivityManager+Delegate.swift in Sources */,
@@ -10684,6 +10689,7 @@
 				A7EBE4DCB94E043DCA401BC9 /* HAWatchConnectivityBlob.swift in Sources */,
 				BEAB7DADF60B18266F8F5EC0 /* HAWatchConnectivityComplicationInfo.swift in Sources */,
 				6F9DE026A3E5B29A18ADECCF /* WCSessionProtocol.swift in Sources */,
+				89AB31C4E51C6469F64307E1 /* WatchConnectivityAliases.swift in Sources */,
 				FE8761059377BD4C45F94035 /* WatchConnectivityManager.swift in Sources */,
 				B56A9AFECBA6229C0AEEAB4B /* WatchConnectivityManager+Send.swift in Sources */,
 				ABB0897221138DA70FAC3460 /* WatchConnectivityManager+Delegate.swift in Sources */,
