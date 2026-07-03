@@ -1,10 +1,18 @@
 import Foundation
 
 public extension WatchConnectivityManager {
+    /// Ceiling for an interactive reply. WCSession's own reply timeout is long/undefined and only
+    /// surfaces if you pass an errorHandler, so the layer enforces a predictable bound: if no reply or
+    /// delivery error arrives within this window, `errorHandler` is called with `.replyTimedOut`. This
+    /// guarantees a UI that blocks on the reply can never spin forever.
+    static let interactiveReplyTimeout: TimeInterval = 30
+
     /// Interactive request/reply. Requires the counterpart immediately reachable. The response envelope
-    /// is decoded back into an `ImmediateMessage` and delivered to `message.reply`.
+    /// is decoded back into an `ImmediateMessage` and delivered to `message.reply`. `errorHandler` fires
+    /// at most once, on delivery failure or after `timeout` seconds with no reply.
     func send(
         _ message: HAWatchConnectivity.InteractiveImmediateMessage,
+        timeout: TimeInterval = WatchConnectivityManager.interactiveReplyTimeout,
         errorHandler: ((Error) -> Void)? = nil
     ) {
         guard let session else {
@@ -19,11 +27,27 @@ public extension WatchConnectivityManager {
             errorHandler?(HAWatchConnectivity.ConnectivityError.notReachable)
             return
         }
+
+        // At most one of {delivery error, timeout} may call errorHandler; a reply cancels the timeout.
+        let errorGate = WatchConnectivityOnceFlag()
+        if timeout > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
+                if errorGate.trySet() {
+                    errorHandler?(HAWatchConnectivity.ConnectivityError.replyTimedOut)
+                }
+            }
+        }
+
         session.sendMessageProxy(message.jsonRepresentation(), replyHandler: { responseEnvelope in
+            errorGate.markResolved()
             let response = HAWatchConnectivity.ImmediateMessage(content: responseEnvelope)
                 ?? HAWatchConnectivity.ImmediateMessage(identifier: message.identifier, content: responseEnvelope)
             message.reply(response)
-        }, errorHandler: errorHandler)
+        }, errorHandler: { error in
+            if errorGate.trySet() {
+                errorHandler?(error)
+            }
+        })
     }
 
     /// One-way message. Requires the counterpart immediately reachable.
@@ -118,4 +142,25 @@ public extension WatchConnectivityManager {
         completionLock.unlock()
     }
     #endif
+}
+
+/// Thread-safe one-shot latch. `trySet()` returns true only for the first caller (used to let the
+/// delivery-error and timeout races call the error handler at most once); `markResolved()` latches it
+/// without contending (used when a reply arrives, to suppress the pending timeout).
+final class WatchConnectivityOnceFlag {
+    private let lock = NSLock()
+    private var resolved = false
+
+    func trySet() -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        if resolved { return false }
+        resolved = true
+        return true
+    }
+
+    func markResolved() {
+        lock.lock()
+        resolved = true
+        lock.unlock()
+    }
 }

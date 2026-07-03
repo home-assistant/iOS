@@ -206,6 +206,40 @@ struct WatchConnectivitySend_test {
         #expect(receivedReply?.content["ok"] as? Bool == true)
     }
 
+    @Test func interactiveSendTimesOutWhenNoReply() async throws {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        var error: Error?
+        manager.send(
+            HAWatchConnectivity.InteractiveImmediateMessage(identifier: "watchConfig", reply: { _ in }),
+            timeout: 0.1,
+            errorHandler: { error = $0 }
+        )
+        #expect(fake.sentMessages.count == 1)
+        try await Task.sleep(for: .milliseconds(400))
+        #expect(error as? HAWatchConnectivity.ConnectivityError == .replyTimedOut)
+    }
+
+    @Test func interactiveReplyCancelsTimeout() async throws {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        var receivedReply: HAWatchConnectivity.ImmediateMessage?
+        var error: Error?
+        manager.send(
+            HAWatchConnectivity.InteractiveImmediateMessage(identifier: "watchConfig", reply: { receivedReply = $0 }),
+            timeout: 0.1,
+            errorHandler: { error = $0 }
+        )
+        fake.sentMessages[0].replyHandler?(
+            HAWatchConnectivity.ImmediateMessage(identifier: "watchConfigResponse").jsonRepresentation()
+        )
+        try await Task.sleep(for: .milliseconds(400))
+        #expect(receivedReply?.identifier == "watchConfigResponse")
+        #expect(error == nil)
+    }
+
     @Test func guaranteedSendUsesTransferUserInfoWithoutReachability() {
         let fake = FakeWCSession()
         fake.isReachableProxy = false

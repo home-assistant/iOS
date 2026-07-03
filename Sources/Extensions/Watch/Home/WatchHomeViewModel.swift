@@ -61,7 +61,15 @@ final class WatchHomeViewModel: ObservableObject {
             reply: { [weak self] message in
                 Task { @MainActor in self?.reconcile(with: message) }
             }
-        ))
+        ), errorHandler: { [weak self] error in
+            // iPhone unreachable / slow / no reply within the timeout: stop the spinner and fall back to
+            // the cached config so the screen never hangs.
+            Current.Log.error("Watch config request failed: \(error.localizedDescription)")
+            Task { @MainActor in
+                self?.loadCache()
+                self?.updateLoading(isLoading: false)
+            }
+        })
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {
