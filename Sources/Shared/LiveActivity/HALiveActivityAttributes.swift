@@ -98,12 +98,14 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// browser. Nil just opens the originating server.
         public var url: String?
 
-        /// Lock Screen background color, parsed like `notification_icon_color`. Defaults to black;
-        /// text auto-contrasts with it. Maps to `background_color`.
+        /// Lock Screen background color, parsed like `notification_icon_color`. When unset the
+        /// system renders its default translucent, appearance-adaptive background; text
+        /// auto-contrasts against an explicit color. Maps to `background_color`.
         public var backgroundColor: String?
 
-        /// Lock Screen text/foreground color, parsed like `notification_icon_color`.
-        /// Overrides the auto-contrast default. Maps to `text_color`.
+        /// Lock Screen text/foreground color, parsed like `notification_icon_color`. Overrides the
+        /// auto-contrast (explicit background) or adaptive (default background) default.
+        /// Maps to `text_color`.
         public var textColor: String?
 
         /// Hex tint for the progress bar, parsed like `notification_icon_color`. Falls back to

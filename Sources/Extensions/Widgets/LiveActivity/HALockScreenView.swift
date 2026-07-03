@@ -13,6 +13,10 @@ struct HALockScreenView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
 
+    /// Drives the light/dark styling when we render on the system's adaptive background
+    /// (i.e. no explicit `background_color`).
+    @Environment(\.colorScheme) private var colorScheme
+
     /// Icon size for the MDI icon in the header row.
     private static let iconSize: CGFloat = 28
 
@@ -119,26 +123,34 @@ struct HALockScreenView: View {
         HAActivityVisualStyle.color(from: state.progressBarColor ?? state.color)
     }
 
-    /// Luma of the resolved background — drives element opacities and the auto-contrast default.
+    /// Whether light-on-dark styling applies: driven by an explicit `background_color`'s luma,
+    /// else by the current appearance when we render on the system's adaptive background.
     private var useLightText: Bool {
-        HAActivityVisualStyle.prefersLightText(onBackground: state.backgroundColor)
+        if let background = HAActivityVisualStyle.normalized(state.backgroundColor) {
+            return HAActivityVisualStyle.prefersLightText(onBackground: background)
+        }
+        return colorScheme == .dark
     }
 
-    /// Explicit `text_color`, else the auto-contrast default.
-    private var foreground: Color {
+    /// Explicit `text_color` or auto-contrast against an explicit `background_color`, else nil to
+    /// defer to the adaptive system color so text stays legible on the default background.
+    private var resolvedForeground: Color? {
         HAActivityVisualStyle.foregroundColor(textColor: state.textColor, onBackground: state.backgroundColor)
     }
 
     private var primaryTextColor: Color {
-        foreground
+        resolvedForeground ?? .primary
     }
 
     private var secondaryTextColor: Color {
-        foreground.opacity(useLightText ? 0.8 : 0.72)
+        if let resolvedForeground {
+            return resolvedForeground.opacity(useLightText ? 0.8 : 0.72)
+        }
+        return .secondary
     }
 
     private var trackColor: Color {
-        foreground.opacity(useLightText ? 0.14 : 0.08)
+        (resolvedForeground ?? .primary).opacity(useLightText ? 0.14 : 0.08)
     }
 }
 
@@ -146,13 +158,9 @@ enum HAActivityVisualStyle {
     /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
     private static let haBlueHex = "#03A9F4"
 
-    /// Default Lock Screen background. Forced (not adaptive) to avoid a start-up flash where the
-    /// system background resolves to the wrong appearance; overridable via `background_color`.
-    private static let defaultBackgroundHex = "#000000"
-
     /// Treats nil, empty, or whitespace-only as "unset" so the caller's default applies — an empty
     /// `background_color`/`text_color` would otherwise parse to transparent via UIColor(hex:).
-    private static func normalized(_ hex: String?) -> String? {
+    static func normalized(_ hex: String?) -> String? {
         let trimmed = hex?.trimmingCharacters(in: .whitespacesAndNewlines)
         return (trimmed?.isEmpty == false) ? trimmed : nil
     }
@@ -161,22 +169,33 @@ enum HAActivityVisualStyle {
         UIColor(hex: color ?? haBlueHex)
     }
 
-    static func backgroundColor(from hex: String?) -> Color {
-        Color(uiColor: UIColor(hex: normalized(hex) ?? defaultBackgroundHex))
+    /// Explicit `background_color`, or nil to let the system render its default translucent,
+    /// appearance-adaptive Live Activity background (Apple's recommended default).
+    static func backgroundColor(from hex: String?) -> Color? {
+        guard let hex = normalized(hex) else { return nil }
+        return Color(uiColor: UIColor(hex: hex))
     }
 
-    static func prefersLightText(onBackground hex: String?) -> Bool {
+    /// Whether light text reads best on the given opaque background hex, by Rec. 601 luma.
+    static func prefersLightText(onBackground hex: String) -> Bool {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
-        UIColor(hex: normalized(hex) ?? defaultBackgroundHex).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        UIColor(hex: hex).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return (0.299 * red + 0.587 * green + 0.114 * blue) < 0.6
     }
 
-    /// Explicit `text_color` if set, else a light/dark default chosen to contrast the background.
-    static func foregroundColor(textColor: String?, onBackground backgroundHex: String?) -> Color {
+    /// Foreground that can be resolved without the render environment:
+    ///   - explicit `text_color`, else
+    ///   - a black/white auto-contrast against an explicit `background_color`.
+    /// Nil when neither is set, so the caller falls back to the adaptive system color (`.primary`),
+    /// which stays legible on the system's translucent background in both light and dark mode.
+    static func foregroundColor(textColor: String?, onBackground backgroundHex: String?) -> Color? {
         if let textColor = normalized(textColor) {
             return Color(uiColor: UIColor(hex: textColor))
         }
-        return prefersLightText(onBackground: backgroundHex) ? .white : .black
+        if let backgroundHex = normalized(backgroundHex) {
+            return prefersLightText(onBackground: backgroundHex) ? .white : .black
+        }
+        return nil
     }
 
     static func color(from color: String?) -> Color {
