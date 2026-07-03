@@ -333,6 +333,18 @@ extension WatchHomeViewModel {
         watchConfig.items.move(fromOffsets: source, toOffset: destination)
     }
 
+    /// Move a root item one position up/down. Drag-to-reorder is unreliable on watchOS, so the edit
+    /// UI drives reordering with explicit arrows.
+    func moveItemUp(at index: Int) {
+        guard index > 0, index < watchConfig.items.count else { return }
+        watchConfig.items.move(fromOffsets: IndexSet(integer: index), toOffset: index - 1)
+    }
+
+    func moveItemDown(at index: Int) {
+        guard index >= 0, index < watchConfig.items.count - 1 else { return }
+        watchConfig.items.move(fromOffsets: IndexSet(integer: index), toOffset: index + 2)
+    }
+
     // MARK: Folder-scoped mutations
 
     func addItemToFolder(folderId: String, item: MagicItem, info: MagicItem.Info?) {
@@ -361,6 +373,26 @@ extension WatchHomeViewModel {
         items.move(fromOffsets: source, toOffset: destination)
         folder.items = items
         watchConfig.items[index] = folder
+    }
+
+    func moveItemUpInFolder(folderId: String, at index: Int) {
+        guard let folderIndex = watchConfig.items.firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = watchConfig.items[folderIndex]
+        var items = folder.items ?? []
+        guard index > 0, index < items.count else { return }
+        items.move(fromOffsets: IndexSet(integer: index), toOffset: index - 1)
+        folder.items = items
+        watchConfig.items[folderIndex] = folder
+    }
+
+    func moveItemDownInFolder(folderId: String, at index: Int) {
+        guard let folderIndex = watchConfig.items.firstIndex(where: { $0.type == .folder && $0.id == folderId }) else { return }
+        var folder = watchConfig.items[folderIndex]
+        var items = folder.items ?? []
+        guard index >= 0, index < items.count - 1 else { return }
+        items.move(fromOffsets: IndexSet(integer: index), toOffset: index + 2)
+        folder.items = items
+        watchConfig.items[folderIndex] = folder
     }
 
     /// Remove an item (or folder) wherever it lives — the root or inside a folder.

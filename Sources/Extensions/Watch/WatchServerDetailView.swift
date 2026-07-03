@@ -25,8 +25,8 @@ struct WatchServerDetailView: View {
 
     var body: some View {
         List {
-            urlOverrideSection
             connectionSection
+            urlOverrideSection
             statusSection
             clientCertificateSection
         }
@@ -80,17 +80,23 @@ struct WatchServerDetailView: View {
         }
     }
 
+    @ViewBuilder
     private var connectionSection: some View {
         Section(header: Text(verbatim: L10n.Settings.ConnectionSection.details)) {
             infoRow(L10n.Settings.ConnectionSection.InternalBaseUrl.title, connection.internalURL?.absoluteString)
-            infoRow(
-                L10n.Settings.ConnectionSection.ExternalBaseUrl.title,
-                connection.address(for: .external)?.absoluteString
-            )
-            infoRow(
-                L10n.Settings.ConnectionSection.RemoteUiUrl.title,
-                connection.address(for: .remoteUI)?.absoluteString
-            )
+            // Remote UI (Nabu Casa cloud) is used only when the server is set to use cloud; in that
+            // case it replaces the external URL, otherwise show the external URL.
+            if connection.useCloud {
+                infoRow(
+                    L10n.Settings.ConnectionSection.RemoteUiUrl.title,
+                    connection.address(for: .remoteUI)?.absoluteString
+                )
+            } else {
+                infoRow(
+                    L10n.Settings.ConnectionSection.ExternalBaseUrl.title,
+                    connection.address(for: .external)?.absoluteString
+                )
+            }
         }
     }
 

@@ -17,8 +17,8 @@ struct WatchFolderContentView: View {
     var body: some View {
         List {
             header
-            ForEach(Array((folder?.items ?? []).enumerated()), id: \.offset) { _, item in
-                rowContent(for: item)
+            ForEach(Array((folder?.items ?? []).enumerated()), id: \.offset) { index, item in
+                rowContent(for: item, at: index)
                     .modify { view in
                         if isEditing {
                             view
@@ -71,18 +71,22 @@ struct WatchFolderContentView: View {
     }
 
     @ViewBuilder
-    private func rowContent(for item: MagicItem) -> some View {
+    private func rowContent(for item: MagicItem, at index: Int) -> some View {
         if isEditing {
-            Button {
-                activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
-            } label: {
-                WatchConfigItemRow(
-                    item: item,
-                    itemInfo: viewModel.info(for: item),
-                    trailingSymbol: .line3Horizontal
+            VStack(spacing: DesignSystem.Spaces.half) {
+                Button {
+                    activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
+                } label: {
+                    WatchConfigItemRow(item: item, itemInfo: viewModel.info(for: item))
+                }
+                .buttonStyle(.plain)
+                WatchReorderControls(
+                    upDisabled: index == 0,
+                    downDisabled: index == (folder?.items?.count ?? 0) - 1,
+                    onUp: { viewModel.moveItemUpInFolder(folderId: folderId, at: index) },
+                    onDown: { viewModel.moveItemDownInFolder(folderId: folderId, at: index) }
                 )
             }
-            .buttonStyle(.plain)
             .watchConfigRowBackground()
         } else {
             WatchMagicViewRow(
@@ -111,10 +115,24 @@ struct WatchFolderContentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             if isEditing {
                 doneButton
+            } else if !(folder?.items?.isEmpty ?? true) {
+                editButton
             }
         }
         .listRowBackground(Color.clear)
         .padding(.top, DesignSystem.Spaces.one)
+    }
+
+    private var editButton: some View {
+        Button {
+            enterEditMode()
+        } label: {
+            Image(systemSymbol: .pencil)
+        }
+        .buttonStyle(.plain)
+        .circularGlassOrLegacyBackground()
+        .disabled(!viewModel.isPhoneReachable)
+        .opacity(viewModel.isPhoneReachable ? 1 : 0.4)
     }
 
     private var addRow: some View {

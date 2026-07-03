@@ -66,20 +66,17 @@ struct WatchSettingsView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } else {
-                ForEach(viewModel.servers, id: \.identifier.rawValue) { server in
-                    NavigationLink {
-                        WatchServerDetailView(server: server)
-                    } label: {
-                        Label {
-                            Text(verbatim: server.info.name)
-                        } icon: {
-                            Image(systemSymbol: .network)
-                        }
+                // Small screen: group servers behind one link; the full list is one tap away.
+                NavigationLink {
+                    WatchServersListView(viewModel: viewModel)
+                } label: {
+                    Label {
+                        Text(verbatim: L10n.Watch.Settings.Servers.header)
+                    } icon: {
+                        Image(systemSymbol: .network)
                     }
                 }
             }
-        } header: {
-            Text(verbatim: L10n.Watch.Settings.Servers.header)
         } footer: {
             // When the synchronized data is from — refreshed via the Home screen's reload button.
             if let lastUpdated = viewModel.lastUpdated {
@@ -88,5 +85,28 @@ struct WatchSettingsView: View {
                 ))
             }
         }
+    }
+}
+
+/// The list of synchronized servers, pushed from the settings "Servers" row so the small settings
+/// screen stays compact. Each server opens its read-only detail.
+private struct WatchServersListView: View {
+    @ObservedObject var viewModel: WatchSettingsViewModel
+
+    var body: some View {
+        List {
+            ForEach(viewModel.servers, id: \.identifier.rawValue) { server in
+                NavigationLink {
+                    WatchServerDetailView(server: server)
+                } label: {
+                    Label {
+                        Text(verbatim: server.info.name)
+                    } icon: {
+                        Image(systemSymbol: .network)
+                    }
+                }
+            }
+        }
+        .navigationTitle(Text(verbatim: L10n.Watch.Settings.Servers.header))
     }
 }

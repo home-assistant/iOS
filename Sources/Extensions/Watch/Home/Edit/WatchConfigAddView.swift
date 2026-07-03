@@ -20,7 +20,11 @@ struct WatchConfigAddView: View {
                 .navigationTitle(Text(verbatim: L10n.Watch.Config.Add.title))
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(L10n.cancelLabel) { dismiss() }
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemSymbol: .xmark)
+                        }
                     }
                 }
         }

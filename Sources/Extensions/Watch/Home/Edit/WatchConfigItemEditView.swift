@@ -31,6 +31,10 @@ struct WatchConfigItemEditView: View {
     @State private var name: String
     @State private var iconName: String?
     @State private var requiresConfirmation: Bool
+    @State private var iconColorHex: String?
+    @State private var backgroundColorHex: String?
+    @State private var textColorHex: String?
+    @State private var useCustomColors: Bool
 
     init(
         mode: Mode,
@@ -50,6 +54,12 @@ struct WatchConfigItemEditView: View {
         _iconName = State(initialValue: item.customization?.icon)
         // Same default as iOS: `Customization.requiresConfirmation` defaults to false.
         _requiresConfirmation = State(initialValue: item.customization?.requiresConfirmation ?? false)
+        _iconColorHex = State(initialValue: item.customization?.iconColor)
+        _backgroundColorHex = State(initialValue: item.customization?.backgroundColor)
+        _textColorHex = State(initialValue: item.customization?.textColor)
+        _useCustomColors = State(
+            initialValue: item.customization?.backgroundColor != nil || item.customization?.textColor != nil
+        )
     }
 
     private var isFolder: Bool { originalItem.type == .folder }
@@ -59,6 +69,16 @@ struct WatchConfigItemEditView: View {
             Section {
                 TextField(placeholderName, text: $name)
                 WatchIconPicker(iconName: $iconName, defaultIcon: defaultIcon)
+            }
+            Section {
+                WatchColorPicker(title: L10n.MagicItem.IconColor.title, colorHex: $iconColorHex)
+                Toggle(isOn: $useCustomColors) {
+                    Text(verbatim: L10n.MagicItem.UseCustomColors.title)
+                }
+                if useCustomColors {
+                    WatchColorPicker(title: L10n.MagicItem.BackgroundColor.title, colorHex: $backgroundColorHex)
+                    WatchColorPicker(title: L10n.MagicItem.TextColor.title, colorHex: $textColorHex)
+                }
             }
             if !isFolder {
                 Section {
@@ -70,8 +90,8 @@ struct WatchConfigItemEditView: View {
             Section {
                 WatchConfigItemRow(item: previewItem, itemInfo: previewInfo)
                     // `MagicItem`'s `==` is identity-only (ignores displayText/customization), so force
-                    // the preview to rebuild when the pending name/icon changes.
-                    .id("\(trimmedName)|\(iconName ?? "")")
+                    // the preview to rebuild when the pending name/icon/color changes.
+                    .id("\(trimmedName)|\(iconName ?? "")|\(iconColorHex ?? "")")
                     .watchConfigRowBackground()
             } header: {
                 Text(verbatim: L10n.Watch.Config.Edit.preview)
@@ -85,13 +105,23 @@ struct WatchConfigItemEditView: View {
             }
         }
         .navigationTitle(Text(verbatim: title))
+        .onChange(of: useCustomColors) { newValue in
+            // Match iOS: seed sensible defaults when turning custom colors on, clear when off.
+            if newValue {
+                if backgroundColorHex == nil { backgroundColorHex = Color.haPrimary.hex() }
+                if textColorHex == nil { textColorHex = Color.white.hex() }
+            } else {
+                backgroundColorHex = nil
+                textColorHex = nil
+            }
+        }
         // A conditional inside `.toolbar { }` needs `ToolbarContentBuilder.buildIf`, which is
         // watchOS 9+. Pick the toolbar variant outside the builder instead (each is static).
         .modify { view in
             if mode == .edit {
                 view.toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(L10n.cancelLabel) { dismiss() }
+                        cancelButton
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         confirmButton
@@ -108,8 +138,21 @@ struct WatchConfigItemEditView: View {
     }
 
     private var confirmButton: some View {
-        Button(commitLabel) { onCommit(editedItem) }
-            .disabled(isFolder && trimmedName.isEmpty)
+        Button {
+            onCommit(editedItem)
+        } label: {
+            Image(systemSymbol: .checkmark)
+        }
+        .tint(.haPrimary)
+        .disabled(isFolder && trimmedName.isEmpty)
+    }
+
+    private var cancelButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Image(systemSymbol: .xmark)
+        }
     }
 
     private var trimmedName: String {
@@ -123,17 +166,28 @@ struct WatchConfigItemEditView: View {
         customization.icon = iconName
         customization.iconIsCustomized = iconName != nil
         customization.requiresConfirmation = requiresConfirmation
+        customization.iconColor = iconColorHex
+        if useCustomColors {
+            customization.backgroundColor = backgroundColorHex
+            customization.textColor = textColorHex
+        } else {
+            customization.backgroundColor = nil
+            customization.textColor = nil
+        }
         item.customization = customization
         return item
     }
 
     private var previewItem: MagicItem { editedItem }
 
+    /// Carries the pending customization so the preview reflects the chosen icon color live.
     private var previewInfo: MagicItem.Info {
-        info ?? .init(
-            id: originalItem.serverUniqueId,
-            name: originalItem.displayText ?? originalItem.id,
-            iconName: ""
+        .init(
+            id: info?.id ?? originalItem.serverUniqueId,
+            name: info?.name ?? (originalItem.displayText ?? originalItem.id),
+            iconName: info?.iconName ?? "",
+            customization: editedItem.customization,
+            contextSubtitle: info?.contextSubtitle
         )
     }
 
@@ -155,8 +209,88 @@ struct WatchConfigItemEditView: View {
         case (false, .edit): return L10n.Watch.Config.Edit.Item.editTitle
         }
     }
+}
 
-    private var commitLabel: String {
-        mode == .add ? L10n.Watch.Config.Edit.addButton : L10n.Watch.Config.Edit.saveButton
+/// A watch-friendly color picker row. `ColorPicker` isn't available on watchOS, so this shows the
+/// current swatch and pushes a palette grid. `nil` means "use the default color".
+struct WatchColorPicker: View {
+    let title: String
+    @Binding var colorHex: String?
+
+    var body: some View {
+        NavigationLink {
+            WatchColorPickerGrid(title: title, colorHex: $colorHex)
+        } label: {
+            HStack(spacing: DesignSystem.Spaces.one) {
+                swatch(for: colorHex, size: 24)
+                Text(verbatim: title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+}
+
+@ViewBuilder
+private func swatch(for hex: String?, size: CGFloat, selected: Bool = false) -> some View {
+    if let hex {
+        Circle()
+            .fill(Color(uiColor: UIColor(hex: hex)))
+            .frame(width: size, height: size)
+            .overlay {
+                if selected {
+                    Circle().strokeBorder(Color.white, lineWidth: 3)
+                }
+            }
+    } else {
+        // "Default" — no custom color set.
+        Circle()
+            .strokeBorder(selected ? Color.haPrimary : Color.secondary, lineWidth: 2)
+            .frame(width: size, height: size)
+    }
+}
+
+private struct WatchColorPickerGrid: View {
+    let title: String
+    @Binding var colorHex: String?
+    @Environment(\.dismiss) private var dismiss
+
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: DesignSystem.Spaces.one), count: 4)
+    private static let palette: [String] = [
+        "F44336", "E91E63", "9C27B0", "673AB7",
+        "3F51B5", "2196F3", "03A9F4", "00BCD4",
+        "009688", "4CAF50", "8BC34A", "CDDC39",
+        "FFEB3B", "FFC107", "FF9800", "FF5722",
+        "795548", "9E9E9E", "607D8B", "FFFFFF",
+        "000000",
+    ]
+
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.one) {
+                Button {
+                    colorHex = nil
+                    dismiss()
+                } label: {
+                    swatch(for: nil, size: 40, selected: isSelected(nil))
+                }
+                .buttonStyle(.plain)
+                ForEach(Self.palette, id: \.self) { hex in
+                    Button {
+                        colorHex = hex
+                        dismiss()
+                    } label: {
+                        swatch(for: hex, size: 40, selected: isSelected(hex))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(DesignSystem.Spaces.one)
+        }
+        .navigationTitle(Text(verbatim: title))
+    }
+
+    private func isSelected(_ hex: String?) -> Bool {
+        guard let hex else { return colorHex == nil }
+        return colorHex?.caseInsensitiveCompare(hex) == .orderedSame
     }
 }

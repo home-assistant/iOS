@@ -31,30 +31,15 @@ struct WatchHomeView: View {
         }
     }
 
-    // MARK: - Layout Constants
-
-    private enum Constants {
-        // Use DesignSystem spacing to derive standard button hit area
-        // Assuming one equals 8pt, adjust by product rules
-        static let headerButtonSize: CGFloat = DesignSystem.Spaces.five
-        static let headerInterItemSpacing: CGFloat = DesignSystem.Spaces.half
-        static let headerCenterSpacer: CGFloat = DesignSystem.Spaces.one
-    }
-
     var body: some View {
         Group {
             if let folderId = openFolderId {
-                ZStack(alignment: .topTrailing) {
-                    WatchFolderContentView(folderId: folderId, viewModel: viewModel) {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            openFolderId = nil
-                        }
+                WatchFolderContentView(folderId: folderId, viewModel: viewModel) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        openFolderId = nil
                     }
-                    .transition(.move(edge: .trailing))
-
-                    editHeaderButton
-                        .padding(DesignSystem.Spaces.one)
                 }
+                .transition(.move(edge: .trailing))
             } else {
                 content
                     .transition(.move(edge: .leading))
@@ -124,12 +109,17 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var content: some View {
         List {
-            listHeader
+            WatchHomeHeaderView(viewModel: viewModel, isEditing: $isEditing, onAssist: { showAssist = true })
             listContent
             if !isEditing {
                 addRow
             }
-            footer
+            WatchHomeFooterView(
+                viewModel: viewModel,
+                isEditing: isEditing,
+                onEdit: { enterEditMode() },
+                onSettings: { showSettings = true }
+            )
         }
         .id(viewModel.configVersion)
         // Removing the safe area so our fake navigation bar buttons (header) can be place correctly
@@ -179,51 +169,6 @@ struct WatchHomeView: View {
         }
     }
 
-    @ViewBuilder
-    private var listHeader: some View {
-        HStack {
-            if isEditing {
-                doneButton
-                Spacer()
-            } else {
-                // Leading: reload (+ pencil only when Assist exists)
-                HStack(spacing: Constants.headerInterItemSpacing) {
-                    navReloadButton
-                        .frame(
-                            width: Constants.headerButtonSize,
-                            height: Constants.headerButtonSize,
-                            alignment: .center
-                        )
-                    if viewModel.showAssist {
-                        editHeaderButton
-                            .frame(
-                                width: Constants.headerButtonSize,
-                                height: Constants.headerButtonSize,
-                                alignment: .center
-                            )
-                    }
-                }
-
-                // Center: loading state stays centered
-                Spacer(minLength: Constants.headerCenterSpacer)
-                toolbarLoadingState
-                Spacer(minLength: Constants.headerCenterSpacer)
-
-                // Trailing: if Assist exists show assist, otherwise pencil takes the assist spot
-                Group {
-                    if viewModel.showAssist {
-                        assistHeaderButton
-                    } else {
-                        editHeaderButton
-                    }
-                }
-                .frame(width: Constants.headerButtonSize, height: Constants.headerButtonSize, alignment: .center)
-            }
-        }
-        .listRowBackground(Color.clear)
-        .padding(.top, DesignSystem.Spaces.one)
-    }
-
     private var addRow: some View {
         Button {
             if viewModel.isPhoneReachable {
@@ -241,45 +186,10 @@ struct WatchHomeView: View {
         .watchItemRowStyle()
     }
 
-    private var doneButton: some View {
-        Button {
-            withAnimation { isEditing = false }
-            viewModel.saveConfig()
-        } label: {
-            Image(systemSymbol: .checkmark)
-        }
-        .buttonStyle(.plain)
-        .circularGlassOrLegacyBackground(tint: .haPrimary)
-    }
-
-    private var editHeaderButton: some View {
-        Button {
-            enterEditMode()
-        } label: {
-            Image(systemSymbol: .pencil)
-        }
-        .buttonStyle(.plain)
-        .circularGlassOrLegacyBackground(tint: .gray)
-        .disabled(!viewModel.isPhoneReachable)
-        .opacity(viewModel.isPhoneReachable ? 1 : 0.4)
-    }
-
-    @ViewBuilder
-    private var inlineError: some View {
-        if viewModel.showError {
-            Text(viewModel.errorMessage)
-                .font(.footnote)
-                .listRowBackground(
-                    Color.red.opacity(0.5)
-                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
-                )
-        }
-    }
-
     @ViewBuilder
     private var mainContent: some View {
-        ForEach(Array(viewModel.watchConfig.items.enumerated()), id: \.offset) { _, item in
-            rowContent(for: item)
+        ForEach(Array(viewModel.watchConfig.items.enumerated()), id: \.offset) { index, item in
+            rowContent(for: item, at: index)
                 .modify { view in
                     if isEditing {
                         view
@@ -293,18 +203,22 @@ struct WatchHomeView: View {
     }
 
     @ViewBuilder
-    private func rowContent(for item: MagicItem) -> some View {
+    private func rowContent(for item: MagicItem, at index: Int) -> some View {
         if isEditing {
-            Button {
-                activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
-            } label: {
-                WatchConfigItemRow(
-                    item: item,
-                    itemInfo: viewModel.info(for: item),
-                    trailingSymbol: .line3Horizontal
+            VStack(spacing: DesignSystem.Spaces.half) {
+                Button {
+                    activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
+                } label: {
+                    WatchConfigItemRow(item: item, itemInfo: viewModel.info(for: item))
+                }
+                .buttonStyle(.plain)
+                WatchReorderControls(
+                    upDisabled: index == 0,
+                    downDisabled: index == viewModel.watchConfig.items.count - 1,
+                    onUp: { viewModel.moveItemUp(at: index) },
+                    onDown: { viewModel.moveItemDown(at: index) }
                 )
             }
-            .buttonStyle(.plain)
             .watchConfigRowBackground()
         } else if item.type == .folder {
             WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
@@ -335,122 +249,5 @@ struct WatchHomeView: View {
 
     private func deleteItems(at offsets: IndexSet) {
         viewModel.deleteItem(at: offsets)
-    }
-
-    @ViewBuilder
-    private var assistHeaderButton: some View {
-        if viewModel.showAssist {
-            assistButton
-                .modify { view in
-                    if #available(watchOS 11, *) {
-                        view.handGestureShortcut(.primaryAction)
-                    } else {
-                        view
-                    }
-                }
-                .circularGlassOrLegacyBackground(tint: .haPrimary)
-        } else {
-            // Reserve space to keep the loader centered
-            Rectangle()
-                .foregroundStyle(Color.clear)
-                .frame(width: 44, height: 44)
-        }
-    }
-
-    private var assistButton: some View {
-        Button(action: {
-            showAssist = true
-        }, label: {
-            let color: UIColor = {
-                if #available(watchOS 26.0, *) {
-                    return .white
-                } else {
-                    return UIColor(Color.haPrimary)
-                }
-            }()
-            Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
-                ofSize: .init(width: 24, height: 24),
-                color: color
-            ))
-        })
-        .buttonStyle(.plain)
-        .modify { view in
-            if #available(watchOS 26.0, *) {
-                view
-                    .tint(.haPrimary)
-            } else {
-                view
-            }
-        }
-    }
-
-    private var navReloadButton: some View {
-        Button {
-            viewModel.requestConfig()
-        } label: {
-            Image(systemSymbol: .arrowCounterclockwise)
-        }
-        .buttonStyle(.plain)
-        .circularGlassOrLegacyBackground()
-    }
-
-    @ViewBuilder
-    private var toolbarLoadingState: some View {
-        HStack {
-            if viewModel.isLoading {
-                loadingState
-                    .circularGlassOrLegacyBackground()
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private var loadingState: some View {
-        ProgressView()
-            .progressViewStyle(.circular)
-    }
-
-    private var footer: some View {
-        VStack(spacing: .zero) {
-            appVersion
-            ssidLabel
-            settingsButton
-        }
-        .listRowBackground(Color.clear)
-    }
-
-    private var settingsButton: some View {
-        Button {
-            showSettings = true
-        } label: {
-            Image(systemSymbol: .gearshapeFill)
-        }
-        .circularGlassOrLegacyBackground()
-        .padding(DesignSystem.Spaces.one)
-    }
-
-    private var appVersion: some View {
-        VStack(alignment: .center, spacing: .zero) {
-            Text(verbatim: AppConstants.version)
-            Text(verbatim: "(\(AppConstants.build))")
-                .font(DesignSystem.Font.caption3)
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-        .listRowBackground(Color.clear)
-        .foregroundStyle(.secondary)
-    }
-
-    @ViewBuilder
-    private var ssidLabel: some View {
-        if !viewModel.currentSSID.isEmpty {
-            Label {
-                Text(verbatim: viewModel.currentSSID)
-                    .minimumScaleFactor(0.5)
-            } icon: {
-                Image(systemSymbol: .wifi)
-            }
-            .font(DesignSystem.Font.caption2)
-            .foregroundStyle(.secondary.opacity(0.5))
-        }
     }
 }

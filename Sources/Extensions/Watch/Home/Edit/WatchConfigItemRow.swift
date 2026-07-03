@@ -65,6 +65,34 @@ struct WatchConfigItemRow: View {
     }
 }
 
+/// Up/down reorder arrows shown on the trailing edge of a row while editing. Drag-to-reorder is
+/// unreliable on watchOS, so these give an explicit way to move a row one position at a time.
+struct WatchReorderControls: View {
+    let upDisabled: Bool
+    let downDisabled: Bool
+    let onUp: () -> Void
+    let onDown: () -> Void
+
+    var body: some View {
+        HStack(spacing: DesignSystem.Spaces.one) {
+            control(symbol: .chevronUp, disabled: upDisabled, action: onUp)
+            control(symbol: .chevronDown, disabled: downDisabled, action: onDown)
+        }
+        .font(.body.weight(.bold))
+    }
+
+    private func control(symbol: SFSymbol, disabled: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemSymbol: symbol)
+                .frame(maxWidth: .infinity, minHeight: 30)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(disabled ? Color.secondary.opacity(0.4) : Color.white)
+        .disabled(disabled)
+    }
+}
+
 extension View {
     /// Shared list-row background for the watch configuration rows.
     func watchConfigRowBackground() -> some View {
