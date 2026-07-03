@@ -99,7 +99,7 @@ public enum NetworkType: Int, CaseIterable {
 public final class NetworkReachability {
     public static let didChangeNotification = Notification.Name("NetworkReachabilityChanged")
 
-    private enum Connection {
+    private enum Connection: Equatable {
         case unavailable
         case wifi
         case cellular
@@ -107,9 +107,14 @@ public final class NetworkReachability {
 
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "io.home-assistant.reachability")
+    private var lastConnection: Connection?
 
     public init() {
-        monitor.pathUpdateHandler = { _ in
+        monitor.pathUpdateHandler = { [weak self] path in
+            guard let self else { return }
+            let connection = Self.connection(for: path)
+            guard connection != lastConnection else { return }
+            self.lastConnection = connection
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: NetworkReachability.didChangeNotification, object: nil)
             }
@@ -121,13 +126,16 @@ public final class NetworkReachability {
         monitor.cancel()
     }
 
-    private var connection: Connection {
-        let path = monitor.currentPath
+    private static func connection(for path: NWPath) -> Connection {
         guard path.status == .satisfied else { return .unavailable }
         if path.usesInterfaceType(.cellular) {
             return .cellular
         }
         return .wifi
+    }
+
+    private var connection: Connection {
+        Self.connection(for: monitor.currentPath)
     }
 
     public func getSimpleNetworkType() -> NetworkType {
