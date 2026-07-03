@@ -166,7 +166,7 @@ jobs:
                   per_page: 100,
                 },
                 (response, done) => {
-                  const workflowRuns = response.data.workflow_runs ?? [];
+                  const workflowRuns = response.data ?? [];
 
                   if (
                     workflowRuns.some((run) => run.run_number === expectedRunNumber) ||
