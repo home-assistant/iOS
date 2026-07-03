@@ -54,11 +54,16 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
         }
     }
 
+    private static let snoozePrefix = "↺ "
+
     /// Re-delivers `content` locally after `delay`, preserving its category/userInfo so any dynamic
     /// actions (e.g. snooze presets) attached to the original notification still show up.
     public func reschedule(_ content: UNNotificationContent, after delay: TimeInterval) {
         // swiftlint:disable:next force_cast
         let copy = content.mutableCopy() as! UNMutableNotificationContent
+        if !copy.title.hasPrefix(Self.snoozePrefix) {
+            copy.title = Self.snoozePrefix + copy.title
+        }
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: copy,

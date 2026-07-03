@@ -155,27 +155,36 @@ final class EntityAddToHandler {
         do {
             var config = try MacToolbarConfig.config() ?? MacToolbarConfig()
 
-            if !config.items.contains(where: { $0.id == entityId && $0.serverId == serverId }) {
+            let addedItem: MagicItem
+            if let existing = config.items.first(where: { $0.id == entityId && $0.serverId == serverId }) {
+                addedItem = existing
+            } else {
                 let appEntity = HAAppEntity.entity(id: entityId, serverId: serverId)
                 let iconName = appEntity?.icon
                     ?? Domain(rawValue: appEntity?.domain ?? "")?.icon(deviceClass: appEntity?.rawDeviceClass).name
                     ?? MaterialDesignIcons.dotsGridIcon.name
 
-                config.items.append(MagicItem(
+                let item = MagicItem(
                     id: entityId,
                     serverId: serverId,
                     type: .entity,
                     customization: .init(icon: iconName),
                     action: .moreInfoDialog,
                     displayText: appEntity?.name
-                ))
+                )
+                config.items.append(item)
+                addedItem = item
 
                 try Current.database().write { db in
                     try config.insert(db, onConflict: .replace)
                 }
             }
 
-            NotificationCenter.default.post(name: .macToolbarConfigDidChange, object: nil)
+            NotificationCenter.default.post(
+                name: .macToolbarConfigDidChange,
+                object: nil,
+                userInfo: [MacToolbarConfigChange.userInfoKey: MacToolbarConfigChange.added(addedItem)]
+            )
         } catch {
             Current.Log.error("Failed to add entity \(entityId) to Mac toolbar: \(error.localizedDescription)")
         }

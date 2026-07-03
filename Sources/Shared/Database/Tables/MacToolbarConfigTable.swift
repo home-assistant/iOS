@@ -24,8 +24,20 @@ public struct MacToolbarConfig: Codable, FetchableRecord, PersistableRecord, Equ
 public extension Notification.Name {
     /// Posted whenever `MacToolbarConfig` changes (an entity is added or removed), so any visible
     /// `MacWebViewTitleBar` can insert or remove the corresponding toolbar item without waiting for
-    /// the next launch.
+    /// the next launch. The changed item travels in `userInfo` under `MacToolbarConfigChange.userInfoKey`.
     static let macToolbarConfigDidChange = Notification.Name("macToolbarConfigDidChange")
+}
+
+/// Describes which entity changed in `MacToolbarConfig`, carried in the `.macToolbarConfigDidChange`
+/// `userInfo`. The observing toolbar must act on this specific item rather than reconciling against the
+/// whole config: entities the user removed via Customize Toolbar stay in the config (only `NSToolbar`'s
+/// separate `autosavesConfiguration` visibility changes), so re-inserting every known item would
+/// resurrect all of them instead of only the entity just added.
+public enum MacToolbarConfigChange {
+    case added(MagicItem)
+    case removed(MagicItem)
+
+    public static let userInfoKey = "MacToolbarConfigChange"
 }
 
 final class MacToolbarConfigTable: DatabaseTableProtocol {
