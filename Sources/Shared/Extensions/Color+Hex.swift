@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 
 public extension Color {
     init(hex: String) {
@@ -21,7 +22,8 @@ public extension UIColor {
 
         let hexString = String(rgba.dropFirst())
         var hexValue: UInt64 = 0
-        guard Scanner(string: hexString).scanHexInt64(&hexValue) else { return nil }
+        let scanner = Scanner(string: hexString)
+        guard scanner.scanHexInt64(&hexValue), scanner.isAtEnd else { return nil }
 
         let shorthandDivisor = CGFloat(15)
         let divisor = CGFloat(255)
@@ -77,7 +79,7 @@ public extension UIColor {
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
-        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        guard getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return "" }
 
         guard red >= 0, red <= 1, green >= 0, green <= 1, blue >= 0, blue <= 1 else {
             return ""
