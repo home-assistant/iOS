@@ -1,7 +1,7 @@
 import Foundation
 #if os(iOS)
 import CoreTelephony
-import Reachability
+import Network
 #endif
 
 public enum NetworkType: Int, CaseIterable {
@@ -96,38 +96,63 @@ public enum NetworkType: Int, CaseIterable {
 }
 
 #if os(iOS)
-public extension Reachability {
-    func getSimpleNetworkType() -> NetworkType {
-        try? startNotifier()
+public final class NetworkReachability {
+    public static let didChangeNotification = Notification.Name("NetworkReachabilityChanged")
 
+    private enum Connection {
+        case unavailable
+        case wifi
+        case cellular
+    }
+
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "io.home-assistant.reachability")
+
+    public init() {
+        monitor.pathUpdateHandler = { _ in
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: NetworkReachability.didChangeNotification, object: nil)
+            }
+        }
+        monitor.start(queue: queue)
+    }
+
+    deinit {
+        monitor.cancel()
+    }
+
+    private var connection: Connection {
+        let path = monitor.currentPath
+        guard path.status == .satisfied else { return .unavailable }
+        if path.usesInterfaceType(.cellular) {
+            return .cellular
+        }
+        return .wifi
+    }
+
+    public func getSimpleNetworkType() -> NetworkType {
         switch connection {
-        case .none:
+        case .unavailable:
             return .noConnection
         case .wifi:
             return .wifi
         case .cellular:
             return .cellular
-        case .unavailable:
-            return .noConnection
         }
     }
 
-    func getNetworkType() -> NetworkType {
-        try? startNotifier()
-
+    public func getNetworkType() -> NetworkType {
         switch connection {
-        case .none:
+        case .unavailable:
             return .noConnection
         case .wifi:
             return .wifi
         case .cellular:
             #if !targetEnvironment(macCatalyst)
-            return Reachability.getWWANNetworkType()
+            return Self.getWWANNetworkType()
             #else
             return .cellular
             #endif
-        case .unavailable:
-            return .noConnection
         }
     }
 
