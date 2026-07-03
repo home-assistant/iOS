@@ -1,5 +1,5 @@
 {
-  "originHash" : "2c4caf4fea7b85f421359b2ac5b5ca84036a078052a18172a67419b55b925f5b",
+  "originHash" : "8af62d21b6fd4ac8d1d803a27cca1c26c1fc25d24b3ad577a9819bd2e533b6bb",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -206,15 +206,6 @@
       "state" : {
         "revision" : "0687f71944021d616d34d922343dcef086855920",
         "version" : "600.0.1"
-      }
-    },
-    {
-      "identity" : "uicolor-hex-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/yeahdongcn/UIColor-Hex-Swift.git",
-      "state" : {
-        "revision" : "f37f97bc1a5b545b39ab5330e133e56fa4f38cff",
-        "version" : "5.1.9"
       }
     },
     {
