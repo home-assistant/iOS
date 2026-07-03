@@ -16,6 +16,8 @@ struct WatchSettingsView: View {
                 serversSection
                 configurationSection
                 performActionSection
+                troubleshootingSection
+                restartAppSection
             }
             .navigationTitle(Text(verbatim: L10n.Watch.Settings.title))
         }
@@ -55,6 +57,28 @@ struct WatchSettingsView: View {
             }
         } footer: {
             Text(verbatim: L10n.Watch.Settings.PerformAction.footer)
+        }
+    }
+
+    private var troubleshootingSection: some View {
+        Section {
+            NavigationLink {
+                WatchTroubleshootingView()
+            } label: {
+                Label(L10n.Watch.Settings.Troubleshooting.title, systemSymbol: .stethoscope)
+            }
+        }
+    }
+
+    private var restartAppSection: some View {
+        Section {
+            Button(role: .destructive) {
+                fatalError("User requested app restart from watch settings")
+            } label: {
+                Label(L10n.Watch.Settings.RestartApp.title, systemSymbol: .arrowClockwise)
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Settings.RestartApp.footer)
         }
     }
 
@@ -108,5 +132,27 @@ private struct WatchServersListView: View {
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Servers.header))
+    }
+}
+
+/// Explains that the iPhone/Watch link can get stuck and that rebooting both devices usually helps.
+private struct WatchTroubleshootingView: View {
+    var body: some View {
+        List {
+            Section {
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                    Label(
+                        L10n.Watch.Settings.Troubleshooting.Connection.title,
+                        systemSymbol: .antennaRadiowavesLeftAndRight
+                    )
+                    .font(.headline)
+                    Text(verbatim: L10n.Watch.Settings.Troubleshooting.Connection.message)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, DesignSystem.Spaces.half)
+            }
+        }
+        .navigationTitle(Text(verbatim: L10n.Watch.Settings.Troubleshooting.title))
     }
 }

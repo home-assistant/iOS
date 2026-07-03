@@ -1838,8 +1838,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Perform action using";
 "watch.settings.refresh" = "Refresh";
+"watch.settings.restart_app.footer" = "This closes the app immediately. You'll need to reopen it manually.";
+"watch.settings.restart_app.title" = "Restart App";
 "watch.settings.servers.header" = "Servers";
 "watch.settings.title" = "Settings";
+"watch.settings.troubleshooting.connection.message" = "The connection between your iPhone and Apple Watch can sometimes get stuck. Restarting both devices usually fixes it.";
+"watch.settings.troubleshooting.connection.title" = "Connection Issues";
+"watch.settings.troubleshooting.title" = "Troubleshooting";
 "watch.settings.url_override.footer" = "Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.";
 "watch.settings.url_override.title" = "Always use";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";

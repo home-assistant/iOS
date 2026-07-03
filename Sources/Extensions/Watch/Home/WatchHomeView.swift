@@ -112,9 +112,14 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var content: some View {
         List {
-            WatchHomeHeaderView(viewModel: viewModel, isEditing: $isEditing, onAssist: { showAssist = true })
+            WatchHomeHeaderView(
+                viewModel: viewModel,
+                isEditing: $isEditing,
+                onAssist: { showAssist = true },
+                onAdd: { activeSheet = .add }
+            )
             listContent
-            if !isEditing {
+            if !isEditing, viewModel.showAssist {
                 addRow
             }
             WatchHomeFooterView(

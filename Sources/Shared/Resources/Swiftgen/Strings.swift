@@ -6190,9 +6190,25 @@ public enum L10n {
         /// Perform action using
         public static var title: String { return L10n.tr("Localizable", "watch.settings.perform_action.title") }
       }
+      public enum RestartApp {
+        /// This closes the app immediately. You'll need to reopen it manually.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.restart_app.footer") }
+        /// Restart App
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.restart_app.title") }
+      }
       public enum Servers {
         /// Servers
         public static var header: String { return L10n.tr("Localizable", "watch.settings.servers.header") }
+      }
+      public enum Troubleshooting {
+        /// Troubleshooting
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.troubleshooting.title") }
+        public enum Connection {
+          /// The connection between your iPhone and Apple Watch can sometimes get stuck. Restarting both devices usually fixes it.
+          public static var message: String { return L10n.tr("Localizable", "watch.settings.troubleshooting.connection.message") }
+          /// Connection Issues
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.troubleshooting.connection.title") }
+        }
       }
       public enum UrlOverride {
         /// Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.

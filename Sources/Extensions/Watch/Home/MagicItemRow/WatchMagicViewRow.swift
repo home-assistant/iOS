@@ -18,7 +18,7 @@ struct WatchMagicViewRow: View {
             HStack(spacing: DesignSystem.Spaces.one) {
                 iconToDisplay
                     .animation(.bouncy, value: viewModel.state)
-                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                VStack(alignment: .leading, spacing: .zero) {
                     Text(viewModel.item.name(info: viewModel.itemInfo))
                         .font(.body.bold())
                         .foregroundStyle(textColor)

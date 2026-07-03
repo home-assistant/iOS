@@ -8,9 +8,10 @@ struct WatchHomeHeaderView: View {
     @ObservedObject var viewModel: WatchHomeViewModel
     @Binding var isEditing: Bool
     let onAssist: () -> Void
+    let onAdd: () -> Void
 
     private enum Constants {
-        static let headerButtonSize: CGFloat = DesignSystem.Spaces.five
+        static let headerButtonSize: CGFloat = 24
         static let headerCenterSpacer: CGFloat = DesignSystem.Spaces.one
     }
 
@@ -33,8 +34,8 @@ struct WatchHomeHeaderView: View {
                 toolbarLoadingState
                 Spacer(minLength: Constants.headerCenterSpacer)
 
-                // Trailing: Assist (reserves space when Assist isn't configured)
-                assistHeaderButton
+                // Trailing: Assist, or the add button when Assist isn't configured
+                trailingHeaderButton
                     .frame(width: Constants.headerButtonSize, height: Constants.headerButtonSize, alignment: .center)
             }
         }
@@ -70,13 +71,18 @@ struct WatchHomeHeaderView: View {
                 ProgressView()
                     .progressViewStyle(.circular)
                     .circularGlassOrLegacyBackground()
+            } else {
+                Image(uiImage: Asset.logo.image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Constants.headerButtonSize, height: Constants.headerButtonSize)
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
 
     @ViewBuilder
-    private var assistHeaderButton: some View {
+    private var trailingHeaderButton: some View {
         if viewModel.showAssist {
             assistButton
                 .modify { view in
@@ -88,11 +94,16 @@ struct WatchHomeHeaderView: View {
                 }
                 .circularGlassOrLegacyBackground(tint: .haPrimary)
         } else {
-            // Reserve space to keep the loader centered
-            Rectangle()
-                .foregroundStyle(Color.clear)
-                .frame(width: 44, height: 44)
+            addButton
         }
+    }
+
+    private var addButton: some View {
+        Button(action: onAdd) {
+            Image(systemSymbol: .plus)
+        }
+        .buttonStyle(.plain)
+        .circularGlassOrLegacyBackground()
     }
 
     private var assistButton: some View {
