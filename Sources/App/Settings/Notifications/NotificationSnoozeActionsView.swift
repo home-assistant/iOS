@@ -24,10 +24,9 @@ struct NotificationSnoozeActionsView: View {
                     Label(L10n.addButtonLabel, systemSymbol: .plus)
                 }
             } footer: {
-                VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-                    Text(L10n.SettingsDetails.Notifications.SnoozeActions.footer)
-                    Text(L10n.SettingsDetails.Notifications.SnoozeActions.prefixFooter)
-                }
+                Text(L10n.SettingsDetails.Notifications.SnoozeActions.footer)
+                    + Text(verbatim: "\n\n")
+                    + Text(L10n.SettingsDetails.Notifications.SnoozeActions.prefixFooter)
             }
         }
         .navigationTitle(L10n.SettingsDetails.Notifications.SnoozeActions.header)

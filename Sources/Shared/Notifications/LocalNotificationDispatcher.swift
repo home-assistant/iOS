@@ -54,7 +54,7 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
         }
     }
 
-    static let snoozePrefix = "↺ "
+    private static let snoozePrefix = "↺ "
 
     /// Re-delivers `content` locally after `delay`, preserving its category/userInfo so any dynamic
     /// actions (e.g. snooze presets) attached to the original notification still show up.
