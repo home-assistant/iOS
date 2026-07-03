@@ -25,6 +25,8 @@ struct NotificationSnoozeActionsView: View {
                 }
             } footer: {
                 Text(L10n.SettingsDetails.Notifications.SnoozeActions.footer)
+                    + Text(verbatim: "\n\n")
+                    + Text(L10n.SettingsDetails.Notifications.SnoozeActions.prefixFooter)
             }
         }
         .navigationTitle(L10n.SettingsDetails.Notifications.SnoozeActions.header)

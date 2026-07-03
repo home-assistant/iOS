@@ -149,28 +149,36 @@ extension MacWebViewTitleBar {
                 forName: .macToolbarConfigDidChange,
                 object: nil,
                 queue: .main
-            ) { [weak self] _ in
-                self?.handleMacToolbarConfigChanged()
+            ) { [weak self] notification in
+                let change = notification.userInfo?[MacToolbarConfigChange.userInfoKey] as? MacToolbarConfigChange
+                self?.handleMacToolbarConfigChanged(change)
             }
         }
 
-        private func handleMacToolbarConfigChanged() {
+        private func handleMacToolbarConfigChanged(_ change: MacToolbarConfigChange?) {
             loadMacToolbarItems()
             guard let toolbar, titlebar?.toolbar === toolbar else { return }
-            let desiredIdentifiers = Set(macToolbarItems.map { NSToolbarItem.Identifier(magicItem: $0) })
 
-            // Remove entity items the user deleted from the config (leave built-in items untouched).
-            for index in toolbar.items.indices.reversed() {
-                let identifier = toolbar.items[index].itemIdentifier
-                guard identifier.isEntityIdentifier, !desiredIdentifiers.contains(identifier) else { continue }
-                toolbar.removeItem(at: index)
-            }
-
-            for item in macToolbarItems {
+            switch change {
+            case let .added(item):
                 let identifier = NSToolbarItem.Identifier(magicItem: item)
-                guard !toolbar.items.contains(where: { $0.itemIdentifier == identifier }) else { continue }
-                toolbar.insertItem(withItemIdentifier: identifier, at: toolbar.items.count)
+                if !toolbar.items.contains(where: { $0.itemIdentifier == identifier }) {
+                    toolbar.insertItem(withItemIdentifier: identifier, at: toolbar.items.count)
+                }
+            case let .removed(item):
+                let identifier = NSToolbarItem.Identifier(magicItem: item)
+                if let index = toolbar.items.firstIndex(where: { $0.itemIdentifier == identifier }) {
+                    toolbar.removeItem(at: index)
+                }
+            case nil:
+                let desiredIdentifiers = Set(macToolbarItems.map { NSToolbarItem.Identifier(magicItem: $0) })
+                for index in toolbar.items.indices.reversed() {
+                    let identifier = toolbar.items[index].itemIdentifier
+                    guard identifier.isEntityIdentifier, !desiredIdentifiers.contains(identifier) else { continue }
+                    toolbar.removeItem(at: index)
+                }
             }
+
             updateEnabledItems()
         }
 

@@ -4810,6 +4810,8 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.footer") }
         /// Snooze Actions
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.header") }
+        /// Snoozed notifications reappear with a “↺” prefix in their title.
+        public static var prefixFooter: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.prefix_footer") }
         /// Snooze 1 hour
         public static var titleHour: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hour") }
         /// Snooze 1 hour and %li min
