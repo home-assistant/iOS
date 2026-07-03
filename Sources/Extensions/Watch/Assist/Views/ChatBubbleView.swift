@@ -19,7 +19,10 @@ struct ChatBubbleView: View {
             let color = backgroundForChatItemType(item.itemType)
             let corners = roundedCornersForChatItemType(item.itemType)
             if #available(watchOS 26.0, *) {
-                view.glassEffect(.regular.tint(color), in: RoundedCorner(radius: DesignSystem.CornerRadius.oneAndHalf, corners: corners))
+                view.glassEffect(
+                    .regular.tint(color),
+                    in: RoundedCorner(radius: DesignSystem.CornerRadius.oneAndHalf, corners: corners)
+                )
             } else {
                 view
                     .background(color)
@@ -40,7 +43,7 @@ struct ChatBubbleView: View {
         case .output, .typing:
             .secondaryBackground
         case .error:
-                .red.opacity(0.3)
+            .red.opacity(0.3)
         case .info:
             .gray.opacity(0.5)
         }
