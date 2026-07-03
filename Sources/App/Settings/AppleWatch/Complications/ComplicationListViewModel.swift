@@ -2,7 +2,6 @@ import Foundation
 import PromiseKit
 import RealmSwift
 import Shared
-import Version
 
 /// Observable view model backing `ComplicationListView`. Wraps the Realm
 /// notification tokens used to drive the existing Eureka controller.

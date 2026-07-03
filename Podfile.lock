@@ -45,7 +45,6 @@ PODS:
   - SwiftFormat/CLI (0.53.1)
   - SwiftGen (6.5.1)
   - SwiftLint (0.54.0)
-  - Version (0.8.0)
   - XCGLogger (7.0.1):
     - XCGLogger/Core (= 7.0.1)
   - XCGLogger/Core (7.0.1):
@@ -65,7 +64,6 @@ DEPENDENCIES:
   - SwiftFormat/CLI (= 0.53.1)
   - SwiftGen (~> 6.5.0)
   - SwiftLint (= 0.54.0)
-  - Version
   - XCGLogger
 
 SPEC REPOS:
@@ -78,7 +76,6 @@ SPEC REPOS:
     - SwiftFormat
     - SwiftGen
     - SwiftLint
-    - Version
     - XCGLogger
 
 EXTERNAL SOURCES:
@@ -129,9 +126,8 @@ SPEC CHECKSUMS:
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
-  Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 21128e9cdc6075f2f0c1baffeefe9174a2ce2851
+PODFILE CHECKSUM: 27809817dc0c9a8791510b05cba8d22238786725
 
 COCOAPODS: 1.15.2

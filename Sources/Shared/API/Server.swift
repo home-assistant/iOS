@@ -1,6 +1,5 @@
 import Foundation
 import HAKit
-import Version
 
 public protocol SettingValue {
     static var defaultSettingValue: Self { get }

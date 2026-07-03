@@ -1,7 +1,6 @@
 import HAKit
 import KeychainAccess
 import UserNotifications
-import Version
 
 public protocol ServerObserver: AnyObject {
     func serversDidChange(_ serverManager: ServerManager)

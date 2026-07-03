@@ -2,7 +2,6 @@ import Foundation
 import ObjectMapper
 @testable import Shared
 import Testing
-import Version
 
 @Suite("DiscoveredHomeAssistant Tests")
 struct DiscoveredHomeAssistantTests {
