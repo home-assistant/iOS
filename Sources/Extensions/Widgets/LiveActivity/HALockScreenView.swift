@@ -171,17 +171,19 @@ enum HAActivityVisualStyle {
 
     /// Foreground that can be resolved without the render environment:
     ///   - explicit `text_color`, else
-    ///   - a black/white auto-contrast against an explicit `background_color`.
-    /// Nil when neither is set, so the caller falls back to the adaptive system color (`.primary`),
-    /// which stays legible on the system's translucent background in both light and dark mode.
+    ///   - a black/white auto-contrast against an opaque `background_color`.
+    /// Nil when neither applies (including a fully transparent `background_color` such as
+    /// "clear"/"transparent"/an alpha-0 hex), so the caller falls back to the adaptive system
+    /// color (`.primary`), which stays legible on the transparent Lock Screen material.
     static func foregroundColor(textColor: String?, onBackground backgroundHex: String?) -> Color? {
         if let textColor = normalized(textColor) {
             return Color(uiColor: UIColor(hex: textColor))
         }
-        if let backgroundHex = normalized(backgroundHex) {
-            return prefersLightText(onBackground: backgroundHex) ? .white : .black
-        }
-        return nil
+        guard let backgroundHex = normalized(backgroundHex) else { return nil }
+        var alpha: CGFloat = 0
+        UIColor(hex: backgroundHex).getRed(nil, green: nil, blue: nil, alpha: &alpha)
+        guard alpha > 0 else { return nil }
+        return prefersLightText(onBackground: backgroundHex) ? .white : .black
     }
 
     static func color(from color: String?) -> Color {
