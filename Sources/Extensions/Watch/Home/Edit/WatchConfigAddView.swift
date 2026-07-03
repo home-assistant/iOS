@@ -54,7 +54,7 @@ struct WatchConfigAddView: View {
                     finish: { dismiss() }
                 )
             } label: {
-                Text(verbatim: L10n.Watch.Config.Add.entity)
+                chooserRow(icon: Domain.automation.icon(), title: L10n.Watch.Config.Add.entity)
             }
 
             NavigationLink {
@@ -75,9 +75,29 @@ struct WatchConfigAddView: View {
                     dismiss()
                 }
             } label: {
-                Text(verbatim: L10n.Watch.Config.Add.folder)
+                chooserRow(icon: .folderIcon, title: L10n.Watch.Config.Add.folder)
             }
         }
+    }
+
+    private func chooserRow(icon: MaterialDesignIcons, title: String) -> some View {
+        HStack(spacing: DesignSystem.Spaces.one) {
+            Image(uiImage: icon.image(ofSize: .init(width: 24, height: 24), color: .white))
+                .frame(width: 38, height: 38)
+                .modify { view in
+                    if #available(watchOS 26.0, *) {
+                        view.glassEffect(.clear.tint(Color.white.opacity(0.3)), in: .circle)
+                    } else {
+                        view
+                            .background(Color.white.opacity(0.3))
+                            .clipShape(Circle())
+                    }
+                }
+                .padding([.vertical, .trailing], DesignSystem.Spaces.half)
+            Text(verbatim: title)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 

@@ -11,40 +11,19 @@ struct WatchFolderRow: View {
         Button {
             onTap()
         } label: {
-            HStack(spacing: DesignSystem.Spaces.one) {
-                iconView
-                Text(item.name(info: itemInfo))
-                    .font(.body.bold())
-                    .foregroundStyle(textColor)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.7)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading)
-                Image(systemSymbol: .chevronRight)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(.trailing, DesignSystem.Spaces.half)
-            }
-            .frame(maxWidth: .infinity)
+            WatchHomeItemLabel(
+                name: item.name(info: itemInfo),
+                textColor: textColor,
+                icon: { iconView },
+                accessory: {
+                    Image(systemSymbol: .chevronRight)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            )
         }
         .frame(maxWidth: .infinity)
-        .modify { view in
-            if #available(watchOS 26.0, *) {
-                if let backgroundForWatchItem {
-                    view
-                        .listRowBackground(Color.clear)
-                        .buttonStyle(.glassProminent)
-                        .tint(backgroundForWatchItem)
-                } else {
-                    view
-                        .listRowBackground(Color.clear)
-                        .buttonStyle(.glass)
-                }
-            } else {
-                view
-                    .listRowBackground((backgroundForWatchItem ?? Color.gray.opacity(0.3)).cornerRadius(14))
-            }
-        }
+        .watchHomeItemRowStyle(tint: backgroundForWatchItem)
     }
 
     private var iconColor: UIColor {
@@ -64,22 +43,7 @@ struct WatchFolderRow: View {
             .foregroundStyle(Color(uiColor: iconColor))
             .padding()
         }
-        .frame(width: 38, height: 38)
-        .modify { view in
-            if #available(watchOS 26.0, *) {
-                view
-                    .glassEffect(
-                        .clear
-                            .tint(Color(uiColor: iconColor).opacity(0.3)),
-                        in: .circle
-                    )
-            } else {
-                view
-                    .background(Color(uiColor: iconColor).opacity(0.3))
-                    .clipShape(Circle())
-            }
-        }
-        .padding([.vertical, .trailing], DesignSystem.Spaces.half)
+        .watchRowIconContainer(color: iconColor)
     }
 
     private var textColor: Color {

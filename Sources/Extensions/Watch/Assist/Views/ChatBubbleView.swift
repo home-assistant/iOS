@@ -15,8 +15,17 @@ struct ChatBubbleView: View {
         }
         .padding(4)
         .padding(.horizontal, 4)
-        .background(backgroundForChatItemType(item.itemType))
-        .roundedCorner(6, corners: roundedCornersForChatItemType(item.itemType))
+        .modify { view in
+            let color = backgroundForChatItemType(item.itemType)
+            let corners = roundedCornersForChatItemType(item.itemType)
+            if #available(watchOS 26.0, *) {
+                view.glassEffect(.regular.tint(color), in: RoundedCorner(radius: DesignSystem.CornerRadius.oneAndHalf, corners: corners))
+            } else {
+                view
+                    .background(color)
+                    .roundedCorner(6, corners: corners)
+            }
+        }
         .foregroundColor(foregroundForChatItemType(item.itemType))
         .tint(tintForChatItemType(item.itemType))
         .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
@@ -31,7 +40,7 @@ struct ChatBubbleView: View {
         case .output, .typing:
             .secondaryBackground
         case .error:
-            .red
+                .red.opacity(0.3)
         case .info:
             .gray.opacity(0.5)
         }
@@ -81,13 +90,23 @@ struct ChatBubbleView: View {
 }
 
 #Preview {
-    LazyVStack(spacing: 8) {
-        ChatBubbleView(item: .init(content: "Hello world", itemType: .input))
-            .background(.red)
-        ChatBubbleView(item: .init(content: "Hello world", itemType: .output))
-        ChatBubbleView(item: .init(content: "Hello world", itemType: .info))
-        ChatBubbleView(item: .init(content: "Hello world", itemType: .input))
-        ChatBubbleView(item: .init(content: "Hello world", itemType: .output))
+    ScrollView {
+        LazyVStack(spacing: DesignSystem.Spaces.one) {
+            ChatBubbleView(item: .init(content: "Turn on the kitchen lights", itemType: .input))
+            ChatBubbleView(item: .init(content: "Done, 3 lights are now on.", itemType: .output))
+            ChatBubbleView(item: .init(content: "Sending…", itemType: .pending))
+            ChatBubbleView(item: .init(content: "", itemType: .typing))
+            ChatBubbleView(item: .init(content: "Something went wrong. Please try again.", itemType: .error))
+            ChatBubbleView(item: .init(content: "Listening…", itemType: .info))
+        }
+        .padding()
     }
-    .background(.green)
+    .background(
+        LinearGradient(
+            colors: [.black, Color.haPrimary.opacity(0.4), .black],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
+    )
 }

@@ -1266,7 +1266,7 @@
 		6596FA74E1A501276EA62D86 /* Pods_watchOS_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD370D44DFFB906B05C3EB3A /* Pods_watchOS_Shared_watchOS.framework */; };
 		692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */; };
 		6BC96773641DF2DE4A0CB617 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5E4816624EF5EE10FD19D90D /* GRDB */; };
-		6DA026324B8AB92F202E8EEA /* Edit/WatchConfigAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78A98DD0936A020042FB4A98 /* Edit/WatchConfigAddView.swift */; };
+		6DA026324B8AB92F202E8EEA /* WatchConfigAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78A98DD0936A020042FB4A98 /* WatchConfigAddView.swift */; };
 		6DA03BF83C5D5A6159263BE6 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9D38AFF8103605A5E02F62 /* KioskSettingsTable.swift */; };
 		6F5492612DCB9E3CBD67F178 /* CallServiceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94616AE6CF9100E44C576B8D /* CallServiceResponse.swift */; };
 		6FCEBAA2C8E9C5403055E73D /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
@@ -1290,12 +1290,12 @@
 		897D7538631C46D4BD849CF5 /* NotificationsCommandManagerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D790D5FA5DBB4B5B9DBB2334 /* NotificationsCommandManagerLiveActivityTests.swift */; };
 		8DFA3DEE4881E59961C3B5E2 /* BarometerSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A4CD40BADC119045547D77 /* BarometerSensor.test.swift */; };
 		8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */; };
-		8E91D9A87D2184599B991FDB /* Edit/WatchIconPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327B41706C936E3015B4DB41 /* Edit/WatchIconPicker.swift */; };
+		8E91D9A87D2184599B991FDB /* WatchIconPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327B41706C936E3015B4DB41 /* WatchIconPicker.swift */; };
 		925D92FC9E2221189D67B22C /* ComplicationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF9C3A30E10A8E214623EBB /* ComplicationListView.swift */; };
 		94802EABC64FDEEC9F875310 /* CallServiceResponse.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */; };
 		95DBCBEFC224D24AD4122119 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = AA067465CCE282820A8F106C /* GRDB */; };
-		9602620751B3D83AC3494563 /* Edit/WatchConfigItemEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5223614EF19F713523318DF8 /* Edit/WatchConfigItemEditView.swift */; };
-		97C36F8027A2A28AD1A5A4A2 /* Edit/WatchConfigItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73D1D48CF6A15E37CCE162F /* Edit/WatchConfigItemRow.swift */; };
+		9602620751B3D83AC3494563 /* WatchConfigItemEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5223614EF19F713523318DF8 /* WatchConfigItemEditView.swift */; };
+		97C36F8027A2A28AD1A5A4A2 /* WatchConfigItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73D1D48CF6A15E37CCE162F /* WatchConfigItemRow.swift */; };
 		999549244371450BC98C700E /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 608CFDA223EBCDF01B946093 /* Pods_iOS_Extensions_PushProvider.framework */; };
 		9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */; };
 		9D57ECBD5431BC00BDC16F1E /* NotificationActionEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F913E441276235B7A2D7B29 /* NotificationActionEditorView.swift */; };
@@ -1590,6 +1590,7 @@
 		C3EB3740FA097F36D51F525E /* BarometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396822195C7FF562AB891F2 /* BarometerSensor.swift */; };
 		C5A9D6D06B794615BE1299F9 /* CarPlayAddItemFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3632CE0EC0E141A8B30CD245 /* CarPlayAddItemFlow.swift */; };
 		C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */; };
+		91A82441CFF3E42A14F465E4 /* WatchHomeItemLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357DCBF27D4B9D87A5972233 /* WatchHomeItemLabel.swift */; };
 		CA0CA15000000000000000A2 /* LocationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0CA15000000000000000A1 /* LocationSettingsView.swift */; };
 		CA0CA15000000000000000B2 /* LocationSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0CA15000000000000000B1 /* LocationSettingsViewModel.swift */; };
 		CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */ = {isa = PBXBuildFile; productRef = CA11B4CC0000000000000010 /* CallbackURLKit */; };
@@ -2328,7 +2329,7 @@
 		28B40938BEB944969AAB2895 /* CarPlayPreferredServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPreferredServer.swift; sourceTree = "<group>"; };
 		2A674A3ACB31BFCEB70423FE /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.release.xcconfig"; sourceTree = "<group>"; };
 		2F5A1F2C65420338C176B7BD /* CameraZoomGestureOverlay.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CameraZoomGestureOverlay.swift; sourceTree = "<group>"; };
-		327B41706C936E3015B4DB41 /* Edit/WatchIconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edit/WatchIconPicker.swift; sourceTree = "<group>"; };
+		327B41706C936E3015B4DB41 /* WatchIconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchIconPicker.swift; sourceTree = "<group>"; };
 		332C060487B468055C487070 /* TemplatePreviewSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TemplatePreviewSection.swift; sourceTree = "<group>"; };
 		33CA7FF55788E7084DA5E4B3 /* Pods_iOS_Extensions_Share.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Share.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3632CE0EC0E141A8B30CD245 /* CarPlayAddItemFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAddItemFlow.swift; sourceTree = "<group>"; };
@@ -3165,7 +3166,7 @@
 		504A2C852F8133E6002A3C0E /* CarPlayTabsSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTabsSelectionView.swift; sourceTree = "<group>"; };
 		50D9C22ED2834EC9DAAC63AC /* Pods-iOS-Extensions-Intents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.debug.xcconfig"; sourceTree = "<group>"; };
 		512A72C5F1BCC979E74F7629 /* ComplicationEditViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ComplicationEditViewModel.swift; sourceTree = "<group>"; };
-		5223614EF19F713523318DF8 /* Edit/WatchConfigItemEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edit/WatchConfigItemEditView.swift; sourceTree = "<group>"; };
+		5223614EF19F713523318DF8 /* WatchConfigItemEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigItemEditView.swift; sourceTree = "<group>"; };
 		53247A6215E54ECABE16375E /* KioskSensorsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSensorsViewModel.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
 		592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-NotificationService-metadata.plist"; path = "Pods/Pods-iOS-Extensions-NotificationService-metadata.plist"; sourceTree = "<group>"; };
@@ -3190,7 +3191,7 @@
 		71373DD7455D9CE893EB450B /* KioskScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskScreensaverView.swift; sourceTree = "<group>"; };
 		7182697D2C66EC0B42D73AC2 /* CarPlayAssistSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistSession.swift; sourceTree = "<group>"; };
 		744765E0A6707B81A6F5EAE8 /* KioskSettingsEntryCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsEntryCustomizationView.swift; sourceTree = "<group>"; };
-		78A98DD0936A020042FB4A98 /* Edit/WatchConfigAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edit/WatchConfigAddView.swift; sourceTree = "<group>"; };
+		78A98DD0936A020042FB4A98 /* WatchConfigAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigAddView.swift; sourceTree = "<group>"; };
 		7A0B01160F7B467E8FE2C7C7 /* TestFlightCommunicationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationEngine.swift; sourceTree = "<group>"; };
 		7AFA80D48C707A822CCB3F38 /* Pods-iOS-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.release.xcconfig"; sourceTree = "<group>"; };
 		7C3CCF89D04DB409DDFC4A09 /* Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig"; sourceTree = "<group>"; };
@@ -3211,6 +3212,7 @@
 		9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.xcconfig; sourceTree = "<group>"; };
 		9D84964A844E6CD21F16D3AB /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; sourceTree = "<group>"; };
 		9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFolderRow.swift; sourceTree = "<group>"; };
+		357DCBF27D4B9D87A5972233 /* WatchHomeItemLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeItemLabel.swift; sourceTree = "<group>"; };
 		9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/TableSchemaTests.test.swift; sourceTree = "<group>"; };
 		9F913E441276235B7A2D7B29 /* NotificationActionEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationActionEditorView.swift; sourceTree = "<group>"; };
 		A1A7DD090A1D41ADB9374E7A /* OnboardingAuthError.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthError.test.swift; sourceTree = "<group>"; };
@@ -3592,7 +3594,7 @@
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D533C1EC8D100C5DAF63A0C5 /* NotificationSnoozeAction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationSnoozeAction.swift; sourceTree = "<group>"; };
 		D72C761F65606EF882E2A7B1 /* Pods-iOS-Extensions-Today-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Today-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Today-metadata.plist"; sourceTree = "<group>"; };
-		D73D1D48CF6A15E37CCE162F /* Edit/WatchConfigItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edit/WatchConfigItemRow.swift; sourceTree = "<group>"; };
+		D73D1D48CF6A15E37CCE162F /* WatchConfigItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigItemRow.swift; sourceTree = "<group>"; };
 		D790D5FA5DBB4B5B9DBB2334 /* NotificationsCommandManagerLiveActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsCommandManagerLiveActivityTests.swift; sourceTree = "<group>"; };
 		DA5459C05BEB77340680D8C6 /* Domain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.test.swift; sourceTree = "<group>"; };
 		DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntities.swift; sourceTree = "<group>"; };
@@ -4799,6 +4801,7 @@
 			isa = PBXGroup;
 			children = (
 				9DA2D62699FC44A99AB37480 /* WatchFolderRow.swift */,
+				357DCBF27D4B9D87A5972233 /* WatchHomeItemLabel.swift */,
 				42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */,
 				4207EB752C8754BF00286A2D /* WatchMagicViewRowViewModel.swift */,
 			);
@@ -4810,6 +4813,17 @@
 			children = (
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		8CE9831DF9AD7740440F91D1 /* Edit */ = {
+			isa = PBXGroup;
+			children = (
+				D73D1D48CF6A15E37CCE162F /* WatchConfigItemRow.swift */,
+				327B41706C936E3015B4DB41 /* WatchIconPicker.swift */,
+				5223614EF19F713523318DF8 /* WatchConfigItemEditView.swift */,
+				78A98DD0936A020042FB4A98 /* WatchConfigAddView.swift */,
+			);
+			path = Edit;
 			sourceTree = "<group>";
 		};
 		420BE13A2F0FE50C00E20584 /* DynamicIslandToast */ = {
@@ -6175,10 +6189,7 @@
 				428830EA2C6E3A8D0012373D /* WatchHomeView.swift */,
 				E86A45D71046ABC254559391 /* WatchHomeHeaderView.swift */,
 				A6A9EF3D8DC45A289C1145E5 /* WatchHomeFooterView.swift */,
-				D73D1D48CF6A15E37CCE162F /* Edit/WatchConfigItemRow.swift */,
-				327B41706C936E3015B4DB41 /* Edit/WatchIconPicker.swift */,
-				5223614EF19F713523318DF8 /* Edit/WatchConfigItemEditView.swift */,
-				78A98DD0936A020042FB4A98 /* Edit/WatchConfigAddView.swift */,
+				8CE9831DF9AD7740440F91D1 /* Edit */,
 				428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */,
 				429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */,
 			);
@@ -10365,16 +10376,17 @@
 				41D3557E8D3A4C9845D8478F /* WatchHomeHeaderView.swift in Sources */,
 				6C5637D7B18F3528C3144AAB /* WatchHomeFooterView.swift in Sources */,
 				42228CE72FF6BFB000CE9A06 /* WatchServerSync.swift in Sources */,
-				97C36F8027A2A28AD1A5A4A2 /* Edit/WatchConfigItemRow.swift in Sources */,
-				8E91D9A87D2184599B991FDB /* Edit/WatchIconPicker.swift in Sources */,
-				9602620751B3D83AC3494563 /* Edit/WatchConfigItemEditView.swift in Sources */,
-				6DA026324B8AB92F202E8EEA /* Edit/WatchConfigAddView.swift in Sources */,
+				97C36F8027A2A28AD1A5A4A2 /* WatchConfigItemRow.swift in Sources */,
+				8E91D9A87D2184599B991FDB /* WatchIconPicker.swift in Sources */,
+				9602620751B3D83AC3494563 /* WatchConfigItemEditView.swift in Sources */,
+				6DA026324B8AB92F202E8EEA /* WatchConfigAddView.swift in Sources */,
 				3E6BF1D2C77498BF0A67C778 /* WatchConfigAssistView.swift in Sources */,
 				42FE01022FA00100A1B2C3D4 /* WatchSettingsView.swift in Sources */,
 				42FE01042FA00100A1B2C3D4 /* WatchSettingsViewModel.swift in Sources */,
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
 				42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */,
 				C8860D27D848451A887BC441 /* WatchFolderRow.swift in Sources */,
+				91A82441CFF3E42A14F465E4 /* WatchHomeItemLabel.swift in Sources */,
 				42752DF12D50F94C00FC2F37 /* AssistTypingIndicator.swift in Sources */,
 				42DF986B2E93A1F300837EA2 /* NotificationSubController.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,

@@ -4,12 +4,20 @@ import SwiftUI
 
 struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var viewModel = WatchHomeViewModel()
+    @StateObject private var viewModel: WatchHomeViewModel
+    /// When false, the view skips the network/database refresh on appear. Used by previews to render
+    /// injected sample data.
+    private let autoLoad: Bool
     @State private var showAssist = false
     @State private var showSettings = false
     @State private var openFolderId: String?
     @State private var isEditing = false
     @State private var activeSheet: HomeSheet?
+
+    init(viewModel: WatchHomeViewModel = WatchHomeViewModel(), autoLoad: Bool = true) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.autoLoad = autoLoad
+    }
 
     /// Identifiable wrapper so a `MagicItem` can drive a `.sheet(item:)`.
     struct EditableItem: Identifiable {
@@ -88,6 +96,7 @@ struct WatchHomeView: View {
             Text(verbatim: L10n.Watch.Config.Conflict.message)
         }
         .onAppear {
+            guard autoLoad else { return }
             Task {
                 await viewModel.fetchNetworkInfo()
                 viewModel.initialRoutine()
@@ -248,4 +257,57 @@ struct WatchHomeView: View {
     private func deleteItems(at offsets: IndexSet) {
         viewModel.deleteItem(at: offsets)
     }
+}
+
+#Preview("Populated") {
+    MaterialDesignIcons.register()
+    let viewModel = WatchHomeViewModel()
+    viewModel.showAssist = true
+    viewModel.watchConfig = WatchConfig(items: [
+        MagicItem(
+            id: "script.good_morning",
+            serverId: "1",
+            type: .script,
+            customization: .init(iconColor: "#FFB300", icon: "weather_sunny"),
+            displayText: "Good Morning"
+        ),
+        MagicItem(
+            id: "scene.movie_time",
+            serverId: "1",
+            type: .scene,
+            customization: .init(icon: "movie_open"),
+            displayText: "Movie Time"
+        ),
+        MagicItem(
+            id: "script.goodnight",
+            serverId: "1",
+            type: .script,
+            customization: .init(backgroundColor: "#3F51B5", icon: "weather_night"),
+            displayText: "Goodnight"
+        ),
+        MagicItem(
+            id: "folder1",
+            serverId: "",
+            type: .folder,
+            customization: .init(iconColor: "#4FC3F7"),
+            displayText: "Lights",
+            items: [
+                MagicItem(
+                    id: "light.kitchen",
+                    serverId: "1",
+                    type: .entity,
+                    customization: .init(icon: "ceiling_light"),
+                    displayText: "Kitchen"
+                ),
+            ]
+        ),
+    ])
+    return WatchHomeView(viewModel: viewModel, autoLoad: false)
+}
+
+#Preview("Empty") {
+    MaterialDesignIcons.register()
+    let viewModel = WatchHomeViewModel()
+    viewModel.watchConfig = WatchConfig(items: [])
+    return WatchHomeView(viewModel: viewModel, autoLoad: false)
 }
