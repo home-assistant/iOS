@@ -99,8 +99,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         public var url: String?
 
         /// Lock Screen background color, parsed like `notification_icon_color`. When unset the
-        /// system renders its default translucent, appearance-adaptive background; text
-        /// auto-contrasts against an explicit color. Maps to `background_color`.
+        /// background is transparent, so the Lock Screen's own adaptive material shows through;
+        /// text auto-contrasts against an explicit color. Maps to `background_color`.
         public var backgroundColor: String?
 
         /// Lock Screen text/foreground color, parsed like `notification_icon_color`. Overrides the

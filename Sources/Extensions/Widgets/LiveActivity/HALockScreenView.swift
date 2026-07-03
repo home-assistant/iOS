@@ -169,10 +169,11 @@ enum HAActivityVisualStyle {
         UIColor(hex: color ?? haBlueHex)
     }
 
-    /// Explicit `background_color`, or nil to let the system render its default translucent,
-    /// appearance-adaptive Live Activity background (Apple's recommended default).
-    static func backgroundColor(from hex: String?) -> Color? {
-        guard let hex = normalized(hex) else { return nil }
+    /// Explicit `background_color`, else `.clear` so the Lock Screen's own translucent,
+    /// appearance-adaptive material shows through. A nil tint makes ActivityKit fall back to an
+    /// opaque (black) default instead, so `.clear` is what actually yields a transparent background.
+    static func backgroundColor(from hex: String?) -> Color {
+        guard let hex = normalized(hex) else { return .clear }
         return Color(uiColor: UIColor(hex: hex))
     }
 
