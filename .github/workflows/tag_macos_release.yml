@@ -11,10 +11,6 @@ on:
         description: Commit SHA to tag
         required: true
         type: string
-      distribute_run_id:
-        description: Optional Distribute workflow run ID to use directly
-        required: false
-        type: string
 
 permissions:
   actions: write
@@ -76,7 +72,6 @@ jobs:
         env:
           EXPECTED_RUN_NUMBER: ${{ steps.parse_inputs.outputs.run_number }}
           TARGET_COMMIT_SHA: ${{ steps.parse_inputs.outputs.commit_sha }}
-          DISTRIBUTE_RUN_ID: ${{ inputs.distribute_run_id || '' }}
         with:
           script: |
             const owner = context.repo.owner;
@@ -84,73 +79,6 @@ jobs:
             const workflowId = 'distribute.yml';
             const headSha = process.env.TARGET_COMMIT_SHA;
             const expectedRunNumber = Number(process.env.EXPECTED_RUN_NUMBER);
-            const distributeRunId = process.env.DISTRIBUTE_RUN_ID.trim();
-
-            function validateRun(run) {
-              if (run.run_number !== expectedRunNumber) {
-                core.setFailed(
-                  `Distribute run ${run.id} is #${run.run_number}, expected #${expectedRunNumber}.`
-                );
-                return false;
-              }
-
-              if (run.head_sha !== headSha) {
-                core.setFailed(
-                  `Distribute run #${run.run_number} points to ${run.head_sha}, expected ${headSha}.`
-                );
-                return false;
-              }
-
-              if (run.head_branch !== 'main') {
-                core.setFailed(
-                  `Distribute run #${run.run_number} is for ${run.head_branch}, expected main.`
-                );
-                return false;
-              }
-
-              if (run.path !== '.github/workflows/distribute.yml') {
-                core.setFailed(
-                  `Run #${run.run_number} used ${run.path}, expected .github/workflows/distribute.yml.`
-                );
-                return false;
-              }
-
-              return true;
-            }
-
-            if (distributeRunId) {
-              const runId = Number(distributeRunId);
-
-              if (!Number.isFinite(runId) || !Number.isInteger(runId)) {
-                core.setFailed(`Invalid DISTRIBUTE_RUN_ID: "${distributeRunId}".`);
-                return;
-              }
-
-              const { data: run } = await github.request(
-                'GET /repos/{owner}/{repo}/actions/runs/{run_id}',
-                {
-                  owner,
-                  repo,
-                  run_id: runId,
-                }
-              );
-
-              if (!validateRun(run)) {
-                return;
-              }
-
-              if (run.conclusion !== 'success') {
-                core.setFailed(
-                  `Distribute run #${run.run_number} concluded with ${run.conclusion}.`
-                );
-                return;
-              }
-
-              core.info(`Using Distribute run #${run.run_number} (${run.html_url})`);
-              core.setOutput('run_id', String(run.id));
-              core.setOutput('run_url', run.html_url);
-              return;
-            }
 
             const pollIntervalMs = 60 * 1000;
             const deadline = Date.now() + (30 * 60 * 1000);
@@ -166,7 +94,7 @@ jobs:
                   per_page: 100,
                 },
                 (response, done) => {
-                  const workflowRuns = response.data.workflow_runs ?? [];
+                  const workflowRuns = response.data ?? [];
 
                   if (
                     workflowRuns.some((run) => run.run_number === expectedRunNumber) ||
@@ -240,7 +168,6 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
-          DISTRIBUTE_RUN_ID: ${{ steps.find_run.outputs.run_id }}
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
@@ -250,6 +177,5 @@ jobs:
               ref: 'main',
               inputs: {
                 release_tag: process.env.RELEASE_TAG,
-                distribute_run_id: process.env.DISTRIBUTE_RUN_ID,
               },
             });
