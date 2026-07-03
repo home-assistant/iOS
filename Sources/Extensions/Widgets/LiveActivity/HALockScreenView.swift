@@ -13,10 +13,6 @@ struct HALockScreenView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
 
-    /// Drives the light/dark styling when we render on the system's adaptive background
-    /// (i.e. no explicit `background_color`).
-    @Environment(\.colorScheme) private var colorScheme
-
     /// Icon size for the MDI icon in the header row.
     private static let iconSize: CGFloat = 28
 
@@ -70,10 +66,10 @@ struct HALockScreenView: View {
         if state.icon != nil {
             ZStack {
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
-                    .fill(accentColor.opacity(useLightText ? 0.2 : 0.14))
+                    .fill(accentColor.opacity(0.2))
                     .overlay {
                         RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf, style: .continuous)
-                            .strokeBorder(accentColor.opacity(useLightText ? 0.3 : 0.18))
+                            .strokeBorder(accentColor.opacity(0.28))
                     }
 
                 iconView
@@ -123,17 +119,9 @@ struct HALockScreenView: View {
         HAActivityVisualStyle.color(from: state.progressBarColor ?? state.color)
     }
 
-    /// Whether light-on-dark styling applies: driven by an explicit `background_color`'s luma,
-    /// else by the current appearance when we render on the system's adaptive background.
-    private var useLightText: Bool {
-        if let background = HAActivityVisualStyle.normalized(state.backgroundColor) {
-            return HAActivityVisualStyle.prefersLightText(onBackground: background)
-        }
-        return colorScheme == .dark
-    }
-
-    /// Explicit `text_color` or auto-contrast against an explicit `background_color`, else nil to
-    /// defer to the adaptive system color so text stays legible on the default background.
+    /// Explicit `text_color` or auto-contrast against an explicit `background_color`, else nil so
+    /// primary/secondary text fall back to the adaptive system colors. Those stay legible on the
+    /// transparent Lock Screen material without us inspecting the color scheme.
     private var resolvedForeground: Color? {
         HAActivityVisualStyle.foregroundColor(textColor: state.textColor, onBackground: state.backgroundColor)
     }
@@ -143,14 +131,11 @@ struct HALockScreenView: View {
     }
 
     private var secondaryTextColor: Color {
-        if let resolvedForeground {
-            return resolvedForeground.opacity(useLightText ? 0.8 : 0.72)
-        }
-        return .secondary
+        resolvedForeground?.opacity(0.8) ?? .secondary
     }
 
     private var trackColor: Color {
-        (resolvedForeground ?? .primary).opacity(useLightText ? 0.14 : 0.08)
+        (resolvedForeground ?? .primary).opacity(0.12)
     }
 }
 
