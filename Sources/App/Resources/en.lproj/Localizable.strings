@@ -1571,6 +1571,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.config.add.empty" = "Nothing to add yet. Add scripts, scenes or automations on your iPhone first.";
 "watch.config.add.entity" = "Entity";
 "watch.config.add.error.fetch_failed" = "Couldn't load items from your iPhone. Please try again.";
+"watch.config.add.filter.all" = "All";
 "watch.config.add.folder" = "Folder";
 "watch.config.add.new_folder" = "New Folder";
 "watch.config.add.search_placeholder" = "Search";
@@ -1823,6 +1824,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.trailing.description" = "The text to display on the trailing edge of the gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
+"watch.labels.no_config_add" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.auto" = "Auto";

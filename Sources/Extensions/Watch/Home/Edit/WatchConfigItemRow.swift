@@ -13,29 +13,18 @@ struct WatchConfigItemRow: View {
     var trailingSymbol: SFSymbol? = nil
 
     var body: some View {
-        HStack(spacing: DesignSystem.Spaces.one) {
-            icon
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                Text(item.name(info: itemInfo))
-                    .font(.body.bold())
-                    .foregroundStyle(.white)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.7)
-                if let subtitle, !subtitle.isEmpty {
-                    Text(subtitle)
-                        .font(.caption2)
+        WatchHomeItemLabel(
+            name: item.name(info: itemInfo),
+            subtitle: subtitle,
+            textColor: textColor,
+            icon: { icon },
+            accessory: {
+                if let trailingSymbol {
+                    Image(systemSymbol: trailingSymbol)
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .multilineTextAlignment(.leading)
-            if let trailingSymbol {
-                Image(systemSymbol: trailingSymbol)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .frame(maxWidth: .infinity)
+        )
     }
 
     private var iconColor: UIColor {
@@ -46,22 +35,22 @@ struct WatchConfigItemRow: View {
         }
     }
 
+    private var textColor: Color {
+        if let hex = itemInfo.customization?.textColor {
+            .init(uiColor: .init(hex: hex))
+        } else {
+            .white
+        }
+    }
+
     private var icon: some View {
         Image(uiImage: item.icon(info: itemInfo).image(
             ofSize: .init(width: 24, height: 24),
             color: iconColor
         ))
-        .frame(width: 38, height: 38)
-        .modify { view in
-            if #available(watchOS 26.0, *) {
-                view.glassEffect(.clear.tint(Color(uiColor: iconColor).opacity(0.3)), in: .circle)
-            } else {
-                view
-                    .background(Color(uiColor: iconColor).opacity(0.3))
-                    .clipShape(Circle())
-            }
-        }
-        .padding([.vertical, .trailing], DesignSystem.Spaces.half)
+        .foregroundStyle(Color(uiColor: iconColor))
+        .padding()
+        .watchRowIconContainer(color: iconColor)
     }
 }
 

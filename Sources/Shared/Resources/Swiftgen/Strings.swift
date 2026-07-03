@@ -5329,6 +5329,10 @@ public enum L10n {
           /// Couldn't load items from your iPhone. Please try again.
           public static var fetchFailed: String { return L10n.tr("Localizable", "watch.config.add.error.fetch_failed") }
         }
+        public enum Filter {
+          /// All
+          public static var all: String { return L10n.tr("Localizable", "watch.config.add.filter.all") }
+        }
       }
       public enum Assist {
         /// No Assist pipelines cached yet. Keep your iPhone nearby and tap Reload.
@@ -5682,6 +5686,8 @@ public enum L10n {
     public enum Labels {
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
+      /// With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.
+      public static var noConfigAdd: String { return L10n.tr("Localizable", "watch.labels.no_config_add") }
       public enum ComplicationGroup {
         public enum CircularSmall {
           /// Use circular small complications to display content in the corners of the Color watch face.

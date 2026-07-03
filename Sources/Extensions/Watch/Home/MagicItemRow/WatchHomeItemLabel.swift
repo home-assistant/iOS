@@ -49,6 +49,7 @@ struct WatchHomeItemLabel<Icon: View, Accessory: View>: View {
         .padding(.leading, DesignSystem.Spaces.one)
         .padding(.trailing, DesignSystem.Spaces.one)
         .padding(.vertical, DesignSystem.Spaces.half)
+        .contentShape(Rectangle())
     }
 }
 
