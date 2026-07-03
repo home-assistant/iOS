@@ -1,5 +1,4 @@
 PODS:
-  - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
   - HAKit (0.4.16):
     - HAKit/Core (= 0.4.16)
@@ -55,7 +54,6 @@ PODS:
     - ObjcExceptionBridging
 
 DEPENDENCIES:
-  - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
@@ -90,9 +88,6 @@ SPEC REPOS:
     - XCGLogger
 
 EXTERNAL SOURCES:
-  Communicator:
-    :branch: observation-memory-direct
-    :git: https://github.com/zacwest/Communicator.git
   CPDAcknowledgements:
     :branch: master
     :git: https://github.com/CocoaPods/CPDAcknowledgements
@@ -110,9 +105,6 @@ EXTERNAL SOURCES:
     :tag: 4.0.9
 
 CHECKOUT OPTIONS:
-  Communicator:
-    :commit: f5dd96048cbe1e7ebfee85688c23c17c6f71f9e4
-    :git: https://github.com/zacwest/Communicator.git
   CPDAcknowledgements:
     :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
     :git: https://github.com/CocoaPods/CPDAcknowledgements
@@ -130,7 +122,6 @@ CHECKOUT OPTIONS:
     :tag: 4.0.9
 
 SPEC CHECKSUMS:
-  Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   HAKit: ef185a67991484219a7ecd74aab25f186274d7dd
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -149,6 +140,6 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: e92a601b330b116cd90222555d91882f89a7e239
+PODFILE CHECKSUM: be250be323475bbf4e03b5efd59107711db8823f
 
 COCOAPODS: 1.15.2
