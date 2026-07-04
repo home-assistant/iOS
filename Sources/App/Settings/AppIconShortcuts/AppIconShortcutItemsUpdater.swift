@@ -89,6 +89,10 @@ enum AppIconShortcutItemsUpdater {
     }
 
     private static func icon(for item: MagicItem, provider: MagicItemProviderProtocol) -> UIApplicationShortcutIcon? {
+        if let imageName = iconTemplateImageName(for: item, provider: provider) {
+            return .init(templateImageName: imageName)
+        }
+
         switch item.type {
         case .script:
             return .init(systemSymbol: .applescriptFill)
@@ -103,5 +107,44 @@ enum AppIconShortcutItemsUpdater {
         case .unsupported:
             return nil
         }
+    }
+
+    static func iconTemplateImageName(for item: MagicItem, provider: MagicItemProviderProtocol) -> String? {
+        let iconName = iconName(for: item, provider: provider)
+
+        guard UIImage(named: iconName) != nil else {
+            return nil
+        }
+
+        return iconName
+    }
+
+    static func iconName(for item: MagicItem, provider: MagicItemProviderProtocol) -> String {
+        let fallbackIcon: String = switch item.type {
+        case .script:
+            MaterialDesignIcons.scriptTextOutlineIcon.name
+        case .scene:
+            MaterialDesignIcons.paletteIcon.name
+        case .entity:
+            MaterialDesignIcons.dotsGridIcon.name
+        case .folder:
+            MaterialDesignIcons.folderIcon.name
+        case .assistPipeline:
+            MaterialDesignIcons.microphoneIcon.name
+        case .assistPrompt:
+            MaterialDesignIcons.messageProcessingOutlineIcon.name
+        case .unsupported:
+            MaterialDesignIcons.dotsGridIcon.name
+        }
+
+        if let iconName = item.customization?.icon {
+            return iconName.normalizingIconString
+        }
+
+        if let info = provider.getInfo(for: item) {
+            return item.icon(info: info).name
+        }
+
+        return fallbackIcon
     }
 }
