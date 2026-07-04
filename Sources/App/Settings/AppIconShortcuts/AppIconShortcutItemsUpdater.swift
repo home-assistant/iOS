@@ -89,8 +89,8 @@ enum AppIconShortcutItemsUpdater {
     }
 
     private static func icon(for item: MagicItem, provider: MagicItemProviderProtocol) -> UIApplicationShortcutIcon? {
-        if let imageName = iconTemplateImageName(for: item, provider: provider) {
-            return .init(templateImageName: imageName)
+        if let systemImageName = iconSystemImageName(for: item, provider: provider) {
+            return .init(systemImageName: systemImageName)
         }
 
         switch item.type {
@@ -109,40 +109,24 @@ enum AppIconShortcutItemsUpdater {
         }
     }
 
-    static func iconTemplateImageName(for item: MagicItem, provider: MagicItemProviderProtocol) -> String? {
-        let iconName = iconName(for: item, provider: provider)
-
-        guard UIImage(named: iconName) != nil else {
+    static func iconSystemImageName(for item: MagicItem, provider: MagicItemProviderProtocol) -> String? {
+        guard let iconValue = iconValue(for: item, provider: provider),
+              iconValue.hasPrefix("sfsymbols:") else {
             return nil
         }
 
-        return iconName
+        return iconValue.replacingOccurrences(of: "sfsymbols:", with: "")
     }
 
-    static func iconName(for item: MagicItem, provider: MagicItemProviderProtocol) -> String {
+    private static func iconValue(for item: MagicItem, provider: MagicItemProviderProtocol) -> String? {
         if let iconName = item.customization?.icon {
-            return iconName.normalizingIconString
+            return iconName
         }
 
         if let info = provider.getInfo(for: item) {
-            return item.icon(info: info).name
+            return info.customization?.icon ?? info.iconName
         }
 
-        return switch item.type {
-        case .script:
-            MaterialDesignIcons.scriptTextOutlineIcon.name
-        case .scene:
-            MaterialDesignIcons.paletteIcon.name
-        case .entity:
-            MaterialDesignIcons.dotsGridIcon.name
-        case .folder:
-            MaterialDesignIcons.folderIcon.name
-        case .assistPipeline:
-            MaterialDesignIcons.microphoneIcon.name
-        case .assistPrompt:
-            MaterialDesignIcons.messageProcessingOutlineIcon.name
-        case .unsupported:
-            MaterialDesignIcons.dotsGridIcon.name
-        }
+        return nil
     }
 }

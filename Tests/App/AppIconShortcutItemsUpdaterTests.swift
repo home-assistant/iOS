@@ -3,41 +3,42 @@
 import Testing
 
 struct AppIconShortcutItemsUpdaterTests {
-    @Test func iconNameUsesCustomizedIconWhenPresent() {
+    @Test func iconSystemImageNameUsesCustomizedIconWhenPresent() {
         let item = MagicItem(
             id: "light.living_room",
             serverId: "server-1",
             type: .entity,
-            customization: .init(icon: "mdi:garage")
+            customization: .init(icon: "sfsymbols:house.fill")
         )
 
-        let iconName = AppIconShortcutItemsUpdater.iconName(for: item, provider: TestMagicItemProvider())
+        let iconName = AppIconShortcutItemsUpdater.iconSystemImageName(for: item, provider: TestMagicItemProvider())
 
-        #expect(iconName == "garage")
+        #expect(iconName == "house.fill")
     }
 
-    @Test func iconNameUsesProviderInfoWhenNoCustomizedIconExists() {
+    @Test func iconSystemImageNameUsesProviderInfoWhenNoCustomizedIconExists() {
         let item = MagicItem(
             id: "light.living_room",
             serverId: "server-1",
             type: .entity
         )
 
-        let iconName = AppIconShortcutItemsUpdater.iconName(for: item, provider: TestMagicItemProvider())
+        let iconName = AppIconShortcutItemsUpdater.iconSystemImageName(for: item, provider: SystemImageMagicItemProvider())
 
-        #expect(iconName == "lamp")
+        #expect(iconName == "lightbulb.fill")
     }
 
-    @Test func iconNameFallsBackToTypeDefaultWhenProviderHasNoInfo() {
+    @Test func iconSystemImageNameReturnsNilForUnsupportedIconSets() {
         let item = MagicItem(
             id: "script.goodnight",
             serverId: "server-1",
-            type: .script
+            type: .script,
+            customization: .init(icon: "mdi:garage")
         )
 
-        let iconName = AppIconShortcutItemsUpdater.iconName(for: item, provider: EmptyMagicItemProvider())
+        let iconName = AppIconShortcutItemsUpdater.iconSystemImageName(for: item, provider: EmptyMagicItemProvider())
 
-        #expect(iconName == MaterialDesignIcons.scriptTextOutlineIcon.name)
+        #expect(iconName == nil)
     }
 }
 
@@ -55,6 +56,29 @@ private struct TestMagicItemProvider: MagicItemProviderProtocol {
             id: item.id,
             name: "Lamp",
             iconName: "mdi:lamp",
+            customization: nil
+        )
+    }
+
+    func getAreaName(for item: MagicItem) -> String? {
+        nil
+    }
+}
+
+private struct SystemImageMagicItemProvider: MagicItemProviderProtocol {
+    func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
+        completion([:])
+    }
+
+    func loadInformation() async -> [String: [HAAppEntity]] {
+        [:]
+    }
+
+    func getInfo(for item: MagicItem) -> MagicItem.Info? {
+        .init(
+            id: item.id,
+            name: "Lamp",
+            iconName: "sfsymbols:lightbulb.fill",
             customization: nil
         )
     }
