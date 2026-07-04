@@ -120,7 +120,15 @@ enum AppIconShortcutItemsUpdater {
     }
 
     static func iconName(for item: MagicItem, provider: MagicItemProviderProtocol) -> String {
-        let fallbackIcon: String = switch item.type {
+        if let iconName = item.customization?.icon {
+            return iconName.normalizingIconString
+        }
+
+        if let info = provider.getInfo(for: item) {
+            return item.icon(info: info).name
+        }
+
+        return switch item.type {
         case .script:
             MaterialDesignIcons.scriptTextOutlineIcon.name
         case .scene:
@@ -136,15 +144,5 @@ enum AppIconShortcutItemsUpdater {
         case .unsupported:
             MaterialDesignIcons.dotsGridIcon.name
         }
-
-        if let iconName = item.customization?.icon {
-            return iconName.normalizingIconString
-        }
-
-        if let info = provider.getInfo(for: item) {
-            return item.icon(info: info).name
-        }
-
-        return fallbackIcon
     }
 }
