@@ -119,8 +119,8 @@ enum AppIconShortcutItemsUpdater {
     }
 
     private static func iconValue(for item: MagicItem, provider: MagicItemProviderProtocol) -> String? {
-        if let iconName = item.customization?.icon {
-            return iconName
+        if let iconValue = item.customization?.icon {
+            return iconValue
         }
 
         if let info = provider.getInfo(for: item) {
