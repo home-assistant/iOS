@@ -60,8 +60,8 @@ import Shared
 /// ```
 enum WhatsNewCatalog {
     static let release: WhatsNewRelease? = WhatsNewRelease(
-        id: WhatsNewReleaseId("drop-support-2026.6.1"),
-        version: WhatsNewAppVersion(major: 2026, minor: 6, patch: 1),
+        id: WhatsNewReleaseId("drop-support-2026.7.1"),
+        version: WhatsNewAppVersion(major: 2026, minor: 7, patch: 1),
         targetPlatforms: [.iPhone, .iPad, .mac],
         osRequirements: WhatsNewOSRequirements(
             iOS: WhatsNewOSVersionRange(
