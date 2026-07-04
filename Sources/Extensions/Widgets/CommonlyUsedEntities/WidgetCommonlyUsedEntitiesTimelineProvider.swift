@@ -21,9 +21,6 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         WidgetCommonlyUsedEntitiesConstants.expiration
     }
 
-    /// Domains supported by this widget for entity filtering and display
-    static let supportedDomains: [Domain] = [.light, .switch, .cover, .fan]
-
     /// Cache is considered valid for 1 second to handle iOS widget reload bug
     /// that triggers multiple timeline refreshes
     private static let cacheValiditySeconds: TimeInterval = 1
@@ -99,7 +96,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
 
         let filteredEntities = entities.filter { entityId in
             guard let domain = Domain(entityId: entityId) else { return false }
-            return Self.supportedDomains.contains(domain)
+            return Domain.commonlyUsedWidgetSupported.contains(domain)
         }
 
         let magicItems = filteredEntities.map { entityId in

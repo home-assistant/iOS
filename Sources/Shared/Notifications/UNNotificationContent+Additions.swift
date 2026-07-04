@@ -38,8 +38,16 @@ public extension UNNotificationContent {
     }
 
     var userInfoActions: [UNNotificationAction] {
-        userInfoActionConfigs
+        let maxActions = 10
+
+        let payloadActions = userInfoActionConfigs
             .map(NotificationAction.init(action:))
             .map(\.action)
+
+        let existingIdentifiers = Set(payloadActions.map(\.identifier))
+        let snoozeActions = NotificationSnoozeAction.enabledActions()
+            .filter { !existingIdentifiers.contains($0.identifier) }
+
+        return Array((payloadActions + snoozeActions).prefix(maxActions))
     }
 }

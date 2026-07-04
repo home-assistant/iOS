@@ -34,14 +34,13 @@ final class EntityPickerViewModel: ObservableObject {
     private var cachedAreaIdToEntityIds: [String: Set<String>] = [:]
     private var cachedEntitiesByServer: [String: [HAAppEntity]] = [:]
 
-    let domainFilter: Domain?
+    let domainFilter: [Domain]?
     private var filterTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
 
     /// Returns true if any filter (excluding server) has a non-default value
     var hasActiveFilters: Bool {
-        let defaultDomainFilter = domainFilter?.rawValue
-        let isDomainFilterActive = selectedDomainFilter != defaultDomainFilter
+        let isDomainFilterActive = domainFilter == nil && selectedDomainFilter != nil
         let isAreaFilterActive = selectedAreaFilter != nil
         let isGroupingFilterActive = selectedGrouping != .area
         return isDomainFilterActive || isAreaFilterActive || isGroupingFilterActive
@@ -49,15 +48,15 @@ final class EntityPickerViewModel: ObservableObject {
 
     /// Resets all filters (except server) to their default values
     func resetFilters() {
-        selectedDomainFilter = domainFilter?.rawValue
+        selectedDomainFilter = nil
         selectedAreaFilter = nil
         selectedGrouping = .area
     }
 
-    init(domainFilter: Domain?, selectedServerId: String?) {
+    init(domainFilter: [Domain]?, selectedServerId: String?) {
         self.domainFilter = domainFilter
         self.selectedServerId = selectedServerId
-        self.selectedDomainFilter = domainFilter?.rawValue
+        self.selectedDomainFilter = nil
         setupFiltering()
     }
 
@@ -156,7 +155,8 @@ final class EntityPickerViewModel: ObservableObject {
         }
 
         if let domainFilter {
-            groups = groups.filter { $0.key == domainFilter.rawValue }
+            let allowedDomains = Set(domainFilter.map(\.rawValue))
+            groups = groups.filter { allowedDomains.contains($0.key) }
         }
 
         entitiesByDomain = groups
@@ -172,7 +172,8 @@ final class EntityPickerViewModel: ObservableObject {
     private func performFiltering() async {
         // Snapshot state needed for filtering
         let searchTerm = searchTerm
-        let domainFilter = selectedDomainFilter
+        let presetDomains = domainFilter.map { Set($0.map(\.rawValue)) }
+        let selectedDomainFilter = selectedDomainFilter
         let areaFilter = selectedAreaFilter
         let grouping = selectedGrouping
         let noAreaTitle = L10n.EntityPicker.List.Area.NoArea.title
@@ -190,8 +191,11 @@ final class EntityPickerViewModel: ObservableObject {
 
             // First, filter entities by domain, area, and search
             let filteredEntities = serverScopedEntities.filter { entity in
-                // Filter by domain if set
-                if let domainFilter, entity.domain != domainFilter { return false }
+                // Filter by the preset domain(s), if any were provided by the caller
+                if let presetDomains, !presetDomains.contains(entity.domain) { return false }
+
+                // Filter by the user-selected domain (only offered when there's no preset)
+                if let selectedDomainFilter, entity.domain != selectedDomainFilter { return false }
 
                 // Filter by area if set
                 if let areaEntityIds, !areaEntityIds.contains(entity.entityId) { return false }

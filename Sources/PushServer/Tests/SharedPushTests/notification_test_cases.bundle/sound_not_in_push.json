@@ -19,6 +19,7 @@
             "alert": {
                 "body": "test"
             },
+            "mutable-content": true,
             "sound": "custom_sound.wav"
         }
     }

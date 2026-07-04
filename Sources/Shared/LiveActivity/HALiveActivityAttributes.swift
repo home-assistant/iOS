@@ -28,6 +28,13 @@ public struct HALiveActivityAttributes: ActivityAttributes {
     /// before this shipped, or when the start path doesn't supply it.
     public let serverWebhookId: String?
 
+    /// Server send-time of the push-to-start, in Unix epoch seconds, stamped by the push relay.
+    /// When Core re-sends a start before it has a per-activity token, two activities can exist for
+    /// one tag; the registry keeps the one with the largest `startedAt` and dismisses the rest, so
+    /// duplicates collapse to the newest deterministically (ActivityKit exposes no creation order).
+    /// Optional: nil for activities started before this shipped, which then sort oldest.
+    public let startedAt: TimeInterval?
+
     /// Static-attribute coding keys. `serverWebhookId` maps to the snake_case `webhook_id` key
     /// carried in the APNs push-to-start `attributes`. Adding optional fields is safe; renaming
     /// or removing breaks in-flight activities.
@@ -35,6 +42,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         case tag
         case title
         case serverWebhookId = "webhook_id"
+        case startedAt = "started_at"
     }
 
     // MARK: - Dynamic State
@@ -58,14 +66,25 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Maximum progress value (raw integer). Maps to `progress_max`.
         public var progressMax: Int?
 
-        /// If true, show a countdown timer instead of static text. Maps to `chronometer`.
+        /// If true, show a ticking timer instead of static text. Maps to `chronometer`.
+        /// Counts down while `countdownEnd` is in the future; counts up from it once it
+        /// has passed (so a `when` at or before now behaves as a count-up chronometer).
+        /// When `chronometerStart` is also set, counts up from it toward `countdownEnd`
+        /// and freezes there (bounded count-up).
         public var chronometer: Bool?
 
-        /// Absolute end date for the countdown timer.
+        /// Absolute end date for the timer.
         /// Computed from `when` + `when_relative` in the notification payload:
         ///   - `when_relative: true`  → `Date().addingTimeInterval(Double(when))`
+        ///   - `when_relative: true` with a negative `when` → `Date().addingTimeInterval(-Double(when))`
+        ///     (bounded count-up toward `|when|` seconds; see `chronometerStart`)
         ///   - `when_relative: false` → `Date(timeIntervalSince1970: Double(when))`
         public var countdownEnd: Date?
+
+        /// Start anchor for a bounded count-up timer, stamped when a negative relative `when`
+        /// is parsed: the timer shows elapsed time from this date and freezes on reaching
+        /// `countdownEnd`. Nil for countdowns and unbounded count-ups.
+        public var chronometerStart: Date?
 
         /// MDI icon slug for display. Maps to `notification_icon`.
         public var icon: String?
@@ -79,12 +98,14 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// browser. Nil just opens the originating server.
         public var url: String?
 
-        /// Lock Screen background color, parsed like `notification_icon_color`. Defaults to black;
-        /// text auto-contrasts with it. Maps to `background_color`.
+        /// Lock Screen background color, parsed like `notification_icon_color`. When unset the
+        /// background is transparent, so the Lock Screen's own adaptive material shows through;
+        /// text auto-contrasts against an explicit color. Maps to `background_color`.
         public var backgroundColor: String?
 
-        /// Lock Screen text/foreground color, parsed like `notification_icon_color`.
-        /// Overrides the auto-contrast default. Maps to `text_color`.
+        /// Lock Screen text/foreground color, parsed like `notification_icon_color`. Overrides the
+        /// auto-contrast (explicit background) or adaptive (default background) default.
+        /// Maps to `text_color`.
         public var textColor: String?
 
         /// Hex tint for the progress bar, parsed like `notification_icon_color`. Falls back to
@@ -110,6 +131,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case progressMax = "progress_max"
             case chronometer
             case countdownEnd = "countdown_end"
+            case chronometerStart = "chronometer_start"
             case icon
             case color
             case url
@@ -128,6 +150,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             progressMax: Int? = nil,
             chronometer: Bool? = nil,
             countdownEnd: Date? = nil,
+            chronometerStart: Date? = nil,
             icon: String? = nil,
             color: String? = nil,
             url: String? = nil,
@@ -142,6 +165,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.progressMax = progressMax
             self.chronometer = chronometer
             self.countdownEnd = countdownEnd
+            self.chronometerStart = chronometerStart
             self.icon = icon
             self.color = color
             self.url = url
@@ -173,6 +197,11 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             } else {
                 self.countdownEnd = nil
             }
+            if let timestamp = try container.decodeIfPresent(Double.self, forKey: .chronometerStart) {
+                self.chronometerStart = Date(timeIntervalSince1970: timestamp)
+            } else {
+                self.chronometerStart = nil
+            }
             self.icon = try container.decodeIfPresent(String.self, forKey: .icon)
             self.color = try container.decodeIfPresent(String.self, forKey: .color)
             self.url = try container.decodeIfPresent(String.self, forKey: .url)
@@ -192,6 +221,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             if let countdownEnd {
                 try container.encode(countdownEnd.timeIntervalSince1970, forKey: .countdownEnd)
             }
+            if let chronometerStart {
+                try container.encode(chronometerStart.timeIntervalSince1970, forKey: .chronometerStart)
+            }
             try container.encodeIfPresent(icon, forKey: .icon)
             try container.encodeIfPresent(color, forKey: .color)
             try container.encodeIfPresent(url, forKey: .url)
@@ -203,10 +235,11 @@ public struct HALiveActivityAttributes: ActivityAttributes {
 
     // MARK: - Init
 
-    public init(tag: String, title: String, serverWebhookId: String? = nil) {
+    public init(tag: String, title: String, serverWebhookId: String? = nil, startedAt: TimeInterval? = nil) {
         self.tag = tag
         self.title = title
         self.serverWebhookId = serverWebhookId
+        self.startedAt = startedAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -218,6 +251,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.title = Self.defaultTitle
         }
         self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
+        self.startedAt = try container.decodeIfPresent(TimeInterval.self, forKey: .startedAt)
     }
 }
 #endif

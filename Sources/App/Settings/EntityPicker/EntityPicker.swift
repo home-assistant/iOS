@@ -20,7 +20,7 @@ struct EntityPicker: View {
     init(
         selectedServerId: String? = nil,
         selectedEntity: Binding<HAAppEntity?>,
-        domainFilter: Domain?,
+        domainFilter: [Domain]?,
         mode: Mode = .button
     ) {
         self._selectedEntity = selectedEntity

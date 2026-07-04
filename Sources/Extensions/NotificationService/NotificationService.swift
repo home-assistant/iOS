@@ -9,6 +9,10 @@ final class NotificationService: UNNotificationServiceExtension {
     ) {
         Current.Log.info("didReceive \(request), user info \(request.content.userInfo)")
 
+        if !Self.isLiveActivity(request.content.userInfo) {
+            Current.notificationHistoryStore.record(NotificationHistoryEntry(content: request.content, kind: .remote))
+        }
+
         guard let server = Current.servers.server(for: request.content), let api = Current.api(for: server) else {
             contentHandler(request.content)
             return
@@ -22,6 +26,11 @@ final class NotificationService: UNNotificationServiceExtension {
         }.done {
             contentHandler($0)
         }
+    }
+
+    private static func isLiveActivity(_ userInfo: [AnyHashable: Any]) -> Bool {
+        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
+        return (hadict["live_update"] as? Bool) == true || (hadict["command"] as? String) == "live_activity"
     }
 
     override func serviceExtensionTimeWillExpire() {

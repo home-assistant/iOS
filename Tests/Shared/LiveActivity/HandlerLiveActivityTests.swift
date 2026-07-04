@@ -159,6 +159,35 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(state.countdownEnd)
     }
 
+    func testContentState_whenRelativePositive_hasNoChronometerStart() {
+        let payload: [String: Any] = ["when": NSNumber(value: 300), "when_relative": true]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        XCTAssertNil(state.chronometerStart)
+    }
+
+    func testContentState_whenRelativeNegative_isBoundedCountUp() {
+        // Negative relative `when` = bounded count-up: anchor at now, end |when| seconds later.
+        let payload: [String: Any] = ["when": NSNumber(value: -1200), "when_relative": true]
+        let before = Date()
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        let after = Date()
+
+        guard let start = state.chronometerStart, let end = state.countdownEnd else {
+            return XCTFail("bounded count-up should set both chronometerStart and countdownEnd")
+        }
+        XCTAssertGreaterThanOrEqual(start.timeIntervalSince1970, before.timeIntervalSince1970 - 0.1)
+        XCTAssertLessThanOrEqual(start.timeIntervalSince1970, after.timeIntervalSince1970 + 0.1)
+        XCTAssertEqual(end.timeIntervalSince(start), 1200, accuracy: 0.001)
+    }
+
+    func testContentState_whenAbsolutePast_hasNoChronometerStart() {
+        // An absolute past `when` stays an unbounded count-up — no anchor, no freeze point.
+        let payload: [String: Any] = ["when": NSNumber(value: 1_700_000_000), "when_relative": false]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        XCTAssertNil(state.chronometerStart)
+        XCTAssertEqual(state.countdownEnd?.timeIntervalSince1970 ?? 0, 1_700_000_000, accuracy: 0.001)
+    }
+
     // MARK: - handle(_:) — app extension hand-off
 
     func testHandle_inAppExtension_enqueuesHandoffAndSkipsRegistry() throws {
@@ -179,6 +208,26 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(pending.first?.title, "Test")
         XCTAssertEqual(pending.first?.serverWebhookId, "wh-1")
         XCTAssertEqual(pending.first?.state.message, "Body")
+        // A non-silent update carries alert = true so the drain fires an ActivityKit alert.
+        XCTAssertEqual(pending.first?.alert, true)
+    }
+
+    func testHandle_inAppExtension_silent_handsOffWithAlertFalse() throws {
+        Current.isAppExtension = true
+        let payload: [String: Any] = ["tag": "test-tag", "title": "Test", "silent": true]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.alert, false)
+    }
+
+    func testHandle_inApp_passesAlertFalseToRegistry() throws {
+        // APNs alerting is owned by the notification system (foreground willPresent / system
+        // banner), so the in-app path never fires the ActivityKit alert.
+        let payload: [String: Any] = ["tag": "my-activity", "title": "Test"]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertFalse(mockRegistry.startOrUpdateCalls[0].alert)
     }
 
     func testHandle_inAppExtension_invalidTag_doesNotEnqueue() throws {
@@ -257,6 +306,147 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         // Still true — unchanged
         XCTAssertTrue(Current.settingsStore.hasSeenLiveActivityDisclosure)
+    }
+}
+
+// MARK: - LiveActivityRegistry token targeting
+
+@available(iOS 17.2, *)
+final class LiveActivityRegistryTokenTargetingTests: XCTestCase {
+    private var servers: FakeServerManager!
+
+    override func setUp() {
+        super.setUp()
+        servers = FakeServerManager()
+        Current.servers = servers
+    }
+
+    override func tearDown() {
+        servers = nil
+        Current.servers = FakeServerManager()
+        super.tearDown()
+    }
+
+    private func addServer(webhookID: String) {
+        let info = with(ServerInfo.fake()) { $0.connection.webhookID = webhookID }
+        _ = servers.add(identifier: .init(rawValue: webhookID), serverInfo: info)
+    }
+
+    /// A per-activity push token must go only to the server whose `webhook_id` started the activity.
+    func testTokenTargetServers_reportsOnlyToOriginServer() {
+        addServer(webhookID: "wh-1")
+        addServer(webhookID: "wh-2")
+        let targets = LiveActivityRegistry.tokenTargetServers(originWebhookID: "wh-2")
+        XCTAssertEqual(targets.map(\.info.connection.webhookID), ["wh-2"])
+    }
+
+    /// Activities created before the origin was recorded carry no `webhook_id`, so their tokens
+    /// still reach every server and existing activities keep working.
+    func testTokenTargetServers_nilOrigin_reportsToAllServers() {
+        addServer(webhookID: "wh-1")
+        addServer(webhookID: "wh-2")
+        let targets = LiveActivityRegistry.tokenTargetServers(originWebhookID: nil)
+        XCTAssertEqual(Set(targets.map(\.info.connection.webhookID)), ["wh-1", "wh-2"])
+    }
+
+    /// If the origin id matches no current server (its server was removed, or the id is unrecognised),
+    /// fall back to every server rather than silently dropping the token.
+    func testTokenTargetServers_unknownOrigin_fallsBackToAllServers() {
+        addServer(webhookID: "wh-1")
+        addServer(webhookID: "wh-2")
+        let targets = LiveActivityRegistry.tokenTargetServers(originWebhookID: "wh-removed")
+        XCTAssertEqual(Set(targets.map(\.info.connection.webhookID)), ["wh-1", "wh-2"])
+    }
+
+    /// With no servers configured there is nowhere to report; the caller skips and remembers nothing.
+    func testTokenTargetServers_noServers_returnsEmpty() {
+        XCTAssertTrue(LiveActivityRegistry.tokenTargetServers(originWebhookID: "wh-1").isEmpty)
+        XCTAssertTrue(LiveActivityRegistry.tokenTargetServers(originWebhookID: nil).isEmpty)
+    }
+}
+
+// MARK: - LiveActivityRegistry bounded count-up anchor
+
+@available(iOS 17.2, *)
+final class LiveActivityRegistryChronometerAnchorTests: XCTestCase {
+    private func countUpState(
+        message: String = "m",
+        start: Date,
+        duration: TimeInterval
+    ) -> HALiveActivityAttributes.ContentState {
+        HALiveActivityAttributes.ContentState(
+            message: message,
+            chronometer: true,
+            countdownEnd: start.addingTimeInterval(duration),
+            chronometerStart: start
+        )
+    }
+
+    /// An update re-sending the same negative `when` re-stamps the anchor at its own receipt
+    /// time; carrying the previous anchor forward keeps the elapsed timer from resetting.
+    func testCarryForward_sameDuration_keepsPreviousAnchor() {
+        let previousStart = Date(timeIntervalSince1970: 1_700_000_000)
+        let previous = countUpState(start: previousStart, duration: 1200)
+        let new = countUpState(message: "updated", start: previousStart.addingTimeInterval(300), duration: 1200)
+
+        let carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous, new: new)
+
+        XCTAssertEqual(carried.chronometerStart, previous.chronometerStart)
+        XCTAssertEqual(carried.countdownEnd, previous.countdownEnd)
+        XCTAssertEqual(carried.message, "updated")
+    }
+
+    /// Sub-second parse jitter between the two stampings must not defeat the carry-forward.
+    func testCarryForward_subSecondJitter_keepsPreviousAnchor() {
+        let previousStart = Date(timeIntervalSince1970: 1_700_000_000)
+        let previous = countUpState(start: previousStart, duration: 1200)
+        let new = countUpState(start: previousStart.addingTimeInterval(300), duration: 1200.4)
+
+        let carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous, new: new)
+
+        XCTAssertEqual(carried.chronometerStart, previous.chronometerStart)
+    }
+
+    /// A different duration is a new timer — the update's own anchor applies.
+    func testCarryForward_differentDuration_reanchors() {
+        let previousStart = Date(timeIntervalSince1970: 1_700_000_000)
+        let previous = countUpState(start: previousStart, duration: 1200)
+        let new = countUpState(start: previousStart.addingTimeInterval(300), duration: 600)
+
+        let carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous, new: new)
+
+        XCTAssertEqual(carried.chronometerStart, new.chronometerStart)
+        XCTAssertEqual(carried.countdownEnd, new.countdownEnd)
+    }
+
+    /// A previous state without an anchor (countdown or unbounded count-up) has nothing to carry.
+    func testCarryForward_previousNotBounded_usesNewState() {
+        let previous = HALiveActivityAttributes.ContentState(
+            message: "m",
+            chronometer: true,
+            countdownEnd: Date(timeIntervalSince1970: 1_700_000_000)
+        )
+        let newStart = Date(timeIntervalSince1970: 1_700_000_500)
+        let new = countUpState(start: newStart, duration: 1200)
+
+        let carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous, new: new)
+
+        XCTAssertEqual(carried.chronometerStart, newStart)
+    }
+
+    /// An update that isn't a bounded count-up (e.g. switches to a countdown) passes through as-is.
+    func testCarryForward_newNotBounded_usesNewState() {
+        let previous = countUpState(start: Date(timeIntervalSince1970: 1_700_000_000), duration: 1200)
+        let new = HALiveActivityAttributes.ContentState(
+            message: "m",
+            chronometer: true,
+            countdownEnd: Date(timeIntervalSince1970: 1_700_005_000)
+        )
+
+        let carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous, new: new)
+
+        XCTAssertNil(carried.chronometerStart)
+        XCTAssertEqual(carried.countdownEnd, new.countdownEnd)
     }
 }
 

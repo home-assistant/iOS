@@ -630,6 +630,12 @@ public enum L10n {
           /// Advanced > Assist
           public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_advanced.title") }
         }
+        public enum GoToTroubleshooting {
+          /// Open Troubleshooting, then Assist.
+          public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_troubleshooting.detail") }
+          /// Troubleshooting > Assist
+          public static var title: String { return L10n.tr("Localizable", "assist.carplay.playback_help.go_to_troubleshooting.title") }
+        }
         public enum OpenApp {
           /// Open CarPlay settings in the Home Assistant Companion app.
           public static var detail: String { return L10n.tr("Localizable", "assist.carplay.playback_help.open_app.detail") }
@@ -1008,6 +1014,18 @@ public enum L10n {
         public enum Troubleshooting {
           /// Troubleshooting
           public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.title") }
+          public enum Assist {
+            public enum Section {
+              /// Assist
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist.section.title") }
+            }
+            public enum TtsPlayback {
+              /// In some cars, spoken responses may not play when 'Stream' is selected. If that happens, 'Download and play' can potentially fix it.
+              public static var footer: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist.tts_playback.footer") }
+              /// TTS Playback
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist.tts_playback.title") }
+            }
+          }
           public enum AssistAudio {
             /// Assist audio
             public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.assist_audio.title") }
@@ -1015,6 +1033,10 @@ public enum L10n {
           public enum ForceClose {
             /// Force close app
             public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.force_close.title") }
+          }
+          public enum Section {
+            /// Troubleshooting
+            public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.troubleshooting.section.title") }
           }
         }
       }
@@ -2110,6 +2132,22 @@ public enum L10n {
       /// Customization
       public static var title: String { return L10n.tr("Localizable", "kiosk.customization.title") }
     }
+    public enum Customize {
+      /// Customize
+      public static var title: String { return L10n.tr("Localizable", "kiosk.customize.title") }
+      public enum BackgroundColor {
+        /// Background color
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.background_color.title") }
+      }
+      public enum IconColor {
+        /// Icon color
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.icon_color.title") }
+      }
+      public enum Preview {
+        /// Preview
+        public static var title: String { return L10n.tr("Localizable", "kiosk.customize.preview.title") }
+      }
+    }
     public enum Display {
       /// Dashboard
       public static var dashboard: String { return L10n.tr("Localizable", "kiosk.display.dashboard") }
@@ -2278,12 +2316,18 @@ public enum L10n {
   public enum LiveActivity {
     /// Home Assistant
     public static var defaultTitle: String { return L10n.tr("Localizable", "live_activity.default_title") }
+    /// Documentation
+    public static var documentation: String { return L10n.tr("Localizable", "live_activity.documentation") }
     /// No active Live Activities
     public static var emptyState: String { return L10n.tr("Localizable", "live_activity.empty_state") }
     /// Real-time Home Assistant updates on your Lock Screen and Dynamic Island.
     public static var subtitle: String { return L10n.tr("Localizable", "live_activity.subtitle") }
     /// Live Activities
     public static var title: String { return L10n.tr("Localizable", "live_activity.title") }
+    public enum Accessibility {
+      /// Progress
+      public static var progress: String { return L10n.tr("Localizable", "live_activity.accessibility.progress") }
+    }
     public enum EndAll {
       /// End All Activities
       public static var button: String { return L10n.tr("Localizable", "live_activity.end_all.button") }
@@ -2310,72 +2354,120 @@ public enum L10n {
       public enum Alarm {
         /// Short 60-second countdown, no progress bar. Red communicates urgency — watch the timer count down in real time.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.alarm.note") }
+        /// A red 60-second countdown that grabs attention.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.alarm.summary") }
         /// Alarm · 60 sec Countdown
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.alarm.title") }
       }
       public enum AllFields {
         /// Every content-state field active at once: icon, live countdown, and progress bar. Confirms no layout collisions.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.note") }
+        /// An icon, a timer, and a progress bar all at once.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.summary") }
         /// All Fields · Max Load
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.all_fields.title") }
+      }
+      public enum CountDown {
+        /// chronometer with when: 2700 and when_relative: true — a 45-minute countdown. The tinted timer bar (progress_bar_color) drains as time runs out.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_down.note") }
+        /// A 45-minute countdown, like a kitchen timer.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.count_down.summary") }
+        /// Oven Timer · 45 min Countdown
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_down.title") }
+      }
+      public enum CountUp {
+        /// chronometer with when: 0 and when_relative: true resolves to "now", so the timer counts up — showing elapsed time since the activity started. No progress bar: an unbounded count-up has no end. To count up toward a target, use a negative when instead.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up.note") }
+        /// A timer that counts up from zero.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.count_up.summary") }
+        /// Washing Machine · Count-Up Timer
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up.title") }
+      }
+      public enum CountUpTarget {
+        /// A negative relative when (when: -1200) counts up toward the target: 0:00 → 20:00, the bar fills, and the timer freezes when it gets there.
+        public static var note: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.note") }
+        /// A timer that counts up toward a 20-minute goal.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.summary") }
+        /// Workout · Count-Up to 20 min
+        public static var title: String { return L10n.tr("Localizable", "live_activity.sample.count_up_target.title") }
       }
       public enum CustomColors {
         /// Sets a custom background and text color for the Lock Screen card. The Dynamic Island keeps its system-provided dark style.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.note") }
+        /// A card with your own background and text colors.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.summary") }
         /// Custom Colors · Background + Text
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.custom_colors.title") }
       }
       public enum Delivery {
         /// message, criticalText, and icon all change on every update — no progress bar. The status category itself changes, not just a value.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.delivery.note") }
+        /// A package moving from shipped to delivered.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.delivery.summary") }
         /// Package Delivery · All Text Fields
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.delivery.title") }
       }
       public enum Dishwasher {
         /// The only sample that tests start → update → end. After it ends, the final "Done" state lingers on the lock screen (up to 4 h).
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.note") }
+        /// A full cycle that starts, runs, and finishes on its own.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.summary") }
         /// Dishwasher · Full Lifecycle, Ends Itself
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.dishwasher.title") }
       }
       public enum Ev {
         /// Numeric percentage in criticalText updates alongside the progress bar; color shifts from green to yellow-green as the charge nears full.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.ev.note") }
+        /// A car battery charging up to full.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.ev.summary") }
         /// EV Charging · Numeric %
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.ev.title") }
       }
       public enum Media {
         /// Progress (playback position) and a live countdown (time left in track) update together. The track change resets both.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.media.note") }
+        /// A now-playing track with its position and time left.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.media.summary") }
         /// Media Player · Progress + Timer
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.media.title") }
       }
       public enum NoIcon {
         /// No icon and no color, so the progress bar uses the default HA-blue tint. criticalText shows in the Dynamic Island compact trailing only.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.note") }
+        /// A progress bar in the default color, with no icon.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.summary") }
         /// No Icon · Default Color
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.no_icon.title") }
       }
       public enum Plain {
         /// Minimum viable layout — only the message field is set. Verifies the bare layout renders without icon, progress, or timer.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.plain.note") }
+        /// A basic message with nothing else.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.plain.summary") }
         /// Plain Message
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.plain.title") }
       }
       public enum RateLimit {
         /// Six updates 2 s apart. On iOS 18 the system renders ~one per 15 s — some are silently dropped and the counter skips. On the simulator and iOS 17 all six render.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.note") }
+        /// Rapid back-to-back updates to test how many show.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.summary") }
         /// Rate Limit · 6 Rapid Updates
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.rate_limit.title") }
       }
       public enum Security {
         /// No progress bar — state is communicated entirely through color and icon. Escalates orange (motion) → red (person) → green (all clear).
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.security.note") }
+        /// A security alert escalating, then all clear.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.security.summary") }
         /// Security Escalation · Color + Icon
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.security.title") }
       }
       public enum Washing {
         /// Progress advances through five named stages; criticalText tracks the current stage. The icon swaps to a check on completion.
         public static var note: String { return L10n.tr("Localizable", "live_activity.sample.washing.note") }
+        /// A wash cycle moving through each of its stages.
+        public static var summary: String { return L10n.tr("Localizable", "live_activity.sample.washing.summary") }
         /// Washing Machine · Stage Labels
         public static var title: String { return L10n.tr("Localizable", "live_activity.sample.washing.title") }
       }
@@ -2391,6 +2483,8 @@ public enum L10n {
       public static var copy: String { return L10n.tr("Localizable", "live_activity.samples.copy") }
       /// Start runs this sample locally on-device. The YAML triggers the same Live Activity from an automation or script — point it at your device's notify action.
       public static var detailFooter: String { return L10n.tr("Localizable", "live_activity.samples.detail_footer") }
+      /// Show YAML
+      public static var showYaml: String { return L10n.tr("Localizable", "live_activity.samples.show_yaml") }
       /// Start
       public static var start: String { return L10n.tr("Localizable", "live_activity.samples.start") }
       /// Started — lock the screen to watch
@@ -2401,6 +2495,8 @@ public enum L10n {
       public static var staticTitle: String { return L10n.tr("Localizable", "live_activity.samples.static_title") }
       /// Samples
       public static var title: String { return L10n.tr("Localizable", "live_activity.samples.title") }
+      /// YAML
+      public static var yamlTitle: String { return L10n.tr("Localizable", "live_activity.samples.yaml_title") }
     }
     public enum Section {
       /// Active Activities
@@ -2528,6 +2624,10 @@ public enum L10n {
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.navigation.go_forward.accessibility_label") }
       }
     }
+    public enum OpenInSafari {
+      /// Open in Safari
+      public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.open_in_safari.accessibility_label") }
+    }
     public enum Paste {
       /// Paste
       public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.paste.accessibility_label") }
@@ -2644,6 +2744,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.script.list.title") }
         }
       }
+      public enum ScriptsScenesAutomations {
+        public enum List {
+          /// Scripts, Scenes & Automations
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.scripts_scenes_automations.list.title") }
+        }
+      }
       public enum Selection {
         public enum List {
           /// Item type
@@ -2674,6 +2780,29 @@ public enum L10n {
     public enum UseCustomColors {
       /// Use custom colors
       public static var title: String { return L10n.tr("Localizable", "magic_item.use_custom_colors.title") }
+    }
+  }
+
+  public enum MainWindowGroupCommands {
+    public enum Areas {
+      /// No Areas
+      public static var empty: String { return L10n.tr("Localizable", "main_window_group_commands.areas.empty") }
+      /// Areas
+      public static var title: String { return L10n.tr("Localizable", "main_window_group_commands.areas.title") }
+    }
+    public enum Entities {
+      /// No Entities
+      public static var empty: String { return L10n.tr("Localizable", "main_window_group_commands.entities.empty") }
+      /// Entities
+      public static var title: String { return L10n.tr("Localizable", "main_window_group_commands.entities.title") }
+    }
+    public enum Floor {
+      /// No Floor
+      public static var empty: String { return L10n.tr("Localizable", "main_window_group_commands.floor.empty") }
+    }
+    public enum OtherEntities {
+      /// Other entities
+      public static var title: String { return L10n.tr("Localizable", "main_window_group_commands.other_entities.title") }
     }
   }
 
@@ -2711,6 +2840,8 @@ public enum L10n {
       }
     }
     public enum View {
+      /// Customize Toolbar…
+      public static var customizeToolbar: String { return L10n.tr("Localizable", "menu.view.customize_toolbar") }
       /// Find
       public static var find: String { return L10n.tr("Localizable", "menu.view.find") }
       /// Reload Page
@@ -3988,6 +4119,36 @@ public enum L10n {
         public static var explanation: String { return L10n.tr("Localizable", "settings.location_history.detail.explanation") }
       }
     }
+    public enum MacToolbar {
+      /// You haven't added any entities to the toolbar yet.
+      public static var emptyState: String { return L10n.tr("Localizable", "settings.mac_toolbar.empty_state") }
+      /// Entities you added to the window toolbar for quick access.
+      public static var headerSubtitle: String { return L10n.tr("Localizable", "settings.mac_toolbar.header_subtitle") }
+      /// Remove
+      public static var remove: String { return L10n.tr("Localizable", "settings.mac_toolbar.remove") }
+      /// Remove %@
+      public static func removeAccessibilityLabel(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.mac_toolbar.remove_accessibility_label", String(describing: p1))
+      }
+      /// Toolbar
+      public static var title: String { return L10n.tr("Localizable", "settings.mac_toolbar.title") }
+      public enum EntitiesSection {
+        /// Added entities
+        public static var header: String { return L10n.tr("Localizable", "settings.mac_toolbar.entities_section.header") }
+      }
+      public enum HowToAdd {
+        /// To add an entity, open its more info dialog in Home Assistant, select the "Add to" button, then choose "Mac Toolbar".
+        public static var body: String { return L10n.tr("Localizable", "settings.mac_toolbar.how_to_add.body") }
+        /// Adding entities
+        public static var header: String { return L10n.tr("Localizable", "settings.mac_toolbar.how_to_add.header") }
+      }
+      public enum RemoveConfirmation {
+        /// Remove "%@" from the toolbar?
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.mac_toolbar.remove_confirmation.title", String(describing: p1))
+        }
+      }
+    }
     public enum NavigationBar {
       /// Settings
       public static var title: String { return L10n.tr("Localizable", "settings.navigation_bar.title") }
@@ -4237,6 +4398,16 @@ public enum L10n {
       public enum DeviceName {
         /// Device Name
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.device_name.title") }
+      }
+      public enum EdgeToEdge {
+        /// Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.footer") }
+        /// Edge to edge display
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.title") }
+        public enum Enabled {
+          /// Enable
+          public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.enabled.title") }
+        }
       }
       public enum FullScreen {
         /// Full Screen
@@ -4494,6 +4665,8 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_details.mac_open_in_browser.title") }
     }
     public enum Notifications {
+      /// Documentation
+      public static var documentation: String { return L10n.tr("Localizable", "settings_details.notifications.documentation") }
       /// Use the mobile_app notify service to send notifications to your device.
       public static var info: String { return L10n.tr("Localizable", "settings_details.notifications.info") }
       /// Notifications
@@ -4511,8 +4684,6 @@ public enum L10n {
         }
       }
       public enum Categories {
-        /// Categories are no longer required for actionable notifications and will be removed in a future release.
-        public static var deprecatedNote: String { return L10n.tr("Localizable", "settings_details.notifications.categories.deprecated_note") }
         /// Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories.header") }
       }
@@ -4525,6 +4696,48 @@ public enum L10n {
         public static var footerNoCategories: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.footer_no_categories") }
         /// Synced Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.header") }
+      }
+      public enum History {
+        /// Clear
+        public static var clear: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear") }
+        /// No notifications yet
+        public static var empty: String { return L10n.tr("Localizable", "settings_details.notifications.history.empty") }
+        /// Push notifications received on this device, including local push and remote push.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.history.footer") }
+        /// (No content)
+        public static var noContent: String { return L10n.tr("Localizable", "settings_details.notifications.history.no_content") }
+        /// Remote Live Activities are delivered straight to the system by iOS, so the app never sees them and can't list them here.
+        public static var remoteLiveActivityUnavailable: String { return L10n.tr("Localizable", "settings_details.notifications.history.remote_live_activity_unavailable") }
+        /// History
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.history.title") }
+        public enum ClearConfirm {
+          /// This cannot be undone.
+          public static var message: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear_confirm.message") }
+          /// Are you sure you want to clear the notification history?
+          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear_confirm.title") }
+        }
+        public enum Detail {
+          /// Copied!
+          public static var copied: String { return L10n.tr("Localizable", "settings_details.notifications.history.detail.copied") }
+          /// Copy Payload
+          public static var copy: String { return L10n.tr("Localizable", "settings_details.notifications.history.detail.copy") }
+          /// No payload
+          public static var empty: String { return L10n.tr("Localizable", "settings_details.notifications.history.detail.empty") }
+          /// Payload
+          public static var payload: String { return L10n.tr("Localizable", "settings_details.notifications.history.detail.payload") }
+        }
+        public enum Kind {
+          /// All
+          public static var all: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.all") }
+          /// Live Activity (Local)
+          public static var liveActivityLocal: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.live_activity_local") }
+          /// Live Activity (Remote)
+          public static var liveActivityRemote: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.live_activity_remote") }
+          /// Local
+          public static var local: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.local") }
+          /// Remote
+          public static var remote: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.remote") }
+        }
       }
       public enum LocalPush {
         /// Local Push
@@ -4591,6 +4804,56 @@ public enum L10n {
         public static var resetsIn: String { return L10n.tr("Localizable", "settings_details.notifications.rate_limits.resets_in") }
         /// Total
         public static var total: String { return L10n.tr("Localizable", "settings_details.notifications.rate_limits.total") }
+      }
+      public enum SnoozeActions {
+        /// Quick actions shown on notifications to snooze them for a set amount of time. Snoozing re-shows the notification later.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.footer") }
+        /// Snooze Actions
+        public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.header") }
+        /// Snoozed notifications reappear with a “↺” prefix in their title.
+        public static var prefixFooter: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.prefix_footer") }
+        /// Snooze 1 hour
+        public static var titleHour: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hour") }
+        /// Snooze 1 hour and %li min
+        public static func titleHourMinutes(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hour_minutes", p1)
+        }
+        /// Snooze %li hours
+        public static func titleHours(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hours", p1)
+        }
+        /// Snooze %li hours and %li min
+        public static func titleHoursMinutes(_ p1: Int, _ p2: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_hours_minutes", p1, p2)
+        }
+        /// Snooze %li min
+        public static func titleMinutes(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.title_minutes", p1)
+        }
+        public enum AddSheet {
+          /// A snooze action for this duration already exists.
+          public static var duplicateWarning: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duplicate_warning") }
+          /// 1 hour
+          public static var durationHour: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hour") }
+          /// 1 hour and %li minutes
+          public static func durationHourMinutes(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hour_minutes", p1)
+          }
+          /// %li hours
+          public static func durationHours(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hours", p1)
+          }
+          /// %li hours and %li minutes
+          public static func durationHoursMinutes(_ p1: Int, _ p2: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.duration_hours_minutes", p1, p2)
+          }
+          /// %li minutes
+          public static func minutesLabel(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.minutes_label", p1)
+          }
+          /// New Snooze Action
+          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.snooze_actions.add_sheet.title") }
+        }
       }
       public enum Sounds {
         /// Bundled
@@ -5864,6 +6127,10 @@ public enum L10n {
         public enum CarPlay {
           /// CarPlay
           public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.CarPlay.title") }
+        }
+        public enum MacToolbar {
+          /// Mac Toolbar
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.MacToolbar.title") }
         }
         public enum Widget {
           /// Widget

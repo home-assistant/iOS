@@ -12,16 +12,14 @@ struct MagicItemAddView: View {
 
     enum PickerOption {
         case entities
-        case scripts
-        case scenes
+        case scriptsScenesAutomations
         case assistPipelines
     }
 
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = MagicItemAddViewModel()
+    @StateObject private var viewModel: MagicItemAddViewModel
     @State private var selectedEntity: HAAppEntity?
     private let visiblePickerOptions: [PickerOption]
-    private let initialItemType: MagicItemAddType
 
     let context: Context
     let itemToAdd: (MagicItem?) -> Void
@@ -44,8 +42,7 @@ struct MagicItemAddView: View {
                 // In other context user can just select entities directly
                 // In Apple watch we don't have entity support yet
                 if context == .watch {
-                    options.append(.scripts)
-                    options.append(.scenes)
+                    options.append(.scriptsScenesAutomations)
                 }
             }
             if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
@@ -54,10 +51,11 @@ struct MagicItemAddView: View {
             return options
         }()
         self.visiblePickerOptions = resolvedPickerOptions
-        self.initialItemType = initialItemType ?? Self.defaultItemType(
+        let resolvedInitialItemType = initialItemType ?? Self.defaultItemType(
             for: context,
             visiblePickerOptions: resolvedPickerOptions
         )
+        self._viewModel = StateObject(wrappedValue: MagicItemAddViewModel(selectedItemType: resolvedInitialItemType))
     }
 
     var body: some View {
@@ -70,17 +68,11 @@ struct MagicItemAddView: View {
                             .padding(.horizontal)
                         entitiesPerServerList()
                     }
-                case .scripts:
+                case .scriptsScenesAutomations:
                     VStack {
                         pickerView
                             .padding(.horizontal)
-                        entitiesPerServerList(domainFilter: .script)
-                    }
-                case .scenes:
-                    VStack {
-                        pickerView
-                            .padding(.horizontal)
-                        entitiesPerServerList(domainFilter: .scene)
+                        entitiesPerServerList(domainFilter: [.script, .scene, .automation])
                     }
                 case .assistPipelines:
                     VStack {
@@ -94,8 +86,6 @@ struct MagicItemAddView: View {
                 }
             }
             .onAppear {
-                autoSelectItemType()
-
                 if viewModel.selectedServerId == nil {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
@@ -130,12 +120,9 @@ struct MagicItemAddView: View {
                     case .entities:
                         Text(verbatim: L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
-                    case .scripts:
-                        Text(verbatim: L10n.MagicItem.ItemType.Script.List.title)
-                            .tag(MagicItemAddType.scripts)
-                    case .scenes:
-                        Text(verbatim: L10n.MagicItem.ItemType.Scene.List.title)
-                            .tag(MagicItemAddType.scenes)
+                    case .scriptsScenesAutomations:
+                        Text(verbatim: L10n.MagicItem.ItemType.ScriptsScenesAutomations.List.title)
+                            .tag(MagicItemAddType.scriptsScenesAutomations)
                     case .assistPipelines:
                         Text(verbatim: L10n.Widgets.Action.Name.assist)
                             .tag(MagicItemAddType.assistPipelines)
@@ -149,10 +136,6 @@ struct MagicItemAddView: View {
         }
     }
 
-    private func autoSelectItemType() {
-        viewModel.selectedItemType = initialItemType
-    }
-
     private static func defaultItemType(
         for context: Context,
         visiblePickerOptions: [PickerOption]
@@ -161,10 +144,8 @@ struct MagicItemAddView: View {
             switch firstOption {
             case .entities:
                 return .entities
-            case .scripts:
-                return .scripts
-            case .scenes:
-                return .scenes
+            case .scriptsScenesAutomations:
+                return .scriptsScenesAutomations
             case .assistPipelines:
                 return .assistPipelines
             }
@@ -172,14 +153,14 @@ struct MagicItemAddView: View {
 
         switch context {
         case .watch:
-            return .scripts
+            return .scriptsScenesAutomations
         case .carPlay, .widget, .appIconShortcut:
             return .entities
         }
     }
 
     @ViewBuilder
-    private func entitiesPerServerList(domainFilter: Domain? = nil) -> some View {
+    private func entitiesPerServerList(domainFilter: [Domain]? = nil) -> some View {
         EntityPicker(
             selectedServerId: Current.servers.all
                 .first(where: { $0.identifier.rawValue == viewModel.selectedServerId })?.identifier.rawValue,

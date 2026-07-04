@@ -55,6 +55,7 @@ public extension DatabaseQueue {
             HAppEntityTable(),
             WatchConfigTable(),
             CarPlayConfigTable(),
+            MacToolbarConfigTable(),
             AppIconShortcutConfigTable(),
             AssistPipelinesTable(),
             ServerInfoMirrorTable(),
@@ -67,6 +68,7 @@ public extension DatabaseQueue {
             AssistConfigurationTable(),
             AllowedTagTable(),
             KioskSettingsTable(),
+            NotificationSnoozeActionTable(),
         ]
     }
 

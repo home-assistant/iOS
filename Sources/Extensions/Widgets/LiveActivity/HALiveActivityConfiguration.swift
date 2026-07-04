@@ -47,7 +47,7 @@ struct HALiveActivityConfiguration: Widget {
         return components?.url?.withWidgetAuthenticity()
     }
 
-    private static func foregroundColor(for state: HALiveActivityAttributes.ContentState) -> Color {
+    private static func foregroundColor(for state: HALiveActivityAttributes.ContentState) -> Color? {
         HAActivityVisualStyle.foregroundColor(textColor: state.textColor, onBackground: state.backgroundColor)
     }
 }

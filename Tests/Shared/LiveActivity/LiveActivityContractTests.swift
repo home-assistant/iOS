@@ -40,6 +40,28 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertEqual(decoded.title, "Title")
     }
 
+    /// The relay stamps the start send-time as the snake_case `started_at` key (Unix epoch
+    /// seconds). The registry compares it to keep the newest of duplicate push-to-starts, so the
+    /// wire key and numeric epoch encoding must not drift.
+    func testAttributes_startedAt_decodesFromEpochAndEncodesAsStartedAt() throws {
+        let json = Data(#"{"tag":"t","title":"Title","started_at":1700000000}"#.utf8)
+        let decoded = try JSONDecoder().decode(HALiveActivityAttributes.self, from: json)
+        XCTAssertEqual(decoded.startedAt, 1_700_000_000)
+
+        let data = try JSONEncoder().encode(decoded)
+        let dict = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        XCTAssertEqual(dict["started_at"] as? Double, 1_700_000_000)
+        XCTAssertNil(dict["startedAt"], "must use the snake_case wire key")
+    }
+
+    /// Activities started before this shipped (or by a relay that omits it) must still decode,
+    /// with a nil `startedAt` — which the registry treats as oldest. The field stays optional.
+    func testAttributes_missingStartedAt_decodesAsNil() throws {
+        let json = Data(#"{"tag":"t","title":"Title"}"#.utf8)
+        let decoded = try JSONDecoder().decode(HALiveActivityAttributes.self, from: json)
+        XCTAssertNil(decoded.startedAt)
+    }
+
     func testAttributes_missingOrEmptyTitle_decodesAsDefault() throws {
         let missing = try JSONDecoder().decode(
             HALiveActivityAttributes.self,
@@ -80,6 +102,7 @@ final class LiveActivityContractTests: XCTestCase {
             progressMax: 2,
             chronometer: true,
             countdownEnd: Date(timeIntervalSince1970: 0),
+            chronometerStart: Date(timeIntervalSince1970: 0),
             icon: "mdi:test",
             color: "#FF0000",
             url: "/lovelace/0",
@@ -101,6 +124,7 @@ final class LiveActivityContractTests: XCTestCase {
             "progress_max",
             "chronometer",
             "countdown_end",
+            "chronometer_start",
             "icon",
             "color",
             "url",
@@ -121,6 +145,7 @@ final class LiveActivityContractTests: XCTestCase {
             progressMax: 3600,
             chronometer: true,
             countdownEnd: Date(timeIntervalSince1970: 1_700_000_000),
+            chronometerStart: Date(timeIntervalSince1970: 1_699_998_800),
             icon: "mdi:washing-machine",
             color: "#2196F3",
             url: "/lovelace/laundry",

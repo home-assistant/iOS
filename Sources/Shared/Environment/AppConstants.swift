@@ -30,6 +30,8 @@ public enum AppConstants {
             URL(string: "https://companion.home-assistant.io/app/ios/local-push")!
         public static var nfcDocs =
             URL(string: "https://companion.home-assistant.io/app/ios/nfc")!
+        public static var liveActivitiesDocs =
+            URL(string: "https://companion.home-assistant.io/docs/notifications/live-activities")!
     }
 
     public enum QueryItems: String, CaseIterable {
@@ -101,8 +103,6 @@ public enum AppConstants {
         switch Current.appConfiguration {
         case .debug:
             return URL(string: "homeassistant-dev://")!
-        case .beta:
-            return URL(string: "homeassistant-beta://")!
         default:
             return URL(string: "homeassistant://")!
         }
@@ -239,6 +239,20 @@ public enum AppConstants {
         }
         let eventsURL = directoryURL.appendingPathComponent("clientEvents.json")
         return eventsURL
+    }
+
+    public static var notificationHistoryFile: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("databases", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to create Notification History file")
+            }
+        }
+        let historyURL = directoryURL.appendingPathComponent("notificationHistory.json")
+        return historyURL
     }
 
     public static var widgetsCacheURL: URL = {

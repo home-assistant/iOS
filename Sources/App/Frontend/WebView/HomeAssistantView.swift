@@ -24,6 +24,7 @@ struct HomeAssistantView: View, WebFrontendView {
 
     /// Changing this forces SwiftUI to discard the current `FrontendView` and create a fresh `WebViewController`.
     @State private var webViewResetID = UUID()
+    @State private var webViewController: WebViewController?
 
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.server = server
@@ -50,33 +51,19 @@ struct HomeAssistantView: View, WebFrontendView {
 
     var body: some View {
         ZStack {
-            FrontendView(
-                server: server,
-                onWebViewController: onWebViewController,
-                resetFrontendAction: resetWebFrontend,
-                reconnectManager: reconnectManager,
-                overlayState: overlayState
-            )
-            .id(webViewResetID)
-            .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
-
-            if overlayState.showsNoActiveURL {
-                ConnectionSecurityLevelBlockView(server: server)
-                    .transition(.opacity)
-            } else if let emptyState = overlayState.emptyState {
-                WebViewEmptyStateView(
-                    style: emptyState.style,
-                    server: emptyState.server,
-                    showsErrorDetailsButton: emptyState.showsErrorDetailsButton,
-                    availableReauthURLTypes: emptyState.availableReauthURLTypes,
-                    retryAction: emptyState.retryAction,
-                    settingsAction: emptyState.settingsAction,
-                    errorDetailsAction: emptyState.errorDetailsAction,
-                    reauthAction: emptyState.reauthAction,
-                    dismissAction: emptyState.dismissAction
+            ZStack(alignment: .topLeading) {
+                FrontendView(
+                    server: server,
+                    onWebViewController: handleWebViewController,
+                    resetFrontendAction: resetWebFrontend,
+                    reconnectManager: reconnectManager,
+                    overlayState: overlayState
                 )
-                .transition(.opacity)
+                .id(webViewResetID)
+                .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
+                macTitleBar
             }
+            emptyStates
         }
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
@@ -91,10 +78,51 @@ struct HomeAssistantView: View, WebFrontendView {
         }
     }
 
+    @ViewBuilder
+    private var macTitleBar: some View {
+        if Current.isCatalyst {
+            MacWebViewTitleBar(
+                server: server,
+                webViewController: webViewController
+            )
+            .frame(width: .zero, height: .zero)
+            .allowsHitTesting(false)
+        }
+    }
+
+    @ViewBuilder
+    private var emptyStates: some View {
+        if overlayState.showsNoActiveURL {
+            ConnectionSecurityLevelBlockView(server: server)
+                .transition(.opacity)
+        } else if let emptyState = overlayState.emptyState {
+            WebViewEmptyStateView(
+                style: emptyState.style,
+                server: emptyState.server,
+                showsErrorDetailsButton: emptyState.showsErrorDetailsButton,
+                availableReauthURLTypes: emptyState.availableReauthURLTypes,
+                retryAction: emptyState.retryAction,
+                settingsAction: emptyState.settingsAction,
+                errorDetailsAction: emptyState.errorDetailsAction,
+                reauthAction: emptyState.reauthAction,
+                dismissAction: emptyState.dismissAction
+            )
+            .transition(.opacity)
+        }
+    }
+
     private func resetWebFrontend() {
         overlayState.emptyState = nil
         overlayState.showsNoActiveURL = false
+        webViewController = nil
         webViewResetID = UUID()
+    }
+
+    private func handleWebViewController(_ controller: WebViewController) {
+        Task { @MainActor in
+            webViewController = controller
+            onWebViewController?(controller)
+        }
     }
 }
 

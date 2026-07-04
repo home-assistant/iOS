@@ -76,6 +76,17 @@ struct LiveActivitySettingsView: View {
             }
 
             samplesSection
+
+            Section {
+                Link(destination: AppConstants.WebURLs.liveActivitiesDocs) {
+                    HStack {
+                        Text(L10n.LiveActivity.documentation)
+                        Spacer()
+                        Image(systemSymbol: .arrowUpForwardSquare)
+                            .font(.caption)
+                    }
+                }
+            }
         }
         .task { await loadActivities() }
     }
@@ -144,9 +155,7 @@ struct LiveActivitySettingsView: View {
                 List {
                     Section {
                         ForEach(staticSamples) { sample in
-                            NavigationLink(sample.name) {
-                                LiveActivitySampleDetailView(sample: sample, onStart: start)
-                            }
+                            sampleLink(sample)
                         }
                     } header: {
                         Text(L10n.LiveActivity.Samples.staticTitle)
@@ -156,9 +165,7 @@ struct LiveActivitySettingsView: View {
 
                     Section {
                         ForEach(animatedSamples) { sample in
-                            NavigationLink(sample.name) {
-                                LiveActivitySampleDetailView(sample: sample, onStart: start)
-                            }
+                            sampleLink(sample)
                         }
                     } header: {
                         Text(L10n.LiveActivity.Samples.animatedTitle)
@@ -171,6 +178,19 @@ struct LiveActivitySettingsView: View {
         }
     }
 
+    private func sampleLink(_ sample: LiveActivitySample) -> some View {
+        NavigationLink {
+            LiveActivitySampleDetailView(sample: sample, onStart: start)
+        } label: {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(sample.name)
+                Text(sample.summary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     // MARK: - Sample catalog
 
     private var staticSamples: [LiveActivitySample] {
@@ -178,6 +198,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "plain",
                 name: L10n.LiveActivity.Sample.Plain.title,
+                summary: L10n.LiveActivity.Sample.Plain.summary,
                 note: L10n.LiveActivity.Sample.Plain.note,
                 tag: "debug-plain",
                 title: "Home Assistant",
@@ -186,6 +207,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "no-icon",
                 name: L10n.LiveActivity.Sample.NoIcon.title,
+                summary: L10n.LiveActivity.Sample.NoIcon.summary,
                 note: L10n.LiveActivity.Sample.NoIcon.note,
                 tag: "debug-no-icon",
                 title: "Script Running",
@@ -199,6 +221,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "alarm",
                 name: L10n.LiveActivity.Sample.Alarm.title,
+                summary: L10n.LiveActivity.Sample.Alarm.summary,
                 note: L10n.LiveActivity.Sample.Alarm.note,
                 tag: "debug-alarm",
                 title: "Security Alarm",
@@ -211,8 +234,53 @@ struct LiveActivitySettingsView: View {
                 )]
             ),
             LiveActivitySample(
+                id: "count-up",
+                name: L10n.LiveActivity.Sample.CountUp.title,
+                summary: L10n.LiveActivity.Sample.CountUp.summary,
+                note: L10n.LiveActivity.Sample.CountUp.note,
+                tag: "debug-count-up",
+                title: "Washing Machine",
+                stages: [.init(
+                    message: "Running...",
+                    countdownSeconds: 0,
+                    icon: "mdi:washing-machine",
+                    color: "#FF9800"
+                )]
+            ),
+            LiveActivitySample(
+                id: "count-up-target",
+                name: L10n.LiveActivity.Sample.CountUpTarget.title,
+                summary: L10n.LiveActivity.Sample.CountUpTarget.summary,
+                note: L10n.LiveActivity.Sample.CountUpTarget.note,
+                tag: "debug-count-up-target",
+                title: "Workout",
+                stages: [.init(
+                    message: "Session in progress",
+                    countdownSeconds: -20 * 60,
+                    icon: "mdi:run",
+                    color: "#4CAF50",
+                    progressBarColor: "#4CAF50"
+                )]
+            ),
+            LiveActivitySample(
+                id: "count-down",
+                name: L10n.LiveActivity.Sample.CountDown.title,
+                summary: L10n.LiveActivity.Sample.CountDown.summary,
+                note: L10n.LiveActivity.Sample.CountDown.note,
+                tag: "debug-count-down",
+                title: "Oven Timer",
+                stages: [.init(
+                    message: "Pizza in the oven",
+                    countdownSeconds: 45 * 60,
+                    icon: "mdi:stove",
+                    color: "#F44336",
+                    progressBarColor: "#F44336"
+                )]
+            ),
+            LiveActivitySample(
                 id: "all-fields",
                 name: L10n.LiveActivity.Sample.AllFields.title,
+                summary: L10n.LiveActivity.Sample.AllFields.summary,
                 note: L10n.LiveActivity.Sample.AllFields.note,
                 tag: "debug-all",
                 title: "All Fields",
@@ -229,6 +297,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "custom-colors",
                 name: L10n.LiveActivity.Sample.CustomColors.title,
+                summary: L10n.LiveActivity.Sample.CustomColors.summary,
                 note: L10n.LiveActivity.Sample.CustomColors.note,
                 tag: "debug-colors",
                 title: "Movie Night",
@@ -248,6 +317,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "washing",
                 name: L10n.LiveActivity.Sample.Washing.title,
+                summary: L10n.LiveActivity.Sample.Washing.summary,
                 note: L10n.LiveActivity.Sample.Washing.note,
                 tag: "debug-washing",
                 title: "Washing Machine",
@@ -301,6 +371,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "ev",
                 name: L10n.LiveActivity.Sample.Ev.title,
+                summary: L10n.LiveActivity.Sample.Ev.summary,
                 note: L10n.LiveActivity.Sample.Ev.note,
                 tag: "debug-ev",
                 title: "EV Charging",
@@ -345,6 +416,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "media",
                 name: L10n.LiveActivity.Sample.Media.title,
+                summary: L10n.LiveActivity.Sample.Media.summary,
                 note: L10n.LiveActivity.Sample.Media.note,
                 tag: "debug-media",
                 title: "Now Playing",
@@ -393,6 +465,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "delivery",
                 name: L10n.LiveActivity.Sample.Delivery.title,
+                summary: L10n.LiveActivity.Sample.Delivery.summary,
                 note: L10n.LiveActivity.Sample.Delivery.note,
                 tag: "debug-delivery",
                 title: "Package Delivery",
@@ -429,6 +502,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "security",
                 name: L10n.LiveActivity.Sample.Security.title,
+                summary: L10n.LiveActivity.Sample.Security.summary,
                 note: L10n.LiveActivity.Sample.Security.note,
                 tag: "debug-security",
                 title: "Security Alert",
@@ -458,6 +532,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "dishwasher",
                 name: L10n.LiveActivity.Sample.Dishwasher.title,
+                summary: L10n.LiveActivity.Sample.Dishwasher.summary,
                 note: L10n.LiveActivity.Sample.Dishwasher.note,
                 tag: "debug-dishwasher",
                 title: "Dishwasher",
@@ -503,6 +578,7 @@ struct LiveActivitySettingsView: View {
             LiveActivitySample(
                 id: "rate-limit",
                 name: L10n.LiveActivity.Sample.RateLimit.title,
+                summary: L10n.LiveActivity.Sample.RateLimit.summary,
                 note: L10n.LiveActivity.Sample.RateLimit.note,
                 tag: "debug-rapid",
                 title: "Rate Limit Test",
@@ -652,35 +728,43 @@ private struct LiveActivitySample: Identifiable {
         var progress: Int?
         var progressMax: Int?
         /// Seconds remaining at the moment the stage is applied (maps to `when` + `when_relative: true`).
-        /// `nil` = no timer.
+        /// `0` resolves to "now", which renders as an unbounded count-up timer. Negative counts up
+        /// toward `|value|` seconds and freezes there (bounded count-up). `nil` = no timer.
         var countdownSeconds: Double?
         var icon: String?
         var color: String?
         var backgroundColor: String?
         var textColor: String?
+        var progressBarColor: String?
 
         func contentState() -> HALiveActivityAttributes.ContentState {
             // countdownEnd is relative to now so the local demo matches `when_relative: true`,
             // where each update means "seconds remaining" from the moment it is received.
-            HALiveActivityAttributes.ContentState(
+            // Negative mirrors the handler's bounded count-up: anchor now, end at now + |value|.
+            let now = Date()
+            return HALiveActivityAttributes.ContentState(
                 message: message,
                 criticalText: criticalText,
                 progress: progress,
                 progressMax: progressMax,
                 chronometer: countdownSeconds == nil ? nil : true,
-                countdownEnd: countdownSeconds.map { Date().addingTimeInterval($0) },
+                countdownEnd: countdownSeconds.map { now.addingTimeInterval(abs($0)) },
+                chronometerStart: (countdownSeconds ?? 0) < 0 ? now : nil,
                 icon: icon,
                 color: color,
                 backgroundColor: backgroundColor,
-                textColor: textColor
+                textColor: textColor,
+                progressBarColor: progressBarColor
             )
         }
     }
 
     /// Stable identifier for SwiftUI identity; not shown to the user.
     let id: String
-    /// Localized display name, used as the row label and detail title.
+    /// Localized display name, used as the row title and detail title.
     let name: String
+    /// Localized short, non-technical one-liner shown as the row subtitle.
+    let summary: String
     /// Localized one-line explanation shown under the Start button.
     let note: String
     let tag: String
@@ -718,6 +802,9 @@ private struct LiveActivitySample: Identifiable {
                 lines.append("\(sub)background_color: \"\(backgroundColor)\"")
             }
             if let textColor = stage.textColor { lines.append("\(sub)text_color: \"\(textColor)\"") }
+            if let progressBarColor = stage.progressBarColor {
+                lines.append("\(sub)progress_bar_color: \"\(progressBarColor)\"")
+            }
             return lines
         }
 
@@ -759,7 +846,6 @@ private struct LiveActivitySampleDetailView: View {
     let onStart: (LiveActivitySample) -> Void
 
     @State private var didStart = false
-    @State private var didCopy = false
 
     var body: some View {
         List {
@@ -781,25 +867,10 @@ private struct LiveActivitySampleDetailView: View {
             }
 
             Section {
-                Text(sample.yaml)
-                    .font(.system(.footnote, design: .monospaced))
-                    .textSelection(.enabled)
-            } header: {
-                HStack {
-                    Text("YAML")
-                    Spacer()
-                    Button {
-                        UIPasteboard.general.string = sample.yaml
-                        didCopy = true
-                    } label: {
-                        Label(
-                            didCopy ? L10n.LiveActivity.Samples.copied : L10n.LiveActivity.Samples.copy,
-                            systemSymbol: didCopy ? .checkmark : .docOnDoc
-                        )
-                        .font(.caption)
-                        .textCase(nil)
-                    }
-                    .buttonStyle(.borderless)
+                NavigationLink {
+                    LiveActivityYAMLView(yaml: sample.yaml)
+                } label: {
+                    Label(L10n.LiveActivity.Samples.showYaml, systemSymbol: .curlybraces)
                 }
             } footer: {
                 Text(L10n.LiveActivity.Samples.detailFooter)
@@ -807,6 +878,42 @@ private struct LiveActivitySampleDetailView: View {
         }
         .navigationTitle(sample.name)
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - YAML viewer
+
+@available(iOS 17.2, *)
+private struct LiveActivityYAMLView: View {
+    let yaml: String
+
+    @State private var didCopy = false
+
+    var body: some View {
+        ScrollView(.vertical) {
+            Text(YAMLSyntaxHighlighter.highlight(yaml))
+                .font(.system(.footnote, design: .monospaced))
+                .textSelection(.enabled)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+        }
+        .background(Color(uiColor: .secondarySystemGroupedBackground))
+        .navigationTitle(L10n.LiveActivity.Samples.yamlTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    UIPasteboard.general.string = yaml
+                    withAnimation { didCopy = true }
+                } label: {
+                    Label(
+                        didCopy ? L10n.LiveActivity.Samples.copied : L10n.LiveActivity.Samples.copy,
+                        systemSymbol: didCopy ? .checkmark : .docOnDoc
+                    )
+                }
+            }
+        }
     }
 }
 

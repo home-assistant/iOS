@@ -413,6 +413,29 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return
         }
 
+        #if DEBUG
+        if response.actionIdentifier == NotificationSnoozeAction.debugTenSecondsActionIdentifier {
+            Current.notificationDispatcher.reschedule(response.notification.request.content, after: 10)
+            completionHandler()
+            return
+        }
+        #endif
+
+        // Snooze is an on-device-only convenience: reschedule a local re-delivery of the same
+        // notification (so it keeps its snooze actions) and skip forwarding to Home Assistant.
+        if response.actionIdentifier.hasPrefix(NotificationSnoozeAction.actionIdentifierPrefix),
+           let minutes = Int(
+               response.actionIdentifier
+                   .dropFirst(NotificationSnoozeAction.actionIdentifierPrefix.count)
+           ) {
+            Current.notificationDispatcher.reschedule(
+                response.notification.request.content,
+                after: TimeInterval(minutes * 60)
+            )
+            completionHandler()
+            return
+        }
+
         let userInfo = response.notification.request.content.userInfo
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")

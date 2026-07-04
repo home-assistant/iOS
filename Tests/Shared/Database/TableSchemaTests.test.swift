@@ -196,6 +196,17 @@ struct TableSchemaTests {
         )
     }
 
+    @Test("MacToolbarConfigTable schema validation")
+    func macToolbarConfigTableSchema() throws {
+        let table = MacToolbarConfigTable()
+        let expectedColumns = DatabaseTables.MacToolbarConfig.allCases.map(\.rawValue)
+        try verifyTableSchema(
+            table: table,
+            expectedTableName: GRDBDatabaseTable.macToolbarConfig.rawValue,
+            expectedColumns: expectedColumns
+        )
+    }
+
     @Test("AllowedTagTable schema validation")
     func allowedTagTableSchema() throws {
         let table = AllowedTagTable()
@@ -207,13 +218,13 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 15 tables create successfully together")
+    @Test("All 17 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 15 tables
-        #expect(tables.count == 15, "Should have exactly 15 tables, but found \(tables.count)")
+        // Verify we have exactly 17 tables
+        #expect(tables.count == 17, "Should have exactly 17 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

@@ -5,6 +5,7 @@ public enum GRDBDatabaseTable: String {
     case watchConfig
     case assistPipelines
     case carPlayConfig
+    case macToolbarConfig
     case appIconShortcutConfig
     case serverInfoMirror
     // Obsolete: replaced by `displayEntityRegistry`. Kept only so `deleteOldTables` can drop it.
@@ -22,6 +23,7 @@ public enum GRDBDatabaseTable: String {
     case assistConfiguration
     case allowedTags
     case kioskSettings
+    case notificationSnoozeAction
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -58,6 +60,12 @@ public enum DatabaseTables {
         case tabs
         case quickAccessItems
         case quickAccessLayout
+    }
+
+    // Mac titlebar/toolbar configuration
+    public enum MacToolbarConfig: String, CaseIterable {
+        case id
+        case items
     }
 
     public enum AppIconShortcutConfig: String, CaseIterable {
@@ -176,6 +184,14 @@ public enum DatabaseTables {
         case tag
     }
 
+    // Default notification quick actions (e.g. snooze presets)
+    public enum NotificationSnoozeAction: String, CaseIterable {
+        case id
+        case minutes
+        case isEnabled
+        case sortOrder
+    }
+
     // Kiosk mode configuration (single row). Column names must match
     // `KioskSettings`'s stored properties so GRDB's Codable mapping lines up.
     public enum KioskSettings: String, CaseIterable {
@@ -190,6 +206,8 @@ public enum DatabaseTables {
         case hideStatusBar
         case autoReload
         case settingsEntryPosition
+        case settingsEntryBackgroundColor
+        case settingsEntryIconColor
         case screensaver
     }
 }

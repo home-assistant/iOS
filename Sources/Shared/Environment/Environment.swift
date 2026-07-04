@@ -14,7 +14,6 @@ import XCGLogger
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equatable {
     case fastlaneSnapshot
     case debug
-    case beta
     case release
 
     public var description: String {
@@ -23,8 +22,6 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equata
             return "fastlane"
         case .debug:
             return "debug"
-        case .beta:
-            return "beta"
         case .release:
             return "release"
         }
@@ -94,6 +91,9 @@ public class AppEnvironment {
 
     /// Provides the Client Event store used for local logging.
     public var clientEventStore: ClientEventStoreProtocol = ClientEventStore()
+
+    /// Provides the store that records received notifications for the in-app history.
+    public var notificationHistoryStore: NotificationHistoryStoreProtocol = NotificationHistoryStore()
 
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
@@ -392,8 +392,6 @@ public class AppEnvironment {
             return .fastlaneSnapshot
         } else if isDebug {
             return .debug
-        } else if (Bundle.main.bundleIdentifier ?? "").lowercased().contains("beta"), isTestFlight {
-            return .beta
         } else {
             return .release
         }

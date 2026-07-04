@@ -14,6 +14,7 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
         let title: String
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
+        let alert: Bool
     }
 
     struct EndCall {
@@ -40,14 +41,15 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
         tag: String,
         title: String,
         serverWebhookId: String?,
-        state: HALiveActivityAttributes.ContentState
+        state: HALiveActivityAttributes.ContentState,
+        alert: Bool
     ) async throws -> Bool {
         if let error = startOrUpdateError {
             startOrUpdateError = nil
             throw error
         }
         startOrUpdateCalls.append(
-            StartOrUpdateCall(tag: tag, title: title, serverWebhookId: serverWebhookId, state: state)
+            StartOrUpdateCall(tag: tag, title: title, serverWebhookId: serverWebhookId, state: state, alert: alert)
         )
         return startOrUpdateResult
     }

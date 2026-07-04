@@ -87,8 +87,19 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     #if targetEnvironment(macCatalyst)
+    override var canBecomeFirstResponder: Bool { true }
+
     override var keyCommands: [UIKeyCommand]? {
+        func prioritised(_ input: String, _ action: Selector) -> UIKeyCommand {
+            let command = UIKeyCommand(input: input, modifierFlags: .command, action: action)
+            command.wantsPriorityOverSystemBehavior = true
+            return command
+        }
+
         var commands = [
+            prioritised("c", #selector(copyCurrentSelectedContent)),
+            prioritised("v", #selector(pasteContent)),
+            prioritised("x", #selector(cutCurrentSelectedContent)),
             UIKeyCommand(
                 input: "c",
                 modifierFlags: [.shift, .command],
@@ -100,14 +111,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 action: #selector(pasteContent)
             ),
             UIKeyCommand(
-                input: "c",
-                modifierFlags: .command,
-                action: #selector(copyCurrentSelectedContent)
-            ),
-            UIKeyCommand(
-                input: "v",
-                modifierFlags: .command,
-                action: #selector(pasteContent)
+                input: "x",
+                modifierFlags: [.shift, .command],
+                action: #selector(cutCurrentSelectedContent)
             ),
             UIKeyCommand(
                 input: "r",

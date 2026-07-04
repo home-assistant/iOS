@@ -33,7 +33,7 @@ final class EntityAddToHandler {
                 // CarPlay is available on iPhone only (not iPad) for supported domains
                 #if !targetEnvironment(macCatalyst)
                 if !Current.isCatalyst, UIDevice.current.userInterfaceIdiom == .phone {
-                    let isCarPlaySupported = domain.map { CarPlaySupportedDomains.all.contains($0) } ?? false
+                    let isCarPlaySupported = domain.map { Domain.carPlaySupported.contains($0) } ?? false
                     if isCarPlaySupported {
                         actions.append(CarPlayQuickAccessAction())
                     }
@@ -43,7 +43,7 @@ final class EntityAddToHandler {
                 // Watch is available on iPhone for supported domains
                 #if os(iOS)
                 if !Current.isCatalyst {
-                    let isWatchSupported = domain.map { WatchSupportedDomains.all.contains($0) } ?? false
+                    let isWatchSupported = domain.map { Domain.watchSupported.contains($0) } ?? false
                     if isWatchSupported {
                         actions.append(WatchItemAction())
                     }
@@ -51,8 +51,13 @@ final class EntityAddToHandler {
                 #endif
 
                 // Widgets are available on all platforms
-                if let domain, HAAppUsedContent.domains.contains(domain) {
+                if let domain, !Domain.appDatabaseExcluded.contains(domain) {
                     actions.append(CustomWidgetAction())
+                }
+
+                // Mac titlebar/toolbar is available on Mac Catalyst for any entity
+                if Current.isCatalyst, domain != nil {
+                    actions.append(MacToolbarItemAction())
                 }
 
                 seal.fulfill(actions)
@@ -100,6 +105,10 @@ final class EntityAddToHandler {
                     )
                     seal.fulfill(())
 
+                case .macToolbarItem:
+                    addToMacToolbar(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
                 case .none:
                     seal.reject(EntityAddToError.unknownActionType)
                 }
@@ -137,6 +146,48 @@ final class EntityAddToHandler {
         let viewController = watchSettingsView.embeddedInHostingController()
         viewController.overrideUserInterfaceStyle = .dark
         webViewController.presentOverlayController(controller: viewController, animated: true)
+    }
+
+    private func addToMacToolbar(entityId: String, webViewController: WebViewControllerProtocol) {
+        Current.Log.info("Adding entity \(entityId) to Mac toolbar")
+        let serverId = webViewController.server.identifier.rawValue
+
+        do {
+            var config = try MacToolbarConfig.config() ?? MacToolbarConfig()
+
+            let addedItem: MagicItem
+            if let existing = config.items.first(where: { $0.id == entityId && $0.serverId == serverId }) {
+                addedItem = existing
+            } else {
+                let appEntity = HAAppEntity.entity(id: entityId, serverId: serverId)
+                let iconName = appEntity?.icon
+                    ?? Domain(rawValue: appEntity?.domain ?? "")?.icon(deviceClass: appEntity?.rawDeviceClass).name
+                    ?? MaterialDesignIcons.dotsGridIcon.name
+
+                let item = MagicItem(
+                    id: entityId,
+                    serverId: serverId,
+                    type: .entity,
+                    customization: .init(icon: iconName),
+                    action: .moreInfoDialog,
+                    displayText: appEntity?.name
+                )
+                config.items.append(item)
+                addedItem = item
+
+                try Current.database().write { db in
+                    try config.insert(db, onConflict: .replace)
+                }
+            }
+
+            NotificationCenter.default.post(
+                name: .macToolbarConfigDidChange,
+                object: nil,
+                userInfo: [MacToolbarConfigChange.userInfoKey: MacToolbarConfigChange.added(addedItem)]
+            )
+        } catch {
+            Current.Log.error("Failed to add entity \(entityId) to Mac toolbar: \(error.localizedDescription)")
+        }
     }
 
     private func openWidgetBuilder(

@@ -299,7 +299,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             detailText: nil
         )
         item.handler = { _, _ in
-            fatalError("Intentional crash, triggered from CarPlay advanced option to restart App.")
+            fatalError("Intentional crash, triggered from CarPlay Troubleshooting option to restart App.")
         }
         return item
     }
