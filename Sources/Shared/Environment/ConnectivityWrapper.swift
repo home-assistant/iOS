@@ -18,8 +18,8 @@ public class ConnectivityWrapper {
     public var networkAttributes: () -> [String: Any]
     /// Refreshes the cached network information (e.g. current SSID/BSSID), returning once the
     /// values are up to date. Defaults to `syncNetworkInformation()`; replaceable in tests.
-    public var refreshNetworkInformation: () async -> Void = {
-        await Current.connectivity.syncNetworkInformation()
+    public lazy var refreshNetworkInformation: () async -> Void = { [weak self] in
+        await self?.syncNetworkInformation()
     }
 
     #if targetEnvironment(macCatalyst)

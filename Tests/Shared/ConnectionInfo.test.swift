@@ -757,10 +757,9 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
+        let previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
         addTeardownBlock {
-            Current.connectivity.refreshNetworkInformation = {
-                await Current.connectivity.syncNetworkInformation()
-            }
+            Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
         }
 
         // Cached network information does not know about the internal network yet;
@@ -793,10 +792,9 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
+        let previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
         addTeardownBlock {
-            Current.connectivity.refreshNetworkInformation = {
-                await Current.connectivity.syncNetworkInformation()
-            }
+            Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
         }
 
         // Cached network information still says we are on the internal network,
@@ -816,10 +814,9 @@ class ConnectionInfoTests: XCTestCase {
         let internalURL = URL(string: "http://internal.example.com:8123")
         let externalURL = URL(string: "http://external.example.com:8123")
 
+        let previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
         addTeardownBlock {
-            Current.connectivity.refreshNetworkInformation = {
-                await Current.connectivity.syncNetworkInformation()
-            }
+            Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
         }
 
         Current.connectivity.currentWiFiSSID = { nil }
