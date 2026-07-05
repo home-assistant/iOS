@@ -224,7 +224,32 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
+    ///
+    /// This evaluates against the network information (e.g. current SSID) cached at the time of the
+    /// call, which may be stale.
+    @available(
+        *,
+        deprecated,
+        message: "Use the async activeURL() instead, which refreshes network information before returning"
+    )
     public mutating func activeURL() -> URL? {
+        evaluateActiveURL()
+    }
+
+    /// Returns the url that should be used at this moment to access the Home Assistant instance,
+    /// refreshing network information (e.g. current SSID) before evaluating which URL is active.
+    public mutating func activeURL() async -> URL? {
+        await Current.connectivity.refreshNetworkInformation()
+        return evaluateActiveURL()
+    }
+
+    /// Evaluates the url that should be used at this moment to access the Home Assistant instance,
+    /// based on the currently cached network information.
+    ///
+    /// Not meant for general use: prefer the async `activeURL()`, which refreshes network
+    /// information first. This exists for callers that must stay synchronous and accept
+    /// potentially stale network information.
+    mutating func evaluateActiveURL() -> URL? {
         if let overrideActiveURLType {
             let overrideURL: URL?
 
@@ -297,7 +322,7 @@ public struct ConnectionInfo: Codable, Equatable {
 
     /// Returns the activeURL with /api appended.
     public mutating func activeAPIURL() -> URL? {
-        if let activeURL = activeURL() {
+        if let activeURL = evaluateActiveURL() {
             return activeURL.appendingPathComponent("api", isDirectory: false)
         } else {
             return nil
@@ -309,7 +334,7 @@ public struct ConnectionInfo: Codable, Equatable {
             return cloudhookURL
         }
 
-        if let activeURL = activeURL() {
+        if let activeURL = evaluateActiveURL() {
             return activeURL.appendingPathComponent(webhookPath, isDirectory: false)
         } else {
             return nil
@@ -414,7 +439,7 @@ class ServerRequestAdapter: RequestAdapter {
         var updatedRequest: URLRequest = urlRequest
 
         if let currentURL = urlRequest.url {
-            if let activeURL = server.info.connection.activeURL() {
+            if let activeURL = server.info.connection.evaluateActiveURL() {
                 let expectedURL = activeURL.adapting(url: currentURL)
                 if currentURL != expectedURL {
                     Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")

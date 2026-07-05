@@ -2,34 +2,35 @@ import Shared
 import Version
 
 final class WhatsNewEngine {
-    private let releases: [WhatsNewRelease]
+    private let release: WhatsNewRelease?
     private let currentVersion: () -> Version
     private let currentPlatform: () -> WhatsNewTargetPlatform
+    private let currentOSVersion: () -> WhatsNewOSVersion
     private let hasSeenRelease: (String) -> Bool
 
     init(
-        releases: [WhatsNewRelease] = WhatsNewCatalog.releases,
+        release: WhatsNewRelease? = WhatsNewCatalog.release,
         currentVersion: @escaping () -> Version = Current.clientVersion,
         currentPlatform: @escaping () -> WhatsNewTargetPlatform = { .current },
+        currentOSVersion: @escaping () -> WhatsNewOSVersion = { .current },
         hasSeenRelease: @escaping (String) -> Bool = { Current.settingsStore.hasSeenWhatsNew(releaseID: $0) }
     ) {
-        self.releases = releases
+        self.release = release
         self.currentVersion = currentVersion
         self.currentPlatform = currentPlatform
+        self.currentOSVersion = currentOSVersion
         self.hasSeenRelease = hasSeenRelease
     }
 
     func releaseToShow() -> WhatsNewRelease? {
+        guard let release else { return nil }
         let appVersion = WhatsNewAppVersion(currentVersion())
         let platform = currentPlatform()
+        let osVersion = currentOSVersion()
 
-        guard let release = releases.first(where: {
-            $0.version == appVersion && $0.targetPlatforms.contains(platform)
-        }) else {
-            return nil
-        }
-
-        guard !hasSeenRelease(release.releaseID) else {
+        guard !hasSeenRelease(release.id.rawValue),
+              release.matches(platform: platform, osVersion: osVersion),
+              release.version == appVersion else {
             return nil
         }
 
@@ -37,13 +38,13 @@ final class WhatsNewEngine {
     }
 
     func latestRelease() -> WhatsNewRelease? {
+        guard let release else { return nil }
         let platform = currentPlatform()
-        return releases
-            .filter { $0.targetPlatforms.contains(platform) }
-            .max(by: { $0.version < $1.version })
+        let osVersion = currentOSVersion()
+        return release.matches(platform: platform, osVersion: osVersion) ? release : nil
     }
 
     func markSeen(_ release: WhatsNewRelease) {
-        Current.settingsStore.markWhatsNewSeen(releaseID: release.releaseID)
+        Current.settingsStore.markWhatsNewSeen(releaseID: release.id.rawValue)
     }
 }

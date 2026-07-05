@@ -1442,6 +1442,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.notifications.snooze_actions.add_sheet.title" = "New Snooze Action";
 "settings_details.notifications.snooze_actions.footer" = "Quick actions shown on notifications to snooze them for a set amount of time. Snoozing re-shows the notification later.";
 "settings_details.notifications.snooze_actions.header" = "Snooze Actions";
+"settings_details.notifications.snooze_actions.prefix_footer" = "Snoozed notifications reappear with a “↺” prefix in their title.";
 "settings_details.notifications.snooze_actions.title_hour" = "Snooze 1 hour";
 "settings_details.notifications.snooze_actions.title_hour_minutes" = "Snooze 1 hour and %li min";
 "settings_details.notifications.snooze_actions.title_hours" = "Snooze %li hours";

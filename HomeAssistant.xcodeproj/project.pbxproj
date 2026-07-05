@@ -721,6 +721,7 @@
 		425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425762742E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		4259959A2F44708F0023D6A6 /* View+ScreenCaptureProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */; };
+		42B7C1A12F78D10000E4F3AB /* MaterialDesignIcons+SFSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7C1A02F78D10000E4F3AB /* MaterialDesignIcons+SFSymbol.swift */; };
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425EB4FD2F5F0ACB0067A678 /* TTSVoicePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425EB4FC2F5F0ACB0067A678 /* TTSVoicePickerView.swift */; };
 		425EB5002F5F0EDF0067A678 /* MockSpeechSynthesizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425EB4FE2F5F0EDF0067A678 /* MockSpeechSynthesizer.swift */; };
@@ -1139,6 +1140,7 @@
 		42EEEFE22E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE32E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
+		42B7C1A32F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */; };
 		42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
 		42EF0ACE2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
 		42EF0AD12D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */; };
@@ -2599,6 +2601,7 @@
 		4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriber.swift; sourceTree = "<group>"; };
 		425762722E71A8B800AE5083 /* ModalCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalCloseButton.swift; sourceTree = "<group>"; };
 		425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ScreenCaptureProtection.swift"; sourceTree = "<group>"; };
+		42B7C1A02F78D10000E4F3AB /* MaterialDesignIcons+SFSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+SFSymbol.swift"; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425EB4FC2F5F0ACB0067A678 /* TTSVoicePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSVoicePickerView.swift; sourceTree = "<group>"; };
 		425EB4FE2F5F0EDF0067A678 /* MockSpeechSynthesizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSpeechSynthesizer.swift; sourceTree = "<group>"; };
@@ -3107,6 +3110,7 @@
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
 		42EEEFE12E2791430080E973 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
+		42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDesignIconsSFSymbol.test.swift; sourceTree = "<group>"; };
 		42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetAllCustomWidgetConfirmationAppIntent.swift; sourceTree = "<group>"; };
 		42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateWidgetItemConfirmationStateAppIntent.swift; sourceTree = "<group>"; };
 		42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationView.swift; sourceTree = "<group>"; };
@@ -5366,6 +5370,7 @@
 				421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */,
 				42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */,
 				42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */,
+				42B7C1A02F78D10000E4F3AB /* MaterialDesignIcons+SFSymbol.swift */,
 				425995992F44708F0023D6A6 /* View+ScreenCaptureProtection.swift */,
 			);
 			path = Extensions;
@@ -7528,6 +7533,7 @@
 				42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */,
 				42EEEFE42E2792B20080E973 /* Service.test.swift */,
 				DA5459C05BEB77340680D8C6 /* Domain.test.swift */,
+				42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */,
 				B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */,
 			);
 			path = Shared;
@@ -10547,6 +10553,7 @@
 				B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */,
 				42790C462C4808FA00E31B38 /* AppleLikeBottomSheet.swift in Sources */,
 				4259959A2F44708F0023D6A6 /* View+ScreenCaptureProtection.swift in Sources */,
+				42B7C1A12F78D10000E4F3AB /* MaterialDesignIcons+SFSymbol.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				427FEE682D9ECFD70047C00C /* PrivacyNoteView.swift in Sources */,
@@ -10885,6 +10892,7 @@
 				8DFA3DEE4881E59961C3B5E2 /* BarometerSensor.test.swift in Sources */,
 				42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */,
 				17200629C6080FA329C8F802 /* Domain.test.swift in Sources */,
+				42B7C1A32F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift in Sources */,
 				42BC58202FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift in Sources */,
 				118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */,
 				114CBAEB2839FC2500A9BAFF /* SecurityExceptions.test.swift in Sources */,

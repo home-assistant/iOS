@@ -102,7 +102,7 @@ struct CameraStreamHLSView: View {
         let response = api.StreamCamera(entityId: cameraEntityId).value
 
         if let hlsPath = response?.hlsPath,
-           let baseURL = api.server.info.connection.activeURL() {
+           let baseURL = await api.server.activeURL() {
             return baseURL.appendingPathComponent(hlsPath)
         } else {
             throw StreamError.noHLSAvailable
