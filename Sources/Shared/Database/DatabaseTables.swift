@@ -45,6 +45,7 @@ public enum DatabaseTables {
         case id
         case assist
         case items
+        case lastModified
     }
 
     // Assist pipelines
