@@ -1,4 +1,3 @@
-import Foundation
 import SFSafeSymbols
 
 public extension MaterialDesignIcons {
@@ -57,6 +56,7 @@ private extension MaterialDesignIcons {
     var sfSymbols4Match: SFSymbol? {
         switch self {
         // MARK: Lighting
+
         case .lightbulbGroupIcon, .lightbulbGroupOutlineIcon, .lightbulbMultipleIcon: return .lightbulb2
         case .lightbulbMultipleOutlineIcon: return .lightbulb2
         case .ceilingLightIcon, .ceilingLightOutlineIcon, .ceilingLightMultipleIcon: return .lampCeiling
@@ -74,6 +74,7 @@ private extension MaterialDesignIcons {
         case .spotlightBeamIcon: return .lightBeaconMax
 
         // MARK: Climate & air
+
         case .thermometerIcon, .thermostatIcon, .thermostatBoxIcon: return .thermometerMedium
         case .thermometerHighIcon: return .thermometerHigh
         case .thermometerLowIcon: return .thermometerLow
@@ -92,6 +93,7 @@ private extension MaterialDesignIcons {
         case .airHumidifierOffIcon: return .humidifierFill
 
         // MARK: Sensors & safety
+
         case .smokeDetectorIcon, .smokeDetectorVariantIcon, .smokeDetectorOutlineIcon: return .sensor
         case .smokeDetectorAlertIcon, .smokeDetectorVariantAlertIcon: return .sensorFill
         case .motionSensorIcon: return .sensorTagRadiowavesForward
@@ -103,6 +105,7 @@ private extension MaterialDesignIcons {
         case .keyWirelessIcon: return .keyRadiowavesForward
 
         // MARK: Doors, windows & covers
+
         case .doorIcon, .doorClosedIcon, .doorClosedLockIcon: return .doorLeftHandClosed
         case .doorOpenIcon: return .doorLeftHandOpen
         case .doorSlidingIcon: return .doorSlidingLeftHandClosed
@@ -125,6 +128,7 @@ private extension MaterialDesignIcons {
         case .stairsIcon, .stairsUpIcon, .stairsDownIcon: return .stairs
 
         // MARK: Rooms, furniture & appliances
+
         case .sofaIcon, .sofaOutlineIcon: return .sofa
         case .sofaSingleIcon, .sofaSingleOutlineIcon: return .chairLounge
         case .chairRollingIcon, .seatIcon, .seatOutlineIcon: return .chair
@@ -147,6 +151,7 @@ private extension MaterialDesignIcons {
         case .cakeVariantIcon, .cakeVariantOutlineIcon, .cakeIcon: return .birthdayCake
 
         // MARK: Water & outdoor
+
         case .pipeValveIcon, .valveIcon: return .spigot
         case .waterPumpIcon: return .spigot
         case .sprinklerIcon, .sprinklerFireIcon: return .sprinkler
@@ -160,6 +165,7 @@ private extension MaterialDesignIcons {
         case .tentIcon: return .tent
 
         // MARK: Power
+
         case .powerSocketIcon: return .poweroutletStrip
         case .powerSocketUsIcon: return .poweroutletTypeB
         case .powerSocketEuIcon, .powerSocketDeIcon: return .poweroutletTypeF
@@ -171,6 +177,7 @@ private extension MaterialDesignIcons {
         case .powerSocketItIcon: return .poweroutletTypeL
 
         // MARK: People & figures
+
         case .accountClockIcon, .accountClockOutlineIcon: return .personBadgeClock
         case .accountKeyIcon, .accountKeyOutlineIcon: return .personBadgeKey
         case .accountChildIcon, .accountChildOutlineIcon: return .figureAndChildHoldinghands
@@ -185,6 +192,7 @@ private extension MaterialDesignIcons {
         case .locationExitIcon: return .figureWalkDeparture
 
         // MARK: Devices & tech
+
         case .routerIcon, .routerWirelessIcon, .routerNetworkIcon: return .wifiRouter
         case .routerWirelessOffIcon: return .wifiRouter
         case .accessPointIcon, .accessPointNetworkIcon: return .wifiRouter
@@ -193,6 +201,7 @@ private extension MaterialDesignIcons {
         case .commentQuestionIcon, .commentQuestionOutlineIcon: return .questionmarkBubble
 
         // MARK: Vehicles & transport
+
         case .roadIcon, .roadVariantIcon, .highwayIcon: return .roadLanes
         case .parkingIcon: return .parkingsign
         case .sailBoatIcon: return .sailboat
@@ -200,6 +209,7 @@ private extension MaterialDesignIcons {
         case .snowboardIcon: return .figureSnowboarding
 
         // MARK: Sports & leisure
+
         case .dumbbellIcon: return .dumbbell
         case .weightLifterIcon: return .figureStrengthtrainingTraditional
         case .yogaIcon, .meditationIcon: return .figureMindAndBody
@@ -216,20 +226,21 @@ private extension MaterialDesignIcons {
         case .partyPopperIcon: return .partyPopper
 
         // MARK: Animals & nature
+
         case .birdIcon: return .bird
         case .fishIcon: return .fish
-        case .virusIcon, .virusOutlineIcon, .bacteriaIcon, .bacteriaOutlineIcon: return .allergens
 
         // MARK: Misc objects
+
         case .wrenchIcon, .wrenchOutlineIcon: return .wrenchAdjustable
         case .pencilRulerIcon: return .pencilAndRuler
         case .bagPersonalIcon, .bagPersonalOutlineIcon: return .backpack
         case .medalIcon, .medalOutlineIcon: return .medal
-        case .compassIcon, .compassOutlineIcon: return .locationNorthCircle
         case .flagCheckeredIcon: return .flagCheckered
         case .robotIcon, .robotOutlineIcon: return .gearshapeArrowTriangle2Circlepath
 
         // MARK: Older-OS fallbacks for SF Symbols 5 matches
+
         case .fanIcon, .fanSpeed1Icon, .fanSpeed2Icon, .fanSpeed3Icon, .fanAutoIcon: return .fanOscillation
         case .speedometerIcon, .speedometerMediumIcon, .speedometerSlowIcon: return .dialMedium
         case .gaugeIcon, .gaugeFullIcon, .gaugeLowIcon, .gaugeEmptyIcon: return .dialMedium
@@ -257,6 +268,7 @@ private extension MaterialDesignIcons {
     var sfSymbols3Match: SFSymbol? {
         switch self {
         // MARK: Home
+
         case .homeIcon, .homeOutlineIcon, .homeVariantIcon, .homeVariantOutlineIcon: return .house
         case .homeAssistantIcon, .homeAutomationIcon, .homeAccountIcon, .homeHeartIcon: return .house
         case .homeCircleIcon, .homeCircleOutlineIcon: return .houseCircle
@@ -266,6 +278,7 @@ private extension MaterialDesignIcons {
         case .homeGroupIcon: return .house
 
         // MARK: Lighting (baseline)
+
         case .lightbulbIcon, .lightbulbOutlineIcon, .lightbulbVariantIcon: return .lightbulb
         case .lightbulbVariantOutlineIcon, .lightbulbCflIcon, .lightbulbCflOffIcon: return .lightbulb
         case .lightbulbOnIcon, .lightbulbOnOutlineIcon: return .lightbulbFill
@@ -276,6 +289,7 @@ private extension MaterialDesignIcons {
         case .candleIcon: return .flame
 
         // MARK: Switches & power (baseline)
+
         case .toggleSwitchIcon, .toggleSwitchOutlineIcon, .toggleSwitchVariantIcon: return .switch2
         case .toggleSwitchOffIcon, .toggleSwitchOffOutlineIcon: return .switch2
         case .toggleSwitchVariantOffIcon, .electricSwitchIcon, .electricSwitchClosedIcon: return .switch2
@@ -291,6 +305,7 @@ private extension MaterialDesignIcons {
         case .carBatteryIcon: return .minusPlusBatteryblock
 
         // MARK: Climate & weather (baseline)
+
         case .weatherSunnyIcon, .whiteBalanceSunnyIcon, .brightness5Icon: return .sunMax
         case .brightness6Icon, .brightness7Icon: return .sunMaxFill
         case .brightness4Icon, .brightnessPercentIcon: return .sunMin
@@ -324,6 +339,7 @@ private extension MaterialDesignIcons {
         case .airballoonIcon, .airballoonOutlineIcon: return .airplane
 
         // MARK: Security & locks
+
         case .lockIcon, .lockOutlineIcon, .lockSmartIcon: return .lock
         case .lockOpenIcon, .lockOpenOutlineIcon, .lockOpenVariantIcon: return .lockOpen
         case .lockOpenVariantOutlineIcon: return .lockOpen
@@ -346,6 +362,7 @@ private extension MaterialDesignIcons {
         case .leakIcon: return .drop
 
         // MARK: People
+
         case .accountIcon, .accountOutlineIcon: return .person
         case .accountCircleIcon, .accountCircleOutlineIcon: return .personCircle
         case .accountMultipleIcon, .accountMultipleOutlineIcon: return .person2
@@ -374,6 +391,7 @@ private extension MaterialDesignIcons {
         case .thumbDownIcon, .thumbDownOutlineIcon: return .handThumbsdown
 
         // MARK: Media players & audio
+
         case .playIcon, .playOutlineIcon: return .play
         case .playCircleIcon, .playCircleOutlineIcon: return .playCircle
         case .pauseIcon: return .pause
@@ -437,6 +455,7 @@ private extension MaterialDesignIcons {
         case .cameraImageIcon: return .photo
 
         // MARK: Communication
+
         case .emailIcon, .emailOutlineIcon, .emailVariantIcon: return .envelope
         case .emailOpenIcon, .emailOpenOutlineIcon: return .envelopeOpen
         case .sendIcon, .sendOutlineIcon, .emailFastIcon, .emailFastOutlineIcon: return .paperplane
@@ -459,6 +478,7 @@ private extension MaterialDesignIcons {
         case .bellPlusIcon, .bellPlusOutlineIcon: return .bellBadge
 
         // MARK: Devices
+
         case .cellphoneIcon, .cellphoneBasicIcon: return .iphone
         case .cellphoneOffIcon: return .iphoneSlash
         case .cellphoneWirelessIcon, .cellphoneNfcIcon: return .iphoneRadiowavesLeftAndRight
@@ -486,6 +506,7 @@ private extension MaterialDesignIcons {
         case .controllerIcon, .controllerClassicIcon, .controllerClassicOutlineIcon: return .gamecontroller
 
         // MARK: Connectivity
+
         case .wifiIcon, .wifiStrength4Icon: return .wifi
         case .wifiStrength1Icon, .wifiStrength2Icon, .wifiStrength3Icon: return .wifi
         case .wifiOffIcon, .wifiStrengthOffIcon, .wifiStrengthOffOutlineIcon: return .wifiSlash
@@ -508,6 +529,7 @@ private extension MaterialDesignIcons {
         case .barcodeScanIcon: return .barcodeViewfinder
 
         // MARK: Transport
+
         case .carIcon, .carSideIcon, .carHatchbackIcon, .carEstateIcon, .taxiIcon: return .car
         case .carSportsIcon, .carConvertibleIcon, .carConnectedIcon, .carWashIcon: return .car
         case .carElectricIcon, .carElectricOutlineIcon: return .boltCar
@@ -535,6 +557,7 @@ private extension MaterialDesignIcons {
         case .routesIcon, .callSplitIcon, .sourceBranchIcon: return .arrowTriangleBranch
 
         // MARK: Time & calendar
+
         case .clockIcon, .clockOutlineIcon, .clockDigitalIcon, .clockFastIcon: return .clock
         case .alarmIcon: return .alarm
         case .timerIcon, .timerOutlineIcon, .timerOffIcon, .timerOffOutlineIcon: return .timer
@@ -551,6 +574,7 @@ private extension MaterialDesignIcons {
         case .calendarAlertIcon: return .calendarBadgeExclamationmark
 
         // MARK: Files & documents
+
         case .fileIcon, .fileOutlineIcon: return .doc
         case .fileDocumentIcon, .fileDocumentOutlineIcon: return .docText
         case .fileMultipleIcon, .fileMultipleOutlineIcon: return .docOnDoc
@@ -588,6 +612,7 @@ private extension MaterialDesignIcons {
         case .receiptIcon, .receiptTextIcon, .receiptTextOutlineIcon: return .docPlaintext
 
         // MARK: Editing & actions
+
         case .pencilIcon, .pencilOutlineIcon, .leadPencilIcon: return .pencil
         case .pencilOffIcon: return .pencilSlash
         case .drawIcon: return .pencilAndOutline
@@ -624,6 +649,7 @@ private extension MaterialDesignIcons {
         case .pinOffIcon, .pinOffOutlineIcon: return .pinSlash
 
         // MARK: Basic UI
+
         case .closeIcon, .closeThickIcon, .windowCloseIcon: return .xmark
         case .closeCircleIcon, .closeCircleOutlineIcon: return .xmarkCircle
         case .closeBoxIcon, .closeBoxOutlineIcon: return .xmarkSquare
@@ -685,6 +711,7 @@ private extension MaterialDesignIcons {
         case .gestureSwipeIcon: return .handDraw
 
         // MARK: Settings & tools
+
         case .cogIcon, .cogOutlineIcon: return .gearshape
         case .cogsIcon: return .gearshape2
         case .tuneIcon, .tuneVariantIcon: return .sliderHorizontal3
@@ -723,6 +750,7 @@ private extension MaterialDesignIcons {
         case .keyChainIcon, .keyChainVariantIcon: return .key
 
         // MARK: Health
+
         case .medicalBagIcon: return .crossCase
         case .hospitalIcon, .hospitalBoxIcon, .hospitalBoxOutlineIcon: return .cross
         case .ambulanceIcon: return .cross
@@ -735,12 +763,14 @@ private extension MaterialDesignIcons {
         case .atomIcon, .atomVariantIcon: return .atom
 
         // MARK: Food & dining
+
         case .silverwareIcon, .silverwareForkKnifeIcon, .silverwareVariantIcon: return .forkKnife
         case .foodIcon, .foodVariantIcon: return .forkKnife
         case .coffeeIcon, .coffeeOutlineIcon, .coffeeMakerIcon: return .cupAndSaucer
         case .coffeeMakerOutlineIcon, .cupIcon, .cupOutlineIcon: return .cupAndSaucer
 
         // MARK: Nature & animals (baseline)
+
         case .leafIcon, .leafCircleIcon, .leafCircleOutlineIcon, .sproutIcon: return .leaf
         case .sproutOutlineIcon, .grassIcon: return .leaf
         case .pawIcon, .pawOutlineIcon: return .pawprint
@@ -749,11 +779,13 @@ private extension MaterialDesignIcons {
         case .fireExtinguisherIcon: return .flame
 
         // MARK: Beds & bedroom
+
         case .bedIcon, .bedOutlineIcon, .bedDoubleIcon, .bedDoubleOutlineIcon: return .bedDouble
         case .bedKingIcon, .bedKingOutlineIcon, .bedQueenIcon, .bedQueenOutlineIcon: return .bedDouble
         case .bedSingleIcon, .bedSingleOutlineIcon, .bedEmptyIcon: return .bedDouble
 
         // MARK: Commerce & data
+
         case .creditCardIcon, .creditCardOutlineIcon: return .creditcard
         case .creditCardWirelessIcon, .creditCardWirelessOutlineIcon: return .creditcard
         case .cashIcon, .cashMultipleIcon: return .banknote
@@ -779,6 +811,7 @@ private extension MaterialDesignIcons {
         case .sitemapIcon, .sitemapOutlineIcon: return .rectangle3Group
 
         // MARK: Code & math
+
         case .codeBracesIcon, .codeJsonIcon: return .curlybraces
         case .codeTagsIcon, .xmlIcon: return .chevronLeftForwardslashChevronRight
         case .functionIcon, .functionVariantIcon: return .function
@@ -792,6 +825,85 @@ private extension MaterialDesignIcons {
         case .translateIcon: return .characterBookClosed
 
         // MARK: Older-OS fallbacks for newer matches
+
+        case .virusIcon, .virusOutlineIcon, .bacteriaIcon, .bacteriaOutlineIcon: return .allergens
+        case .compassIcon, .compassOutlineIcon: return .locationNorthCircle
+        case .fanIcon, .fanSpeed1Icon, .fanSpeed2Icon, .fanSpeed3Icon, .fanAutoIcon, .fanOffIcon: return .wind
+        case .airFilterIcon, .airPurifierIcon: return .wind
+        case .airConditionerIcon, .hvacIcon, .hvacOffIcon: return .snowflake
+        case .thermometerIcon, .thermometerHighIcon, .thermometerLowIcon: return .thermometerSun
+        case .thermostatIcon, .thermostatBoxIcon, .homeThermometerIcon: return .thermometerSun
+        case .homeThermometerOutlineIcon: return .thermometerSun
+        case .temperatureCelsiusIcon, .temperatureFahrenheitIcon, .temperatureKelvinIcon: return .thermometerSun
+        case .airHumidifierIcon, .airHumidifierOffIcon: return .humidity
+        case .radiatorIcon, .radiatorOffIcon, .radiatorDisabledIcon: return .flame
+        case .heatingCoilIcon, .heatWaveIcon, .fireplaceIcon, .fireplaceOffIcon, .gasBurnerIcon: return .flame
+        case .waterBoilerIcon, .waterBoilerOffIcon, .waterBoilerAlertIcon: return .flame
+        case .sprinklerIcon, .sprinklerFireIcon, .sprinklerVariantIcon, .waterPumpIcon: return .drop
+        case .pipeValveIcon, .valveIcon: return .drop
+        case .showerIcon, .showerHeadIcon, .bathtubIcon, .bathtubOutlineIcon, .hotTubIcon: return .drop
+        case .batteryIcon, .battery10Icon, .battery20Icon, .battery30Icon, .battery40Icon: return .boltBatteryblock
+        case .battery50Icon, .battery60Icon, .battery70Icon, .battery80Icon, .battery90Icon: return .boltBatteryblock
+        case .batteryHighIcon, .batteryMediumIcon, .batteryLowIcon: return .boltBatteryblock
+        case .batteryOutlineIcon, .batteryAlertIcon, .batteryOffIcon: return .boltBatteryblock
+        case .gaugeIcon, .gaugeFullIcon, .gaugeLowIcon, .gaugeEmptyIcon: return .barometer
+        case .speedometerIcon, .speedometerMediumIcon, .speedometerSlowIcon: return .barometer
+        case .robotIcon, .robotOutlineIcon: return .gearshape2
+        case .lightSwitchIcon, .lightSwitchOffIcon: return .switch2
+        case .lightbulbGroupIcon, .lightbulbGroupOutlineIcon, .lightbulbMultipleIcon: return .lightbulb
+        case .lightbulbMultipleOutlineIcon, .chandelierIcon, .trackLightIcon, .spotlightBeamIcon: return .lightbulb
+        case .ceilingLightIcon, .ceilingLightOutlineIcon, .ceilingLightMultipleIcon: return .lightbulb
+        case .ceilingLightMultipleOutlineIcon, .ledStripIcon, .ledStripVariantIcon: return .lightbulb
+        case .floorLampIcon, .floorLampOutlineIcon, .floorLampDualIcon: return .lightbulb
+        case .floorLampDualOutlineIcon, .floorLampTorchiereIcon, .deskLampIcon, .deskLampOnIcon: return .lightbulb
+        case .lampIcon, .lampOutlineIcon, .lampsIcon, .lampsOutlineIcon: return .lightbulb
+        case .cctvIcon, .webcamIcon: return .video
+        case .motionSensorIcon: return .dotRadiowavesLeftAndRight
+        case .moleculeCo2Icon, .moleculeCoIcon: return .aqiMedium
+        case .routerIcon, .routerWirelessIcon, .routerNetworkIcon, .routerWirelessOffIcon: return .wifi
+        case .accessPointIcon, .accessPointNetworkIcon: return .wifi
+        case .signalIcon, .signalCellular1Icon, .signalCellular2Icon: return .chartBar
+        case .signalCellular3Icon, .signalCellularOutlineIcon: return .chartBar
+        case .remoteIcon: return .appletvremoteGen1
+        case .messageProcessingIcon, .messageProcessingOutlineIcon: return .message
+        case .commentQuestionIcon, .commentQuestionOutlineIcon: return .bubbleLeft
+        case .consoleIcon, .consoleLineIcon: return .chevronLeftForwardslashChevronRight
+        case .powerSocketIcon, .powerSocketUsIcon, .powerSocketEuIcon, .powerSocketDeIcon: return .powerplug
+        case .powerSocketUkIcon, .powerSocketAuIcon, .powerSocketFrIcon, .powerSocketJpIcon: return .powerplug
+        case .powerSocketChIcon, .powerSocketItIcon: return .powerplug
+        case .keyWirelessIcon: return .key
+        case .lockAlertIcon, .lockAlertOutlineIcon: return .lock
+        case .clipboardIcon, .clipboardOutlineIcon, .clipboardListIcon: return .docOnClipboard
+        case .clipboardTextIcon, .clipboardTextOutlineIcon: return .docOnClipboard
+        case .flashAlertIcon: return .bolt
+        case .volumePlusIcon, .volumeMinusIcon: return .speakerWave2
+        case .truckIcon, .truckDeliveryIcon, .truckFastIcon, .truckOutlineIcon: return .shippingbox
+        case .parkingIcon: return .pSquare
+        case .sailBoatIcon: return .ferry
+        case .runIcon, .runFastIcon, .hikingIcon: return .figureWalk
+        case .exitRunIcon, .locationExitIcon: return .rectanglePortraitAndArrowRight
+        case .locationEnterIcon: return .arrowRightSquare
+        case .accountClockIcon, .accountClockOutlineIcon, .accountKeyIcon: return .person
+        case .accountKeyOutlineIcon, .accountChildIcon, .accountChildOutlineIcon: return .person
+        case .accountChildCircleIcon: return .person
+        case .medalIcon, .medalOutlineIcon: return .rosette
+        case .trophyIcon, .trophyOutlineIcon, .trophyAwardIcon, .trophyVariantIcon: return .rosette
+        case .flagCheckeredIcon: return .flag
+        case .treeIcon, .treeOutlineIcon, .pineTreeIcon, .forestIcon, .palmTreeIcon: return .leaf
+        case .flowerIcon, .flowerOutlineIcon, .flowerTulipIcon, .flowerTulipOutlineIcon: return .leaf
+        case .carrotIcon: return .leaf
+        case .teaIcon, .teaOutlineIcon: return .cupAndSaucer
+        case .needleIcon: return .cross
+        case .partyPopperIcon: return .sparkles
+        case .eraserIcon: return .pencilSlash
+        case .hangerIcon: return .tshirt
+        case .umbrellaBeachIcon, .umbrellaBeachOutlineIcon, .beachIcon: return .umbrella
+        case .pencilRulerIcon: return .ruler
+        case .wrenchIcon, .wrenchOutlineIcon: return .wrenchAndScrewdriver
+        case .bagPersonalIcon, .bagPersonalOutlineIcon: return .bag
+        case .basketballIcon, .footballIcon, .footballAustralianIcon, .tennisIcon: return .sportscourt
+        case .tennisBallIcon, .volleyballIcon, .rugbyIcon, .hockeyPuckIcon: return .sportscourt
+        case .cricketIcon, .golfIcon, .bowlingIcon: return .sportscourt
         case .storeIcon, .storeOutlineIcon, .storefrontOutlineIcon: return .building
         case .evStationIcon: return .boltCar
         case .dogIcon, .dogSideIcon, .dogServiceIcon, .catIcon: return .pawprint
@@ -806,4 +918,3 @@ private extension MaterialDesignIcons {
         }
     }
 }
-
