@@ -217,7 +217,7 @@ struct WatchConnectivitySend_test {
             errorHandler: { error = $0 }
         )
         #expect(fake.sentMessages.count == 1)
-        try await Task.sleep(for: .milliseconds(400))
+        try await Task.sleep(nanoseconds: 400_000_000)
         #expect(error as? HAWatchConnectivity.ConnectivityError == .replyTimedOut)
     }
 
@@ -235,7 +235,7 @@ struct WatchConnectivitySend_test {
         fake.sentMessages[0].replyHandler?(
             HAWatchConnectivity.ImmediateMessage(identifier: "watchConfigResponse").jsonRepresentation()
         )
-        try await Task.sleep(for: .milliseconds(400))
+        try await Task.sleep(nanoseconds: 400_000_000)
         #expect(receivedReply?.identifier == "watchConfigResponse")
         #expect(error == nil)
     }
@@ -364,7 +364,7 @@ struct WatchConnectivityReceive_test {
         manager.receiveMessage(envelope, replyHandler: { _ in })
         manager.receiveMessage(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup").jsonRepresentation())
 
-        try await Task.sleep(for: .milliseconds(250))
+        try await Task.sleep(nanoseconds: 250_000_000)
         #expect(interactiveBox.value?.identifier == "watchConfig")
         #expect(immediateBox.value?.identifier == "wakeup")
         #expect(interactiveBox.count == 1)
@@ -380,7 +380,7 @@ struct WatchConnectivityReceive_test {
         manager.receiveUserInfo(HAWatchConnectivity.ComplicationInfo(content: [:]).jsonRepresentation())
         manager.receiveUserInfo(HAWatchConnectivity.GuaranteedMessage(identifier: "sync").jsonRepresentation())
 
-        try await Task.sleep(for: .milliseconds(250))
+        try await Task.sleep(nanoseconds: 250_000_000)
         #expect(complicationBox.count == 1)
         #expect(guaranteedBox.value?.identifier == "sync")
     }
@@ -393,7 +393,7 @@ struct WatchConnectivityReceive_test {
         DispatchQueue.global().async {
             manager.receiveMessage(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup").jsonRepresentation())
         }
-        try await Task.sleep(for: .milliseconds(250))
+        try await Task.sleep(nanoseconds: 250_000_000)
         #expect(box.value?.identifier == "wakeup")
         #expect(box.wasOnMain == true)
     }
@@ -405,7 +405,7 @@ struct WatchConnectivityReceive_test {
         manager.immediateMessage.unobserve(token)
 
         manager.receiveMessage(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup").jsonRepresentation())
-        try await Task.sleep(for: .milliseconds(200))
+        try await Task.sleep(nanoseconds: 200_000_000)
         #expect(box.count == 0)
     }
 
@@ -416,13 +416,13 @@ struct WatchConnectivityReceive_test {
         manager.immediateMessage.store[observation] = { box.set($0) }
 
         manager.receiveMessage(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup").jsonRepresentation())
-        try await Task.sleep(for: .milliseconds(250))
+        try await Task.sleep(nanoseconds: 250_000_000)
         #expect(box.value?.identifier == "wakeup")
         #expect(box.wasOnMain == true)
 
         manager.immediateMessage.store[observation] = nil
         manager.receiveMessage(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup").jsonRepresentation())
-        try await Task.sleep(for: .milliseconds(200))
+        try await Task.sleep(nanoseconds: 200_000_000)
         #expect(box.count == 1)
     }
 
@@ -433,7 +433,7 @@ struct WatchConnectivityReceive_test {
 
         var replied = false
         manager.receiveMessage(["identifier": "x"], replyHandler: { _ in replied = true })
-        try await Task.sleep(for: .milliseconds(150))
+        try await Task.sleep(nanoseconds: 150_000_000)
         #expect(replied == true)
         #expect(interactiveBox.count == 0)
     }
