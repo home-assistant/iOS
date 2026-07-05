@@ -1,12 +1,3 @@
-//
-//  HAWidgetPushHandler.swift
-//  HomeAssistant
-//
-//  Created by Hariharan on 29/06/26.
-//  Copyright © 2026 Home Assistant. All rights reserved.
-//
-
-
 import Shared
 import WidgetKit
 
@@ -28,7 +19,7 @@ struct HAWidgetPushHandler: WidgetPushHandler {
         let tokenHex = pushInfo.token.map { String(format: "%02x", $0) }.joined()
         let subscriptions = Self.subscriptions(from: widgets).filter { !$0.entityIDs.isEmpty }
 
-        Current.Log.info("HAWidgetPushHandler: token \(tokenHex.prefix(8))… -> \(subscriptions.count) subscription(s)")
+        Current.Log.info("HAWidgetPushHandler: token changed -> \(subscriptions.count) subscription(s)")
 
         guard !subscriptions.isEmpty else {
             Current.Log.info("HAWidgetPushHandler: no trackable entities, skipping register")
@@ -55,10 +46,17 @@ struct HAWidgetPushHandler: WidgetPushHandler {
                         "(\(subscription.entityIDs.count) entities) with \(server.identifier.rawValue)"
                 )
                 Task {
-                    try? await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                        Current.webhooks.sendEphemeral(server: server, request: request)
-                            .done { continuation.resume() }
-                            .catch { continuation.resume(throwing: $0) }
+                    do {
+                        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                            Current.webhooks.sendEphemeral(server: server, request: request)
+                                .done { continuation.resume() }
+                                .catch { continuation.resume(throwing: $0) }
+                        }
+                    } catch {
+                        Current.Log.error(
+                            "HAWidgetPushHandler: failed to register \(subscription.subscriptionID) " +
+                                "with \(server.identifier.rawValue): \(error)"
+                        )
                     }
                 }
             }
