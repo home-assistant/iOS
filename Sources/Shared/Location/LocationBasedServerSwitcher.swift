@@ -1,6 +1,5 @@
 import CoreLocation
 import Foundation
-import PromiseKit
 import RealmSwift
 
 /// Decides which server the app should display based on where the user currently is, similar to how
@@ -150,14 +149,8 @@ public final class LocationBasedServerSwitcherImpl: LocationBasedServerSwitcher 
     }
 
     private static func currentLocation() async throws -> CLLocation {
-        try await withCheckedThrowingContinuation { continuation in
-            // remaining: 10 bounds the one-shot to a few seconds so a foreground evaluation can't
-            // leave the app on a stale server for long when GPS is slow.
-            Current.location.oneShotLocation(.Manual, 10).done { location in
-                continuation.resume(returning: location)
-            }.catch { error in
-                continuation.resume(throwing: error)
-            }
-        }
+        // remaining: 10 bounds the one-shot to a few seconds so a foreground evaluation can't
+        // leave the app on a stale server for long when GPS is slow.
+        try await CLLocationManager.oneShotLocation(trigger: .Manual, remaining: 10)
     }
 }

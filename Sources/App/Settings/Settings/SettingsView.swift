@@ -23,6 +23,7 @@ struct SettingsView: View {
         }
         .onAppear {
             isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
+            serverAutoSwitchEnabled = Current.settingsStore.locationBasedServerSwitchEnabled
         }
     }
 

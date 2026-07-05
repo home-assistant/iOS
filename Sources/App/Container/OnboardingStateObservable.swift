@@ -31,6 +31,7 @@ final class OnboardingStateObservable: ObservableObject {
     @Published private(set) var screen: Screen
 
     private var cancellables = Set<AnyCancellable>()
+    private var locationBasedServerSwitchTask: Task<Void, Never>?
 
     init() {
         self.screen = Self.initialScreen()
@@ -99,10 +100,14 @@ final class OnboardingStateObservable: ObservableObject {
 
     /// Switches the web view to the server matching the user's current network/location, unless the
     /// user intentionally switched to another server recently (manual-selection grace period).
+    /// Evaluations are cancel-and-replace so quick successive triggers can't race: only the newest
+    /// evaluation gets to update the screen.
     private func switchToLocationBasedServerIfNeeded() {
         guard Current.locationBasedServerSwitcher.isEnabled else { return }
-        Task { @MainActor [weak self] in
+        locationBasedServerSwitchTask?.cancel()
+        locationBasedServerSwitchTask = Task { @MainActor [weak self] in
             guard let preferred = await Current.locationBasedServerSwitcher.preferredServer() else { return }
+            guard !Task.isCancelled else { return }
             guard let self, case let .webView(current) = screen else { return }
             guard current.identifier != preferred.identifier else { return }
             guard !Current.locationBasedServerSwitcher.isManualSelectionActive(for: current) else {

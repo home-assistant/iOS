@@ -8062,7 +8062,6 @@
 				B6CC5D802159D10D00833E5D /* Resources */,
 				93C44648FF2FAE89B2ED8FC9 /* Frameworks */,
 				119A172824D74DA800D1B66D /* Embed App Extensions */,
-				BDD0C858B32E5A39A8FB259F /* Sources */,
 			);
 			buildRules = (
 			);
@@ -10340,13 +10339,6 @@
 				4207EB762C8754BF00286A2D /* WatchMagicViewRowViewModel.swift in Sources */,
 				427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */,
 				4264906E2C0F1B8B002155CC /* WatchAssistViewModel.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BDD0C858B32E5A39A8FB259F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

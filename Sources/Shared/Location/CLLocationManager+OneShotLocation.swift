@@ -9,6 +9,20 @@ public extension CLLocationManager {
             timeout: after(seconds: timeout)
         ).promise
     }
+
+    /// Async bridge for `Current.location.oneShotLocation`, for Swift Concurrency call sites.
+    static func oneShotLocation(
+        trigger: LocationUpdateTrigger,
+        remaining: TimeInterval?
+    ) async throws -> CLLocation {
+        try await withCheckedThrowingContinuation { continuation in
+            Current.location.oneShotLocation(trigger, remaining).done { location in
+                continuation.resume(returning: location)
+            }.catch { error in
+                continuation.resume(throwing: error)
+            }
+        }
+    }
 }
 
 enum OneShotError: Error, Equatable, LocalizedError, CustomNSError {
