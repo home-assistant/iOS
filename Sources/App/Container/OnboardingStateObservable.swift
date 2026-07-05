@@ -36,6 +36,7 @@ final class OnboardingStateObservable: ObservableObject {
         self.screen = Self.initialScreen()
         Current.onboardingObservation.register(observer: self)
         observeKioskTarget()
+        observeLocationBasedServerSwitch()
     }
 
     /// Switches the displayed screen to `server`'s web view. Called by the app coordinator's `open(server:)`.
@@ -79,6 +80,40 @@ final class OnboardingStateObservable: ObservableObject {
     private var currentServer: Server? {
         if case let .webView(server) = screen { return server }
         return nil
+    }
+
+    /// Re-evaluates the location-based server whenever the app returns to the foreground, when the
+    /// setting is toggled, and once after launch (the synchronous launch decision can only use cached
+    /// state — e.g. the current SSID is fetched asynchronously and may not be known yet when
+    /// `initialScreen()` runs).
+    private func observeLocationBasedServerSwitch() {
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .merge(with: NotificationCenter.default.publisher(for: SettingsStore.locationRelatedSettingDidChange))
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.switchToLocationBasedServerIfNeeded()
+            }
+            .store(in: &cancellables)
+        switchToLocationBasedServerIfNeeded()
+    }
+
+    /// Switches the web view to the server matching the user's current network/location, unless the
+    /// user intentionally switched to another server recently (manual-selection grace period).
+    private func switchToLocationBasedServerIfNeeded() {
+        guard Current.locationBasedServerSwitcher.isEnabled else { return }
+        Task { @MainActor [weak self] in
+            guard let preferred = await Current.locationBasedServerSwitcher.preferredServer() else { return }
+            guard let self, case let .webView(current) = screen else { return }
+            guard current.identifier != preferred.identifier else { return }
+            guard !Current.locationBasedServerSwitcher.isManualSelectionActive(for: current) else {
+                Current.Log.verbose(
+                    "not switching to location-based server \(preferred.identifier): manual selection active"
+                )
+                return
+            }
+            Current.Log.info("switching to location-based server \(preferred.identifier)")
+            screen = .webView(preferred)
+        }
     }
 
     /// Recomputes which screen to show (e.g. after onboarding finishes). Mirrors the launch decision.
@@ -181,12 +216,22 @@ final class OnboardingStateObservable: ObservableObject {
         return .onboarding(.initial)
     }
 
-    /// The server to show at launch: the kiosk-configured server when kiosk mode is enabled, otherwise the
+    /// The server to show at launch: the kiosk-configured server when kiosk mode is enabled, then the
+    /// location-based server (or a recent manual selection) when auto-switching is on, otherwise the
     /// first registered server.
     private static func preferredInitialServer() -> Server? {
         let kiosk = Current.kioskSettings
         if kiosk.enabled, let server = Current.servers.server(forServerIdentifier: kiosk.serverId) {
             return server
+        }
+        let switcher = Current.locationBasedServerSwitcher
+        if switcher.isEnabled {
+            if let manuallySelected = switcher.activeManualSelection {
+                return manuallySelected
+            }
+            if let preferred = switcher.preferredServerUsingCachedState() {
+                return preferred
+            }
         }
         return Current.servers.all.first
     }

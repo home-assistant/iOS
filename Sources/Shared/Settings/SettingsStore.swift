@@ -258,6 +258,18 @@ public class SettingsStore {
         }
     }
 
+    /// Automatically switch the displayed server to the one matching the user's current location
+    /// (Wi-Fi network / zones). Off by default; only relevant with more than one server.
+    public var locationBasedServerSwitchEnabled: Bool {
+        get {
+            prefs.bool(forKey: "locationBasedServerSwitchEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "locationBasedServerSwitchEnabled")
+            NotificationCenter.default.post(name: Self.locationRelatedSettingDidChange, object: nil)
+        }
+    }
+
     public var macNativeFeaturesOnly: Bool {
         get {
             prefs.bool(forKey: "macNativeFeaturesOnly")

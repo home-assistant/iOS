@@ -4177,6 +4177,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings.reset_section.reset_web_cache.title") }
       }
     }
+    public enum ServerAutoSwitch {
+      /// Automatically switch to the server matching your current location, based on your Wi-Fi network and zones. After you manually switch to a different server, automatic switching pauses for a while.
+      public static var footer: String { return L10n.tr("Localizable", "settings.server_auto_switch.footer") }
+      /// Auto-switch server
+      public static var title: String { return L10n.tr("Localizable", "settings.server_auto_switch.title") }
+    }
     public enum ServerSelect {
       /// Server
       public static var title: String { return L10n.tr("Localizable", "settings.server_select.title") }

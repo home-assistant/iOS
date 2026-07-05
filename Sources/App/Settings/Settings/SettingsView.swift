@@ -8,6 +8,7 @@ struct SettingsView: View {
     @State private var whatsNewRelease: WhatsNewRelease?
     @State private var testFlightMessage: TestFlightMessage?
     @State private var isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
+    @State private var serverAutoSwitchEnabled = Current.settingsStore.locationBasedServerSwitchEnabled
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
     @StateObject private var serversObserver = ServersObserver()
@@ -48,6 +49,8 @@ struct SettingsView: View {
             Section(header: Text(L10n.Settings.ConnectionSection.serversHeader)) {
                 ServersListView()
             }
+
+            serverAutoSwitchSection
 
             if isShowingTranslationKeys {
                 translationKeysWarningSection
@@ -121,6 +124,8 @@ struct SettingsView: View {
                 ServersListView()
             }
             .environment(\.defaultMinListRowHeight, 60)
+
+            serverAutoSwitchSection
 
             if isShowingTranslationKeys {
                 translationKeysWarningSection
@@ -264,6 +269,21 @@ struct SettingsView: View {
         .sheet(item: $testFlightMessage) { message in
             TestFlightCommunicationView(message: message) {
                 TestFlightCommunicationEngine().markSeen(message)
+            }
+        }
+    }
+
+    /// Only offered with more than one server, since switching needs something to switch between.
+    @ViewBuilder
+    private var serverAutoSwitchSection: some View {
+        if serversObserver.servers.count > 1 {
+            Section(footer: Text(L10n.Settings.ServerAutoSwitch.footer)) {
+                Toggle(isOn: $serverAutoSwitchEnabled) {
+                    Text(L10n.Settings.ServerAutoSwitch.title)
+                }
+                .onChange(of: serverAutoSwitchEnabled) { newValue in
+                    Current.settingsStore.locationBasedServerSwitchEnabled = newValue
+                }
             }
         }
     }

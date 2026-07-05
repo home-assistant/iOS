@@ -1233,6 +1233,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.server_auto_switch.footer" = "Automatically switch to the server matching your current location, based on your Wi-Fi network and zones. After you manually switch to a different server, automatic switching pauses for a while.";
+"settings.server_auto_switch.title" = "Auto-switch server";
 "settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";

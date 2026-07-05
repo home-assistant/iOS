@@ -83,6 +83,10 @@ final class AppContainerCoordinator: AppCoordinator {
         if let current = frontend, current.server.identifier == server.identifier {
             return .value(current)
         }
+        // Everything routing through here (server picker, gestures, deep links, notification taps)
+        // reflects an intentional interest in this server, so it should win over the location-based
+        // server for the grace period. Automatic switches set the screen directly and skip this.
+        Current.locationBasedServerSwitcher.recordManualSelection(of: server)
         let (promise, seal) = Guarantee<any WebFrontend>.pending()
         pendingOpens[server.identifier, default: []].append(seal)
         onOpenServer?(server)

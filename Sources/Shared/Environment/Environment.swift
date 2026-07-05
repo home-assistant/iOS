@@ -602,4 +602,7 @@ public class AppEnvironment {
     public var appSessionValues: AppSessionValuesProtocol = AppSessionValues.shared
 
     public var locationManager: LocationManagerProtocol = LocationManager()
+
+    /// Picks the server to display based on the user's current network/location.
+    public var locationBasedServerSwitcher: LocationBasedServerSwitcher = LocationBasedServerSwitcherImpl()
 }
