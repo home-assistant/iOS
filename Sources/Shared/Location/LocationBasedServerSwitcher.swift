@@ -127,7 +127,7 @@ public final class LocationBasedServerSwitcherImpl: LocationBasedServerSwitcher 
     /// Servers whose connection considers the current network "internal" — same signal `activeURL()`
     /// uses to pick the internal URL (SSIDs everywhere, hardware addresses on macOS).
     private func serversMatchingCurrentNetwork() -> [Server] {
-        Current.servers.all.filter { $0.info.connection.isOnInternalNetwork }
+        Current.servers.all.filter(\.info.connection.isOnInternalNetwork)
     }
 
     private func servers(containing location: CLLocation) -> [Server] {
