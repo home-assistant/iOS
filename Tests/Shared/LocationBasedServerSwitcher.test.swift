@@ -19,12 +19,18 @@ class LocationBasedServerSwitcherTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
+        // Network matching is tested through hardware addresses rather than SSIDs: the SSID closure
+        // on `Current.connectivity` is reassigned asynchronously by `syncNetworkInformation()` (it
+        // returns "Simulator" on simulators), so an SSID stub can be silently overwritten mid-test.
+        // Both feed the same `ConnectionInfo.isOnInternalNetwork` signal the switcher consumes.
         servers = FakeServerManager()
         serverA = servers.add(identifier: "serverA", serverInfo: with(ServerInfo.fake()) {
-            $0.connection.internalSSIDs = ["wifi-a"]
+            $0.connection.internalSSIDs = []
+            $0.connection.internalHardwareAddresses = ["aa:aa:aa:aa:aa:aa"]
         })
         serverB = servers.add(identifier: "serverB", serverInfo: with(ServerInfo.fake()) {
-            $0.connection.internalSSIDs = ["wifi-b"]
+            $0.connection.internalSSIDs = []
+            $0.connection.internalHardwareAddresses = ["bb:bb:bb:bb:bb:bb"]
         })
         Current.servers = servers
 
@@ -96,11 +102,12 @@ class LocationBasedServerSwitcherTests: XCTestCase {
 
     func testDisabledWhenSettingIsOff() async {
         Current.settingsStore.locationBasedServerSwitchEnabled = false
-        Current.connectivity.currentWiFiSSID = { "wifi-a" }
+        Current.connectivity.currentNetworkHardwareAddress = { "aa:aa:aa:aa:aa:aa" }
 
         let switcher = makeSwitcher()
         XCTAssertFalse(switcher.isEnabled)
-        XCTAssertNil(switcher.preferredServerUsingCachedState())
+        let cached = await MainActor.run { switcher.preferredServerUsingCachedState() }
+        XCTAssertNil(cached)
 
         let preferred = await switcher.preferredServer()
         XCTAssertNil(preferred)
@@ -108,7 +115,7 @@ class LocationBasedServerSwitcherTests: XCTestCase {
 
     func testDisabledWithSingleServer() async {
         servers.remove(identifier: serverB.identifier)
-        Current.connectivity.currentWiFiSSID = { "wifi-a" }
+        Current.connectivity.currentNetworkHardwareAddress = { "aa:aa:aa:aa:aa:aa" }
 
         let switcher = makeSwitcher()
         XCTAssertFalse(switcher.isEnabled)
@@ -117,25 +124,27 @@ class LocationBasedServerSwitcherTests: XCTestCase {
         XCTAssertNil(preferred)
     }
 
-    // MARK: - Network (SSID) matching
+    // MARK: - Network matching
 
-    func testSSIDMatchPicksServer() async {
-        Current.connectivity.currentWiFiSSID = { "wifi-b" }
+    func testNetworkMatchPicksServer() async {
+        Current.connectivity.currentNetworkHardwareAddress = { "bb:bb:bb:bb:bb:bb" }
 
         let switcher = makeSwitcher()
-        XCTAssertEqual(switcher.preferredServerUsingCachedState()?.identifier, serverB.identifier)
+        let cached = await MainActor.run { switcher.preferredServerUsingCachedState() }
+        XCTAssertEqual(cached?.identifier, serverB.identifier)
 
         let preferred = await switcher.preferredServer()
         XCTAssertEqual(preferred?.identifier, serverB.identifier)
     }
 
-    func testAmbiguousSSIDMatchPicksNothing() async {
-        serverA.update { $0.connection.internalSSIDs = ["shared-wifi"] }
-        serverB.update { $0.connection.internalSSIDs = ["shared-wifi"] }
-        Current.connectivity.currentWiFiSSID = { "shared-wifi" }
+    func testAmbiguousNetworkMatchPicksNothing() async {
+        serverA.update { $0.connection.internalHardwareAddresses = ["cc:cc:cc:cc:cc:cc"] }
+        serverB.update { $0.connection.internalHardwareAddresses = ["cc:cc:cc:cc:cc:cc"] }
+        Current.connectivity.currentNetworkHardwareAddress = { "cc:cc:cc:cc:cc:cc" }
 
         let switcher = makeSwitcher()
-        XCTAssertNil(switcher.preferredServerUsingCachedState())
+        let cached = await MainActor.run { switcher.preferredServerUsingCachedState() }
+        XCTAssertNil(cached)
 
         let preferred = await switcher.preferredServer()
         XCTAssertNil(preferred)
@@ -167,12 +176,7 @@ class LocationBasedServerSwitcherTests: XCTestCase {
     }
 
     func testFailedLocationFallsBackToCachedZoneState() async throws {
-        let realm = Current.realm()
-        try realm.write {
-            realm.objects(RLMZone.self)
-                .first(where: { $0.serverIdentifier == "serverA" })?
-                .inRegion = true
-        }
+        try await markZoneOccupied(serverIdentifier: "serverA")
 
         let switcher = makeSwitcher(
             locationAuthorization: .authorizedWhenInUse,
@@ -184,33 +188,38 @@ class LocationBasedServerSwitcherTests: XCTestCase {
     }
 
     func testWithoutLocationPermissionUsesCachedZoneState() async throws {
-        let realm = Current.realm()
-        try realm.write {
-            realm.objects(RLMZone.self)
-                .first(where: { $0.serverIdentifier == "serverB" })?
-                .inRegion = true
-        }
+        try await markZoneOccupied(serverIdentifier: "serverB")
 
         let switcher = makeSwitcher(locationAuthorization: .denied)
 
         let preferred = await switcher.preferredServer()
         XCTAssertEqual(preferred?.identifier, serverB.identifier)
 
-        XCTAssertEqual(switcher.preferredServerUsingCachedState()?.identifier, serverB.identifier)
+        let cached = await MainActor.run { switcher.preferredServerUsingCachedState() }
+        XCTAssertEqual(cached?.identifier, serverB.identifier)
     }
 
     func testAmbiguousZoneStatePicksNothing() async throws {
-        let realm = Current.realm()
-        try realm.write {
-            for zone in realm.objects(RLMZone.self) {
-                zone.inRegion = true
-            }
-        }
+        try await markZoneOccupied(serverIdentifier: "serverA")
+        try await markZoneOccupied(serverIdentifier: "serverB")
 
         let switcher = makeSwitcher(locationAuthorization: .denied)
 
         let preferred = await switcher.preferredServer()
         XCTAssertNil(preferred)
+    }
+
+    /// The test realm is confined to the main thread it was created on, while async test bodies run
+    /// on arbitrary threads — mutate it on the main actor, like the switcher reads it.
+    private func markZoneOccupied(serverIdentifier: String) async throws {
+        try await MainActor.run {
+            let realm = Current.realm()
+            try realm.write {
+                realm.objects(RLMZone.self)
+                    .first(where: { $0.serverIdentifier == serverIdentifier })?
+                    .inRegion = true
+            }
+        }
     }
 
     // MARK: - Manual selection grace period

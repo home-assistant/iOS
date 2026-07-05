@@ -18,7 +18,8 @@ public protocol LocationBasedServerSwitcher {
 
     /// Best-effort synchronous evaluation from cached state (last known SSID and the zone state kept
     /// up to date by region monitoring). Used at launch, before async lookups have a chance to run.
-    func preferredServerUsingCachedState() -> Server?
+    /// Main-actor so the zone lookup reads Realm from the main thread.
+    @MainActor func preferredServerUsingCachedState() -> Server?
 
     /// Full evaluation: refreshes the current network information and falls back to a one-shot
     /// location to test zone membership. Returns nil when no single server clearly matches.
@@ -87,7 +88,7 @@ public final class LocationBasedServerSwitcherImpl: LocationBasedServerSwitcher 
         activeManualSelection?.identifier == server.identifier
     }
 
-    public func preferredServerUsingCachedState() -> Server? {
+    @MainActor public func preferredServerUsingCachedState() -> Server? {
         guard isEnabled else { return nil }
         if let server = onlyCandidate(serversMatchingCurrentNetwork()) {
             return server
@@ -106,12 +107,12 @@ public final class LocationBasedServerSwitcherImpl: LocationBasedServerSwitcher 
         switch locationAuthorization() {
         case .authorizedAlways, .authorizedWhenInUse:
             if let location = try? await oneShotLocation() {
-                return onlyCandidate(servers(containing: location))
+                return await onlyCandidate(servers(containing: location))
             }
             // Couldn't get a fresh location in time; fall back to the zone state region monitoring keeps.
-            return onlyCandidate(serversWithOccupiedZone())
+            return await onlyCandidate(serversWithOccupiedZone())
         default:
-            return onlyCandidate(serversWithOccupiedZone())
+            return await onlyCandidate(serversWithOccupiedZone())
         }
     }
 
@@ -129,7 +130,7 @@ public final class LocationBasedServerSwitcherImpl: LocationBasedServerSwitcher 
         Current.servers.all.filter(\.info.connection.isOnInternalNetwork)
     }
 
-    private func servers(containing location: CLLocation) -> [Server] {
+    @MainActor private func servers(containing location: CLLocation) -> [Server] {
         Current.servers.all.filter { server in
             !RLMZone.zones(of: location, in: server, includingPassive: false).isEmpty
         }
@@ -138,7 +139,8 @@ public final class LocationBasedServerSwitcherImpl: LocationBasedServerSwitcher 
     /// Servers with at least one zone the device is currently known to be inside, per the `inRegion`
     /// state maintained by region monitoring. Stale when background location access is unavailable,
     /// which is why it's only the fallback to a fresh one-shot location.
-    private func serversWithOccupiedZone() -> [Server] {
+    /// Main-actor to keep all Realm reads on the main thread.
+    @MainActor private func serversWithOccupiedZone() -> [Server] {
         let occupiedServerIdentifiers = Set(
             Current.realm()
                 .objects(RLMZone.self)
