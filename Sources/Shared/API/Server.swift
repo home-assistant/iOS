@@ -332,6 +332,23 @@ public final class Server: Hashable, Comparable, CustomStringConvertible {
     }
 }
 
+public extension Server {
+    /// Returns the url that should be used at this moment to access this server, refreshing
+    /// network information (e.g. current SSID) before evaluating which URL is active.
+    ///
+    /// The re-evaluated active URL type is written back to `info`, matching the behavior of the
+    /// synchronous `ConnectionInfo.activeURL()` when called through `Server.info`.
+    func activeURL() async -> URL? {
+        await Current.connectivity.refreshNetworkInformation()
+
+        var url: URL?
+        update { info in
+            url = info.connection.evaluateActiveURL()
+        }
+        return url
+    }
+}
+
 #if !os(watchOS)
 public extension Server {
     /// Triggers a refresh of this server's data from Home Assistant
