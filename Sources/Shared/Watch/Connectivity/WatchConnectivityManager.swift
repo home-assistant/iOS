@@ -5,8 +5,8 @@ import WatchConnectivity
 /// (via an injected seam for testability), fans delegate callbacks out to `Observable`s on their
 /// registered queue, and exposes send/transfer entry points.
 ///
-/// Phase 1 is DORMANT: nothing in the app references `shared` or calls `activate()`, so the pod keeps
-/// owning `WCSession.default.delegate`. A later phase claims the delegate and rewires call sites.
+/// The app claims `WCSession.default.delegate` by calling `activate()` at startup —
+/// `WatchCommunicatorService` on iOS and `ExtensionDelegate` on watchOS.
 public final class WatchConnectivityManager: NSObject {
     public static let shared = WatchConnectivityManager()
 
@@ -65,7 +65,7 @@ public final class WatchConnectivityManager: NSObject {
         session?.hasContentPendingProxy ?? false
     }
 
-    public var mostRecentlyReceievedContext: HAWatchConnectivity.Context {
+    public var mostRecentlyReceivedContext: HAWatchConnectivity.Context {
         HAWatchConnectivity.Context(content: session?.receivedApplicationContextProxy ?? [:])
     }
 
@@ -85,8 +85,8 @@ public final class WatchConnectivityManager: NSObject {
     }
     #endif
 
-    /// Claim `WCSession.default.delegate` and activate. NOT called during Phase 1 (the pod still owns
-    /// the delegate); wired up at the swap phase.
+    /// Claim `WCSession.default.delegate` and activate. Called once at startup by
+    /// `WatchCommunicatorService` (iOS) and `ExtensionDelegate` (watchOS).
     public func activate() {
         guard let session else { return }
         session.delegateProxy = self

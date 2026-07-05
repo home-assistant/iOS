@@ -92,7 +92,8 @@ public extension WatchConnectivityManager {
         }
     }
 
-    /// Large-data transfer (does not require reachability). Stages to a unique temp file.
+    /// Large-data transfer (does not require reachability). Stages to a unique temp file that is
+    /// removed once the transfer finishes, whether or not the caller passes a completion.
     func transfer(_ blob: HAWatchConnectivity.Blob, completion: ((Result<Void, Error>) -> Void)? = nil) {
         guard let session else {
             completion?(.failure(HAWatchConnectivity.ConnectivityError.sessionNotSupported))
@@ -115,9 +116,11 @@ public extension WatchConnectivityManager {
             return
         }
         let handle = session.transferFileProxy(url, metadata: blob.metadata)
-        guard let completion else { return }
         completionLock.lock()
-        fileCompletions[ObjectIdentifier(handle)] = completion
+        fileCompletions[ObjectIdentifier(handle)] = { result in
+            try? FileManager.default.removeItem(at: url)
+            completion?(result)
+        }
         completionLock.unlock()
     }
 

@@ -21,7 +21,7 @@ public enum WatchContext: String, CaseIterable {
 public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
     private static var watchContext: HAWatchConnectivity.Content {
-        var content: HAWatchConnectivity.Content = Communicator.shared.mostRecentlyReceievedContext.content
+        var content: HAWatchConnectivity.Content = Communicator.shared.mostRecentlyReceivedContext.content
 
         #if os(iOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see

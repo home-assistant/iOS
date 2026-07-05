@@ -14,7 +14,7 @@ final class WatchBatterySensor: SensorProvider {
         case .paired:
 
             let batteryState: DeviceBattery.State? = {
-                if let rawValue = Communicator.shared.mostRecentlyReceievedContext
+                if let rawValue = Communicator.shared.mostRecentlyReceivedContext
                     .content[WatchContext.watchBatteryState.rawValue] as? Int,
                     let deviceBatteryState = UIDevice.BatteryState(rawValue: rawValue) {
                     return .init(state: deviceBatteryState)
@@ -23,7 +23,7 @@ final class WatchBatterySensor: SensorProvider {
                 }
             }()
 
-            let batteryDecimal = Communicator.shared.mostRecentlyReceievedContext
+            let batteryDecimal = Communicator.shared.mostRecentlyReceivedContext
                 .content[WatchContext.watchBattery.rawValue] as? Float
             let batteryLevel: Int? = {
                 if let batteryDecimal {

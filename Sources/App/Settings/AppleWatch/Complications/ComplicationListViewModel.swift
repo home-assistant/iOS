@@ -36,7 +36,7 @@ final class ComplicationListViewModel: ObservableObject {
     // MARK: - Capability
 
     var supportsMultipleComplications: Bool {
-        guard let string = Communicator.shared.mostRecentlyReceievedContext.content["watchVersion"] as? String else {
+        guard let string = Communicator.shared.mostRecentlyReceivedContext.content["watchVersion"] as? String else {
             return false
         }
         do {

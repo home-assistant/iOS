@@ -47,6 +47,13 @@ public extension HAWatchConnectivity {
                 lock.lock(); defer { lock.unlock() }
                 storeStorage = newValue
             }
+            // Writeback mutations (`store[observation] = handler`) go through `_modify`, which holds
+            // the lock across the whole read-modify-write so concurrent registrations can't be lost
+            // to a get-copy → mutate → set interleave.
+            _modify {
+                lock.lock(); defer { lock.unlock() }
+                yield &storeStorage
+            }
         }
 
         /// Register a handler. Capture `[weak self]` in the handler — the registry retains it until
