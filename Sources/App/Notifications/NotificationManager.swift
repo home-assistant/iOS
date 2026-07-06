@@ -1,5 +1,4 @@
 import CallbackURLKit
-import Communicator
 import FirebaseMessaging
 import Foundation
 import MediaPlayer

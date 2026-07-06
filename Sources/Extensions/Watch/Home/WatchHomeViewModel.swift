@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import NetworkExtension
 import PromiseKit
@@ -62,7 +61,15 @@ final class WatchHomeViewModel: ObservableObject {
             reply: { [weak self] message in
                 Task { @MainActor in self?.reconcile(with: message) }
             }
-        ))
+        ), errorHandler: { [weak self] error in
+            // iPhone unreachable / slow / no reply within the timeout: stop the spinner and fall back to
+            // the cached config so the screen never hangs.
+            Current.Log.error("Watch config request failed: \(error.localizedDescription)")
+            Task { @MainActor in
+                self?.loadCache()
+                self?.updateLoading(isLoading: false)
+            }
+        })
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {
@@ -80,7 +87,7 @@ final class WatchHomeViewModel: ObservableObject {
     /// Handle the phone's reply to a config pull, deciding whether to adopt it, push local offline
     /// edits, or (when both sides changed) surface a conflict for the user to resolve.
     @MainActor
-    private func reconcile(with message: ImmediateMessage) {
+    private func reconcile(with message: HAWatchConnectivity.ImmediateMessage) {
         switch message.identifier {
         case InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue:
             reconcile(phoneConfig: nil, phoneItemsInfo: [])
@@ -171,7 +178,7 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     @MainActor
-    private func adoptPushReply(_ message: ImmediateMessage) {
+    private func adoptPushReply(_ message: HAWatchConnectivity.ImmediateMessage) {
         if message.identifier == InteractiveImmediateResponses.watchConfigResponse.rawValue,
            let configData = message.content["config"] as? Data,
            let phoneConfig = WatchConfig.decodeForWatch(configData),

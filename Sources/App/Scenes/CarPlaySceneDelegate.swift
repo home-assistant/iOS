@@ -1,6 +1,5 @@
 import CarPlay
 import Combine
-import Communicator
 import GRDB
 import HAKit
 import PromiseKit

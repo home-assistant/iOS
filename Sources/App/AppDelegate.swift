@@ -1,6 +1,5 @@
 import Alamofire
 import CallbackURLKit
-import Communicator
 #if DEBUG
 import DebugSwift
 #endif

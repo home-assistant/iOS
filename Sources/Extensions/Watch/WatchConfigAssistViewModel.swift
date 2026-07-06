@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import Shared
 import SwiftUI
@@ -91,7 +90,7 @@ final class WatchConfigAssistViewModel: ObservableObject {
     }
 
     @MainActor
-    private func handlePipelinesResponse(_ message: ImmediateMessage) {
+    private func handlePipelinesResponse(_ message: HAWatchConnectivity.ImmediateMessage) {
         isLoadingPipelines = false
         guard let raw = message.content["pipelines"] as? [[String: String]] else {
             if let serverId = selectedServerId {
@@ -174,7 +173,7 @@ final class WatchConfigAssistViewModel: ObservableObject {
 
     @MainActor
     private func handleSaveResponse(
-        _ message: ImmediateMessage,
+        _ message: HAWatchConnectivity.ImmediateMessage,
         completion: @escaping @MainActor (Bool) -> Void
     ) {
         defer { isSaving = false }

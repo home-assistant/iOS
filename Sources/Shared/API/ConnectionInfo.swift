@@ -1,9 +1,6 @@
 import Alamofire
 import Foundation
 import Version
-#if os(watchOS)
-import Communicator
-#endif
 
 public enum ConnectionSecurityLevel: String, Codable {
     // User has not opted in or out of security checks

@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import ObjectMapper
 import PromiseKit
@@ -31,17 +30,17 @@ final class WatchCommunicatorService {
         Current.servers.add(observer: self)
 
         // This directly mutates the data structure for observations to avoid race conditions.
-        Communicator.State.observations.store[.init(queue: .main)] = { state in
+        Communicator.shared.state.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
             _ = HomeAssistantAPI.SyncWatchContext()
         }
 
-        WatchState.observations.store[.init(queue: .main)] = { watchState in
+        Communicator.shared.watchState.observations.store[.init(queue: .main)] = { watchState in
             Current.Log.verbose("Watch state changed: \(watchState)")
             _ = HomeAssistantAPI.SyncWatchContext()
         }
 
-        Reachability.observations.store[.init(queue: .main)] = { reachability in
+        Communicator.shared.reachability.observations.store[.init(queue: .main)] = { reachability in
             Current.Log.verbose("Reachability changed: \(reachability)")
         }
 
@@ -56,7 +55,7 @@ final class WatchCommunicatorService {
             self?.presentPendingClientCertImportIfPossible()
         }
 
-        Context.observations.store[.init(queue: .main)] = { context in
+        Communicator.shared.context.observations.store[.init(queue: .main)] = { context in
             Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
 
             if let modelIdentifier = context.content[WatchContext.watchModel.rawValue] as? String {
@@ -66,49 +65,50 @@ final class WatchCommunicatorService {
             Current.apis.forEach({ $0.UpdateSensors(trigger: .watchContext).cauterize() })
         }
 
-        _ = Communicator.shared
+        Communicator.shared.activate()
     }
 
     private func setupMessages() {
-        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
-            Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
+        Communicator.shared.interactiveImmediateMessage.observations
+            .store[.init(queue: .main)] = { [weak self] message in
+                Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
 
-            guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
-                Current.Log
-                    .error(
-                        "Received InteractiveImmediateMessage not mapped in InteractiveImmediateMessages: \(message.identifier)"
-                    )
-                return
-            }
+                guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
+                    Current.Log
+                        .error(
+                            "Received InteractiveImmediateMessage not mapped in InteractiveImmediateMessages: \(message.identifier)"
+                        )
+                    return
+                }
 
-            switch messageId {
-            case .ping:
-                message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
-            case .watchConfig:
-                watchConfig(message: message)
-            case .watchConfigAvailableItems:
-                watchConfigAvailableItems(message: message)
-            case .watchConfigUpdate:
-                watchConfigUpdate(message: message)
-            case .watchDatabaseMirror:
-                watchDatabaseMirror(message: message)
-            case .pushAction:
-                pushAction(message: message)
-            case .assistPipelinesFetch:
-                assistPipelinesFetch(message: message)
-            case .assistAudioDataChunked:
-                handleAssistAudioChunkedMessage(message)
-            case .magicItemPressed:
-                magicItemPressed(message: message)
-            case .serversConfigSync:
-                handleServersConfigSync(message: message)
-            case .clientCertImportRequest:
-                handleClientCertImportRequest(message: message)
+                switch messageId {
+                case .ping:
+                    message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
+                case .watchConfig:
+                    watchConfig(message: message)
+                case .watchConfigAvailableItems:
+                    watchConfigAvailableItems(message: message)
+                case .watchConfigUpdate:
+                    watchConfigUpdate(message: message)
+                case .watchDatabaseMirror:
+                    watchDatabaseMirror(message: message)
+                case .pushAction:
+                    pushAction(message: message)
+                case .assistPipelinesFetch:
+                    assistPipelinesFetch(message: message)
+                case .assistAudioDataChunked:
+                    handleAssistAudioChunkedMessage(message)
+                case .magicItemPressed:
+                    magicItemPressed(message: message)
+                case .serversConfigSync:
+                    handleServersConfigSync(message: message)
+                case .clientCertImportRequest:
+                    handleClientCertImportRequest(message: message)
+                }
             }
-        }
     }
 
-    private func handleServersConfigSync(message: InteractiveImmediateMessage) {
+    private func handleServersConfigSync(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         // Reply with the server configuration AND any mTLS client certificate bundles inline,
         // mirroring how the watch configuration is delivered — a single, synchronous round-trip.
         var content: [String: Any] = ["servers": Current.servers.restorableState()]
@@ -155,7 +155,7 @@ final class WatchCommunicatorService {
     /// The watch asked us to present the client-certificate import screen for a server. We can't
     /// foreground the iPhone app from here, so remember the request and present it now (if the app
     /// is active) or the next time the app becomes active.
-    private func handleClientCertImportRequest(message: InteractiveImmediateMessage) {
+    private func handleClientCertImportRequest(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         pendingCertImportServerId = message.content["serverId"] as? String
         message.reply(.init(
             identifier: InteractiveImmediateResponses.clientCertImportRequestResponse.rawValue,
@@ -212,7 +212,7 @@ final class WatchCommunicatorService {
         return top
     }
 
-    private func handleAssistAudioChunkedMessage(_ message: InteractiveImmediateMessage) {
+    private func handleAssistAudioChunkedMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
         guard let chunkData = message.content["chunkData"] as? Data,
               let chunkIndex = message.content["chunkIndex"] as? Int,
               let totalChunks = message.content["totalChunks"] as? Int,
@@ -249,7 +249,7 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func watchConfig(message: InteractiveImmediateMessage) {
+    private func watchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         do {
             if let config: WatchConfig = try Current.database().read({ db in
                 try WatchConfig.fetchOne(db)
@@ -265,7 +265,7 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func notifyWatchConfig(message: InteractiveImmediateMessage, watchConfig: WatchConfig) {
+    private func notifyWatchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage, watchConfig: WatchConfig) {
         let responseIdentifier = InteractiveImmediateResponses.watchConfigResponse.rawValue
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { _ in
@@ -293,7 +293,7 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
+    private func notifyEmptyWatchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
         message.reply(.init(identifier: responseIdentifier))
     }
@@ -301,7 +301,7 @@ final class WatchCommunicatorService {
     /// Build the list of items the user can add to the watch configuration and reply to the watch.
     /// Mirrors the iPhone watch picker (`MagicItemAddView` context `.watch`): scripts, scenes and
     /// automations, all stored as `type: .entity`.
-    private func watchConfigAvailableItems(message: InteractiveImmediateMessage) {
+    private func watchConfigAvailableItems(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.watchConfigAvailableItemsResponse.rawValue
         let allowedDomains: Set<String> = [
             Domain.script.rawValue,
@@ -338,7 +338,7 @@ final class WatchCommunicatorService {
     /// so we write it here (mirroring the iPhone `WatchConfigurationViewModel.save()`) and reply with
     /// the same payload as `watchConfig`, so the watch refreshes its cache with server-resolved info.
     /// On decode/DB failure we reply with the last-good persisted config, reverting the watch edit.
-    private func watchConfigUpdate(message: InteractiveImmediateMessage) {
+    private func watchConfigUpdate(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         guard let data = message.content["config"] as? Data,
               var config = WatchConfig.decodeForWatch(data) else {
             Current.Log.error("Watch config update did not include a decodable config, reverting watch")
@@ -361,7 +361,7 @@ final class WatchCommunicatorService {
     }
 
     /// Reply with a snapshot of the reference GRDB tables the watch needs to configure itself offline.
-    private func watchDatabaseMirror(message: InteractiveImmediateMessage) {
+    private func watchDatabaseMirror(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.watchDatabaseMirrorResponse.rawValue
         do {
             let mirror = try WatchDatabaseMirror.snapshot()
@@ -372,7 +372,7 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func magicItemPressed(message: InteractiveImmediateMessage) {
+    private func magicItemPressed(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
         guard let itemType = message.content["itemType"] as? String,
               let itemId = message.content["itemId"] as? String,
@@ -442,7 +442,7 @@ final class WatchCommunicatorService {
 
     private func callService(
         server: Server,
-        message: InteractiveImmediateMessage,
+        message: HAWatchConnectivity.InteractiveImmediateMessage,
         magicItemId: String,
         domain: Domain,
         serviceName: String? = nil,
@@ -473,7 +473,7 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func pushAction(message: InteractiveImmediateMessage) {
+    private func pushAction(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.pushActionResponse.rawValue
 
         if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
@@ -493,7 +493,7 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func sendMessage(message: ImmediateMessage) {
+    private func sendMessage(message: HAWatchConnectivity.ImmediateMessage) {
         Communicator.shared.send(message)
     }
 }
@@ -501,7 +501,7 @@ final class WatchCommunicatorService {
 // MARK: - Assist
 
 extension WatchCommunicatorService {
-    private func assistPipelinesFetch(message: InteractiveImmediateMessage) {
+    private func assistPipelinesFetch(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.assistPipelinesFetchResponse.rawValue
 
         let serverId = message.content["serverId"] as? String
@@ -538,7 +538,7 @@ extension WatchCommunicatorService {
         }
     }
 
-    private func assistAudioData(message: ImmediateMessage, data: Data) {
+    private func assistAudioData(message: HAWatchConnectivity.ImmediateMessage, data: Data) {
         let serverId = message.content["serverId"] as? String
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
             .servers.all.first else {
@@ -598,7 +598,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     }
 
     func didReceiveSttContent(_ content: String) {
-        let message = ImmediateMessage(
+        let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistSTTResponse.rawValue,
             content: [
                 "content": content,
@@ -608,7 +608,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     }
 
     func didReceiveIntentEndContent(_ content: String) {
-        let message = ImmediateMessage(
+        let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistIntentEndResponse.rawValue,
             content: [
                 "content": content,
@@ -622,7 +622,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
-        let message = ImmediateMessage(
+        let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistTTSResponse.rawValue,
             content: [
                 "mediaURL": mediaUrl.absoluteString,
@@ -632,7 +632,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     }
 
     func didReceiveError(code: String, message: String) {
-        let message = ImmediateMessage(
+        let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistError.rawValue,
             content: [
                 "code": code,
@@ -653,8 +653,8 @@ extension WatchCommunicatorService: ServerObserver {
     }
 }
 
-private extension InteractiveImmediateMessage {
-    func toImmediateMessage() -> ImmediateMessage {
-        ImmediateMessage(identifier: identifier, content: content)
+private extension HAWatchConnectivity.InteractiveImmediateMessage {
+    func toImmediateMessage() -> HAWatchConnectivity.ImmediateMessage {
+        HAWatchConnectivity.ImmediateMessage(identifier: identifier, content: content)
     }
 }

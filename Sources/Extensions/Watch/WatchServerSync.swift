@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import Shared
 
@@ -23,7 +22,7 @@ enum WatchServerSync {
         })
     }
 
-    private static func apply(_ message: ImmediateMessage) {
+    private static func apply(_ message: HAWatchConnectivity.ImmediateMessage) {
         if let serversData = message.content["servers"] as? Data {
             WatchUserDefaults.shared.set(Date(), key: .serversUpdatedAt)
             Current.servers.restoreState(serversData)
