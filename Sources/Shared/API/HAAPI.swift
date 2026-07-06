@@ -203,7 +203,7 @@ public class HomeAssistantAPI {
             let (_, response) = try await session.data(for: request)
             return response is HTTPURLResponse
         } catch {
-            Current.Log.info("Watch reachability probe failed, relaying via iPhone (\(error.localizedDescription))")
+            Current.Log.info("API availability check failed for \(server.info.name): \(error.localizedDescription)")
             return false
         }
     }

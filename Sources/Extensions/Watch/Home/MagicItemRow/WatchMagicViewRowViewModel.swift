@@ -133,9 +133,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
         startTimeoutTimerWhichResetsState(completion: completion)
         Task { [weak self] in
-            guard let self else { return }
-            await Current.connectivity.refreshNetworkInformation()
-            await routeExecution(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+            await self?.routeExecution(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         }
     }
 
@@ -152,12 +150,13 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         case .iPhone:
             executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         case .appleWatch:
-            executeViaWatch(magicItem: magicItem, completion: completion)
+            await Current.connectivity.refreshNetworkInformation()
+            executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         case .auto:
             if let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }),
                await HomeAssistantAPI.apiAvailabilityCheck(for: server) {
                 Current.Log.info("Auto: Watch can reach Home Assistant directly, executing on watch")
-                executeViaWatch(magicItem: magicItem, completion: completion)
+                executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
             } else {
                 Current.Log.info("Auto: Watch cannot reach Home Assistant directly, relaying via iPhone")
                 executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
@@ -165,10 +164,13 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
-    private func executeViaWatch(magicItem: MagicItem, completion: @escaping (MagicItemResponse) -> Void) {
+    private func executeViaWatch(
+        magicItem: MagicItem,
+        timeTriggered: Date,
+        completion: @escaping (MagicItemResponse) -> Void
+    ) {
         executeMagicItemUsingAPI(magicItem: magicItem) { [weak self] success in
-            self?.cancelTimeout()
-            completion(success ? .success : .failed)
+            self?.finishExecution(success: success, timeTriggered: timeTriggered, completion: completion)
         }
     }
 
@@ -178,19 +180,22 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         completion: @escaping (MagicItemResponse) -> Void
     ) {
         executeMagicItemUsingiPhone(magicItem: magicItem) { [weak self] success in
-            guard let self else { return }
-            // Avoid haptics in background
-            guard isLessThan30Seconds(from: timeTriggered) else {
-                completion(.tookLonger)
-                return
-            }
-            if success {
-                cancelTimeout()
-                completion(.success)
-            } else {
-                completion(.failed)
-            }
+            self?.finishExecution(success: success, timeTriggered: timeTriggered, completion: completion)
         }
+    }
+
+    private func finishExecution(
+        success: Bool,
+        timeTriggered: Date,
+        completion: @escaping (MagicItemResponse) -> Void
+    ) {
+        // Avoid haptics in background
+        guard isLessThan30Seconds(from: timeTriggered) else {
+            completion(.tookLonger)
+            return
+        }
+        cancelTimeout()
+        completion(success ? .success : .failed)
     }
 
     // Given date returns if is less than 30 seconds from now
