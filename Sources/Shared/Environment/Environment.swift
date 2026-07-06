@@ -5,7 +5,6 @@ import Foundation
 import GRDB
 import HAKit
 import PromiseKit
-import RealmSwift
 import UserNotifications
 import XCGLogger
 
@@ -93,13 +92,6 @@ public class AppEnvironment {
     /// Provides the store that records received notifications for the in-app history.
     public var notificationHistoryStore: NotificationHistoryStoreProtocol = NotificationHistoryStore()
 
-    /// Provides the Realm used for many data storage tasks.
-    public var realm: () -> Realm = Realm.live
-    /// Provides the Realm given objectTypes to reduce memory usage mostly in extensions.
-    public func realm(objectTypes: [ObjectBase.Type]) -> Realm {
-        Realm.getRealm(objectTypes: objectTypes)
-    }
-
     public var database: () -> DatabaseQueue = {
         .appDatabase
     }
@@ -157,8 +149,6 @@ public class AppEnvironment {
     public var appDatabaseUpdater: AppDatabaseUpdaterProtocol = AppDatabaseUpdater.shared
 
     public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
-
-    public var realmFatalPresentation: ((UIViewController) -> Void)?
 
     public var impactFeedback: ImpactFeedbackGeneratorProtocol = ImpactFeedbackGenerator()
     /// Wrapper around UIApplication for use in shared framework

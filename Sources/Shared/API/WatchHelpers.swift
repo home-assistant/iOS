@@ -1,7 +1,6 @@
 import Foundation
 import ObjectMapper
 import PromiseKit
-import RealmSwift
 #if os(watchOS)
 import ClockKit
 import WatchKit
@@ -26,7 +25,7 @@ public extension HomeAssistantAPI {
         #if os(iOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
-        content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
+        content[WatchContext.complications.rawValue] = WatchComplication.all().toJSON()
 
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
@@ -83,8 +82,7 @@ public extension HomeAssistantAPI {
         #endif
 
         let complications = Set(
-            Current.realm().objects(WatchComplication.self)
-                .filter("serverIdentifier = %@", server.identifier.rawValue)
+            WatchComplication.complications(serverIdentifier: server.identifier.rawValue)
         )
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {

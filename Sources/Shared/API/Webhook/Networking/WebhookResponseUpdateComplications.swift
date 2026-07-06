@@ -1,6 +1,5 @@
 import Foundation
 import PromiseKit
-import RealmSwift
 import UserNotifications
 #if os(watchOS)
 import ClockKit
@@ -12,9 +11,6 @@ extension WebhookResponseIdentifier {
 
 struct WebhookResponseUpdateComplications: WebhookResponseHandler {
     let api: HomeAssistantAPI
-
-    // for tests, since Realm can't query subclasses in a query
-    var watchComplicationClass: WatchComplication.Type = WatchComplication.self
 
     init(api: HomeAssistantAPI) {
         self.api = api
@@ -63,16 +59,14 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                 }
                 accumulator[components[0], default: [:]][components[1]] = value.value
             }
-        }.then { paired -> Promise<Void> in
-            let realm = Current.realm()
-            return realm.reentrantWrite {
-                for (identifier, rendered) in paired {
-                    if let complication = realm.object(ofType: watchComplicationClass, forPrimaryKey: identifier) {
-                        Current.Log.verbose("updating \(identifier) with \(rendered)")
-                        complication.updateRawRendered(from: rendered)
-                    } else {
-                        Current.Log.error("couldn't find complication for \(identifier)")
-                    }
+        }.map { paired -> Void in
+            for (identifier, rendered) in paired {
+                if let complication = WatchComplication.fetch(identifier: identifier) {
+                    Current.Log.verbose("updating \(identifier) with \(rendered)")
+                    complication.updateRawRendered(from: rendered)
+                    complication.save()
+                } else {
+                    Current.Log.error("couldn't find complication for \(identifier)")
                 }
             }
         }.done {

@@ -1,6 +1,5 @@
 #if os(iOS)
 import GRDB
-import RealmSwift
 import UIKit
 import XCGLogger
 import ZIPFoundation
@@ -68,13 +67,6 @@ public extension XCGLogger {
         }
 
         do {
-            if let backupURL = Realm.backup() {
-                try archive.addEntry(
-                    with: backupURL.lastPathComponent,
-                    relativeTo: backupURL.deletingLastPathComponent()
-                )
-            }
-
             // In case App config does not exist it can safely fail
             do {
                 try archive.addEntry(
