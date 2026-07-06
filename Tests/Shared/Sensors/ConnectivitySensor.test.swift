@@ -2,7 +2,6 @@ import CoreTelephony
 import Foundation
 import PromiseKit
 @testable import Shared
-import Version
 import XCTest
 
 #if !targetEnvironment(macCatalyst)

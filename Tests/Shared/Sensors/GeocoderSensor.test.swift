@@ -4,7 +4,6 @@ import Foundation
 import PromiseKit
 import RealmSwift
 @testable import Shared
-import Version
 import XCTest
 
 class GeocoderSensorTests: XCTestCase {

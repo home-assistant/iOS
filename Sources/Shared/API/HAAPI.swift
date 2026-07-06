@@ -7,7 +7,6 @@ import ObjectMapper
 import PromiseKit
 import RealmSwift
 import UIKit
-import Version
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {

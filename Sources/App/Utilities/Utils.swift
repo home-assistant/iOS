@@ -4,7 +4,6 @@ import RealmSwift
 import SafariServices
 import Security
 import Shared
-import Version
 
 private enum DeleteKeychainError: LocalizedError {
     case keychain(OSStatus)

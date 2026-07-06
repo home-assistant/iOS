@@ -25,7 +25,6 @@ pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git',
 pod 'PromiseKit', '~> 8.1.1'
 
 pod 'RealmSwift'
-pod 'Version'
 pod 'XCGLogger'
 
 # Keep Starscream reference even though HAKit already install it, because it defines our fork with the necessary fix

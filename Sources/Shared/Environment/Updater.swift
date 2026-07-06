@@ -1,6 +1,5 @@
 import Foundation
 import PromiseKit
-import Version
 
 public struct AvailableUpdate: Codable, Comparable {
     public var id: Int

@@ -1,5 +1,4 @@
 import Shared
-import Version
 
 final class WhatsNewEngine {
     private let release: WhatsNewRelease?

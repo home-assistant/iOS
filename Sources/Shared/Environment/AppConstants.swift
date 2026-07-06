@@ -1,7 +1,6 @@
 import Foundation
 import KeychainAccess
 import UIKit
-import Version
 
 /// Contains shared constants
 public enum AppConstants {

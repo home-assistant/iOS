@@ -8,7 +8,6 @@ import NetworkExtension
 import PromiseKit
 import RealmSwift
 import UserNotifications
-import Version
 import XCGLogger
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equatable {

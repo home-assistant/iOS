@@ -2,7 +2,6 @@ import Foundation
 import SFSafeSymbols
 import Shared
 import UIKit
-import Version
 
 typealias MaterialDesignIcon = MaterialDesignIcons
 

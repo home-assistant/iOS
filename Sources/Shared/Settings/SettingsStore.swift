@@ -3,7 +3,6 @@ import CoreMotion
 import Foundation
 import KeychainAccess
 import UIKit
-import Version
 
 public class SettingsStore {
     let keychain = AppConstants.Keychain
