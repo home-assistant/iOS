@@ -448,27 +448,26 @@ class ServerRequestAdapter: RequestAdapter {
         for session: Session,
         completion: @escaping (Result<URLRequest, Error>) -> Void
     ) {
-        let server = server
-        Task {
-            await Current.connectivity.refreshNetworkInformation()
+        var updatedRequest: URLRequest = urlRequest
 
-            var updatedRequest: URLRequest = urlRequest
-
-            if let currentURL = urlRequest.url {
-                if let activeURL = server.info.connection.evaluateActiveURL() {
-                    let expectedURL = activeURL.adapting(url: currentURL)
-                    if currentURL != expectedURL {
-                        Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
-                        updatedRequest.url = expectedURL
-                    }
-                } else {
-                    Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
-                    completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
-                    return
+        if let currentURL = urlRequest.url {
+            // Evaluated against cached network information: every request reaching this adapter
+            // just resolved its URL through an async accessor that refreshed the cache moments
+            // earlier, so this stays synchronous instead of spawning a Task (and a second network
+            // information fetch) per outgoing request.
+            if let activeURL = server.info.connection.evaluateActiveURL() {
+                let expectedURL = activeURL.adapting(url: currentURL)
+                if currentURL != expectedURL {
+                    Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
+                    updatedRequest.url = expectedURL
                 }
+            } else {
+                Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
+                completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
+                return
             }
-
-            completion(.success(updatedRequest))
         }
+
+        completion(.success(updatedRequest))
     }
 }

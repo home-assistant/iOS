@@ -341,7 +341,7 @@ struct DebugView: View {
                 set: { Current.settingsStore.toastsHandledByApp = $0 }
             ))
             Button {
-                Task {
+                Task { @MainActor in
                     if let syncError = await HomeAssistantAPI.SyncWatchContext() {
                         watchSyncErrorMessage = syncError.localizedDescription
                         showWatchSyncError = true

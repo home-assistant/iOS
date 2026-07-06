@@ -36,6 +36,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     private var tokens: [HACancellable] = []
     private var localPushObserver: HACancellable?
     private var notificationCenterObserver: NSObjectProtocol?
+    private var canRetryLocalPushTask: Task<Void, Never>?
 
     // MARK: - Computed Properties
 
@@ -188,9 +189,13 @@ final class ConnectionSettingsViewModel: ObservableObject {
     }
 
     private func updateCanRetryLocalPush() {
-        Task { [weak self] in
+        // Cancel any in-flight update so an older SSID fetch resuming late can't overwrite the
+        // result of a newer one.
+        canRetryLocalPushTask?.cancel()
+        canRetryLocalPushTask = Task { [weak self] in
             guard let self else { return }
             let currentSSID = await Current.connectivity.currentWiFiSSID()
+            guard !Task.isCancelled else { return }
             canRetryLocalPush = LocalPushRetryDiagnostics.canRetry(
                 server: server,
                 currentSSID: currentSSID
