@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.7
 import PackageDescription
 
 // Separate package so the app doesn't need to pull in packages
