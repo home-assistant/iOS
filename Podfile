@@ -24,6 +24,9 @@ plugin 'cocoapods-acknowledgements'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit', '~> 8.1.1'
 
+# RealmSwift is only used by RealmToGRDBMigration.swift to import the legacy
+# Realm store into GRDB; once that migration has shipped for a few releases the
+# pod and the migration file can be deleted together.
 pod 'RealmSwift'
 pod 'XCGLogger'
 
