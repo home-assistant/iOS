@@ -118,7 +118,7 @@ public struct LocationError: Codable, FetchableRecord, PersistableRecord, Identi
     public func save() {
         do {
             try Current.database().write { db in
-                try self.save(db)
+                try save(db)
             }
         } catch {
             Current.Log.error("Failed to save location error: \(error.localizedDescription)")

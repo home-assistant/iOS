@@ -171,11 +171,21 @@ class ModelManagerTests: XCTestCase {
         ]
 
         try database.write { db in
-            for model in expired1 { try model.save(db) }
-            for model in expired2 { try model.save(db) }
-            for model in alive1 { try model.save(db) }
-            for model in alive2 { try model.save(db) }
-            for model in alive3 { try model.save(db) }
+            for model in expired1 {
+                try model.save(db)
+            }
+            for model in expired2 {
+                try model.save(db)
+            }
+            for model in alive1 {
+                try model.save(db)
+            }
+            for model in alive2 {
+                try model.save(db)
+            }
+            for model in alive3 {
+                try model.save(db)
+            }
         }
 
         let promise = manager.cleanup(
@@ -250,8 +260,12 @@ class ModelManagerTests: XCTestCase {
         ]).cauterize()
 
         try database.write { db in
-            for model in start1 { try model.save(db) }
-            for model in start3 { try model.save(db) }
+            for model in start1 {
+                try model.save(db)
+            }
+            for model in start3 {
+                try model.save(db)
+            }
         }
 
         servers.remove(identifier: api2.server.identifier)

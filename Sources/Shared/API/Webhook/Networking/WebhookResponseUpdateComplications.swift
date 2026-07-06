@@ -59,7 +59,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                 }
                 accumulator[components[0], default: [:]][components[1]] = value.value
             }
-        }.map { paired -> Void in
+        }.map { paired in
             for (identifier, rendered) in paired {
                 if let complication = WatchComplication.fetch(identifier: identifier) {
                     Current.Log.verbose("updating \(identifier) with \(rendered)")
