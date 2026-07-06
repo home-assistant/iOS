@@ -1505,6 +1505,7 @@
 		B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B641BC1F1E2097EF002CCBC1 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC1D1E2097EF002CCBC1 /* AboutView.swift */; };
 		B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */; };
+		B0B0B0B00000000000000011 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000010 /* ProgressHUD.swift */; };
 		B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64BB3A71E9C6551001E8B46 /* WebViewController.swift */; };
 		B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
@@ -3459,6 +3460,7 @@
 		B640485C1FBBBB1300F0CCCD /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B641BC1D1E2097EF002CCBC1 /* AboutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AboutView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInChromeController.swift; sourceTree = "<group>"; };
+		B0B0B0B00000000000000010 /* ProgressHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressHUD.swift; sourceTree = "<group>"; };
 		B646B04C24D10A2900093E6A /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Intents.strings; sourceTree = "<group>"; };
 		B646B04E24D10A2900093E6A /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B646B04F24D10A2A00093E6A /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -7233,6 +7235,7 @@
 				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
 				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
+				B0B0B0B00000000000000010 /* ProgressHUD.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
@@ -9747,6 +9750,7 @@
 				4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */,
 				42D5ACDB2C64C82600D9C4E2 /* MagicItemAddViewModel.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
+				B0B0B0B00000000000000011 /* ProgressHUD.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				42A9E0F22F2B58FF00D22154 /* EntityAddToAction.swift in Sources */,
 				42A9E0F32F2B58FF00D22154 /* EntityAddToHandler.swift in Sources */,
@@ -11740,8 +11744,6 @@
 					"-l\"c++\"",
 					"-l\"z\"",
 					"-framework",
-					"\"MBProgressHUD\"",
-					"-framework",
 					"\"PromiseKit\"",
 					"-framework",
 					"\"Security\"",
@@ -11780,8 +11782,6 @@
 					"-ObjC",
 					"-l\"c++\"",
 					"-l\"z\"",
-					"-framework",
-					"\"MBProgressHUD\"",
 					"-framework",
 					"\"PromiseKit\"",
 					"-framework",
