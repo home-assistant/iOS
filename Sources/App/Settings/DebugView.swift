@@ -1,5 +1,4 @@
 import PromiseKit
-import RealmSwift
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -360,15 +359,6 @@ struct DebugView: View {
             }
 
             Button {
-                copyRealm()
-            } label: {
-                linkContent(
-                    image: .init(systemSymbol: .docOnDoc),
-                    title: L10n.Settings.Developer.CopyRealm.title
-                )
-            }
-
-            Button {
                 prefs.set(!prefs.bool(forKey: "showTranslationKeys"), forKey: "showTranslationKeys")
             } label: {
                 linkContent(
@@ -442,36 +432,6 @@ struct DebugView: View {
         } footer: {
             Text(verbatim: L10n.Settings.Developer.footer)
         }
-    }
-
-    private func copyRealm() {
-        guard let backupURL = Realm.backup() else {
-            fatalError("Unable to get Realm backup")
-        }
-        let containerRealmPath = Realm.Configuration.defaultConfiguration.fileURL!
-
-        Current.Log.verbose("Would copy from \(backupURL) to \(containerRealmPath)")
-
-        if FileManager.default.fileExists(atPath: containerRealmPath.path) {
-            do {
-                _ = try FileManager.default.removeItem(at: containerRealmPath)
-            } catch {
-                Current.Log.error("Error occurred, here are the details:\n \(error)")
-            }
-        }
-
-        do {
-            _ = try FileManager.default.copyItem(at: backupURL, to: containerRealmPath)
-        } catch let error as NSError {
-            // Catch fires here, with an NSError being thrown
-            Current.Log.error("Error occurred, here are the details:\n \(error)")
-        }
-
-        let msg = L10n.Settings.Developer.CopyRealm.Alert.message(
-            backupURL.path,
-            containerRealmPath.path
-        )
-        Current.Log.verbose(msg)
     }
 
     private func sendMapNotification() {

@@ -1,10 +1,10 @@
 import Foundation
+import GRDB
 import PromiseKit
-import RealmSwift
 import Shared
 
-/// Observable view model backing `ComplicationListView`. Wraps the Realm
-/// notification tokens used to drive the existing Eureka controller.
+/// Observable view model backing `ComplicationListView`. Observes the
+/// persisted complications via GRDB `ValueObservation`.
 final class ComplicationListViewModel: ObservableObject {
     @Published private(set) var complicationsByGroup: [ComplicationGroup: [WatchComplication]] = [:]
     @Published private(set) var watchState: HAWatchConnectivity.WatchState = Communicator.shared.currentWatchState
@@ -12,18 +12,18 @@ final class ComplicationListViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showError = false
 
-    private var realmToken: NotificationToken?
+    private var databaseToken: AnyDatabaseCancellable?
     private var watchStateToken: HAWatchConnectivity.ObservationToken?
     private var updateNotificationToken: NSObjectProtocol?
 
     init() {
-        observeRealm()
+        observeDatabase()
         observeWatchState()
         observeComplicationsUpdate()
     }
 
     deinit {
-        realmToken?.invalidate()
+        databaseToken?.cancel()
         if let watchStateToken {
             Communicator.shared.watchState.unobserve(watchStateToken)
         }
@@ -69,16 +69,26 @@ final class ComplicationListViewModel: ObservableObject {
             }
     }
 
-    // MARK: - Realm observation
+    // MARK: - Database observation
 
-    private func observeRealm() {
-        let results = Current.realm().objects(WatchComplication.self).sorted(byKeyPath: "rawFamily")
-        realmToken = results.observe { [weak self] _ in
-            self?.rebuildGroups(from: results)
+    private func observeDatabase() {
+        let observation = ValueObservation.tracking { db in
+            try WatchComplication
+                .order(Column(DatabaseTables.WatchComplication.rawFamily.rawValue))
+                .fetchAll(db)
         }
+        databaseToken = observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("couldn't observe complications: \(error)")
+            },
+            onChange: { [weak self] complications in
+                self?.rebuildGroups(from: complications)
+            }
+        )
     }
 
-    private func rebuildGroups(from results: Results<WatchComplication>) {
+    private func rebuildGroups(from results: [WatchComplication]) {
         var grouped: [ComplicationGroup: [WatchComplication]] = [:]
         for complication in results {
             for group in ComplicationGroup.allCases where group.members.contains(complication.Family) {

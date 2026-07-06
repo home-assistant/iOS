@@ -1,6 +1,6 @@
 import Foundation
+import GRDB
 import KeychainAccess
-import RealmSwift
 import SafariServices
 import Security
 import Shared
@@ -27,7 +27,17 @@ func resetStores() {
     UserDefaults.standard.removePersistentDomain(forName: bundleId)
     UserDefaults.standard.removePersistentDomain(forName: AppConstants.AppGroupID)
 
-    Realm.reset()
+    do {
+        try Current.database().write { db in
+            _ = try AppZone.deleteAll(db)
+            _ = try NotificationCategory.deleteAll(db)
+            _ = try WatchComplication.deleteAll(db)
+            _ = try LocationHistoryEntry.deleteAll(db)
+            _ = try LocationError.deleteAll(db)
+        }
+    } catch {
+        Current.Log.error("Failed to reset database: \(error)")
+    }
 }
 
 func deleteKeychainCompletely() throws {

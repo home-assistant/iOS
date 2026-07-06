@@ -53,8 +53,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
             return
         }
 
-        let zone = Current.realm()
-            .objects(RLMZone.self)
+        let zone = AppZone.all()
             .first(where: {
                 $0.identifier == region.identifier ||
                     $0.identifier == region.identifier.components(separatedBy: "@").first

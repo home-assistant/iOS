@@ -1,6 +1,5 @@
 import Foundation
 import PromiseKit
-import RealmSwift
 import Shared
 import SwiftUI
 import UIKit
@@ -45,7 +44,7 @@ final class ComplicationEditViewModel: ObservableObject {
         self.displayTemplate = config.Template
 
         self.name = config.name ?? ""
-        self.isPublic = config.IsPublic
+        self.isPublic = config.isPublic
 
         if let existing = Current.servers.server(forServerIdentifier: config.serverIdentifier) {
             self.serverIdentifier = existing.identifier.rawValue
@@ -155,26 +154,19 @@ final class ComplicationEditViewModel: ObservableObject {
 
     // MARK: - Save / Delete
 
-    /// Persists to Realm then asks the API to push the change. Returns once
-    /// the Realm write is committed; the API update is fired-and-forget like
-    /// the original Eureka controller.
+    /// Persists to the database then asks the API to push the change. The API
+    /// update is fired-and-forget like the original Eureka controller.
     func save() {
-        let realm = Current.realm()
         let server = server
-        let payload = serializedData()
-        let nameValue = name.isEmpty ? nil : name
-        let isPublicValue = isPublic
-        let template = displayTemplate
-        let serverIdentifierValue = server?.identifier.rawValue
 
-        realm.reentrantWrite {
-            config.name = nameValue
-            config.IsPublic = isPublicValue
-            config.serverIdentifier = serverIdentifierValue
-            config.Template = template
-            config.Data = payload
-            realm.add(config, update: .all)
-        }.then(on: nil) { () -> Promise<Void> in
+        config.name = name.isEmpty ? nil : name
+        config.isPublic = isPublic
+        config.serverIdentifier = server?.identifier.rawValue
+        config.Template = displayTemplate
+        config.Data = serializedData()
+        config.save()
+
+        firstly { () -> Promise<Void> in
             if let server {
                 return Current.api(for: server)?
                     .updateComplications(passively: false) ??
@@ -186,11 +178,11 @@ final class ComplicationEditViewModel: ObservableObject {
     }
 
     func delete() {
-        let realm = Current.realm()
         let server = server
-        realm.reentrantWrite {
-            realm.delete(config)
-        }.then(on: nil) { () -> Promise<Void> in
+
+        config.delete()
+
+        firstly { () -> Promise<Void> in
             if let server {
                 return Current.api(for: server)?
                     .updateComplications(passively: false) ??
