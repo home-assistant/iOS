@@ -3,7 +3,6 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayServerListViewModel {
     weak var templateProvider: CarPlayServersListTemplate?
     weak var interfaceController: CPInterfaceController?
@@ -171,7 +170,6 @@ final class CarPlayServerListViewModel {
     }
 }
 
-@available(iOS 16.0, *)
 extension CarPlayServerListViewModel: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         guard let server = serverManager.serverOrFirstIfAvailable(

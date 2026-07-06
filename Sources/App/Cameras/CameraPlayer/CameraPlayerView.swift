@@ -5,7 +5,6 @@ import SwiftUI
 
 /// A camera player view that automatically falls back from WebRTC to HLS to MJPEG
 /// when a streaming method is not supported.
-@available(iOS 16.0, *)
 struct CameraPlayerView: View {
     @Environment(\.dismiss) private var dismiss
     private let server: Server
@@ -74,13 +73,7 @@ struct CameraPlayerView: View {
             name = appEntity?.name ?? cameraName
         }
         .statusBarHidden(true)
-        .modify { view in
-            if #available(iOS 16.0, *) {
-                view.persistentSystemOverlays(.hidden)
-            } else {
-                view
-            }
-        }
+        .persistentSystemOverlays(.hidden)
     }
 
     @ViewBuilder
@@ -162,7 +155,6 @@ struct CameraPlayerView: View {
 }
 
 #if DEBUG
-@available(iOS 16.0, *)
 #Preview {
     CameraPlayerView(
         server: ServerFixture.standard,

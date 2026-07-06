@@ -350,16 +350,13 @@ class MenuManager {
             ),
         ]
 
-        // Add find menu item for iOS 16+
-        if #available(iOS 16.0, *) {
-            commands.append(UIKeyCommand(
-                title: L10n.Menu.View.find,
-                image: nil,
-                action: #selector(showFindInteraction),
-                input: "f",
-                modifierFlags: [.command]
-            ))
-        }
+        commands.append(UIKeyCommand(
+            title: L10n.Menu.View.find,
+            image: nil,
+            action: #selector(showFindInteraction),
+            input: "f",
+            modifierFlags: [.command]
+        ))
 
         #if targetEnvironment(macCatalyst)
         commands.append(UICommand(
@@ -457,7 +454,6 @@ class MenuManager {
     // selectors that use responder chain
     @objc private func refresh() {}
     @objc private func updateSensors() {}
-    @available(iOS 16.0, *)
     @objc private func showFindInteraction() {}
     @objc private func customizeToolbar() {}
 }

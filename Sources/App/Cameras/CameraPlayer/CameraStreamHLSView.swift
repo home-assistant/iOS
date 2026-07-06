@@ -3,7 +3,6 @@ import Shared
 import SwiftUI
 
 /// A SwiftUI view for playing HLS camera streams.
-@available(iOS 16.0, *)
 struct CameraStreamHLSView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -158,7 +157,6 @@ struct CameraStreamHLSView: View {
 }
 
 #if DEBUG
-@available(iOS 16.0, *)
 #Preview {
     CameraStreamHLSView(
         server: ServerFixture.standard,

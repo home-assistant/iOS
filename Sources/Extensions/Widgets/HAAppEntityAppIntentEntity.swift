@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Entity")
 
@@ -49,7 +49,7 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [HAAppEntityAppIntentEntity] {
         getEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
@@ -98,7 +98,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 func makeHAEntityIntentItemCollection(
     entities: [(Server, [HAAppEntity])],
     defaultIconName: String

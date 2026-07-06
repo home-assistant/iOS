@@ -189,7 +189,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 handleEntityAddTo(entityId: entityId, appPayload: appPayload)
             case .cameraPlayerShow:
-                guard #available(iOS 16.0, *) else { return }
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
                     Current.Log.error("Received camera/show but entity_id was not string! \(incomingMessage)")
                     return
@@ -309,34 +308,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             return
         }
 
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
-                        .buildTransferToHomeAssistant(server: webViewController.server)
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController.presentOverlayController(controller: threadManagementView, animated: true)
-        }
+        let threadManagementView =
+            UIHostingController(
+                rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
+                    .buildTransferToHomeAssistant(server: webViewController.server)
+            )
+        threadManagementView.view.backgroundColor = .clear
+        threadManagementView.modalPresentationStyle = .overFullScreen
+        threadManagementView.modalTransitionStyle = .crossDissolve
+        webViewController.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func transferHAThreadCredentialsToKeychain(macExtendedAddress: String, activeOperationalDataset: String) {
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
-                        .buildTransferToAppleKeychain(
-                            macExtendedAddress: macExtendedAddress,
-                            activeOperationalDataset: activeOperationalDataset
-                        )
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
-        }
+        let threadManagementView =
+            UIHostingController(
+                rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
+                    .buildTransferToAppleKeychain(
+                        macExtendedAddress: macExtendedAddress,
+                        activeOperationalDataset: activeOperationalDataset
+                    )
+            )
+        threadManagementView.view.backgroundColor = .clear
+        threadManagementView.modalPresentationStyle = .overFullScreen
+        threadManagementView.modalTransitionStyle = .crossDissolve
+        webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func barcodeScannerRequested(
@@ -615,7 +610,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
-    @available(iOS 16.0, *)
     private func showCameraPlayer(entityId: String, cameraName: String?) {
         guard let webViewController else {
             Current.Log.error("WebViewController not available while opening camera player")

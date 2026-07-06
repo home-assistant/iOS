@@ -205,7 +205,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        if #available(iOS 16.0, *), connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+        if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
             return SceneActivity.carPlay.configuration
         } else {
             let activity = options.userActivities

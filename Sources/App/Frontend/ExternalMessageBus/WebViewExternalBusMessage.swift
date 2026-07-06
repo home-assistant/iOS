@@ -42,13 +42,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
             "hasAssistSettings": true,
-            "hasCameraPlayer": {
-                if #available(iOS 16.0, *), !Current.isCatalyst {
-                    return true
-                } else {
-                    return false
-                }
-            }(),
+            "hasCameraPlayer": !Current.isCatalyst,
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,

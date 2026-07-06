@@ -70,7 +70,6 @@ struct WidgetBasicView: View {
         .frame(maxHeight: (sizeStyle == .compact && widgetFamily != .systemSmall) ? maxTileHeightWhenCompact : nil)
     }
 
-    @available(iOS 16.0, *)
     private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
         Group {
             switch type {

@@ -86,27 +86,15 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var iOSView: some View {
-        if #available(iOS 16.0, *) {
-            iOSViewModern
-        } else {
-            iOSViewLegacy
-        }
+        iOSViewModern
     }
 
-    @available(iOS 16.0, *)
     private var iOSViewModern: some View {
         NavigationStack {
             iOSListContent
                 .navigationDestination(for: SettingsItem.self) { item in
                     item.destinationView
                 }
-        }
-    }
-
-    private var iOSViewLegacy: some View {
-        NavigationView {
-            iOSListContent
-                .navigationViewStyle(.stack)
         }
     }
 
@@ -244,15 +232,8 @@ struct SettingsView: View {
             }
         }
         .sheet(isPresented: $showAbout) {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    aboutViewContent
-                }
-            } else {
-                NavigationView {
-                    aboutViewContent
-                }
-                .navigationViewStyle(.stack)
+            NavigationStack {
+                aboutViewContent
             }
         }
         .sheet(item: $whatsNewRelease) { release in
