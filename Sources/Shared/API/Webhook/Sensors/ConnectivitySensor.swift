@@ -125,26 +125,32 @@ public class ConnectivitySensor: SensorProvider {
             return .init(error: ConnectivityError.unsupportedPlatform)
         }
 
-        return .value([
-            with(WebhookSensor(name: "SSID", uniqueID: WebhookSensorId.connectivitySSID.rawValue)) { sensor in
-                if let ssid = Current.connectivity.currentWiFiSSID() {
-                    sensor.State = ssid
-                    sensor.Icon = "mdi:wifi"
-                } else {
-                    sensor.State = "Not Connected"
-                    sensor.Icon = "mdi:wifi-off"
-                }
-            },
-            with(WebhookSensor(name: "BSSID", uniqueID: WebhookSensorId.connectivityBSID.rawValue)) { sensor in
-                if let bssid = Current.connectivity.currentWiFiBSSID() {
-                    sensor.State = bssid.formattedBSSID
-                    sensor.Icon = "mdi:wifi-star"
-                } else {
-                    sensor.State = "Not Connected"
-                    sensor.Icon = "mdi:wifi-off"
-                }
-            },
-        ])
+        return Guarantee<NetworkState> { seal in
+            Task {
+                seal(await Current.connectivity.currentNetworkState())
+            }
+        }.map { networkState in
+            [
+                with(WebhookSensor(name: "SSID", uniqueID: WebhookSensorId.connectivitySSID.rawValue)) { sensor in
+                    if let ssid = networkState.ssid {
+                        sensor.State = ssid
+                        sensor.Icon = "mdi:wifi"
+                    } else {
+                        sensor.State = "Not Connected"
+                        sensor.Icon = "mdi:wifi-off"
+                    }
+                },
+                with(WebhookSensor(name: "BSSID", uniqueID: WebhookSensorId.connectivityBSID.rawValue)) { sensor in
+                    if let bssid = networkState.bssid {
+                        sensor.State = bssid.formattedBSSID
+                        sensor.Icon = "mdi:wifi-star"
+                    } else {
+                        sensor.State = "Not Connected"
+                        sensor.Icon = "mdi:wifi-off"
+                    }
+                },
+            ]
+        }
     }
 
     #endif

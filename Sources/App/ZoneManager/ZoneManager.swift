@@ -88,32 +88,42 @@ class ZoneManager {
     }
 
     private func perform(event: ZoneManagerEvent) {
-        let logPayload: [String: String] = [
-            "start_ssid": Current.connectivity.currentWiFiSSID() ?? "none",
-            "event": event.description,
-        ]
-
         // although technically the processor also does this, it does it after some async processing.
-        // let's be very confident that we're not going to miss out on an update due to being suspended
-        Current.backgroundTask(withName: BackgroundTask.zoneManagerPerformEvent.rawValue) { _ in
+        // let's be very confident that we're not going to miss out on an update due to being suspended,
+        // so the background task starts before any asynchronous work (like fetching the current SSID).
+        let performPromise = Current.backgroundTask(withName: BackgroundTask.zoneManagerPerformEvent.rawValue) { _ in
             processor.perform(event: event)
         }.get { [weak self] _ in
             // a location change means we should consider changing our monitored regions
             // ^ not tap for this side effect because we don't want to do this on failure
             guard let self else { return }
             sync(zones: AnyCollection(zones))
-        }.then {
+        }
+
+        Guarantee<String?> { seal in
+            Task {
+                seal(await Current.connectivity.currentWiFiSSID())
+            }
+        }.then { currentSSID -> Promise<[String: String]> in
+            let logPayload: [String: String] = [
+                "start_ssid": currentSSID ?? "none",
+                "event": event.description,
+            ]
+            return performPromise.map { logPayload }
+        }.done { logPayload in
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Updated location",
                 type: .locationUpdate,
                 payload: logPayload
             ))
-            return Promise.value(())
         }.catch { error in
             Current.Log.error("ZoneManagerPerformEvent background task error for \(event): \(error)")
 
-            var updatedPayload = logPayload
-            updatedPayload["error"] = String(describing: error)
+            var updatedPayload = [
+                "event": event.description,
+                "error": String(describing: error),
+            ]
+            updatedPayload["start_ssid"] = Current.connectivity.lastKnownNetworkState().ssid ?? "none"
 
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Didn't update: \(error.localizedDescription)",

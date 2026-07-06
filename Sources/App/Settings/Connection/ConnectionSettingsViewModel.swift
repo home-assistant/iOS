@@ -188,10 +188,14 @@ final class ConnectionSettingsViewModel: ObservableObject {
     }
 
     private func updateCanRetryLocalPush() {
-        canRetryLocalPush = LocalPushRetryDiagnostics.canRetry(
-            server: server,
-            currentSSID: Current.connectivity.currentWiFiSSID()
-        )
+        Task { [weak self] in
+            guard let self else { return }
+            let currentSSID = await Current.connectivity.currentWiFiSSID()
+            canRetryLocalPush = LocalPushRetryDiagnostics.canRetry(
+                server: server,
+                currentSSID: currentSSID
+            )
+        }
     }
 
     // MARK: - Actions
@@ -245,7 +249,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     func activateServer() {
         if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
-            if let url = server.info.connection.activeURL() {
+            Task { [weak self] in
+                guard let self, let url = await server.activeURL() else { return }
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
         } else {

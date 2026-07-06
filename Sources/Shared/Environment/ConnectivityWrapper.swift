@@ -4,27 +4,116 @@ import CoreTelephony
 #endif
 import NetworkExtension
 
+/// A snapshot of the network information (Wi-Fi and interface details) available to the app.
+public struct NetworkState: Equatable {
+    /// The SSID of the Wi-Fi network the device is currently connected to, if any.
+    public var ssid: String?
+    /// The BSSID of the Wi-Fi network the device is currently connected to, if any.
+    public var bssid: String?
+    /// The hardware (MAC) address of the active network interface, if available (macOS only).
+    public var hardwareAddress: String?
+
+    public init(ssid: String? = nil, bssid: String? = nil, hardwareAddress: String? = nil) {
+        self.ssid = ssid
+        self.bssid = bssid
+        self.hardwareAddress = hardwareAddress
+    }
+}
+
 /// Wrapper around CoreTelephony, Reachability
+///
+/// Network information (SSID, BSSID, hardware address) is only available asynchronously, so all
+/// accessors for it are async and fetch fresh values. `lastKnownNetworkState()` is the single
+/// escape hatch for consumers that cannot be async (e.g. HAKit's `connectionInfo` closure).
 public class ConnectivityWrapper {
     public var connectivityDidChangeNotification: () -> Notification.Name
     public var hasWiFi: () -> Bool
-    public var currentWiFiSSID: () -> String?
-    public var currentWiFiBSSID: () -> String?
-    public var currentNetworkHardwareAddress: () -> String?
     public var simpleNetworkType: () -> NetworkType
     public var cellularNetworkType: () -> NetworkType
     public var networkAttributes: () -> [String: Any]
-    /// Refreshes the cached network information (e.g. current SSID/BSSID), returning once the
-    /// values are up to date. Defaults to `syncNetworkInformation()`; replaceable in tests.
+
+    /// Fetches up-to-date network information (SSID, BSSID, hardware address); replaceable in tests.
+    ///
+    /// The default implementation coalesces concurrent calls into a single fetch and records the
+    /// result as the last-known network state.
+    public lazy var currentNetworkState: () async -> NetworkState = { [weak self] in
+        await self?.fetchNetworkState() ?? NetworkState()
+    }
+
+    /// Refreshes the cached network information, returning once `lastKnownNetworkState()` is up to
+    /// date; replaceable in tests.
     public lazy var refreshNetworkInformation: () async -> Void = { [weak self] in
-        await self?.syncNetworkInformation()
+        guard let self else { return }
+        let state = await self.currentNetworkState()
+        self.updateLastKnownNetworkState(state)
+    }
+
+    /// The most recently fetched network information, without refreshing it.
+    ///
+    /// Only meant for consumers that cannot be async — currently the synchronous
+    /// `ConnectionInfo.evaluateActiveURL()` core used by HAKit's `connectionInfo` closure and the
+    /// Alamofire request adapter. Everything else should use `currentNetworkState()` or
+    /// `refreshNetworkInformation()` followed by the relevant async API.
+    public lazy var lastKnownNetworkState: () -> NetworkState = { [weak self] in
+        self?.readLastKnownNetworkState() ?? NetworkState()
+    }
+
+    /// The SSID of the Wi-Fi network the device is currently connected to, freshly fetched.
+    public func currentWiFiSSID() async -> String? {
+        await currentNetworkState().ssid
+    }
+
+    /// The BSSID of the Wi-Fi network the device is currently connected to, freshly fetched.
+    public func currentWiFiBSSID() async -> String? {
+        await currentNetworkState().bssid
+    }
+
+    /// The hardware (MAC) address of the active network interface, freshly fetched (macOS only).
+    public func currentNetworkHardwareAddress() async -> String? {
+        await currentNetworkState().hardwareAddress
+    }
+
+    private let stateLock = NSLock()
+    private var cachedNetworkState = NetworkState()
+    private var inFlightFetch: Task<NetworkState, Never>?
+
+    public func updateLastKnownNetworkState(_ state: NetworkState) {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        cachedNetworkState = state
+    }
+
+    private func readLastKnownNetworkState() -> NetworkState {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return cachedNetworkState
+    }
+
+    private func fetchNetworkState() async -> NetworkState {
+        let task: Task<NetworkState, Never>
+
+        stateLock.lock()
+        if let inFlightFetch {
+            task = inFlightFetch
+        } else {
+            task = Task { [self] in
+                let state = await performNetworkStateFetch()
+                stateLock.lock()
+                inFlightFetch = nil
+                cachedNetworkState = state
+                stateLock.unlock()
+                return state
+            }
+            inFlightFetch = task
+        }
+        stateLock.unlock()
+
+        return await task.value
     }
 
     #if targetEnvironment(macCatalyst)
     init() {
         self.hasWiFi = { Current.macBridge.networkConnectivity.hasWiFi }
-        self.currentWiFiSSID = { Current.macBridge.networkConnectivity.wifi?.ssid }
-        self.currentWiFiBSSID = { Current.macBridge.networkConnectivity.wifi?.bssid }
         self.connectivityDidChangeNotification = { Current.macBridge.networkConnectivityDidChangeNotification }
         self.simpleNetworkType = {
             switch Current.macBridge.networkConnectivity.networkType {
@@ -34,7 +123,6 @@ public class ConnectivityWrapper {
             case .noNetwork: return .noConnection
             }
         }
-        self.currentNetworkHardwareAddress = { Current.macBridge.networkConnectivity.interface?.hardwareAddress }
         self.cellularNetworkType = { .unknown }
         self.networkAttributes = {
             if let interface = Current.macBridge.networkConnectivity.interface {
@@ -46,6 +134,29 @@ public class ConnectivityWrapper {
                 return [:]
             }
         }
+
+        // macBridge network information is always current, so synchronous consumers read it live
+        // instead of going through the cached state.
+        self.lastKnownNetworkState = {
+            let connectivity = Current.macBridge.networkConnectivity
+            return NetworkState(
+                ssid: connectivity.wifi?.ssid,
+                bssid: connectivity.wifi?.bssid,
+                hardwareAddress: connectivity.interface?.hardwareAddress
+            )
+        }
+
+        observeConnectivityChanges()
+    }
+
+    private func performNetworkStateFetch() async -> NetworkState {
+        // macOS uses macBridge to retrieve network information, which is always current.
+        let connectivity = Current.macBridge.networkConnectivity
+        return NetworkState(
+            ssid: connectivity.wifi?.ssid,
+            bssid: connectivity.wifi?.bssid,
+            hardwareAddress: connectivity.interface?.hardwareAddress
+        )
     }
 
     #elseif os(iOS)
@@ -53,44 +164,50 @@ public class ConnectivityWrapper {
         let reachability = NetworkReachability()
 
         self.hasWiFi = { true }
-        self.currentWiFiSSID = {
-            nil
-        }
-        self.currentWiFiBSSID = {
-            nil
-        }
         self.connectivityDidChangeNotification = { NetworkReachability.didChangeNotification }
         self.simpleNetworkType = { reachability.getSimpleNetworkType() }
         self.cellularNetworkType = { reachability.getNetworkType() }
-        self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
 
-        syncNetworkInformation()
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(connectivityDidChange(_:)),
-            name: NetworkReachability.didChangeNotification,
-            object: nil
-        )
+        observeConnectivityChanges()
     }
+
+    private func performNetworkStateFetch() async -> NetworkState {
+        let hotspotNetwork = await withCheckedContinuation { (continuation: CheckedContinuation<
+            NEHotspotNetwork?,
+            Never
+        >) in
+            NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+                continuation.resume(returning: hotspotNetwork)
+            }
+        }
+        Current.Log.verbose(
+            "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
+        )
+        #if targetEnvironment(simulator)
+        let ssid: String? = "Simulator"
+        #else
+        let ssid = hotspotNetwork?.ssid
+        #endif
+        return NetworkState(ssid: ssid, bssid: hotspotNetwork?.bssid)
+    }
+
     #else
     init() {
         self.hasWiFi = { true }
-        self.currentWiFiSSID = {
-            let ssid = WatchUserDefaults.shared.string(for: .watchSSID)
-            Current.Log.verbose("Watch current WiFi SSID: \(String(describing: ssid))")
-            return ssid
-        }
-        self.currentWiFiBSSID = { nil }
         self.connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
         self.simpleNetworkType = { .unknown }
         self.cellularNetworkType = { .unknown }
-        self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
 
-        syncNetworkInformation()
+        observeConnectivityChanges()
         // Reachability observer is not available for watchOS
+    }
+
+    private func performNetworkStateFetch() async -> NetworkState {
+        let ssid = WatchUserDefaults.shared.string(for: .watchSSID)
+        Current.Log.verbose("Watch current WiFi SSID: \(String(describing: ssid))")
+        return NetworkState(ssid: ssid)
     }
     #endif
 
@@ -104,40 +221,25 @@ public class ConnectivityWrapper {
     }
     #endif
 
-    @objc private func connectivityDidChange(_ note: Notification) {
-        syncNetworkInformation()
-    }
-
-    // TODO: Refactor SSID retrieval to be async instead of hacking around with completion handlers
-    public func syncNetworkInformation(completion: (() -> Void)? = nil) {
-        #if targetEnvironment(macCatalyst)
-        // macOS uses macBridge to retrieve network information
-        completion?()
-        #else
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            Current.Log
-                .verbose(
-                    "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
-                )
-            let ssid = hotspotNetwork?.ssid
-            self.currentWiFiSSID = {
-                #if targetEnvironment(simulator)
-                return "Simulator"
-                #endif
-                return ssid
-            }
-            let bssid = hotspotNetwork?.bssid
-            self.currentWiFiBSSID = { bssid }
-            completion?()
+    private func observeConnectivityChanges() {
+        // Prime the last-known network state so synchronous consumers have a value early.
+        Task { [weak self] in
+            await self?.refreshNetworkInformation()
         }
+
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(connectivityDidChange(_:)),
+            name: NetworkReachability.didChangeNotification,
+            object: nil
+        )
         #endif
     }
 
-    public func syncNetworkInformation() async {
-        await withCheckedContinuation { continuation in
-            syncNetworkInformation {
-                continuation.resume()
-            }
+    @objc private func connectivityDidChange(_ note: Notification) {
+        Task { [weak self] in
+            await self?.refreshNetworkInformation()
         }
     }
 }

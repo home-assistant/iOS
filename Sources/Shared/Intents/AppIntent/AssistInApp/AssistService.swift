@@ -216,9 +216,12 @@ extension AssistService {
     }
 
     private func ttsEnd(mediaUrlPath: String?) {
-        guard let mediaUrlPath,
-              let mediaUrl = server.info.connection.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
-        delegate?.didReceiveTtsMediaUrl(mediaUrl)
+        guard let mediaUrlPath else { return }
+        Task { [weak self] in
+            guard let self,
+                  let mediaUrl = await self.server.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
+            self.delegate?.didReceiveTtsMediaUrl(mediaUrl)
+        }
     }
 
     private func intentProgress(messageChunk: String?) {

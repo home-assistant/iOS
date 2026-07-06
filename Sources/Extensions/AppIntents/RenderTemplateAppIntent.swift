@@ -24,7 +24,7 @@ struct RenderTemplateAppIntent: AppIntent {
     var template: String
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         guard let server = server.getServer(),
               let connection = Current.api(for: server)?.connection else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)

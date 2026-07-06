@@ -101,7 +101,11 @@ public class HomeAssistantAPI {
             configuration: .init(
                 connectionInfo: {
                     do {
-                        if let activeURL = server.info.connection.activeURL() {
+                        // HAKit calls this closure synchronously whenever it (re)connects, so this
+                        // is one of the few places that evaluates against cached network
+                        // information. The cache is refreshed on connectivity changes and app
+                        // lifecycle events, and HAKit re-invokes this closure on reconnect.
+                        if let activeURL = server.info.connection.evaluateActiveURL() {
                             // Prepare client identity (SecIdentity) for mTLS if configured
                             let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
                             if let clientCert = server.info.connection.clientCertificate {
@@ -381,40 +385,43 @@ public class HomeAssistantAPI {
 
     public func DownloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
         Promise { seal in
-            var finalURL = url
+            Task { [self] in
+                var finalURL = url
 
-            let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
+                let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
 
-            if needsAuth {
-                guard let activeURL = server.info.connection.activeURL() else {
-                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                if needsAuth {
+                    guard let activeURL = await server.activeURL() else {
+                        seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                        return
+                    }
+
+                    if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
+                        Current.Log
+                            .verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
+                        finalURL = activeURL.appendingPathComponent(url.absoluteString)
+                    }
+
+                    Current.Log.verbose("Data download needs auth!")
+                }
+
+                guard let downloadPath = temporaryDownloadFileURL(appropriateFor: finalURL) else {
+                    Current.Log.error("Unable to get download path!")
+                    seal.reject(APIError.cantBuildURL)
                     return
                 }
 
-                if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
-                    Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
-                    finalURL = activeURL.appendingPathComponent(url.absoluteString)
+                let destination: DownloadRequest.Destination = { _, _ in
+                    (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
                 }
 
-                Current.Log.verbose("Data download needs auth!")
-            }
-
-            guard let downloadPath = temporaryDownloadFileURL(appropriateFor: finalURL) else {
-                Current.Log.error("Unable to get download path!")
-                seal.reject(APIError.cantBuildURL)
-                return
-            }
-
-            let destination: DownloadRequest.Destination = { _, _ in
-                (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
-            }
-
-            dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
-                switch downloadResponse.result {
-                case .success:
-                    seal.fulfill(downloadResponse.fileURL!)
-                case let .failure(error):
-                    seal.reject(error)
+                dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
+                    switch downloadResponse.result {
+                    case .success:
+                        seal.fulfill(downloadResponse.fileURL!)
+                    case let .failure(error):
+                        seal.reject(error)
+                    }
                 }
             }
         }
@@ -497,24 +504,26 @@ public class HomeAssistantAPI {
 
     public func getCameraSnapshot(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
-            guard let queryUrl = server.info.connection.activeAPIURL()?
-                .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {
-                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
-                return
-            }
-            _ = manager.request(queryUrl)
-                .validate()
-                .responseData { response in
-                    switch response.result {
-                    case let .success(data):
-                        if let image = UIImage(data: data) {
-                            seal.fulfill(image)
-                        }
-                    case let .failure(error):
-                        Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
-                        seal.reject(error)
-                    }
+            Task { [self] in
+                guard let queryUrl = await server.activeAPIURL()?
+                    .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {
+                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                    return
                 }
+                _ = manager.request(queryUrl)
+                    .validate()
+                    .responseData { response in
+                        switch response.result {
+                        case let .success(data):
+                            if let image = UIImage(data: data) {
+                                seal.fulfill(image)
+                            }
+                        case let .failure(error):
+                            Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
+                            seal.reject(error)
+                        }
+                    }
+            }
         }
     }
 
@@ -650,72 +659,81 @@ public class HomeAssistantAPI {
         location rawLocation: CLLocation?,
         zone: RLMZone?
     ) -> Promise<Void> {
-        let update: WebhookUpdateLocation
-        let location: CLLocation?
         let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
         let localMetadata = WebhookResponseLocation.localMetdata(
             trigger: updateType,
             zone: zone
         )
 
-        switch server.info.setting(for: .locationPrivacy) {
-        case .exact:
-            update = .init(trigger: updateType, location: rawLocation, zone: zone)
-            location = rawLocation
-        case .zoneOnly:
-            let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
-            if updateType == .BeaconRegionEnter || rawLocation != nil {
-                update = .init(
-                    trigger: updateType,
-                    usingNameOf: locationNameZone(
-                        for: updateType,
-                        from: inZones,
-                        fallbackZone: zone,
-                        supportsInZones: supportsInZones
-                    ),
-                    inZones: supportsInZones ? inZones : nil
-                )
-            } else {
-                update = .init(trigger: updateType)
+        return Guarantee<String?> { seal in
+            Task {
+                seal(await Current.connectivity.currentWiFiSSID())
             }
-            location = nil
-        case .never:
-            update = .init(trigger: updateType)
-            location = nil
-        }
+        }.then { [self] currentSSID -> Promise<Void> in
+            // The `then` continuation runs on the main queue, matching the thread the Realm zone
+            // object is confined to.
+            let update: WebhookUpdateLocation
+            let location: CLLocation?
 
-        return firstly {
-            let realm = Current.realm()
-            return when(resolved: realm.reentrantWrite {
-                let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
+            switch server.info.setting(for: .locationPrivacy) {
+            case .exact:
+                update = .init(trigger: updateType, location: rawLocation, zone: zone, currentSSID: currentSSID)
+                location = rawLocation
+            case .zoneOnly:
+                let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
+                if updateType == .BeaconRegionEnter || rawLocation != nil {
+                    update = .init(
+                        trigger: updateType,
+                        usingNameOf: locationNameZone(
+                            for: updateType,
+                            from: inZones,
+                            fallbackZone: zone,
+                            supportsInZones: supportsInZones
+                        ),
+                        inZones: supportsInZones ? inZones : nil
+                    )
+                } else {
+                    update = .init(trigger: updateType)
+                }
+                location = nil
+            case .never:
+                update = .init(trigger: updateType)
+                location = nil
+            }
 
-                realm.add(LocationHistoryEntry(
-                    updateType: updateType,
-                    location: location,
-                    zone: zone,
-                    accuracyAuthorization: accuracyAuthorization,
-                    payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
-                ))
-            }).asVoid()
-        }.map { () -> [String: Any] in
-            let payloadDict = Mapper<WebhookUpdateLocation>().toJSON(update)
-            Current.Log.info("Location update payload: \(payloadDict)")
-            return payloadDict
-        }.then { [self] payload in
-            when(
-                resolved:
-                UpdateSensors(trigger: updateType, location: location).asVoid(),
-                Current.webhooks.send(
-                    identifier: .location,
-                    server: server,
-                    request: .init(
-                        type: "update_location",
-                        data: payload,
-                        localMetadata: localMetadata
+            return firstly {
+                let realm = Current.realm()
+                return when(resolved: realm.reentrantWrite {
+                    let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
+
+                    realm.add(LocationHistoryEntry(
+                        updateType: updateType,
+                        location: location,
+                        zone: zone,
+                        accuracyAuthorization: accuracyAuthorization,
+                        payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
+                    ))
+                }).asVoid()
+            }.map { () -> [String: Any] in
+                let payloadDict = Mapper<WebhookUpdateLocation>().toJSON(update)
+                Current.Log.info("Location update payload: \(payloadDict)")
+                return payloadDict
+            }.then { [self] payload in
+                when(
+                    resolved:
+                    UpdateSensors(trigger: updateType, location: location).asVoid(),
+                    Current.webhooks.send(
+                        identifier: .location,
+                        server: server,
+                        request: .init(
+                            type: "update_location",
+                            data: payload,
+                            localMetadata: localMetadata
+                        )
                     )
                 )
-            )
-        }.asVoid()
+            }.asVoid()
+        }
     }
 
     private func zones(
@@ -1111,13 +1129,15 @@ public class HomeAssistantAPI {
                     return
                 }
 
-                guard let url = self?.resolvedProfilePictureURL(from: path) else {
-                    Current.Log.error("Profile picture: Invalid URL for user entity picture, user id \(user.id)")
-                    completion(nil)
-                    return
-                }
+                Task {
+                    guard let url = await self?.resolvedProfilePictureURL(from: path) else {
+                        Current.Log.error("Profile picture: Invalid URL for user entity picture, user id \(user.id)")
+                        completion(nil)
+                        return
+                    }
 
-                completion(url)
+                    completion(url)
+                }
             case let .failure(error):
                 Current.Log.error("Failed to retrieve states for profile picture: \(error)")
                 completion(nil)
@@ -1196,8 +1216,8 @@ public class HomeAssistantAPI {
         return cancellable
     }
 
-    private func resolvedProfilePictureURL(from path: String) -> URL? {
-        guard let activeURL = server.info.connection.activeURL() else {
+    private func resolvedProfilePictureURL(from path: String) async -> URL? {
+        guard let activeURL = await server.activeURL() else {
             return nil
         }
 
