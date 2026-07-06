@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import NetworkExtension
 import PromiseKit
@@ -82,7 +81,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     private func executeMagicItemUsingiPhone(magicItem: MagicItem, completion: @escaping (Bool) -> Void) {
         Current.Log.verbose("Signaling magic item pressed via phone")
-        let itemMessage = InteractiveImmediateMessage(
+        let itemMessage = HAWatchConnectivity.InteractiveImmediateMessage(
             identifier: InteractiveImmediateMessages.magicItemPressed.rawValue,
             content: [
                 "itemId": magicItem.id,

@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import Shared
 
@@ -24,7 +23,7 @@ final class ImmediateCommunicatorService {
         observers.removeAll { $0.delegate === observerDelegate }
     }
 
-    func evaluateMessage(_ message: ImmediateMessage) {
+    func evaluateMessage(_ message: HAWatchConnectivity.ImmediateMessage) {
         guard let messageId = InteractiveImmediateResponses(rawValue: message.identifier) else {
             Current.Log.error("Received communicator message that cant be mapped to messages responses enum")
             return

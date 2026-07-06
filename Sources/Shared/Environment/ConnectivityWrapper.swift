@@ -3,7 +3,6 @@ import Foundation
 import CoreTelephony
 import Reachability
 #endif
-import Communicator
 import NetworkExtension
 
 /// Wrapper around CoreTelephony, Reachability
@@ -16,6 +15,11 @@ public class ConnectivityWrapper {
     public var simpleNetworkType: () -> NetworkType
     public var cellularNetworkType: () -> NetworkType
     public var networkAttributes: () -> [String: Any]
+    /// Refreshes the cached network information (e.g. current SSID/BSSID), returning once the
+    /// values are up to date. Defaults to `syncNetworkInformation()`; replaceable in tests.
+    public lazy var refreshNetworkInformation: () async -> Void = { [weak self] in
+        await self?.syncNetworkInformation()
+    }
 
     #if targetEnvironment(macCatalyst)
     init() {

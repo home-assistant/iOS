@@ -1,4 +1,4 @@
-import Communicator
+import Combine
 import Foundation
 import PromiseKit
 import Shared
@@ -16,7 +16,7 @@ final class WatchAssistService: ObservableObject {
 
     private let serverId: String
     private let pipelineId: String
-    private var reachabilityObservation: Observation?
+    private var reachabilityObservation: HAWatchConnectivity.ObservationToken?
     private var cancellable: Cancellable?
 
     init(serverId: String, pipelineId: String) {
@@ -31,7 +31,7 @@ final class WatchAssistService: ObservableObject {
 
     func endRoutine() {
         if let reachabilityObservation {
-            Reachability.unobserve(reachabilityObservation)
+            Communicator.shared.reachability.unobserve(reachabilityObservation)
             self.reachabilityObservation = nil
         }
     }
@@ -82,7 +82,7 @@ final class WatchAssistService: ObservableObject {
     }
 
     private func setupReachability() {
-        reachabilityObservation = Reachability.observe { [weak self] _ in
+        reachabilityObservation = Communicator.shared.reachability.observe { [weak self] _ in
             DispatchQueue.main.async {
                 self?.deviceReachable = Communicator.shared.currentReachability == .immediatelyReachable
             }

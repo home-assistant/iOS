@@ -224,6 +224,7 @@ struct WatchAssistView: View {
             ScrollView {
                 // Using LazyVStack instead of List to avoid List minimum row height
                 LazyVStack(spacing: DesignSystem.Spaces.one) {
+                    LabsLabel()
                     ForEach(viewModel.chatItems, id: \.id) { item in
                         ChatBubbleView(item: item)
                     }
@@ -261,3 +262,43 @@ struct WatchAssistView: View {
         .listRowBackground(Color.clear)
     }
 }
+
+#if DEBUG
+#Preview {
+    WatchAssistView(viewModel: .preview)
+}
+
+private extension WatchAssistViewModel {
+    static var preview: WatchAssistViewModel {
+        let viewModel = WatchAssistViewModel(
+            assistService: WatchAssistService(serverId: "preview-server", pipelineId: "preview-pipeline"),
+            audioRecorder: PreviewWatchAudioRecorder(),
+            audioPlayer: PreviewAudioPlayer(),
+            immediateCommunicatorService: ImmediateCommunicatorService()
+        )
+        viewModel.chatItems = [
+            .init(content: "Turn on the kitchen lights", itemType: .input),
+            .init(content: "Done, 3 lights are now on.", itemType: .output),
+        ]
+        viewModel.assistService.deviceReachable = false
+        return viewModel
+    }
+}
+
+private final class PreviewWatchAudioRecorder: ObservableObject, WatchAudioRecorderProtocol {
+    weak var delegate: WatchAudioRecorderDelegate?
+
+    func startRecording() {}
+
+    func stopRecording() {}
+}
+
+private final class PreviewAudioPlayer: AudioPlayerProtocol {
+    weak var delegate: AudioPlayerDelegate?
+
+    func play(url: URL) {}
+
+    func pause() {}
+}
+
+#endif

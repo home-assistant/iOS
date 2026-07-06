@@ -1,4 +1,3 @@
-import Communicator
 import Foundation
 import PromiseKit
 import UserNotifications
@@ -150,7 +149,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
 private struct HandlerUpdateComplications: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
         Promise<Void> { seal in
-            Communicator.shared.transfer(ComplicationInfo(content: [:])) { result in
+            Communicator.shared.transfer(HAWatchConnectivity.ComplicationInfo(content: [:])) { result in
                 switch result {
                 case .success: seal.fulfill(())
                 case let .failure(error): seal.reject(error)
