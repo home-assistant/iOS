@@ -218,13 +218,58 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 17 tables create successfully together")
+    @Test("AppZoneTable schema validation")
+    func appZoneTableSchema() throws {
+        try verifyTableSchema(
+            table: AppZoneTable(),
+            expectedTableName: GRDBDatabaseTable.appZone.rawValue,
+            expectedColumns: DatabaseTables.AppZone.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("NotificationCategoryTable schema validation")
+    func notificationCategoryTableSchema() throws {
+        try verifyTableSchema(
+            table: NotificationCategoryTable(),
+            expectedTableName: GRDBDatabaseTable.notificationCategory.rawValue,
+            expectedColumns: DatabaseTables.NotificationCategory.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("WatchComplicationTable schema validation")
+    func watchComplicationTableSchema() throws {
+        try verifyTableSchema(
+            table: WatchComplicationTable(),
+            expectedTableName: GRDBDatabaseTable.watchComplication.rawValue,
+            expectedColumns: DatabaseTables.WatchComplication.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("LocationHistoryTable schema validation")
+    func locationHistoryTableSchema() throws {
+        try verifyTableSchema(
+            table: LocationHistoryTable(),
+            expectedTableName: GRDBDatabaseTable.locationHistory.rawValue,
+            expectedColumns: DatabaseTables.LocationHistory.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("LocationErrorTable schema validation")
+    func locationErrorTableSchema() throws {
+        try verifyTableSchema(
+            table: LocationErrorTable(),
+            expectedTableName: GRDBDatabaseTable.locationError.rawValue,
+            expectedColumns: DatabaseTables.LocationError.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("All 22 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 17 tables
-        #expect(tables.count == 17, "Should have exactly 17 tables, but found \(tables.count)")
+        // Verify we have exactly 22 tables
+        #expect(tables.count == 22, "Should have exactly 22 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

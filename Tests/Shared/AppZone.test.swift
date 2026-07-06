@@ -1,20 +1,21 @@
 import CoreLocation
 import Foundation
-import RealmSwift
+import GRDB
 @testable import Shared
 import XCTest
 
-class RealmZoneTests: XCTestCase {
-    private var zone: RLMZone!
+class AppZoneTests: XCTestCase {
+    private var zone: AppZone!
 
     override func setUp() {
         super.setUp()
 
-        zone = RLMZone()
-        zone.entityId = "monkeys"
-        zone.serverIdentifier = "fake1"
-        zone.Latitude = 53.2225509
-        zone.Longitude = -4.2212136
+        zone = AppZone(
+            entityId: "monkeys",
+            serverIdentifier: "fake1",
+            latitude: 53.2225509,
+            longitude: -4.2212136
+        )
 
         XCTAssertEqual(zone.identifier, "fake1/monkeys")
     }
@@ -51,14 +52,14 @@ class RealmZoneTests: XCTestCase {
     }
 
     func testBeaconZone() {
-        zone.BeaconUUID = UUID().uuidString
+        zone.beaconUUID = UUID().uuidString
 
         XCTAssertTrue(zone.isBeaconRegion)
         XCTAssertEqualRegions(zone.regionsForMonitoring, zone.beaconRegion.flatMap { [$0] } ?? [])
     }
 
     func testNormalRegion() {
-        zone.Radius = 100.0
+        zone.radius = 100.0
 
         XCTAssertFalse(zone.isBeaconRegion)
         XCTAssertEqualRegions(zone.regionsForMonitoring, [
@@ -67,7 +68,7 @@ class RealmZoneTests: XCTestCase {
     }
 
     func testSmallRegion() {
-        zone.Radius = 80
+        zone.radius = 80
 
         XCTAssertFalse(zone.isBeaconRegion)
         XCTAssertEqual(zone.regionsForMonitoring, zone.circularRegionsForMonitoring)
@@ -91,86 +92,88 @@ class RealmZoneTests: XCTestCase {
     }
 
     func testZoneOfLocation() throws {
-        let executionIdentifier = UUID().uuidString
-
-        let realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
-        Current.realm = { realm }
-        addTeardownBlock { Current.realm = Realm.live }
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        try AppZoneTable().createIfNeeded(database: database)
+        Current.database = { database }
+        addTeardownBlock { Current.database = previousDatabase }
 
         let zones = [
-            with(RLMZone()) {
-                $0.entityId = "zone1_a"
-                $0.serverIdentifier = "fake1"
+            AppZone(
+                entityId: "zone1_a",
+                serverIdentifier: "fake1",
                 // gus's, mission bay
-                $0.Latitude = 37.774299403042754
-                $0.Longitude = -122.3914772411471
-                $0.Radius = 100.0
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone1_b"
-                $0.serverIdentifier = "fake1"
+                latitude: 37.774299403042754,
+                longitude: -122.3914772411471,
+                radius: 100.0
+            ),
+            AppZone(
+                entityId: "zone1_b",
+                serverIdentifier: "fake1",
                 // gus's, mission bay
-                $0.Latitude = 37.774299403042754
-                $0.Longitude = -122.3914772411471
-                $0.Radius = 50.0
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone2"
-                $0.serverIdentifier = "fake1"
+                latitude: 37.774299403042754,
+                longitude: -122.3914772411471,
+                radius: 50.0
+            ),
+            AppZone(
+                entityId: "zone2",
+                serverIdentifier: "fake1",
                 // gus's, mission
-                $0.Latitude = 37.76421375578578
-                $0.Longitude = -122.41263128786335
-                $0.Radius = 100.0
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone3"
-                $0.serverIdentifier = "fake2"
+                latitude: 37.76421375578578,
+                longitude: -122.41263128786335,
+                radius: 100.0
+            ),
+            AppZone(
+                entityId: "zone3",
+                serverIdentifier: "fake2",
                 // gus's, mission
-                $0.Latitude = 37.76421375578578
-                $0.Longitude = -122.41263128786335
-                $0.Radius = 90.0
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone_passive"
-                $0.serverIdentifier = "fake1"
+                latitude: 37.76421375578578,
+                longitude: -122.41263128786335,
+                radius: 90.0
+            ),
+            AppZone(
+                entityId: "zone_passive",
+                serverIdentifier: "fake1",
                 // fort mason, sf
-                $0.Latitude = 37.80535
-                $0.Longitude = -122.43194
-                $0.Radius = 100.0
-                $0.isPassive = true
-                $0.TrackingEnabled = true
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone_disabled"
-                $0.serverIdentifier = "fake1"
+                latitude: 37.80535,
+                longitude: -122.43194,
+                radius: 100.0,
+                trackingEnabled: true,
+                isPassive: true
+            ),
+            AppZone(
+                entityId: "zone_disabled",
+                serverIdentifier: "fake1",
                 // crissy field, sf
-                $0.Latitude = 37.80290
-                $0.Longitude = -122.45290
-                $0.Radius = 100.0
-                $0.TrackingEnabled = false
-            },
+                latitude: 37.80290,
+                longitude: -122.45290,
+                radius: 100.0,
+                trackingEnabled: false
+            ),
         ]
 
-        try realm.write {
-            realm.add(zones)
+        try database.write { db in
+            for zone in zones {
+                try zone.save(db)
+            }
         }
 
         let server1 = Server.fake(identifier: "fake1")
         let server2 = Server.fake(identifier: "fake2")
 
-        let outside = RLMZone.zone(
+        let outside = AppZone.zone(
             of: CLLocation(latitude: 37.771796641675984, longitude: -122.42665440151637),
             in: server1
         )
         XCTAssertNil(outside, "should not find any here")
 
-        let inside1 = RLMZone.zone(
+        let inside1 = AppZone.zone(
             of: CLLocation(latitude: 37.77427675230296, longitude: -122.39145063179514),
             in: server1
         )
         XCTAssertEqual(inside1?.entityId, "zone1_b", "should prefer smaller")
         XCTAssertEqual(
-            RLMZone.zones(
+            AppZone.zones(
                 of: CLLocation(latitude: 37.77427675230296, longitude: -122.39145063179514),
                 in: server1
             ).map(\.entityId),
@@ -178,25 +181,25 @@ class RealmZoneTests: XCTestCase {
             "should return all matching zones, sorted by radius"
         )
 
-        let inside2 = RLMZone.zone(
+        let inside2 = AppZone.zone(
             of: CLLocation(latitude: 37.76392336744542, longitude: -122.41274993932525),
             in: server1
         )
         XCTAssertEqual(inside2?.entityId, "zone2")
 
-        let inside3 = RLMZone.zone(
+        let inside3 = AppZone.zone(
             of: CLLocation(latitude: 37.76392336744542, longitude: -122.41274993932525),
             in: server2
         )
         XCTAssertEqual(inside3?.entityId, "zone3")
 
-        let insidePassive = RLMZone.zone(
+        let insidePassive = AppZone.zone(
             of: CLLocation(latitude: 37.80535, longitude: -122.43194),
             in: server1
         )
-        XCTAssertEqual(insidePassive?.entityId, "zone_passive", "passive zone with TrackingEnabled should be returned")
+        XCTAssertEqual(insidePassive?.entityId, "zone_passive", "passive zone with trackingEnabled should be returned")
         XCTAssertEqual(
-            RLMZone.zones(
+            AppZone.zones(
                 of: CLLocation(latitude: 37.80535, longitude: -122.43194),
                 in: server1,
                 includingPassive: false
@@ -205,10 +208,10 @@ class RealmZoneTests: XCTestCase {
             "passive zones should be excluded when requested"
         )
 
-        let insideDisabled = RLMZone.zone(
+        let insideDisabled = AppZone.zone(
             of: CLLocation(latitude: 37.80290, longitude: -122.45290),
             in: server1
         )
-        XCTAssertNil(insideDisabled, "zone with TrackingEnabled = false should be excluded")
+        XCTAssertNil(insideDisabled, "zone with trackingEnabled = false should be excluded")
     }
 }

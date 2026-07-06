@@ -1,12 +1,13 @@
 import Foundation
+import GRDB
 import HAKit
 import PromiseKit
-import RealmSwift
 @testable import Shared
 import XCTest
 
 class ModelManagerTests: XCTestCase {
-    private var realm: Realm!
+    private var database: DatabaseQueue!
+    private var previousDatabase: (() -> DatabaseQueue)!
     private var testQueue: DispatchQueue!
     private var manager: LegacyModelManager!
     private var servers: FakeServerManager!
@@ -34,68 +35,66 @@ class ModelManagerTests: XCTestCase {
         Current.servers = servers
         Current.cachedApis = [server1.identifier: api1, server2.identifier: api2]
 
-        let executionIdentifier = UUID().uuidString
-        try testQueue.sync {
-            realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier), queue: testQueue)
-            Current.realm = { self.realm }
+        database = try DatabaseQueue()
+        try database.write { db in
+            try db.create(table: TestStoreModel1.databaseTableName) { t in
+                t.primaryKey("identifier", .text).notNull()
+                t.column("serverIdentifier", .text).notNull()
+                t.column("value", .text)
+            }
+            try db.create(table: TestStoreModel3.databaseTableName) { t in
+                t.primaryKey("identifier", .text).notNull()
+                t.column("serverIdentifier", .text).notNull()
+                t.column("value", .integer).notNull()
+            }
+            for tableName in [
+                TestDeleteModel1.databaseTableName,
+                TestDeleteModel2.databaseTableName,
+                TestDeleteModel3.databaseTableName,
+            ] {
+                try db.create(table: tableName) { t in
+                    t.primaryKey("identifier", .text).notNull()
+                    t.column("createdAt", .datetime).notNull()
+                }
+            }
         }
+
+        previousDatabase = Current.database
+        Current.database = { self.database }
     }
 
     override func tearDown() {
-        super.tearDown()
-
-        Current.realm = Realm.live
-        TestStoreModel1.lastDidUpdates = []
-        TestStoreModel1.lastWillDeleteIds = []
+        Current.database = previousDatabase
         TestStoreModel1.updateFalseIds = []
 
-        TestStoreModel3.lastWillDeleteIds = []
+        super.tearDown()
     }
 
     func testObserve() throws {
-        try testQueue.sync {
-            let results = AnyRealmCollection(realm.objects(TestStoreModel1.self))
+        let initialExpectation = expectation(description: "initial")
+        let updateExpectation = expectation(description: "update")
 
-            let executedExpectation = self.expectation(description: "observed")
-            executedExpectation.expectedFulfillmentCount = 2
+        var observed: [[TestStoreModel1]] = []
 
-            var didObserveCount = 0
-
-            manager.observe(for: results) { collection -> Promise<Void> in
-                XCTAssertEqual(Array(collection), Array(results))
-                didObserveCount += 1
-                executedExpectation.fulfill()
-                return .value(())
+        manager.observe(for: TestStoreModel1.self) { models -> Promise<Void> in
+            observed.append(models)
+            if observed.count == 1 {
+                initialExpectation.fulfill()
+            } else if observed.count == 2 {
+                updateExpectation.fulfill()
             }
-
-            realm.refresh()
-
-            XCTAssertEqual(didObserveCount, 0)
-
-            try realm.write {
-                realm.add(with(TestStoreModel1()) {
-                    $0.identifier = "123"
-                    $0.value = "456"
-                })
-            }
-
-            realm.refresh()
-
-            XCTAssertEqual(didObserveCount, 1)
-
-            try realm.write {
-                realm.add(with(TestStoreModel1()) {
-                    $0.identifier = "qrs"
-                    $0.value = "tuv"
-                })
-            }
-
-            realm.refresh()
-
-            XCTAssertEqual(didObserveCount, 2)
-
-            wait(for: [executedExpectation], timeout: 10.0)
+            return .value(())
         }
+
+        wait(for: [initialExpectation], timeout: 10.0)
+        XCTAssertEqual(observed.last, [])
+
+        try database.write { db in
+            try TestStoreModel1(identifier: "123", serverIdentifier: "s1", value: "456").save(db)
+        }
+
+        wait(for: [updateExpectation], timeout: 10.0)
+        XCTAssertEqual(observed.last?.map(\.identifier), ["123"])
     }
 
     func testCleanupWithoutItems() {
@@ -113,26 +112,24 @@ class ModelManagerTests: XCTestCase {
             TestDeleteModel1(now.addingTimeInterval(-3)),
         ]
 
-        try testQueue.sync {
-            try realm.write {
-                realm.add(models)
+        try database.write { db in
+            for model in models {
+                try model.save(db)
             }
         }
 
-        XCTAssertTrue(models.allSatisfy { $0.realm != nil })
-
         let promise = manager.cleanup(
             definitions: [
-                .init(
-                    model: TestDeleteModel1.self,
-                    createdKey: #keyPath(TestDeleteModel1.createdAt),
+                .age(
+                    recordType: TestDeleteModel1.self,
+                    createdColumnName: "createdAt",
                     duration: .init(value: 100, unit: .seconds)
                 ),
             ]
         )
 
         XCTAssertNoThrow(try hang(promise))
-        XCTAssertTrue(models.allSatisfy { !$0.isInvalidated })
+        XCTAssertEqual(try database.read { try TestDeleteModel1.fetchCount($0) }, models.count)
     }
 
     func testCleanupRemovesOnlyOlder() throws {
@@ -146,57 +143,65 @@ class ModelManagerTests: XCTestCase {
 
         Current.date = { now }
 
-        let (expectedExpired, expectedAlive) = try testQueue.sync { () -> (expired: [Object], alive: [Object]) in
-            let expired = [
-                TestDeleteModel1(deletedLimit1.addingTimeInterval(-1)),
-                TestDeleteModel1(deletedLimit1.addingTimeInterval(-100)),
-                TestDeleteModel1(deletedLimit1.addingTimeInterval(-1000)),
-                TestDeleteModel2(deletedLimit2.addingTimeInterval(-1)),
-                TestDeleteModel2(deletedLimit2.addingTimeInterval(-100)),
-                TestDeleteModel2(deletedLimit2.addingTimeInterval(-1000)),
-            ]
+        let expired1 = [
+            TestDeleteModel1(deletedLimit1.addingTimeInterval(-1)),
+            TestDeleteModel1(deletedLimit1.addingTimeInterval(-100)),
+            TestDeleteModel1(deletedLimit1.addingTimeInterval(-1000)),
+        ]
+        let expired2 = [
+            TestDeleteModel2(deletedLimit2.addingTimeInterval(-1)),
+            TestDeleteModel2(deletedLimit2.addingTimeInterval(-100)),
+            TestDeleteModel2(deletedLimit2.addingTimeInterval(-1000)),
+        ]
 
-            let alive = [
-                // shouldn't be deleted due to time
-                TestDeleteModel1(deletedLimit1),
-                TestDeleteModel1(deletedLimit1.addingTimeInterval(10)),
-                TestDeleteModel1(deletedLimit1.addingTimeInterval(100)),
-                TestDeleteModel2(deletedLimit2),
-                TestDeleteModel2(deletedLimit2.addingTimeInterval(10)),
-                TestDeleteModel2(deletedLimit2.addingTimeInterval(100)),
-                // shouldn't be deleted due to not being requested
-                TestDeleteModel3(now.addingTimeInterval(-10000)),
-            ]
+        let alive1 = [
+            // shouldn't be deleted due to time
+            TestDeleteModel1(deletedLimit1),
+            TestDeleteModel1(deletedLimit1.addingTimeInterval(10)),
+            TestDeleteModel1(deletedLimit1.addingTimeInterval(100)),
+        ]
+        let alive2 = [
+            TestDeleteModel2(deletedLimit2),
+            TestDeleteModel2(deletedLimit2.addingTimeInterval(10)),
+            TestDeleteModel2(deletedLimit2.addingTimeInterval(100)),
+        ]
+        let alive3 = [
+            // shouldn't be deleted due to not being requested
+            TestDeleteModel3(now.addingTimeInterval(-10000)),
+        ]
 
-            try realm.write {
-                realm.add(expired)
-                realm.add(alive)
-            }
-
-            return (expired, alive)
+        try database.write { db in
+            for model in expired1 { try model.save(db) }
+            for model in expired2 { try model.save(db) }
+            for model in alive1 { try model.save(db) }
+            for model in alive2 { try model.save(db) }
+            for model in alive3 { try model.save(db) }
         }
-
-        XCTAssertTrue(expectedExpired.allSatisfy { $0.realm != nil })
-        XCTAssertTrue(expectedAlive.allSatisfy { $0.realm != nil })
 
         let promise = manager.cleanup(
             definitions: [
-                .init(
-                    model: TestDeleteModel1.self,
-                    createdKey: #keyPath(TestDeleteModel1.createdAt),
+                .age(
+                    recordType: TestDeleteModel1.self,
+                    createdColumnName: "createdAt",
                     duration: .init(value: deletedTimeInterval1, unit: .seconds)
                 ),
-                .init(
-                    model: TestDeleteModel2.self,
-                    createdKey: #keyPath(TestDeleteModel2.createdAt),
+                .age(
+                    recordType: TestDeleteModel2.self,
+                    createdColumnName: "createdAt",
                     duration: .init(value: deletedTimeInterval2, unit: .seconds)
                 ),
             ]
         )
 
         XCTAssertNoThrow(try hang(promise))
-        XCTAssertTrue(expectedExpired.allSatisfy(\.isInvalidated))
-        XCTAssertTrue(expectedAlive.allSatisfy { !$0.isInvalidated })
+
+        let remaining1 = try database.read { try TestDeleteModel1.fetchAll($0) }
+        let remaining2 = try database.read { try TestDeleteModel2.fetchAll($0) }
+        let remaining3 = try database.read { try TestDeleteModel3.fetchAll($0) }
+
+        XCTAssertEqual(Set(remaining1.map(\.identifier)), Set(alive1.map(\.identifier)))
+        XCTAssertEqual(Set(remaining2.map(\.identifier)), Set(alive2.map(\.identifier)))
+        XCTAssertEqual(Set(remaining3.map(\.identifier)), Set(alive3.map(\.identifier)))
     }
 
     func testCleanupMissingServers() throws {
@@ -205,127 +210,71 @@ class ModelManagerTests: XCTestCase {
         Current.cachedApis[server3.identifier] = api3
 
         let start1 = [
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.identifier = "s1m1"
-            },
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.identifier = "s1m2"
-            },
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.identifier = "s1m3"
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.identifier = "s1m4"
-                $0.value = 1 // not deleted
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.identifier = "s1m5"
-                $0.value = 6 // deleted
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.identifier = "s1m6"
-                $0.value = 8 // deleted
-            },
-        ]
-        let start2 = [
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.identifier = "s2m1"
-            },
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.identifier = "s2m2"
-            },
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.identifier = "s2m3"
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.identifier = "s2m4"
-                $0.value = 1 // not deleted
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.identifier = "s2m5"
-                $0.value = 6 // deleted
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.identifier = "s2m6"
-                $0.value = 8 // deleted
-            },
+            TestStoreModel1(identifier: "s1m1", serverIdentifier: "s1", value: nil),
+            TestStoreModel1(identifier: "s1m2", serverIdentifier: "s1", value: nil),
+            TestStoreModel1(identifier: "s1m3", serverIdentifier: "s1", value: nil),
+            TestStoreModel1(identifier: "s2m1", serverIdentifier: "s2", value: nil),
+            TestStoreModel1(identifier: "s2m2", serverIdentifier: "s2", value: nil),
+            TestStoreModel1(identifier: "s2m3", serverIdentifier: "s2", value: nil),
+            TestStoreModel1(identifier: "s3m1", serverIdentifier: server3.identifier.rawValue, value: nil),
+            TestStoreModel1(identifier: "s3m2", serverIdentifier: server3.identifier.rawValue, value: nil),
+            TestStoreModel1(identifier: "s3m3", serverIdentifier: server3.identifier.rawValue, value: nil),
         ]
         let start3 = [
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api3.server.identifier.rawValue
-                $0.identifier = "s3m1"
-            },
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api3.server.identifier.rawValue
-                $0.identifier = "s3m2"
-            },
-            with(TestStoreModel1()) {
-                $0.serverIdentifier = api3.server.identifier.rawValue
-                $0.identifier = "s3m3"
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api3.server.identifier.rawValue
-                $0.identifier = "s3m4"
-                $0.value = 1 // not deleted
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api3.server.identifier.rawValue
-                $0.identifier = "s3m5"
-                $0.value = 6 // deleted
-            },
-            with(TestStoreModel3()) {
-                $0.serverIdentifier = api3.server.identifier.rawValue
-                $0.identifier = "s3m6"
-                $0.value = 8 // deleted
-            },
+            TestStoreModel3(identifier: "s1m4", serverIdentifier: "s1", value: 1), // not deleted
+            TestStoreModel3(identifier: "s1m5", serverIdentifier: "s1", value: 6),
+            TestStoreModel3(identifier: "s1m6", serverIdentifier: "s1", value: 8),
+            TestStoreModel3(identifier: "s2m4", serverIdentifier: "s2", value: 1), // reassigned
+            TestStoreModel3(identifier: "s2m5", serverIdentifier: "s2", value: 6), // deleted
+            TestStoreModel3(identifier: "s2m6", serverIdentifier: "s2", value: 8), // deleted
+            TestStoreModel3(identifier: "s3m4", serverIdentifier: server3.identifier.rawValue, value: 1),
+            TestStoreModel3(identifier: "s3m5", serverIdentifier: server3.identifier.rawValue, value: 6),
+            TestStoreModel3(identifier: "s3m6", serverIdentifier: server3.identifier.rawValue, value: 8),
         ]
 
         manager.cleanup(definitions: [
-            .init(orphansOf: TestStoreModel1.self),
-            .init(orphansOf: TestStoreModel3.self),
+            .orphanDelete(
+                recordType: TestStoreModel1.self,
+                serverIdentifierColumnName: "serverIdentifier"
+            ),
+            .orphanDelete(
+                recordType: TestStoreModel3.self,
+                serverIdentifierColumnName: "serverIdentifier",
+                condition: (Column("value") > 5).sqlExpression
+            ),
+            .orphanReassign(
+                recordType: TestStoreModel3.self,
+                serverIdentifierColumnName: "serverIdentifier",
+                condition: (Column("value") <= 5).sqlExpression
+            ),
         ]).cauterize()
 
-        try testQueue.sync {
-            try realm.write {
-                realm.add(start1)
-                realm.add(start2)
-                realm.add(start3)
-            }
+        try database.write { db in
+            for model in start1 { try model.save(db) }
+            for model in start3 { try model.save(db) }
         }
 
         servers.remove(identifier: api2.server.identifier)
         servers.notify()
 
-        try testQueue.sync {
-            let expected = Set(start1 + start3 + [start2[3]])
-            let present = Set<Object>(realm.objects(TestStoreModel1.self).map { $0 as Object })
-                .union(realm.objects(TestStoreModel3.self).map { $0 as Object })
-            XCTAssertEqual(present, expected)
+        // ensure the cleanup triggered by the server change has finished
+        testQueue.sync {}
 
-            XCTAssertEqual(
-                try XCTUnwrap(start2[3] as? TestStoreModel3).serverIdentifier,
-                api1.server.identifier.rawValue
-            )
-        }
+        let remaining1 = try database.read { try TestStoreModel1.fetchAll($0) }
+        let remaining3 = try database.read { try TestStoreModel3.fetchAll($0) }
 
-        XCTAssertEqual(Set(TestStoreModel1.lastWillDeleteIds.flatMap { $0 }), Set([
-            "s2m1", "s2m2", "s2m3",
+        XCTAssertEqual(Set(remaining1.map(\.identifier)), Set([
+            "s1m1", "s1m2", "s1m3",
+            "s3m1", "s3m2", "s3m3",
         ]))
-        XCTAssertEqual(Set(TestStoreModel3.lastWillDeleteIds.flatMap { $0 }), Set([
-            "s2m5", "s2m6",
+        XCTAssertEqual(Set(remaining3.map(\.identifier)), Set([
+            "s1m4", "s1m5", "s1m6",
+            "s2m4",
+            "s3m4", "s3m5", "s3m6",
         ]))
+
+        let reassigned = try XCTUnwrap(remaining3.first(where: { $0.identifier == "s2m4" }))
+        XCTAssertEqual(reassigned.serverIdentifier, servers.all.first?.identifier.rawValue)
     }
 
     func testFetchInvokesDefinition() {
@@ -441,99 +390,51 @@ class ModelManagerTests: XCTestCase {
     }
 
     func testStoreWithoutModels() throws {
-        try testQueue.sync {
-            try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: []))
-            XCTAssertTrue(realm.objects(TestStoreModel1.self).isEmpty)
-        }
-    }
-
-    func testStoreWithModelLackingPrimaryKey() throws {
-        func doStore() throws {
-            try testQueue.sync {
-                try hang(manager.store(type: TestStoreModel2.self, from: api1.server, sourceModels: []))
-            }
-        }
-
-        XCTAssertThrowsError(try doStore()) { error in
-            XCTAssertEqual(error as? LegacyModelManager.StoreError, .missingPrimaryKey)
-        }
+        try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: []))
+        XCTAssertEqual(try database.read { try TestStoreModel1.fetchCount($0) }, 0)
     }
 
     func testStoreWithoutExistingObjects() throws {
-        try testQueue.sync {
-            let sources1: [TestStoreSource1] = [
-                .init(id: "id1s1", value: "val1"),
-                .init(id: "id2s1", value: "val2"),
-            ]
-            let sources2: [TestStoreSource1] = [
-                .init(id: "id1s2", value: "val1"),
-                .init(id: "id2s2", value: "val2"),
-            ]
+        let sources1: [TestStoreSource1] = [
+            .init(id: "id1s1", value: "val1"),
+            .init(id: "id2s1", value: "val2"),
+        ]
+        let sources2: [TestStoreSource1] = [
+            .init(id: "id1s2", value: "val1"),
+            .init(id: "id2s2", value: "val2"),
+        ]
 
-            try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: sources1))
-            try hang(manager.store(type: TestStoreModel1.self, from: api2.server, sourceModels: sources2))
-            let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
-            XCTAssertEqual(models.count, 4)
-            XCTAssertEqual(models[0].identifier, "s1/id1s1")
-            XCTAssertEqual(models[0].serverIdentifier, api1.server.identifier.rawValue)
-            XCTAssertEqual(models[0].value, "val1")
-            XCTAssertEqual(models[1].identifier, "s1/id2s1")
-            XCTAssertEqual(models[1].serverIdentifier, api1.server.identifier.rawValue)
-            XCTAssertEqual(models[1].value, "val2")
-            XCTAssertEqual(models[2].identifier, "s2/id1s2")
-            XCTAssertEqual(models[2].serverIdentifier, api2.server.identifier.rawValue)
-            XCTAssertEqual(models[2].value, "val1")
-            XCTAssertEqual(models[3].identifier, "s2/id2s2")
-            XCTAssertEqual(models[3].serverIdentifier, api2.server.identifier.rawValue)
-            XCTAssertEqual(models[3].value, "val2")
-            XCTAssertEqual(Set(TestStoreModel1.lastDidUpdates.flatMap { $0 }), Set(models))
+        try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: sources1))
+        try hang(manager.store(type: TestStoreModel1.self, from: api2.server, sourceModels: sources2))
+
+        let models = try database.read {
+            try TestStoreModel1.order(Column("identifier")).fetchAll($0)
         }
+        XCTAssertEqual(models.count, 4)
+        XCTAssertEqual(models[0].identifier, "s1/id1s1")
+        XCTAssertEqual(models[0].serverIdentifier, api1.server.identifier.rawValue)
+        XCTAssertEqual(models[0].value, "val1")
+        XCTAssertEqual(models[1].identifier, "s1/id2s1")
+        XCTAssertEqual(models[1].serverIdentifier, api1.server.identifier.rawValue)
+        XCTAssertEqual(models[1].value, "val2")
+        XCTAssertEqual(models[2].identifier, "s2/id1s2")
+        XCTAssertEqual(models[2].serverIdentifier, api2.server.identifier.rawValue)
+        XCTAssertEqual(models[2].value, "val1")
+        XCTAssertEqual(models[3].identifier, "s2/id2s2")
+        XCTAssertEqual(models[3].serverIdentifier, api2.server.identifier.rawValue)
+        XCTAssertEqual(models[3].value, "val2")
     }
 
     func testStoreUpdatesAndDeletes() throws {
-        let start1 = [
-            with(TestStoreModel1()) {
-                $0.identifier = "s1/start_id1s1"
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.value = "start_val1"
-            },
-            with(TestStoreModel1()) {
-                $0.identifier = "s1/start_id2s1"
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.value = "start_val2"
-            },
-            with(TestStoreModel1()) {
-                $0.identifier = "s1/start_id3s1"
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.value = "start_val3"
-            },
-            with(TestStoreModel1()) {
-                $0.identifier = "s1/start_id4s1"
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.value = "start_val4"
-            },
-        ]
-        let start2 = [
-            with(TestStoreModel1()) {
-                $0.identifier = "s2/start_id1s2"
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.value = "start_val1"
-            },
-            with(TestStoreModel1()) {
-                $0.identifier = "s2/start_id2s2"
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.value = "start_val2"
-            },
-            with(TestStoreModel1()) {
-                $0.identifier = "s2/start_id3s2"
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.value = "start_val3"
-            },
-            with(TestStoreModel1()) {
-                $0.identifier = "s2/start_id4s2"
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.value = "start_val4"
-            },
+        let start = [
+            TestStoreModel1(identifier: "s1/start_id1s1", serverIdentifier: "s1", value: "start_val1"),
+            TestStoreModel1(identifier: "s1/start_id2s1", serverIdentifier: "s1", value: "start_val2"),
+            TestStoreModel1(identifier: "s1/start_id3s1", serverIdentifier: "s1", value: "start_val3"),
+            TestStoreModel1(identifier: "s1/start_id4s1", serverIdentifier: "s1", value: "start_val4"),
+            TestStoreModel1(identifier: "s2/start_id1s2", serverIdentifier: "s2", value: "start_val1"),
+            TestStoreModel1(identifier: "s2/start_id2s2", serverIdentifier: "s2", value: "start_val2"),
+            TestStoreModel1(identifier: "s2/start_id3s2", serverIdentifier: "s2", value: "start_val3"),
+            TestStoreModel1(identifier: "s2/start_id4s2", serverIdentifier: "s2", value: "start_val4"),
         ]
 
         let insertedSources1 = [
@@ -554,89 +455,61 @@ class ModelManagerTests: XCTestCase {
             TestStoreSource1(id: "start_id2s2", value: "start_val2-2"),
         ]
 
-        try testQueue.sync {
-            try realm.write {
-                realm.add(start1)
-                realm.add(start2)
+        try database.write { db in
+            for model in start {
+                try model.save(db)
             }
-
-            try hang(manager.store(
-                type: TestStoreModel1.self,
-                from: api1.server,
-                sourceModels: insertedSources1 + updatedSources1
-            ))
-            try hang(manager.store(
-                type: TestStoreModel1.self,
-                from: api2.server,
-                sourceModels: insertedSources2 + updatedSources2
-            ))
-            let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.value))
-            XCTAssertEqual(models.count, 8)
-
-            // inserted
-            XCTAssertEqual(models[0].identifier, "s1/ins_id1s1")
-            XCTAssertEqual(models[0].value, "ins_val1")
-            XCTAssertEqual(models[1].identifier, "s2/ins_id1s2")
-            XCTAssertEqual(models[1].value, "ins_val1")
-            XCTAssertEqual(models[2].identifier, "s1/ins_id2s1")
-            XCTAssertEqual(models[2].value, "ins_val2")
-            XCTAssertEqual(models[3].identifier, "s2/ins_id2s2")
-            XCTAssertEqual(models[3].value, "ins_val2")
-
-            // updated
-            XCTAssertEqual(models[4].identifier, "s1/start_id1s1")
-            XCTAssertEqual(models[4].value, "start_val1-2")
-            XCTAssertEqual(models[5].identifier, "s2/start_id1s2")
-            XCTAssertEqual(models[5].value, "start_val1-2")
-            XCTAssertEqual(models[6].identifier, "s1/start_id2s1")
-            XCTAssertEqual(models[6].value, "start_val2-2")
-            XCTAssertEqual(models[7].identifier, "s2/start_id2s2")
-            XCTAssertEqual(models[7].value, "start_val2-2")
-
-            // deleted
-            XCTAssertEqual(Set(TestStoreModel1.lastWillDeleteIds.flatMap { $0 }), Set([
-                "s1/start_id3s1",
-                "s1/start_id4s1",
-                "s2/start_id3s2",
-                "s2/start_id4s2",
-            ]))
         }
+
+        try hang(manager.store(
+            type: TestStoreModel1.self,
+            from: api1.server,
+            sourceModels: insertedSources1 + updatedSources1
+        ))
+        try hang(manager.store(
+            type: TestStoreModel1.self,
+            from: api2.server,
+            sourceModels: insertedSources2 + updatedSources2
+        ))
+
+        let models = try database.read {
+            try TestStoreModel1.order(Column("value"), Column("identifier")).fetchAll($0)
+        }
+        XCTAssertEqual(models.count, 8)
+
+        // inserted
+        XCTAssertEqual(models[0].identifier, "s1/ins_id1s1")
+        XCTAssertEqual(models[0].value, "ins_val1")
+        XCTAssertEqual(models[1].identifier, "s2/ins_id1s2")
+        XCTAssertEqual(models[1].value, "ins_val1")
+        XCTAssertEqual(models[2].identifier, "s1/ins_id2s1")
+        XCTAssertEqual(models[2].value, "ins_val2")
+        XCTAssertEqual(models[3].identifier, "s2/ins_id2s2")
+        XCTAssertEqual(models[3].value, "ins_val2")
+
+        // updated
+        XCTAssertEqual(models[4].identifier, "s1/start_id1s1")
+        XCTAssertEqual(models[4].value, "start_val1-2")
+        XCTAssertEqual(models[5].identifier, "s2/start_id1s2")
+        XCTAssertEqual(models[5].value, "start_val1-2")
+        XCTAssertEqual(models[6].identifier, "s1/start_id2s1")
+        XCTAssertEqual(models[6].value, "start_val2-2")
+        XCTAssertEqual(models[7].identifier, "s2/start_id2s2")
+        XCTAssertEqual(models[7].value, "start_val2-2")
+
+        // deleted
+        XCTAssertFalse(models.contains(where: { $0.identifier.contains("start_id3") }))
+        XCTAssertFalse(models.contains(where: { $0.identifier.contains("start_id4") }))
     }
 
     func testIneligibleNotDeleted() throws {
-        let start1 = [
-            with(TestStoreModel3()) {
-                $0.identifier = "s1/start_id1s1"
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.value = 10 // eligible
-            },
-            with(TestStoreModel3()) {
-                $0.identifier = "s1/start_id2s1"
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.value = 1 // not eligible
-            },
-            with(TestStoreModel3()) {
-                $0.identifier = "s1/start_id3s1"
-                $0.serverIdentifier = api1.server.identifier.rawValue
-                $0.value = 100 // eligible, will be deleted
-            },
-        ]
-        let start2 = [
-            with(TestStoreModel3()) {
-                $0.identifier = "s2/start_id1s2"
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.value = 10 // eligible
-            },
-            with(TestStoreModel3()) {
-                $0.identifier = "s2/start_id2s2"
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.value = 1 // not eligible
-            },
-            with(TestStoreModel3()) {
-                $0.identifier = "s2/start_id3s2"
-                $0.serverIdentifier = api2.server.identifier.rawValue
-                $0.value = 100 // eligible, will be deleted
-            },
+        let start = [
+            TestStoreModel3(identifier: "s1/start_id1s1", serverIdentifier: "s1", value: 10), // eligible
+            TestStoreModel3(identifier: "s1/start_id2s1", serverIdentifier: "s1", value: 1), // not eligible
+            TestStoreModel3(identifier: "s1/start_id3s1", serverIdentifier: "s1", value: 100), // eligible, deleted
+            TestStoreModel3(identifier: "s2/start_id1s2", serverIdentifier: "s2", value: 10), // eligible
+            TestStoreModel3(identifier: "s2/start_id2s2", serverIdentifier: "s2", value: 1), // not eligible
+            TestStoreModel3(identifier: "s2/start_id3s2", serverIdentifier: "s2", value: 100), // eligible, deleted
         ]
 
         let insertedSources1 = [
@@ -653,153 +526,127 @@ class ModelManagerTests: XCTestCase {
             TestStoreSource2(id: "start_id1s2", value: 4),
         ]
 
-        try testQueue.sync {
-            try realm.write {
-                realm.add(start1)
-                realm.add(start2)
+        try database.write { db in
+            for model in start {
+                try model.save(db)
             }
-
-            try hang(manager.store(
-                type: TestStoreModel3.self,
-                from: api1.server,
-                sourceModels: insertedSources1 + updatedSources1
-            ))
-            try hang(manager.store(
-                type: TestStoreModel3.self,
-                from: api2.server,
-                sourceModels: insertedSources2 + updatedSources2
-            ))
-            let models = realm.objects(TestStoreModel3.self).sorted(byKeyPath: #keyPath(TestStoreModel3.value))
-            XCTAssertEqual(models.count, 6)
-
-            XCTAssertEqual(models[0].identifier, "s1/start_id2s1")
-            XCTAssertEqual(models[0].value, 1)
-            XCTAssertEqual(models[1].identifier, "s2/start_id2s2")
-            XCTAssertEqual(models[1].value, 1)
-            XCTAssertEqual(models[2].identifier, "s1/start_id1s1")
-            XCTAssertEqual(models[2].value, 4)
-            XCTAssertEqual(models[3].identifier, "s2/start_id1s2")
-            XCTAssertEqual(models[3].value, 4)
-            XCTAssertEqual(models[4].identifier, "s1/ins_id1s1")
-            XCTAssertEqual(models[4].value, 100)
-            XCTAssertEqual(models[5].identifier, "s2/ins_id1s2")
-            XCTAssertEqual(models[5].value, 100)
         }
+
+        try hang(manager.store(
+            type: TestStoreModel3.self,
+            from: api1.server,
+            sourceModels: insertedSources1 + updatedSources1
+        ))
+        try hang(manager.store(
+            type: TestStoreModel3.self,
+            from: api2.server,
+            sourceModels: insertedSources2 + updatedSources2
+        ))
+
+        let models = try database.read {
+            try TestStoreModel3.order(Column("value"), Column("identifier")).fetchAll($0)
+        }
+        XCTAssertEqual(models.count, 6)
+
+        XCTAssertEqual(models[0].identifier, "s1/start_id2s1")
+        XCTAssertEqual(models[0].value, 1)
+        XCTAssertEqual(models[1].identifier, "s2/start_id2s2")
+        XCTAssertEqual(models[1].value, 1)
+        XCTAssertEqual(models[2].identifier, "s1/start_id1s1")
+        XCTAssertEqual(models[2].value, 4)
+        XCTAssertEqual(models[3].identifier, "s2/start_id1s2")
+        XCTAssertEqual(models[3].value, 4)
+        XCTAssertEqual(models[4].identifier, "s1/ins_id1s1")
+        XCTAssertEqual(models[4].value, 100)
+        XCTAssertEqual(models[5].identifier, "s2/ins_id1s2")
+        XCTAssertEqual(models[5].value, 100)
     }
 
     func testUpdateFalseSkipsNewCreation() throws {
-        try testQueue.sync {
-            let sources: [TestStoreSource1] = [
-                .init(id: "id1", value: "val1"),
-                .init(id: "id2", value: "val2"),
-            ]
+        let sources: [TestStoreSource1] = [
+            .init(id: "id1", value: "val1"),
+            .init(id: "id2", value: "val2"),
+        ]
 
-            TestStoreModel1.updateFalseIds = ["id2"]
+        TestStoreModel1.updateFalseIds = ["id2"]
 
-            try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: sources))
-            let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
-            XCTAssertEqual(models.count, 1)
-            XCTAssertEqual(models[0].identifier, "s1/id1")
-            XCTAssertEqual(models[0].value, "val1")
-            XCTAssertEqual(Set(TestStoreModel1.lastDidUpdates.flatMap { $0 }), Set(models))
+        try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: sources))
+
+        let models = try database.read {
+            try TestStoreModel1.order(Column("identifier")).fetchAll($0)
         }
+        XCTAssertEqual(models.count, 1)
+        XCTAssertEqual(models[0].identifier, "s1/id1")
+        XCTAssertEqual(models[0].value, "val1")
     }
 }
 
-class TestDeleteModel1: Object {
-    @objc dynamic var identifier: String = UUID().uuidString
-    @objc dynamic var createdAt: Date
+struct TestDeleteModel1: Codable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "testDeleteModel1"
+
+    var identifier: String
+    var createdAt: Date
 
     init(_ createdAt: Date) {
+        self.identifier = UUID().uuidString
         self.createdAt = createdAt
-    }
-
-    override required init() {
-        self.createdAt = Date()
-        super.init()
-    }
-
-    override class func primaryKey() -> String? {
-        #keyPath(TestDeleteModel1.identifier)
     }
 }
 
-class TestDeleteModel2: Object {
-    @objc dynamic var identifier: String = UUID().uuidString
-    @objc dynamic var createdAt: Date
+struct TestDeleteModel2: Codable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "testDeleteModel2"
+
+    var identifier: String
+    var createdAt: Date
 
     init(_ createdAt: Date) {
+        self.identifier = UUID().uuidString
         self.createdAt = createdAt
-    }
-
-    override required init() {
-        self.createdAt = Date()
-        super.init()
-    }
-
-    override class func primaryKey() -> String? {
-        #keyPath(TestDeleteModel2.identifier)
     }
 }
 
-class TestDeleteModel3: Object {
-    @objc dynamic var identifier: String = UUID().uuidString
-    @objc dynamic var createdAt: Date
+struct TestDeleteModel3: Codable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "testDeleteModel3"
+
+    var identifier: String
+    var createdAt: Date
 
     init(_ createdAt: Date) {
+        self.identifier = UUID().uuidString
         self.createdAt = createdAt
-        super.init()
-    }
-
-    override required init() {
-        self.createdAt = Date()
-        super.init()
-    }
-
-    override class func primaryKey() -> String? {
-        #keyPath(TestDeleteModel3.identifier)
     }
 }
 
-final class TestStoreModel1: Object, UpdatableModel {
+struct TestStoreModel1: Codable, FetchableRecord, PersistableRecord, UpdatableModel, Equatable {
+    static let databaseTableName = "testStoreModel1"
+
     static var updateFalseIds = [String]()
 
-    static var lastDidUpdates: [[TestStoreModel1]] = []
-    static var lastWillDeleteIds: [[String]] = []
-    static func didUpdate(objects: [TestStoreModel1], server: Server, realm: Realm) {
-        lastDidUpdates.append(objects)
-    }
+    var identifier: String
+    var serverIdentifier: String
+    var value: String?
 
-    static func willDelete(objects: [TestStoreModel1], server: Server?, realm: Realm) {
-        lastWillDeleteIds.append(objects.compactMap(\.identifier))
-    }
+    static var serverIdentifierColumnName: String { "serverIdentifier" }
+    static var primaryKeyColumnName: String { "identifier" }
 
-    @objc dynamic var identifier: String?
-    @objc dynamic var serverIdentifier: String?
-    @objc dynamic var value: String?
+    var primaryKeyValue: String { identifier }
 
     static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
         serverIdentifier + "/" + sourceIdentifier
     }
 
-    override class func primaryKey() -> String? {
-        #keyPath(TestStoreModel1.identifier)
+    init(identifier: String, serverIdentifier: String, value: String?) {
+        self.identifier = identifier
+        self.serverIdentifier = serverIdentifier
+        self.value = value
     }
 
-    static func serverIdentifierKey() -> String {
-        #keyPath(TestStoreModel1.serverIdentifier)
+    init(primaryKey: String, serverIdentifier: String) {
+        self.init(identifier: primaryKey, serverIdentifier: serverIdentifier, value: nil)
     }
 
-    func update(
-        with object: TestStoreSource1,
-        server: Server,
-        using realm: Realm
-    ) -> Bool {
-        if self.realm == nil {
-            serverIdentifier = server.identifier.rawValue
-        } else {
-            XCTAssertEqual(serverIdentifier, server.identifier.rawValue)
-        }
+    mutating func update(with object: TestStoreSource1, server: Server) -> Bool {
+        XCTAssertEqual(serverIdentifier, server.identifier.rawValue)
         value = object.value
 
         if Self.updateFalseIds.contains(object.id) {
@@ -817,36 +664,6 @@ struct TestStoreSource1: UpdatableModelSource {
     var value: String?
 }
 
-final class TestStoreModel2: Object, UpdatableModel {
-    static func didUpdate(objects: [TestStoreModel2], server: Server, realm: Realm) {}
-
-    static func willDelete(objects: [TestStoreModel2], server: Server?, realm: Realm) {}
-
-    @objc dynamic var identifier: String?
-    @objc dynamic var serverIdentifier: String?
-
-    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
-        serverIdentifier + "/" + sourceIdentifier
-    }
-
-    override class func primaryKey() -> String? {
-        nil
-    }
-
-    static func serverIdentifierKey() -> String {
-        #keyPath(TestStoreModel2.serverIdentifier)
-    }
-
-    func update(
-        with object: TestStoreSource1,
-        server: Server,
-        using realm: Realm
-    ) -> Bool {
-        XCTFail("not expected to be called in error scenario")
-        return false
-    }
-}
-
 struct TestStoreSource2: UpdatableModelSource {
     var primaryKey: String { id }
 
@@ -854,44 +671,37 @@ struct TestStoreSource2: UpdatableModelSource {
     var value: Int = 0
 }
 
-final class TestStoreModel3: Object, UpdatableModel {
-    static func didUpdate(objects: [TestStoreModel3], server: Server, realm: Realm) {}
+struct TestStoreModel3: Codable, FetchableRecord, PersistableRecord, UpdatableModel, Equatable {
+    static let databaseTableName = "testStoreModel3"
 
-    static var lastWillDeleteIds: [[String]] = []
-    static func willDelete(objects: [TestStoreModel3], server: Server?, realm: Realm) {
-        lastWillDeleteIds.append(objects.compactMap(\.identifier))
+    var identifier: String
+    var serverIdentifier: String
+    var value: Int
+
+    static var serverIdentifierColumnName: String { "serverIdentifier" }
+    static var primaryKeyColumnName: String { "identifier" }
+    static var updateEligibleCondition: SQLExpression? {
+        (Column("value") > 5).sqlExpression
     }
 
-    static var updateEligiblePredicate: NSPredicate {
-        .init(format: "value > 5")
-    }
-
-    @objc dynamic var identifier: String?
-    @objc dynamic var serverIdentifier: String?
-    @objc dynamic var value: Int = 0
+    var primaryKeyValue: String { identifier }
 
     static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
         serverIdentifier + "/" + sourceIdentifier
     }
 
-    override class func primaryKey() -> String? {
-        "identifier"
+    init(identifier: String, serverIdentifier: String, value: Int) {
+        self.identifier = identifier
+        self.serverIdentifier = serverIdentifier
+        self.value = value
     }
 
-    static func serverIdentifierKey() -> String {
-        #keyPath(TestStoreModel3.serverIdentifier)
+    init(primaryKey: String, serverIdentifier: String) {
+        self.init(identifier: primaryKey, serverIdentifier: serverIdentifier, value: 0)
     }
 
-    func update(
-        with object: TestStoreSource2,
-        server: Server,
-        using realm: Realm
-    ) -> Bool {
-        if self.realm == nil {
-            serverIdentifier = server.identifier.rawValue
-        } else {
-            XCTAssertEqual(serverIdentifier, server.identifier.rawValue)
-        }
+    mutating func update(with object: TestStoreSource2, server: Server) -> Bool {
+        XCTAssertEqual(serverIdentifier, server.identifier.rawValue)
         value = object.value
         return true
     }
