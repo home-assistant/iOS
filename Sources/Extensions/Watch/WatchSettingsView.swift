@@ -56,7 +56,7 @@ struct WatchSettingsView: View {
                 WatchUserDefaults.shared.performActionTarget = newValue
             }
         } footer: {
-            Text(verbatim: L10n.Watch.Settings.PerformAction.footer)
+            Text(verbatim: L10n.Watch.Settings.PerformAction.footerPreferWatch)
         }
     }
 

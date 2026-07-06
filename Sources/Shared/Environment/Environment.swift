@@ -4,7 +4,6 @@ import CoreMotion
 import Foundation
 import GRDB
 import HAKit
-import NetworkExtension
 import PromiseKit
 import RealmSwift
 import UserNotifications
@@ -570,22 +569,6 @@ public class AppEnvironment {
 
     public var userNotificationCenter: UNUserNotificationCenter {
         UNUserNotificationCenter.current()
-    }
-
-    public var networkInformation: NEHotspotNetwork? {
-        get async {
-            await withCheckedContinuation { continuation in
-                NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-                    continuation.resume(returning: hotspotNetwork)
-                }
-            }
-        }
-    }
-
-    public func networkInformation(completion: @escaping (NEHotspotNetwork?) -> Void) {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            completion(hotspotNetwork)
-        }
     }
 
     #if !os(watchOS)

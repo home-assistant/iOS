@@ -1,7 +1,6 @@
 import Foundation
 
 public enum WatchUserDefaultsKey: String {
-    case watchSSID
     /// When the watch last received the server configuration from the paired iPhone.
     case serversUpdatedAt
     /// Where the watch runs actions (magic items): automatically, always via iPhone, or directly.
@@ -15,7 +14,7 @@ public enum WatchUserDefaultsKey: String {
 
 /// Where the Apple Watch performs actions such as executing magic items.
 public enum WatchActionTarget: String, CaseIterable {
-    /// Use the iPhone when it's immediately reachable, otherwise connect directly from the Watch.
+    /// Connect directly from the Watch when it can reach Home Assistant, otherwise relay via the iPhone.
     case auto
     /// Always route through the paired iPhone.
     case iPhone

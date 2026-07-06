@@ -192,6 +192,26 @@ public class HomeAssistantAPI {
         }
     }
 
+    public static func apiAvailabilityCheck(for server: Server, timeout: TimeInterval = 5) async -> Bool {
+        var connectionInfo = server.info.connection
+        guard let baseURL = await connectionInfo.activeURL() else {
+            return false
+        }
+
+        var request = URLRequest(url: baseURL.appendingPathComponent("api"))
+        request.timeoutInterval = timeout
+
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        defer { session.finishTasksAndInvalidate() }
+        do {
+            let (_, response) = try await session.data(for: request)
+            return response is HTTPURLResponse
+        } catch {
+            Current.Log.info("Watch reachability probe failed, relaying via iPhone (\(error.localizedDescription))")
+            return false
+        }
+    }
+
     convenience init?() {
         if let server = Current.servers.all.first {
             self.init(server: server, urlConfig: .default)

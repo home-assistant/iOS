@@ -83,11 +83,7 @@ public class ConnectivityWrapper {
     #else
     init() {
         self.hasWiFi = { true }
-        self.currentWiFiSSID = {
-            let ssid = WatchUserDefaults.shared.string(for: .watchSSID)
-            Current.Log.verbose("Watch current WiFi SSID: \(String(describing: ssid))")
-            return ssid
-        }
+        self.currentWiFiSSID = { nil }
         self.currentWiFiBSSID = { nil }
         self.connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
         self.simpleNetworkType = { .unknown }

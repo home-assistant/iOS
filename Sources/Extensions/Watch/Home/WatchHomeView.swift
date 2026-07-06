@@ -97,6 +97,7 @@ struct WatchHomeView: View {
         }
         .onAppear {
             guard autoLoad else { return }
+            viewModel.startNetworkMonitoring()
             Task {
                 await viewModel.fetchNetworkInfo()
                 viewModel.initialRoutine()
