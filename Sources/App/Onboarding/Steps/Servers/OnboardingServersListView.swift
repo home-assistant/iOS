@@ -128,7 +128,8 @@ struct OnboardingServersListView: View {
         }, set: { newValue in
             viewModel.showPermissionsFlow = newValue
         }), onDismiss: {
-            if onboardingStyle == .secondary {
+            if viewModel.permissionsFlowCompleted {
+                viewModel.permissionsFlowCompleted = false
                 Current.onboardingObservation.complete()
             }
         }) {
@@ -138,6 +139,7 @@ struct OnboardingServersListView: View {
                 onboardingServer: viewModel.onboardingServer!,
                 onDismiss: {
                     if onboardingStyle == .secondary {
+                        viewModel.permissionsFlowCompleted = true
                         viewModel.showPermissionsFlow = false
                     } else {
                         Current.onboardingObservation.complete()
