@@ -45,8 +45,6 @@ end
 abstract_target 'iOS' do
   platform :ios, '15.0'
 
-  pod 'ReachabilitySwift'
-
   # fixes newer cocoapods search path issues for Clibsodium build failures
   shared_fwk_pods
 

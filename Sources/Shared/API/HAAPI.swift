@@ -8,9 +8,6 @@ import PromiseKit
 import RealmSwift
 import UIKit
 import Version
-#if os(iOS)
-import Reachability
-#endif
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
