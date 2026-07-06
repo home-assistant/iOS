@@ -164,6 +164,35 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertEqual(decoded, original)
     }
 
+    /// HA sends `progress`/`progress_max` as JSON numbers that may be fractional (e.g. 20.1234).
+    /// ActivityKit decodes content-state OS-side with a strict JSONDecoder, so a float must not make
+    /// the decode throw — that would silently drop the remote update (stale activity) or reject a
+    /// push-to-start. It must decode, rounded to the nearest Int.
+    func testContentState_progressAsFloat_decodesRounded() throws {
+        let decoded = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m","progress":20.1234,"progress_max":100}"#.utf8)
+        )
+        XCTAssertEqual(decoded.progress, 20)
+        XCTAssertEqual(decoded.progressMax, 100)
+
+        let rounding = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m","progress":20.6}"#.utf8)
+        )
+        XCTAssertEqual(rounding.progress, 21)
+    }
+
+    /// A content-state payload without progress keys still decodes, with nil progress.
+    func testContentState_missingProgress_decodesAsNil() throws {
+        let decoded = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m"}"#.utf8)
+        )
+        XCTAssertNil(decoded.progress)
+        XCTAssertNil(decoded.progressMax)
+    }
+
     // MARK: - LiveActivityRegistry (webhook contracts)
 
     /// The Keychain key for the push-to-start token. Changing it would lose stored tokens.

@@ -126,11 +126,12 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(state.countdownEnd)
     }
 
-    func testContentState_progressAsDouble_truncatesToInt() {
-        // JSON may send progress as 50.0 (Double) rather than 50 (Int)
-        let payload: [String: Any] = ["progress": NSNumber(value: 50.9)]
+    func testContentState_progressAsDouble_roundsToInt() {
+        // JSON may send progress as a float (e.g. 20.1234) rather than an Int; round to the nearest.
+        let payload: [String: Any] = ["progress": NSNumber(value: 50.9), "progress_max": NSNumber(value: 100.4)]
         let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
-        XCTAssertEqual(state.progress, 50)
+        XCTAssertEqual(state.progress, 51)
+        XCTAssertEqual(state.progressMax, 100)
     }
 
     func testContentState_whenAbsolute_usesEpochTimestamp() {
