@@ -8,7 +8,6 @@ protocol AppCameraView {
     var showLoader: Binding<Bool> { get set }
 }
 
-@available(iOS 16.0, *)
 struct WebRTCVideoPlayerView: View, AppCameraView {
     @Environment(\.dismiss) var dismiss
 

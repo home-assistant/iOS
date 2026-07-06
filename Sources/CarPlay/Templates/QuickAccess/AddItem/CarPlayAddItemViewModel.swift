@@ -4,7 +4,6 @@ import Shared
 /// Data and persistence for the in-car "Add item" flow. Everything is read from the cached GRDB tables
 /// (`HAAppEntity`, `AppArea`, the entity registry) rather than a live connection, so the picker also
 /// works for servers that aren't the currently selected CarPlay server.
-@available(iOS 16.0, *)
 final class CarPlayAddItemViewModel {
     private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
 

@@ -45,10 +45,6 @@ struct WidgetOpenPage: Widget {
 
 enum WidgetOpenPageSupportedFamilies {
     static var families: [WidgetFamily] {
-        if #available(iOS 16.0, *) {
-            [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .accessoryCircular]
-        } else {
-            [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
-        }
+        [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .accessoryCircular]
     }
 }

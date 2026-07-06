@@ -3,7 +3,6 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayServerListViewModel
     private weak var tabsSelectionTemplate: CPListTemplate?

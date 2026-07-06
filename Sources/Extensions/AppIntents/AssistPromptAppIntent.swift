@@ -2,7 +2,6 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 16.4, *)
 struct AssistPromptAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.assist_prompt.title",
@@ -41,7 +40,6 @@ struct AssistPromptAppIntent: AppIntent {
     }
 }
 
-@available(iOS 16.4, *)
 private final class AssistPromptRunner: NSObject, AssistServiceDelegate {
     private let server: Server
     private var assistService: AssistService?

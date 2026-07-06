@@ -78,15 +78,8 @@ struct ContainerView: View {
                 }
             case let .serverSelect(prompt, includeSettings, onSelect):
                 ServerSelectView(prompt: prompt, includeSettings: includeSettings, selectAction: onSelect)
-                    .modify { view in
-                        if #available(iOS 16.4, *) {
-                            view
-                                .presentationDetents([.medium, .large])
-                                .presentationBackground(Color(uiColor: .systemBackground))
-                        } else {
-                            view
-                        }
-                    }
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(Color(uiColor: .systemBackground))
             }
         }
         .fullScreenCover(item: $viewModel.fullScreenCover, onDismiss: { refreshWebView() }) { cover in

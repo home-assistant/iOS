@@ -3,7 +3,6 @@ import HAKit
 import PromiseKit
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayEntitiesListViewModel {
     enum FilterType {
         case domain(String)

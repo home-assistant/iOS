@@ -36,13 +36,9 @@ public struct LabsLabel: View {
             showInfo = true
         }
         .sheet(isPresented: $showInfo) {
-            if #available(iOS 16.0, *) {
-                infoSheet
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            } else {
-                infoSheet
-            }
+            infoSheet
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
 

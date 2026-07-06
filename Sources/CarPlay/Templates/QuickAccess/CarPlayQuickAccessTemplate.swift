@@ -5,7 +5,6 @@ import PromiseKit
 import RealmSwift
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private static let minimumExecutingDuration: TimeInterval = 1.5
 

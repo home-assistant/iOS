@@ -38,13 +38,7 @@ struct NotificationSnoozeActionsView: View {
             NotificationSnoozeActionAddView(existingMinutes: Set(viewModel.actions.map(\.minutes))) { minutes in
                 viewModel.add(minutes: minutes)
             }
-            .modify { view in
-                if #available(iOS 16.0, *) {
-                    view.presentationDetents([.medium])
-                } else {
-                    view
-                }
-            }
+            .presentationDetents([.medium])
         }
     }
 

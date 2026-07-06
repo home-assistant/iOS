@@ -164,7 +164,7 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct CustomWidgetEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Custom Widget")
 
@@ -185,7 +185,7 @@ struct CustomWidgetEntity: AppEntity {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct CustomWidgetAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [CustomWidgetEntity] {
         widgets().filter { identifiers.contains($0.id) }.map { .init(id: $0.id, name: $0.name) }

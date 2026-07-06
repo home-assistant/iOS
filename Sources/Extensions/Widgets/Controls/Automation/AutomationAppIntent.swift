@@ -4,7 +4,6 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-@available(iOS 16.4, *)
 final class AutomationAppIntent: AppIntent {
     static let title: LocalizedStringResource = .init(
         "widgets.automation.trigger.title",
