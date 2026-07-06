@@ -154,9 +154,7 @@ final class BarcodeScannerCamera: NSObject {
             .upce,
         ]
 
-        if #available(iOS 15.4, *) {
-            metadataObjectTypes.append(.codabar)
-        }
+        metadataObjectTypes.append(.codabar)
 
         metadataOutput.metadataObjectTypes = metadataObjectTypes
 

@@ -2,7 +2,6 @@ import AppIntents
 import HAKit
 import Shared
 
-@available(iOS 16.4, *)
 struct RenderTemplateAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.render_template.title",

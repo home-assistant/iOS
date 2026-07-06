@@ -2,7 +2,6 @@ import CarPlay
 import Foundation
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayAddItemFlow {
     private enum Step {
         case servers

@@ -1,7 +1,6 @@
 import Foundation
 import KeychainAccess
 import UIKit
-import Version
 
 /// Contains shared constants
 public enum AppConstants {
@@ -32,6 +31,8 @@ public enum AppConstants {
             URL(string: "https://companion.home-assistant.io/app/ios/nfc")!
         public static var liveActivitiesDocs =
             URL(string: "https://companion.home-assistant.io/docs/notifications/live-activities")!
+        public static var appleDropSupportiOS15 =
+            URL(string: "https://ohf.to/ha/apple-drop-support")!
     }
 
     public enum QueryItems: String, CaseIterable {
@@ -163,7 +164,6 @@ public enum AppConstants {
         )
     }
 
-    @available(iOS 16.0, watchOS 9.0, *)
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil
@@ -175,7 +175,6 @@ public enum AppConstants {
         ])
     }
 
-    @available(iOS 16.0, watchOS 9.0, *)
     public static func todoListOpenURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil

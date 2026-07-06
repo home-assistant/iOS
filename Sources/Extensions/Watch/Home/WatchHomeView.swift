@@ -4,10 +4,40 @@ import SwiftUI
 
 struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var viewModel = WatchHomeViewModel()
+    @StateObject private var viewModel: WatchHomeViewModel
+    /// When false, the view skips the network/database refresh on appear. Used by previews to render
+    /// injected sample data.
+    private let autoLoad: Bool
     @State private var showAssist = false
     @State private var showSettings = false
     @State private var openFolderId: String?
+    @State private var isEditing = false
+    @State private var activeSheet: HomeSheet?
+
+    init(viewModel: WatchHomeViewModel = WatchHomeViewModel(), autoLoad: Bool = true) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.autoLoad = autoLoad
+    }
+
+    /// Identifiable wrapper so a `MagicItem` can drive a `.sheet(item:)`.
+    struct EditableItem: Identifiable {
+        let id: String
+        let item: MagicItem
+    }
+
+    /// A single sheet enum avoids stacking multiple `.sheet` modifiers on one view, which is
+    /// unreliable on older watchOS.
+    enum HomeSheet: Identifiable {
+        case add
+        case edit(EditableItem)
+
+        var id: String {
+            switch self {
+            case .add: return "__add__"
+            case let .edit(editable): return editable.id
+            }
+        }
+    }
 
     var body: some View {
         Group {
@@ -27,6 +57,9 @@ struct WatchHomeView: View {
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
             showAssist = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
+            viewModel.loadCache()
+        }
         .fullScreenCover(isPresented: $showAssist, content: {
             if let serverId = viewModel.watchConfig.assist.serverId,
                let pipelineId = viewModel.watchConfig.assist.pipelineId {
@@ -41,7 +74,30 @@ struct WatchHomeView: View {
         .sheet(isPresented: $showSettings) {
             WatchSettingsView()
         }
+        .onChange(of: showSettings) { isPresented in
+            if !isPresented {
+                viewModel.loadCache()
+            }
+        }
+        .alert(
+            Text(verbatim: L10n.Watch.Config.Conflict.title),
+            isPresented: Binding(
+                get: { viewModel.pendingConflict != nil },
+                set: { if !$0 { viewModel.pendingConflict = nil } }
+            )
+        ) {
+            Button(L10n.Watch.Config.Conflict.keepWatch) {
+                viewModel.resolveConflictKeepingWatch()
+            }
+            Button(L10n.Watch.Config.Conflict.useIphone) {
+                viewModel.resolveConflictUsingiPhone()
+            }
+        } message: {
+            Text(verbatim: L10n.Watch.Config.Conflict.message)
+        }
         .onAppear {
+            guard autoLoad else { return }
+            viewModel.startNetworkMonitoring()
             Task {
                 await viewModel.fetchNetworkInfo()
                 viewModel.initialRoutine()
@@ -66,9 +122,22 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var content: some View {
         List {
-            listHeader
+            WatchHomeHeaderView(
+                viewModel: viewModel,
+                isEditing: $isEditing,
+                onAssist: { showAssist = true },
+                onAdd: { activeSheet = .add }
+            )
             listContent
-            footer
+            if !isEditing, viewModel.showAssist {
+                addRow
+            }
+            WatchHomeFooterView(
+                viewModel: viewModel,
+                isEditing: isEditing,
+                onEdit: { enterEditMode() },
+                onSettings: { showSettings = true }
+            )
         }
         .id(viewModel.configVersion)
         // Removing the safe area so our fake navigation bar buttons (header) can be place correctly
@@ -78,10 +147,30 @@ struct WatchHomeView: View {
         .modify { view in
             if #available(watchOS 11.0, *) {
                 view.toolbarVisibility(.hidden, for: .navigationBar)
-            } else if #available(watchOS 9.0, *) {
-                view.toolbar(.hidden, for: .navigationBar)
             } else {
-                view.navigationBarHidden(true)
+                view.toolbar(.hidden, for: .navigationBar)
+            }
+        }
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .add:
+                WatchConfigAddView(viewModel: viewModel, folderId: nil)
+            case let .edit(editable):
+                NavigationView {
+                    WatchConfigItemEditView(
+                        mode: .edit,
+                        placeholderName: viewModel.info(for: editable.item).name,
+                        item: editable.item,
+                        info: viewModel.info(for: editable.item)
+                    ) { item in
+                        viewModel.updateItem(item, info: viewModel.info(for: editable.item))
+                        activeSheet = nil
+                    } onDelete: {
+                        viewModel.removeItem(editable.item)
+                        viewModel.saveConfig()
+                        activeSheet = nil
+                    }
+                }
             }
         }
     }
@@ -89,168 +178,137 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var listContent: some View {
         if viewModel.watchConfig.items.isEmpty {
-            Text(verbatim: L10n.Watch.Labels.noConfig)
+            Text(verbatim: L10n.Watch.Labels.noConfigAdd)
                 .font(.footnote)
+                .foregroundStyle(.secondary)
+                .listRowBackground(Color.clear)
         } else {
             mainContent
         }
     }
 
-    @ViewBuilder
-    private var listHeader: some View {
-        HStack {
-            navReloadButton
-            toolbarLoadingState
-            assistHeaderButton
+    private var addRow: some View {
+        Button {
+            activeSheet = .add
+        } label: {
+            Label(L10n.Watch.Config.Add.title, systemSymbol: .plus)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
         }
-        .listRowBackground(Color.clear)
-        .padding(.top, DesignSystem.Spaces.one)
-    }
-
-    @ViewBuilder
-    private var inlineError: some View {
-        if viewModel.showError {
-            Text(viewModel.errorMessage)
-                .font(.footnote)
-                .listRowBackground(
-                    Color.red.opacity(0.5)
-                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
-                )
-        }
+        .watchItemRowStyle()
     }
 
     @ViewBuilder
     private var mainContent: some View {
-        ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
-            if item.type == .folder {
-                WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
-                    withAnimation(.easeInOut(duration: 0.25)) {
-                        openFolderId = item.id
+        ForEach(Array(viewModel.watchConfig.items.enumerated()), id: \.offset) { index, item in
+            rowContent(for: item, at: index)
+                .modify { view in
+                    if isEditing {
+                        view
+                    } else {
+                        view.onLongPressGesture { enterEditMode() }
                     }
                 }
-            } else {
-                WatchMagicViewRow(
-                    item: item,
-                    itemInfo: viewModel.info(for: item)
+        }
+        .onMove(perform: isEditing ? moveItems : nil)
+        .onDelete(perform: isEditing ? deleteItems : nil)
+    }
+
+    @ViewBuilder
+    private func rowContent(for item: MagicItem, at index: Int) -> some View {
+        if isEditing {
+            VStack(spacing: DesignSystem.Spaces.half) {
+                Button {
+                    activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
+                } label: {
+                    WatchConfigItemRow(item: item, itemInfo: viewModel.info(for: item))
+                }
+                .buttonStyle(.plain)
+                WatchReorderControls(
+                    upDisabled: index == 0,
+                    downDisabled: index == viewModel.watchConfig.items.count - 1,
+                    onUp: { viewModel.moveItemUp(at: index) },
+                    onDown: { viewModel.moveItemDown(at: index) }
                 )
             }
-        }
-    }
-
-    @ViewBuilder
-    private var assistHeaderButton: some View {
-        if viewModel.showAssist {
-            assistButton
-                .modify { view in
-                    if #available(watchOS 11, *) {
-                        view.handGestureShortcut(.primaryAction)
-                    } else {
-                        view
-                    }
+            .watchConfigRowBackground()
+        } else if item.type == .folder {
+            WatchFolderRow(item: item, itemInfo: viewModel.info(for: item)) {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    openFolderId = item.id
                 }
-                .circularGlassOrLegacyBackground(tint: .haPrimary)
+            }
         } else {
-            // Reserve space to keep the loader centered
-            Rectangle()
-                .foregroundStyle(Color.clear)
-                .frame(width: 44, height: 44)
+            WatchMagicViewRow(
+                item: item,
+                itemInfo: viewModel.info(for: item),
+                subtitle: viewModel.serverName(for: item)
+            )
         }
     }
 
-    private var assistButton: some View {
-        Button(action: {
-            showAssist = true
-        }, label: {
-            let color: UIColor = {
-                if #available(watchOS 26.0, *) {
-                    return .white
-                } else {
-                    return UIColor(Color.haPrimary)
-                }
-            }()
-            Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
-                ofSize: .init(width: 24, height: 24),
-                color: color
-            ))
-        })
-        .buttonStyle(.plain)
-        .modify { view in
-            if #available(watchOS 26.0, *) {
-                view
-                    .tint(.haPrimary)
-            } else {
-                view
-            }
-        }
+    private func enterEditMode() {
+        withAnimation { isEditing = true }
     }
 
-    private var navReloadButton: some View {
-        Button {
-            viewModel.requestConfig()
-        } label: {
-            Image(systemSymbol: .arrowCounterclockwise)
-        }
-        .buttonStyle(.plain)
-        .circularGlassOrLegacyBackground()
+    private func moveItems(from source: IndexSet, to destination: Int) {
+        viewModel.moveItem(from: source, to: destination)
     }
 
-    @ViewBuilder
-    private var toolbarLoadingState: some View {
-        HStack {
-            if viewModel.isLoading {
-                loadingState
-                    .circularGlassOrLegacyBackground()
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
+    private func deleteItems(at offsets: IndexSet) {
+        viewModel.deleteItem(at: offsets)
     }
+}
 
-    private var loadingState: some View {
-        ProgressView()
-            .progressViewStyle(.circular)
-    }
+#Preview("Populated") {
+    MaterialDesignIcons.register()
+    let viewModel = WatchHomeViewModel()
+    viewModel.showAssist = true
+    viewModel.watchConfig = WatchConfig(items: [
+        MagicItem(
+            id: "script.good_morning",
+            serverId: "1",
+            type: .script,
+            customization: .init(iconColor: "#FFB300", icon: "weather_sunny"),
+            displayText: "Good Morning"
+        ),
+        MagicItem(
+            id: "scene.movie_time",
+            serverId: "1",
+            type: .scene,
+            customization: .init(icon: "movie_open"),
+            displayText: "Movie Time"
+        ),
+        MagicItem(
+            id: "script.goodnight",
+            serverId: "1",
+            type: .script,
+            customization: .init(backgroundColor: "#3F51B5", icon: "weather_night"),
+            displayText: "Goodnight"
+        ),
+        MagicItem(
+            id: "folder1",
+            serverId: "",
+            type: .folder,
+            customization: .init(iconColor: "#4FC3F7"),
+            displayText: "Lights",
+            items: [
+                MagicItem(
+                    id: "light.kitchen",
+                    serverId: "1",
+                    type: .entity,
+                    customization: .init(icon: "ceiling_light"),
+                    displayText: "Kitchen"
+                ),
+            ]
+        ),
+    ])
+    return WatchHomeView(viewModel: viewModel, autoLoad: false)
+}
 
-    private var footer: some View {
-        VStack(spacing: .zero) {
-            appVersion
-            ssidLabel
-            settingsButton
-        }
-        .listRowBackground(Color.clear)
-    }
-
-    private var settingsButton: some View {
-        Button {
-            showSettings = true
-        } label: {
-            Image(systemSymbol: .gearshapeFill)
-        }
-        .circularGlassOrLegacyBackground()
-        .padding(DesignSystem.Spaces.one)
-    }
-
-    private var appVersion: some View {
-        VStack(alignment: .center, spacing: .zero) {
-            Text(verbatim: AppConstants.version)
-            Text(verbatim: "(\(AppConstants.build))")
-                .font(DesignSystem.Font.caption3)
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-        .listRowBackground(Color.clear)
-        .foregroundStyle(.secondary)
-    }
-
-    @ViewBuilder
-    private var ssidLabel: some View {
-        if !viewModel.currentSSID.isEmpty {
-            Label {
-                Text(verbatim: viewModel.currentSSID)
-                    .minimumScaleFactor(0.5)
-            } icon: {
-                Image(systemSymbol: .wifi)
-            }
-            .font(DesignSystem.Font.caption2)
-            .foregroundStyle(.secondary.opacity(0.5))
-        }
-    }
+#Preview("Empty") {
+    MaterialDesignIcons.register()
+    let viewModel = WatchHomeViewModel()
+    viewModel.watchConfig = WatchConfig(items: [])
+    return WatchHomeView(viewModel: viewModel, autoLoad: false)
 }

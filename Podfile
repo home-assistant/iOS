@@ -12,7 +12,7 @@ end
 if ENV['ONLY_SUPPORT_MODULES']
   # some of our CI scripts only need e.g. SwiftLint
   # this allows us to skip a lot of installation when unnecessary
-  platform :ios, '15.0'
+  platform :ios, '16.4'
   support_modules
   workspace 'abstract.workspace'
 
@@ -21,12 +21,10 @@ end
 
 plugin 'cocoapods-acknowledgements'
 
-pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit', '~> 8.1.1'
 
 pod 'RealmSwift'
-pod 'Version'
 pod 'XCGLogger'
 
 # Keep Starscream reference even though HAKit already install it, because it defines our fork with the necessary fix
@@ -44,10 +42,7 @@ def shared_fwk_pods
 end
 
 abstract_target 'iOS' do
-  platform :ios, '15.0'
-
-  pod 'MBProgressHUD', '~> 1.2.0'
-  pod 'ReachabilitySwift'
+  platform :ios, '16.4'
 
   # fixes newer cocoapods search path issues for Clibsodium build failures
   shared_fwk_pods
@@ -83,7 +78,7 @@ abstract_target 'iOS' do
 end
 
 abstract_target 'watchOS' do
-  platform :watchos, '8.0'
+  platform :watchos, '9.0'
 
   target 'Shared-watchOS' do
     shared_fwk_pods
@@ -95,8 +90,8 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '8.0'
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '9.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.4'
 
       config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO' unless target.name.include? 'Firebase'
 

@@ -2,7 +2,6 @@ import CoreLocation
 import Foundation
 import HAKit
 import PromiseKit
-import Version
 
 public struct SensorObserverUpdate {
     public let sensors: Guarantee<[WebhookSensor]>

@@ -4,7 +4,6 @@ import HAKit
 import PromiseKit
 import Shared
 
-@available(iOS 16.0, *)
 enum CarPlayLockConfirmation {
     /// Displays a lock/unlock confirmation dialog appropriate for the entity's current state
     /// - Parameters:

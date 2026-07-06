@@ -1442,6 +1442,7 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings_details.notifications.snooze_actions.add_sheet.title" = "Nouvelle action de report";
 "settings_details.notifications.snooze_actions.footer" = "Actions rapides affichées sur les notifications pour les reporter d'une durée définie. Le report réaffiche la notification plus tard.";
 "settings_details.notifications.snooze_actions.header" = "Actions de report";
+"settings_details.notifications.snooze_actions.prefix_footer" = "Snoozed notifications reappear with a “↺” prefix in their title.";
 "settings_details.notifications.snooze_actions.title_hour" = "Reporter 1 heure";
 "settings_details.notifications.snooze_actions.title_hour_minutes" = "Reporter 1 heure et %li min";
 "settings_details.notifications.snooze_actions.title_hours" = "Reporter %li heures";

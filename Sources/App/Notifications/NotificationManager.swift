@@ -1,5 +1,4 @@
 import CallbackURLKit
-import Communicator
 import FirebaseMessaging
 import Foundation
 import MediaPlayer
@@ -69,11 +68,6 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }
 
     private func openCamera(from userInfo: [AnyHashable: Any]?) {
-        guard #available(iOS 16.0, *) else {
-            Current.Log.info("Ignoring kiosk_show_camera command because camera player requires iOS 16")
-            return
-        }
-
         guard let entityId = cameraEntityId(from: userInfo) else {
             Current.Log.error("Received kiosk_show_camera command without a valid camera entity_id")
             return

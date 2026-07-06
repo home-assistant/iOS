@@ -4,7 +4,7 @@ import PromiseKit
 import SFSafeSymbols
 import Shared
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct IntentSceneEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Scene")
 
@@ -49,7 +49,7 @@ struct IntentSceneEntity: AppEntity, EntityContextRepresentable {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentSceneEntity] {
         getSceneEntities().flatMap(\.1).filter { identifiers.contains($0.id) }

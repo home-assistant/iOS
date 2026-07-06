@@ -3,7 +3,6 @@ import Shared
 import SwiftUI
 
 /// A SwiftUI view for playing HLS camera streams.
-@available(iOS 16.0, *)
 struct CameraStreamHLSView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -102,7 +101,7 @@ struct CameraStreamHLSView: View {
         let response = api.StreamCamera(entityId: cameraEntityId).value
 
         if let hlsPath = response?.hlsPath,
-           let baseURL = api.server.info.connection.activeURL() {
+           let baseURL = await api.server.activeURL() {
             return baseURL.appendingPathComponent(hlsPath)
         } else {
             throw StreamError.noHLSAvailable
@@ -158,7 +157,6 @@ struct CameraStreamHLSView: View {
 }
 
 #if DEBUG
-@available(iOS 16.0, *)
 #Preview {
     CameraStreamHLSView(
         server: ServerFixture.standard,

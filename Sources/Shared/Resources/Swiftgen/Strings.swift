@@ -5320,14 +5320,102 @@ public enum L10n {
       }
     }
     public enum Config {
+      public enum Add {
+        /// Nothing to add yet. Add scripts, scenes or automations on your iPhone first.
+        public static var empty: String { return L10n.tr("Localizable", "watch.config.add.empty") }
+        /// Entity
+        public static var entity: String { return L10n.tr("Localizable", "watch.config.add.entity") }
+        /// Folder
+        public static var folder: String { return L10n.tr("Localizable", "watch.config.add.folder") }
+        /// Search
+        public static var searchPlaceholder: String { return L10n.tr("Localizable", "watch.config.add.search_placeholder") }
+        /// Add
+        public static var title: String { return L10n.tr("Localizable", "watch.config.add.title") }
+        public enum Error {
+          /// Couldn't load items from your iPhone. Please try again.
+          public static var fetchFailed: String { return L10n.tr("Localizable", "watch.config.add.error.fetch_failed") }
+        }
+        public enum Filter {
+          /// All
+          public static var all: String { return L10n.tr("Localizable", "watch.config.add.filter.all") }
+        }
+      }
       public enum Assist {
+        /// No Assist pipelines cached yet. Keep your iPhone nearby and tap Reload.
+        public static var noPipelines: String { return L10n.tr("Localizable", "watch.config.assist.no_pipelines") }
+        /// Pipeline
+        public static var pipeline: String { return L10n.tr("Localizable", "watch.config.assist.pipeline") }
+        /// Preferred
+        public static var preferred: String { return L10n.tr("Localizable", "watch.config.assist.preferred") }
+        /// Reload
+        public static var reload: String { return L10n.tr("Localizable", "watch.config.assist.reload") }
+        /// Save
+        public static var save: String { return L10n.tr("Localizable", "watch.config.assist.save") }
+        /// Select pipeline
+        public static var selectPipeline: String { return L10n.tr("Localizable", "watch.config.assist.select_pipeline") }
         /// Server
         public static var selectServer: String { return L10n.tr("Localizable", "watch.config.assist.select_server") }
+        /// Show Assist
+        public static var show: String { return L10n.tr("Localizable", "watch.config.assist.show") }
+        /// Assist
+        public static var title: String { return L10n.tr("Localizable", "watch.config.assist.title") }
+        public enum Error {
+          /// Couldn't load Assist pipelines from your iPhone.
+          public static var fetchFailed: String { return L10n.tr("Localizable", "watch.config.assist.error.fetch_failed") }
+        }
       }
       public enum Cache {
         public enum Error {
           /// Failed to load watch config from cache.
           public static var message: String { return L10n.tr("Localizable", "watch.config.cache.error.message") }
+        }
+      }
+      public enum Conflict {
+        /// Keep Watch Changes
+        public static var keepWatch: String { return L10n.tr("Localizable", "watch.config.conflict.keep_watch") }
+        /// This watch and your iPhone both changed the configuration since they last synced. Which do you want to keep?
+        public static var message: String { return L10n.tr("Localizable", "watch.config.conflict.message") }
+        /// Sync Conflict
+        public static var title: String { return L10n.tr("Localizable", "watch.config.conflict.title") }
+        /// Use iPhone
+        public static var useIphone: String { return L10n.tr("Localizable", "watch.config.conflict.use_iphone") }
+      }
+      public enum Edit {
+        /// Add
+        public static var addButton: String { return L10n.tr("Localizable", "watch.config.edit.add_button") }
+        /// Delete
+        public static var delete: String { return L10n.tr("Localizable", "watch.config.edit.delete") }
+        /// Icon
+        public static var icon: String { return L10n.tr("Localizable", "watch.config.edit.icon") }
+        /// Name
+        public static var namePlaceholder: String { return L10n.tr("Localizable", "watch.config.edit.name_placeholder") }
+        /// Preview
+        public static var preview: String { return L10n.tr("Localizable", "watch.config.edit.preview") }
+        /// Ask before running
+        public static var requireConfirmation: String { return L10n.tr("Localizable", "watch.config.edit.require_confirmation") }
+        /// Edit
+        public static var title: String { return L10n.tr("Localizable", "watch.config.edit.title") }
+        public enum Error {
+          /// Keep your iPhone nearby to change what's shown on your watch.
+          public static var notReachable: String { return L10n.tr("Localizable", "watch.config.edit.error.not_reachable") }
+        }
+        public enum Folder {
+          /// New Folder
+          public static var addTitle: String { return L10n.tr("Localizable", "watch.config.edit.folder.add_title") }
+          /// Edit Folder
+          public static var editTitle: String { return L10n.tr("Localizable", "watch.config.edit.folder.edit_title") }
+        }
+        public enum IconSearch {
+          /// Search icons
+          public static var placeholder: String { return L10n.tr("Localizable", "watch.config.edit.icon_search.placeholder") }
+          /// Use default icon
+          public static var useDefault: String { return L10n.tr("Localizable", "watch.config.edit.icon_search.use_default") }
+        }
+        public enum Item {
+          /// Add Item
+          public static var addTitle: String { return L10n.tr("Localizable", "watch.config.edit.item.add_title") }
+          /// Edit Item
+          public static var editTitle: String { return L10n.tr("Localizable", "watch.config.edit.item.edit_title") }
         }
       }
       public enum Error {
@@ -5598,6 +5686,8 @@ public enum L10n {
     public enum Labels {
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
+      /// With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.
+      public static var noConfigAdd: String { return L10n.tr("Localizable", "watch.labels.no_config_add") }
       public enum ComplicationGroup {
         public enum CircularSmall {
           /// Use circular small complications to display content in the corners of the Color watch face.
@@ -6105,14 +6195,32 @@ public enum L10n {
         public static var appleWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.apple_watch") }
         /// Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.
         public static var footer: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer") }
+        /// Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.
+        public static var footerPreferWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer_prefer_watch") }
         /// iPhone
         public static var iphone: String { return L10n.tr("Localizable", "watch.settings.perform_action.iphone") }
         /// Perform action using
         public static var title: String { return L10n.tr("Localizable", "watch.settings.perform_action.title") }
       }
+      public enum RestartApp {
+        /// This closes the app immediately. You'll need to reopen it manually.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.restart_app.footer") }
+        /// Restart App
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.restart_app.title") }
+      }
       public enum Servers {
         /// Servers
         public static var header: String { return L10n.tr("Localizable", "watch.settings.servers.header") }
+      }
+      public enum Troubleshooting {
+        /// Troubleshooting
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.troubleshooting.title") }
+        public enum Connection {
+          /// The connection between your iPhone and Apple Watch can sometimes get stuck. Restarting both devices usually fixes it.
+          public static var message: String { return L10n.tr("Localizable", "watch.settings.troubleshooting.connection.message") }
+          /// Connection Issues
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.troubleshooting.connection.title") }
+        }
       }
       public enum UrlOverride {
         /// Which URL the Apple Watch uses when it connects directly to this server. Auto follows your network.
@@ -6191,6 +6299,20 @@ public enum L10n {
     /// Version %@
     public static func versionFormat(_ p1: Any) -> String {
       return L10n.tr("Localizable", "whats_new.version_format", String(describing: p1))
+    }
+    public enum AppSupportUpdate {
+      /// This update requires iOS 16.4, watchOS 9, and macOS 12 or later. Tap to read more.
+      public static var itemBody: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_body") }
+      /// Support for older operating systems has ended
+      public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_title") }
+      /// App support update
+      public static var title: String { return L10n.tr("Localizable", "whats_new.app_support_update.title") }
+    }
+    public enum Item {
+      /// Opens an article
+      public static var opensArticleHint: String { return L10n.tr("Localizable", "whats_new.item.opens_article_hint") }
+      /// Opens a link
+      public static var opensLinkHint: String { return L10n.tr("Localizable", "whats_new.item.opens_link_hint") }
     }
   }
 

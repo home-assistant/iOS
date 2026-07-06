@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
+@available(macOS 13.0, tvOS 16.0, *)
 struct IntentServerAppEntity: AppEntity, Sendable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "MaterialDesignIcons")
 

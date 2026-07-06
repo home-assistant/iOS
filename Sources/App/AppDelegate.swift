@@ -1,6 +1,5 @@
 import Alamofire
 import CallbackURLKit
-import Communicator
 #if DEBUG
 import DebugSwift
 #endif
@@ -8,7 +7,6 @@ import FirebaseCore
 import FirebaseMessaging
 import Intents
 import KeychainAccess
-import MBProgressHUD
 import ObjectMapper
 import PromiseKit
 import RealmSwift
@@ -207,7 +205,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        if #available(iOS 16.0, *), connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+        if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
             return SceneActivity.carPlay.configuration
         } else {
             let activity = options.userActivities

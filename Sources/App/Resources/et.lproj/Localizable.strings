@@ -1442,6 +1442,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.notifications.snooze_actions.add_sheet.title" = "Uus edasilükkamise toiming";
 "settings_details.notifications.snooze_actions.footer" = "Teavitustel kuvatakse kiirtoiminguid nende edasilükkamiseks määratud aja võrra. Edasilükkamine kuvab teavituse hiljem uuesti.";
 "settings_details.notifications.snooze_actions.header" = "Toimingute edasilükkamine";
+"settings_details.notifications.snooze_actions.prefix_footer" = "Snoozed notifications reappear with a “↺” prefix in their title.";
 "settings_details.notifications.snooze_actions.title_hour" = "Edasilükkamine 1 tund";
 "settings_details.notifications.snooze_actions.title_hour_minutes" = "Edasilükkamine 1 tund  ja %li minutit";
 "settings_details.notifications.snooze_actions.title_hours" = "Edasilükkamine %li tundi";
