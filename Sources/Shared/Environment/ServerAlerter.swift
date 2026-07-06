@@ -1,6 +1,5 @@
 import Foundation
 import PromiseKit
-import Version
 
 public struct ServerAlert: Codable, Equatable {
     public struct VersionRequirement: Codable, Equatable {

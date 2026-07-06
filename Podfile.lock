@@ -35,7 +35,6 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (8.1.2):
     - PromiseKit/CorePromise
-  - ReachabilitySwift (5.0.0)
   - Realm (10.35.0):
     - Realm/Headers (= 10.35.0)
   - Realm/Headers (10.35.0)
@@ -46,7 +45,6 @@ PODS:
   - SwiftFormat/CLI (0.53.1)
   - SwiftGen (6.5.1)
   - SwiftLint (0.54.0)
-  - Version (0.8.0)
   - XCGLogger (7.0.1):
     - XCGLogger/Core (= 7.0.1)
   - XCGLogger/Core (7.0.1):
@@ -60,14 +58,12 @@ DEPENDENCIES:
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
   - PromiseKit (~> 8.1.1)
-  - ReachabilitySwift
   - RealmSwift
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/bgoncal/starscream`, tag `4.0.9`)
   - SwiftFormat/CLI (= 0.53.1)
   - SwiftGen (~> 6.5.0)
   - SwiftLint (= 0.54.0)
-  - Version
   - XCGLogger
 
 SPEC REPOS:
@@ -75,13 +71,11 @@ SPEC REPOS:
     - ObjcExceptionBridging
     - OHHTTPStubs
     - PromiseKit
-    - ReachabilitySwift
     - Realm
     - RealmSwift
     - SwiftFormat
     - SwiftGen
     - SwiftLint
-    - Version
     - XCGLogger
 
 EXTERNAL SOURCES:
@@ -125,7 +119,6 @@ SPEC CHECKSUMS:
   ObjectMapper: e6e4d91ff7f2861df7aecc536c92d8363f4c9677
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
-  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
   RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
@@ -133,9 +126,8 @@ SPEC CHECKSUMS:
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
-  Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: f1f3f4803de5d663773e0bb46a5aebb2e9fbcded
+PODFILE CHECKSUM: 27809817dc0c9a8791510b05cba8d22238786725
 
 COCOAPODS: 1.15.2

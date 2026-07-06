@@ -1,6 +1,5 @@
 import PromiseKit
 @testable import Shared
-import Version
 import XCTest
 
 class ActiveSensorTests: XCTestCase {

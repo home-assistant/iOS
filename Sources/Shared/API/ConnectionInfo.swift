@@ -1,6 +1,5 @@
 import Alamofire
 import Foundation
-import Version
 
 public enum ConnectionSecurityLevel: String, Codable {
     // User has not opted in or out of security checks

@@ -1,5 +1,4 @@
 @testable import Shared
-import Version
 import XCTest
 
 class ServerManagerTests: XCTestCase {
