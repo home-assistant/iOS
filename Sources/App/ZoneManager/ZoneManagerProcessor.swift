@@ -163,6 +163,10 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             return ignore(.zoneDisabled)
         }
 
+        // Snapshot before the asynchronous SSID fetch: the Realm object could be deleted while the
+        // continuation is suspended.
+        let ssidFilter = Array(zone.SSIDFilter)
+
         return Guarantee<String?> { seal in
             Task {
                 await seal(Current.connectivity.currentWiFiSSID())
@@ -170,11 +174,16 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }.then { currentSSID -> Promise<Void> in
             // The `then` continuation runs on the main queue, matching the thread the Realm zone
             // object is confined to.
-            if let currentSSID, zone.SSIDFilter.contains(currentSSID) {
+            if let currentSSID, ssidFilter.contains(currentSSID) {
                 // If current SSID is in the filter list stop processing region event.
                 // This is to cut down on false exits.
                 // https://github.com/home-assistant/iOS/issues/32
                 return ignore(.ignoredSSID(currentSSID))
+            }
+
+            guard !zone.isInvalidated else {
+                // The zone was deleted while the SSID fetch was in flight.
+                return ignore(.unknownRegion)
             }
 
             zone.realm?.reentrantWrite {

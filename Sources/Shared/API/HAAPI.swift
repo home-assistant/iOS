@@ -671,7 +671,10 @@ public class HomeAssistantAPI {
             }
         }.then { [self] currentSSID -> Promise<Void> in
             // The `then` continuation runs on the main queue, matching the thread the Realm zone
-            // object is confined to.
+            // object is confined to. The zone could have been deleted while the SSID fetch was in
+            // flight, in which case it must not be touched anymore.
+            let zone = (zone?.isInvalidated == true) ? nil : zone
+
             let update: WebhookUpdateLocation
             let location: CLLocation?
 

@@ -133,13 +133,12 @@ enum StatusItemPrimaryAction {
         guard Current.settingsStore.macNativeFeaturesOnly else { return false }
         // Prefer the server shown in the menu-bar title; its getter already falls back to the first
         // server, so this also covers users without a configured menu-bar template.
-        guard let server = Current.settingsStore.menuItemTemplate?.server ?? Current.servers.all.first else {
-            return false
-        }
-        Task { @MainActor in
-            guard let url = await server.activeURL() else { return }
-            URLOpener.shared.open(url, options: [:], completionHandler: nil)
-        }
+        let server = Current.settingsStore.menuItemTemplate?.server ?? Current.servers.all.first
+        // This only runs on macOS, where the last-known network information is read live from
+        // macBridge, so the synchronous evaluation is current. Callers need the handled/unhandled
+        // decision synchronously to fall through to the toggle behavior.
+        guard let url = server?.activeURLUsingLastKnownNetworkState() else { return false }
+        URLOpener.shared.open(url, options: [:], completionHandler: nil)
         return true
     }
 }

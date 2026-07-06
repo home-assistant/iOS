@@ -216,12 +216,13 @@ extension AssistService {
     }
 
     private func ttsEnd(mediaUrlPath: String?) {
-        guard let mediaUrlPath else { return }
-        Task { [weak self] in
-            guard let self,
-                  let mediaUrl = await server.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
-            delegate?.didReceiveTtsMediaUrl(mediaUrl)
-        }
+        // Evaluated against cached network information: this runs mid-pipeline over an active
+        // WebSocket connection (so the cache is fresh), and delegates rely on receiving the TTS
+        // URL synchronously, in order with the other pipeline events.
+        guard let mediaUrlPath,
+              let mediaUrl = server.activeURLUsingLastKnownNetworkState()?.appendingPathComponent(mediaUrlPath)
+        else { return }
+        delegate?.didReceiveTtsMediaUrl(mediaUrl)
     }
 
     private func intentProgress(messageChunk: String?) {

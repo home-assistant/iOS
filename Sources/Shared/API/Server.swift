@@ -346,6 +346,22 @@ public extension Server {
         return url
     }
 
+    /// Returns the active url evaluated against the most recently known network information,
+    /// without refreshing it first.
+    ///
+    /// On macOS (and watchOS) the last-known network information is read live from its source, so
+    /// this is current; on iOS it may be stale. Only for synchronous callers that cannot await —
+    /// prefer the async `activeURL()`.
+    ///
+    /// The re-evaluated active URL type is written back to `info`.
+    func activeURLUsingLastKnownNetworkState() -> URL? {
+        var url: URL?
+        update { info in
+            url = info.connection.evaluateActiveURL()
+        }
+        return url
+    }
+
     /// Returns the active url with /api appended, refreshing network information (e.g. current
     /// SSID) before evaluating which URL is active.
     ///

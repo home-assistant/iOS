@@ -34,7 +34,8 @@ public class ConnectivityWrapper {
 
     /// Fetches up-to-date network information (SSID, BSSID, hardware address); replaceable in tests.
     ///
-    /// The default implementation coalesces concurrent calls into a single fetch and records the
+    /// The default implementation always performs a fresh fetch — coalescing onto an in-flight
+    /// fetch could return state older than the event that triggered the call — and records the
     /// result as the last-known network state.
     public lazy var currentNetworkState: () async -> NetworkState = { [weak self] in
         await self?.fetchNetworkState() ?? NetworkState()
@@ -75,7 +76,6 @@ public class ConnectivityWrapper {
 
     private let stateLock = NSLock()
     private var cachedNetworkState = NetworkState()
-    private var inFlightFetch: Task<NetworkState, Never>?
 
     public func updateLastKnownNetworkState(_ state: NetworkState) {
         stateLock.lock()
@@ -90,25 +90,9 @@ public class ConnectivityWrapper {
     }
 
     private func fetchNetworkState() async -> NetworkState {
-        let task: Task<NetworkState, Never>
-
-        stateLock.lock()
-        if let inFlightFetch {
-            task = inFlightFetch
-        } else {
-            task = Task { [self] in
-                let state = await performNetworkStateFetch()
-                stateLock.lock()
-                inFlightFetch = nil
-                cachedNetworkState = state
-                stateLock.unlock()
-                return state
-            }
-            inFlightFetch = task
-        }
-        stateLock.unlock()
-
-        return await task.value
+        let state = await performNetworkStateFetch()
+        updateLastKnownNetworkState(state)
+        return state
     }
 
     #if targetEnvironment(macCatalyst)
@@ -199,6 +183,13 @@ public class ConnectivityWrapper {
         self.simpleNetworkType = { .unknown }
         self.cellularNetworkType = { .unknown }
         self.networkAttributes = { [:] }
+
+        // The watch's network information lives in UserDefaults (synced from the phone), which is
+        // always current, so synchronous consumers read it live instead of going through the
+        // cached state.
+        self.lastKnownNetworkState = {
+            NetworkState(ssid: WatchUserDefaults.shared.string(for: .watchSSID))
+        }
 
         observeConnectivityChanges()
         // Reachability observer is not available for watchOS

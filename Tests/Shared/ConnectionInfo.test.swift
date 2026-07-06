@@ -2,9 +2,23 @@
 import XCTest
 
 class ConnectionInfoTests: XCTestCase {
+    private var previousCurrentNetworkState: (() async -> NetworkState)!
+    private var previousLastKnownNetworkState: (() -> NetworkState)!
+    private var previousRefreshNetworkInformation: (() async -> Void)!
+
     override func setUp() {
         super.setUp()
+        previousCurrentNetworkState = Current.connectivity.currentNetworkState
+        previousLastKnownNetworkState = Current.connectivity.lastKnownNetworkState
+        previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
         setNetworkState(NetworkState())
+    }
+
+    override func tearDown() {
+        Current.connectivity.currentNetworkState = previousCurrentNetworkState
+        Current.connectivity.lastKnownNetworkState = previousLastKnownNetworkState
+        Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        super.tearDown()
     }
 
     /// Makes the given network state what connectivity reports, both for fresh fetches and for the
