@@ -93,12 +93,16 @@ struct ContainerView: View {
             switch cover {
             case let .onboardingPermissions(server, steps):
                 NavigationView {
-                    OnboardingPermissionsNavigationView(onboardingServer: server, steps: steps)
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                CloseButton { viewModel.fullScreenCover = nil }
-                            }
+                    OnboardingPermissionsNavigationView(
+                        onboardingServer: server,
+                        steps: steps,
+                        onDismiss: { viewModel.fullScreenCover = nil }
+                    )
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            CloseButton { viewModel.fullScreenCover = nil }
                         }
+                    }
                 }
                 .navigationViewStyle(.stack)
                 .injectingViewControllerProvider()
