@@ -53,11 +53,13 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
             return
         }
 
-        let zone = AppZone.all()
-            .first(where: {
-                $0.identifier == region.identifier ||
-                    $0.identifier == region.identifier.components(separatedBy: "@").first
-            })
+        // regions for small zones are suffixed with "@<angle>"; the zone's
+        // identifier is the prefix
+        let baseIdentifier = region.identifier.components(separatedBy: "@").first ?? region.identifier
+        var zone = AppZone.zone(identifier: region.identifier)
+        if zone == nil, baseIdentifier != region.identifier {
+            zone = AppZone.zone(identifier: baseIdentifier)
+        }
 
         let event = ZoneManagerEvent(
             eventType: .region(region, state),
