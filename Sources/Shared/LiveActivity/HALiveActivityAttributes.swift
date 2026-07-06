@@ -189,8 +189,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             }
             self.message = try container.decode(String.self, forKey: .message)
             self.criticalText = try container.decodeIfPresent(String.self, forKey: .criticalText)
-            self.progress = try container.decodeIfPresent(Int.self, forKey: .progress)
-            self.progressMax = try container.decodeIfPresent(Int.self, forKey: .progressMax)
+            self.progress = Self.decodeRoundedInt(container, forKey: .progress)
+            self.progressMax = Self.decodeRoundedInt(container, forKey: .progressMax)
             self.chronometer = try container.decodeIfPresent(Bool.self, forKey: .chronometer)
             if let timestamp = try container.decodeIfPresent(Double.self, forKey: .countdownEnd) {
                 self.countdownEnd = Date(timeIntervalSince1970: timestamp)
@@ -230,6 +230,20 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             try container.encodeIfPresent(backgroundColor, forKey: .backgroundColor)
             try container.encodeIfPresent(textColor, forKey: .textColor)
             try container.encodeIfPresent(progressBarColor, forKey: .progressBarColor)
+        }
+
+        // HA may send progress/progress_max as a JSON float (e.g. 20.1234). ActivityKit decodes
+        // content-state OS-side with a strict JSONDecoder, so decoding those keys as Int would throw
+        // and drop the whole remote update (stale activity) or reject a push-to-start. Decode as
+        // Double and round so both integer and fractional values map to the nearest Int.
+        private static func decodeRoundedInt(
+            _ container: KeyedDecodingContainer<CodingKeys>,
+            forKey key: CodingKeys
+        ) -> Int? {
+            guard let value = try? container.decodeIfPresent(Double.self, forKey: key) else {
+                return nil
+            }
+            return Int(exactly: value.rounded())
         }
     }
 
