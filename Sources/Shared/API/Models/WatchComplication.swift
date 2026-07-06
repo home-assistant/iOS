@@ -1,16 +1,22 @@
 import Foundation
+import GRDB
 import ObjectMapper
-import RealmSwift
 import UIKit
 #if os(watchOS)
 import ClockKit
 #endif
 
-public class WatchComplication: Object, ImmutableMappable {
-    @objc public dynamic var identifier: String = UUID().uuidString
-    @objc public dynamic var serverIdentifier: String?
+/// An Apple Watch complication configuration persisted in GRDB. Replaces the
+/// legacy Realm-backed model. ObjectMapper conformance is kept because the
+/// phone syncs complications to the watch as JSON via the watch context, and
+/// the wire keys must stay stable across app versions.
+public final class WatchComplication: Codable, FetchableRecord, PersistableRecord, ImmutableMappable {
+    public static let databaseTableName = GRDBDatabaseTable.watchComplication.rawValue
 
-    @objc private dynamic var rawFamily: String = ""
+    public var identifier: String = UUID().uuidString
+    public var serverIdentifier: String?
+
+    private var rawFamily: String = ""
     public var Family: ComplicationGroupMember {
         get {
             // Current.Log.verbose("GET Family for str '\(rawFamily)'")
@@ -24,7 +30,7 @@ public class WatchComplication: Object, ImmutableMappable {
         }
     }
 
-    @objc private dynamic var rawTemplate: String = ""
+    private var rawTemplate: String = ""
     public var Template: ComplicationTemplate {
         get {
             // Current.Log.verbose("GET Template for str '\(rawTemplate)'")
@@ -38,7 +44,7 @@ public class WatchComplication: Object, ImmutableMappable {
         }
     }
 
-    @objc public dynamic var Data: [String: Any] {
+    public var Data: [String: Any] {
         get {
             guard let dictionaryData = complicationData else {
                 return [String: Any]()
@@ -61,49 +67,71 @@ public class WatchComplication: Object, ImmutableMappable {
         }
     }
 
-    @objc fileprivate dynamic var complicationData: Data?
-    @objc public dynamic var CreatedAt = Date()
+    fileprivate var complicationData: Data?
+    public var createdAt = Date()
 
-    @objc public dynamic var name: String?
+    public var name: String?
     public var displayName: String {
         name ?? Template.style
     }
 
-    @objc public dynamic var IsPublic: Bool = true
+    public var isPublic: Bool = true
 
-    override public static func primaryKey() -> String? {
-        "identifier"
+    enum CodingKeys: String, CodingKey {
+        case identifier
+        case serverIdentifier
+        case rawFamily
+        case rawTemplate
+        case complicationData
+        case createdAt
+        case name
+        case isPublic
     }
 
-    override public static func ignoredProperties() -> [String] {
-        ["Family", "Template"]
+    public init() {}
+
+    /// Used by `RealmToGRDBMigration` to import legacy rows without going
+    /// through the (validating) computed accessors.
+    init(
+        identifier: String,
+        serverIdentifier: String?,
+        rawFamily: String,
+        rawTemplate: String,
+        complicationData: Data?,
+        createdAt: Date,
+        name: String?,
+        isPublic: Bool
+    ) {
+        self.identifier = identifier
+        self.serverIdentifier = serverIdentifier
+        self.rawFamily = rawFamily
+        self.rawTemplate = rawTemplate
+        self.complicationData = complicationData
+        self.createdAt = createdAt
+        self.name = name
+        self.isPublic = isPublic
     }
 
-    override public required init() {
-        super.init()
-    }
-
-    public required init(map: ObjectMapper.Map) throws {
+    public init(map: ObjectMapper.Map) throws {
         // this is used for watch<->app syncing
-        self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
-        super.init()
+        self.createdAt = try map.value("CreatedAt", using: DateTransform())
         self.Template = try map.value("Template")
         self.Data = try map.value("Data")
         self.Family = try map.value("Family")
         self.identifier = try map.value("identifier")
         self.name = try map.value("name")
-        self.IsPublic = try map.value("IsPublic")
+        self.isPublic = try map.value("IsPublic")
         self.serverIdentifier = try map.value("serverIdentifier")
     }
 
     public func mapping(map: ObjectMapper.Map) {
         Template >>> map["Template"]
         Data >>> map["Data"]
-        CreatedAt >>> (map["CreatedAt"], DateTransform())
+        createdAt >>> (map["CreatedAt"], DateTransform())
         Family >>> map["Family"]
         identifier >>> map["identifier"]
         name >>> map["name"]
-        IsPublic >>> map["IsPublic"]
+        isPublic >>> map["IsPublic"]
         serverIdentifier >>> map["serverIdentifier"]
     }
 
@@ -988,4 +1016,123 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     #endif
+}
+
+// MARK: - Equatable & Hashable
+
+extension WatchComplication: Equatable, Hashable {
+    public static func == (lhs: WatchComplication, rhs: WatchComplication) -> Bool {
+        lhs.identifier == rhs.identifier
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
+}
+
+// MARK: - Queries
+
+public extension WatchComplication {
+    /// All persisted complications, across all servers.
+    static func all() -> [WatchComplication] {
+        do {
+            return try Current.database().read { db in
+                try WatchComplication.fetchAll(db)
+            }
+        } catch {
+            Current.Log.error("Failed to fetch watch complications: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    static func fetch(identifier: String) -> WatchComplication? {
+        do {
+            return try Current.database().read { db in
+                try WatchComplication
+                    .filter(Column(DatabaseTables.WatchComplication.identifier.rawValue) == identifier)
+                    .fetchOne(db)
+            }
+        } catch {
+            Current.Log.error("Failed to fetch watch complication \(identifier): \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    static func complications(serverIdentifier: String) -> [WatchComplication] {
+        do {
+            return try Current.database().read { db in
+                try WatchComplication
+                    .filter(Column(DatabaseTables.WatchComplication.serverIdentifier.rawValue) == serverIdentifier)
+                    .fetchAll(db)
+            }
+        } catch {
+            Current.Log.error("Failed to fetch watch complications: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    func save() {
+        do {
+            try Current.database().write { db in
+                try self.save(db)
+            }
+        } catch {
+            Current.Log.error("Failed to save watch complication \(identifier): \(error.localizedDescription)")
+        }
+    }
+
+    func delete() {
+        do {
+            _ = try Current.database().write { db in
+                try self.delete(db)
+            }
+        } catch {
+            Current.Log.error("Failed to delete watch complication \(identifier): \(error.localizedDescription)")
+        }
+    }
+
+    /// Replaces every persisted complication, used when the watch receives the
+    /// full set from the paired phone.
+    static func replaceAll(with complications: [WatchComplication]) {
+        do {
+            try Current.database().write { db in
+                try WatchComplication.deleteAll(db)
+                for complication in complications {
+                    try complication.save(db)
+                }
+            }
+        } catch {
+            Current.Log.error("Failed to replace watch complications: \(error.localizedDescription)")
+        }
+    }
+}
+
+// MARK: - Table
+
+final class WatchComplicationTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.watchComplication.rawValue }
+
+    var definedColumns: [String] { DatabaseTables.WatchComplication.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.WatchComplication.identifier.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.serverIdentifier.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplication.rawFamily.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.rawTemplate.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.complicationData.rawValue, .blob)
+                    t.column(DatabaseTables.WatchComplication.createdAt.rawValue, .datetime).notNull()
+                    t.column(DatabaseTables.WatchComplication.name.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplication.isPublic.rawValue, .boolean).notNull()
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
+        }
+    }
 }

@@ -25,6 +25,13 @@ public enum GRDBDatabaseTable: String {
     case kioskSettings
     case notificationSnoozeAction
 
+    // Formerly Realm models, migrated by RealmToGRDBMigration
+    case appZone
+    case notificationCategory
+    case watchComplication
+    case locationHistory
+    case locationError
+
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
     case clientEvent
@@ -191,6 +198,80 @@ public enum DatabaseTables {
         case minutes
         case isEnabled
         case sortOrder
+    }
+
+    // Zones from Home Assistant, used for location tracking / region monitoring.
+    // Column names must match `AppZone`'s stored properties.
+    public enum AppZone: String, CaseIterable {
+        case identifier
+        case entityId
+        case serverIdentifier
+        case friendlyName
+        case latitude
+        case longitude
+        case radius
+        case trackingEnabled
+        case enterNotification
+        case exitNotification
+        case inRegion
+        case isPassive
+        case beaconUUID
+        case beaconMajor
+        case beaconMinor
+        case ssidTrigger
+        case ssidFilter
+    }
+
+    // Actionable notification categories (local and server-controlled). Column
+    // names must match `NotificationCategory`'s stored properties; actions are
+    // embedded as JSON.
+    public enum NotificationCategory: String, CaseIterable {
+        case identifier
+        case serverIdentifier
+        case name
+        case isServerControlled
+        case hiddenPreviewsBodyPlaceholder
+        case categorySummaryFormat
+        case sendDismissActions
+        case hiddenPreviewsShowTitle
+        case hiddenPreviewsShowSubtitle
+        case actions
+    }
+
+    // Apple Watch complication configurations. Column names must match
+    // `WatchComplication`'s stored properties.
+    public enum WatchComplication: String, CaseIterable {
+        case identifier
+        case serverIdentifier
+        case rawFamily
+        case rawTemplate
+        case complicationData
+        case createdAt
+        case name
+        case isPublic
+    }
+
+    // Debug history of location updates submitted to servers. Column names must
+    // match `LocationHistoryEntry`'s stored properties.
+    public enum LocationHistory: String, CaseIterable {
+        case id
+        case trigger
+        case zoneIdentifier
+        case latitude
+        case longitude
+        case accuracy
+        case payload
+        case createdAt
+        case accuracyAuthorization
+    }
+
+    // Debug history of CoreLocation errors. Column names must match
+    // `LocationError`'s stored properties.
+    public enum LocationError: String, CaseIterable {
+        case id
+        case code
+        case message
+        case createdAt
     }
 
     // Kiosk mode configuration (single row). Column names must match

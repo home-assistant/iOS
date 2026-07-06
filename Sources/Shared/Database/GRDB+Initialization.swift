@@ -69,6 +69,11 @@ public extension DatabaseQueue {
             AllowedTagTable(),
             KioskSettingsTable(),
             NotificationSnoozeActionTable(),
+            AppZoneTable(),
+            NotificationCategoryTable(),
+            WatchComplicationTable(),
+            LocationHistoryTable(),
+            LocationErrorTable(),
         ]
     }
 

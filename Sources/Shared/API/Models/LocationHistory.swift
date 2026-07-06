@@ -1,34 +1,37 @@
 import CoreLocation
 import Foundation
-import RealmSwift
+import GRDB
 
-public class LocationHistoryEntry: Object {
-    @objc public dynamic var Trigger: String?
-    @objc public dynamic var Zone: RLMZone?
-    @objc public dynamic var Latitude = 0.0
-    @objc public dynamic var Longitude = 0.0
-    @objc public dynamic var Accuracy = 0.0
-    @objc public dynamic var Payload: String = ""
-    @objc public dynamic var CreatedAt = Current.date()
-    private let rawAccuracyAuthorization = RealmProperty<CLAccuracyAuthorization.RawValue?>()
-    public var accuracyAuthorization: CLAccuracyAuthorization? {
+/// A debug record of a location update submitted to a server, persisted in GRDB.
+public struct LocationHistoryEntry: Codable, FetchableRecord, PersistableRecord, Identifiable, Equatable {
+    public static let databaseTableName = GRDBDatabaseTable.locationHistory.rawValue
+
+    public var id: String
+    public var trigger: String?
+    public var zoneIdentifier: String?
+    public var latitude: Double
+    public var longitude: Double
+    public var accuracy: Double
+    public var payload: String
+    public var createdAt: Date
+    private var accuracyAuthorization: Int?
+
+    public var clAccuracyAuthorization: CLAccuracyAuthorization? {
         get {
-            rawAccuracyAuthorization.value.flatMap(CLAccuracyAuthorization.init(rawValue:))
+            accuracyAuthorization.flatMap(CLAccuracyAuthorization.init(rawValue:))
         }
         set {
-            rawAccuracyAuthorization.value = newValue?.rawValue
+            accuracyAuthorization = newValue?.rawValue
         }
     }
 
-    public convenience init(
+    public init(
         updateType: LocationUpdateTrigger,
         location: CLLocation?,
-        zone: RLMZone?,
+        zone: AppZone?,
         accuracyAuthorization: CLAccuracyAuthorization,
         payload: String
     ) {
-        self.init()
-
         var loc = CLLocation()
         if let location {
             loc = location
@@ -36,34 +39,144 @@ public class LocationHistoryEntry: Object {
             loc = zone.location
         }
 
-        self.Accuracy = loc.horizontalAccuracy
-        self.Latitude = loc.coordinate.latitude
-        self.Longitude = loc.coordinate.longitude
-        self.Trigger = updateType.rawValue
-        self.Zone = zone
-        self.Payload = payload
-        self.accuracyAuthorization = accuracyAuthorization
+        self.id = UUID().uuidString
+        self.trigger = updateType.rawValue
+        self.zoneIdentifier = zone?.identifier
+        self.latitude = loc.coordinate.latitude
+        self.longitude = loc.coordinate.longitude
+        self.accuracy = loc.horizontalAccuracy
+        self.payload = payload
+        self.createdAt = Current.date()
+        self.accuracyAuthorization = accuracyAuthorization.rawValue
     }
 
     public var clLocation: CLLocation {
         CLLocation(
-            coordinate: .init(latitude: Latitude, longitude: Longitude),
+            coordinate: .init(latitude: latitude, longitude: longitude),
             altitude: 0,
-            horizontalAccuracy: Accuracy,
+            horizontalAccuracy: accuracy,
             verticalAccuracy: 0,
             timestamp: Current.date()
         )
     }
 }
 
-public class LocationError: Object {
-    @objc public dynamic var Code: Int = 0
-    @objc public dynamic var Description: String = ""
-    @objc public dynamic var CreatedAt = Current.date()
+// MARK: - LocationHistoryEntry queries
 
-    public convenience init(err: CLError) {
-        self.init()
-        self.Code = err.errorCode
-        self.Description = err.debugDescription
+public extension LocationHistoryEntry {
+    /// All entries, most recent first.
+    static func all() -> [LocationHistoryEntry] {
+        do {
+            return try Current.database().read { db in
+                try LocationHistoryEntry
+                    .order(Column(DatabaseTables.LocationHistory.createdAt.rawValue).desc)
+                    .fetchAll(db)
+            }
+        } catch {
+            Current.Log.error("Failed to fetch location history: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    func save() {
+        do {
+            try Current.database().write { db in
+                try self.save(db)
+            }
+        } catch {
+            Current.Log.error("Failed to save location history entry: \(error.localizedDescription)")
+        }
+    }
+
+    static func deleteAll() {
+        do {
+            _ = try Current.database().write { db in
+                try LocationHistoryEntry.deleteAll(db)
+            }
+        } catch {
+            Current.Log.error("Failed to delete location history: \(error.localizedDescription)")
+        }
+    }
+}
+
+/// A debug record of a CoreLocation failure, persisted in GRDB.
+public struct LocationError: Codable, FetchableRecord, PersistableRecord, Identifiable {
+    public static let databaseTableName = GRDBDatabaseTable.locationError.rawValue
+
+    public var id: String
+    public var code: Int
+    public var message: String
+    public var createdAt: Date
+
+    public init(err: CLError) {
+        self.id = UUID().uuidString
+        self.code = err.errorCode
+        self.message = err.debugDescription
+        self.createdAt = Current.date()
+    }
+
+    public func save() {
+        do {
+            try Current.database().write { db in
+                try self.save(db)
+            }
+        } catch {
+            Current.Log.error("Failed to save location error: \(error.localizedDescription)")
+        }
+    }
+}
+
+// MARK: - Tables
+
+final class LocationHistoryTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.locationHistory.rawValue }
+
+    var definedColumns: [String] { DatabaseTables.LocationHistory.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.LocationHistory.id.rawValue, .text).notNull()
+                    t.column(DatabaseTables.LocationHistory.trigger.rawValue, .text)
+                    t.column(DatabaseTables.LocationHistory.zoneIdentifier.rawValue, .text)
+                    t.column(DatabaseTables.LocationHistory.latitude.rawValue, .double).notNull()
+                    t.column(DatabaseTables.LocationHistory.longitude.rawValue, .double).notNull()
+                    t.column(DatabaseTables.LocationHistory.accuracy.rawValue, .double).notNull()
+                    t.column(DatabaseTables.LocationHistory.payload.rawValue, .text).notNull()
+                    t.column(DatabaseTables.LocationHistory.createdAt.rawValue, .datetime).notNull()
+                    t.column(DatabaseTables.LocationHistory.accuracyAuthorization.rawValue, .integer)
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
+        }
+    }
+}
+
+final class LocationErrorTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.locationError.rawValue }
+
+    var definedColumns: [String] { DatabaseTables.LocationError.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.LocationError.id.rawValue, .text).notNull()
+                    t.column(DatabaseTables.LocationError.code.rawValue, .integer).notNull()
+                    t.column(DatabaseTables.LocationError.message.rawValue, .text).notNull()
+                    t.column(DatabaseTables.LocationError.createdAt.rawValue, .datetime).notNull()
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
+        }
     }
 }
