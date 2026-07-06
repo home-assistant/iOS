@@ -134,9 +134,10 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
         let title = (payload["title"] as? String).flatMap { $0.isEmpty ? nil : $0 }
         let message = payload["message"] as? String ?? ""
         let criticalText = payload["critical_text"] as? String
-        // Use NSNumber coercion so both Int and Double JSON values (e.g. 50 vs 50.0) decode correctly.
-        let progress = (payload["progress"] as? NSNumber).map { Int(truncating: $0) }
-        let progressMax = (payload["progress_max"] as? NSNumber).map { Int(truncating: $0) }
+        // Round so both Int and Double JSON values (e.g. 50 vs 50.9) map to the nearest Int, matching
+        // the OS-side content-state decoder in HALiveActivityAttributes.ContentState.
+        let progress = (payload["progress"] as? NSNumber).flatMap { Int(exactly: $0.doubleValue.rounded()) }
+        let progressMax = (payload["progress_max"] as? NSNumber).flatMap { Int(exactly: $0.doubleValue.rounded()) }
         let chronometer = payload["chronometer"] as? Bool
         let icon = payload["notification_icon"] as? String
         let color = payload["notification_icon_color"] as? String

@@ -1,5 +1,4 @@
 @testable import Shared
-import Version
 import XCTest
 
 class ConnectionInfoTests: XCTestCase {
@@ -738,5 +737,102 @@ class ConnectionInfoTests: XCTestCase {
 
         XCTAssertEqual(info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
+    }
+
+    func testAsyncActiveURLRefreshesNetworkInformationBeforeEvaluating() async {
+        let internalURL = URL(string: "http://internal.example.com:8123")
+        let externalURL = URL(string: "http://external.example.com:8123")
+        var info = ConnectionInfo(
+            externalURL: externalURL,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: ["unit_tests"],
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        let previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        addTeardownBlock {
+            Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        }
+
+        // Cached network information does not know about the internal network yet;
+        // the refresh performed by the async activeURL discovers it.
+        Current.connectivity.currentWiFiSSID = { nil }
+        Current.connectivity.refreshNetworkInformation = {
+            Current.connectivity.currentWiFiSSID = { "unit_tests" }
+        }
+
+        let url = await info.activeURL()
+
+        XCTAssertEqual(url, internalURL)
+        XCTAssertEqual(info.activeURLType, .internal)
+    }
+
+    func testAsyncActiveURLFallsBackToExternalURLWhenRefreshLeavesInternalNetwork() async {
+        let internalURL = URL(string: "http://internal.example.com:8123")
+        let externalURL = URL(string: "http://external.example.com:8123")
+        var info = ConnectionInfo(
+            externalURL: externalURL,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: ["unit_tests"],
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        let previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        addTeardownBlock {
+            Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        }
+
+        // Cached network information still says we are on the internal network,
+        // but the refresh performed by the async activeURL discovers we left it.
+        Current.connectivity.currentWiFiSSID = { "unit_tests" }
+        Current.connectivity.refreshNetworkInformation = {
+            Current.connectivity.currentWiFiSSID = { nil }
+        }
+
+        let url = await info.activeURL()
+
+        XCTAssertEqual(url, externalURL)
+        XCTAssertEqual(info.activeURLType, .external)
+    }
+
+    func testServerAsyncActiveURLRefreshesNetworkInformationAndUpdatesInfo() async {
+        let internalURL = URL(string: "http://internal.example.com:8123")
+        let externalURL = URL(string: "http://external.example.com:8123")
+
+        let previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        addTeardownBlock {
+            Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        }
+
+        Current.connectivity.currentWiFiSSID = { nil }
+
+        let server = Server.fake { info in
+            info.connection.set(address: internalURL, for: .internal)
+            info.connection.set(address: externalURL, for: .external)
+            info.connection.internalSSIDs = ["unit_tests"]
+        }
+
+        Current.connectivity.refreshNetworkInformation = {
+            Current.connectivity.currentWiFiSSID = { "unit_tests" }
+        }
+
+        let url = await server.activeURL()
+
+        XCTAssertEqual(url, internalURL)
+        XCTAssertEqual(server.info.connection.activeURLType, .internal)
     }
 }

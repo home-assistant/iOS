@@ -6,6 +6,11 @@ public enum WatchUserDefaultsKey: String {
     case serversUpdatedAt
     /// Where the watch runs actions (magic items): automatically, always via iPhone, or directly.
     case performActionTarget
+    /// Last selected Assist pipeline display name for the Watch settings summary.
+    case assistPipelineName
+    /// `WatchConfig.lastModified` of the config the watch and iPhone last agreed on — the baseline for
+    /// offline-edit conflict detection.
+    case lastConfigSyncModified
 }
 
 /// Where the Apple Watch performs actions such as executing magic items.
@@ -35,6 +40,21 @@ public final class WatchUserDefaults {
         userDefaults.object(forKey: key.rawValue) as? Date
     }
 
+    // MARK: - Offline config sync baseline
+
+    /// `WatchConfig.lastModified` of the last config the watch and iPhone agreed on. `nil` until the
+    /// first successful sync.
+    public var lastSyncedModified: Double? {
+        get { userDefaults.object(forKey: WatchUserDefaultsKey.lastConfigSyncModified.rawValue) as? Double }
+        set {
+            if let newValue {
+                userDefaults.set(newValue, forKey: WatchUserDefaultsKey.lastConfigSyncModified.rawValue)
+            } else {
+                userDefaults.removeObject(forKey: WatchUserDefaultsKey.lastConfigSyncModified.rawValue)
+            }
+        }
+    }
+
     // MARK: - Action target
 
     public var performActionTarget: WatchActionTarget {
@@ -62,5 +82,12 @@ public final class WatchUserDefaults {
         } else {
             userDefaults.removeObject(forKey: key)
         }
+    }
+
+    // MARK: - Assist pipeline display name
+
+    public var assistPipelineName: String? {
+        get { string(for: .assistPipelineName) }
+        set { set(newValue, key: .assistPipelineName) }
     }
 }

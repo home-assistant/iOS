@@ -2,7 +2,6 @@ import CoreMotion
 import Foundation
 import PromiseKit
 @testable import Shared
-import Version
 import XCTest
 
 class PedometerSensorTests: XCTestCase {

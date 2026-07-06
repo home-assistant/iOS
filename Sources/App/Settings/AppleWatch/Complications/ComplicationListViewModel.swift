@@ -1,21 +1,19 @@
-import Communicator
 import Foundation
 import PromiseKit
 import RealmSwift
 import Shared
-import Version
 
 /// Observable view model backing `ComplicationListView`. Wraps the Realm
 /// notification tokens used to drive the existing Eureka controller.
 final class ComplicationListViewModel: ObservableObject {
     @Published private(set) var complicationsByGroup: [ComplicationGroup: [WatchComplication]] = [:]
-    @Published private(set) var watchState: WatchState = Communicator.shared.currentWatchState
+    @Published private(set) var watchState: HAWatchConnectivity.WatchState = Communicator.shared.currentWatchState
     @Published var isUpdatingComplications = false
     @Published var errorMessage: String?
     @Published var showError = false
 
     private var realmToken: NotificationToken?
-    private var watchStateToken: Observation?
+    private var watchStateToken: HAWatchConnectivity.ObservationToken?
     private var updateNotificationToken: NSObjectProtocol?
 
     init() {
@@ -27,7 +25,7 @@ final class ComplicationListViewModel: ObservableObject {
     deinit {
         realmToken?.invalidate()
         if let watchStateToken {
-            WatchState.unobserve(watchStateToken)
+            Communicator.shared.watchState.unobserve(watchStateToken)
         }
         if let updateNotificationToken {
             NotificationCenter.default.removeObserver(updateNotificationToken)
@@ -37,7 +35,7 @@ final class ComplicationListViewModel: ObservableObject {
     // MARK: - Capability
 
     var supportsMultipleComplications: Bool {
-        guard let string = Communicator.shared.mostRecentlyReceievedContext.content["watchVersion"] as? String else {
+        guard let string = Communicator.shared.mostRecentlyReceivedContext.content["watchVersion"] as? String else {
             return false
         }
         do {
@@ -94,7 +92,7 @@ final class ComplicationListViewModel: ObservableObject {
     // MARK: - Watch state observation
 
     private func observeWatchState() {
-        watchStateToken = WatchState.observe { [weak self] state in
+        watchStateToken = Communicator.shared.watchState.observe { [weak self] state in
             DispatchQueue.main.async {
                 self?.watchState = state
             }

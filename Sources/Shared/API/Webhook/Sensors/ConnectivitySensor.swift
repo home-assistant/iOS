@@ -2,7 +2,6 @@ import Foundation
 import PromiseKit
 #if os(iOS)
 import CoreTelephony
-import Reachability
 #endif
 
 final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {

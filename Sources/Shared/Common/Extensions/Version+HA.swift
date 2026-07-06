@@ -1,5 +1,4 @@
 import Foundation
-import Version
 
 public extension Version {
     private static func replacements() throws -> [(regex: NSRegularExpression, replacement: String)] {

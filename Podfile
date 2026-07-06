@@ -21,12 +21,10 @@ end
 
 plugin 'cocoapods-acknowledgements'
 
-pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit', '~> 8.1.1'
 
 pod 'RealmSwift'
-pod 'Version'
 pod 'XCGLogger'
 
 # Keep Starscream reference even though HAKit already install it, because it defines our fork with the necessary fix
@@ -45,9 +43,6 @@ end
 
 abstract_target 'iOS' do
   platform :ios, '15.0'
-
-  pod 'MBProgressHUD', '~> 1.2.0'
-  pod 'ReachabilitySwift'
 
   # fixes newer cocoapods search path issues for Clibsodium build failures
   shared_fwk_pods

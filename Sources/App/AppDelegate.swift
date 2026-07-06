@@ -1,6 +1,5 @@
 import Alamofire
 import CallbackURLKit
-import Communicator
 #if DEBUG
 import DebugSwift
 #endif
@@ -8,7 +7,6 @@ import FirebaseCore
 import FirebaseMessaging
 import Intents
 import KeychainAccess
-import MBProgressHUD
 import ObjectMapper
 import PromiseKit
 import RealmSwift

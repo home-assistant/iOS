@@ -1,7 +1,6 @@
 import HAKit
 import KeychainAccess
 import UserNotifications
-import Version
 
 public protocol ServerObserver: AnyObject {
     func serversDidChange(_ serverManager: ServerManager)
@@ -379,7 +378,7 @@ final class ServerManagerImpl: ServerManager {
 
             // update active URL so we can update just once if it's different than the save is doing
             // intentionally not in the lock
-            _ = serverInfo.connection.activeURL()
+            _ = serverInfo.connection.evaluateActiveURL()
 
             return cache.mutate { cache in
                 guard !cache.deletedServers.contains(identifier) else {

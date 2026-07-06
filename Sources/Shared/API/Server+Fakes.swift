@@ -30,7 +30,7 @@ extension ServerInfo {
                 build: nil
             )
         )
-        _ = value.connection.activeURL()
+        _ = value.connection.evaluateActiveURL()
         return value
     }
 }
