@@ -1132,7 +1132,9 @@ public class HomeAssistantAPI {
                     return
                 }
 
-                Task {
+                // @MainActor so the completion fires on the main queue like every other branch
+                // (HAKit's callback queue), which UI callers rely on.
+                Task { @MainActor in
                     guard let url = await self?.resolvedProfilePictureURL(from: path) else {
                         Current.Log.error("Profile picture: Invalid URL for user entity picture, user id \(user.id)")
                         completion(nil)
