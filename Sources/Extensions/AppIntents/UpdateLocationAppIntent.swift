@@ -2,7 +2,6 @@ import AppIntents
 import CoreLocation
 import Shared
 
-@available(iOS 16.4, *)
 struct UpdateLocationAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.update_location.title",

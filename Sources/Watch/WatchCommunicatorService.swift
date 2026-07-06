@@ -374,6 +374,16 @@ final class WatchCommunicatorService {
 
     private func magicItemPressed(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
+
+        if let triggeredAt = message.content["triggeredAt"] as? TimeInterval {
+            let age = Current.date().timeIntervalSince1970 - triggeredAt
+            if age > 30 {
+                Current.Log.warning("Discarding stale magic item press received \(Int(age))s after it was triggered")
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                return
+            }
+        }
+
         guard let itemType = message.content["itemType"] as? String,
               let itemId = message.content["itemId"] as? String,
               let type = MagicItem.ItemType(rawValue: itemType) else {

@@ -6189,6 +6189,8 @@ public enum L10n {
         public static var appleWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.apple_watch") }
         /// Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.
         public static var footer: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer") }
+        /// Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.
+        public static var footerPreferWatch: String { return L10n.tr("Localizable", "watch.settings.perform_action.footer_prefer_watch") }
         /// iPhone
         public static var iphone: String { return L10n.tr("Localizable", "watch.settings.perform_action.iphone") }
         /// Perform action using
@@ -6293,9 +6295,9 @@ public enum L10n {
       return L10n.tr("Localizable", "whats_new.version_format", String(describing: p1))
     }
     public enum AppSupportUpdate {
-      /// This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.
+      /// This update requires iOS 16.4, watchOS 9, and macOS 12 or later. Tap to read more.
       public static var itemBody: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_body") }
-      /// Support for iOS 15, watch OS 8, and macOS 11 will end
+      /// Support for older operating systems has ended
       public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_title") }
       /// App support update
       public static var title: String { return L10n.tr("Localizable", "whats_new.app_support_update.title") }

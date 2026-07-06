@@ -1,7 +1,6 @@
 import AppIntents
 import Shared
 
-@available(iOS 16.4, *)
 struct UpdateSensorsAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.update_sensors.title",

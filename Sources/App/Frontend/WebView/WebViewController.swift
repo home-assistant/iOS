@@ -121,19 +121,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             ),
         ]
 
-        // Add find command for iOS 16+
-        if #available(iOS 16.0, *) {
-            commands.append(UIKeyCommand(
-                input: "f",
-                modifierFlags: .command,
-                action: #selector(showFindInteraction)
-            ))
-            commands.append(UIKeyCommand(
-                input: "f",
-                modifierFlags: [.shift, .command],
-                action: #selector(showFindInteraction)
-            ))
-        }
+        commands.append(UIKeyCommand(
+            input: "f",
+            modifierFlags: .command,
+            action: #selector(showFindInteraction)
+        ))
+        commands.append(UIKeyCommand(
+            input: "f",
+            modifierFlags: [.shift, .command],
+            action: #selector(showFindInteraction)
+        ))
 
         return commands
     }
@@ -270,14 +267,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         styleUI()
         getLatestConfig()
 
-        if #available(iOS 16.4, *) {
-            webView.isInspectable = true
-        }
+        webView.isInspectable = true
 
-        // Enable find interaction for iOS 16+
-        if #available(iOS 16.0, *) {
-            webView.isFindInteractionEnabled = true
-        }
+        webView.isFindInteractionEnabled = true
 
         postOnboardingNotificationPermission()
         checkForLocalSecurityLevelDecisionNeeded()

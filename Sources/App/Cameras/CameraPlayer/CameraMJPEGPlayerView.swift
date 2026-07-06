@@ -3,7 +3,6 @@ import SwiftUI
 import UIKit
 
 /// A SwiftUI view for displaying MJPEG camera streams.
-@available(iOS 16.0, *)
 struct CameraMJPEGPlayerView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -60,7 +59,6 @@ struct CameraMJPEGPlayerView: View {
 
 // MARK: - UIViewControllerRepresentable wrapper
 
-@available(iOS 16.0, *)
 private struct MJPEGStreamContainerView: UIViewControllerRepresentable {
     let server: Server
     let cameraEntityId: String
@@ -105,7 +103,6 @@ private struct MJPEGStreamContainerView: UIViewControllerRepresentable {
 
 // MARK: - UIKit View Controller for MJPEG streaming
 
-@available(iOS 16.0, *)
 private class MJPEGStreamViewController: UIViewController {
     private let server: Server
     private let cameraEntityId: String
@@ -202,7 +199,6 @@ private class MJPEGStreamViewController: UIViewController {
 }
 
 #if DEBUG
-@available(iOS 16.0, *)
 #Preview {
     CameraMJPEGPlayerView(
         server: ServerFixture.standard,

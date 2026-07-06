@@ -1836,6 +1836,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.settings.no_servers" = "No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.";
 "watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.";
+"watch.settings.perform_action.footer_prefer_watch" = "Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Perform action using";
 "watch.settings.refresh" = "Refresh";
@@ -1865,8 +1866,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "webrtc_player.known_issues.title" = "Known Issues";
-"whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
-"whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
+"whats_new.app_support_update.item_body" = "This update requires iOS 16.4, watchOS 9, and macOS 12 or later. Tap to read more.";
+"whats_new.app_support_update.item_title" = "Support for older operating systems has ended";
 "whats_new.app_support_update.title" = "App support update";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";

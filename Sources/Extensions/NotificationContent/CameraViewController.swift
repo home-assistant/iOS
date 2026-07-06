@@ -172,11 +172,9 @@ class CameraViewController: UIViewController, NotificationCategory {
                 }
 
             // Prefer WebRTC; it rejects when unsupported so the chain falls through to HLS then MJPEG.
-            if #available(iOS 16.0, *) {
-                controllers.insert({ () -> Promise<UIViewController & CameraStreamHandler> in
-                    .value(CameraStreamWebRTCViewController(api: api, cameraEntityId: entityId))
-                }, at: 0)
-            }
+            controllers.insert({ () -> Promise<UIViewController & CameraStreamHandler> in
+                .value(CameraStreamWebRTCViewController(api: api, cameraEntityId: entityId))
+            }, at: 0)
 
             return self?.viewController(from: controllers).asVoid() ?? .value(())
         }
@@ -239,7 +237,7 @@ class CameraViewController: UIViewController, NotificationCategory {
 
     #if DEBUG
     private func debugStreamName(for controller: UIViewController & CameraStreamHandler) -> String {
-        if #available(iOS 16.0, *), controller is CameraStreamWebRTCViewController {
+        if controller is CameraStreamWebRTCViewController {
             return "WebRTC"
         }
         if controller is CameraStreamHLSViewController {

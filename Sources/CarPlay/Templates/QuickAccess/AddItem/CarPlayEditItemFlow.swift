@@ -2,7 +2,6 @@ import CarPlay
 import Foundation
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayEditItemFlow {
     typealias DisplayItem = (title: String, subtitle: String?, image: UIImage)
 

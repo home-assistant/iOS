@@ -7,7 +7,6 @@ enum CarPlayCondensedEntitiesGroup {
     static let size = 6
 }
 
-@available(iOS 16.0, *)
 final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayEntitiesListViewModel
     var template: CPListTemplate

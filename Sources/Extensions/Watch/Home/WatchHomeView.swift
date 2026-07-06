@@ -97,6 +97,7 @@ struct WatchHomeView: View {
         }
         .onAppear {
             guard autoLoad else { return }
+            viewModel.startNetworkMonitoring()
             Task {
                 await viewModel.fetchNetworkInfo()
                 viewModel.initialRoutine()
@@ -146,10 +147,8 @@ struct WatchHomeView: View {
         .modify { view in
             if #available(watchOS 11.0, *) {
                 view.toolbarVisibility(.hidden, for: .navigationBar)
-            } else if #available(watchOS 9.0, *) {
-                view.toolbar(.hidden, for: .navigationBar)
             } else {
-                view.navigationBarHidden(true)
+                view.toolbar(.hidden, for: .navigationBar)
             }
         }
         .sheet(item: $activeSheet) { sheet in

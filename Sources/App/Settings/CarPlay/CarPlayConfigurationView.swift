@@ -52,14 +52,8 @@ struct CarPlayConfigurationView: View {
 
     var body: some View {
         if needsNavigationController {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    content
-                }
-            } else {
-                NavigationView {
-                    content
-                }
+            NavigationStack {
+                content
             }
         } else {
             content

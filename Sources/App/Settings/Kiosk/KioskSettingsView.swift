@@ -201,11 +201,7 @@ private extension View {
     // system reverse them when the menu opens upward, so the first option stays on top.
     @ViewBuilder
     func fixedMenuOrder() -> some View {
-        if #available(iOS 16.0, *) {
-            menuOrder(.fixed)
-        } else {
-            self
-        }
+        menuOrder(.fixed)
     }
 }
 

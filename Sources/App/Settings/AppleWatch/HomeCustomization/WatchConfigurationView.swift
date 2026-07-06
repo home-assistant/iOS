@@ -21,14 +21,8 @@ struct WatchConfigurationView: View {
 
     var body: some View {
         if needsNavigationController {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    content
-                }
-            } else {
-                NavigationView {
-                    content
-                }
+            NavigationStack {
+                content
             }
         } else {
             content
@@ -131,19 +125,11 @@ struct WatchConfigurationView: View {
 
     @ViewBuilder
     private var addFolderSheet: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                addFolderForm
-            }
-            .presentationDetents([.medium])
-            .preferredColorScheme(.dark)
-        } else {
-            NavigationView {
-                addFolderForm
-            }
-            .navigationViewStyle(.stack)
-            .preferredColorScheme(.dark)
+        NavigationStack {
+            addFolderForm
         }
+        .presentationDetents([.medium])
+        .preferredColorScheme(.dark)
     }
 
     private var addFolderForm: some View {

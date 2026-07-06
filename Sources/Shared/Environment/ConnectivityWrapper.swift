@@ -184,21 +184,13 @@ public class ConnectivityWrapper {
         self.cellularNetworkType = { .unknown }
         self.networkAttributes = { [:] }
 
-        // The watch's network information lives in UserDefaults (synced from the phone), which is
-        // always current, so synchronous consumers read it live instead of going through the
-        // cached state.
-        self.lastKnownNetworkState = {
-            NetworkState(ssid: WatchUserDefaults.shared.string(for: .watchSSID))
-        }
-
         observeConnectivityChanges()
         // Reachability observer is not available for watchOS
     }
 
     private func performNetworkStateFetch() async -> NetworkState {
-        let ssid = WatchUserDefaults.shared.string(for: .watchSSID)
-        Current.Log.verbose("Watch current WiFi SSID: \(String(describing: ssid))")
-        return NetworkState(ssid: ssid)
+        // The watch has no network information of its own (the phone-synced SSID was removed).
+        NetworkState()
     }
     #endif
 

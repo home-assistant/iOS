@@ -75,15 +75,8 @@ struct EntityPicker: View {
         }
         #endif
         .navigationViewStyle(.stack)
-        .modify { view in
-            if #available(iOS 16.0, *) {
-                view
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
-            } else {
-                view
-            }
-        }
+        .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
     }
 
     private var content: some View {

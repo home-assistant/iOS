@@ -67,6 +67,7 @@ struct WatchHomeFooterView: View {
             }
             .font(DesignSystem.Font.caption2)
             .foregroundStyle(.secondary.opacity(0.5))
+            .padding(.vertical, DesignSystem.Spaces.one)
         }
     }
 }

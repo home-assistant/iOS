@@ -4,7 +4,6 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 16.4, *)
 struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Update custom widget confirmation"
     static var isDiscoverable: Bool = false

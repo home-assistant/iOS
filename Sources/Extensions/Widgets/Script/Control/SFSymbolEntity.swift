@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import SFSafeSymbols
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct SFSymbolEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Icon")
 
@@ -14,7 +14,7 @@ struct SFSymbolEntity: AppEntity {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct IntentSFSymbolAppEntityQuery: EntityQuery, EntityStringQuery {
     private var prefix = 100
     func entities(for identifiers: [String]) async throws -> [SFSymbolEntity] {
