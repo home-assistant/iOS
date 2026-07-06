@@ -1,5 +1,5 @@
 import Foundation
-import NetworkExtension
+import Network
 import PromiseKit
 import Shared
 import SwiftUI
@@ -27,11 +27,29 @@ final class WatchHomeViewModel: ObservableObject {
     /// user to choose which to keep.
     @Published var pendingConflict: ConfigConflict?
 
+    private var networkPathMonitor: NWPathMonitor?
+    private let networkMonitorQueue = DispatchQueue(label: "WatchHomeNetworkPathMonitor")
+
+    deinit {
+        networkPathMonitor?.cancel()
+    }
+
+    func startNetworkMonitoring() {
+        guard networkPathMonitor == nil else { return }
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { [weak self] _ in
+            Task { @MainActor in
+                await self?.fetchNetworkInfo()
+            }
+        }
+        monitor.start(queue: networkMonitorQueue)
+        networkPathMonitor = monitor
+    }
+
     @MainActor
     func fetchNetworkInfo() async {
-        let networkInformation = await Current.networkInformation
-        WatchUserDefaults.shared.set(networkInformation?.ssid, key: .watchSSID)
-        currentSSID = networkInformation?.ssid ?? ""
+        await Current.connectivity.refreshNetworkInformation()
+        currentSSID = Current.connectivity.currentWiFiSSID() ?? ""
     }
 
     @MainActor
