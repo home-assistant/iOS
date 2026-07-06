@@ -112,6 +112,7 @@
 		1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
 		1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
 		1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */; };
+		B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000030 /* Color+Hex.test.swift */; };
 		11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
@@ -1608,10 +1609,6 @@
 		BEAB7DADF60B18266F8F5EC0 /* HAWatchConnectivityComplicationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B221C55E9F8D7D035B5A67 /* HAWatchConnectivityComplicationInfo.swift */; };
 		BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */; };
 		C0000538272BDAF3CFE5AA2E /* HAWatchConnectivityError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49867CD42F9A2EBEFE97143F /* HAWatchConnectivityError.swift */; };
-		C010F1E50000000000000011 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000010 /* UIColorHexSwift */; };
-		C010F1E50000000000000021 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000020 /* UIColorHexSwift */; };
-		C010F1E50000000000000031 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000030 /* UIColorHexSwift */; };
-		C010F1E50000000000000041 /* UIColorHexSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C010F1E50000000000000040 /* UIColorHexSwift */; };
 		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
 		C1AE883A374C598B5BCCAE23 /* CustomWidgetIntentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7FF77B68D19A4AD68F8FE3 /* CustomWidgetIntentHelper.swift */; };
 		C2485C745F81BBEB2BEB9DB0 /* KioskVolumeSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90C5ED6BFAE78B948D25DC0 /* KioskVolumeSensor.swift */; };
@@ -2076,6 +2073,7 @@
 		113199DB28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthLoginViewController.swift; sourceTree = "<group>"; };
 		1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.swift"; sourceTree = "<group>"; };
 		1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.test.swift"; sourceTree = "<group>"; };
+		B0B0B0B00000000000000030 /* Color+Hex.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.test.swift"; sourceTree = "<group>"; };
 		11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.swift; sourceTree = "<group>"; };
 		11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.swift; sourceTree = "<group>"; };
 		113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodicUpdateManager.swift; sourceTree = "<group>"; };
@@ -3790,7 +3788,6 @@
 			files = (
 				50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */,
 				CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */,
-				C010F1E50000000000000031 /* UIColorHexSwift in Frameworks */,
 				42991E612FF4474500C2C76B /* ImproviOS in Frameworks */,
 				CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */,
 				42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */,
@@ -3845,7 +3842,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
-				C010F1E50000000000000021 /* UIColorHexSwift in Frameworks */,
 				CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */,
 				427692E52B98B83200F24321 /* SharedPush in Frameworks */,
 				42A1F0B32E000000000000B3 /* Alamofire in Frameworks */,
@@ -3870,7 +3866,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */,
-				C010F1E50000000000000041 /* UIColorHexSwift in Frameworks */,
 				CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */,
 				42A1F0B72E000000000000B7 /* Alamofire in Frameworks */,
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
@@ -3885,7 +3880,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
-				C010F1E50000000000000011 /* UIColorHexSwift in Frameworks */,
 				CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */,
 				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
 				1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */,
@@ -7515,6 +7509,7 @@
 				110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */,
 				11267D0825BBA9FE00F28E5C /* Updater.test.swift */,
 				1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */,
+				B0B0B0B00000000000000030 /* Color+Hex.test.swift */,
 				11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */,
 				11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */,
 				11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */,
@@ -8052,7 +8047,6 @@
 				42A1F0A12E000000000000A1 /* Alamofire */,
 				EBD991757B454B819925F6B9 /* SFSafeSymbols */,
 				CA11B4CC0000000000000010 /* CallbackURLKit */,
-				C010F1E50000000000000030 /* UIColorHexSwift */,
 				CEA1C4A10000000000000010 /* KeychainAccess */,
 				42991E602FF4474500C2C76B /* ImproviOS */,
 			);
@@ -8148,7 +8142,6 @@
 				B19185B1C20DABFD5B0D1B5D /* GRDB */,
 				42A1F0A32E000000000000A3 /* Alamofire */,
 				C8FA7E5B23954D258050DD72 /* SFSafeSymbols */,
-				C010F1E50000000000000020 /* UIColorHexSwift */,
 				CEA1C4A10000000000000030 /* KeychainAccess */,
 			);
 			productName = "Shared-watchOS";
@@ -8217,7 +8210,6 @@
 				E516764DF55905E4F0FE2003 /* GRDB */,
 				CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */,
 				42A1F0A72E000000000000A7 /* Alamofire */,
-				C010F1E50000000000000040 /* UIColorHexSwift */,
 				CEA1C4A10000000000000050 /* KeychainAccess */,
 			);
 			productName = "WatchApp Extension";
@@ -8248,7 +8240,6 @@
 				638EC9AD85B8C58C9C77DCC7 /* GRDB */,
 				42A1F0A22E000000000000A2 /* Alamofire */,
 				294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */,
-				C010F1E50000000000000010 /* UIColorHexSwift */,
 				CEA1C4A10000000000000020 /* KeychainAccess */,
 			);
 			productName = Shared;
@@ -8511,7 +8502,6 @@
 				5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */,
-				C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */,
 				CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */,
 			);
@@ -10918,6 +10908,7 @@
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
 				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
 				1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */,
+				B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */,
 				11764A6C26817FC3007D47F3 /* UserDefaultsValueSync.test.swift in Sources */,
 				421125C72F51DE9200971BAD /* StatePrecision.test.swift in Sources */,
 				114CBAED283AB92D00A9BAFF /* SecTrust+TestAdditions.swift in Sources */,
@@ -12405,14 +12396,6 @@
 				minimumVersion = 5.3.0;
 			};
 		};
-		C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/yeahdongcn/UIColor-Hex-Swift.git";
-			requirement = {
-				kind = exactVersion;
-				version = 5.1.9;
-			};
-		};
 		CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/phimage/CallbackURLKit.git";
@@ -12626,26 +12609,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
-		};
-		C010F1E50000000000000010 /* UIColorHexSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
-			productName = UIColorHexSwift;
-		};
-		C010F1E50000000000000020 /* UIColorHexSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
-			productName = UIColorHexSwift;
-		};
-		C010F1E50000000000000030 /* UIColorHexSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
-			productName = UIColorHexSwift;
-		};
-		C010F1E50000000000000040 /* UIColorHexSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C010F1E50000000000000001 /* XCRemoteSwiftPackageReference "UIColor-Hex-Swift" */;
-			productName = UIColorHexSwift;
 		};
 		C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
