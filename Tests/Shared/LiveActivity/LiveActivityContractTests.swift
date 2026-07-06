@@ -193,6 +193,16 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertNil(decoded.progressMax)
     }
 
+    /// An out-of-Int-range progress value must degrade to nil rather than trap the OS-side decoder.
+    func testContentState_progressOutOfIntRange_decodesAsNil() throws {
+        let decoded = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m","progress":1e19,"progress_max":100}"#.utf8)
+        )
+        XCTAssertNil(decoded.progress)
+        XCTAssertEqual(decoded.progressMax, 100)
+    }
+
     // MARK: - LiveActivityRegistry (webhook contracts)
 
     /// The Keychain key for the push-to-start token. Changing it would lose stored tokens.

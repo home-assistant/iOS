@@ -240,10 +240,10 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             _ container: KeyedDecodingContainer<CodingKeys>,
             forKey key: CodingKeys
         ) -> Int? {
-            if let value = try? container.decodeIfPresent(Double.self, forKey: key) {
-                return value.map { Int($0.rounded()) }
+            guard let value = try? container.decodeIfPresent(Double.self, forKey: key) else {
+                return nil
             }
-            return nil
+            return Int(exactly: value.rounded())
         }
     }
 

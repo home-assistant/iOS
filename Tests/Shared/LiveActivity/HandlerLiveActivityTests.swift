@@ -134,6 +134,16 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(state.progressMax, 100)
     }
 
+    func testContentState_progressNonFinite_isNil() {
+        let payload: [String: Any] = [
+            "progress": NSNumber(value: Double.nan),
+            "progress_max": NSNumber(value: Double.infinity),
+        ]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        XCTAssertNil(state.progress)
+        XCTAssertNil(state.progressMax)
+    }
+
     func testContentState_whenAbsolute_usesEpochTimestamp() {
         let timestamp: Double = 1_700_000_000
         let payload: [String: Any] = ["when": NSNumber(value: timestamp), "when_relative": false]
