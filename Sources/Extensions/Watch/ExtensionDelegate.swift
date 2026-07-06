@@ -26,6 +26,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         Current.Log.verbose("didFinishLaunching")
 
+        // Import any legacy Realm data into GRDB before anything reads it
+        RealmToGRDBMigration.migrateIfNeeded()
+
         UNUserNotificationCenter.current().delegate = self
 
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
@@ -118,17 +121,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
            identifier != CLKDefaultComplicationIdentifier {
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: identifier
-            )
+            complication = WatchComplication.fetch(identifier: identifier)
         } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
                   let clkFamily = date.complicationFamilyFromEncodedDate {
             let family = ComplicationGroupMember(family: clkFamily)
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: family.rawValue
-            )
+            complication = WatchComplication.fetch(identifier: family.rawValue)
         } else {
             complication = nil
         }
@@ -247,17 +244,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     private func updateContext(_ content: HAWatchConnectivity.Content) {
-        let realm = Current.realm()
-
         if let complicationsDictionary = content["complications"] as? [[String: Any]] {
             let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
 
             Current.Log.verbose("Updating complications from context \(complications)")
 
-            realm.reentrantWrite {
-                realm.delete(realm.objects(WatchComplication.self))
-                realm.add(complications, update: .all)
-            }
+            WatchComplication.replaceAll(with: complications)
         }
 
         updateComplications()

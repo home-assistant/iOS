@@ -2,7 +2,6 @@ import CarPlay
 import Foundation
 import HAKit
 import PromiseKit
-import RealmSwift
 import Shared
 
 final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
