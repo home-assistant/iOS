@@ -44,8 +44,8 @@ public class ConnectivityWrapper {
     /// date; replaceable in tests.
     public lazy var refreshNetworkInformation: () async -> Void = { [weak self] in
         guard let self else { return }
-        let state = await self.currentNetworkState()
-        self.updateLastKnownNetworkState(state)
+        let state = await currentNetworkState()
+        updateLastKnownNetworkState(state)
     }
 
     /// The most recently fetched network information, without refreshing it.

@@ -138,11 +138,11 @@ final class AppContainerCoordinator: AppCoordinator {
         let openUrl = AppConstants.normalizedNavigationDestination(openUrlRaw)
         Task { @MainActor [weak self] in
             guard let self else { return }
-            open(
+            await open(
                 from: from,
                 server: server,
                 urlString: openUrl,
-                webviewURL: await server.webviewURL(from: openUrl),
+                webviewURL: server.webviewURL(from: openUrl),
                 externalURL: URL(string: openUrl),
                 skipConfirm: skipConfirm,
                 avoidUnnecessaryReload: avoidUnnecessaryReload,

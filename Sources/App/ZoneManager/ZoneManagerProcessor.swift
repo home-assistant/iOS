@@ -165,7 +165,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
 
         return Guarantee<String?> { seal in
             Task {
-                seal(await Current.connectivity.currentWiFiSSID())
+                await seal(Current.connectivity.currentWiFiSSID())
             }
         }.then { currentSSID -> Promise<Void> in
             // The `then` continuation runs on the main queue, matching the thread the Realm zone

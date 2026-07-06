@@ -219,8 +219,8 @@ extension AssistService {
         guard let mediaUrlPath else { return }
         Task { [weak self] in
             guard let self,
-                  let mediaUrl = await self.server.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
-            self.delegate?.didReceiveTtsMediaUrl(mediaUrl)
+                  let mediaUrl = await server.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
+            delegate?.didReceiveTtsMediaUrl(mediaUrl)
         }
     }
 

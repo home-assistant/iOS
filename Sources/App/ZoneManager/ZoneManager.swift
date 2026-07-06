@@ -102,7 +102,7 @@ class ZoneManager {
 
         Guarantee<String?> { seal in
             Task {
-                seal(await Current.connectivity.currentWiFiSSID())
+                await seal(Current.connectivity.currentWiFiSSID())
             }
         }.then { currentSSID -> Promise<[String: String]> in
             let logPayload: [String: String] = [

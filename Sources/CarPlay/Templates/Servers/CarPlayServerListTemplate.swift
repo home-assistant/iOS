@@ -150,7 +150,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
                     completion()
                     return
                 }
-                template.updateSections([await serverSelectionSection(template: template)])
+                await template.updateSections([serverSelectionSection(template: template)])
                 completion()
             }
         }
@@ -164,7 +164,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         serverSelectionTemplate = selectionTemplate
         Task { @MainActor [weak self] in
             guard let self else { return }
-            selectionTemplate.updateSections([await serverSelectionSection(template: selectionTemplate)])
+            await selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
         }
         interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
     }

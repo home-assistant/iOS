@@ -388,7 +388,7 @@ public class HomeAssistantAPI {
             Task { [self] in
                 var finalURL = url
 
-                let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
+                let dataManager: Alamofire.Session = needsAuth ? manager : Self.unauthenticatedManager
 
                 if needsAuth {
                     guard let activeURL = await server.activeURL() else {
@@ -667,7 +667,7 @@ public class HomeAssistantAPI {
 
         return Guarantee<String?> { seal in
             Task {
-                seal(await Current.connectivity.currentWiFiSSID())
+                await seal(Current.connectivity.currentWiFiSSID())
             }
         }.then { [self] currentSSID -> Promise<Void> in
             // The `then` continuation runs on the main queue, matching the thread the Realm zone

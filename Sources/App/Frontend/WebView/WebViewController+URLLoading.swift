@@ -75,7 +75,7 @@ extension WebViewController {
             }
 
             // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-            load(request: URLRequest(url: await resolvedLoadURL(for: webviewURL)))
+            await load(request: URLRequest(url: resolvedLoadURL(for: webviewURL)))
         }
     }
 

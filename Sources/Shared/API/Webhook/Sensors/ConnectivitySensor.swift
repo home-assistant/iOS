@@ -127,7 +127,7 @@ public class ConnectivitySensor: SensorProvider {
 
         return Guarantee<NetworkState> { seal in
             Task {
-                seal(await Current.connectivity.currentNetworkState())
+                await seal(Current.connectivity.currentNetworkState())
             }
         }.map { networkState in
             [
