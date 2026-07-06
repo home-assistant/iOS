@@ -104,38 +104,36 @@ class ZoneManager {
             Task {
                 await seal(Current.connectivity.currentWiFiSSID())
             }
-        }.then { currentSSID -> Promise<[String: String]> in
+        }.done { currentSSID in
             let logPayload: [String: String] = [
                 "start_ssid": currentSSID ?? "none",
                 "event": event.description,
             ]
-            return performPromise.map { logPayload }
-        }.done { logPayload in
-            Current.clientEventStore.addEvent(ClientEvent(
-                text: "Updated location",
-                type: .locationUpdate,
-                payload: logPayload
-            ))
-        }.catch { error in
-            Current.Log.error("ZoneManagerPerformEvent background task error for \(event): \(error)")
 
-            var updatedPayload = [
-                "event": event.description,
-                "error": String(describing: error),
-            ]
-            updatedPayload["start_ssid"] = Current.connectivity.lastKnownNetworkState().ssid ?? "none"
+            performPromise.done {
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Updated location",
+                    type: .locationUpdate,
+                    payload: logPayload
+                ))
+            }.catch { error in
+                Current.Log.error("ZoneManagerPerformEvent background task error for \(event): \(error)")
 
-            Current.clientEventStore.addEvent(ClientEvent(
-                text: "Didn't update: \(error.localizedDescription)",
-                type: .locationUpdate,
-                payload: updatedPayload
-            ))
+                var updatedPayload = logPayload
+                updatedPayload["error"] = String(describing: error)
 
-            Current.notificationDispatcher.send(.init(
-                id: .debug,
-                title: "DEBUG: Failed to perform ZoneManager event",
-                body: "Event: \(event.eventType.description), error: \(error.localizedDescription)"
-            ))
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Didn't update: \(error.localizedDescription)",
+                    type: .locationUpdate,
+                    payload: updatedPayload
+                ))
+
+                Current.notificationDispatcher.send(.init(
+                    id: .debug,
+                    title: "DEBUG: Failed to perform ZoneManager event",
+                    body: "Event: \(event.eventType.description), error: \(error.localizedDescription)"
+                ))
+            }
         }
     }
 
