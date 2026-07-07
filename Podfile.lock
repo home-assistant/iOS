@@ -1,12 +1,12 @@
 PODS:
   - CPDAcknowledgements (1.0.0)
-  - HAKit (0.4.16):
-    - HAKit/Core (= 0.4.16)
-  - HAKit/Core (0.4.16):
+  - HAKit (0.4.18):
+    - HAKit/Core (= 0.4.18)
+  - HAKit/Core (0.4.18):
     - Starscream (~> 4.0.4)
-  - HAKit/Mocks (0.4.16):
+  - HAKit/Mocks (0.4.18):
     - HAKit/Core
-  - HAKit/PromiseKit (0.4.16):
+  - HAKit/PromiseKit (0.4.18):
     - HAKit/Core
     - PromiseKit (~> 8.1.1)
   - ObjcExceptionBridging (1.0.1):
@@ -52,9 +52,9 @@ PODS:
 
 DEPENDENCIES:
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
-  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
-  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
-  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.16`)
+  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
+  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
+  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
   - PromiseKit (~> 8.1.1)
@@ -84,7 +84,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/CocoaPods/CPDAcknowledgements
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.16
+    :tag: 0.4.18
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -101,7 +101,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/CocoaPods/CPDAcknowledgements
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.16
+    :tag: 0.4.18
   ObjectMapper:
     :commit: 6021c6035e83a306047348666f6400dc61445d3b
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -114,7 +114,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  HAKit: ef185a67991484219a7ecd74aab25f186274d7dd
+  HAKit: f6492dc50f8ba0113ff6845fcd07631ecdab9a91
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: e6e4d91ff7f2861df7aecc536c92d8363f4c9677
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
@@ -128,6 +128,6 @@ SPEC CHECKSUMS:
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 0ce1d6e865e6853c44d736810f9722a64f50c372
+PODFILE CHECKSUM: 263fbf73f1b83bffe7b49a87dc2533ebbbffe9e6
 
 COCOAPODS: 1.15.2
