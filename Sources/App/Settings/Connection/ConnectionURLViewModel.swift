@@ -146,6 +146,11 @@ final class ConnectionURLViewModel: ObservableObject {
         }
     }
 
+    func commitAnyway(onSuccess: @escaping () -> Void) {
+        commit()
+        onSuccess()
+    }
+
     private func commit() {
         let givenURL = url.isEmpty ? nil : URL(string: url)
 
