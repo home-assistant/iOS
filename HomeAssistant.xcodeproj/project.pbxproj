@@ -33,6 +33,7 @@
 		0907D6244565287ED4E46A3C /* WhatsNewCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09953104F4749B10268B7C61 /* WhatsNewCatalog.swift */; };
 		09C9974C22F113423EE3B3DC /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B19185B1C20DABFD5B0D1B5D /* GRDB */; };
 		0C1F82B6DF9051F98A587352 /* ComplicationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3995EF7323087AA35F01BDDF /* ComplicationEditView.swift */; };
+		0D20E5697E7DA70D01E77A51 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E35AE15984C6303B97D502F8 /* RealmSwift */; };
 		0F682BC2703945208CFAB9A4 /* CarPlayPreferredServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B40938BEB944969AAB2895 /* CarPlayPreferredServer.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
 		1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */; };
@@ -442,10 +443,12 @@
 		14A4AE0E492F4BADB1E8A3CA /* TestFlightCommunicationCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666F733264F8449E8E7CB985 /* TestFlightCommunicationCatalog.swift */; };
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
 		177E4B39B7BA296CCB68A27D /* Pods-iOS-Extensions-Widgets-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6723A4E97E50C3C9141428D0 /* Pods-iOS-Extensions-Widgets-metadata.plist */; };
+		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A0BF50187A921289B3BA4AE /* Pods-Tests-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B67C3F1DA02199833DA64AF8 /* Pods-Tests-App-metadata.plist */; };
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		1AA7D3A6102D7CC4601EEC6F /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */; };
 		1BACC6CFCE37E6AA2DC862F4 /* HAWatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8762CF6B50A0FB05013908A /* HAWatchConnectivity.swift */; };
+		1BD4D48734DB8B6FDE329FCD /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DC7A63D910AB3EEAC50BE210 /* RealmSwift */; };
 		1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */; };
 		1E9DE26E93988560ACF01A4A /* NotificationCategoryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C700605E488301BAD78A5B27 /* NotificationCategoryEditorView.swift */; };
 		21316D8EAC0226B0CD48FF30 /* Pods_iOS_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22F619E232C3F0E98A9346D /* Pods_iOS_App.framework */; };
@@ -454,6 +457,7 @@
 		257083A269ACE9E924DB3BAB /* NotificationSnoozeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D533C1EC8D100C5DAF63A0C5 /* NotificationSnoozeAction.swift */; };
 		26FD843EADBEDFCBBB44D612 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 3932B484D8AF4C056AB1A84D /* GRDB */; };
 		28305758AD4046002E242490 /* WatchFolderContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F3921F07C51AA4021DD11D /* WatchFolderContentView.swift */; };
+		2ACC292CBD70CA7E061DE1D9 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AB784C585C188EB65EA62A21 /* RealmSwift */; };
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
 		324A8B0F152A80EA190D98F3 /* Pods_iOS_Extensions_Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC9B77AAC44845DC9EE48759 /* Pods_iOS_Extensions_Intents.framework */; };
 		37414CBA81F74D6AADCFE442 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */; };
@@ -465,8 +469,10 @@
 		399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */; };
+		3B5B2D52F2408473F8BFA79C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 70600C4E2473CC736B505F6D /* RealmSwift */; };
 		3BB66E53094D6C7C2F395D54 /* ControlFan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D00E1755885575FF8118933 /* ControlFan.swift */; };
 		3C845E2CAF04CA64B5A640E7 /* WatchConnectivityManager+Send.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6C0AF840114403CECD9CE2 /* WatchConnectivityManager+Send.swift */; };
+		3CD55EFC5CB7477B681D04C0 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EBE9D41C3797206D88C3FBC2 /* RealmSwift */; };
 		3D2FAA9FF488451FB8CF5F5C /* CarPlayAddItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B153E9DF0CE64E989B6185A9 /* CarPlayAddItemViewModel.swift */; };
 		3E02C0E22CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */; };
 		3E02C0E32CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */; };
@@ -1259,11 +1265,13 @@
 		52599DB740A83DDEC7E2725D /* HAWatchConnectivityContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A663A6E9D2634AAD5D5D5B4 /* HAWatchConnectivityContext.swift */; };
 		54892E08EF4EF24C2D9F6FC8 /* YAMLSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA1071C86C7AFA79F08AF9 /* YAMLSyntaxHighlighter.swift */; };
 		54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */; };
+		56EA37CD70DF98104A87EB0C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A49460AC07F40DB7EE5373E8 /* RealmSwift */; };
 		577142E05D7B54FFFEB61CED /* WidgetGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */; };
 		58213D5B1792311CD4CA261D /* Pods_iOS_Extensions_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6DA82FEEE2DDC3B2CC20DA3 /* Pods_iOS_Extensions_NotificationService.framework */; };
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
 		5D4737422F241342009A70EA /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4737412F241342009A70EA /* FolderDetailView.swift */; };
 		5D5F19CD200C051E13C940E2 /* KioskScreensaverSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B10F23CD68334A0873B5707 /* KioskScreensaverSettingsView.swift */; };
+		5E4269EB8497773727C5F947 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7D4A7DC5D24363D8EDCF61D9 /* RealmSwift */; };
 		5F2ECF3C2CA505A59A1CFFAF /* Pods_iOS_SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65B4DC669522BB7A70C5EED0 /* Pods_iOS_SharedTesting.framework */; };
 		60575896CEC7963BA77697FE /* HAWatchConnectivityObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23EF1C338811D52799A685B /* HAWatchConnectivityObservable.swift */; };
 		61495A70232316478717CF27 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FF3A67FB1C2B548C6C7730C /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
@@ -1292,6 +1300,7 @@
 		71E0BF803A854C3B9F0CB726 /* HandlerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */; };
 		72BA28D07496C22E40A84DDB /* KioskBrightnessSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D3EF229B8D9A2DB7DF078A /* KioskBrightnessSensor.swift */; };
 		756FCCCE01A8BFA7864E61C7 /* NotificationSnoozeActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FDABE240EEC2AF3656F35B /* NotificationSnoozeActionsView.swift */; };
+		78C739CC566382B44154608A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E9035E07265E8F5491BE067E /* RealmSwift */; };
 		78F6EC29BAE43C9BAAFBAB1A /* WhatsNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12960782B4F42B5C4811E859 /* WhatsNewView.swift */; };
 		7BFD0239CA1B74E2C14C92E2 /* KioskVolumeSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90C5ED6BFAE78B948D25DC0 /* KioskVolumeSensor.swift */; };
 		7CD3C880084E8C73B781D130 /* NotificationSnoozeActionTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31B4C3B146C0560BFDF64F2 /* NotificationSnoozeActionTable.swift */; };
@@ -1305,6 +1314,8 @@
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
 		857D6560D8A33C20A009A615 /* KioskSettingsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9D38AFF8103605A5E02F62 /* KioskSettingsTable.swift */; };
 		864FFB19D2954B698B31E350 /* WebViewController+ReAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1945E8E386664E5A88668E77 /* WebViewController+ReAuth.swift */; };
+		867F86D2D91B9933538A4891 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8D113496DA6B709CFA136779 /* RealmSwift */; };
+		88C105DE391F069B0BCB3949 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 36767239772C4D819C72C063 /* RealmSwift */; };
 		8946C707252D1317C4D2565C /* HAWatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8762CF6B50A0FB05013908A /* HAWatchConnectivity.swift */; };
 		897D7538631C46D4BD849CF5 /* NotificationsCommandManagerLiveActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D790D5FA5DBB4B5B9DBB2334 /* NotificationsCommandManagerLiveActivityTests.swift */; };
 		89AB31C4E51C6469F64307E1 /* WatchConnectivityAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */; };
@@ -1324,6 +1335,7 @@
 		9D57ECBD5431BC00BDC16F1E /* NotificationActionEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F913E441276235B7A2D7B29 /* NotificationActionEditorView.swift */; };
 		A23A4D2702C94EF9B6296171 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7FBFE016210544989AFC7F64 /* SFSafeSymbols */; };
 		A2F3A140CDD1EF1AEA6DFAB9 /* DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* DatabaseTableProtocol.test.swift */; };
+		A307E253426FAE95903A3493 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; };
 		A47A58B70C53DADB13857F23 /* WhatsNewEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5ACE5BCADFD9765F5283BF7 /* WhatsNewEngine.swift */; };
 		A596C4D1E125E6863C7D2034 /* ComplicationEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512A72C5F1BCC979E74F7629 /* ComplicationEditViewModel.swift */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
@@ -1642,6 +1654,7 @@
 		D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */; };
 		D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */; };
+		D090217B33959041E3137A59 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; };
 		D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
 		D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44092104224600C74314 /* TokenInfo.swift */; };
@@ -1670,6 +1683,7 @@
 		D0FD54AF3CFE27E4C0B959EC /* NotificationSnoozeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D533C1EC8D100C5DAF63A0C5 /* NotificationSnoozeAction.swift */; };
 		D234820A53471DE7B485A445 /* Pods_Tests_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA48C686F844D08C426A8D74 /* Pods_Tests_App.framework */; };
 		D3FCE8B4BFF69263FBC7521A /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 18B0A90DBA0BB81EC7AB1414 /* GRDB */; };
+		D4D3CAD389641303F2B6AF1C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = BE72091B2E0CF29A3B829B1F /* RealmSwift */; };
 		D6EDE74F32A018B30B875ECE /* HAWatchConnectivityState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7188E89B38708CCA5D2F47CA /* HAWatchConnectivityState.swift */; };
 		D6F87818FFB55C006563EBBB /* RealmResultsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208A5362BE60377368ACB1D6 /* RealmResultsObserver.swift */; };
 		D73456479437738B202696E1 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9112C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift */; };
@@ -3696,6 +3710,7 @@
 				1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */,
 				D9A6697AF4D05BB8DE822A54 /* Pods_iOS_Extensions_Share.framework in Frameworks */,
 				06BCE0CBFF45995A2999543F /* GRDB in Frameworks */,
+				5E4269EB8497773727C5F947 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3718,6 +3733,7 @@
 				1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */,
 				BD1044995DE13A04C0FA039A /* Pods_iOS_Extensions_Widgets.framework in Frameworks */,
 				B871DD78CC898B174D22045D /* GRDB in Frameworks */,
+				56EA37CD70DF98104A87EB0C /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3728,6 +3744,7 @@
 				11B6B59429497C5800B8B552 /* Shared.framework in Frameworks */,
 				FE626519D14570FF70598F85 /* Pods_iOS_Extensions_Matter.framework in Frameworks */,
 				D3FCE8B4BFF69263FBC7521A /* GRDB in Frameworks */,
+				3B5B2D52F2408473F8BFA79C /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3739,6 +3756,7 @@
 				11B92A5B266F17AA00786588 /* Shared.framework in Frameworks */,
 				999549244371450BC98C700E /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */,
 				61826BB51EF447EA760E65F8 /* GRDB in Frameworks */,
+				867F86D2D91B9933538A4891 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3761,6 +3779,7 @@
 				46C62B9B2D8A373A002C0001 /* Shared.framework in Frameworks */,
 				5F2ECF3C2CA505A59A1CFFAF /* Pods_iOS_SharedTesting.framework in Frameworks */,
 				F155B3EE44F62779FADE7DFA /* GRDB in Frameworks */,
+				1BD4D48734DB8B6FDE329FCD /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3784,6 +3803,7 @@
 				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
 				AB3E076F146799C008ACB0EA /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */,
 				26FD843EADBEDFCBBB44D612 /* GRDB in Frameworks */,
+				88C105DE391F069B0BCB3949 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3807,6 +3827,7 @@
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
 				21316D8EAC0226B0CD48FF30 /* Pods_iOS_App.framework in Frameworks */,
 				B33AA2540A50911557F33BEB /* GRDB in Frameworks */,
+				D090217B33959041E3137A59 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3822,6 +3843,7 @@
 				4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */,
 				D234820A53471DE7B485A445 /* Pods_Tests_App.framework in Frameworks */,
 				E9D0AE4CC8B1D908D258B791 /* GRDB in Frameworks */,
+				D4D3CAD389641303F2B6AF1C /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3839,6 +3861,7 @@
 				B6C09153215206BB00A326DC /* Shared.framework in Frameworks */,
 				324A8B0F152A80EA190D98F3 /* Pods_iOS_Extensions_Intents.framework in Frameworks */,
 				95DBCBEFC224D24AD4122119 /* GRDB in Frameworks */,
+				3CD55EFC5CB7477B681D04C0 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3852,6 +3875,7 @@
 				42A1F0B32E000000000000B3 /* Alamofire in Frameworks */,
 				6596FA74E1A501276EA62D86 /* Pods_watchOS_Shared_watchOS.framework in Frameworks */,
 				09C9974C22F113423EE3B3DC /* GRDB in Frameworks */,
+				0D20E5697E7DA70D01E77A51 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3863,6 +3887,7 @@
 				D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */,
 				58213D5B1792311CD4CA261D /* Pods_iOS_Extensions_NotificationService.framework in Frameworks */,
 				6BC96773641DF2DE4A0CB617 /* GRDB in Frameworks */,
+				2ACC292CBD70CA7E061DE1D9 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3877,6 +3902,7 @@
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				403FFD6242C8A6021379C555 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */,
 				EB30AC52784FBFC4C3CF251A /* GRDB in Frameworks */,
+				A307E253426FAE95903A3493 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3895,6 +3921,7 @@
 				42A1F0B22E000000000000B2 /* Alamofire in Frameworks */,
 				70BD8A8EA1ABC5DC1F0A0D6E /* Pods_iOS_Shared_iOS.framework in Frameworks */,
 				B3FD7A16B24D03BE49029BB0 /* GRDB in Frameworks */,
+				78C739CC566382B44154608A /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3906,6 +3933,7 @@
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
 				61495A70232316478717CF27 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */,
 				42337621AE73706EB2D88EAE /* GRDB in Frameworks */,
+				17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7859,6 +7887,7 @@
 			name = "Extensions-Share";
 			packageProductDependencies = (
 				9A1913B3A1CFDC22BA567199 /* GRDB */,
+				7D4A7DC5D24363D8EDCF61D9 /* RealmSwift */,
 			);
 			productName = ShareExtension;
 			productReference = 1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */;
@@ -7898,6 +7927,7 @@
 			name = "Extensions-Widgets";
 			packageProductDependencies = (
 				A6857A0F44E122B08AD36698 /* GRDB */,
+				A49460AC07F40DB7EE5373E8 /* RealmSwift */,
 				C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */,
 			);
 			productName = WidgetsExtension;
@@ -7921,6 +7951,7 @@
 			name = "Extensions-Matter";
 			packageProductDependencies = (
 				18B0A90DBA0BB81EC7AB1414 /* GRDB */,
+				70600C4E2473CC736B505F6D /* RealmSwift */,
 			);
 			productName = "Extensions-Matter";
 			productReference = 11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */;
@@ -7944,6 +7975,7 @@
 			name = "Extensions-PushProvider";
 			packageProductDependencies = (
 				067B845F1477358424F0C5FD /* GRDB */,
+				8D113496DA6B709CFA136779 /* RealmSwift */,
 			);
 			productName = PushProvider;
 			productReference = 11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */;
@@ -7987,6 +8019,7 @@
 				46C62B972D8A3730002C0001 /* SnapshotTesting */,
 				46C62B992D8A3730002C0001 /* SnapshotTestingCustomDump */,
 				2715B836C33E6EDA430278BD /* GRDB */,
+				DC7A63D910AB3EEAC50BE210 /* RealmSwift */,
 			);
 			productName = SharedTesting;
 			productReference = 46C62B882D8A3687002C0001 /* SharedTesting.framework */;
@@ -8011,6 +8044,7 @@
 				42FA000000000000000C0001 /* WebRTC */,
 				42FA000000000000000C0008 /* SFSafeSymbols */,
 				3932B484D8AF4C056AB1A84D /* GRDB */,
+				36767239772C4D819C72C063 /* RealmSwift */,
 				42A1F0A42E000000000000A4 /* Alamofire */,
 				CEA1C4A10000000000000040 /* KeychainAccess */,
 			);
@@ -8051,6 +8085,7 @@
 			name = App;
 			packageProductDependencies = (
 				8BF085C5243838861E8635E7 /* GRDB */,
+				4C014BAFE0BC019E4055ED11 /* RealmSwift */,
 				42A1F0A12E000000000000A1 /* Alamofire */,
 				EBD991757B454B819925F6B9 /* SFSafeSymbols */,
 				CA11B4CC0000000000000010 /* CallbackURLKit */,
@@ -8082,6 +8117,7 @@
 			name = "Tests-App";
 			packageProductDependencies = (
 				3F08AA27DA3E77F7C8FA1059 /* GRDB */,
+				BE72091B2E0CF29A3B829B1F /* RealmSwift */,
 				42A1F0A52E000000000000A5 /* Alamofire */,
 				7FBFE016210544989AFC7F64 /* SFSafeSymbols */,
 			);
@@ -8123,6 +8159,7 @@
 			name = "Extensions-Intents";
 			packageProductDependencies = (
 				AA067465CCE282820A8F106C /* GRDB */,
+				EBE9D41C3797206D88C3FBC2 /* RealmSwift */,
 			);
 			productName = Intents;
 			productReference = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */;
@@ -8147,6 +8184,7 @@
 			packageProductDependencies = (
 				427692E42B98B83200F24321 /* SharedPush */,
 				B19185B1C20DABFD5B0D1B5D /* GRDB */,
+				E35AE15984C6303B97D502F8 /* RealmSwift */,
 				42A1F0A32E000000000000A3 /* Alamofire */,
 				C8FA7E5B23954D258050DD72 /* SFSafeSymbols */,
 				CEA1C4A10000000000000030 /* KeychainAccess */,
@@ -8172,6 +8210,7 @@
 			name = "Extensions-NotificationService";
 			packageProductDependencies = (
 				5E4816624EF5EE10FD19D90D /* GRDB */,
+				AB784C585C188EB65EA62A21 /* RealmSwift */,
 			);
 			productName = APNSAttachmentService;
 			productReference = B6AAD7A11D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex */;
@@ -8215,6 +8254,7 @@
 			name = "WatchExtension-Watch";
 			packageProductDependencies = (
 				E516764DF55905E4F0FE2003 /* GRDB */,
+				3402A10CAEE631B133C57DBE /* RealmSwift */,
 				CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */,
 				42A1F0A72E000000000000A7 /* Alamofire */,
 				CEA1C4A10000000000000050 /* KeychainAccess */,
@@ -8245,6 +8285,7 @@
 				427692E22B98B82500F24321 /* SharedPush */,
 				4237E6382E5333370023B673 /* ZIPFoundation */,
 				638EC9AD85B8C58C9C77DCC7 /* GRDB */,
+				E9035E07265E8F5491BE067E /* RealmSwift */,
 				42A1F0A22E000000000000A2 /* Alamofire */,
 				294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */,
 				CEA1C4A10000000000000020 /* KeychainAccess */,
@@ -8271,6 +8312,7 @@
 			name = "Tests-Shared";
 			packageProductDependencies = (
 				D615F032BC3C6F39F533EA25 /* GRDB */,
+				DDD36A352E3698887FBF85D9 /* RealmSwift */,
 				42A1F0A62E000000000000A6 /* Alamofire */,
 			);
 			productName = SharedTests;
@@ -8499,6 +8541,7 @@
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
+				50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
@@ -12378,6 +12421,14 @@
 				minimumVersion = 1.15.0;
 			};
 		};
+		50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fruitcoder/realm-swift";
+			requirement = {
+				kind = revision;
+				revision = dc01270ec79aa9f51dd37fe34e9da030a117170a;
+			};
+		};
 		5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols.git";
@@ -12432,6 +12483,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
+		};
+		3402A10CAEE631B133C57DBE /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		36767239772C4D819C72C063 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		3932B484D8AF4C056AB1A84D /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12560,6 +12621,11 @@
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTestingCustomDump;
 		};
+		4C014BAFE0BC019E4055ED11 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		5E4816624EF5EE10FD19D90D /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
@@ -12569,6 +12635,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
+		};
+		70600C4E2473CC736B505F6D /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		7D4A7DC5D24363D8EDCF61D9 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		7FBFE016210544989AFC7F64 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12580,10 +12656,20 @@
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
+		8D113496DA6B709CFA136779 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		9A1913B3A1CFDC22BA567199 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
+		};
+		A49460AC07F40DB7EE5373E8 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		A6857A0F44E122B08AD36698 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12595,10 +12681,20 @@
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
+		AB784C585C188EB65EA62A21 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		B19185B1C20DABFD5B0D1B5D /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
+		};
+		BE72091B2E0CF29A3B829B1F /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12650,15 +12746,40 @@
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
+		DC7A63D910AB3EEAC50BE210 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		DDD36A352E3698887FBF85D9 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		E35AE15984C6303B97D502F8 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		E516764DF55905E4F0FE2003 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
+		E9035E07265E8F5491BE067E /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		EBD991757B454B819925F6B9 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
+		};
+		EBE9D41C3797206D88C3FBC2 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

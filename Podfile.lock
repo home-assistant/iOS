@@ -35,11 +35,6 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (8.1.2):
     - PromiseKit/CorePromise
-  - Realm (10.35.0):
-    - Realm/Headers (= 10.35.0)
-  - Realm/Headers (10.35.0)
-  - RealmSwift (10.35.0):
-    - Realm (= 10.35.0)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
   - SwiftFormat/CLI (0.53.1)
@@ -58,7 +53,6 @@ DEPENDENCIES:
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
   - PromiseKit (~> 8.1.1)
-  - RealmSwift
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/bgoncal/starscream`, tag `4.0.9`)
   - SwiftFormat/CLI (= 0.53.1)
@@ -71,8 +65,6 @@ SPEC REPOS:
     - ObjcExceptionBridging
     - OHHTTPStubs
     - PromiseKit
-    - Realm
-    - RealmSwift
     - SwiftFormat
     - SwiftGen
     - SwiftLint
@@ -119,8 +111,6 @@ SPEC CHECKSUMS:
   ObjectMapper: e6e4d91ff7f2861df7aecc536c92d8363f4c9677
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
-  Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
-  RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
@@ -128,6 +118,10 @@ SPEC CHECKSUMS:
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
+<<<<<<< Updated upstream
 PODFILE CHECKSUM: 0ce1d6e865e6853c44d736810f9722a64f50c372
+=======
+PODFILE CHECKSUM: 1cbd661fda454a57050f68db6299614cd408432b
+>>>>>>> Stashed changes
 
 COCOAPODS: 1.15.2
