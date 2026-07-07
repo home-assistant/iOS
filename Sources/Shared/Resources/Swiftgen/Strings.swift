@@ -5321,6 +5321,8 @@ public enum L10n {
         public static var entity: String { return L10n.tr("Localizable", "watch.config.add.entity") }
         /// Folder
         public static var folder: String { return L10n.tr("Localizable", "watch.config.add.folder") }
+        /// New Folder
+        public static var newFolder: String { return L10n.tr("Localizable", "watch.config.add.new_folder") }
         /// Search
         public static var searchPlaceholder: String { return L10n.tr("Localizable", "watch.config.add.search_placeholder") }
         /// Add
@@ -5387,11 +5389,15 @@ public enum L10n {
         public static var preview: String { return L10n.tr("Localizable", "watch.config.edit.preview") }
         /// Ask before running
         public static var requireConfirmation: String { return L10n.tr("Localizable", "watch.config.edit.require_confirmation") }
+        /// Save
+        public static var saveButton: String { return L10n.tr("Localizable", "watch.config.edit.save_button") }
         /// Edit
         public static var title: String { return L10n.tr("Localizable", "watch.config.edit.title") }
         public enum Error {
           /// Keep your iPhone nearby to change what's shown on your watch.
           public static var notReachable: String { return L10n.tr("Localizable", "watch.config.edit.error.not_reachable") }
+          /// Couldn't save your changes. Please try again.
+          public static var saveFailed: String { return L10n.tr("Localizable", "watch.config.edit.error.save_failed") }
         }
         public enum Folder {
           /// New Folder
@@ -5400,6 +5406,8 @@ public enum L10n {
           public static var editTitle: String { return L10n.tr("Localizable", "watch.config.edit.folder.edit_title") }
         }
         public enum IconSearch {
+          /// Type at least 2 characters to search.
+          public static var hint: String { return L10n.tr("Localizable", "watch.config.edit.icon_search.hint") }
           /// Search icons
           public static var placeholder: String { return L10n.tr("Localizable", "watch.config.edit.icon_search.placeholder") }
           /// Use default icon
@@ -6295,9 +6303,9 @@ public enum L10n {
       return L10n.tr("Localizable", "whats_new.version_format", String(describing: p1))
     }
     public enum AppSupportUpdate {
-      /// This update requires iOS 16.4, watchOS 9, and macOS 12 or later. Tap to read more.
+      /// This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.
       public static var itemBody: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_body") }
-      /// Support for older operating systems has ended
+      /// Support for iOS 15, watch OS 8, and macOS 11 will end
       public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_title") }
       /// App support update
       public static var title: String { return L10n.tr("Localizable", "whats_new.app_support_update.title") }
