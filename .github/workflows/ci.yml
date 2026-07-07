@@ -159,13 +159,10 @@ jobs:
         name: "Cache: Pods"
         id: cache_pods
         with:
-          path: |
-            Pods
-            Tools/MaterialDesignIcons.ttf
-            Tools/MaterialDesignIcons.json
+          path: Pods
           key: >-
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
-            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
+            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock') }}
 
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         name: "Cache: Gems"
@@ -233,13 +230,10 @@ jobs:
         name: "Cache: Pods"
         id: cache_pods
         with:
-          path: |
-            Pods
-            Tools/MaterialDesignIcons.ttf
-            Tools/MaterialDesignIcons.json
+          path: Pods
           key: >-
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
-            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
+            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock') }}
 
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         name: "Cache: Gems"
