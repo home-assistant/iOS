@@ -52,6 +52,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
         _ = localPushManager
+        if Manager.shared.callbackURLScheme == nil {
+            Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
+        }
     }
 
     @objc private func didBecomeActive() {
