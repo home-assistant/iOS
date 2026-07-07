@@ -1574,7 +1574,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.config.add.error.fetch_failed" = "iPhone'ist ei õnnestunud üksusi laadida. Proovi uuesti.";
 "watch.config.add.filter.all" = "Kõik";
 "watch.config.add.folder" = "Kaust";
-"watch.config.add.new_folder" = "Uus kaust";
 "watch.config.add.search_placeholder" = "Otsi";
 "watch.config.add.title" = "Lisa";
 "watch.config.assist.error.fetch_failed" = "Assisti vooge ei õnnestunud sinu iPhone’ist laadida.";
@@ -1595,11 +1594,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.config.edit.add_button" = "Lisa";
 "watch.config.edit.delete" = "Kustuta";
 "watch.config.edit.error.not_reachable" = "Hoia oma iPhone'i lähedal, et muuta kellal kuvatavat sisu.";
-"watch.config.edit.error.save_failed" = "Muudatusi ei õnnestunud salvestada. Proovi uuesti.";
 "watch.config.edit.folder.add_title" = "Uus kaust";
 "watch.config.edit.folder.edit_title" = "Muuda kausta";
 "watch.config.edit.icon" = "Ikoon";
-"watch.config.edit.icon_search.hint" = "Otsimiseks sisesta vähemalt 2 tähemärki.";
 "watch.config.edit.icon_search.placeholder" = "Otsi ikoone";
 "watch.config.edit.icon_search.use_default" = "Kasuta vaikeikooni";
 "watch.config.edit.item.add_title" = "Lisa üksus";
@@ -1607,7 +1604,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.config.edit.name_placeholder" = "Nimi";
 "watch.config.edit.preview" = "Eelvaade";
 "watch.config.edit.require_confirmation" = "Küsi enne käivitamist";
-"watch.config.edit.save_button" = "Salvesta";
 "watch.config.edit.title" = "Muuda";
 "watch.config.error.message" = "Kella konfiguratsiooni laadimine nurjus, tõrge: %@";
 "watch.config.migration_error.failed_access_grdb" = "Andmebaasile (GRDB) ei pääsenud juurde, tõrge: %@";

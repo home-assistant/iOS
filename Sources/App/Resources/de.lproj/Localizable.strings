@@ -1575,7 +1575,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.config.add.error.fetch_failed" = "Elemente von deinem iPhone konnten nicht geladen werden. Bitte versuche es erneut.";
 "watch.config.add.filter.all" = "Alle";
 "watch.config.add.folder" = "Ordner";
-"watch.config.add.new_folder" = "Neuer Ordner";
 "watch.config.add.search_placeholder" = "Suchen";
 "watch.config.add.title" = "Hinzufügen";
 "watch.config.assist.error.fetch_failed" = "Assist-Pipelines konnten nicht von deinem iPhone geladen werden.";
@@ -1596,11 +1595,9 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.config.edit.add_button" = "Hinzufügen";
 "watch.config.edit.delete" = "Löschen";
 "watch.config.edit.error.not_reachable" = "Halte dein iPhone in der Nähe, um die Anzeige auf deiner Watch zu ändern.";
-"watch.config.edit.error.save_failed" = "Deine Änderungen konnten nicht gespeichert werden. Bitte versuche es erneut.";
 "watch.config.edit.folder.add_title" = "Neuer Ordner";
 "watch.config.edit.folder.edit_title" = "Ordner bearbeiten";
 "watch.config.edit.icon" = "Symbol";
-"watch.config.edit.icon_search.hint" = "Gib für die Suche mindestens 2 Zeichen ein.";
 "watch.config.edit.icon_search.placeholder" = "Symbole durchsuchen";
 "watch.config.edit.icon_search.use_default" = "Standard-Symbol verwenden";
 "watch.config.edit.item.add_title" = "Element hinzufügen";
@@ -1608,7 +1605,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.config.edit.name_placeholder" = "Name";
 "watch.config.edit.preview" = "Vorschau";
 "watch.config.edit.require_confirmation" = "Vor Ausführung fragen";
-"watch.config.edit.save_button" = "Speichern";
 "watch.config.edit.title" = "Bearbeiten";
 "watch.config.error.message" = "Laden der Watch-Konfiguration fehlgeschlagen, Fehler: %@";
 "watch.config.migration_error.failed_access_grdb" = "Zugriff auf Datenbank (GRDB) fehlgeschlagen, Fehler: %@";

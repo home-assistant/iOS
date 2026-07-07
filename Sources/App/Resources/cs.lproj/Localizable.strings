@@ -1574,7 +1574,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.config.add.error.fetch_failed" = "Nepodařilo se načíst položky z vašeho iPhonu. Zkuste to znovu.";
 "watch.config.add.filter.all" = "Vše";
 "watch.config.add.folder" = "Složka";
-"watch.config.add.new_folder" = "Nová složka";
 "watch.config.add.search_placeholder" = "Hledat";
 "watch.config.add.title" = "Přidat";
 "watch.config.assist.error.fetch_failed" = "Nepodařilo se načíst pipelines Assist z vašeho iPhonu.";
@@ -1595,11 +1594,9 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.config.edit.add_button" = "Přidat";
 "watch.config.edit.delete" = "Smazat";
 "watch.config.edit.error.not_reachable" = "Mějte iPhone po ruce, abyste mohli změnit, co se zobrazuje na hodinkách.";
-"watch.config.edit.error.save_failed" = "Změny se nepodařilo uložit. Zkuste to znovu.";
 "watch.config.edit.folder.add_title" = "Nová složka";
 "watch.config.edit.folder.edit_title" = "Upravit složku";
 "watch.config.edit.icon" = "Ikona";
-"watch.config.edit.icon_search.hint" = "Zadejte alespoň 2 znaky pro vyhledávání.";
 "watch.config.edit.icon_search.placeholder" = "Prohledat ikony";
 "watch.config.edit.icon_search.use_default" = "Použít výchozí ikonu";
 "watch.config.edit.item.add_title" = "Přidat položku";
@@ -1607,7 +1604,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.config.edit.name_placeholder" = "Název";
 "watch.config.edit.preview" = "Náhled";
 "watch.config.edit.require_confirmation" = "Zeptat se před spuštěním";
-"watch.config.edit.save_button" = "Uložit";
 "watch.config.edit.title" = "Upravit";
 "watch.config.error.message" = "Nepodařilo se načíst nastavení hodinek, chyba: %@";
 "watch.config.migration_error.failed_access_grdb" = "Nepodařilo se získat přístup k databázi (GRDB), chyba: %@";

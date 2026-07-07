@@ -1574,7 +1574,6 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "watch.config.add.error.fetch_failed" = "Couldn't load items from your iPhone. Please try again.";
 "watch.config.add.filter.all" = "All";
 "watch.config.add.folder" = "Folder";
-"watch.config.add.new_folder" = "New Folder";
 "watch.config.add.search_placeholder" = "Search";
 "watch.config.add.title" = "Add";
 "watch.config.assist.error.fetch_failed" = "Couldn't load Assist pipelines from your iPhone.";
@@ -1595,11 +1594,9 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "watch.config.edit.add_button" = "Add";
 "watch.config.edit.delete" = "Delete";
 "watch.config.edit.error.not_reachable" = "Keep your iPhone nearby to change what's shown on your watch.";
-"watch.config.edit.error.save_failed" = "Couldn't save your changes. Please try again.";
 "watch.config.edit.folder.add_title" = "New Folder";
 "watch.config.edit.folder.edit_title" = "Edit Folder";
 "watch.config.edit.icon" = "Icon";
-"watch.config.edit.icon_search.hint" = "Type at least 2 characters to search.";
 "watch.config.edit.icon_search.placeholder" = "Search icons";
 "watch.config.edit.icon_search.use_default" = "Use default icon";
 "watch.config.edit.item.add_title" = "Add Item";
@@ -1607,7 +1604,6 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "watch.config.edit.name_placeholder" = "Name";
 "watch.config.edit.preview" = "Preview";
 "watch.config.edit.require_confirmation" = "Ask before running";
-"watch.config.edit.save_button" = "Save";
 "watch.config.edit.title" = "Edit";
 "watch.config.error.message" = "Impossibile caricare la configurazione dell'orologio, errore: %@";
 "watch.config.migration_error.failed_access_grdb" = "Impossibile accedere al database (GRDB), errore: %@";
