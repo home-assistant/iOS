@@ -1701,7 +1701,6 @@
 		E864AF283C52DCFA11B83545 /* KioskSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AA95E1438BC6A0DE7EF820 /* KioskSettingsView.swift */; };
 		E8EEF4E584B6F9F24A3F24C8 /* WatchConnectivityAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */; };
 		E9D0AE4CC8B1D908D258B791 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 3F08AA27DA3E77F7C8FA1059 /* GRDB */; };
-		EB30AC52784FBFC4C3CF251A /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = E516764DF55905E4F0FE2003 /* GRDB */; };
 		EEBF4138A6FB2D369C751FF7 /* WatchDatabaseMirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E72B762F8CA5AFD59436EB /* WatchDatabaseMirror.swift */; };
 		EF407595A931C19EBCCC9E87 /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
 		F047227C0B227B15A30CD989 /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4D0DF04261DA520DFE8E1AD /* Pods_iOS_Extensions_Widgets.framework */; };
@@ -3900,7 +3899,6 @@
 				42A1F0B72E000000000000B7 /* Alamofire in Frameworks */,
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
-				EB30AC52784FBFC4C3CF251A /* GRDB in Frameworks */,
 				A307E253426FAE95903A3493 /* RealmSwift in Frameworks */,
 				99A9D031CC41EB3F6768CC8C /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */,
 			);
@@ -8253,7 +8251,6 @@
 			);
 			name = "WatchExtension-Watch";
 			packageProductDependencies = (
-				E516764DF55905E4F0FE2003 /* GRDB */,
 				3402A10CAEE631B133C57DBE /* RealmSwift */,
 				CB3CFAA8C32849229F7F7B59 /* SFSafeSymbols */,
 				42A1F0A72E000000000000A7 /* Alamofire */,
@@ -12776,11 +12773,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
 			productName = RealmSwift;
-		};
-		E516764DF55905E4F0FE2003 /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
 		};
 		E9035E07265E8F5491BE067E /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
