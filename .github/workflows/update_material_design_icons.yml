@@ -6,12 +6,18 @@ on:
     # bumps the pinned version, regenerates the font, and opens a PR.
     - cron: '0 6 * * 1'
 
+permissions:
+  contents: read
+
 env:
   BUNDLE_PATH: vendor/bundle
 
 jobs:
   update_icons:
     runs-on: macos-15
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
