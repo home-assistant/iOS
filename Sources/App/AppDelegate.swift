@@ -173,11 +173,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @objc func openAbout() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        sceneManager.activateAnyScene(for: .about)
-    }
-
     @objc func openMenuUrl(_ command: AnyObject) {
         guard let command = command as? UICommand, let url = MenuManager.url(from: command) else {
             return
@@ -188,18 +183,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sceneManager.appCoordinator.done { coordinator in
             IncomingURLHandler(coordinator: coordinator).handle(url: url)
         }
-    }
-
-    @objc func openPreferences() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        sceneManager.activateAnyScene(for: .settings)
-    }
-
-    @objc func openHelp() {
-        openURLInBrowser(
-            URL(string: "https://companion.home-assistant.io")!,
-            nil
-        )
     }
 
     func application(
