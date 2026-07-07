@@ -3768,13 +3768,9 @@
 				9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */,
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				42A1F0B72E000000000000B7 /* Alamofire in Frameworks */,
-				42B0798E2FFD7B3B00A22C46 /* KeychainAccess in Frameworks */,
-				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */,
-				42B0798C2FFD7B3B00A22C46 /* Alamofire in Frameworks */,
-				42B0798A2FFD7B3B00A22C46 /* SFSafeSymbols in Frameworks */,
+				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				A307E253426FAE95903A3493 /* RealmSwift in Frameworks */,
-				42B079882FFD7B3B00A22C46 /* RealmSwift in Frameworks */,
 				B652508C26B42CCF607868AD /* Pods_watchOS_WatchApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
