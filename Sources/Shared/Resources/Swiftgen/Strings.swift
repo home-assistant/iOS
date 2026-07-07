@@ -6187,9 +6187,9 @@ public enum L10n {
       return L10n.tr("Localizable", "whats_new.version_format", String(describing: p1))
     }
     public enum AppSupportUpdate {
-      /// This is the last update for iOS 15, watchOS 8 and macOS 11, tap to read more.
+      /// This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.
       public static var itemBody: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_body") }
-      /// iOS 15, watchOS 8 and macOS 11 support will end
+      /// Support for iOS 15, watch OS 8, and macOS 11 will end
       public static var itemTitle: String { return L10n.tr("Localizable", "whats_new.app_support_update.item_title") }
       /// App support update
       public static var title: String { return L10n.tr("Localizable", "whats_new.app_support_update.title") }
