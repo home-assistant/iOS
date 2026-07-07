@@ -41,7 +41,9 @@ jobs:
           git add Tools/BuildMaterialDesignIconsFont.sh
           git add Tools/MaterialDesignIcons.ttf Tools/MaterialDesignIcons.json
           git add Sources/Shared/Iconic/MaterialDesignIcons.swift
-          git commit -m "Bump MaterialDesignIcons to $VERSION" || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Bump MaterialDesignIcons to $VERSION"
+          fi
           git checkout -- .
           git clean -xfd
           echo "pr_title=$(git log -1 --pretty='%s')" >> "$GITHUB_OUTPUT"

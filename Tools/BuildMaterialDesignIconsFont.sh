@@ -7,9 +7,10 @@
 
 set -euo pipefail
 
-SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+DIR="$(cd "$(dirname "$0")" && pwd)"
+SELF="$DIR/$(basename "$0")"
 
-pushd `dirname $0` >/dev/null
+pushd "$DIR" >/dev/null
 
 # helper tool
 FONT_RENAME_COMMIT=77734a1a165d25c8c83b2201c15e268da4a107b6
@@ -54,7 +55,7 @@ if [ "$BUMP" -eq 1 ]; then
 	MDI_VERSION=$LATEST
 	echo "Bumping to $MDI_VERSION (webfont $MDI_COMMIT, svg $SVG_COMMIT)"
 else
-	if [ "$LATEST" != "$MDI_VERSION" ]; then
+	if [ -n "$LATEST" ] && [ "$LATEST" != "$MDI_VERSION" ]; then
 		echo "A newer version ($LATEST) is available; run with --bump to update."
 	fi
 	if [[ \
@@ -72,16 +73,16 @@ pip3 install --user fonttools
 
 if [ ! -f fontname-$FONT_RENAME_COMMIT.py ]; then
   echo "Downloading the fontname script..."
-  curl -O --silent https://raw.githubusercontent.com/chrissimpkins/fontname.py/77734a1a165d25c8c83b2201c15e268da4a107b6/fontname.py >fontname-$FONT_RENAME_COMMIT.py
+  curl --fail --location -O --silent https://raw.githubusercontent.com/chrissimpkins/fontname.py/77734a1a165d25c8c83b2201c15e268da4a107b6/fontname.py >fontname-$FONT_RENAME_COMMIT.py
 else
   echo "fontname.py is already downloaded"
 fi
 
 echo "Downloading the MaterialDesignIcons TTF..."
-curl -O --silent https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/$MDI_COMMIT/fonts/materialdesignicons-webfont.ttf
+curl --fail --location -O --silent https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/$MDI_COMMIT/fonts/materialdesignicons-webfont.ttf
 
 echo "Downloading the MaterialDesignIcons JSON..."
-curl -O --silent https://raw.githubusercontent.com/Templarian/MaterialDesign-SVG/$SVG_COMMIT/meta.json
+curl --fail --location -O --silent https://raw.githubusercontent.com/Templarian/MaterialDesign-SVG/$SVG_COMMIT/meta.json
 
 echo "Renaming raw files..."
 mv materialdesignicons-webfont.ttf MaterialDesignIcons-$MDI_VERSION.ttf
