@@ -181,18 +181,17 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         let observation = ValueObservation.tracking { db in
             try AppZone.fetchAll(db)
         }
-        // ValueObservation delivers on the main queue by default, including an
-        // initial fetch.
+        // .immediate delivers the initial value synchronously (we are created on
+        // the main queue), matching the previous Realm behavior of populating
+        // the zones before first render; changes also arrive on the main queue.
         zonesToken = observation.start(
             in: Current.database(),
+            scheduling: .immediate,
             onError: { error in
                 Current.Log.error("couldn't observe zones: \(error)")
             },
             onChange: { [weak self] zones in
-                let snapshot = zones.map(LocationZoneItem.init)
-                Task { @MainActor [weak self] in
-                    self?.zones = snapshot
-                }
+                self?.zones = zones.map(LocationZoneItem.init)
             }
         )
     }

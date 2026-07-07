@@ -36,8 +36,12 @@ private class LocationHistoryListViewModel: ObservableObject {
                 .order(Column(DatabaseTables.LocationHistory.createdAt.rawValue).desc)
                 .fetchAll(db)
         }
+        // .immediate delivers the initial value synchronously (we are created on
+        // the main queue), matching the previous Realm behavior of populating
+        // the list before first render (the snapshot tests rely on this).
         token = observation.start(
             in: Current.database(),
+            scheduling: .immediate,
             onError: { error in
                 Current.Log.error("couldn't observe location history: \(error)")
             },
