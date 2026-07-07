@@ -22,13 +22,6 @@ end
 plugin 'cocoapods-acknowledgements'
 pod 'PromiseKit', '~> 8.1.1'
 
-<<<<<<< HEAD
-# RealmSwift is only used by RealmToGRDBMigration.swift to import the legacy
-# Realm store into GRDB; once that migration has shipped for a few releases the
-# pod and the migration file can be deleted together.
-pod 'RealmSwift'
-=======
->>>>>>> origin/main
 pod 'XCGLogger'
 
 # Keep Starscream reference even though HAKit already install it, because it defines our fork with the necessary fix
