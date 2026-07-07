@@ -7,7 +7,6 @@ import FirebaseCore
 import FirebaseMessaging
 import Intents
 import KeychainAccess
-import ObjectMapper
 import PromiseKit
 import RealmSwift
 import SafariServices
