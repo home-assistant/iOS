@@ -102,8 +102,7 @@ public class HomeAssistantAPI {
                 connectionInfo: {
                     do {
                         if let activeURL = server.info.connection.activeURL() {
-                            // Prepare client identity (SecIdentity) for mTLS if configured
-                            let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
+                            // Prepare client identity (SecIdentity) for mTLS if configured and the active URL is HTTPS
                             if let clientCert = server.info.connection.clientCertificate,
                                activeURL.scheme?.lowercased() == "https" {
                                 clientIdentityProvider = {
