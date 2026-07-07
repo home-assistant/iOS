@@ -37,6 +37,7 @@ struct WidgetSensors: Widget {
         .description(L10n.Widgets.Sensors.description)
         .supportedFamilies(WidgetDetailsTableSupportedFamilies.families)
         .disfavoredInCarPlayIfAvailable(for: WidgetDetailsTableSupportedFamilies.families)
+        .haWidgetPushHandlerIfAvailable()
     }
 
     private func appendUnitOfMeasurementToValue(sensor: WidgetSensorsEntry.SensorData) -> String {

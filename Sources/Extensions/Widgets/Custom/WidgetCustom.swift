@@ -30,6 +30,7 @@ struct WidgetCustom: Widget {
         .configurationDisplayName(L10n.Widgets.Preview.Custom.title)
         .description(L10n.Widgets.Preview.Custom.description)
         .supportedFamilies(WidgetCustomSupportedFamilies.families)
+        .haWidgetPushHandlerIfAvailable()
     }
 
     private var emptyView: some View {

@@ -23,6 +23,7 @@ struct WidgetTodoList: Widget {
         .configurationDisplayName(L10n.Widgets.TodoList.title)
         .description(L10n.Widgets.TodoList.description)
         .supportedFamilies(supportedFamilies)
+        .haWidgetPushHandlerIfAvailable()
     }
 
     private var supportedFamilies: [WidgetFamily] {

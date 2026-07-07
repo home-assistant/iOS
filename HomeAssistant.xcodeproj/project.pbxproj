@@ -442,6 +442,9 @@
 		14A4AE0E492F4BADB1E8A3CA /* TestFlightCommunicationCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666F733264F8449E8E7CB985 /* TestFlightCommunicationCatalog.swift */; };
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
 		177E4B39B7BA296CCB68A27D /* Pods-iOS-Extensions-Widgets-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6723A4E97E50C3C9141428D0 /* Pods-iOS-Extensions-Widgets-metadata.plist */; };
+		187CA3C02FF709A500F14FD7 /* WidgetPushHandlerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187CA3BF2FF709A500F14FD7 /* WidgetPushHandlerModifier.swift */; };
+		187CA3C12FF709A500F14FD7 /* WidgetPushHandlerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187CA3BF2FF709A500F14FD7 /* WidgetPushHandlerModifier.swift */; };
+		187CA3C32FF709DB00F14FD7 /* HAWidgetPushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187CA3C22FF709DB00F14FD7 /* HAWidgetPushHandler.swift */; };
 		1A0BF50187A921289B3BA4AE /* Pods-Tests-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B67C3F1DA02199833DA64AF8 /* Pods-Tests-App-metadata.plist */; };
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		1AA7D3A6102D7CC4601EEC6F /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */; };
@@ -1688,6 +1691,7 @@
 		E8EEF4E584B6F9F24A3F24C8 /* WatchConnectivityAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */; };
 		E9D0AE4CC8B1D908D258B791 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 3F08AA27DA3E77F7C8FA1059 /* GRDB */; };
 		EB30AC52784FBFC4C3CF251A /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = E516764DF55905E4F0FE2003 /* GRDB */; };
+		EF2E71982FF71AED00CAA421 /* HAWidgetPushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187CA3C22FF709DB00F14FD7 /* HAWidgetPushHandler.swift */; };
 		EEBF4138A6FB2D369C751FF7 /* WatchDatabaseMirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E72B762F8CA5AFD59436EB /* WatchDatabaseMirror.swift */; };
 		EF407595A931C19EBCCC9E87 /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF41D72CA895DB501333EF /* KioskModeManager.swift */; };
 		F0D1DD41A8F55F6D767EBF37 /* TemplatePreviewSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332C060487B468055C487070 /* TemplatePreviewSection.swift */; };
@@ -2350,6 +2354,8 @@
 		1396822195C7FF562AB891F2 /* BarometerSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarometerSensor.swift; sourceTree = "<group>"; };
 		14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationEngine.test.swift; sourceTree = "<group>"; };
 		1861EB0361816DC9260D1F5E /* ComplicationFamilySelectView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ComplicationFamilySelectView.swift; sourceTree = "<group>"; };
+		187CA3BF2FF709A500F14FD7 /* WidgetPushHandlerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPushHandlerModifier.swift; sourceTree = "<group>"; };
+		187CA3C22FF709DB00F14FD7 /* HAWidgetPushHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAWidgetPushHandler.swift; sourceTree = "<group>"; };
 		1945E8E386664E5A88668E77 /* WebViewController+ReAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+ReAuth.swift"; sourceTree = "<group>"; };
 		1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionWindowSceneDelegate.swift; sourceTree = "<group>"; };
 		1CCF41D72CA895DB501333EF /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
@@ -4000,6 +4006,7 @@
 		115560DF27010D6700A8F818 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				187CA3BF2FF709A500F14FD7 /* WidgetPushHandlerModifier.swift */,
 				115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */,
 				42392EAA2F30A7870051D155 /* WidgetFamily+AppPreview.swift */,
 				42B74A612D36B08600C37304 /* WidgetBasicView.swift */,
@@ -4739,6 +4746,7 @@
 		3E02C0F82CAD9EC700102131 /* Sensor */ = {
 			isa = PBXGroup;
 			children = (
+				187CA3C22FF709DB00F14FD7 /* HAWidgetPushHandler.swift */,
 				3E02C0E42CA7FCF400102131 /* WidgetSensors.swift */,
 			);
 			path = Sensor;
@@ -9520,6 +9528,7 @@
 				42AC20012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */,
 				4276FEF52FE92903001F9228 /* GaugeArcView.swift in Sources */,
 				42AC20012FA1000000000007 /* IntentActionEntity.swift in Sources */,
+				187CA3C02FF709A500F14FD7 /* WidgetPushHandlerModifier.swift in Sources */,
 				42AC20012FA1000000000008 /* IntentCameraEntity.swift in Sources */,
 				42AC20012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */,
 				42AC20012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */,
@@ -9535,6 +9544,7 @@
 				4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */,
 				428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */,
+				187CA3C32FF709DB00F14FD7 /* HAWidgetPushHandler.swift in Sources */,
 				429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */,
 				420461692C8F29440062E89F /* ControlLight.swift in Sources */,
 				3BB66E53094D6C7C2F395D54 /* ControlFan.swift in Sources */,
@@ -9702,6 +9712,7 @@
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
 				4285C5532D35658000DADE45 /* TileCard.swift in Sources */,
+				EF2E71982FF71AED00CAA421 /* HAWidgetPushHandler.swift in Sources */,
 				42D57FC22E0589DE0061FF3B /* WebRTCClient.swift in Sources */,
 				42F5C0892F02BCDE00C50310 /* IntentFanEntity.swift in Sources */,
 				426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */,
@@ -9911,6 +9922,7 @@
 				4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */,
 				4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */,
 				3E02C0E22CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */,
+				187CA3C12FF709A500F14FD7 /* WidgetPushHandlerModifier.swift in Sources */,
 				4280E06F2DC23B120004BE7D /* SensorListViewModel.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
