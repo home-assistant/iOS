@@ -261,9 +261,9 @@ public final class WatchComplication: Codable, FetchableRecord, PersistableRecor
                     Current.Log.warning("TextArea \(key) doesn't have a text color!")
                     continue
                 }
-                providers[key] = with(CLKSimpleTextProvider(text: text)) {
-                    $0.tintColor = UIColor(color)
-                }
+                let provider = CLKSimpleTextProvider(text: text)
+                provider.tintColor = UIColor(color)
+                providers[key] = provider
             }
         }
 
@@ -951,9 +951,9 @@ public final class WatchComplication: Codable, FetchableRecord, PersistableRecor
         case .GraphicBezelCircularText:
             let template = CLKComplicationTemplateGraphicBezelCircularText()
             if let iconProvider = fullColorImageProvider {
-                template.circularTemplate = with(CLKComplicationTemplateGraphicCircularImage()) {
-                    $0.imageProvider = iconProvider
-                }
+                let circularTemplate = CLKComplicationTemplateGraphicCircularImage()
+                circularTemplate.imageProvider = iconProvider
+                template.circularTemplate = circularTemplate
             } else {
                 return nil
             }

@@ -38,6 +38,11 @@ func resetStores() {
     } catch {
         Current.Log.error("Failed to reset database: \(error)")
     }
+
+    // Clearing the app group defaults above also clears the Realm→GRDB
+    // migration flag, so drop the legacy store too or the importer would
+    // repopulate GRDB from it on the next launch.
+    RealmToGRDBMigration.deleteLegacyStore()
 }
 
 func deleteKeychainCompletely() throws {

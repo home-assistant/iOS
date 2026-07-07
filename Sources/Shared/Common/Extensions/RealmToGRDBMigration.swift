@@ -90,6 +90,8 @@ private final class LegacyRealmWatchComplication: Object {
 /// this file, and delete the legacy store directory.
 public enum RealmToGRDBMigration {
     static let migrationCompletedKey = "hasCompletedRealmToGRDBMigration"
+    static let migrationAttemptsKey = "realmToGRDBMigrationAttempts"
+    static let maxMigrationAttempts = 3
 
     public static func migrateIfNeeded() {
         guard NSClassFromString("XCTest") == nil else { return }
@@ -101,6 +103,18 @@ public enum RealmToGRDBMigration {
 
         guard FileManager.default.fileExists(atPath: storeURL.path) else {
             // fresh install, nothing to migrate
+            prefs.set(true, forKey: migrationCompletedKey)
+            return
+        }
+
+        let attempt = prefs.integer(forKey: migrationAttemptsKey) + 1
+        prefs.set(attempt, forKey: migrationAttemptsKey)
+        guard attempt <= maxMigrationAttempts else {
+            // A store that always fails to open (corrupt, or a schema newer
+            // than we know about) would otherwise be retried, and reported as
+            // an error, on every launch forever. Give up after a few tries and
+            // leave the store on disk untouched.
+            Current.Log.error("Abandoning Realm to GRDB migration after \(attempt - 1) failed attempts")
             prefs.set(true, forKey: migrationCompletedKey)
             return
         }
@@ -117,9 +131,24 @@ public enum RealmToGRDBMigration {
             Current.Log.info(message)
             Current.clientEventStore.addEvent(ClientEvent(text: message, type: .database))
         } catch {
-            // Not setting the completion flag means we retry on next launch.
-            Current.Log.error("Realm to GRDB migration failed: \(error)")
+            // Not setting the completion flag means we retry on next launch,
+            // up to maxMigrationAttempts.
+            Current.Log.error("Realm to GRDB migration failed (attempt \(attempt)): \(error)")
             Current.crashReporter.logError(error as NSError)
+        }
+    }
+
+    /// Deletes the legacy Realm store and its side files. Used by the app
+    /// reset flow: without this a reset would clear GRDB and the completion
+    /// flag but leave the Realm store on disk, so the importer would run again
+    /// on the next launch and resurrect the data the user just wiped.
+    public static func deleteLegacyStore() {
+        let storeURL = storeDirectoryURL.appendingPathComponent("store.realm", isDirectory: false)
+        guard FileManager.default.fileExists(atPath: storeURL.path) else { return }
+        do {
+            _ = try Realm.deleteFiles(for: Realm.Configuration(fileURL: storeURL))
+        } catch {
+            Current.Log.error("Failed to delete legacy Realm store: \(error)")
         }
     }
 

@@ -21,13 +21,12 @@ final class DatabaseResultsObserver<RecordType: FetchableRecord>: ObservableObje
 
         self.token = observation.start(
             in: Current.database(),
+            scheduling: .immediate,
             onError: { error in
                 Current.Log.error("couldn't observe database results: \(error)")
             },
             onChange: { [weak self] items in
-                Task { @MainActor [weak self] in
-                    self?.items = items
-                }
+                self?.items = items
             }
         )
     }
