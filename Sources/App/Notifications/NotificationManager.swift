@@ -50,6 +50,10 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
+        // Ensure the callback URL scheme is registered so that shortcut notification
+        // handling works even when the app is cold-launched directly from a notification
+        // tap (i.e. before any deep-link/URL has been handled by IncomingURLHandler).
+        Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
         _ = localPushManager
     }
 
