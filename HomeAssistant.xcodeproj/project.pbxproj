@@ -1216,6 +1216,8 @@
 		42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
 		42FDA9372DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
 		42FDCA272F0C7EB900C92958 /* EntityRegistry.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */; };
+		42A1B2C3D4E5F60718293A4C /* NotificationCategory.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1B2C3D4E5F60718293A4B /* NotificationCategory.test.swift */; };
+		42A1B2C3D4E5F60718293A4E /* WatchComplication.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1B2C3D4E5F60718293A4D /* WatchComplication.test.swift */; };
 		42FDCA2A2F0C88A100C92958 /* DisplayEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* DisplayEntityRegistryTable.swift */; };
 		42FDCA2B2F0C88A100C92958 /* DisplayEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* DisplayEntityRegistryTable.swift */; };
 		42FE01022FA00100A1B2C3D4 /* WatchSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FE01012FA00100A1B2C3D4 /* WatchSettingsView.swift */; };
@@ -2434,6 +2436,8 @@
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
 		420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.test.swift; sourceTree = "<group>"; };
+		42A1B2C3D4E5F60718293A4B /* NotificationCategory.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.test.swift; sourceTree = "<group>"; };
+		42A1B2C3D4E5F60718293A4D /* WatchComplication.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplication.test.swift; sourceTree = "<group>"; };
 		420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAppEntityTable.swift; sourceTree = "<group>"; };
 		420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigTable.swift; sourceTree = "<group>"; };
@@ -4888,6 +4892,8 @@
 			isa = PBXGroup;
 			children = (
 				420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */,
+				42A1B2C3D4E5F60718293A4B /* NotificationCategory.test.swift */,
+				42A1B2C3D4E5F60718293A4D /* WatchComplication.test.swift */,
 				428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */,
 				428DC0122F0C95D8003B08D5 /* HAAreasRegistryResponse.test.swift */,
 				428DC0102F0C95D8003B08D5 /* HAFloorRegistryResponse.test.swift */,
@@ -10856,6 +10862,8 @@
 				11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */,
 				11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */,
 				42FDCA272F0C7EB900C92958 /* EntityRegistry.test.swift in Sources */,
+				42A1B2C3D4E5F60718293A4C /* NotificationCategory.test.swift in Sources */,
+				42A1B2C3D4E5F60718293A4E /* WatchComplication.test.swift in Sources */,
 				11B7DC1F266C5D3E0090BD3B /* LocalPushManager.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,
