@@ -2,6 +2,42 @@ import Foundation
 import Shared
 import SwiftUI
 
+struct AppMenuBarCommands: Commands {
+    private var appName: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "Home Assistant"
+    }
+
+    var body: some Commands {
+        CommandGroup(replacing: .appInfo) {
+            Button(L10n.Menu.Application.about(appName)) {
+                Current.sceneManager.activateAnyScene(for: .about)
+            }
+        }
+
+        CommandGroup(after: .appInfo) {
+            if Current.updater.isSupported {
+                Button(L10n.Updater.CheckForUpdatesMenu.title) {
+                    guard let appDelegate = AppDelegate.shared else { return }
+                    appDelegate.checkForUpdate(appDelegate)
+                }
+            }
+        }
+
+        CommandGroup(replacing: .appSettings) {
+            Button(L10n.Menu.Application.preferences) {
+                Current.sceneManager.activateAnyScene(for: .settings)
+            }
+            .keyboardShortcut(",", modifiers: .command)
+        }
+
+        CommandGroup(replacing: .help) {
+            Button(L10n.Menu.Help.help(appName)) {
+                openURLInBrowser(URL(string: "https://companion.home-assistant.io")!, nil)
+            }
+        }
+    }
+}
+
 /// Controls macOS and iPadOS menu bar items for the main app window.
 struct MainWindowGroupCommands: Commands {
     @StateObject private var reloadObserver = MainWindowGroupCommandsReloadObserver()

@@ -20,21 +20,22 @@ if ENV['ONLY_SUPPORT_MODULES']
 end
 
 plugin 'cocoapods-acknowledgements'
-
-pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit', '~> 8.1.1'
 
+<<<<<<< HEAD
 # RealmSwift is only used by RealmToGRDBMigration.swift to import the legacy
 # Realm store into GRDB; once that migration has shipped for a few releases the
 # pod and the migration file can be deleted together.
 pod 'RealmSwift'
+=======
+>>>>>>> origin/main
 pod 'XCGLogger'
 
 # Keep Starscream reference even though HAKit already install it, because it defines our fork with the necessary fix
 pod 'Starscream', git: 'https://github.com/bgoncal/starscream', tag: '4.0.9'
-pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.16'
-pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.16'
-pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.16'
+pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
+pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
+pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
 
 def test_pods
   pod 'OHHTTPStubs/Swift'

@@ -1,5 +1,5 @@
 {
-  "originHash" : "8af62d21b6fd4ac8d1d803a27cca1c26c1fc25d24b3ad577a9819bd2e533b6bb",
+  "originHash" : "76b54af24ec632d9cd8c007ea8e91330f03823694c5ab2ea1afb27439baadc9e",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -155,12 +155,30 @@
       }
     },
     {
+      "identity" : "objectmapper",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tristanhimmelman/ObjectMapper.git",
+      "state" : {
+        "revision" : "6021c6035e83a306047348666f6400dc61445d3b",
+        "version" : "4.4.3"
+      }
+    },
+    {
       "identity" : "promises",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/promises.git",
       "state" : {
         "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
         "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "realm-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fruitcoder/realm-core.git",
+      "state" : {
+        "revision" : "bd17f8a0f0803db816701b558e25a31fa37f1b6e",
+        "version" : "20.1.5"
       }
     },
     {
@@ -215,6 +233,14 @@
       "state" : {
         "revision" : "86dbb5cb57e4da009b859a6245b1c10d610f215a",
         "version" : "140.0.0"
+      }
+    },
+    {
+      "identity" : "xcode27-realm-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bgoncal/xcode27-realm-swift.git",
+      "state" : {
+        "revision" : "dc01270ec79aa9f51dd37fe34e9da030a117170a"
       }
     },
     {

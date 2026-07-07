@@ -18,6 +18,7 @@ struct HAApp: App {
         .handlesExternalEvents(matching: [SceneActivity.webView.activityIdentifier])
         .commands {
             MainWindowGroupCommands()
+            AppMenuBarCommands()
         }
 
         // Mac Settings
