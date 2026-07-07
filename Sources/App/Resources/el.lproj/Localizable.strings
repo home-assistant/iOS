@@ -1574,7 +1574,6 @@
 "watch.config.add.error.fetch_failed" = "Δεν ήταν δυνατή η φόρτωση των στοιχείων από το iPhone σας. Παρακαλώ δοκιμάστε ξανά.";
 "watch.config.add.filter.all" = "Ολα";
 "watch.config.add.folder" = "Φάκελος";
-"watch.config.add.new_folder" = "Νέος φάκελος";
 "watch.config.add.search_placeholder" = "Αναζήτηση";
 "watch.config.add.title" = "Προσθήκη";
 "watch.config.assist.error.fetch_failed" = "Δεν ήταν δυνατή η φόρτωση των pipelines του Assist από το iPhone σας.";
@@ -1595,11 +1594,9 @@
 "watch.config.edit.add_button" = "Προσθήκη";
 "watch.config.edit.delete" = "Διαγραφή";
 "watch.config.edit.error.not_reachable" = "Κρατήστε το iPhone σας κοντά για να αλλάξετε τι εμφανίζεται στο ρολόι σας.";
-"watch.config.edit.error.save_failed" = "Δεν ήταν δυνατή η αποθήκευση των αλλαγών σας. Παρακαλώ, δοκιμάστε ξανά.";
 "watch.config.edit.folder.add_title" = "Νέος φάκελος";
 "watch.config.edit.folder.edit_title" = "Επεξεργασία φακέλου";
 "watch.config.edit.icon" = "Εικονίδιο";
-"watch.config.edit.icon_search.hint" = "Πληκτρολογήστε τουλάχιστον 2 χαρακτήρες για αναζήτηση.";
 "watch.config.edit.icon_search.placeholder" = "Αναζήτηση εικονιδίων";
 "watch.config.edit.icon_search.use_default" = "Χρήση προεπιλεγμένου εικονιδίου";
 "watch.config.edit.item.add_title" = "Προσθήκη στοιχείου";
@@ -1607,7 +1604,6 @@
 "watch.config.edit.name_placeholder" = "Ονομα";
 "watch.config.edit.preview" = "Προεπισκόπηση";
 "watch.config.edit.require_confirmation" = "Ρωτήστε πριν ξεκινήσετε";
-"watch.config.edit.save_button" = "Αποθήκευση";
 "watch.config.edit.title" = "Επεξεργασία";
 "watch.config.error.message" = "Αποτυχία φόρτωσης της διαμόρφωσης ρολογιού, σφάλμα: %@";
 "watch.config.migration_error.failed_access_grdb" = "Αποτυχία πρόσβασης στη βάση δεδομένων (GRDB), σφάλμα: %@";
