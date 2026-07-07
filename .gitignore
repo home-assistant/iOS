@@ -75,6 +75,8 @@ env.sh
 push_certs/*
 Tools/*.ttf
 Tools/*.json
+!Tools/MaterialDesignIcons.ttf
+!Tools/MaterialDesignIcons.json
 dSYMs/
 
 # Local configuration overrides
