@@ -106,9 +106,10 @@ public class HomeAssistantAPI {
                         // information. The cache is refreshed on connectivity changes and app
                         // lifecycle events, and HAKit re-invokes this closure on reconnect.
                         if let activeURL = server.info.connection.evaluateActiveURL() {
-                            // Prepare client identity (SecIdentity) for mTLS if configured
+                            // Prepare client identity (SecIdentity) for mTLS if configured and the active URL is HTTPS
                             let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
-                            if let clientCert = server.info.connection.clientCertificate {
+                            if let clientCert = server.info.connection.clientCertificate,
+                               activeURL.scheme?.lowercased() == "https" {
                                 clientIdentityProvider = {
                                     try? ClientCertificateManager.shared.retrieveIdentity(for: clientCert)
                                 }

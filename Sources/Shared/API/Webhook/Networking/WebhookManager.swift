@@ -473,8 +473,25 @@ public class WebhookManager: NSObject {
                 server: server,
                 baseURL: baseURL
             )
-        }.then(on: dataQueue) { urlRequest, data in
-            self.currentRegularSessionInfo.session.uploadTask(.promise, with: urlRequest, from: data)
+        }.then(on: dataQueue) { [self] urlRequest, data -> Promise<(Data, URLResponse)> in
+            let (promise, seal) = Promise<(Data, URLResponse)>.pending()
+            let task = currentRegularSessionInfo.session.uploadTask(
+                with: urlRequest,
+                from: data,
+                completionHandler: { data, response, error in
+                    if let data, let response {
+                        seal.fulfill((data, response))
+                    } else {
+                        seal.resolve(nil, error)
+                    }
+                }
+            )
+            let taskKey = TaskKey(sessionInfo: currentRegularSessionInfo, task: task)
+            serverForEphemeralTask[taskKey] = server
+            task.resume()
+            return promise.ensure(on: dataQueue) { [self] in
+                serverForEphemeralTask[taskKey] = nil
+            }
         }.then { data, response in
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),

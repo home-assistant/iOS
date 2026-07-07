@@ -15,21 +15,14 @@ struct MacWebViewTitleBar: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context: Context) -> UIViewController {
-        MacWebViewTitleBarViewController { [weak coordinator = context.coordinator] viewController in
-            coordinator?.configure(
-                windowScene: viewController.view.window?.windowScene,
-                server: server,
-                webViewController: webViewController
-            )
+        MacWebViewTitleBarViewController { [weak coordinator = context.coordinator] windowScene in
+            coordinator?.attach(to: windowScene)
         }
     }
 
     func updateUIViewController(_ viewController: UIViewController, context: Context) {
-        context.coordinator.configure(
-            windowScene: viewController.view.window?.windowScene,
-            server: server,
-            webViewController: webViewController
-        )
+        context.coordinator.update(server: server, webViewController: webViewController)
+        context.coordinator.attach(to: viewController.view.window?.windowScene)
     }
 
     static func dismantleUIViewController(_ viewController: UIViewController, coordinator: Coordinator) {
@@ -38,10 +31,10 @@ struct MacWebViewTitleBar: UIViewControllerRepresentable {
 }
 
 private final class MacWebViewTitleBarViewController: UIViewController {
-    private let updateToolbar: (MacWebViewTitleBarViewController) -> Void
+    private let attachToolbar: (UIWindowScene?) -> Void
 
-    init(updateToolbar: @escaping (MacWebViewTitleBarViewController) -> Void) {
-        self.updateToolbar = updateToolbar
+    init(attachToolbar: @escaping (UIWindowScene?) -> Void) {
+        self.attachToolbar = attachToolbar
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -58,7 +51,7 @@ private final class MacWebViewTitleBarViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateToolbar(self)
+        attachToolbar(view.window?.windowScene)
     }
 }
 
@@ -90,17 +83,17 @@ extension MacWebViewTitleBar {
         private var macToolbarItems: [MagicItem] = []
         private var macToolbarConfigObserver: NSObjectProtocol?
 
-        func configure(
-            windowScene: UIWindowScene?,
-            server: Server,
-            webViewController: WebViewController?
-        ) {
+        func update(server: Server, webViewController: WebViewController?) {
             self.server = server
             self.webViewController = webViewController
 
             loadMacToolbarItems()
             observeMacToolbarConfigChanges()
 
+            refreshToolbarState()
+        }
+
+        func attach(to windowScene: UIWindowScene?) {
             guard let titlebar = windowScene?.titlebar else { return }
             self.titlebar = titlebar
 
@@ -120,6 +113,11 @@ extension MacWebViewTitleBar {
                 self.toolbar = toolbar
             }
 
+            refreshToolbarState()
+        }
+
+        private func refreshToolbarState() {
+            guard let toolbar, titlebar?.toolbar === toolbar else { return }
             updateEnabledItems()
             updateServerPicker()
         }
@@ -572,12 +570,8 @@ private extension NSToolbarItem.Identifier {
 #else
 extension MacWebViewTitleBar {
     final class Coordinator: NSObject {
-        func configure(
-            windowScene: UIWindowScene?,
-            server: Server,
-            webViewController: WebViewController?
-        ) {}
-
+        func update(server: Server, webViewController: WebViewController?) {}
+        func attach(to windowScene: UIWindowScene?) {}
         func removeToolbar() {}
     }
 }
