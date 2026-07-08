@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Pre-commit hook: auto-format the code before committing.
+# Runs `bundle exec fastlane autocorrect` and re-stages the files it changed.
+#
+# Install with: bundle exec fastlane install_git_hooks
+#
+
+set -e
+
+cd "$(git rev-parse --show-toplevel)"
+
+if git diff --cached --quiet --diff-filter=ACMR; then
+  exit 0
+fi
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+
+echo "pre-commit: running bundle exec fastlane autocorrect"
+bundle exec fastlane autocorrect
+
+printf '%s\n' "$staged" | while IFS= read -r file; do
+  [ -n "$file" ] && [ -e "$file" ] && git add -- "$file"
+done

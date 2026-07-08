@@ -10,3 +10,9 @@ lane :autocorrect do
   sh('../Tools/build_tool swiftformat ..')
   sh('bundle exec rubocop -a ..')
 end
+
+desc 'Install the git pre-commit hook that runs autocorrect before each commit'
+lane :install_git_hooks do
+  sh('cd .. ; git config core.hooksPath .githooks')
+  UI.success('Installed git hooks. `bundle exec fastlane autocorrect` will run before each commit.')
+end
