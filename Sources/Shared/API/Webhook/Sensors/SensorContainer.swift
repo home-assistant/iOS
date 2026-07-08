@@ -116,7 +116,9 @@ public class SensorContainer {
 
     private func setLastUpdate(_ update: SensorObserverUpdate) {
         lastUpdate.mutate { $0 = update }
-        currentObservers().forEach { $0.sensorContainer(self, didUpdate: update) }
+        for observer in currentObservers() {
+            observer.sensorContainer(self, didUpdate: update)
+        }
     }
 
     private struct LastSentSensors {
@@ -222,8 +224,8 @@ public class SensorContainer {
 
     private func notifySignal(reason: SensorContainerUpdateReason) {
         let update = lastUpdate.read { $0 }
-        currentObservers().forEach {
-            $0.sensorContainer(self, didSignalForUpdateBecause: reason, lastUpdate: update)
+        for observer in currentObservers() {
+            observer.sensorContainer(self, didSignalForUpdateBecause: reason, lastUpdate: update)
         }
     }
 
