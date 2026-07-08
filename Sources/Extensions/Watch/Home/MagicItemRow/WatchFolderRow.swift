@@ -5,12 +5,31 @@ import SwiftUI
 struct WatchFolderRow: View {
     let item: MagicItem
     let itemInfo: MagicItem.Info
+    var layout: WatchLayout = .list
     let onTap: () -> Void
 
     var body: some View {
         Button {
             onTap()
         } label: {
+            label
+        }
+        .modify { view in
+            if layout == .grid {
+                view.watchHomeItemGridStyle(tint: backgroundForWatchItem)
+            } else {
+                view
+                    .frame(maxWidth: .infinity)
+                    .watchHomeItemRowStyle(tint: backgroundForWatchItem)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var label: some View {
+        if layout == .grid {
+            gridIcon
+        } else {
             WatchHomeItemLabel(
                 name: item.name(info: itemInfo),
                 textColor: textColor,
@@ -22,8 +41,6 @@ struct WatchFolderRow: View {
                 }
             )
         }
-        .frame(maxWidth: .infinity)
-        .watchHomeItemRowStyle(tint: backgroundForWatchItem)
     }
 
     private var iconColor: UIColor {
@@ -44,6 +61,24 @@ struct WatchFolderRow: View {
             .padding()
         }
         .watchRowIconContainer(color: iconColor)
+    }
+
+    private var gridIcon: some View {
+        ZStack(alignment: .topTrailing) {
+            Image(uiImage: item.icon(info: itemInfo).image(
+                ofSize: .init(width: 28, height: 28),
+                color: iconColor
+            ))
+            .foregroundStyle(Color(uiColor: iconColor))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            Image(systemSymbol: .chevronRight)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .padding(DesignSystem.Spaces.half)
+                .accessibilityHidden(true)
+        }
+        .contentShape(Rectangle())
+        .accessibilityLabel(Text(item.name(info: itemInfo)))
     }
 
     private var textColor: Color {
