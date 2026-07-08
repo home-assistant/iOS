@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import PromiseKit
 import Shared
 import UIKit
@@ -80,6 +81,7 @@ class LifecycleManager {
 
     @objc private func willEnterForeground() {
         isActive = true
+        NotificationCenter.default.post(name: Database.resumeNotification, object: self)
         refreshNetworkInformation()
         syncLiveActivities()
     }
@@ -96,6 +98,7 @@ class LifecycleManager {
 
     @objc private func didEnterBackground() {
         isActive = false
+        NotificationCenter.default.post(name: Database.suspendNotification, object: self)
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidEnterBackground.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(

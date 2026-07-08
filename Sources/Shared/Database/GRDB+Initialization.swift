@@ -5,9 +5,12 @@ public extension DatabaseQueue {
     // Following GRDB cocnurrency rules, we have just one database instance
     // https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/concurrency#Concurrency-Rules
     static var appDatabase: DatabaseQueue = {
+        var configuration = Configuration()
+        configuration.observesSuspensionNotifications = true
+
         let database: DatabaseQueue
         do {
-            database = try DatabaseQueue(path: databasePath())
+            database = try DatabaseQueue(path: databasePath(), configuration: configuration)
             #if targetEnvironment(simulator)
             print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
@@ -15,7 +18,7 @@ public extension DatabaseQueue {
             Current.Log.error("Failed to initialize GRDB, error: \(error.localizedDescription)")
             // Fallback to in-memory database so extensions don't crash
             do {
-                database = try DatabaseQueue()
+                database = try DatabaseQueue(configuration: configuration)
                 Current.Log.error("Using in-memory GRDB database as fallback")
             } catch {
                 fatalError("Failed to create even an in-memory GRDB database: \(error.localizedDescription)")
@@ -89,6 +92,8 @@ public extension DatabaseQueue {
         ]
         for tableName in obsoleteTables {
             do {
+                let exists = try database.read { try $0.tableExists(tableName) }
+                guard exists else { continue }
                 try database.write { db in
                     try db.drop(table: tableName)
                 }
@@ -115,24 +120,27 @@ protocol DatabaseTableProtocol {
 extension DatabaseTableProtocol {
     /// Migrates the table by adding new columns and removing obsolete columns
     func migrateColumns(database: DatabaseQueue) throws {
-        try database.write { db in
-            let existingColumns = try db.columns(in: tableName)
+        let (columnsToAdd, columnsToDrop) = try database.read { db -> ([String], [String]) in
+            let existingColumnNames = try db.columns(in: tableName).map(\.name)
+            let existingColumnSet = Set(existingColumnNames)
             let definedColumnSet = Set(definedColumns)
 
-            // Add new columns that don't exist yet
-            for columnName in definedColumns {
-                let shouldCreateColumn = !existingColumns.contains { $0.name == columnName }
-                if shouldCreateColumn {
-                    try db.alter(table: tableName) { tableAlteration in
-                        tableAlteration.add(column: columnName)
-                    }
+            let toAdd = definedColumns.filter { !existingColumnSet.contains($0) }
+            let toDrop = existingColumnNames.filter { !definedColumnSet.contains($0) }
+            return (toAdd, toDrop)
+        }
+
+        guard !columnsToAdd.isEmpty || !columnsToDrop.isEmpty else { return }
+
+        try database.write { db in
+            for columnName in columnsToAdd {
+                try db.alter(table: tableName) { tableAlteration in
+                    tableAlteration.add(column: columnName)
                 }
             }
-
-            // Remove columns that are no longer defined
-            for existingColumn in existingColumns where !definedColumnSet.contains(existingColumn.name) {
+            for columnName in columnsToDrop {
                 try db.alter(table: tableName) { tableAlteration in
-                    tableAlteration.drop(column: existingColumn.name)
+                    tableAlteration.drop(column: columnName)
                 }
             }
         }
