@@ -194,7 +194,7 @@ struct WatchHomeView: View {
             columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
             spacing: DesignSystem.Spaces.one
         ) {
-            ForEach(Array(viewModel.watchConfig.items.enumerated()), id: \.offset) { _, item in
+            ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 if item.type == .folder {
                     WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid) {
                         withAnimation(.easeInOut(duration: 0.25)) {

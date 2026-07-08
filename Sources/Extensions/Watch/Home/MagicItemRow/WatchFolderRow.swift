@@ -75,8 +75,10 @@ struct WatchFolderRow: View {
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .padding(DesignSystem.Spaces.half)
+                .accessibilityHidden(true)
         }
         .contentShape(Rectangle())
+        .accessibilityLabel(Text(item.name(info: itemInfo)))
     }
 
     private var textColor: Color {

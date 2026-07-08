@@ -67,7 +67,7 @@ struct WatchFolderContentView: View {
     }
 
     private var listItems: some View {
-        ForEach(Array((folder?.items ?? []).enumerated()), id: \.offset) { index, item in
+        ForEach(Array((folder?.items ?? []).enumerated()), id: \.element.serverUniqueId) { index, item in
             rowContent(for: item, at: index)
                 .modify { view in
                     if isEditing {
@@ -86,7 +86,7 @@ struct WatchFolderContentView: View {
             columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
             spacing: DesignSystem.Spaces.one
         ) {
-            ForEach(Array((folder?.items ?? []).enumerated()), id: \.offset) { _, item in
+            ForEach(folder?.items ?? [], id: \.serverUniqueId) { item in
                 WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
             }
         }

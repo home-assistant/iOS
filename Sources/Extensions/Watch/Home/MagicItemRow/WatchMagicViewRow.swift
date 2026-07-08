@@ -107,6 +107,7 @@ struct WatchMagicViewRow: View {
         stateIcon(size: 28)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
+            .accessibilityLabel(Text(viewModel.item.name(info: viewModel.itemInfo)))
     }
 
     @ViewBuilder
