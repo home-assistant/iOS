@@ -50,19 +50,20 @@ public class TokenManager {
     public static func initialToken(
         code: String,
         connectionInfo: inout ConnectionInfo
-    ) -> Promise<TokenInfo> {
-        guard let url = connectionInfo.activeURL() else {
-            return Promise { seal in
-                seal.reject(ServerConnectionError.noActiveURL("Unknown - Initial token config"))
-            }
+    ) async throws -> TokenInfo {
+        guard let url = await connectionInfo.activeURL() else {
+            throw ServerConnectionError.noActiveURL("Unknown - Initial token config")
         }
 
-        return AuthenticationAPI.fetchToken(
+        let exceptions = connectionInfo.securityExceptions
+        let clientCertificate = connectionInfo.clientCertificate
+
+        return try await AuthenticationAPI.fetchToken(
             authorizationCode: code,
             baseURL: url,
-            exceptions: connectionInfo.securityExceptions,
-            clientCertificate: connectionInfo.clientCertificate
-        )
+            exceptions: exceptions,
+            clientCertificate: clientCertificate
+        ).asyncValue()
     }
 
     // Request the server revokes the current token.

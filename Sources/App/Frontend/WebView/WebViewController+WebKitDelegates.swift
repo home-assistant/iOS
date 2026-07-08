@@ -133,12 +133,14 @@ extension WebViewController {
 
             // it's for the restored page, let's load the default url
 
-            if let webviewURL = server.info.connection.webviewURL() {
-                decisionHandler(.cancel)
-                load(request: URLRequest(url: webviewURL))
-            } else {
-                // we don't have anything we can do about this
-                decisionHandler(.allow)
+            Task { [weak self] in
+                if let self, let webviewURL = await server.webviewURL() {
+                    decisionHandler(.cancel)
+                    load(request: URLRequest(url: webviewURL))
+                } else {
+                    // we don't have anything we can do about this
+                    decisionHandler(.allow)
+                }
             }
         }
     }
