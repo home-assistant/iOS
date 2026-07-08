@@ -1836,7 +1836,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.settings.no_servers" = "Ühtegi serverit pole veel sünkroonitud. Ava oma seotud iPhone'is rakendus Home Assistant ja seejärel värskenda avakuvalt.";
 "watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Kus toimingud toimuvad. Kasutab automaatselt teie iPhone'i, kui see on läheduses, vastasel juhul loob Apple Watch otseühenduse Home Assistantiga.";
-"watch.settings.perform_action.footer_prefer_watch" = "Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.";
+"watch.settings.perform_action.footer_prefer_watch" = "Kus toimingud toimuvad. Ühendub automaatselt otse Apple Watchist Home Assistantiga, kui see on võimalik, vastasel juhul edastab see teavet iPhone'i kaudu.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Tee toiming kasutades";
 "watch.settings.refresh" = "Värskenda";
