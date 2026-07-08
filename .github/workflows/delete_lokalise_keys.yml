@@ -71,8 +71,6 @@ jobs:
           ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
-      - name: Install Pods
-        run: ONLY_SUPPORT_MODULES=1 bundle exec pod install --repo-update
       - name: Remove keys from Localizable.strings and regenerate
         run: bundle exec fastlane delete_local_strings
         env:

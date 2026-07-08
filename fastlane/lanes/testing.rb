@@ -35,7 +35,7 @@ end
 desc 'Run tests'
 lane :test do
   run_tests(
-    workspace: 'HomeAssistant.xcworkspace',
+    project: 'HomeAssistant.xcodeproj',
     scheme: 'Tests-Unit',
     result_bundle: true,
     skip_package_dependencies_resolution: true,
