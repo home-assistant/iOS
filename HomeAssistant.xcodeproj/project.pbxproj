@@ -8982,7 +8982,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$CI\" != \"true\" ]\nthen \n    # swiftlint as of 2021-01-21 (0.42.0) can't handle spaces in paths\n    # for the config arg, so we rely on relative here\n    # https://github.com/realm/SwiftLint/issues/3471\n    \"${SRCROOT}/Pods/SwiftLint/swiftlint\" \\\n       --config \".swiftlint.yml\" \\\n       --quiet \\\n       \"${SRCROOT}\"\nfi\n";
+			shellScript = "if [ \"$CI\" != \"true\" ]\nthen \n    # swiftlint as of 2021-01-21 (0.42.0) can't handle spaces in paths\n    # for the config arg, so we rely on relative here\n    # https://github.com/realm/SwiftLint/issues/3471\n    \"${SRCROOT}/Tools/build_tool\" swiftlint \\\n       --config \".swiftlint.yml\" \\\n       --quiet \\\n       \"${SRCROOT}\"\nfi\n";
 		};
 		11A67358268D9E7B00D1AFD4 /* Fix Xcode 12.5+ Dependency Issues */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -9103,7 +9103,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Skip SwiftLint if flag is set in Build settings \"user-defined settings\"\nif [ \"${DISABLE_SWIFTLINT}\" = \"1\" ]; then\n  echo \"SwiftLint skipped because DISABLE_SWIFTLINT=1\"\n  exit 0\nfi\n\nif which swiftlint > /dev/null; then\n  swiftlint --strict --config \"${SRCROOT}/.swiftlint.yml\"\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "# Skip SwiftLint if flag is set in Build settings \"user-defined settings\"\nif [ \"${DISABLE_SWIFTLINT}\" = \"1\" ]; then\n  echo \"SwiftLint skipped because DISABLE_SWIFTLINT=1\"\n  exit 0\nfi\n\n\"${SRCROOT}/Tools/build_tool\" swiftlint --strict --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
 		42CBB9002BBC226900385107 /* BuildMaterialDesignIconsFont */ = {
 			isa = PBXShellScriptBuildPhase;

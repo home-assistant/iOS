@@ -65,7 +65,7 @@ echo "Successfully built MaterialDesignIcons at version $MDI_VERSION"
 echo "Running Swiftgen..."
 
 pushd ..
-Pods/SwiftGen/bin/swiftgen
+Tools/build_tool swiftgen
 popd
 
 popd

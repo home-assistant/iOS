@@ -1,7 +1,3 @@
-# ib
-$(SRCROOT)/Sources/App/Resources/Scenes.swift
-$(SRCROOT)/Sources/App/Resources/Segues.swift
-
 # json
 $(SRCROOT)/Sources/Shared/Iconic/MaterialDesignIcons.swift
 

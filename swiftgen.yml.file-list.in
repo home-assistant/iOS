@@ -1,6 +1,3 @@
-# ib
-$(SRCROOT)/Sources/App/ClientEvents/ClientEvents.storyboard
-
 # json
 $(SRCROOT)/Tools/MaterialDesignIcons.json
 Tools/icons.stencil
@@ -14,5 +11,4 @@ $(SRCROOT)/Sources/App/Resources/en.lproj/Frontend.strings
 $(SRCROOT)/Sources/App/Resources/en.lproj/Localizable.strings
 
 # xcassets
-$(SRCROOT)/Sources/Shared/Assets/Colors.xcassets
 $(SRCROOT)/Sources/Shared/Assets/SharedAssets.xcassets
