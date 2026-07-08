@@ -52,7 +52,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // If the application was previously in the background, optionally refresh the user interface.
 
         Current.Log.verbose("didBecomeActive")
-        _ = HomeAssistantAPI.SyncWatchContext()
+        HomeAssistantAPI.syncWatchContext()
     }
 
     func applicationWillResignActive() {
@@ -61,12 +61,12 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
         Current.Log.verbose("willResignActive")
-        _ = HomeAssistantAPI.SyncWatchContext()
+        HomeAssistantAPI.syncWatchContext()
         Current.backgroundRefreshScheduler.schedule().cauterize()
     }
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
-        _ = HomeAssistantAPI.SyncWatchContext()
+        HomeAssistantAPI.syncWatchContext()
 
         // Sent when the system needs to launch the application in the background to process tasks.
         // Tasks arrive in a set, so loop through and process each one.
@@ -150,7 +150,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         Communicator.shared.state.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
 
-            _ = HomeAssistantAPI.SyncWatchContext()
+            HomeAssistantAPI.syncWatchContext()
         }
 
         Communicator.shared.reachability.observations.store[.init(queue: .main)] = { reachability in
@@ -175,7 +175,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             Current.Log.verbose("Received guaranteed message! \(message)")
 
             if message.identifier == GuaranteedMessages.sync.rawValue {
-                _ = HomeAssistantAPI.SyncWatchContext()
+                HomeAssistantAPI.syncWatchContext()
             }
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()

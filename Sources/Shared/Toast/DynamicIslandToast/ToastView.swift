@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import SwiftUI
 
 public extension View {

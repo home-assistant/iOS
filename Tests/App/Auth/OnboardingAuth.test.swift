@@ -129,7 +129,7 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testSuccessfulWithInternalAndExternalAndInternalSucceedsWithoutSSID() throws {
-        Current.connectivity.currentWiFiSSID = { nil }
+        Current.connectivity.currentNetworkState = { NetworkState() }
 
         let result = auth()
         let server = try hang(result)
@@ -149,8 +149,9 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testSuccessfulWithInternalAndExternalAndInternalSucceedsWithSSID() throws {
-        Current.connectivity.currentWiFiSSID = { "unit_test" }
-        Current.connectivity.currentNetworkHardwareAddress = { "unit_test_addr" }
+        Current.connectivity.currentNetworkState = {
+            NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
+        }
 
         let result = auth()
         let server = try hang(result)
@@ -211,7 +212,7 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testInternalPortRedirectIsAdopted() throws {
-        Current.connectivity.currentWiFiSSID = { nil }
+        Current.connectivity.currentNetworkState = { NetworkState() }
 
         // Login web view ended up on a different port than the URL we started the internal attempt with.
         let result = auth(
@@ -229,7 +230,7 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testHostChangeDuringLoginIsNotAdopted() throws {
-        Current.connectivity.currentWiFiSSID = { nil }
+        Current.connectivity.currentNetworkState = { NetworkState() }
 
         // Different host should never be adopted; keep the original internal URL.
         let result = auth(
@@ -503,9 +504,9 @@ class FakeOnboardingAuthLogin: OnboardingAuthLogin {
 }
 
 struct FakeOnboardingAuthTokenExchange: OnboardingAuthTokenExchange {
-    func tokenInfo(code: String, connectionInfo: inout ConnectionInfo) -> Promise<TokenInfo> {
+    func tokenInfo(code: String, connectionInfo: inout ConnectionInfo) async throws -> TokenInfo {
         XCTAssertEqual(code, expectedCode)
-        return result
+        return try await result.asyncValue()
     }
 
     var result: Promise<TokenInfo> = .init(error: TestError.any)

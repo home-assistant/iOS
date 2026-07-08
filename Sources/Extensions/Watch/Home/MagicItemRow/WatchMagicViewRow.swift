@@ -5,24 +5,20 @@ import SwiftUI
 struct WatchMagicViewRow: View {
     @StateObject private var viewModel: WatchMagicViewRowViewModel
     private let subtitle: String?
+    private let layout: WatchLayout
 
-    init(item: MagicItem, itemInfo: MagicItem.Info, subtitle: String? = nil) {
+    init(item: MagicItem, itemInfo: MagicItem.Info, subtitle: String? = nil, layout: WatchLayout = .list) {
         self._viewModel = .init(wrappedValue: .init(item: item, itemInfo: itemInfo))
         self.subtitle = subtitle
+        self.layout = layout
     }
 
     var body: some View {
         Button {
             viewModel.executeItem()
         } label: {
-            WatchHomeItemLabel(
-                name: viewModel.item.name(info: viewModel.itemInfo),
-                subtitle: subtitle,
-                textColor: textColor,
-                icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
-            )
+            label
         }
-        .frame(maxWidth: .infinity)
         .confirmationDialog(
             L10n.Watch.Home.Run.Confirmation.title(viewModel.item.name(info: viewModel.itemInfo)),
             isPresented: $viewModel.showConfirmationDialog,
@@ -38,7 +34,15 @@ struct WatchMagicViewRow: View {
                 .tint(.red)
             }
         )
-        .watchHomeItemRowStyle(tint: backgroundForWatchItem)
+        .modify { view in
+            if layout == .grid {
+                view.watchHomeItemGridStyle(tint: backgroundForWatchItem)
+            } else {
+                view
+                    .frame(maxWidth: .infinity)
+                    .watchHomeItemRowStyle(tint: backgroundForWatchItem)
+            }
+        }
         .onChange(of: viewModel.state) { newValue in
             // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
             let currentDevice = WKInterfaceDevice.current()
@@ -76,36 +80,59 @@ struct WatchMagicViewRow: View {
         }
     }
 
+    @ViewBuilder
+    private var label: some View {
+        if layout == .grid {
+            gridIcon
+                .animation(.bouncy, value: viewModel.state)
+        } else {
+            WatchHomeItemLabel(
+                name: viewModel.item.name(info: viewModel.itemInfo),
+                subtitle: subtitle,
+                textColor: textColor,
+                icon: { iconToDisplay.animation(.bouncy, value: viewModel.state) }
+            )
+        }
+    }
+
     private var iconToDisplay: some View {
         VStack {
-            switch viewModel.state {
-            case .idle:
-                Image(uiImage: viewModel.item.icon(info: viewModel.itemInfo).image(
-                    ofSize: .init(width: 24, height: 24),
-                    color: iconColor
-                ))
-                .foregroundStyle(Color(uiColor: iconColor))
+            stateIcon(size: 24)
                 .padding()
-            case .loading:
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .frame(width: 24, height: 24)
-                    .shadow(color: .white, radius: 10)
-                    .padding()
-            case .success:
-                makeStateImage(systemName: .checkmarkCircleFill)
-            case .failure:
-                makeStateImage(systemName: .xmarkCircle)
-            }
         }
         .watchRowIconContainer(color: iconColor)
     }
 
-    private func makeStateImage(systemName: SFSymbol) -> some View {
-        Image(systemSymbol: systemName)
-            .font(.system(size: 24))
-            .foregroundStyle(.white)
-            .padding()
+    private var gridIcon: some View {
+        stateIcon(size: 28)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .accessibilityLabel(Text(viewModel.item.name(info: viewModel.itemInfo)))
+    }
+
+    @ViewBuilder
+    private func stateIcon(size: CGFloat) -> some View {
+        switch viewModel.state {
+        case .idle:
+            Image(uiImage: viewModel.item.icon(info: viewModel.itemInfo).image(
+                ofSize: .init(width: size, height: size),
+                color: iconColor
+            ))
+            .foregroundStyle(Color(uiColor: iconColor))
+        case .loading:
+            ProgressView()
+                .progressViewStyle(.circular)
+                .frame(width: size, height: size)
+                .shadow(color: .white, radius: 10)
+        case .success:
+            Image(systemSymbol: .checkmarkCircleFill)
+                .font(.system(size: size))
+                .foregroundStyle(.white)
+        case .failure:
+            Image(systemSymbol: .xmarkCircle)
+                .font(.system(size: size))
+                .foregroundStyle(.white)
+        }
     }
 
     private var textColor: Color {

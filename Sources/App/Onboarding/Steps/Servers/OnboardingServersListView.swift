@@ -127,10 +127,25 @@ struct OnboardingServersListView: View {
             viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
         }, set: { newValue in
             viewModel.showPermissionsFlow = newValue
-        })) {
+        }), onDismiss: {
+            if viewModel.permissionsFlowCompleted {
+                viewModel.permissionsFlowCompleted = false
+                Current.onboardingObservation.complete()
+            }
+        }) {
             // isPresented guarantees onboardingServer
             // swiftlint:disable:next force_unwrapping
-            OnboardingPermissionsNavigationView(onboardingServer: viewModel.onboardingServer!)
+            OnboardingPermissionsNavigationView(
+                onboardingServer: viewModel.onboardingServer!,
+                onDismiss: {
+                    if onboardingStyle == .secondary {
+                        viewModel.permissionsFlowCompleted = true
+                        viewModel.showPermissionsFlow = false
+                    } else {
+                        Current.onboardingObservation.complete()
+                    }
+                }
+            )
         }
     }
 

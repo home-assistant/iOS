@@ -238,8 +238,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     /// Determines if a specific server should be updated based on connection and throttle rules.
-    private func shouldUpdateServer(_ server: Server, forceUpdate: Bool) -> Bool {
-        guard server.info.connection.activeURL() != nil else { return false }
+    private func shouldUpdateServer(_ server: Server, forceUpdate: Bool) async -> Bool {
+        guard await server.activeURL() != nil else { return false }
         if isUpdateCancelled() { return false }
 
         // Skip throttle checks if forceUpdate is true
@@ -266,7 +266,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         // Read the effective force as late as possible — immediately before the throttle decision —
         // so a forced request that upgraded this server's queued entry isn't throttled into a no-op.
         let forceUpdate = await taskCoordinator.effectiveForce(for: server.identifier.rawValue)
-        guard shouldUpdateServer(server, forceUpdate: forceUpdate) else {
+        guard await shouldUpdateServer(server, forceUpdate: forceUpdate) else {
             Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
             return
         }

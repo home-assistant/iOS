@@ -5458,6 +5458,12 @@ public enum L10n {
         /// Items
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.items.title") }
       }
+      public enum Layout {
+        /// Grid layout only displays icons.
+        public static var footer: String { return L10n.tr("Localizable", "watch.configuration.layout.footer") }
+        /// Layout
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.layout.title") }
+      }
       public enum NewFolder {
         /// New Folder
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.new_folder.title") }
