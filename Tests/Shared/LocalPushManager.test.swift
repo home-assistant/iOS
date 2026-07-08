@@ -1,4 +1,5 @@
 import HAKit
+import HAKit_Mocks
 import PromiseKit
 @testable import Shared
 import XCTest

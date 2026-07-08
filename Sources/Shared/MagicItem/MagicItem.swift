@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import SwiftUI
 

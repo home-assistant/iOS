@@ -1,5 +1,6 @@
 import Foundation
 import HAKit
+import HAKit_PromiseKit
 import Shared
 import SwiftUI
 import WebRTC

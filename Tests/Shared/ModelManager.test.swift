@@ -1,5 +1,6 @@
 import Foundation
 import HAKit
+import HAKit_Mocks
 import PromiseKit
 import RealmSwift
 @testable import Shared
