@@ -25,9 +25,13 @@ struct SearchingServersAnimationView: View {
 
     var body: some View {
         VStack(spacing: DesignSystem.Spaces.three) {
-            ZStack {
-                dots
-                logo
+            if #available(iOS 17, *) {
+                ZStack {
+                    dots
+                    logo
+                }
+            } else {
+                ProgressView()
             }
 
             Text(text ?? "")
@@ -39,9 +43,9 @@ struct SearchingServersAnimationView: View {
                 .animation(.easeInOut, value: showText)
         }
         .onAppear {
-            animateLogoPulse()
-            withAnimation(Animation.linear(duration: Constants.animationDuration).repeatForever(autoreverses: false)) {
-                rotation = direction * Constants.rotationDegrees
+            if #available(iOS 17, *) {
+                animateLogoPulse()
+                animateRotation()
             }
             if text != nil {
                 scheduleText()
@@ -78,6 +82,12 @@ struct SearchingServersAnimationView: View {
     private func animateLogoPulse() {
         withAnimation(Animation.easeInOut(duration: Constants.logoPulseDuration).repeatForever(autoreverses: true)) {
             logoScale = Constants.logoPulseScale
+        }
+    }
+
+    private func animateRotation() {
+        withAnimation(Animation.linear(duration: Constants.animationDuration).repeatForever(autoreverses: false)) {
+            rotation = direction * Constants.rotationDegrees
         }
     }
 }
