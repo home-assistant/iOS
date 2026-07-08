@@ -216,7 +216,8 @@ struct ConnectionSecurityLevelBlockView: View {
         NavigationView {
             OnboardingPermissionsNavigationView(
                 onboardingServer: server,
-                steps: [.localAccess, .updatePreferencesSuccess]
+                steps: [.localAccess, .updatePreferencesSuccess],
+                onDismiss: { showConnectionSecurityPreferences = false }
             )
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
