@@ -444,8 +444,6 @@
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
 		177E4B39B7BA296CCB68A27D /* Pods-iOS-Extensions-Widgets-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6723A4E97E50C3C9141428D0 /* Pods-iOS-Extensions-Widgets-metadata.plist */; };
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
-		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A0BF50187A921289B3BA4AE /* Pods-Tests-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B67C3F1DA02199833DA64AF8 /* Pods-Tests-App-metadata.plist */; };
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -986,10 +984,6 @@
 		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
 		42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */; };
 		42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */; };
-		42B079882FFD7B3B00A22C46 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 42B079872FFD7B3B00A22C46 /* RealmSwift */; };
-		42B0798A2FFD7B3B00A22C46 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 42B079892FFD7B3B00A22C46 /* SFSafeSymbols */; };
-		42B0798C2FFD7B3B00A22C46 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42B0798B2FFD7B3B00A22C46 /* Alamofire */; };
-		42B0798E2FFD7B3B00A22C46 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 42B0798D2FFD7B3B00A22C46 /* KeychainAccess */; };
 		42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 42B18FD62F38CA2300A1537A /* FirebaseMessaging */; };
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
@@ -12411,26 +12405,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		42B079872FFD7B3B00A22C46 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
-			productName = RealmSwift;
-		};
-		42B079892FFD7B3B00A22C46 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		42B0798B2FFD7B3B00A22C46 /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		42B0798D2FFD7B3B00A22C46 /* KeychainAccess */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-			productName = KeychainAccess;
 		};
 		42B18FD62F38CA2300A1537A /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
