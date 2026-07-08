@@ -1,5 +1,5 @@
 {
-  "originHash" : "76b54af24ec632d9cd8c007ea8e91330f03823694c5ab2ea1afb27439baadc9e",
+  "originHash" : "f24d7a232197b1795160265dc204eab0cea02650275df95dc9def4b03824c097",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -233,6 +233,15 @@
       "state" : {
         "revision" : "86dbb5cb57e4da009b859a6245b1c10d610f215a",
         "version" : "140.0.0"
+      }
+    },
+    {
+      "identity" : "xcglogger",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DaveWoodCom/XCGLogger",
+      "state" : {
+        "revision" : "4def3c1c772ca90ad5e7bfc8ac437c3b0b4276cf",
+        "version" : "7.1.5"
       }
     },
     {

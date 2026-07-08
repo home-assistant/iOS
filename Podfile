@@ -22,8 +22,6 @@ end
 plugin 'cocoapods-acknowledgements'
 pod 'PromiseKit', '~> 8.1.1'
 
-pod 'XCGLogger'
-
 # Keep Starscream reference even though HAKit already install it, because it defines our fork with the necessary fix
 pod 'Starscream', git: 'https://github.com/bgoncal/starscream', tag: '4.0.9'
 pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
