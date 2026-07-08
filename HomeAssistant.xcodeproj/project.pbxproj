@@ -985,10 +985,6 @@
 		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
 		42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */; };
 		42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */; };
-		42B079882FFD7B3B00A22C46 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 42B079872FFD7B3B00A22C46 /* RealmSwift */; };
-		42B0798A2FFD7B3B00A22C46 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 42B079892FFD7B3B00A22C46 /* SFSafeSymbols */; };
-		42B0798C2FFD7B3B00A22C46 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42B0798B2FFD7B3B00A22C46 /* Alamofire */; };
-		42B0798E2FFD7B3B00A22C46 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 42B0798D2FFD7B3B00A22C46 /* KeychainAccess */; };
 		42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 42B18FD62F38CA2300A1537A /* FirebaseMessaging */; };
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
@@ -1130,6 +1126,7 @@
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
+		42E0D82C2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		42E0D82D2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		42E28A712FEABEBD00B65504 /* ModalReusableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E28A702FEABEBD00B65504 /* ModalReusableButton.swift */; };
 		42E28A742FEACDEA00B65504 /* CarPlayEditItemFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E28A732FEACDEA00B65504 /* CarPlayEditItemFlow.swift */; };
@@ -1241,7 +1238,7 @@
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
-		4697F4C22D8A416400C5C467 /* SharedTesting.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4697F4C22D8A416400C5C467 /* SharedTesting.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		46BA6A4E2D734EBB002C2262 /* SnapshotTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */; };
 		46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C3EB1B2D721017009A893F /* Array+SafeSubscripting.test.swift */; };
 		46C62B962D8A3730002C0001 /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 46C62B952D8A3730002C0001 /* InlineSnapshotTesting */; };
@@ -3763,13 +3760,6 @@
 				9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */,
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				42A1F0B72E000000000000B7 /* Alamofire in Frameworks */,
-				42B0798E2FFD7B3B00A22C46 /* KeychainAccess in Frameworks */,
-				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
-				CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */,
-				42B0798C2FFD7B3B00A22C46 /* Alamofire in Frameworks */,
-				42B0798A2FFD7B3B00A22C46 /* SFSafeSymbols in Frameworks */,
-				A307E253426FAE95903A3493 /* RealmSwift in Frameworks */,
-				42B079882FFD7B3B00A22C46 /* RealmSwift in Frameworks */,
 				CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */,
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				A307E253426FAE95903A3493 /* RealmSwift in Frameworks */,
@@ -6822,8 +6812,6 @@
 				9FF8339CF3917058749E364B /* Pods-iOS-SharedTesting.release.xcconfig */,
 				DC4CD653159135DAFAD8E8EF /* Pods-watchOS-Shared-watchOS.debug.xcconfig */,
 				82BA4976B40B4D1C90345C61 /* Pods-watchOS-Shared-watchOS.release.xcconfig */,
-				B29A8EA7C20918B689206E6D /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */,
-				F169404A60EE25C26ED9CA1C /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */,
 				7AC3EC6EBE43F6466751B45B /* Pods-watchOS-WatchApp.debug.xcconfig */,
 				979DEEDBAEB562956D220154 /* Pods-watchOS-WatchApp.release.xcconfig */,
 				216BFB58F2D5FDCF8FE20A0B /* Pods-watchOS-WatchApp-metadata.plist */,
@@ -8782,9 +8770,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				426490732C0F1F36002155CC /* Colors.xcassets in Resources */,
-				FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */,
-				B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */,
-				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
 				B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */,
 				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
 				42E0D82C2DCCE5900095A245 /* Colors.xcassets in Resources */,
@@ -9113,13 +9098,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchApp/Pods-watchOS-WatchApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchApp/Pods-watchOS-WatchApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -10794,11 +10775,6 @@
 				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
 				11F2F2B8258728B200F61F7C /* NotificationAttachmentParserURL.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
-				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
-				42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */,
-				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,
-				692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */,
-				BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */,
 				DA6F4C18D66EDBA5DCEAE833 /* DatabaseMigration.test.swift in Sources */,
 				42A7F1012FBC000100BEEF01 /* AllowedTag.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* DatabaseTableProtocol.test.swift in Sources */,
@@ -11934,9 +11910,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
-					/usr/lib/swift,
-					"'@executable_path/Frameworks'",
-					"'@loader_path/Frameworks'",
+					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
@@ -11959,9 +11933,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
-					/usr/lib/swift,
-					"'@executable_path/Frameworks'",
-					"'@loader_path/Frameworks'",
+					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
@@ -12429,26 +12401,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		42B079872FFD7B3B00A22C46 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
-			productName = RealmSwift;
-		};
-		42B079892FFD7B3B00A22C46 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		42B0798B2FFD7B3B00A22C46 /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		42B0798D2FFD7B3B00A22C46 /* KeychainAccess */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-			productName = KeychainAccess;
 		};
 		42B18FD62F38CA2300A1537A /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
