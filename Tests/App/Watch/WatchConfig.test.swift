@@ -342,6 +342,26 @@ struct WatchDatabaseMirror_test {
     }
 }
 
+struct WatchConfigLayout_test {
+    @Test func resolvedLayoutDefaultsToListWhenUnset() {
+        let config = WatchConfig()
+        #expect(config.layout == nil)
+        #expect(config.resolvedLayout == .list)
+    }
+
+    @Test func resolvedLayoutReturnsStoredValue() {
+        #expect(WatchConfig(layout: .grid).resolvedLayout == .grid)
+        #expect(WatchConfig(layout: .list).resolvedLayout == .list)
+    }
+
+    @Test func encodeForWatchRoundTripPreservesLayout() throws {
+        let original = WatchConfig(items: [], layout: .grid)
+        let data = original.encodeForWatch()
+        let decoded = try #require(WatchConfig.decodeForWatch(data))
+        #expect(decoded.resolvedLayout == .grid)
+    }
+}
+
 struct WatchConfigLastModified_test {
     @Test func stampModifiedUsesCurrentDate() {
         let fixedDate = Date(timeIntervalSince1970: 1_700_000_000)

@@ -182,9 +182,32 @@ struct WatchHomeView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .listRowBackground(Color.clear)
+        } else if !isEditing, viewModel.watchConfig.resolvedLayout == .grid {
+            gridContent
         } else {
             mainContent
         }
+    }
+
+    private var gridContent: some View {
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+            spacing: DesignSystem.Spaces.one
+        ) {
+            ForEach(Array(viewModel.watchConfig.items.enumerated()), id: \.offset) { _, item in
+                if item.type == .folder {
+                    WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid) {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            openFolderId = item.id
+                        }
+                    }
+                } else {
+                    WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                }
+            }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
     }
 
     private var addRow: some View {
@@ -310,5 +333,51 @@ struct WatchHomeView: View {
     MaterialDesignIcons.register()
     let viewModel = WatchHomeViewModel()
     viewModel.watchConfig = WatchConfig(items: [])
+    return WatchHomeView(viewModel: viewModel, autoLoad: false)
+}
+
+#Preview("Grid") {
+    MaterialDesignIcons.register()
+    let viewModel = WatchHomeViewModel()
+    viewModel.showAssist = true
+    viewModel.watchConfig = WatchConfig(items: [
+        MagicItem(
+            id: "script.good_morning",
+            serverId: "1",
+            type: .script,
+            customization: .init(iconColor: "#FFB300", icon: "weather_sunny"),
+            displayText: "Good Morning"
+        ),
+        MagicItem(
+            id: "scene.movie_time",
+            serverId: "1",
+            type: .scene,
+            customization: .init(icon: "movie_open"),
+            displayText: "Movie Time"
+        ),
+        MagicItem(
+            id: "script.goodnight",
+            serverId: "1",
+            type: .script,
+            customization: .init(backgroundColor: "#3F51B5", icon: "weather_night"),
+            displayText: "Goodnight"
+        ),
+        MagicItem(
+            id: "folder1",
+            serverId: "",
+            type: .folder,
+            customization: .init(iconColor: "#4FC3F7"),
+            displayText: "Lights",
+            items: [
+                MagicItem(
+                    id: "light.kitchen",
+                    serverId: "1",
+                    type: .entity,
+                    customization: .init(icon: "ceiling_light"),
+                    displayText: "Kitchen"
+                ),
+            ]
+        ),
+    ], layout: .grid)
     return WatchHomeView(viewModel: viewModel, autoLoad: false)
 }

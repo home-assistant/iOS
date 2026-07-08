@@ -17,18 +17,7 @@ struct WatchFolderContentView: View {
     var body: some View {
         List {
             header
-            ForEach(Array((folder?.items ?? []).enumerated()), id: \.offset) { index, item in
-                rowContent(for: item, at: index)
-                    .modify { view in
-                        if isEditing {
-                            view
-                        } else {
-                            view.onLongPressGesture { enterEditMode() }
-                        }
-                    }
-            }
-            .onMove(perform: isEditing ? moveItems : nil)
-            .onDelete(perform: isEditing ? deleteItems : nil)
+            itemsContent
             if !isEditing {
                 addRow
             }
@@ -66,6 +55,43 @@ struct WatchFolderContentView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private var itemsContent: some View {
+        if !isEditing, viewModel.watchConfig.resolvedLayout == .grid {
+            gridContent
+        } else {
+            listItems
+        }
+    }
+
+    private var listItems: some View {
+        ForEach(Array((folder?.items ?? []).enumerated()), id: \.offset) { index, item in
+            rowContent(for: item, at: index)
+                .modify { view in
+                    if isEditing {
+                        view
+                    } else {
+                        view.onLongPressGesture { enterEditMode() }
+                    }
+                }
+        }
+        .onMove(perform: isEditing ? moveItems : nil)
+        .onDelete(perform: isEditing ? deleteItems : nil)
+    }
+
+    private var gridContent: some View {
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+            spacing: DesignSystem.Spaces.one
+        ) {
+            ForEach(Array((folder?.items ?? []).enumerated()), id: \.offset) { _, item in
+                WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+            }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
     }
 
     @ViewBuilder

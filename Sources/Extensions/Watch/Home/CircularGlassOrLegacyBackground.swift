@@ -57,6 +57,26 @@ extension View {
             }
         }
     }
+
+    @ViewBuilder
+    func watchHomeItemGridStyle(tint: Color?) -> some View {
+        buttonStyle(.plain)
+            .frame(maxWidth: .infinity)
+            .aspectRatio(1, contentMode: .fit)
+            .modify { view in
+                if #available(watchOS 26.0, *) {
+                    view.glassEffect(
+                        .regular.tint(tint).interactive(),
+                        in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
+                    )
+                } else {
+                    view.background(
+                        (tint ?? Color.gray.opacity(0.3))
+                            .cornerRadius(DesignSystem.CornerRadius.two)
+                    )
+                }
+            }
+    }
 }
 
 #endif
