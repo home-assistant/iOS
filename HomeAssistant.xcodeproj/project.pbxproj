@@ -1712,7 +1712,6 @@
 		FA11C0DE0000000000000057 /* FrontendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000056 /* FrontendView.swift */; };
 		FA11C0DE000000000000005B /* WebFrontend.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE000000000000005A /* WebFrontend.swift */; };
 		FA11C0DE0000000000000061 /* MockAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000060 /* MockAppCoordinator.swift */; };
-		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
 		FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */; };
 		FD3BC66C29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */; };
 		FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */; };
@@ -3235,7 +3234,6 @@
 		892F0EF22A0B9F20AAEE4CCA /* DatabaseMigration.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/DatabaseMigration.test.swift; sourceTree = "<group>"; };
 		8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlFanValueProvider.swift; sourceTree = "<group>"; };
 		8D6888525DCF492642BA7EA3 /* FanIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanIntent.swift; sourceTree = "<group>"; };
-		9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-watchOS-WatchExtension-Watch-metadata.plist"; path = "Pods/Pods-watchOS-WatchExtension-Watch-metadata.plist"; sourceTree = "<group>"; };
 		94616AE6CF9100E44C576B8D /* CallServiceResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CallServiceResponse.swift; sourceTree = "<group>"; };
 		968F6CFEBF2D6A74B7199CCA /* Pods-iOS-SharedTesting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-SharedTesting.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-SharedTesting/Pods-iOS-SharedTesting.debug.xcconfig"; sourceTree = "<group>"; };
 		979DEEDBAEB562956D220154 /* Pods-watchOS-WatchApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchApp/Pods-watchOS-WatchApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -3275,7 +3273,6 @@
 		B0B0B0B00000000000000020 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		B0B0B0B00000000000000030 /* Color+Hex.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.test.swift"; sourceTree = "<group>"; };
 		B153E9DF0CE64E989B6185A9 /* CarPlayAddItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAddItemViewModel.swift; sourceTree = "<group>"; };
-		B29A8EA7C20918B689206E6D /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; sourceTree = "<group>"; };
 		B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; sourceTree = "<group>"; };
 		B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerLiveActivityTests.swift; sourceTree = "<group>"; };
 		B60247ED1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -3651,7 +3648,6 @@
 		EA48D83CEC81207475292E40 /* Pods-iOS-Shared-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		EE9D38AFF8103605A5E02F62 /* KioskSettingsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettingsTable.swift; sourceTree = "<group>"; };
 		EF91E383A44843F087423FB5 /* WidgetCommonlyUsedEntitiesTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCommonlyUsedEntitiesTimelineProvider.swift; sourceTree = "<group>"; };
-		F169404A60EE25C26ED9CA1C /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.release.xcconfig"; sourceTree = "<group>"; };
 		F1D3EF229B8D9A2DB7DF078A /* KioskBrightnessSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskBrightnessSensor.swift; sourceTree = "<group>"; };
 		F23EF1C338811D52799A685B /* HAWatchConnectivityObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAWatchConnectivityObservable.swift; sourceTree = "<group>"; };
 		F8B050BDD351F8F05783CAE4 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
@@ -6783,7 +6779,6 @@
 				D72C761F65606EF882E2A7B1 /* Pods-iOS-Extensions-Today-metadata.plist */,
 				6723A4E97E50C3C9141428D0 /* Pods-iOS-Extensions-Widgets-metadata.plist */,
 				207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */,
-				9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */,
 				6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */,
 				B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */,
 				E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */,
@@ -6815,8 +6810,6 @@
 				9FF8339CF3917058749E364B /* Pods-iOS-SharedTesting.release.xcconfig */,
 				DC4CD653159135DAFAD8E8EF /* Pods-watchOS-Shared-watchOS.debug.xcconfig */,
 				82BA4976B40B4D1C90345C61 /* Pods-watchOS-Shared-watchOS.release.xcconfig */,
-				B29A8EA7C20918B689206E6D /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */,
-				F169404A60EE25C26ED9CA1C /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */,
 				7AC3EC6EBE43F6466751B45B /* Pods-watchOS-WatchApp.debug.xcconfig */,
 				979DEEDBAEB562956D220154 /* Pods-watchOS-WatchApp.release.xcconfig */,
 				216BFB58F2D5FDCF8FE20A0B /* Pods-watchOS-WatchApp-metadata.plist */,
@@ -8774,7 +8767,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				426490732C0F1F36002155CC /* Colors.xcassets in Resources */,
-				FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */,
 				B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */,
 				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
 				42E0D82C2DCCE5900095A245 /* Colors.xcassets in Resources */,
