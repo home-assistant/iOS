@@ -27,6 +27,11 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = scene as? UIWindowScene else { return }
 
+        // Record this connection and remember whether it was the process's first (cold-launch) one. macOS
+        // reconnects this scene in the background throughout the app's lifetime, so only the first connection
+        // represents a user-initiated launch (see `MacBrowserSceneLauncher`).
+        let isInitialSceneConnection = MacBrowserSceneLauncher.markSceneConnected()
+
         // Cold launch via a quick action: the app was launched by tapping an app-icon shortcut.
         // This getter does not exist on macOS 10.15, so check that it responds before accessing it.
         if connectionOptions.responds(to: #selector(getter: UIScene.ConnectionOptions.shortcutItem)),
@@ -38,8 +43,10 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
         // "Open Home Assistant UI in browser" (Mac): when the app is opened by tapping its icon, open
         // Home Assistant in the default browser and destroy the empty webview window so none is left behind.
         // This only runs on macOS, where the last-known network information is read live from macBridge,
-        // so the synchronous evaluation is current.
-        if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly,
+        // so the synchronous evaluation is current. Only the initial (cold-launch) connection triggers this;
+        // later background scene reconnections must not reopen the browser (#4985). Subsequent user-initiated
+        // opens are handled by the Dock reopen handler / status-item menu via `StatusItemPrimaryAction`.
+        if isInitialSceneConnection, MacBrowserSceneLauncher.isBrowserLaunchEnabled,
            let url = Current.servers.all.first?.activeURLUsingLastKnownNetworkState() {
             URLOpener.shared.open(url, options: [:], completionHandler: nil)
             UIApplication.shared.requestSceneSessionDestruction(session, options: nil, errorHandler: nil)
