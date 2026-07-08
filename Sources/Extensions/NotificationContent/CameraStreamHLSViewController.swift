@@ -169,15 +169,22 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         })
 
         observationTokens.append(videoPlayer.observe(\AVPlayer.currentItem?.tracks) { [weak self] item, _ in
-            let sizes = item.currentItem?
-                .tracks
-                .compactMap({ $0.assetTrack?.naturalSize })
-                .filter {
-                    // hls streams occasionally bounce between (0, 0); (1, 1); and the real size
-                    $0.width > 1 && $0.height > 1
+            let assetTracks = item.currentItem?.tracks.compactMap(\.assetTrack)
+            Task { @MainActor [weak self] in
+                var sizes: [CGSize]?
+                if let assetTracks {
+                    sizes = []
+                    for track in assetTracks {
+                        // hls streams occasionally bounce between (0, 0); (1, 1); and the real size
+                        if let size = try? await track.load(.naturalSize),
+                           size.width > 1, size.height > 1 {
+                            sizes?.append(size)
+                        }
+                    }
                 }
 
-            self?.lastSize = sizes?.first
+                self?.lastSize = sizes?.first
+            }
         })
     }
 }

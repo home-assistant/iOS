@@ -119,8 +119,9 @@ public class ConnectivityWrapper {
             self.currentWiFiSSID = {
                 #if targetEnvironment(simulator)
                 return "Simulator"
-                #endif
+                #else
                 return ssid
+                #endif
             }
             let bssid = hotspotNetwork?.bssid
             self.currentWiFiBSSID = { bssid }

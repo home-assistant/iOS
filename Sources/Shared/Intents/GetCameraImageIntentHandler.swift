@@ -1,8 +1,8 @@
 import Foundation
 import Intents
-import MobileCoreServices
 import PromiseKit
 import UIKit
+import UniformTypeIdentifiers
 
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
     typealias Intent = GetCameraImageIntent
@@ -70,7 +70,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         guard let server = Current.servers.server(for: intent), let api = Current.api(for: server) else {
             completion(
                 .failure(
-                    error: "No server provided, active URL: \(String(describing: Current.servers.server(for: intent)?.info.connection.activeURL()?.absoluteString))"
+                    error: "No server provided, active URL: \(String(describing: Current.servers.server(for: intent)?.info.connection.evaluateActiveURL()?.absoluteString))"
                 )
             )
             return
@@ -92,7 +92,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
                 resp.cameraImage = INFile(
                     data: pngData,
                     filename: "\(cameraID)_still.png",
-                    typeIdentifier: kUTTypePNG as String
+                    typeIdentifier: UTType.png.identifier
                 )
                 resp.cameraID = cameraID
                 completion(resp)

@@ -6,7 +6,7 @@ struct AboutView: View {
     @State private var showVersionAlert = false
 
     var shouldHideSocialsNotAvailableInChina: Bool {
-        if let lang = Locale.current.languageCode, lang.hasPrefix("zh") {
+        if let lang = Locale.current.language.languageCode?.identifier, lang.hasPrefix("zh") {
             return true
         }
         return false

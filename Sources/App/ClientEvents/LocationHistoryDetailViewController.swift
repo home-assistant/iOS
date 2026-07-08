@@ -369,8 +369,8 @@ private extension LocationHistoryDetailViewController {
 
 extension LocationHistoryDetailViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: nil)
-        view.pinTintColor = .purple
+        let view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: nil)
+        view.markerTintColor = .purple
         return view
     }
 

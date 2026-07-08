@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import WidgetKit
 
 struct WidgetBasicViewTintedWrapper<T: WidgetBasicViewProtocol>: View {
     @Environment(\.widgetRenderingMode) var widgetRenderingMode

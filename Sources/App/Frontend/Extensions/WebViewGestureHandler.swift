@@ -43,6 +43,7 @@ final class WebViewGestureHandler {
     private func showSidebar() {
         webView?.webViewExternalMessageHandler
             .sendExternalBus(message: .init(command: WebViewExternalBusOutgoingMessage.showSidebar.rawValue))
+            .cauterize()
     }
 
     private func webViewNavigateBack() {

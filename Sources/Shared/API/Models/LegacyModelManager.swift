@@ -38,7 +38,9 @@ public class LegacyModelManager: ServerObserver {
         })
     }
 
-    public struct CleanupDefinition {
+    // Immutable value describing a Realm cleanup pass; safe to hand across queues even though
+    // Realm types themselves aren't Sendable.
+    public struct CleanupDefinition: @unchecked Sendable {
         public enum OrphanMode {
             case delete(handler: (Realm, [Object]) -> Void)
             case replace

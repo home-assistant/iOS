@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 import Security
 
-final class CustomServerTrustManager: ServerTrustManager, ServerTrustEvaluating {
+final class CustomServerTrustManager: ServerTrustManager, ServerTrustEvaluating, @unchecked Sendable {
     let exceptions: () -> SecurityExceptions
 
     init(server: Server) {

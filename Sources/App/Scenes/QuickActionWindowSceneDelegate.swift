@@ -38,9 +38,12 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
         // "Open Home Assistant UI in browser" (Mac): when the app is opened by tapping its icon, open
         // Home Assistant in the default browser and destroy the empty webview window so none is left behind.
         if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly,
-           let url = Current.servers.all.first?.info.connection.activeURL() {
-            URLOpener.shared.open(url, options: [:], completionHandler: nil)
-            UIApplication.shared.requestSceneSessionDestruction(session, options: nil, errorHandler: nil)
+           let server = Current.servers.all.first {
+            Task { @MainActor in
+                guard let url = await server.activeURL() else { return }
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
+                UIApplication.shared.requestSceneSessionDestruction(session, options: nil, errorHandler: nil)
+            }
         }
     }
 

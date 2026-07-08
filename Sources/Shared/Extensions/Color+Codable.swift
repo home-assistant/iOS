@@ -32,7 +32,7 @@ private extension Color {
     }
 }
 
-extension Color: Codable {
+extension Color: @retroactive Decodable, @retroactive Encodable {
     enum CodingKeys: String, CodingKey {
         case red, green, blue
     }
