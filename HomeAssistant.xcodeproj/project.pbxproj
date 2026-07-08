@@ -844,6 +844,9 @@
 		42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42881BD32DDF12340079BDCB /* SwiftUI+SafeArea.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
+		42886D162FFE5C12004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D152FFE5C12004EB33B /* Sodium */; };
+		42886D182FFE5C19004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D172FFE5C19004EB33B /* Sodium */; };
+		42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D192FFE5C20004EB33B /* Sodium */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
 		4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
 		4289DDAF2C85D5C4003591C2 /* ControlScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDAE2C85D5C4003591C2 /* ControlScene.swift */; };
@@ -3865,6 +3868,7 @@
 				CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */,
 				427692E52B98B83200F24321 /* SharedPush in Frameworks */,
 				42A1F0B32E000000000000B3 /* Alamofire in Frameworks */,
+				42886D182FFE5C19004EB33B /* Sodium in Frameworks */,
 				42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */,
 				09C9974C22F113423EE3B3DC /* GRDB in Frameworks */,
 				0D20E5697E7DA70D01E77A51 /* RealmSwift in Frameworks */,
@@ -3892,6 +3896,7 @@
 				42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */,
 				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
 				1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */,
+				42886D162FFE5C12004EB33B /* Sodium in Frameworks */,
 				D0EEF301214D8EAB00D1D360 /* CoreLocation.framework in Frameworks */,
 				427692E32B98B82500F24321 /* SharedPush in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
@@ -3912,6 +3917,7 @@
 				426BD7742FFE54E8001378A4 /* OHHTTPStubsSwift in Frameworks */,
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
+				42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */,
 				17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */,
 				1C691D0A33773328FB47DC6C /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */,
 			);
@@ -8165,6 +8171,7 @@
 				CEA1C4A10000000000000030 /* KeychainAccess */,
 				42C57CB12FFD4BE5002457D9 /* ObjectMapper */,
 				42E1C8112FFE4DB2008DAEE5 /* XCGLogger */,
+				42886D172FFE5C19004EB33B /* Sodium */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -8242,6 +8249,7 @@
 				CEA1C4A10000000000000020 /* KeychainAccess */,
 				42C57CAF2FFD4BD5002457D9 /* ObjectMapper */,
 				42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */,
+				42886D152FFE5C12004EB33B /* Sodium */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -8268,6 +8276,7 @@
 				42A1F0A62E000000000000A6 /* Alamofire */,
 				426BD7712FFE54E8001378A4 /* OHHTTPStubs */,
 				426BD7732FFE54E8001378A4 /* OHHTTPStubsSwift */,
+				42886D192FFE5C20004EB33B /* Sodium */,
 			);
 			productName = SharedTests;
 			productReference = D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */;
@@ -8497,6 +8506,7 @@
 				425E94862FFD4A8B0067FA73 /* XCRemoteSwiftPackageReference "ObjectMapper" */,
 				42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
+				42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -12304,6 +12314,14 @@
 				minimumVersion = 9.1.0;
 			};
 		};
+		42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jedisct1/swift-sodium";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.11.0;
+			};
+		};
 		42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/improv-wifi/sdk-iOS.git";
@@ -12462,6 +12480,21 @@
 		427692E42B98B83200F24321 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedPush;
+		};
+		42886D152FFE5C12004EB33B /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		42886D172FFE5C19004EB33B /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		42886D192FFE5C20004EB33B /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
 		};
 		42991E602FF4474500C2C76B /* ImproviOS */ = {
 			isa = XCSwiftPackageProductDependency;

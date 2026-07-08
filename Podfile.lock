@@ -18,7 +18,6 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (8.1.2):
     - PromiseKit/CorePromise
-  - Sodium (0.9.1)
   - Starscream (4.0.4)
   - SwiftFormat/CLI (0.53.1)
   - SwiftGen (6.5.1)
@@ -30,7 +29,6 @@ DEPENDENCIES:
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
   - PromiseKit (~> 8.1.1)
-  - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/bgoncal/starscream`, tag `4.0.9`)
   - SwiftFormat/CLI (= 0.53.1)
   - SwiftGen (~> 6.5.0)
@@ -50,9 +48,6 @@ EXTERNAL SOURCES:
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.18
-  Sodium:
-    :branch: xcode-14.0.1
-    :git: https://github.com/zacwest/swift-sodium.git
   Starscream:
     :git: https://github.com/bgoncal/starscream
     :tag: 4.0.9
@@ -64,9 +59,6 @@ CHECKOUT OPTIONS:
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.18
-  Sodium:
-    :commit: c66991f2ea610d437b31656795226c8e52002abd
-    :git: https://github.com/zacwest/swift-sodium.git
   Starscream:
     :git: https://github.com/bgoncal/starscream
     :tag: 4.0.9
@@ -75,12 +67,11 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   HAKit: f6492dc50f8ba0113ff6845fcd07631ecdab9a91
   PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
-  Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: bca4edcb8b4ffe82894d0699406aee4d03b81689
+PODFILE CHECKSUM: 04a547bcbf959ca88c474526d48231293e091bbd
 
 COCOAPODS: 1.15.2

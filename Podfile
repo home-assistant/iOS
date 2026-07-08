@@ -32,7 +32,6 @@ def test_pods
 end
 
 def shared_fwk_pods
-  pod 'Sodium', git: 'https://github.com/zacwest/swift-sodium.git', branch: 'xcode-14.0.1'
 end
 
 abstract_target 'iOS' do
