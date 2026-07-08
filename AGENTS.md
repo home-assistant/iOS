@@ -293,6 +293,13 @@ public lazy var webhooks = with(WebhookManager()) {
 - View models are annotated with `@MainActor`
 - Support both light and dark mode
 
+#### SwiftUI View Conventions
+
+- **One struct per file**: whenever a new `View` struct is introduced, put it in its own file. Do not stack multiple view structs in one file.
+- **Keep everything in `body`**: build the view's content inline inside `body`. Do not abstract portions out into separate reusable subviews (helper view structs or computed `some View` properties) just to break `body` up. Extract a new struct only when it is genuinely reused elsewhere, and when you do, it gets its own file (see above).
+- **Always add a `#Preview`**: every SwiftUI view must ship with a preview so it can be checked quickly in Xcode.
+- **Snapshot tests for new features**: any new feature that adds UI must include snapshot tests (see [Snapshot Testing](#snapshot-testing)).
+
 ### Assets
 
 - SF Symbols via `SFSafeSymbols` library (`Image(systemSymbol: .house)`), never the string-based API
