@@ -1,5 +1,6 @@
 import AppIntents
 import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import SFSafeSymbols
 import Shared

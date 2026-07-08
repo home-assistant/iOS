@@ -3,15 +3,6 @@ inhibit_all_warnings!
 
 project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release
 
-plugin 'cocoapods-acknowledgements'
-pod 'PromiseKit', '~> 8.1.1'
-
-# Keep Starscream reference even though HAKit already install it, because it defines our fork with the necessary fix
-pod 'Starscream', git: 'https://github.com/bgoncal/starscream', tag: '4.0.9'
-pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
-pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
-pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
-
 abstract_target 'iOS' do
   platform :ios, '16.4'
 

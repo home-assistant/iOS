@@ -1,5 +1,5 @@
 {
-  "originHash" : "34795cf6b251822aa6d52ee1c876c430442c26c0a7ef82c6d8190d12d51ea915",
+  "originHash" : "a79bcae9a2126a24a296422b14c71a63b1cc2ff864193ea88dd81e42aec726a5",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -119,6 +119,15 @@
       }
     },
     {
+      "identity" : "hakit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/home-assistant/HAKit.git",
+      "state" : {
+        "revision" : "02777d0b7ce4b635ca7dd46bcd74a032eb79dd60",
+        "version" : "0.4.18"
+      }
+    },
+    {
       "identity" : "interop-ios-for-google-sdks",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/interop-ios-for-google-sdks.git",
@@ -173,6 +182,15 @@
       }
     },
     {
+      "identity" : "promisekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mxcl/PromiseKit/",
+      "state" : {
+        "revision" : "cb70b070cde06837cd10a1febdf6105c1a3bb348",
+        "version" : "8.1.1"
+      }
+    },
+    {
       "identity" : "promises",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/promises.git",
@@ -206,6 +224,14 @@
       "state" : {
         "revision" : "e2e28f4e56e1769c2ec3c61c9355fc64eb7a535a",
         "version" : "5.3.0"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bgoncal/starscream",
+      "state" : {
+        "revision" : "aaaf609d07eb487b2fccbe77f6267cf0843e2b19"
       }
     },
     {

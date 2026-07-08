@@ -2,6 +2,7 @@ import Alamofire
 import CoreLocation
 import Foundation
 import HAKit
+import HAKit_PromiseKit
 import Intents
 import ObjectMapper
 import PromiseKit
