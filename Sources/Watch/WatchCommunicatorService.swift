@@ -32,12 +32,12 @@ final class WatchCommunicatorService {
         // This directly mutates the data structure for observations to avoid race conditions.
         Communicator.shared.state.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
-            _ = HomeAssistantAPI.SyncWatchContext()
+            HomeAssistantAPI.syncWatchContext()
         }
 
         Communicator.shared.watchState.observations.store[.init(queue: .main)] = { watchState in
             Current.Log.verbose("Watch state changed: \(watchState)")
-            _ = HomeAssistantAPI.SyncWatchContext()
+            HomeAssistantAPI.syncWatchContext()
         }
 
         Communicator.shared.reachability.observations.store[.init(queue: .main)] = { reachability in
@@ -657,7 +657,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-        _ = HomeAssistantAPI.SyncWatchContext()
+        HomeAssistantAPI.syncWatchContext()
         // Servers + client certificates are delivered on demand via the `serversConfigSync` reply
         // (watch Home refresh); no proactive push needed here.
     }

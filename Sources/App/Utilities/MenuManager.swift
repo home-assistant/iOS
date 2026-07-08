@@ -133,7 +133,10 @@ enum StatusItemPrimaryAction {
         // Prefer the server shown in the menu-bar title; its getter already falls back to the first
         // server, so this also covers users without a configured menu-bar template.
         let server = Current.settingsStore.menuItemTemplate?.server ?? Current.servers.all.first
-        guard let url = server?.info.connection.activeURL() else { return false }
+        // This only runs on macOS, where the last-known network information is read live from
+        // macBridge, so the synchronous evaluation is current. Callers need the handled/unhandled
+        // decision synchronously to fall through to the toggle behavior.
+        guard let url = server?.activeURLUsingLastKnownNetworkState() else { return false }
         URLOpener.shared.open(url, options: [:], completionHandler: nil)
         return true
     }

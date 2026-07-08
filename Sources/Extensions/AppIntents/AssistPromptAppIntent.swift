@@ -20,7 +20,7 @@ struct AssistPromptAppIntent: AppIntent {
     var pipeline: AssistPipelineEntity
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: pipeline.serverId)) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }

@@ -52,7 +52,7 @@ struct PerformActionAppIntent: AppIntent {
     var payload: String
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         guard action.serverId == server.id,
               let server = server.getServer(),
               let api = Current.api(for: server) else {

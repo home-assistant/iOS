@@ -1837,7 +1837,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.settings.no_servers" = "Es wurden noch keine Server synchronisiert. Öffne Home Assistant auf deinem gekoppelten iPhone und aktualisiere die Seite vom Startbildschirm aus.";
 "watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Wo Aktionen ausgeführt werden. „Auto“ nutzt dein iPhone, wenn es in der Nähe ist; andernfalls verbindet sich die Apple Watch direkt mit Home Assistant.";
-"watch.settings.perform_action.footer_prefer_watch" = "Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.";
+"watch.settings.perform_action.footer_prefer_watch" = "Wo Aktionen ausgeführt werden. „Auto“ stellt, sofern möglich, eine direkte Verbindung von der Apple Watch zu Home Assistant her; andernfalls erfolgt die Verbindung über dein iPhone.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Aktion ausführen mit";
 "watch.settings.refresh" = "Aktualisieren";
