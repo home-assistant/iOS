@@ -8072,8 +8072,8 @@
 				B657A8F81CA646EB00121384 /* Sources */,
 				B657A8F91CA646EB00121384 /* Frameworks */,
 				B657A8FA1CA646EB00121384 /* Resources */,
-				4697F4C52D8A416400C5C467 /* Embed Frameworks */,
 				5EE8829B00F840C4A21DA75B /* [CP] Embed Pods Frameworks */,
+				4697F4C52D8A416400C5C467 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
