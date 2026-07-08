@@ -9,19 +9,6 @@ PODS:
   - HAKit/PromiseKit (0.4.18):
     - HAKit/Core
     - PromiseKit (~> 8.1.1)
-  - OHHTTPStubs/Core (9.1.0)
-  - OHHTTPStubs/Default (9.1.0):
-    - OHHTTPStubs/Core
-    - OHHTTPStubs/JSON
-    - OHHTTPStubs/NSURLSession
-    - OHHTTPStubs/OHPathHelpers
-  - OHHTTPStubs/JSON (9.1.0):
-    - OHHTTPStubs/Core
-  - OHHTTPStubs/NSURLSession (9.1.0):
-    - OHHTTPStubs/Core
-  - OHHTTPStubs/OHPathHelpers (9.1.0)
-  - OHHTTPStubs/Swift (9.1.0):
-    - OHHTTPStubs/Default
   - PromiseKit (8.1.2):
     - PromiseKit/CorePromise (= 8.1.2)
     - PromiseKit/Foundation (= 8.1.2)
@@ -42,7 +29,6 @@ DEPENDENCIES:
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
-  - OHHTTPStubs/Swift
   - PromiseKit (~> 8.1.1)
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/bgoncal/starscream`, tag `4.0.9`)
@@ -52,7 +38,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - OHHTTPStubs
     - PromiseKit
     - SwiftFormat
     - SwiftGen
@@ -89,7 +74,6 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   HAKit: f6492dc50f8ba0113ff6845fcd07631ecdab9a91
-  OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
@@ -97,6 +81,6 @@ SPEC CHECKSUMS:
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: eb4fdec994f17e233de7d8923a1c9c0113ea20bc
+PODFILE CHECKSUM: bca4edcb8b4ffe82894d0699406aee4d03b81689
 
 COCOAPODS: 1.15.2

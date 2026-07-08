@@ -1,5 +1,6 @@
 import HAKit
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
 import XCTest

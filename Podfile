@@ -29,7 +29,6 @@ pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4
 pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
 
 def test_pods
-  pod 'OHHTTPStubs/Swift'
 end
 
 def shared_fwk_pods
