@@ -219,7 +219,9 @@ public class AppEnvironment {
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()
     public func api(for server: Server) -> HomeAssistantAPI? {
-        guard server.info.connection.activeURL() != nil else {
+        // Evaluated against cached network information: this is only a "has any usable URL" check,
+        // and refreshing here would force every caller to be async.
+        guard server.info.connection.evaluateActiveURL() != nil else {
             return nil
         }
 

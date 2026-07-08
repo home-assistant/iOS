@@ -48,8 +48,8 @@ final class WatchHomeViewModel: ObservableObject {
 
     @MainActor
     func fetchNetworkInfo() async {
-        await Current.connectivity.refreshNetworkInformation()
-        currentSSID = Current.connectivity.currentWiFiSSID() ?? ""
+        // `currentWiFiSSID()` fetches fresh network information itself.
+        currentSSID = await Current.connectivity.currentWiFiSSID() ?? ""
     }
 
     @MainActor
