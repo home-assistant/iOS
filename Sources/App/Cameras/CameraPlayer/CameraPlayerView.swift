@@ -10,6 +10,7 @@ struct CameraPlayerView: View {
     private let server: Server
     private let cameraEntityId: String
     private let cameraName: String?
+    private let showsDebugOverlay: Bool
 
     @State private var playerType: PlayerType = .webRTC
     @State private var appEntity: HAAppEntity?
@@ -21,12 +22,21 @@ struct CameraPlayerView: View {
         case webRTC
         case hls
         case mjpeg
+
+        var debugTitle: String {
+            switch self {
+            case .webRTC: return "WebRTC"
+            case .hls: return "HLS"
+            case .mjpeg: return "MJPEG"
+            }
+        }
     }
 
-    init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
+    init(server: Server, cameraEntityId: String, cameraName: String? = nil, showsDebugOverlay: Bool = false) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
+        self.showsDebugOverlay = showsDebugOverlay
     }
 
     var body: some View {
@@ -68,12 +78,29 @@ struct CameraPlayerView: View {
                 HAProgressView(style: .extraLarge)
             }
         }
+        .overlay(alignment: .bottomLeading) {
+            playerTypeBadge
+        }
         .onAppear {
             appEntity = HAAppEntity.entity(id: cameraEntityId, serverId: server.identifier.rawValue)
             name = appEntity?.name ?? cameraName
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
+    }
+
+    @ViewBuilder
+    private var playerTypeBadge: some View {
+        if showsDebugOverlay {
+            Text(verbatim: playerType.debugTitle)
+                .font(.caption.monospaced())
+                .padding(.horizontal, DesignSystem.Spaces.one)
+                .padding(.vertical, DesignSystem.Spaces.half)
+                .background(.regularMaterial)
+                .clipShape(.capsule)
+                .padding(.leading, DesignSystem.Spaces.two)
+                .padding(.bottom, DesignSystem.Spaces.two)
+        }
     }
 
     @ViewBuilder

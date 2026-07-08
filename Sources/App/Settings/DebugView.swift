@@ -143,6 +143,15 @@ struct DebugView: View {
                     )
                 }
 
+                NavigationLink {
+                    CamerasDebugView()
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .videoFill),
+                        title: "Cameras Debug"
+                    )
+                }
+
                 #if DEBUG
                 NavigationLink {
                     KeychainExplorerView()

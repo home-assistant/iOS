@@ -33,8 +33,12 @@ struct CameraStreamHLSView: View {
             Color.black.edgesIgnoringSafeArea(.all)
 
             if let player {
-                VideoPlayer(player: player)
-                    .edgesIgnoringSafeArea(.all)
+                ZoomableCameraContainer(onSwipeDown: {
+                    dismiss()
+                }, content: {
+                    VideoPlayer(player: player)
+                        .edgesIgnoringSafeArea(.all)
+                })
             }
 
             if isLoading {
