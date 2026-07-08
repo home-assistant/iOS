@@ -28,10 +28,6 @@ pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
 pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
 pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
 
-def test_pods
-  pod 'OHHTTPStubs/Swift'
-end
-
 def shared_fwk_pods
   pod 'Sodium', git: 'https://github.com/zacwest/swift-sodium.git', branch: 'xcode-14.0.1'
 end
@@ -47,7 +43,6 @@ abstract_target 'iOS' do
 
     target 'Tests-Shared' do
       inherit! :complete
-      test_pods
     end
   end
 
@@ -58,7 +53,6 @@ abstract_target 'iOS' do
 
     target 'Tests-App' do
       inherit! :search_paths
-      test_pods
     end
   end
 
