@@ -1,0 +1,262 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "abseil-cpp-binary",
+        "repositoryURL": "https://github.com/google/abseil-cpp-binary.git",
+        "state": {
+          "revision": "bbe8b69694d7873315fd3a4ad41efe043e1c07c5",
+          "version": "1.2024072200.0"
+        }
+      },
+      {
+        "package": "alamofire",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
+        "state": {
+          "revision": "7595cbcf59809f9977c5f6378500de2ad73b7ddb",
+          "version": "5.12.0"
+        }
+      },
+      {
+        "package": "app-check",
+        "repositoryURL": "https://github.com/google/app-check.git",
+        "state": {
+          "revision": "61b85103a1aeed8218f17c794687781505fbbef5",
+          "version": "11.2.0"
+        }
+      },
+      {
+        "package": "callbackurlkit",
+        "repositoryURL": "https://github.com/phimage/CallbackURLKit.git",
+        "state": {
+          "revision": "28664b3d4f37bb359d5ed729aa463cbedfba5d82",
+          "version": "2.3.2"
+        }
+      },
+      {
+        "package": "debugswift",
+        "repositoryURL": "https://github.com/DebugSwift/DebugSwift.git",
+        "state": {
+          "revision": "6f5a7f2111257fab7323641716943001707a61bb",
+          "version": "1.15.0"
+        }
+      },
+      {
+        "package": "firebase-ios-sdk",
+        "repositoryURL": "https://github.com/firebase/firebase-ios-sdk.git",
+        "state": {
+          "revision": "9b3aed4fa6226125305b82d4d86c715bef250785",
+          "version": "12.9.0"
+        }
+      },
+      {
+        "package": "google-ads-on-device-conversion-ios-sdk",
+        "repositoryURL": "https://github.com/googleads/google-ads-on-device-conversion-ios-sdk",
+        "state": {
+          "revision": "35b601a60fbbea2de3ea461f604deaaa4d8bbd0c",
+          "version": "3.2.0"
+        }
+      },
+      {
+        "package": "googleappmeasurement",
+        "repositoryURL": "https://github.com/google/GoogleAppMeasurement.git",
+        "state": {
+          "revision": "2ffd220823f3716904733162e9ae685545c276d1",
+          "version": "12.8.0"
+        }
+      },
+      {
+        "package": "googledatatransport",
+        "repositoryURL": "https://github.com/google/GoogleDataTransport.git",
+        "state": {
+          "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
+          "version": "10.1.0"
+        }
+      },
+      {
+        "package": "googleutilities",
+        "repositoryURL": "https://github.com/google/GoogleUtilities.git",
+        "state": {
+          "revision": "60da361632d0de02786f709bdc0c4df340f7613e",
+          "version": "8.1.0"
+        }
+      },
+      {
+        "package": "grdb.swift",
+        "repositoryURL": "https://github.com/groue/GRDB.swift.git",
+        "state": {
+          "revision": "18497b68fdbb3a09528d260a0a0e1e7e61c8c53d",
+          "version": "7.8.0"
+        }
+      },
+      {
+        "package": "grpc-binary",
+        "repositoryURL": "https://github.com/google/grpc-binary.git",
+        "state": {
+          "revision": "75b31c842f664a0f46a2e590a570e370249fd8f6",
+          "version": "1.69.1"
+        }
+      },
+      {
+        "package": "gtm-session-fetcher",
+        "repositoryURL": "https://github.com/google/gtm-session-fetcher.git",
+        "state": {
+          "revision": "fb7f2740b1570d2f7599c6bb9531bf4fad6974b7",
+          "version": "5.0.0"
+        }
+      },
+      {
+        "package": "interop-ios-for-google-sdks",
+        "repositoryURL": "https://github.com/google/interop-ios-for-google-sdks.git",
+        "state": {
+          "revision": "040d087ac2267d2ddd4cca36c757d1c6a05fdbfe",
+          "version": "101.0.0"
+        }
+      },
+      {
+        "package": "keychainaccess",
+        "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess.git",
+        "state": {
+          "revision": "84e546727d66f1adc5439debad16270d0fdd04e7",
+          "version": "4.2.2"
+        }
+      },
+      {
+        "package": "leveldb",
+        "repositoryURL": "https://github.com/firebase/leveldb.git",
+        "state": {
+          "revision": "a0bc79961d7be727d258d33d5a6b2f1023270ba1",
+          "version": "1.22.5"
+        }
+      },
+      {
+        "package": "nanopb",
+        "repositoryURL": "https://github.com/firebase/nanopb.git",
+        "state": {
+          "revision": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+          "version": "2.30910.0"
+        }
+      },
+      {
+        "package": "objectmapper",
+        "repositoryURL": "https://github.com/tristanhimmelman/ObjectMapper.git",
+        "state": {
+          "revision": "6021c6035e83a306047348666f6400dc61445d3b",
+          "version": "4.4.3"
+        }
+      },
+      {
+        "package": "ohhttpstubs",
+        "repositoryURL": "https://github.com/AliSoftware/OHHTTPStubs",
+        "state": {
+          "revision": "12f19662426d0434d6c330c6974d53e2eb10ecd9",
+          "version": "9.1.0"
+        }
+      },
+      {
+        "package": "promises",
+        "repositoryURL": "https://github.com/google/promises.git",
+        "state": {
+          "revision": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+          "version": "2.4.0"
+        }
+      },
+      {
+        "package": "realm-core",
+        "repositoryURL": "https://github.com/fruitcoder/realm-core.git",
+        "state": {
+          "revision": "bd17f8a0f0803db816701b558e25a31fa37f1b6e",
+          "version": "20.1.5"
+        }
+      },
+      {
+        "package": "sdk-ios",
+        "repositoryURL": "https://github.com/improv-wifi/sdk-iOS.git",
+        "state": {
+          "branch": "main",
+          "revision": "937732ba42aeebfaf07434bd4e771fb7796e0489"
+        }
+      },
+      {
+        "package": "sfsafesymbols",
+        "repositoryURL": "https://github.com/SFSafeSymbols/SFSafeSymbols.git",
+        "state": {
+          "revision": "e2e28f4e56e1769c2ec3c61c9355fc64eb7a535a",
+          "version": "5.3.0"
+        }
+      },
+      {
+        "package": "swift-custom-dump",
+        "repositoryURL": "https://github.com/pointfreeco/swift-custom-dump",
+        "state": {
+          "revision": "82645ec760917961cfa08c9c0c7104a57a0fa4b1",
+          "version": "1.3.3"
+        }
+      },
+      {
+        "package": "swift-snapshot-testing",
+        "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing",
+        "state": {
+          "revision": "b2d4cb30735f4fbc3a01963a9c658336dd21e9ba",
+          "version": "1.18.1"
+        }
+      },
+      {
+        "package": "swift-sodium",
+        "repositoryURL": "https://github.com/jedisct1/swift-sodium",
+        "state": {
+          "revision": "cfd195c76882aa9b997560ca7cb95d72fbf5db00",
+          "version": "0.11.0"
+        }
+      },
+      {
+        "package": "swift-syntax",
+        "repositoryURL": "https://github.com/swiftlang/swift-syntax",
+        "state": {
+          "revision": "0687f71944021d616d34d922343dcef086855920",
+          "version": "600.0.1"
+        }
+      },
+      {
+        "package": "webrtc",
+        "repositoryURL": "https://github.com/stasel/WebRTC.git",
+        "state": {
+          "revision": "86dbb5cb57e4da009b859a6245b1c10d610f215a",
+          "version": "140.0.0"
+        }
+      },
+      {
+        "package": "xcglogger",
+        "repositoryURL": "https://github.com/DaveWoodCom/XCGLogger",
+        "state": {
+          "revision": "4def3c1c772ca90ad5e7bfc8ac437c3b0b4276cf",
+          "version": "7.1.5"
+        }
+      },
+      {
+        "package": "xcode27-realm-swift",
+        "repositoryURL": "https://github.com/bgoncal/xcode27-realm-swift.git",
+        "state": {
+          "revision": "dc01270ec79aa9f51dd37fe34e9da030a117170a"
+        }
+      },
+      {
+        "package": "xctest-dynamic-overlay",
+        "repositoryURL": "https://github.com/pointfreeco/xctest-dynamic-overlay",
+        "state": {
+          "revision": "b444594f79844b0d6d76d70fbfb3f7f71728f938",
+          "version": "1.5.1"
+        }
+      },
+      {
+        "package": "zipfoundation",
+        "repositoryURL": "https://github.com/weichsel/ZIPFoundation.git",
+        "state": {
+          "revision": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+          "version": "0.9.19"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

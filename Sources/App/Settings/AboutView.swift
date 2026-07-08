@@ -1,4 +1,3 @@
-import CPDAcknowledgements
 import Shared
 import SwiftUI
 
@@ -83,27 +82,4 @@ struct AboutView: View {
             )
         }
     }
-}
-
-struct AcknowledgementsView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> CPDAcknowledgementsViewController {
-        var licenses = [CPDLibrary]()
-
-        for fileName in [
-            "Pods-iOS-App-metadata",
-            "ManualPodLicenses",
-        ] {
-            if let file = Bundle.main.url(forResource: fileName, withExtension: "plist"),
-               let dictionary = NSDictionary(contentsOf: file),
-               let license = dictionary["specs"] as? [[String: Any]] {
-                licenses += license.map { CPDLibrary(cocoaPodsMetadataPlistDictionary: $0) }
-            }
-        }
-
-        licenses.sort(by: { $0.title < $1.title })
-
-        return CPDAcknowledgementsViewController(style: nil, acknowledgements: licenses, contributions: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: CPDAcknowledgementsViewController, context: Context) {}
 }
