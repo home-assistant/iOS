@@ -847,6 +847,9 @@
 		42886D162FFE5C12004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D152FFE5C12004EB33B /* Sodium */; };
 		42886D182FFE5C19004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D172FFE5C19004EB33B /* Sodium */; };
 		42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D192FFE5C20004EB33B /* Sodium */; };
+		42886D212FFE6D87004EB33B /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 42886D202FFE64DF004EB33B /* Package.resolved */; };
+		42886D232FFE701C004EB33B /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42886D222FFE701C004EB33B /* AcknowledgementsView.swift */; };
+		42886D272FFE701C004EB33B /* AcknowledgementPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42886D262FFE701C004EB33B /* AcknowledgementPackage.swift */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
 		4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
 		4289DDAF2C85D5C4003591C2 /* ControlScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDAE2C85D5C4003591C2 /* ControlScene.swift */; };
@@ -2701,6 +2704,9 @@
 		42881BD32DDF12340079BDCB /* SwiftUI+SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+SafeArea.swift"; sourceTree = "<group>"; };
 		428830EA2C6E3A8D0012373D /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
+		42886D202FFE64DF004EB33B /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.resolved; sourceTree = "<group>"; };
+		42886D222FFE701C004EB33B /* AcknowledgementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsView.swift; sourceTree = "<group>"; };
+		42886D262FFE701C004EB33B /* AcknowledgementPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementPackage.swift; sourceTree = "<group>"; };
 		4289DDAE2C85D5C4003591C2 /* ControlScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScene.swift; sourceTree = "<group>"; };
 		4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScenesValueProvider.swift; sourceTree = "<group>"; };
 		4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSceneEntity.swift; sourceTree = "<group>"; };
@@ -7048,6 +7054,7 @@
 		B657A8DD1CA646EB00121384 = {
 			isa = PBXGroup;
 			children = (
+				42886D202FFE64DF004EB33B /* Package.resolved */,
 				9C4E5E20229D97FA0044C8EC /* Configuration */,
 				1115018C2528411200DCFA94 /* Sources */,
 				111501A82528414000DCFA94 /* Tests */,
@@ -7189,6 +7196,8 @@
 				420DBEXP2F10000000000005 /* DatabaseExplorer */,
 				42C7A1022F90010000A1B2C3 /* KeychainExplorer */,
 				D75BA669B0E8C771B69ABE41 /* Components */,
+				42886D222FFE701C004EB33B /* AcknowledgementsView.swift */,
+				42886D262FFE701C004EB33B /* AcknowledgementPackage.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -8029,6 +8038,7 @@
 				D45FEC9A97FE2D588B71E477 /* [CP] Check Pods Manifest.lock */,
 				B657A8E21CA646EB00121384 /* Sources */,
 				B657A8E31CA646EB00121384 /* Frameworks */,
+				42886D1E2FFE61FB004EB33B /* ShellScript */,
 				B657A8E41CA646EB00121384 /* Resources */,
 				B6AAD7AC1D827DD40090B220 /* Embed Foundation Extensions */,
 				B6CC5DA62159D10F00833E5D /* Embed Watch Content */,
@@ -8611,6 +8621,7 @@
 				B606163F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav in Resources */,
 				B606167B1D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav in Resources */,
 				B60616481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav in Resources */,
+				42886D212FFE6D87004EB33B /* Package.resolved in Resources */,
 				B60616911D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav in Resources */,
 				B606164F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Lights.wav in Resources */,
 				B606169C1D1F117800249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav in Resources */,
@@ -9040,6 +9051,25 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		42886D1E2FFE61FB004EB33B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(WORKSPACE_DIR)/HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(PROJECT_DIR)/Package.resolved",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ruby \"$PROJECT_DIR/Tools/GenerateSPMAcknowledgmentsPackageResolved.rb\"\n";
 		};
 		429FB0412DC0D729000E3372 /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -9827,6 +9857,7 @@
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
 				504A2C862F8133E6002A3C0E /* CarPlayTabsSelectionView.swift in Sources */,
 				42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */,
+				42886D232FFE701C004EB33B /* AcknowledgementsView.swift in Sources */,
 				42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutView.swift in Sources */,
 				42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */,
@@ -9967,6 +9998,7 @@
 				A60E917B401A6D456F1DB630 /* ComplicationFamilySelectView.swift in Sources */,
 				925D92FC9E2221189D67B22C /* ComplicationListView.swift in Sources */,
 				498C0EF747C141F3E3204BBE /* ComplicationListViewModel.swift in Sources */,
+				42886D272FFE701C004EB33B /* AcknowledgementPackage.swift in Sources */,
 				0C1F82B6DF9051F98A587352 /* ComplicationEditView.swift in Sources */,
 				A596C4D1E125E6863C7D2034 /* ComplicationEditViewModel.swift in Sources */,
 				F0D1DD41A8F55F6D767EBF37 /* TemplatePreviewSection.swift in Sources */,
