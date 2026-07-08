@@ -28,19 +28,10 @@ pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
 pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
 pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.18'
 
-def shared_fwk_pods
-  pod 'Sodium', git: 'https://github.com/zacwest/swift-sodium.git', branch: 'xcode-14.0.1'
-end
-
 abstract_target 'iOS' do
   platform :ios, '16.4'
 
-  # fixes newer cocoapods search path issues for Clibsodium build failures
-  shared_fwk_pods
-
   target 'Shared-iOS' do
-    shared_fwk_pods
-
     target 'Tests-Shared' do
       inherit! :complete
     end
@@ -69,9 +60,7 @@ end
 abstract_target 'watchOS' do
   platform :watchos, '9.0'
 
-  target 'Shared-watchOS' do
-    shared_fwk_pods
-  end
+  target 'Shared-watchOS'
 
   target 'WatchApp'
 end
