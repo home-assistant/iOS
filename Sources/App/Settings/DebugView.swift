@@ -340,9 +340,11 @@ struct DebugView: View {
                 set: { Current.settingsStore.toastsHandledByApp = $0 }
             ))
             Button {
-                if let syncError = HomeAssistantAPI.SyncWatchContext() {
-                    watchSyncErrorMessage = syncError.localizedDescription
-                    showWatchSyncError = true
+                Task { @MainActor in
+                    if let syncError = await HomeAssistantAPI.SyncWatchContext() {
+                        watchSyncErrorMessage = syncError.localizedDescription
+                        showWatchSyncError = true
+                    }
                 }
             } label: {
                 linkContent(
@@ -534,6 +536,7 @@ struct DebugView: View {
     }
 
     private func revokeToken(api: HomeAssistantAPI) async {
+        let activeURLString = await api.server.activeURL()?.absoluteString ?? "Uknown active URL"
         await withCheckedContinuation { continuation in
             api.tokenManager.revokeToken().pipe { result in
                 switch result {
@@ -542,7 +545,7 @@ struct DebugView: View {
                 case let .rejected(error):
                     Current.Log
                         .error(
-                            "Failed to revoke token for api \(api.server.info.name) \(api.server.info.connection.activeURL()?.absoluteString ?? "Uknown active URL"), error: \(error.localizedDescription)"
+                            "Failed to revoke token for api \(api.server.info.name) \(activeURLString), error: \(error.localizedDescription)"
                         )
                 }
                 continuation.resume()

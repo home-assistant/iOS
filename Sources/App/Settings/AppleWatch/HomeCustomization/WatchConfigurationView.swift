@@ -5,6 +5,7 @@ import SwiftUI
 
 struct WatchConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) private var requestReview
     @StateObject private var viewModel: WatchConfigurationViewModel
 
     @State private var isLoaded = false
@@ -39,6 +40,7 @@ struct WatchConfigurationView: View {
                     viewModel.loadWatchConfig()
                     isLoaded = true
                 }
+            layoutSection
             itemsSection
             assistSection
             resetView
@@ -51,9 +53,7 @@ struct WatchConfigurationView: View {
                 Button(action: {
                     let success = viewModel.save()
                     if success {
-                        // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
-                        // private var requestReview`
-                        SKStoreReviewController.requestReview()
+                        requestReview()
                         dismiss()
                     }
                 }, label: {
@@ -95,6 +95,21 @@ struct WatchConfigurationView: View {
                 }
             }
             Button(L10n.noLabel, role: .cancel) {}
+        }
+    }
+
+    private var layoutSection: some View {
+        Section {
+            Picker(L10n.Watch.Configuration.Layout.title, selection: Binding(
+                get: { viewModel.watchConfig.resolvedLayout },
+                set: { viewModel.watchConfig.layout = $0 }
+            )) {
+                ForEach(WatchLayout.allCases, id: \.rawValue) { layout in
+                    Text(layout.name).tag(layout)
+                }
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.Layout.footer)
         }
     }
 

@@ -322,14 +322,12 @@ class IncomingURLHandler {
             case HAApplicationShortcutItem.openSettings.rawValue:
                 if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
                     // Close window to avoid empty window left behind
-                    for window in UIApplication.shared.windows {
-                        if let scene = window.windowScene {
-                            UIApplication.shared.requestSceneSessionDestruction(
-                                scene.session,
-                                options: nil,
-                                errorHandler: nil
-                            )
-                        }
+                    for scene in UIApplication.shared.connectedScenes where scene is UIWindowScene {
+                        UIApplication.shared.requestSceneSessionDestruction(
+                            scene.session,
+                            options: nil,
+                            errorHandler: nil
+                        )
                     }
                 }
                 Current.sceneManager.activateAnyScene(for: .settings)
@@ -536,7 +534,7 @@ class IncomingURLHandler {
     }
 
     private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
-        Current.sceneManager.webViewControllerPromise.done { webViewController in
+        Current.sceneManager.webViewControllerPromise.done { [weak self] webViewController in
             let view = TagApprovalBottomSheet(
                 tag: tag,
                 onAllowOnce: { [weak self] in

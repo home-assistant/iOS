@@ -19,7 +19,7 @@ public enum WatchContext: String, CaseIterable {
 
 public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
-    private static var watchContext: HAWatchConnectivity.Content {
+    private static func watchContext() async -> HAWatchConnectivity.Content {
         var content: HAWatchConnectivity.Content = Communicator.shared.mostRecentlyReceivedContext.content
 
         #if os(iOS)
@@ -30,7 +30,7 @@ public extension HomeAssistantAPI {
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
         #else
-        content[WatchContext.ssid.rawValue] = Current.connectivity.currentWiFiSSID()
+        content[WatchContext.ssid.rawValue] = await Current.connectivity.currentWiFiSSID()
         #endif
 
         #elseif os(watchOS)
@@ -52,7 +52,7 @@ public extension HomeAssistantAPI {
         return content
     }
 
-    static func SyncWatchContext() -> NSError? {
+    static func SyncWatchContext() async -> NSError? {
         #if os(iOS)
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
             Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
@@ -60,7 +60,7 @@ public extension HomeAssistantAPI {
         }
         #endif
 
-        let context = HAWatchConnectivity.Context(content: HomeAssistantAPI.watchContext)
+        let context = await HAWatchConnectivity.Context(content: HomeAssistantAPI.watchContext())
 
         do {
             try Communicator.shared.sync(context)
@@ -71,6 +71,14 @@ public extension HomeAssistantAPI {
         }
 
         return nil
+    }
+
+    /// Fire-and-forget `SyncWatchContext()` for callers that cannot await; sync errors are logged
+    /// by `SyncWatchContext()` itself.
+    static func syncWatchContext() {
+        Task {
+            _ = await SyncWatchContext()
+        }
     }
 
     func updateComplications(passively: Bool) -> Promise<Void> {
@@ -90,7 +98,7 @@ public extension HomeAssistantAPI {
 
             #if os(iOS)
             // in case the user deleted the last complication, sync that fact up to the watch
-            _ = HomeAssistantAPI.SyncWatchContext()
+            HomeAssistantAPI.syncWatchContext()
             #else
             // in case the user updated just the complication's metadata, force a refresh
             WebhookResponseUpdateComplications.updateComplications()

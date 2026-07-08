@@ -1,5 +1,6 @@
 import Alamofire
 import HAKit
+import HAKit_Mocks
 @testable import Shared
 import XCTest
 

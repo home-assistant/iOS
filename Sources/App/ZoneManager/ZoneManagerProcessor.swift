@@ -163,21 +163,27 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             return ignore(.zoneDisabled)
         }
 
-        if let current = Current.connectivity.currentWiFiSSID(), zone.ssidFilter.contains(current) {
-            // If current SSID is in the filter list stop processing region event.
-            // This is to cut down on false exits.
-            // https://github.com/home-assistant/iOS/issues/32
-            return ignore(.ignoredSSID(current))
+        return Guarantee<String?> { seal in
+            Task {
+                await seal(Current.connectivity.currentWiFiSSID())
+            }
+        }.then { currentSSID -> Promise<Void> in
+            if let currentSSID, zone.ssidFilter.contains(currentSSID) {
+                // If current SSID is in the filter list stop processing region event.
+                // This is to cut down on false exits.
+                // https://github.com/home-assistant/iOS/issues/32
+                return ignore(.ignoredSSID(currentSSID))
+            }
+
+            var updatedZone = zone
+            updatedZone.inRegion = state == .inside
+            updatedZone.save()
+
+            if region is CLBeaconRegion, state == .outside {
+                return ignore(.beaconExitIgnored)
+            }
+
+            return .value(())
         }
-
-        var updatedZone = zone
-        updatedZone.inRegion = state == .inside
-        updatedZone.save()
-
-        if region is CLBeaconRegion, state == .outside {
-            return ignore(.beaconExitIgnored)
-        }
-
-        return .value(())
     }
 }

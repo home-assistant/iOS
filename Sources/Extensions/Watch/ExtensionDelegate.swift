@@ -5,7 +5,8 @@ import UserNotifications
 import WatchKit
 import XCGLogger
 
-class ExtensionDelegate: NSObject, WKExtensionDelegate {
+@main
+class ExtensionDelegate: NSObject, WKApplicationDelegate {
     // MARK: Fileprivate
 
     fileprivate var watchConnectivityBackgroundPromise: Guarantee<Void>
@@ -19,7 +20,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         super.init()
     }
 
-    // MARK: - WKExtensionDelegate -
+    // MARK: - WKApplicationDelegate -
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
@@ -33,7 +34,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
 
-        WKExtension.shared().registerForRemoteNotifications()
+        WKApplication.shared().registerForRemoteNotifications()
 
         UNUserNotificationCenter.current().requestAuthorization(options: options) { granted, error in
             Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")
@@ -54,7 +55,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // If the application was previously in the background, optionally refresh the user interface.
 
         Current.Log.verbose("didBecomeActive")
-        _ = HomeAssistantAPI.SyncWatchContext()
+        HomeAssistantAPI.syncWatchContext()
     }
 
     func applicationWillResignActive() {
@@ -63,12 +64,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
         Current.Log.verbose("willResignActive")
-        _ = HomeAssistantAPI.SyncWatchContext()
+        HomeAssistantAPI.syncWatchContext()
         Current.backgroundRefreshScheduler.schedule().cauterize()
     }
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
-        _ = HomeAssistantAPI.SyncWatchContext()
+        HomeAssistantAPI.syncWatchContext()
 
         // Sent when the system needs to launch the application in the background to process tasks.
         // Tasks arrive in a set, so loop through and process each one.
@@ -146,7 +147,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         Communicator.shared.state.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
 
-            _ = HomeAssistantAPI.SyncWatchContext()
+            HomeAssistantAPI.syncWatchContext()
         }
 
         Communicator.shared.reachability.observations.store[.init(queue: .main)] = { reachability in
@@ -171,7 +172,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             Current.Log.verbose("Received guaranteed message! \(message)")
 
             if message.identifier == GuaranteedMessages.sync.rawValue {
-                _ = HomeAssistantAPI.SyncWatchContext()
+                HomeAssistantAPI.syncWatchContext()
             }
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()

@@ -1,5 +1,6 @@
 import Foundation
 import HAKit
+import HAKit_PromiseKit
 import Intents
 import PromiseKit
 import UIKit

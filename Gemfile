@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'cocoapods'
-gem 'cocoapods-acknowledgements'
 gem 'fastlane', '2.236.1'
 gem 'rubocop', require: false
 

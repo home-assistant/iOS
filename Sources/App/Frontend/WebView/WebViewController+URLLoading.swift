@@ -47,13 +47,15 @@ extension WebViewController {
         loadActiveURLIfNeededInProgress = true
         Current.Log.info("loadActiveURLIfNeeded called")
 
-        let loadBlock: () -> Void = { [weak self] in
+        Task { [weak self] in
             defer {
                 self?.loadActiveURLIfNeededInProgress = false
             }
 
             guard let self else { return }
-            guard let webviewURL = server.info.connection.webviewURL() else {
+            // `webviewURL()` refreshes the network information (e.g. current SSID) before
+            // evaluating which URL is active.
+            guard let webviewURL = await server.webviewURL() else {
                 Current.Log.info("not loading, no url")
                 showNoActiveURLError()
                 return
@@ -73,22 +75,14 @@ extension WebViewController {
             }
 
             // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-            load(request: URLRequest(url: resolvedLoadURL(for: webviewURL)))
-        }
-
-        if Current.isCatalyst {
-            loadBlock()
-        } else {
-            Current.connectivity.syncNetworkInformation {
-                loadBlock()
-            }
+            await load(request: URLRequest(url: resolvedLoadURL(for: webviewURL)))
         }
     }
 
     /// Determines which URL to load for the active server: the kiosk dashboard (when applicable), the
     /// restored last URL, the preserved current path on a base-URL change, or the server default.
-    private func resolvedLoadURL(for webviewURL: URL) -> URL {
-        if let kioskURL = kioskDashboardURL(for: webviewURL) {
+    private func resolvedLoadURL(for webviewURL: URL) async -> URL {
+        if let kioskURL = await kioskDashboardURL(for: webviewURL) {
             // In kiosk mode the configured dashboard takes precedence over restore/last-path behavior.
             Current.Log.info("loading kiosk dashboard path: \(kioskURL.path)")
             return kioskURL
@@ -122,7 +116,7 @@ extension WebViewController {
 
     /// The URL of the kiosk-configured dashboard for this server, or `nil` when kiosk mode is off, this
     /// isn't the kiosk server, or no specific dashboard was chosen (in which case the server default loads).
-    private func kioskDashboardURL(for webviewURL: URL) -> URL? {
+    private func kioskDashboardURL(for webviewURL: URL) async -> URL? {
         let kiosk = Current.kioskSettings
         guard kiosk.enabled,
               kiosk.serverId == nil || kiosk.serverId == server.identifier.rawValue,
@@ -130,7 +124,7 @@ extension WebViewController {
             return nil
         }
         let path = dashboard.hasPrefix("/") ? dashboard : "/" + dashboard
-        guard let url = server.info.connection.webviewURL(from: path), url.baseIsEqual(to: webviewURL) else {
+        guard let url = await server.webviewURL(from: path), url.baseIsEqual(to: webviewURL) else {
             return nil
         }
         return url
@@ -140,11 +134,14 @@ extension WebViewController {
     /// default when no specific dashboard is set), so picking a dashboard in kiosk settings updates the
     /// web view live. Server changes are handled by rebuilding the web view, not here.
     func applyKioskDashboard() {
-        guard Current.kioskSettings.enabled, let webviewURL = server.info.connection.webviewURL() else { return }
-        let target = kioskDashboardURL(for: webviewURL) ?? webviewURL
-        guard webView.url?.absoluteString != target.absoluteString else { return }
-        Current.Log.info("applying kiosk dashboard to web view: \(target.path)")
-        load(request: URLRequest(url: target))
+        Task { [weak self] in
+            guard let self, Current.kioskSettings.enabled,
+                  let webviewURL = await server.webviewURL() else { return }
+            let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
+            guard webView.url?.absoluteString != target.absoluteString else { return }
+            Current.Log.info("applying kiosk dashboard to web view: \(target.path)")
+            load(request: URLRequest(url: target))
+        }
     }
 
     func showNoActiveURLError() {

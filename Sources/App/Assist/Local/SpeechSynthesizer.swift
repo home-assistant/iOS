@@ -12,7 +12,7 @@ protocol SpeechSynthesizerProtocol: AnyObject {
 
 /// A text-to-speech synthesizer using Apple's AVSpeechSynthesizer framework.
 /// Speaks text locally on the device without sending audio data to a server.
-final class SpeechSynthesizer: NSObject, SpeechSynthesizerProtocol, AVSpeechSynthesizerDelegate {
+final class SpeechSynthesizer: NSObject, SpeechSynthesizerProtocol, AVSpeechSynthesizerDelegate, @unchecked Sendable {
     private let synthesizer = AVSpeechSynthesizer()
     private let voice: AVSpeechSynthesisVoice?
 

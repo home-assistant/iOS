@@ -1836,7 +1836,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.settings.no_servers" = "Zatím nebyly synchronizovány žádné servery. Otevřete na spárovaném iPhonu Home Assistanta a poté obnovte stránku z domovské obrazovky.";
 "watch.settings.perform_action.apple_watch" = "Apple Watch";
 "watch.settings.perform_action.footer" = "Kde se spouštějí akce. Funkce Auto používá váš iPhone, když je poblíž, jinak se Apple Watch připojí přímo k Home Assistantovi.";
-"watch.settings.perform_action.footer_prefer_watch" = "Where actions run. Auto connects directly from the Apple Watch to Home Assistant when it can, otherwise it relays through your iPhone.";
+"watch.settings.perform_action.footer_prefer_watch" = "Kde se spouštějí akce. Auto se připojuje přímo z Apple Watch k Home Assistantovi, pokud to jde, jinak přenáší data přes váš iPhone.";
 "watch.settings.perform_action.iphone" = "iPhone";
 "watch.settings.perform_action.title" = "Provést akci pomocí";
 "watch.settings.refresh" = "Obnovit";

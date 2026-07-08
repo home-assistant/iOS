@@ -5,7 +5,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-final class ScriptAppIntent: AppIntent {
+final class ScriptAppIntent: AppIntent, @unchecked Sendable {
     static let title: LocalizedStringResource = .init("widgets.script.description.title", defaultValue: "Run Script")
 
     @Parameter(title: LocalizedStringResource("app_intents.scripts.script.title", defaultValue: "Run Script"))
@@ -34,7 +34,7 @@ final class ScriptAppIntent: AppIntent {
     var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
         }

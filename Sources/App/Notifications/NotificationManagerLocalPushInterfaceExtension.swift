@@ -68,7 +68,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     override init() {
         super.init()
-        self.syncStates = PerServerContainer<LocalPushStateSync>(constructor: { server in
+        self.syncStates = PerServerContainer<LocalPushStateSync>(constructor: { [weak self] server in
             let sync = LocalPushStateSync(settingsKey: PushProviderConfiguration.defaultSettingsKey(for: server))
             let token = sync.observe { [weak self] _ in
                 self?.notifyObservers(for: [server])
@@ -81,15 +81,18 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     }
 
     func retryLocalPush(for server: Server?, reason: LocalPushRetryReason) {
-        let servers = retryEligibleServers(targetServer: server)
-        guard !servers.isEmpty else {
-            Current.Log.info("Skipping local push retry for \(reason.eventValue), no eligible servers")
-            logRetryDiagnostics(reason: reason, targetServer: server, managers: [], error: nil)
-            return
-        }
+        Task { [weak self] in
+            guard let self else { return }
+            let servers = await retryEligibleServers(targetServer: server)
+            guard !servers.isEmpty else {
+                Current.Log.info("Skipping local push retry for \(reason.eventValue), no eligible servers")
+                logRetryDiagnostics(reason: reason, targetServer: server, managers: [], error: nil)
+                return
+            }
 
-        Current.Log.info("Retrying local push for \(servers.count) server(s), reason: \(reason.eventValue)")
-        updateManagers(reason: reason, targetServer: server)
+            Current.Log.info("Retrying local push for \(servers.count) server(s), reason: \(reason.eventValue)")
+            updateManagers(reason: reason, targetServer: server)
+        }
     }
 
     func scheduleAppOpenLocalPushRetries() {
@@ -344,8 +347,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 
-    private func retryEligibleServers(targetServer: Server?) -> [Server] {
-        let currentSSID = Current.connectivity.currentWiFiSSID()
+    private func retryEligibleServers(targetServer: Server?) async -> [Server] {
+        let currentSSID = await Current.connectivity.currentWiFiSSID()
         return (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
             LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: currentSSID)
         }
@@ -357,7 +360,24 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         managers loadedManagers: [NEAppPushManager],
         error: Error?
     ) {
-        let currentSSID = Current.connectivity.currentWiFiSSID()
+        Task { [weak self] in
+            guard let self else { return }
+            await performLogRetryDiagnostics(
+                reason: reason,
+                targetServer: targetServer,
+                managers: loadedManagers,
+                error: error
+            )
+        }
+    }
+
+    private func performLogRetryDiagnostics(
+        reason: LocalPushRetryReason,
+        targetServer: Server?,
+        managers loadedManagers: [NEAppPushManager],
+        error: Error?
+    ) async {
+        let currentSSID = await Current.connectivity.currentWiFiSSID()
         let servers = (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
             LocalPushRetryDiagnostics.matchesExpectedNetworkConditions(server: server, currentSSID: currentSSID)
         }

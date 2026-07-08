@@ -144,8 +144,14 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             }
 
             viewModel.setServer(server)
-            template.updateSections([serverSelectionSection(template: template)])
-            completion()
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    completion()
+                    return
+                }
+                await template.updateSections([serverSelectionSection(template: template)])
+                completion()
+            }
         }
         serverItem.accessoryType = .none
         return serverItem
@@ -155,14 +161,19 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         viewModel.beginServerSelection()
         let selectionTemplate = CPListTemplate(title: L10n.CarPlay.Labels.Settings.MainServer.title, sections: [])
         serverSelectionTemplate = selectionTemplate
-        selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            await selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
+        }
         interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
     }
 
-    private func serverSelectionSection(template: CPListTemplate) -> CPListSection {
-        let servers = Current.servers.all
-            .filter { $0.info.connection.activeURL() != nil }
-            .map { serverItem(server: $0, template: template) }
+    private func serverSelectionSection(template: CPListTemplate) async -> CPListSection {
+        var servers = [CPListItem]()
+        for server in Current.servers.all {
+            guard await server.activeURL() != nil else { continue }
+            servers.append(serverItem(server: server, template: template))
+        }
 
         guard !servers.isEmpty else {
             return CPListSection(items: [

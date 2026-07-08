@@ -26,6 +26,7 @@ final class BarcodeScannerViewModel: ObservableObject {
                             "format": format,
                         ]
                     ))
+                    .cauterize()
             }
     }
 
@@ -39,7 +40,7 @@ final class BarcodeScannerViewModel: ObservableObject {
                     payload: [
                         "reason": reason.rawValue,
                     ]
-                ))
+                )).cauterize()
             }
     }
 }

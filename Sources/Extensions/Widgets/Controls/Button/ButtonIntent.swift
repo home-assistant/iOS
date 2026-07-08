@@ -10,7 +10,7 @@ struct ButtonIntent: AppIntent {
     var entity: IntentButtonEntity
 
     func perform() async throws -> some IntentResult {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId }),
               let connection = Current.api(for: server)?.connection else {
             return .result()

@@ -58,12 +58,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
+                let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
                         seal(WebSocketMessage(
                             id: incomingMessage.ID!,
                             type: "result",
-                            result: WebViewExternalBusMessage.configResult
+                            result: configResult
                         ))
                     }
                 }
@@ -436,7 +437,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if #available(iOS 18, *) {
             ToastPresenter.shared.show(
                 id: payload.id,
-                symbol: SFSymbol.infoCircleFill.rawValue,
+                symbol: .infoCircleFill,
                 symbolForegroundStyle: (.white, .haPrimary),
                 title: payload.message,
                 message: "",
@@ -480,7 +481,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue,
             payload: [
-                "name": deviceName,
+                "name": deviceName as Any,
                 "success": success,
             ]
         ))

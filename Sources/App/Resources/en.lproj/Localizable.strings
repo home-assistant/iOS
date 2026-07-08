@@ -1615,6 +1615,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.configuration.folder.default_name" = "Folder";
 "watch.configuration.folder_name.title" = "Folder Name";
 "watch.configuration.items.title" = "Items";
+"watch.configuration.layout.footer" = "Grid layout only displays icons.";
+"watch.configuration.layout.title" = "Layout";
 "watch.configuration.new_folder.title" = "New Folder";
 "watch.configuration.save.title" = "Save";
 "watch.configuration.show_assist.title" = "Show Assist";

@@ -43,8 +43,8 @@ extension DataRequest {
     /// Utility function for extracting JSON from response
     internal static func processResponse(request: URLRequest?, response: HTTPURLResponse?, data: Data?, keyPath: String?) -> Any? {
 
-        let jsonResponseSerializer = JSONResponseSerializer(options: .allowFragments)
-        if let result = try? jsonResponseSerializer.serialize(request: request, response: response, data: data, error: nil) {
+        if let data, !data.isEmpty,
+           let result = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
 
             let JSON: Any?
             if let keyPath = keyPath , keyPath.isEmpty == false {
@@ -207,7 +207,7 @@ extension DataRequest {
     }
 }
 
-public final class MappableResponseSerializer<T: BaseMappable>: ResponseSerializer {
+public final class MappableResponseSerializer<T: BaseMappable>: ResponseSerializer, @unchecked Sendable {
     /// The `JSONDecoder` instance used to decode responses.
     public let decoder: DataDecoder = JSONDecoder()
     /// HTTP response codes for which empty responses are allowed.
@@ -262,7 +262,7 @@ public final class MappableResponseSerializer<T: BaseMappable>: ResponseSerializ
     }
 }
 
-public final class MappableArrayResponseSerializer<T: BaseMappable>: ResponseSerializer {
+public final class MappableArrayResponseSerializer<T: BaseMappable>: ResponseSerializer, @unchecked Sendable {
     /// The `JSONDecoder` instance used to decode responses.
     public let decoder: DataDecoder = JSONDecoder()
     /// HTTP response codes for which empty responses are allowed.

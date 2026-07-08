@@ -52,6 +52,7 @@ public enum DatabaseTables {
         case id
         case assist
         case items
+        case layout
         case lastModified
     }
 

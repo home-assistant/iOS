@@ -171,8 +171,8 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     private func hideCamera() {
         Current.sceneManager.webViewControllerPromise
-            .done { webViewController in
-                guard let cameraOverlayController = self.cameraOverlayController,
+            .done { [weak self] webViewController in
+                guard let cameraOverlayController = self?.cameraOverlayController,
                       webViewController.overlayedController === cameraOverlayController else {
                     Current.Log.info("Ignoring kiosk_hide_camera command because no camera is on display")
                     Current.kiosk.setCameraOverlayVisible(false)
@@ -586,7 +586,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if #available(iOS 18, *) {
             let identifier = notification.request.identifier
-            let symbol = command.symbol.rawValue
+            let symbol = command.symbol
             let colors = (command.symbolForegroundStyle.primary, command.symbolForegroundStyle.secondary)
             let title = command.localizedString
             let subtitle = command.localizedSubtitle

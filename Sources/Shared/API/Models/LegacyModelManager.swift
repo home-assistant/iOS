@@ -44,9 +44,7 @@ public class LegacyModelManager: ServerObserver {
         ))
     }
 
-    public struct CleanupDefinition {
-        /// Performs the cleanup inside a database write transaction. The array
-        /// contains the identifiers of the currently configured servers.
+    public struct CleanupDefinition: @unchecked Sendable {
         public var cleanup: (Database, [String]) throws -> Void
 
         public init(cleanup: @escaping (Database, [String]) throws -> Void) {
@@ -241,7 +239,9 @@ public class LegacyModelManager: ServerObserver {
         subscribedSubscriptions.removeAll()
         hakitTokens.forEach { $0.cancel() }
         hakitTokens = definitions.flatMap { definition -> [HACancellable] in
-            Current.apis.filter({ $0.server.info.connection.activeURL() != nil }).flatMap { api in
+            // Evaluated against cached network information: `Current.apis` already excludes servers
+            // without a usable URL, and this synchronous subscribe path cannot refresh.
+            Current.apis.filter({ $0.server.info.connection.evaluateActiveURL() != nil }).flatMap { api in
                 definition.subscribe(api.connection, api.server, workQueue, self)
             }
         }

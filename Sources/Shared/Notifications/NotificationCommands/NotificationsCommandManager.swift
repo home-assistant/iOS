@@ -1,5 +1,5 @@
 import Foundation
-import PromiseKit
+@preconcurrency import PromiseKit
 import UserNotifications
 import WidgetKit
 

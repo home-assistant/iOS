@@ -516,7 +516,7 @@ lane :update_strings do
     )
   end
 
-  sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
+  sh('cd ../ && ./Tools/build_tool swiftgen')
 end
 
 desc 'Upload localized strings to Lokalise'
@@ -669,7 +669,7 @@ lane :delete_local_strings do
   missing = key_names - removed
   UI.important("Not found in any Localizable.strings: #{missing.join(', ')}") unless missing.empty?
 
-  sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
+  sh('cd ../ && ./Tools/build_tool swiftgen')
 end
 
 desc 'Find unused localized strings'

@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import SwiftUI
 
 /// Holds the currently presented toast and drives auto-dismissal. Pure state — the toast is rendered
@@ -8,7 +9,7 @@ import SwiftUI
 /// if #available(iOS 18, *) {
 ///     ToastPresenter.shared.show(
 ///         id: "my-toast",
-///         symbol: SFSymbol.checkmarkSealFill.rawValue,
+///         symbol: .checkmarkSealFill,
 ///         symbolForegroundStyle: (.white, .green),
 ///         title: "Success",
 ///         message: "Operation completed",
@@ -32,7 +33,7 @@ public final class ToastPresenter: ObservableObject {
 
     public func show(
         id: String,
-        symbol: String,
+        symbol: SFSymbol,
         symbolFont: Font = .system(size: 35),
         symbolForegroundStyle: (Color, Color),
         title: String,

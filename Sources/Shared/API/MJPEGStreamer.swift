@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 import UIKit
 
-class MJPEGStreamerSessionDelegate: SessionDelegate {
+class MJPEGStreamerSessionDelegate: SessionDelegate, @unchecked Sendable {
     static let didReceiveResponse: Notification.Name = .init(rawValue: "MJPEGStreamerSessionDelegateDidReceiveResponse")
     static let taskUserInfoKey: AnyHashable = "taskUserInfoKey"
 
@@ -11,7 +11,7 @@ class MJPEGStreamerSessionDelegate: SessionDelegate {
         _ session: URLSession,
         dataTask: URLSessionDataTask,
         didReceive response: URLResponse,
-        completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
+        completionHandler: @escaping @Sendable (URLSession.ResponseDisposition) -> Void
     ) {
         super.urlSession(session, dataTask: dataTask, didReceive: response, completionHandler: completionHandler)
         NotificationCenter.default.post(
@@ -25,12 +25,12 @@ class MJPEGStreamerSessionDelegate: SessionDelegate {
 
 #if !os(watchOS)
 /// Combines MJPEG response-boundary notifications with mTLS client certificate handling.
-final class MJPEGCertificateSessionDelegate: ClientCertificateSessionDelegate {
+final class MJPEGCertificateSessionDelegate: ClientCertificateSessionDelegate, @unchecked Sendable {
     override func urlSession(
         _ session: URLSession,
         dataTask: URLSessionDataTask,
         didReceive response: URLResponse,
-        completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
+        completionHandler: @escaping @Sendable (URLSession.ResponseDisposition) -> Void
     ) {
         super.urlSession(session, dataTask: dataTask, didReceive: response, completionHandler: completionHandler)
         NotificationCenter.default.post(

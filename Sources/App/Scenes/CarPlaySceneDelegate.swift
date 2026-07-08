@@ -227,7 +227,9 @@ class CarPlaySceneDelegate: UIResponder {
 
     private func observeCarPlayConfigChanges() {
         configObservation?.cancel()
-        let observation = ValueObservation.tracking(CarPlayConfig.fetchOne)
+        let observation = ValueObservation.tracking { db in
+            try CarPlayConfig.fetchOne(db)
+        }
         configObservation = observation.start(
             in: Current.database(),
             onError: { error in

@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 
 /// Custom SessionDelegate that handles client certificate authentication (mTLS)
-public class ClientCertificateSessionDelegate: SessionDelegate {
+public class ClientCertificateSessionDelegate: SessionDelegate, @unchecked Sendable {
     private let server: Server
 
     public init(server: Server) {

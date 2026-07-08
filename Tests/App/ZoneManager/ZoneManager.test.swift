@@ -67,7 +67,7 @@ class ZoneManagerTests: XCTestCase {
         Current.cachedApis = [server1.identifier: apis[0], server2.identifier: apis[1]]
 
         loggedEvents = []
-        Current.connectivity.currentWiFiSSID = { "wifi_name" }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "wifi_name") }
         Current.clientEventStore = MockClientEventStore(addEventAction: { event in
             self.loggedEvents.append(event)
         })

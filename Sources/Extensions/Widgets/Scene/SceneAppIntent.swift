@@ -4,7 +4,7 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-final class SceneAppIntent: AppIntent {
+final class SceneAppIntent: AppIntent, @unchecked Sendable {
     static let title: LocalizedStringResource = .init("widgets.scene.activate.title", defaultValue: "Activate scene")
 
     @Parameter(title: LocalizedStringResource("app_intents.scenes.parameter.scene.title", defaultValue: "Scene"))
@@ -33,7 +33,7 @@ final class SceneAppIntent: AppIntent {
     var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
         }

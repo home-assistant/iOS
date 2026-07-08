@@ -10,7 +10,7 @@ enum WidgetFamilySizes {
         case .systemSmall: return 3
         case .systemMedium: return 6
         case .systemLarge: return 12
-        case .systemExtraLarge: return 20
+        case .systemExtraLarge, .systemExtraLargePortrait: return 20
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
@@ -23,7 +23,7 @@ enum WidgetFamilySizes {
         case .systemSmall: return 3
         case .systemMedium: return 3
         case .systemLarge: return 6
-        case .systemExtraLarge: return 12
+        case .systemExtraLarge, .systemExtraLargePortrait: return 12
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
@@ -37,7 +37,7 @@ enum WidgetFamilySizes {
         switch family {
         case .systemSmall: return WidgetFamilySizes.size(for: family) - 1
         case .systemMedium, .systemLarge: return WidgetFamilySizes.size(for: family) - 2
-        case .systemExtraLarge: return 20
+        case .systemExtraLarge, .systemExtraLargePortrait: return 20
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
@@ -52,7 +52,7 @@ enum WidgetFamilySizes {
         case .systemSmall: return 3
         case .systemMedium: return 6
         case .systemLarge: return 12
-        case .systemExtraLarge: return 20
+        case .systemExtraLarge, .systemExtraLargePortrait: return 20
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
@@ -66,7 +66,7 @@ enum WidgetFamilySizes {
         case .systemSmall: return 0
         case .systemMedium: return 2
         case .systemLarge: return 4
-        case .systemExtraLarge: return 3
+        case .systemExtraLarge, .systemExtraLargePortrait: return 3
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
@@ -80,7 +80,7 @@ enum WidgetFamilySizes {
         case .systemSmall: return 2
         case .systemMedium: return 4
         case .systemLarge: return 10
-        case .systemExtraLarge: return 20
+        case .systemExtraLarge, .systemExtraLargePortrait: return 20
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
@@ -101,7 +101,7 @@ enum WidgetFamilySizes {
             } else {
                 return 2
             }
-        case .systemExtraLarge:
+        case .systemExtraLarge, .systemExtraLargePortrait:
             if modelCount <= 4 {
                 return 1
             } else if modelCount <= 15 {
