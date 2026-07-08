@@ -7,8 +7,6 @@ import FirebaseCore
 import FirebaseMessaging
 import Intents
 import KeychainAccess
-import MBProgressHUD
-import ObjectMapper
 import PromiseKit
 import RealmSwift
 import SafariServices
@@ -172,11 +170,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @objc func openAbout() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        sceneManager.activateAnyScene(for: .about)
-    }
-
     @objc func openMenuUrl(_ command: AnyObject) {
         guard let command = command as? UICommand, let url = MenuManager.url(from: command) else {
             return
@@ -189,24 +182,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @objc func openPreferences() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        sceneManager.activateAnyScene(for: .settings)
-    }
-
-    @objc func openHelp() {
-        openURLInBrowser(
-            URL(string: "https://companion.home-assistant.io")!,
-            nil
-        )
-    }
-
     func application(
         _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        if #available(iOS 16.0, *), connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+        if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
             return SceneActivity.carPlay.configuration
         } else {
             let activity = options.userActivities

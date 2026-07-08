@@ -3,7 +3,6 @@ import Foundation
 import Shared
 import SwiftUI
 
-@available(iOS 16.4, *)
 struct CustomWidgetPressButtonAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle"
     static var isDiscoverable: Bool = false

@@ -1,5 +1,4 @@
 import Foundation
-import NetworkExtension
 import PromiseKit
 import Shared
 
@@ -72,13 +71,6 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
-    private func fetchNetworkInfo(completion: (() -> Void)? = nil) {
-        Current.networkInformation { hotspotNetwork in
-            WatchUserDefaults.shared.set(hotspotNetwork?.ssid, key: .watchSSID)
-            completion?()
-        }
-    }
-
     private func executeMagicItemUsingiPhone(magicItem: MagicItem, completion: @escaping (Bool) -> Void) {
         Current.Log.verbose("Signaling magic item pressed via phone")
         let itemMessage = HAWatchConnectivity.InteractiveImmediateMessage(
@@ -87,6 +79,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
                 "itemId": magicItem.id,
                 "serverId": magicItem.serverId,
                 "itemType": magicItem.type.rawValue,
+                "triggeredAt": Current.date().timeIntervalSince1970,
             ],
             reply: { message in
                 Current.Log.verbose("Received reply dictionary \(message)")
@@ -135,51 +128,79 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     private func executeMagicItem(completion: @escaping (MagicItemResponse) -> Void) {
-        let timeTriggered = Date()
+        let timeTriggered = Current.date()
         let magicItem = item
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
-        fetchNetworkInfo { [weak self] in
-            guard let self else { return }
-            if shouldUsePhone {
-                executeMagicItemUsingiPhone(magicItem: magicItem) { success in
-                    // Avoid haptics in background
-                    guard self.isLessThan30Seconds(from: timeTriggered) else {
-                        completion(.tookLonger)
-                        return
-                    }
-                    if success {
-                        self.cancelTimeout()
-                        completion(success ? .success : .failed)
-                    } else {
-                        completion(.failed)
-                    }
-                }
-            } else {
-                executeMagicItemUsingAPI(magicItem: magicItem) { success in
-                    self.cancelTimeout()
-                    completion(success ? .success : .failed)
-                }
-            }
-            startTimeoutTimerWhichResetsState(completion: completion)
+        startTimeoutTimerWhichResetsState(completion: completion)
+        Task { [weak self] in
+            await self?.routeExecution(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         }
     }
 
     /// Resolve where to run the action from the user's "Perform action using" preference: always the
-    /// iPhone, always the Watch (direct), or automatically (iPhone when reachable, else direct).
-    private var shouldUsePhone: Bool {
+    /// iPhone, always the Watch (direct), or automatically. In `auto` the Watch is preferred: it pings
+    /// Home Assistant directly and runs the action itself when reachable, otherwise it relays through
+    /// the paired iPhone (which errors if the iPhone isn't reachable either).
+    private func routeExecution(
+        magicItem: MagicItem,
+        timeTriggered: Date,
+        completion: @escaping (MagicItemResponse) -> Void
+    ) async {
         switch WatchUserDefaults.shared.performActionTarget {
         case .iPhone:
-            return true
+            executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         case .appleWatch:
-            return false
+            await Current.connectivity.refreshNetworkInformation()
+            executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
         case .auto:
-            return Communicator.shared.currentReachability == .immediatelyReachable
+            if let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }),
+               await HomeAssistantAPI.apiAvailabilityCheck(for: server) {
+                Current.Log.info("Auto: Watch can reach Home Assistant directly, executing on watch")
+                executeViaWatch(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+            } else {
+                Current.Log.info("Auto: Watch cannot reach Home Assistant directly, relaying via iPhone")
+                executeViaiPhone(magicItem: magicItem, timeTriggered: timeTriggered, completion: completion)
+            }
         }
+    }
+
+    private func executeViaWatch(
+        magicItem: MagicItem,
+        timeTriggered: Date,
+        completion: @escaping (MagicItemResponse) -> Void
+    ) {
+        executeMagicItemUsingAPI(magicItem: magicItem) { [weak self] success in
+            self?.finishExecution(success: success, timeTriggered: timeTriggered, completion: completion)
+        }
+    }
+
+    private func executeViaiPhone(
+        magicItem: MagicItem,
+        timeTriggered: Date,
+        completion: @escaping (MagicItemResponse) -> Void
+    ) {
+        executeMagicItemUsingiPhone(magicItem: magicItem) { [weak self] success in
+            self?.finishExecution(success: success, timeTriggered: timeTriggered, completion: completion)
+        }
+    }
+
+    private func finishExecution(
+        success: Bool,
+        timeTriggered: Date,
+        completion: @escaping (MagicItemResponse) -> Void
+    ) {
+        // Avoid haptics in background
+        guard isLessThan30Seconds(from: timeTriggered) else {
+            completion(.tookLonger)
+            return
+        }
+        cancelTimeout()
+        completion(success ? .success : .failed)
     }
 
     // Given date returns if is less than 30 seconds from now
     private func isLessThan30Seconds(from date: Date) -> Bool {
-        Date().timeIntervalSince(date) < 30
+        Current.date().timeIntervalSince(date) < 30
     }
 
     private func startTimeoutTimerWhichResetsState(completion: @escaping (MagicItemResponse) -> Void) {

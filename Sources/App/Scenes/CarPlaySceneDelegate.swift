@@ -5,7 +5,6 @@ import HAKit
 import PromiseKit
 import Shared
 
-@available(iOS 16.0, *)
 class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entitiesSubscriptionToken: HACancellable?
@@ -244,7 +243,6 @@ class CarPlaySceneDelegate: UIResponder {
 
 // MARK: - CPTemplateApplicationSceneDelegate
 
-@available(iOS 16.0, *)
 extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
@@ -259,7 +257,6 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
     }
 }
 
-@available(iOS 16.0, *)
 extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     func templateWillDisappear(_ aTemplate: CPTemplate, animated: Bool) {
         allTemplates.forEach { $0.templateWillDisappear(template: aTemplate) }

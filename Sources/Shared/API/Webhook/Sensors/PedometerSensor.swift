@@ -1,7 +1,6 @@
 import CoreMotion
 import Foundation
 import PromiseKit
-import Version
 
 public class PedometerSensor: SensorProvider {
     public enum PedometerError: Error {

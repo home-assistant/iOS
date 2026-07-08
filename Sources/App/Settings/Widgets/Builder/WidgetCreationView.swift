@@ -23,17 +23,10 @@ struct WidgetCreationView: View {
 
     var body: some View {
         if needsNavigationController {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    content
-                }
-                .navigationViewStyle(.stack)
-            } else {
-                NavigationView {
-                    content
-                }
-                .navigationViewStyle(.stack)
+            NavigationStack {
+                content
             }
+            .navigationViewStyle(.stack)
         } else {
             content
         }

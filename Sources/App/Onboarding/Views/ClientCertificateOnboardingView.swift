@@ -155,7 +155,6 @@ struct ClientCertificateOnboardingView: View {
     }
 }
 
-@available(iOS 16.0, *)
 #Preview {
     VStack {}
         .sheet(isPresented: .constant(true)) {

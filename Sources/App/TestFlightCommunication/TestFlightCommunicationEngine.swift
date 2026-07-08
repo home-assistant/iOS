@@ -1,5 +1,4 @@
 import Shared
-import Version
 
 final class TestFlightCommunicationEngine {
     private let message: TestFlightMessage?

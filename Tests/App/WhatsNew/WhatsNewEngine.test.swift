@@ -1,7 +1,6 @@
 @testable import HomeAssistant
 @testable import Shared
 import Testing
-import Version
 
 @Suite(.serialized)
 struct WhatsNewEngineTests {

@@ -1,6 +1,5 @@
 import Alamofire
 import KeychainAccess
-import MBProgressHUD
 import PromiseKit
 import Shared
 import UIKit
@@ -110,7 +109,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
         activeViewController = NotificationLoadingViewController()
 
-        var hud: MBProgressHUD?
+        var indicator: UIActivityIndicatorView?
 
         viewController(
             for: notification,
@@ -126,16 +125,23 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             if controller.mediaPlayPauseButtonType == .none, !controller.hidesSystemLoadingIndicator,
                let view = self?.view {
                 // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
-                hud = {
-                    let hud = MBProgressHUD.showAdded(to: view, animated: true)
-                    hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
-                    return hud
+                indicator = {
+                    let indicator = UIActivityIndicatorView(style: .medium)
+                    indicator.translatesAutoresizingMaskIntoConstraints = false
+                    view.addSubview(indicator)
+                    NSLayoutConstraint.activate([
+                        indicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                        indicator.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+                    ])
+                    indicator.startAnimating()
+                    return indicator
                 }()
             }
 
             return controller.start()
         }.ensure {
-            hud?.hide(animated: true)
+            indicator?.stopAnimating()
+            indicator?.removeFromSuperview()
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")
             self?.activeViewController = NotificationErrorViewController(error: error)

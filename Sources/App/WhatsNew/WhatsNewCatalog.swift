@@ -66,7 +66,7 @@ enum WhatsNewCatalog {
         osRequirements: WhatsNewOSRequirements(
             iOS: WhatsNewOSVersionRange(
                 minimum: WhatsNewOSVersion(major: 15),
-                maximum: .init(major: 15, minor: 9, patch: 9)
+                maximum: .init(major: 16, minor: 3, patch: 9)
             ),
             macOS: WhatsNewOSVersionRange(
                 minimum: WhatsNewOSVersion(major: 10),

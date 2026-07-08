@@ -82,7 +82,7 @@ struct OnboardingErrorView: View {
     @ViewBuilder
     private var exportLogsView: some View {
         Group {
-            if #available(iOS 16.0, *), let archiveURL = Current.Log.archiveURL() {
+            if let archiveURL = Current.Log.archiveURL() {
                 ShareLink(item: archiveURL, label: {
                     Text(Current.Log.exportTitle)
                 })

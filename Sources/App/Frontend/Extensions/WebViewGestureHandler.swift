@@ -1,7 +1,5 @@
 import Foundation
-import MBProgressHUD
 import Shared
-import Version
 
 // MARK: - Gestures
 
@@ -145,7 +143,7 @@ final class WebViewGestureHandler {
         Current.sceneManager.appCoordinator.done { coordinator in
             coordinator.open(server: nextServer).done { frontend in
                 guard let window = frontend.presentationWindow else { return }
-                let hud = MBProgressHUD.showAdded(to: window, animated: true)
+                let hud = ProgressHUD.showAdded(to: window, animated: true)
                 hud.isUserInteractionEnabled = false
                 hud.mode = .text
                 hud.label.text = nextServer.info.name

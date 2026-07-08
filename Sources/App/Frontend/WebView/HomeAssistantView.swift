@@ -69,13 +69,7 @@ struct HomeAssistantView: View, WebFrontendView {
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.showsNoActiveURL)
         .statusBarHidden(chrome.statusBarHidden)
-        .modify { view in
-            if #available(iOS 16.0, *) {
-                view.persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
-            } else {
-                view
-            }
-        }
+        .persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
     }
 
     @ViewBuilder

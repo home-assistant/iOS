@@ -1,7 +1,6 @@
 import Foundation
 #if os(iOS)
 import CoreTelephony
-import Reachability
 #endif
 import NetworkExtension
 
@@ -51,13 +50,8 @@ public class ConnectivityWrapper {
 
     #elseif os(iOS)
     init() {
-        let reachability = try? Reachability()
+        let reachability = NetworkReachability()
 
-        do {
-            try reachability?.startNotifier()
-        } catch {
-            Current.Log.error("failed to start reachability notifier: \(error)")
-        }
         self.hasWiFi = { true }
         self.currentWiFiSSID = {
             nil
@@ -65,9 +59,9 @@ public class ConnectivityWrapper {
         self.currentWiFiBSSID = {
             nil
         }
-        self.connectivityDidChangeNotification = { .reachabilityChanged }
-        self.simpleNetworkType = { reachability?.getSimpleNetworkType() ?? .unknown }
-        self.cellularNetworkType = { reachability?.getNetworkType() ?? .unknown }
+        self.connectivityDidChangeNotification = { NetworkReachability.didChangeNotification }
+        self.simpleNetworkType = { reachability.getSimpleNetworkType() }
+        self.cellularNetworkType = { reachability.getNetworkType() }
         self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
 
@@ -76,18 +70,14 @@ public class ConnectivityWrapper {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(connectivityDidChange(_:)),
-            name: .reachabilityChanged,
+            name: NetworkReachability.didChangeNotification,
             object: nil
         )
     }
     #else
     init() {
         self.hasWiFi = { true }
-        self.currentWiFiSSID = {
-            let ssid = WatchUserDefaults.shared.string(for: .watchSSID)
-            Current.Log.verbose("Watch current WiFi SSID: \(String(describing: ssid))")
-            return ssid
-        }
+        self.currentWiFiSSID = { nil }
         self.currentWiFiBSSID = { nil }
         self.connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
         self.simpleNetworkType = { .unknown }

@@ -72,8 +72,7 @@ class IncomingURLHandler {
                     handler: { self.sendLocationURLHandler() }
                 )
             case .camera:
-                guard #available(iOS 16.0, *),
-                      var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
                 }
                 components.scheme = nil
@@ -206,16 +205,8 @@ class IncomingURLHandler {
                                 }
                             }
                         let controller = UIHostingController(rootView: AnyView(
-                            Group {
-                                if #available(iOS 16.0, *) {
-                                    NavigationStack {
-                                        mainView
-                                    }
-                                } else {
-                                    NavigationView {
-                                        mainView
-                                    }
-                                }
+                            NavigationStack {
+                                mainView
                             }
                         ))
                         webViewController.presentOverlayController(controller: controller, animated: true)

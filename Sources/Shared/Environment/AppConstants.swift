@@ -1,7 +1,6 @@
 import Foundation
 import KeychainAccess
 import UIKit
-import Version
 
 /// Contains shared constants
 public enum AppConstants {
@@ -165,7 +164,6 @@ public enum AppConstants {
         )
     }
 
-    @available(iOS 16.0, watchOS 9.0, *)
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil
@@ -177,7 +175,6 @@ public enum AppConstants {
         ])
     }
 
-    @available(iOS 16.0, watchOS 9.0, *)
     public static func todoListOpenURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil

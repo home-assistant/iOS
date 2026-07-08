@@ -3,7 +3,6 @@ import HAKit
 import RealmSwift
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayQuickAccessViewModel {
     weak var templateProvider: CarPlayQuickAccessTemplate?
 

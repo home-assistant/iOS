@@ -3,7 +3,7 @@ import Foundation
 import PromiseKit
 @preconcurrency import Shared
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct PageAppEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Page")
 
@@ -23,7 +23,7 @@ struct PageAppEntity: AppEntity {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct PageAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [PageAppEntity] {
         try await panels().flatMap { server, panels in

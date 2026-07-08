@@ -278,8 +278,6 @@ extension WebViewController {
         return false;
     }
     """
-
-    @available(iOS 16.0, *)
     @objc func showFindInteraction() {
         // Present the find interaction UI
         if let findInteraction = webView.findInteraction {

@@ -7,10 +7,6 @@ import ObjectMapper
 import PromiseKit
 import RealmSwift
 import UIKit
-import Version
-#if os(iOS)
-import Reachability
-#endif
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
@@ -106,9 +102,10 @@ public class HomeAssistantAPI {
                 connectionInfo: {
                     do {
                         if let activeURL = server.info.connection.activeURL() {
-                            // Prepare client identity (SecIdentity) for mTLS if configured
+                            // Prepare client identity (SecIdentity) for mTLS if configured and the active URL is HTTPS
                             let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
-                            if let clientCert = server.info.connection.clientCertificate {
+                            if let clientCert = server.info.connection.clientCertificate,
+                               activeURL.scheme?.lowercased() == "https" {
                                 clientIdentityProvider = {
                                     try? ClientCertificateManager.shared.retrieveIdentity(for: clientCert)
                                 }
@@ -189,6 +186,26 @@ public class HomeAssistantAPI {
         } else {
             Current.Log.info("[mTLS] Using default URLSession for HAKit")
             return URLSession(configuration: .ephemeral)
+        }
+    }
+
+    public static func apiAvailabilityCheck(for server: Server, timeout: TimeInterval = 5) async -> Bool {
+        var connectionInfo = server.info.connection
+        guard let baseURL = await connectionInfo.activeURL() else {
+            return false
+        }
+
+        var request = URLRequest(url: baseURL.appendingPathComponent("api"))
+        request.timeoutInterval = timeout
+
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        defer { session.finishTasksAndInvalidate() }
+        do {
+            let (_, response) = try await session.data(for: request)
+            return response is HTTPURLResponse
+        } catch {
+            Current.Log.info("API availability check failed for \(server.info.name): \(error.localizedDescription)")
+            return false
         }
     }
 

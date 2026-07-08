@@ -295,10 +295,6 @@ struct WidgetBasicContainerWrapperView: View {
     // This is all widgets that are on the lock screen
     // Lock screen widgets are transparent and don't need a colored background
     private static var transparentFamilies: [WidgetFamily] {
-        if #available(iOS 16.0, *) {
-            [.accessoryCircular, .accessoryRectangular]
-        } else {
-            []
-        }
+        [.accessoryCircular, .accessoryRectangular]
     }
 }
