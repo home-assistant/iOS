@@ -281,46 +281,47 @@ class CameraViewController: UIViewController, NotificationCategory {
         )
 
         for nextPromise in controllerPromises {
-            promise = promise.recover { [extensionContext] error -> Promise<UIViewController & CameraStreamHandler> in
-                // always tell the extension context the previous one failed, aka go back to showing pause
-                extensionContext?.mediaPlayingPaused()
-                // accumulate the error
-                if case CameraViewControllerError.noControllers = error {
-                    // except the empty one that we started with to make this code nicer
-                } else {
-                    accumulatedErrors.append(error)
-                }
-
-                return firstly {
-                    // now try this latest one
-                    nextPromise()
-                }.get { [weak self, extensionContext] controller in
-                    // configure it -- this isn't part of the one-level-up chain because it would run for each one
-                    var lastState: CameraStreamHandlerState?
-                    controller.didUpdateState = { [weak self] state in
-                        guard lastState != state else {
-                            return
-                        }
-
-                        switch state {
-                        case .playing:
-                            extensionContext?.mediaPlayingStarted()
-                            self?.setLoading(false)
-                        case .paused:
-                            extensionContext?.mediaPlayingPaused()
-                            self?.setLoading(true)
-                        }
-
-                        lastState = state
+            promise = promise
+                .recover { [weak self, extensionContext] error -> Promise<UIViewController & CameraStreamHandler> in
+                    // always tell the extension context the previous one failed, aka go back to showing pause
+                    extensionContext?.mediaPlayingPaused()
+                    // accumulate the error
+                    if case CameraViewControllerError.noControllers = error {
+                        // except the empty one that we started with to make this code nicer
+                    } else {
+                        accumulatedErrors.append(error)
                     }
 
-                    // add it to hirearchy and constrain
-                    self?.activeViewController = controller
-                }.then { value in
-                    // make sure we wait until the controller figures out if it started or failed
-                    value.promise.map { value }
+                    return firstly {
+                        // now try this latest one
+                        nextPromise()
+                    }.get { [extensionContext] controller in
+                        // configure it -- this isn't part of the one-level-up chain because it would run for each one
+                        var lastState: CameraStreamHandlerState?
+                        controller.didUpdateState = { [weak self] state in
+                            guard lastState != state else {
+                                return
+                            }
+
+                            switch state {
+                            case .playing:
+                                extensionContext?.mediaPlayingStarted()
+                                self?.setLoading(false)
+                            case .paused:
+                                extensionContext?.mediaPlayingPaused()
+                                self?.setLoading(true)
+                            }
+
+                            lastState = state
+                        }
+
+                        // add it to hirearchy and constrain
+                        self?.activeViewController = controller
+                    }.then { value in
+                        // make sure we wait until the controller figures out if it started or failed
+                        value.promise.map { value }
+                    }
                 }
-            }
         }
 
         return promise.recover { nextError -> Promise<UIViewController & CameraStreamHandler> in

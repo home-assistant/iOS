@@ -171,9 +171,9 @@ public class WebhookManager: NSObject {
             }
 
             if self.currentBackgroundSessionInfo != sessionInfo {
-                sessionInfo.eventGroup.notify(queue: dataQueue) { [weak self] in
+                sessionInfo.eventGroup.notify(queue: dataQueue) {
                     Current.Log.info("removing session info \(sessionInfo)")
-                    self?.sessionInfos.remove(sessionInfo)
+                    self.sessionInfos.remove(sessionInfo)
                 }
             }
         }

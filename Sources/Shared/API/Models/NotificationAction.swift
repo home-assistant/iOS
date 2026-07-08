@@ -115,3 +115,7 @@ public class NotificationAction: Object {
         """
     }
 }
+
+extension NotificationAction: Identifiable {
+    public var id: String { uuid }
+}

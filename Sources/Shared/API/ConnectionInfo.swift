@@ -436,7 +436,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 }
 
-class ServerRequestAdapter: RequestAdapter {
+final class ServerRequestAdapter: RequestAdapter, @unchecked Sendable {
     let server: Server
 
     init(server: Server) {

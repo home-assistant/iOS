@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 import PromiseKit
 
-public class TokenManager {
+public final class TokenManager: @unchecked Sendable {
     public enum TokenError: Error {
         case tokenUnavailable
         case expired

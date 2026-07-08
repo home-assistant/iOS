@@ -4,6 +4,7 @@ import CoreMotion
 import Foundation
 import GRDB
 import HAKit
+import os
 import PromiseKit
 import RealmSwift
 import UserNotifications
@@ -26,16 +27,24 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equata
     }
 }
 
-private var underlyingWasSetUp: UInt32 = 0
+private let underlyingWasSetUp = OSAllocatedUnfairLock(initialState: false)
 private var underlyingCurrent = AppEnvironment()
 
 public var Current: AppEnvironment {
     get {
         let result = underlyingCurrent
-        if OSAtomicTestAndSetBarrier(0, &underlyingWasSetUp) == false {
-            // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
-            // reentrant, which is a requirement for touching things like Log but also touching more unexpected
-            // things like accessing any L10n helper value, which funnels through Current as well.
+        // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
+        // reentrant, which is a requirement for touching things like Log but also touching more unexpected
+        // things like accessing any L10n helper value, which funnels through Current as well.
+        // so this is a test-and-set: the flag flips inside the lock, but setup() runs outside it.
+        let needsSetup = underlyingWasSetUp.withLock { wasSetUp -> Bool in
+            if wasSetUp {
+                return false
+            }
+            wasSetUp = true
+            return true
+        }
+        if needsSetup {
             result.setup()
         }
         return result

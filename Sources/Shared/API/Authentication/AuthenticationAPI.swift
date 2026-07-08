@@ -1,7 +1,7 @@
 import Alamofire
 import Foundation
 import ObjectMapper
-import PromiseKit
+@preconcurrency import PromiseKit
 
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
@@ -150,7 +150,7 @@ public class AuthenticationAPI {
 
 #if !os(watchOS)
 /// Session delegate for fetching initial token during onboarding (before server exists)
-private class OnboardingClientCertificateDelegate: SessionDelegate {
+private class OnboardingClientCertificateDelegate: SessionDelegate, @unchecked Sendable {
     private let certificate: ClientCertificate
 
     init(certificate: ClientCertificate) {

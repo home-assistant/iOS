@@ -4,7 +4,7 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-final class SceneAppIntent: AppIntent {
+final class SceneAppIntent: AppIntent, @unchecked Sendable {
     static let title: LocalizedStringResource = .init("widgets.scene.activate.title", defaultValue: "Activate scene")
 
     @Parameter(title: LocalizedStringResource("app_intents.scenes.parameter.scene.title", defaultValue: "Scene"))

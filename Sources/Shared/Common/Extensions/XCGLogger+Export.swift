@@ -62,7 +62,7 @@ public extension XCGLogger {
         Current.Log.debug("Exporting logs as filename \(fileName)")
 
         let archiveURL = fileManager.temporaryDirectory.appendingPathComponent(fileName, isDirectory: false)
-        guard let archive = Archive(url: archiveURL, accessMode: .create) else {
+        guard let archive = try? Archive(url: archiveURL, accessMode: .create, pathEncoding: nil) else {
             Current.Log.error("Failed to create archive at \(archiveURL.path)")
             return nil
         }

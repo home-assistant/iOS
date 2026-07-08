@@ -55,7 +55,9 @@ enum AssistDefaultComplication {
             )
         case .graphicBezel:
             return CLKComplicationTemplateGraphicBezelCircularText(
-                circularTemplate: .init(),
+                circularTemplate: CLKComplicationTemplateGraphicCircularImage(
+                    imageProvider: CLKFullColorImageProvider(fullColorImage: bigIcon)
+                ),
                 textProvider: CLKSimpleTextProvider(text: title)
             )
         case .graphicCircular:

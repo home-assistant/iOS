@@ -1,8 +1,8 @@
 import Alamofire
 import Foundation
-import MobileCoreServices
 import PromiseKit
 import UIKit
+import UniformTypeIdentifiers
 import UserNotifications
 
 public enum NotificationAttachmentManagerServiceError: Error {
@@ -43,7 +43,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
         }.then { [self] attachmentInfo -> Promise<UNNotificationAttachment> in
             Current.Log.info("using attachment info \(attachmentInfo)")
             return attachment(from: attachmentInfo, api: api)
-        }.recover { [self] error -> Promise<UNNotificationAttachment> in
+        }.recover { error -> Promise<UNNotificationAttachment> in
             Current.Log.error("failed at getting attachment info: \(error)")
 
             if case NotificationAttachmentManagerServiceError.noAttachment = error {
@@ -53,7 +53,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
                 throw error
             } else {
                 #if os(iOS)
-                return try .value(attachment(for: error, api: api))
+                return try .value(self.attachment(for: error, api: api))
                 #else
                 throw error
                 #endif
@@ -185,7 +185,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
             identifier: "error",
             url: url,
             options: [
-                UNNotificationAttachmentOptionsTypeHintKey: kUTTypePNG,
+                UNNotificationAttachmentOptionsTypeHintKey: UTType.png.identifier,
             ]
         )) {
             // note: attachments don't actually support accessibility here (yet?) but this is used also for tests

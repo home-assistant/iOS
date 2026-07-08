@@ -110,9 +110,9 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
 
             DispatchQueue.main.async {
                 let view = ClientCertificateOnboardingView(
-                    onImport: { [weak self] certificate in
+                    onImport: { certificate in
                         Current.Log.info("[mTLS] Certificate imported: \(certificate.displayName)")
-                        self?.authDetails.clientCertificate = certificate
+                        self.authDetails.clientCertificate = certificate
                         sender.dismiss(animated: true) {
                             seal.fulfill(())
                         }

@@ -68,7 +68,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     override init() {
         super.init()
-        self.syncStates = PerServerContainer<LocalPushStateSync>(constructor: { server in
+        self.syncStates = PerServerContainer<LocalPushStateSync>(constructor: { [weak self] server in
             let sync = LocalPushStateSync(settingsKey: PushProviderConfiguration.defaultSettingsKey(for: server))
             let token = sync.observe { [weak self] _ in
                 self?.notifyObservers(for: [server])

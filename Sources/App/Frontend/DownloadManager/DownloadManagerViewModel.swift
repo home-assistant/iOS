@@ -57,8 +57,11 @@ extension DownloadManagerViewModel: WKDownloadDelegate {
             }
             progressObservation?.invalidate()
             progressObservation = download.progress.observe(\.completedUnitCount) { [weak self] progress, _ in
-                guard let self else { return }
-                self.progress = bytesToMBString(progress.completedUnitCount)
+                let completedUnitCount = progress.completedUnitCount
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    self.progress = bytesToMBString(completedUnitCount)
+                }
             }
             return url
         } else {

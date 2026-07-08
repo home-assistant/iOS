@@ -128,3 +128,7 @@ public final class NotificationCategory: Object, UpdatableModel {
         return true
     }
 }
+
+extension NotificationCategory: Identifiable {
+    public var id: String { Identifier }
+}
