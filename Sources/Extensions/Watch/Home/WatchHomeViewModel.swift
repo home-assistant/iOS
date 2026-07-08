@@ -56,7 +56,13 @@ final class WatchHomeViewModel: ObservableObject {
             reply: { [weak self] message in
                 self?.handleMessageResponse(message)
             }
-        ))
+        ), errorHandler: { [weak self] error in
+            // iPhone unreachable / slow / no reply within the system timeout: stop the spinner and
+            // fall back to the cached config so the screen never hangs on a dropped reply.
+            Current.Log.error("Watch config request failed: \(error)")
+            self?.loadCache()
+            self?.updateLoading(isLoading: false)
+        })
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {
@@ -133,7 +139,7 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func loadInformationCache(watchConfig: WatchConfig) {
         let magicItemsInfo = getItemsInfoFromCache()
-        if !magicItemsInfo.isEmpty {
+        if !magicItemsInfo.isEmpty || watchConfig.items.isEmpty {
             updateConfig(config: watchConfig, magicItemsInfo: magicItemsInfo)
             resetError()
         } else {
