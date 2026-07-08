@@ -148,23 +148,12 @@ class CameraViewController: UIViewController, NotificationCategory {
         }.recover { [entityId] error -> Promise<StreamCameraResponse> in
             Current.Log.info("falling back due to no streaming info for \(entityId) due to \(error)")
             return .value(StreamCameraResponse(fallbackEntityID: entityId))
-        }.then { [api] result -> Promise<(StreamCameraResponse, URL)> in
-            Promise { seal in
-                Task {
-                    if let baseURL = await api.server.activeURL() {
-                        seal.fulfill((result, baseURL))
-                    } else {
-                        seal.reject(ServerConnectionError.noActiveURL(api.server.info.name))
-                    }
-                }
-            }
-        }.then { [weak self, api, entityId] resultAndBaseURL -> Promise<Void> in
-            let (result, baseURL) = resultAndBaseURL
+        }.then { [weak self, api, entityId] result -> Promise<Void> in
             var controllers = Self.possibleControllers
                 .compactMap { controllerClass -> () -> Promise<UIViewController & CameraStreamHandler> in
                     {
                         do {
-                            return try .value(controllerClass.init(api: api, response: result, baseURL: baseURL))
+                            return try .value(controllerClass.init(api: api, response: result))
                         } catch {
                             return Promise(error: error)
                         }

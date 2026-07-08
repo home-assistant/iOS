@@ -39,7 +39,7 @@ final class AutomationAppIntent: AppIntent {
     var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        await Current.connectivity.refreshNetworkInformation()
+        await Current.connectivity.syncNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
         }

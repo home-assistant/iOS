@@ -36,13 +36,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         self.inZones = inZones?.map(\.entityId)
     }
 
-    public init(
-        trigger: LocationUpdateTrigger,
-        location: CLLocation?,
-        zone: RLMZone?,
-        inZones: [RLMZone]? = nil,
-        currentSSID: String? = nil
-    ) {
+    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?, inZones: [RLMZone]? = nil) {
         self.init(trigger: trigger)
         self.inZones = inZones?.map(\.entityId)
 
@@ -81,7 +75,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
 
             #if os(iOS)
             // https://github.com/home-assistant/iOS/issues/32
-            if let currentSSID, zone.SSIDTrigger.contains(currentSSID) {
+            if let currentSSID = Current.connectivity.currentWiFiSSID(), zone.SSIDTrigger.contains(currentSSID) {
                 self.location = zone.center
                 self.locationName = zone.Name
                 return

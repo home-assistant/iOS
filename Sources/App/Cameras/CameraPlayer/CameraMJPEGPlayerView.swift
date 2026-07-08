@@ -158,33 +158,29 @@ private class MJPEGStreamViewController: UIViewController {
             return
         }
 
-        Task { [weak self] in
+        guard let baseURL = api.server.info.connection.activeURL() else {
+            coordinator?.didEncounterError(StreamError.unableToConnect)
+            return
+        }
+
+        let mjpegURL = baseURL.appendingPathComponent("api/camera_proxy_stream/\(cameraEntityId)")
+
+        // Create streamer once and keep it for the lifetime of this view controller
+        let videoStreamer = api.VideoStreamer()
+        streamer = videoStreamer
+
+        videoStreamer.streamImages(fromURL: mjpegURL) { [weak self] image, error in
             guard let self else { return }
 
-            guard let baseURL = await api.server.activeURL() else {
-                coordinator?.didEncounterError(StreamError.unableToConnect)
-                return
-            }
-
-            let mjpegURL = baseURL.appendingPathComponent("api/camera_proxy_stream/\(cameraEntityId)")
-
-            // Create streamer once and keep it for the lifetime of this view controller
-            let videoStreamer = api.VideoStreamer()
-            streamer = videoStreamer
-
-            videoStreamer.streamImages(fromURL: mjpegURL) { [weak self] image, error in
-                guard let self else { return }
-
-                if let image {
-                    imageView.image = image
-                    if !hasReceivedFirstFrame {
-                        hasReceivedFirstFrame = true
-                        coordinator?.didReceiveFirstFrame()
-                    }
-                } else if let error {
-                    Current.Log.error("MJPEG stream error: \(error.localizedDescription)")
-                    coordinator?.didEncounterError(error)
+            if let image {
+                imageView.image = image
+                if !hasReceivedFirstFrame {
+                    hasReceivedFirstFrame = true
+                    coordinator?.didReceiveFirstFrame()
                 }
+            } else if let error {
+                Current.Log.error("MJPEG stream error: \(error.localizedDescription)")
+                coordinator?.didEncounterError(error)
             }
         }
     }

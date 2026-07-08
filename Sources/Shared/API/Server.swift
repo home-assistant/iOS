@@ -335,51 +335,14 @@ public extension Server {
     /// Returns the url that should be used at this moment to access this server, refreshing
     /// network information (e.g. current SSID) before evaluating which URL is active.
     ///
-    /// The re-evaluated active URL type is written back to `info`.
+    /// The re-evaluated active URL type is written back to `info`, matching the behavior of the
+    /// synchronous `ConnectionInfo.activeURL()` when called through `Server.info`.
     func activeURL() async -> URL? {
         await Current.connectivity.refreshNetworkInformation()
 
         var url: URL?
         update { info in
             url = info.connection.evaluateActiveURL()
-        }
-        return url
-    }
-
-    /// Returns the active url evaluated against the most recently known network information,
-    /// without refreshing it first.
-    ///
-    /// On macOS (and watchOS) the last-known network information is read live from its source, so
-    /// this is current; on iOS it may be stale. Only for synchronous callers that cannot await —
-    /// prefer the async `activeURL()`.
-    ///
-    /// The re-evaluated active URL type is written back to `info`.
-    func activeURLUsingLastKnownNetworkState() -> URL? {
-        var url: URL?
-        update { info in
-            url = info.connection.evaluateActiveURL()
-        }
-        return url
-    }
-
-    /// Returns the active url with /api appended, refreshing network information (e.g. current
-    /// SSID) before evaluating which URL is active.
-    ///
-    /// The re-evaluated active URL type is written back to `info`.
-    func activeAPIURL() async -> URL? {
-        await activeURL()?.appendingPathComponent("api", isDirectory: false)
-    }
-
-    /// Returns the url that should be used at this moment to reach this server's webhook,
-    /// refreshing network information (e.g. current SSID) before evaluating which URL is active.
-    ///
-    /// The re-evaluated active URL type is written back to `info`.
-    func webhookURL() async -> URL? {
-        await Current.connectivity.refreshNetworkInformation()
-
-        var url: URL?
-        update { info in
-            url = info.connection.evaluateWebhookURL()
         }
         return url
     }

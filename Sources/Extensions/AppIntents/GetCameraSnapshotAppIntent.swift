@@ -29,7 +29,7 @@ struct GetCameraSnapshotAppIntent: AppIntent {
     var camera: IntentCameraEntity
 
     func perform() async throws -> some IntentResult & ReturnsValue<IntentFile> {
-        await Current.connectivity.refreshNetworkInformation()
+        await Current.connectivity.syncNetworkInformation()
         guard camera.serverId == server.id,
               let server = server.getServer(),
               let api = Current.api(for: server) else {

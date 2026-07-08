@@ -261,9 +261,7 @@ public class LegacyModelManager: ServerObserver {
         subscribedSubscriptions.removeAll()
         hakitTokens.forEach { $0.cancel() }
         hakitTokens = definitions.flatMap { definition -> [HACancellable] in
-            // Evaluated against cached network information: `Current.apis` already excludes servers
-            // without a usable URL, and this synchronous subscribe path cannot refresh.
-            Current.apis.filter({ $0.server.info.connection.evaluateActiveURL() != nil }).flatMap { api in
+            Current.apis.filter({ $0.server.info.connection.activeURL() != nil }).flatMap { api in
                 definition.subscribe(api.connection, api.server, workQueue, self)
             }
         }

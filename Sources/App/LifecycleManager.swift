@@ -71,16 +71,15 @@ class LifecycleManager {
         }.cauterize()
 
         // Resolve the network info (SSID) before the first connect so we don't pick the remote URL while on
-        // the home network and get rejected.
-        Task { @MainActor [periodicUpdateManager] in
-            await Current.connectivity.refreshNetworkInformation()
+        // the home network and get rejected. On Catalyst the completion is invoked synchronously.
+        Current.connectivity.syncNetworkInformation { [periodicUpdateManager] in
             periodicUpdateManager.connectAPI(reason: .cold)
         }
     }
 
     @objc private func willEnterForeground() {
         isActive = true
-        refreshNetworkInformation()
+        syncNetworkInformation()
         syncLiveActivities()
     }
 
@@ -128,12 +127,12 @@ class LifecycleManager {
                 )
             })
         }.cauterize()
-        refreshNetworkInformation()
+        syncNetworkInformation()
     }
 
-    private func refreshNetworkInformation() {
+    private func syncNetworkInformation() {
         Task {
-            await Current.connectivity.refreshNetworkInformation()
+            await Current.connectivity.syncNetworkInformation()
         }
     }
 }

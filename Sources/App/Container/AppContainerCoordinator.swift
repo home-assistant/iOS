@@ -136,19 +136,16 @@ final class AppContainerCoordinator: AppCoordinator {
         // Live Activities, …): slash-less HA paths and the app's own navigate deep link resolve to
         // an internal path; external URLs pass through untouched.
         let openUrl = AppConstants.normalizedNavigationDestination(openUrlRaw)
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            await open(
-                from: from,
-                server: server,
-                urlString: openUrl,
-                webviewURL: server.webviewURL(from: openUrl),
-                externalURL: URL(string: openUrl),
-                skipConfirm: skipConfirm,
-                avoidUnnecessaryReload: avoidUnnecessaryReload,
-                isComingFromAppIntent: isComingFromAppIntent
-            )
-        }
+        open(
+            from: from,
+            server: server,
+            urlString: openUrl,
+            webviewURL: server.info.connection.webviewURL(from: openUrl),
+            externalURL: URL(string: openUrl),
+            skipConfirm: skipConfirm,
+            avoidUnnecessaryReload: avoidUnnecessaryReload,
+            isComingFromAppIntent: isComingFromAppIntent
+        )
     }
 
     func openSelectingServer(

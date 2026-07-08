@@ -79,7 +79,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             #if os(watchOS)
             Self.updateComplications()
             #else
-            HomeAssistantAPI.syncWatchContext()
+            _ = HomeAssistantAPI.SyncWatchContext()
             #endif
         }.map { _ in
             WebhookResponseHandlerResult.default

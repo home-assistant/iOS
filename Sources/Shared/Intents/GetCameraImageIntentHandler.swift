@@ -70,7 +70,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         guard let server = Current.servers.server(for: intent), let api = Current.api(for: server) else {
             completion(
                 .failure(
-                    error: "No server provided, active URL: \(String(describing: Current.servers.server(for: intent)?.info.connection.evaluateActiveURL()?.absoluteString))"
+                    error: "No server provided, active URL: \(String(describing: Current.servers.server(for: intent)?.info.connection.activeURL()?.absoluteString))"
                 )
             )
             return

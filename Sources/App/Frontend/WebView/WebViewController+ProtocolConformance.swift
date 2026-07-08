@@ -90,11 +90,8 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func navigateToPath(path: String) {
-        Task { [weak self] in
-            guard let self else { return }
-            if let activeURL = await server.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
-                load(request: URLRequest(url: url))
-            }
+        if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
+            load(request: URLRequest(url: url))
         }
     }
 
@@ -112,12 +109,10 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     @objc func refresh() {
-        // called via menu/keyboard shortcut too
-        Task { [weak self] in
+        let refreshBlock: () -> Void = { [weak self] in
             guard let self else { return }
-            // `webviewURL()` refreshes the network information (e.g. current SSID) before
-            // evaluating which URL is active.
-            if let webviewURL = await server.webviewURL() {
+            // called via menu/keyboard shortcut too
+            if let webviewURL = server.info.connection.webviewURL() {
                 if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                     reload()
                 } else {
@@ -127,6 +122,14 @@ extension WebViewController: WebViewControllerProtocol {
                 hideNoActiveURLError()
             } else {
                 showNoActiveURLError()
+            }
+        }
+
+        if Current.isCatalyst {
+            refreshBlock()
+        } else {
+            Current.connectivity.syncNetworkInformation {
+                refreshBlock()
             }
         }
         updateDatabaseAndPanels()

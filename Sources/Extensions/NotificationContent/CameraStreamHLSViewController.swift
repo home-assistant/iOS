@@ -27,12 +27,15 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         }
     }
 
-    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse, baseURL: URL) throws {
+    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse) throws {
         guard let path = response.hlsPath else {
             throw HLSError.noPath
         }
 
-        self.init(api: api, url: baseURL.appendingPathComponent(path))
+        guard let url = api.server.info.connection.activeURL()?.appendingPathComponent(path) else {
+            throw ServerConnectionError.noActiveURL(api.server.info.name)
+        }
+        self.init(api: api, url: url)
     }
 
     init(api: HomeAssistantAPI, url: URL) {

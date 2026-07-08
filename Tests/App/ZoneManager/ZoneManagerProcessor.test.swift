@@ -22,7 +22,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        Current.connectivity.currentNetworkState = { NetworkState(ssid: "wifi_name") }
+        Current.connectivity.currentWiFiSSID = { "wifi_name" }
 
         let executionIdentifier = UUID().uuidString
 

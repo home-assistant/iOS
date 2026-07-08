@@ -17,7 +17,7 @@ struct UpdateLocationAppIntent: AppIntent {
     var location: CLPlacemark
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
-        await Current.connectivity.refreshNetworkInformation()
+        await Current.connectivity.syncNetworkInformation()
         let failedServers = try await Current.apis.asyncCompactMap { api -> String? in
             do {
                 try await api.SubmitLocation(

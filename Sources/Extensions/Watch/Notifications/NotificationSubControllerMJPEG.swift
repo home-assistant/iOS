@@ -31,21 +31,19 @@ class NotificationSubControllerMJPEG: NotificationSubController {
         self.streamer = streamer
 
         return Promise<Void> { seal in
-            Task { [self] in
-                guard let apiURL = await api.server.activeAPIURL() else {
-                    seal.reject(ServerConnectionError.noActiveURL(api.server.info.name))
-                    return
-                }
-                let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
+            guard let apiURL = api.server.info.connection.activeAPIURL() else {
+                seal.reject(ServerConnectionError.noActiveURL(api.server.info.name))
+                return
+            }
+            let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
 
-                streamer.streamImages(fromURL: queryUrl) { uiImage, error in
-                    if let error {
-                        seal.reject(error)
-                    } else if let uiImage {
-                        seal.fulfill(())
-                        elements.image.setHidden(false)
-                        elements.image.setImage(uiImage)
-                    }
+            streamer.streamImages(fromURL: queryUrl) { uiImage, error in
+                if let error {
+                    seal.reject(error)
+                } else if let uiImage {
+                    seal.fulfill(())
+                    elements.image.setHidden(false)
+                    elements.image.setImage(uiImage)
                 }
             }
         }

@@ -46,7 +46,7 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         }
     }
 
-    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse, baseURL: URL) throws {
+    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse) throws {
         throw WebRTCError.requiresEntityID
     }
 

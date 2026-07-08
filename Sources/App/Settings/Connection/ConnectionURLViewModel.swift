@@ -61,14 +61,11 @@ final class ConnectionURLViewModel: ObservableObject {
     }
 
     func addSSID() {
-        Task { [weak self] in
-            let currentSSID = await Current.connectivity.currentWiFiSSID()
-            guard let self else { return }
-            if let currentSSID, !ssids.contains(currentSSID) {
-                ssids.append(currentSSID)
-            } else {
-                ssids.append("")
-            }
+        let currentSSID = Current.connectivity.currentWiFiSSID()
+        if let currentSSID, !ssids.contains(currentSSID) {
+            ssids.append(currentSSID)
+        } else {
+            ssids.append("")
         }
     }
 
@@ -81,14 +78,11 @@ final class ConnectionURLViewModel: ObservableObject {
     }
 
     func addHardwareAddress() {
-        Task { [weak self] in
-            let currentAddress = await Current.connectivity.currentNetworkHardwareAddress()
-            guard let self else { return }
-            if let currentAddress, !hardwareAddresses.contains(currentAddress) {
-                hardwareAddresses.append(currentAddress)
-            } else {
-                hardwareAddresses.append("")
-            }
+        let currentAddress = Current.connectivity.currentNetworkHardwareAddress()
+        if let currentAddress, !hardwareAddresses.contains(currentAddress) {
+            hardwareAddresses.append(currentAddress)
+        } else {
+            hardwareAddresses.append("")
         }
     }
 

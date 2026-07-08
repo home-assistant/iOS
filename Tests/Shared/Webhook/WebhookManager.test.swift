@@ -17,8 +17,8 @@ class WebhookManagerTests: XCTestCase {
 
         api1 = FakeHassAPI(server: .fake())
         api2 = FakeHassAPI(server: .fake())
-        webhookURL1 = api1.server.info.connection.evaluateWebhookURL()
-        webhookURL2 = api2.server.info.connection.evaluateWebhookURL()
+        webhookURL1 = api1.server.info.connection.webhookURL()
+        webhookURL2 = api2.server.info.connection.webhookURL()
 
         manager = WebhookManager()
     }
@@ -188,7 +188,7 @@ class WebhookManagerTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        let nextAPIWebhookURL = nextConnectionInfo.evaluateWebhookURL()
+        let nextAPIWebhookURL = nextConnectionInfo.webhookURL()
         api1.server.info.connection = nextConnectionInfo
 
         stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
