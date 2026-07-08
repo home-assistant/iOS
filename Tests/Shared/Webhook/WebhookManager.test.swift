@@ -1,6 +1,7 @@
 import Foundation
 import ObjectMapper
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
 import XCTest

@@ -762,6 +762,10 @@
 		426B73E52DCCE2C7003F778E /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C42D393F0E0062D905 /* EntityPicker.swift */; };
 		426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */; };
+		426BD76E2FFE54B0001378A4 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD76D2FFE54B0001378A4 /* OHHTTPStubs */; };
+		426BD7702FFE54B0001378A4 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD76F2FFE54B0001378A4 /* OHHTTPStubsSwift */; };
+		426BD7722FFE54E8001378A4 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD7712FFE54E8001378A4 /* OHHTTPStubs */; };
+		426BD7742FFE54E8001378A4 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD7732FFE54E8001378A4 /* OHHTTPStubsSwift */; };
 		426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB692C9C543F003CA3AC /* ControlSwitchValueProvider.swift */; };
 		426CBB6C2C9C550D003CA3AC /* IntentSwitchEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */; };
 		426D9C742C9C60B000F278AF /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
@@ -3813,7 +3817,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A23A4D2702C94EF9B6296171 /* SFSafeSymbols in Frameworks */,
+				426BD76E2FFE54B0001378A4 /* OHHTTPStubs in Frameworks */,
 				420E64C12D676B2400A31E86 /* SnapshotTestingCustomDump in Frameworks */,
+				426BD7702FFE54B0001378A4 /* OHHTTPStubsSwift in Frameworks */,
 				420E64BF2D676B2400A31E86 /* SnapshotTesting in Frameworks */,
 				420E64BD2D676B2400A31E86 /* InlineSnapshotTesting in Frameworks */,
 				42A1F0B52E000000000000B5 /* Alamofire in Frameworks */,
@@ -3892,6 +3898,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				426BD7722FFE54E8001378A4 /* OHHTTPStubs in Frameworks */,
+				426BD7742FFE54E8001378A4 /* OHHTTPStubsSwift in Frameworks */,
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
 				17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */,
@@ -8074,6 +8082,8 @@
 				BE72091B2E0CF29A3B829B1F /* RealmSwift */,
 				42A1F0A52E000000000000A5 /* Alamofire */,
 				7FBFE016210544989AFC7F64 /* SFSafeSymbols */,
+				426BD76D2FFE54B0001378A4 /* OHHTTPStubs */,
+				426BD76F2FFE54B0001378A4 /* OHHTTPStubsSwift */,
 			);
 			productName = HomeAssistantTests;
 			productReference = B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */;
@@ -8244,6 +8254,8 @@
 			packageProductDependencies = (
 				DDD36A352E3698887FBF85D9 /* RealmSwift */,
 				42A1F0A62E000000000000A6 /* Alamofire */,
+				426BD7712FFE54E8001378A4 /* OHHTTPStubs */,
+				426BD7732FFE54E8001378A4 /* OHHTTPStubsSwift */,
 			);
 			productName = SharedTests;
 			productReference = D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */;
@@ -8472,6 +8484,7 @@
 				42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */,
 				425E94862FFD4A8B0067FA73 /* XCRemoteSwiftPackageReference "ObjectMapper" */,
 				42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */,
+				426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -12238,6 +12251,14 @@
 				minimumVersion = 4.4.3;
 			};
 		};
+		426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AliSoftware/OHHTTPStubs";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.1.0;
+			};
+		};
 		42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/improv-wifi/sdk-iOS.git";
@@ -12363,6 +12384,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
+		};
+		426BD76D2FFE54B0001378A4 /* OHHTTPStubs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubs;
+		};
+		426BD76F2FFE54B0001378A4 /* OHHTTPStubsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubsSwift;
+		};
+		426BD7712FFE54E8001378A4 /* OHHTTPStubs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubs;
+		};
+		426BD7732FFE54E8001378A4 /* OHHTTPStubsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubsSwift;
 		};
 		4273F7DF2E258827000629F7 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
