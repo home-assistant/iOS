@@ -50,8 +50,6 @@ abstract_target 'iOS' do
   end
 
   target 'App' do
-    pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
-
     support_modules
 
     target 'Tests-App' do

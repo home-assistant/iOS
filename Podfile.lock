@@ -1,5 +1,4 @@
 PODS:
-  - CPDAcknowledgements (1.0.0)
   - HAKit (0.4.18):
     - HAKit/Core (= 0.4.18)
   - HAKit/Core (0.4.18):
@@ -24,7 +23,6 @@ PODS:
   - SwiftLint (0.54.0)
 
 DEPENDENCIES:
-  - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
@@ -42,9 +40,6 @@ SPEC REPOS:
     - SwiftLint
 
 EXTERNAL SOURCES:
-  CPDAcknowledgements:
-    :branch: master
-    :git: https://github.com/CocoaPods/CPDAcknowledgements
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.18
@@ -53,9 +48,6 @@ EXTERNAL SOURCES:
     :tag: 4.0.9
 
 CHECKOUT OPTIONS:
-  CPDAcknowledgements:
-    :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
-    :git: https://github.com/CocoaPods/CPDAcknowledgements
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.18
@@ -64,7 +56,6 @@ CHECKOUT OPTIONS:
     :tag: 4.0.9
 
 SPEC CHECKSUMS:
-  CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   HAKit: f6492dc50f8ba0113ff6845fcd07631ecdab9a91
   PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
   Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
@@ -72,6 +63,6 @@ SPEC CHECKSUMS:
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: 04a547bcbf959ca88c474526d48231293e091bbd
+PODFILE CHECKSUM: 36c52f7134c96296a71db2e2d49a80897e73167b
 
 COCOAPODS: 1.15.2
