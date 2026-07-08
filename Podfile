@@ -3,22 +3,6 @@ inhibit_all_warnings!
 
 project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release
 
-def support_modules
-  pod 'SwiftGen', '~> 6.5.0'
-  pod 'SwiftLint', '0.54.0' # also update ci.yml GHA
-  pod 'SwiftFormat/CLI', '0.53.1' # also update ci.yml GHA
-end
-
-if ENV['ONLY_SUPPORT_MODULES']
-  # some of our CI scripts only need e.g. SwiftLint
-  # this allows us to skip a lot of installation when unnecessary
-  platform :ios, '16.4'
-  support_modules
-  workspace 'abstract.workspace'
-
-  return self # rubocop:disable Lint/TopLevelReturnWithArgument
-end
-
 plugin 'cocoapods-acknowledgements'
 pod 'PromiseKit', '~> 8.1.1'
 
@@ -38,8 +22,6 @@ abstract_target 'iOS' do
   end
 
   target 'App' do
-    support_modules
-
     target 'Tests-App' do
       inherit! :search_paths
     end

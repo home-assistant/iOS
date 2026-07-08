@@ -18,9 +18,6 @@ PODS:
   - PromiseKit/UIKit (8.1.2):
     - PromiseKit/CorePromise
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.53.1)
-  - SwiftGen (6.5.1)
-  - SwiftLint (0.54.0)
 
 DEPENDENCIES:
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
@@ -28,16 +25,10 @@ DEPENDENCIES:
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.18`)
   - PromiseKit (~> 8.1.1)
   - Starscream (from `https://github.com/bgoncal/starscream`, tag `4.0.9`)
-  - SwiftFormat/CLI (= 0.53.1)
-  - SwiftGen (~> 6.5.0)
-  - SwiftLint (= 0.54.0)
 
 SPEC REPOS:
   trunk:
     - PromiseKit
-    - SwiftFormat
-    - SwiftGen
-    - SwiftLint
 
 EXTERNAL SOURCES:
   HAKit:
@@ -59,10 +50,7 @@ SPEC CHECKSUMS:
   HAKit: f6492dc50f8ba0113ff6845fcd07631ecdab9a91
   PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
   Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
-  SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
-  SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
-  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: 7d10f0a29cf4d8aa81043b7d7b7c3022e899f520
+PODFILE CHECKSUM: 8ee6f4be5afbdd9fcf460b832942685762369348
 
 COCOAPODS: 1.15.2
