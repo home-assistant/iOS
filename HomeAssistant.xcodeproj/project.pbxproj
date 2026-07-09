@@ -8389,6 +8389,7 @@
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
 				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */,
+				42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */,
@@ -11745,6 +11746,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/SharedPush;
 		};
+		42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/PromiseKitDynamic;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -11991,10 +11996,10 @@
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = "HAKit+PromiseKit";
 		};
-		42886D352FFE882F004EB33B /* PromiseKit */ = {
+		42886D352FFE882F004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
 		42886D372FFE883A004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12006,15 +12011,15 @@
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = "HAKit+PromiseKit";
 		};
-		42886D3B2FFE8841004EB33B /* PromiseKit */ = {
+		42886D3B2FFE8841004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
-		42886D532FFE88AB004EB33B /* PromiseKit */ = {
+		42886D532FFE88AB004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
 		42886D552FFE88BE004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12026,10 +12031,10 @@
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = "HAKit+Mocks";
 		};
-		42886D592FFE88C6004EB33B /* PromiseKit */ = {
+		42886D592FFE88C6004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
 		42886D5D2FFE88CD004EB33B /* HAKit+Mocks */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12235,65 +12240,65 @@
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D2F2FFE881B004EB33B /* PromiseKit */ = {
+		42886D2F2FFE881B004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
 		42886D3D2FFE884E004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D412FFE8853004EB33B /* PromiseKit */ = {
+		42886D412FFE8853004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
 		42886D432FFE885E004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D472FFE8865004EB33B /* PromiseKit */ = {
+		42886D472FFE8865004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
 		42886D492FFE8875004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D4B2FFE887B004EB33B /* PromiseKit */ = {
+		42886D4B2FFE887B004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
-		42886D4D2FFE8887004EB33B /* PromiseKit */ = {
+		42886D4D2FFE8887004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
-		42886D4F2FFE8890004EB33B /* PromiseKit */ = {
+		42886D4F2FFE8890004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
-		42886D512FFE889A004EB33B /* PromiseKit */ = {
+		42886D512FFE889A004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
 		42886D5B2FFE88CD004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D5F2FFE88D5004EB33B /* PromiseKit */ = {
+		42886D5F2FFE88D5004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
 		};
 		42886D642FFE8C0E004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
