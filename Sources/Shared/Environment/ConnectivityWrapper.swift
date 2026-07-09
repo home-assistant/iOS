@@ -157,23 +157,41 @@ public class ConnectivityWrapper {
     }
 
     private func performNetworkStateFetch() async -> NetworkState {
-        let hotspotNetwork = await withCheckedContinuation { (continuation: CheckedContinuation<
-            NEHotspotNetwork?,
-            Never
-        >) in
+        let timeout: TimeInterval = 3
+        let state: NetworkState? = await withCheckedContinuation { continuation in
+            let lock = NSLock()
+            var didResume = false
+            let resume: (NetworkState?) -> Void = { value in
+                lock.lock()
+                defer { lock.unlock() }
+                guard !didResume else { return }
+                didResume = true
+                continuation.resume(returning: value)
+            }
+
             NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-                continuation.resume(returning: hotspotNetwork)
+                Current.Log.verbose(
+                    "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
+                )
+                #if targetEnvironment(simulator)
+                let ssid: String? = "Simulator"
+                #else
+                let ssid = hotspotNetwork?.ssid
+                #endif
+                resume(NetworkState(ssid: ssid, bssid: hotspotNetwork?.bssid))
+            }
+
+            DispatchQueue.global().asyncAfter(deadline: .now() + timeout) {
+                resume(nil)
             }
         }
-        Current.Log.verbose(
-            "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
-        )
-        #if targetEnvironment(simulator)
-        let ssid: String? = "Simulator"
-        #else
-        let ssid = hotspotNetwork?.ssid
-        #endif
-        return NetworkState(ssid: ssid, bssid: hotspotNetwork?.bssid)
+
+        guard let state else {
+            Current.Log.error("NEHotspotNetwork.fetchCurrent timed out; keeping last-known network state")
+            return readLastKnownNetworkState()
+        }
+
+        return state
     }
 
     #else
