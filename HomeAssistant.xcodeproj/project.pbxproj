@@ -441,8 +441,6 @@
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		42886DEE0000000000000001 /* PromiseKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2F2FFE881B004EB33B /* PromiseKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		42886DEE0000000000000002 /* PromiseKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 42886D352FFE882F004EB33B /* PromiseKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1AA7D3A6102D7CC4601EEC6F /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */; };
 		1BACC6CFCE37E6AA2DC862F4 /* HAWatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8762CF6B50A0FB05013908A /* HAWatchConnectivity.swift */; };
@@ -1928,7 +1926,6 @@
 			files = (
 				110EC9FE251708D5009C9A1B /* Shared.framework in Embed Frameworks */,
 				1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */,
-				42886DEE0000000000000001 /* PromiseKit in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1974,7 +1971,6 @@
 			files = (
 				B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */,
 				1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */,
-				42886DEE0000000000000002 /* PromiseKit in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
