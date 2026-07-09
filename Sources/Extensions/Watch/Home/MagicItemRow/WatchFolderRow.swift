@@ -64,19 +64,12 @@ struct WatchFolderRow: View {
     }
 
     private var gridIcon: some View {
-        ZStack(alignment: .topTrailing) {
-            Image(uiImage: item.icon(info: itemInfo).image(
-                ofSize: .init(width: 28, height: 28),
-                color: iconColor
-            ))
-            .foregroundStyle(Color(uiColor: iconColor))
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            Image(systemSymbol: .chevronRight)
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .padding(DesignSystem.Spaces.half)
-                .accessibilityHidden(true)
-        }
+        Image(uiImage: item.icon(info: itemInfo).image(
+            ofSize: .init(width: 28, height: 28),
+            color: iconColor
+        ))
+        .foregroundStyle(Color(uiColor: iconColor))
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
         .accessibilityLabel(Text(item.name(info: itemInfo)))
     }
@@ -98,7 +91,7 @@ struct WatchFolderRow: View {
     }
 }
 
-#Preview {
+#Preview("List") {
     MaterialDesignIcons.register()
     return List {
         WatchFolderRow(
@@ -116,5 +109,34 @@ struct WatchFolderRow: View {
                 customization: .init(iconColor: "#03A9F4")
             )
         ) {}
+    }
+}
+
+#Preview("Grid") {
+    MaterialDesignIcons.register()
+    return List {
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+            spacing: DesignSystem.Spaces.one
+        ) {
+            WatchFolderRow(
+                item: .init(
+                    id: "folder1",
+                    serverId: "",
+                    type: .folder,
+                    customization: .init(iconColor: "#03A9F4"),
+                    displayText: "Living Room"
+                ),
+                itemInfo: .init(
+                    id: "folder1",
+                    name: "Living Room",
+                    iconName: "mdi:folder",
+                    customization: .init(iconColor: "#03A9F4")
+                ),
+                layout: .grid
+            ) {}
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
     }
 }
