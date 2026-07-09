@@ -56,28 +56,68 @@ extension WebViewController {
         }
     }
 
+    /// How long an in-flight `loadActiveURLIfNeeded()` attempt may run before a new call treats it
+    /// as hung and replaces it. Attempts normally finish in well under a second; the network-info
+    /// fetch they depend on is itself bounded by `ConnectivityWrapper.networkFetchTimeout`.
+    static let loadActiveURLStaleInterval: TimeInterval = 5
+
     @objc func loadActiveURLIfNeeded() {
-        guard !loadActiveURLIfNeededInProgress else {
-            Current.Log.info("loadActiveURLIfNeeded already in progress, skipping")
+        var previousAttemptHung = false
+        if let inFlightTask = loadActiveURLTask {
+            let startDate = loadActiveURLTaskStartDate ?? .distantPast
+            guard Current.date().timeIntervalSince(startDate) >= Self.loadActiveURLStaleInterval else {
+                Current.Log.info("loadActiveURLIfNeeded already in progress, skipping")
+                return
+            }
+
+            // The attempt hung mid-flight (e.g. the app was suspended while it refreshed network
+            // information during a background launch). Cancel it so it can't apply a stale result
+            // later, and start over -- otherwise the web view stays blank until the app is killed.
+            Current.Log.error("loadActiveURLIfNeeded in progress since \(startDate), assuming hung and restarting")
+            inFlightTask.cancel()
+            loadActiveURLTask = nil
+            loadActiveURLTaskStartDate = nil
+            previousAttemptHung = true
+        }
+
+        guard !isAppInBackground() else {
+            // Loading would bail anyway, and starting async work while backgrounded risks hanging
+            // mid-flight on suspension; didBecomeActive triggers another call once loading can work.
+            Current.Log.info("not loading, in background")
             return
         }
 
-        loadActiveURLIfNeededInProgress = true
-        Current.Log.info("loadActiveURLIfNeeded called")
+        // The async path hung once already, so don't depend on it recovering: if the web view is
+        // still empty, load the last-known URL synchronously right away -- a possibly stale URL
+        // beats a blank screen -- and let the fresh attempt below correct it if the network changed.
+        if previousAttemptHung, webView.url == nil,
+           let fallbackURL = server.webviewURLUsingLastKnownNetworkState() {
+            Current.Log.info("loading fallback URL after hung attempt")
+            load(request: URLRequest(url: fallbackURL))
+        }
 
-        Task { [weak self] in
+        Current.Log.info("loadActiveURLIfNeeded called")
+        loadActiveURLTaskStartDate = Current.date()
+        loadActiveURLTask = Task { [weak self] in
             defer {
-                self?.loadActiveURLIfNeededInProgress = false
+                // A cancelled attempt has already been replaced; it must not clear its replacement.
+                if !Task.isCancelled {
+                    self?.loadActiveURLTask = nil
+                    self?.loadActiveURLTaskStartDate = nil
+                }
             }
 
             guard let self else { return }
             // `webviewURL()` refreshes the network information (e.g. current SSID) before
             // evaluating which URL is active.
             guard let webviewURL = await server.webviewURL() else {
+                guard !Task.isCancelled else { return }
                 Current.Log.info("not loading, no url")
                 showNoActiveURLError()
                 return
             }
+
+            guard !Task.isCancelled else { return }
 
             hideNoActiveURLError()
 
@@ -87,13 +127,10 @@ extension WebViewController {
                 return
             }
 
-            guard UIApplication.shared.applicationState != .background else {
-                Current.Log.info("not loading, in background")
-                return
-            }
-
             // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-            await load(request: URLRequest(url: resolvedLoadURL(for: webviewURL)))
+            let request = URLRequest(url: await resolvedLoadURL(for: webviewURL))
+            guard !Task.isCancelled else { return }
+            load(request: request)
         }
     }
 

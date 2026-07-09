@@ -25,6 +25,19 @@ extension Server {
         await webviewURLComponents()?.url
     }
 
+    /// Like `webviewURL()`, but evaluated synchronously against the last-known network state.
+    ///
+    /// Only for fallback paths that cannot await (e.g. recovering after an async load attempt
+    /// hung): the network information may be stale, so prefer `webviewURL()` everywhere else.
+    func webviewURLUsingLastKnownNetworkState() -> URL? {
+        guard let activeURL = activeURLUsingLastKnownNetworkState(),
+              var components = URLComponents(url: activeURL, resolvingAgainstBaseURL: true) else {
+            return nil
+        }
+        components.queryItems = [URLQueryItem(name: "external_auth", value: "1")]
+        return components.url
+    }
+
     func webviewURL(from raw: String) async -> URL? {
         guard let baseURLComponents = await webviewURLComponents(), let baseURL = baseURLComponents.url else {
             return nil

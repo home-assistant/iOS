@@ -92,6 +92,36 @@ class ConnectivityWrapperTests: XCTestCase {
         XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "cached-ssid")
     }
 
+    func testFetchThatNeverCompletesTimesOutToLastKnownState() async {
+        Current.connectivity.updateLastKnownNetworkState(NetworkState(ssid: "cached-ssid"))
+        Current.connectivity.networkFetchTimeout = 0.1
+        Current.connectivity.performNetworkStateFetch = {
+            // Simulates NEHotspotNetwork never calling back (seen during background launches).
+            try? await Task.sleep(nanoseconds: 60 * 1_000_000_000)
+            return NetworkState(ssid: "should-not-be-used")
+        }
+
+        let state = await Current.connectivity.fetchNetworkState()
+
+        XCTAssertEqual(state.ssid, "cached-ssid")
+    }
+
+    func testFetchCompletingAfterTimeoutDoesNotOverrideLastKnownState() async throws {
+        Current.connectivity.updateLastKnownNetworkState(NetworkState(ssid: "cached-ssid"))
+        Current.connectivity.networkFetchTimeout = 0.1
+        Current.connectivity.performNetworkStateFetch = {
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            return NetworkState(ssid: "late-ssid")
+        }
+
+        let state = await Current.connectivity.fetchNetworkState()
+        XCTAssertEqual(state.ssid, "cached-ssid")
+
+        // The fetch that lost the race must be dropped entirely, not applied after the fact.
+        try await Task.sleep(nanoseconds: 1_000_000_000)
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "cached-ssid")
+    }
+
     func testFetchThatCompletesUpdatesLastKnownState() async {
         Current.connectivity.updateLastKnownNetworkState(NetworkState(ssid: "stale-ssid"))
         Current.connectivity.networkFetchTimeout = 5
