@@ -92,8 +92,6 @@ private extension Identifier where ObjectType == Server {
 
 private struct ServerCache {
     var restrictCaching: Bool = false
-    var deletedServersLoaded = false
-    var deletedServers: Set<Identifier<Server>> = []
     var info: [Identifier<Server>: ServerInfo] = [:]
     var server: [Identifier<Server>: Server] = [:]
     var all: [Server]?
@@ -137,26 +135,12 @@ final class ServerManagerImpl: ServerManager {
     private let cache = HAProtected<ServerCache>(value: .init())
 
     private var deletedServers: Set<Identifier<Server>> {
-        hydrateDeletedServersIfNeeded()
-        return cache.read(\.deletedServers)
-    }
-
-    private func loadPersistedDeletedServers() -> Set<Identifier<Server>> {
-        let identifiers = Current.settingsStore.prefs.array(forKey: "deletedServers") as? [String] ?? []
-        return Set(identifiers.map { Identifier<Server>(rawValue: $0) })
-    }
-
-    private func persist(deletedServers: Set<Identifier<Server>>) {
-        Current.settingsStore.prefs.set(deletedServers.map(\.rawValue), forKey: "deletedServers")
-    }
-
-    private func hydrateDeletedServersIfNeeded() {
-        guard !cache.read(\.deletedServersLoaded) else { return }
-        let persisted = loadPersistedDeletedServers()
-        cache.mutate { cache in
-            guard !cache.deletedServersLoaded else { return }
-            cache.deletedServers = persisted
-            cache.deletedServersLoaded = true
+        get {
+            let identifiers = Current.settingsStore.prefs.array(forKey: "deletedServers") as? [String] ?? []
+            return Set(identifiers.map { Identifier<Server>(rawValue: $0) })
+        }
+        set {
+            Current.settingsStore.prefs.set(newValue.map(\.rawValue), forKey: "deletedServers")
         }
     }
 
@@ -198,11 +182,10 @@ final class ServerManagerImpl: ServerManager {
     }
 
     public var all: [Server] {
-        hydrateDeletedServersIfNeeded()
+        let deletedServers = deletedServers
         let snapshot = cache.read { cache in
             (
                 restrictCaching: cache.restrictCaching,
-                deletedServers: cache.deletedServers,
                 cachedServers: cache.all
             )
         }
@@ -213,17 +196,18 @@ final class ServerManagerImpl: ServerManager {
 
         // Read from Keychain and GRDB outside the cache lock so persistence I/O
         // does not block unrelated server-manager operations.
-        let persistedServers = mergedServerInfo(deletedServers: snapshot.deletedServers)
+        let persistedServers = mergedServerInfo(deletedServers: deletedServers)
             .sorted(by: { lhs, rhs -> Bool in
                 lhs.1.sortOrder < rhs.1.sortOrder
             })
 
+        let deletedServersUnchanged = self.deletedServers == deletedServers
         if let cachedOrFreshServers = cache.mutate(using: { cache -> [Server]? in
             if !cache.restrictCaching, let cachedServers = cache.all {
                 return cachedServers
             }
 
-            guard cache.deletedServers == snapshot.deletedServers else {
+            guard deletedServersUnchanged else {
                 return nil
             }
 
@@ -238,7 +222,7 @@ final class ServerManagerImpl: ServerManager {
 
         // Avoid retrying forever when another thread keeps mutating the server set.
         // In that case we return a best-effort fresh view and let a later access cache it.
-        let latestDeletedServers = cache.read(\.deletedServers)
+        let latestDeletedServers = self.deletedServers
         let latestPersistedServers = mergedServerInfo(deletedServers: latestDeletedServers)
             .sorted(by: { lhs, rhs -> Bool in
                 lhs.1.sortOrder < rhs.1.sortOrder
@@ -269,17 +253,18 @@ final class ServerManagerImpl: ServerManager {
             }
         }
 
-        hydrateDeletedServersIfNeeded()
-        let (result, deletedServers) = cache.mutate { cache -> (Server, Set<Identifier<Server>>) in
-            cache.deletedServers.remove(identifier)
+        var deletedServers = deletedServers
+        if deletedServers.remove(identifier) != nil {
+            self.deletedServers = deletedServers
+        }
+
+        let result = cache.mutate { cache -> Server in
             keychain.set(serverInfo: setValue, key: identifier.keychainKey, encoder: encoder)
             cache.info[identifier] = setValue
             cache.all = nil
 
-            let server = server(key: identifier.keychainKey, value: setValue, currentCache: &cache)
-            return (server, cache.deletedServers)
+            return server(key: identifier.keychainKey, value: setValue, currentCache: &cache)
         }
-        persist(deletedServers: deletedServers)
 
         mirrorStore.set(setValue, key: identifier.keychainKey)
         var restoredMirroredServers = restoredMirroredServers
@@ -293,14 +278,14 @@ final class ServerManagerImpl: ServerManager {
     }
 
     public func remove(identifier: Identifier<Server>) {
-        hydrateDeletedServersIfNeeded()
-        let deletedServers = cache.mutate { cache -> Set<Identifier<Server>> in
-            cache.deletedServers.insert(identifier)
+        var deletedServers = deletedServers
+        deletedServers.insert(identifier)
+        self.deletedServers = deletedServers
+
+        cache.mutate { cache in
             keychain.deleteServerInfo(key: identifier.keychainKey)
             cache.remove(identifier: identifier)
-            return cache.deletedServers
         }
-        persist(deletedServers: deletedServers)
 
         mirrorStore.remove(identifier.keychainKey)
         var restoredMirroredServers = restoredMirroredServers
@@ -313,14 +298,14 @@ final class ServerManagerImpl: ServerManager {
 
     public func removeAll() {
         let allKeys = Set(keychain.allKeys() + mirrorStore.allKeys())
-        hydrateDeletedServersIfNeeded()
-        let deletedServers = cache.mutate { cache -> Set<Identifier<Server>> in
-            cache.deletedServers.formUnion(Set(allKeys.map { Identifier<Server>(keychainKey: $0) }))
+        var deletedServers = deletedServers
+        deletedServers.formUnion(Set(allKeys.map { Identifier<Server>(keychainKey: $0) }))
+        self.deletedServers = deletedServers
+
+        cache.mutate { cache in
             cache.reset()
             _ = try? keychain.removeAll()
-            return cache.deletedServers
         }
-        persist(deletedServers: deletedServers)
 
         mirrorStore.removeAll()
         restoredMirroredServers = []
@@ -356,7 +341,7 @@ final class ServerManagerImpl: ServerManager {
                 return cached
             }
 
-            self.hydrateDeletedServersIfNeeded()
+            let deletedServers = self.deletedServers
             return cache.mutate { cache -> ServerInfo in
                 if !cache.restrictCaching, let info = cache.info[identifier] {
                     return info
@@ -370,7 +355,7 @@ final class ServerManagerImpl: ServerManager {
                     let info = keychainInfo
                         ?? (shouldUseMirrorFallback ? mirroredInfo : nil)
                         ?? fallback
-                    if !cache.deletedServers.contains(identifier) {
+                    if !deletedServers.contains(identifier) {
                         cache.info[identifier] = info
                     }
                     return info
@@ -393,9 +378,9 @@ final class ServerManagerImpl: ServerManager {
             // intentionally not in the lock
             _ = serverInfo.connection.evaluateActiveURL()
 
-            self?.hydrateDeletedServersIfNeeded()
+            let deletedServers = self?.deletedServers ?? []
             return cache.mutate { cache in
-                guard !cache.deletedServers.contains(identifier) else {
+                guard !deletedServers.contains(identifier) else {
                     Current.Log.verbose("ignoring update to deleted server \(identifier)")
                     return false
                 }
