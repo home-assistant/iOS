@@ -113,7 +113,7 @@ public class ConnectivityWrapper {
                 continuation.resume(returning: value)
             }
 
-            Task { resume(await fetch()) }
+            Task { await resume(fetch()) }
             Task {
                 try? await Task.sleep(nanoseconds: UInt64(timeout * Double(NSEC_PER_SEC)))
                 resume(nil)
