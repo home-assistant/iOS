@@ -3,22 +3,15 @@ import Shared
 
 extension Server {
     func webviewURLComponents() async -> URLComponents? {
-        if Current.appConfiguration == .fastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
-            return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
+        if let demoComponents = demoModeURLComponents() {
+            return demoComponents
         }
         guard let activeURL = await activeURL() else {
             Current.Log.error("No activeURL available while webviewURLComponents was called")
             return nil
         }
 
-        guard var components = URLComponents(url: activeURL, resolvingAgainstBaseURL: true) else {
-            return nil
-        }
-
-        let queryItem = URLQueryItem(name: "external_auth", value: "1")
-        components.queryItems = [queryItem]
-
-        return components
+        return webviewURLComponents(for: activeURL)
     }
 
     func webviewURL() async -> URL? {
@@ -30,12 +23,28 @@ extension Server {
     /// Only for fallback paths that cannot await (e.g. recovering after an async load attempt
     /// hung): the network information may be stale, so prefer `webviewURL()` everywhere else.
     func webviewURLUsingLastKnownNetworkState() -> URL? {
-        guard let activeURL = activeURLUsingLastKnownNetworkState(),
-              var components = URLComponents(url: activeURL, resolvingAgainstBaseURL: true) else {
+        if let demoComponents = demoModeURLComponents() {
+            return demoComponents.url
+        }
+        guard let activeURL = activeURLUsingLastKnownNetworkState() else {
+            return nil
+        }
+        return webviewURLComponents(for: activeURL)?.url
+    }
+
+    private func demoModeURLComponents() -> URLComponents? {
+        guard Current.appConfiguration == .fastlaneSnapshot, prefs.object(forKey: "useDemo") != nil else {
+            return nil
+        }
+        return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
+    }
+
+    private func webviewURLComponents(for activeURL: URL) -> URLComponents? {
+        guard var components = URLComponents(url: activeURL, resolvingAgainstBaseURL: true) else {
             return nil
         }
         components.queryItems = [URLQueryItem(name: "external_auth", value: "1")]
-        return components.url
+        return components
     }
 
     func webviewURL(from raw: String) async -> URL? {

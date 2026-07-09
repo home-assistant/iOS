@@ -245,6 +245,9 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
     func testLoadActiveURLShowsNoActiveURLOverlayWhenNoURLIsAvailable() async {
         let sut = makeSUT(server: .fake(update: { info in
             info.connection.set(address: nil, for: .external)
+            // Re-evaluate now so the load attempt doesn't change the stored active URL type,
+            // which would fire the server observer and enqueue a stray load into later tests.
+            _ = info.connection.evaluateActiveURL()
         }))
         let overlayState = WebFrontendOverlayState()
         sut.overlayState = overlayState
@@ -329,8 +332,8 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
+        // Setting the view triggers viewDidLoad, which creates the real webView.
         sut.setValue(containerView, forKey: "view")
-        sut.webView = WKWebView(frame: containerView.bounds)
         sut.isAppInBackground = { false }
         return sut
     }

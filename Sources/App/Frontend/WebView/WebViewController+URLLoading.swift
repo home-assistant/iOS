@@ -57,11 +57,22 @@ extension WebViewController {
     }
 
     /// How long an in-flight `loadActiveURLIfNeeded()` attempt may run before a new call treats it
-    /// as hung and replaces it. Attempts normally finish in well under a second; the network-info
-    /// fetch they depend on is itself bounded by `ConnectivityWrapper.networkFetchTimeout`.
-    static let loadActiveURLStaleInterval: TimeInterval = 5
+    /// as hung and replaces it. Attempts normally finish in well under a second; the worst healthy
+    /// case is two sequential network-info fetches (`webviewURL()` plus the kiosk dashboard URL),
+    /// each bounded by `ConnectivityWrapper.networkFetchTimeout` (3s), so 10s means only a truly
+    /// stuck attempt gets replaced.
+    static let loadActiveURLStaleInterval: TimeInterval = 10
 
     @objc func loadActiveURLIfNeeded() {
+        // Checked before the stale handling below so a hung attempt is only ever replaced while
+        // active, when the fallback load and the fresh attempt can both actually run.
+        guard !isAppInBackground() else {
+            // Loading would bail anyway, and starting async work while backgrounded risks hanging
+            // mid-flight on suspension; didBecomeActive triggers another call once loading can work.
+            Current.Log.info("not loading, in background")
+            return
+        }
+
         var previousAttemptHung = false
         if let inFlightTask = loadActiveURLTask {
             let startDate = loadActiveURLTaskStartDate ?? .distantPast
@@ -78,13 +89,6 @@ extension WebViewController {
             loadActiveURLTask = nil
             loadActiveURLTaskStartDate = nil
             previousAttemptHung = true
-        }
-
-        guard !isAppInBackground() else {
-            // Loading would bail anyway, and starting async work while backgrounded risks hanging
-            // mid-flight on suspension; didBecomeActive triggers another call once loading can work.
-            Current.Log.info("not loading, in background")
-            return
         }
 
         // The async path hung once already, so don't depend on it recovering: if the web view is
@@ -129,7 +133,10 @@ extension WebViewController {
 
             // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
             let request = URLRequest(url: await resolvedLoadURL(for: webviewURL))
-            guard !Task.isCancelled else { return }
+            // Re-check the background state too: backgrounding mid-flight could otherwise start a
+            // navigation that stalls on suspension, leaving webView.url pointing at a page that
+            // never loaded (which would defeat the empty-web-view checks above and the fallback).
+            guard !Task.isCancelled, !isAppInBackground() else { return }
             load(request: request)
         }
     }
