@@ -67,6 +67,43 @@ struct EntityContextSubtitleTests {
         )
         #expect(subtitle == "Living Room")
     }
+
+    @Test func areaIsOmittedWhenEntityNameMatchesIt() {
+        // A camera named after its location (entity name == area) would otherwise repeat the area in
+        // its subtitle, so the area segment is dropped and only the entity id fallback remains.
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Front Door",
+            deviceName: nil,
+            entityName: "Front Door",
+            entityId: "camera.front_door",
+            domain: .camera
+        )
+        #expect(subtitle == "camera.front_door")
+    }
+
+    @Test func areaIsOmittedWhenEntityNameContainsItCaseAndDiacriticInsensitive() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "café",
+            deviceName: "Cafe Camera",
+            entityName: "Cafe Camera",
+            entityId: "camera.cafe",
+            domain: .camera
+        )
+        // Area "café" is contained (case/diacritic-insensitively) in the entity name, and the device
+        // repeats the entity name, so both are omitted — leaving only the entity id fallback.
+        #expect(subtitle == "camera.cafe")
+    }
+
+    @Test func areaIsKeptWhenEntityNameDoesNotContainIt() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Living Room",
+            deviceName: nil,
+            entityName: "Front Door",
+            entityId: "camera.front_door",
+            domain: .camera
+        )
+        #expect(subtitle == "Living Room")
+    }
 }
 
 struct AppAreaFloorDisambiguationTests {

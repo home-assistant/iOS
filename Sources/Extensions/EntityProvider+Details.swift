@@ -14,7 +14,8 @@ public enum EntityContextSubtitle {
     ///     configured — it's prepended as the first segment; pass `nil` to omit it (single-server).
     ///   - floorName: The floor the entity's area belongs to. Pass this only when it's needed to
     ///     disambiguate two areas that share the same name; pass `nil` to omit it otherwise.
-    ///   - areaName: The area the entity belongs to, if any.
+    ///   - areaName: The area the entity belongs to, if any. Omitted when the entity name already
+    ///     contains it (e.g. a camera named after its location), to avoid echoing it in the subtitle.
     ///   - deviceName: The device the entity belongs to, if any. Omitted when it merely repeats the entity name.
     ///   - entityName: The entity's resolved display name (used to avoid echoing it as the device name).
     ///   - entityId: The entity id, used as a last-resort context when no other context is available.
@@ -40,7 +41,8 @@ public enum EntityContextSubtitle {
         if let floorName, !floorName.isEmpty {
             parts.append(floorName)
         }
-        if let areaName, !areaName.isEmpty {
+        if let areaName, !areaName.isEmpty,
+           entityName.range(of: areaName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
             parts.append(areaName)
         }
         if let deviceName, !deviceName.isEmpty,
