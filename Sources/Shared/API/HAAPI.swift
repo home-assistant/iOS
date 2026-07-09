@@ -43,6 +43,8 @@ public class HomeAssistantAPI {
     }
 
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
+    public static let serverVersionDidChangeNotification =
+        Notification.Name(rawValue: "HomeAssistantServerVersionDidChange")
 
     public private(set) var manager: Alamofire.Session!
     public static let unauthenticatedManager: Alamofire.Session = configureSessionManager()
@@ -456,15 +458,27 @@ public class HomeAssistantAPI {
         )
 
         return promise.done { [self] config in
+            let previousVersion = server.info.version
+            let fetchedVersion = try? Version(hassVersion: config.Version)
+
             server.update { serverInfo in
                 serverInfo.connection.cloudhookURL = config.CloudhookURL
                 serverInfo.connection.set(address: config.RemoteUIURL, for: .remoteUI)
                 serverInfo.remoteName = config.LocationName ?? ServerInfo.defaultName
                 serverInfo.hassDeviceId = config.hassDeviceId
 
-                if let version = try? Version(hassVersion: config.Version) {
-                    serverInfo.version = version
+                if let fetchedVersion {
+                    serverInfo.version = fetchedVersion
                 }
+            }
+
+            if let fetchedVersion, fetchedVersion != previousVersion {
+                Current.Log
+                    .info("Server \(server.identifier) version changed from \(previousVersion) to \(fetchedVersion)")
+                NotificationCenter.default.post(
+                    name: Self.serverVersionDidChangeNotification,
+                    object: server
+                )
             }
 
             Current.crashReporter.setUserProperty(value: config.Version, name: "HA_Version")

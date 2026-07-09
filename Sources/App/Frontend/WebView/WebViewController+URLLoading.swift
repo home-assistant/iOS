@@ -27,9 +27,29 @@ extension WebViewController {
             object: nil
         )
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(serverVersionDidChange(_:)),
+            name: HomeAssistantAPI.serverVersionDidChangeNotification,
+            object: nil
+        )
+
         tokens.append(server.observe { [weak self] _ in
             self?.connectionInfoDidChange()
         })
+    }
+
+    @objc func serverVersionDidChange(_ notification: Notification) {
+        guard let changedServer = notification.object as? Server,
+              changedServer.identifier == server.identifier else { return }
+
+        Current.Log.info("Resetting frontend cache for \(server.identifier) after server version change")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
+                DispatchQueue.main.async {
+                    self?.reload()
+                }
+            }
     }
 
     @objc func connectionInfoDidChange() {
