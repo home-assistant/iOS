@@ -169,7 +169,7 @@ extension WebViewController {
             didHandleServerErrorResponse = true
             decisionHandler(.cancel)
             latestLoadError = Self.serverErrorLoadError(for: navigationResponse.response.url)
-            connectionState = .disconnected
+            connectionState = Self.connectionStateForInterceptedServerError(current: connectionState)
             showEmptyState()
         }
     }
@@ -311,6 +311,12 @@ extension WebViewController {
             return .allow
         }
         return .showEmptyState
+    }
+
+    static func connectionStateForInterceptedServerError(
+        current: FrontEndConnectionState
+    ) -> FrontEndConnectionState {
+        current == .authInvalid ? .authInvalid : .disconnected
     }
 
     static func serverErrorLoadError(for url: URL?) -> URLError {
