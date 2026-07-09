@@ -1850,7 +1850,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.home.sync.waiting" = "Waiting for iPhone…";
 "watch.sync.starting" = "Starting sync…";
 "watch.sync.progress" = "%1$d/%2$d";
-"watch.sync.error.unreachable" = "Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.";
+"watch.sync.error.connection_failed" = "We couldn't connect to your iPhone. Open the Home Assistant app on your iPhone, then tap the reload button here on your Watch.";
 "watch.sync.error.generic" = "Sync failed. Please try again.";
 "watch.sync.error.data" = "Received incomplete data from iPhone. Please try again.";
 "watch.sync.retry" = "Try Again";

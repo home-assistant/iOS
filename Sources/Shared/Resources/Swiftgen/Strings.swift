@@ -6295,12 +6295,12 @@ public enum L10n {
       /// Starting sync…
       public static var starting: String { return L10n.tr("Localizable", "watch.sync.starting") }
       public enum Error {
+        /// We couldn't connect to your iPhone. Open the Home Assistant app on your iPhone, then tap the reload button here on your Watch.
+        public static var connectionFailed: String { return L10n.tr("Localizable", "watch.sync.error.connection_failed") }
         /// Received incomplete data from iPhone. Please try again.
         public static var data: String { return L10n.tr("Localizable", "watch.sync.error.data") }
         /// Sync failed. Please try again.
         public static var generic: String { return L10n.tr("Localizable", "watch.sync.error.generic") }
-        /// Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.
-        public static var unreachable: String { return L10n.tr("Localizable", "watch.sync.error.unreachable") }
       }
     }
   }

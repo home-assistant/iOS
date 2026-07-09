@@ -43,6 +43,13 @@ final class WatchHomeViewModel: ObservableObject {
     private var lastStatusChangeAt: Date?
     private var pendingStatusWork: DispatchWorkItem?
 
+    /// Minimum time the sync error banner stays on screen once shown. A failed sync immediately reloads
+    /// the local cache, whose completion would otherwise clear the banner within a fraction of a second —
+    /// too fast to read. Keep it up long enough to be legible.
+    private static let minErrorDisplay: TimeInterval = 3
+    private var errorShownAt: Date?
+    private var pendingErrorClearWork: DispatchWorkItem?
+
     /// Set the status text, but never faster than `minStatusDisplay`; rapid updates coalesce to the
     /// latest value once the minimum on-screen time for the previous one has elapsed. Must be called on
     /// the main thread (all call sites are).
@@ -304,7 +311,7 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func startDatabaseSync() {
         guard Communicator.shared.currentReachability == .immediatelyReachable else {
-            failSync(L10n.Watch.Sync.Error.unreachable)
+            failSync(L10n.Watch.Sync.Error.connectionFailed)
             return
         }
         resetSyncState()
@@ -316,7 +323,7 @@ final class WatchHomeViewModel: ObservableObject {
         ), errorHandler: { [weak self] error in
             Task { @MainActor in
                 Current.Log.error("Database sync start failed: \(error.localizedDescription)")
-                self?.failSync(L10n.Watch.Sync.Error.unreachable)
+                self?.failSync(L10n.Watch.Sync.Error.connectionFailed)
             }
         })
     }
@@ -407,8 +414,7 @@ final class WatchHomeViewModel: ObservableObject {
             text: "Apple Watch database sync failed: \(friendlyMessage)",
             type: .database
         ))
-        errorMessage = friendlyMessage
-        showError = true
+        presentError(friendlyMessage)
         updateLoading(isLoading: false)
         // Never leave the user with nothing: show whatever is cached locally.
         loadCache()
@@ -424,8 +430,57 @@ final class WatchHomeViewModel: ObservableObject {
 
     @MainActor
     private func clearError() {
+        // A brand-new sync attempt supersedes any previous error, so drop it right away.
+        pendingErrorClearWork?.cancel()
+        pendingErrorClearWork = nil
         errorMessage = ""
         showError = false
+        errorShownAt = nil
+    }
+
+    /// Show the sync error banner, cancelling any pending auto-dismiss and stamping when it appeared.
+    /// Must be called on the main thread (all call sites are).
+    private func presentError(_ message: String) {
+        pendingErrorClearWork?.cancel()
+        pendingErrorClearWork = nil
+        errorMessage = message
+        showError = true
+        errorShownAt = Current.date()
+    }
+
+    /// Hide the sync error banner, but never before it has been on screen for `minErrorDisplay`, so the
+    /// cache reload that follows a failed sync can't blink the message away before it can be read.
+    /// Must be called on the main thread (all call sites are).
+    private func dismissError() {
+        guard showError else {
+            pendingErrorClearWork?.cancel()
+            pendingErrorClearWork = nil
+            errorMessage = ""
+            errorShownAt = nil
+            return
+        }
+
+        let elapsed = errorShownAt.map { Current.date().timeIntervalSince($0) } ?? .greatestFiniteMagnitude
+        if elapsed >= Self.minErrorDisplay {
+            pendingErrorClearWork?.cancel()
+            pendingErrorClearWork = nil
+            errorMessage = ""
+            showError = false
+            errorShownAt = nil
+            return
+        }
+
+        // Keep it up for the remainder of the minimum display window, coalescing repeated requests.
+        pendingErrorClearWork?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            errorMessage = ""
+            showError = false
+            errorShownAt = nil
+            pendingErrorClearWork = nil
+        }
+        pendingErrorClearWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + (Self.minErrorDisplay - elapsed), execute: work)
     }
 
     /// Render the home screen straight from the local GRDB — the config table plus names/icons/context
@@ -495,15 +550,13 @@ final class WatchHomeViewModel: ObservableObject {
 
     private func displayError(message: String) {
         DispatchQueue.main.async { [weak self] in
-            self?.errorMessage = message
-            self?.showError = true
+            self?.presentError(message)
         }
     }
 
     private func resetError() {
         DispatchQueue.main.async { [weak self] in
-            self?.errorMessage = ""
-            self?.showError = false
+            self?.dismissError()
         }
     }
 }
