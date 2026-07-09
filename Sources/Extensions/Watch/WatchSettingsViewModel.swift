@@ -23,6 +23,35 @@ final class WatchSettingsViewModel: ObservableObject {
         }
     }
 
+    /// Wipe all data stored locally on this Watch: the offline GRDB database (mirrored servers,
+    /// entities, watch config, etc.) and the cached magic-items JSON. The iPhone and servers are
+    /// untouched; a refresh from the Home screen re-syncs everything. Returns `false` if anything
+    /// failed so the UI can surface an error.
+    @discardableResult
+    func deleteLocalData() -> Bool {
+        var success = true
+
+        do {
+            try Current.database().eraseAllData()
+        } catch {
+            Current.Log.error("Failed to erase watch local database: \(error.localizedDescription)")
+            success = false
+        }
+
+        let cacheURL = AppConstants.watchMagicItemsInfo
+        if FileManager.default.fileExists(atPath: cacheURL.path) {
+            do {
+                try FileManager.default.removeItem(at: cacheURL)
+            } catch {
+                Current.Log.error("Failed to delete watch cached JSON: \(error.localizedDescription)")
+                success = false
+            }
+        }
+
+        reload()
+        return success
+    }
+
     private static func assistPipelineTitle() -> String {
         guard let config = try? WatchConfig.config(),
               config.assist.showAssist,

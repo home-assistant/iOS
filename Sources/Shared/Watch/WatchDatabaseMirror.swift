@@ -8,10 +8,10 @@ import GRDB
 /// runs locally on the watch to list addable items, resolve names/icons and the area context — all
 /// without the phone nearby.
 ///
-/// Only what the add flow needs is included, to keep the payload small enough for an interactive
-/// WatchConnectivity reply: scripts/scenes/automations (stored as entities), areas (for the context
-/// line), and Assist pipelines. Device / entity-registry tables are intentionally omitted — they're
-/// large and device context is rarely set for scripts/scenes.
+/// Only what the add flow needs is included: scripts/scenes/automations (stored as entities), areas
+/// (for the context line), and Assist pipelines. Device / entity-registry tables are intentionally
+/// omitted — they're large and device context is rarely set for scripts/scenes. Even so, this snapshot
+/// can exceed WatchConnectivity's per-message limit, so it is streamed as chunked guaranteed messages.
 public struct WatchDatabaseMirror: WatchCodable {
     public var entities: [HAAppEntity]
     public var areas: [AppArea]

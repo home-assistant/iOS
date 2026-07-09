@@ -180,31 +180,19 @@ final class WatchConfigAssistViewModel: ObservableObject {
 
         guard message.identifier == InteractiveImmediateResponses.watchConfigResponse.rawValue,
               let configData = message.content["config"] as? Data,
-              let config = WatchConfig.decodeForWatch(configData),
-              let magicItemsInfoData = message.content["magicItemsInfo"] as? [Data] else {
+              let config = WatchConfig.decodeForWatch(configData) else {
             Current.Log.error("Failed to decode assist config save response on watch")
             // The local copy is already saved; it'll sync on the next reload.
             completion(true)
             return
         }
 
-        let magicItemsInfo = magicItemsInfoData.compactMap { MagicItem.Info.decodeForWatch($0) }
-
         persistLocally(config)
-        saveItemsInfoInCache(magicItemsInfo)
-        // The phone accepted our push, so this is now the synced baseline.
+        // The phone accepted our push, so this is now the synced baseline. Item info is resolved from
+        // GRDB when the home screen loads — no JSON cache to keep in sync.
         WatchUserDefaults.shared.lastSyncedModified = config.lastModified
         WatchUserDefaults.shared.assistPipelineName = selectedPipelineName
         NotificationCenter.default.post(name: .watchConfigDidChange, object: nil)
         completion(true)
-    }
-
-    private func saveItemsInfoInCache(_ itemsInfo: [MagicItem.Info]) {
-        do {
-            let jsonData = try JSONEncoder().encode(itemsInfo)
-            try jsonData.write(to: AppConstants.watchMagicItemsInfo)
-        } catch {
-            Current.Log.error("Error saving JSON for magic items info: \(error)")
-        }
     }
 }

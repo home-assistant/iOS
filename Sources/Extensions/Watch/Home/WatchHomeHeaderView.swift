@@ -13,6 +13,8 @@ struct WatchHomeHeaderView: View {
     private enum Constants {
         static let headerButtonSize: CGFloat = 24
         static let headerCenterSpacer: CGFloat = DesignSystem.Spaces.one
+        /// Keeps the sync progress bar + status text compact so they don't crowd the header buttons.
+        static let loadingBarWidth: CGFloat = 70
     }
 
     var body: some View {
@@ -68,9 +70,27 @@ struct WatchHomeHeaderView: View {
     private var toolbarLoadingState: some View {
         HStack {
             if viewModel.isLoading {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .circularGlassOrLegacyBackground()
+                VStack(spacing: DesignSystem.Spaces.half) {
+                    Group {
+                        if let progress = viewModel.syncProgress {
+                            ProgressView(value: progress)
+                        } else {
+                            ProgressView()
+                        }
+                    }
+                    .progressViewStyle(.linear)
+                    .tint(.haPrimary)
+                    .frame(width: Constants.loadingBarWidth)
+                    if let status = viewModel.loadingStatus {
+                        Text(verbatim: status)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                            .truncationMode(.tail)
+                            .frame(maxWidth: Constants.loadingBarWidth)
+                    }
+                }
             } else {
                 Image(uiImage: Asset.logo.image)
                     .resizable()
