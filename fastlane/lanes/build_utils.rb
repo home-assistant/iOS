@@ -23,7 +23,7 @@ private_lane :upload_binary_to_apple do |options|
 
     if output.include?('90382') || output.include?('Upload limit reached')
       report_upload_limit_reached(type: options[:type])
-      UI.user_error!('App Store upload limit reached (error 90382). See the job summary for details.')
+      UI.user_error!('Apple upload limit reached (error 90382). See the job summary for details.')
     end
 
     attempts += 1
