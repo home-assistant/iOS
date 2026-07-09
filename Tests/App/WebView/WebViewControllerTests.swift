@@ -332,8 +332,10 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
-        // Setting the view triggers viewDidLoad, which creates the real webView.
+        // KVC-setting the view bypasses loadView/viewDidLoad, so the webView the URL-loading
+        // paths dereference must be provided explicitly.
         sut.setValue(containerView, forKey: "view")
+        sut.webView = WKWebView(frame: containerView.bounds)
         sut.isAppInBackground = { false }
         return sut
     }
