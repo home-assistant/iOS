@@ -76,8 +76,9 @@ extension WebViewController: WebViewControllerProtocol {
         case .authInvalid:
             showEmptyState()
         case .disconnected, .unknown:
-            // Start a 10-second timer. If not interrupted by a 'connected' state, set alpha to 1.
-            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
+            // Start a timer. If not interrupted by a 'connected' state, show the empty state.
+            let timeout = TimeInterval(Current.settingsStore.webViewEmptyStateTimeout)
+            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
                 self?.showEmptyState()
             }
         }
