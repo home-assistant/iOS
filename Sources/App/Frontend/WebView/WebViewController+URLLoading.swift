@@ -46,9 +46,7 @@ extension WebViewController {
         Current.Log.info("Resetting frontend cache for \(server.identifier) after server version change")
         Current.websiteDataStoreHandler
             .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
-                DispatchQueue.main.async {
-                    self?.reload()
-                }
+                self?.reload()
             }
     }
 

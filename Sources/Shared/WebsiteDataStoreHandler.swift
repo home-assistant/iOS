@@ -18,7 +18,12 @@ final class WebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
             modifiedSince: Date(timeIntervalSince1970: 0),
             completionHandler: {
                 Current.Log.verbose("Cleaned browser cache for data types: \(dataTypes)")
-                completion?()
+                guard let completion else { return }
+                if Thread.isMainThread {
+                    completion()
+                } else {
+                    DispatchQueue.main.async(execute: completion)
+                }
             }
         )
     }

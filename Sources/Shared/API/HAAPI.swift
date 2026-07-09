@@ -475,10 +475,13 @@ public class HomeAssistantAPI {
             if let fetchedVersion, fetchedVersion != previousVersion {
                 Current.Log
                     .info("Server \(server.identifier) version changed from \(previousVersion) to \(fetchedVersion)")
-                NotificationCenter.default.post(
-                    name: Self.serverVersionDidChangeNotification,
-                    object: server
-                )
+                let changedServer = server
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: Self.serverVersionDidChangeNotification,
+                        object: changedServer
+                    )
+                }
             }
 
             Current.crashReporter.setUserProperty(value: config.Version, name: "HA_Version")
