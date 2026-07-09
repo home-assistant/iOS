@@ -55,49 +55,49 @@ public class AuthenticationAPI {
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
         Promise { seal in
-            Task { [self] in
-                guard let activeUrl = await server.activeURL() else {
-                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
-                    return
-                }
-                let token = tokenInfo.refreshToken
-                let routeInfo = RouteInfo(
-                    route: AuthenticationRoute.refreshToken(token: token),
-                    baseURL: activeUrl
-                )
-                let request = session.request(routeInfo)
-
-                let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
-                request.validateAuth()
-                    .responseObject(context: context) { (response: DataResponse<TokenInfo, AFError>) in
-                        switch response.result {
-                        case let .failure(error):
-                            seal.reject(error)
-                        case let .success(value):
-                            seal.fulfill(value)
-                        }
-                    }
+            // Like HAKit's connectionInfo closure, evaluate against cached network information:
+            // websocket auth waits on token refresh, so this must stay off the async network-info
+            // path, which can hang mid-flight (the cache is refreshed on connectivity changes).
+            guard let activeUrl = server.activeURLUsingLastKnownNetworkState() else {
+                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                return
             }
+            let token = tokenInfo.refreshToken
+            let routeInfo = RouteInfo(
+                route: AuthenticationRoute.refreshToken(token: token),
+                baseURL: activeUrl
+            )
+            let request = session.request(routeInfo)
+
+            let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
+            request.validateAuth()
+                .responseObject(context: context) { (response: DataResponse<TokenInfo, AFError>) in
+                    switch response.result {
+                    case let .failure(error):
+                        seal.reject(error)
+                    case let .success(value):
+                        seal.fulfill(value)
+                    }
+                }
         }
     }
 
     public func revokeToken(tokenInfo: TokenInfo) -> Promise<Bool> {
         Promise { seal in
-            Task { [self] in
-                guard let activeUrl = await server.activeURL() else {
-                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
-                    return
-                }
-                let token = tokenInfo.accessToken
-                let routeInfo = RouteInfo(
-                    route: AuthenticationRoute.revokeToken(token: token),
-                    baseURL: activeUrl
-                )
-                let request = session.request(routeInfo)
+            // Evaluated against cached network information for the same reason as refreshTokenWith.
+            guard let activeUrl = server.activeURLUsingLastKnownNetworkState() else {
+                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                return
+            }
+            let token = tokenInfo.accessToken
+            let routeInfo = RouteInfo(
+                route: AuthenticationRoute.revokeToken(token: token),
+                baseURL: activeUrl
+            )
+            let request = session.request(routeInfo)
 
-                request.validateAuth().response { _ in
-                    seal.fulfill(true)
-                }
+            request.validateAuth().response { _ in
+                seal.fulfill(true)
             }
         }
     }

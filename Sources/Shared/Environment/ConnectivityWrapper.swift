@@ -114,8 +114,10 @@ public class ConnectivityWrapper {
             }
 
             Task { await resume(fetch()) }
-            Task {
-                try? await Task.sleep(nanoseconds: UInt64(timeout * Double(NSEC_PER_SEC)))
+            // The timeout must run on GCD, not on a `Task`: the scenario it guards against is the
+            // fetch hanging because Swift concurrency's shared thread pool is starved (seen during
+            // background launches), and a `Task.sleep`-based timeout would be starved with it.
+            DispatchQueue.global().asyncAfter(deadline: .now() + timeout) {
                 resume(nil)
             }
         }
@@ -241,6 +243,13 @@ public class ConnectivityWrapper {
     #endif
 
     private func observeConnectivityChanges() {
+        // Touch the lazy closures while init is still single-threaded: `lazy var` initialization
+        // is not thread-safe, and at app launch these are first hit concurrently from many tasks.
+        _ = currentNetworkState
+        _ = refreshNetworkInformation
+        _ = lastKnownNetworkState
+        _ = performNetworkStateFetch
+
         // Prime the last-known network state so synchronous consumers have a value early.
         Task { [weak self] in
             await self?.refreshNetworkInformation()
