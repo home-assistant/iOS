@@ -121,10 +121,54 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.connectionState, .authInvalid)
     }
 
-    private func makeSUT() -> WebViewController {
-        let sut = WebViewController(server: .fake())
+    func testServerVersionDidChangeClearsFrontendAssetCacheForMatchingServer() {
+        let original = Current.websiteDataStoreHandler
+        defer { Current.websiteDataStoreHandler = original }
+        let handler = FakeWebsiteDataStoreHandler()
+        Current.websiteDataStoreHandler = handler
+
+        let server = Server.fake()
+        let sut = makeSUT(server: server)
+
+        sut.serverVersionDidChange(Notification(
+            name: HomeAssistantAPI.serverVersionDidChangeNotification,
+            object: server
+        ))
+
+        XCTAssertEqual(handler.cleanCacheCallCount, 1)
+        XCTAssertEqual(handler.lastDataTypes, WebsiteDataStoreHandlerImpl.frontendAssetDataTypes)
+    }
+
+    func testServerVersionDidChangeIgnoresChangesForOtherServers() {
+        let original = Current.websiteDataStoreHandler
+        defer { Current.websiteDataStoreHandler = original }
+        let handler = FakeWebsiteDataStoreHandler()
+        Current.websiteDataStoreHandler = handler
+
+        let sut = makeSUT(server: .fake())
+
+        sut.serverVersionDidChange(Notification(
+            name: HomeAssistantAPI.serverVersionDidChangeNotification,
+            object: Server.fake()
+        ))
+
+        XCTAssertEqual(handler.cleanCacheCallCount, 0)
+    }
+
+    private func makeSUT(server: Server = .fake()) -> WebViewController {
+        let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
         sut.setValue(containerView, forKey: "view")
         return sut
+    }
+}
+
+private final class FakeWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
+    private(set) var cleanCacheCallCount = 0
+    private(set) var lastDataTypes: Set<String>?
+
+    func cleanCache(dataTypes: Set<String>, completion: (() -> Void)?) {
+        cleanCacheCallCount += 1
+        lastDataTypes = dataTypes
     }
 }
