@@ -815,6 +815,14 @@ public enum L10n {
       /// Tap to open camera
       public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
     }
+    public enum Talkback {
+      /// Microphone access is required for two-way audio. Enable it in Settings.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_player.talkback.microphone_denied") }
+      /// Start talking
+      public static var start: String { return L10n.tr("Localizable", "camera_player.talkback.start") }
+      /// Stop talking
+      public static var stop: String { return L10n.tr("Localizable", "camera_player.talkback.stop") }
+    }
   }
 
   public enum Cameras {
