@@ -1617,6 +1617,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.configuration.add_item.title" = "Add item";
 "watch.configuration.folder.default_name" = "Folder";
 "watch.configuration.folder_name.title" = "Folder Name";
+"watch.configuration.header.subtitle" = "Customize the items, folders and layout shown on your Apple Watch.";
+"watch.configuration.header.title" = "Apple Watch";
 "watch.configuration.items.title" = "Items";
 "watch.configuration.layout.footer" = "Grid layout only displays icons.";
 "watch.configuration.layout.title" = "Layout";
