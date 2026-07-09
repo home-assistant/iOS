@@ -23,7 +23,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
     @State private var isVideoPlaying: Bool = false
     var controlsVisible: Binding<Bool>
     var showLoader: Binding<Bool>
-    @State var hideControlsWorkItem: DispatchWorkItem?
 
     private let server: Server
     private let cameraEntityId: String
@@ -44,7 +43,11 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         self.onWebRTCUnsupported = onWebRTCUnsupported
         self.controlsVisible = controlsVisible
         self.showLoader = showLoader
-        self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(server: server, cameraEntityId: cameraEntityId))
+        self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(
+            server: server,
+            cameraEntityId: cameraEntityId,
+            supportsTalkback: true
+        ))
     }
 
     var body: some View {
@@ -68,18 +71,33 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                 )
             }
             .background(.black)
-            .onAppear {
-                showControlsTemporarily()
-            }
-            .onDisappear {
-                hideControlsWorkItem?.cancel()
-                hideControlsWorkItem = nil
+            .overlay {
+                // Fade shade behind the bottom controls so the talkback (mic) button keeps contrast
+                // against a bright camera image. Only shown when the mic button is present. The
+                // container ignores the safe area so the shade extends under the mic button/home
+                // indicator rather than stopping above it.
+                if controlsVisible.wrappedValue, viewModel.isTalkbackSupported {
+                    VStack(spacing: 0) {
+                        Spacer(minLength: 0)
+                        LinearGradient(
+                            colors: [.clear, .black.opacity(0.6)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 180)
+                    }
+                    .allowsHitTesting(false)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                }
             }
             .simultaneousGesture(
                 dragGesture(geometry: geometry)
             )
             .onTapGesture {
-                showControlsTemporarily()
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    controlsVisible.wrappedValue.toggle()
+                }
             }
             .onChange(of: viewModel.isWebRTCUnsupported) { isUnsupported in
                 if isUnsupported {
@@ -91,6 +109,40 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
             }
         }
         .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                if controlsVisible.wrappedValue, viewModel.isTalkbackSupported {
+                    Button(action: {
+                        viewModel.toggleTalkback()
+                    }) {
+                        HStack {
+                            if viewModel.isTalking {
+                                Text(L10n.CameraPlayer.Talkback.stop)
+                            }
+                            Image(systemSymbol: viewModel.isTalking ? .micSlash : .micFill)
+                        }
+                        .transition(.opacity.combined(with: .scale))
+                    }
+                    .controlSize({
+                        if #available(iOS 17.0, *) {
+                            return .extraLarge
+                        } else {
+                            return .large
+                        }
+                    }())
+                    .modify({ view in
+                        if #available(iOS 26.0, *) {
+                            view
+                                .buttonStyle(.glassProminent)
+                                .tint(viewModel.isTalking ? Color.orange : Color.haPrimary)
+                        } else {
+                            view
+                        }
+                    })
+                    .accessibilityLabel(
+                        viewModel.isTalking ? L10n.CameraPlayer.Talkback.stop : L10n.CameraPlayer.Talkback.start
+                    )
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 if controlsVisible.wrappedValue {
                     Button(action: {
@@ -134,13 +186,11 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         scale = proposedScale
         offset = clampedOffset(for: newOffset, in: containerSize)
         previousFrameScale = proposedScale
-        showControlsTemporarily()
     }
 
     private func handlePinchEnded(in containerSize: CGSize) {
         lastScale = scale
         previousFrameScale = scale
-        showControlsTemporarily()
         if scale <= 1.0 {
             withAnimation {
                 offset = .zero
@@ -173,7 +223,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                 offset = clampedOffset(for: newOffset, in: containerSize)
                 lastOffset = offset
             }
-            showControlsTemporarily()
         }
     }
 
@@ -186,7 +235,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                     height: lastOffset.height + value.translation.height
                 )
                 offset = clampedOffset(for: newOffset, in: geometry.size)
-                showControlsTemporarily()
             }
             .onEnded { value in
                 // If user is not zoomed in, allow dismissing the view with a swipe down
@@ -200,7 +248,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                     offset = clampedOffset(for: offset, in: geometry.size)
                     lastOffset = offset
                 }
-                showControlsTemporarily()
             }
     }
 
@@ -212,16 +259,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         .edgesIgnoringSafeArea(.all)
         .scaleEffect(.init(floatLiteral: scale >= 1.0 ? scale : 1.0))
         .offset(offset)
-    }
-
-    private func showControlsTemporarily() {
-        controlsVisible.wrappedValue = true
-        hideControlsWorkItem?.cancel()
-        let workItem = DispatchWorkItem {
-            controlsVisible.wrappedValue = false
-        }
-        hideControlsWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: workItem)
     }
 
     /// Clamps the dragging offset to prevent the zoomed content from being moved
