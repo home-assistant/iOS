@@ -360,7 +360,9 @@ private enum WatchWidgetComplicationSnapshotStore {
 }
 
 private struct WatchWidgetComplicationSnapshot: Codable {
-    static let iconRenderSize = CGSize(width: 96, height: 96)
+    // Watch screens are @2x, so this rasterizes to 112px — safely under WidgetKit's ~122px
+    // complication-image archiving limit. Anything larger makes the complication render empty.
+    static let iconRenderSize = CGSize(width: 56, height: 56)
 
     let id: String
     let family: String
@@ -428,7 +430,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             inlineText: "Home Assistant",
             fraction: nil,
             tint: nil,
-            iconData: UIImage(named: "RoundLogo")?.pngData()
+            // No icon payload: the widget extension renders its bundled (correctly sized) Logo asset.
+            iconData: nil
         )
     }
 
@@ -441,9 +444,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             inlineText: AssistDefaultComplication.title,
             fraction: nil,
             tint: nil,
-            iconData: MaterialDesignIcons.messageProcessingOutlineIcon
-                .image(ofSize: iconRenderSize, color: AppConstants.tintColor)
-                .pngData()
+            // No icon payload: the widget extension renders its bundled Assist symbol via the fallback path.
+            iconData: nil
         )
     }
 
