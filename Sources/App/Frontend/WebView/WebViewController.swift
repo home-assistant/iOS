@@ -195,6 +195,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         config.mediaTypesRequiringUserActionForPlayback = Current.settingsStore
             .mediaTypesRequiringUserActionForPlayback
             .wkMediaTypes
+        #if targetEnvironment(macCatalyst)
+        config.preferences.tabFocusesLinks = true
+        #endif
         return config
     }
 
