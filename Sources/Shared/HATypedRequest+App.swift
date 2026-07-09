@@ -167,6 +167,12 @@ public extension HATypedRequest {
         ))
     }
 
+    static func energyPreferences() -> HATypedRequest<EnergyPreferences> {
+        HATypedRequest<EnergyPreferences>(request: .init(
+            type: .webSocket("energy/get_prefs")
+        ))
+    }
+
     static func fetchCurrentUser() -> HATypedRequest<HAResponseCurrentUser> {
         HATypedRequest<HAResponseCurrentUser>.currentUser()
     }

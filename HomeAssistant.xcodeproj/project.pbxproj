@@ -648,7 +648,15 @@
 		423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
+		DE189D6FAC056A475B08745C /* EnergyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53E5D7CE3AD35E7B254FE056 /* EnergyPreferences.swift */; };
+		07B263BBEEC2F577F71F1072 /* HomeSummaryState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3C8362C57D0B0954335578 /* HomeSummaryState.swift */; };
+		748F5B25B6B5FD6FC398D1B2 /* EntityFilterEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB1C17F4D824B2F3EFF8C9E /* EntityFilterEvaluator.swift */; };
+		D7B00AB3E685CC490E73E005 /* HomeSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F20B7860E1D687C2A893A /* HomeSummary.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
+		DADC72F561F7C9CD14817D35 /* EnergyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53E5D7CE3AD35E7B254FE056 /* EnergyPreferences.swift */; };
+		6E749C37B3AB638214E39EF6 /* HomeSummaryState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3C8362C57D0B0954335578 /* HomeSummaryState.swift */; };
+		EF561FB2B2AC06DBF58D2C1D /* EntityFilterEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB1C17F4D824B2F3EFF8C9E /* EntityFilterEvaluator.swift */; };
+		612B469B118519B3EF7BE522 /* HomeSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F20B7860E1D687C2A893A /* HomeSummary.swift */; };
 		4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4237E6382E5333370023B673 /* ZIPFoundation */; };
 		42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
@@ -2504,6 +2512,10 @@
 		423178492FBB000100814230 /* AllowedTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllowedTagsView.swift; sourceTree = "<group>"; };
 		4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentHaptics.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
+		53E5D7CE3AD35E7B254FE056 /* EnergyPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyPreferences.swift; sourceTree = "<group>"; };
+		5A3C8362C57D0B0954335578 /* HomeSummaryState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSummaryState.swift; sourceTree = "<group>"; };
+		5FB1C17F4D824B2F3EFF8C9E /* EntityFilterEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFilterEvaluator.swift; sourceTree = "<group>"; };
+		B34F20B7860E1D687C2A893A /* HomeSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSummary.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
 		42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTriggerSource.swift; sourceTree = "<group>"; };
 		4238DCA32DD1F1E300126434 /* AppSessionValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionValues.swift; sourceTree = "<group>"; };
@@ -5607,6 +5619,10 @@
 			isa = PBXGroup;
 			children = (
 				42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */,
+				53E5D7CE3AD35E7B254FE056 /* EnergyPreferences.swift */,
+				5A3C8362C57D0B0954335578 /* HomeSummaryState.swift */,
+				5FB1C17F4D824B2F3EFF8C9E /* EntityFilterEvaluator.swift */,
+				B34F20B7860E1D687C2A893A /* HomeSummary.swift */,
 				42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */,
 				42F1DA702B4EE2E8002729BC /* HAFloorRegistryResponse.swift */,
 				429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */,
@@ -9837,6 +9853,10 @@
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
 				42C5E5AB2F7C20EA004797B5 /* EntityColorAttributesParser.swift in Sources */,
 				42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
+				DE189D6FAC056A475B08745C /* EnergyPreferences.swift in Sources */,
+				07B263BBEEC2F577F71F1072 /* HomeSummaryState.swift in Sources */,
+				748F5B25B6B5FD6FC398D1B2 /* EntityFilterEvaluator.swift in Sources */,
+				D7B00AB3E685CC490E73E005 /* HomeSummary.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
 				1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
 				426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
@@ -10192,6 +10212,10 @@
 				D03D893620E0AEFA00D4F28D /* Environment.swift in Sources */,
 				D0EEF2CE214D8AE200D1D360 /* RealmZone.swift in Sources */,
 				42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
+				DADC72F561F7C9CD14817D35 /* EnergyPreferences.swift in Sources */,
+				6E749C37B3AB638214E39EF6 /* HomeSummaryState.swift in Sources */,
+				EF561FB2B2AC06DBF58D2C1D /* EntityFilterEvaluator.swift in Sources */,
+				612B469B118519B3EF7BE522 /* HomeSummary.swift in Sources */,
 				11C65CC0249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				B6A258452232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
 				1182620424F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,

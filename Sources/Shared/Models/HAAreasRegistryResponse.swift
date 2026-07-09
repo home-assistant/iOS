@@ -10,6 +10,8 @@ public struct HAAreasRegistryResponse: HADataDecodable {
     public let icon: String?
     // Identifier of the floor this area belongs to, if any.
     public let floorId: String?
+    public let temperatureEntityId: String?
+    public let humidityEntityId: String?
     public init(data: HAData) throws {
         try self.init(
             aliases: data.decode("aliases"),
@@ -17,7 +19,9 @@ public struct HAAreasRegistryResponse: HADataDecodable {
             name: data.decode("name"),
             picture: try? data.decode("picture"),
             icon: try? data.decode("icon"),
-            floorId: try? data.decode("floor_id")
+            floorId: try? data.decode("floor_id"),
+            temperatureEntityId: try? data.decode("temperature_entity_id"),
+            humidityEntityId: try? data.decode("humidity_entity_id")
         )
     }
 
@@ -27,7 +31,9 @@ public struct HAAreasRegistryResponse: HADataDecodable {
         name: String,
         picture: String? = nil,
         icon: String? = nil,
-        floorId: String? = nil
+        floorId: String? = nil,
+        temperatureEntityId: String? = nil,
+        humidityEntityId: String? = nil
     ) {
         self.aliases = aliases
         self.areaId = areaId
@@ -35,5 +41,7 @@ public struct HAAreasRegistryResponse: HADataDecodable {
         self.picture = picture
         self.icon = icon
         self.floorId = floorId
+        self.temperatureEntityId = temperatureEntityId
+        self.humidityEntityId = humidityEntityId
     }
 }
