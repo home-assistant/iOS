@@ -22,6 +22,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		DE51600000000000000000B2 /* HADesignSystemExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE51600000000000000000B1 /* HADesignSystemExports.swift */; };
+		DE51600000000000000000B3 /* HADesignSystemExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE51600000000000000000B1 /* HADesignSystemExports.swift */; };
+		DE51600000000000000000A3 /* HADesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000A2 /* HADesignSystem */; };
+		DE51600000000000000000A5 /* HADesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000A4 /* HADesignSystem */; };
 		00345F0517E14EC186DFB25D /* TestFlightCommunicationEngine.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */; };
 		00C267608DCC88B783816CBF /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
 		01783C74005B40978CE7508B /* NotificationIdentifierField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC7EF1136575D0E7A17091 /* NotificationIdentifierField.swift */; };
@@ -587,7 +591,6 @@
 		421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155202D3525F500A71630 /* AppIconSelectorView.swift */; };
 		421155232D354F3F00A71630 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155222D354F3F00A71630 /* AppIcon.swift */; };
 		421155252D355C6700A71630 /* CustomWidgetsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155242D355C6700A71630 /* CustomWidgetsListView.swift */; };
-		421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		4214388C2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		4214388D2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		42145A622DAFD49A00891E04 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
@@ -605,7 +608,6 @@
 		42196ADA2DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42196AD52DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift */; };
 		42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */; };
 		421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */; };
-		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		421BBC702E93A64B00745EC8 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D842159D10D00833E5D /* Interface.storyboard */; };
 		421D89A22EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421D89A12EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift */; };
 		421F2B9A2EF8479400F21FE5 /* ControlAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B962EF8479400F21FE5 /* ControlAutomation.swift */; };
@@ -679,9 +681,6 @@
 		42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */; };
 		42462E6D2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
 		42462E6E2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
-		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
-		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
-		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
@@ -798,8 +797,6 @@
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		42790C422C4806A700E31B38 /* ImprovFailureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42790C412C4806A700E31B38 /* ImprovFailureView.swift */; };
 		42790C442C48077200E31B38 /* ImprovSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42790C432C48077200E31B38 /* ImprovSuccessView.swift */; };
-		42790C462C4808FA00E31B38 /* AppleLikeBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */; };
-		42790C472C4809DD00E31B38 /* UIScreen+PerfectCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */; };
 		4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		427A21772F7EA57600BD40B7 /* ServerInfoMirrorTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A21762F7EA57600BD40B7 /* ServerInfoMirrorTable.swift */; };
@@ -893,8 +890,6 @@
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
 		428EDB682DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
 		428EDB692DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
-		42905D852E12B00900250728 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
-		42905D872E12B01200250728 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
@@ -915,8 +910,6 @@
 		4297ADA72C89C74A00790812 /* GRDB+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */; };
 		4297ADA82C89C74A00790812 /* GRDB+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */; };
 		429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */; };
-		429821172CD0DDCD005ECD39 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
-		429821192CD0DEE2005ECD39 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
 		4298587E2EB1025E00E33710 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4298587D2EB1025E00E33710 /* LocationManager.swift */; };
 		4298587F2EB1025E00E33710 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4298587D2EB1025E00E33710 /* LocationManager.swift */; };
 		429858862EB1066400E33710 /* LocationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429858832EB102D000E33710 /* LocationManagerTests.swift */; };
@@ -931,13 +924,11 @@
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
 		429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */; };
-		429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
 		429C07722FAB2D31000302D1 /* CarPlayTroubleshootingSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C07712FAB2D31000302D1 /* CarPlayTroubleshootingSettingsView.swift */; };
 		429C33BF2F17989F0033EF5E /* EntityPickerViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */; };
 		429C33C22F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
 		429C33C32F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
-		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */; };
 		42A1860A2E1D310D004B729A /* HATextField.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A186092E1D310D004B729A /* HATextField.test.swift */; };
 		42A1F0B12E000000000000B1 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A12E000000000000A1 /* Alamofire */; };
@@ -1015,9 +1006,6 @@
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
-		42B2637E2E16A1DC0042DF10 /* BaseColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B2637D2E16A1DC0042DF10 /* BaseColors.swift */; };
-		42B2637F2E16A1DC0042DF10 /* BaseColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B2637D2E16A1DC0042DF10 /* BaseColors.swift */; };
-		42B74A5D2D36A47E00C37304 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A5C2D36A47E00C37304 /* CloseButton.swift */; };
 		42B74A622D36B08600C37304 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A612D36B08600C37304 /* WidgetBasicView.swift */; };
 		42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A612D36B08600C37304 /* WidgetBasicView.swift */; };
 		42B74A642D36B17000C37304 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
@@ -1069,7 +1057,6 @@
 		42C1012B2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101292CD3DB8A0012BA78 /* CoverIntent.swift */; };
 		42C1012E2CD3DBF00012BA78 /* ControlCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C1012C2CD3DBF00012BA78 /* ControlCover.swift */; };
 		42C101302CD3DC0C0012BA78 /* ControlCoverValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C1012F2CD3DC0C0012BA78 /* ControlCoverValueProvider.swift */; };
-		42C131D02D66084C00AF48E6 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C131CF2D66084C00AF48E6 /* PillView.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CAF2FFD4BD5002457D9 /* ObjectMapper */; };
 		42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CB12FFD4BE5002457D9 /* ObjectMapper */; };
@@ -1126,8 +1113,6 @@
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
 		42DC44362E1C0791001046C1 /* WebRTCVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC44342E1C0791001046C1 /* WebRTCVideoPlayerView.swift */; };
 		42DC8B782E14027000D9999E /* SearchingServersAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC8B772E14027000D9999E /* SearchingServersAnimationView.swift */; };
-		42DC8B792E169FA300D9999E /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694524E771AB004AA96D /* Color+Hex.swift */; };
-		42DC8B7A2E169FA300D9999E /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694524E771AB004AA96D /* Color+Hex.swift */; };
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
 		42DE75D32D1061A600FF379F /* PanelsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DE75D12D105F3000FF379F /* PanelsUpdater.swift */; };
@@ -1162,7 +1147,6 @@
 		42E3B8BA2D8AC63300F5D084 /* Float+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8B82D8AC63300F5D084 /* Float+HA.swift */; };
 		42E3B8C02D8ACE0400F5D084 /* OptionalsDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */; };
 		42E3B8C12D8ACE0400F5D084 /* OptionalsDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */; };
-		42E4C9932DCC9A6600DF2813 /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		42E5542D2E128AE4008A160D /* ServerPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E5542C2E128AE4008A160D /* ServerPickerView.swift */; };
 		42E65F082C8079FE00C4A6F2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
 		42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E6C0892CE4F4FA007CA622 /* DownloadManagerView.swift */; };
@@ -1195,15 +1179,10 @@
 		42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6A2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift */; };
 		42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */; };
 		42F384052FB49C9500390AFC /* DebugSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 42F384042FB49C9500390AFC /* DebugSwift */; };
-		42F3E1492E1D22B400F4E6FC /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
-		42F3E14A2E1D22B400F4E6FC /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
 		42F5C0862F02BCC700C50310 /* SwitchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158472CA15FA7009C7201 /* SwitchIntent.swift */; };
 		42F5C0872F02BCCD00C50310 /* IntentSwitchEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */; };
 		42F5C0882F02BCD700C50310 /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
 		42F5C0892F02BCDE00C50310 /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
-		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
-		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
-		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
@@ -2008,6 +1987,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DE51600000000000000000B1 /* HADesignSystemExports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HADesignSystemExports.swift; sourceTree = "<group>"; };
 		0699711AAB843A3A6B110FED /* WCSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCSessionProtocol.swift; sourceTree = "<group>"; };
 		06E30D10E821F679102C3D62 /* WatchConfigAssistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigAssistViewModel.swift; sourceTree = "<group>"; };
 		06F3921F07C51AA4021DD11D /* WatchFolderContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFolderContentView.swift; sourceTree = "<group>"; };
@@ -2032,7 +2012,6 @@
 		1109F82324A25A41002590F2 /* SensorContainer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.test.swift; sourceTree = "<group>"; };
 		110AA55B25B36630005061A0 /* ServerAlerter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerAlerter.swift; sourceTree = "<group>"; };
 		110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerAlerter.test.swift; sourceTree = "<group>"; };
-		110E694524E771AB004AA96D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		110ED55325A5604F00489AF7 /* MacBridgeScreenImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeScreenImpl.swift; sourceTree = "<group>"; };
 		110ED56225A563D600489AF7 /* DisplaySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySensor.swift; sourceTree = "<group>"; };
 		110ED57F25A570F100489AF7 /* DisplaySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySensor.test.swift; sourceTree = "<group>"; };
@@ -2469,7 +2448,6 @@
 		42196AD52DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListViewModelTests.swift; sourceTree = "<group>"; };
 		42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationTests.swift; sourceTree = "<group>"; };
 		421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderViewModel.swift; sourceTree = "<group>"; };
-		421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ConditionalModifier.swift"; sourceTree = "<group>"; };
 		421D89A12EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOnboardingViewModifiers.swift; sourceTree = "<group>"; };
 		421F2B962EF8479400F21FE5 /* ControlAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAutomation.swift; sourceTree = "<group>"; };
 		421F2B972EF8479400F21FE5 /* ControlAutomationsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAutomationsValueProvider.swift; sourceTree = "<group>"; };
@@ -2555,7 +2533,6 @@
 		424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewTintedWrapper.swift; sourceTree = "<group>"; };
 		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
 		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
-		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
 		424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInBrowser.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
@@ -2658,7 +2635,6 @@
 		4278DFD02B45C66A0087C9D7 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Core.strings; sourceTree = "<group>"; };
 		42790C412C4806A700E31B38 /* ImprovFailureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovFailureView.swift; sourceTree = "<group>"; };
 		42790C432C48077200E31B38 /* ImprovSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovSuccessView.swift; sourceTree = "<group>"; };
-		42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLikeBottomSheet.swift; sourceTree = "<group>"; };
 		4279407E2B8369EA001D7E14 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bg; path = bg.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		427A21762F7EA57600BD40B7 /* ServerInfoMirrorTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerInfoMirrorTable.swift; sourceTree = "<group>"; };
 		427A7CD82EBDFB1700D17841 /* AppArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppArea.swift; sourceTree = "<group>"; };
@@ -2709,7 +2685,6 @@
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
-		42905D842E12B00900250728 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		429106862BA9D22500D452F9 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
@@ -2726,7 +2701,6 @@
 		4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntitiesModel.swift; sourceTree = "<group>"; };
 		4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GRDB+Initialization.swift"; sourceTree = "<group>"; };
 		429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionViewModel.swift; sourceTree = "<group>"; };
-		429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStyles.swift; sourceTree = "<group>"; };
 		4298587D2EB1025E00E33710 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		429858832EB102D000E33710 /* LocationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerTests.swift; sourceTree = "<group>"; };
 		42991E532FF32AF000C2C76B /* HAActivityProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAActivityProgressBar.swift; sourceTree = "<group>"; };
@@ -2739,7 +2713,6 @@
 		429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTemplateEditor.swift; sourceTree = "<group>"; };
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
 		429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorDetailsView.swift; sourceTree = "<group>"; };
-		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
 		429C07712FAB2D31000302D1 /* CarPlayTroubleshootingSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTroubleshootingSettingsView.swift; sourceTree = "<group>"; };
 		429C33BC2F17986D0033EF5E /* EntityPickerViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPickerViewModel.test.swift; sourceTree = "<group>"; };
 		429C33C12F17A7010033EF5E /* HAUsagePredictionCommonControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAUsagePredictionCommonControl.swift; sourceTree = "<group>"; };
@@ -2968,8 +2941,6 @@
 		42B19BD02D4A358B00B3262B /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
-		42B2637D2E16A1DC0042DF10 /* BaseColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseColors.swift; sourceTree = "<group>"; };
-		42B74A5C2D36A47E00C37304 /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
 		42B74A612D36B08600C37304 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
 		42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationViewModel.swift; sourceTree = "<group>"; };
 		42B7BFEB2E97AF070056BADC /* LocalAccessPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionViewModel.swift; sourceTree = "<group>"; };
@@ -2998,7 +2969,6 @@
 		42BC58192FAA2C8F0080EE09 /* center_button_press.flac */ = {isa = PBXFileReference; lastKnownFileType = file; path = center_button_press.flac; sourceTree = "<group>"; };
 		42BC581B2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.swift; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
-		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
 		42BF8DAF2EC4D69600DCB7E7 /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "copilot-instructions.md"; sourceTree = "<group>"; };
 		42BF8DB22EC4E73700DCB7E7 /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
@@ -3014,7 +2984,6 @@
 		42C101292CD3DB8A0012BA78 /* CoverIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverIntent.swift; sourceTree = "<group>"; };
 		42C1012C2CD3DBF00012BA78 /* ControlCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCover.swift; sourceTree = "<group>"; };
 		42C1012F2CD3DC0C0012BA78 /* ControlCoverValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCoverValueProvider.swift; sourceTree = "<group>"; };
-		42C131CF2D66084C00AF48E6 /* PillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillView.swift; sourceTree = "<group>"; };
 		42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		42C373AF2BC536AA00898990 /* WatchApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WatchApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		42C5E5AC2F7E74DE004797B5 /* SafeScriptMessageHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeScriptMessageHandlerTests.swift; sourceTree = "<group>"; };
@@ -3022,9 +2991,6 @@
 		42C7A1012F90010000A1B2C3 /* KeychainExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainExplorerView.swift; sourceTree = "<group>"; };
 		42C95E812F7EDAAA00112233 /* ServerManagerPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManagerPersistence.swift; sourceTree = "<group>"; };
 		42C95E842F7EDB1000112233 /* ServerManagerMirrorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManagerMirrorStore.swift; sourceTree = "<group>"; };
-		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
-		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
-		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
 		42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectView.swift; sourceTree = "<group>"; };
 		42CB330E2DAE530400491DCE /* SettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButton.swift; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
@@ -3087,7 +3053,6 @@
 		42E28A732FEACDEA00B65504 /* CarPlayEditItemFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEditItemFlow.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
-		42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAProgressView.swift; sourceTree = "<group>"; };
 		42E5542C2E128AE4008A160D /* ServerPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerPickerView.swift; sourceTree = "<group>"; };
 		42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAssistValueProvider.swift; sourceTree = "<group>"; };
 		42E6C0892CE4F4FA007CA622 /* DownloadManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerView.swift; sourceTree = "<group>"; };
@@ -3123,7 +3088,6 @@
 		42F1DA6F2B4EE2E8002729BC /* HAAreasRegistryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAreasRegistryResponse.swift; sourceTree = "<group>"; };
 		42F1DA702B4EE2E8002729BC /* HAFloorRegistryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAFloorRegistryResponse.swift; sourceTree = "<group>"; };
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
-		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
@@ -3809,6 +3773,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE51600000000000000000A5 /* HADesignSystem in Frameworks */,
 				42886D382FFE883A004EB33B /* HAKit in Frameworks */,
 				42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */,
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
@@ -3838,6 +3803,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE51600000000000000000A3 /* HADesignSystem in Frameworks */,
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
 				42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */,
 				CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */,
@@ -5310,13 +5276,10 @@
 		426740A62B1738F900C1DD73 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				110E694524E771AB004AA96D /* Color+Hex.swift */,
-				42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */,
 				42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */,
 				426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */,
 				42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */,
 				42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */,
-				421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */,
 				42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */,
 				42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */,
 				42B7C1A02F78D10000E4F3AB /* MaterialDesignIcons+SFSymbol.swift */,
@@ -5403,7 +5366,6 @@
 		428338412BA1BAF3004798C2 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				42462E702DA4114800ECC8A7 /* Sizes.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -5563,7 +5525,6 @@
 		429821152CD0DDC0005ECD39 /* Styles */ = {
 			isa = PBXGroup;
 			children = (
-				429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */,
 			);
 			path = Styles;
 			sourceTree = "<group>";
@@ -6205,8 +6166,7 @@
 				429821152CD0DDC0005ECD39 /* Styles */,
 				428338412BA1BAF3004798C2 /* Constants */,
 				42CA28B12B101D9C0093B31A /* Components */,
-				42905D842E12B00900250728 /* DesignSystem.swift */,
-				42B2637D2E16A1DC0042DF10 /* BaseColors.swift */,
+				DE51600000000000000000B1 /* HADesignSystemExports.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -6215,20 +6175,12 @@
 			isa = PBXGroup;
 			children = (
 				42F161422D661CBA003DDC75 /* ServersPickerPillList.swift */,
-				429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */,
 				42FCD0052B9B1D9E0057783F /* CollapsibleView.swift */,
-				42CA28AF2B101D6B0093B31A /* CardView.swift */,
-				42CA28B52B1022680093B31A /* HAButton.swift */,
-				42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */,
 				4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */,
-				42B74A5C2D36A47E00C37304 /* CloseButton.swift */,
 				425762722E71A8B800AE5083 /* ModalCloseButton.swift */,
 				42E28A702FEABEBD00B65504 /* ModalReusableButton.swift */,
 				42CB330E2DAE530400491DCE /* SettingsButton.swift */,
-				42C131CF2D66084C00AF48E6 /* PillView.swift */,
 				427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */,
-				42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */,
-				42F3E1482E1D22B400F4E6FC /* HATextField.swift */,
 				42C01D912F73C24800EFCFE7 /* LabsLabel.swift */,
 			);
 			path = Components;
@@ -6238,7 +6190,6 @@
 			isa = PBXGroup;
 			children = (
 				46C62BA02D8A3792002C0001 /* SnapshottablePreviewConfigurations.swift */,
-				42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */,
 				429C721F2B28D0EC00BCD558 /* Haptics.swift */,
 			);
 			path = Utilities;
@@ -8054,6 +8005,7 @@
 			name = "Shared-watchOS";
 			packageProductDependencies = (
 				427692E42B98B83200F24321 /* SharedPush */,
+				DE51600000000000000000A4 /* HADesignSystem */,
 				B19185B1C20DABFD5B0D1B5D /* GRDB */,
 				E35AE15984C6303B97D502F8 /* RealmSwift */,
 				42A1F0A32E000000000000A3 /* Alamofire */,
@@ -8130,6 +8082,7 @@
 			name = "Shared-iOS";
 			packageProductDependencies = (
 				427692E22B98B82500F24321 /* SharedPush */,
+				DE51600000000000000000A2 /* HADesignSystem */,
 				4237E6382E5333370023B673 /* ZIPFoundation */,
 				638EC9AD85B8C58C9C77DCC7 /* GRDB */,
 				E9035E07265E8F5491BE067E /* RealmSwift */,
@@ -8388,6 +8341,7 @@
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
 				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */,
 				42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */,
+				DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */,
@@ -9206,7 +9160,6 @@
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsView.swift in Sources */,
 				42DFE8742EFAE33D0058DADB /* AssistWavesAnimation.swift in Sources */,
-				42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				42175EC12F436811001073AF /* ClientCertificateOnboardingView.swift in Sources */,
 				42175EC52F878B23001073AF /* RecoveredServersImportView.swift in Sources */,
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
@@ -9643,6 +9596,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE51600000000000000000B3 /* HADesignSystemExports.swift in Sources */,
 				7F5261AFA361C741413A782D /* KioskModeManager.swift in Sources */,
 				70E2B868FFDDA96DAF138814 /* KioskSettings.swift in Sources */,
 				6DA03BF83C5D5A6159263BE6 /* KioskSettingsTable.swift in Sources */,
@@ -9654,7 +9608,6 @@
 				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				AC730001000000000000AA01 /* AppIconShortcutConfig.swift in Sources */,
 				AC730003000000000000AA01 /* AppIconShortcutConfigTable.swift in Sources */,
-				421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */,
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				42FDCA2A2F0C88A100C92958 /* DisplayEntityRegistryTable.swift in Sources */,
 				427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
@@ -9668,7 +9621,6 @@
 				3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				42BC581C2FAA38D10080EE09 /* CarPlayAssistDebugSettings.swift in Sources */,
 				42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */,
-				42905D872E12B01200250728 /* DesignSystem.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
@@ -9676,7 +9628,6 @@
 				428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				11B38EF0275C54A300205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5852749C6350046C38B /* ServerProviding.swift in Sources */,
-				429821192CD0DEE2005ECD39 /* HAButtonStyles.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				1104FCC02532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */,
@@ -9744,7 +9695,6 @@
 				4286A2F02F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */,
 				42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */,
 				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
-				42DC8B7A2E169FA300D9999E /* Color+Hex.swift in Sources */,
 				4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */,
 				424151FA2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */,
 				42070EED2BAC523F0031E96F /* AssistService.swift in Sources */,
@@ -9752,7 +9702,6 @@
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
-				42F3E14A2E1D22B400F4E6FC /* HATextField.swift in Sources */,
 				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
 				4278C9C22C8F226500A7B5F4 /* GuaranteedMessages.swift in Sources */,
 				4238DCA42DD1F1E300126434 /* AppSessionValues.swift in Sources */,
@@ -9847,7 +9796,6 @@
 				1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */,
-				42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				4245DC052EBA7919005E0E04 /* AreasService.swift in Sources */,
 				11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
@@ -9890,7 +9838,6 @@
 				42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */,
 				4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */,
 				42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */,
-				429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */,
 				4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */,
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
@@ -9917,7 +9864,6 @@
 				42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */,
 				11F2F27F258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */,
 				B67CE8A622200F220034C1D0 /* HAAPI.swift in Sources */,
-				42B2637E2E16A1DC0042DF10 /* BaseColors.swift in Sources */,
 				1105CE1D272B9CB300F33BD8 /* ServerManager.swift in Sources */,
 				42C95E832F7EDAAA00112233 /* ServerManagerPersistence.swift in Sources */,
 				42C95E862F7EDB1000112233 /* ServerManagerMirrorStore.swift in Sources */,
@@ -9996,11 +9942,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE51600000000000000000B2 /* HADesignSystemExports.swift in Sources */,
 				EF407595A931C19EBCCC9E87 /* KioskModeManager.swift in Sources */,
 				7EB1B6B52775DAF12C3B2B27 /* KioskSettings.swift in Sources */,
 				857D6560D8A33C20A009A615 /* KioskSettingsTable.swift in Sources */,
 				427A21772F7EA57600BD40B7 /* ServerInfoMirrorTable.swift in Sources */,
-				42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
 				AC730002000000000000AA01 /* AppIconShortcutConfig.swift in Sources */,
 				AC730004000000000000AA01 /* AppIconShortcutConfigTable.swift in Sources */,
@@ -10024,7 +9970,6 @@
 				42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */,
 				42D086972F43659100DD730C /* ClientCertificate.swift in Sources */,
 				42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */,
-				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
 				4251AAC02C6CE376004CCC9D /* MagicItem.swift in Sources */,
 				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,
 				A95FDD0C2F6B89C6008EF72F /* LiveActivityRegistry.swift in Sources */,
@@ -10033,7 +9978,6 @@
 				11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */,
-				42790C462C4808FA00E31B38 /* AppleLikeBottomSheet.swift in Sources */,
 				4259959A2F44708F0023D6A6 /* View+ScreenCaptureProtection.swift in Sources */,
 				42B7C1A12F78D10000E4F3AB /* MaterialDesignIcons+SFSymbol.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
@@ -10061,7 +10005,6 @@
 				11AF4D16249C8083006C74C0 /* With.swift in Sources */,
 				11B38EEC275C54A200205C7B /* IntentHandlerFactory.swift in Sources */,
 				1182620124F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
-				421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */,
 				B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
 				11482AD62505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */,
 				11AF4D25249D1931006C74C0 /* LastUpdateSensor.swift in Sources */,
@@ -10111,13 +10054,11 @@
 				11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				42D996E52D89863A001737A0 /* Bool+HA.swift in Sources */,
 				11F20BFC274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
-				42B74A5D2D36A47E00C37304 /* CloseButton.swift in Sources */,
 				399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				42955C222F1A550B00E398E8 /* ExternalBusPayload.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
 				42FDCA2B2F0C88A100C92958 /* DisplayEntityRegistryTable.swift in Sources */,
 				11CFD784273662DF0082D557 /* Server.swift in Sources */,
-				42905D852E12B00900250728 /* DesignSystem.swift in Sources */,
 				116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
 				4238DCA52DD1F1E300126434 /* AppSessionValues.swift in Sources */,
 				4210CCFF2F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */,
@@ -10157,7 +10098,6 @@
 				1120C57F274638330046C38B /* PerServerContainer.swift in Sources */,
 				42FCCFD62B9B195D0057783F /* Image+SharedAssets.swift in Sources */,
 				426D9C742C9C60B000F278AF /* ControlEntityProvider.swift in Sources */,
-				42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */,
 				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
@@ -10169,7 +10109,6 @@
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				42145A662F7F4CC000891E04 /* EntityColorAttributesParser.swift in Sources */,
 				42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */,
-				429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */,
 				11ADF940267D34B10040A7E3 /* NotificationsCommandManager.swift in Sources */,
 				11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
@@ -10207,7 +10146,6 @@
 				42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */,
 				42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */,
 				42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */,
-				42E4C9932DCC9A6600DF2813 /* HAProgressView.swift in Sources */,
 				42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */,
 				420D5AE32C5A860900624A08 /* LocationPermissionSensor.swift in Sources */,
 				42FCCFDB2B9B19F70057783F /* ThreadCredential.swift in Sources */,
@@ -10218,11 +10156,9 @@
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
 				B7104E0100000000000000A2 /* NotificationHistory.swift in Sources */,
 				3997926E2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
-				42790C472C4809DD00E31B38 /* UIScreen+PerfectCornerRadius.swift in Sources */,
 				4278CB892D01F81B00CFAAC9 /* AppGesture.swift in Sources */,
 				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
-				429821172CD0DDCD005ECD39 /* HAButtonStyles.swift in Sources */,
 				4206DE5A2E25055E00142E85 /* WebsiteDataStoreHandler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
 				11B38EEE275C54A200205C7B /* FocusStatusIntentHandler.swift in Sources */,
@@ -10235,21 +10171,18 @@
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				42462E6D2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */,
 				420A80962E9CF98C00D30A6B /* ImpactFeedbackGeneratorProtocol.swift in Sources */,
-				42F3E1492E1D22B400F4E6FC /* HATextField.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */,
 				427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
 				420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
-				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,
 				1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
 				B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */,
 				1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				420CFC682D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */,
 				42A9C1022FBB000100D0C0DE /* AllowedTag.swift in Sources */,
 				42A9C1052FBB000100D0C0DE /* AllowedTagTable.swift in Sources */,
-				42DC8B792E169FA300D9999E /* Color+Hex.swift in Sources */,
 				11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */,
 				42E28A712FEABEBD00B65504 /* ModalReusableButton.swift in Sources */,
 				4264906B2C0F1B5F002155CC /* AssistChatItem.swift in Sources */,
@@ -10262,10 +10195,8 @@
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,
 				429C33C22F17A7010033EF5E /* HAUsagePredictionCommonControl.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
-				42B2637F2E16A1DC0042DF10 /* BaseColors.swift in Sources */,
 				426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
 				42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */,
-				42C131D02D66084C00AF48E6 /* PillView.swift in Sources */,
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				42B94BED2B96083C00DEE060 /* AssistModel.swift in Sources */,
@@ -11740,6 +11671,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HADesignSystem;
+		};
 		42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/PromiseKitDynamic;
@@ -11906,6 +11841,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		DE51600000000000000000A2 /* HADesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */;
+			productName = HADesignSystem;
+		};
+		DE51600000000000000000A4 /* HADesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */;
+			productName = HADesignSystem;
+		};
 		294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;

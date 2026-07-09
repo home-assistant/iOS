@@ -1,3 +1,4 @@
+#if !os(watchOS)
 import SwiftUI
 
 public struct CardView<Content: View>: View {
@@ -37,3 +38,4 @@ public struct CardView<Content: View>: View {
     }
     .background(Color.yellow)
 }
+#endif

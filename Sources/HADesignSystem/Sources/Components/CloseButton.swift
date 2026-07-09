@@ -1,3 +1,5 @@
+#if !os(watchOS)
+import SFSafeSymbols
 import SwiftUI
 
 public struct CloseButton: View {
@@ -7,25 +9,25 @@ public struct CloseButton: View {
         case large
 
         var size: CGFloat {
-            if Current.isCatalyst {
-                switch self {
-                case .small:
-                    return 24
-                case .medium:
-                    return 28
-                case .large:
-                    return 32
-                }
-            } else {
-                switch self {
-                case .small:
-                    return 20
-                case .medium:
-                    return 24
-                case .large:
-                    return 28
-                }
+            #if targetEnvironment(macCatalyst)
+            switch self {
+            case .small:
+                return 24
+            case .medium:
+                return 28
+            case .large:
+                return 32
             }
+            #else
+            switch self {
+            case .small:
+                return 20
+            case .medium:
+                return 24
+            case .large:
+                return 28
+            }
+            #endif
         }
     }
 
@@ -86,3 +88,4 @@ public struct CloseButton: View {
         Spacer()
     }
 }
+#endif

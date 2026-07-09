@@ -1,3 +1,4 @@
+#if !os(watchOS)
 import SwiftUI
 
 public struct PillView: View {
@@ -39,3 +40,4 @@ public struct PillView: View {
         }
     }
 }
+#endif
