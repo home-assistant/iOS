@@ -14,8 +14,7 @@ public enum EntityContextSubtitle {
     ///     configured — it's prepended as the first segment; pass `nil` to omit it (single-server).
     ///   - floorName: The floor the entity's area belongs to. Pass this only when it's needed to
     ///     disambiguate two areas that share the same name; pass `nil` to omit it otherwise.
-    ///   - areaName: The area the entity belongs to, if any. Omitted when the entity name already
-    ///     contains it (e.g. a camera named after its location), to avoid echoing it in the subtitle.
+    ///   - areaName: The area the entity belongs to, if any.
     ///   - deviceName: The device the entity belongs to, if any. Omitted when it merely repeats the entity name.
     ///   - entityName: The entity's resolved display name (used to avoid echoing it as the device name).
     ///   - entityId: The entity id, used as a last-resort context when no other context is available.
@@ -34,7 +33,6 @@ public enum EntityContextSubtitle {
         domain: Domain?,
         fallbackToEntityId: Bool = true
     ) -> String? {
-        let normalizedEntityName = entityName.normalizedForAreaComparison
         var parts: [String] = []
         if let serverName, !serverName.isEmpty {
             parts.append(serverName)
@@ -42,18 +40,22 @@ public enum EntityContextSubtitle {
         if let floorName, !floorName.isEmpty {
             parts.append(floorName)
         }
-        if let areaName {
-            // Drop the area when the name already conveys it (e.g. a camera named after its location).
-            // Compared in the trimmed, case-/diacritic-insensitive form used everywhere area names are
-            // matched, so "Bedroom " and "Bedroom" count as the same and whitespace-only areas are ignored.
-            let normalizedAreaName = areaName.normalizedForAreaComparison
-            if !normalizedAreaName.isEmpty, normalizedEntityName.range(of: normalizedAreaName) == nil {
-                parts.append(areaName)
-            }
+        if let areaName, !areaName.isEmpty {
+            parts.append(areaName)
         }
         if let deviceName, !deviceName.isEmpty,
            deviceName.range(of: entityName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
             parts.append(deviceName)
+        }
+        // Collapse segments that resolve to the same label so the line doesn't repeat one twice — a
+        // device named after its area is common (e.g. a "Sala" camera in the "Sala" area) and would
+        // otherwise render as "Sala • Sala". Compared in the trimmed, case-/diacritic-insensitive form,
+        // which also drops whitespace-only segments that would show as a blank piece.
+        var seenNormalizedParts = Set<String>()
+        parts = parts.filter { part in
+            let normalized = part.normalizedForAreaComparison
+            guard !normalized.isEmpty else { return false }
+            return seenNormalizedParts.insert(normalized).inserted
         }
         guard parts.isEmpty else {
             return parts.joined(separator: " • ")

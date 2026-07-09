@@ -68,58 +68,42 @@ struct EntityContextSubtitleTests {
         #expect(subtitle == "Living Room")
     }
 
-    @Test func areaIsOmittedWhenEntityNameMatchesIt() {
-        // A camera named after its location (entity name == area) would otherwise repeat the area in
-        // its subtitle, so the area segment is dropped and only the entity id fallback remains.
+    @Test func deviceRepeatingTheAreaIsCollapsedToOneSegment() {
+        // A camera device named after its area (common in Home Assistant) would otherwise render the
+        // same label twice, e.g. "Sala • Sala".
         let subtitle = EntityContextSubtitle.make(
-            areaName: "Front Door",
-            deviceName: nil,
-            entityName: "Front Door",
-            entityId: "camera.front_door",
+            areaName: "Sala",
+            deviceName: "Sala",
+            entityName: "Camera",
+            entityId: "camera.sala",
             domain: .camera
         )
-        #expect(subtitle == "camera.front_door")
+        #expect(subtitle == "Sala")
     }
 
-    @Test func areaIsOmittedWhenEntityNameContainsItCaseAndDiacriticInsensitive() {
+    @Test func duplicateSegmentsAreCollapsedIgnoringCaseDiacriticsAndWhitespace() {
         let subtitle = EntityContextSubtitle.make(
-            areaName: "café",
-            deviceName: "Cafe Camera",
-            entityName: "Cafe Camera",
-            entityId: "camera.cafe",
+            areaName: "Escritório do Bruno",
+            deviceName: "escritorio do bruno ",
+            entityName: "Camera",
+            entityId: "camera.office",
             domain: .camera
         )
-        // Area "café" is contained (case/diacritic-insensitively) in the entity name, and the device
-        // repeats the entity name, so both are omitted — leaving only the entity id fallback.
-        #expect(subtitle == "camera.cafe")
+        #expect(subtitle == "Escritório do Bruno")
     }
 
-    @Test func areaIsKeptWhenEntityNameDoesNotContainIt() {
+    @Test func distinctAreaAndDeviceAreBothKept() {
         let subtitle = EntityContextSubtitle.make(
-            areaName: "Living Room",
-            deviceName: nil,
-            entityName: "Front Door",
-            entityId: "camera.front_door",
+            areaName: "Meter cupboard",
+            deviceName: "C100",
+            entityName: "C100 mainStream",
+            entityId: "camera.c100",
             domain: .camera
         )
-        #expect(subtitle == "Living Room")
+        #expect(subtitle == "Meter cupboard • C100")
     }
 
-    @Test func areaIsOmittedWhenEntityNameMatchesItIgnoringSurroundingWhitespace() {
-        // Area names are compared in their trimmed, folded form, so trailing whitespace on the area
-        // (which core/frontend treat as equivalent) must not prevent the duplication from being removed.
-        let subtitle = EntityContextSubtitle.make(
-            areaName: "Bedroom ",
-            deviceName: nil,
-            entityName: "Bedroom",
-            entityId: "camera.bedroom",
-            domain: .camera
-        )
-        #expect(subtitle == "camera.bedroom")
-    }
-
-    @Test func whitespaceOnlyAreaIsIgnored() {
-        // A whitespace-only area name carries no meaning and must not render as a blank subtitle segment.
+    @Test func whitespaceOnlyAreaIsDroppedRatherThanShownBlank() {
         let subtitle = EntityContextSubtitle.make(
             areaName: "   ",
             deviceName: nil,
