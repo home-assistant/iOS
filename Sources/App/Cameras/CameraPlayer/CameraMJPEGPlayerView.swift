@@ -24,13 +24,17 @@ struct CameraMJPEGPlayerView: View {
             Color.black.edgesIgnoringSafeArea(.all)
 
             if errorMessage == nil {
-                MJPEGStreamContainerView(
-                    server: server,
-                    cameraEntityId: cameraEntityId,
-                    isLoading: $isLoading,
-                    errorMessage: $errorMessage
-                )
-                .ignoresSafeArea()
+                ZoomableCameraContainer(onSwipeDown: {
+                    dismiss()
+                }, content: {
+                    MJPEGStreamContainerView(
+                        server: server,
+                        cameraEntityId: cameraEntityId,
+                        isLoading: $isLoading,
+                        errorMessage: $errorMessage
+                    )
+                    .ignoresSafeArea()
+                })
             }
 
             if isLoading {
