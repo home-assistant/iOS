@@ -85,7 +85,7 @@ class ConnectivityWrapperTests: XCTestCase {
             return NetworkState(ssid: "should-not-be-used")
         }
 
-        let state = await Current.connectivity.currentNetworkState()
+        let state = await Current.connectivity.fetchNetworkState()
 
         XCTAssertEqual(state.ssid, "cached-ssid")
         XCTAssertEqual(state.bssid, "cached-bssid")
@@ -99,7 +99,7 @@ class ConnectivityWrapperTests: XCTestCase {
             NetworkState(ssid: "fresh-ssid", bssid: "fresh-bssid")
         }
 
-        let state = await Current.connectivity.currentNetworkState()
+        let state = await Current.connectivity.fetchNetworkState()
 
         XCTAssertEqual(state.ssid, "fresh-ssid")
         XCTAssertEqual(state.bssid, "fresh-bssid")

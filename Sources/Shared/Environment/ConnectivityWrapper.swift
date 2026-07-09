@@ -99,7 +99,7 @@ public class ConnectivityWrapper {
         await self?.systemNetworkStateFetch() ?? NetworkState()
     }
 
-    private func fetchNetworkState() async -> NetworkState {
+    func fetchNetworkState() async -> NetworkState {
         let fetch = performNetworkStateFetch
         let timeout = networkFetchTimeout
         let fetched: NetworkState? = await withCheckedContinuation { continuation in
