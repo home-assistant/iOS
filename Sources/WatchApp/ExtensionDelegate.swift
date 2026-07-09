@@ -6,7 +6,6 @@ import WatchKit
 import WidgetKit
 import XCGLogger
 
-@main
 class ExtensionDelegate: NSObject, WKApplicationDelegate {
     // MARK: Fileprivate
 
@@ -124,6 +123,9 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     }
 
     private func launchAssist() {
+        // Record the intent so a cold launch still opens Assist once the UI appears, and post the
+        // notification for the case where the view is already on screen (warm launch).
+        AssistDefaultComplication.pendingLaunch = true
         NotificationCenter.default.post(name: AssistDefaultComplication.launchNotification, object: nil)
     }
 

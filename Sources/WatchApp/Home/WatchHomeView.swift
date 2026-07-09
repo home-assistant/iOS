@@ -57,6 +57,14 @@ struct WatchHomeView: View {
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
             showAssist = true
         }
+        // The Assist complication opens the app via a `homeassistant://assist` widget URL. Depending on
+        // launch state watchOS delivers this either as an opened URL or as a browsing-web user activity.
+        .onOpenURL { url in
+            if isAssistDeepLink(url) { showAssist = true }
+        }
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            if isAssistDeepLink(activity.webpageURL) { showAssist = true }
+        }
         .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
             viewModel.loadCache()
         }
@@ -68,7 +76,13 @@ struct WatchHomeView: View {
                     pipelineId: pipelineId
                 )
             } else {
-                fatalError("Assist launched without serverId or pipelineId")
+                // Assist isn't configured yet (e.g. cold launch before the config synced). Surface a
+                // message instead of crashing; the user can retry once configuration is available.
+                Text(verbatim: L10n.Watch.Assist.LackConfig.Error.title)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding()
             }
         })
         .sheet(isPresented: $showSettings) {
@@ -96,6 +110,11 @@ struct WatchHomeView: View {
             Text(verbatim: L10n.Watch.Config.Conflict.message)
         }
         .onAppear {
+            // Consume a launch requested from the complication before this view existed (cold launch).
+            if AssistDefaultComplication.pendingLaunch {
+                AssistDefaultComplication.pendingLaunch = false
+                showAssist = true
+            }
             guard autoLoad else { return }
             viewModel.startNetworkMonitoring()
             Task {
@@ -287,6 +306,11 @@ struct WatchHomeView: View {
                 subtitle: viewModel.serverName(for: item)
             )
         }
+    }
+
+    private func isAssistDeepLink(_ url: URL?) -> Bool {
+        guard let url else { return false }
+        return ["homeassistant", "homeassistant-dev"].contains(url.scheme) && url.host == "assist"
     }
 
     private func enterEditMode() {
