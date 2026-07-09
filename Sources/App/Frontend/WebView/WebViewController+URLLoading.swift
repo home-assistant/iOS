@@ -138,7 +138,7 @@ extension WebViewController {
         }
 
         // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-        let request = URLRequest(url: await resolvedLoadURL(for: webviewURL))
+        let request = await URLRequest(url: resolvedLoadURL(for: webviewURL))
         // Re-check the background state too: backgrounding mid-flight could otherwise start a
         // navigation that stalls on suspension, leaving webView.url pointing at a page that
         // never loaded (which would defeat the empty-web-view checks above and the fallback).
