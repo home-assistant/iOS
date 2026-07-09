@@ -88,6 +88,12 @@ bundle exec fastlane lint
 bundle exec fastlane autocorrect
 ```
 
+To run `autocorrect` automatically before each commit, install the git pre-commit hook once:
+
+```bash
+bundle exec fastlane install_git_hooks
+```
+
 In the Xcode project, the autocorrectable linters will not modify your source code but will provide warnings. This project uses several linters:
 
 - [SwiftFormat](https://github.com/nicklockwood/SwiftFormat)
