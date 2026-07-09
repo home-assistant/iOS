@@ -18,8 +18,5 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "auto-scaling" : "auto"
   }
 }
