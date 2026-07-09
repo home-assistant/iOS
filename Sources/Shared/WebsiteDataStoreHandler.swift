@@ -13,19 +13,25 @@ public extension WebsiteDataStoreHandlerProtocol {
 
 final class WebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
     func cleanCache(dataTypes: Set<String>, completion: (() -> Void)? = nil) {
-        WKWebsiteDataStore.default().removeData(
-            ofTypes: dataTypes,
-            modifiedSince: Date(timeIntervalSince1970: 0),
-            completionHandler: {
-                Current.Log.verbose("Cleaned browser cache for data types: \(dataTypes)")
-                guard let completion else { return }
-                if Thread.isMainThread {
-                    completion()
-                } else {
-                    DispatchQueue.main.async(execute: completion)
+        Self.onMainThread {
+            WKWebsiteDataStore.default().removeData(
+                ofTypes: dataTypes,
+                modifiedSince: Date(timeIntervalSince1970: 0),
+                completionHandler: {
+                    Current.Log.verbose("Cleaned browser cache for data types: \(dataTypes)")
+                    Self.onMainThread(completion)
                 }
-            }
-        )
+            )
+        }
+    }
+
+    private static func onMainThread(_ block: (() -> Void)?) {
+        guard let block else { return }
+        if Thread.isMainThread {
+            block()
+        } else {
+            DispatchQueue.main.async(execute: block)
+        }
     }
 }
 
