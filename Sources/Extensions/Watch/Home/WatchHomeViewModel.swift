@@ -37,6 +37,37 @@ final class WatchHomeViewModel: ObservableObject {
     /// Registration for background (`transferUserInfo`) config responses from the phone.
     private var guaranteedObserver: HAWatchConnectivity.ObservationToken?
 
+    /// Minimum time each `loadingStatus` value stays on screen, so rapid chunk progress doesn't blink
+    /// through numbers too fast to read.
+    private static let minStatusDisplay: TimeInterval = 0.4
+    private var lastStatusChangeAt: Date?
+    private var pendingStatusWork: DispatchWorkItem?
+
+    /// Set the status text, but never faster than `minStatusDisplay`; rapid updates coalesce to the
+    /// latest value once the minimum on-screen time for the previous one has elapsed. Must be called on
+    /// the main thread (all call sites are).
+    private func setLoadingStatus(_ status: String?) {
+        pendingStatusWork?.cancel()
+        pendingStatusWork = nil
+
+        let now = Current.date()
+        let elapsed = lastStatusChangeAt.map { now.timeIntervalSince($0) } ?? .greatestFiniteMagnitude
+        if elapsed >= Self.minStatusDisplay {
+            loadingStatus = status
+            lastStatusChangeAt = now
+            return
+        }
+
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            loadingStatus = status
+            lastStatusChangeAt = Current.date()
+            pendingStatusWork = nil
+        }
+        pendingStatusWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + (Self.minStatusDisplay - elapsed), execute: work)
+    }
+
     init() {
         // The phone answers a background config pull with a guaranteed message; route it through the
         // same conflict-aware reconcile as the interactive reply so offline edits aren't clobbered.
@@ -110,13 +141,13 @@ final class WatchHomeViewModel: ObservableObject {
             loadCache()
             // Queue a background pull so the phone answers once it's reachable again, then updates the
             // screen via the guaranteed-response reconcile — no need for the phone to be foreground.
-            loadingStatus = L10n.Watch.Home.Sync.waiting
+            setLoadingStatus(L10n.Watch.Home.Sync.waiting)
             enqueueGuaranteedConfigPull()
             return
         }
         isLoading = true
         clearError()
-        loadingStatus = L10n.Watch.Sync.starting
+        setLoadingStatus(L10n.Watch.Sync.starting)
         syncProgress = nil
         // Pull servers + any mTLS client certificates as part of the refresh (delivered inline).
         WatchServerSync.request()
@@ -305,7 +336,7 @@ final class WatchHomeViewModel: ObservableObject {
             text: "Apple Watch database sync started (\(totalChunks) chunks)",
             type: .database
         ))
-        loadingStatus = L10n.Watch.Sync.progress(0, totalChunks)
+        setLoadingStatus(L10n.Watch.Sync.progress(0, totalChunks))
         syncProgress = 0
         pullChunk(index: 0)
     }
@@ -335,7 +366,7 @@ final class WatchHomeViewModel: ObservableObject {
         }
         syncAccumulated.append(chunk)
         let received = index + 1
-        loadingStatus = L10n.Watch.Sync.progress(received, syncTotalChunks)
+        setLoadingStatus(L10n.Watch.Sync.progress(received, syncTotalChunks))
         syncProgress = Double(received) / Double(syncTotalChunks)
         if received < syncTotalChunks {
             pullChunk(index: received)
@@ -364,7 +395,7 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         // Reference tables are fresh — now pull the watch config and render everything from the DB.
-        loadingStatus = L10n.Watch.Home.Sync.syncing
+        setLoadingStatus(L10n.Watch.Home.Sync.syncing)
         pullWatchConfig()
     }
 
@@ -453,6 +484,9 @@ final class WatchHomeViewModel: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.isLoading = isLoading
             if !isLoading {
+                // Loading is over — cancel any pending throttled status update and clear immediately.
+                self?.pendingStatusWork?.cancel()
+                self?.pendingStatusWork = nil
                 self?.loadingStatus = nil
                 self?.syncProgress = nil
             }

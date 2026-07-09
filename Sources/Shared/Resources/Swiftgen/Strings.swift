@@ -6278,7 +6278,7 @@ public enum L10n {
       }
     }
     public enum Sync {
-      /// Syncing… %1$d/%2$d
+      /// %1$d/%2$d
       public static func progress(_ p1: Int, _ p2: Int) -> String {
         return L10n.tr("Localizable", "watch.sync.progress", p1, p2)
       }
