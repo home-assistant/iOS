@@ -89,8 +89,44 @@ public class ConnectivityWrapper {
         return cachedNetworkState
     }
 
-    private func fetchNetworkState() async -> NetworkState {
-        let state = await performNetworkStateFetch()
+    /// Maximum time to await a network-info fetch before falling back to the last-known state.
+    /// Overridable in tests.
+    var networkFetchTimeout: TimeInterval = 3
+
+    /// The underlying network-info fetch, before the timeout guard in `fetchNetworkState()`.
+    /// Overridable in tests to simulate a fetch that never completes.
+    lazy var performNetworkStateFetch: () async -> NetworkState = { [weak self] in
+        await self?.systemNetworkStateFetch() ?? NetworkState()
+    }
+
+    func fetchNetworkState() async -> NetworkState {
+        let fetch = performNetworkStateFetch
+        let timeout = networkFetchTimeout
+        let fetched: NetworkState? = await withCheckedContinuation { continuation in
+            let lock = NSLock()
+            var didResume = false
+            let resume: (NetworkState?) -> Void = { value in
+                lock.lock()
+                defer { lock.unlock() }
+                guard !didResume else { return }
+                didResume = true
+                continuation.resume(returning: value)
+            }
+
+            Task { await resume(fetch()) }
+            Task {
+                try? await Task.sleep(nanoseconds: UInt64(timeout * Double(NSEC_PER_SEC)))
+                resume(nil)
+            }
+        }
+
+        guard let state = fetched else {
+            Current.Log.error(
+                "network information fetch timed out after \(timeout)s; keeping last-known network state"
+            )
+            return readLastKnownNetworkState()
+        }
+
         updateLastKnownNetworkState(state)
         return state
     }
@@ -133,7 +169,7 @@ public class ConnectivityWrapper {
         observeConnectivityChanges()
     }
 
-    private func performNetworkStateFetch() async -> NetworkState {
+    private func systemNetworkStateFetch() async -> NetworkState {
         // macOS uses macBridge to retrieve network information, which is always current.
         let connectivity = Current.macBridge.networkConnectivity
         return NetworkState(
@@ -156,7 +192,7 @@ public class ConnectivityWrapper {
         observeConnectivityChanges()
     }
 
-    private func performNetworkStateFetch() async -> NetworkState {
+    private func systemNetworkStateFetch() async -> NetworkState {
         let hotspotNetwork = await withCheckedContinuation { (continuation: CheckedContinuation<
             NEHotspotNetwork?,
             Never
@@ -188,7 +224,7 @@ public class ConnectivityWrapper {
         // Reachability observer is not available for watchOS
     }
 
-    private func performNetworkStateFetch() async -> NetworkState {
+    private func systemNetworkStateFetch() async -> NetworkState {
         // The watch has no network information of its own (the phone-synced SSID was removed).
         NetworkState()
     }

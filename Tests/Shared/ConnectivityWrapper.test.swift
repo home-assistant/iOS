@@ -5,18 +5,24 @@ class ConnectivityWrapperTests: XCTestCase {
     private var previousCurrentNetworkState: (() async -> NetworkState)!
     private var previousLastKnownNetworkState: (() -> NetworkState)!
     private var previousRefreshNetworkInformation: (() async -> Void)!
+    private var previousPerformNetworkStateFetch: (() async -> NetworkState)!
+    private var previousNetworkFetchTimeout: TimeInterval!
 
     override func setUp() {
         super.setUp()
         previousCurrentNetworkState = Current.connectivity.currentNetworkState
         previousLastKnownNetworkState = Current.connectivity.lastKnownNetworkState
         previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        previousPerformNetworkStateFetch = Current.connectivity.performNetworkStateFetch
+        previousNetworkFetchTimeout = Current.connectivity.networkFetchTimeout
     }
 
     override func tearDown() {
         Current.connectivity.currentNetworkState = previousCurrentNetworkState
         Current.connectivity.lastKnownNetworkState = previousLastKnownNetworkState
         Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        Current.connectivity.performNetworkStateFetch = previousPerformNetworkStateFetch
+        Current.connectivity.networkFetchTimeout = previousNetworkFetchTimeout
         super.tearDown()
     }
 
@@ -67,5 +73,36 @@ class ConnectivityWrapperTests: XCTestCase {
         await Current.connectivity.refreshNetworkInformation()
 
         XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "fetched-ssid")
+    }
+
+    func testFetchThatTimesOutPreservesLastKnownState() async {
+        Current.connectivity.updateLastKnownNetworkState(
+            NetworkState(ssid: "cached-ssid", bssid: "cached-bssid")
+        )
+        Current.connectivity.networkFetchTimeout = 0.1
+        Current.connectivity.performNetworkStateFetch = {
+            try? await Task.sleep(nanoseconds: 10 * 1_000_000_000)
+            return NetworkState(ssid: "should-not-be-used")
+        }
+
+        let state = await Current.connectivity.fetchNetworkState()
+
+        XCTAssertEqual(state.ssid, "cached-ssid")
+        XCTAssertEqual(state.bssid, "cached-bssid")
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "cached-ssid")
+    }
+
+    func testFetchThatCompletesUpdatesLastKnownState() async {
+        Current.connectivity.updateLastKnownNetworkState(NetworkState(ssid: "stale-ssid"))
+        Current.connectivity.networkFetchTimeout = 5
+        Current.connectivity.performNetworkStateFetch = {
+            NetworkState(ssid: "fresh-ssid", bssid: "fresh-bssid")
+        }
+
+        let state = await Current.connectivity.fetchNetworkState()
+
+        XCTAssertEqual(state.ssid, "fresh-ssid")
+        XCTAssertEqual(state.bssid, "fresh-bssid")
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "fresh-ssid")
     }
 }
