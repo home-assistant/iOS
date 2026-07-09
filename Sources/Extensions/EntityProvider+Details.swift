@@ -47,6 +47,16 @@ public enum EntityContextSubtitle {
            deviceName.range(of: entityName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
             parts.append(deviceName)
         }
+        // Collapse segments that resolve to the same label so the line doesn't repeat one twice — a
+        // device named after its area is common (e.g. a "Sala" camera in the "Sala" area) and would
+        // otherwise render as "Sala • Sala". Compared in the trimmed, case-/diacritic-insensitive form,
+        // which also drops whitespace-only segments that would show as a blank piece.
+        var seenNormalizedParts = Set<String>()
+        parts = parts.filter { part in
+            let normalized = part.normalizedForAreaComparison
+            guard !normalized.isEmpty else { return false }
+            return seenNormalizedParts.insert(normalized).inserted
+        }
         guard parts.isEmpty else {
             return parts.joined(separator: " • ")
         }

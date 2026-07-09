@@ -200,7 +200,7 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var listContent: some View {
         if viewModel.watchConfig.items.isEmpty {
-            Text(verbatim: L10n.Watch.Labels.noConfigAdd)
+            Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .listRowBackground(Color.clear)

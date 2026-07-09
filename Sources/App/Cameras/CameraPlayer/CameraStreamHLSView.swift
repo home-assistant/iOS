@@ -10,6 +10,7 @@ struct CameraStreamHLSView: View {
     private let cameraEntityId: String
     private let cameraName: String?
     private let onHLSUnsupported: (() -> Void)?
+    private let controlsVisible: Binding<Bool>?
 
     @State private var player: AVPlayer?
     @State private var isLoading = true
@@ -20,11 +21,13 @@ struct CameraStreamHLSView: View {
         server: Server,
         cameraEntityId: String,
         cameraName: String? = nil,
+        controlsVisible: Binding<Bool>? = nil,
         onHLSUnsupported: (() -> Void)? = nil
     ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
+        self.controlsVisible = controlsVisible
         self.onHLSUnsupported = onHLSUnsupported
     }
 
@@ -56,6 +59,10 @@ struct CameraStreamHLSView: View {
                         .padding(.horizontal)
                 }
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            controlsVisible?.wrappedValue.toggle()
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)

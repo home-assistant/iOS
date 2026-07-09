@@ -9,14 +9,21 @@ struct CameraMJPEGPlayerView: View {
     private let server: Server
     private let cameraEntityId: String
     private let cameraName: String?
+    private let controlsVisible: Binding<Bool>?
 
     @State private var isLoading = true
     @State private var errorMessage: String?
 
-    init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
+    init(
+        server: Server,
+        cameraEntityId: String,
+        cameraName: String? = nil,
+        controlsVisible: Binding<Bool>? = nil
+    ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
+        self.controlsVisible = controlsVisible
     }
 
     var body: some View {
@@ -51,6 +58,10 @@ struct CameraMJPEGPlayerView: View {
                         .padding(.horizontal)
                 }
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            controlsVisible?.wrappedValue.toggle()
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)

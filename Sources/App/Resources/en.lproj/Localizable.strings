@@ -198,6 +198,9 @@
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.unknown" = "Unknown error";
 "camera_player.notification.body" = "Tap to open camera";
+"camera_player.talkback.microphone_denied" = "Microphone access is required for two-way audio. Enable it in Settings.";
+"camera_player.talkback.start" = "Start talking";
+"camera_player.talkback.stop" = "Stop talking";
 "cameras.no_server_found" = "No server found for camera: %@";
 "cancel_label" = "Cancel";
 "carPlay.action.execute.in_progress" = "Executing...";
@@ -1823,7 +1826,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.trailing.description" = "The text to display on the trailing edge of the gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
-"watch.labels.no_config_add" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.";
+"watch.labels.no_config_add_plus" = "With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.auto" = "Auto";
@@ -1848,6 +1851,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.sync.starting" = "Starting sync…";
 "watch.sync.progress" = "%1$d/%2$d";
 "watch.sync.error.unreachable" = "Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.";
+"watch.sync.error.connection_failed" = "We couldn't connect to your iPhone. Open the Home Assistant app on your iPhone, then tap the reload button here on your Watch.";
 "watch.sync.error.generic" = "Sync failed. Please try again.";
 "watch.sync.error.data" = "Received incomplete data from iPhone. Please try again.";
 "watch.sync.retry" = "Try Again";
