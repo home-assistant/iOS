@@ -111,34 +111,39 @@ extension WebViewController {
                 }
             }
 
-            guard let self else { return }
-            // `webviewURL()` refreshes the network information (e.g. current SSID) before
-            // evaluating which URL is active.
-            guard let webviewURL = await server.webviewURL() else {
-                guard !Task.isCancelled else { return }
-                Current.Log.info("not loading, no url")
-                showNoActiveURLError()
-                return
-            }
-
-            guard !Task.isCancelled else { return }
-
-            hideNoActiveURLError()
-
-            guard webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false else {
-                // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
-                webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
-                return
-            }
-
-            // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-            let request = URLRequest(url: await resolvedLoadURL(for: webviewURL))
-            // Re-check the background state too: backgrounding mid-flight could otherwise start a
-            // navigation that stalls on suspension, leaving webView.url pointing at a page that
-            // never loaded (which would defeat the empty-web-view checks above and the fallback).
-            guard !Task.isCancelled, !isAppInBackground() else { return }
-            load(request: request)
+            await self?.performLoadActiveURL()
         }
+    }
+
+    /// The async body of `loadActiveURLIfNeeded()`; only ever runs as `loadActiveURLTask`, and
+    /// re-checks cancellation after every await so a replaced attempt cannot apply stale results.
+    private func performLoadActiveURL() async {
+        // `webviewURL()` refreshes the network information (e.g. current SSID) before
+        // evaluating which URL is active.
+        guard let webviewURL = await server.webviewURL() else {
+            guard !Task.isCancelled else { return }
+            Current.Log.info("not loading, no url")
+            showNoActiveURLError()
+            return
+        }
+
+        guard !Task.isCancelled else { return }
+
+        hideNoActiveURLError()
+
+        guard webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false else {
+            // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
+            webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
+            return
+        }
+
+        // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
+        let request = URLRequest(url: await resolvedLoadURL(for: webviewURL))
+        // Re-check the background state too: backgrounding mid-flight could otherwise start a
+        // navigation that stalls on suspension, leaving webView.url pointing at a page that
+        // never loaded (which would defeat the empty-web-view checks above and the fallback).
+        guard !Task.isCancelled, !isAppInBackground() else { return }
+        load(request: request)
     }
 
     /// Determines which URL to load for the active server: the kiosk dashboard (when applicable), the
