@@ -299,6 +299,16 @@ public lazy var webhooks = with(WebhookManager()) {
 - **Always add a `#Preview`**: every SwiftUI view must ship with a preview so it can be checked quickly in Xcode.
 - **Snapshot tests for new features**: any new feature that adds UI must include snapshot tests (see [Snapshot Testing](#snapshot-testing)).
 
+#### Design System & Reusable Components (`HADesignSystem`)
+
+Reusable, app-agnostic UI lives in the **`HADesignSystem`** Swift package (`Sources/HADesignSystem`), **not** in `Sources/App`. `Shared` re-exports it (`@_exported import HADesignSystem`), so anything that already does `import Shared` sees the design system with no extra import.
+
+- **Build new reusable components in the package, not the app.** Buttons, cards, inputs, controls, indicators, sheets, tokens, colors, and styles belong in `HADesignSystem`. Only genuinely one-off, app-specific views stay in `Sources/App`.
+- **Keep package code app-agnostic.** No `Current` (the World), no `L10n` product copy, no `Server`/app models, no `MaterialDesignIcons`. Inject text, colors, icons, and data through `init` parameters instead. (This is why a few still-coupled components remain in `Shared` for now.)
+- **Guard iOS-only code.** The package also builds for watchOS and SPM has no per-file target membership, so wrap components using iOS-only APIs (UIKit `UIScreen`, `UIColor.label`, etc.) in `#if !os(watchOS)`.
+- **Semantic colors are code-defined** in `Color+Semantic.swift` on `ShapeStyle where Self == Color` (so both `Color.haPrimary` and `.foregroundStyle(.haPrimary)` resolve). Add new semantic colors there, not to an asset catalog.
+- **Register every new component in `DesignSystemComponent`** (categorized via `ComponentCategory`) so it shows up in `ComponentsLibraryView`, the in-app components explorer/glossary.
+
 ### Assets
 
 - SF Symbols via `SFSafeSymbols` library (`Image(systemSymbol: .house)`), never the string-based API
