@@ -37,6 +37,14 @@ Setup Continous Integration
 
 
 
+### install_git_hooks
+
+```sh
+[bundle exec] fastlane install_git_hooks
+```
+
+Install the git pre-commit hook that runs autocorrect before each commit
+
 ### download_provisioning_profiles
 
 ```sh
