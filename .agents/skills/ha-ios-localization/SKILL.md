@@ -8,7 +8,7 @@ description: Localization via SwiftGen-generated L10n accessors and the en.lproj
 ## How Strings Work
 
 1. **Add strings** to the English `.strings` file: `Sources/App/Resources/en.lproj/Localizable.strings`
-2. **SwiftGen auto-generates** type-safe accessors in `Sources/Shared/Resources/SwiftGen/Strings.swift` when building the app
+2. **SwiftGen auto-generates** type-safe accessors in `Sources/Shared/Resources/Swiftgen/Strings.swift` when building the app
 3. **Use generated accessors** via the `L10n` enum:
 
 ```swift

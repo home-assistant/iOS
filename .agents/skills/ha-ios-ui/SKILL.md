@@ -1,6 +1,6 @@
 ---
 name: ha-ios-ui
-description: SwiftUI and UIKit UI conventions for Home Assistant iOS. Use when building views, choosing SwiftUI vs UIKit, bridging with embeddedInHostingController(), or following the one-struct-per-file, inline-body, and #Preview rules.
+description: "SwiftUI and UIKit UI conventions for Home Assistant iOS. Use when building views, choosing SwiftUI vs UIKit, bridging with embeddedInHostingController(), or following the one-struct-per-file, inline-body, and #Preview rules."
 ---
 
 # UI Patterns
