@@ -11,6 +11,7 @@ extension WebViewController {
         // Deliberately does not mark disconnected: a navigation starting isn't a lost connection. Only the
         // frontend (via the external bus) or a hard reload (`reload()`/`refresh()`) sets disconnected.
         overlayState?.isLoading = true
+        didHandleServerErrorResponse = false
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
     }
 
@@ -42,6 +43,10 @@ extension WebViewController {
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         refreshControl.endRefreshing()
         overlayState?.isLoading = false
+        if didHandleServerErrorResponse {
+            didHandleServerErrorResponse = false
+            return
+        }
         if let err = error as? URLError {
             if err.code != .cancelled {
                 Current.Log.error("Failure during nav: \(err)")
@@ -57,6 +62,11 @@ extension WebViewController {
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         refreshControl.endRefreshing()
         overlayState?.isLoading = false
+
+        if didHandleServerErrorResponse {
+            didHandleServerErrorResponse = false
+            return
+        }
 
         let nsError = error as NSError
         let shouldShowError: Bool
@@ -127,16 +137,25 @@ extension WebViewController {
 
         lastNavigationWasServerError = true
 
-        // error response, let's inspect if it's restoring a page or normal navigation
-        if navigationResponse.response.url != initialURL {
-            // just a normal loading error
+        let cfMitigated = httpResponse.value(forHTTPHeaderField: "cf-mitigated")
+        let cfRay = httpResponse.value(forHTTPHeaderField: "cf-ray") ?? "-"
+        Current.Log.error(
+            "Main frame HTTP \(httpResponse.statusCode) at \(navigationResponse.response.url?.absoluteString ?? "?"), cf-ray=\(cfRay), cf-mitigated=\(cfMitigated ?? "-")"
+        )
+
+        switch Self.decisionForMainFrameErrorResponse(
+            statusCode: httpResponse.statusCode,
+            responseURL: navigationResponse.response.url,
+            initialURL: initialURL,
+            cfMitigated: cfMitigated
+        ) {
+        case .allow:
             decisionHandler(.allow)
-        } else {
+        case .reloadDefaultURL:
             // first: clear that saved url, it's bad
             initialURL = nil
 
             // it's for the restored page, let's load the default url
-
             Task { [weak self] in
                 if let self, let webviewURL = await server.webviewURL() {
                     decisionHandler(.cancel)
@@ -146,6 +165,12 @@ extension WebViewController {
                     decisionHandler(.allow)
                 }
             }
+        case .showEmptyState:
+            didHandleServerErrorResponse = true
+            decisionHandler(.cancel)
+            latestLoadError = Self.serverErrorLoadError(for: navigationResponse.response.url)
+            connectionState = Self.connectionStateForInterceptedServerError(current: connectionState)
+            showEmptyState()
         }
     }
 
@@ -260,5 +285,45 @@ extension WebViewController: UIGestureRecognizerDelegate {
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
         true
+    }
+}
+
+extension WebViewController {
+    enum MainFrameErrorResponseDecision: Equatable {
+        case allow
+        case reloadDefaultURL
+        case showEmptyState
+    }
+
+    static func decisionForMainFrameErrorResponse(
+        statusCode: Int,
+        responseURL: URL?,
+        initialURL: URL?,
+        cfMitigated: String?
+    ) -> MainFrameErrorResponseDecision {
+        if let initialURL, responseURL == initialURL {
+            return .reloadDefaultURL
+        }
+        if cfMitigated?.lowercased() == "challenge" {
+            return .allow
+        }
+        guard statusCode >= 500 else {
+            return .allow
+        }
+        return .showEmptyState
+    }
+
+    static func connectionStateForInterceptedServerError(
+        current: FrontEndConnectionState
+    ) -> FrontEndConnectionState {
+        current == .authInvalid ? .authInvalid : .disconnected
+    }
+
+    static func serverErrorLoadError(for url: URL?) -> URLError {
+        guard let url else { return URLError(.badServerResponse) }
+        return URLError(.badServerResponse, userInfo: [
+            NSURLErrorFailingURLErrorKey: url,
+            NSURLErrorFailingURLStringErrorKey: url.absoluteString,
+        ])
     }
 }

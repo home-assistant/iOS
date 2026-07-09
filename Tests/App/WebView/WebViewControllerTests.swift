@@ -155,6 +155,94 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(handler.cleanCacheCallCount, 0)
     }
 
+    func testServerErrorResponseDecisionShowsEmptyStateForProxyServerErrors() {
+        for statusCode in [500, 502, 503, 521, 522, 523, 524] {
+            let decision = WebViewController.decisionForMainFrameErrorResponse(
+                statusCode: statusCode,
+                responseURL: URL(string: "https://example.com/lovelace"),
+                initialURL: nil,
+                cfMitigated: nil
+            )
+
+            XCTAssertEqual(decision, .showEmptyState, "expected empty state for HTTP \(statusCode)")
+        }
+    }
+
+    func testServerErrorResponseDecisionAllowsClientErrorsToRender() {
+        for statusCode in [400, 401, 403, 404, 429] {
+            let decision = WebViewController.decisionForMainFrameErrorResponse(
+                statusCode: statusCode,
+                responseURL: URL(string: "https://example.com/lovelace"),
+                initialURL: nil,
+                cfMitigated: nil
+            )
+
+            XCTAssertEqual(decision, .allow, "expected allow for HTTP \(statusCode)")
+        }
+    }
+
+    func testServerErrorResponseDecisionAllowsCloudflareChallengeToRender() {
+        let decision = WebViewController.decisionForMainFrameErrorResponse(
+            statusCode: 503,
+            responseURL: URL(string: "https://example.com/lovelace"),
+            initialURL: nil,
+            cfMitigated: "Challenge"
+        )
+
+        XCTAssertEqual(decision, .allow)
+    }
+
+    func testServerErrorResponseDecisionReloadsDefaultURLForRestoredPage() {
+        let restoredURL = URL(string: "https://example.com/history")!
+
+        for statusCode in [404, 500] {
+            let decision = WebViewController.decisionForMainFrameErrorResponse(
+                statusCode: statusCode,
+                responseURL: restoredURL,
+                initialURL: restoredURL,
+                cfMitigated: nil
+            )
+
+            XCTAssertEqual(decision, .reloadDefaultURL, "expected reload for restored page on HTTP \(statusCode)")
+        }
+    }
+
+    func testServerErrorLoadErrorCarriesFailingURL() {
+        let url = URL(string: "https://example.com/lovelace")!
+
+        let error = WebViewController.serverErrorLoadError(for: url)
+
+        XCTAssertEqual(error.code, .badServerResponse)
+        XCTAssertEqual(error.failingURL, url)
+    }
+
+    func testInterceptedServerErrorMarksDisconnectedFromConnectedOrUnknown() {
+        for current in [FrontEndConnectionState.connected, .disconnected, .unknown] {
+            let resolved = WebViewController.connectionStateForInterceptedServerError(current: current)
+
+            XCTAssertEqual(resolved, .disconnected, "expected disconnected when current is \(current)")
+        }
+    }
+
+    func testInterceptedServerErrorPreservesAuthInvalid() {
+        let resolved = WebViewController.connectionStateForInterceptedServerError(current: .authInvalid)
+
+        XCTAssertEqual(resolved, .authInvalid)
+    }
+
+    func testHandledServerErrorResponseSuppressesFollowUpProvisionalFailure() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.didHandleServerErrorResponse = true
+        sut.latestLoadError = URLError(.badServerResponse)
+
+        sut.webView(WKWebView(), didFailProvisionalNavigation: nil, withError: URLError(.timedOut))
+
+        XCTAssertFalse(sut.didHandleServerErrorResponse)
+        XCTAssertEqual((sut.latestLoadError as? URLError)?.code, .badServerResponse)
+    }
+
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
