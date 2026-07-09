@@ -1716,18 +1716,10 @@
 		JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
 		42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D192FFE5C20004EB33B /* Sodium */; };
 		42886D2C2FFE8815004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2B2FFE8815004EB33B /* HAKit */; };
-		42886D302FFE881B004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2F2FFE881B004EB33B /* PromiseKit */; };
 		42886D3E2FFE884E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3D2FFE884E004EB33B /* HAKit */; };
-		42886D422FFE8853004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D412FFE8853004EB33B /* PromiseKit */; };
 		42886D442FFE885E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D432FFE885E004EB33B /* HAKit */; };
-		42886D482FFE8865004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D472FFE8865004EB33B /* PromiseKit */; };
 		42886D4A2FFE8875004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D492FFE8875004EB33B /* HAKit */; };
-		42886D4C2FFE887B004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4B2FFE887B004EB33B /* PromiseKit */; };
-		42886D4E2FFE8887004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4D2FFE8887004EB33B /* PromiseKit */; };
-		42886D502FFE8890004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4F2FFE8890004EB33B /* PromiseKit */; };
-		42886D522FFE889A004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D512FFE889A004EB33B /* PromiseKit */; };
 		42886D5C2FFE88CD004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D5B2FFE88CD004EB33B /* HAKit */; };
-		42886D602FFE88D5004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D5F2FFE88D5004EB33B /* PromiseKit */; };
 		42886D652FFE8C0E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D642FFE8C0E004EB33B /* HAKit */; };
 		42A1F0B12E000000000000B1 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A12E000000000000A1 /* Alamofire */; };
 		42A1F0B42E000000000000B4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A42E000000000000A4 /* Alamofire */; };
@@ -3640,7 +3632,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42886D522FFE889A004EB33B /* PromiseKit in Frameworks */,
 				1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */,
 				5E4269EB8497773727C5F947 /* RealmSwift in Frameworks */,
 			);
@@ -3660,7 +3651,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */,
-				42886D422FFE8853004EB33B /* PromiseKit in Frameworks */,
 				42886D3E2FFE884E004EB33B /* HAKit in Frameworks */,
 				1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */,
 				1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */,
@@ -3673,7 +3663,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42886D482FFE8865004EB33B /* PromiseKit in Frameworks */,
 				42886D442FFE885E004EB33B /* HAKit in Frameworks */,
 				11B6B59429497C5800B8B552 /* Shared.framework in Frameworks */,
 				3B5B2D52F2408473F8BFA79C /* RealmSwift in Frameworks */,
@@ -3684,7 +3673,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42886D4C2FFE887B004EB33B /* PromiseKit in Frameworks */,
 				42886D4A2FFE8875004EB33B /* HAKit in Frameworks */,
 				11B9290B266F145000786588 /* NetworkExtension.framework in Frameworks */,
 				11B92A5B266F17AA00786588 /* Shared.framework in Frameworks */,
@@ -3735,7 +3723,6 @@
 				42FA000000000000000C0009 /* SFSafeSymbols in Frameworks */,
 				CEA1C4A10000000000000041 /* KeychainAccess in Frameworks */,
 				42A1F0B42E000000000000B4 /* Alamofire in Frameworks */,
-				42886D4E2FFE8887004EB33B /* PromiseKit in Frameworks */,
 				42FA000000000000000C0002 /* WebRTC in Frameworks */,
 				B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */,
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
@@ -3752,7 +3739,6 @@
 				50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */,
 				CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */,
 				42A1F0B12E000000000000B1 /* Alamofire in Frameworks */,
-				42886D302FFE881B004EB33B /* PromiseKit in Frameworks */,
 				CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */,
 				42991E612FF4474500C2C76B /* ImproviOS in Frameworks */,
 				42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */,
@@ -3826,7 +3812,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42886D502FFE8890004EB33B /* PromiseKit in Frameworks */,
 				1112EA93271B78690038BBFC /* UserNotifications.framework in Frameworks */,
 				D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */,
 				2ACC292CBD70CA7E061DE1D9 /* RealmSwift in Frameworks */,
@@ -3862,7 +3847,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
-				42886D602FFE88D5004EB33B /* PromiseKit in Frameworks */,
 				42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */,
 				42886D5C2FFE88CD004EB33B /* HAKit in Frameworks */,
 				426BD7722FFE54E8001378A4 /* OHHTTPStubs in Frameworks */,
@@ -7760,7 +7744,6 @@
 			);
 			name = "Extensions-Share";
 			packageProductDependencies = (
-				42886D512FFE889A004EB33B /* PromiseKit */,
 				7D4A7DC5D24363D8EDCF61D9 /* RealmSwift */,
 			);
 			productName = ShareExtension;
@@ -7801,7 +7784,6 @@
 			packageProductDependencies = (
 				C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */,
 				42886D3D2FFE884E004EB33B /* HAKit */,
-				42886D412FFE8853004EB33B /* PromiseKit */,
 				A49460AC07F40DB7EE5373E8 /* RealmSwift */,
 			);
 			productName = WidgetsExtension;
@@ -7824,7 +7806,6 @@
 			name = "Extensions-Matter";
 			packageProductDependencies = (
 				42886D432FFE885E004EB33B /* HAKit */,
-				42886D472FFE8865004EB33B /* PromiseKit */,
 				70600C4E2473CC736B505F6D /* RealmSwift */,
 			);
 			productName = "Extensions-Matter";
@@ -7848,7 +7829,6 @@
 			name = "Extensions-PushProvider";
 			packageProductDependencies = (
 				42886D492FFE8875004EB33B /* HAKit */,
-				42886D4B2FFE887B004EB33B /* PromiseKit */,
 				8D113496DA6B709CFA136779 /* RealmSwift */,
 			);
 			productName = PushProvider;
@@ -7915,7 +7895,6 @@
 				42FA000000000000000C0008 /* SFSafeSymbols */,
 				42A1F0A42E000000000000A4 /* Alamofire */,
 				CEA1C4A10000000000000040 /* KeychainAccess */,
-				42886D4D2FFE8887004EB33B /* PromiseKit */,
 				42886D642FFE8C0E004EB33B /* HAKit */,
 				42FA000000000000000C0001 /* WebRTC */,
 				36767239772C4D819C72C063 /* RealmSwift */,
@@ -7959,7 +7938,6 @@
 				EBD991757B454B819925F6B9 /* SFSafeSymbols */,
 				CEA1C4A10000000000000010 /* KeychainAccess */,
 				42886D2B2FFE8815004EB33B /* HAKit */,
-				42886D2F2FFE881B004EB33B /* PromiseKit */,
 				4C014BAFE0BC019E4055ED11 /* RealmSwift */,
 				CA11B4CC0000000000000010 /* CallbackURLKit */,
 				42991E602FF4474500C2C76B /* ImproviOS */,
@@ -8085,7 +8063,6 @@
 			);
 			name = "Extensions-NotificationService";
 			packageProductDependencies = (
-				42886D4F2FFE8890004EB33B /* PromiseKit */,
 				AB784C585C188EB65EA62A21 /* RealmSwift */,
 			);
 			productName = APNSAttachmentService;
@@ -8166,7 +8143,6 @@
 				42A1F0A62E000000000000A6 /* Alamofire */,
 				42886D192FFE5C20004EB33B /* Sodium */,
 				42886D5B2FFE88CD004EB33B /* HAKit */,
-				42886D5F2FFE88D5004EB33B /* PromiseKit */,
 				DDD36A352E3698887FBF85D9 /* RealmSwift */,
 				426BD7712FFE54E8001378A4 /* OHHTTPStubs */,
 				426BD7732FFE54E8001378A4 /* OHHTTPStubsSwift */,
@@ -12235,65 +12211,25 @@
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D2F2FFE881B004EB33B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
-		};
 		42886D3D2FFE884E004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
-		};
-		42886D412FFE8853004EB33B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
 		};
 		42886D432FFE885E004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D472FFE8865004EB33B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
-		};
 		42886D492FFE8875004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D4B2FFE887B004EB33B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
-		};
-		42886D4D2FFE8887004EB33B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
-		};
-		42886D4F2FFE8890004EB33B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
-		};
-		42886D512FFE889A004EB33B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
-		};
 		42886D5B2FFE88CD004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
-		};
-		42886D5F2FFE88D5004EB33B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
 		};
 		42886D642FFE8C0E004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
