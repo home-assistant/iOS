@@ -1,8 +1,9 @@
-import ClockKit
 import PromiseKit
 import Shared
+import UIKit
 import UserNotifications
 import WatchKit
+import WidgetKit
 import XCGLogger
 
 @main
@@ -38,6 +39,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
 
         setupWatchCommunicator()
+        WatchWidgetComplicationSnapshotStore.update()
 
         // Re-apply any watch-local "Always use" URL choices to the persisted servers (their
         // connection info doesn't carry the override across launches/syncs).
@@ -113,35 +115,21 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
     }
 
-    // Triggered when a complication is tapped
-    func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
-        let complication: WatchComplication?
-
-        if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
-           identifier != CLKDefaultComplicationIdentifier {
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: identifier
-            )
-        } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
-                  let clkFamily = date.complicationFamilyFromEncodedDate {
-            let family = ComplicationGroupMember(family: clkFamily)
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: family.rawValue
-            )
+    func handle(_ userActivity: NSUserActivity) {
+        if isAssistWidgetURL(userActivity.webpageURL) {
+            launchAssist()
         } else {
-            complication = nil
+            Current.Log.verbose("Unhandled user activity: \(userActivity.activityType)")
         }
+    }
 
-        if let complication {
-            Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
-        } else if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
-                  identifier == AssistDefaultComplication.defaultComplicationId {
-            NotificationCenter.default.post(name: AssistDefaultComplication.launchNotification, object: nil)
-        } else {
-            Current.Log.verbose("unknown or no complication launched the app")
-        }
+    private func launchAssist() {
+        NotificationCenter.default.post(name: AssistDefaultComplication.launchNotification, object: nil)
+    }
+
+    private func isAssistWidgetURL(_ url: URL?) -> Bool {
+        guard let url else { return false }
+        return ["homeassistant", "homeassistant-dev"].contains(url.scheme) && url.host == "assist"
     }
 
     func setupWatchCommunicator() {
@@ -261,6 +249,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             }
         }
 
+        WatchWidgetComplicationSnapshotStore.update()
         updateComplications()
     }
 
@@ -276,6 +265,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }.ensure { [self] in
             isUpdatingComplications = false
         }.ensure { [self] in
+            WatchWidgetComplicationSnapshotStore.update()
             endWatchConnectivityBackgroundTaskIfNecessary()
         }.cauterize()
     }
@@ -336,5 +326,203 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
         }.ensure {
             completionHandler()
         }.cauterize()
+    }
+}
+
+private enum WatchWidgetComplicationSnapshotStore {
+    static var kind: String {
+        AppConstants.BundleID + ".watchkitapp.WatchWidgets"
+    }
+
+    static let defaultsKey = "watchWidgetComplicationSnapshots"
+
+    static func update() {
+        MaterialDesignIcons.register()
+
+        let userComplications = Current.realm().objects(WatchComplication.self)
+            .sorted(byKeyPath: "CreatedAt")
+            .map(WatchWidgetComplicationSnapshot.init(complication:))
+
+        let snapshots = [WatchWidgetComplicationSnapshot.placeholder, .assist] + Array(userComplications)
+
+        guard let data = try? JSONEncoder().encode(snapshots),
+              let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else {
+            Current.Log.error("Failed to encode watch widget complication snapshots")
+            return
+        }
+
+        defaults.set(data, forKey: defaultsKey)
+        WidgetCenter.shared.reloadTimelines(ofKind: kind)
+        WidgetCenter.shared.invalidateConfigurationRecommendations()
+    }
+}
+
+private struct WatchWidgetComplicationSnapshot: Codable {
+    static let iconRenderSize = CGSize(width: 96, height: 96)
+
+    let id: String
+    let family: String
+    let title: String
+    let subtitle: String
+    let inlineText: String
+    let fraction: Double?
+    let tint: String?
+    let iconData: Data?
+
+    init(
+        id: String,
+        family: String,
+        title: String,
+        subtitle: String,
+        inlineText: String,
+        fraction: Double?,
+        tint: String?,
+        iconData: Data?
+    ) {
+        self.id = id
+        self.family = family
+        self.title = title
+        self.subtitle = subtitle
+        self.inlineText = inlineText
+        self.fraction = fraction
+        self.tint = tint
+        self.iconData = iconData
+    }
+
+    init(complication: WatchComplication) {
+        let textAreas = Self.textAreas(from: complication.Data)
+        let renderedTextAreas = Self.renderedTextAreas(from: complication.Data)
+        let preferredText = Self.firstText(
+            from: renderedTextAreas,
+            textAreas,
+            keys: ["Center", "InsideRing", "Line1", "Header", "Body1", "Row1Column1"]
+        )
+        let secondaryText = Self.firstText(
+            from: renderedTextAreas,
+            textAreas,
+            keys: ["Line2", "Body2", "Row1Column2", "Row2Column1", "Row2Column2"]
+        )
+        let resolvedTitle = preferredText ?? complication.displayName
+        let resolvedFraction = Self.fraction(from: complication.Data)
+
+        self.init(
+            id: complication.identifier,
+            family: complication.Family.rawValue,
+            title: resolvedTitle,
+            subtitle: secondaryText ?? complication.Template.style,
+            inlineText: [resolvedTitle, secondaryText].compactMap { $0 }.joined(separator: " "),
+            fraction: resolvedFraction,
+            tint: Self.tint(from: complication.Data),
+            iconData: Self.iconData(from: complication.Data)
+        )
+    }
+
+    static var placeholder: WatchWidgetComplicationSnapshot {
+        .init(
+            id: "placeholder",
+            family: "",
+            title: "Home Assistant",
+            subtitle: "Complication",
+            inlineText: "Home Assistant",
+            fraction: nil,
+            tint: nil,
+            iconData: UIImage(named: "RoundLogo")?.pngData()
+        )
+    }
+
+    static var assist: WatchWidgetComplicationSnapshot {
+        .init(
+            id: AssistDefaultComplication.defaultComplicationId,
+            family: "",
+            title: AssistDefaultComplication.title,
+            subtitle: "Home Assistant",
+            inlineText: AssistDefaultComplication.title,
+            fraction: nil,
+            tint: nil,
+            iconData: MaterialDesignIcons.messageProcessingOutlineIcon
+                .image(ofSize: iconRenderSize, color: AppConstants.tintColor)
+                .pngData()
+        )
+    }
+
+    private static func textAreas(from data: [String: Any]) -> [String: String] {
+        guard let textAreas = data["textAreas"] as? [String: [String: Any]] else { return [:] }
+
+        return textAreas.compactMapValues { $0["text"] as? String }
+    }
+
+    private static func renderedTextAreas(from data: [String: Any]) -> [String: String] {
+        guard let rendered = data["rendered"] as? [String: Any] else { return [:] }
+
+        return rendered.reduce(into: [String: String]()) { result, item in
+            guard item.key.hasPrefix("textArea,") else { return }
+
+            let key = String(item.key.dropFirst("textArea,".count))
+            result[key] = String(describing: item.value)
+        }
+    }
+
+    private static func firstText(
+        from renderedTextAreas: [String: String],
+        _ textAreas: [String: String],
+        keys: [String]
+    ) -> String? {
+        for key in keys {
+            if let rendered = renderedTextAreas[key], rendered.isEmpty == false {
+                return rendered
+            } else if let configured = textAreas[key], configured.isEmpty == false {
+                return configured
+            }
+        }
+
+        return nil
+    }
+
+    private static func fraction(from data: [String: Any]) -> Double? {
+        if let rendered = data["rendered"] as? [String: Any] {
+            if let ringValue = rendered["ring"].flatMap(percentileNumber(from:)) {
+                return ringValue
+            } else if let gaugeValue = rendered["gauge"].flatMap(percentileNumber(from:)) {
+                return gaugeValue
+            }
+        }
+
+        if let ring = data["ring"] as? [String: String],
+           let value = ring["ring_value"].flatMap(percentileNumber(from:)) {
+            return value
+        }
+
+        if let gauge = data["gauge"] as? [String: String], let value = gauge["gauge"].flatMap(percentileNumber(from:)) {
+            return value
+        }
+
+        return nil
+    }
+
+    private static func percentileNumber(from value: Any) -> Double? {
+        WatchComplication.percentileNumber(from: value).map(Double.init)
+    }
+
+    private static func tint(from data: [String: Any]) -> String? {
+        if let ring = data["ring"] as? [String: String], let color = ring["ring_color"] {
+            return color
+        }
+
+        if let gauge = data["gauge"] as? [String: String], let color = gauge["gauge_color"] {
+            return color
+        }
+
+        return nil
+    }
+
+    private static func iconData(from data: [String: Any]) -> Data? {
+        guard let icon = data["icon"] as? [String: String], let name = icon["icon"] else {
+            return nil
+        }
+
+        let color = icon["icon_color"].map { UIColor($0) } ?? AppConstants.tintColor
+        return MaterialDesignIcons(named: name)
+            .image(ofSize: iconRenderSize, color: color)
+            .pngData()
     }
 }
