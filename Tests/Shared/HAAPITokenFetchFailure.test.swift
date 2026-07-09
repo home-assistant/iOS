@@ -1,8 +1,34 @@
 import Alamofire
 import HAKit
 import HAKit_Mocks
+import PromiseKit
 @testable import Shared
 import XCTest
+
+class AuthenticationAPIActiveURLTests: XCTestCase {
+    /// Websocket auth waits on token refresh, so token refresh must never depend on the async
+    /// network-info path: here that path hangs outright, and the refresh must still settle.
+    func testRefreshTokenSettlesEvenWhenNetworkInfoRefreshHangs() {
+        let previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        defer { Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation }
+        Current.connectivity.refreshNetworkInformation = {
+            try? await Task.sleep(nanoseconds: 60 * 1_000_000_000)
+        }
+
+        let server = Server.fake(update: { info in
+            info.connection.set(address: nil, for: .external)
+        })
+        let api = AuthenticationAPI(server: server)
+
+        let rejected = expectation(description: "refresh rejected without an active URL")
+        api.refreshTokenWith(tokenInfo: server.info.token).catch { error in
+            XCTAssertTrue(error is ServerConnectionError)
+            rejected.fulfill()
+        }
+
+        wait(for: [rejected], timeout: 1)
+    }
+}
 
 class HAAPITokenFetchFailureTests: XCTestCase {
     private func drainMainQueue(cycles: Int = 2) {
