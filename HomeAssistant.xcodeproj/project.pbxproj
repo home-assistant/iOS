@@ -441,6 +441,8 @@
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		42886DEE0000000000000011 /* PromiseKitDynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2F2FFE881B004EB33B /* PromiseKitDynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		42886DEE0000000000000012 /* PromiseKitDynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 42886D352FFE882F004EB33B /* PromiseKitDynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1AA7D3A6102D7CC4601EEC6F /* KioskSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70F7D3E8E4B489FA1514E7C /* KioskSettingsViewModel.swift */; };
 		1BACC6CFCE37E6AA2DC862F4 /* HAWatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8762CF6B50A0FB05013908A /* HAWatchConnectivity.swift */; };
@@ -835,22 +837,35 @@
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
 		42886D162FFE5C12004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D152FFE5C12004EB33B /* Sodium */; };
 		42886D182FFE5C19004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D172FFE5C19004EB33B /* Sodium */; };
+		42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D192FFE5C20004EB33B /* Sodium */; };
 		42886D212FFE6D87004EB33B /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 42886D202FFE64DF004EB33B /* Package.resolved */; };
 		42886D232FFE701C004EB33B /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42886D222FFE701C004EB33B /* AcknowledgementsView.swift */; };
 		42886D272FFE701C004EB33B /* AcknowledgementPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42886D262FFE701C004EB33B /* AcknowledgementPackage.swift */; };
+		42886D2C2FFE8815004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2B2FFE8815004EB33B /* HAKit */; };
+		42886D302FFE881B004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2F2FFE881B004EB33B /* PromiseKitDynamic */; };
 		42886D322FFE8829004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D312FFE8829004EB33B /* HAKit */; };
-		42886D342FFE8829004EB33B /* HAKit+PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D332FFE8829004EB33B /* HAKit+PromiseKit */; };
-		42886D362FFE882F004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D352FFE882F004EB33B /* PromiseKit */; };
+		42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D352FFE882F004EB33B /* PromiseKitDynamic */; };
 		42886D382FFE883A004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D372FFE883A004EB33B /* HAKit */; };
-		42886D3A2FFE883A004EB33B /* HAKit+PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D392FFE883A004EB33B /* HAKit+PromiseKit */; };
-		42886D3C2FFE8841004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3B2FFE8841004EB33B /* PromiseKit */; };
-		42886D542FFE88AB004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D532FFE88AB004EB33B /* PromiseKit */; };
+		42886D3C2FFE8841004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3B2FFE8841004EB33B /* PromiseKitDynamic */; };
+		42886D3E2FFE884E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3D2FFE884E004EB33B /* HAKit */; };
+		42886D422FFE8853004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D412FFE8853004EB33B /* PromiseKitDynamic */; };
+		42886D442FFE885E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D432FFE885E004EB33B /* HAKit */; };
+		42886D482FFE8865004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D472FFE8865004EB33B /* PromiseKitDynamic */; };
+		42886D4A2FFE8875004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D492FFE8875004EB33B /* HAKit */; };
+		42886D4C2FFE887B004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4B2FFE887B004EB33B /* PromiseKitDynamic */; };
+		42886D4E2FFE8887004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4D2FFE8887004EB33B /* PromiseKitDynamic */; };
+		42886D502FFE8890004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4F2FFE8890004EB33B /* PromiseKitDynamic */; };
+		42886D522FFE889A004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D512FFE889A004EB33B /* PromiseKitDynamic */; };
+		42886D542FFE88AB004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D532FFE88AB004EB33B /* PromiseKitDynamic */; };
 		42886D562FFE88BE004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D552FFE88BE004EB33B /* HAKit */; };
 		42886D582FFE88BE004EB33B /* HAKit+Mocks in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D572FFE88BE004EB33B /* HAKit+Mocks */; };
-		42886D5A2FFE88C6004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D592FFE88C6004EB33B /* PromiseKit */; };
+		42886D5A2FFE88C6004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D592FFE88C6004EB33B /* PromiseKitDynamic */; };
+		42886D5C2FFE88CD004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D5B2FFE88CD004EB33B /* HAKit */; };
 		42886D5E2FFE88CD004EB33B /* HAKit+Mocks in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D5D2FFE88CD004EB33B /* HAKit+Mocks */; };
+		42886D602FFE88D5004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D5F2FFE88D5004EB33B /* PromiseKitDynamic */; };
 		42886D622FFE8BF1004EB33B /* PromiseKitURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42886D612FFE8BF1004EB33B /* PromiseKitURLSession.swift */; };
 		42886D632FFE8BF1004EB33B /* PromiseKitURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42886D612FFE8BF1004EB33B /* PromiseKitURLSession.swift */; };
+		42886D652FFE8C0E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D642FFE8C0E004EB33B /* HAKit */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
 		4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
 		4289DDAF2C85D5C4003591C2 /* ControlScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDAE2C85D5C4003591C2 /* ControlScene.swift */; };
@@ -925,9 +940,12 @@
 		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */; };
 		42A1860A2E1D310D004B729A /* HATextField.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A186092E1D310D004B729A /* HATextField.test.swift */; };
+		42A1F0B12E000000000000B1 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A12E000000000000A1 /* Alamofire */; };
 		42A1F0B22E000000000000B2 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A22E000000000000A2 /* Alamofire */; };
 		42A1F0B32E000000000000B3 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A32E000000000000A3 /* Alamofire */; };
+		42A1F0B42E000000000000B4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A42E000000000000A4 /* Alamofire */; };
 		42A1F0B52E000000000000B5 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A52E000000000000A5 /* Alamofire */; };
+		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
 		42A1F0B72E000000000000B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A72E000000000000A7 /* Alamofire */; };
 		42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2AB7F2C80751E00C5608D /* ControlAssist.swift */; };
 		42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A32F372EEA393700B323F1 /* CarPlayLockConfirmation.swift */; };
@@ -1199,6 +1217,7 @@
 		42FA000000000000000C0005 /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */; };
 		42FA000000000000000C0006 /* WebRTCViewPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */; };
 		42FA000000000000000C0007 /* WebRTCVideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425390D82E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift */; };
+		42FA000000000000000C0009 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0008 /* SFSafeSymbols */; };
 		42FA83392F4722A30050095A /* FrontEndConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA83382F4722A30050095A /* FrontEndConnectionState.swift */; };
 		42FA833B2F4722C40050095A /* WebViewController+StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA833A2F4722C40050095A /* WebViewController+StatusBar.swift */; };
 		42FA833D2F4722D00050095A /* WebViewController+EmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA833C2F4722D00050095A /* WebViewController+EmptyState.swift */; };
@@ -1270,6 +1289,7 @@
 		4B17A9AA16801F9C4EBEC1F8 /* WatchConnectivityManager+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F583CF6B1B80D904D17CA /* WatchConnectivityManager+Delegate.swift */; };
 		4B7EE27E39BFC01761838770 /* HAWatchConnectivityComplicationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B221C55E9F8D7D035B5A67 /* HAWatchConnectivityComplicationInfo.swift */; };
 		5002BDAF2FEE000100BEEF01 /* WhatsNewEngine.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5002BDAE2FEE000100BEEF01 /* WhatsNewEngine.test.swift */; };
+		50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = EBD991757B454B819925F6B9 /* SFSafeSymbols */; };
 		504A2C862F8133E6002A3C0E /* CarPlayTabsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504A2C852F8133E6002A3C0E /* CarPlayTabsSelectionView.swift */; };
 		5189F6FB2CC89777A8E2172A /* KioskBrightnessSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D3EF229B8D9A2DB7DF078A /* KioskBrightnessSensor.swift */; };
 		52599DB740A83DDEC7E2725D /* HAWatchConnectivityContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A663A6E9D2634AAD5D5D5B4 /* HAWatchConnectivityContext.swift */; };
@@ -1628,8 +1648,10 @@
 		CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */ = {isa = PBXBuildFile; productRef = CA11B4CC0000000000000010 /* CallbackURLKit */; };
 		CA40A11000000000000000B1 /* WidgetCarPlayLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */; };
 		CA40A11000000000000000B2 /* WidgetCarPlayLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */; };
+		CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
 		CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000020 /* KeychainAccess */; };
 		CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000030 /* KeychainAccess */; };
+		CEA1C4A10000000000000041 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000040 /* KeychainAccess */; };
 		CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000050 /* KeychainAccess */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1680,6 +1702,7 @@
 		DB54626ADCE0C32094C8C0B9 /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFD0D30836C69840AB63A8A /* LoadingButton.swift */; };
 		DE8048842D9FB6C90459E229 /* QuickActionWindowSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */; };
 		DFB59CC17BC47B8A6949B81C /* KioskScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71373DD7455D9CE893EB450B /* KioskScreensaverView.swift */; };
+		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		E3A02409794174F002C8BB4F /* IconSearchPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC23DE131CA8813C2DBD657 /* IconSearchPicker.swift */; };
 		E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */; };
 		E864AF283C52DCFA11B83545 /* KioskSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AA95E1438BC6A0DE7EF820 /* KioskSettingsView.swift */; };
@@ -1714,29 +1737,6 @@
 		JARVIS0002000000000003 /* TodoListRefreshAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000001 /* TodoListRefreshAppIntent.swift */; };
 		JARVIS0002000000000005 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
 		JARVIS0002000000000006 /* TodoItemCompleteAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = JARVIS0002000000000004 /* TodoItemCompleteAppIntent.swift */; };
-		42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D192FFE5C20004EB33B /* Sodium */; };
-		42886D2C2FFE8815004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2B2FFE8815004EB33B /* HAKit */; };
-		42886D302FFE881B004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2F2FFE881B004EB33B /* PromiseKit */; };
-		42886D3E2FFE884E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3D2FFE884E004EB33B /* HAKit */; };
-		42886D422FFE8853004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D412FFE8853004EB33B /* PromiseKit */; };
-		42886D442FFE885E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D432FFE885E004EB33B /* HAKit */; };
-		42886D482FFE8865004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D472FFE8865004EB33B /* PromiseKit */; };
-		42886D4A2FFE8875004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D492FFE8875004EB33B /* HAKit */; };
-		42886D4C2FFE887B004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4B2FFE887B004EB33B /* PromiseKit */; };
-		42886D4E2FFE8887004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4D2FFE8887004EB33B /* PromiseKit */; };
-		42886D502FFE8890004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D4F2FFE8890004EB33B /* PromiseKit */; };
-		42886D522FFE889A004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D512FFE889A004EB33B /* PromiseKit */; };
-		42886D5C2FFE88CD004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D5B2FFE88CD004EB33B /* HAKit */; };
-		42886D602FFE88D5004EB33B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D5F2FFE88D5004EB33B /* PromiseKit */; };
-		42886D652FFE8C0E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D642FFE8C0E004EB33B /* HAKit */; };
-		42A1F0B12E000000000000B1 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A12E000000000000A1 /* Alamofire */; };
-		42A1F0B42E000000000000B4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A42E000000000000A4 /* Alamofire */; };
-		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
-		42FA000000000000000C0009 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0008 /* SFSafeSymbols */; };
-		50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = EBD991757B454B819925F6B9 /* SFSafeSymbols */; };
-		CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
-		CEA1C4A10000000000000041 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000040 /* KeychainAccess */; };
-		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1926,6 +1926,7 @@
 			files = (
 				110EC9FE251708D5009C9A1B /* Shared.framework in Embed Frameworks */,
 				1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */,
+				42886DEE0000000000000011 /* PromiseKitDynamic in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1971,6 +1972,7 @@
 			files = (
 				B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */,
 				1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */,
+				42886DEE0000000000000012 /* PromiseKitDynamic in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3640,7 +3642,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42886D522FFE889A004EB33B /* PromiseKit in Frameworks */,
+				42886D522FFE889A004EB33B /* PromiseKitDynamic in Frameworks */,
 				1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */,
 				5E4269EB8497773727C5F947 /* RealmSwift in Frameworks */,
 			);
@@ -3660,7 +3662,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */,
-				42886D422FFE8853004EB33B /* PromiseKit in Frameworks */,
+				42886D422FFE8853004EB33B /* PromiseKitDynamic in Frameworks */,
 				42886D3E2FFE884E004EB33B /* HAKit in Frameworks */,
 				1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */,
 				1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */,
@@ -3673,7 +3675,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42886D482FFE8865004EB33B /* PromiseKit in Frameworks */,
+				42886D482FFE8865004EB33B /* PromiseKitDynamic in Frameworks */,
 				42886D442FFE885E004EB33B /* HAKit in Frameworks */,
 				11B6B59429497C5800B8B552 /* Shared.framework in Frameworks */,
 				3B5B2D52F2408473F8BFA79C /* RealmSwift in Frameworks */,
@@ -3684,7 +3686,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42886D4C2FFE887B004EB33B /* PromiseKit in Frameworks */,
+				42886D4C2FFE887B004EB33B /* PromiseKitDynamic in Frameworks */,
 				42886D4A2FFE8875004EB33B /* HAKit in Frameworks */,
 				11B9290B266F145000786588 /* NetworkExtension.framework in Frameworks */,
 				11B92A5B266F17AA00786588 /* Shared.framework in Frameworks */,
@@ -3718,7 +3720,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D29A20E07C24BE4ACFD33A2 /* SFSafeSymbols in Frameworks */,
-				42886D542FFE88AB004EB33B /* PromiseKit in Frameworks */,
+				42886D542FFE88AB004EB33B /* PromiseKitDynamic in Frameworks */,
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				42A1F0B72E000000000000B7 /* Alamofire in Frameworks */,
 				CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */,
@@ -3735,7 +3737,7 @@
 				42FA000000000000000C0009 /* SFSafeSymbols in Frameworks */,
 				CEA1C4A10000000000000041 /* KeychainAccess in Frameworks */,
 				42A1F0B42E000000000000B4 /* Alamofire in Frameworks */,
-				42886D4E2FFE8887004EB33B /* PromiseKit in Frameworks */,
+				42886D4E2FFE8887004EB33B /* PromiseKitDynamic in Frameworks */,
 				42FA000000000000000C0002 /* WebRTC in Frameworks */,
 				B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */,
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
@@ -3752,7 +3754,7 @@
 				50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */,
 				CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */,
 				42A1F0B12E000000000000B1 /* Alamofire in Frameworks */,
-				42886D302FFE881B004EB33B /* PromiseKit in Frameworks */,
+				42886D302FFE881B004EB33B /* PromiseKitDynamic in Frameworks */,
 				CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */,
 				42991E612FF4474500C2C76B /* ImproviOS in Frameworks */,
 				42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */,
@@ -3781,7 +3783,7 @@
 				420E64BF2D676B2400A31E86 /* SnapshotTesting in Frameworks */,
 				420E64BD2D676B2400A31E86 /* InlineSnapshotTesting in Frameworks */,
 				42A1F0B52E000000000000B5 /* Alamofire in Frameworks */,
-				42886D5A2FFE88C6004EB33B /* PromiseKit in Frameworks */,
+				42886D5A2FFE88C6004EB33B /* PromiseKitDynamic in Frameworks */,
 				4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */,
 				D4D3CAD389641303F2B6AF1C /* RealmSwift in Frameworks */,
 			);
@@ -3810,13 +3812,12 @@
 				42886D382FFE883A004EB33B /* HAKit in Frameworks */,
 				42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */,
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
-				42886D3A2FFE883A004EB33B /* HAKit+PromiseKit in Frameworks */,
 				CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */,
 				427692E52B98B83200F24321 /* SharedPush in Frameworks */,
 				42A1F0B32E000000000000B3 /* Alamofire in Frameworks */,
 				42886D182FFE5C19004EB33B /* Sodium in Frameworks */,
 				42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */,
-				42886D3C2FFE8841004EB33B /* PromiseKit in Frameworks */,
+				42886D3C2FFE8841004EB33B /* PromiseKitDynamic in Frameworks */,
 				09C9974C22F113423EE3B3DC /* GRDB in Frameworks */,
 				0D20E5697E7DA70D01E77A51 /* RealmSwift in Frameworks */,
 			);
@@ -3826,7 +3827,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42886D502FFE8890004EB33B /* PromiseKit in Frameworks */,
+				42886D502FFE8890004EB33B /* PromiseKitDynamic in Frameworks */,
 				1112EA93271B78690038BBFC /* UserNotifications.framework in Frameworks */,
 				D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */,
 				2ACC292CBD70CA7E061DE1D9 /* RealmSwift in Frameworks */,
@@ -3838,7 +3839,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
-				42886D362FFE882F004EB33B /* PromiseKit in Frameworks */,
+				42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */,
 				CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */,
 				42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */,
 				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
@@ -3853,7 +3854,6 @@
 				42A1F0B22E000000000000B2 /* Alamofire in Frameworks */,
 				B3FD7A16B24D03BE49029BB0 /* GRDB in Frameworks */,
 				78C739CC566382B44154608A /* RealmSwift in Frameworks */,
-				42886D342FFE8829004EB33B /* HAKit+PromiseKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3862,7 +3862,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
-				42886D602FFE88D5004EB33B /* PromiseKit in Frameworks */,
+				42886D602FFE88D5004EB33B /* PromiseKitDynamic in Frameworks */,
 				42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */,
 				42886D5C2FFE88CD004EB33B /* HAKit in Frameworks */,
 				426BD7722FFE54E8001378A4 /* OHHTTPStubs in Frameworks */,
@@ -7760,7 +7760,7 @@
 			);
 			name = "Extensions-Share";
 			packageProductDependencies = (
-				42886D512FFE889A004EB33B /* PromiseKit */,
+				42886D512FFE889A004EB33B /* PromiseKitDynamic */,
 				7D4A7DC5D24363D8EDCF61D9 /* RealmSwift */,
 			);
 			productName = ShareExtension;
@@ -7801,7 +7801,7 @@
 			packageProductDependencies = (
 				C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */,
 				42886D3D2FFE884E004EB33B /* HAKit */,
-				42886D412FFE8853004EB33B /* PromiseKit */,
+				42886D412FFE8853004EB33B /* PromiseKitDynamic */,
 				A49460AC07F40DB7EE5373E8 /* RealmSwift */,
 			);
 			productName = WidgetsExtension;
@@ -7824,7 +7824,7 @@
 			name = "Extensions-Matter";
 			packageProductDependencies = (
 				42886D432FFE885E004EB33B /* HAKit */,
-				42886D472FFE8865004EB33B /* PromiseKit */,
+				42886D472FFE8865004EB33B /* PromiseKitDynamic */,
 				70600C4E2473CC736B505F6D /* RealmSwift */,
 			);
 			productName = "Extensions-Matter";
@@ -7848,7 +7848,7 @@
 			name = "Extensions-PushProvider";
 			packageProductDependencies = (
 				42886D492FFE8875004EB33B /* HAKit */,
-				42886D4B2FFE887B004EB33B /* PromiseKit */,
+				42886D4B2FFE887B004EB33B /* PromiseKitDynamic */,
 				8D113496DA6B709CFA136779 /* RealmSwift */,
 			);
 			productName = PushProvider;
@@ -7915,7 +7915,7 @@
 				42FA000000000000000C0008 /* SFSafeSymbols */,
 				42A1F0A42E000000000000A4 /* Alamofire */,
 				CEA1C4A10000000000000040 /* KeychainAccess */,
-				42886D4D2FFE8887004EB33B /* PromiseKit */,
+				42886D4D2FFE8887004EB33B /* PromiseKitDynamic */,
 				42886D642FFE8C0E004EB33B /* HAKit */,
 				42FA000000000000000C0001 /* WebRTC */,
 				36767239772C4D819C72C063 /* RealmSwift */,
@@ -7959,7 +7959,7 @@
 				EBD991757B454B819925F6B9 /* SFSafeSymbols */,
 				CEA1C4A10000000000000010 /* KeychainAccess */,
 				42886D2B2FFE8815004EB33B /* HAKit */,
-				42886D2F2FFE881B004EB33B /* PromiseKit */,
+				42886D2F2FFE881B004EB33B /* PromiseKitDynamic */,
 				4C014BAFE0BC019E4055ED11 /* RealmSwift */,
 				CA11B4CC0000000000000010 /* CallbackURLKit */,
 				42991E602FF4474500C2C76B /* ImproviOS */,
@@ -7993,7 +7993,7 @@
 				426BD76F2FFE54B0001378A4 /* OHHTTPStubsSwift */,
 				42886D552FFE88BE004EB33B /* HAKit */,
 				42886D572FFE88BE004EB33B /* HAKit+Mocks */,
-				42886D592FFE88C6004EB33B /* PromiseKit */,
+				42886D592FFE88C6004EB33B /* PromiseKitDynamic */,
 			);
 			productName = HomeAssistantTests;
 			productReference = B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */;
@@ -8063,8 +8063,7 @@
 				42E1C8112FFE4DB2008DAEE5 /* XCGLogger */,
 				42886D172FFE5C19004EB33B /* Sodium */,
 				42886D372FFE883A004EB33B /* HAKit */,
-				42886D392FFE883A004EB33B /* HAKit+PromiseKit */,
-				42886D3B2FFE8841004EB33B /* PromiseKit */,
+				42886D3B2FFE8841004EB33B /* PromiseKitDynamic */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -8085,7 +8084,7 @@
 			);
 			name = "Extensions-NotificationService";
 			packageProductDependencies = (
-				42886D4F2FFE8890004EB33B /* PromiseKit */,
+				42886D4F2FFE8890004EB33B /* PromiseKitDynamic */,
 				AB784C585C188EB65EA62A21 /* RealmSwift */,
 			);
 			productName = APNSAttachmentService;
@@ -8141,8 +8140,7 @@
 				42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */,
 				42886D152FFE5C12004EB33B /* Sodium */,
 				42886D312FFE8829004EB33B /* HAKit */,
-				42886D332FFE8829004EB33B /* HAKit+PromiseKit */,
-				42886D352FFE882F004EB33B /* PromiseKit */,
+				42886D352FFE882F004EB33B /* PromiseKitDynamic */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -8166,7 +8164,7 @@
 				42A1F0A62E000000000000A6 /* Alamofire */,
 				42886D192FFE5C20004EB33B /* Sodium */,
 				42886D5B2FFE88CD004EB33B /* HAKit */,
-				42886D5F2FFE88D5004EB33B /* PromiseKit */,
+				42886D5F2FFE88D5004EB33B /* PromiseKitDynamic */,
 				DDD36A352E3698887FBF85D9 /* RealmSwift */,
 				426BD7712FFE54E8001378A4 /* OHHTTPStubs */,
 				426BD7732FFE54E8001378A4 /* OHHTTPStubsSwift */,
@@ -11742,13 +11740,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Sources/SharedPush;
-		};
 		42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/PromiseKitDynamic;
+		};
+		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/SharedPush;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -11986,15 +11984,25 @@
 			package = 42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */;
 			productName = Sodium;
 		};
-		42886D312FFE8829004EB33B /* HAKit */ = {
+		42886D192FFE5C20004EB33B /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		42886D2B2FFE8815004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D332FFE8829004EB33B /* HAKit+PromiseKit */ = {
+		42886D2F2FFE881B004EB33B /* PromiseKitDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
+		};
+		42886D312FFE8829004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
-			productName = "HAKit+PromiseKit";
+			productName = HAKit;
 		};
 		42886D352FFE882F004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12006,12 +12014,52 @@
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = HAKit;
 		};
-		42886D392FFE883A004EB33B /* HAKit+PromiseKit */ = {
+		42886D3B2FFE8841004EB33B /* PromiseKitDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
+		};
+		42886D3D2FFE884E004EB33B /* HAKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
-			productName = "HAKit+PromiseKit";
+			productName = HAKit;
 		};
-		42886D3B2FFE8841004EB33B /* PromiseKitDynamic */ = {
+		42886D412FFE8853004EB33B /* PromiseKitDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
+		};
+		42886D432FFE885E004EB33B /* HAKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
+			productName = HAKit;
+		};
+		42886D472FFE8865004EB33B /* PromiseKitDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
+		};
+		42886D492FFE8875004EB33B /* HAKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
+			productName = HAKit;
+		};
+		42886D4B2FFE887B004EB33B /* PromiseKitDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
+		};
+		42886D4D2FFE8887004EB33B /* PromiseKitDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
+		};
+		42886D4F2FFE8890004EB33B /* PromiseKitDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
+		};
+		42886D512FFE889A004EB33B /* PromiseKitDynamic */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
 			productName = PromiseKitDynamic;
@@ -12036,15 +12084,35 @@
 			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
 			productName = PromiseKitDynamic;
 		};
+		42886D5B2FFE88CD004EB33B /* HAKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
+			productName = HAKit;
+		};
 		42886D5D2FFE88CD004EB33B /* HAKit+Mocks */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
 			productName = "HAKit+Mocks";
 		};
+		42886D5F2FFE88D5004EB33B /* PromiseKitDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
+			productName = PromiseKitDynamic;
+		};
+		42886D642FFE8C0E004EB33B /* HAKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
+			productName = HAKit;
+		};
 		42991E602FF4474500C2C76B /* ImproviOS */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */;
 			productName = ImproviOS;
+		};
+		42A1F0A12E000000000000A1 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 		42A1F0A22E000000000000A2 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12056,7 +12124,17 @@
 			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
 		};
+		42A1F0A42E000000000000A4 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
 		42A1F0A52E000000000000A5 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		42A1F0A62E000000000000A6 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
@@ -12109,6 +12187,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */;
 			productName = WebRTC;
+		};
+		42FA000000000000000C0008 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
 		};
 		46C62B952D8A3730002C0001 /* InlineSnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -12175,6 +12258,11 @@
 			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
 			productName = RealmSwift;
 		};
+		C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
 		C8FA7E5B23954D258050DD72 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
@@ -12190,12 +12278,22 @@
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
 		};
+		CEA1C4A10000000000000010 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
 		CEA1C4A10000000000000020 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
 		};
 		CEA1C4A10000000000000030 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		CEA1C4A10000000000000040 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
@@ -12225,125 +12323,15 @@
 			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
 			productName = RealmSwift;
 		};
-		EBE9D41C3797206D88C3FBC2 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
-			productName = RealmSwift;
-		};
-		42886D192FFE5C20004EB33B /* Sodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Sodium;
-		};
-		42886D2B2FFE8815004EB33B /* HAKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
-			productName = HAKit;
-		};
-		42886D2F2FFE881B004EB33B /* PromiseKitDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
-			productName = PromiseKitDynamic;
-		};
-		42886D3D2FFE884E004EB33B /* HAKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
-			productName = HAKit;
-		};
-		42886D412FFE8853004EB33B /* PromiseKitDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
-			productName = PromiseKitDynamic;
-		};
-		42886D432FFE885E004EB33B /* HAKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
-			productName = HAKit;
-		};
-		42886D472FFE8865004EB33B /* PromiseKitDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
-			productName = PromiseKitDynamic;
-		};
-		42886D492FFE8875004EB33B /* HAKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
-			productName = HAKit;
-		};
-		42886D4B2FFE887B004EB33B /* PromiseKitDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
-			productName = PromiseKitDynamic;
-		};
-		42886D4D2FFE8887004EB33B /* PromiseKitDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
-			productName = PromiseKitDynamic;
-		};
-		42886D4F2FFE8890004EB33B /* PromiseKitDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
-			productName = PromiseKitDynamic;
-		};
-		42886D512FFE889A004EB33B /* PromiseKitDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
-			productName = PromiseKitDynamic;
-		};
-		42886D5B2FFE88CD004EB33B /* HAKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
-			productName = HAKit;
-		};
-		42886D5F2FFE88D5004EB33B /* PromiseKitDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886DEE0000000000000010 /* XCLocalSwiftPackageReference "Sources/PromiseKitDynamic" */;
-			productName = PromiseKitDynamic;
-		};
-		42886D642FFE8C0E004EB33B /* HAKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */;
-			productName = HAKit;
-		};
-		42A1F0A12E000000000000A1 /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		42A1F0A42E000000000000A4 /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		42A1F0A62E000000000000A6 /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42A1F09E2E000000000000A0 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		42FA000000000000000C0008 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
-		CEA1C4A10000000000000010 /* KeychainAccess */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-			productName = KeychainAccess;
-		};
-		CEA1C4A10000000000000040 /* KeychainAccess */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-			productName = KeychainAccess;
-		};
 		EBD991757B454B819925F6B9 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
+		};
+		EBE9D41C3797206D88C3FBC2 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
