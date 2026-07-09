@@ -7,6 +7,7 @@ public extension DatabaseQueue {
     static var appDatabase: DatabaseQueue = {
         var configuration = Configuration()
         configuration.busyMode = .timeout(3)
+        configuration.observesSuspensionNotifications = true
 
         let database: DatabaseQueue
         var isInMemoryFallback = false
