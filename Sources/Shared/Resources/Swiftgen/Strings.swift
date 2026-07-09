@@ -5462,6 +5462,12 @@ public enum L10n {
         /// Folder Name
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.folder_name.title") }
       }
+      public enum Header {
+        /// Customize the items, folders and layout shown on your Apple Watch.
+        public static var subtitle: String { return L10n.tr("Localizable", "watch.configuration.header.subtitle") }
+        /// Apple Watch
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.header.title") }
+      }
       public enum Items {
         /// Items
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.items.title") }
