@@ -128,6 +128,9 @@ struct WatchHomeView: View {
                 onAssist: { showAssist = true },
                 onAdd: { activeSheet = .add }
             )
+            if viewModel.showError, !viewModel.errorMessage.isEmpty {
+                syncErrorBanner
+            }
             listContent
             if !isEditing, viewModel.showAssist {
                 addRow
@@ -219,6 +222,22 @@ struct WatchHomeView: View {
                 .contentShape(Rectangle())
         }
         .watchItemRowStyle()
+    }
+
+    /// Inline, understandable sync failure with a retry — so the user is never left hanging or guessing.
+    private var syncErrorBanner: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+            Label(viewModel.errorMessage, systemSymbol: .exclamationmarkTriangleFill)
+                .font(.footnote)
+                .foregroundStyle(.orange)
+            Button(L10n.Watch.Sync.retry) {
+                viewModel.requestConfig()
+            }
+            .buttonStyle(.bordered)
+            .tint(.haPrimary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .listRowBackground(Color.clear)
     }
 
     @ViewBuilder

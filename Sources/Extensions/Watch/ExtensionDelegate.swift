@@ -171,14 +171,14 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             self?.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Communicator.shared.guaranteedMessage.observations.store[.init(queue: .main)] = { message in
+        Communicator.shared.guaranteedMessage.observations.store[.init(queue: .main)] = { [weak self] message in
             Current.Log.verbose("Received guaranteed message! \(message)")
 
             if message.identifier == GuaranteedMessages.sync.rawValue {
                 HomeAssistantAPI.syncWatchContext()
             }
 
-            self.endWatchConnectivityBackgroundTaskIfNecessary()
+            self?.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         Communicator.shared.blob.observations.store[.init(queue: .main)] = { blob in

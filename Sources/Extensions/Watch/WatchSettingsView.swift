@@ -9,6 +9,9 @@ import SwiftUI
 struct WatchSettingsView: View {
     @StateObject private var viewModel = WatchSettingsViewModel()
     @State private var performActionTarget = WatchUserDefaults.shared.performActionTarget
+    @State private var showDeleteLocalDataConfirmation = false
+    @State private var showDeleteLocalDataResult = false
+    @State private var deleteLocalDataSucceeded = false
 
     var body: some View {
         NavigationView {
@@ -17,9 +20,46 @@ struct WatchSettingsView: View {
                 configurationSection
                 performActionSection
                 troubleshootingSection
+                deleteLocalDataSection
                 restartAppSection
             }
             .navigationTitle(Text(verbatim: L10n.Watch.Settings.title))
+            .alert(
+                Text(
+                    verbatim: deleteLocalDataSucceeded
+                        ? L10n.Watch.Settings.DeleteLocalData.success
+                        : L10n.Watch.Settings.DeleteLocalData.error
+                ),
+                isPresented: $showDeleteLocalDataResult
+            ) {
+                Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+            }
+        }
+    }
+
+    private var deleteLocalDataSection: some View {
+        Section {
+            Button(role: .destructive) {
+                showDeleteLocalDataConfirmation = true
+            } label: {
+                Label(L10n.Watch.Settings.DeleteLocalData.title, systemSymbol: .trash)
+            }
+            .alert(
+                Text(verbatim: L10n.Watch.Settings.DeleteLocalData.Confirm.title),
+                isPresented: $showDeleteLocalDataConfirmation
+            ) {
+                Button(role: .cancel) {} label: { Text(verbatim: L10n.cancelLabel) }
+                Button(role: .destructive) {
+                    deleteLocalDataSucceeded = viewModel.deleteLocalData()
+                    showDeleteLocalDataResult = true
+                } label: {
+                    Text(verbatim: L10n.Watch.Settings.DeleteLocalData.Confirm.delete)
+                }
+            } message: {
+                Text(verbatim: L10n.Watch.Settings.DeleteLocalData.Confirm.message)
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Settings.DeleteLocalData.footer)
         }
     }
 
@@ -152,7 +192,55 @@ private struct WatchTroubleshootingView: View {
                 }
                 .padding(.vertical, DesignSystem.Spaces.half)
             }
+
+            Section {
+                NavigationLink {
+                    WatchClientEventsView()
+                } label: {
+                    Label(L10n.Watch.Settings.ClientEvents.title, systemSymbol: .listBulletRectangle)
+                }
+            }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Troubleshooting.title))
+    }
+}
+
+/// Lists the client events recorded on this Watch (sync, database, lifecycle) for on-device debugging.
+private struct WatchClientEventsView: View {
+    @State private var events: [ClientEvent] = []
+
+    var body: some View {
+        List {
+            if events.isEmpty {
+                Text(verbatim: L10n.Watch.Settings.ClientEvents.empty)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(events, id: \.id) { event in
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                        Text(verbatim: event.text)
+                            .font(.footnote)
+                        Text(
+                            verbatim: "\(event.type.rawValue) • "
+                                + event.date.formatted(date: .abbreviated, time: .shortened)
+                        )
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, DesignSystem.Spaces.half)
+                }
+
+                Section {
+                    Button(role: .destructive) {
+                        Current.clientEventStore.clearAllEvents()
+                        events = []
+                    } label: {
+                        Label(L10n.Watch.Settings.ClientEvents.clear, systemSymbol: .trash)
+                    }
+                }
+            }
+        }
+        .navigationTitle(Text(verbatim: L10n.Watch.Settings.ClientEvents.title))
+        .onAppear { events = Current.clientEventStore.getEvents().reversed() }
     }
 }
