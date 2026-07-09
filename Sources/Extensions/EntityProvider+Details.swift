@@ -34,6 +34,7 @@ public enum EntityContextSubtitle {
         domain: Domain?,
         fallbackToEntityId: Bool = true
     ) -> String? {
+        let normalizedEntityName = entityName.normalizedForAreaComparison
         var parts: [String] = []
         if let serverName, !serverName.isEmpty {
             parts.append(serverName)
@@ -41,9 +42,14 @@ public enum EntityContextSubtitle {
         if let floorName, !floorName.isEmpty {
             parts.append(floorName)
         }
-        if let areaName, !areaName.isEmpty,
-           entityName.range(of: areaName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
-            parts.append(areaName)
+        if let areaName {
+            // Drop the area when the name already conveys it (e.g. a camera named after its location).
+            // Compared in the trimmed, case-/diacritic-insensitive form used everywhere area names are
+            // matched, so "Bedroom " and "Bedroom" count as the same and whitespace-only areas are ignored.
+            let normalizedAreaName = areaName.normalizedForAreaComparison
+            if !normalizedAreaName.isEmpty, normalizedEntityName.range(of: normalizedAreaName) == nil {
+                parts.append(areaName)
+            }
         }
         if let deviceName, !deviceName.isEmpty,
            deviceName.range(of: entityName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {

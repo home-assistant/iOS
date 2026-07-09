@@ -104,6 +104,31 @@ struct EntityContextSubtitleTests {
         )
         #expect(subtitle == "Living Room")
     }
+
+    @Test func areaIsOmittedWhenEntityNameMatchesItIgnoringSurroundingWhitespace() {
+        // Area names are compared in their trimmed, folded form, so trailing whitespace on the area
+        // (which core/frontend treat as equivalent) must not prevent the duplication from being removed.
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Bedroom ",
+            deviceName: nil,
+            entityName: "Bedroom",
+            entityId: "camera.bedroom",
+            domain: .camera
+        )
+        #expect(subtitle == "camera.bedroom")
+    }
+
+    @Test func whitespaceOnlyAreaIsIgnored() {
+        // A whitespace-only area name carries no meaning and must not render as a blank subtitle segment.
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "   ",
+            deviceName: nil,
+            entityName: "Backyard",
+            entityId: "camera.backyard",
+            domain: .camera
+        )
+        #expect(subtitle == "camera.backyard")
+    }
 }
 
 struct AppAreaFloorDisambiguationTests {
