@@ -2,7 +2,7 @@ import Foundation
 
 enum AssistDefaultComplication {
     static let title = "Assist"
-    static let launchNotification: Notification.Name = .init("assist-detault-complication-launch")
+    static let launchNotification: Notification.Name = .init("assist-default-complication-launch")
     static let defaultComplicationId = "default-assist"
 
     /// Set when the app is launched from the Assist complication before the UI is ready to present it.
