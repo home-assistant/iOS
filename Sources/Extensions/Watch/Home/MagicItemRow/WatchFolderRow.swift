@@ -137,5 +137,6 @@ struct WatchFolderRow: View {
             ) {}
         }
         .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
     }
 }
