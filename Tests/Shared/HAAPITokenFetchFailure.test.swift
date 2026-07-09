@@ -181,13 +181,13 @@ private final class RejectingMockConnection: HAConnection {
 
     private func noopCancellable() -> HACancellable { HAMockCancellable {} }
 
-    func send(_ request: HARequest, completion: @escaping (Result<HAData, HAError>) -> Void) -> HACancellable {
+    func send(_ request: HARequest, completion: @escaping (Swift.Result<HAData, HAError>) -> Void) -> HACancellable {
         noopCancellable()
     }
 
     func send<T>(
         _ request: HATypedRequest<T>,
-        completion: @escaping (Result<T, HAError>) -> Void
+        completion: @escaping (Swift.Result<T, HAError>) -> Void
     ) -> HACancellable {
         noopCancellable()
     }
@@ -201,7 +201,7 @@ private final class RejectingMockConnection: HAConnection {
 
     func subscribe(
         to request: HARequest,
-        initiated: @escaping (Result<HAData, HAError>) -> Void,
+        initiated: @escaping (Swift.Result<HAData, HAError>) -> Void,
         handler: @escaping (HACancellable, HAData) -> Void
     ) -> HACancellable {
         noopCancellable()
@@ -216,7 +216,7 @@ private final class RejectingMockConnection: HAConnection {
 
     func subscribe<T>(
         to request: HATypedSubscription<T>,
-        initiated: @escaping (Result<HAData, HAError>) -> Void,
+        initiated: @escaping (Swift.Result<HAData, HAError>) -> Void,
         handler: @escaping (HACancellable, T) -> Void
     ) -> HACancellable {
         noopCancellable()
