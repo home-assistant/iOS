@@ -815,6 +815,14 @@ public enum L10n {
       /// Tap to open camera
       public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
     }
+    public enum Talkback {
+      /// Microphone access is required for two-way audio. Enable it in Settings.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_player.talkback.microphone_denied") }
+      /// Start talking
+      public static var start: String { return L10n.tr("Localizable", "camera_player.talkback.start") }
+      /// Stop talking
+      public static var stop: String { return L10n.tr("Localizable", "camera_player.talkback.stop") }
+    }
   }
 
   public enum Cameras {
@@ -5682,12 +5690,34 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "watch.home.run.error.title") }
         }
       }
+      public enum Sync {
+        /// Syncing with iPhone…
+        public static var syncing: String { return L10n.tr("Localizable", "watch.home.sync.syncing") }
+        /// Waiting for iPhone…
+        public static var waiting: String { return L10n.tr("Localizable", "watch.home.sync.waiting") }
+      }
+    }
+    public enum Interaction {
+      public enum Toast {
+        /// Ran an action
+        public static var action: String { return L10n.tr("Localizable", "watch.interaction.toast.action") }
+        /// Sent watch configuration
+        public static var config: String { return L10n.tr("Localizable", "watch.interaction.toast.config") }
+        /// Sent offline data
+        public static var database: String { return L10n.tr("Localizable", "watch.interaction.toast.database") }
+        /// Synced with your Apple Watch
+        public static var generic: String { return L10n.tr("Localizable", "watch.interaction.toast.generic") }
+        /// Synced servers
+        public static var servers: String { return L10n.tr("Localizable", "watch.interaction.toast.servers") }
+        /// Apple Watch
+        public static var title: String { return L10n.tr("Localizable", "watch.interaction.toast.title") }
+      }
     }
     public enum Labels {
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
-      /// With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.
-      public static var noConfigAdd: String { return L10n.tr("Localizable", "watch.labels.no_config_add") }
+      /// With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.
+      public static var noConfigAddPlus: String { return L10n.tr("Localizable", "watch.labels.no_config_add_plus") }
       public enum ComplicationGroup {
         public enum CircularSmall {
           /// Use circular small complications to display content in the corners of the Color watch face.
@@ -6184,6 +6214,32 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "watch.settings.client_certificate.remove_from_watch.title") }
         }
       }
+      public enum ClientEvents {
+        /// Clear
+        public static var clear: String { return L10n.tr("Localizable", "watch.settings.client_events.clear") }
+        /// No events recorded yet.
+        public static var empty: String { return L10n.tr("Localizable", "watch.settings.client_events.empty") }
+        /// Logs
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.client_events.title") }
+      }
+      public enum DeleteLocalData {
+        /// Couldn't delete local data
+        public static var error: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.error") }
+        /// Removes the offline database and cached data stored on this Watch only.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.footer") }
+        /// Local data deleted
+        public static var success: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.success") }
+        /// Delete Local Data
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.title") }
+        public enum Confirm {
+          /// Delete
+          public static var delete: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.confirm.delete") }
+          /// This deletes the offline database and cached files stored on this Watch. Your iPhone and servers aren't affected. Refresh from the Home screen to sync again.
+          public static var message: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.confirm.message") }
+          /// Delete local data?
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.confirm.title") }
+        }
+      }
       public enum NoItems {
         public enum Phone {
           /// No items configured, please choose items below.
@@ -6227,6 +6283,24 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "watch.settings.url_override.footer") }
         /// Always use
         public static var title: String { return L10n.tr("Localizable", "watch.settings.url_override.title") }
+      }
+    }
+    public enum Sync {
+      /// %1$d/%2$d
+      public static func progress(_ p1: Int, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "watch.sync.progress", p1, p2)
+      }
+      /// Try Again
+      public static var retry: String { return L10n.tr("Localizable", "watch.sync.retry") }
+      /// Starting sync…
+      public static var starting: String { return L10n.tr("Localizable", "watch.sync.starting") }
+      public enum Error {
+        /// Received incomplete data from iPhone. Please try again.
+        public static var data: String { return L10n.tr("Localizable", "watch.sync.error.data") }
+        /// Sync failed. Please try again.
+        public static var generic: String { return L10n.tr("Localizable", "watch.sync.error.generic") }
+        /// Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.
+        public static var unreachable: String { return L10n.tr("Localizable", "watch.sync.error.unreachable") }
       }
     }
   }

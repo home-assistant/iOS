@@ -107,6 +107,19 @@ public extension DatabaseQueue {
             }
         }
     }
+
+    /// Delete every row from all app tables, leaving the schema intact. Used by the watch's
+    /// "Delete local data" action to wipe the locally-mirrored config/entities without dropping the DB
+    /// (so the app keeps working and re-syncs on the next refresh). The table list is the same one used
+    /// to create the schema, so new tables are covered automatically. Exposed as an instance method so
+    /// callers can invoke it on `Current.database()` without importing GRDB directly.
+    func eraseAllData() throws {
+        try write { db in
+            for table in DatabaseQueue.tables() {
+                try db.execute(sql: "DELETE FROM \(table.tableName)")
+            }
+        }
+    }
 }
 
 protocol DatabaseTableProtocol {

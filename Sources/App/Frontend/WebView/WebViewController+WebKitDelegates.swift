@@ -10,6 +10,7 @@ extension WebViewController {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         // Deliberately does not mark disconnected: a navigation starting isn't a lost connection. Only the
         // frontend (via the external bus) or a hard reload (`reload()`/`refresh()`) sets disconnected.
+        overlayState?.isLoading = true
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
     }
 
@@ -40,6 +41,7 @@ extension WebViewController {
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         refreshControl.endRefreshing()
+        overlayState?.isLoading = false
         if let err = error as? URLError {
             if err.code != .cancelled {
                 Current.Log.error("Failure during nav: \(err)")
@@ -54,6 +56,7 @@ extension WebViewController {
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         refreshControl.endRefreshing()
+        overlayState?.isLoading = false
 
         let nsError = error as NSError
         let shouldShowError: Bool
@@ -84,6 +87,7 @@ extension WebViewController {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         refreshControl.endRefreshing()
+        overlayState?.isLoading = false
         latestLoadError = nil
 
         // in case the view appears again, don't reload

@@ -1,4 +1,5 @@
 import GRDB
+import PromiseKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -8,12 +9,20 @@ import SwiftUI
 struct CameraPlayerView: View {
     @Environment(\.dismiss) private var dismiss
     private let server: Server
-    private let cameraEntityId: String
     private let cameraName: String?
 
+    @State private var cameraEntityId: String
     @State private var playerType: PlayerType = .webRTC
     @State private var appEntity: HAAppEntity?
     @State private var name: String?
+    @State private var subtitle: String?
+    @State private var cameras: [HAAppEntity] = []
+    /// Precomputed context subtitle per camera entity id, resolved once when the list is loaded so the
+    /// picker rows don't hit the database on every render.
+    @State private var cameraSubtitles: [String: String] = [:]
+    /// Snapshot thumbnail per camera entity id, fetched lazily so the picker can show a live still with an
+    /// SF Symbol placeholder until it arrives.
+    @State private var cameraSnapshots: [String: UIImage] = [:]
     @State private var controlsVisible = true
     @State private var showLoader = true
 
@@ -25,62 +34,106 @@ struct CameraPlayerView: View {
 
     init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
         self.server = server
-        self.cameraEntityId = cameraEntityId
+        self._cameraEntityId = State(initialValue: cameraEntityId)
         self.cameraName = cameraName
     }
 
     var body: some View {
         ZStack {
-            ZStack(alignment: .topLeading) {
-                NavigationStack {
-                    content
-                        .toolbar {
-                            ToolbarItem(placement: .primaryAction) {
-                                if controlsVisible {
-                                    HStack(spacing: DesignSystem.Spaces.one) {
-                                        Button {
-                                            openMoreInfo()
-                                        } label: {
-                                            Image(systemSymbol: .safari)
-                                        }
-                                    }
-                                }
-                            }
+            navigationStack
 
-                            ToolbarItem(placement: .primaryAction) {
-                                CloseButton {
-                                    dismiss()
-                                }
-                            }
-                        }
-                        .modify { view in
-                            if #available(iOS 18.0, *) {
-                                view.toolbarVisibility(controlsVisible ? .automatic : .hidden, for: .navigationBar)
-                            } else {
-                                view
-                            }
-                        }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                nameBadge
-            }
             if showLoader {
-                HAProgressView(style: .extraLarge)
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .tint(.white)
+                    .scaleEffect(1.5)
             }
         }
         .onAppear {
-            appEntity = HAAppEntity.entity(id: cameraEntityId, serverId: server.identifier.rawValue)
-            name = appEntity?.name ?? cameraName
+            loadMetadata()
+            loadCameras()
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
     }
 
+    private var navigationStack: some View {
+        NavigationStack {
+            content
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        if controlsVisible {
+                            HStack(spacing: DesignSystem.Spaces.one) {
+                                Button {
+                                    openMoreInfo()
+                                } label: {
+                                    Image(systemSymbol: .safari)
+                                }
+                            }
+                        }
+                    }
+
+                    ToolbarItem(placement: .cancellationAction) {
+                        CloseButton {
+                            dismiss()
+                        }
+                    }
+
+                    ToolbarItem(placement: .principal) {
+                        nameBadge
+                    }
+                }
+                .modify { view in
+                    if #available(iOS 18.0, *) {
+                        view.toolbarVisibility(controlsVisible ? .automatic : .hidden, for: .navigationBar)
+                    } else {
+                        view
+                    }
+                }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
     @ViewBuilder
     private var nameBadge: some View {
         if let name, controlsVisible {
-            Text(name)
-                .font(.headline)
+            Menu {
+                ForEach(cameras) { camera in
+                    Button {
+                        switchCamera(to: camera.entityId)
+                    } label: {
+                        if let snapshot = cameraSnapshots[camera.entityId] {
+                            Image(uiImage: snapshot)
+                                .renderingMode(.original)
+                                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one))
+                        } else {
+                            Image(systemSymbol: .videoFill)
+                        }
+                        Text(camera.name)
+                        if let subtitle = cameraSubtitles[camera.entityId], !subtitle.isEmpty {
+                            Text(subtitle)
+                        }
+                    }
+                }
+            } label: {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                        Text(name)
+                            .font(DesignSystem.Font.caption.bold())
+                            .foregroundStyle(.primary)
+                            .truncationMode(.middle)
+                        if let subtitle, !subtitle.isEmpty {
+                            Text(subtitle)
+                                .font(DesignSystem.Font.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    if cameras.count > 1 {
+                        Image(systemSymbol: .chevronUpChevronDown)
+                            .font(DesignSystem.Font.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 .padding(.horizontal, DesignSystem.Spaces.two)
                 .padding(.vertical, DesignSystem.Spaces.one)
                 .modify { view in
@@ -93,9 +146,10 @@ struct CameraPlayerView: View {
                             .clipShape(.capsule)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, DesignSystem.Spaces.two)
-                .padding(.top, DesignSystem.Spaces.half)
+            }
+            .menuOrder(.fixed)
+            .disabled(cameras.count <= 1)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -106,7 +160,7 @@ struct CameraPlayerView: View {
                 WebRTCVideoPlayerView(
                     server: server,
                     cameraEntityId: cameraEntityId,
-                    cameraName: cameraName,
+                    cameraName: name ?? cameraName,
                     controlsVisible: $controlsVisible,
                     showLoader: $showLoader,
                     onWebRTCUnsupported: {
@@ -117,7 +171,8 @@ struct CameraPlayerView: View {
                 CameraStreamHLSView(
                     server: server,
                     cameraEntityId: cameraEntityId,
-                    cameraName: cameraName,
+                    cameraName: name ?? cameraName,
+                    controlsVisible: $controlsVisible,
                     onHLSUnsupported: {
                         fallbackToMJPEG()
                     }
@@ -126,10 +181,15 @@ struct CameraPlayerView: View {
                 CameraMJPEGPlayerView(
                     server: server,
                     cameraEntityId: cameraEntityId,
-                    cameraName: cameraName
+                    cameraName: name ?? cameraName,
+                    controlsVisible: $controlsVisible
                 )
             }
         }
+        // Rebuild the whole player subtree when the camera changes so the previous stream is torn
+        // down cleanly (the WebRTC controller closes its connection in `viewWillDisappear`) before a
+        // new one starts, rather than reusing the existing player/view model.
+        .id(cameraEntityId)
     }
 
     private func fallbackToHLS() {
@@ -144,6 +204,59 @@ struct CameraPlayerView: View {
         withAnimation {
             playerType = .mjpeg
         }
+    }
+
+    private func loadMetadata() {
+        appEntity = HAAppEntity.entity(id: cameraEntityId, serverId: server.identifier.rawValue)
+        name = appEntity?.name ?? cameraName
+        subtitle = appEntity?.contextualSubtitle
+    }
+
+    private func loadCameras() {
+        do {
+            let loaded = try HAAppEntity.config()
+                .filter { $0.serverId == server.identifier.rawValue && $0.domain == Domain.camera.rawValue }
+                .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            cameras = loaded
+            cameraSubtitles = Dictionary(
+                uniqueKeysWithValues: loaded.compactMap { camera in
+                    camera.contextualSubtitle.map { (camera.entityId, $0) }
+                }
+            )
+            Task { await loadSnapshots(for: loaded) }
+        } catch {
+            Current.Log.error("Failed to load cameras for picker: \(error)")
+        }
+    }
+
+    /// Fetches a still thumbnail for each camera to show as its picker icon. Failures are logged and
+    /// simply leave that camera on its SF Symbol placeholder.
+    @MainActor
+    private func loadSnapshots(for cameras: [HAAppEntity]) async {
+        guard let api = Current.api(for: server) else { return }
+        for camera in cameras where cameraSnapshots[camera.entityId] == nil {
+            do {
+                let image: UIImage = try await withCheckedThrowingContinuation { continuation in
+                    api.getCameraSnapshot(cameraEntityID: camera.entityId)
+                        .done { continuation.resume(returning: $0) }
+                        .catch { continuation.resume(throwing: $0) }
+                }
+                let thumbnail = await image.byPreparingThumbnail(ofSize: CGSize(width: 120, height: 120))
+                cameraSnapshots[camera.entityId] = thumbnail ?? image
+            } catch {
+                Current.Log.error("Failed to load snapshot for \(camera.entityId): \(error)")
+            }
+        }
+    }
+
+    private func switchCamera(to entityId: String) {
+        guard entityId != cameraEntityId else { return }
+        // Restart from the top of the fallback chain and show the loader while the new stream connects.
+        // Changing `cameraEntityId` re-identifies `content`, tearing down the current player first.
+        showLoader = true
+        playerType = .webRTC
+        cameraEntityId = entityId
+        loadMetadata()
     }
 
     private func openMoreInfo() {
