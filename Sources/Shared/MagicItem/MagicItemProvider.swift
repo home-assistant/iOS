@@ -60,6 +60,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateCarPlayConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var carPlayConfig = try? Current.carPlayConfig() else {
             completion()
             return
@@ -79,6 +83,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateWatchConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var watchConfig = try? Current.watchConfig() else {
             completion()
             return
@@ -97,6 +105,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateAppIconShortcutConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var appIconShortcutConfig = try? Current.appIconShortcutConfig() else {
             completion()
             return
@@ -125,6 +137,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
      The completion handler is always called at the end of the process.
      */
     func migrateWidgetsConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard let customWidgets = try? Current.customWidgets() else {
             completion()
             return
