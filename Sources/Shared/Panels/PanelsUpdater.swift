@@ -25,6 +25,7 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
     }
 
     public func update() {
+        guard !Current.isAppExtension else { return }
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
             Current.Log.verbose("Skipping panels update, last update was \(lastUpdate)")
             return

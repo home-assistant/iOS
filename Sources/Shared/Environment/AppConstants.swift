@@ -206,7 +206,8 @@ public enum AppConstants {
         let groupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID)
 
         guard let groupDir else {
-            fatalError("Unable to get groupDir.")
+            Current.Log.error("Unable to get app group container URL; falling back to temporary directory")
+            return URL(fileURLWithPath: NSTemporaryDirectory())
         }
 
         return groupDir
