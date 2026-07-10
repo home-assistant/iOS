@@ -26,7 +26,9 @@ public extension HomeAssistantAPI {
         #if os(iOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
-        content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
+        // Legacy complications are now GRDB records synced to the watch as Codable JSON `Data`.
+        let complications = (try? WatchComplication.all()) ?? []
+        content[WatchContext.complications.rawValue] = (try? JSONEncoder().encode(complications)) ?? Data()
 
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
@@ -90,10 +92,7 @@ public extension HomeAssistantAPI {
         }
         #endif
 
-        let complications = Set(
-            Current.realm().objects(WatchComplication.self)
-                .filter("serverIdentifier = %@", server.identifier.rawValue)
-        )
+        let complications = (try? WatchComplication.all(forServerIdentifier: server.identifier.rawValue)) ?? []
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")

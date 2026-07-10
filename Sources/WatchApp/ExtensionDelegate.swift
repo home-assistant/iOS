@@ -238,17 +238,13 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     }
 
     private func updateContext(_ content: HAWatchConnectivity.Content) {
-        let realm = Current.realm()
-
-        if let complicationsDictionary = content["complications"] as? [[String: Any]] {
-            let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
-
-            Current.Log.verbose("Updating complications from context \(complications)")
-
-            realm.reentrantWrite {
-                realm.delete(realm.objects(WatchComplication.self))
-                realm.add(complications, update: .all)
-            }
+        // Legacy complications arrive as Codable JSON `Data` (they used to be an ObjectMapper array
+        // written into Realm). Persist the raw blob to the app group so the snapshot writer can build
+        // widget snapshots on launch and on background refresh, without Realm.
+        if let data = content["complications"] as? Data {
+            Current.Log.verbose("Updating legacy complications from context (\(data.count) bytes)")
+            UserDefaults(suiteName: AppConstants.AppGroupID)?
+                .set(data, forKey: WatchWidgetComplicationSnapshotStore.legacyComplicationsKey)
         }
 
         WatchWidgetComplicationSnapshotStore.update()
@@ -337,15 +333,24 @@ private enum WatchWidgetComplicationSnapshotStore {
     }
 
     static let defaultsKey = "watchWidgetComplicationSnapshots"
+    static let legacyComplicationsKey = "watchLegacyComplications"
 
     static func update() {
         MaterialDesignIcons.register()
 
-        let userComplications = Current.realm().objects(WatchComplication.self)
-            .sorted(byKeyPath: "CreatedAt")
+        let stored: [WatchComplication]
+        if let data = UserDefaults(suiteName: AppConstants.AppGroupID)?.data(forKey: legacyComplicationsKey),
+           let decoded = try? JSONDecoder().decode([WatchComplication].self, from: data) {
+            stored = decoded
+        } else {
+            stored = []
+        }
+
+        let userComplications = stored
+            .sorted(by: { $0.createdAt < $1.createdAt })
             .map(WatchWidgetComplicationSnapshot.init(complication:))
 
-        let snapshots = [WatchWidgetComplicationSnapshot.placeholder, .assist] + Array(userComplications)
+        let snapshots = [WatchWidgetComplicationSnapshot.placeholder, .assist] + userComplications
 
         guard let data = try? JSONEncoder().encode(snapshots),
               let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else {

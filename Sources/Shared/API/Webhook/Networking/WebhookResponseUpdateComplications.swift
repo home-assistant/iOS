@@ -1,6 +1,6 @@
 import Foundation
+import GRDB
 import PromiseKit
-import RealmSwift
 import UserNotifications
 #if os(watchOS)
 import ClockKit
@@ -13,9 +13,6 @@ extension WebhookResponseIdentifier {
 struct WebhookResponseUpdateComplications: WebhookResponseHandler {
     let api: HomeAssistantAPI
 
-    // for tests, since Realm can't query subclasses in a query
-    var watchComplicationClass: WatchComplication.Type = WatchComplication.self
-
     init(api: HomeAssistantAPI) {
         self.api = api
     }
@@ -24,7 +21,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
         true
     }
 
-    static func request(for complications: Set<WatchComplication>) -> WebhookRequest? {
+    static func request(for complications: some Sequence<WatchComplication>) -> WebhookRequest? {
         Current.Log.verbose("complications \(complications.map(\.identifier))")
 
         let templates = complications.reduce(into: [String: [String: String]]()) { payload, complication in
@@ -64,15 +61,22 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                 accumulator[components[0], default: [:]][components[1]] = value.value
             }
         }.then { paired -> Promise<Void> in
-            let realm = Current.realm()
-            return realm.reentrantWrite {
-                for (identifier, rendered) in paired {
-                    if let complication = realm.object(ofType: watchComplicationClass, forPrimaryKey: identifier) {
-                        Current.Log.verbose("updating \(identifier) with \(rendered)")
-                        complication.updateRawRendered(from: rendered)
-                    } else {
-                        Current.Log.error("couldn't find complication for \(identifier)")
+            Promise { seal in
+                do {
+                    try Current.database().write { db in
+                        for (identifier, rendered) in paired {
+                            if var complication = try WatchComplication.fetchOne(db, key: identifier) {
+                                Current.Log.verbose("updating \(identifier) with \(rendered)")
+                                complication.updateRawRendered(from: rendered)
+                                try complication.update(db)
+                            } else {
+                                Current.Log.error("couldn't find complication for \(identifier)")
+                            }
+                        }
                     }
+                    seal.fulfill(())
+                } catch {
+                    seal.reject(error)
                 }
             }
         }.done {

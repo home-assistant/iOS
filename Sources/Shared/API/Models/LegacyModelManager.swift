@@ -114,12 +114,7 @@ public class LegacyModelManager: ServerObserver {
             ),
             CleanupDefinition(orphansOf: RLMZone.self),
             CleanupDefinition(orphansOf: NotificationCategory.self),
-            CleanupDefinition(
-                orphansOf: WatchComplication.self,
-                serverIdentifierKey: #keyPath(WatchComplication.serverIdentifier),
-                allowedPredicate: .init(value: true),
-                mode: .replace
-            ),
+            // WatchComplication moved to GRDB; its server-orphan handling now lives in the GRDB layer.
         ]
     }
 

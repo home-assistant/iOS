@@ -1,10 +1,9 @@
 import Foundation
 import PromiseKit
-import RealmSwift
 import Shared
 
-/// Observable view model backing `ComplicationListView`. Wraps the Realm
-/// notification tokens used to drive the existing Eureka controller.
+/// Observable view model backing the legacy `ComplicationListView`. Reads complications from GRDB
+/// and refreshes whenever one is created/edited/deleted.
 final class ComplicationListViewModel: ObservableObject {
     @Published private(set) var complicationsByGroup: [ComplicationGroup: [WatchComplication]] = [:]
     @Published private(set) var watchState: HAWatchConnectivity.WatchState = Communicator.shared.currentWatchState
@@ -12,24 +11,45 @@ final class ComplicationListViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showError = false
 
-    private var realmToken: NotificationToken?
     private var watchStateToken: HAWatchConnectivity.ObservationToken?
     private var updateNotificationToken: NSObjectProtocol?
+    private var didChangeToken: NSObjectProtocol?
 
     init() {
-        observeRealm()
+        reload()
         observeWatchState()
         observeComplicationsUpdate()
+        didChangeToken = NotificationCenter.default.addObserver(
+            forName: WatchComplication.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.reload()
+        }
     }
 
     deinit {
-        realmToken?.invalidate()
         if let watchStateToken {
             Communicator.shared.watchState.unobserve(watchStateToken)
         }
         if let updateNotificationToken {
             NotificationCenter.default.removeObserver(updateNotificationToken)
         }
+        if let didChangeToken {
+            NotificationCenter.default.removeObserver(didChangeToken)
+        }
+    }
+
+    func reload() {
+        let complications = (try? WatchComplication.all()) ?? []
+        var grouped: [ComplicationGroup: [WatchComplication]] = [:]
+        for complication in complications {
+            for group in ComplicationGroup.allCases where group.members.contains(complication.Family) {
+                grouped[group, default: []].append(complication)
+                break
+            }
+        }
+        complicationsByGroup = grouped
     }
 
     // MARK: - Capability
@@ -67,26 +87,6 @@ final class ComplicationListViewModel: ObservableObject {
                     self?.showError = true
                 }
             }
-    }
-
-    // MARK: - Realm observation
-
-    private func observeRealm() {
-        let results = Current.realm().objects(WatchComplication.self).sorted(byKeyPath: "rawFamily")
-        realmToken = results.observe { [weak self] _ in
-            self?.rebuildGroups(from: results)
-        }
-    }
-
-    private func rebuildGroups(from results: Results<WatchComplication>) {
-        var grouped: [ComplicationGroup: [WatchComplication]] = [:]
-        for complication in results {
-            for group in ComplicationGroup.allCases where group.members.contains(complication.Family) {
-                grouped[group, default: []].append(complication)
-                break
-            }
-        }
-        complicationsByGroup = grouped
     }
 
     // MARK: - Watch state observation

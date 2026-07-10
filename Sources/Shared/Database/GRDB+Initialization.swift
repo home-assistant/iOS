@@ -77,6 +77,7 @@ public extension DatabaseQueue {
             AllowedTagTable(),
             KioskSettingsTable(),
             NotificationSnoozeActionTable(),
+            WatchComplicationTable(),
         ]
     }
 
@@ -118,6 +119,35 @@ public extension DatabaseQueue {
             for table in DatabaseQueue.tables() {
                 try db.execute(sql: "DELETE FROM \(table.tableName)")
             }
+        }
+    }
+}
+
+/// Legacy watch complications table. Defined here (rather than a new file) so it joins the Shared
+/// target without a project-file change. Mirrors the `WatchConfigTable` pattern.
+final class WatchComplicationTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.watchComplication.rawValue }
+    var definedColumns: [String] { DatabaseTables.WatchComplication.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.WatchComplication.identifier.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.serverIdentifier.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplication.rawFamily.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.rawTemplate.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.complicationData.rawValue, .jsonText)
+                    t.column(DatabaseTables.WatchComplication.createdAt.rawValue, .datetime).notNull()
+                    t.column(DatabaseTables.WatchComplication.name.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplication.isPublic.rawValue, .boolean).notNull()
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
         }
     }
 }
