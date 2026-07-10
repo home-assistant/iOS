@@ -34,7 +34,7 @@ struct WatchWidgetsEntryView: View {
         if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
             if complication.isCapacityGauge(for: entry.family) {
                 Gauge(value: fraction) {
-                    icon
+                    circularCenter
                 }
                 .gaugeStyle(.accessoryCircularCapacity)
                 .tint(complication.tintColor(for: entry.family))
@@ -42,7 +42,7 @@ struct WatchWidgetsEntryView: View {
                 Gauge(value: fraction) {
                     icon
                 } currentValueLabel: {
-                    icon
+                    circularCenter
                 } minimumValueLabel: {
                     Text(labels.min)
                 } maximumValueLabel: {
@@ -52,7 +52,7 @@ struct WatchWidgetsEntryView: View {
                 .tint(complication.tintColor(for: entry.family))
             } else {
                 Gauge(value: fraction) {
-                    icon
+                    circularCenter
                 }
                 .gaugeStyle(.accessoryCircular)
                 .tint(complication.tintColor(for: entry.family))
@@ -114,6 +114,20 @@ struct WatchWidgetsEntryView: View {
             }
 
             Spacer(minLength: 0)
+        }
+    }
+
+    /// Center of a circular gauge: the state value when the complication shows it (matching watchOS
+    /// gauges, which put the number in the middle), otherwise the icon.
+    @ViewBuilder
+    private var circularCenter: some View {
+        if let complication = entry.complication,
+           complication.showsValue(for: entry.family), !complication.title.isEmpty {
+            Text(complication.title)
+                .minimumScaleFactor(0.4)
+                .lineLimit(1)
+        } else {
+            icon
         }
     }
 
