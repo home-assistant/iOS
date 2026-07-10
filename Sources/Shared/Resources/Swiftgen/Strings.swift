@@ -5317,6 +5317,8 @@ public enum L10n {
       public enum Builder {
         /// Gauge color
         public static var color: String { return L10n.tr("Localizable", "watch.complications.builder.color") }
+        /// Colors
+        public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
         /// Display name
         public static var displayName: String { return L10n.tr("Localizable", "watch.complications.builder.display_name") }
         /// Edit complication

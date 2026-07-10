@@ -586,21 +586,6 @@ struct WatchComplicationBuilderEditView: View {
                     }
                 }
 
-                if familyHasProgressBar, config.showsGauge(for: currentFamily) {
-                    ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
-                }
-                if config.showsIcon(for: currentFamily) {
-                    ColorPicker(
-                        L10n.Watch.Complications.Builder.iconColor,
-                        selection: iconColorBinding,
-                        supportsOpacity: false
-                    )
-                }
-                ColorPicker(
-                    L10n.Watch.Complications.Builder.textColor,
-                    selection: textColorBinding,
-                    supportsOpacity: false
-                )
             } header: {
                 // Family switcher, so the size being customized can be changed without scrolling
                 // back up to the preview.
@@ -617,12 +602,43 @@ struct WatchComplicationBuilderEditView: View {
                 Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
             }
 
+            // Colors for the selected size.
+            Section {
+                if familyHasProgressBar, config.showsGauge(for: currentFamily) {
+                    ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
+                }
+                if config.showsIcon(for: currentFamily) {
+                    ColorPicker(
+                        L10n.Watch.Complications.Builder.iconColor,
+                        selection: iconColorBinding,
+                        supportsOpacity: false
+                    )
+                }
+                ColorPicker(
+                    L10n.Watch.Complications.Builder.textColor,
+                    selection: textColorBinding,
+                    supportsOpacity: false
+                )
+            } header: {
+                Text(L10n.Watch.Complications.Builder.colors)
+            }
+
             Section {
                 Toggle(isOn: showWhenInactiveBinding) {
                     Text(L10n.Watch.Complications.Builder.showWhenInactive)
                 }
             } footer: {
                 Text(L10n.Watch.Complications.Builder.showWhenInactiveFooter)
+            }
+
+            // Mirror of the top preview so the result is visible from the bottom of the form too.
+            if let server {
+                Section {
+                    WatchComplicationLivePreview(config: config, server: server)
+                        .frame(maxWidth: .infinity)
+                        .listRowBackground(Color(uiColor: .systemBackground))
+                        .listRowSeparator(.hidden)
+                }
             }
         }
         .navigationTitle(Text(isNew ? L10n.Watch.Complications.Builder.newTitle : L10n.Watch.Complications.Builder
