@@ -3,21 +3,18 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// Root of the Complications settings screen. The modern entity/custom builder lives here; the
-/// previous ClockKit-era complications are tucked under "Legacy complications".
+/// Root of the Complications settings screen. Mirrors the CarPlay / Widgets configuration layout:
+/// an Apple-like header, the list of the user's complications with an add button, and the legacy
+/// complications tucked behind a navigation link.
 struct ComplicationsRootView: View {
+    @State private var configs: [WatchComplicationConfig] = []
+    @State private var editing: WatchComplicationConfig?
+    @State private var showAdd = false
+
     var body: some View {
         List {
-            Section {
-                NavigationLink {
-                    WatchComplicationBuilderView()
-                } label: {
-                    Label(title: { Text(L10n.Watch.Complications.Root.new) },
-                          icon: { Image(systemSymbol: .plusCircle) })
-                }
-            } footer: {
-                Text(L10n.Watch.Complications.Root.newFooter)
-            }
+            header
+            yourComplicationsSection
 
             Section {
                 NavigationLink {
@@ -30,7 +27,68 @@ struct ComplicationsRootView: View {
                 Text(L10n.Watch.Complications.Root.legacyFooter)
             }
         }
-        .navigationTitle(L10n.SettingsDetails.Watch.title)
+        .navigationTitle(L10n.Watch.Complications.Builder.title)
+        .sheet(isPresented: $showAdd) {
+            NavigationView { WatchComplicationBuilderEditView(existing: nil) }
+        }
+        .sheet(item: $editing) { config in
+            NavigationView { WatchComplicationBuilderEditView(existing: config) }
+        }
+        .onAppear(perform: reload)
+        .onReceive(NotificationCenter.default.publisher(for: WatchComplicationConfig.didChangeNotification)) { _ in
+            reload()
+        }
+    }
+
+    private var header: some View {
+        AppleLikeListTopRowHeader(
+            image: .watchVariantIcon,
+            title: L10n.Watch.Complications.Builder.title,
+            subtitle: L10n.Watch.Complications.Root.headerSubtitle
+        )
+    }
+
+    private var yourComplicationsSection: some View {
+        Section(L10n.Watch.Complications.Root.yourComplications) {
+            ForEach(configs) { config in
+                Button {
+                    editing = config
+                } label: {
+                    HStack(spacing: DesignSystem.Spaces.two) {
+                        ComplicationFamilyPreview(family: config.widgetFamily)
+                            .frame(width: 48, height: 48)
+                        VStack(alignment: .leading) {
+                            Text(config.displayName)
+                                .foregroundColor(.primary)
+                            Text(verbatim: config.widgetFamily.title)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+            .onDelete(perform: delete)
+
+            Button {
+                showAdd = true
+            } label: {
+                Label(L10n.Watch.Complications.Root.new, systemSymbol: .plus)
+            }
+        }
+    }
+
+    private func reload() {
+        configs = (try? WatchComplicationConfig.all()) ?? []
+    }
+
+    private func delete(at offsets: IndexSet) {
+        for index in offsets {
+            try? configs[index].delete()
+        }
+        NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
+        HomeAssistantAPI.syncWatchContext()
+        reload()
     }
 }
 
@@ -44,7 +102,11 @@ struct ComplicationListView: View {
             introSection
             manualUpdatesSection
             groupSections
+            #if DEBUG
+            // Creating new legacy (ClockKit-era) complications is retained for debugging only; users
+            // build complications through the modern entity/template builder on the root screen.
             addSection
+            #endif
         }
         .navigationTitle(Text(L10n.Watch.Complications.Legacy.title))
         .sheet(isPresented: $showFamilyPicker) {
@@ -138,6 +200,7 @@ struct ComplicationListView: View {
         }
     }
 
+    #if DEBUG
     private var addSection: some View {
         Section {
             Button(L10n.addButtonLabel) {
@@ -145,81 +208,18 @@ struct ComplicationListView: View {
             }
         }
     }
+    #endif
 }
 
 // MARK: - New (modern) complication builder
-
-/// Lists the modern `WatchComplicationConfig`s and hosts the add/edit flow.
-struct WatchComplicationBuilderView: View {
-    @State private var configs: [WatchComplicationConfig] = []
-    @State private var editing: WatchComplicationConfig?
-    @State private var showAdd = false
-
-    var body: some View {
-        List {
-            if configs.isEmpty {
-                Section {
-                    Text(L10n.Watch.Complications.Builder.empty)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            ForEach(configs) { config in
-                Button {
-                    editing = config
-                } label: {
-                    HStack(spacing: DesignSystem.Spaces.two) {
-                        ComplicationFamilyPreview(family: config.widgetFamily)
-                            .frame(width: 48, height: 48)
-                        VStack(alignment: .leading) {
-                            Text(config.displayName)
-                                .foregroundColor(.primary)
-                            Text(verbatim: config.widgetFamily.title)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-                .buttonStyle(.plain)
-            }
-            .onDelete(perform: delete)
-        }
-        .navigationTitle(Text(L10n.Watch.Complications.Builder.title))
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button { showAdd = true } label: { Image(systemSymbol: .plus) }
-            }
-        }
-        .sheet(isPresented: $showAdd) {
-            NavigationView { WatchComplicationBuilderEditView(existing: nil) }
-        }
-        .sheet(item: $editing) { config in
-            NavigationView { WatchComplicationBuilderEditView(existing: config) }
-        }
-        .onAppear(perform: reload)
-        .onReceive(NotificationCenter.default.publisher(for: WatchComplicationConfig.didChangeNotification)) { _ in
-            reload()
-        }
-    }
-
-    private func reload() {
-        configs = (try? WatchComplicationConfig.all()) ?? []
-    }
-
-    private func delete(at offsets: IndexSet) {
-        for index in offsets {
-            try? configs[index].delete()
-        }
-        NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
-        HomeAssistantAPI.syncWatchContext()
-        reload()
-    }
-}
 
 /// Add/edit a modern complication: pick an entity (auto-designed) or a custom template.
 struct WatchComplicationBuilderEditView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var config: WatchComplicationConfig
     @State private var selectedEntity: HAAppEntity?
+    /// Cached context line for the selected entity — computed off the DB, so kept out of `body`.
+    @State private var entitySubtitle: String?
     private let isNew: Bool
 
     init(existing: WatchComplicationConfig?) {
@@ -230,6 +230,28 @@ struct WatchComplicationBuilderEditView: View {
 
     private var server: Server? {
         Current.servers.all.first { $0.identifier.rawValue == config.serverId } ?? Current.servers.all.first
+    }
+
+    private var servers: [Server] { Current.servers.all }
+
+    /// The Name field placeholder: the selected entity's name (so a blank name previews the fallback),
+    /// otherwise the generic "Name" label.
+    private var namePlaceholder: String {
+        config.entityDisplayName ?? config.entityId ?? L10n.Watch.Complications.Builder.name
+    }
+
+    /// Server selection. Changing servers clears the entity, which belonged to the previous server.
+    private var serverBinding: Binding<String> {
+        Binding(
+            get: { config.serverId },
+            set: { newValue in
+                guard newValue != config.serverId else { return }
+                config.serverId = newValue
+                selectedEntity = nil
+                config.entityId = nil
+                config.entityDisplayName = nil
+            }
+        )
     }
 
     /// The size currently selected in the preview — also the size being customized below.
@@ -282,7 +304,7 @@ struct WatchComplicationBuilderEditView: View {
                 Section {
                     WatchComplicationLivePreview(config: config, server: server)
                         .frame(maxWidth: .infinity)
-                        .listRowBackground(Color.clear)
+                        .listRowBackground(Color(uiColor: .systemBackground))
                     Picker(selection: $config.widgetFamily) {
                         ForEach(WatchComplicationConfig.Family.allCases) { family in
                             Text(verbatim: family.title).tag(family)
@@ -299,26 +321,51 @@ struct WatchComplicationBuilderEditView: View {
             }
 
             Section {
+                // Name first; when left blank the complication falls back to the entity's name, so the
+                // placeholder previews that fallback.
+                TextField(text: stringBinding(\.name)) {
+                    Text(verbatim: namePlaceholder)
+                }
+
                 Picker(selection: $config.kind) {
                     Text(L10n.Watch.Complications.Builder.sourceEntity).tag(WatchComplicationConfig.Kind.entity)
                     Text(L10n.Watch.Complications.Builder.sourceCustom).tag(WatchComplicationConfig.Kind.customTemplate)
                 } label: {
                     Text(L10n.Watch.Complications.Builder.source)
                 }
-            }
 
-            if config.kind == .entity {
-                Section {
+                if config.kind == .entity {
+                    // Server selector — only meaningful with more than one server; the entity picker
+                    // reads from (and is scoped to) the selected server.
+                    if servers.count > 1 {
+                        Picker(selection: serverBinding) {
+                            ForEach(servers, id: \.identifier.rawValue) { server in
+                                Text(verbatim: server.info.name).tag(server.identifier.rawValue)
+                            }
+                        } label: {
+                            Text(L10n.AppIntents.Server.title)
+                        }
+                    }
+
                     EntityPicker(
                         selectedServerId: config.serverId,
                         selectedEntity: $selectedEntity,
                         domainFilter: nil,
                         mode: .button
                     )
-                } header: {
-                    Text(L10n.Watch.Complications.Builder.entity)
-                }
+                    // Recreate when the server changes so the picker fetches that server's entities.
+                    .id(config.serverId)
+                    .disabled(config.serverId.isEmpty)
 
+                    if let entitySubtitle {
+                        Text(verbatim: entitySubtitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            if config.kind == .entity {
                 // Per-size customization: bound to the size currently selected in the preview above.
                 Section {
                     Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
@@ -349,12 +396,6 @@ struct WatchComplicationBuilderEditView: View {
                     Text(L10n.Watch.Complications.Builder.templates)
                 }
             }
-
-            Section {
-                TextField(text: stringBinding(\.name)) {
-                    Text(L10n.Watch.Complications.Builder.name)
-                }
-            }
         }
         .navigationTitle(Text(isNew ? L10n.Watch.Complications.Builder.newTitle : L10n.Watch.Complications.Builder
                 .editTitle))
@@ -368,9 +409,13 @@ struct WatchComplicationBuilderEditView: View {
             }
         }
         .onChange(of: selectedEntity?.id) { _ in
-            guard let entity = selectedEntity else { return }
+            guard let entity = selectedEntity else {
+                entitySubtitle = nil
+                return
+            }
             config.entityId = entity.entityId
             config.entityDisplayName = entity.name
+            entitySubtitle = entity.contextualSubtitle
             // Prefer the entity's own icon; otherwise fall back to a domain/device-class default so the
             // complication isn't icon-less on the watch.
             config.iconName = entity.icon
@@ -390,6 +435,7 @@ struct WatchComplicationBuilderEditView: View {
                     try HAAppEntity.fetchOne(db, key: key)
                 }
             }
+            entitySubtitle = selectedEntity?.contextualSubtitle
         }
     }
 
@@ -521,13 +567,11 @@ struct WatchComplicationLivePreview: View {
     }
 
     var body: some View {
-        ZStack {
-            Circle().fill(Color.black.opacity(0.06))
-            content
-        }
-        .frame(height: 150)
-        .onAppear(perform: applyTemplates)
-        .onChange(of: config) { _ in applyTemplates() }
+        content
+            .frame(maxWidth: .infinity)
+            .frame(height: 150)
+            .onAppear(perform: applyTemplates)
+            .onChange(of: config) { _ in applyTemplates() }
     }
 
     @ViewBuilder
@@ -631,5 +675,5 @@ struct WatchComplicationLivePreview: View {
 }
 
 #Preview {
-    NavigationView { WatchComplicationBuilderView() }
+    NavigationView { ComplicationsRootView() }
 }
