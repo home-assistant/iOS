@@ -45,7 +45,7 @@ struct RectangularComplicationView: View {
                     .foregroundStyle(textColor)
             }
             if let fraction = complication.fraction(for: family) {
-                RectangularGaugeView(
+                RectangularProgressView(
                     fraction: fraction,
                     minLabel: complication.showsMin(for: family)
                         ? complication.gaugeLabels(for: family)?.min : nil,
