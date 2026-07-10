@@ -16,6 +16,10 @@ struct HALockScreenView: View {
     /// Icon size for the MDI icon in the header row.
     private static let iconSize: CGFloat = 28
 
+    /// Lets the trailing value (e.g. "100%") shrink to fit on one line instead of
+    /// wrapping the "%" onto a second line when horizontal space is tight.
+    private static let trailingValueMinimumScaleFactor: CGFloat = 0.7
+
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.oneAndHalf) {
             HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
@@ -99,11 +103,14 @@ struct HALockScreenView: View {
             Text(HAActivityVisualStyle.percentString(for: fraction))
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(primaryTextColor)
+                .lineLimit(1)
+                .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
         } else if let critical = state.criticalText {
             Text(critical)
                 .font(.headline)
                 .foregroundStyle(primaryTextColor)
                 .lineLimit(1)
+                .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
         }
     }
 

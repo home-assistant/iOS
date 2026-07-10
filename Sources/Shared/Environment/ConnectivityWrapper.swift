@@ -89,8 +89,46 @@ public class ConnectivityWrapper {
         return cachedNetworkState
     }
 
-    private func fetchNetworkState() async -> NetworkState {
-        let state = await performNetworkStateFetch()
+    /// Maximum time to await a network-info fetch before falling back to the last-known state.
+    /// Overridable in tests.
+    var networkFetchTimeout: TimeInterval = 3
+
+    /// The underlying network-info fetch, before the timeout guard in `fetchNetworkState()`.
+    /// Overridable in tests to simulate a fetch that never completes.
+    lazy var performNetworkStateFetch: () async -> NetworkState = { [weak self] in
+        await self?.systemNetworkStateFetch() ?? NetworkState()
+    }
+
+    func fetchNetworkState() async -> NetworkState {
+        let fetch = performNetworkStateFetch
+        let timeout = networkFetchTimeout
+        let fetched: NetworkState? = await withCheckedContinuation { continuation in
+            let lock = NSLock()
+            var didResume = false
+            let resume: (NetworkState?) -> Void = { value in
+                lock.lock()
+                defer { lock.unlock() }
+                guard !didResume else { return }
+                didResume = true
+                continuation.resume(returning: value)
+            }
+
+            Task { await resume(fetch()) }
+            // The timeout must run on GCD, not on a `Task`: the scenario it guards against is the
+            // fetch hanging because Swift concurrency's shared thread pool is starved (seen during
+            // background launches), and a `Task.sleep`-based timeout would be starved with it.
+            DispatchQueue.global().asyncAfter(deadline: .now() + timeout) {
+                resume(nil)
+            }
+        }
+
+        guard let state = fetched else {
+            Current.Log.error(
+                "network information fetch timed out after \(timeout)s; keeping last-known network state"
+            )
+            return readLastKnownNetworkState()
+        }
+
         updateLastKnownNetworkState(state)
         return state
     }
@@ -133,7 +171,7 @@ public class ConnectivityWrapper {
         observeConnectivityChanges()
     }
 
-    private func performNetworkStateFetch() async -> NetworkState {
+    private func systemNetworkStateFetch() async -> NetworkState {
         // macOS uses macBridge to retrieve network information, which is always current.
         let connectivity = Current.macBridge.networkConnectivity
         return NetworkState(
@@ -156,7 +194,7 @@ public class ConnectivityWrapper {
         observeConnectivityChanges()
     }
 
-    private func performNetworkStateFetch() async -> NetworkState {
+    private func systemNetworkStateFetch() async -> NetworkState {
         let hotspotNetwork = await withCheckedContinuation { (continuation: CheckedContinuation<
             NEHotspotNetwork?,
             Never
@@ -188,7 +226,7 @@ public class ConnectivityWrapper {
         // Reachability observer is not available for watchOS
     }
 
-    private func performNetworkStateFetch() async -> NetworkState {
+    private func systemNetworkStateFetch() async -> NetworkState {
         // The watch has no network information of its own (the phone-synced SSID was removed).
         NetworkState()
     }
@@ -205,6 +243,13 @@ public class ConnectivityWrapper {
     #endif
 
     private func observeConnectivityChanges() {
+        // Touch the lazy closures while init is still single-threaded: `lazy var` initialization
+        // is not thread-safe, and at app launch these are first hit concurrently from many tasks.
+        _ = currentNetworkState
+        _ = refreshNetworkInformation
+        _ = lastKnownNetworkState
+        _ = performNetworkStateFetch
+
         // Prime the last-known network state so synchronous consumers have a value early.
         Task { [weak self] in
             await self?.refreshNetworkInformation()

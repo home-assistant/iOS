@@ -30,6 +30,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var initialURL: URL?
     var statusBarButtonsStack: UIStackView?
     var lastNavigationWasServerError = false
+    var didHandleServerErrorResponse = false
     var reconnectBackgroundTimer: Timer? {
         willSet {
             if reconnectBackgroundTimer != newValue {
@@ -50,7 +51,15 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Owns disconnected empty-state recovery timing. Kept in `HomeAssistantView` so attempts survive reset.
     var reconnectManager: WebViewReconnectManager?
 
-    var loadActiveURLIfNeededInProgress = false
+    /// In-flight `loadActiveURLIfNeeded()` attempt and when it started. Repeat calls are skipped
+    /// while a recent attempt is running, but an attempt older than
+    /// `WebViewController.loadActiveURLStaleInterval` is assumed hung, cancelled, and replaced —
+    /// a hung attempt must never block URL loading until the app is killed.
+    var loadActiveURLTask: Task<Void, Never>?
+    var loadActiveURLTaskStartDate: Date?
+
+    /// Wrapper around the application state; replaceable in tests.
+    var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
     /// Track the timestamp of the last pull-to-refresh action
     var lastPullToRefreshTimestamp: Date?
@@ -186,6 +195,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
+        loadActiveURLTask?.cancel()
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {
@@ -195,9 +205,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         config.mediaTypesRequiringUserActionForPlayback = Current.settingsStore
             .mediaTypesRequiringUserActionForPlayback
             .wkMediaTypes
-        #if targetEnvironment(macCatalyst)
-        config.preferences.tabFocusesLinks = true
-        #endif
         return config
     }
 
