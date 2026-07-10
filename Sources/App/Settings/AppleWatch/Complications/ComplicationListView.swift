@@ -74,6 +74,7 @@ struct ComplicationsRootView: View {
                 dismissButton: .default(Text(L10n.okLabel))
             )
         }
+        .navigationTitle(" ")
         .onAppear(perform: load)
         .onReceive(NotificationCenter.default.publisher(for: WatchComplicationConfig.didChangeNotification)) { _ in
             load()
