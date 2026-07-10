@@ -241,10 +241,14 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // Legacy complications arrive as Codable JSON `Data` (they used to be an ObjectMapper array
         // written into Realm). Persist the raw blob to the app group so the snapshot writer can build
         // widget snapshots on launch and on background refresh, without Realm.
+        let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
         if let data = content["complications"] as? Data {
             Current.Log.verbose("Updating legacy complications from context (\(data.count) bytes)")
-            UserDefaults(suiteName: AppConstants.AppGroupID)?
-                .set(data, forKey: WatchWidgetComplicationSnapshotStore.legacyComplicationsKey)
+            defaults?.set(data, forKey: WatchWidgetComplicationSnapshotStore.legacyComplicationsKey)
+        }
+        if let data = content["complicationConfigs"] as? Data {
+            Current.Log.verbose("Updating complication configs from context (\(data.count) bytes)")
+            defaults?.set(data, forKey: WatchWidgetComplicationSnapshotStore.configsKey)
         }
 
         WatchWidgetComplicationSnapshotStore.update()
@@ -334,33 +338,100 @@ private enum WatchWidgetComplicationSnapshotStore {
 
     static let defaultsKey = "watchWidgetComplicationSnapshots"
     static let legacyComplicationsKey = "watchLegacyComplications"
+    static let configsKey = "watchComplicationConfigs"
 
     static func update() {
         MaterialDesignIcons.register()
+        let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
 
-        let stored: [WatchComplication]
-        if let data = UserDefaults(suiteName: AppConstants.AppGroupID)?.data(forKey: legacyComplicationsKey),
+        // Legacy complications render synchronously from their server-rendered data.
+        let legacy: [WatchWidgetComplicationSnapshot]
+        if let data = defaults?.data(forKey: legacyComplicationsKey),
            let decoded = try? JSONDecoder().decode([WatchComplication].self, from: data) {
-            stored = decoded
+            legacy = decoded.sorted(by: { $0.createdAt < $1.createdAt })
+                .map(WatchWidgetComplicationSnapshot.init(complication:))
         } else {
-            stored = []
+            legacy = []
         }
 
-        let userComplications = stored
-            .sorted(by: { $0.createdAt < $1.createdAt })
-            .map(WatchWidgetComplicationSnapshot.init(complication:))
+        let configs: [WatchComplicationConfig]
+        if let data = defaults?.data(forKey: configsKey),
+           let decoded = try? JSONDecoder().decode([WatchComplicationConfig].self, from: data) {
+            configs = decoded.sorted(by: { $0.sortOrder < $1.sortOrder })
+        } else {
+            configs = []
+        }
 
-        let snapshots = [WatchWidgetComplicationSnapshot.placeholder, .assist] + userComplications
+        // Write the synchronous set first so the face is never empty, then refine the
+        // watch-rendered (entity/custom) configs asynchronously once their live values are fetched.
+        write(snapshots: [.placeholder, .assist] + legacy, defaults: defaults)
 
-        guard let data = try? JSONEncoder().encode(snapshots),
-              let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else {
+        guard !configs.isEmpty else { return }
+        Task {
+            var configSnapshots: [WatchWidgetComplicationSnapshot] = []
+            for config in configs {
+                configSnapshots.append(await WatchWidgetComplicationSnapshot.make(config: config))
+            }
+            write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
+        }
+    }
+
+    private static func write(snapshots: [WatchWidgetComplicationSnapshot], defaults: UserDefaults?) {
+        guard let data = try? JSONEncoder().encode(snapshots), let defaults else {
             Current.Log.error("Failed to encode watch widget complication snapshots")
             return
         }
-
         defaults.set(data, forKey: defaultsKey)
         WidgetCenter.shared.reloadTimelines(ofKind: kind)
         WidgetCenter.shared.invalidateConfigurationRecommendations()
+    }
+}
+
+/// Fetches live data for watch-rendered complications directly from Home Assistant over REST
+/// (no WebSocket on watchOS), reusing the server's active URL and bearer token.
+private enum ComplicationStateFetcher {
+    struct EntityState {
+        let state: String
+        let attributes: [String: Any]
+    }
+
+    private static func bearerToken(for server: Server) async -> String? {
+        let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+        return try? await withCheckedThrowingContinuation { continuation in
+            tokenManager.bearerToken.done { token, _ in
+                continuation.resume(returning: token)
+            }.catch { error in
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+
+    static func fetchState(entityId: String, server: Server) async -> EntityState? {
+        guard let baseURL = await server.activeURL(), let token = await bearerToken(for: server) else {
+            return nil
+        }
+        var request = URLRequest(url: baseURL.appendingPathComponent("api/states/\(entityId)"))
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        guard let (data, _) = try? await URLSession.shared.data(for: request),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let state = json["state"] as? String else {
+            return nil
+        }
+        return EntityState(state: state, attributes: json["attributes"] as? [String: Any] ?? [:])
+    }
+
+    static func renderTemplate(_ template: String, server: Server) async -> String? {
+        guard !template.isEmpty, let baseURL = await server.activeURL(),
+              let token = await bearerToken(for: server) else {
+            return nil
+        }
+        var request = URLRequest(url: baseURL.appendingPathComponent("api/template"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: ["template": template])
+        guard let (data, _) = try? await URLSession.shared.data(for: request) else { return nil }
+        return String(data: data, encoding: .utf8)
     }
 }
 
@@ -396,6 +467,59 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         self.fraction = fraction
         self.tint = tint
         self.iconData = iconData
+    }
+
+    /// Builds a snapshot for a modern config, fetching the live entity state / rendering the custom
+    /// template on the watch. Falls back to the configured name when the value can't be fetched.
+    static func make(config: WatchComplicationConfig) async -> WatchWidgetComplicationSnapshot {
+        let server = Current.servers.all.first(where: { $0.identifier.rawValue == config.serverId })
+        var valueText = ""
+        var fraction: Double?
+
+        switch config.kind {
+        case .entity:
+            if let server, let entityId = config.entityId,
+               let result = await ComplicationStateFetcher.fetchState(entityId: entityId, server: server) {
+                valueText = result.state
+                if let minValue = config.gaugeMin, let maxValue = config.gaugeMax, maxValue > minValue {
+                    let source = config.gaugeAttribute.flatMap { result.attributes[$0] } ?? result.state
+                    if let raw = WatchComplication.percentileNumber(from: source) {
+                        let normalized = (Double(raw) - minValue) / (maxValue - minValue)
+                        fraction = min(max(normalized, 0), 1)
+                    }
+                }
+            }
+        case .customTemplate:
+            if let server {
+                if let template = config.customTextTemplate,
+                   let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server) {
+                    valueText = rendered
+                }
+                if let template = config.customGaugeTemplate,
+                   let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server),
+                   let raw = WatchComplication.percentileNumber(from: rendered) {
+                    fraction = min(max(Double(raw), 0), 1)
+                }
+            }
+        }
+
+        let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
+        let title = (config.showValue && !valueText.isEmpty) ? valueText : name
+        let color = config.iconColor.map { UIColor($0) } ?? AppConstants.tintColor
+        let iconData = config.iconName
+            .map { MaterialDesignIcons(named: $0).image(ofSize: iconRenderSize, color: color) }?
+            .pngData()
+
+        return .init(
+            id: config.id,
+            family: "",
+            title: title,
+            subtitle: name,
+            inlineText: [name, valueText].filter { !$0.isEmpty }.joined(separator: " "),
+            fraction: fraction,
+            tint: config.iconColor,
+            iconData: iconData
+        )
     }
 
     init(complication: WatchComplication) {

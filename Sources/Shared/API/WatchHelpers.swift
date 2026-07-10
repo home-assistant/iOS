@@ -10,6 +10,7 @@ import WatchKit
 public enum WatchContext: String, CaseIterable {
     case servers
     case complications
+    case complicationConfigs
     case ssid = "SSID"
     case activeFamilies
     case watchModel
@@ -29,6 +30,11 @@ public extension HomeAssistantAPI {
         // Legacy complications are now GRDB records synced to the watch as Codable JSON `Data`.
         let complications = (try? WatchComplication.all()) ?? []
         content[WatchContext.complications.rawValue] = (try? JSONEncoder().encode(complications)) ?? Data()
+
+        // Modern complications (entity/custom) are rendered by the watch itself.
+        let complicationConfigs = (try? WatchComplicationConfig.all()) ?? []
+        content[WatchContext.complicationConfigs.rawValue] =
+            (try? JSONEncoder().encode(complicationConfigs)) ?? Data()
 
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"

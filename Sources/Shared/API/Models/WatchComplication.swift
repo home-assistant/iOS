@@ -218,3 +218,121 @@ public struct WatchComplication: Codable, FetchableRecord, PersistableRecord, Eq
         }
     }
 }
+
+/// A modern watch complication built from a Home Assistant entity (auto-designed) or a custom
+/// template. Unlike `WatchComplication`, it targets one of the four WidgetKit accessory families and
+/// is rendered by the watch itself: entity icon/name are denormalized here at build time, and the
+/// watch fetches only the live state over REST. Persisted in GRDB and synced to the watch.
+public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
+    public static var databaseTableName: String { GRDBDatabaseTable.watchComplicationConfig.rawValue }
+
+    /// Posted after a config is created/edited/deleted so list views can refresh.
+    public static let didChangeNotification = Notification.Name("watchComplicationConfigsDidChange")
+
+    public enum Kind: String, Codable, CaseIterable { case entity, customTemplate }
+
+    /// The four modern WidgetKit accessory families.
+    public enum Family: String, Codable, CaseIterable, Identifiable {
+        case circular
+        case rectangular
+        case inline
+        case corner
+        public var id: String { rawValue }
+
+        public var title: String {
+            switch self {
+            case .circular: return "Circular"
+            case .rectangular: return "Rectangular"
+            case .inline: return "Inline"
+            case .corner: return "Corner"
+            }
+        }
+    }
+
+    public var id: String
+    public var serverId: String
+    public var widgetFamily: Family
+    public var kind: Kind
+    public var name: String?
+
+    // Entity kind (denormalized so the watch needs no entity registry)
+    public var entityId: String?
+    public var entityDisplayName: String?
+    public var iconName: String?
+    public var iconColor: String?
+    /// Attribute used for a gauge/ring value; `nil` uses the entity state. Only meaningful when numeric.
+    public var gaugeAttribute: String?
+    public var gaugeMin: Double?
+    public var gaugeMax: Double?
+    /// Whether to show the state value as text (vs. icon-only).
+    public var showValue: Bool
+
+    // Custom-template kind
+    public var customTextTemplate: String?
+    public var customGaugeTemplate: String?
+
+    public var sortOrder: Int
+
+    public enum CodingKeys: String, CodingKey {
+        case id, serverId, widgetFamily, kind, name
+        case entityId, entityDisplayName, iconName, iconColor
+        case gaugeAttribute, gaugeMin, gaugeMax, showValue
+        case customTextTemplate, customGaugeTemplate, sortOrder
+    }
+
+    public init(
+        id: String = UUID().uuidString,
+        serverId: String,
+        widgetFamily: Family = .circular,
+        kind: Kind = .entity,
+        name: String? = nil,
+        entityId: String? = nil,
+        entityDisplayName: String? = nil,
+        iconName: String? = nil,
+        iconColor: String? = nil,
+        gaugeAttribute: String? = nil,
+        gaugeMin: Double? = nil,
+        gaugeMax: Double? = nil,
+        showValue: Bool = true,
+        customTextTemplate: String? = nil,
+        customGaugeTemplate: String? = nil,
+        sortOrder: Int = 0
+    ) {
+        self.id = id
+        self.serverId = serverId
+        self.widgetFamily = widgetFamily
+        self.kind = kind
+        self.name = name
+        self.entityId = entityId
+        self.entityDisplayName = entityDisplayName
+        self.iconName = iconName
+        self.iconColor = iconColor
+        self.gaugeAttribute = gaugeAttribute
+        self.gaugeMin = gaugeMin
+        self.gaugeMax = gaugeMax
+        self.showValue = showValue
+        self.customTextTemplate = customTextTemplate
+        self.customGaugeTemplate = customGaugeTemplate
+        self.sortOrder = sortOrder
+    }
+
+    public var displayName: String {
+        name ?? entityDisplayName ?? entityId ?? "Complication"
+    }
+
+    public static func all() throws -> [WatchComplicationConfig] {
+        try Current.database().read { db in
+            try WatchComplicationConfig.order(Column(CodingKeys.sortOrder.rawValue)).fetchAll(db)
+        }
+    }
+
+    public func save() throws {
+        try Current.database().write { db in try save(db) }
+    }
+
+    public func delete() throws {
+        _ = try Current.database().write { db in
+            try WatchComplicationConfig.deleteOne(db, key: id)
+        }
+    }
+}

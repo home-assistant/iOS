@@ -78,6 +78,7 @@ public extension DatabaseQueue {
             KioskSettingsTable(),
             NotificationSnoozeActionTable(),
             WatchComplicationTable(),
+            WatchComplicationConfigTable(),
         ]
     }
 
@@ -144,6 +145,42 @@ final class WatchComplicationTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplication.createdAt.rawValue, .datetime).notNull()
                     t.column(DatabaseTables.WatchComplication.name.rawValue, .text)
                     t.column(DatabaseTables.WatchComplication.isPublic.rawValue, .boolean).notNull()
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
+        }
+    }
+}
+
+/// Modern watch complication configs table. Defined here to avoid a project-file change.
+final class WatchComplicationConfigTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.watchComplicationConfig.rawValue }
+    var definedColumns: [String] { DatabaseTables.WatchComplicationConfig.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.WatchComplicationConfig.id.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.serverId.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.widgetFamily.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.kind.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.name.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.entityId.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.entityDisplayName.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.iconName.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.iconColor.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeAttribute.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeMin.rawValue, .double)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeMax.rawValue, .double)
+                    t.column(DatabaseTables.WatchComplicationConfig.showValue.rawValue, .boolean).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.customTextTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customGaugeTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()
                 }
             }
         } else {
