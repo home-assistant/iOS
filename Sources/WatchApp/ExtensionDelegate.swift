@@ -433,19 +433,9 @@ private enum ComplicationStateFetcher {
         }
     }
 
-    /// Best-effort base URL for a complication fetch. `activeURL()` returns nil when the watch can't
-    /// confirm it's on the internal network (common on watchOS / off-network), so fall back to any
-    /// configured URL (Cloud → Remote → Internal) and just try it.
-    private static func baseURL(for server: Server) async -> URL? {
-        if let url = await server.activeURL() {
-            return url
-        }
-        return server.info.connection.invitationURL()
-    }
-
     static func fetchState(entityId: String, server: Server) async -> EntityState? {
-        guard let baseURL = await baseURL(for: server) else {
-            Current.Log.error("[Complication] no reachable URL for server \(server.identifier.rawValue)")
+        guard let baseURL = await server.activeURL() else {
+            Current.Log.error("[Complication] no active URL for server \(server.identifier.rawValue)")
             return nil
         }
         guard let token = await bearerToken(for: server) else {
@@ -465,7 +455,7 @@ private enum ComplicationStateFetcher {
     }
 
     static func renderTemplate(_ template: String, server: Server) async -> String? {
-        guard !template.isEmpty, let baseURL = await baseURL(for: server),
+        guard !template.isEmpty, let baseURL = await server.activeURL(),
               let token = await bearerToken(for: server) else {
             return nil
         }
