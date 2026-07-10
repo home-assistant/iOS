@@ -944,10 +944,21 @@ struct WatchComplicationLivePreview: View {
         return Image(uiImage: image)
     }
 
+    /// True while any of the template renderers is still evaluating.
+    private var isLoading: Bool {
+        [valueRenderer.output, gaugeRenderer.output, unitRenderer.output].contains(.loading)
+    }
+
     var body: some View {
         content
             .frame(maxWidth: .infinity)
             .frame(height: 150)
+            .overlay {
+                if isLoading {
+                    ProgressView()
+                        .controlSize(.large)
+                }
+            }
             .onAppear(perform: applyTemplates)
             .onChange(of: config) { _ in applyTemplates() }
             .onChange(of: unitRenderer.output) { _ in onUnit(renderedUnit) }
