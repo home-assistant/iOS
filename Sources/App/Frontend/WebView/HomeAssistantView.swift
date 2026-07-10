@@ -26,6 +26,8 @@ struct HomeAssistantView: View, WebFrontendView {
     @State private var webViewResetID = UUID()
     @State private var webViewController: WebViewController?
 
+    @State private var contentOpacity: Double = 0
+
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.server = server
         self.onWebViewController = onWebViewController
@@ -65,11 +67,22 @@ struct HomeAssistantView: View, WebFrontendView {
             }
             emptyStates
         }
+        .opacity(contentOpacity)
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.showsNoActiveURL)
         .statusBarHidden(chrome.statusBarHidden)
         .persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.5)) {
+                contentOpacity = 1
+            }
+        }
+        .onDisappear {
+            withAnimation(.easeInOut(duration: 1.5)) {
+                contentOpacity = 0
+            }
+        }
     }
 
     @ViewBuilder
