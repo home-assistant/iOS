@@ -73,15 +73,13 @@ struct HomeAssistantView: View, WebFrontendView {
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.showsNoActiveURL)
         .statusBarHidden(chrome.statusBarHidden)
         .persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
-        .onAppear {
-            withAnimation(DesignSystem.Animation.easeInOutSlowest) {
-                contentOpacity = 1
-            }
-        }
-        .onDisappear {
-            withAnimation(DesignSystem.Animation.easeInOutSlowest) {
-                contentOpacity = 0
-            }
+        .onAppear { fade(to: 1) }
+        .onDisappear { fade(to: 0) }
+    }
+
+    private func fade(to opacity: Double) {
+        withAnimation(DesignSystem.Animation.easeInOutSlowest) {
+            contentOpacity = opacity
         }
     }
 
