@@ -28,6 +28,8 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @State private var contentOpacity: Double = 0
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.server = server
         self.onWebViewController = onWebViewController
@@ -65,9 +67,9 @@ struct HomeAssistantView: View, WebFrontendView {
                 .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
                 macTitleBar
             }
+            .opacity(contentOpacity)
             emptyStates
         }
-        .opacity(contentOpacity)
         .background(themedStatusBar)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.showsNoActiveURL)
@@ -78,6 +80,10 @@ struct HomeAssistantView: View, WebFrontendView {
     }
 
     private func fade(to opacity: Double) {
+        guard !reduceMotion else {
+            contentOpacity = opacity
+            return
+        }
         withAnimation(DesignSystem.Animation.easeInOutSlowest) {
             contentOpacity = opacity
         }
