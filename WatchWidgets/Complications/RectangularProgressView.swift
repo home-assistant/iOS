@@ -1,5 +1,4 @@
 import SwiftUI
-import Shared
 
 /// A horizontal progress bar with a circular value "thumb" riding the fill, and the minimum / maximum
 /// labels below the bar. Mirrors the iOS builder preview.
@@ -30,18 +29,21 @@ struct RectangularProgressView: View {
                     Capsule().fill(tint.opacity(0.25)).frame(height: Self.barHeight)
                     Capsule().fill(tint).frame(width: max(Self.barHeight, width * clamped), height: Self.barHeight)
                     if let valueLabel {
-                            Text(verbatim: valueLabel)
-                                .font(.system(size: 10, weight: .bold, design: .rounded))
-                                .foregroundStyle(contrastColor)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.4)
-                                .padding(1)
-                        .frame(width: Self.thumbSize, height: Self.thumbSize)
-                        .padding(DesignSystem.Spaces.micro)
-                        .background(tint)
-                        .clipShape(.capsule)
-                        .position(x: min(max(width * clamped, Self.thumbSize / 2), width - Self.thumbSize / 2),
-                                  y: Self.thumbSize / 2)
+                        Text(verbatim: valueLabel)
+                            .font(.system(size: 10, weight: .bold, design: .rounded))
+                            .foregroundStyle(contrastColor)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.4)
+                            .padding(1)
+                            .frame(width: Self.thumbSize, height: Self.thumbSize)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(tint)
+                            .clipShape(.capsule)
+                            .position(
+                                x: min(max(width * clamped, Self.thumbSize / 2), width - Self.thumbSize / 2),
+                                y: Self.thumbSize / 2
+                            )
                     }
                 }
                 .frame(height: Self.thumbSize)

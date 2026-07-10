@@ -19,7 +19,7 @@ final class ComplicationListViewModel: ObservableObject {
         reload()
         observeWatchState()
         observeComplicationsUpdate()
-        didChangeToken = NotificationCenter.default.addObserver(
+        self.didChangeToken = NotificationCenter.default.addObserver(
             forName: WatchComplication.didChangeNotification,
             object: nil,
             queue: .main

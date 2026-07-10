@@ -188,8 +188,10 @@ final class ComplicationEditViewModel: ObservableObject {
 
     private func pushUpdate(server: Server?) {
         guard let server else { return }
-        (Current.api(for: server)?.updateComplications(passively: false) ??
-            .init(error: HomeAssistantAPI.APIError.noAPIAvailable)).cauterize()
+        (
+            Current.api(for: server)?.updateComplications(passively: false) ??
+                .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+        ).cauterize()
     }
 
     // MARK: - Serialization

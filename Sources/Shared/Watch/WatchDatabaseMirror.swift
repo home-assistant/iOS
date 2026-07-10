@@ -49,16 +49,16 @@ public struct WatchDatabaseMirror: WatchCodable {
     // the watch home screen, which relies on the same sync.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        entities = try container.decode([HAAppEntity].self, forKey: .entities)
-        areas = try container.decode([AppArea].self, forKey: .areas)
-        pipelines = try container.decode([AssistPipelines].self, forKey: .pipelines)
-        complications = (try? container.decodeIfPresent([WatchComplication].self, forKey: .complications))
+        self.entities = try container.decode([HAAppEntity].self, forKey: .entities)
+        self.areas = try container.decode([AppArea].self, forKey: .areas)
+        self.pipelines = try container.decode([AssistPipelines].self, forKey: .pipelines)
+        self.complications = (try? container.decodeIfPresent([WatchComplication].self, forKey: .complications))
             .flatMap { $0 } ?? []
-        complicationConfigs = (try? container.decodeIfPresent(
+        self.complicationConfigs = (try? container.decodeIfPresent(
             [WatchComplicationConfig].self,
             forKey: .complicationConfigs
         )).flatMap { $0 } ?? []
-        complicationEntities = (try? container.decodeIfPresent(
+        self.complicationEntities = (try? container.decodeIfPresent(
             [EntityRegistryListForDisplay.Entity].self,
             forKey: .complicationEntities
         )).flatMap { $0 } ?? []

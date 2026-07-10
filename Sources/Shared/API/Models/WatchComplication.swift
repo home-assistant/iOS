@@ -25,7 +25,7 @@ public struct WatchComplication: Codable, FetchableRecord, PersistableRecord, Eq
     /// The free-form configuration blob (text areas, gauge, ring, icon, rendered values), stored as JSON
     /// text. Was a binary `Data` column under Realm; JSON text is equivalent and easier to inspect.
     public var complicationData: String?
-    public var createdAt: Date = Date()
+    public var createdAt: Date = .init()
     public var name: String?
     public var isPublic: Bool = true
 
@@ -57,7 +57,7 @@ public struct WatchComplication: Codable, FetchableRecord, PersistableRecord, Eq
         self.createdAt = createdAt
         self.name = name
         self.isPublic = isPublic
-        Data = data
+        self.Data = data
     }
 
     // MARK: - Typed accessors (not persisted directly)
@@ -222,7 +222,9 @@ public struct WatchComplication: Codable, FetchableRecord, PersistableRecord, Eq
     public static func replaceAll(_ complications: [WatchComplication]) throws {
         _ = try Current.database().write { db in
             try WatchComplication.deleteAll(db)
-            for complication in complications { try complication.insert(db) }
+            for complication in complications {
+                try complication.insert(db)
+            }
         }
     }
 
@@ -526,7 +528,9 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public static func replaceAll(_ configs: [WatchComplicationConfig]) throws {
         _ = try Current.database().write { db in
             try WatchComplicationConfig.deleteAll(db)
-            for config in configs { try config.insert(db) }
+            for config in configs {
+                try config.insert(db)
+            }
         }
     }
 
@@ -539,4 +543,3 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         }
     }
 }
-

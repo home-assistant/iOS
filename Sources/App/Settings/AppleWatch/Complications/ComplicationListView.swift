@@ -35,8 +35,10 @@ struct ComplicationsRootView: View {
                     NavigationLink {
                         ComplicationListView()
                     } label: {
-                        Label(title: { Text(L10n.Watch.Complications.Root.legacy) },
-                              icon: { Image(systemSymbol: .clockArrowCirclepath) })
+                        Label(
+                            title: { Text(L10n.Watch.Complications.Root.legacy) },
+                            icon: { Image(systemSymbol: .clockArrowCirclepath) }
+                        )
                     }
                 } footer: {
                     Text(L10n.Watch.Complications.Root.legacyFooter)
@@ -265,7 +267,7 @@ struct WatchComplicationBuilderEditView: View {
     private let isNew: Bool
 
     init(existing: WatchComplicationConfig?) {
-        isNew = existing == nil
+        self.isNew = existing == nil
         let serverId = Current.servers.all.first?.identifier.rawValue ?? ""
         _config = State(initialValue: existing ?? WatchComplicationConfig(serverId: serverId))
     }
@@ -646,8 +648,10 @@ struct WatchComplicationBuilderEditView: View {
                 }
             }
         }
-        .navigationTitle(Text(isNew ? L10n.Watch.Complications.Builder.newTitle : L10n.Watch.Complications.Builder
-                .editTitle))
+        .navigationTitle(Text(
+            isNew ? L10n.Watch.Complications.Builder.newTitle : L10n.Watch.Complications.Builder
+                .editTitle
+        ))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -737,9 +741,9 @@ struct WatchComplicationBuilderEditView: View {
             TextField(text: text) { Text(verbatim: "—") }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 120)
-                #if !targetEnvironment(macCatalyst)
+            #if !targetEnvironment(macCatalyst)
                 .keyboardType(.numberPad)
-                #endif
+            #endif
         }
     }
 }
