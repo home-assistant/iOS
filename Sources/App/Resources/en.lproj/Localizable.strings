@@ -1667,6 +1667,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.value_source_state" = "State";
 "watch.complications.builder.precision" = "Decimals";
 "watch.complications.builder.precision_automatic" = "Automatic";
+"watch.complications.builder.unit" = "Unit";
+"watch.complications.builder.unit_automatic" = "Automatic";
 "watch.complications.family.circular" = "Circular";
 "watch.complications.family.corner" = "Corner";
 "watch.complications.family.inline" = "Inline";

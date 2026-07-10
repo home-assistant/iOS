@@ -5405,6 +5405,10 @@ public enum L10n {
         public static var textColor: String { return L10n.tr("Localizable", "watch.complications.builder.text_color") }
         /// Complications
         public static var title: String { return L10n.tr("Localizable", "watch.complications.builder.title") }
+        /// Unit
+        public static var unit: String { return L10n.tr("Localizable", "watch.complications.builder.unit") }
+        /// Automatic
+        public static var unitAutomatic: String { return L10n.tr("Localizable", "watch.complications.builder.unit_automatic") }
         /// Value
         public static var valueSource: String { return L10n.tr("Localizable", "watch.complications.builder.value_source") }
         /// State

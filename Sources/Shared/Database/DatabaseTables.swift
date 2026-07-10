@@ -216,6 +216,7 @@ public enum DatabaseTables {
         case gaugeAttribute
         case valueAttribute
         case valuePrecision
+        case unitOverride
         case gaugeMin
         case gaugeMax
         case showValue

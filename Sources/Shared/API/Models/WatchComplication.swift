@@ -304,6 +304,9 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// Number of decimal places for a numeric value; `nil` follows Home Assistant's display precision.
     /// Global — the value text is shared across sizes.
     public var valuePrecision: Int?
+    /// A custom unit shown after the value; `nil`/empty resolves the unit automatically (the state's
+    /// unit_of_measurement, or an attribute's resolved unit). Global — the value text is shared across sizes.
+    public var unitOverride: String?
     public var gaugeMin: Double?
     public var gaugeMax: Double?
     /// Whether to show the state value as text (vs. icon-only). Base default; can be overridden per size.
@@ -376,7 +379,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public enum CodingKeys: String, CodingKey {
         case id, serverId, widgetFamily, kind, name
         case entityId, entityDisplayName, iconName, iconColor
-        case gaugeAttribute, valueAttribute, valuePrecision, gaugeMin, gaugeMax
+        case gaugeAttribute, valueAttribute, valuePrecision, unitOverride, gaugeMin, gaugeMax
         case showValue, showUnit, showWhenInactive
         case customTextTemplate, customGaugeTemplate, sortOrder, families
     }
@@ -394,6 +397,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         gaugeAttribute: String? = nil,
         valueAttribute: String? = nil,
         valuePrecision: Int? = nil,
+        unitOverride: String? = nil,
         gaugeMin: Double? = nil,
         gaugeMax: Double? = nil,
         showValue: Bool = true,
@@ -416,6 +420,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.gaugeAttribute = gaugeAttribute
         self.valueAttribute = valueAttribute
         self.valuePrecision = valuePrecision
+        self.unitOverride = unitOverride
         self.gaugeMin = gaugeMin
         self.gaugeMax = gaugeMax
         self.showValue = showValue

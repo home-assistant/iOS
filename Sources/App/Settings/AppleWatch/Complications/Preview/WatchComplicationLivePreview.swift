@@ -80,8 +80,21 @@ struct WatchComplicationLivePreview: View {
     // Live entity state, fetched over REST for the entity kind.
     @State private var entityState: String = ""
     @State private var entityAttributes: [String: Any] = [:]
-    @State private var entityUnit: String?
     @State private var isFetching = false
+    /// The inputs a fetch actually depends on. Changing only the value source / unit / precision reuses
+    /// the already-fetched attributes instead of triggering a fresh (slow) REST call, so the value and
+    /// unit update together immediately.
+    @State private var lastFetchKey: String?
+
+    private var fetchKey: String {
+        [
+            config.kind.rawValue,
+            config.serverId,
+            config.entityId ?? "",
+            config.customTextTemplate ?? "",
+            config.customGaugeTemplate ?? "",
+        ].joined(separator: "|")
+    }
 
     init(
         config: WatchComplicationConfig,
@@ -103,16 +116,39 @@ struct WatchComplicationLivePreview: View {
         switch config.kind {
         case .entity:
             guard !entityState.isEmpty else { return "" }
-            let unit = config.showsUnit() ? entityUnit : nil
             // The value can come from an entity attribute instead of the state.
             let raw = config.valueAttribute
                 .flatMap { entityAttributes[$0] }
                 .map { String(describing: $0) } ?? entityState
-            return Self.formatValue(raw, unit: unit, precision: entityPrecision)
+            return Self.formatValue(raw, unit: displayUnit, precision: entityPrecision)
         case .customTemplate:
             if case let .success(rendered) = valueRenderer.output { return rendered }
             return ""
         }
+    }
+
+    /// The unit for the current value source, derived synchronously from the already-fetched attributes
+    /// so switching between the state / attributes updates the unit immediately (no stale re-fetch
+    /// window). The state's `unit_of_measurement` only applies to the state; an attribute resolves its
+    /// own unit (weather `*_unit`, known percentages, …) or none.
+    private var resolvedUnit: String? {
+        guard config.kind == .entity else { return nil }
+        if let attribute = config.valueAttribute {
+            return WatchComplicationConfig.attributeUnit(
+                attribute: attribute,
+                attributes: entityAttributes,
+                domain: config.entityId?.components(separatedBy: ".").first
+            )
+        }
+        return entityAttributes["unit_of_measurement"] as? String
+    }
+
+    /// The unit actually shown: the user's override when set, otherwise the resolved unit; nil when the
+    /// "Show unit" toggle is off.
+    private var displayUnit: String? {
+        guard config.showsUnit() else { return nil }
+        if let override = config.unitOverride, !override.isEmpty { return override }
+        return resolvedUnit
     }
 
     private var fraction: Double? {
@@ -201,18 +237,30 @@ struct WatchComplicationLivePreview: View {
     private func refresh() {
         switch config.kind {
         case .entity:
-            fetchEntityState()
+            // Only hit the network when a fetch input changed; otherwise recompute the reported
+            // unit/attributes from the cached data so switching value source updates instantly.
+            if fetchKey != lastFetchKey {
+                fetchEntityState()
+            } else {
+                reportDerived()
+            }
         case .customTemplate:
             valueRenderer.updateTemplate(config.customTextTemplate ?? "")
             gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "")
         }
     }
 
+    /// Report the resolved unit and attribute names for the current config off the already-fetched data.
+    private func reportDerived() {
+        onUnit(resolvedUnit)
+        onAttributes(entityAttributes.keys.sorted())
+    }
+
     private func fetchEntityState() {
+        lastFetchKey = fetchKey
         guard let entityId = config.entityId else {
             entityState = ""
             entityAttributes = [:]
-            entityUnit = nil
             onUnit(nil)
             onAttributes([])
             return
@@ -225,21 +273,7 @@ struct WatchComplicationLivePreview: View {
                 guard let result else { return }
                 entityState = result.state
                 entityAttributes = result.attributes
-                // The unit follows the value source: the state's unit for the state, or the attribute's
-                // resolved unit (never the state unit) for an attribute.
-                let resolvedUnit: String?
-                if let attribute = config.valueAttribute {
-                    resolvedUnit = WatchComplicationConfig.attributeUnit(
-                        attribute: attribute,
-                        attributes: result.attributes,
-                        domain: config.entityId?.components(separatedBy: ".").first
-                    )
-                } else {
-                    resolvedUnit = result.attributes["unit_of_measurement"] as? String
-                }
-                entityUnit = resolvedUnit
-                onUnit(resolvedUnit)
-                onAttributes(result.attributes.keys.sorted())
+                reportDerived()
             }
         }
     }

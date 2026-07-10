@@ -177,6 +177,7 @@ final class WatchComplicationConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplicationConfig.gaugeAttribute.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.valueAttribute.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.valuePrecision.rawValue, .integer)
+                    t.column(DatabaseTables.WatchComplicationConfig.unitOverride.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.gaugeMin.rawValue, .double)
                     t.column(DatabaseTables.WatchComplicationConfig.gaugeMax.rawValue, .double)
                     t.column(DatabaseTables.WatchComplicationConfig.showValue.rawValue, .boolean).notNull()

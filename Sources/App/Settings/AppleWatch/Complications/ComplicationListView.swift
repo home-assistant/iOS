@@ -621,6 +621,18 @@ struct WatchComplicationBuilderEditView: View {
                         } label: {
                             Text(L10n.Watch.Complications.Builder.precision)
                         }
+
+                        // Optional custom unit; the placeholder shows the auto-resolved unit, so leaving
+                        // it blank keeps following Home Assistant.
+                        HStack {
+                            Text(L10n.Watch.Complications.Builder.unit)
+                            Spacer()
+                            TextField(text: stringBinding(\.unitOverride)) {
+                                Text(verbatim: entityUnit ?? L10n.Watch.Complications.Builder.unitAutomatic)
+                            }
+                            .multilineTextAlignment(.trailing)
+                            .frame(maxWidth: 120)
+                        }
                     }
                 }
             }
@@ -646,7 +658,7 @@ struct WatchComplicationBuilderEditView: View {
                 if currentFamily != .inline {
                     Toggle(isOn: showIconBinding) { Text(L10n.Watch.Complications.Builder.showIcon) }
                 }
-                if config.kind == .entity, entityUnit != nil {
+                if config.kind == .entity, entityUnit != nil || !(config.unitOverride ?? "").isEmpty {
                     Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
                 }
 

@@ -780,7 +780,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                     rawValue = result.state
                     resolvedUnit = result.attributes["unit_of_measurement"] as? String
                 }
-                let unit = config.showsUnit() ? resolvedUnit : nil
+                // A user-provided unit override wins over the resolved unit.
+                let effectiveUnit = config.unitOverride.flatMap { $0.isEmpty ? nil : $0 } ?? resolvedUnit
+                let unit = config.showsUnit() ? effectiveUnit : nil
                 valueText = formatValue(rawValue, unit: unit, precision: precision)
                 isLive = true
             } else {
