@@ -1631,6 +1631,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.minimum" = "Minimum";
 "watch.complications.builder.name" = "Name (optional)";
 "watch.complications.builder.new_title" = "New complication";
+"watch.complications.builder.preview" = "Preview";
+"watch.complications.builder.preview_footer" = "A live approximation of how this complication appears on the watch, using current data.";
 "watch.complications.builder.show_value" = "Show value";
 "watch.complications.builder.source" = "Source";
 "watch.complications.builder.source_custom" = "Custom template";

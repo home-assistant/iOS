@@ -5335,6 +5335,10 @@ public enum L10n {
         public static var name: String { return L10n.tr("Localizable", "watch.complications.builder.name") }
         /// New complication
         public static var newTitle: String { return L10n.tr("Localizable", "watch.complications.builder.new_title") }
+        /// Preview
+        public static var preview: String { return L10n.tr("Localizable", "watch.complications.builder.preview") }
+        /// A live approximation of how this complication appears on the watch, using current data.
+        public static var previewFooter: String { return L10n.tr("Localizable", "watch.complications.builder.preview_footer") }
         /// Show value
         public static var showValue: String { return L10n.tr("Localizable", "watch.complications.builder.show_value") }
         /// Source

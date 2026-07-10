@@ -227,8 +227,24 @@ struct WatchComplicationBuilderEditView: View {
         _config = State(initialValue: existing ?? WatchComplicationConfig(serverId: serverId))
     }
 
+    private var server: Server? {
+        Current.servers.all.first { $0.identifier.rawValue == config.serverId } ?? Current.servers.all.first
+    }
+
     var body: some View {
         Form {
+            if let server {
+                Section {
+                    WatchComplicationLivePreview(config: config, server: server)
+                        .frame(maxWidth: .infinity)
+                        .listRowBackground(Color.clear)
+                } header: {
+                    Text(L10n.Watch.Complications.Builder.preview)
+                } footer: {
+                    Text(L10n.Watch.Complications.Builder.previewFooter)
+                }
+            }
+
             Section {
                 Picker(selection: $config.widgetFamily) {
                     ForEach(WatchComplicationConfig.Family.allCases) { family in
@@ -405,6 +421,154 @@ struct ComplicationFamilyPreview: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .accessibilityHidden(true)
+    }
+}
+
+/// A live approximation of the watch complication, mirroring `WatchWidgetsEntryView` but rendered on
+/// iPhone with current data (via Home Assistant template rendering) so the user sees the real result
+/// before saving. Not pixel-identical to watchOS, but faithful to layout, icon, value and gauge.
+struct WatchComplicationLivePreview: View {
+    let config: WatchComplicationConfig
+    @StateObject private var valueRenderer: TemplateRenderer
+    @StateObject private var gaugeRenderer: TemplateRenderer
+
+    init(config: WatchComplicationConfig, server: Server) {
+        self.config = config
+        _valueRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
+        _gaugeRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
+    }
+
+    private var name: String {
+        config.name ?? config.entityDisplayName ?? config.entityId ?? ""
+    }
+
+    private var value: String {
+        if case let .success(rendered) = valueRenderer.output, !rendered.isEmpty {
+            return rendered
+        }
+        return ""
+    }
+
+    private var fraction: Double? {
+        guard case let .success(rendered) = gaugeRenderer.output,
+              let raw = WatchComplication.percentileNumber(from: rendered) else {
+            return nil
+        }
+        return min(max(Double(raw), 0), 1)
+    }
+
+    private var tint: Color {
+        config.iconColor.map { Color(uiColor: UIColor($0)) } ?? .accentColor
+    }
+
+    private var iconImage: Image? {
+        guard let iconName = config.iconName else { return nil }
+        let image = MaterialDesignIcons(named: iconName)
+            .image(ofSize: CGSize(width: 64, height: 64), color: .white)
+        return Image(uiImage: image)
+    }
+
+    var body: some View {
+        ZStack {
+            Circle().fill(Color.black.opacity(0.06))
+            content
+        }
+        .frame(height: 150)
+        .onAppear(perform: applyTemplates)
+        .onChange(of: config) { _ in applyTemplates() }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch config.widgetFamily {
+        case .circular, .corner:
+            circular
+        case .rectangular:
+            rectangular
+        case .inline:
+            inline
+        }
+    }
+
+    private var circular: some View {
+        ZStack {
+            Circle().fill(Color.black)
+            if let fraction {
+                Circle().stroke(Color.white.opacity(0.25), lineWidth: 6)
+                Circle()
+                    .trim(from: 0, to: fraction)
+                    .stroke(tint, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+            }
+            VStack(spacing: 1) {
+                iconImage?
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 26, height: 26)
+                if config.showValue, !value.isEmpty {
+                    Text(value)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                }
+            }
+            .padding(20)
+        }
+        .frame(width: 100, height: 100)
+    }
+
+    private var rectangular: some View {
+        HStack(spacing: 8) {
+            iconImage?
+                .resizable()
+                .scaledToFit()
+                .frame(width: 22, height: 22)
+                .foregroundStyle(.white)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(name).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+                Text(config.showValue && !value.isEmpty ? value : " ")
+                    .font(.system(size: 13)).foregroundStyle(.white.opacity(0.7)).lineLimit(1)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(12)
+        .frame(width: 200)
+        .background(RoundedRectangle(cornerRadius: 14).fill(Color.black))
+        .foregroundStyle(.white)
+    }
+
+    private var inline: some View {
+        HStack(spacing: 4) {
+            iconImage?.resizable().scaledToFit().frame(width: 16, height: 16)
+            Text([name, config.showValue ? value : ""].filter { !$0.isEmpty }.joined(separator: " "))
+                .font(.system(size: 15)).lineLimit(1)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 14).padding(.vertical, 8)
+        .background(Capsule().fill(Color.black))
+    }
+
+    private func applyTemplates() {
+        switch config.kind {
+        case .entity:
+            guard let entityId = config.entityId else {
+                valueRenderer.updateTemplate("")
+                gaugeRenderer.updateTemplate("")
+                return
+            }
+            valueRenderer.updateTemplate("{{ states('\(entityId)') }}")
+            if let minValue = config.gaugeMin, let maxValue = config.gaugeMax, maxValue > minValue {
+                let source = config.gaugeAttribute
+                    .map { "state_attr('\(entityId)', '\($0)')" } ?? "states('\(entityId)')"
+                gaugeRenderer.updateTemplate("{{ ((\(source) | float(0)) - \(minValue)) / \(maxValue - minValue) }}")
+            } else {
+                gaugeRenderer.updateTemplate("")
+            }
+        case .customTemplate:
+            valueRenderer.updateTemplate(config.customTextTemplate ?? "")
+            gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "")
+        }
     }
 }
 
