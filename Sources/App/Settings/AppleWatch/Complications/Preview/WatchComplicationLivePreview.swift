@@ -55,7 +55,7 @@ extension ComplicationPreviewContext {
             config: config,
             value: "68%",
             fraction: gauge ? 0.68 : nil,
-            iconImage: Image(systemName: "battery.75")
+            iconImage: Image(systemSymbol: .battery75)
         )
     }
 }
