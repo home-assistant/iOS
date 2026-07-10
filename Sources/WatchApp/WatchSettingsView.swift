@@ -275,6 +275,7 @@ private struct WatchComplicationsDiagnosticsView: View {
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Complications.title))
     }
 
+    @MainActor
     private func refresh() async {
         isRefreshing = true
         outcomes = await WatchWidgetComplicationSnapshotStore.refresh()

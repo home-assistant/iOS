@@ -46,7 +46,7 @@ struct WatchWidgetsEntryView: View {
             Text(WatchWidgetConstants.appName)
         case .accessoryCorner:
             Text(WatchWidgetConstants.appName)
-                .widgetLabel(WatchWidgetConstants.appName)
+                .widgetLabel { Text(WatchWidgetConstants.appName) }
         default:
             Image(WatchWidgetConstants.templateLogoAssetName)
                 .renderingMode(.template)

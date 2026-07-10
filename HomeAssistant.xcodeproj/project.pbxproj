@@ -670,6 +670,13 @@
 		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42479C10300141B100F7FCD3 /* ComplicationFamilyPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42479C0F300141B100F7FCD3 /* ComplicationFamilyPreview.swift */; };
+		42479C12300141C300F7FCD3 /* RectangularGaugePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42479C11300141C300F7FCD3 /* RectangularGaugePreview.swift */; };
+		42479C14300141ED00F7FCD3 /* WatchComplicationLivePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42479C13300141ED00F7FCD3 /* WatchComplicationLivePreview.swift */; };
+		42479C163001420200F7FCD3 /* CircularComplicationPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42479C153001420200F7FCD3 /* CircularComplicationPreview.swift */; };
+		42479C183001420C00F7FCD3 /* CornerComplicationPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42479C173001420C00F7FCD3 /* CornerComplicationPreview.swift */; };
+		42479C1A3001421700F7FCD3 /* RectangularComplicationPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42479C193001421700F7FCD3 /* RectangularComplicationPreview.swift */; };
+		42479C1C3001422200F7FCD3 /* InlineComplicationPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42479C1B3001422200F7FCD3 /* InlineComplicationPreview.swift */; };
 		424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
@@ -2515,6 +2522,13 @@
 		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
 		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
 		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
+		42479C0F300141B100F7FCD3 /* ComplicationFamilyPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFamilyPreview.swift; sourceTree = "<group>"; };
+		42479C11300141C300F7FCD3 /* RectangularGaugePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangularGaugePreview.swift; sourceTree = "<group>"; };
+		42479C13300141ED00F7FCD3 /* WatchComplicationLivePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationLivePreview.swift; sourceTree = "<group>"; };
+		42479C153001420200F7FCD3 /* CircularComplicationPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularComplicationPreview.swift; sourceTree = "<group>"; };
+		42479C173001420C00F7FCD3 /* CornerComplicationPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerComplicationPreview.swift; sourceTree = "<group>"; };
+		42479C193001421700F7FCD3 /* RectangularComplicationPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangularComplicationPreview.swift; sourceTree = "<group>"; };
+		42479C1B3001422200F7FCD3 /* InlineComplicationPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineComplicationPreview.swift; sourceTree = "<group>"; };
 		424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInBrowser.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
@@ -5073,6 +5087,20 @@
 			path = PermissionScreen;
 			sourceTree = "<group>";
 		};
+		42479C0E300141B100F7FCD3 /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				42479C0F300141B100F7FCD3 /* ComplicationFamilyPreview.swift */,
+				42479C11300141C300F7FCD3 /* RectangularGaugePreview.swift */,
+				42479C13300141ED00F7FCD3 /* WatchComplicationLivePreview.swift */,
+				42479C153001420200F7FCD3 /* CircularComplicationPreview.swift */,
+				42479C173001420C00F7FCD3 /* CornerComplicationPreview.swift */,
+				42479C193001421700F7FCD3 /* RectangularComplicationPreview.swift */,
+				42479C1B3001422200F7FCD3 /* InlineComplicationPreview.swift */,
+			);
+			path = Preview;
+			sourceTree = "<group>";
+		};
 		4251AA972C6B9D30004CCC9D /* Edit */ = {
 			isa = PBXGroup;
 			children = (
@@ -7448,6 +7476,7 @@
 				332C060487B468055C487070 /* TemplatePreviewSection.swift */,
 				6BC23DE131CA8813C2DBD657 /* IconSearchPicker.swift */,
 				5BFD0D30836C69840AB63A8A /* LoadingButton.swift */,
+				42479C0E300141B100F7FCD3 /* Preview */,
 			);
 			path = Complications;
 			sourceTree = "<group>";
@@ -9118,6 +9147,7 @@
 				42514C1B2F3E217E008EB858 /* WidgetTodoListAppIntent.swift in Sources */,
 				42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
 				423B5E0A2D6778370000CB95 /* WidgetBackground.swift in Sources */,
+				42479C10300141B100F7FCD3 /* ComplicationFamilyPreview.swift in Sources */,
 				423B5E092D67781A0000CB95 /* WidgetBasicContainerView.swift in Sources */,
 				4269F48B2FADE46300164A52 /* AssistPromptMagicItemView.swift in Sources */,
 				42EFFAEC2C8882DD002F10FC /* CarPlayConfigurationView.swift in Sources */,
@@ -9154,6 +9184,7 @@
 				42B7BFEC2E97AF070056BADC /* LocalAccessPermissionViewModel.swift in Sources */,
 				78F6EC29BAE43C9BAAFBAB1A /* WhatsNewView.swift in Sources */,
 				14A4AE0E492F4BADB1E8A3CA /* TestFlightCommunicationCatalog.swift in Sources */,
+				42479C163001420200F7FCD3 /* CircularComplicationPreview.swift in Sources */,
 				639D841C8B7A4154956024A8 /* TestFlightCommunicationEngine.swift in Sources */,
 				E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */,
 				027A90037B4049A1AFFF27E3 /* TestFlightCommunicationView.swift in Sources */,
@@ -9180,6 +9211,7 @@
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				42FA833F2F4722F40050095A /* WebViewController+URLLoading.swift in Sources */,
 				42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */,
+				42479C12300141C300F7FCD3 /* RectangularGaugePreview.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
@@ -9254,6 +9286,7 @@
 				42FF5E922E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,
 				42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */,
+				42479C183001420C00F7FCD3 /* CornerComplicationPreview.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
@@ -9261,6 +9294,7 @@
 				4210CCF32F1532C400B71FB9 /* CameraMJPEGPlayerView.swift in Sources */,
 				42FA834B2F4731F80050095A /* WebViewController+Onboarding.swift in Sources */,
 				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,
+				42479C1A3001421700F7FCD3 /* RectangularComplicationPreview.swift in Sources */,
 				42FCCFE32B9B1B610057783F /* BarcodeScannerCameraView.swift in Sources */,
 				42BF8DB42EC4E73700DCB7E7 /* ConnectionSettingsView.swift in Sources */,
 				42BF8DB52EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift in Sources */,
@@ -9301,6 +9335,7 @@
 				42B980D72DC24E4500BC5C08 /* SensorDetailsDecimalStepper.swift in Sources */,
 				420EC8D32FE037CD00C2ED53 /* OnboardingHostingView.swift in Sources */,
 				4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */,
+				42479C1C3001422200F7FCD3 /* InlineComplicationPreview.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDeviceNaming.swift in Sources */,
 				4291CD962DBA70930024F891 /* ActivityViewController.swift in Sources */,
 				427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */,
@@ -9335,6 +9370,7 @@
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */,
+				42479C14300141ED00F7FCD3 /* WatchComplicationLivePreview.swift in Sources */,
 				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,
 				403AE90E2C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
 				4206FFB42DAD58140087626C /* WebViewController+PostOnboarding.swift in Sources */,
@@ -10871,7 +10907,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 2026;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -10959,7 +10994,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 2026;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
