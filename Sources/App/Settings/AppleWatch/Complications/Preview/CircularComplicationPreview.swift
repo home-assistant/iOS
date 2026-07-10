@@ -67,3 +67,10 @@ struct CircularComplicationPreview: View {
         }
     }
 }
+
+#if DEBUG
+#Preview {
+    CircularComplicationPreview(context: .preview(.circular))
+        .padding()
+}
+#endif

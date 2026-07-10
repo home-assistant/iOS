@@ -36,6 +36,31 @@ struct ComplicationPreviewContext {
     func label(_ value: Double) -> String { String(Int(value.rounded())) }
 }
 
+#if DEBUG
+extension ComplicationPreviewContext {
+    /// Sample context used by the per-family preview SwiftUI previews.
+    static func preview(_ family: WatchComplicationConfig.Family, gauge: Bool = true) -> ComplicationPreviewContext {
+        var config = WatchComplicationConfig(
+            serverId: "preview",
+            widgetFamily: family,
+            name: "Battery",
+            iconName: "battery-70",
+            iconColor: "#34C759FF"
+        )
+        if gauge {
+            config.gaugeMin = 0
+            config.gaugeMax = 100
+        }
+        return ComplicationPreviewContext(
+            config: config,
+            value: "68%",
+            fraction: gauge ? 0.68 : nil,
+            iconImage: Image(systemName: "battery.75")
+        )
+    }
+}
+#endif
+
 /// A live approximation of the watch complication, rendered on iPhone with current data so the user
 /// sees the real result before saving. Entity complications fetch their value over the plain REST
 /// states API (no admin-only templating); only the custom-template kind renders templates.

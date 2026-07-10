@@ -35,3 +35,10 @@ struct CornerComplicationPreview: View {
         .environment(\.colorScheme, .dark)
     }
 }
+
+#if DEBUG
+#Preview {
+    CornerComplicationPreview(context: .preview(.corner))
+        .padding()
+}
+#endif

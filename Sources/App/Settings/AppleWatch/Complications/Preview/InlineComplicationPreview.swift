@@ -20,3 +20,10 @@ struct InlineComplicationPreview: View {
         .background(Capsule().fill(Color.black))
     }
 }
+
+#if DEBUG
+#Preview {
+    InlineComplicationPreview(context: .preview(.inline, gauge: false))
+        .padding()
+}
+#endif

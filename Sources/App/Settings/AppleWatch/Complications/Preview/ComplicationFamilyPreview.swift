@@ -38,3 +38,15 @@ struct ComplicationFamilyPreview: View {
         .accessibilityHidden(true)
     }
 }
+
+#if DEBUG
+#Preview {
+    HStack(spacing: 12) {
+        ForEach(WatchComplicationConfig.Family.allCases) { family in
+            ComplicationFamilyPreview(family: family)
+                .frame(width: 60, height: 60)
+        }
+    }
+    .padding()
+}
+#endif

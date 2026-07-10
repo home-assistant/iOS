@@ -42,3 +42,11 @@ struct CornerComplicationView: View {
         }
     }
 }
+
+#if DEBUG
+@available(watchOS 10.0, *)
+#Preview {
+    CornerComplicationView(complication: .previewSample(), family: .accessoryCorner)
+        .frame(width: 90, height: 90)
+}
+#endif

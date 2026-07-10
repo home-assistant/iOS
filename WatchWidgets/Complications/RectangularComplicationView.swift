@@ -85,3 +85,11 @@ struct RectangularComplicationView: View {
         }
     }
 }
+
+#if DEBUG
+@available(watchOS 10.0, *)
+#Preview {
+    RectangularComplicationView(complication: .previewSample(), family: .accessoryRectangular)
+        .frame(width: 160, height: 70)
+}
+#endif

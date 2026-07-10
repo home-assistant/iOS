@@ -86,3 +86,17 @@ struct CircularComplicationView: View {
         .padding(padded ? WatchWidgetConstants.Layout.circularIconGaugePadding : 0)
     }
 }
+
+#if DEBUG
+@available(watchOS 10.0, *)
+#Preview("Open") {
+    CircularComplicationView(complication: .previewSample(gaugeStyle: "open"), family: .accessoryCircular)
+        .frame(width: 90, height: 90)
+}
+
+@available(watchOS 10.0, *)
+#Preview("Ring") {
+    CircularComplicationView(complication: .previewSample(gaugeStyle: "capacity"), family: .accessoryCircular)
+        .frame(width: 90, height: 90)
+}
+#endif

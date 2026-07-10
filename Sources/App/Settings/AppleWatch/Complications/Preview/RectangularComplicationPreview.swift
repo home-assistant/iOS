@@ -41,3 +41,10 @@ struct RectangularComplicationPreview: View {
         .background(RoundedRectangle(cornerRadius: 14).fill(Color.black))
     }
 }
+
+#if DEBUG
+#Preview {
+    RectangularComplicationPreview(context: .preview(.rectangular))
+        .padding()
+}
+#endif

@@ -189,3 +189,40 @@ struct WatchWidgetComplicationSnapshot: Codable {
         }
     }
 }
+
+#if DEBUG
+extension WatchWidgetComplicationSnapshot {
+    /// Sample used by the SwiftUI previews of the per-family complication views.
+    static func previewSample(
+        title: String = "68%",
+        fraction: Double? = 0.68,
+        gaugeStyle: String = "open"
+    ) -> Self {
+        let options = PerFamily(
+            fraction: fraction,
+            tint: "#34C759FF",
+            showValue: true,
+            showName: true,
+            showIcon: true,
+            showMin: true,
+            showMax: true,
+            gaugeStyle: gaugeStyle,
+            minLabel: "0",
+            maxLabel: "100",
+            textColor: nil
+        )
+        return .init(
+            id: "preview",
+            family: "",
+            title: title,
+            subtitle: "Battery",
+            inlineText: "Battery \(title)",
+            fraction: fraction,
+            tint: "#34C759FF",
+            iconData: nil,
+            perFamily: ["circular": options, "rectangular": options, "inline": options, "corner": options],
+            menuName: "Battery"
+        )
+    }
+}
+#endif

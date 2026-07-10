@@ -58,3 +58,12 @@ struct RectangularProgressView: View {
         }
     }
 }
+
+#if DEBUG
+@available(watchOS 10.0, *)
+#Preview {
+    RectangularProgressView(fraction: 0.68, minLabel: "0", maxLabel: "100", valueLabel: "68", tint: .green)
+        .frame(width: 160, height: 40)
+        .padding()
+}
+#endif

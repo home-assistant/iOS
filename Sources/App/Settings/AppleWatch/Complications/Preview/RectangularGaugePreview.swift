@@ -77,3 +77,16 @@ struct RectangularGaugeThumb: View {
             .clipShape(.capsule)
     }
 }
+
+#if DEBUG
+#Preview("Gauge") {
+    RectangularGauge(fraction: 0.68, minLabel: "0", maxLabel: "100", valueLabel: "68", tint: .green)
+        .frame(width: 180)
+        .padding()
+}
+
+#Preview("Thumb") {
+    RectangularGaugeThumb(value: "68", tint: .green)
+        .padding()
+}
+#endif

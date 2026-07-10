@@ -25,3 +25,10 @@ struct InlineComplicationView: View {
         ].filter { !$0.isEmpty }.joined(separator: " - ")
     }
 }
+
+#if DEBUG
+@available(watchOS 10.0, *)
+#Preview {
+    InlineComplicationView(complication: .previewSample(), family: .accessoryInline)
+}
+#endif

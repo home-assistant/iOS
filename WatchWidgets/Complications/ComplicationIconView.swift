@@ -31,3 +31,17 @@ struct ComplicationIconView: View {
         }
     }
 }
+
+#if DEBUG
+@available(watchOS 10.0, *)
+#Preview("Fallback logo") {
+    ComplicationIconView(complication: .previewSample())
+        .frame(width: 60, height: 60)
+}
+
+@available(watchOS 10.0, *)
+#Preview("Assist") {
+    ComplicationIconView(complication: .assist)
+        .frame(width: 60, height: 60)
+}
+#endif
