@@ -74,12 +74,12 @@ struct HomeAssistantView: View, WebFrontendView {
         .statusBarHidden(chrome.statusBarHidden)
         .persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
         .onAppear {
-            withAnimation(.easeInOut(duration: 1.5)) {
+            withAnimation(DesignSystem.Animation.easeInOutSlowest) {
                 contentOpacity = 1
             }
         }
         .onDisappear {
-            withAnimation(.easeInOut(duration: 1.5)) {
+            withAnimation(DesignSystem.Animation.easeInOutSlowest) {
                 contentOpacity = 0
             }
         }
