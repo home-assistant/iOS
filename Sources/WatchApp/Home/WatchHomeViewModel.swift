@@ -390,6 +390,9 @@ final class WatchHomeViewModel: ObservableObject {
                 text: "Apple Watch database sync applied (\(data.count) bytes)",
                 type: .database
             ))
+            // The mirror carries complications too — rebuild widget snapshots now so a reload is another
+            // chance to obtain them if the background context push hasn't delivered them yet.
+            WatchWidgetComplicationSnapshotStore.update()
         } catch {
             failSync(L10n.Watch.Sync.Error.data)
             return

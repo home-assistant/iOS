@@ -16,15 +16,28 @@ public struct WatchDatabaseMirror: WatchCodable {
     public var entities: [HAAppEntity]
     public var areas: [AppArea]
     public var pipelines: [AssistPipelines]
+    /// Legacy complications + modern configs so the watch reload routine is another chance to receive
+    /// them (in addition to the background WatchConnectivity context push).
+    public var complications: [WatchComplication]
+    public var complicationConfigs: [WatchComplicationConfig]
+    /// Registry rows for the entities used by complications, so the watch can format values with the
+    /// right display precision without carrying the whole registry.
+    public var complicationEntities: [EntityRegistryListForDisplay.Entity]
 
     public init(
         entities: [HAAppEntity],
         areas: [AppArea],
-        pipelines: [AssistPipelines]
+        pipelines: [AssistPipelines],
+        complications: [WatchComplication] = [],
+        complicationConfigs: [WatchComplicationConfig] = [],
+        complicationEntities: [EntityRegistryListForDisplay.Entity] = []
     ) {
         self.entities = entities
         self.areas = areas
         self.pipelines = pipelines
+        self.complications = complications
+        self.complicationConfigs = complicationConfigs
+        self.complicationEntities = complicationEntities
     }
 
     /// Domains the watch can add (mirrors the iPhone watch picker).
@@ -34,18 +47,40 @@ public struct WatchDatabaseMirror: WatchCodable {
 
     /// Read the current reference tables from the local GRDB (called on the phone).
     public static func snapshot() throws -> WatchDatabaseMirror {
-        try Current.database().read { db in
+        let complications = (try? WatchComplication.all()) ?? []
+        let configs = (try? WatchComplicationConfig.all()) ?? []
+        // Precision lives in the entity registry; fetch just the entries the complications need.
+        let entitiesByServer = Dictionary(grouping: configs.compactMap { config -> (String, String)? in
+            config.entityId.map { (config.serverId, $0) }
+        }, by: { $0.0 })
+        var registry: [EntityRegistryListForDisplay.Entity] = []
+        for (serverId, pairs) in entitiesByServer {
+            registry += (try? EntityRegistryListForDisplay.Entity.entries(
+                serverId: serverId,
+                entityIds: pairs.map(\.1)
+            )) ?? []
+        }
+
+        return try Current.database().read { db in
             let entities = try HAAppEntity
                 .filter(mirroredDomains.contains(Column(DatabaseTables.AppEntity.domain.rawValue)))
                 .fetchAll(db)
             let areas = try AppArea.fetchAll(db)
             let pipelines = try AssistPipelines.fetchAll(db)
-            return WatchDatabaseMirror(entities: entities, areas: areas, pipelines: pipelines)
+            return WatchDatabaseMirror(
+                entities: entities,
+                areas: areas,
+                pipelines: pipelines,
+                complications: complications,
+                complicationConfigs: configs,
+                complicationEntities: registry
+            )
         }
     }
 
     /// Overwrite the local GRDB reference tables with this snapshot (called on the watch). The watch
-    /// only ever holds mirrored rows in these tables, so a full replace is correct.
+    /// only ever holds mirrored rows in these tables, so a full replace is correct. Complication
+    /// registry rows are upserted (not wiped) so they don't disturb other registry data.
     public func apply() throws {
         try Current.database().write { db in
             try HAAppEntity.deleteAll(db)
@@ -59,6 +94,17 @@ public struct WatchDatabaseMirror: WatchCodable {
             try AssistPipelines.deleteAll(db)
             for pipeline in pipelines {
                 try pipeline.insert(db)
+            }
+            try WatchComplication.deleteAll(db)
+            for complication in complications {
+                try complication.insert(db)
+            }
+            try WatchComplicationConfig.deleteAll(db)
+            for config in complicationConfigs {
+                try config.insert(db)
+            }
+            for entity in complicationEntities {
+                try entity.save(db)
             }
         }
     }

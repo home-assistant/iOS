@@ -1,9 +1,18 @@
 import SwiftUI
 import UIKit
+import WidgetKit
 
 struct WatchWidgetComplicationSnapshot: Codable {
     static let placeholderID = "placeholder"
     static let assistID = "default-assist"
+
+    /// Per-widget-family rendering values, keyed by `WatchComplicationConfig.Family.rawValue`
+    /// ("circular"/"rectangular"/"inline"/"corner"). Absent for built-in/legacy complications.
+    struct PerFamily: Codable {
+        let fraction: Double?
+        let tint: String?
+        let showValue: Bool
+    }
 
     let id: String?
     let family: String
@@ -13,6 +22,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
     let fraction: Double?
     let tint: String?
     let iconData: Data?
+    let perFamily: [String: PerFamily]?
 
     static var placeholder: Self {
         .init(
@@ -23,7 +33,8 @@ struct WatchWidgetComplicationSnapshot: Codable {
             inlineText: WatchWidgetConstants.appName,
             fraction: nil,
             tint: nil,
-            iconData: nil
+            iconData: nil,
+            perFamily: nil
         )
     }
 
@@ -36,8 +47,38 @@ struct WatchWidgetComplicationSnapshot: Codable {
             inlineText: "Assist",
             fraction: nil,
             tint: nil,
-            iconData: nil
+            iconData: nil,
+            perFamily: nil
         )
+    }
+
+    private static func familyKey(for widgetFamily: WidgetFamily) -> String? {
+        switch widgetFamily {
+        case .accessoryCircular: return "circular"
+        case .accessoryRectangular: return "rectangular"
+        case .accessoryInline: return "inline"
+        case .accessoryCorner: return "corner"
+        default: return nil
+        }
+    }
+
+    private func options(for widgetFamily: WidgetFamily) -> PerFamily? {
+        Self.familyKey(for: widgetFamily).flatMap { perFamily?[$0] }
+    }
+
+    /// The gauge fraction for a given family (per-family override, else the top-level value).
+    func fraction(for widgetFamily: WidgetFamily) -> Double? {
+        options(for: widgetFamily)?.fraction ?? fraction
+    }
+
+    /// The tint color for a given family.
+    func tintColor(for widgetFamily: WidgetFamily) -> Color {
+        Color(hex: options(for: widgetFamily)?.tint ?? tint) ?? .accentColor
+    }
+
+    /// Whether to show the state value as text for a given family (default true).
+    func showsValue(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.showValue ?? true
     }
 
     var recommendationID: String {

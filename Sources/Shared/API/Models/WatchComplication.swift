@@ -218,6 +218,14 @@ public struct WatchComplication: Codable, FetchableRecord, PersistableRecord, Eq
         }
     }
 
+    /// Replace all stored complications (used on the watch when a fresh set arrives).
+    public static func replaceAll(_ complications: [WatchComplication]) throws {
+        _ = try Current.database().write { db in
+            try WatchComplication.deleteAll(db)
+            for complication in complications { try complication.insert(db) }
+        }
+    }
+
     /// Delete complications whose server no longer exists (rows with no server are kept).
     public static func deleteOrphans(keepingServerIdentifiers serverIdentifiers: [String]) throws {
         _ = try Current.database().write { db in
@@ -273,7 +281,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public var gaugeAttribute: String?
     public var gaugeMin: Double?
     public var gaugeMax: Double?
-    /// Whether to show the state value as text (vs. icon-only).
+    /// Whether to show the state value as text (vs. icon-only). Base default; can be overridden per size.
     public var showValue: Bool
 
     // Custom-template kind
@@ -282,11 +290,41 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
 
     public var sortOrder: Int
 
+    /// Per-family customization overrides, keyed by `Family.rawValue`. Any field left nil falls back to
+    /// the base value, so one config works in every size yet can be tuned per size. Optional/nullable so
+    /// rows created before this column migrate cleanly.
+    public var families: [String: FamilyOptions]?
+
+    public struct FamilyOptions: Codable, Equatable {
+        public var showValue: Bool?
+        public var showGauge: Bool?
+        public var gaugeMin: Double?
+        public var gaugeMax: Double?
+        public var gaugeAttribute: String?
+        public var tint: String?
+
+        public init(
+            showValue: Bool? = nil,
+            showGauge: Bool? = nil,
+            gaugeMin: Double? = nil,
+            gaugeMax: Double? = nil,
+            gaugeAttribute: String? = nil,
+            tint: String? = nil
+        ) {
+            self.showValue = showValue
+            self.showGauge = showGauge
+            self.gaugeMin = gaugeMin
+            self.gaugeMax = gaugeMax
+            self.gaugeAttribute = gaugeAttribute
+            self.tint = tint
+        }
+    }
+
     public enum CodingKeys: String, CodingKey {
         case id, serverId, widgetFamily, kind, name
         case entityId, entityDisplayName, iconName, iconColor
         case gaugeAttribute, gaugeMin, gaugeMax, showValue
-        case customTextTemplate, customGaugeTemplate, sortOrder
+        case customTextTemplate, customGaugeTemplate, sortOrder, families
     }
 
     public init(
@@ -305,7 +343,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         showValue: Bool = true,
         customTextTemplate: String? = nil,
         customGaugeTemplate: String? = nil,
-        sortOrder: Int = 0
+        sortOrder: Int = 0,
+        families: [String: FamilyOptions]? = nil
     ) {
         self.id = id
         self.serverId = serverId
@@ -323,10 +362,56 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.customTextTemplate = customTextTemplate
         self.customGaugeTemplate = customGaugeTemplate
         self.sortOrder = sortOrder
+        self.families = families
     }
 
     public var displayName: String {
         name ?? entityDisplayName ?? entityId ?? "Complication"
+    }
+
+    // MARK: - Per-family resolution (override → base fallback)
+
+    public func showsValue(for family: Family) -> Bool {
+        families?[family.rawValue]?.showValue ?? showValue
+    }
+
+    /// Whether a gauge/ring should be drawn for this family.
+    public func showsGauge(for family: Family) -> Bool {
+        if let override = families?[family.rawValue]?.showGauge { return override }
+        // Base default: a gauge is shown when a numeric range is configured.
+        return gaugeMin != nil && gaugeMax != nil
+    }
+
+    /// The resolved gauge range for this family, or nil when no gauge should be drawn.
+    public func gaugeRange(for family: Family) -> (min: Double, max: Double)? {
+        guard showsGauge(for: family) else { return nil }
+        let options = families?[family.rawValue]
+        if let minValue = options?.gaugeMin, let maxValue = options?.gaugeMax, maxValue > minValue {
+            return (minValue, maxValue)
+        }
+        if let minValue = gaugeMin, let maxValue = gaugeMax, maxValue > minValue {
+            return (minValue, maxValue)
+        }
+        return nil
+    }
+
+    public func gaugeAttribute(for family: Family) -> String? {
+        families?[family.rawValue]?.gaugeAttribute ?? gaugeAttribute
+    }
+
+    public func tint(for family: Family) -> String? {
+        families?[family.rawValue]?.tint ?? iconColor
+    }
+
+    /// Mutable access to a family's options, creating an empty set if none exists yet.
+    public func options(for family: Family) -> FamilyOptions {
+        families?[family.rawValue] ?? FamilyOptions()
+    }
+
+    public mutating func setOptions(_ options: FamilyOptions, for family: Family) {
+        var resolved = families ?? [:]
+        resolved[family.rawValue] = options
+        families = resolved
     }
 
     public static func all() throws -> [WatchComplicationConfig] {
@@ -342,6 +427,14 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public func delete() throws {
         _ = try Current.database().write { db in
             try WatchComplicationConfig.deleteOne(db, key: id)
+        }
+    }
+
+    /// Replace all stored configs (used on the watch when a fresh set arrives).
+    public static func replaceAll(_ configs: [WatchComplicationConfig]) throws {
+        _ = try Current.database().write { db in
+            try WatchComplicationConfig.deleteAll(db)
+            for config in configs { try config.insert(db) }
         }
     }
 

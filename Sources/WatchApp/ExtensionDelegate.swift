@@ -238,17 +238,18 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     }
 
     private func updateContext(_ content: HAWatchConnectivity.Content) {
-        // Legacy complications arrive as Codable JSON `Data` (they used to be an ObjectMapper array
-        // written into Realm). Persist the raw blob to the app group so the snapshot writer can build
-        // widget snapshots on launch and on background refresh, without Realm.
-        let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
-        if let data = content["complications"] as? Data {
-            Current.Log.verbose("Updating legacy complications from context (\(data.count) bytes)")
-            defaults?.set(data, forKey: WatchWidgetComplicationSnapshotStore.legacyComplicationsKey)
+        // Complications arrive from the phone as Codable JSON `Data` over the background context, and
+        // also via the watch database mirror on reload. Both write into GRDB — the single source the
+        // snapshot writer reads from.
+        if let data = content["complications"] as? Data,
+           let complications = try? JSONDecoder().decode([WatchComplication].self, from: data) {
+            Current.Log.verbose("Updating \(complications.count) legacy complications from context")
+            WatchWidgetComplicationSnapshotStore.replaceLegacyComplications(complications)
         }
-        if let data = content["complicationConfigs"] as? Data {
-            Current.Log.verbose("Updating complication configs from context (\(data.count) bytes)")
-            defaults?.set(data, forKey: WatchWidgetComplicationSnapshotStore.configsKey)
+        if let data = content["complicationConfigs"] as? Data,
+           let configs = try? JSONDecoder().decode([WatchComplicationConfig].self, from: data) {
+            Current.Log.verbose("Updating \(configs.count) complication configs from context")
+            WatchWidgetComplicationSnapshotStore.replaceConfigs(configs)
         }
 
         WatchWidgetComplicationSnapshotStore.update()
@@ -331,36 +332,40 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
-private enum WatchWidgetComplicationSnapshotStore {
+enum WatchWidgetComplicationSnapshotStore {
     static var kind: String {
         AppConstants.BundleID + ".watchkitapp.WatchWidgets"
     }
 
     static let defaultsKey = "watchWidgetComplicationSnapshots"
-    static let legacyComplicationsKey = "watchLegacyComplications"
-    static let configsKey = "watchComplicationConfigs"
+
+    /// Replace the watch's legacy complications in GRDB (from the background context or the mirror).
+    static func replaceLegacyComplications(_ complications: [WatchComplication]) {
+        do {
+            try WatchComplication.replaceAll(complications)
+        } catch {
+            Current.Log.error("Failed to store legacy complications: \(error)")
+        }
+    }
+
+    /// Replace the watch's modern complication configs in GRDB.
+    static func replaceConfigs(_ configs: [WatchComplicationConfig]) {
+        do {
+            try WatchComplicationConfig.replaceAll(configs)
+        } catch {
+            Current.Log.error("Failed to store complication configs: \(error)")
+        }
+    }
 
     static func update() {
         MaterialDesignIcons.register()
         let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
 
-        // Legacy complications render synchronously from their server-rendered data.
-        let legacy: [WatchWidgetComplicationSnapshot]
-        if let data = defaults?.data(forKey: legacyComplicationsKey),
-           let decoded = try? JSONDecoder().decode([WatchComplication].self, from: data) {
-            legacy = decoded.sorted(by: { $0.createdAt < $1.createdAt })
-                .map(WatchWidgetComplicationSnapshot.init(complication:))
-        } else {
-            legacy = []
-        }
-
-        let configs: [WatchComplicationConfig]
-        if let data = defaults?.data(forKey: configsKey),
-           let decoded = try? JSONDecoder().decode([WatchComplicationConfig].self, from: data) {
-            configs = decoded.sorted(by: { $0.sortOrder < $1.sortOrder })
-        } else {
-            configs = []
-        }
+        // GRDB is the single source of truth on the watch (populated by the background context and the
+        // reload mirror). Legacy complications render synchronously from their server-rendered data.
+        let legacy = ((try? WatchComplication.all()) ?? [])
+            .map(WatchWidgetComplicationSnapshot.init(complication:))
+        let configs = ((try? WatchComplicationConfig.all()) ?? [])
 
         // Write the synchronous set first so the face is never empty, then refine the
         // watch-rendered (entity/custom) configs asynchronously once their live values are fetched.
@@ -480,6 +485,14 @@ private struct WatchWidgetComplicationSnapshot: Codable {
     // complication-image archiving limit. Anything larger makes the complication render empty.
     static let iconRenderSize = CGSize(width: 56, height: 56)
 
+    /// Per-widget-family rendering values (varies with the config's per-size customization). Keyed by
+    /// `WatchComplicationConfig.Family.rawValue`.
+    struct PerFamily: Codable {
+        let fraction: Double?
+        let tint: String?
+        let showValue: Bool
+    }
+
     let id: String
     let family: String
     let title: String
@@ -488,6 +501,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
     let fraction: Double?
     let tint: String?
     let iconData: Data?
+    let perFamily: [String: PerFamily]?
 
     init(
         id: String,
@@ -497,7 +511,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         inlineText: String,
         fraction: Double?,
         tint: String?,
-        iconData: Data?
+        iconData: Data?,
+        perFamily: [String: PerFamily]? = nil
     ) {
         self.id = id
         self.family = family
@@ -507,47 +522,95 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         self.fraction = fraction
         self.tint = tint
         self.iconData = iconData
+        self.perFamily = perFamily
+    }
+
+    /// Formats a numeric state with the entity's display precision and unit, mirroring the app.
+    private static func formatValue(_ state: String, unit: String?, precision: Int?) -> String {
+        var text = state
+        if let precision, let number = Double(state) {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.minimumFractionDigits = precision
+            formatter.maximumFractionDigits = precision
+            text = formatter.string(from: NSNumber(value: number)) ?? state
+        }
+        if let unit, !unit.isEmpty {
+            text += " \(unit)"
+        }
+        return text
     }
 
     /// Builds a snapshot for a modern config, fetching the live entity state / rendering the custom
-    /// template on the watch. Falls back to the configured name when the value can't be fetched.
+    /// template on the watch. The value is shared across sizes; per-family gauge/tint/showValue are
+    /// resolved from the config's per-size customization. Falls back to the name when unavailable.
     static func make(config: WatchComplicationConfig) async -> WatchWidgetComplicationSnapshot {
+        typealias Family = WatchComplicationConfig.Family
         let server = Current.servers.all.first(where: { $0.identifier.rawValue == config.serverId })
-        var valueText = ""
-        var fraction: Double?
-
         if server == nil {
             Current.Log.error("[Complication] no matching server for config \(config.id) (serverId \(config.serverId))")
         }
+
+        var valueText = ""
+        var rawState = ""
+        var attributes: [String: Any] = [:]
+        var customGaugeFraction: Double?
+
         switch config.kind {
         case .entity:
             if let server, let entityId = config.entityId,
                let result = await ComplicationStateFetcher.fetchState(entityId: entityId, server: server) {
-                valueText = result.state
-                if let minValue = config.gaugeMin, let maxValue = config.gaugeMax, maxValue > minValue {
-                    let source = config.gaugeAttribute.flatMap { result.attributes[$0] } ?? result.state
-                    if let raw = WatchComplication.percentileNumber(from: source) {
-                        let normalized = (Double(raw) - minValue) / (maxValue - minValue)
-                        fraction = min(max(normalized, 0), 1)
-                    }
-                }
+                rawState = result.state
+                attributes = result.attributes
+                // Unit comes from the live state; precision comes from the entity registry in GRDB (synced
+                // to the watch) — neither is duplicated into the config.
+                let unit = result.attributes["unit_of_measurement"] as? String
+                let precision = EntityRegistryListForDisplay.Entity.displayPrecision(
+                    serverId: config.serverId,
+                    entityId: entityId
+                )
+                valueText = formatValue(result.state, unit: unit, precision: precision)
             }
         case .customTemplate:
             if let server {
                 if let template = config.customTextTemplate,
                    let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server) {
                     valueText = rendered
+                    rawState = rendered
                 }
                 if let template = config.customGaugeTemplate,
                    let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server),
                    let raw = WatchComplication.percentileNumber(from: rendered) {
-                    fraction = min(max(Double(raw), 0), 1)
+                    customGaugeFraction = min(max(Double(raw), 0), 1)
                 }
             }
         }
 
+        func fraction(for family: Family) -> Double? {
+            switch config.kind {
+            case .entity:
+                guard let range = config.gaugeRange(for: family) else { return nil }
+                let source: Any = config.gaugeAttribute(for: family).flatMap { attributes[$0] } ?? rawState
+                guard let raw = WatchComplication.percentileNumber(from: source), range.max > range.min else {
+                    return nil
+                }
+                return min(max((Double(raw) - range.min) / (range.max - range.min), 0), 1)
+            case .customTemplate:
+                if config.families?[family.rawValue]?.showGauge == false { return nil }
+                return customGaugeFraction
+            }
+        }
+
+        var perFamily: [String: PerFamily] = [:]
+        for family in Family.allCases {
+            perFamily[family.rawValue] = PerFamily(
+                fraction: fraction(for: family),
+                tint: config.tint(for: family),
+                showValue: config.showsValue(for: family)
+            )
+        }
+
         let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
-        let title = (config.showValue && !valueText.isEmpty) ? valueText : name
         let color = config.iconColor.map { UIColor($0) } ?? AppConstants.tintColor
         let iconData = config.iconName
             .map { MaterialDesignIcons(named: $0).image(ofSize: iconRenderSize, color: color) }?
@@ -556,12 +619,13 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         return .init(
             id: config.id,
             family: "",
-            title: title,
+            title: valueText.isEmpty ? name : valueText,
             subtitle: name,
             inlineText: [name, valueText].filter { !$0.isEmpty }.joined(separator: " "),
-            fraction: fraction,
-            tint: config.iconColor,
-            iconData: iconData
+            fraction: fraction(for: config.widgetFamily),
+            tint: config.tint(for: config.widgetFamily),
+            iconData: iconData,
+            perFamily: perFamily
         )
     }
 

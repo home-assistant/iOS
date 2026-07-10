@@ -30,12 +30,12 @@ struct WatchWidgetsEntryView: View {
     /// Circular: a progress ring around the icon when a gauge value exists, otherwise the icon.
     @ViewBuilder
     private var circular: some View {
-        if let complication = entry.complication, let fraction = complication.fraction {
+        if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
             Gauge(value: fraction) {
                 icon
             }
             .gaugeStyle(.accessoryCircular)
-            .tint(complication.tintColor)
+            .tint(complication.tintColor(for: entry.family))
         } else {
             icon
                 .padding(WatchWidgetConstants.Layout.logoPadding)
@@ -48,13 +48,13 @@ struct WatchWidgetsEntryView: View {
     /// much smaller image-archiving budget than circular, so a full-size icon would be rejected.
     @ViewBuilder
     private var corner: some View {
-        if let complication = entry.complication, let fraction = complication.fraction {
+        if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
             Text(complication.title)
                 .widgetLabel {
                     Gauge(value: fraction) {
                         Text(complication.subtitle)
                     }
-                    .tint(complication.tintColor)
+                    .tint(complication.tintColor(for: entry.family))
                 }
         } else {
             Text(entry.complication?.title ?? WatchWidgetConstants.appName)
@@ -77,14 +77,14 @@ struct WatchWidgetsEntryView: View {
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
 
-                if let complication = entry.complication, let fraction = complication.fraction {
+                if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
                     Gauge(value: fraction) {
                         EmptyView()
                     } currentValueLabel: {
                         Text(complication.subtitle).lineLimit(1)
                     }
                     .gaugeStyle(.accessoryLinearCapacity)
-                    .tint(complication.tintColor)
+                    .tint(complication.tintColor(for: entry.family))
                 } else {
                     Text(entry.complication?.subtitle ?? WatchWidgetConstants.placeholderSubtitle)
                         .font(.caption2)
@@ -134,7 +134,8 @@ private extension WatchWidgetComplicationSnapshot {
             inlineText: "Battery 68%",
             fraction: 0.68,
             tint: "#34C759FF",
-            iconData: nil
+            iconData: nil,
+            perFamily: nil
         )
     }
 }

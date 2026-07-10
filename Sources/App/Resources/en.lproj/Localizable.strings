@@ -1634,7 +1634,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.preview_footer" = "A live approximation using current data. This complication is available in every size — add it to any complication slot on your watch face.";
 "watch.complications.builder.preview_size" = "Preview size";
+"watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_value" = "Show value";
+"watch.complications.builder.size_options" = "%1$@ options";
+"watch.complications.builder.size_options_footer" = "These settings apply to the selected size. Switch the preview size above to customize each size independently.";
+"watch.complications.builder.color" = "Color";
 "watch.complications.builder.source" = "Source";
 "watch.complications.builder.source_custom" = "Custom template";
 "watch.complications.builder.source_entity" = "Entity";

@@ -181,6 +181,7 @@ final class WatchComplicationConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplicationConfig.customTextTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.customGaugeTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.families.rawValue, .jsonText)
                 }
             }
         } else {

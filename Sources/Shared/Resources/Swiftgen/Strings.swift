@@ -5315,6 +5315,8 @@ public enum L10n {
     }
     public enum Complications {
       public enum Builder {
+        /// Color
+        public static var color: String { return L10n.tr("Localizable", "watch.complications.builder.color") }
         /// Edit complication
         public static var editTitle: String { return L10n.tr("Localizable", "watch.complications.builder.edit_title") }
         /// No complications yet. Tap + to create one from an entity or a template.
@@ -5341,8 +5343,16 @@ public enum L10n {
         public static var previewFooter: String { return L10n.tr("Localizable", "watch.complications.builder.preview_footer") }
         /// Preview size
         public static var previewSize: String { return L10n.tr("Localizable", "watch.complications.builder.preview_size") }
+        /// Show as gauge / ring
+        public static var showGauge: String { return L10n.tr("Localizable", "watch.complications.builder.show_gauge") }
         /// Show value
         public static var showValue: String { return L10n.tr("Localizable", "watch.complications.builder.show_value") }
+        /// %1$@ options
+        public static func sizeOptions(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.complications.builder.size_options", String(describing: p1))
+        }
+        /// These settings apply to the selected size. Switch the preview size above to customize each size independently.
+        public static var sizeOptionsFooter: String { return L10n.tr("Localizable", "watch.complications.builder.size_options_footer") }
         /// Source
         public static var source: String { return L10n.tr("Localizable", "watch.complications.builder.source") }
         /// Custom template

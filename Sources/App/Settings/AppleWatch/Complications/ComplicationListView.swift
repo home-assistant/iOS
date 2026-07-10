@@ -1,6 +1,7 @@
 import GRDB
 import Shared
 import SwiftUI
+import UIKit
 
 /// Root of the Complications settings screen. The modern entity/custom builder lives here; the
 /// previous ClockKit-era complications are tucked under "Legacy complications".
@@ -231,6 +232,50 @@ struct WatchComplicationBuilderEditView: View {
         Current.servers.all.first { $0.identifier.rawValue == config.serverId } ?? Current.servers.all.first
     }
 
+    /// The size currently selected in the preview — also the size being customized below.
+    private var currentFamily: WatchComplicationConfig.Family { config.widgetFamily }
+
+    private func updateOptions(_ mutate: (inout WatchComplicationConfig.FamilyOptions) -> Void) {
+        var options = config.options(for: currentFamily)
+        mutate(&options)
+        config.setOptions(options, for: currentFamily)
+    }
+
+    private var showValueBinding: Binding<Bool> {
+        Binding(
+            get: { config.showsValue(for: currentFamily) },
+            set: { value in updateOptions { $0.showValue = value } }
+        )
+    }
+
+    private var showGaugeBinding: Binding<Bool> {
+        Binding(
+            get: { config.showsGauge(for: currentFamily) },
+            set: { value in updateOptions { $0.showGauge = value } }
+        )
+    }
+
+    private var gaugeMinBinding: Binding<Double?> {
+        Binding(
+            get: { config.families?[currentFamily.rawValue]?.gaugeMin ?? config.gaugeMin },
+            set: { value in updateOptions { $0.gaugeMin = value } }
+        )
+    }
+
+    private var gaugeMaxBinding: Binding<Double?> {
+        Binding(
+            get: { config.families?[currentFamily.rawValue]?.gaugeMax ?? config.gaugeMax },
+            set: { value in updateOptions { $0.gaugeMax = value } }
+        )
+    }
+
+    private var tintBinding: Binding<Color> {
+        Binding(
+            get: { config.tint(for: currentFamily).map { Color(uiColor: UIColor($0)) } ?? .green },
+            set: { value in updateOptions { $0.tint = UIColor(value).hexString(true) } }
+        )
+    }
+
     var body: some View {
         Form {
             if let server {
@@ -270,18 +315,27 @@ struct WatchComplicationBuilderEditView: View {
                         domainFilter: nil,
                         mode: .button
                     )
-                    Toggle(isOn: $config.showValue) { Text(L10n.Watch.Complications.Builder.showValue) }
                 } header: {
                     Text(L10n.Watch.Complications.Builder.entity)
                 }
 
+                // Per-size customization: bound to the size currently selected in the preview above.
                 Section {
-                    numberField(title: L10n.Watch.Complications.Builder.minimum, value: $config.gaugeMin)
-                    numberField(title: L10n.Watch.Complications.Builder.maximum, value: $config.gaugeMax)
+                    Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
+                    Toggle(isOn: showGaugeBinding) { Text(L10n.Watch.Complications.Builder.showGauge) }
+                    if config.showsGauge(for: config.widgetFamily) {
+                        numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
+                        numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
+                    }
+                    ColorPicker(
+                        L10n.Watch.Complications.Builder.color,
+                        selection: tintBinding,
+                        supportsOpacity: false
+                    )
                 } header: {
-                    Text(L10n.Watch.Complications.Builder.gaugeRange)
+                    Text(L10n.Watch.Complications.Builder.sizeOptions(config.widgetFamily.title))
                 } footer: {
-                    Text(L10n.Watch.Complications.Builder.gaugeRangeFooter)
+                    Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
                 }
             } else {
                 Section {
@@ -321,6 +375,13 @@ struct WatchComplicationBuilderEditView: View {
             // complication isn't icon-less on the watch.
             config.iconName = entity.icon
                 ?? Domain(rawValue: entity.domain)?.icon(deviceClass: entity.rawDeviceClass).name
+            // Percentage-like entities read naturally as a ring, so default to a 0–100 gauge (unless the
+            // user already set a range) — this is why picking a battery immediately shows a ring.
+            if config.gaugeMin == nil, config.gaugeMax == nil,
+               [.battery, .humidity, .moisture].contains(entity.deviceClass) {
+                config.gaugeMin = 0
+                config.gaugeMax = 100
+            }
         }
         .onAppear {
             if selectedEntity == nil, let entityId = config.entityId {
@@ -447,8 +508,10 @@ struct WatchComplicationLivePreview: View {
     }
 
     private var tint: Color {
-        config.iconColor.map { Color(uiColor: UIColor($0)) } ?? .accentColor
+        config.tint(for: config.widgetFamily).map { Color(uiColor: UIColor($0)) } ?? .accentColor
     }
+
+    private var showsValue: Bool { config.showsValue(for: config.widgetFamily) }
 
     private var iconImage: Image? {
         guard let iconName = config.iconName else { return nil }
@@ -494,7 +557,7 @@ struct WatchComplicationLivePreview: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 26, height: 26)
-                if config.showValue, !value.isEmpty {
+                if showsValue, !value.isEmpty {
                     Text(value)
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundStyle(.white)
@@ -516,7 +579,7 @@ struct WatchComplicationLivePreview: View {
                 .foregroundStyle(.white)
             VStack(alignment: .leading, spacing: 1) {
                 Text(name).font(.system(size: 13, weight: .semibold)).lineLimit(1)
-                Text(config.showValue && !value.isEmpty ? value : " ")
+                Text(showsValue && !value.isEmpty ? value : " ")
                     .font(.system(size: 13)).foregroundStyle(.white.opacity(0.7)).lineLimit(1)
             }
             Spacer(minLength: 0)
@@ -530,7 +593,7 @@ struct WatchComplicationLivePreview: View {
     private var inline: some View {
         HStack(spacing: 4) {
             iconImage?.resizable().scaledToFit().frame(width: 16, height: 16)
-            Text([name, config.showValue ? value : ""].filter { !$0.isEmpty }.joined(separator: " "))
+            Text([name, showsValue ? value : ""].filter { !$0.isEmpty }.joined(separator: " "))
                 .font(.system(size: 15)).lineLimit(1)
         }
         .foregroundStyle(.white)
@@ -546,11 +609,17 @@ struct WatchComplicationLivePreview: View {
                 gaugeRenderer.updateTemplate("")
                 return
             }
-            valueRenderer.updateTemplate("{{ states('\(entityId)') }}")
-            if let minValue = config.gaugeMin, let maxValue = config.gaugeMax, maxValue > minValue {
-                let source = config.gaugeAttribute
+            // Value with unit, mirroring the watch (which also applies registry precision).
+            valueRenderer.updateTemplate(
+                "{{ states('\(entityId)') }}{{ ' ' ~ state_attr('\(entityId)', 'unit_of_measurement') " +
+                    "if state_attr('\(entityId)', 'unit_of_measurement') else '' }}"
+            )
+            if let range = config.gaugeRange(for: config.widgetFamily) {
+                let source = config.gaugeAttribute(for: config.widgetFamily)
                     .map { "state_attr('\(entityId)', '\($0)')" } ?? "states('\(entityId)')"
-                gaugeRenderer.updateTemplate("{{ ((\(source) | float(0)) - \(minValue)) / \(maxValue - minValue) }}")
+                gaugeRenderer.updateTemplate(
+                    "{{ ((\(source) | float(0)) - \(range.min)) / \(range.max - range.min) }}"
+                )
             } else {
                 gaugeRenderer.updateTemplate("")
             }
