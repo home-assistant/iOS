@@ -109,6 +109,20 @@ struct WatchHomeView: View {
         } message: {
             Text(verbatim: L10n.Watch.Config.Conflict.message)
         }
+        // Sync failures are shown as a full-screen alert (not a fleeting banner) so the reason is
+        // actually readable, with a one-tap retry.
+        .alert(
+            Text(verbatim: L10n.Watch.Sync.Error.title),
+            isPresented: Binding(
+                get: { viewModel.showError && !viewModel.errorMessage.isEmpty },
+                set: { if !$0 { viewModel.showError = false } }
+            )
+        ) {
+            Button(L10n.Watch.Sync.retry) { viewModel.requestConfig() }
+            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+        } message: {
+            Text(verbatim: viewModel.errorMessage)
+        }
         .onAppear {
             // Consume a launch requested from the complication before this view existed (cold launch).
             if AssistDefaultComplication.pendingLaunch {
@@ -147,9 +161,6 @@ struct WatchHomeView: View {
                 onAssist: { showAssist = true },
                 onAdd: { activeSheet = .add }
             )
-            if viewModel.showError, !viewModel.errorMessage.isEmpty {
-                syncErrorBanner
-            }
             listContent
             if !isEditing, viewModel.showAssist {
                 addRow
@@ -241,22 +252,6 @@ struct WatchHomeView: View {
                 .contentShape(Rectangle())
         }
         .watchItemRowStyle()
-    }
-
-    /// Inline, understandable sync failure with a retry — so the user is never left hanging or guessing.
-    private var syncErrorBanner: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            Label(viewModel.errorMessage, systemSymbol: .exclamationmarkTriangleFill)
-                .font(.footnote)
-                .foregroundStyle(.orange)
-            Button(L10n.Watch.Sync.retry) {
-                viewModel.requestConfig()
-            }
-            .buttonStyle(.bordered)
-            .tint(.haPrimary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .listRowBackground(Color.clear)
     }
 
     @ViewBuilder

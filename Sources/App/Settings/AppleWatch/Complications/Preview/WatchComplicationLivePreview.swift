@@ -45,6 +45,8 @@ struct WatchComplicationLivePreview: View {
     /// Reports the entity's unit of measurement (nil when it has none) so the editor can decide whether
     /// to offer the "Show unit" toggle.
     var onUnit: (String?) -> Void = { _ in }
+    /// Reports the entity's attribute names (sorted) so the editor can offer them as value sources.
+    var onAttributes: ([String]) -> Void = { _ in }
 
     // Template rendering is used only for the custom-template kind.
     @StateObject private var valueRenderer: TemplateRenderer
@@ -56,10 +58,16 @@ struct WatchComplicationLivePreview: View {
     @State private var entityUnit: String?
     @State private var isFetching = false
 
-    init(config: WatchComplicationConfig, server: Server, onUnit: @escaping (String?) -> Void = { _ in }) {
+    init(
+        config: WatchComplicationConfig,
+        server: Server,
+        onUnit: @escaping (String?) -> Void = { _ in },
+        onAttributes: @escaping ([String]) -> Void = { _ in }
+    ) {
         self.config = config
         self.server = server
         self.onUnit = onUnit
+        self.onAttributes = onAttributes
         _valueRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
         _gaugeRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
     }
@@ -71,7 +79,11 @@ struct WatchComplicationLivePreview: View {
         case .entity:
             guard !entityState.isEmpty else { return "" }
             let unit = config.showsUnit() ? entityUnit : nil
-            return Self.formatValue(entityState, unit: unit, precision: entityPrecision)
+            // The value can come from an entity attribute instead of the state.
+            let raw = config.valueAttribute
+                .flatMap { entityAttributes[$0] }
+                .map { String(describing: $0) } ?? entityState
+            return Self.formatValue(raw, unit: unit, precision: entityPrecision)
         case .customTemplate:
             if case let .success(rendered) = valueRenderer.output { return rendered }
             return ""
@@ -83,7 +95,9 @@ struct WatchComplicationLivePreview: View {
         case .entity:
             guard let range = config.gaugeRange(for: config.widgetFamily) else { return nil }
             let source: Any = config.gaugeAttribute(for: config.widgetFamily)
-                .flatMap { entityAttributes[$0] } ?? entityState
+                .flatMap { entityAttributes[$0] }
+                ?? config.valueAttribute.flatMap { entityAttributes[$0] }
+                ?? entityState
             guard let raw = WatchComplication.percentileNumber(from: source), range.max > range.min else {
                 return nil
             }
@@ -174,6 +188,7 @@ struct WatchComplicationLivePreview: View {
             entityAttributes = [:]
             entityUnit = nil
             onUnit(nil)
+            onAttributes([])
             return
         }
         isFetching = true
@@ -186,6 +201,7 @@ struct WatchComplicationLivePreview: View {
                 entityAttributes = result.attributes
                 entityUnit = result.attributes["unit_of_measurement"] as? String
                 onUnit(entityUnit)
+                onAttributes(result.attributes.keys.sorted())
             }
         }
     }

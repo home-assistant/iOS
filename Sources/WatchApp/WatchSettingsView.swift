@@ -241,7 +241,11 @@ private struct WatchComplicationsDiagnosticsView: View {
                     Task { await refresh() }
                 } label: {
                     if isRefreshing {
-                        Label(L10n.Watch.Settings.Complications.refreshing, systemSymbol: .arrowClockwise)
+                        // A live spinner so a slow REST refresh doesn't look stuck (feedback: "seems frozen").
+                        HStack(spacing: DesignSystem.Spaces.one) {
+                            ProgressView()
+                            Text(verbatim: L10n.Watch.Settings.Complications.refreshing)
+                        }
                     } else {
                         Label(L10n.Watch.Settings.Complications.refresh, systemSymbol: .arrowClockwise)
                     }

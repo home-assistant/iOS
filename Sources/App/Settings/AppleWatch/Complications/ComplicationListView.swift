@@ -14,6 +14,15 @@ struct ComplicationsRootView: View {
     @State private var hasLegacy = false
     @State private var editing: WatchComplicationConfig?
     @State private var showAdd = false
+    @State private var isReloading = false
+    @State private var reloadAlert: ReloadAlert?
+
+    /// One-off alert describing the result of the manual "Reload" (so it isn't a silent no-op).
+    private struct ReloadAlert: Identifiable {
+        let id = UUID()
+        let title: String
+        let message: String
+    }
 
     var body: some View {
         List {
@@ -22,10 +31,17 @@ struct ComplicationsRootView: View {
 
             Section {
                 Button {
-                    HomeAssistantAPI.syncWatchContext()
+                    Task { await reload() }
                 } label: {
-                    Label(L10n.Watch.Complications.Root.reload, systemSymbol: .arrowClockwise)
+                    HStack {
+                        Label(L10n.Watch.Complications.Root.reload, systemSymbol: .arrowClockwise)
+                        if isReloading {
+                            Spacer()
+                            ProgressView()
+                        }
+                    }
                 }
+                .disabled(isReloading)
             } footer: {
                 Text(L10n.Watch.Complications.Root.reloadFooter)
             }
@@ -51,9 +67,42 @@ struct ComplicationsRootView: View {
         .sheet(item: $editing) { config in
             NavigationView { WatchComplicationBuilderEditView(existing: config) }
         }
-        .onAppear(perform: reload)
+        .alert(item: $reloadAlert) { alert in
+            Alert(
+                title: Text(verbatim: alert.title),
+                message: Text(verbatim: alert.message),
+                dismissButton: .default(Text(L10n.okLabel))
+            )
+        }
+        .onAppear(perform: load)
         .onReceive(NotificationCenter.default.publisher(for: WatchComplicationConfig.didChangeNotification)) { _ in
-            reload()
+            load()
+        }
+    }
+
+    /// Manual reload: pushes the current complications to the watch and reports the result so the user
+    /// isn't left guessing (feedback: silent reload button, and no explanation when the watch is away).
+    @MainActor
+    private func reload() async {
+        isReloading = true
+        let outcome = await HomeAssistantAPI.reloadWatchComplications()
+        isReloading = false
+        switch outcome {
+        case .success:
+            reloadAlert = ReloadAlert(
+                title: L10n.Watch.Complications.Root.reloadSuccessTitle,
+                message: L10n.Watch.Complications.Root.reloadSuccessMessage
+            )
+        case .watchUnavailable:
+            reloadAlert = ReloadAlert(
+                title: L10n.Watch.Complications.Root.reloadUnavailableTitle,
+                message: L10n.Watch.Complications.Root.reloadUnavailableMessage
+            )
+        case let .failed(message):
+            reloadAlert = ReloadAlert(
+                title: L10n.Watch.Complications.Root.reloadFailedTitle,
+                message: message
+            )
         }
     }
 
@@ -114,7 +163,7 @@ struct ComplicationsRootView: View {
         return Image(uiImage: icon.image(ofSize: .init(width: 28, height: 28), color: color))
     }
 
-    private func reload() {
+    private func load() {
         hasLegacy = !((try? WatchComplication.all()) ?? []).isEmpty
         let all = (try? WatchComplicationConfig.all()) ?? []
         configs = all
@@ -141,7 +190,7 @@ struct ComplicationsRootView: View {
         }
         NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
         HomeAssistantAPI.syncWatchContext()
-        reload()
+        load()
     }
 }
 
@@ -263,6 +312,8 @@ struct WatchComplicationBuilderEditView: View {
     /// The selected entity's unit of measurement (nil when it has none), reported by the live preview.
     /// Used to decide whether to offer the "Show unit" toggle.
     @State private var entityUnit: String?
+    /// The selected entity's attribute names, reported by the live preview, offered as value sources.
+    @State private var entityAttributeKeys: [String] = []
     @State private var showEntityPicker = false
     private let isNew: Bool
 
@@ -406,6 +457,15 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
+    /// Value source: empty string == the entity state, otherwise an attribute name. Global (the value
+    /// text is shared across sizes).
+    private var valueAttributeBinding: Binding<String> {
+        Binding(
+            get: { config.valueAttribute ?? "" },
+            set: { config.valueAttribute = $0.isEmpty ? nil : $0 }
+        )
+    }
+
     /// Unit visibility is global (the value text is shared across sizes).
     private var showUnitBinding: Binding<Bool> {
         Binding(
@@ -435,6 +495,8 @@ struct WatchComplicationBuilderEditView: View {
                 Section {
                     WatchComplicationLivePreview(config: config, server: server) { unit in
                         entityUnit = unit
+                    } onAttributes: { keys in
+                        entityAttributeKeys = keys
                     }
                     .frame(maxWidth: .infinity)
                     .listRowBackground(Color(uiColor: .systemBackground))
@@ -524,6 +586,18 @@ struct WatchComplicationBuilderEditView: View {
                             )
                         }
                         .navigationViewStyle(.stack)
+                    }
+
+                    // Choose whether the value shown is the entity's state or one of its attributes.
+                    if config.entityId != nil, !entityAttributeKeys.isEmpty {
+                        Picker(selection: valueAttributeBinding) {
+                            Text(L10n.Watch.Complications.Builder.valueSourceState).tag("")
+                            ForEach(entityAttributeKeys, id: \.self) { key in
+                                Text(verbatim: key).tag(key)
+                            }
+                        } label: {
+                            Text(L10n.Watch.Complications.Builder.valueSource)
+                        }
                     }
                 }
             }
@@ -661,9 +735,16 @@ struct WatchComplicationBuilderEditView: View {
                 entitySubtitle = nil
                 return
             }
+            entitySubtitle = entity.contextualSubtitle
+            // Only auto-design defaults when the user actually picked a *different* entity. On appear we
+            // hydrate `selectedEntity` from the existing config, which also fires this handler — without
+            // this guard that would clobber the user's saved icon/name/gauge every time they reopen the
+            // editor (feedback: "icon not saving correctly").
+            guard entity.entityId != config.entityId else { return }
             config.entityId = entity.entityId
             config.entityDisplayName = entity.name
-            entitySubtitle = entity.contextualSubtitle
+            // A new entity's value source no longer applies to the old attributes.
+            config.valueAttribute = nil
             // Prefer the entity's own icon; otherwise fall back to a domain/device-class default so the
             // complication isn't icon-less on the watch.
             config.iconName = entity.icon

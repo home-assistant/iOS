@@ -5401,6 +5401,10 @@ public enum L10n {
         public static var textColor: String { return L10n.tr("Localizable", "watch.complications.builder.text_color") }
         /// Complications
         public static var title: String { return L10n.tr("Localizable", "watch.complications.builder.title") }
+        /// Value
+        public static var valueSource: String { return L10n.tr("Localizable", "watch.complications.builder.value_source") }
+        /// State
+        public static var valueSourceState: String { return L10n.tr("Localizable", "watch.complications.builder.value_source_state") }
       }
       public enum Family {
         /// Circular
@@ -5441,8 +5445,18 @@ public enum L10n {
         public static var newFooter: String { return L10n.tr("Localizable", "watch.complications.root.new_footer") }
         /// Reload Complications
         public static var reload: String { return L10n.tr("Localizable", "watch.complications.root.reload") }
+        /// Reload Failed
+        public static var reloadFailedTitle: String { return L10n.tr("Localizable", "watch.complications.root.reload_failed_title") }
         /// Sends your complications to the Apple Watch and refreshes them.
         public static var reloadFooter: String { return L10n.tr("Localizable", "watch.complications.root.reload_footer") }
+        /// Your complications were sent to the Apple Watch. They refresh shortly.
+        public static var reloadSuccessMessage: String { return L10n.tr("Localizable", "watch.complications.root.reload_success_message") }
+        /// Reload Sent
+        public static var reloadSuccessTitle: String { return L10n.tr("Localizable", "watch.complications.root.reload_success_title") }
+        /// Make sure your Apple Watch is paired and the Home Assistant watch app is installed, then try again.
+        public static var reloadUnavailableMessage: String { return L10n.tr("Localizable", "watch.complications.root.reload_unavailable_message") }
+        /// Apple Watch Not Available
+        public static var reloadUnavailableTitle: String { return L10n.tr("Localizable", "watch.complications.root.reload_unavailable_title") }
         /// Template
         public static var template: String { return L10n.tr("Localizable", "watch.complications.root.template") }
         /// Your complications
@@ -6455,6 +6469,8 @@ public enum L10n {
         public static var data: String { return L10n.tr("Localizable", "watch.sync.error.data") }
         /// Sync failed. Please try again.
         public static var generic: String { return L10n.tr("Localizable", "watch.sync.error.generic") }
+        /// Sync Failed
+        public static var title: String { return L10n.tr("Localizable", "watch.sync.error.title") }
         /// Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.
         public static var unreachable: String { return L10n.tr("Localizable", "watch.sync.error.unreachable") }
       }

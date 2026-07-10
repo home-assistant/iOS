@@ -678,7 +678,11 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                     serverId: config.serverId,
                     entityId: entityId
                 )
-                valueText = formatValue(result.state, unit: unit, precision: precision)
+                // The value can come from an entity attribute instead of the state.
+                let rawValue = config.valueAttribute
+                    .flatMap { result.attributes[$0] }
+                    .map { String(describing: $0) } ?? result.state
+                valueText = formatValue(rawValue, unit: unit, precision: precision)
                 isLive = true
             } else {
                 failureReason = "live state unavailable"
@@ -709,7 +713,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             switch config.kind {
             case .entity:
                 guard let range = config.gaugeRange(for: family) else { return nil }
-                let source: Any = config.gaugeAttribute(for: family).flatMap { attributes[$0] } ?? rawState
+                let source: Any = config.gaugeAttribute(for: family).flatMap { attributes[$0] }
+                    ?? config.valueAttribute.flatMap { attributes[$0] }
+                    ?? rawState
                 guard let raw = WatchComplication.percentileNumber(from: source), range.max > range.min else {
                     return nil
                 }

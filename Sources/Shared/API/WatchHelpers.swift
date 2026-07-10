@@ -95,6 +95,36 @@ public extension HomeAssistantAPI {
         }
     }
 
+    /// Outcome of a user-initiated watch reload, so the iPhone UI can give real feedback instead of
+    /// silently firing a sync.
+    enum WatchReloadOutcome: Equatable {
+        case success
+        /// The watch isn't paired or the watch app isn't installed — nothing to sync to.
+        case watchUnavailable
+        case failed(String)
+    }
+
+    #if os(iOS)
+    /// Push the current context to the watch and report whether it worked, for the Complications
+    /// settings "Reload" button. Distinguishes "no watch" (so the UI can explain why) from a transport
+    /// failure (so the UI can show the error).
+    static func reloadWatchComplications() async -> WatchReloadOutcome {
+        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
+            Current.Log.warning("Watch reload requested but watch not paired or app not installed")
+            return .watchUnavailable
+        }
+        let context = await HAWatchConnectivity.Context(content: watchContext())
+        do {
+            try Communicator.shared.sync(context)
+            Current.Log.info("Watch reload: context synced")
+            return .success
+        } catch {
+            Current.Log.error("Watch reload failed: \(error.localizedDescription)")
+            return .failed(error.localizedDescription)
+        }
+    }
+    #endif
+
     func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
         guard case .paired = Communicator.shared.currentWatchState else {

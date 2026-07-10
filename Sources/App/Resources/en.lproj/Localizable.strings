@@ -1663,6 +1663,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.style" = "Style";
 "watch.complications.builder.templates" = "Templates";
 "watch.complications.builder.title" = "Complications";
+"watch.complications.builder.value_source" = "Value";
+"watch.complications.builder.value_source_state" = "State";
 "watch.complications.family.circular" = "Circular";
 "watch.complications.family.corner" = "Corner";
 "watch.complications.family.inline" = "Inline";
@@ -1682,6 +1684,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.root.new_footer" = "Build a complication from an entity or a custom template. The watch renders it using live data.";
 "watch.complications.root.reload" = "Reload Complications";
 "watch.complications.root.reload_footer" = "Sends your complications to the Apple Watch and refreshes them.";
+"watch.complications.root.reload_success_title" = "Reload Sent";
+"watch.complications.root.reload_success_message" = "Your complications were sent to the Apple Watch. They refresh shortly.";
+"watch.complications.root.reload_unavailable_title" = "Apple Watch Not Available";
+"watch.complications.root.reload_unavailable_message" = "Make sure your Apple Watch is paired and the Home Assistant watch app is installed, then try again.";
+"watch.complications.root.reload_failed_title" = "Reload Failed";
 "watch.complications.root.template" = "Template";
 "watch.configurator.delete.message" = "Are you sure you want to delete this Complication? This cannot be undone.";
 "watch.configurator.delete.title" = "Delete Complication?";
@@ -1917,6 +1924,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.home.sync.waiting" = "Waiting for iPhone…";
 "watch.sync.starting" = "Starting sync…";
 "watch.sync.progress" = "%1$d/%2$d";
+"watch.sync.error.title" = "Sync Failed";
 "watch.sync.error.unreachable" = "Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.";
 "watch.sync.error.connection_failed" = "We couldn't connect to your iPhone. Open the Home Assistant app on your iPhone, then tap the reload button here on your Watch.";
 "watch.sync.error.generic" = "Sync failed. Please try again.";

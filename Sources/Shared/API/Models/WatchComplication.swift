@@ -297,6 +297,10 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public var iconColor: String?
     /// Attribute used for a gauge/ring value; `nil` uses the entity state. Only meaningful when numeric.
     public var gaugeAttribute: String?
+    /// Attribute whose value is shown as the complication's text (and used as the gauge basis when no
+    /// dedicated `gaugeAttribute` is set); `nil` shows the entity state. Global — the value text is
+    /// shared across sizes.
+    public var valueAttribute: String?
     public var gaugeMin: Double?
     public var gaugeMax: Double?
     /// Whether to show the state value as text (vs. icon-only). Base default; can be overridden per size.
@@ -369,7 +373,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public enum CodingKeys: String, CodingKey {
         case id, serverId, widgetFamily, kind, name
         case entityId, entityDisplayName, iconName, iconColor
-        case gaugeAttribute, gaugeMin, gaugeMax, showValue, showUnit, showWhenInactive
+        case gaugeAttribute, valueAttribute, gaugeMin, gaugeMax, showValue, showUnit, showWhenInactive
         case customTextTemplate, customGaugeTemplate, sortOrder, families
     }
 
@@ -384,6 +388,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         iconName: String? = nil,
         iconColor: String? = nil,
         gaugeAttribute: String? = nil,
+        valueAttribute: String? = nil,
         gaugeMin: Double? = nil,
         gaugeMax: Double? = nil,
         showValue: Bool = true,
@@ -404,6 +409,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.iconName = iconName
         self.iconColor = iconColor
         self.gaugeAttribute = gaugeAttribute
+        self.valueAttribute = valueAttribute
         self.gaugeMin = gaugeMin
         self.gaugeMax = gaugeMax
         self.showValue = showValue
