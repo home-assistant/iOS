@@ -28,13 +28,18 @@ public extension HomeAssistantAPI {
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
         // Legacy complications are now GRDB records synced to the watch as Codable JSON `Data`.
-        let complications = (try? WatchComplication.all()) ?? []
-        content[WatchContext.complications.rawValue] = (try? JSONEncoder().encode(complications)) ?? Data()
+        // Only attach them when the read actually succeeds: sending an empty array on a read failure
+        // would look authoritative to the watch and wipe its existing complications. A successful read
+        // that happens to be empty IS authoritative (that is how deleting the last one propagates).
+        if let complications = try? WatchComplication.all() {
+            content[WatchContext.complications.rawValue] = (try? JSONEncoder().encode(complications)) ?? Data()
+        }
 
         // Modern complications (entity/custom) are rendered by the watch itself.
-        let complicationConfigs = (try? WatchComplicationConfig.all()) ?? []
-        content[WatchContext.complicationConfigs.rawValue] =
-            (try? JSONEncoder().encode(complicationConfigs)) ?? Data()
+        if let complicationConfigs = try? WatchComplicationConfig.all() {
+            content[WatchContext.complicationConfigs.rawValue] =
+                (try? JSONEncoder().encode(complicationConfigs)) ?? Data()
+        }
 
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"

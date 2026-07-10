@@ -18,8 +18,14 @@ public struct WatchDatabaseMirror: WatchCodable {
     public var pipelines: [AssistPipelines]
     /// Legacy complications + modern configs so the watch reload routine is another chance to receive
     /// them (in addition to the background WatchConnectivity context push).
-    public var complications: [WatchComplication]
-    public var complicationConfigs: [WatchComplicationConfig]
+    ///
+    /// Optional on purpose: `nil` means "this sync did not carry complication data" — an older build, a
+    /// partial payload, or a decode/read failure — and the watch must RETAIN whatever it already has. A
+    /// non-nil value (even an empty array) is authoritative and replaces the local rows, which is how a
+    /// genuine "user deleted them all" propagates. This is what stops a half/broken sync from wiping the
+    /// existing complications off the watch.
+    public var complications: [WatchComplication]?
+    public var complicationConfigs: [WatchComplicationConfig]?
     /// Registry rows for the entities used by complications, so the watch can format values with the
     /// right display precision without carrying the whole registry.
     public var complicationEntities: [EntityRegistryListForDisplay.Entity]
@@ -28,8 +34,8 @@ public struct WatchDatabaseMirror: WatchCodable {
         entities: [HAAppEntity],
         areas: [AppArea],
         pipelines: [AssistPipelines],
-        complications: [WatchComplication] = [],
-        complicationConfigs: [WatchComplicationConfig] = [],
+        complications: [WatchComplication]? = nil,
+        complicationConfigs: [WatchComplicationConfig]? = nil,
         complicationEntities: [EntityRegistryListForDisplay.Entity] = []
     ) {
         self.entities = entities
@@ -46,18 +52,19 @@ public struct WatchDatabaseMirror: WatchCodable {
 
     // Decode the complication fields defensively: they were added after the mirror shipped, so a payload
     // from a different build (or any format drift) must not fail the whole mirror — that would also break
-    // the watch home screen, which relies on the same sync.
+    // the watch home screen, which relies on the same sync. A missing key OR a decode failure yields
+    // `nil` (retain existing rows); only a value that actually decodes is treated as authoritative.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.entities = try container.decode([HAAppEntity].self, forKey: .entities)
         self.areas = try container.decode([AppArea].self, forKey: .areas)
         self.pipelines = try container.decode([AssistPipelines].self, forKey: .pipelines)
         self.complications = (try? container.decodeIfPresent([WatchComplication].self, forKey: .complications))
-            .flatMap { $0 } ?? []
+            .flatMap { $0 }
         self.complicationConfigs = (try? container.decodeIfPresent(
             [WatchComplicationConfig].self,
             forKey: .complicationConfigs
-        )).flatMap { $0 } ?? []
+        )).flatMap { $0 }
         self.complicationEntities = (try? container.decodeIfPresent(
             [EntityRegistryListForDisplay.Entity].self,
             forKey: .complicationEntities
@@ -71,10 +78,12 @@ public struct WatchDatabaseMirror: WatchCodable {
 
     /// Read the current reference tables from the local GRDB (called on the phone).
     public static func snapshot() throws -> WatchDatabaseMirror {
-        let complications = (try? WatchComplication.all()) ?? []
-        let configs = (try? WatchComplicationConfig.all()) ?? []
+        // A read failure sends `nil` (not `[]`) so the watch retains its rows rather than being told the
+        // phone has none — only a successful read is authoritative.
+        let complications = try? WatchComplication.all()
+        let configs = try? WatchComplicationConfig.all()
         // Precision lives in the entity registry; fetch just the entries the complications need.
-        let entitiesByServer = Dictionary(grouping: configs.compactMap { config -> (String, String)? in
+        let entitiesByServer = Dictionary(grouping: (configs ?? []).compactMap { config -> (String, String)? in
             config.entityId.map { (config.serverId, $0) }
         }, by: { $0.0 })
         var registry: [EntityRegistryListForDisplay.Entity] = []
@@ -119,13 +128,19 @@ public struct WatchDatabaseMirror: WatchCodable {
             for pipeline in pipelines {
                 try pipeline.insert(db)
             }
-            try WatchComplication.deleteAll(db)
-            for complication in complications {
-                try complication.insert(db)
+            // Only replace the complication tables when this sync actually carried them. A `nil` here is
+            // a half/broken/older sync — keep the watch's existing complications instead of wiping them.
+            if let complications {
+                try WatchComplication.deleteAll(db)
+                for complication in complications {
+                    try complication.insert(db)
+                }
             }
-            try WatchComplicationConfig.deleteAll(db)
-            for config in complicationConfigs {
-                try config.insert(db)
+            if let complicationConfigs {
+                try WatchComplicationConfig.deleteAll(db)
+                for config in complicationConfigs {
+                    try config.insert(db)
+                }
             }
             // The registry is keyed on (serverId, entityId) with no stable primary key, so a plain
             // save() re-inserts on the next sync and violates that unique index (SQLite error 19).
