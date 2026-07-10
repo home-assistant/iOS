@@ -1,3 +1,4 @@
+import HADesignSystem
 import SwiftUI
 
 public struct LabsLabel: View {

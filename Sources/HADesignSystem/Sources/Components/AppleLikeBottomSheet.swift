@@ -1,3 +1,5 @@
+#if !os(watchOS)
+import SFSafeSymbols
 import SwiftUI
 
 public enum AppleLikeBottomSheetViewState {
@@ -202,3 +204,4 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         trailing: DesignSystem.Spaces.two
     ), state: .constant(.initial), willDismiss: {})
 }
+#endif

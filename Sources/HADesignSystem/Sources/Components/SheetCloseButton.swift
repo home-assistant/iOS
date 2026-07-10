@@ -1,3 +1,4 @@
+#if !os(watchOS)
 import SFSafeSymbols
 import SwiftUI
 
@@ -22,3 +23,4 @@ public struct SheetCloseButton: View {
 #Preview {
     SheetCloseButton(action: {})
 }
+#endif

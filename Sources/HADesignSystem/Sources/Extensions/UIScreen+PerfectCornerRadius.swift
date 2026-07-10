@@ -1,3 +1,4 @@
+#if !os(watchOS)
 import Foundation
 import UIKit
 
@@ -16,3 +17,4 @@ public extension UIScreen {
         return cornerRadius
     }
 }
+#endif

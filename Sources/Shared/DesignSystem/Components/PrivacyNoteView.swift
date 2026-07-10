@@ -1,3 +1,4 @@
+import HADesignSystem
 import SwiftUI
 
 /// View used to display and highlight privacy related information

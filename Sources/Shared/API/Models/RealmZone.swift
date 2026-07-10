@@ -265,7 +265,11 @@ public final class RLMZone: Object, UpdatableModel {
             .filter { $0.circularRegion.containsWithAccuracy(location) }
             .sorted { zoneA, zoneB in
                 // match the smaller zone over the larger
-                zoneA.Radius < zoneB.Radius
+                if zoneA.Radius != zoneB.Radius {
+                    return zoneA.Radius < zoneB.Radius
+                }
+                // tiebreaker: prefer the zone whose center is closer to the user
+                return location.distance(from: zoneA.location) < location.distance(from: zoneB.location)
             }
     }
 
