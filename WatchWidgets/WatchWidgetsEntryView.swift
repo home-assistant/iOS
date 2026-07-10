@@ -58,25 +58,13 @@ struct WatchWidgetsEntryView: View {
 
     // MARK: - Inline
 
-    /// Inline: optional leading icon + name/value on one line. Modern configs honor the per-size
-    /// toggles and text color; legacy/built-ins use their precomputed inline text.
+    /// Inline: a single line of name / value. Inline has no icon or custom colors (watchOS renders it
+    /// in the face's tint); the name and value are joined with " - ".
     @ViewBuilder
     private var inline: some View {
         if let complication = entry.complication {
             let text = inlineText(for: complication)
-            let color = complication.textColor(for: entry.family) ?? .primary
-            if complication.perFamily != nil, complication.showsIcon(for: entry.family),
-               let iconImage = complication.iconImage {
-                Label {
-                    Text(text.isEmpty ? WatchWidgetConstants.appName : text)
-                } icon: {
-                    iconImage.renderingMode(.template)
-                }
-                .foregroundStyle(color)
-            } else {
-                Text(text.isEmpty ? WatchWidgetConstants.appName : text)
-                    .foregroundStyle(color)
-            }
+            Text(text.isEmpty ? WatchWidgetConstants.appName : text)
         } else {
             Text(WatchWidgetConstants.appName)
         }
@@ -87,7 +75,7 @@ struct WatchWidgetsEntryView: View {
         return [
             complication.showsName(for: entry.family) ? complication.subtitle : "",
             complication.showsValue(for: entry.family) ? complication.title : "",
-        ].filter { !$0.isEmpty }.joined(separator: " ")
+        ].filter { !$0.isEmpty }.joined(separator: " - ")
     }
 
     // MARK: - Circular
@@ -260,8 +248,7 @@ struct WatchWidgetsEntryView: View {
                     maxLabel: complication.showsMax(for: entry.family)
                         ? complication.gaugeLabels(for: entry.family)?.max : nil,
                     valueLabel: complication.showsValue(for: entry.family) ? complication.title : nil,
-                    tint: complication.tintColor(for: entry.family),
-                    textColor: textColor
+                    tint: complication.tintColor(for: entry.family)
                 )
             } else if complication.showsValue(for: entry.family), !complication.title.isEmpty {
                 Text(complication.title)
@@ -320,49 +307,60 @@ struct WatchWidgetsEntryView: View {
     }
 }
 
-/// A horizontal progress bar whose value label follows the thumb, with min/max edge labels the value
-/// replaces when it gets visually close to an edge. Mirrors the iOS builder preview.
+/// A horizontal progress bar with a circular value "thumb" riding the fill, and the minimum / maximum
+/// labels below the bar. Mirrors the iOS builder preview.
 @available(watchOS 10.0, *)
 struct WatchRectangularGauge: View {
+    static let barHeight: CGFloat = 7
+    static let thumbSize: CGFloat = 22
+
     let fraction: Double
     let minLabel: String?
     let maxLabel: String?
     let valueLabel: String?
     let tint: Color
-    let textColor: Color
+
+    /// Black on light tints, white on dark ones.
+    private var contrastColor: Color {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        UIColor(tint).getRed(&r, green: &g, blue: &b, alpha: &a)
+        return (0.299 * r + 0.587 * g + 0.114 * b) > 0.6 ? .black : .white
+    }
 
     var body: some View {
         let clamped = min(max(fraction, 0), 1)
-        let nearMin = clamped <= 0.28
-        let nearMax = clamped >= 0.72
-        GeometryReader { geo in
-            let width = geo.size.width
-            VStack(spacing: 1) {
-                ZStack {
-                    HStack {
-                        Text(verbatim: (minLabel != nil && !nearMin) ? minLabel! : " ")
-                        Spacer()
-                        Text(verbatim: (maxLabel != nil && !nearMax) ? maxLabel! : " ")
-                    }
-                    .font(.system(size: 10))
-                    .foregroundStyle(.secondary)
-                    if let valueLabel {
-                        Text(verbatim: valueLabel)
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(textColor)
-                            .fixedSize()
-                            .position(x: min(max(width * clamped, 12), width - 12), y: 6)
-                    }
-                }
-                .frame(height: 13)
+        VStack(spacing: 3) {
+            GeometryReader { geo in
+                let width = geo.size.width
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color.white.opacity(0.25))
-                    Capsule().fill(tint).frame(width: width * clamped)
+                    Capsule().fill(tint.opacity(0.25)).frame(height: Self.barHeight)
+                    Capsule().fill(tint).frame(width: max(Self.barHeight, width * clamped), height: Self.barHeight)
+                    if let valueLabel {
+                        ZStack {
+                            Circle().fill(tint)
+                            Text(verbatim: valueLabel)
+                                .font(.system(size: 10, weight: .bold, design: .rounded))
+                                .foregroundStyle(contrastColor)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.4)
+                                .padding(1)
+                        }
+                        .frame(width: Self.thumbSize, height: Self.thumbSize)
+                        .position(x: min(max(width * clamped, Self.thumbSize / 2), width - Self.thumbSize / 2),
+                                  y: Self.thumbSize / 2)
+                    }
                 }
-                .frame(height: 5)
+                .frame(height: Self.thumbSize)
             }
+            .frame(height: Self.thumbSize)
+            HStack {
+                Text(verbatim: minLabel ?? " ")
+                Spacer()
+                Text(verbatim: maxLabel ?? " ")
+            }
+            .font(.system(size: 10))
+            .foregroundStyle(.secondary)
         }
-        .frame(height: 22)
     }
 }
 

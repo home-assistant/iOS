@@ -551,7 +551,10 @@ struct WatchComplicationBuilderEditView: View {
             Section {
                 Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
                 Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
-                Toggle(isOn: showIconBinding) { Text(L10n.Watch.Complications.Builder.showIcon) }
+                // Inline has no icon.
+                if currentFamily != .inline {
+                    Toggle(isOn: showIconBinding) { Text(L10n.Watch.Complications.Builder.showIcon) }
+                }
                 if config.kind == .entity, entityUnit != nil {
                     Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
                 }
@@ -602,25 +605,27 @@ struct WatchComplicationBuilderEditView: View {
                 Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
             }
 
-            // Colors for the selected size.
-            Section {
-                if familyHasProgressBar, config.showsGauge(for: currentFamily) {
-                    ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
-                }
-                if config.showsIcon(for: currentFamily) {
+            // Colors for the selected size. Inline is rendered in the watch-face tint, so it has none.
+            if currentFamily != .inline {
+                Section {
+                    if familyHasProgressBar, config.showsGauge(for: currentFamily) {
+                        ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
+                    }
+                    if config.showsIcon(for: currentFamily) {
+                        ColorPicker(
+                            L10n.Watch.Complications.Builder.iconColor,
+                            selection: iconColorBinding,
+                            supportsOpacity: false
+                        )
+                    }
                     ColorPicker(
-                        L10n.Watch.Complications.Builder.iconColor,
-                        selection: iconColorBinding,
+                        L10n.Watch.Complications.Builder.textColor,
+                        selection: textColorBinding,
                         supportsOpacity: false
                     )
+                } header: {
+                    Text(L10n.Watch.Complications.Builder.colors)
                 }
-                ColorPicker(
-                    L10n.Watch.Complications.Builder.textColor,
-                    selection: textColorBinding,
-                    supportsOpacity: false
-                )
-            } header: {
-                Text(L10n.Watch.Complications.Builder.colors)
             }
 
             Section {
@@ -775,48 +780,81 @@ struct ComplicationFamilyPreview: View {
     }
 }
 
-/// A horizontal progress bar whose value label follows the thumb, with min/max edge labels. When the
-/// value gets visually close to an edge it replaces that edge's label (whichever is closer).
+/// A horizontal progress bar with a circular value "thumb" riding the fill, and the minimum / maximum
+/// labels below the bar.
 struct RectangularGauge: View {
     let fraction: Double
     let minLabel: String?
     let maxLabel: String?
     let valueLabel: String?
     let tint: Color
-    let textColor: Color
 
     var body: some View {
         let clamped = min(max(fraction, 0), 1)
-        let nearMin = clamped <= 0.28
-        let nearMax = clamped >= 0.72
-        GeometryReader { geo in
-            let width = geo.size.width
-            VStack(spacing: 2) {
-                ZStack {
-                    HStack {
-                        Text(verbatim: (minLabel != nil && !nearMin) ? minLabel! : " ")
-                        Spacer()
-                        Text(verbatim: (maxLabel != nil && !nearMax) ? maxLabel! : " ")
-                    }
-                    .font(.system(size: 10))
-                    .foregroundStyle(.secondary)
-                    if let valueLabel {
-                        Text(verbatim: valueLabel)
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(textColor)
-                            .fixedSize()
-                            .position(x: min(max(width * clamped, 14), width - 14), y: 6)
-                    }
-                }
-                .frame(height: 13)
+        VStack(spacing: 3) {
+            GeometryReader { geo in
+                let width = geo.size.width
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color.white.opacity(0.25))
-                    Capsule().fill(tint).frame(width: width * clamped)
+                    Capsule().fill(tint.opacity(0.25)).frame(height: RectangularGaugeMetrics.barHeight)
+                    Capsule().fill(tint)
+                        .frame(
+                            width: max(RectangularGaugeMetrics.barHeight, width * clamped),
+                            height: RectangularGaugeMetrics.barHeight
+                        )
+                    if let valueLabel {
+                        RectangularGaugeThumb(value: valueLabel, tint: tint)
+                            .position(
+                                x: min(
+                                    max(width * clamped, RectangularGaugeMetrics.thumbSize / 2),
+                                    width - RectangularGaugeMetrics.thumbSize / 2
+                                ),
+                                y: RectangularGaugeMetrics.thumbSize / 2
+                            )
+                    }
                 }
-                .frame(height: 5)
+                .frame(height: RectangularGaugeMetrics.thumbSize)
             }
+            .frame(height: RectangularGaugeMetrics.thumbSize)
+            HStack {
+                Text(verbatim: minLabel ?? " ")
+                Spacer()
+                Text(verbatim: maxLabel ?? " ")
+            }
+            .font(.system(size: 10))
+            .foregroundStyle(.secondary)
         }
-        .frame(height: 22)
+    }
+}
+
+enum RectangularGaugeMetrics {
+    static let barHeight: CGFloat = 7
+    static let thumbSize: CGFloat = 22
+}
+
+/// Circular value marker for the rectangular progress bar: a filled disc in the bar's color with the
+/// value inside, in a contrast-aware color.
+struct RectangularGaugeThumb: View {
+    let value: String
+    let tint: Color
+
+    /// Black on light tints, white on dark ones.
+    private var contrastColor: Color {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        UIColor(tint).getRed(&r, green: &g, blue: &b, alpha: &a)
+        return (0.299 * r + 0.587 * g + 0.114 * b) > 0.6 ? .black : .white
+    }
+
+    var body: some View {
+        ZStack {
+            Circle().fill(tint)
+            Text(verbatim: value)
+                .font(.system(size: 10, weight: .bold, design: .rounded))
+                .foregroundStyle(contrastColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.4)
+                .padding(1)
+        }
+        .frame(width: RectangularGaugeMetrics.thumbSize, height: RectangularGaugeMetrics.thumbSize)
     }
 }
 
@@ -1044,8 +1082,7 @@ struct WatchComplicationLivePreview: View {
                         minLabel: showsMin ? range.map { label($0.min) } : nil,
                         maxLabel: showsMax ? range.map { label($0.max) } : nil,
                         valueLabel: showsValue && !value.isEmpty ? value : nil,
-                        tint: tint,
-                        textColor: textColor
+                        tint: tint
                     )
                 } else if showsValue, !value.isEmpty {
                     Text(value).font(.system(size: 13)).foregroundStyle(textColor.opacity(0.85)).lineLimit(1)
@@ -1059,14 +1096,12 @@ struct WatchComplicationLivePreview: View {
     }
 
     private var inline: some View {
-        HStack(spacing: 4) {
-            iconImage?.resizable().scaledToFit().frame(width: 16, height: 16)
-            Text([showsName ? name : "", showsValue ? value : ""].filter { !$0.isEmpty }.joined(separator: " "))
-                .font(.system(size: 15)).lineLimit(1)
-        }
-        .foregroundStyle(textColor)
-        .padding(.horizontal, 14).padding(.vertical, 8)
-        .background(Capsule().fill(Color.black))
+        // Inline has no icon or custom colors; name and value are joined with " - ".
+        Text([showsName ? name : "", showsValue ? value : ""].filter { !$0.isEmpty }.joined(separator: " - "))
+            .font(.system(size: 15)).lineLimit(1)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14).padding(.vertical, 8)
+            .background(Capsule().fill(Color.black))
     }
 
     private func applyTemplates() {
