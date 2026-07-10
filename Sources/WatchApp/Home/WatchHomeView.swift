@@ -13,6 +13,10 @@ struct WatchHomeView: View {
     @State private var openFolderId: String?
     @State private var isEditing = false
     @State private var activeSheet: HomeSheet?
+    /// Latched copy of the sync error so the alert stays up until the user acts. The view model's
+    /// `showError` gets cleared by later syncs (`clearError()`/`loadCache`), which would otherwise
+    /// auto-dismiss the alert and make it flash by.
+    @State private var latchedSyncError: String?
 
     init(viewModel: WatchHomeViewModel = WatchHomeViewModel(), autoLoad: Bool = true) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -110,18 +114,31 @@ struct WatchHomeView: View {
             Text(verbatim: L10n.Watch.Config.Conflict.message)
         }
         // Sync failures are shown as a full-screen alert (not a fleeting banner) so the reason is
-        // actually readable, with a one-tap retry.
+        // actually readable, with a one-tap retry. The message is latched into local state so the alert
+        // only dismisses on a button tap — not when a later sync clears the view model's `showError`.
+        .onChange(of: viewModel.showError) { show in
+            if show, !viewModel.errorMessage.isEmpty {
+                latchedSyncError = viewModel.errorMessage
+            }
+        }
         .alert(
             Text(verbatim: L10n.Watch.Sync.Error.title),
             isPresented: Binding(
-                get: { viewModel.showError && !viewModel.errorMessage.isEmpty },
-                set: { if !$0 { viewModel.showError = false } }
+                get: { latchedSyncError != nil },
+                set: { if !$0 { latchedSyncError = nil; viewModel.showError = false } }
             )
         ) {
-            Button(L10n.Watch.Sync.retry) { viewModel.requestConfig(userInitiated: true) }
-            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+            Button(L10n.Watch.Sync.retry) {
+                latchedSyncError = nil
+                viewModel.showError = false
+                viewModel.requestConfig(userInitiated: true)
+            }
+            Button(role: .cancel) {
+                latchedSyncError = nil
+                viewModel.showError = false
+            } label: { Text(verbatim: L10n.okLabel) }
         } message: {
-            Text(verbatim: viewModel.errorMessage)
+            Text(verbatim: latchedSyncError ?? viewModel.errorMessage)
         }
         // Explicit reload while the iPhone isn't reachable: explain why (the data still refreshes in the
         // background once the phone is reachable).
