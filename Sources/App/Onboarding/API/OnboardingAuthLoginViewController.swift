@@ -22,9 +22,6 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
         let configuration = WKWebViewConfiguration()
         configuration.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
         configuration.defaultWebpagePreferences.preferredContentMode = Current.isCatalyst ? .desktop : .mobile
-        #if targetEnvironment(macCatalyst)
-        configuration.preferences.tabFocusesLinks = true
-        #endif
 
         return WKWebView(frame: .zero, configuration: configuration)
     }()
