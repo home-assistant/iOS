@@ -1654,8 +1654,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.root.your_complications" = "Your complications";
 "watch.complications.root.legacy" = "Legacy complications";
 "watch.complications.root.legacy_footer" = "Complications created with the older watchOS templates. Existing ones keep working and map to their closest modern style.";
-"watch.complications.root.new" = "New complication";
+"watch.complications.root.new" = "Create";
 "watch.complications.root.new_footer" = "Build a complication from an entity or a custom template. The watch renders it using live data.";
+"watch.complications.root.template" = "Template";
 "watch.configurator.delete.message" = "Are you sure you want to delete this Complication? This cannot be undone.";
 "watch.configurator.delete.title" = "Delete Complication?";
 "watch.configurator.list.description" = "Configure a new Complication using the Add button. Once saved, you can choose it on your Apple Watch or in the Watch app.";

@@ -8,6 +8,8 @@ import UIKit
 /// complications tucked behind a navigation link.
 struct ComplicationsRootView: View {
     @State private var configs: [WatchComplicationConfig] = []
+    /// Context line per config (entity `Area • Device`, or "Template"), computed off the DB in `reload`.
+    @State private var subtitles: [String: String] = [:]
     @State private var editing: WatchComplicationConfig?
     @State private var showAdd = false
 
@@ -27,7 +29,6 @@ struct ComplicationsRootView: View {
                 Text(L10n.Watch.Complications.Root.legacyFooter)
             }
         }
-        .navigationTitle(L10n.Watch.Complications.Builder.title)
         .sheet(isPresented: $showAdd) {
             NavigationView { WatchComplicationBuilderEditView(existing: nil) }
         }
@@ -55,14 +56,16 @@ struct ComplicationsRootView: View {
                     editing = config
                 } label: {
                     HStack(spacing: DesignSystem.Spaces.two) {
-                        ComplicationFamilyPreview(family: config.widgetFamily)
-                            .frame(width: 48, height: 48)
+                        rowIcon(for: config)
+                            .frame(width: 30, height: 30)
                         VStack(alignment: .leading) {
                             Text(config.displayName)
                                 .foregroundColor(.primary)
-                            Text(verbatim: config.widgetFamily.title)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            if let subtitle = subtitles[config.id] {
+                                Text(verbatim: subtitle)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                 }
@@ -78,8 +81,37 @@ struct ComplicationsRootView: View {
         }
     }
 
+    /// A plain MDI icon for entity-backed complications, or a gauge glyph as a neutral fallback for
+    /// template-backed (or icon-less) ones — not a per-family mock, since a complication works in every size.
+    private func rowIcon(for config: WatchComplicationConfig) -> Image {
+        let color = config.iconColor.map { UIColor(hex: $0) } ?? AppConstants.tintColor
+        let icon: MaterialDesignIcons
+        if config.kind == .entity, let iconName = config.iconName {
+            icon = MaterialDesignIcons(named: iconName)
+        } else {
+            icon = .gaugeIcon
+        }
+        return Image(uiImage: icon.image(ofSize: .init(width: 28, height: 28), color: color))
+    }
+
     private func reload() {
-        configs = (try? WatchComplicationConfig.all()) ?? []
+        let all = (try? WatchComplicationConfig.all()) ?? []
+        configs = all
+        var map: [String: String] = [:]
+        for config in all {
+            switch config.kind {
+            case .entity:
+                guard let entityId = config.entityId else { continue }
+                let key = "\(config.serverId)-\(entityId)"
+                let entity = try? Current.database().read { db in
+                    try HAAppEntity.fetchOne(db, key: key)
+                }
+                map[config.id] = entity?.contextualSubtitle ?? config.entityDisplayName ?? entityId
+            case .customTemplate:
+                map[config.id] = L10n.Watch.Complications.Root.template
+            }
+        }
+        subtitles = map
     }
 
     private func delete(at offsets: IndexSet) {
@@ -305,6 +337,7 @@ struct WatchComplicationBuilderEditView: View {
                     WatchComplicationLivePreview(config: config, server: server)
                         .frame(maxWidth: .infinity)
                         .listRowBackground(Color(uiColor: .systemBackground))
+                        .listRowSeparator(.hidden)
                     Picker(selection: $config.widgetFamily) {
                         ForEach(WatchComplicationConfig.Family.allCases) { family in
                             Text(verbatim: family.title).tag(family)
@@ -313,6 +346,7 @@ struct WatchComplicationBuilderEditView: View {
                         Text(L10n.Watch.Complications.Builder.previewSize)
                     }
                     .pickerStyle(.segmented)
+                    .listRowSeparator(.hidden)
                 } header: {
                     Text(L10n.Watch.Complications.Builder.preview)
                 } footer: {
@@ -402,10 +436,19 @@ struct WatchComplicationBuilderEditView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button(L10n.cancelLabel) { dismiss() }
+                if #available(iOS 26.0, *) {
+                    Button(role: .close) { dismiss() }
+                } else {
+                    Button { dismiss() } label: { Image(systemSymbol: .xmark) }
+                }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button(L10n.saveLabel) { save() }.disabled(!isValid)
+                if #available(iOS 26.0, *) {
+                    Button(role: .confirm) { save() }.disabled(!isValid)
+                } else {
+                    Button { save() } label: { Image(systemSymbol: .checkmark) }
+                        .disabled(!isValid)
+                }
             }
         }
         .onChange(of: selectedEntity?.id) { _ in

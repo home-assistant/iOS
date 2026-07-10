@@ -5387,10 +5387,12 @@ public enum L10n {
         public static var legacy: String { return L10n.tr("Localizable", "watch.complications.root.legacy") }
         /// Complications created with the older watchOS templates. Existing ones keep working and map to their closest modern style.
         public static var legacyFooter: String { return L10n.tr("Localizable", "watch.complications.root.legacy_footer") }
-        /// New complication
+        /// Create
         public static var new: String { return L10n.tr("Localizable", "watch.complications.root.new") }
         /// Build a complication from an entity or a custom template. The watch renders it using live data.
         public static var newFooter: String { return L10n.tr("Localizable", "watch.complications.root.new_footer") }
+        /// Template
+        public static var template: String { return L10n.tr("Localizable", "watch.complications.root.template") }
         /// Your complications
         public static var yourComplications: String { return L10n.tr("Localizable", "watch.complications.root.your_complications") }
       }
