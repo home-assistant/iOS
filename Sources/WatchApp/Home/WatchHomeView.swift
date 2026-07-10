@@ -118,10 +118,20 @@ struct WatchHomeView: View {
                 set: { if !$0 { viewModel.showError = false } }
             )
         ) {
-            Button(L10n.Watch.Sync.retry) { viewModel.requestConfig() }
+            Button(L10n.Watch.Sync.retry) { viewModel.requestConfig(userInitiated: true) }
             Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
         } message: {
             Text(verbatim: viewModel.errorMessage)
+        }
+        // Explicit reload while the iPhone isn't reachable: explain why (the data still refreshes in the
+        // background once the phone is reachable).
+        .alert(
+            Text(verbatim: L10n.Watch.Sync.NotReachable.title),
+            isPresented: $viewModel.showNotReachableAlert
+        ) {
+            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+        } message: {
+            Text(verbatim: L10n.Watch.Sync.NotReachable.message)
         }
         .onAppear {
             // Consume a launch requested from the complication before this view existed (cold launch).

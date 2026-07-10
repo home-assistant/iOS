@@ -5353,6 +5353,10 @@ public enum L10n {
         public static var name: String { return L10n.tr("Localizable", "watch.complications.builder.name") }
         /// New complication
         public static var newTitle: String { return L10n.tr("Localizable", "watch.complications.builder.new_title") }
+        /// Decimals
+        public static var precision: String { return L10n.tr("Localizable", "watch.complications.builder.precision") }
+        /// Automatic
+        public static var precisionAutomatic: String { return L10n.tr("Localizable", "watch.complications.builder.precision_automatic") }
         /// Preview
         public static var preview: String { return L10n.tr("Localizable", "watch.complications.builder.preview") }
         /// A live approximation using current data. This complication is available in every size. Add it to any complication slot on your watch face.
@@ -6491,6 +6495,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.sync.error.title") }
         /// Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.
         public static var unreachable: String { return L10n.tr("Localizable", "watch.sync.error.unreachable") }
+      }
+      public enum NotReachable {
+        /// Open the Home Assistant app on your iPhone and keep it nearby. Your complications will still refresh in the background once it becomes reachable.
+        public static var message: String { return L10n.tr("Localizable", "watch.sync.not_reachable.message") }
+        /// iPhone Not Reachable
+        public static var title: String { return L10n.tr("Localizable", "watch.sync.not_reachable.title") }
       }
     }
   }

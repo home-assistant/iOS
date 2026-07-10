@@ -1665,6 +1665,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.title" = "Complications";
 "watch.complications.builder.value_source" = "Value";
 "watch.complications.builder.value_source_state" = "State";
+"watch.complications.builder.precision" = "Decimals";
+"watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.family.circular" = "Circular";
 "watch.complications.family.corner" = "Corner";
 "watch.complications.family.inline" = "Inline";
@@ -1933,6 +1935,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.sync.starting" = "Starting sync…";
 "watch.sync.progress" = "%1$d/%2$d";
 "watch.sync.error.title" = "Sync Failed";
+"watch.sync.not_reachable.title" = "iPhone Not Reachable";
+"watch.sync.not_reachable.message" = "Open the Home Assistant app on your iPhone and keep it nearby. Your complications will still refresh in the background once it becomes reachable.";
 "watch.sync.error.unreachable" = "Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.";
 "watch.sync.error.connection_failed" = "We couldn't connect to your iPhone. Open the Home Assistant app on your iPhone, then tap the reload button here on your Watch.";
 "watch.sync.error.generic" = "Sync failed. Please try again.";
