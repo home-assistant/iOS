@@ -65,15 +65,15 @@ struct RectangularGaugeThumb: View {
     }
 
     var body: some View {
-        ZStack {
-            Circle().fill(tint)
-            Text(verbatim: value)
-                .font(.system(size: 10, weight: .bold, design: .rounded))
-                .foregroundStyle(contrastColor)
-                .lineLimit(1)
-                .minimumScaleFactor(0.4)
-                .padding(1)
-        }
-        .frame(width: RectangularGaugeMetrics.thumbSize, height: RectangularGaugeMetrics.thumbSize)
+        Text(verbatim: value)
+            .font(.system(size: 12, weight: .bold, design: .rounded))
+            .foregroundStyle(contrastColor)
+            .lineLimit(1)
+            .minimumScaleFactor(0.4)
+            .padding(1)
+            .frame(minWidth: RectangularGaugeMetrics.thumbSize, minHeight: RectangularGaugeMetrics.thumbSize)
+            .padding(.horizontal, 4)
+            .background(tint)
+            .clipShape(.capsule)
     }
 }

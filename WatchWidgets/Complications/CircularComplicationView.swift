@@ -67,7 +67,7 @@ struct CircularComplicationView: View {
                     }
                     if complication.showsValue(for: family), !complication.title.isEmpty {
                         Text(complication.title)
-                            .minimumScaleFactor(0.4)
+                            .minimumScaleFactor(0.3)
                             .lineLimit(1)
                             .foregroundStyle(complication.textColor(for: family) ?? .primary)
                     }

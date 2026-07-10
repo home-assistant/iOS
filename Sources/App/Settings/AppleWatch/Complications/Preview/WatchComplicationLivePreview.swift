@@ -1,3 +1,6 @@
+import Alamofire
+import Foundation
+import PromiseKit
 import Shared
 import SwiftUI
 
@@ -5,7 +8,7 @@ import SwiftUI
 /// don't each re-derive the same styling from the config.
 struct ComplicationPreviewContext {
     let config: WatchComplicationConfig
-    /// The value text (already unit-appended when applicable), from the live template render.
+    /// The value text (already unit-appended when applicable).
     let value: String
     /// The gauge fraction (0...1), or nil when there's no gauge value.
     let fraction: Double?
@@ -33,52 +36,71 @@ struct ComplicationPreviewContext {
     func label(_ value: Double) -> String { String(Int(value.rounded())) }
 }
 
-/// A live approximation of the watch complication, mirroring `WatchWidgetsEntryView` but rendered on
-/// iPhone with current data (via Home Assistant template rendering) so the user sees the real result
-/// before saving. Owns the template renderers and dispatches to the per-family preview views.
+/// A live approximation of the watch complication, rendered on iPhone with current data so the user
+/// sees the real result before saving. Entity complications fetch their value over the plain REST
+/// states API (no admin-only templating); only the custom-template kind renders templates.
 struct WatchComplicationLivePreview: View {
     let config: WatchComplicationConfig
-    /// Reports the entity's rendered unit of measurement (nil when it has none) so the editor can
-    /// decide whether to offer the "Show unit" toggle.
+    let server: Server
+    /// Reports the entity's unit of measurement (nil when it has none) so the editor can decide whether
+    /// to offer the "Show unit" toggle.
     var onUnit: (String?) -> Void = { _ in }
+
+    // Template rendering is used only for the custom-template kind.
     @StateObject private var valueRenderer: TemplateRenderer
     @StateObject private var gaugeRenderer: TemplateRenderer
-    @StateObject private var unitRenderer: TemplateRenderer
+
+    // Live entity state, fetched over REST for the entity kind.
+    @State private var entityState: String = ""
+    @State private var entityAttributes: [String: Any] = [:]
+    @State private var entityUnit: String?
+    @State private var isFetching = false
 
     init(config: WatchComplicationConfig, server: Server, onUnit: @escaping (String?) -> Void = { _ in }) {
         self.config = config
+        self.server = server
         self.onUnit = onUnit
         _valueRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
         _gaugeRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
-        _unitRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
     }
 
-    private var renderedValue: String {
-        if case let .success(rendered) = valueRenderer.output { return rendered }
-        return ""
-    }
+    // MARK: - Value / fraction / unit
 
-    private var renderedUnit: String? {
-        if case let .success(unit) = unitRenderer.output, !unit.isEmpty { return unit }
-        return nil
-    }
-
-    /// The value as displayed: appends the unit when present and enabled (entity source only).
     private var value: String {
-        let base = renderedValue
-        guard !base.isEmpty else { return "" }
-        if config.kind == .entity, config.showsUnit(), let unit = renderedUnit {
-            return "\(base) \(unit)"
+        switch config.kind {
+        case .entity:
+            guard !entityState.isEmpty else { return "" }
+            let unit = config.showsUnit() ? entityUnit : nil
+            return Self.formatValue(entityState, unit: unit, precision: entityPrecision)
+        case .customTemplate:
+            if case let .success(rendered) = valueRenderer.output { return rendered }
+            return ""
         }
-        return base
     }
 
     private var fraction: Double? {
-        guard case let .success(rendered) = gaugeRenderer.output,
-              let raw = WatchComplication.percentileNumber(from: rendered) else {
-            return nil
+        switch config.kind {
+        case .entity:
+            guard let range = config.gaugeRange(for: config.widgetFamily) else { return nil }
+            let source: Any = config.gaugeAttribute(for: config.widgetFamily)
+                .flatMap { entityAttributes[$0] } ?? entityState
+            guard let raw = WatchComplication.percentileNumber(from: source), range.max > range.min else {
+                return nil
+            }
+            return min(max((Double(raw) - range.min) / (range.max - range.min), 0), 1)
+        case .customTemplate:
+            guard case let .success(rendered) = gaugeRenderer.output,
+                  let raw = WatchComplication.percentileNumber(from: rendered) else {
+                return nil
+            }
+            return min(max(Double(raw), 0), 1)
         }
-        return min(max(Double(raw), 0), 1)
+    }
+
+    /// Display precision comes from the entity registry (never duplicated into the config).
+    private var entityPrecision: Int? {
+        guard let entityId = config.entityId else { return nil }
+        return EntityRegistryListForDisplay.Entity.displayPrecision(serverId: config.serverId, entityId: entityId)
     }
 
     private var iconColor: Color {
@@ -92,9 +114,11 @@ struct WatchComplicationLivePreview: View {
         return Image(uiImage: image)
     }
 
-    /// True while any of the template renderers is still evaluating.
     private var isLoading: Bool {
-        [valueRenderer.output, gaugeRenderer.output, unitRenderer.output].contains(.loading)
+        switch config.kind {
+        case .entity: return isFetching
+        case .customTemplate: return [valueRenderer.output, gaugeRenderer.output].contains(.loading)
+        }
     }
 
     private var context: ComplicationPreviewContext {
@@ -105,15 +129,17 @@ struct WatchComplicationLivePreview: View {
         content
             .frame(maxWidth: .infinity)
             .frame(height: 150)
-            .overlay {
+            // Spinner tucked in the corner so it doesn't cover the preview content.
+            .overlay(alignment: .topTrailing) {
                 if isLoading {
                     ProgressView()
-                        .controlSize(.large)
+                        .controlSize(.small)
+                        .padding(6)
                 }
             }
-            .onAppear(perform: applyTemplates)
-            .onChange(of: config) { _ in applyTemplates() }
-            .onChange(of: unitRenderer.output) { _ in onUnit(renderedUnit) }
+            .onAppear(perform: refresh)
+            // Re-fetch/re-render whenever the config changes (e.g. the user picks a different entity).
+            .onChange(of: config) { _ in refresh() }
     }
 
     @ViewBuilder
@@ -130,30 +156,87 @@ struct WatchComplicationLivePreview: View {
         }
     }
 
-    private func applyTemplates() {
+    // MARK: - Data loading
+
+    private func refresh() {
         switch config.kind {
         case .entity:
-            guard let entityId = config.entityId else {
-                valueRenderer.updateTemplate("")
-                gaugeRenderer.updateTemplate("")
-                unitRenderer.updateTemplate("")
-                return
-            }
-            valueRenderer.updateTemplate("{{ states('\(entityId)') }}")
-            unitRenderer.updateTemplate("{{ state_attr('\(entityId)', 'unit_of_measurement') or '' }}")
-            if let range = config.gaugeRange(for: config.widgetFamily) {
-                let source = config.gaugeAttribute(for: config.widgetFamily)
-                    .map { "state_attr('\(entityId)', '\($0)')" } ?? "states('\(entityId)')"
-                gaugeRenderer.updateTemplate(
-                    "{{ ((\(source) | float(0)) - \(range.min)) / \(range.max - range.min) }}"
-                )
-            } else {
-                gaugeRenderer.updateTemplate("")
-            }
+            fetchEntityState()
         case .customTemplate:
             valueRenderer.updateTemplate(config.customTextTemplate ?? "")
             gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "")
-            unitRenderer.updateTemplate("")
         }
+    }
+
+    private func fetchEntityState() {
+        guard let entityId = config.entityId else {
+            entityState = ""
+            entityAttributes = [:]
+            entityUnit = nil
+            onUnit(nil)
+            return
+        }
+        isFetching = true
+        Task {
+            let result = await Self.fetchState(entityId: entityId, server: server)
+            await MainActor.run {
+                isFetching = false
+                guard let result else { return }
+                entityState = result.state
+                entityAttributes = result.attributes
+                entityUnit = result.attributes["unit_of_measurement"] as? String
+                onUnit(entityUnit)
+            }
+        }
+    }
+
+    // MARK: - REST helpers (plain states API — no admin-only templating)
+
+    private struct EntityState {
+        let state: String
+        let attributes: [String: Any]
+    }
+
+    private static func fetchState(entityId: String, server: Server) async -> EntityState? {
+        guard let baseURL = await server.activeURL() else { return nil }
+        guard let token = await bearerToken(for: server) else { return nil }
+        var request = URLRequest(url: baseURL.appendingPathComponent("api/states/\(entityId)"))
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        defer { session.finishTasksAndInvalidate() }
+        guard let (data, response) = try? await session.data(for: request),
+              let http = response as? HTTPURLResponse, (200 ..< 300).contains(http.statusCode),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let state = json["state"] as? String else {
+            return nil
+        }
+        return EntityState(state: state, attributes: json["attributes"] as? [String: Any] ?? [:])
+    }
+
+    private static func bearerToken(for server: Server) async -> String? {
+        let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+        return try? await withCheckedThrowingContinuation { continuation in
+            tokenManager.bearerToken.done { token, _ in
+                continuation.resume(returning: token)
+            }.catch { error in
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+
+    private static func formatValue(_ state: String, unit: String?, precision: Int?) -> String {
+        var text = state
+        if let precision, let number = Double(state) {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.minimumFractionDigits = precision
+            formatter.maximumFractionDigits = precision
+            text = formatter.string(from: NSNumber(value: number)) ?? state
+        }
+        if let unit, !unit.isEmpty {
+            text += " \(unit)"
+        }
+        return text
     }
 }

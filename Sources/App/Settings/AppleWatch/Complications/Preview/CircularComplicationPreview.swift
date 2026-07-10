@@ -55,7 +55,7 @@ struct CircularComplicationPreview: View {
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundStyle(context.textColor)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.5)
+                    .minimumScaleFactor(0.3)
             }
             if context.showsName, !context.name.isEmpty {
                 Text(context.name)
