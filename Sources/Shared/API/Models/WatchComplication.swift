@@ -323,6 +323,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var tint: String?
         /// Raw value of `GaugeStyle`; nil defaults to `.open`. Only meaningful for circular.
         public var gaugeStyle: String?
+        /// Hex color for the value/text; nil uses the default (primary) color.
+        public var textColor: String?
 
         public init(
             showValue: Bool? = nil,
@@ -331,7 +333,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             gaugeMax: Double? = nil,
             gaugeAttribute: String? = nil,
             tint: String? = nil,
-            gaugeStyle: String? = nil
+            gaugeStyle: String? = nil,
+            textColor: String? = nil
         ) {
             self.showValue = showValue
             self.showGauge = showGauge
@@ -340,6 +343,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             self.gaugeAttribute = gaugeAttribute
             self.tint = tint
             self.gaugeStyle = gaugeStyle
+            self.textColor = textColor
         }
     }
 
@@ -437,6 +441,11 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
 
     public func tint(for family: Family) -> String? {
         families?[family.rawValue]?.tint ?? iconColor
+    }
+
+    /// The value/text color for a family, or nil to use the default (primary) color.
+    public func textColor(for family: Family) -> String? {
+        families?[family.rawValue]?.textColor
     }
 
     /// Mutable access to a family's options, creating an empty set if none exists yet.

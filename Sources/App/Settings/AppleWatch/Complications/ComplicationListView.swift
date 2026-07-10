@@ -358,6 +358,14 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
+    /// Text/value color; defaults to primary when unset.
+    private var textColorBinding: Binding<Color> {
+        Binding(
+            get: { config.textColor(for: currentFamily).map { Color(uiColor: UIColor(hex: $0)) } ?? .primary },
+            set: { value in updateOptions { $0.textColor = UIColor(value).hexString(true) } }
+        )
+    }
+
     var body: some View {
         Form {
             if let server {
@@ -484,6 +492,11 @@ struct WatchComplicationBuilderEditView: View {
                     ColorPicker(
                         L10n.Watch.Complications.Builder.color,
                         selection: tintBinding,
+                        supportsOpacity: false
+                    )
+                    ColorPicker(
+                        L10n.Watch.Complications.Builder.textColor,
+                        selection: textColorBinding,
                         supportsOpacity: false
                     )
                 } header: {
@@ -698,6 +711,11 @@ struct WatchComplicationLivePreview: View {
         config.tint(for: config.widgetFamily).map { Color(uiColor: UIColor($0)) } ?? .accentColor
     }
 
+    /// Value/text color; defaults to white for contrast on the dark preview face.
+    private var textColor: Color {
+        config.textColor(for: config.widgetFamily).map { Color(uiColor: UIColor(hex: $0)) } ?? .white
+    }
+
     private var showsValue: Bool { config.showsValue(for: config.widgetFamily) }
 
     private var iconImage: Image? {
@@ -740,7 +758,7 @@ struct WatchComplicationLivePreview: View {
                 if showsValue, !value.isEmpty {
                     Text(value)
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(textColor)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                 } else {
@@ -772,7 +790,7 @@ struct WatchComplicationLivePreview: View {
             if showsValue, !value.isEmpty {
                 Text(value)
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(textColor)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
             }
@@ -833,7 +851,7 @@ struct WatchComplicationLivePreview: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(name).font(.system(size: 13, weight: .semibold)).lineLimit(1)
                 Text(showsValue && !value.isEmpty ? value : " ")
-                    .font(.system(size: 13)).foregroundStyle(.white.opacity(0.7)).lineLimit(1)
+                    .font(.system(size: 13)).foregroundStyle(textColor.opacity(0.85)).lineLimit(1)
             }
             Spacer(minLength: 0)
         }

@@ -569,6 +569,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         /// Pre-formatted gauge min/max labels for the open circular gauge.
         var minLabel: String?
         var maxLabel: String?
+        /// Hex color for the value text; nil uses the default.
+        var textColor: String?
     }
 
     let id: String
@@ -720,7 +722,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 showValue: config.showsValue(for: family),
                 gaugeStyle: config.gaugeStyle(for: family).rawValue,
                 minLabel: range.map { label($0.min) },
-                maxLabel: range.map { label($0.max) }
+                maxLabel: range.map { label($0.max) },
+                textColor: config.textColor(for: family)
             )
         }
 

@@ -17,6 +17,8 @@ struct WatchWidgetComplicationSnapshot: Codable {
         /// Pre-formatted gauge min/max labels for the open circular gauge.
         var minLabel: String?
         var maxLabel: String?
+        /// Hex color for the value text; nil uses the default.
+        var textColor: String?
     }
 
     let id: String?
@@ -84,6 +86,11 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// The tint color for a given family.
     func tintColor(for widgetFamily: WidgetFamily) -> Color {
         Color(hex: options(for: widgetFamily)?.tint ?? tint) ?? .accentColor
+    }
+
+    /// The value/text color for a given family, or nil to use the default.
+    func textColor(for widgetFamily: WidgetFamily) -> Color? {
+        options(for: widgetFamily)?.textColor.flatMap { Color(hex: $0) }
     }
 
     /// Whether to show the state value as text for a given family (default true).

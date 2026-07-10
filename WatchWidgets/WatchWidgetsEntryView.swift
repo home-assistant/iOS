@@ -97,6 +97,7 @@ struct WatchWidgetsEntryView: View {
                 Text(entry.complication?.title ?? WatchWidgetConstants.appName)
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
+                    .foregroundStyle(entry.complication?.textColor(for: entry.family) ?? .primary)
 
                 if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
                     Gauge(value: fraction) {
@@ -127,6 +128,7 @@ struct WatchWidgetsEntryView: View {
             Text(complication.title)
                 .minimumScaleFactor(0.4)
                 .lineLimit(1)
+                .foregroundStyle(complication.textColor(for: entry.family) ?? .primary)
         } else {
             icon
         }

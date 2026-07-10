@@ -1640,7 +1640,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.show_value" = "Show value";
 "watch.complications.builder.size_options" = "%1$@ options";
 "watch.complications.builder.size_options_footer" = "These settings apply to the selected size. Switch the preview size above to customize each size independently.";
-"watch.complications.builder.color" = "Color";
+"watch.complications.builder.color" = "Gauge color";
+"watch.complications.builder.text_color" = "Text color";
 "watch.complications.builder.source" = "Source";
 "watch.complications.builder.source_custom" = "Custom template";
 "watch.complications.builder.source_entity" = "Entity";
