@@ -113,10 +113,6 @@ struct ComplicationsRootView: View {
     }
 
     private func reload() {
-        #if DEBUG
-        // Seed one example of every complication variant so they're all visible while debugging.
-        WatchComplicationConfig.seedDebugFixturesIfNeeded()
-        #endif
         hasLegacy = !((try? WatchComplication.all()) ?? []).isEmpty
         let all = (try? WatchComplicationConfig.all()) ?? []
         configs = all
@@ -323,11 +319,55 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
+    private var showIconBinding: Binding<Bool> {
+        Binding(
+            get: { config.showsIcon(for: currentFamily) },
+            set: { value in updateOptions { $0.showIcon = value } }
+        )
+    }
+
     private var showGaugeBinding: Binding<Bool> {
         Binding(
             get: { config.showsGauge(for: currentFamily) },
             set: { value in updateOptions { $0.showGauge = value } }
         )
+    }
+
+    private var showMinBinding: Binding<Bool> {
+        Binding(
+            get: { config.showsMin(for: currentFamily) },
+            set: { value in updateOptions { $0.showMin = value } }
+        )
+    }
+
+    private var showMaxBinding: Binding<Bool> {
+        Binding(
+            get: { config.showsMax(for: currentFamily) },
+            set: { value in updateOptions { $0.showMax = value } }
+        )
+    }
+
+    /// Icon color is global (not per-size); defaults to the Home Assistant primary color.
+    private var iconColorBinding: Binding<Color> {
+        Binding(
+            get: { iconColor },
+            set: { config.iconColor = UIColor($0).hexString(true) }
+        )
+    }
+
+    /// Only the circular family has the open/ring gauge; the others (except inline) show a progress bar.
+    private var familyHasProgressBar: Bool { currentFamily != .inline }
+
+    private var gaugeToggleTitle: String {
+        currentFamily == .circular
+            ? L10n.Watch.Complications.Builder.showGauge
+            : L10n.Watch.Complications.Builder.showProgressBar
+    }
+
+    private var gaugeColorTitle: String {
+        currentFamily == .circular
+            ? L10n.Watch.Complications.Builder.color
+            : L10n.Watch.Complications.Builder.progressBarColor
     }
 
     private var gaugeMinBinding: Binding<Double?> {
@@ -369,6 +409,14 @@ struct WatchComplicationBuilderEditView: View {
         Binding(
             get: { config.showsUnit() },
             set: { config.showUnit = $0 }
+        )
+    }
+
+    /// Whether the complication is shown while the watch display is dimmed (global).
+    private var showWhenInactiveBinding: Binding<Bool> {
+        Binding(
+            get: { config.showsWhenInactive() },
+            set: { config.showWhenInactive = $0 }
         )
     }
 
@@ -419,7 +467,7 @@ struct WatchComplicationBuilderEditView: View {
                 HStack(spacing: DesignSystem.Spaces.two) {
                     IconPicker(
                         selectedIcon: iconBinding,
-                        selectedColor: .constant(iconColor)
+                        selectedColor: iconColorBinding
                     )
                     TextField(text: stringBinding(\.name)) {
                         Text(verbatim: namePlaceholder)
@@ -486,57 +534,7 @@ struct WatchComplicationBuilderEditView: View {
                 }
             }
 
-            if config.kind == .entity {
-                // Per-size customization: bound to the size currently selected in the preview above.
-                Section {
-                    Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
-                    Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
-                    if entityUnit != nil {
-                        Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
-                    }
-                    Toggle(isOn: showGaugeBinding) { Text(L10n.Watch.Complications.Builder.showGauge) }
-                    if config.showsGauge(for: config.widgetFamily) {
-                        // A circular gauge can be an open arc or a full ring; other families have a
-                        // single family-appropriate gauge, so the style picker only applies to circular.
-                        if config.widgetFamily == .circular {
-                            Picker(selection: gaugeStyleBinding) {
-                                ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
-                                    Text(verbatim: style.title).tag(style)
-                                }
-                            } label: {
-                                Text(L10n.Watch.Complications.GaugeStyle.title)
-                            }
-                            .pickerStyle(.segmented)
-                        }
-                        numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
-                        numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
-                    }
-                    ColorPicker(
-                        L10n.Watch.Complications.Builder.color,
-                        selection: tintBinding,
-                        supportsOpacity: false
-                    )
-                    ColorPicker(
-                        L10n.Watch.Complications.Builder.textColor,
-                        selection: textColorBinding,
-                        supportsOpacity: false
-                    )
-                } header: {
-                    // Family switcher, so the size being customized can be changed without scrolling
-                    // back up to the preview.
-                    Picker(selection: $config.widgetFamily) {
-                        ForEach(WatchComplicationConfig.Family.allCases) { family in
-                            Text(verbatim: family.title).tag(family)
-                        }
-                    } label: { EmptyView() }
-                        .pickerStyle(.segmented)
-                        .frame(maxWidth: .infinity)
-                        .textCase(nil)
-                        .padding(.bottom, DesignSystem.Spaces.one)
-                } footer: {
-                    Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
-                }
-            } else {
+            if config.kind == .customTemplate {
                 Section {
                     TextField(text: stringBinding(\.customTextTemplate)) {
                         Text(verbatim: "{{ states('sensor.x') }}")
@@ -547,6 +545,84 @@ struct WatchComplicationBuilderEditView: View {
                 } header: {
                     Text(L10n.Watch.Complications.Builder.templates)
                 }
+            }
+
+            // Per-size display options, bound to the size currently selected in the header picker.
+            Section {
+                Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
+                Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
+                Toggle(isOn: showIconBinding) { Text(L10n.Watch.Complications.Builder.showIcon) }
+                if config.kind == .entity, entityUnit != nil {
+                    Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
+                }
+
+                if familyHasProgressBar {
+                    Toggle(isOn: showGaugeBinding) { Text(verbatim: gaugeToggleTitle) }
+                    if config.showsGauge(for: currentFamily) {
+                        // Only the circular gauge has an open/ring style choice.
+                        if currentFamily == .circular {
+                            Picker(selection: gaugeStyleBinding) {
+                                ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
+                                    Text(verbatim: style.title).tag(style)
+                                }
+                            } label: {
+                                Text(L10n.Watch.Complications.GaugeStyle.title)
+                            }
+                            .pickerStyle(.segmented)
+                        }
+                        // Numeric range + min/max labels only apply to entity gauges.
+                        if config.kind == .entity {
+                            numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
+                            numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
+                            if config.gaugeRange(for: currentFamily) != nil {
+                                Toggle(isOn: showMinBinding) {
+                                    Text(L10n.Watch.Complications.Builder.showMin)
+                                }
+                                Toggle(isOn: showMaxBinding) {
+                                    Text(L10n.Watch.Complications.Builder.showMax)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if familyHasProgressBar, config.showsGauge(for: currentFamily) {
+                    ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
+                }
+                if config.showsIcon(for: currentFamily) {
+                    ColorPicker(
+                        L10n.Watch.Complications.Builder.iconColor,
+                        selection: iconColorBinding,
+                        supportsOpacity: false
+                    )
+                }
+                ColorPicker(
+                    L10n.Watch.Complications.Builder.textColor,
+                    selection: textColorBinding,
+                    supportsOpacity: false
+                )
+            } header: {
+                // Family switcher, so the size being customized can be changed without scrolling
+                // back up to the preview.
+                Picker(selection: $config.widgetFamily) {
+                    ForEach(WatchComplicationConfig.Family.allCases) { family in
+                        Text(verbatim: family.title).tag(family)
+                    }
+                } label: { EmptyView() }
+                    .pickerStyle(.segmented)
+                    .frame(maxWidth: .infinity)
+                    .textCase(nil)
+                    .padding(.bottom, DesignSystem.Spaces.one)
+            } footer: {
+                Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
+            }
+
+            Section {
+                Toggle(isOn: showWhenInactiveBinding) {
+                    Text(L10n.Watch.Complications.Builder.showWhenInactive)
+                }
+            } footer: {
+                Text(L10n.Watch.Complications.Builder.showWhenInactiveFooter)
             }
         }
         .navigationTitle(Text(isNew ? L10n.Watch.Complications.Builder.newTitle : L10n.Watch.Complications.Builder
@@ -683,6 +759,51 @@ struct ComplicationFamilyPreview: View {
     }
 }
 
+/// A horizontal progress bar whose value label follows the thumb, with min/max edge labels. When the
+/// value gets visually close to an edge it replaces that edge's label (whichever is closer).
+struct RectangularGauge: View {
+    let fraction: Double
+    let minLabel: String?
+    let maxLabel: String?
+    let valueLabel: String?
+    let tint: Color
+    let textColor: Color
+
+    var body: some View {
+        let clamped = min(max(fraction, 0), 1)
+        let nearMin = clamped <= 0.28
+        let nearMax = clamped >= 0.72
+        GeometryReader { geo in
+            let width = geo.size.width
+            VStack(spacing: 2) {
+                ZStack {
+                    HStack {
+                        Text(verbatim: (minLabel != nil && !nearMin) ? minLabel! : " ")
+                        Spacer()
+                        Text(verbatim: (maxLabel != nil && !nearMax) ? maxLabel! : " ")
+                    }
+                    .font(.system(size: 10))
+                    .foregroundStyle(.secondary)
+                    if let valueLabel {
+                        Text(verbatim: valueLabel)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(textColor)
+                            .fixedSize()
+                            .position(x: min(max(width * clamped, 14), width - 14), y: 6)
+                    }
+                }
+                .frame(height: 13)
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.white.opacity(0.25))
+                    Capsule().fill(tint).frame(width: width * clamped)
+                }
+                .frame(height: 5)
+            }
+        }
+        .frame(height: 22)
+    }
+}
+
 /// A live approximation of the watch complication, mirroring `WatchWidgetsEntryView` but rendered on
 /// iPhone with current data (via Home Assistant template rendering) so the user sees the real result
 /// before saving. Not pixel-identical to watchOS, but faithful to layout, icon, value and gauge.
@@ -752,10 +873,20 @@ struct WatchComplicationLivePreview: View {
 
     private var showsName: Bool { config.showsName(for: config.widgetFamily) }
 
+    private var showsIcon: Bool { config.showsIcon(for: config.widgetFamily) }
+
+    private var showsMin: Bool { config.showsMin(for: config.widgetFamily) }
+
+    private var showsMax: Bool { config.showsMax(for: config.widgetFamily) }
+
+    private var iconColor: Color {
+        config.iconColor.map { Color(uiColor: UIColor(hex: $0)) } ?? .white
+    }
+
     private var iconImage: Image? {
-        guard let iconName = config.iconName else { return nil }
+        guard showsIcon, let iconName = config.iconName else { return nil }
         let image = MaterialDesignIcons(serversideValueNamed: iconName)
-            .image(ofSize: CGSize(width: 64, height: 64), color: .white)
+            .image(ofSize: CGSize(width: 64, height: 64), color: UIColor(iconColor))
         return Image(uiImage: image)
     }
 
@@ -787,19 +918,18 @@ struct WatchComplicationLivePreview: View {
     private var corner: some View {
         ZStack {
             Circle().fill(Color.black)
-            VStack(spacing: 3) {
+            VStack(spacing: 2) {
                 Spacer()
+                iconImage?
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
                 if showsValue, !value.isEmpty {
                     Text(value)
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundStyle(textColor)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
-                } else {
-                    iconImage?
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 22, height: 22)
                 }
                 if showsGauge, let fraction {
                     Gauge(value: fraction) { EmptyView() }
@@ -814,17 +944,24 @@ struct WatchComplicationLivePreview: View {
         .environment(\.colorScheme, .dark)
     }
 
-    /// Icon (+ value) shown in the middle of a circular complication.
+    /// Icon / value / name shown in the middle of a circular complication, each per its toggle.
     private var centerContent: some View {
-        VStack(spacing: 1) {
+        VStack(spacing: 0) {
             iconImage?
                 .resizable()
                 .scaledToFit()
-                .frame(width: 22, height: 22)
+                .frame(width: 20, height: 20)
             if showsValue, !value.isEmpty {
                 Text(value)
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundStyle(textColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+            }
+            if showsName, !name.isEmpty {
+                Text(name)
+                    .font(.system(size: 9))
+                    .foregroundStyle(textColor.opacity(0.7))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
             }
@@ -846,9 +983,9 @@ struct WatchComplicationLivePreview: View {
                         } currentValueLabel: {
                             centerContent
                         } minimumValueLabel: {
-                            Text(verbatim: range.map { label($0.min) } ?? "")
+                            Text(verbatim: (showsMin ? range.map { label($0.min) } : nil) ?? "")
                         } maximumValueLabel: {
-                            Text(verbatim: range.map { label($0.max) } ?? "")
+                            Text(verbatim: (showsMax ? range.map { label($0.max) } : nil) ?? "")
                         }
                         .gaugeStyle(.accessoryCircular)
                         .tint(tint)
@@ -881,20 +1018,28 @@ struct WatchComplicationLivePreview: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 22, height: 22)
-                .foregroundStyle(.white)
-            VStack(alignment: .leading, spacing: 1) {
+            VStack(alignment: .leading, spacing: 2) {
                 if showsName {
-                    Text(name).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+                    Text(name).font(.system(size: 13, weight: .semibold)).lineLimit(1).foregroundStyle(textColor)
                 }
-                Text(showsValue && !value.isEmpty ? value : " ")
-                    .font(.system(size: 13)).foregroundStyle(textColor.opacity(0.85)).lineLimit(1)
+                if showsGauge, let fraction {
+                    RectangularGauge(
+                        fraction: fraction,
+                        minLabel: showsMin ? range.map { label($0.min) } : nil,
+                        maxLabel: showsMax ? range.map { label($0.max) } : nil,
+                        valueLabel: showsValue && !value.isEmpty ? value : nil,
+                        tint: tint,
+                        textColor: textColor
+                    )
+                } else if showsValue, !value.isEmpty {
+                    Text(value).font(.system(size: 13)).foregroundStyle(textColor.opacity(0.85)).lineLimit(1)
+                }
             }
             Spacer(minLength: 0)
         }
         .padding(12)
         .frame(width: 200)
         .background(RoundedRectangle(cornerRadius: 14).fill(Color.black))
-        .foregroundStyle(.white)
     }
 
     private var inline: some View {

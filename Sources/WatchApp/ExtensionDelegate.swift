@@ -38,10 +38,6 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
 
         setupWatchCommunicator()
-        #if DEBUG
-        // Seed one example of every complication variant so they're all visible while debugging.
-        WatchComplicationConfig.seedDebugFixturesIfNeeded()
-        #endif
         WatchWidgetComplicationSnapshotStore.update()
 
         // Re-apply any watch-local "Always use" URL choices to the persisted servers (their
@@ -570,6 +566,11 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         let showValue: Bool
         /// Whether to show the complication name (default true).
         var showName: Bool?
+        /// Whether to show the icon (default true).
+        var showIcon: Bool?
+        /// Whether to show the gauge/progress-bar minimum / maximum labels (each default true).
+        var showMin: Bool?
+        var showMax: Bool?
         /// Raw `WatchComplicationConfig.GaugeStyle` (circular only); nil defaults to open.
         var gaugeStyle: String?
         /// Pre-formatted gauge min/max labels for the open circular gauge.
@@ -590,6 +591,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
     let perFamily: [String: PerFamily]?
     /// Name shown in the complication picker (the value goes in `title` for on-face rendering).
     let menuName: String?
+    /// Whether the complication is shown while the display is dimmed (default true).
+    var showWhenInactive: Bool?
 
     init(
         id: String,
@@ -601,7 +604,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         tint: String?,
         iconData: Data?,
         perFamily: [String: PerFamily]? = nil,
-        menuName: String? = nil
+        menuName: String? = nil,
+        showWhenInactive: Bool? = nil
     ) {
         self.id = id
         self.family = family
@@ -613,6 +617,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         self.iconData = iconData
         self.perFamily = perFamily
         self.menuName = menuName
+        self.showWhenInactive = showWhenInactive
     }
 
     /// Formats a numeric state with the entity's display precision and unit, mirroring the app.
@@ -727,6 +732,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 tint: config.tint(for: family),
                 showValue: config.showsValue(for: family),
                 showName: config.showsName(for: family),
+                showIcon: config.showsIcon(for: family),
+                showMin: config.showsMin(for: family),
+                showMax: config.showsMax(for: family),
                 gaugeStyle: config.gaugeStyle(for: family).rawValue,
                 minLabel: range.map { label($0.min) },
                 maxLabel: range.map { label($0.max) },
@@ -735,9 +743,10 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         }
 
         let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
-        let color = config.iconColor.map { UIColor($0) } ?? AppConstants.tintColor
+        // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup.
+        let color = config.iconColor.map { UIColor(hex: $0) } ?? AppConstants.tintColor
         let iconData = config.iconName
-            .map { MaterialDesignIcons(named: $0).image(ofSize: iconRenderSize, color: color) }?
+            .map { MaterialDesignIcons(serversideValueNamed: $0).image(ofSize: iconRenderSize, color: color) }?
             .pngData()
 
         let snapshot = WatchWidgetComplicationSnapshot(
@@ -750,7 +759,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             tint: config.tint(for: config.widgetFamily),
             iconData: iconData,
             perFamily: perFamily,
-            menuName: name
+            menuName: name,
+            showWhenInactive: config.showsWhenInactive()
         )
         return (snapshot, isLive, failureReason)
     }

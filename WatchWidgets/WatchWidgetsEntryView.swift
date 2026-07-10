@@ -4,13 +4,42 @@ import WidgetKit
 @available(watchOS 10.0, *)
 struct WatchWidgetsEntryView: View {
     let entry: WatchWidgetEntry
+    /// True while the display is dimmed (wrist down / always-on).
+    @Environment(\.isLuminanceReduced) private var isLuminanceReduced
 
     var body: some View {
-        content
-            .containerBackground(for: .widget) {
-                AccessoryWidgetBackground()
+        Group {
+            if let complication = entry.complication, !complication.showsWhenInactive, isLuminanceReduced {
+                inactivePlaceholder
+            } else {
+                content
             }
-            .widgetURL(entry.complication?.widgetURL)
+        }
+        .containerBackground(for: .widget) {
+            AccessoryWidgetBackground()
+        }
+        .widgetURL(entry.complication?.widgetURL)
+    }
+
+    /// Privacy: while the display is dimmed and the complication opts out of always-on, hide the
+    /// content and show the app logo (or a neutral marker for the text-only families).
+    @ViewBuilder
+    private var inactivePlaceholder: some View {
+        switch entry.family {
+        case .accessoryInline:
+            Text(WatchWidgetConstants.appName)
+        case .accessoryCorner:
+            Text(WatchWidgetConstants.appName)
+                .widgetLabel(WatchWidgetConstants.appName)
+        default:
+            Image(WatchWidgetConstants.templateLogoAssetName)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(.secondary)
+                .padding(WatchWidgetConstants.Layout.logoPadding)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
     }
 
     @ViewBuilder
@@ -27,14 +56,27 @@ struct WatchWidgetsEntryView: View {
         }
     }
 
-    /// Inline: name + value on one line. For a modern config the name/value honor the per-size
+    // MARK: - Inline
+
+    /// Inline: optional leading icon + name/value on one line. Modern configs honor the per-size
     /// toggles and text color; legacy/built-ins use their precomputed inline text.
     @ViewBuilder
     private var inline: some View {
         if let complication = entry.complication {
             let text = inlineText(for: complication)
-            Text(text.isEmpty ? WatchWidgetConstants.appName : text)
-                .foregroundStyle(complication.textColor(for: entry.family) ?? .primary)
+            let color = complication.textColor(for: entry.family) ?? .primary
+            if complication.perFamily != nil, complication.showsIcon(for: entry.family),
+               let iconImage = complication.iconImage {
+                Label {
+                    Text(text.isEmpty ? WatchWidgetConstants.appName : text)
+                } icon: {
+                    iconImage.renderingMode(.template)
+                }
+                .foregroundStyle(color)
+            } else {
+                Text(text.isEmpty ? WatchWidgetConstants.appName : text)
+                    .foregroundStyle(color)
+            }
         } else {
             Text(WatchWidgetConstants.appName)
         }
@@ -48,139 +90,207 @@ struct WatchWidgetsEntryView: View {
         ].filter { !$0.isEmpty }.joined(separator: " ")
     }
 
-    /// Circular: a gauge around the icon when a value exists — an open arc (optionally with min/max
-    /// labels) or a full capacity ring, per the complication's gauge style — otherwise just the icon.
+    // MARK: - Circular
+
+    /// Circular: a gauge around the center content (icon/value/name) when a value exists — an open arc
+    /// (optionally with min/max labels) or a full capacity ring — otherwise just the center content.
     @ViewBuilder
     private var circular: some View {
         if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
             if complication.isCapacityGauge(for: entry.family) {
+                // Ring (capacity) fills the disc, so the center needs no extra padding.
                 Gauge(value: fraction) {
-                    circularCenter
+                    circularContent(padded: false)
                 }
                 .gaugeStyle(.accessoryCircularCapacity)
                 .tint(complication.tintColor(for: entry.family))
-            } else if let labels = complication.gaugeLabels(for: entry.family) {
-                Gauge(value: fraction) {
-                    icon
-                } currentValueLabel: {
-                    circularCenter
-                } minimumValueLabel: {
-                    Text(labels.min)
-                } maximumValueLabel: {
-                    Text(labels.max)
-                }
-                .gaugeStyle(.accessoryCircular)
-                .tint(complication.tintColor(for: entry.family))
             } else {
-                Gauge(value: fraction) {
-                    circularCenter
+                let labels = complication.gaugeLabels(for: entry.family)
+                let showMin = complication.showsMin(for: entry.family)
+                let showMax = complication.showsMax(for: entry.family)
+                if let labels, showMin || showMax {
+                    Gauge(value: fraction) {
+                        EmptyView()
+                    } currentValueLabel: {
+                        circularContent(padded: true)
+                    } minimumValueLabel: {
+                        Text(showMin ? labels.min : "")
+                    } maximumValueLabel: {
+                        Text(showMax ? labels.max : "")
+                    }
+                    .gaugeStyle(.accessoryCircular)
+                    .tint(complication.tintColor(for: entry.family))
+                } else {
+                    Gauge(value: fraction) {
+                        EmptyView()
+                    } currentValueLabel: {
+                        circularContent(padded: true)
+                    }
+                    .gaugeStyle(.accessoryCircular)
+                    .tint(complication.tintColor(for: entry.family))
                 }
-                .gaugeStyle(.accessoryCircular)
-                .tint(complication.tintColor(for: entry.family))
             }
         } else {
-            icon
+            circularContent(padded: false)
                 .padding(WatchWidgetConstants.Layout.logoPadding)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
-    /// Corner: the value/title as the corner content with a curved bezel label — a gauge when a value
-    /// exists, otherwise the subtitle. Text-based (not the raster icon) because the corner family has a
-    /// much smaller image-archiving budget than circular, so a full-size icon would be rejected.
+    /// Center of a circular complication: icon / value / name per the toggles for a modern config; the
+    /// icon alone for legacy/built-ins. `padded` insets it off the surrounding open-gauge ring.
+    @ViewBuilder
+    private func circularContent(padded: Bool) -> some View {
+        Group {
+            if let complication = entry.complication, complication.perFamily != nil {
+                VStack(spacing: 0) {
+                    if complication.showsIcon(for: entry.family), let iconImage = complication.iconImage {
+                        iconImage
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 18, height: 18)
+                            .widgetAccentable()
+                    }
+                    if complication.showsValue(for: entry.family), !complication.title.isEmpty {
+                        Text(complication.title)
+                            .minimumScaleFactor(0.4)
+                            .lineLimit(1)
+                            .foregroundStyle(complication.textColor(for: entry.family) ?? .primary)
+                    }
+                    if complication.showsName(for: entry.family), !complication.subtitle.isEmpty {
+                        Text(complication.subtitle)
+                            .font(.system(size: 9))
+                            .minimumScaleFactor(0.4)
+                            .lineLimit(1)
+                            .foregroundStyle(complication.textColor(for: entry.family) ?? .primary)
+                    }
+                }
+            } else {
+                icon
+            }
+        }
+        .padding(padded ? WatchWidgetConstants.Layout.circularIconGaugePadding : 0)
+    }
+
+    // MARK: - Corner
+
+    /// Corner: an icon (when enabled) or the value/name tucked in the corner, with a curved bezel label
+    /// carrying the gauge (when a value exists) or the remaining text.
     @ViewBuilder
     private var corner: some View {
-        if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
-            Text(complication.title)
-                .widgetLabel {
-                    Gauge(value: fraction) {
-                        Text(complication.subtitle)
-                    }
-                    .tint(complication.tintColor(for: entry.family))
+        if let complication = entry.complication {
+            Group {
+                if complication.showsIcon(for: entry.family), let iconImage = complication.iconImage {
+                    iconImage.renderingMode(.template).resizable().scaledToFit().widgetAccentable()
+                } else {
+                    Text(cornerMainText(complication))
                 }
+            }
+            .widgetLabel { cornerLabel(complication) }
         } else {
-            Text(entry.complication?.title ?? WatchWidgetConstants.appName)
-                .widgetLabel(entry.complication?.subtitle ?? WatchWidgetConstants.placeholderSubtitle)
+            Text(WatchWidgetConstants.appName)
         }
     }
 
-    /// Rectangular: icon + title, plus a linear gauge when a value exists, otherwise a subtitle line.
+    private func cornerMainText(_ complication: WatchWidgetComplicationSnapshot) -> String {
+        if complication.showsValue(for: entry.family), !complication.title.isEmpty {
+            return complication.title
+        }
+        return complication.showsName(for: entry.family) ? complication.subtitle : WatchWidgetConstants.appName
+    }
+
+    @ViewBuilder
+    private func cornerLabel(_ complication: WatchWidgetComplicationSnapshot) -> some View {
+        if let fraction = complication.fraction(for: entry.family) {
+            Gauge(value: fraction) {
+                Text(complication.showsValue(for: entry.family) ? complication.title : complication.subtitle)
+            }
+            .tint(complication.tintColor(for: entry.family))
+        } else {
+            Text(complication.showsName(for: entry.family) ? complication.subtitle : complication.title)
+        }
+    }
+
+    // MARK: - Rectangular
+
+    /// Rectangular: optional icon + name, plus a progress bar (value follows the thumb, min/max at the
+    /// edges) when a value exists. Legacy/built-ins keep the simpler primary/secondary layout.
     @ViewBuilder
     private var rectangular: some View {
         HStack(spacing: WatchWidgetConstants.Layout.rectangularSpacing) {
-            icon
-                .frame(
-                    width: WatchWidgetConstants.Layout.rectangularLogoSize,
-                    height: WatchWidgetConstants.Layout.rectangularLogoSize
-                )
-
-            VStack(alignment: .leading, spacing: WatchWidgetConstants.Layout.rectangularTextSpacing) {
-                if let complication = entry.complication, complication.perFamily != nil {
-                    // Modern config: name (subtitle) on top, value (title) below, both honoring toggles.
-                    let textColor = complication.textColor(for: entry.family) ?? .primary
-                    if complication.showsName(for: entry.family) {
-                        Text(complication.subtitle)
-                            .font(.caption2.weight(.semibold))
-                            .lineLimit(1)
-                            .foregroundStyle(textColor)
-                    }
-                    if let fraction = complication.fraction(for: entry.family) {
-                        Gauge(value: fraction) {
-                            EmptyView()
-                        } currentValueLabel: {
-                            if complication.showsValue(for: entry.family) {
-                                Text(complication.title).lineLimit(1)
-                            }
-                        }
-                        .gaugeStyle(.accessoryLinearCapacity)
-                        .tint(complication.tintColor(for: entry.family))
-                    } else if complication.showsValue(for: entry.family), !complication.title.isEmpty {
-                        Text(complication.title)
-                            .font(.caption2)
-                            .lineLimit(2)
-                            .foregroundStyle(textColor)
-                    }
-                } else {
-                    // Legacy / built-in: primary text on top, secondary (or gauge) below.
-                    Text(entry.complication?.title ?? WatchWidgetConstants.appName)
-                        .font(.caption2.weight(.semibold))
-                        .lineLimit(1)
-
-                    if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
-                        Gauge(value: fraction) {
-                            EmptyView()
-                        } currentValueLabel: {
-                            Text(complication.subtitle).lineLimit(1)
-                        }
-                        .gaugeStyle(.accessoryLinearCapacity)
-                        .tint(complication.tintColor(for: entry.family))
-                    } else {
-                        Text(entry.complication?.subtitle ?? WatchWidgetConstants.placeholderSubtitle)
-                            .font(.caption2)
-                            .lineLimit(2)
-                    }
+            if let complication = entry.complication, complication.perFamily != nil {
+                if complication.showsIcon(for: entry.family), let iconImage = complication.iconImage {
+                    iconImage
+                        .resizable()
+                        .scaledToFit()
+                        .frame(
+                            width: WatchWidgetConstants.Layout.rectangularLogoSize,
+                            height: WatchWidgetConstants.Layout.rectangularLogoSize
+                        )
+                        .widgetAccentable()
                 }
+                rectangularModernContent(complication)
+            } else {
+                icon
+                    .frame(
+                        width: WatchWidgetConstants.Layout.rectangularLogoSize,
+                        height: WatchWidgetConstants.Layout.rectangularLogoSize
+                    )
+                rectangularLegacyContent
             }
-
             Spacer(minLength: 0)
         }
     }
 
-    /// Center of a circular gauge: for a modern config, the state value when shown (matching watchOS
-    /// gauges, which put the number in the middle); otherwise the icon. Legacy/image complications
-    /// (no per-family options) keep their icon, since their title is just the name.
     @ViewBuilder
-    private var circularCenter: some View {
-        if let complication = entry.complication, complication.perFamily != nil,
-           complication.showsValue(for: entry.family), !complication.title.isEmpty {
-            Text(complication.title)
-                .minimumScaleFactor(0.4)
+    private func rectangularModernContent(_ complication: WatchWidgetComplicationSnapshot) -> some View {
+        let textColor = complication.textColor(for: entry.family) ?? .primary
+        VStack(alignment: .leading, spacing: WatchWidgetConstants.Layout.rectangularTextSpacing) {
+            if complication.showsName(for: entry.family) {
+                Text(complication.subtitle)
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+                    .foregroundStyle(textColor)
+            }
+            if let fraction = complication.fraction(for: entry.family) {
+                WatchRectangularGauge(
+                    fraction: fraction,
+                    minLabel: complication.showsMin(for: entry.family)
+                        ? complication.gaugeLabels(for: entry.family)?.min : nil,
+                    maxLabel: complication.showsMax(for: entry.family)
+                        ? complication.gaugeLabels(for: entry.family)?.max : nil,
+                    valueLabel: complication.showsValue(for: entry.family) ? complication.title : nil,
+                    tint: complication.tintColor(for: entry.family),
+                    textColor: textColor
+                )
+            } else if complication.showsValue(for: entry.family), !complication.title.isEmpty {
+                Text(complication.title)
+                    .font(.caption2)
+                    .lineLimit(2)
+                    .foregroundStyle(textColor)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var rectangularLegacyContent: some View {
+        VStack(alignment: .leading, spacing: WatchWidgetConstants.Layout.rectangularTextSpacing) {
+            Text(entry.complication?.title ?? WatchWidgetConstants.appName)
+                .font(.caption2.weight(.semibold))
                 .lineLimit(1)
-                .foregroundStyle(complication.textColor(for: entry.family) ?? .primary)
-        } else {
-            // Inset the icon so it doesn't touch the surrounding gauge ring.
-            icon
-                .padding(WatchWidgetConstants.Layout.circularIconGaugePadding)
+            if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
+                Gauge(value: fraction) {
+                    EmptyView()
+                } currentValueLabel: {
+                    Text(complication.subtitle).lineLimit(1)
+                }
+                .gaugeStyle(.accessoryLinearCapacity)
+                .tint(complication.tintColor(for: entry.family))
+            } else {
+                Text(entry.complication?.subtitle ?? WatchWidgetConstants.placeholderSubtitle)
+                    .font(.caption2)
+                    .lineLimit(2)
+            }
         }
     }
 
@@ -207,6 +317,52 @@ struct WatchWidgetsEntryView: View {
                 .scaledToFit()
                 .widgetAccentable()
         }
+    }
+}
+
+/// A horizontal progress bar whose value label follows the thumb, with min/max edge labels the value
+/// replaces when it gets visually close to an edge. Mirrors the iOS builder preview.
+@available(watchOS 10.0, *)
+struct WatchRectangularGauge: View {
+    let fraction: Double
+    let minLabel: String?
+    let maxLabel: String?
+    let valueLabel: String?
+    let tint: Color
+    let textColor: Color
+
+    var body: some View {
+        let clamped = min(max(fraction, 0), 1)
+        let nearMin = clamped <= 0.28
+        let nearMax = clamped >= 0.72
+        GeometryReader { geo in
+            let width = geo.size.width
+            VStack(spacing: 1) {
+                ZStack {
+                    HStack {
+                        Text(verbatim: (minLabel != nil && !nearMin) ? minLabel! : " ")
+                        Spacer()
+                        Text(verbatim: (maxLabel != nil && !nearMax) ? maxLabel! : " ")
+                    }
+                    .font(.system(size: 10))
+                    .foregroundStyle(.secondary)
+                    if let valueLabel {
+                        Text(verbatim: valueLabel)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(textColor)
+                            .fixedSize()
+                            .position(x: min(max(width * clamped, 12), width - 12), y: 6)
+                    }
+                }
+                .frame(height: 13)
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.white.opacity(0.25))
+                    Capsule().fill(tint).frame(width: width * clamped)
+                }
+                .frame(height: 5)
+            }
+        }
+        .frame(height: 22)
     }
 }
 

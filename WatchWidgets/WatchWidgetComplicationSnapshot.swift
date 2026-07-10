@@ -14,6 +14,11 @@ struct WatchWidgetComplicationSnapshot: Codable {
         let showValue: Bool
         /// Whether to show the complication name (default true).
         var showName: Bool?
+        /// Whether to show the icon (default true).
+        var showIcon: Bool?
+        /// Whether to show the gauge/progress-bar minimum / maximum labels (each default true).
+        var showMin: Bool?
+        var showMax: Bool?
         /// Raw gauge style ("open"/"capacity") for circular; nil defaults to open.
         var gaugeStyle: String?
         /// Pre-formatted gauge min/max labels for the open circular gauge.
@@ -35,6 +40,8 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// The name shown in the complication picker (the value goes in `title` for on-face rendering).
     /// Optional so older payloads without it still decode.
     let menuName: String?
+    /// Whether the complication is shown while the display is dimmed (default true).
+    var showWhenInactive: Bool?
 
     static var placeholder: Self {
         .init(
@@ -104,6 +111,24 @@ struct WatchWidgetComplicationSnapshot: Codable {
     func showsName(for widgetFamily: WidgetFamily) -> Bool {
         options(for: widgetFamily)?.showName ?? true
     }
+
+    /// Whether to show the icon for a given family (default true).
+    func showsIcon(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.showIcon ?? true
+    }
+
+    /// Whether to show the gauge/progress-bar minimum label for a given family (default true).
+    func showsMin(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.showMin ?? true
+    }
+
+    /// Whether to show the gauge/progress-bar maximum label for a given family (default true).
+    func showsMax(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.showMax ?? true
+    }
+
+    /// Whether the complication should render while the display is dimmed (default true).
+    var showsWhenInactive: Bool { showWhenInactive ?? true }
 
     /// Whether the circular gauge should be drawn as a full capacity ring (vs the open arc).
     func isCapacityGauge(for widgetFamily: WidgetFamily) -> Bool {

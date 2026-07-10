@@ -302,6 +302,9 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// Whether to append the entity's unit of measurement to the value. Nullable so pre-existing rows
     /// (NULL) default to visible; see `showsUnit()`.
     public var showUnit: Bool?
+    /// Whether the complication is shown while the display is dimmed (wrist down / always-on). Nullable
+    /// so pre-existing rows (NULL) default to visible; see `showsWhenInactive()`.
+    public var showWhenInactive: Bool?
 
     // Custom-template kind
     public var customTextTemplate: String?
@@ -317,7 +320,12 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public struct FamilyOptions: Codable, Equatable {
         public var showName: Bool?
         public var showValue: Bool?
+        public var showIcon: Bool?
         public var showGauge: Bool?
+        /// Whether the minimum / maximum labels are shown alongside a progress bar / open gauge
+        /// (each default true).
+        public var showMin: Bool?
+        public var showMax: Bool?
         public var gaugeMin: Double?
         public var gaugeMax: Double?
         public var gaugeAttribute: String?
@@ -330,7 +338,10 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public init(
             showName: Bool? = nil,
             showValue: Bool? = nil,
+            showIcon: Bool? = nil,
             showGauge: Bool? = nil,
+            showMin: Bool? = nil,
+            showMax: Bool? = nil,
             gaugeMin: Double? = nil,
             gaugeMax: Double? = nil,
             gaugeAttribute: String? = nil,
@@ -340,7 +351,10 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         ) {
             self.showName = showName
             self.showValue = showValue
+            self.showIcon = showIcon
             self.showGauge = showGauge
+            self.showMin = showMin
+            self.showMax = showMax
             self.gaugeMin = gaugeMin
             self.gaugeMax = gaugeMax
             self.gaugeAttribute = gaugeAttribute
@@ -353,7 +367,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public enum CodingKeys: String, CodingKey {
         case id, serverId, widgetFamily, kind, name
         case entityId, entityDisplayName, iconName, iconColor
-        case gaugeAttribute, gaugeMin, gaugeMax, showValue, showUnit
+        case gaugeAttribute, gaugeMin, gaugeMax, showValue, showUnit, showWhenInactive
         case customTextTemplate, customGaugeTemplate, sortOrder, families
     }
 
@@ -372,6 +386,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         gaugeMax: Double? = nil,
         showValue: Bool = true,
         showUnit: Bool? = nil,
+        showWhenInactive: Bool? = nil,
         customTextTemplate: String? = nil,
         customGaugeTemplate: String? = nil,
         sortOrder: Int = 0,
@@ -391,6 +406,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.gaugeMax = gaugeMax
         self.showValue = showValue
         self.showUnit = showUnit
+        self.showWhenInactive = showWhenInactive
         self.customTextTemplate = customTextTemplate
         self.customGaugeTemplate = customGaugeTemplate
         self.sortOrder = sortOrder
@@ -401,15 +417,32 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         name ?? entityDisplayName ?? entityId ?? "Complication"
     }
 
-    // MARK: - Per-family resolution (override → base fallback)
+    // MARK: - Per-family resolution (override → family default)
 
-    /// Whether the complication's name is shown for this family (default true).
+    /// Whether the complication's name is shown for this family. Circular is too small for a name, so
+    /// it defaults off; the other families default on.
     public func showsName(for family: Family) -> Bool {
-        families?[family.rawValue]?.showName ?? true
+        families?[family.rawValue]?.showName ?? (family != .circular)
     }
 
     public func showsValue(for family: Family) -> Bool {
         families?[family.rawValue]?.showValue ?? showValue
+    }
+
+    /// Whether the icon is shown for this family. Rectangular always leads with the icon; the compact
+    /// families (circular/inline/corner) default off but can opt in.
+    public func showsIcon(for family: Family) -> Bool {
+        families?[family.rawValue]?.showIcon ?? (family == .rectangular)
+    }
+
+    /// Whether the minimum label is shown next to a progress bar / open gauge (default true).
+    public func showsMin(for family: Family) -> Bool {
+        families?[family.rawValue]?.showMin ?? true
+    }
+
+    /// Whether the maximum label is shown next to a progress bar / open gauge (default true).
+    public func showsMax(for family: Family) -> Bool {
+        families?[family.rawValue]?.showMax ?? true
     }
 
     /// Whether a gauge/ring should be drawn for this family.
@@ -440,6 +473,12 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// shared across sizes); defaults to visible when unset.
     public func showsUnit() -> Bool {
         showUnit ?? true
+    }
+
+    /// Whether the complication is shown while the display is dimmed (always-on / wrist down); defaults
+    /// to visible when unset.
+    public func showsWhenInactive() -> Bool {
+        showWhenInactive ?? true
     }
 
     /// The gauge style for a family (circular only); defaults to `.open`.
@@ -501,101 +540,3 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     }
 }
 
-#if DEBUG
-public extension WatchComplicationConfig {
-    static let debugFixturePrefix = "debug-fixture-"
-
-    /// On the simulator, seed one example complication for each family / source / style / option so
-    /// every rendering variant is visible while debugging. Idempotent (stable ids, only inserts what's
-    /// missing) and confined to the simulator so it never touches a real device's configuration.
-    static func seedDebugFixturesIfNeeded() {
-        #if targetEnvironment(simulator)
-        let serverId = Current.servers.all.first?.identifier.rawValue ?? "debug"
-        let existingIds = Set(((try? all()) ?? []).map(\.id))
-        for fixture in debugFixtures(serverId: serverId) where !existingIds.contains(fixture.id) {
-            try? fixture.save()
-        }
-        #endif
-    }
-
-    private static func debugFixtures(serverId: String) -> [WatchComplicationConfig] {
-        // Custom-template fixtures render concrete values without needing a real entity.
-        func custom(
-            _ id: String,
-            _ family: Family,
-            _ name: String,
-            text: String,
-            gauge: String?,
-            icon: String = "flash",
-            options: FamilyOptions
-        ) -> WatchComplicationConfig {
-            var config = WatchComplicationConfig(
-                id: debugFixturePrefix + id,
-                serverId: serverId,
-                widgetFamily: family,
-                kind: .customTemplate,
-                name: name,
-                iconName: icon,
-                customTextTemplate: text,
-                customGaugeTemplate: gauge
-            )
-            config.setOptions(options, for: family)
-            return config
-        }
-
-        let green = "#34C759FF"
-        let orange = "#FF9500FF"
-
-        var battery = WatchComplicationConfig(
-            id: debugFixturePrefix + "entity-battery",
-            serverId: serverId,
-            widgetFamily: .circular,
-            kind: .entity,
-            name: "Entity Battery",
-            entityId: "sensor.battery",
-            entityDisplayName: "Battery",
-            iconName: "battery",
-            gaugeMin: 0,
-            gaugeMax: 100
-        )
-        battery.setOptions(.init(showGauge: true, tint: green, gaugeStyle: "open"), for: .circular)
-
-        return [
-            custom(
-                "circular-open", .circular, "Circular Open",
-                text: "66", gauge: "{{ 0.66 }}",
-                options: .init(showValue: true, showGauge: true, tint: green, gaugeStyle: "open")
-            ),
-            custom(
-                "circular-capacity", .circular, "Circular Ring",
-                text: "98", gauge: "{{ 0.98 }}",
-                options: .init(showValue: true, showGauge: true, tint: green, gaugeStyle: "capacity")
-            ),
-            custom(
-                "circular-icon", .circular, "Circular Icon", text: "", gauge: nil, icon: "music",
-                options: .init(showValue: false, showGauge: false)
-            ),
-            custom(
-                "circular-text", .circular, "Circular Text",
-                text: "6.4", gauge: nil, icon: "weather-sunny",
-                options: .init(showValue: true, showGauge: false, textColor: orange)
-            ),
-            custom(
-                "rectangular", .rectangular, "Rectangular",
-                text: "72", gauge: "{{ 0.72 }}",
-                options: .init(showValue: true, showGauge: true, tint: green)
-            ),
-            custom(
-                "inline", .inline, "Inline", text: "21°", gauge: nil,
-                options: .init(showValue: true, showGauge: false)
-            ),
-            custom(
-                "corner", .corner, "Corner",
-                text: "88", gauge: "{{ 0.88 }}",
-                options: .init(showValue: true, showGauge: true, tint: green)
-            ),
-            battery,
-        ]
-    }
-}
-#endif

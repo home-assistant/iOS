@@ -6,6 +6,7 @@ enum WatchWidgetConstants {
     static let defaultBundleID = "io.robbie.HomeAssistant.watchkitapp.WatchWidgets"
     static let defaultsKey = "watchWidgetComplicationSnapshots"
     static let logoAssetName = "Logo"
+    static let templateLogoAssetName = "TemplateLogo"
     static let assistIconAssetName = "message-processing-outline"
     static let placeholderSubtitle = "Complication"
     static let timelineRefreshInterval: TimeInterval = 15 * 60

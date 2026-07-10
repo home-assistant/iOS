@@ -218,6 +218,7 @@ public enum DatabaseTables {
         case gaugeMax
         case showValue
         case showUnit
+        case showWhenInactive
         case customTextTemplate
         case customGaugeTemplate
         case sortOrder
