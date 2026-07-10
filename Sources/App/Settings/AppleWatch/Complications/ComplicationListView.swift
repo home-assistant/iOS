@@ -238,30 +238,19 @@ struct WatchComplicationBuilderEditView: View {
                     WatchComplicationLivePreview(config: config, server: server)
                         .frame(maxWidth: .infinity)
                         .listRowBackground(Color.clear)
+                    Picker(selection: $config.widgetFamily) {
+                        ForEach(WatchComplicationConfig.Family.allCases) { family in
+                            Text(verbatim: family.title).tag(family)
+                        }
+                    } label: {
+                        Text(L10n.Watch.Complications.Builder.previewSize)
+                    }
+                    .pickerStyle(.segmented)
                 } header: {
                     Text(L10n.Watch.Complications.Builder.preview)
                 } footer: {
                     Text(L10n.Watch.Complications.Builder.previewFooter)
                 }
-            }
-
-            Section {
-                Picker(selection: $config.widgetFamily) {
-                    ForEach(WatchComplicationConfig.Family.allCases) { family in
-                        Text(verbatim: family.title).tag(family)
-                    }
-                } label: {
-                    Text(L10n.Watch.Complications.Builder.family)
-                }
-                HStack {
-                    Spacer()
-                    ComplicationFamilyPreview(family: config.widgetFamily)
-                        .frame(width: 76, height: 76)
-                        .padding(.vertical, DesignSystem.Spaces.one)
-                    Spacer()
-                }
-            } header: {
-                Text(L10n.Watch.Complications.Builder.style)
             }
 
             Section {
