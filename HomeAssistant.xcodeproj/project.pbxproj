@@ -669,6 +669,7 @@
 		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42479CDA3001A7CA00F7FCD3 /* WatchComplicationSync.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42479CD93001A7CA00F7FCD3 /* WatchComplicationSync.test.swift */; };
 		424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
@@ -2500,6 +2501,7 @@
 		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
 		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
 		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
+		42479CD93001A7CA00F7FCD3 /* WatchComplicationSync.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationSync.test.swift; sourceTree = "<group>"; };
 		424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInBrowser.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
@@ -5041,6 +5043,14 @@
 			path = PermissionScreen;
 			sourceTree = "<group>";
 		};
+		42479CD83001A7CA00F7FCD3 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				42479CD93001A7CA00F7FCD3 /* WatchComplicationSync.test.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
 		4251AA972C6B9D30004CCC9D /* Edit */ = {
 			isa = PBXGroup;
 			children = (
@@ -7215,6 +7225,7 @@
 				DA5459C05BEB77340680D8C6 /* Domain.test.swift */,
 				42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */,
 				B90B4A989089C3375C55AF75 /* CallServiceResponse.test.swift */,
+				42479CD83001A7CA00F7FCD3 /* Watch */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -10113,6 +10124,7 @@
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,
 				114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */,
+				42479CDA3001A7CA00F7FCD3 /* WatchComplicationSync.test.swift in Sources */,
 				115AD72D267C57DA0090B243 /* FocusSensor.test.swift in Sources */,
 				11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */,
 				D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */,

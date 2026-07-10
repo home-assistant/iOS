@@ -13,6 +13,10 @@ import GRDB
 /// omitted — they're large and device context is rarely set for scripts/scenes. Even so, this snapshot
 /// can exceed WatchConnectivity's per-message limit, so it is streamed as chunked guaranteed messages.
 public struct WatchDatabaseMirror: WatchCodable {
+    /// Blob identifier used when the phone proactively *pushes* the mirror to the watch over
+    /// `transferFile` (background-capable), in addition to the watch-initiated chunked pull.
+    public static let blobIdentifier = "watchDatabaseMirror.push"
+
     public var entities: [HAAppEntity]
     public var areas: [AppArea]
     public var pipelines: [AssistPipelines]

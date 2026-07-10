@@ -79,8 +79,16 @@ public extension HomeAssistantAPI {
         do {
             try Communicator.shared.sync(context)
             Current.Log.info("updated context")
+            Current.clientEventStore.addEvent(.init(
+                text: "Synced watch context to Apple Watch (updateApplicationContext)",
+                type: .database
+            ))
         } catch let error as NSError {
             Current.Log.error("Updating the context failed: \(error)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to sync watch context: \(error.localizedDescription)",
+                type: .database
+            ))
             return error
         }
 
@@ -156,3 +164,88 @@ public extension HomeAssistantAPI {
         }
     }
 }
+
+#if os(iOS)
+/// Coalesces and de-duplicates proactive pushes of the full watch database mirror to the Apple Watch
+/// over `transferFile` (background-capable), so the watch always ends up with the latest reference data
+/// without the user asking. Multiple triggers within `debounceInterval` collapse into a single push, and
+/// a snapshot identical to the last-pushed one is skipped.
+public enum WatchMirrorPushCoordinator {
+    /// Why a push was requested — a typed value (not a bare string) so triggers, logging and tests all
+    /// share the same source of truth.
+    public enum Reason: String, CaseIterable {
+        case databaseUpdated
+        case complicationChanged
+        case serversChanged
+
+        /// Human-readable text used in logs and client events.
+        public var logDescription: String {
+            switch self {
+            case .databaseUpdated: return "database updated"
+            case .complicationChanged: return "complication changed"
+            case .serversChanged: return "servers changed"
+            }
+        }
+    }
+
+    /// Window over which repeated triggers coalesce into a single push.
+    public static let debounceInterval: TimeInterval = 3
+    /// Serial queue guarding the de-dup cache and debounce work item.
+    private static let queue = DispatchQueue(label: AppConstants.BundleID + ".watchMirrorPush")
+    private static var pendingWork: DispatchWorkItem?
+    private static var lastPushedData: Data?
+
+    /// Request a push. Safe to call from anywhere and as often as needed — it debounces and de-dupes.
+    public static func schedule(reason: Reason) {
+        queue.async {
+            pendingWork?.cancel()
+            let work = DispatchWorkItem { push(reason: reason) }
+            pendingWork = work
+            queue.asyncAfter(deadline: .now() + debounceInterval, execute: work)
+        }
+    }
+
+    /// Clear the de-dup cache so the next `schedule` pushes even if the snapshot is unchanged. Used
+    /// after a failed transfer and by tests.
+    public static func reset() {
+        queue.async { lastPushedData = nil }
+    }
+
+    private static func push(reason: Reason) {
+        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
+            Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): watch unavailable")
+            return
+        }
+        let data: Data
+        do {
+            data = try WatchDatabaseMirror.snapshot().encodeForWatch()
+        } catch {
+            Current.Log.error("Watch mirror push snapshot failed (\(reason.logDescription)): \(error)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Watch mirror push failed to build (\(reason.logDescription)): \(error.localizedDescription)",
+                type: .database
+            ))
+            return
+        }
+        if data == lastPushedData {
+            Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): unchanged")
+            return
+        }
+        lastPushedData = data
+        Communicator.shared.transfer(HAWatchConnectivity.Blob(
+            identifier: WatchDatabaseMirror.blobIdentifier,
+            content: data
+        )) { result in
+            if case let .failure(error) = result {
+                Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")
+                queue.async { lastPushedData = nil }
+            }
+        }
+        Current.clientEventStore.addEvent(.init(
+            text: "Pushed watch database mirror to Apple Watch (\(data.count) bytes) — \(reason.logDescription)",
+            type: .database,
+            payload: ["reason": reason.rawValue, "bytes": data.count]
+        ))
+    }
+}
+#endif

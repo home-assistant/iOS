@@ -191,6 +191,7 @@ struct ComplicationsRootView: View {
         }
         NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
         HomeAssistantAPI.syncWatchContext()
+        WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
         load()
     }
 }
@@ -825,6 +826,7 @@ struct WatchComplicationBuilderEditView: View {
         }
         NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
         HomeAssistantAPI.syncWatchContext()
+        WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
         dismiss()
     }
 

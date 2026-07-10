@@ -181,10 +181,14 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             self?.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Communicator.shared.blob.observations.store[.init(queue: .main)] = { blob in
+        Communicator.shared.blob.observations.store[.init(queue: .main)] = { [weak self] blob in
             Current.Log.verbose("Received blob: \(blob.identifier)")
 
-            self.endWatchConnectivityBackgroundTaskIfNecessary()
+            if blob.identifier == WatchDatabaseMirror.blobIdentifier {
+                self?.applyPushedDatabaseMirror(blob.content)
+            }
+
+            self?.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         Communicator.shared.context.observations.store[.init(queue: .main)] = { [weak self] context in
@@ -264,6 +268,40 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         WatchWidgetComplicationSnapshotStore.update()
         updateComplications()
+    }
+
+    /// Apply a reference database mirror the iPhone pushed proactively over `transferFile` (arrives even
+    /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
+    /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
+    private func applyPushedDatabaseMirror(_ data: Data) {
+        let mirror: WatchDatabaseMirror
+        do {
+            mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
+        } catch {
+            Current.Log.error("Failed to decode pushed watch database mirror: \(error)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to decode pushed watch database mirror (\(data.count) bytes): \(error)",
+                type: .database
+            ))
+            return
+        }
+        do {
+            try mirror.apply()
+            Current.Log.info("Applied pushed watch database mirror (\(data.count) bytes)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",
+                type: .database
+            ))
+            // Rebuild complication snapshots and let the home screen re-render from the fresh data.
+            WatchWidgetComplicationSnapshotStore.update()
+            NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
+        } catch {
+            Current.Log.error("Failed to apply pushed watch database mirror: \(error)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to apply pushed watch database mirror (\(data.count) bytes): \(error)",
+                type: .database
+            ))
+        }
     }
 
     private var isUpdatingComplications = false
