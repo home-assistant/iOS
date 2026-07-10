@@ -1621,9 +1621,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.configuration.save.title" = "Save";
 "watch.configuration.show_assist.title" = "Show Assist";
 "watch.configurator.delete.button" = "Delete Complication";
+"watch.complications.builder.display_name" = "Display name";
 "watch.complications.builder.edit_title" = "Edit complication";
 "watch.complications.builder.empty" = "No complications yet. Tap + to create one from an entity or a template.";
 "watch.complications.builder.entity" = "Entity";
+"watch.complications.builder.icon" = "Icon";
 "watch.complications.builder.family" = "Family";
 "watch.complications.builder.gauge_range" = "Gauge range (optional)";
 "watch.complications.builder.gauge_range_footer" = "Set a numeric range to show a ring or gauge from the state.";
@@ -1632,7 +1634,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.name" = "Name (optional)";
 "watch.complications.builder.new_title" = "New complication";
 "watch.complications.builder.preview" = "Preview";
-"watch.complications.builder.preview_footer" = "A live approximation using current data. This complication is available in every size — add it to any complication slot on your watch face.";
+"watch.complications.builder.preview_footer" = "A live approximation using current data. This complication is available in every size. Add it to any complication slot on your watch face.";
 "watch.complications.builder.preview_size" = "Preview size";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_value" = "Show value";
@@ -1653,6 +1655,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.gauge_style.capacity" = "Ring";
 "watch.complications.gauge_style.title" = "Gauge style";
 "watch.complications.builder.show_unit" = "Show unit";
+"watch.complications.legacy.delete_all" = "Delete All Legacy Complications";
+"watch.complications.legacy.delete_all_confirm" = "Delete all legacy complications? This cannot be undone.";
 "watch.complications.legacy.title" = "Legacy Complications";
 "watch.complications.root.header_subtitle" = "Show entity state and gauges on your watch face. Create a complication, then add it to any watch face.";
 "watch.complications.root.your_complications" = "Your complications";

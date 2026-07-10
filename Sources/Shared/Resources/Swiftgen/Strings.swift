@@ -5317,6 +5317,8 @@ public enum L10n {
       public enum Builder {
         /// Color
         public static var color: String { return L10n.tr("Localizable", "watch.complications.builder.color") }
+        /// Display name
+        public static var displayName: String { return L10n.tr("Localizable", "watch.complications.builder.display_name") }
         /// Edit complication
         public static var editTitle: String { return L10n.tr("Localizable", "watch.complications.builder.edit_title") }
         /// No complications yet. Tap + to create one from an entity or a template.
@@ -5329,6 +5331,8 @@ public enum L10n {
         public static var gaugeRange: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range") }
         /// Set a numeric range to show a ring or gauge from the state.
         public static var gaugeRangeFooter: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range_footer") }
+        /// Icon
+        public static var icon: String { return L10n.tr("Localizable", "watch.complications.builder.icon") }
         /// Maximum
         public static var maximum: String { return L10n.tr("Localizable", "watch.complications.builder.maximum") }
         /// Minimum
@@ -5339,7 +5343,7 @@ public enum L10n {
         public static var newTitle: String { return L10n.tr("Localizable", "watch.complications.builder.new_title") }
         /// Preview
         public static var preview: String { return L10n.tr("Localizable", "watch.complications.builder.preview") }
-        /// A live approximation using current data. This complication is available in every size — add it to any complication slot on your watch face.
+        /// A live approximation using current data. This complication is available in every size. Add it to any complication slot on your watch face.
         public static var previewFooter: String { return L10n.tr("Localizable", "watch.complications.builder.preview_footer") }
         /// Preview size
         public static var previewSize: String { return L10n.tr("Localizable", "watch.complications.builder.preview_size") }
@@ -5387,6 +5391,10 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.complications.gauge_style.title") }
       }
       public enum Legacy {
+        /// Delete All Legacy Complications
+        public static var deleteAll: String { return L10n.tr("Localizable", "watch.complications.legacy.delete_all") }
+        /// Delete all legacy complications? This cannot be undone.
+        public static var deleteAllConfirm: String { return L10n.tr("Localizable", "watch.complications.legacy.delete_all_confirm") }
         /// Legacy Complications
         public static var title: String { return L10n.tr("Localizable", "watch.complications.legacy.title") }
       }

@@ -71,6 +71,22 @@ final class ComplicationListViewModel: ObservableObject {
         Set(complicationsByGroup.values.flatMap { $0 }.map(\.Family))
     }
 
+    // MARK: - Delete
+
+    /// Deletes every legacy complication, then nudges the watch to sync the (now empty) set.
+    func deleteAll() {
+        do {
+            try WatchComplication.replaceAll([])
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+            return
+        }
+        NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
+        HomeAssistantAPI.syncWatchContext()
+        reload()
+    }
+
     // MARK: - Manual update
 
     func updateComplications() {

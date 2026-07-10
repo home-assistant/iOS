@@ -71,7 +71,10 @@ struct ComplicationsRootView: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
+                        Spacer(minLength: 0)
                     }
+                    // Make the whole row (including empty space) tappable, not just the text.
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
             }
@@ -91,7 +94,8 @@ struct ComplicationsRootView: View {
         let color = config.iconColor.map { UIColor(hex: $0) } ?? AppConstants.tintColor
         let icon: MaterialDesignIcons
         if config.kind == .entity, let iconName = config.iconName {
-            icon = MaterialDesignIcons(named: iconName)
+            // Icon names may be server-side values (e.g. "mdi:home"); normalize before lookup.
+            icon = MaterialDesignIcons(serversideValueNamed: iconName)
         } else {
             icon = .gaugeIcon
         }
@@ -131,19 +135,20 @@ struct ComplicationsRootView: View {
 
 /// SwiftUI replacement for `ComplicationListViewController`.
 struct ComplicationListView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = ComplicationListViewModel()
     @State private var showFamilyPicker = false
+    @State private var showDeleteAllConfirmation = false
 
     var body: some View {
         List {
-            introSection
-            manualUpdatesSection
             groupSections
             #if DEBUG
             // Creating new legacy (ClockKit-era) complications is retained for debugging only; users
             // build complications through the modern entity/template builder on the root screen.
             addSection
             #endif
+            deleteAllSection
         }
         .navigationTitle(Text(L10n.Watch.Complications.Legacy.title))
         .sheet(isPresented: $showFamilyPicker) {
@@ -169,41 +174,27 @@ struct ComplicationListView: View {
 
     // MARK: - Sections
 
-    private var introSection: some View {
+    private var deleteAllSection: some View {
         Section {
-            Text(L10n.Watch.Configurator.List.description)
-                .foregroundColor(.primary)
-            Link(destination: URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!) {
-                HStack {
-                    Text(L10n.Nfc.List.learnMore)
-                    Spacer()
-                    Image(systemSymbol: .arrowUpForwardSquare)
-                        .font(.caption)
-                }
+            Button(role: .destructive) {
+                showDeleteAllConfirmation = true
+            } label: {
+                Text(L10n.Watch.Complications.Legacy.deleteAll)
             }
-            Text(L10n.Watch.Configurator.Warning.templatingAdmin)
-                .foregroundColor(.secondary)
-        }
-    }
-
-    private var manualUpdatesSection: some View {
-        Section {
-            HStack {
-                Text(L10n.Watch.Configurator.List.ManualUpdates.remaining)
-                Spacer()
-                Text(viewModel.remainingUpdatesDescription)
-                    .foregroundColor(.secondary)
-            }
-            LoadingButton(
-                title: L10n.Watch.Configurator.List.ManualUpdates.manuallyUpdate,
-                isLoading: viewModel.isUpdatingComplications
+            .confirmationDialog(
+                L10n.Watch.Complications.Legacy.deleteAllConfirm,
+                isPresented: $showDeleteAllConfirmation,
+                titleVisibility: .visible
             ) {
-                viewModel.updateComplications()
+                Button(role: .destructive) {
+                    viewModel.deleteAll()
+                    // Nothing left to configure here; return to the root, where the legacy entry hides.
+                    dismiss()
+                } label: {
+                    Text(L10n.Watch.Complications.Legacy.deleteAll)
+                }
+                Button(role: .cancel) {} label: { Text(L10n.cancelLabel) }
             }
-        } header: {
-            Text(L10n.Watch.Configurator.List.ManualUpdates.title)
-        } footer: {
-            Text(L10n.Watch.Configurator.List.ManualUpdates.footer)
         }
     }
 
@@ -260,6 +251,7 @@ struct WatchComplicationBuilderEditView: View {
     /// The selected entity's unit of measurement (nil when it has none), reported by the live preview.
     /// Used to decide whether to offer the "Show unit" toggle.
     @State private var entityUnit: String?
+    @State private var showEntityPicker = false
     private let isNew: Bool
 
     init(existing: WatchComplicationConfig?) {
@@ -333,8 +325,21 @@ struct WatchComplicationBuilderEditView: View {
 
     private var tintBinding: Binding<Color> {
         Binding(
-            get: { config.tint(for: currentFamily).map { Color(uiColor: UIColor($0)) } ?? .green },
+            get: { config.tint(for: currentFamily).map { Color(uiColor: UIColor($0)) } ?? Color.haPrimary },
             set: { value in updateOptions { $0.tint = UIColor(value).hexString(true) } }
+        )
+    }
+
+    /// The icon's tint, used for the icon picker preview. Defaults to the Home Assistant primary color.
+    private var iconColor: Color {
+        config.iconColor.map { Color(uiColor: UIColor(hex: $0)) } ?? Color.haPrimary
+    }
+
+    /// Two-way binding between the stored (possibly server-side "mdi:") icon name and the picker.
+    private var iconBinding: Binding<MaterialDesignIcons> {
+        Binding(
+            get: { config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) } ?? .gaugeIcon },
+            set: { config.iconName = $0.name }
         )
     }
 
@@ -380,12 +385,16 @@ struct WatchComplicationBuilderEditView: View {
             }
 
             Section {
-                // Name first; when left blank the complication falls back to the entity's name, so the
-                // placeholder previews that fallback.
+                // When left blank the complication falls back to the entity's name, so the placeholder
+                // previews that fallback.
                 TextField(text: stringBinding(\.name)) {
                     Text(verbatim: namePlaceholder)
                 }
+            } header: {
+                Text(L10n.Watch.Complications.Builder.displayName)
+            }
 
+            Section {
                 Picker(selection: $config.kind) {
                     Text(L10n.Watch.Complications.Builder.sourceEntity).tag(WatchComplicationConfig.Kind.entity)
                     Text(L10n.Watch.Complications.Builder.sourceCustom).tag(WatchComplicationConfig.Kind.customTemplate)
@@ -406,21 +415,45 @@ struct WatchComplicationBuilderEditView: View {
                         }
                     }
 
-                    EntityPicker(
-                        selectedServerId: config.serverId,
-                        selectedEntity: $selectedEntity,
-                        domainFilter: nil,
-                        mode: .button
-                    )
-                    // Recreate when the server changes so the picker fetches that server's entities.
-                    .id(config.serverId)
-                    .disabled(config.serverId.isEmpty)
-
-                    if let entitySubtitle {
-                        Text(verbatim: entitySubtitle)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                    // Entity + its context as one row (name primary, context as subtitle); opens the
+                    // full picker in a sheet.
+                    Button {
+                        showEntityPicker = true
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                                Text(verbatim: selectedEntity?.name ?? L10n.EntityPicker.placeholder)
+                                    .foregroundColor(selectedEntity == nil ? .accentColor : .primary)
+                                if let entitySubtitle {
+                                    Text(verbatim: entitySubtitle)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            Spacer(minLength: 0)
+                        }
+                        .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .disabled(config.serverId.isEmpty)
+                    .sheet(isPresented: $showEntityPicker) {
+                        NavigationView {
+                            EntityPicker(
+                                selectedServerId: config.serverId,
+                                selectedEntity: $selectedEntity,
+                                domainFilter: nil,
+                                mode: .list
+                            )
+                        }
+                        .navigationViewStyle(.stack)
+                    }
+
+                    // The icon is auto-derived from the entity but can be overridden here.
+                    IconSearchPicker(
+                        selectedIcon: iconBinding,
+                        tintColor: iconColor,
+                        title: L10n.Watch.Complications.Builder.icon
+                    )
                 }
             }
 
@@ -492,6 +525,8 @@ struct WatchComplicationBuilderEditView: View {
             }
         }
         .onChange(of: selectedEntity?.id) { _ in
+            // Dismiss the picker sheet once a choice is made.
+            showEntityPicker = false
             guard let entity = selectedEntity else {
                 entitySubtitle = nil
                 return
@@ -667,7 +702,7 @@ struct WatchComplicationLivePreview: View {
 
     private var iconImage: Image? {
         guard let iconName = config.iconName else { return nil }
-        let image = MaterialDesignIcons(named: iconName)
+        let image = MaterialDesignIcons(serversideValueNamed: iconName)
             .image(ofSize: CGSize(width: 64, height: 64), color: .white)
         return Image(uiImage: image)
     }
