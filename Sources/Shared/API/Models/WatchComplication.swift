@@ -483,6 +483,36 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         showUnit ?? true
     }
 
+    /// Resolves the unit for an attribute value the way the Home Assistant frontend does. The state's
+    /// `unit_of_measurement` intentionally NEVER applies to an attribute — that only describes the state.
+    /// Order: a sibling `<attribute>_unit` attribute (the weather pattern: `temperature` →
+    /// `temperature_unit`, `pressure` → `pressure_unit`, …), then a small domain→attribute→unit map for
+    /// well-known percentages / kelvin, else nil (show the raw value with no unit).
+    public static func attributeUnit(
+        attribute: String,
+        attributes: [String: Any],
+        domain: String?
+    ) -> String? {
+        if let sibling = attributes["\(attribute)_unit"] as? String, !sibling.isEmpty {
+            return sibling
+        }
+        return domainAttributeUnits[domain ?? ""]?[attribute]
+    }
+
+    /// Well-known attribute units, mirroring the frontend's `DOMAIN_ATTRIBUTES_UNITS`. Only attributes
+    /// whose scale is unambiguous (0–100 percentages, kelvin) are included; anything else resolves to no
+    /// unit rather than risk a wrong one.
+    private static let domainAttributeUnits: [String: [String: String]] = [
+        "climate": ["humidity": "%", "current_humidity": "%"],
+        "cover": ["current_position": "%", "current_tilt_position": "%"],
+        "fan": ["percentage": "%"],
+        "humidifier": ["humidity": "%", "current_humidity": "%"],
+        "light": ["color_temp_kelvin": "K"],
+        "vacuum": ["battery_level": "%"],
+        "valve": ["current_position": "%"],
+        "weather": ["humidity": "%", "cloud_coverage": "%"],
+    ]
+
     /// Whether the complication is shown while the display is dimmed (always-on / wrist down); defaults
     /// to visible when unset.
     public func showsWhenInactive() -> Bool {

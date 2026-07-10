@@ -199,8 +199,20 @@ struct WatchComplicationLivePreview: View {
                 guard let result else { return }
                 entityState = result.state
                 entityAttributes = result.attributes
-                entityUnit = result.attributes["unit_of_measurement"] as? String
-                onUnit(entityUnit)
+                // The unit follows the value source: the state's unit for the state, or the attribute's
+                // resolved unit (never the state unit) for an attribute.
+                let resolvedUnit: String?
+                if let attribute = config.valueAttribute {
+                    resolvedUnit = WatchComplicationConfig.attributeUnit(
+                        attribute: attribute,
+                        attributes: result.attributes,
+                        domain: config.entityId?.components(separatedBy: ".").first
+                    )
+                } else {
+                    resolvedUnit = result.attributes["unit_of_measurement"] as? String
+                }
+                entityUnit = resolvedUnit
+                onUnit(resolvedUnit)
                 onAttributes(result.attributes.keys.sorted())
             }
         }

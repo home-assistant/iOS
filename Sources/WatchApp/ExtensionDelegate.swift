@@ -673,15 +673,28 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 // Unit comes from the live state; precision comes from the entity registry in GRDB (synced
                 // to the watch) — neither is duplicated into the config. The unit is suppressed when the
                 // user turned it off.
-                let unit = config.showsUnit() ? result.attributes["unit_of_measurement"] as? String : nil
                 let precision = EntityRegistryListForDisplay.Entity.displayPrecision(
                     serverId: config.serverId,
                     entityId: entityId
                 )
-                // The value can come from an entity attribute instead of the state.
-                let rawValue = config.valueAttribute
-                    .flatMap { result.attributes[$0] }
-                    .map { String(describing: $0) } ?? result.state
+                // The value can come from an entity attribute instead of the state. The unit follows the
+                // source: the state's unit_of_measurement for the state, or the attribute's resolved unit
+                // (never the state unit) for an attribute — otherwise weather temperature would get the
+                // wrong unit.
+                let rawValue: String
+                let resolvedUnit: String?
+                if let attribute = config.valueAttribute {
+                    rawValue = result.attributes[attribute].map { String(describing: $0) } ?? result.state
+                    resolvedUnit = WatchComplicationConfig.attributeUnit(
+                        attribute: attribute,
+                        attributes: result.attributes,
+                        domain: entityId.components(separatedBy: ".").first
+                    )
+                } else {
+                    rawValue = result.state
+                    resolvedUnit = result.attributes["unit_of_measurement"] as? String
+                }
+                let unit = config.showsUnit() ? resolvedUnit : nil
                 valueText = formatValue(rawValue, unit: unit, precision: precision)
                 isLive = true
             } else {
