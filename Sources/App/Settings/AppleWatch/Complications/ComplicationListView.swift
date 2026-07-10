@@ -312,7 +312,10 @@ struct WatchComplicationBuilderEditView: View {
             guard let entity = selectedEntity else { return }
             config.entityId = entity.entityId
             config.entityDisplayName = entity.name
+            // Prefer the entity's own icon; otherwise fall back to a domain/device-class default so the
+            // complication isn't icon-less on the watch.
             config.iconName = entity.icon
+                ?? Domain(rawValue: entity.domain)?.icon(deviceClass: entity.rawDeviceClass).name
         }
         .onAppear {
             if selectedEntity == nil, let entityId = config.entityId {
