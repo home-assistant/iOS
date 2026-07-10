@@ -83,5 +83,6 @@ public enum DesignSystem {
         public static let `default`: SwiftUICore.Animation = .easeInOut(duration: 0.3)
         public static let easeInOutFaster: SwiftUICore.Animation = .easeInOut(duration: 0.1)
         public static let easeInOutSlower: SwiftUICore.Animation = .easeInOut(duration: 0.8)
+        public static let easeInOutSlowest: SwiftUICore.Animation = .easeInOut(duration: 1.5)
     }
 }
