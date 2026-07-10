@@ -33,6 +33,8 @@ def lokalise_request_class(http_method)
     Net::HTTP::Get
   when :post
     Net::HTTP::Post
+  when :delete
+    Net::HTTP::Delete
   else
     raise ArgumentError, "Unsupported Lokalise HTTP method: #{http_method}"
   end
@@ -282,6 +284,63 @@ def lokalise_follow_bundle_redirect!(response, redirects_remaining)
   lokalise_download_bundle_body!(response['location'], redirects_remaining - 1)
 end
 
+# All names a key answers to. key_name is a plain string, or a per-platform
+# object ({ ios:, android:, web:, other: }) when per-platform names are enabled.
+def lokalise_key_names(key)
+  name = key['key_name']
+  case name
+  when String then [name]
+  when Hash then name.values.compact
+  else []
+  end
+end
+
+LOKALISE_KEYS_PAGE_LIMIT = 500
+
+# Resolve requested key names to { name => key_id }, exact match only.
+# We page through every key and match names locally rather than relying on the
+# Lokalise `filter_keys` query param: its matching semantics are loosely defined
+# (and a comma-joined value is unreliable), which is too risky for a destructive op.
+def lokalise_find_key_ids!(token:, project_id:, key_names:)
+  found = {}
+  page = 1
+  loop do
+    keys = lokalise_keys_page!(token: token, project_id: project_id, page: page)
+    lokalise_collect_key_ids!(keys: keys, key_names: key_names, found: found)
+    break if keys.length < LOKALISE_KEYS_PAGE_LIMIT
+
+    page += 1
+  end
+  found
+end
+
+def lokalise_keys_page!(token:, project_id:, page:)
+  response = lokalise_request!(
+    project_id: project_id,
+    token: token,
+    http_method: :get,
+    path: "/keys?limit=#{LOKALISE_KEYS_PAGE_LIMIT}&page=#{page}"
+  )
+  response['keys'] || []
+end
+
+def lokalise_collect_key_ids!(keys:, key_names:, found:)
+  keys.each do |key|
+    match = key_names.find { |name| lokalise_key_names(key).include?(name) }
+    found[match] = key['key_id'] if match
+  end
+end
+
+def lokalise_delete_keys!(token:, project_id:, key_ids:)
+  lokalise_request!(
+    project_id: project_id,
+    token: token,
+    http_method: :delete,
+    path: '/keys',
+    body: { keys: key_ids }
+  )
+end
+
 desc 'Download latest localization files from Lokalize'
 lane :update_strings do
   token = ENV.fetch('LOKALISE_API_TOKEN') do
@@ -457,7 +516,7 @@ lane :update_strings do
     )
   end
 
-  sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
+  sh('cd ../ && ./Tools/build_tool swiftgen')
 end
 
 desc 'Upload localized strings to Lokalise'
@@ -493,6 +552,124 @@ lane :push_strings do
       )
     end
   end
+end
+
+desc 'Delete keys completely from the iOS app Lokalise project'
+lane :delete_lokalise_keys do
+  token = ENV.fetch('LOKALISE_API_TOKEN') do
+    prompt(
+      text: 'API token',
+      secure_text: true
+    )
+  end
+
+  project_id = ENV.fetch('LOKALISE_PROJECT_ID') do
+    prompt(
+      text: 'Project ID',
+      secure_text: true
+    )
+  end
+
+  raw_keys = ENV.fetch('LOKALISE_DELETE_KEYS') do
+    prompt(text: 'Keys to delete (comma or newline separated)')
+  end
+  key_names = raw_keys.split(/[,\n]/).map(&:strip).reject(&:empty?).uniq
+  UI.user_error!('No keys provided to delete.') if key_names.empty?
+
+  dry_run = ENV.fetch('LOKALISE_DELETE_DRY_RUN', 'true').to_s.strip.downcase != 'false'
+  confirmation = ENV.fetch('LOKALISE_DELETE_CONFIRMATION', '').to_s.strip
+
+  UI.message("Resolving #{key_names.count} key(s) in Lokalise project #{project_id}...")
+  found = lokalise_find_key_ids!(token: token, project_id: project_id, key_names: key_names)
+
+  missing = key_names - found.keys
+  UI.important("Not found (skipped): #{missing.join(', ')}") unless missing.empty?
+
+  if found.empty?
+    UI.message('No matching keys found. Nothing to delete.')
+    next
+  end
+
+  found.each { |name, id| UI.message("  #{name} -> #{id}") }
+
+  if dry_run
+    UI.important(
+      "DRY RUN: would delete #{found.count} key(s). Re-run with " \
+      'LOKALISE_DELETE_DRY_RUN=false and LOKALISE_DELETE_CONFIRMATION=DELETE to proceed ' \
+      '(via the workflow, set the dry_run and confirmation inputs).'
+    )
+    next
+  end
+
+  unless confirmation == 'DELETE'
+    UI.user_error!("Confirmation required: set LOKALISE_DELETE_CONFIRMATION to 'DELETE' to proceed.")
+  end
+
+  lokalise_delete_keys!(token: token, project_id: project_id, key_ids: found.values)
+  UI.success("Deleted #{found.count} key(s) from Lokalise project #{project_id}.")
+end
+
+LOCALIZABLE_STRINGS_GLOB = 'Sources/App/Resources/*.lproj/Localizable.strings'.freeze
+
+# Index of the last physical line of the .strings entry starting at `start`.
+# Entries may span lines via trailing-backslash continuation; the last line ends with ';'.
+def strings_entry_end(lines, start)
+  i = start
+  i += 1 while i < lines.length - 1 && !lines[i].rstrip.end_with?(';')
+  i
+end
+
+# Key names defined in the file (one capture per entry-start line).
+def strings_keys(lines)
+  lines.filter_map do |line|
+    match = line.match(/\A"((?:[^"\\]|\\.)*)" = /)
+    match && match[1]
+  end
+end
+
+# Lines with every entry whose key is in key_set removed (the whole multi-line entry).
+def reject_strings_keys(lines, key_set)
+  kept = []
+  i = 0
+  while i < lines.length
+    match = lines[i].match(/\A"((?:[^"\\]|\\.)*)" = /)
+    drop = !match.nil? && key_set.include?(match[1])
+    last = drop ? strings_entry_end(lines, i) : i
+    kept.concat(lines[i..last]) unless drop
+    i = last + 1
+  end
+  kept
+end
+
+# Removes the requested keys from a single Localizable.strings file.
+# Returns the requested keys that were present (and removed) in this file.
+def remove_strings_keys!(path:, key_set:)
+  lines = File.readlines(path, encoding: 'UTF-8')
+  present = strings_keys(lines).select { |key| key_set.include?(key) }.uniq
+  return [] if present.empty?
+
+  File.write(path, reject_strings_keys(lines, key_set).join, encoding: 'UTF-8')
+  UI.message("#{File.basename(File.dirname(path))}: removed #{present.length} key(s)")
+  present
+end
+
+desc 'Remove keys from all Localizable.strings files and regenerate SwiftGen output'
+lane :delete_local_strings do
+  raw_keys = ENV.fetch('LOKALISE_DELETE_KEYS') do
+    prompt(text: 'Keys to delete (comma or newline separated)')
+  end
+  key_names = raw_keys.split(/[,\n]/).map(&:strip).reject(&:empty?).uniq
+  UI.user_error!('No keys provided to delete.') if key_names.empty?
+
+  key_set = key_names.to_set
+  files = Dir.glob(File.expand_path("../#{LOCALIZABLE_STRINGS_GLOB}"))
+  UI.user_error!('No Localizable.strings files found.') if files.empty?
+
+  removed = files.flat_map { |path| remove_strings_keys!(path: path, key_set: key_set) }.uniq
+  missing = key_names - removed
+  UI.important("Not found in any Localizable.strings: #{missing.join(', ')}") unless missing.empty?
+
+  sh('cd ../ && ./Tools/build_tool swiftgen')
 end
 
 desc 'Find unused localized strings'

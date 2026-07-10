@@ -155,7 +155,7 @@ struct ConnectionErrorDetailsView: View {
                 .font(.callout.bold())
         } expandedContent: {
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.three) {
-                advancedContent
+                errorDetailsContent
                 troubleShootingView
             }
         }
@@ -176,7 +176,7 @@ struct ConnectionErrorDetailsView: View {
     }
 
     @ViewBuilder
-    private var advancedContent: some View {
+    private var errorDetailsContent: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
             makeRow(title: L10n.Connection.Error.Details.Label.description, body: error.localizedDescription)
             makeRow(title: L10n.Connection.Error.Details.Label.domain, body: (error as NSError).domain)

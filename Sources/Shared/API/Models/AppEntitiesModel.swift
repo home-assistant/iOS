@@ -6,30 +6,9 @@ public protocol AppEntitiesModelProtocol {
     func updateModel(_ entities: Set<HAEntity>, server: Server) async
 }
 
-public enum HAAppUsedContent {
-    public static let domains: [Domain] = [
-        .automation,
-        .scene,
-        .script,
-        .light,
-        .switch,
-        .sensor,
-        .binarySensor,
-        .cover,
-        .button,
-        .inputBoolean,
-        .inputButton,
-        .lock,
-        .camera,
-        .fan,
-        .todo,
-    ]
-
-    public static var rawValues: [String] = domains.map(\.rawValue)
-}
-
 final class AppEntitiesModel: AppEntitiesModelProtocol {
     static var shared = AppEntitiesModel()
+    private static let excludedDomains = Set(Domain.appDatabaseExcluded.map(\.rawValue))
     /// ServerId: Date
     private var lastDatabaseUpdate: [String: Date] = [:]
     /// ServerId: Int
@@ -39,7 +18,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         // Only update database after a few seconds or if the entities count changed
         // First check for time to avoid unnecessary filtering to check count
         if !checkLastDatabaseUpdateRecently(server: server) {
-            let appRelatedEntities = filterDomains(entities)
+            let appRelatedEntities = persistableEntities(entities)
             Current.Log
                 .verbose(
                     "Updating App Entities for \(server.info.name) checkLastDatabaseUpdateLessThanMinuteAgo false, lastDatabaseUpdate \(String(describing: lastDatabaseUpdate)) "
@@ -47,7 +26,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
             updateLastUpdate(entitiesCount: appRelatedEntities.count, server: server)
             await handle(appRelatedEntities: appRelatedEntities, server: server)
         } else {
-            let appRelatedEntities = filterDomains(entities)
+            let appRelatedEntities = persistableEntities(entities)
             if lastEntitiesCount[server.identifier.rawValue] != appRelatedEntities.count {
                 Current.Log
                     .verbose(
@@ -64,8 +43,8 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         lastDatabaseUpdate[server.identifier.rawValue] = Date()
     }
 
-    private func filterDomains(_ entities: Set<HAEntity>) -> Set<HAEntity> {
-        entities.filter { HAAppUsedContent.rawValues.contains($0.domain) }
+    private func persistableEntities(_ entities: Set<HAEntity>) -> Set<HAEntity> {
+        entities.filter { !Self.excludedDomains.contains($0.domain) }
     }
 
     // Avoid updating database too often

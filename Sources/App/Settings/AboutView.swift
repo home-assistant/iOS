@@ -1,4 +1,3 @@
-import CPDAcknowledgements
 import Shared
 import SwiftUI
 
@@ -6,7 +5,7 @@ struct AboutView: View {
     @State private var showVersionAlert = false
 
     var shouldHideSocialsNotAvailableInChina: Bool {
-        if let lang = Locale.current.languageCode, lang.hasPrefix("zh") {
+        if let lang = Locale.current.language.languageCode?.identifier, lang.hasPrefix("zh") {
             return true
         }
         return false
@@ -30,12 +29,10 @@ struct AboutView: View {
             }
 
             Section {
-                if Current.appConfiguration != .beta {
-                    Link(
-                        L10n.About.Beta.title,
-                        destination: Current.isCatalyst ? AppConstants.WebURLs.betaMac : AppConstants.WebURLs.beta
-                    )
-                }
+                Link(
+                    L10n.About.Beta.title,
+                    destination: Current.isCatalyst ? AppConstants.WebURLs.betaMac : AppConstants.WebURLs.beta
+                )
 
                 NavigationLink(destination: AcknowledgementsView()) {
                     Text(L10n.About.Acknowledgements.title)
@@ -85,27 +82,4 @@ struct AboutView: View {
             )
         }
     }
-}
-
-struct AcknowledgementsView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> CPDAcknowledgementsViewController {
-        var licenses = [CPDLibrary]()
-
-        for fileName in [
-            "Pods-iOS-App-metadata",
-            "ManualPodLicenses",
-        ] {
-            if let file = Bundle.main.url(forResource: fileName, withExtension: "plist"),
-               let dictionary = NSDictionary(contentsOf: file),
-               let license = dictionary["specs"] as? [[String: Any]] {
-                licenses += license.map { CPDLibrary(cocoaPodsMetadataPlistDictionary: $0) }
-            }
-        }
-
-        licenses.sort(by: { $0.title < $1.title })
-
-        return CPDAcknowledgementsViewController(style: nil, acknowledgements: licenses, contributions: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: CPDAcknowledgementsViewController, context: Context) {}
 }

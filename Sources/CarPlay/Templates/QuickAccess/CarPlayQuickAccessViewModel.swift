@@ -3,7 +3,6 @@ import HAKit
 import RealmSwift
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayQuickAccessViewModel {
     weak var templateProvider: CarPlayQuickAccessTemplate?
 
@@ -31,15 +30,5 @@ final class CarPlayQuickAccessViewModel {
         } else {
             return supportedItems.filter { $0.type != .assistPipeline && $0.type != .assistPrompt }
         }
-    }
-
-    func sendIntroNotification() {
-        Current.notificationDispatcher.send(
-            .init(
-                id: NotificationIdentifier.carPlayIntro,
-                title: L10n.CarPlay.Notification.QuickAccess.Intro.title,
-                body: L10n.CarPlay.Notification.QuickAccess.Intro.body
-            )
-        )
     }
 }

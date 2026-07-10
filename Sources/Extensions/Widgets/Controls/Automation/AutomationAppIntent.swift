@@ -4,8 +4,7 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-@available(iOS 16.4, *)
-final class AutomationAppIntent: AppIntent {
+final class AutomationAppIntent: AppIntent, @unchecked Sendable {
     static let title: LocalizedStringResource = .init(
         "widgets.automation.trigger.title",
         defaultValue: "Trigger automation"
@@ -40,7 +39,7 @@ final class AutomationAppIntent: AppIntent {
     var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
         }

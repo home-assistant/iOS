@@ -1,5 +1,6 @@
 import Shared
 import SwiftUI
+import WidgetKit
 
 struct WidgetAssistView: View {
     @Environment(\.widgetFamily) private var widgetFamily

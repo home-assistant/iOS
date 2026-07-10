@@ -5,6 +5,7 @@ public enum GRDBDatabaseTable: String {
     case watchConfig
     case assistPipelines
     case carPlayConfig
+    case macToolbarConfig
     case appIconShortcutConfig
     case serverInfoMirror
     // Obsolete: replaced by `displayEntityRegistry`. Kept only so `deleteOldTables` can drop it.
@@ -20,8 +21,9 @@ public enum GRDBDatabaseTable: String {
     case appArea
     case homeViewConfiguration
     case assistConfiguration
-    case kioskSettings
     case allowedTags
+    case kioskSettings
+    case notificationSnoozeAction
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -43,6 +45,8 @@ public enum DatabaseTables {
         case id
         case assist
         case items
+        case layout
+        case lastModified
     }
 
     // Assist pipelines
@@ -58,6 +62,12 @@ public enum DatabaseTables {
         case tabs
         case quickAccessItems
         case quickAccessLayout
+    }
+
+    // Mac titlebar/toolbar configuration
+    public enum MacToolbarConfig: String, CaseIterable {
+        case id
+        case items
     }
 
     public enum AppIconShortcutConfig: String, CaseIterable {
@@ -99,6 +109,8 @@ public enum DatabaseTables {
         case icon
         case sortOrder
         case entities
+        case floorId
+        case floorName
     }
 
     // Home View Configuration (per server)
@@ -170,13 +182,34 @@ public enum DatabaseTables {
         case onDeviceTTSVoiceIdentifier
     }
 
-    // Kiosk mode settings (stored as JSON blob)
-    public enum KioskSettings: String, CaseIterable {
-        case id
-        case settingsJSON
-    }
-
     public enum AllowedTag: String, CaseIterable {
         case tag
+    }
+
+    // Default notification quick actions (e.g. snooze presets)
+    public enum NotificationSnoozeAction: String, CaseIterable {
+        case id
+        case minutes
+        case isEnabled
+        case sortOrder
+    }
+
+    // Kiosk mode configuration (single row). Column names must match
+    // `KioskSettings`'s stored properties so GRDB's Codable mapping lines up.
+    public enum KioskSettings: String, CaseIterable {
+        case id
+        case enabled
+        case requireAuthentication
+        case acceptRemoteCommands
+        case serverId
+        case dashboard
+        case keepScreenOn
+        case removeHeaderAndSidebar
+        case hideStatusBar
+        case autoReload
+        case settingsEntryPosition
+        case settingsEntryBackgroundColor
+        case settingsEntryIconColor
+        case screensaver
     }
 }

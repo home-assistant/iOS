@@ -1,3 +1,4 @@
+import Combine
 import PromiseKit
 import Shared
 import SwiftUI
@@ -29,14 +30,55 @@ final class OnboardingStateObservable: ObservableObject {
 
     @Published private(set) var screen: Screen
 
+    private var cancellables = Set<AnyCancellable>()
+
     init() {
         self.screen = Self.initialScreen()
         Current.onboardingObservation.register(observer: self)
+        observeKioskTarget()
     }
 
     /// Switches the displayed screen to `server`'s web view. Called by the app coordinator's `open(server:)`.
     func showWebView(for server: Server) {
         screen = .webView(server)
+    }
+
+    /// A change to the kiosk server requires a different web view (rebuilt by `ContainerView` via the
+    /// `.id(server)`); a change to just the dashboard navigates the current web view in place.
+    private struct KioskWebTarget: Equatable {
+        let enabled: Bool
+        let serverId: String?
+        let dashboard: String?
+    }
+
+    /// Live-updates the web view as the kiosk server/dashboard pickers change, so the configured
+    /// dashboard appears in the web view behind the kiosk settings sheet.
+    private func observeKioskTarget() {
+        Current.kiosk.settingsPublisher
+            .map { KioskWebTarget(enabled: $0.enabled, serverId: $0.serverId, dashboard: $0.dashboard) }
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] target in
+                self?.applyKioskTarget(target)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func applyKioskTarget(_ target: KioskWebTarget) {
+        guard target.enabled, let server = Current.servers.server(forServerIdentifier: target.serverId) else { return }
+        if currentServer != server {
+            // Different server: rebuild the web view, which loads its kiosk dashboard on creation.
+            showWebView(for: server)
+        } else {
+            // Same server: just navigate the existing web view to the configured dashboard.
+            Current.sceneManager.webViewControllerPromise.done { $0.applyKioskDashboard() }
+        }
+    }
+
+    private var currentServer: Server? {
+        if case let .webView(server) = screen { return server }
+        return nil
     }
 
     /// Recomputes which screen to show (e.g. after onboarding finishes). Mirrors the launch decision.
@@ -133,10 +175,20 @@ final class OnboardingStateObservable: ObservableObject {
         if let style = OnboardingNavigation.requiredOnboardingStyle {
             return .onboarding(style)
         }
-        if let server = Current.servers.all.first {
+        if let server = preferredInitialServer() {
             return .webView(server)
         }
         return .onboarding(.initial)
+    }
+
+    /// The server to show at launch: the kiosk-configured server when kiosk mode is enabled, otherwise the
+    /// first registered server.
+    private static func preferredInitialServer() -> Server? {
+        let kiosk = Current.kioskSettings
+        if kiosk.enabled, let server = Current.servers.server(forServerIdentifier: kiosk.serverId) {
+            return server
+        }
+        return Current.servers.all.first
     }
 
     /// The server shown at launch (preferring one that doesn't need re-auth), if it requires re-auth after a

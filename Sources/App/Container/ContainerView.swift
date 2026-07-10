@@ -3,6 +3,15 @@ import Shared
 import SwiftUI
 import UIKit
 
+/// Presents app Settings from above the kiosk/container swap (hosted by `ConditionalContainerView`) so that
+/// toggling kiosk mode — reachable via Settings → Kiosk — doesn't tear the Settings sheet down with the
+/// container it would otherwise be presented from.
+final class AppSettingsPresenter: ObservableObject {
+    static let shared = AppSettingsPresenter()
+    @Published var isPresented = false
+    private init() {}
+}
+
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
@@ -23,6 +32,7 @@ struct ContainerView: View {
                     coordinator.setFrontend(webViewController)
                     Current.sceneManager.setWebViewController(webViewController)
                 }
+                .id(server.identifier.rawValue)
             case .recoveredServerImport:
                 RecoveredServersImportView(onImport: { state.completeRecoveredServerImport() })
             case let .recoveredServerReauth(server):
@@ -33,7 +43,7 @@ struct ContainerView: View {
         .onAppear {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
-            coordinator.onShowSettings = { viewModel.presentSettings() }
+            coordinator.onShowSettings = { AppSettingsPresenter.shared.isPresented = true }
             coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
             coordinator.onShowDownloadManager = { viewModel.presentDownloadManager($0) }
             coordinator.onShowOnboardingPermissions = { viewModel.presentOnboardingPermissions(server: $0, steps: $1) }
@@ -56,9 +66,6 @@ struct ContainerView: View {
                 TestFlightCommunicationView(message: message) {
                     TestFlightCommunicationEngine().markSeen(message)
                 }
-            case .settings:
-                SettingsView().injectingViewControllerProvider()
-                    .onDisappear { refreshWebViewIfDisconnected() }
             case .assistSettings:
                 AssistSettingsView()
             case let .downloadManager(viewModel):
@@ -71,27 +78,24 @@ struct ContainerView: View {
                 }
             case let .serverSelect(prompt, includeSettings, onSelect):
                 ServerSelectView(prompt: prompt, includeSettings: includeSettings, selectAction: onSelect)
-                    .modify { view in
-                        if #available(iOS 16.4, *) {
-                            view
-                                .presentationDetents([.medium, .large])
-                                .presentationBackground(Color(uiColor: .systemBackground))
-                        } else {
-                            view
-                        }
-                    }
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(Color(uiColor: .systemBackground))
             }
         }
         .fullScreenCover(item: $viewModel.fullScreenCover, onDismiss: { refreshWebView() }) { cover in
             switch cover {
             case let .onboardingPermissions(server, steps):
                 NavigationView {
-                    OnboardingPermissionsNavigationView(onboardingServer: server, steps: steps)
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                CloseButton { viewModel.fullScreenCover = nil }
-                            }
+                    OnboardingPermissionsNavigationView(
+                        onboardingServer: server,
+                        steps: steps,
+                        onDismiss: { viewModel.fullScreenCover = nil }
+                    )
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            CloseButton { viewModel.fullScreenCover = nil }
                         }
+                    }
                 }
                 .navigationViewStyle(.stack)
                 .injectingViewControllerProvider()
@@ -103,12 +107,6 @@ struct ContainerView: View {
     /// old `presentOverlayController`'s `onDisappear { refresh() }`.
     private func refreshWebView() {
         Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
-    }
-
-    /// Re-evaluates the web view after Settings closes, but only when it isn't connected — so closing Settings
-    /// on a healthy page doesn't reload it, while the no-active-URL / connection block still re-evaluates.
-    private func refreshWebViewIfDisconnected() {
-        Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
     }
 
     private var isShowingWebView: Bool {

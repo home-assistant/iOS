@@ -2,7 +2,6 @@ import CoreTelephony
 import Foundation
 import PromiseKit
 @testable import Shared
-import Version
 import XCTest
 
 #if !targetEnvironment(macCatalyst)
@@ -18,8 +17,7 @@ class ConnectivitySensorTests: XCTestCase {
         networkAttributes: [String: Any] = [:]
     ) throws -> (ssid: WebhookSensor?, bssid: WebhookSensor?, connection: WebhookSensor?, sims: [WebhookSensor]) {
         Current.connectivity.hasWiFi = { hasWiFi }
-        Current.connectivity.currentWiFiSSID = { ssid }
-        Current.connectivity.currentWiFiBSSID = { bssid }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: ssid, bssid: bssid) }
         Current.connectivity.simpleNetworkType = { networkType }
         Current.connectivity.cellularNetworkType = { cellularNetworkType ?? networkType }
         Current.connectivity.telephonyCarriers = { cellular }

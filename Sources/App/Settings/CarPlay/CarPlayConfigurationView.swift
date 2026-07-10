@@ -52,14 +52,8 @@ struct CarPlayConfigurationView: View {
 
     var body: some View {
         if needsNavigationController {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    content
-                }
-            } else {
-                NavigationView {
-                    content
-                }
+            NavigationStack {
+                content
             }
         } else {
             content
@@ -71,7 +65,7 @@ struct CarPlayConfigurationView: View {
             carPlayLogo
             tabsSection
             itemsSection
-            advancedSection
+            troubleshootingSection
             resetView
         }
         .navigationTitle("CarPlay")
@@ -325,11 +319,11 @@ struct CarPlayConfigurationView: View {
         }
     }
 
-    private var advancedSection: some View {
+    private var troubleshootingSection: some View {
         NavigationLink {
-            CarPlayAdvancedSettingsView()
+            CarPlayTroubleshootingSettingsView()
         } label: {
-            Text(L10n.CarPlay.Labels.Settings.Advanced.Section.title)
+            Text(L10n.CarPlay.Labels.Settings.Troubleshooting.Section.title)
         }
     }
 

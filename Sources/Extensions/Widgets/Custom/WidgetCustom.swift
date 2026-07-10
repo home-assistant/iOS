@@ -161,7 +161,6 @@ struct WidgetCustom: Widget {
 }
 
 enum WidgetCustomSupportedFamilies {
-    @available(iOS 16.0, *)
     static let families: [WidgetFamily] = [
         .systemSmall,
         .systemMedium,

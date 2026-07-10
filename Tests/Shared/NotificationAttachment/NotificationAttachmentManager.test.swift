@@ -2,6 +2,7 @@ import Alamofire
 import CoreServices
 import Foundation
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
 import XCTest
@@ -67,8 +68,11 @@ class NotificationAttachmentManagerTests: XCTestCase {
         parser3.result = .missing
 
         let content = UNNotificationContent()
+        // swiftlint:disable:next force_cast
+        let expected = content.mutableCopy() as! UNMutableNotificationContent
+        expected.categoryIdentifier = "DYNAMIC"
         let promise = manager.content(from: content, api: api)
-        XCTAssertEqual(try hang(Promise(promise)), content)
+        XCTAssertEqual(try hang(Promise(promise)), expected)
         XCTAssertThrowsError(try hang(Promise(manager.downloadAttachment(from: content, api: api))))
     }
 
@@ -195,8 +199,11 @@ class NotificationAttachmentManagerTests: XCTestCase {
         )
 
         let content = UNNotificationContent()
+        // swiftlint:disable:next force_cast
+        let expected = content.mutableCopy() as! UNMutableNotificationContent
+        expected.categoryIdentifier = "DYNAMIC"
         let promise = manager.content(from: content, api: api)
-        XCTAssertEqual(try hang(Promise(promise)), content)
+        XCTAssertEqual(try hang(Promise(promise)), expected)
         XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 }

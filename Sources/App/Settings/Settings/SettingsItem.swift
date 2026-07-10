@@ -11,6 +11,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case liveActivities
     case sensors
     case nfc
+    case macToolbar
     case widgets
     case appIconShortcuts
     case watch
@@ -25,6 +26,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         switch self {
         case .servers: return L10n.Settings.ConnectionSection.servers
         case .general: return L10n.SettingsDetails.General.title
+        case .macToolbar: return L10n.Settings.MacToolbar.title
         case .gestures: return L10n.Gestures.Screen.title
         case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
@@ -53,10 +55,12 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 MaterialDesignIconsImage(icon: .serverIcon, size: Self.iconSize)
             case .general:
                 MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: Self.iconSize)
+            case .macToolbar:
+                MaterialDesignIconsImage(icon: .dockWindowIcon, size: Self.iconSize)
             case .gestures:
                 MaterialDesignIconsImage(icon: .gestureIcon, size: Self.iconSize)
             case .kiosk:
-                MaterialDesignIconsImage(icon: .tabletIcon, size: Self.iconSize)
+                MaterialDesignIconsImage(icon: .tabletDashboardIcon, size: Self.iconSize)
             case .location:
                 MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: Self.iconSize)
             case .notifications:
@@ -105,6 +109,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             SettingsServersView()
         case .general:
             GeneralSettingsView()
+        case .macToolbar:
+            MacToolbarSettingsView()
         case .gestures:
             GesturesSetupView()
         case .kiosk:
@@ -153,8 +159,14 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 return canShowLiveActivities
             }
 
+            // Managing toolbar entities only makes sense on macOS, where the toolbar exists.
+            if item == .macToolbar {
+                return Current.isCatalyst
+            }
+
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
+            // Kiosk mode is unsupported on macOS.
             let hiddenItems: [SettingsItem] = [
                 .servers,
                 .gestures,
@@ -233,7 +245,7 @@ struct SettingsServersView: View {
         List {
             Section(
                 header: Text(L10n.Settings.ConnectionSection.serversHeader),
-                footer: Text(L10n.Settings.ConnectionSection.serversFooter)
+                footer: Text(L10n.Settings.ConnectionSection.serversReorderFooter)
             ) {
                 ServersListView()
             }

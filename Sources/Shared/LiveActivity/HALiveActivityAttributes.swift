@@ -21,6 +21,30 @@ public struct HALiveActivityAttributes: ActivityAttributes {
     /// Display title for the activity. Maps to `title` in the notification payload.
     public let title: String
 
+    public static var defaultTitle: String { L10n.LiveActivity.defaultTitle }
+
+    /// Webhook id of the Home Assistant server that started this activity, so a tap can open
+    /// the originating server when several are configured. Optional: nil for activities created
+    /// before this shipped, or when the start path doesn't supply it.
+    public let serverWebhookId: String?
+
+    /// Server send-time of the push-to-start, in Unix epoch seconds, stamped by the push relay.
+    /// When Core re-sends a start before it has a per-activity token, two activities can exist for
+    /// one tag; the registry keeps the one with the largest `startedAt` and dismisses the rest, so
+    /// duplicates collapse to the newest deterministically (ActivityKit exposes no creation order).
+    /// Optional: nil for activities started before this shipped, which then sort oldest.
+    public let startedAt: TimeInterval?
+
+    /// Static-attribute coding keys. `serverWebhookId` maps to the snake_case `webhook_id` key
+    /// carried in the APNs push-to-start `attributes`. Adding optional fields is safe; renaming
+    /// or removing breaks in-flight activities.
+    enum CodingKeys: String, CodingKey {
+        case tag
+        case title
+        case serverWebhookId = "webhook_id"
+        case startedAt = "started_at"
+    }
+
     // MARK: - Dynamic State
 
     /// Codable state that can be updated via push or local update.
@@ -42,20 +66,51 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Maximum progress value (raw integer). Maps to `progress_max`.
         public var progressMax: Int?
 
-        /// If true, show a countdown timer instead of static text. Maps to `chronometer`.
+        /// If true, show a ticking timer instead of static text. Maps to `chronometer`.
+        /// Counts down while `countdownEnd` is in the future; counts up from it once it
+        /// has passed (so a `when` at or before now behaves as a count-up chronometer).
+        /// When `chronometerStart` is also set, counts up from it toward `countdownEnd`
+        /// and freezes there (bounded count-up).
         public var chronometer: Bool?
 
-        /// Absolute end date for the countdown timer.
+        /// Absolute end date for the timer.
         /// Computed from `when` + `when_relative` in the notification payload:
         ///   - `when_relative: true`  → `Date().addingTimeInterval(Double(when))`
+        ///   - `when_relative: true` with a negative `when` → `Date().addingTimeInterval(-Double(when))`
+        ///     (bounded count-up toward `|when|` seconds; see `chronometerStart`)
         ///   - `when_relative: false` → `Date(timeIntervalSince1970: Double(when))`
         public var countdownEnd: Date?
+
+        /// Start anchor for a bounded count-up timer, stamped when a negative relative `when`
+        /// is parsed: the timer shows elapsed time from this date and freezes on reaching
+        /// `countdownEnd`. Nil for countdowns and unbounded count-ups.
+        public var chronometerStart: Date?
 
         /// MDI icon slug for display. Maps to `notification_icon`.
         public var icon: String?
 
         /// Hex color string for icon accent. Maps to `notification_icon_color`.
         public var color: String?
+
+        /// Path or URL opened when the activity is tapped, mirroring the `url` key from
+        /// actionable notifications. Resolved like a notification tap: a relative HA path
+        /// (e.g. `/lovelace/home`) opens in the frontend, an external URL opens in the
+        /// browser. Nil just opens the originating server.
+        public var url: String?
+
+        /// Lock Screen background color, parsed like `notification_icon_color`. When unset the
+        /// background is transparent, so the Lock Screen's own adaptive material shows through;
+        /// text auto-contrasts against an explicit color. Maps to `background_color`.
+        public var backgroundColor: String?
+
+        /// Lock Screen text/foreground color, parsed like `notification_icon_color`. Overrides the
+        /// auto-contrast (explicit background) or adaptive (default background) default.
+        /// Maps to `text_color`.
+        public var textColor: String?
+
+        /// Hex tint for the progress bar, parsed like `notification_icon_color`. Falls back to
+        /// `notification_icon_color` when omitted. Maps to `progress_bar_color`.
+        public var progressBarColor: String?
 
         // MARK: - Computed helpers (not sent over wire)
 
@@ -76,8 +131,13 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case progressMax = "progress_max"
             case chronometer
             case countdownEnd = "countdown_end"
+            case chronometerStart = "chronometer_start"
             case icon
             case color
+            case url
+            case backgroundColor = "background_color"
+            case textColor = "text_color"
+            case progressBarColor = "progress_bar_color"
         }
 
         // MARK: - Init
@@ -90,8 +150,13 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             progressMax: Int? = nil,
             chronometer: Bool? = nil,
             countdownEnd: Date? = nil,
+            chronometerStart: Date? = nil,
             icon: String? = nil,
-            color: String? = nil
+            color: String? = nil,
+            url: String? = nil,
+            backgroundColor: String? = nil,
+            textColor: String? = nil,
+            progressBarColor: String? = nil
         ) {
             self.title = title
             self.message = message
@@ -100,8 +165,13 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.progressMax = progressMax
             self.chronometer = chronometer
             self.countdownEnd = countdownEnd
+            self.chronometerStart = chronometerStart
             self.icon = icon
             self.color = color
+            self.url = url
+            self.backgroundColor = backgroundColor
+            self.textColor = textColor
+            self.progressBarColor = progressBarColor
         }
 
         // MARK: - Codable
@@ -112,19 +182,32 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         // avoid a ~31-year offset. The encoder is symmetric for round-tripping.
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.title = try container.decodeIfPresent(String.self, forKey: .title)
+            if let decodedTitle = try container.decodeIfPresent(String.self, forKey: .title), !decodedTitle.isEmpty {
+                self.title = decodedTitle
+            } else {
+                self.title = nil
+            }
             self.message = try container.decode(String.self, forKey: .message)
             self.criticalText = try container.decodeIfPresent(String.self, forKey: .criticalText)
-            self.progress = try container.decodeIfPresent(Int.self, forKey: .progress)
-            self.progressMax = try container.decodeIfPresent(Int.self, forKey: .progressMax)
+            self.progress = Self.decodeRoundedInt(container, forKey: .progress)
+            self.progressMax = Self.decodeRoundedInt(container, forKey: .progressMax)
             self.chronometer = try container.decodeIfPresent(Bool.self, forKey: .chronometer)
             if let timestamp = try container.decodeIfPresent(Double.self, forKey: .countdownEnd) {
                 self.countdownEnd = Date(timeIntervalSince1970: timestamp)
             } else {
                 self.countdownEnd = nil
             }
+            if let timestamp = try container.decodeIfPresent(Double.self, forKey: .chronometerStart) {
+                self.chronometerStart = Date(timeIntervalSince1970: timestamp)
+            } else {
+                self.chronometerStart = nil
+            }
             self.icon = try container.decodeIfPresent(String.self, forKey: .icon)
             self.color = try container.decodeIfPresent(String.self, forKey: .color)
+            self.url = try container.decodeIfPresent(String.self, forKey: .url)
+            self.backgroundColor = try container.decodeIfPresent(String.self, forKey: .backgroundColor)
+            self.textColor = try container.decodeIfPresent(String.self, forKey: .textColor)
+            self.progressBarColor = try container.decodeIfPresent(String.self, forKey: .progressBarColor)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -138,16 +221,51 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             if let countdownEnd {
                 try container.encode(countdownEnd.timeIntervalSince1970, forKey: .countdownEnd)
             }
+            if let chronometerStart {
+                try container.encode(chronometerStart.timeIntervalSince1970, forKey: .chronometerStart)
+            }
             try container.encodeIfPresent(icon, forKey: .icon)
             try container.encodeIfPresent(color, forKey: .color)
+            try container.encodeIfPresent(url, forKey: .url)
+            try container.encodeIfPresent(backgroundColor, forKey: .backgroundColor)
+            try container.encodeIfPresent(textColor, forKey: .textColor)
+            try container.encodeIfPresent(progressBarColor, forKey: .progressBarColor)
+        }
+
+        // HA may send progress/progress_max as a JSON float (e.g. 20.1234). ActivityKit decodes
+        // content-state OS-side with a strict JSONDecoder, so decoding those keys as Int would throw
+        // and drop the whole remote update (stale activity) or reject a push-to-start. Decode as
+        // Double and round so both integer and fractional values map to the nearest Int.
+        private static func decodeRoundedInt(
+            _ container: KeyedDecodingContainer<CodingKeys>,
+            forKey key: CodingKeys
+        ) -> Int? {
+            guard let value = try? container.decodeIfPresent(Double.self, forKey: key) else {
+                return nil
+            }
+            return Int(exactly: value.rounded())
         }
     }
 
     // MARK: - Init
 
-    public init(tag: String, title: String) {
+    public init(tag: String, title: String, serverWebhookId: String? = nil, startedAt: TimeInterval? = nil) {
         self.tag = tag
         self.title = title
+        self.serverWebhookId = serverWebhookId
+        self.startedAt = startedAt
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.tag = try container.decode(String.self, forKey: .tag)
+        if let decodedTitle = try container.decodeIfPresent(String.self, forKey: .title), !decodedTitle.isEmpty {
+            self.title = decodedTitle
+        } else {
+            self.title = Self.defaultTitle
+        }
+        self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
+        self.startedAt = try container.decodeIfPresent(TimeInterval.self, forKey: .startedAt)
     }
 }
 #endif

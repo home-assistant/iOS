@@ -36,7 +36,7 @@ struct OnboardingErrorView: View {
             viewAppeared = true
         }
         .sheet(isPresented: $showShareSheet, content: {
-            ShareActivityView(activityItems: [Current.Log.archiveURL()])
+            ShareActivityView(activityItems: [Current.Log.archiveURL()].compactMap { $0 })
         })
     }
 
@@ -82,7 +82,7 @@ struct OnboardingErrorView: View {
     @ViewBuilder
     private var exportLogsView: some View {
         Group {
-            if #available(iOS 16.0, *), let archiveURL = Current.Log.archiveURL() {
+            if let archiveURL = Current.Log.archiveURL() {
                 ShareLink(item: archiveURL, label: {
                     Text(Current.Log.exportTitle)
                 })

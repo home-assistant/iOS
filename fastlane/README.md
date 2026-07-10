@@ -37,6 +37,14 @@ Setup Continous Integration
 
 
 
+### install_git_hooks
+
+```sh
+[bundle exec] fastlane install_git_hooks
+```
+
+Install the git pre-commit hook that runs autocorrect before each commit
+
 ### download_provisioning_profiles
 
 ```sh
@@ -84,6 +92,22 @@ Download latest localization files from Lokalize
 ```
 
 Upload localized strings to Lokalise
+
+### delete_lokalise_keys
+
+```sh
+[bundle exec] fastlane delete_lokalise_keys
+```
+
+Delete keys completely from the iOS app Lokalise project
+
+### delete_local_strings
+
+```sh
+[bundle exec] fastlane delete_local_strings
+```
+
+Remove keys from all Localizable.strings files and regenerate SwiftGen output
 
 ### unused_strings
 

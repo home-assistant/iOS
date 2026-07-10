@@ -1,6 +1,7 @@
 import Foundation
 import ObjectMapper
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
 import XCTest
@@ -17,8 +18,8 @@ class WebhookManagerTests: XCTestCase {
 
         api1 = FakeHassAPI(server: .fake())
         api2 = FakeHassAPI(server: .fake())
-        webhookURL1 = api1.server.info.connection.webhookURL()
-        webhookURL2 = api2.server.info.connection.webhookURL()
+        webhookURL1 = api1.server.info.connection.evaluateWebhookURL()
+        webhookURL2 = api2.server.info.connection.evaluateWebhookURL()
 
         manager = WebhookManager()
     }
@@ -188,7 +189,7 @@ class WebhookManagerTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        let nextAPIWebhookURL = nextConnectionInfo.webhookURL()
+        let nextAPIWebhookURL = nextConnectionInfo.evaluateWebhookURL()
         api1.server.info.connection = nextConnectionInfo
 
         stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in

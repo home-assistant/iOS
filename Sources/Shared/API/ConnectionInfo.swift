@@ -1,9 +1,5 @@
 import Alamofire
 import Foundation
-import Version
-#if os(watchOS)
-import Communicator
-#endif
 
 public enum ConnectionSecurityLevel: String, Codable {
     // User has not opted in or out of security checks
@@ -226,8 +222,20 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
-    /// Returns the url that should be used at this moment to access the Home Assistant instance.
-    public mutating func activeURL() -> URL? {
+    /// Returns the url that should be used at this moment to access the Home Assistant instance,
+    /// refreshing network information (e.g. current SSID) before evaluating which URL is active.
+    public mutating func activeURL() async -> URL? {
+        await Current.connectivity.refreshNetworkInformation()
+        return evaluateActiveURL()
+    }
+
+    /// Evaluates the url that should be used at this moment to access the Home Assistant instance,
+    /// based on the currently cached network information.
+    ///
+    /// Not meant for general use: prefer the async `activeURL()`, which refreshes network
+    /// information first. This exists for callers that must stay synchronous and accept
+    /// potentially stale network information.
+    mutating func evaluateActiveURL() -> URL? {
         if let overrideActiveURLType {
             let overrideURL: URL?
 
@@ -253,7 +261,7 @@ public struct ConnectionInfo: Codable, Equatable {
 
         let url: URL?
 
-        if let internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {
+        if let internalURL, isOnInternalNetworkUsingLastKnownState || overrideActiveURLType == .internal {
             // Home network, local connection
             activeURLType = .internal
             url = internalURL
@@ -298,21 +306,35 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
-    /// Returns the activeURL with /api appended.
-    public mutating func activeAPIURL() -> URL? {
-        if let activeURL = activeURL() {
+    /// Returns the activeURL with /api appended, refreshing network information (e.g. current SSID)
+    /// before evaluating which URL is active.
+    public mutating func activeAPIURL() async -> URL? {
+        if let activeURL = await activeURL() {
             return activeURL.appendingPathComponent("api", isDirectory: false)
         } else {
             return nil
         }
     }
 
-    public mutating func webhookURL() -> URL? {
-        if let cloudhookURL, !isOnInternalNetwork {
+    /// Returns the url that should be used at this moment to reach the webhook, refreshing network
+    /// information (e.g. current SSID) before evaluating which URL is active.
+    public mutating func webhookURL() async -> URL? {
+        await Current.connectivity.refreshNetworkInformation()
+        return evaluateWebhookURL()
+    }
+
+    /// Evaluates the url that should be used at this moment to reach the webhook, based on the
+    /// currently cached network information.
+    ///
+    /// Not meant for general use: prefer the async `webhookURL()`, which refreshes network
+    /// information first. This exists for callers that must stay synchronous and accept
+    /// potentially stale network information.
+    mutating func evaluateWebhookURL() -> URL? {
+        if let cloudhookURL, !isOnInternalNetworkUsingLastKnownState {
             return cloudhookURL
         }
 
-        if let activeURL = activeURL() {
+        if let activeURL = evaluateActiveURL() {
             return activeURL.appendingPathComponent(webhookPath, isDirectory: false)
         } else {
             return nil
@@ -353,19 +375,31 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
-    /// Returns true if current SSID is SSID marked for internal URL use.
-    public var isOnInternalNetwork: Bool {
-        if let current = Current.connectivity.currentWiFiSSID(),
-           internalSSIDs?.contains(current) == true {
+    /// Returns true if the current SSID (or hardware address) is marked for internal URL use,
+    /// fetching fresh network information before evaluating.
+    public func isOnInternalNetwork() async -> Bool {
+        await isOnInternalNetwork(using: Current.connectivity.currentNetworkState())
+    }
+
+    /// Returns true if the given network state's SSID (or hardware address) is marked for internal
+    /// URL use.
+    func isOnInternalNetwork(using networkState: NetworkState) -> Bool {
+        if let ssid = networkState.ssid, internalSSIDs?.contains(ssid) == true {
             return true
         }
 
-        if let current = Current.connectivity.currentNetworkHardwareAddress(),
-           internalHardwareAddresses?.contains(current) == true {
+        if let hardwareAddress = networkState.hardwareAddress,
+           internalHardwareAddresses?.contains(hardwareAddress) == true {
             return true
         }
 
         return false
+    }
+
+    /// `isOnInternalNetwork(using:)` evaluated against the cached network information, which may be
+    /// stale. Only for synchronous evaluation (`evaluateActiveURL()`/`evaluateWebhookURL()`).
+    var isOnInternalNetworkUsingLastKnownState: Bool {
+        isOnInternalNetwork(using: Current.connectivity.lastKnownNetworkState())
     }
 
     public var hasInternalURLSet: Bool {
@@ -402,7 +436,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 }
 
-class ServerRequestAdapter: RequestAdapter {
+final class ServerRequestAdapter: RequestAdapter, @unchecked Sendable {
     let server: Server
 
     init(server: Server) {
@@ -417,7 +451,11 @@ class ServerRequestAdapter: RequestAdapter {
         var updatedRequest: URLRequest = urlRequest
 
         if let currentURL = urlRequest.url {
-            if let activeURL = server.info.connection.activeURL() {
+            // Evaluated against cached network information: every request reaching this adapter
+            // just resolved its URL through an async accessor that refreshed the cache moments
+            // earlier, so this stays synchronous instead of spawning a Task (and a second network
+            // information fetch) per outgoing request.
+            if let activeURL = server.info.connection.evaluateActiveURL() {
                 let expectedURL = activeURL.adapting(url: currentURL)
                 if currentURL != expectedURL {
                     Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
@@ -426,6 +464,7 @@ class ServerRequestAdapter: RequestAdapter {
             } else {
                 Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
                 completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
+                return
             }
         }
 

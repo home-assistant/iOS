@@ -1,101 +1,168 @@
 import Foundation
-@testable import HomeAssistant
-import Shared
+import GRDB
+@testable import Shared
 import Testing
 
-// MARK: - KioskSettings Codable Tests
+struct KioskSettingsTests {
+    @Test func roundTripsThroughDatabase() throws {
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
 
-struct KioskSettingsCodableTests {
-    @Test func defaultSettingsRoundtrip() async throws {
-        let original = KioskSettings()
-        let encoded = try JSONEncoder().encode(original)
-        let decoded = try JSONDecoder().decode(KioskSettings.self, from: encoded)
+        let settings = KioskSettings(
+            enabled: true,
+            requireAuthentication: true,
+            acceptRemoteCommands: false,
+            serverId: "server-1",
+            dashboard: "lovelace/home",
+            keepScreenOn: true,
+            removeHeaderAndSidebar: true,
+            hideStatusBar: true,
+            autoReload: .minutes10,
+            settingsEntryPosition: .topLeading,
+            screensaver: KioskScreensaverSettings(
+                enabled: true,
+                mode: .clock,
+                showDate: false,
+                showSeconds: true,
+                timeToStart: .minutes10,
+                dimEnabled: true,
+                dimLevel: 0.3,
+                pixelShiftEnabled: true,
+                clockFontWeight: 0.6,
+                dateFontWeight: 0.8,
+                clockFontSize: 0.3,
+                dateFontSize: 0.7
+            )
+        )
 
-        #expect(decoded == original)
+        try database.write { db in
+            try settings.insert(db, onConflict: .replace)
+        }
+        let loaded = try database.read { db in
+            try KioskSettings.fetchOne(db)
+        }
+
+        #expect(loaded == settings)
     }
 
-    @Test func customSettingsRoundtrip() async throws {
-        var settings = KioskSettings()
-        settings.isKioskModeEnabled = true
-        settings.requireDeviceAuthentication = true
-        settings.hideStatusBar = true
-        settings.preventAutoLock = true
-        settings.screensaverTimeout = 600
-        settings.screensaverMode = .clock
-        settings.clockStyle = .analog
-        settings.manualBrightness = 0.9
-        settings.pixelShiftAmount = 15
-        settings.secretExitGestureCorner = .bottomLeft
-        settings.secretExitGestureTaps = 5
+    @Test func decodesDefaultsWhenColumnsAreMissing() throws {
+        // A row with only the primary key must decode with defaults (resilient decoder), so additive
+        // schema migrations don't break existing installs.
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+        try database.write { db in
+            try db.execute(
+                sql: "INSERT INTO \(GRDBDatabaseTable.kioskSettings.rawValue) (id) VALUES (?)",
+                arguments: [KioskSettings.kioskSettingsId]
+            )
+        }
 
-        let encoded = try JSONEncoder().encode(settings)
-        let decoded = try JSONDecoder().decode(KioskSettings.self, from: encoded)
+        let loaded = try database.read { db in
+            try KioskSettings.fetchOne(db)
+        }
 
-        #expect(decoded == settings)
-        #expect(decoded.isKioskModeEnabled == true)
-        #expect(decoded.requireDeviceAuthentication == true)
-        #expect(decoded.screensaverMode == .clock)
-        #expect(decoded.clockStyle == .analog)
-        #expect(decoded.secretExitGestureCorner == .bottomLeft)
-        #expect(decoded.secretExitGestureTaps == 5)
-    }
-}
-
-// MARK: - Enum Display Name Tests
-
-struct EnumDisplayNameTests {
-    @Test func screensaverModeDisplayNames() async throws {
-        #expect(ScreensaverMode.blank.displayName == L10n.Kiosk.Screensaver.Mode.blank)
-        #expect(ScreensaverMode.dim.displayName == L10n.Kiosk.Screensaver.Mode.dim)
-        #expect(ScreensaverMode.clock.displayName == L10n.Kiosk.Screensaver.Mode.clock)
+        #expect(loaded?.enabled == false)
+        #expect(loaded?.requireAuthentication == false)
+        #expect(loaded?.acceptRemoteCommands == true)
+        #expect(loaded?.autoReload == .never)
+        #expect(loaded?.settingsEntryPosition == .bottomTrailing)
+        #expect(loaded?.screensaver == KioskScreensaverSettings())
     }
 
-    @Test func clockStyleDisplayNames() async throws {
-        #expect(ClockStyle.large.displayName == L10n.Kiosk.Clock.Style.large)
-        #expect(ClockStyle.minimal.displayName == L10n.Kiosk.Clock.Style.minimal)
-        #expect(ClockStyle.analog.displayName == L10n.Kiosk.Clock.Style.analog)
-        #expect(ClockStyle.digital.displayName == L10n.Kiosk.Clock.Style.digital)
+    @Test func decodesRemovedOrUnknownAutoReloadIntervalsAsNever() throws {
+        // Intervals under 10 minutes were removed; a stored value that no longer resolves (the removed
+        // sub-10-minute ones, or anything unrecognized) falls back to `.never` instead of failing to decode.
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+
+        func loadAutoReload(storedRawValue: String) throws -> KioskAutoReloadInterval? {
+            try database.write { db in
+                try db.execute(
+                    sql: "INSERT OR REPLACE INTO \(GRDBDatabaseTable.kioskSettings.rawValue) (id, autoReload) "
+                        + "VALUES (?, ?)",
+                    arguments: [KioskSettings.kioskSettingsId, storedRawValue]
+                )
+            }
+            return try database.read { db in try KioskSettings.fetchOne(db)?.autoReload }
+        }
+
+        let fromOneMinute = try loadAutoReload(storedRawValue: "minutes1")
+        let fromFiveMinutes = try loadAutoReload(storedRawValue: "minutes5")
+        let fromThirtyMinutes = try loadAutoReload(storedRawValue: "minutes30")
+        let fromUnknown = try loadAutoReload(storedRawValue: "garbage")
+
+        #expect(fromOneMinute == .never)
+        #expect(fromFiveMinutes == .never)
+        #expect(fromThirtyMinutes == .minutes30)
+        #expect(fromUnknown == .never)
     }
 
-    @Test func screenCornerDisplayNames() async throws {
-        #expect(ScreenCorner.topLeft.displayName == L10n.Kiosk.Corner.topLeft)
-        #expect(ScreenCorner.topRight.displayName == L10n.Kiosk.Corner.topRight)
-        #expect(ScreenCorner.bottomLeft.displayName == L10n.Kiosk.Corner.bottomLeft)
-        #expect(ScreenCorner.bottomRight.displayName == L10n.Kiosk.Corner.bottomRight)
+    @Test func decodesDefaultsWhenScreensaverFieldsAreMissing() throws {
+        let decoder = JSONDecoder()
+        let data = Data(
+            """
+            {
+              "enabled": true,
+              "mode": "clock",
+              "showDate": false,
+              "showSeconds": true,
+              "timeToStart": "minutes10",
+              "dimLevel": 0.3
+            }
+            """.utf8
+        )
+
+        let settings = try decoder.decode(KioskScreensaverSettings.self, from: data)
+
+        #expect(settings.dimEnabled == false)
+        #expect(settings.dimLevel == 0.3)
+        #expect(settings.pixelShiftEnabled == false)
+        #expect(settings.clockFontWeight == 0.15)
+        #expect(settings.dateFontWeight == 0.4)
+        #expect(settings.clockFontSize == 0.5)
+        #expect(settings.dateFontSize == 0.5)
     }
-}
 
-// MARK: - ScreensaverTimeout Tests
-
-struct ScreensaverTimeoutTests {
-    @Test func allCasesHaveCorrectIntervals() async throws {
-        #expect(ScreensaverTimeout.thirtySeconds.timeInterval == 30)
-        #expect(ScreensaverTimeout.oneMinute.timeInterval == 60)
-        #expect(ScreensaverTimeout.twoMinutes.timeInterval == 120)
-        #expect(ScreensaverTimeout.fiveMinutes.timeInterval == 300)
-        #expect(ScreensaverTimeout.tenMinutes.timeInterval == 600)
-        #expect(ScreensaverTimeout.fifteenMinutes.timeInterval == 900)
-        #expect(ScreensaverTimeout.thirtyMinutes.timeInterval == 1800)
-    }
-
-    @Test func allCasesHaveDisplayNames() async throws {
-        for timeout in ScreensaverTimeout.allCases {
-            #expect(!timeout.displayName.isEmpty)
+    @Test func migratesLegacyClockStyleToFontSize() throws {
+        let decoder = JSONDecoder()
+        let expected: [(style: String, fontSize: Double)] = [
+            ("small", 0.1),
+            ("medium", 0.275),
+            ("large", 0.5),
+        ]
+        for (style, fontSize) in expected {
+            let data = Data("{\"clockStyle\": \"\(style)\"}".utf8)
+            let settings = try decoder.decode(KioskScreensaverSettings.self, from: data)
+            #expect(settings.clockFontSize == fontSize)
         }
     }
 
-    @Test func caseCount() async throws {
-        #expect(ScreensaverTimeout.allCases.count == 7)
-    }
-
-    @Test func initFromValidInterval() async throws {
-        #expect(ScreensaverTimeout(from: 30) == .thirtySeconds)
-        #expect(ScreensaverTimeout(from: 300) == .fiveMinutes)
-        #expect(ScreensaverTimeout(from: 1800) == .thirtyMinutes)
-    }
-
-    @Test func initFromInvalidIntervalDefaultsToFiveMinutes() async throws {
-        #expect(ScreensaverTimeout(from: 999) == .fiveMinutes)
-        #expect(ScreensaverTimeout(from: 0) == .fiveMinutes)
+    @Test func enumMetadataIsComplete() {
+        for mode in KioskScreensaverMode.allCases {
+            #expect(!mode.title.isEmpty)
+            #expect(mode.id == mode.rawValue)
+        }
+        for style in KioskClockStyle.allCases {
+            #expect(!style.title.isEmpty)
+        }
+        for timeout in KioskScreensaverTimeout.allCases {
+            #expect(!timeout.title.isEmpty)
+            if timeout == .pushNotificationControlled {
+                #expect(timeout.timeInterval == nil)
+            } else {
+                #expect((timeout.timeInterval ?? 0) > 0)
+            }
+        }
+        for interval in KioskAutoReloadInterval.allCases {
+            #expect(!interval.title.isEmpty)
+            if interval == .never {
+                #expect(interval.timeInterval == nil)
+            } else {
+                #expect((interval.timeInterval ?? 0) > 0)
+            }
+        }
+        for position in KioskCornerPosition.allCases {
+            #expect(!position.title.isEmpty)
+        }
     }
 }

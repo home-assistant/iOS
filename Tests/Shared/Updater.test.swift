@@ -1,7 +1,7 @@
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
-import Version
 import XCTest
 
 class UpdaterTest: XCTestCase {

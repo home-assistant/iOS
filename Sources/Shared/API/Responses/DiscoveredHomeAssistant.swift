@@ -1,7 +1,6 @@
 import Foundation
 import ObjectMapper
 import PromiseKit
-import Version
 
 public struct DiscoveredHomeAssistant: ImmutableMappable, Equatable {
     public static let defaultVersion = Version(major: 2022, minor: 4)

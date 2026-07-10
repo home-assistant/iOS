@@ -11,7 +11,6 @@ final class ContainerViewModel: ObservableObject {
     enum PresentedSheet: Identifiable {
         case whatsNew(WhatsNewRelease)
         case testFlight(TestFlightMessage)
-        case settings
         case assistSettings
         case downloadManager(DownloadManagerViewModel)
         case serverSelect(prompt: String?, includeSettings: Bool, onSelect: (Server) -> Void)
@@ -20,7 +19,6 @@ final class ContainerViewModel: ObservableObject {
             switch self {
             case let .whatsNew(release): return "whatsNew-\(release.id)"
             case let .testFlight(message): return "testFlight-\(message.id.rawValue)"
-            case .settings: return "settings"
             case .assistSettings: return "assistSettings"
             case .downloadManager: return "downloadManager"
             case .serverSelect: return "serverSelect"
@@ -67,11 +65,6 @@ final class ContainerViewModel: ObservableObject {
     func showNextLaunchMessage() {
         guard presentedSheet == nil, !pendingLaunchMessages.isEmpty else { return }
         presentedSheet = pendingLaunchMessages.removeFirst()
-    }
-
-    /// Presents app Settings as a sheet over the web view (user-triggered, e.g. a gesture or the re-auth gear).
-    func presentSettings() {
-        presentedSheet = .settings
     }
 
     /// Presents Assist settings as a sheet over the web view (triggered by the frontend's external bus).

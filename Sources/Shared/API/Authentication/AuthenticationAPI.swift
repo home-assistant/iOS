@@ -1,7 +1,7 @@
 import Alamofire
 import Foundation
 import ObjectMapper
-import PromiseKit
+@preconcurrency import PromiseKit
 
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
@@ -55,7 +55,10 @@ public class AuthenticationAPI {
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
         Promise { seal in
-            guard let activeUrl = server.info.connection.activeURL() else {
+            // Like HAKit's connectionInfo closure, evaluate against cached network information:
+            // websocket auth waits on token refresh, so this must stay off the async network-info
+            // path, which can hang mid-flight (the cache is refreshed on connectivity changes).
+            guard let activeUrl = server.activeURLUsingLastKnownNetworkState() else {
                 seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                 return
             }
@@ -67,20 +70,22 @@ public class AuthenticationAPI {
             let request = session.request(routeInfo)
 
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
-            request.validateAuth().responseObject(context: context) { (response: DataResponse<TokenInfo, AFError>) in
-                switch response.result {
-                case let .failure(error):
-                    seal.reject(error)
-                case let .success(value):
-                    seal.fulfill(value)
+            request.validateAuth()
+                .responseObject(context: context) { (response: DataResponse<TokenInfo, AFError>) in
+                    switch response.result {
+                    case let .failure(error):
+                        seal.reject(error)
+                    case let .success(value):
+                        seal.fulfill(value)
+                    }
                 }
-            }
         }
     }
 
     public func revokeToken(tokenInfo: TokenInfo) -> Promise<Bool> {
         Promise { seal in
-            guard let activeUrl = server.info.connection.activeURL() else {
+            // Evaluated against cached network information for the same reason as refreshTokenWith.
+            guard let activeUrl = server.activeURLUsingLastKnownNetworkState() else {
                 seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                 return
             }
@@ -145,7 +150,7 @@ public class AuthenticationAPI {
 
 #if !os(watchOS)
 /// Session delegate for fetching initial token during onboarding (before server exists)
-private class OnboardingClientCertificateDelegate: SessionDelegate {
+private class OnboardingClientCertificateDelegate: SessionDelegate, @unchecked Sendable {
     private let certificate: ClientCertificate
 
     init(certificate: ClientCertificate) {

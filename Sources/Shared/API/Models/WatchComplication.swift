@@ -1,7 +1,6 @@
 import Foundation
 import ObjectMapper
 import RealmSwift
-import UIColor_Hex_Swift
 import UIKit
 #if os(watchOS)
 import ClockKit
@@ -361,630 +360,467 @@ public class WatchComplication: Object, ImmutableMappable {
         }
         switch Template {
         case .CircularSmallRingImage:
-            let template = CLKComplicationTemplateCircularSmallRingImage()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
             let ringData = ringData
-            template.fillFraction = ringData.fraction
-            template.ringStyle = ringData.style
+            let template = CLKComplicationTemplateCircularSmallRingImage(
+                imageProvider: iconProvider,
+                fillFraction: ringData.fraction,
+                ringStyle: ringData.style
+            )
             template.tintColor = ringData.color
             return template
         case .CircularSmallSimpleImage:
-            let template = CLKComplicationTemplateCircularSmallSimpleImage()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateCircularSmallSimpleImage(imageProvider: iconProvider)
         case .CircularSmallStackImage:
-            let template = CLKComplicationTemplateCircularSmallStackImage()
-            if let iconProvider {
-                template.line1ImageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Line2"] {
-                template.line2TextProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Line2"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateCircularSmallStackImage(
+                line1ImageProvider: iconProvider,
+                line2TextProvider: textProvider
+            )
         case .CircularSmallRingText:
-            let template = CLKComplicationTemplateCircularSmallRingText()
-            if let textProvider = textDataProviders["InsideRing"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["InsideRing"] else {
                 return nil
             }
             let ringData = ringData
-            template.fillFraction = ringData.fraction
-            template.ringStyle = ringData.style
+            let template = CLKComplicationTemplateCircularSmallRingText(
+                textProvider: textProvider,
+                fillFraction: ringData.fraction,
+                ringStyle: ringData.style
+            )
             template.tintColor = ringData.color
             return template
         case .CircularSmallSimpleText:
-            let template = CLKComplicationTemplateCircularSmallSimpleText()
-            if let textProvider = textDataProviders["Center"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Center"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateCircularSmallSimpleText(textProvider: textProvider)
         case .CircularSmallStackText:
-            let template = CLKComplicationTemplateCircularSmallStackText()
-            if let textProvider = textDataProviders["Line1"] {
-                template.line1TextProvider = textProvider
-            } else {
+            guard let line1TextProvider = textDataProviders["Line1"],
+                  let line2TextProvider = textDataProviders["Line2"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Line2"] {
-                template.line2TextProvider = textProvider
-            } else {
-                return nil
-            }
-            return template
+            return CLKComplicationTemplateCircularSmallStackText(
+                line1TextProvider: line1TextProvider,
+                line2TextProvider: line2TextProvider
+            )
         case .ExtraLargeRingImage:
-            let template = CLKComplicationTemplateExtraLargeRingImage()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
             let ringData = ringData
-            template.fillFraction = ringData.fraction
-            template.ringStyle = ringData.style
+            let template = CLKComplicationTemplateExtraLargeRingImage(
+                imageProvider: iconProvider,
+                fillFraction: ringData.fraction,
+                ringStyle: ringData.style
+            )
             template.tintColor = ringData.color
             return template
         case .ExtraLargeSimpleImage:
-            let template = CLKComplicationTemplateExtraLargeSimpleImage()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateExtraLargeSimpleImage(imageProvider: iconProvider)
         case .ExtraLargeStackImage:
-            let template = CLKComplicationTemplateExtraLargeStackImage()
-            if let iconProvider {
-                template.line1ImageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Line2"] {
-                template.line2TextProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Line2"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateExtraLargeStackImage(
+                line1ImageProvider: iconProvider,
+                line2TextProvider: textProvider
+            )
         case .ExtraLargeColumnsText:
-            let template = CLKComplicationTemplateExtraLargeColumnsText()
-            if let textProvider = textDataProviders["Row1Column1"] {
-                template.row1Column1TextProvider = textProvider
-            } else {
+            guard let row1Column1TextProvider = textDataProviders["Row1Column1"],
+                  let row1Column2TextProvider = textDataProviders["Row1Column2"],
+                  let row2Column1TextProvider = textDataProviders["Row2Column1"],
+                  let row2Column2TextProvider = textDataProviders["Row2Column2"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Row1Column2"] {
-                template.row1Column2TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row2Column1"] {
-                template.row2Column1TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row2Column2"] {
-                template.row2Column2TextProvider = textProvider
-            } else {
-                return nil
-            }
+            let template = CLKComplicationTemplateExtraLargeColumnsText(
+                row1Column1TextProvider: row1Column1TextProvider,
+                row1Column2TextProvider: row1Column2TextProvider,
+                row2Column1TextProvider: row2Column1TextProvider,
+                row2Column2TextProvider: row2Column2TextProvider
+            )
             template.column2Alignment = column2Alignment
             return template
         case .ExtraLargeRingText:
-            let template = CLKComplicationTemplateExtraLargeRingText()
-            if let textProvider = textDataProviders["InsideRing"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["InsideRing"] else {
                 return nil
             }
             let ringData = ringData
-            template.fillFraction = ringData.fraction
-            template.ringStyle = ringData.style
+            let template = CLKComplicationTemplateExtraLargeRingText(
+                textProvider: textProvider,
+                fillFraction: ringData.fraction,
+                ringStyle: ringData.style
+            )
             template.tintColor = ringData.color
             return template
         case .ExtraLargeSimpleText:
-            let template = CLKComplicationTemplateExtraLargeSimpleText()
-            if let textProvider = textDataProviders["Center"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Center"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateExtraLargeSimpleText(textProvider: textProvider)
         case .ExtraLargeStackText:
-            let template = CLKComplicationTemplateExtraLargeStackText()
-            if let textProvider = textDataProviders["Line1"] {
-                template.line1TextProvider = textProvider
-            } else {
+            guard let line1TextProvider = textDataProviders["Line1"],
+                  let line2TextProvider = textDataProviders["Line2"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Line2"] {
-                template.line2TextProvider = textProvider
-            } else {
-                return nil
-            }
-            return template
+            return CLKComplicationTemplateExtraLargeStackText(
+                line1TextProvider: line1TextProvider,
+                line2TextProvider: line2TextProvider
+            )
         case .ModularSmallRingImage:
-            let template = CLKComplicationTemplateModularSmallRingImage()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
             let ringData = ringData
-            template.fillFraction = ringData.fraction
-            template.ringStyle = ringData.style
+            let template = CLKComplicationTemplateModularSmallRingImage(
+                imageProvider: iconProvider,
+                fillFraction: ringData.fraction,
+                ringStyle: ringData.style
+            )
             template.tintColor = ringData.color
             return template
         case .ModularSmallSimpleImage:
-            let template = CLKComplicationTemplateModularSmallSimpleImage()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateModularSmallSimpleImage(imageProvider: iconProvider)
         case .ModularSmallStackImage:
-            let template = CLKComplicationTemplateModularSmallStackImage()
-            if let iconProvider {
-                template.line1ImageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Line2"] {
-                template.line2TextProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Line2"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateModularSmallStackImage(
+                line1ImageProvider: iconProvider,
+                line2TextProvider: textProvider
+            )
         case .ModularSmallColumnsText:
-            let template = CLKComplicationTemplateModularSmallColumnsText()
-            if let textProvider = textDataProviders["Row1Column1"] {
-                template.row1Column1TextProvider = textProvider
-            } else {
+            guard let row1Column1TextProvider = textDataProviders["Row1Column1"],
+                  let row1Column2TextProvider = textDataProviders["Row1Column2"],
+                  let row2Column1TextProvider = textDataProviders["Row2Column1"],
+                  let row2Column2TextProvider = textDataProviders["Row2Column2"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Row1Column2"] {
-                template.row1Column2TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row2Column1"] {
-                template.row2Column1TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row2Column2"] {
-                template.row2Column2TextProvider = textProvider
-            } else {
-                return nil
-            }
+            let template = CLKComplicationTemplateModularSmallColumnsText(
+                row1Column1TextProvider: row1Column1TextProvider,
+                row1Column2TextProvider: row1Column2TextProvider,
+                row2Column1TextProvider: row2Column1TextProvider,
+                row2Column2TextProvider: row2Column2TextProvider
+            )
             template.column2Alignment = column2Alignment
             return template
         case .ModularSmallRingText:
-            let template = CLKComplicationTemplateModularSmallRingText()
-            if let textProvider = textDataProviders["InsideRing"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["InsideRing"] else {
                 return nil
             }
             let ringData = ringData
-            template.fillFraction = ringData.fraction
-            template.ringStyle = ringData.style
+            let template = CLKComplicationTemplateModularSmallRingText(
+                textProvider: textProvider,
+                fillFraction: ringData.fraction,
+                ringStyle: ringData.style
+            )
             template.tintColor = ringData.color
             return template
         case .ModularSmallSimpleText:
-            let template = CLKComplicationTemplateModularSmallSimpleText()
-            if let textProvider = textDataProviders["Center"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Center"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateModularSmallSimpleText(textProvider: textProvider)
         case .ModularSmallStackText:
-            let template = CLKComplicationTemplateModularSmallStackText()
-            if let textProvider = textDataProviders["Line1"] {
-                template.line1TextProvider = textProvider
-            } else {
+            guard let line1TextProvider = textDataProviders["Line1"],
+                  let line2TextProvider = textDataProviders["Line2"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Line2"] {
-                template.line2TextProvider = textProvider
-            } else {
-                return nil
-            }
-            return template
+            return CLKComplicationTemplateModularSmallStackText(
+                line1TextProvider: line1TextProvider,
+                line2TextProvider: line2TextProvider
+            )
         case .ModularLargeStandardBody:
-            let template = CLKComplicationTemplateModularLargeStandardBody()
-            if let textProvider = textDataProviders["Header"] {
-                template.headerTextProvider = textProvider
-            } else {
+            guard let headerTextProvider = textDataProviders["Header"],
+                  let body1TextProvider = textDataProviders["Body1"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Body1"] {
-                template.body1TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Body2"] {
-                template.body2TextProvider = textProvider
-            } else {
-                // optional, allowed to be nil and makes body1 wrap
-            }
-            return template
+            // body2TextProvider is optional, allowed to be nil and makes body1 wrap
+            return CLKComplicationTemplateModularLargeStandardBody(
+                headerTextProvider: headerTextProvider,
+                body1TextProvider: body1TextProvider,
+                body2TextProvider: textDataProviders["Body2"]
+            )
         case .ModularLargeTallBody:
-            let template = CLKComplicationTemplateModularLargeTallBody()
-            if let textProvider = textDataProviders["Header"] {
-                template.headerTextProvider = textProvider
-            } else {
+            guard let headerTextProvider = textDataProviders["Header"],
+                  let bodyTextProvider = textDataProviders["Center"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Center"] {
-                template.bodyTextProvider = textProvider
-            } else {
-                return nil
-            }
-            return template
+            return CLKComplicationTemplateModularLargeTallBody(
+                headerTextProvider: headerTextProvider,
+                bodyTextProvider: bodyTextProvider
+            )
         case .ModularLargeColumns:
-            let template = CLKComplicationTemplateModularLargeColumns()
-            if let textProvider = textDataProviders["Row1Column1"] {
-                template.row1Column1TextProvider = textProvider
-            } else {
+            guard let row1Column1TextProvider = textDataProviders["Row1Column1"],
+                  let row1Column2TextProvider = textDataProviders["Row1Column2"],
+                  let row2Column1TextProvider = textDataProviders["Row2Column1"],
+                  let row2Column2TextProvider = textDataProviders["Row2Column2"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Row1Column2"] {
-                template.row1Column2TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row2Column1"] {
-                template.row2Column1TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row2Column2"] {
-                template.row2Column2TextProvider = textProvider
-            } else {
-                return nil
-            }
+            // only two rows are configurable; the initializer requires row 3, so pass empty providers to
+            // keep it blank like the previous no-argument initializer did
+            let template = CLKComplicationTemplateModularLargeColumns(
+                row1Column1TextProvider: row1Column1TextProvider,
+                row1Column2TextProvider: row1Column2TextProvider,
+                row2Column1TextProvider: row2Column1TextProvider,
+                row2Column2TextProvider: row2Column2TextProvider,
+                row3Column1TextProvider: CLKSimpleTextProvider(text: ""),
+                row3Column2TextProvider: CLKSimpleTextProvider(text: "")
+            )
             template.column2Alignment = column2Alignment
             return template
         case .ModularLargeTable:
-            let template = CLKComplicationTemplateModularLargeTable()
-            if let textProvider = textDataProviders["Header"] {
-                template.headerTextProvider = textProvider
-            } else {
+            guard let headerTextProvider = textDataProviders["Header"],
+                  let row1Column1TextProvider = textDataProviders["Row1Column1"],
+                  let row1Column2TextProvider = textDataProviders["Row1Column2"],
+                  let row2Column1TextProvider = textDataProviders["Row2Column1"],
+                  let row2Column2TextProvider = textDataProviders["Row2Column2"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Row1Column1"] {
-                template.row1Column1TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row1Column2"] {
-                template.row1Column2TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row2Column1"] {
-                template.row2Column1TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Row2Column2"] {
-                template.row2Column2TextProvider = textProvider
-            } else {
-                return nil
-            }
+            let template = CLKComplicationTemplateModularLargeTable(
+                headerTextProvider: headerTextProvider,
+                row1Column1TextProvider: row1Column1TextProvider,
+                row1Column2TextProvider: row1Column2TextProvider,
+                row2Column1TextProvider: row2Column1TextProvider,
+                row2Column2TextProvider: row2Column2TextProvider
+            )
             template.column2Alignment = column2Alignment
             return template
         case .UtilitarianSmallFlat:
-            let template = CLKComplicationTemplateUtilitarianSmallFlat()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
-                // optional
-            }
-            if let textProvider = textDataProviders["Center"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Center"] else {
                 return nil
             }
-            return template
+            // imageProvider is optional
+            return CLKComplicationTemplateUtilitarianSmallFlat(
+                textProvider: textProvider,
+                imageProvider: iconProvider
+            )
         case .UtilitarianSmallRingImage:
-            let template = CLKComplicationTemplateUtilitarianSmallRingImage()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
             let ringData = ringData
-            template.fillFraction = ringData.fraction
-            template.ringStyle = ringData.style
+            let template = CLKComplicationTemplateUtilitarianSmallRingImage(
+                imageProvider: iconProvider,
+                fillFraction: ringData.fraction,
+                ringStyle: ringData.style
+            )
             template.tintColor = ringData.color
             return template
         case .UtilitarianSmallRingText:
-            let template = CLKComplicationTemplateUtilitarianSmallRingText()
-            if let textProvider = textDataProviders["InsideRing"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["InsideRing"] else {
                 return nil
             }
             let ringData = ringData
-            template.fillFraction = ringData.fraction
-            template.ringStyle = ringData.style
+            let template = CLKComplicationTemplateUtilitarianSmallRingText(
+                textProvider: textProvider,
+                fillFraction: ringData.fraction,
+                ringStyle: ringData.style
+            )
             template.tintColor = ringData.color
             return template
         case .UtilitarianSmallSquare:
-            let template = CLKComplicationTemplateUtilitarianSmallSquare()
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateUtilitarianSmallSquare(imageProvider: iconProvider)
         case .UtilitarianLargeFlat:
-            let template = CLKComplicationTemplateUtilitarianLargeFlat()
-            if let textProvider = textDataProviders["Center"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Center"] else {
                 return nil
             }
-            if let iconProvider {
-                template.imageProvider = iconProvider
-            } else {
-                // optional
-            }
-            return template
+            // imageProvider is optional
+            return CLKComplicationTemplateUtilitarianLargeFlat(
+                textProvider: textProvider,
+                imageProvider: iconProvider
+            )
         case .GraphicCornerCircularImage:
-            let template = CLKComplicationTemplateGraphicCornerCircularImage()
-            if let iconProvider = fullColorImageProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider = fullColorImageProvider else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateGraphicCornerCircularImage(imageProvider: iconProvider)
         case .GraphicCornerGaugeImage:
-            let template = CLKComplicationTemplateGraphicCornerGaugeImage()
-            if let iconProvider = fullColorImageProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider = fullColorImageProvider else {
                 return nil
             }
-            if let gaugeProvider {
-                template.gaugeProvider = gaugeProvider
-            } else {
+            guard let gaugeProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Leading"] {
-                template.leadingTextProvider = textProvider
-            } else {
-                // optional
-            }
-            if let textProvider = textDataProviders["Trailing"] {
-                template.trailingTextProvider = textProvider
-            } else {
-                // optional
-            }
-            return template
+            // leading and trailing text providers are optional
+            return CLKComplicationTemplateGraphicCornerGaugeImage(
+                gaugeProvider: gaugeProvider,
+                leadingTextProvider: textDataProviders["Leading"],
+                trailingTextProvider: textDataProviders["Trailing"],
+                imageProvider: iconProvider
+            )
         case .GraphicCornerGaugeText:
-            let template = CLKComplicationTemplateGraphicCornerGaugeText()
-            if let gaugeProvider {
-                template.gaugeProvider = gaugeProvider
-            } else {
+            guard let gaugeProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Outer"] {
-                template.outerTextProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Outer"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Leading"] {
-                template.leadingTextProvider = textProvider
-            } else {
-                // optional
-            }
-            if let textProvider = textDataProviders["Trailing"] {
-                template.trailingTextProvider = textProvider
-            } else {
-                // optional
-            }
-            return template
+            // leading and trailing text providers are optional
+            return CLKComplicationTemplateGraphicCornerGaugeText(
+                gaugeProvider: gaugeProvider,
+                leadingTextProvider: textDataProviders["Leading"],
+                trailingTextProvider: textDataProviders["Trailing"],
+                outerTextProvider: textProvider
+            )
         case .GraphicCornerStackText:
-            let template = CLKComplicationTemplateGraphicCornerStackText()
-            if let textProvider = textDataProviders["Outer"] {
-                template.outerTextProvider = textProvider
-            } else {
+            guard let outerTextProvider = textDataProviders["Outer"],
+                  let innerTextProvider = textDataProviders["Inner"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Inner"] {
-                template.innerTextProvider = textProvider
-            } else {
-                return nil
-            }
-            return template
+            return CLKComplicationTemplateGraphicCornerStackText(
+                innerTextProvider: innerTextProvider,
+                outerTextProvider: outerTextProvider
+            )
         case .GraphicCornerTextImage:
-            let template = CLKComplicationTemplateGraphicCornerTextImage()
-            if let iconProvider = fullColorImageProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider = fullColorImageProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Center"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Center"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateGraphicCornerTextImage(
+                textProvider: textProvider,
+                imageProvider: iconProvider
+            )
         case .GraphicCircularImage:
-            let template = CLKComplicationTemplateGraphicCircularImage()
-            if let iconProvider = fullColorImageProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider = fullColorImageProvider else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateGraphicCircularImage(imageProvider: iconProvider)
         case .GraphicCircularClosedGaugeImage:
-            let template = CLKComplicationTemplateGraphicCircularClosedGaugeImage()
-            if let iconProvider = fullColorImageProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider = fullColorImageProvider else {
                 return nil
             }
-            if let gaugeProvider {
-                template.gaugeProvider = gaugeProvider
-            } else {
+            guard let gaugeProvider else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateGraphicCircularClosedGaugeImage(
+                gaugeProvider: gaugeProvider,
+                imageProvider: iconProvider
+            )
         case .GraphicCircularOpenGaugeImage:
-            let template = CLKComplicationTemplateGraphicCircularOpenGaugeImage()
-            if let iconProvider = fullColorImageProvider {
-                template.bottomImageProvider = iconProvider
-            } else {
+            guard let iconProvider = fullColorImageProvider else {
                 return nil
             }
-            if let gaugeProvider {
-                template.gaugeProvider = gaugeProvider
-            } else {
+            guard let gaugeProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Center"] {
-                template.centerTextProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Center"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateGraphicCircularOpenGaugeImage(
+                gaugeProvider: gaugeProvider,
+                bottomImageProvider: iconProvider,
+                centerTextProvider: textProvider
+            )
         case .GraphicCircularClosedGaugeText:
-            let template = CLKComplicationTemplateGraphicCircularClosedGaugeText()
-            if let gaugeProvider {
-                template.gaugeProvider = gaugeProvider
-            } else {
+            guard let gaugeProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Center"] {
-                template.centerTextProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Center"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateGraphicCircularClosedGaugeText(
+                gaugeProvider: gaugeProvider,
+                centerTextProvider: textProvider
+            )
         case .GraphicCircularOpenGaugeSimpleText:
-            let template = CLKComplicationTemplateGraphicCircularOpenGaugeSimpleText()
-            if let gaugeProvider {
-                template.gaugeProvider = gaugeProvider
-            } else {
+            guard let gaugeProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Center"] {
-                template.centerTextProvider = textProvider
-            } else {
+            guard let centerTextProvider = textDataProviders["Center"],
+                  let bottomTextProvider = textDataProviders["Bottom"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Bottom"] {
-                template.bottomTextProvider = textProvider
-            } else {
-                return nil
-            }
-            return template
+            return CLKComplicationTemplateGraphicCircularOpenGaugeSimpleText(
+                gaugeProvider: gaugeProvider,
+                bottomTextProvider: bottomTextProvider,
+                centerTextProvider: centerTextProvider
+            )
         case .GraphicCircularOpenGaugeRangeText:
-            let template = CLKComplicationTemplateGraphicCircularOpenGaugeRangeText()
-            if let gaugeProvider {
-                template.gaugeProvider = gaugeProvider
-            } else {
+            guard let gaugeProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Center"] {
-                template.centerTextProvider = textProvider
-            } else {
+            guard let centerTextProvider = textDataProviders["Center"],
+                  let leadingTextProvider = textDataProviders["Leading"],
+                  let trailingTextProvider = textDataProviders["Trailing"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Leading"] {
-                template.leadingTextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Trailing"] {
-                template.trailingTextProvider = textProvider
-            } else {
-                return nil
-            }
-            return template
+            return CLKComplicationTemplateGraphicCircularOpenGaugeRangeText(
+                gaugeProvider: gaugeProvider,
+                leadingTextProvider: leadingTextProvider,
+                trailingTextProvider: trailingTextProvider,
+                centerTextProvider: centerTextProvider
+            )
         case .GraphicBezelCircularText:
-            let template = CLKComplicationTemplateGraphicBezelCircularText()
-            if let iconProvider = fullColorImageProvider {
-                template.circularTemplate = with(CLKComplicationTemplateGraphicCircularImage()) {
-                    $0.imageProvider = iconProvider
-                }
-            } else {
+            guard let iconProvider = fullColorImageProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Center"] {
-                template.textProvider = textProvider
-            } else {
-                // optional
-            }
-            return template
+            // textProvider is optional
+            return CLKComplicationTemplateGraphicBezelCircularText(
+                circularTemplate: CLKComplicationTemplateGraphicCircularImage(imageProvider: iconProvider),
+                textProvider: textDataProviders["Center"]
+            )
         case .GraphicRectangularStandardBody:
-            let template = CLKComplicationTemplateGraphicRectangularStandardBody()
-            if let textProvider = textDataProviders["Header"] {
-                template.headerTextProvider = textProvider
-            } else {
+            guard let headerTextProvider = textDataProviders["Header"],
+                  let body1TextProvider = textDataProviders["Body1"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Body1"] {
-                template.body1TextProvider = textProvider
-            } else {
-                return nil
-            }
-            if let textProvider = textDataProviders["Body2"] {
-                template.body2TextProvider = textProvider
-            } else {
-                // optional
-            }
-            return template
+            // body2TextProvider is optional
+            return CLKComplicationTemplateGraphicRectangularStandardBody(
+                headerTextProvider: headerTextProvider,
+                body1TextProvider: body1TextProvider,
+                body2TextProvider: textDataProviders["Body2"]
+            )
         case .GraphicRectangularTextGauge:
-            let template = CLKComplicationTemplateGraphicRectangularTextGauge()
-            if let gaugeProvider {
-                template.gaugeProvider = gaugeProvider
-            } else {
+            guard let gaugeProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Header"] {
-                template.headerTextProvider = textProvider
-            } else {
+            guard let headerTextProvider = textDataProviders["Header"],
+                  let body1TextProvider = textDataProviders["Body1"] else {
                 return nil
             }
-            if let textProvider = textDataProviders["Body1"] {
-                template.body1TextProvider = textProvider
-            } else {
-                return nil
-            }
-            return template
+            return CLKComplicationTemplateGraphicRectangularTextGauge(
+                headerTextProvider: headerTextProvider,
+                body1TextProvider: body1TextProvider,
+                gaugeProvider: gaugeProvider
+            )
         case .GraphicRectangularLargeImage:
-            let template = CLKComplicationTemplateGraphicRectangularLargeImage()
-            if let iconProvider = fullColorImageProvider {
-                template.imageProvider = iconProvider
-            } else {
+            guard let iconProvider = fullColorImageProvider else {
                 return nil
             }
-            if let textProvider = textDataProviders["Header"] {
-                template.textProvider = textProvider
-            } else {
+            guard let textProvider = textDataProviders["Header"] else {
                 return nil
             }
-            return template
+            return CLKComplicationTemplateGraphicRectangularLargeImage(
+                textProvider: textProvider,
+                imageProvider: iconProvider
+            )
         }
     }
 

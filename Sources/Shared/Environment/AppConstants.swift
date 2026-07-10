@@ -1,7 +1,6 @@
 import Foundation
 import KeychainAccess
 import UIKit
-import Version
 
 /// Contains shared constants
 public enum AppConstants {
@@ -30,6 +29,10 @@ public enum AppConstants {
             URL(string: "https://companion.home-assistant.io/app/ios/local-push")!
         public static var nfcDocs =
             URL(string: "https://companion.home-assistant.io/app/ios/nfc")!
+        public static var liveActivitiesDocs =
+            URL(string: "https://companion.home-assistant.io/docs/notifications/live-activities")!
+        public static var appleDropSupportiOS15 =
+            URL(string: "https://ohf.to/ha/apple-drop-support")!
     }
 
     public enum QueryItems: String, CaseIterable {
@@ -101,11 +104,19 @@ public enum AppConstants {
         switch Current.appConfiguration {
         case .debug:
             return URL(string: "homeassistant-dev://")!
-        case .beta:
-            return URL(string: "homeassistant-beta://")!
         default:
             return URL(string: "homeassistant://")!
         }
+    }
+
+    /// Roots a scheme-less, slash-less navigation path (`map/0` → `/map/0`) so an HA path that is
+    /// missing its leading slash still resolves in the frontend. Anything already rooted, or that
+    /// carries a scheme — `https://`, `mailto:`, or the app's own `homeassistant://` deep links —
+    /// is returned unchanged, so external URLs open in the browser and deep links are handled by
+    /// the URL handler as deep links rather than being coerced into a path.
+    public static func normalizedNavigationDestination(_ raw: String) -> String {
+        guard !raw.hasPrefix("/"), URL(string: raw)?.scheme == nil else { return raw }
+        return "/" + raw
     }
 
     public static func invitationURL(serverURL: URL) -> URL? {
@@ -153,7 +164,6 @@ public enum AppConstants {
         )
     }
 
-    @available(iOS 16.0, watchOS 9.0, *)
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil
@@ -165,7 +175,6 @@ public enum AppConstants {
         ])
     }
 
-    @available(iOS 16.0, watchOS 9.0, *)
     public static func todoListOpenURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil
@@ -197,7 +206,8 @@ public enum AppConstants {
         let groupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID)
 
         guard let groupDir else {
-            fatalError("Unable to get groupDir.")
+            Current.Log.error("Unable to get app group container URL; falling back to temporary directory")
+            return URL(fileURLWithPath: NSTemporaryDirectory())
         }
 
         return groupDir
@@ -229,6 +239,20 @@ public enum AppConstants {
         }
         let eventsURL = directoryURL.appendingPathComponent("clientEvents.json")
         return eventsURL
+    }
+
+    public static var notificationHistoryFile: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("databases", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to create Notification History file")
+            }
+        }
+        let historyURL = directoryURL.appendingPathComponent("notificationHistory.json")
+        return historyURL
     }
 
     public static var widgetsCacheURL: URL = {

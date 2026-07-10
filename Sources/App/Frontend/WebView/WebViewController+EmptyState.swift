@@ -18,10 +18,18 @@ extension WebViewController {
     /// `overlayState`) rather than an alpha-animated subview, so app-level sheets can float over it.
     func showEmptyState() {
         overlayState?.emptyState = makeEmptyStateContent()
+        if connectionState == .disconnected || connectionState == .unknown {
+            reconnectManager?.start { [weak self] in
+                self?.recoverDisconnectedFrontend()
+            }
+        } else {
+            reconnectManager?.stop()
+        }
     }
 
     @objc func hideEmptyState() {
         overlayState?.emptyState = nil
+        reconnectManager?.stop()
     }
 
     var shouldShowErrorDetailsButton: Bool {
@@ -39,42 +47,13 @@ extension WebViewController {
         )
     }
 
-    // To avoid keeping the empty state on screen when user is disconnected in background
-    // due to inactivity, we reset the empty state timer
-    @objc func resetEmptyStateTimerWithLatestConnectedState() {
-        let state: FrontEndConnectionState = if connectionState == .authInvalid {
-            .authInvalid
+    func recoverDisconnectedFrontend() {
+        if let resetFrontendAction {
+            resetFrontendAction()
         } else {
-            isConnected ? .connected : .disconnected
+            hideEmptyState()
+            refresh()
         }
-        updateFrontendConnectionState(state: state.rawValue)
-    }
-
-    func emptyStateObservations() {
-        // Hide empty state when enter background
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(hideEmptyState),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
-
-        // Show empty state again if after entering foreground it is not connected
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(resetEmptyStateTimerWithLatestConnectedState),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
-    }
-
-    func removeEmptyStateObservations() {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(
-            self,
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
     }
 
     private func makeEmptyStateContent() -> WebFrontendOverlayState.EmptyStateContent {
@@ -84,8 +63,7 @@ extension WebViewController {
             showsErrorDetailsButton: shouldShowErrorDetailsButton,
             availableReauthURLTypes: availableReauthURLTypes(for: server),
             retryAction: { [weak self] in
-                self?.hideEmptyState()
-                self?.refresh()
+                self?.recoverDisconnectedFrontend()
             },
             settingsAction: { [weak self] in self?.showSettingsViewController() },
             errorDetailsAction: { [weak self] in self?.presentLatestLoadErrorDetails() },

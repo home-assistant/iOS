@@ -34,6 +34,18 @@ class IncomingURLHandler {
             serviceData = queryItems
         }
         guard let host = url.host else { return true }
+
+        // Universal / web links (e.g. `my.home-assistant.io`, including HACS "my" redirect links) can be
+        // delivered through `onOpenURL` as well as `onContinueUserActivity` under the SwiftUI lifecycle.
+        // They are not deep-link actions, so route them to the my-link handler instead of treating the
+        // host as an `IncomingURLAction` (which would otherwise show a "not a valid route" error).
+        // Restrict to web schemes since `showMy(for:)` presents an `SFSafariViewController`, which only
+        // supports http/https; this also prevents a crafted `homeassistant://my.home-assistant.io/...`
+        // from reaching Safari.
+        if ["http", "https"].contains(url.scheme?.lowercased()), host.lowercased() == "my.home-assistant.io" {
+            return showMy(for: url)
+        }
+
         if let requestedAction = IncomingURLAction(rawValue: host.lowercased()) {
             switch requestedAction {
             case .xCallbackURL:
@@ -60,8 +72,7 @@ class IncomingURLHandler {
                     handler: { self.sendLocationURLHandler() }
                 )
             case .camera:
-                guard #available(iOS 16.0, *),
-                      var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
                 }
                 components.scheme = nil
@@ -98,8 +109,14 @@ class IncomingURLHandler {
                 let queryParameters = components.queryItems
                 let isFromWidget = components.popWidgetAuthenticity()
                 let serverId = components.queryItems?.first(where: { $0.name == "serverId" })?.value as? String
-                let server = components.popWidgetServer(isFromWidget: isFromWidget) ?? Current.servers.all
-                    .first(where: { $0.identifier.rawValue == serverId })
+                // Strip `webhook_id` (a sender that couldn't resolve the server defers it to here)
+                // so it doesn't leak into the navigated path.
+                let webhookId = queryParameters?.first(where: { $0.name == "webhook_id" })?.value
+                components.queryItems = components.queryItems?.filter { $0.name != "webhook_id" }
+                if components.queryItems?.isEmpty == true { components.queryItems = nil }
+                let server = components.popWidgetServer(isFromWidget: isFromWidget)
+                    ?? Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
+                    ?? webhookId.flatMap { Current.servers.server(forWebhookID: $0) }
                 let isComingFromAppIntent: Bool = {
                     if let value = queryParameters?
                         .first(where: { $0.name == AppConstants.QueryItems.isComingFromAppIntent.rawValue })?.value {
@@ -109,9 +126,14 @@ class IncomingURLHandler {
                     }
                 }()
 
-                guard let rawURL = components.url?.absoluteString else {
-                    return false
-                }
+                // An explicit `url` query param (e.g. from a Live Activity tap) carries the raw
+                // destination so it resolves exactly like a notification's url: relative HA paths
+                // open in the frontend, external URLs open in the in-app browser.
+                let explicitDestination = queryParameters?.first(where: { $0.name == "url" })?.value
+
+                // A url-less tap (only a server, e.g. via webhook_id) opens that server's root
+                // instead of being dropped when `components.url` is nil.
+                let rawURL = explicitDestination ?? components.url?.absoluteString ?? ""
 
                 if
                     let presenting = coordinator.presentedViewController,
@@ -183,16 +205,8 @@ class IncomingURLHandler {
                                 }
                             }
                         let controller = UIHostingController(rootView: AnyView(
-                            Group {
-                                if #available(iOS 16.0, *) {
-                                    NavigationStack {
-                                        mainView
-                                    }
-                                } else {
-                                    NavigationView {
-                                        mainView
-                                    }
-                                }
+                            NavigationStack {
+                                mainView
                             }
                         ))
                         webViewController.presentOverlayController(controller: controller, animated: true)
@@ -308,14 +322,12 @@ class IncomingURLHandler {
             case HAApplicationShortcutItem.openSettings.rawValue:
                 if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
                     // Close window to avoid empty window left behind
-                    for window in UIApplication.shared.windows {
-                        if let scene = window.windowScene {
-                            UIApplication.shared.requestSceneSessionDestruction(
-                                scene.session,
-                                options: nil,
-                                errorHandler: nil
-                            )
-                        }
+                    for scene in UIApplication.shared.connectedScenes where scene is UIWindowScene {
+                        UIApplication.shared.requestSceneSessionDestruction(
+                            scene.session,
+                            options: nil,
+                            errorHandler: nil
+                        )
                     }
                 }
                 Current.sceneManager.activateAnyScene(for: .settings)
@@ -522,7 +534,7 @@ class IncomingURLHandler {
     }
 
     private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
-        Current.sceneManager.webViewControllerPromise.done { webViewController in
+        Current.sceneManager.webViewControllerPromise.done { [weak self] webViewController in
             let view = TagApprovalBottomSheet(
                 tag: tag,
                 onAllowOnce: { [weak self] in

@@ -6,7 +6,6 @@ import Shared
 import UIKit
 
 private extension UIMenu.Identifier {
-    static var haHelp: Self { .init(rawValue: "ha.help") }
     static var haWebViewActions: Self { .init(rawValue: "ha.webViewActions") }
     static var haFile: Self { .init(rawValue: "ha.file") }
 }
@@ -134,7 +133,10 @@ enum StatusItemPrimaryAction {
         // Prefer the server shown in the menu-bar title; its getter already falls back to the first
         // server, so this also covers users without a configured menu-bar template.
         let server = Current.settingsStore.menuItemTemplate?.server ?? Current.servers.all.first
-        guard let url = server?.info.connection.activeURL() else { return false }
+        // This only runs on macOS, where the last-known network information is read live from
+        // macBridge, so the synchronous evaluation is current. Callers need the handled/unhandled
+        // decision synchronously to fall through to the toggle behavior.
+        guard let url = server?.activeURLUsingLastKnownNetworkState() else { return false }
         URLOpener.shared.open(url, options: [:], completionHandler: nil)
         return true
     }
@@ -206,17 +208,6 @@ class MenuManager {
     public func update() {
         builder.remove(menu: .format)
 
-        builder.replace(menu: .about, with: aboutMenu())
-
-        if builder.menu(for: .preferences) == nil {
-            // macOS prior to 11.3 doesn't have the preferences menu already and 11.3+ doesn't like it being inserted
-            builder.insertSibling(preferencesMenu(), afterMenu: .about)
-        } else {
-            builder.replace(menu: .preferences, with: preferencesMenu())
-        }
-
-        builder.replaceChildren(ofMenu: .help) { _ in helpMenus() }
-
         if builder.menu(for: .haWebViewActions) == nil {
             builder.insertSibling(webViewActionsMenu(), beforeMenu: .fullscreen)
         } else {
@@ -230,40 +221,6 @@ class MenuManager {
         }
 
         configureStatusItem()
-    }
-
-    private func aboutMenu() -> UIMenu {
-        let title = L10n.Menu.Application.about(appName)
-
-        let about = UICommand(
-            title: title,
-            image: nil,
-            action: #selector(AppDelegate.openAbout),
-            propertyList: nil
-        )
-
-        let checkForUpdates = UICommand(
-            title: L10n.Updater.CheckForUpdatesMenu.title,
-            image: nil,
-            action: #selector(AppDelegate.checkForUpdate(_:)),
-            propertyList: nil
-        )
-
-        var children: [UICommand] = [
-            about,
-        ]
-
-        if Current.updater.isSupported {
-            children.append(checkForUpdates)
-        }
-
-        return UIMenu(
-            title: title,
-            image: nil,
-            identifier: .about,
-            options: .displayInline,
-            children: children
-        )
     }
 
     private func aboutMenu() -> [AppMacBridgeStatusItemMenuItem] {
@@ -288,25 +245,6 @@ class MenuManager {
         ]
     }
 
-    private func preferencesMenu() -> UIMenu {
-        let command = UIKeyCommand(
-            title: L10n.Menu.Application.preferences,
-            image: nil,
-            action: #selector(AppDelegate.openPreferences),
-            input: ",",
-            modifierFlags: .command,
-            propertyList: nil
-        )
-
-        return UIMenu(
-            title: L10n.Menu.Application.preferences,
-            image: nil,
-            identifier: .preferences,
-            options: .displayInline,
-            children: [command]
-        )
-    }
-
     private func preferencesMenu() -> AppMacBridgeStatusItemMenuItem {
         .init(
             name: L10n.Menu.Application.preferences,
@@ -316,27 +254,6 @@ class MenuManager {
             Current.sceneManager.activateAnyScene(for: .settings)
             callbackInfo.activate()
         }
-    }
-
-    private func helpMenus() -> [UIMenu] {
-        let title = L10n.Menu.Help.help(appName)
-
-        let helpCommand = UICommand(
-            title: title,
-            image: nil,
-            action: #selector(AppDelegate.openHelp),
-            propertyList: nil
-        )
-
-        return [
-            UIMenu(
-                title: title,
-                image: nil,
-                identifier: .haHelp,
-                options: .displayInline,
-                children: [helpCommand]
-            ),
-        ]
     }
 
     private func webViewActionsMenu() -> UIMenu {
@@ -350,16 +267,21 @@ class MenuManager {
             ),
         ]
 
-        // Add find menu item for iOS 16+
-        if #available(iOS 16.0, *) {
-            commands.append(UIKeyCommand(
-                title: L10n.Menu.View.find,
-                image: nil,
-                action: #selector(showFindInteraction),
-                input: "f",
-                modifierFlags: [.command]
-            ))
-        }
+        commands.append(UIKeyCommand(
+            title: L10n.Menu.View.find,
+            image: nil,
+            action: #selector(showFindInteraction),
+            input: "f",
+            modifierFlags: [.command]
+        ))
+
+        #if targetEnvironment(macCatalyst)
+        commands.append(UICommand(
+            title: L10n.Menu.View.customizeToolbar,
+            image: nil,
+            action: #selector(customizeToolbar)
+        ))
+        #endif
 
         return UIMenu(
             title: "",
@@ -449,8 +371,8 @@ class MenuManager {
     // selectors that use responder chain
     @objc private func refresh() {}
     @objc private func updateSensors() {}
-    @available(iOS 16.0, *)
     @objc private func showFindInteraction() {}
+    @objc private func customizeToolbar() {}
 }
 
 #if targetEnvironment(macCatalyst)

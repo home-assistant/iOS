@@ -1,5 +1,6 @@
 import Foundation
 import HAKit
+import HAKit_PromiseKit
 import Shared
 import SwiftUI
 import WebRTC
@@ -26,20 +27,26 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private var pendingCandidates: [RTCIceCandidate] = []
     private let server: Server
     private let cameraEntityId: String
+    private let supportsTalkback: Bool
 
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
     @Published var isMuted: Bool = true
     @Published var isWebRTCUnsupported: Bool = false
+    @Published var isTalkbackSupported: Bool = false
+    @Published var isTalking: Bool = false
 
     /// Invoked on offer rejection or ICE failure. Used by the notification extension to fall back;
     /// the SwiftUI player leaves it `nil` and observes the published properties instead.
     var onFailure: (() -> Void)?
 
-    init(server: Server, cameraEntityId: String) {
+    init(server: Server, cameraEntityId: String, supportsTalkback: Bool = false) {
         self.server = server
         self.cameraEntityId = cameraEntityId
+        self.supportsTalkback = supportsTalkback
     }
+
+    func toggleTalkback() {}
 
     func toggleMute() {
         guard let webRTCClient else { return }

@@ -11,8 +11,11 @@ import UIKit
 /// 2. Honouring the Mac "Open Home Assistant UI in browser" setting (`macNativeFeaturesOnly`): on a plain
 ///    app-icon launch it opens Home Assistant in the user's default browser and destroys the otherwise-empty
 ///    webview window.
+/// 3. Persisting and restoring the Mac window size and position across launches via `WindowScenesManager`.
+///    The SwiftUI `WindowGroup` lifecycle does not restore the previous window geometry on its own, so the
+///    scene lifecycle is forwarded to `WindowScenesManager` (which saves the latest frame and re-applies it).
 ///
-/// Both behaviours previously lived in the now-removed `WebViewSceneDelegate`. This delegate is attached to
+/// All three behaviours previously lived in the now-removed `WebViewSceneDelegate`. This delegate is attached to
 /// the `"WebView"` scene configuration in `AppDelegate.application(_:configurationForConnecting:options:)`.
 /// In the normal (non-browser) case it does not create or own a `UIWindow` — SwiftUI's `WindowGroup`
 /// (see `HAApp`) keeps hosting `ContainerView`.
@@ -34,8 +37,10 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // "Open Home Assistant UI in browser" (Mac): when the app is opened by tapping its icon, open
         // Home Assistant in the default browser and destroy the empty webview window so none is left behind.
+        // This only runs on macOS, where the last-known network information is read live from macBridge,
+        // so the synchronous evaluation is current.
         if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly,
-           let url = Current.servers.all.first?.info.connection.activeURL() {
+           let url = Current.servers.all.first?.activeURLUsingLastKnownNetworkState() {
             URLOpener.shared.open(url, options: [:], completionHandler: nil)
             UIApplication.shared.requestSceneSessionDestruction(session, options: nil, errorHandler: nil)
         }
@@ -56,5 +61,18 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     completionHandler(false)
                 }
         }
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+        WindowScenesManager.shared.sceneDidBecomeActive(windowScene)
+    }
+
+    func sceneWillResignActive(_ scene: UIScene) {
+        WindowScenesManager.shared.sceneWillResignActive(scene)
+    }
+
+    func sceneDidDisconnect(_ scene: UIScene) {
+        WindowScenesManager.shared.didDiscardScene(scene)
     }
 }

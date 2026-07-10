@@ -5,9 +5,14 @@ public extension DatabaseQueue {
     // Following GRDB cocnurrency rules, we have just one database instance
     // https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/concurrency#Concurrency-Rules
     static var appDatabase: DatabaseQueue = {
+        var configuration = Configuration()
+        configuration.busyMode = .timeout(3)
+        configuration.observesSuspensionNotifications = true
+
         let database: DatabaseQueue
+        var isInMemoryFallback = false
         do {
-            database = try DatabaseQueue(path: databasePath())
+            database = try DatabaseQueue(path: databasePath(), configuration: configuration)
             #if targetEnvironment(simulator)
             print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
@@ -16,13 +21,16 @@ public extension DatabaseQueue {
             // Fallback to in-memory database so extensions don't crash
             do {
                 database = try DatabaseQueue()
+                isInMemoryFallback = true
                 Current.Log.error("Using in-memory GRDB database as fallback")
             } catch {
                 fatalError("Failed to create even an in-memory GRDB database: \(error.localizedDescription)")
             }
         }
 
-        setupSchema(database: database)
+        if !Current.isAppExtension || isInMemoryFallback {
+            setupSchema(database: database)
+        }
         return database
     }()
 
@@ -55,6 +63,7 @@ public extension DatabaseQueue {
             HAppEntityTable(),
             WatchConfigTable(),
             CarPlayConfigTable(),
+            MacToolbarConfigTable(),
             AppIconShortcutConfigTable(),
             AssistPipelinesTable(),
             ServerInfoMirrorTable(),
@@ -65,8 +74,9 @@ public extension DatabaseQueue {
             AppAreaTable(),
             HomeViewConfigurationTable(),
             AssistConfigurationTable(),
-            KioskSettingsTable(),
             AllowedTagTable(),
+            KioskSettingsTable(),
+            NotificationSnoozeActionTable(),
         ]
     }
 
@@ -94,6 +104,19 @@ public extension DatabaseQueue {
                 Current.Log.verbose(
                     "Failed or not needed to drop obsolete GRDB table \(tableName), error: \(error.localizedDescription)"
                 )
+            }
+        }
+    }
+
+    /// Delete every row from all app tables, leaving the schema intact. Used by the watch's
+    /// "Delete local data" action to wipe the locally-mirrored config/entities without dropping the DB
+    /// (so the app keeps working and re-syncs on the next refresh). The table list is the same one used
+    /// to create the schema, so new tables are covered automatically. Exposed as an instance method so
+    /// callers can invoke it on `Current.database()` without importing GRDB directly.
+    func eraseAllData() throws {
+        try write { db in
+            for table in DatabaseQueue.tables() {
+                try db.execute(sql: "DELETE FROM \(table.tableName)")
             }
         }
     }

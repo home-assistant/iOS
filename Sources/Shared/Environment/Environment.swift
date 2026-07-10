@@ -4,17 +4,15 @@ import CoreMotion
 import Foundation
 import GRDB
 import HAKit
-import NetworkExtension
+import os
 import PromiseKit
 import RealmSwift
 import UserNotifications
-import Version
 import XCGLogger
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equatable {
     case fastlaneSnapshot
     case debug
-    case beta
     case release
 
     public var description: String {
@@ -23,24 +21,30 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equata
             return "fastlane"
         case .debug:
             return "debug"
-        case .beta:
-            return "beta"
         case .release:
             return "release"
         }
     }
 }
 
-private var underlyingWasSetUp: UInt32 = 0
+private let underlyingWasSetUp = OSAllocatedUnfairLock(initialState: false)
 private var underlyingCurrent = AppEnvironment()
 
 public var Current: AppEnvironment {
     get {
         let result = underlyingCurrent
-        if OSAtomicTestAndSetBarrier(0, &underlyingWasSetUp) == false {
-            // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
-            // reentrant, which is a requirement for touching things like Log but also touching more unexpected
-            // things like accessing any L10n helper value, which funnels through Current as well.
+        // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
+        // reentrant, which is a requirement for touching things like Log but also touching more unexpected
+        // things like accessing any L10n helper value, which funnels through Current as well.
+        // so this is a test-and-set: the flag flips inside the lock, but setup() runs outside it.
+        let needsSetup = underlyingWasSetUp.withLock { wasSetUp -> Bool in
+            if wasSetUp {
+                return false
+            }
+            wasSetUp = true
+            return true
+        }
+        if needsSetup {
             result.setup()
         }
         return result
@@ -94,6 +98,9 @@ public class AppEnvironment {
 
     /// Provides the Client Event store used for local logging.
     public var clientEventStore: ClientEventStoreProtocol = ClientEventStore()
+
+    /// Provides the store that records received notifications for the in-app history.
+    public var notificationHistoryStore: NotificationHistoryStoreProtocol = NotificationHistoryStore()
 
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
@@ -221,7 +228,9 @@ public class AppEnvironment {
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()
     public func api(for server: Server) -> HomeAssistantAPI? {
-        guard server.info.connection.activeURL() != nil else {
+        // Evaluated against cached network information: this is only a "has any usable URL" check,
+        // and refreshing here would force every caller to be async.
+        guard server.info.connection.evaluateActiveURL() != nil else {
             return nil
         }
 
@@ -273,6 +282,9 @@ public class AppEnvironment {
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
         $0.register(provider: BarometerSensor.self)
+        $0.register(provider: KioskModeSensor.self)
+        $0.register(provider: KioskBrightnessSensor.self)
+        $0.register(provider: KioskVolumeSensor.self)
     }
 
     public var localized = LocalizedManager()
@@ -312,6 +324,12 @@ public class AppEnvironment {
     public lazy var clientVersion: () -> Version = { AppConstants.clientVersion }
 
     public var onboardingObservation = OnboardingStateObservation()
+
+    public lazy var kiosk = KioskModeManager()
+
+    /// The current kiosk mode configuration. Always available, defaulting to a disabled
+    /// configuration when nothing has been persisted yet.
+    public var kioskSettings: KioskSettings { kiosk.settings }
 
     public var isPerformingSingleShotLocationQuery = false
 
@@ -383,8 +401,6 @@ public class AppEnvironment {
             return .fastlaneSnapshot
         } else if isDebug {
             return .debug
-        } else if (Bundle.main.bundleIdentifier ?? "").lowercased().contains("beta"), isTestFlight {
-            return .beta
         } else {
             return .release
         }
@@ -563,22 +579,6 @@ public class AppEnvironment {
 
     public var userNotificationCenter: UNUserNotificationCenter {
         UNUserNotificationCenter.current()
-    }
-
-    public var networkInformation: NEHotspotNetwork? {
-        get async {
-            await withCheckedContinuation { continuation in
-                NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-                    continuation.resume(returning: hotspotNetwork)
-                }
-            }
-        }
-    }
-
-    public func networkInformation(completion: @escaping (NEHotspotNetwork?) -> Void) {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            completion(hotspotNetwork)
-        }
     }
 
     #if !os(watchOS)

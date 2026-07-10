@@ -132,16 +132,23 @@ final class AppContainerCoordinator: AppCoordinator {
         avoidUnnecessaryReload: Bool,
         isComingFromAppIntent: Bool
     ) {
-        open(
-            from: from,
-            server: server,
-            urlString: openUrlRaw,
-            webviewURL: server.info.connection.webviewURL(from: openUrlRaw),
-            externalURL: URL(string: openUrlRaw),
-            skipConfirm: skipConfirm,
-            avoidUnnecessaryReload: avoidUnnecessaryReload,
-            isComingFromAppIntent: isComingFromAppIntent
-        )
+        // Accept the same destination forms anywhere a url is opened (notifications, deep links,
+        // Live Activities, …): slash-less HA paths and the app's own navigate deep link resolve to
+        // an internal path; external URLs pass through untouched.
+        let openUrl = AppConstants.normalizedNavigationDestination(openUrlRaw)
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            await open(
+                from: from,
+                server: server,
+                urlString: openUrl,
+                webviewURL: server.webviewURL(from: openUrl),
+                externalURL: URL(string: openUrl),
+                skipConfirm: skipConfirm,
+                avoidUnnecessaryReload: avoidUnnecessaryReload,
+                isComingFromAppIntent: isComingFromAppIntent
+            )
+        }
     }
 
     func openSelectingServer(

@@ -13,6 +13,10 @@ public protocol AppDatabaseUpdaterProtocol {
     func update(server: Server, forceUpdate: Bool)
 }
 
+public extension Notification.Name {
+    static let appDatabaseUpdaterDidFinishRoutine = Notification.Name("appDatabaseUpdaterDidFinishRoutine")
+}
+
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     enum UpdateError: Error {
         case noAPI
@@ -234,8 +238,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     /// Determines if a specific server should be updated based on connection and throttle rules.
-    private func shouldUpdateServer(_ server: Server, forceUpdate: Bool) -> Bool {
-        guard server.info.connection.activeURL() != nil else { return false }
+    private func shouldUpdateServer(_ server: Server, forceUpdate: Bool) async -> Bool {
+        guard await server.activeURL() != nil else { return false }
         if isUpdateCancelled() { return false }
 
         // Skip throttle checks if forceUpdate is true
@@ -262,7 +266,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         // Read the effective force as late as possible — immediately before the throttle decision —
         // so a forced request that upgraded this server's queued entry isn't throttled into a no-op.
         let forceUpdate = await taskCoordinator.effectiveForce(for: server.identifier.rawValue)
-        guard shouldUpdateServer(server, forceUpdate: forceUpdate) else {
+        guard await shouldUpdateServer(server, forceUpdate: forceUpdate) else {
             Current.Log.verbose("Skipping update for server \(server.info.name) - throttled")
             return
         }
@@ -364,6 +368,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         totalTimer.end()
         Current.Log.info("✅ [Profiling] Full update for server \(server.info.name) completed")
+        NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishRoutine, object: server)
     }
 
     /// Sends a typed request for `server` and returns the decoded payload, or `nil` on cancellation,
@@ -484,15 +489,24 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             return
         }
 
+        // Build a floorId -> name lookup once so resolving each area's floor is O(1) instead of a
+        // linear scan through the floors array per area.
+        let floorNamesById = Dictionary(
+            (Current.areasProvider().floors[serverId] ?? []).map { ($0.floorId, $0.name) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
         // Ensure model building happens off the main thread
         let appAreas = await Task.detached(priority: .utility) {
             let modelTimer = ProfilingTimer("Step 4.2.1: Building AppArea models (count: \(areas.count))")
             let result = areas.enumerated().map { index, area in
-                AppArea(
+                let floorName = area.floorId.flatMap { floorNamesById[$0] }
+                return AppArea(
                     from: area,
                     serverId: serverId,
                     entities: areasAndEntities[area.areaId],
-                    sortOrder: index
+                    sortOrder: index,
+                    floorName: floorName
                 )
             }
             modelTimer.end()

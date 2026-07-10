@@ -1,7 +1,6 @@
 import AppIntents
 import Shared
 
-@available(iOS 16.4, *)
 struct UpdateSensorsAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.update_sensors.title",
@@ -14,7 +13,7 @@ struct UpdateSensorsAppIntent: AppIntent {
     ))
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         let failedServers = try await Current.apis.asyncCompactMap { api -> String? in
             do {
                 try await api.UpdateSensors(trigger: .AppShortcut).async(timeout: 10)

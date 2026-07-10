@@ -2,7 +2,6 @@ import HAKit
 import Shared
 import SwiftUI
 import UniformTypeIdentifiers
-import Version
 
 /// SwiftUI view for managing server connection settings
 struct ConnectionSettingsView: View {

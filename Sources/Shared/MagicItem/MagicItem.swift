@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import SwiftUI
 
@@ -253,31 +254,21 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     startListening: startListening
                 )
             }
-        } else {
-            switch domain {
-            case .button, .inputButton:
+        } else if let mainAction = domain.mainAction {
+            switch mainAction {
+            case .press:
                 interactionType = .appIntent(.press(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
                     serverId: magicItem.serverId
                 ))
-            case .cover, .inputBoolean, .light, .switch:
+            case .toggle, .trigger:
                 interactionType = .appIntent(.toggle(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
                     serverId: magicItem.serverId
                 ))
-            case .lock:
-                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                    entityId: magicItem.id,
-                    serverId: magicItem.serverId
-                ))
-            case .climate:
-                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                    entityId: magicItem.id,
-                    serverId: magicItem.serverId
-                ))
-            case .scene, .script:
+            case .turnOn where domain == .scene || domain == .script:
                 interactionType = .appIntent(.activate(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
@@ -289,6 +280,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     serverId: magicItem.serverId
                 ))
             }
+        } else {
+            interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                entityId: magicItem.id,
+                serverId: magicItem.serverId
+            ))
         }
 
         return interactionType
@@ -563,25 +559,26 @@ public extension MagicItem {
             return
         }
 
-        var connectionInfo = server.info.connection
-        guard let baseURL = connectionInfo.activeURL() else {
-            Current.Log.error("No active URL while executing magic item \(id) on watch")
-            completion(false, ServerConnectionError.noActiveURL(server.info.name))
-            return
-        }
+        Task {
+            guard let baseURL = await server.activeURL() else {
+                Current.Log.error("No active URL while executing magic item \(id) on watch")
+                completion(false, ServerConnectionError.noActiveURL(server.info.name))
+                return
+            }
 
-        let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
-        tokenManager.bearerToken.done { token, _ in
-            self.sendRESTServiceCall(
-                baseURL: baseURL,
-                server: server,
-                token: token,
-                serviceCall: serviceCall,
-                completion: completion
-            )
-        }.catch { error in
-            Current.Log.error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
-            completion(false, error)
+            let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+            tokenManager.bearerToken.done { token, _ in
+                self.sendRESTServiceCall(
+                    baseURL: baseURL,
+                    server: server,
+                    token: token,
+                    serviceCall: serviceCall,
+                    completion: completion
+                )
+            }.catch { error in
+                Current.Log.error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
+                completion(false, error)
+            }
         }
     }
 

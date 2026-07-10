@@ -92,6 +92,8 @@
 	<string>Take photos and send them to your Home Assistant server.</string>
 	<key>NSCrossWebsiteTrackingUsageDescription</key>
 	<string>Optionally enable cross-website tracking if your configuration requires it.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Authenticate to access kiosk mode settings.</string>
 	<key>NSFocusStatusUsageDescription</key>
 	<string>Report your focus status as a sensor.</string>
 	<key>NSLocalNetworkUsageDescription</key>

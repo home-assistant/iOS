@@ -1,8 +1,8 @@
 import Alamofire
 import Foundation
-import MobileCoreServices
 import PromiseKit
 import UIKit
+import UniformTypeIdentifiers
 import UserNotifications
 
 public enum NotificationAttachmentManagerServiceError: Error {
@@ -43,7 +43,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
         }.then { [self] attachmentInfo -> Promise<UNNotificationAttachment> in
             Current.Log.info("using attachment info \(attachmentInfo)")
             return attachment(from: attachmentInfo, api: api)
-        }.recover { [self] error -> Promise<UNNotificationAttachment> in
+        }.recover { error -> Promise<UNNotificationAttachment> in
             Current.Log.error("failed at getting attachment info: \(error)")
 
             if case NotificationAttachmentManagerServiceError.noAttachment = error {
@@ -53,7 +53,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
                 throw error
             } else {
                 #if os(iOS)
-                return try .value(attachment(for: error, api: api))
+                return try .value(self.attachment(for: error, api: api))
                 #else
                 throw error
                 #endif
@@ -65,6 +65,8 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
         }.map { content in
             // swiftlint:disable:next force_cast
             content.mutableCopy() as! UNMutableNotificationContent
+        }.get { content in
+            Self.applyDefaultCategoryIfNeeded(to: content)
         }.then { content in
             when(resolved: attachmentPromise.get { attachment in
                 Current.Log.info("adding attachment \(attachment)")
@@ -77,6 +79,24 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
                 // just in case we're not retained by our caller, keep alive through
             }
         }
+    }
+
+    /// Notifications without a category never get a chance to show action buttons, since iOS only
+    /// looks up actions via a registered `UNNotificationCategory` matching `categoryIdentifier`. The
+    /// "DYNAMIC" category is looked up by the content extension at presentation time (see
+    /// `UNNotificationContent.userInfoActions`), so forcing it here is what lets default actions like
+    /// snooze show up even on notifications HA didn't already tag with actions/entity_id/attachments.
+    static func applyDefaultCategoryIfNeeded(to content: UNMutableNotificationContent) {
+        guard content.categoryIdentifier.isEmpty, !NotificationSnoozeAction.enabledActions().isEmpty else {
+            return
+        }
+
+        if let hadict = content.userInfo["homeassistant"] as? [String: Any],
+           (hadict["live_update"] as? Bool) == true || (hadict["command"] as? String) == "live_activity" {
+            return
+        }
+
+        content.categoryIdentifier = "DYNAMIC"
     }
 
     public func downloadAttachment(
@@ -165,7 +185,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
             identifier: "error",
             url: url,
             options: [
-                UNNotificationAttachmentOptionsTypeHintKey: kUTTypePNG,
+                UNNotificationAttachmentOptionsTypeHintKey: UTType.png.identifier,
             ]
         )) {
             // note: attachments don't actually support accessibility here (yet?) but this is used also for tests

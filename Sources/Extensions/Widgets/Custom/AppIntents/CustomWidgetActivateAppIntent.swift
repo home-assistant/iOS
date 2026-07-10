@@ -1,10 +1,10 @@
 import AppIntents
 import Foundation
 import HAKit
+import HAKit_PromiseKit
 import Shared
 import SwiftUI
 
-@available(iOS 16.4, *)
 /// Intent activate scenes or scripts
 struct CustomWidgetActivateAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Activate"

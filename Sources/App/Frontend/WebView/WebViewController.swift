@@ -5,7 +5,6 @@ import CoreLocation
 import HAKit
 import Improv_iOS
 import KeychainAccess
-import MBProgressHUD
 import PromiseKit
 import Shared
 import SwiftUI
@@ -31,6 +30,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var initialURL: URL?
     var statusBarButtonsStack: UIStackView?
     var lastNavigationWasServerError = false
+    var didHandleServerErrorResponse = false
     var reconnectBackgroundTimer: Timer? {
         willSet {
             if reconnectBackgroundTimer != newValue {
@@ -45,7 +45,21 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// instead of UIKit modals presented from here.
     var overlayState: WebFrontendOverlayState?
 
-    var loadActiveURLIfNeededInProgress = false
+    /// Set by `FrontendView` so retry can rebuild the SwiftUI-hosted web view when WebKit is stuck.
+    var resetFrontendAction: (() -> Void)?
+
+    /// Owns disconnected empty-state recovery timing. Kept in `HomeAssistantView` so attempts survive reset.
+    var reconnectManager: WebViewReconnectManager?
+
+    /// In-flight `loadActiveURLIfNeeded()` attempt and when it started. Repeat calls are skipped
+    /// while a recent attempt is running, but an attempt older than
+    /// `WebViewController.loadActiveURLStaleInterval` is assumed hung, cancelled, and replaced —
+    /// a hung attempt must never block URL loading until the app is killed.
+    var loadActiveURLTask: Task<Void, Never>?
+    var loadActiveURLTaskStartDate: Date?
+
+    /// Wrapper around the application state; replaceable in tests.
+    var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
     /// Track the timestamp of the last pull-to-refresh action
     var lastPullToRefreshTimestamp: Date?
@@ -55,28 +69,26 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         improvManager: ImprovManager.shared
     )
 
+    private var kioskCancellables = Set<AnyCancellable>()
+
+    /// Periodically reloads the page while kiosk mode's "Auto reload" is set to an interval.
+    private var autoReloadTimer: Timer?
+
     /// Handler for gestures over the webview
     let webViewGestureHandler = WebViewGestureHandler()
 
     /// Handler for script messages sent from the webview to the app
     let webViewScriptMessageHandler = WebViewScriptMessageHandler()
 
-    /// Defer showing the empty state until disconnected for 10 seconds (used by
+    /// Defer showing the empty state until the frontend has been disconnected for
+    /// `Current.settingsStore.webViewEmptyStateTimeout` seconds (used by
     /// updateFrontendConnectionState in WebViewController+ProtocolConformance.swift)
     var emptyStateTimer: Timer?
 
-    /// Frontend notifies when connection is established or not
-    /// Each navigation resets this to false so we can show the empty state
-    var isConnected = false
-
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
-    override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen || kioskPrefersStatusBarHidden
-    }
-
     override var prefersHomeIndicatorAutoHidden: Bool {
-        Current.settingsStore.fullScreen || kioskPrefersHomeIndicatorAutoHidden
+        Current.settingsStore.fullScreen
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -84,8 +96,19 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     #if targetEnvironment(macCatalyst)
+    override var canBecomeFirstResponder: Bool { true }
+
     override var keyCommands: [UIKeyCommand]? {
+        func prioritised(_ input: String, _ action: Selector) -> UIKeyCommand {
+            let command = UIKeyCommand(input: input, modifierFlags: .command, action: action)
+            command.wantsPriorityOverSystemBehavior = true
+            return command
+        }
+
         var commands = [
+            prioritised("c", #selector(copyCurrentSelectedContent)),
+            prioritised("v", #selector(pasteContent)),
+            prioritised("x", #selector(cutCurrentSelectedContent)),
             UIKeyCommand(
                 input: "c",
                 modifierFlags: [.shift, .command],
@@ -97,14 +120,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 action: #selector(pasteContent)
             ),
             UIKeyCommand(
-                input: "c",
-                modifierFlags: .command,
-                action: #selector(copyCurrentSelectedContent)
-            ),
-            UIKeyCommand(
-                input: "v",
-                modifierFlags: .command,
-                action: #selector(pasteContent)
+                input: "x",
+                modifierFlags: [.shift, .command],
+                action: #selector(cutCurrentSelectedContent)
             ),
             UIKeyCommand(
                 input: "r",
@@ -113,19 +131,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             ),
         ]
 
-        // Add find command for iOS 16+
-        if #available(iOS 16.0, *) {
-            commands.append(UIKeyCommand(
-                input: "f",
-                modifierFlags: .command,
-                action: #selector(showFindInteraction)
-            ))
-            commands.append(UIKeyCommand(
-                input: "f",
-                modifierFlags: [.shift, .command],
-                action: #selector(showFindInteraction)
-            ))
-        }
+        commands.append(UIKeyCommand(
+            input: "f",
+            modifierFlags: .command,
+            action: #selector(showFindInteraction)
+        ))
+        commands.append(UIKeyCommand(
+            input: "f",
+            modifierFlags: [.shift, .command],
+            action: #selector(showFindInteraction)
+        ))
 
         return commands
     }
@@ -177,16 +192,19 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     deinit {
-        removeEmptyStateObservations()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
+        autoReloadTimer?.invalidate()
+        loadActiveURLTask?.cancel()
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         // Avoid interrupting background audio when the frontend loads media-capable elements.
-        config.mediaTypesRequiringUserActionForPlayback = .audio
+        config.mediaTypesRequiringUserActionForPlayback = Current.settingsStore
+            .mediaTypesRequiringUserActionForPlayback
+            .wkMediaTypes
         return config
     }
 
@@ -197,6 +215,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         becomeFirstResponder()
 
         observeConnectionNotifications()
+        setupKioskModeObservation()
 
         let statusBarView = setupStatusBarView()
 
@@ -259,19 +278,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         styleUI()
         getLatestConfig()
 
-        if #available(iOS 16.4, *) {
-            webView.isInspectable = true
-        }
+        webView.isInspectable = true
 
-        // Enable find interaction for iOS 16+
-        if #available(iOS 16.0, *) {
-            webView.isFindInteractionEnabled = true
-        }
+        webView.isFindInteractionEnabled = true
 
         postOnboardingNotificationPermission()
-        emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
-        setupKioskMode()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -291,12 +303,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
-
-        // Refresh kiosk status bar state when view appears (e.g., after settings modal dismisses)
-        if KioskModeManager.shared.isKioskModeActive {
-            setNeedsStatusBarAppearanceUpdate()
-            navigationController?.setNeedsStatusBarAppearanceUpdate()
-        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -316,5 +322,75 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             let action = Current.settingsStore.gestures[.shake] ?? .openDebug
             webViewGestureHandler.handleGestureAction(action)
         }
+    }
+}
+
+private extension Set<SettingsStore.MediaTypeRequiringUserActionForPlayback> {
+    var wkMediaTypes: WKAudiovisualMediaTypes {
+        var mediaTypes: WKAudiovisualMediaTypes = []
+
+        if contains(.audio) {
+            mediaTypes.insert(.audio)
+        }
+        if contains(.video) {
+            mediaTypes.insert(.video)
+        }
+
+        return mediaTypes
+    }
+}
+
+// MARK: - Kiosk mode
+
+extension WebViewController {
+    func setupKioskModeObservation() {
+        Current.kiosk.settingsPublisher
+            .map { $0.enabled && $0.removeHeaderAndSidebar }
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateFrontendKioskMode()
+            }
+            .store(in: &kioskCancellables)
+
+        // (Re)schedule the auto-reload timer. Not dropped, so the initial value arms it on cold start.
+        Current.kiosk.settingsPublisher
+            .map { $0.enabled ? $0.autoReload : .never }
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] interval in
+                self?.applyAutoReload(interval)
+            }
+            .store(in: &kioskCancellables)
+    }
+
+    private func applyAutoReload(_ interval: KioskAutoReloadInterval) {
+        autoReloadTimer?.invalidate()
+        autoReloadTimer = nil
+        guard let seconds = interval.timeInterval else { return }
+        autoReloadTimer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                switch connectionState {
+                case .connected:
+                    reload()
+                case .disconnected, .unknown:
+                    if overlayState?.emptyState != nil {
+                        recoverDisconnectedFrontend()
+                    }
+                case .authInvalid:
+                    break
+                }
+            }
+        }
+    }
+
+    func updateFrontendKioskMode() {
+        let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
+        webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+            command: .kioskModeSet,
+            payload: ["enable": enable]
+        )
     }
 }

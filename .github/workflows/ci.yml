@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-      - uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74  # v1.314.0
+      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9  # v1.316.0
         with:
           ruby-version: "3.1"
           bundler-cache: true
@@ -67,7 +67,7 @@ jobs:
 
       - name: Comment on PR if `swiftlint:disable` is found
         if: steps.scan.outputs.disable_lines != '' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0  # v3.0.4
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88  # v3.0.5
         with:
           header: swiftlint-disable-check
           message: |
@@ -85,7 +85,7 @@ jobs:
           fetch-depth: 0  # Fetch all history for comparison with main branch
 
       - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v5.3.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v5.3.0
         with:
           python-version: '3.x'
 
@@ -96,6 +96,13 @@ jobs:
           OUTPUT=$(python3 Tools/detect_unused_strings.py 2>&1 || true)
           echo "output<<EOF" >> $GITHUB_OUTPUT
           echo "$OUTPUT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Last non-empty line is the comma-separated list of unused keys,
+          # ready to paste into the "Lokalise: Delete Keys" workflow.
+          KEYS=$(printf '%s\n' "$OUTPUT" | awk 'NF { last = $0 } END { print last }')
+          echo "keys<<EOF" >> $GITHUB_OUTPUT
+          echo "$KEYS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
           # Check if any unused strings were found
@@ -112,7 +119,7 @@ jobs:
         if: |
           steps.detect.outputs.has_unused == 'true' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0  # v3.0.4
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88  # v3.0.5
         with:
           header: unused-strings-check
           message: |
@@ -129,32 +136,26 @@ jobs:
 
             </details>
 
-            To clean up these strings, manually remove them from the `Localizable.strings` files
-            and regenerate `Strings.swift` using SwiftGen.
+            To remove them, run the
+            [Lokalise: Delete Keys](${{ github.event.repository.html_url }}/actions/workflows/delete_lokalise_keys.yml)
+            workflow — it deletes the keys from Lokalise and opens a PR removing them from
+            `Localizable.strings` and regenerating `Strings.swift`. Copy-paste these keys into the **keys** input:
+
+            ```
+            ${{ steps.detect.outputs.keys }}
+            ```
 
   test:
-    needs: check-swiftlint-disables
+    needs: lint
     runs-on: macos-26
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-      - uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74  # v1.314.0
+      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9  # v1.316.0
         with:
           ruby-version: .ruby-version
 
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
-        name: "Cache: Pods"
-        id: cache_pods
-        with:
-          path: |
-            Pods
-            Tools/MaterialDesignIcons.ttf
-            Tools/MaterialDesignIcons.json
-          key: >-
-            ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
-            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
-
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         name: "Cache: Gems"
         id: cache_gems
         with:
@@ -166,6 +167,24 @@ jobs:
             env.DEVELOPER_DIR,
             hashFiles('.ruby-version', '**/Gemfile.lock')) }}
 
+      # DerivedData is warmed on `main` (the save step below) and only restored
+      # on PRs, so pinned SPM dependencies are compiled once per Package.resolved
+      # and reused instead of recompiled from scratch on every run.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('**/Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
       - name: Install Brews
         # right now, we don't need anything from brew for tests, so save some time
         if: ${{ false }}
@@ -175,15 +194,27 @@ jobs:
         if: steps.cache_gems.outputs.cache-hit != 'true'
         run: bundle install --jobs 4 --retry 3
 
-      - name: Install Pods Release
-        if: steps.cache_pods.outputs.cache-hit != 'true'
-        run: bundle exec pod install --repo-update
-
       - name: Run tests
         run: bundle exec fastlane test
+        env:
+          CI_ENABLE_COVERAGE: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+
+      # Save the warmed DerivedData only from `main`, and only on a fresh key,
+      # so PR runs never evict the shared base cache other PRs restore from.
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Save: DerivedData"
+        if: github.ref == 'refs/heads/main' && steps.derived_data.outputs.cache-hit != 'true'
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('**/Package.resolved')) }}
 
       - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0
         name: "Upload Code Coverage"
+        if: github.ref == 'refs/heads/main'
         with:
           xcode: true
           xcode_archive_path: fastlane/test_output/Tests-Unit.xcresult
@@ -203,70 +234,3 @@ jobs:
         with:
           name: ios-simulator
           path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
-
-  size:
-    needs: check-swiftlint-disables
-    if: |
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == 'home-assistant/iOS'
-    runs-on: macos-26
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-      - uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74  # v1.314.0
-        with:
-          ruby-version: .ruby-version
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v4.6.2
-        name: "Cache: Pods"
-        id: cache_pods
-        with:
-          path: |
-            Pods
-            Tools/MaterialDesignIcons.ttf
-            Tools/MaterialDesignIcons.json
-          key: >-
-            ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
-            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
-
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
-        name: "Cache: Gems"
-        id: cache_gems
-        with:
-          path: vendor/bundle
-          key: >-
-            ${{ format('{0}-gems-{1}-{2}-{3}',
-            runner.os,
-            env.ImageVersion,
-            env.DEVELOPER_DIR,
-            hashFiles('.ruby-version', '**/Gemfile.lock')) }}
-
-      - name: Install Brews
-        # right now, we don't need anything from brew for sizing, so save some time
-        if: ${{ false }}
-        run: brew bundle
-
-      - name: Install Gems
-        if: steps.cache_gems.outputs.cache-hit != 'true'
-        run: bundle install --jobs 4 --retry 3
-
-      - name: Install Pods Release
-        if: steps.cache_pods.outputs.cache-hit != 'true'
-        run: bundle exec pod install --repo-update
-
-      - name: Build app
-        run: bundle exec fastlane ios size
-        env:
-          P12_KEY_DISTRIBUTION: ${{ secrets.P12_KEY_DISTRIBUTION }}
-          P12_VALUE_DISTRIBUTION: ${{ secrets.P12_VALUE_DISTRIBUTION }}
-          P12_KEY_MAC_DEVELOPER_ID: ${{ secrets.P12_KEY_MAC_DEVELOPER_ID }}
-          P12_KEY_MAC_DEVELOPER_INSTALLER: ${{ secrets.P12_KEY_MAC_DEVELOPER_INSTALLER }}
-          P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
-          P12_VALUE_MAC_DEVELOPER_INSTALLER: ${{ secrets.P12_VALUE_MAC_DEVELOPER_INSTALLER }}
-          EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
-          EMERGE_REPO_NAME: ${{ github.repository }}
-          EMERGE_PR_NUMBER: ${{ github.event.number }}
-          EMERGE_SHA: ${{ github.event.pull_request.head.sha }}
-          EMERGE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
-          HOMEASSISTANT_APPLE_ID: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
-          HOMEASSISTANT_FASTLANE_SESSION: ${{ secrets.HOMEASSISTANT_FASTLANE_SESSION }}

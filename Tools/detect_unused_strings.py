@@ -249,6 +249,14 @@ def main():
     print(f"Total unused: {len(unused_strings)}")
     print(f"{'='*80}\n")
     
+    # Copy-paste list for the "Lokalise: Delete Keys" workflow. The CI job reads
+    # the last non-empty line of this output to build the PR-comment keys block.
+    keys_csv = ",".join(sorted({s.localizable_key for s in unused_strings}))
+    print(f"{'='*80}")
+    print('Copy-paste these keys into the "Lokalise: Delete Keys" workflow (keys input):')
+    print(f"{'='*80}")
+    print(keys_csv)
+
     # Exit with error code to indicate unused strings were found
     sys.exit(1)
 

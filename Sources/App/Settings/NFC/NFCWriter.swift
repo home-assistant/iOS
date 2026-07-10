@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import CoreNFC
 import Foundation
 import PromiseKit
@@ -125,3 +126,4 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         }
     }
 }
+#endif

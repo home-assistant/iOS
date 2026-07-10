@@ -78,4 +78,24 @@ struct HAEntityCarPlayTests {
 
         #expect(actualData == expectedData)
     }
+
+    @Test("Given a domain without a dedicated CarPlay icon then getMDI falls back to Domain.icon")
+    func usesDomainIconFallbackForUnhandledDomain() throws {
+        let entity = try HAEntity(
+            entityId: "media_player.living_room",
+            state: "playing",
+            lastChanged: Date(),
+            lastUpdated: Date(),
+            attributes: [
+                "friendly_name": "Living room speaker",
+            ],
+            context: .init(id: "context", userId: "user", parentId: nil)
+        )
+
+        let expected = Domain.mediaPlayer.icon(
+            deviceClass: entity.deviceClass.rawValue,
+            state: Domain.State(rawValue: entity.state)
+        )
+        #expect(entity.getMDI() == expected)
+    }
 }

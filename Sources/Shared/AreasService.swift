@@ -3,22 +3,34 @@ import HAKit
 
 public protocol AreasServiceProtocol {
     var areas: [String: [HAAreasRegistryResponse]] { get }
+    var floors: [String: [HAFloorRegistryResponse]] { get }
     func fetchAreasAndItsEntities(for server: Server) async -> [String: Set<String>]
     func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse?
+    func floor(for floorId: String, serverId: String) -> HAFloorRegistryResponse?
 }
 
 final class AreasService: AreasServiceProtocol {
     static var shared: AreasServiceProtocol = AreasService()
 
     private var request: HACancellable?
+    private var floorsRequest: HACancellable?
     /// [ServerId: [HAAreasRegistryResponse]]
     var areas: [String: [HAAreasRegistryResponse]] = [:]
+    /// [ServerId: [HAFloorRegistryResponse]]
+    var floors: [String: [HAFloorRegistryResponse]] = [:]
 
     func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse? {
         guard let areasForServer = areas[serverId] else {
             return nil
         }
         return areasForServer.first(where: { $0.areaId == areaId })
+    }
+
+    func floor(for floorId: String, serverId: String) -> HAFloorRegistryResponse? {
+        guard let floorsForServer = floors[serverId] else {
+            return nil
+        }
+        return floorsForServer.first(where: { $0.floorId == floorId })
     }
 
     func fetchAreasAndItsEntities(for server: Server) async -> [String: Set<String>] {
@@ -43,6 +55,13 @@ final class AreasService: AreasServiceProtocol {
             )
         }
         self.areas[server.identifier.rawValue] = areas
+        // Only fetch the floor registry when at least one area references a floor — otherwise the
+        // floor names would never be used and the request is a wasted round-trip.
+        if areas.contains(where: { $0.floorId != nil }) {
+            await fetchFloors(for: server, connection: connection)
+        } else {
+            floors[server.identifier.rawValue] = []
+        }
         if areas.isEmpty {
             Current.Log.verbose("No areas found on the server.")
             return [:]
@@ -57,6 +76,25 @@ final class AreasService: AreasServiceProtocol {
 
             return allEntitiesPerArea
         }
+    }
+
+    private func fetchFloors(for server: Server, connection: HAConnection) async {
+        floorsRequest?.cancel()
+        let floors = await withCheckedContinuation { continuation in
+            floorsRequest = connection.send(
+                HATypedRequest<[HAFloorRegistryResponse]>.configFloorRegistry(),
+                completion: { result in
+                    switch result {
+                    case let .success(data):
+                        continuation.resume(returning: data)
+                    case let .failure(error):
+                        Current.Log.error(userInfo: ["Failed to retrieve floors": error.localizedDescription])
+                        continuation.resume(returning: [])
+                    }
+                }
+            )
+        }
+        self.floors[server.identifier.rawValue] = floors
     }
 
     private func fetchEntitiesFromDatabase(serverId: String) -> [EntityRegistryListForDisplay.Entity] {

@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Entity")
 
@@ -16,6 +16,7 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     var serverName: String
     var areaName: String?
     var deviceName: String?
+    var floorName: String?
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
@@ -32,6 +33,7 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         serverName: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        floorName: String? = nil,
         displayString: String,
         iconName: String
     ) {
@@ -41,12 +43,13 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         self.serverName = serverName
         self.areaName = areaName
         self.deviceName = deviceName
+        self.floorName = floorName
         self.displayString = displayString
         self.iconName = iconName
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [HAAppEntityAppIntentEntity] {
         getEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
@@ -74,6 +77,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         for (server, values) in entities {
             let deviceMap = values.devicesMap(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
+            let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
 
             allEntities.append((server, values.map({ entity in
                 HAAppEntityAppIntentEntity(
@@ -83,6 +87,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name ?? "",
                     deviceName: deviceMap[entity.entityId]?.name ?? "",
+                    floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue
                 )
@@ -93,13 +98,14 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 func makeHAEntityIntentItemCollection(
     entities: [(Server, [HAAppEntity])],
     defaultIconName: String
 ) -> IntentItemCollection<HAAppEntityAppIntentEntity> {
     .init(sections: entities.map { (server: Server, values: [HAAppEntity]) in
         let areasMap = values.areasMap(for: server.identifier.rawValue)
+        let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
         return .init(
             .init(stringLiteral: server.info.name),
             items: values.map { entity in
@@ -109,6 +115,7 @@ func makeHAEntityIntentItemCollection(
                     serverId: entity.serverId,
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name,
+                    floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? defaultIconName
                 )

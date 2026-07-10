@@ -42,7 +42,6 @@ struct ControlAssistConfiguration: ControlConfigurationIntent {
     var displayText: String?
 }
 
-@available(iOS 16.4, *)
 struct AssistPipelineEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Assist Pipeline")
     static let defaultQuery = AssistPipelineEntityQuery()
@@ -77,7 +76,6 @@ struct AssistPipelineEntity: AppEntity {
     }
 }
 
-@available(iOS 16.4, *)
 struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [AssistPipelineEntity] {
         let pipelinesPerServer = try await pipelines()

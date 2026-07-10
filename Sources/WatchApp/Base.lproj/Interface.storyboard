@@ -9,7 +9,7 @@
         <!--Home Assistant-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller title="Home Assistant" id="AgC-eL-Hgc" customClass="HostingController" customModule="WatchExtension_Watch"/>
+                <controller title="Home Assistant" id="AgC-eL-Hgc" customClass="HostingController" customModule="WatchApp"/>
             </objects>
             <point key="canvasLocation" x="34" y="32"/>
         </scene>
@@ -91,7 +91,7 @@
         <!--Dynamic Notification Controller-->
         <scene sceneID="Cz7-57-7Ue">
             <objects>
-                <controller id="CnG-yJ-6kl" customClass="DynamicNotificationController" customModule="WatchExtension_Watch">
+                <controller id="CnG-yJ-6kl" customClass="DynamicNotificationController" customModule="WatchApp">
                     <items>
                         <label alignment="center" text="Error Label" textAlignment="center" numberOfLines="0" id="TYD-CK-j6b"/>
                         <imageView alignment="center" id="kUn-Nn-n23"/>

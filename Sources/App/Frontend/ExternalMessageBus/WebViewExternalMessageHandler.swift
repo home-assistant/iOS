@@ -12,6 +12,7 @@ protocol WebViewExternalMessageHandlerProtocol {
     var webViewController: WebViewControllerProtocol? { get set }
     func handleExternalMessage(_ dictionary: [String: Any])
     func sendExternalBus(message: WebSocketMessage) -> Promise<Void>
+    func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?)
 
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
@@ -25,6 +26,9 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
+
+    private var nextOutgoingMessageID = 1
+    private var pendingCommands: [Int: PendingExternalBusCommand] = [:]
 
     init(
         improvManager: any ImprovManagerProtocol
@@ -44,17 +48,23 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             return
         }
 
+        if incomingMessage.MessageType == "result" {
+            handleExternalBusCommandResult(incomingMessage)
+            return
+        }
+
         var response: Guarantee<WebSocketMessage>?
 
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
+                let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
                         seal(WebSocketMessage(
                             id: incomingMessage.ID!,
                             type: "result",
-                            result: WebViewExternalBusMessage.configResult
+                            result: configResult
                         ))
                     }
                 }
@@ -180,7 +190,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 handleEntityAddTo(entityId: entityId, appPayload: appPayload)
             case .cameraPlayerShow:
-                guard #available(iOS 16.0, *) else { return }
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
                     Current.Log.error("Received camera/show but entity_id was not string! \(incomingMessage)")
                     return
@@ -300,34 +309,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             return
         }
 
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
-                        .buildTransferToHomeAssistant(server: webViewController.server)
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController.presentOverlayController(controller: threadManagementView, animated: true)
-        }
+        let threadManagementView =
+            UIHostingController(
+                rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
+                    .buildTransferToHomeAssistant(server: webViewController.server)
+            )
+        threadManagementView.view.backgroundColor = .clear
+        threadManagementView.modalPresentationStyle = .overFullScreen
+        threadManagementView.modalTransitionStyle = .crossDissolve
+        webViewController.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func transferHAThreadCredentialsToKeychain(macExtendedAddress: String, activeOperationalDataset: String) {
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
-                        .buildTransferToAppleKeychain(
-                            macExtendedAddress: macExtendedAddress,
-                            activeOperationalDataset: activeOperationalDataset
-                        )
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
-        }
+        let threadManagementView =
+            UIHostingController(
+                rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
+                    .buildTransferToAppleKeychain(
+                        macExtendedAddress: macExtendedAddress,
+                        activeOperationalDataset: activeOperationalDataset
+                    )
+            )
+        threadManagementView.view.backgroundColor = .clear
+        threadManagementView.modalPresentationStyle = .overFullScreen
+        threadManagementView.modalTransitionStyle = .crossDissolve
+        webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func barcodeScannerRequested(
@@ -430,9 +435,9 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func showToast(payload: ToastShowPayload) {
         if #available(iOS 18, *) {
-            ToastManager.shared.show(
+            ToastPresenter.shared.show(
                 id: payload.id,
-                symbol: SFSymbol.infoCircleFill.rawValue,
+                symbol: .infoCircleFill,
                 symbolForegroundStyle: (.white, .haPrimary),
                 title: payload.message,
                 message: "",
@@ -446,7 +451,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func hideToast(id: String) {
         if #available(iOS 18, *) {
-            ToastManager.shared.hide(id: id)
+            ToastPresenter.shared.hide(id: id)
         } else {
             Current.Log.verbose("Not hiding toast with id \(id), Toast not available on this OS version.")
         }
@@ -476,7 +481,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue,
             payload: [
-                "name": deviceName,
+                "name": deviceName as Any,
                 "success": success,
             ]
         ))
@@ -606,7 +611,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
-    @available(iOS 16.0, *)
     private func showCameraPlayer(entityId: String, cameraName: String?) {
         guard let webViewController else {
             Current.Log.error("WebViewController not available while opening camera player")
@@ -620,6 +624,153 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         ).embeddedInHostingController()
         view.modalPresentationStyle = .overFullScreen
         webViewController.presentOverlayController(controller: view, animated: true)
+    }
+}
+
+// MARK: - Acknowledged external bus commands
+
+private final class PendingExternalBusCommand {
+    let command: String
+    let payload: [String: Any]?
+    let retryDelay: DispatchTimeInterval
+    let acknowledgementTimeout: DispatchTimeInterval
+    var attemptsRemaining: Int
+    /// A fresh id is assigned per attempt so a late error result for a previous attempt is ignored.
+    var messageID: Int
+    var acknowledgementWorkItem: DispatchWorkItem?
+
+    init(
+        command: String,
+        payload: [String: Any]?,
+        attemptsRemaining: Int,
+        retryDelay: DispatchTimeInterval,
+        acknowledgementTimeout: DispatchTimeInterval,
+        messageID: Int
+    ) {
+        self.command = command
+        self.payload = payload
+        self.attemptsRemaining = attemptsRemaining
+        self.retryDelay = retryDelay
+        self.acknowledgementTimeout = acknowledgementTimeout
+        self.messageID = messageID
+    }
+}
+
+extension WebViewExternalMessageHandler {
+    /// Sends a command over the external bus and keeps retrying until the frontend acknowledges it,
+    /// rather than relying on a fixed delay to guess when the frontend is ready.
+    ///
+    /// The frontend only replies to a `command` when it could **not** handle it — the command handler
+    /// isn't registered yet, or it rejected the command (see `external_messaging.ts`); a handled command
+    /// produces no reply. So we retry whenever an error result is echoed back for our message id (or the
+    /// JavaScript evaluation itself fails), and treat the absence of any error within
+    /// `acknowledgementTimeout` as success. Main thread only.
+    func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?) {
+        sendExternalBusCommandWithRetry(
+            command: command,
+            payload: payload,
+            maxAttempts: 6,
+            retryDelay: .milliseconds(300),
+            acknowledgementTimeout: .milliseconds(750)
+        )
+    }
+
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        maxAttempts: Int,
+        retryDelay: DispatchTimeInterval,
+        acknowledgementTimeout: DispatchTimeInterval
+    ) {
+        // Supersede any in-flight attempt for the same command so the latest payload wins.
+        cancelPendingCommands(matching: command.rawValue)
+
+        let pending = PendingExternalBusCommand(
+            command: command.rawValue,
+            payload: payload,
+            attemptsRemaining: maxAttempts,
+            retryDelay: retryDelay,
+            acknowledgementTimeout: acknowledgementTimeout,
+            messageID: nextOutgoingMessageID
+        )
+        nextOutgoingMessageID += 1
+        attemptExternalBusCommand(pending)
+    }
+
+    private func attemptExternalBusCommand(_ pending: PendingExternalBusCommand) {
+        guard pending.attemptsRemaining > 0 else {
+            Current.Log
+                .warning("External bus command \(pending.command) not acknowledged after retries, giving up")
+            pendingCommands[pending.messageID] = nil
+            return
+        }
+        pending.attemptsRemaining -= 1
+        let attemptID = pending.messageID
+        pendingCommands[attemptID] = pending
+
+        sendExternalBus(message: .init(
+            id: attemptID,
+            command: pending.command,
+            payload: pending.payload
+        )).done { [weak self, weak pending] in
+            // Start the acknowledgement timer only once the command actually reached the frontend, so a
+            // send failure always routes to `catch` below regardless of timing. The frontend stays
+            // silent on success, so no error result within the window counts as acknowledged.
+            guard let self, let pending, pendingCommands[attemptID] === pending else { return }
+            let acknowledgementWorkItem = DispatchWorkItem { [weak self, weak pending] in
+                guard let self, let pending, pendingCommands[attemptID] === pending else { return }
+                Current.Log.verbose("External bus command \(pending.command) (id \(attemptID)) acknowledged")
+                pendingCommands[attemptID] = nil
+            }
+            pending.acknowledgementWorkItem = acknowledgementWorkItem
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + pending.acknowledgementTimeout,
+                execute: acknowledgementWorkItem
+            )
+        }.catch { [weak self, weak pending] error in
+            // The frontend never saw the command, so no error result is coming — retry now.
+            guard let self, let pending, pendingCommands[attemptID] === pending else { return }
+            Current.Log.error("External bus command \(pending.command) failed to send: \(error)")
+            retryExternalBusCommand(pending)
+        }
+    }
+
+    private func retryExternalBusCommand(_ pending: PendingExternalBusCommand) {
+        guard pendingCommands[pending.messageID] === pending else { return }
+        pending.acknowledgementWorkItem?.cancel()
+        pendingCommands[pending.messageID] = nil
+
+        // Re-key under a fresh id and stay registered through the delay so a newer command can still
+        // supersede this one; the delayed attempt bails out if that happened.
+        pending.messageID = nextOutgoingMessageID
+        nextOutgoingMessageID += 1
+        let retryID = pending.messageID
+        pendingCommands[retryID] = pending
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + pending.retryDelay) { [weak self] in
+            guard let self, pendingCommands[retryID] === pending else { return }
+            attemptExternalBusCommand(pending)
+        }
+    }
+
+    private func cancelPendingCommands(matching command: String) {
+        let ids = pendingCommands.filter { $0.value.command == command }.map(\.key)
+        for id in ids {
+            pendingCommands[id]?.acknowledgementWorkItem?.cancel()
+            pendingCommands[id] = nil
+        }
+    }
+
+    private func handleExternalBusCommandResult(_ message: WebSocketMessage) {
+        guard let id = message.ID, let pending = pendingCommands[id] else { return }
+        guard message.Success != true else {
+            // Defensive: the frontend doesn't currently send a success ack, only failures.
+            pending.acknowledgementWorkItem?.cancel()
+            pendingCommands[id] = nil
+            return
+        }
+        Current.Log.verbose("External bus command \(pending.command) (id \(id)) rejected by frontend, retrying")
+        retryExternalBusCommand(pending)
     }
 }
 
