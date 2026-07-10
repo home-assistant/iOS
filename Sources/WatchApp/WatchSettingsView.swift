@@ -226,94 +226,189 @@ private struct WatchTroubleshootingView: View {
     }
 }
 
-/// On-device complication diagnostics: forces a live refresh of every configured complication and
-/// shows the per-complication outcome (updated / cached / failed) so connectivity issues are visible
-/// without the paired iPhone.
+/// Shared status → icon/color/text mapping for complication refresh diagnostics.
+enum ComplicationDiagnosticStyle {
+    static func icon(for status: ComplicationRefreshOutcome.Status?) -> SFSymbol {
+        switch status {
+        case .live: return .checkmarkCircleFill
+        case .cached: return .clockArrowCirclepath
+        case .failed: return .exclamationmarkTriangleFill
+        case .none: return .questionmarkCircle
+        }
+    }
+
+    static func color(for status: ComplicationRefreshOutcome.Status?) -> Color {
+        switch status {
+        case .live: return .green
+        case .cached: return .orange
+        case .failed: return .red
+        case .none: return .secondary
+        }
+    }
+
+    static func text(for status: ComplicationRefreshOutcome.Status?) -> String {
+        switch status {
+        case .live: return L10n.Watch.Settings.Complications.Status.live
+        case .cached: return L10n.Watch.Settings.Complications.Status.cached
+        case .failed: return L10n.Watch.Settings.Complications.Status.failed
+        case .none: return L10n.Watch.Settings.Complications.never
+        }
+    }
+}
+
+/// On-device complication diagnostics: lists each configured complication with its last refresh
+/// status, and lets you refresh them all. Each row opens a detail with the last-attempt time, reason,
+/// and a per-complication retry — so connectivity issues are visible and fixable without the iPhone.
 private struct WatchComplicationsDiagnosticsView: View {
-    @State private var outcomes: [ComplicationRefreshOutcome] = []
-    @State private var isRefreshing = false
-    @State private var hasRun = false
+    @State private var configs: [WatchComplicationConfig] = []
+    @State private var records: [String: ComplicationRefreshRecord] = [:]
+    @State private var isRefreshingAll = false
 
     var body: some View {
         List {
             Section {
                 Button {
-                    Task { await refresh() }
+                    Task { await refreshAll() }
                 } label: {
-                    if isRefreshing {
+                    if isRefreshingAll {
                         // A live spinner so a slow REST refresh doesn't look stuck (feedback: "seems frozen").
                         HStack(spacing: DesignSystem.Spaces.one) {
                             ProgressView()
                             Text(verbatim: L10n.Watch.Settings.Complications.refreshing)
                         }
                     } else {
-                        Label(L10n.Watch.Settings.Complications.refresh, systemSymbol: .arrowClockwise)
+                        Label(L10n.Watch.Settings.Complications.refreshAll, systemSymbol: .arrowClockwise)
                     }
                 }
-                .disabled(isRefreshing)
+                .disabled(isRefreshingAll || configs.isEmpty)
             } footer: {
                 Text(verbatim: L10n.Watch.Settings.Complications.footer)
             }
 
-            if hasRun, outcomes.isEmpty {
+            if configs.isEmpty {
                 Text(verbatim: L10n.Watch.Settings.Complications.empty)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } else {
-                ForEach(outcomes) { outcome in
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                        Label {
-                            Text(verbatim: outcome.name)
-                        } icon: {
-                            Image(systemSymbol: icon(for: outcome.status))
-                                .foregroundStyle(color(for: outcome.status))
+                Section {
+                    ForEach(configs) { config in
+                        NavigationLink {
+                            ComplicationDiagnosticDetailView(config: config)
+                        } label: {
+                            row(for: config)
                         }
-                        Text(verbatim: statusText(for: outcome))
-                            .font(.system(size: 11))
-                            .foregroundStyle(.secondary)
                     }
-                    .padding(.vertical, DesignSystem.Spaces.half)
+                } footer: {
+                    Text(verbatim: L10n.Watch.Settings.Complications.listFooter)
                 }
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Complications.title))
+        .onAppear(perform: load)
+    }
+
+    private func row(for config: WatchComplicationConfig) -> some View {
+        let record = records[config.id]
+        return VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+            Label {
+                Text(verbatim: config.displayName)
+            } icon: {
+                Image(systemSymbol: ComplicationDiagnosticStyle.icon(for: record?.status))
+                    .foregroundStyle(ComplicationDiagnosticStyle.color(for: record?.status))
+            }
+            Text(verbatim: subtitle(for: record))
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, DesignSystem.Spaces.half)
+    }
+
+    private func subtitle(for record: ComplicationRefreshRecord?) -> String {
+        guard let record else { return L10n.Watch.Settings.Complications.never }
+        return ComplicationDiagnosticStyle.text(for: record.status)
+    }
+
+    private func load() {
+        configs = (try? WatchComplicationConfig.all()) ?? []
+        records = WatchWidgetComplicationSnapshotStore.records()
     }
 
     @MainActor
-    private func refresh() async {
-        isRefreshing = true
-        outcomes = await WatchWidgetComplicationSnapshotStore.refresh()
-        isRefreshing = false
-        hasRun = true
+    private func refreshAll() async {
+        isRefreshingAll = true
+        _ = await WatchWidgetComplicationSnapshotStore.refresh()
+        records = WatchWidgetComplicationSnapshotStore.records()
+        isRefreshingAll = false
     }
+}
 
-    private func icon(for status: ComplicationRefreshOutcome.Status) -> SFSymbol {
-        switch status {
-        case .live: return .checkmarkCircleFill
-        case .cached: return .clockArrowCirclepath
-        case .failed: return .exclamationmarkTriangleFill
+/// Per-complication diagnostics detail: when it last tried to update, whether it worked, why not, and
+/// a Retry button that re-fetches just this complication and updates the screen with the new result.
+private struct ComplicationDiagnosticDetailView: View {
+    let config: WatchComplicationConfig
+    @State private var record: ComplicationRefreshRecord?
+    @State private var isRetrying = false
+
+    var body: some View {
+        List {
+            Section {
+                Label {
+                    Text(verbatim: ComplicationDiagnosticStyle.text(for: record?.status))
+                } icon: {
+                    Image(systemSymbol: ComplicationDiagnosticStyle.icon(for: record?.status))
+                        .foregroundStyle(ComplicationDiagnosticStyle.color(for: record?.status))
+                }
+                Text(verbatim: lastAttemptText)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text(verbatim: L10n.Watch.Settings.Complications.statusHeader)
+            }
+
+            if let reason = record?.reason, !reason.isEmpty {
+                Section {
+                    Text(verbatim: reason)
+                        .font(.footnote)
+                } header: {
+                    Text(verbatim: L10n.Watch.Settings.Complications.reasonHeader)
+                }
+            }
+
+            Section {
+                Button {
+                    Task { await retry() }
+                } label: {
+                    if isRetrying {
+                        HStack(spacing: DesignSystem.Spaces.one) {
+                            ProgressView()
+                            Text(verbatim: L10n.Watch.Settings.Complications.retrying)
+                        }
+                    } else {
+                        Label(L10n.Watch.Settings.Complications.retry, systemSymbol: .arrowClockwise)
+                    }
+                }
+                .disabled(isRetrying)
+            }
+        }
+        .navigationTitle(Text(verbatim: config.displayName))
+        .onAppear {
+            record = WatchWidgetComplicationSnapshotStore.records()[config.id]
         }
     }
 
-    private func color(for status: ComplicationRefreshOutcome.Status) -> Color {
-        switch status {
-        case .live: return .green
-        case .cached: return .orange
-        case .failed: return .red
-        }
+    private var lastAttemptText: String {
+        guard let record else { return L10n.Watch.Settings.Complications.never }
+        return L10n.Watch.Settings.Complications.lastAttempt(
+            record.date.formatted(date: .abbreviated, time: .shortened)
+        )
     }
 
-    private func statusText(for outcome: ComplicationRefreshOutcome) -> String {
-        switch outcome.status {
-        case .live:
-            return L10n.Watch.Settings.Complications.Status.live
-        case .cached:
-            return [L10n.Watch.Settings.Complications.Status.cached, outcome.reason]
-                .compactMap { $0 }.joined(separator: " • ")
-        case .failed:
-            return [L10n.Watch.Settings.Complications.Status.failed, outcome.reason]
-                .compactMap { $0 }.joined(separator: " • ")
-        }
+    @MainActor
+    private func retry() async {
+        isRetrying = true
+        _ = await WatchWidgetComplicationSnapshotStore.refresh(configId: config.id)
+        record = WatchWidgetComplicationSnapshotStore.records()[config.id]
+        isRetrying = false
     }
 }
 

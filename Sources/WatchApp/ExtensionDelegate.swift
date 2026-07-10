@@ -345,7 +345,7 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
 /// Result of refreshing a single modern complication, surfaced to the watch's on-device diagnostics
 /// (the "Refresh complications" button in Settings).
 struct ComplicationRefreshOutcome: Identifiable {
-    enum Status {
+    enum Status: String, Codable {
         case live
         case cached
         case failed
@@ -357,12 +357,23 @@ struct ComplicationRefreshOutcome: Identifiable {
     let reason: String?
 }
 
+/// Persisted record of a complication's last refresh attempt, shown on the watch's per-complication
+/// diagnostics detail so the user can see when it last tried, whether it worked, and why not.
+struct ComplicationRefreshRecord: Codable {
+    let id: String
+    let name: String
+    let date: Date
+    let status: ComplicationRefreshOutcome.Status
+    let reason: String?
+}
+
 enum WatchWidgetComplicationSnapshotStore {
     static var kind: String {
         AppConstants.BundleID + ".watchkitapp.WatchWidgets"
     }
 
     static let defaultsKey = "watchWidgetComplicationSnapshots"
+    static let recordsKey = "watchComplicationRefreshRecords"
 
     /// Replace the watch's legacy complications in GRDB (from the background context or the mirror).
     static func replaceLegacyComplications(_ complications: [WatchComplication]) {
@@ -444,6 +455,7 @@ enum WatchWidgetComplicationSnapshotStore {
             }
         }
         write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
+        persistRecords(outcomes, keepingIds: configs.map(\.id), defaults: defaults)
         let liveCount = outcomes.filter { $0.status == .live }.count
         let cachedCount = outcomes.filter { $0.status == .cached }.count
         let failedCount = outcomes.filter { $0.status == .failed }.count
@@ -454,6 +466,79 @@ enum WatchWidgetComplicationSnapshotStore {
             payload: ["live": liveCount, "cached": cachedCount, "failed": failedCount]
         ))
         return outcomes
+    }
+
+    /// Refresh a single complication (from its diagnostics detail's Retry button), leaving the others
+    /// untouched. Updates that complication's stored snapshot and its refresh record, and returns the
+    /// outcome so the detail can show the fresh result.
+    @discardableResult
+    static func refresh(configId: String) async -> ComplicationRefreshOutcome? {
+        MaterialDesignIcons.register()
+        let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
+        let configs = (try? WatchComplicationConfig.all()) ?? []
+        guard let config = configs.first(where: { $0.id == configId }) else { return nil }
+        let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
+        let previous = readSnapshots(defaults)
+        let legacy = ((try? WatchComplication.all()) ?? [])
+            .map(WatchWidgetComplicationSnapshot.init(complication:))
+
+        let result = await WatchWidgetComplicationSnapshot.make(config: config)
+        let snapshot: WatchWidgetComplicationSnapshot
+        let outcome: ComplicationRefreshOutcome
+        if result.isLive {
+            snapshot = result.snapshot
+            outcome = .init(id: config.id, name: name, status: .live, reason: nil)
+        } else if let cached = previous[config.id] {
+            snapshot = cached
+            outcome = .init(id: config.id, name: name, status: .cached, reason: result.failureReason)
+        } else {
+            snapshot = result.snapshot
+            outcome = .init(id: config.id, name: name, status: .failed, reason: result.failureReason)
+        }
+
+        // Rebuild the full set: keep every other complication's last snapshot, replace just this one.
+        let configSnapshots: [WatchWidgetComplicationSnapshot] = configs.compactMap { other in
+            other.id == config.id ? snapshot : previous[other.id]
+        }
+        write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
+        persistRecords([outcome], keepingIds: configs.map(\.id), defaults: defaults)
+        return outcome
+    }
+
+    /// The persisted per-complication refresh records, newest attempt per id.
+    static func records() -> [String: ComplicationRefreshRecord] {
+        readRecords(UserDefaults(suiteName: AppConstants.AppGroupID))
+    }
+
+    private static func persistRecords(
+        _ outcomes: [ComplicationRefreshOutcome],
+        keepingIds: [String],
+        defaults: UserDefaults?
+    ) {
+        // Merge the fresh attempts into the stored records and drop any whose complication no longer
+        // exists, so a targeted refresh only updates its own record.
+        var stored = readRecords(defaults)
+        let now = Date()
+        for outcome in outcomes {
+            stored[outcome.id] = ComplicationRefreshRecord(
+                id: outcome.id,
+                name: outcome.name,
+                date: now,
+                status: outcome.status,
+                reason: outcome.reason
+            )
+        }
+        stored = stored.filter { keepingIds.contains($0.key) }
+        guard let defaults, let data = try? JSONEncoder().encode(stored) else { return }
+        defaults.set(data, forKey: recordsKey)
+    }
+
+    private static func readRecords(_ defaults: UserDefaults?) -> [String: ComplicationRefreshRecord] {
+        guard let defaults, let data = defaults.data(forKey: recordsKey),
+              let records = try? JSONDecoder().decode([String: ComplicationRefreshRecord].self, from: data) else {
+            return [:]
+        }
+        return records
     }
 
     private static func readSnapshots(_ defaults: UserDefaults?) -> [String: WatchWidgetComplicationSnapshot] {
