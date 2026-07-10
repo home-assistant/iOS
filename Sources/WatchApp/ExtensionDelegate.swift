@@ -411,17 +411,43 @@ private enum ComplicationStateFetcher {
     private static func data(for request: URLRequest, server: Server) async -> Data? {
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
         defer { session.finishTasksAndInvalidate() }
-        guard let (data, response) = try? await session.data(for: request),
-              let http = response as? HTTPURLResponse, (200 ..< 300).contains(http.statusCode) else {
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let http = response as? HTTPURLResponse else {
+                Current.Log.error("[Complication] no HTTP response for \(request.url?.absoluteString ?? "?")")
+                return nil
+            }
+            guard (200 ..< 300).contains(http.statusCode) else {
+                Current.Log.error("[Complication] HTTP \(http.statusCode) for \(request.url?.absoluteString ?? "?")")
+                return nil
+            }
+            return data
+        } catch {
+            Current.Log.error("[Complication] request failed \(request.url?.absoluteString ?? "?"): \(error)")
             return nil
         }
-        return data
+    }
+
+    /// Best-effort base URL for a complication fetch. `activeURL()` returns nil when the watch can't
+    /// confirm it's on the internal network (common on watchOS / off-network), so fall back to any
+    /// configured URL (Cloud → Remote → Internal) and just try it.
+    private static func baseURL(for server: Server) async -> URL? {
+        if let url = await server.activeURL() {
+            return url
+        }
+        return server.info.connection.invitationURL()
     }
 
     static func fetchState(entityId: String, server: Server) async -> EntityState? {
-        guard let baseURL = await server.activeURL(), let token = await bearerToken(for: server) else {
+        guard let baseURL = await baseURL(for: server) else {
+            Current.Log.error("[Complication] no reachable URL for server \(server.identifier.rawValue)")
             return nil
         }
+        guard let token = await bearerToken(for: server) else {
+            Current.Log.error("[Complication] no bearer token for server \(server.identifier.rawValue)")
+            return nil
+        }
+        Current.Log.info("[Complication] fetching state for \(entityId) at \(baseURL.absoluteString)")
         var request = URLRequest(url: baseURL.appendingPathComponent("api/states/\(entityId)"))
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
@@ -434,7 +460,7 @@ private enum ComplicationStateFetcher {
     }
 
     static func renderTemplate(_ template: String, server: Server) async -> String? {
-        guard !template.isEmpty, let baseURL = await server.activeURL(),
+        guard !template.isEmpty, let baseURL = await baseURL(for: server),
               let token = await bearerToken(for: server) else {
             return nil
         }
@@ -490,6 +516,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         var valueText = ""
         var fraction: Double?
 
+        if server == nil {
+            Current.Log.error("[Complication] no matching server for config \(config.id) (serverId \(config.serverId))")
+        }
         switch config.kind {
         case .entity:
             if let server, let entityId = config.entityId,
