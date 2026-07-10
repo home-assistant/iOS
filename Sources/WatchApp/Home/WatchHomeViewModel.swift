@@ -316,7 +316,10 @@ final class WatchHomeViewModel: ObservableObject {
         ), errorHandler: { [weak self] error in
             Task { @MainActor in
                 Current.Log.error("Database sync start failed: \(error.localizedDescription)")
-                self?.failSync(L10n.Watch.Sync.Error.unreachable)
+                self?.failSync(
+                    L10n.Watch.Sync.Error.unreachable,
+                    detail: "sync start request failed: \(error.localizedDescription)"
+                )
             }
         })
     }
@@ -326,7 +329,12 @@ final class WatchHomeViewModel: ObservableObject {
         guard message.content["error"] == nil,
               let transferId = message.content["transferId"] as? String,
               let totalChunks = message.content["totalChunks"] as? Int, totalChunks > 0 else {
-            failSync(L10n.Watch.Sync.Error.generic)
+            let phoneError = message.content["error"] as? String
+            failSync(
+                L10n.Watch.Sync.Error.generic,
+                detail: phoneError.map { "iPhone reported: \($0)" }
+                    ?? "sync start reply missing transferId/totalChunks (keys: \(message.content.keys.sorted()))"
+            )
             return
         }
         syncTransferId = transferId
@@ -353,7 +361,10 @@ final class WatchHomeViewModel: ObservableObject {
         ), errorHandler: { [weak self] error in
             Task { @MainActor in
                 Current.Log.error("Database sync chunk \(index) failed: \(error.localizedDescription)")
-                self?.failSync(L10n.Watch.Sync.Error.generic)
+                self?.failSync(
+                    L10n.Watch.Sync.Error.generic,
+                    detail: "chunk \(index) request failed: \(error.localizedDescription)"
+                )
             }
         })
     }
@@ -361,7 +372,12 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func handleChunk(_ message: HAWatchConnectivity.ImmediateMessage, index: Int) {
         guard message.content["error"] == nil, let chunk = message.content["chunkData"] as? Data else {
-            failSync(L10n.Watch.Sync.Error.generic)
+            let phoneError = message.content["error"] as? String
+            failSync(
+                L10n.Watch.Sync.Error.generic,
+                detail: phoneError.map { "iPhone reported on chunk \(index): \($0)" }
+                    ?? "chunk \(index) reply missing chunkData"
+            )
             return
         }
         syncAccumulated.append(chunk)
@@ -379,8 +395,11 @@ final class WatchHomeViewModel: ObservableObject {
     private func finishDatabaseSync() {
         let data = syncAccumulated
         resetSyncState()
-        guard let mirror = WatchDatabaseMirror.decodeForWatch(data) else {
-            failSync(L10n.Watch.Sync.Error.data)
+        let mirror: WatchDatabaseMirror
+        do {
+            mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
+        } catch {
+            failSync(L10n.Watch.Sync.Error.data, detail: "decode failed (\(data.count) bytes): \(error)")
             return
         }
         do {
@@ -394,7 +413,7 @@ final class WatchHomeViewModel: ObservableObject {
             // chance to obtain them if the background context push hasn't delivered them yet.
             WatchWidgetComplicationSnapshotStore.update()
         } catch {
-            failSync(L10n.Watch.Sync.Error.data)
+            failSync(L10n.Watch.Sync.Error.data, detail: "apply to database failed: \(error)")
             return
         }
         // Reference tables are fresh — now pull the watch config and render everything from the DB.
@@ -403,12 +422,16 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     @MainActor
-    private func failSync(_ friendlyMessage: String) {
+    private func failSync(_ friendlyMessage: String, detail: String? = nil) {
         resetSyncState()
-        Current.Log.error("Watch database sync failed: \(friendlyMessage)")
+        // The friendly message goes to the UI; the technical detail (which step failed and why) goes to
+        // the log and the client-event payload so failures are actually diagnosable on-device.
+        let logMessage = detail.map { "\(friendlyMessage) — \($0)" } ?? friendlyMessage
+        Current.Log.error("Watch database sync failed: \(logMessage)")
         Current.clientEventStore.addEvent(.init(
-            text: "Apple Watch database sync failed: \(friendlyMessage)",
-            type: .database
+            text: "Apple Watch database sync failed: \(logMessage)",
+            type: .database,
+            payload: detail.map { ["detail": $0] } ?? [:]
         ))
         errorMessage = friendlyMessage
         showError = true

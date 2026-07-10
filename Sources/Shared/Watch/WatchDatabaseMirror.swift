@@ -127,8 +127,11 @@ public struct WatchDatabaseMirror: WatchCodable {
             for config in complicationConfigs {
                 try config.insert(db)
             }
+            // The registry is keyed on (serverId, entityId) with no stable primary key, so a plain
+            // save() re-inserts on the next sync and violates that unique index (SQLite error 19).
+            // Replace on conflict to upsert just these rows without wiping the rest of the registry.
             for entity in complicationEntities {
-                try entity.save(db)
+                try entity.insert(db, onConflict: .replace)
             }
         }
     }
