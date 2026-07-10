@@ -502,6 +502,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
     let tint: String?
     let iconData: Data?
     let perFamily: [String: PerFamily]?
+    /// Name shown in the complication picker (the value goes in `title` for on-face rendering).
+    let menuName: String?
 
     init(
         id: String,
@@ -512,7 +514,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         fraction: Double?,
         tint: String?,
         iconData: Data?,
-        perFamily: [String: PerFamily]? = nil
+        perFamily: [String: PerFamily]? = nil,
+        menuName: String? = nil
     ) {
         self.id = id
         self.family = family
@@ -523,6 +526,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         self.tint = tint
         self.iconData = iconData
         self.perFamily = perFamily
+        self.menuName = menuName
     }
 
     /// Formats a numeric state with the entity's display precision and unit, mirroring the app.
@@ -625,7 +629,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             fraction: fraction(for: config.widgetFamily),
             tint: config.tint(for: config.widgetFamily),
             iconData: iconData,
-            perFamily: perFamily
+            perFamily: perFamily,
+            menuName: name
         )
     }
 
@@ -653,7 +658,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             inlineText: [resolvedTitle, secondaryText].compactMap { $0 }.joined(separator: " "),
             fraction: resolvedFraction,
             tint: Self.tint(from: complication.Data),
-            iconData: Self.iconData(from: complication.Data)
+            iconData: Self.iconData(from: complication.Data),
+            perFamily: nil,
+            menuName: complication.displayName
         )
     }
 

@@ -23,6 +23,9 @@ struct WatchWidgetComplicationSnapshot: Codable {
     let tint: String?
     let iconData: Data?
     let perFamily: [String: PerFamily]?
+    /// The name shown in the complication picker (the value goes in `title` for on-face rendering).
+    /// Optional so older payloads without it still decode.
+    let menuName: String?
 
     static var placeholder: Self {
         .init(
@@ -34,7 +37,8 @@ struct WatchWidgetComplicationSnapshot: Codable {
             fraction: nil,
             tint: nil,
             iconData: nil,
-            perFamily: nil
+            perFamily: nil,
+            menuName: WatchWidgetConstants.appName
         )
     }
 
@@ -48,7 +52,8 @@ struct WatchWidgetComplicationSnapshot: Codable {
             fraction: nil,
             tint: nil,
             iconData: nil,
-            perFamily: nil
+            perFamily: nil,
+            menuName: "Assist"
         )
     }
 
@@ -86,7 +91,9 @@ struct WatchWidgetComplicationSnapshot: Codable {
     }
 
     var recommendationTitle: String {
-        title.isEmpty ? WatchWidgetConstants.appName : title
+        // The picker should show the complication's name, not its live value.
+        if let menuName, !menuName.isEmpty { return menuName }
+        return title.isEmpty ? WatchWidgetConstants.appName : title
     }
 
     var widgetURL: URL? {

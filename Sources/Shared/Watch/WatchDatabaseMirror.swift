@@ -40,6 +40,30 @@ public struct WatchDatabaseMirror: WatchCodable {
         self.complicationEntities = complicationEntities
     }
 
+    private enum CodingKeys: String, CodingKey {
+        case entities, areas, pipelines, complications, complicationConfigs, complicationEntities
+    }
+
+    // Decode the complication fields defensively: they were added after the mirror shipped, so a payload
+    // from a different build (or any format drift) must not fail the whole mirror — that would also break
+    // the watch home screen, which relies on the same sync.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        entities = try container.decode([HAAppEntity].self, forKey: .entities)
+        areas = try container.decode([AppArea].self, forKey: .areas)
+        pipelines = try container.decode([AssistPipelines].self, forKey: .pipelines)
+        complications = (try? container.decodeIfPresent([WatchComplication].self, forKey: .complications))
+            .flatMap { $0 } ?? []
+        complicationConfigs = (try? container.decodeIfPresent(
+            [WatchComplicationConfig].self,
+            forKey: .complicationConfigs
+        )).flatMap { $0 } ?? []
+        complicationEntities = (try? container.decodeIfPresent(
+            [EntityRegistryListForDisplay.Entity].self,
+            forKey: .complicationEntities
+        )).flatMap { $0 } ?? []
+    }
+
     /// Domains the watch can add (mirrors the iPhone watch picker).
     private static var mirroredDomains: Set<String> {
         [Domain.script.rawValue, Domain.scene.rawValue, Domain.automation.rawValue]

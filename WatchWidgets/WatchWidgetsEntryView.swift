@@ -135,7 +135,8 @@ private extension WatchWidgetComplicationSnapshot {
             fraction: 0.68,
             tint: "#34C759FF",
             iconData: nil,
-            perFamily: nil
+            perFamily: nil,
+            menuName: "Battery"
         )
     }
 }
