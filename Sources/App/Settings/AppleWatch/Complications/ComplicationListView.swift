@@ -414,14 +414,6 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
-    /// Whether the complication is shown while the watch display is dimmed (global).
-    private var showWhenInactiveBinding: Binding<Bool> {
-        Binding(
-            get: { config.showsWhenInactive() },
-            set: { config.showWhenInactive = $0 }
-        )
-    }
-
     private var gaugeStyleBinding: Binding<WatchComplicationConfig.GaugeStyle> {
         Binding(
             get: { config.gaugeStyle(for: currentFamily) },
@@ -628,14 +620,6 @@ struct WatchComplicationBuilderEditView: View {
                 } header: {
                     Text(L10n.Watch.Complications.Builder.colors)
                 }
-            }
-
-            Section {
-                Toggle(isOn: showWhenInactiveBinding) {
-                    Text(L10n.Watch.Complications.Builder.showWhenInactive)
-                }
-            } footer: {
-                Text(L10n.Watch.Complications.Builder.showWhenInactiveFooter)
             }
 
             // Mirror of the top preview so the result is visible from the bottom of the form too.

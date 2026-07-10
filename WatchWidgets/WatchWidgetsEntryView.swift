@@ -6,21 +6,13 @@ import WidgetKit
 @available(watchOS 10.0, *)
 struct WatchWidgetsEntryView: View {
     let entry: WatchWidgetEntry
-    /// True while the display is dimmed (wrist down / always-on).
-    @Environment(\.isLuminanceReduced) private var isLuminanceReduced
 
     var body: some View {
-        Group {
-            if let complication = entry.complication, !complication.showsWhenInactive, isLuminanceReduced {
-                inactivePlaceholder
-            } else {
-                content
+        content
+            .containerBackground(for: .widget) {
+                AccessoryWidgetBackground()
             }
-        }
-        .containerBackground(for: .widget) {
-            AccessoryWidgetBackground()
-        }
-        .widgetURL(entry.complication?.widgetURL)
+            .widgetURL(entry.complication?.widgetURL)
     }
 
     @ViewBuilder
@@ -34,27 +26,6 @@ struct WatchWidgetsEntryView: View {
             RectangularComplicationView(complication: entry.complication, family: entry.family)
         default:
             CircularComplicationView(complication: entry.complication, family: entry.family)
-        }
-    }
-
-    /// Privacy: while the display is dimmed and the complication opts out of always-on, hide the
-    /// content and show the app logo (or a neutral marker for the text-only families).
-    @ViewBuilder
-    private var inactivePlaceholder: some View {
-        switch entry.family {
-        case .accessoryInline:
-            Text(WatchWidgetConstants.appName)
-        case .accessoryCorner:
-            Text(WatchWidgetConstants.appName)
-                .widgetLabel { Text(WatchWidgetConstants.appName) }
-        default:
-            Image(WatchWidgetConstants.templateLogoAssetName)
-                .renderingMode(.template)
-                .resizable()
-                .scaledToFit()
-                .foregroundStyle(.secondary)
-                .padding(WatchWidgetConstants.Layout.logoPadding)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
