@@ -721,7 +721,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         }
 
         func label(_ value: Double) -> String {
-            value == value.rounded() ? String(Int(value)) : String(value)
+            String(Int(value.rounded()))
         }
 
         var perFamily: [String: PerFamily] = [:]

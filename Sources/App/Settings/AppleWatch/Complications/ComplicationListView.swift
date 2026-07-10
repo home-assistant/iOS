@@ -726,9 +726,10 @@ struct WatchComplicationBuilderEditView: View {
 
     @ViewBuilder
     private func numberField(title: String, value: Binding<Double?>) -> some View {
+        // Min/max are whole numbers: display and accept integers only.
         let text = Binding<String>(
-            get: { value.wrappedValue.map { String($0) } ?? "" },
-            set: { value.wrappedValue = Double($0) }
+            get: { value.wrappedValue.map { String(Int($0.rounded())) } ?? "" },
+            set: { value.wrappedValue = Int($0).map(Double.init) }
         )
         HStack {
             Text(verbatim: title)
@@ -736,6 +737,9 @@ struct WatchComplicationBuilderEditView: View {
             TextField(text: text) { Text(verbatim: "—") }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 120)
+                #if !targetEnvironment(macCatalyst)
+                .keyboardType(.numberPad)
+                #endif
         }
     }
 }
@@ -1074,7 +1078,7 @@ struct WatchComplicationLivePreview: View {
     }
 
     private func label(_ value: Double) -> String {
-        value == value.rounded() ? String(Int(value)) : String(value)
+        String(Int(value.rounded()))
     }
 
     private var rectangular: some View {
