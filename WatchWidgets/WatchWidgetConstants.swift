@@ -17,7 +17,13 @@ enum WatchWidgetConstants {
         static let assistHost = "assist"
 
         static var scheme: String {
-            appBundleID.contains(".dev") ? debugScheme : releaseScheme
+            // The widget's bundle id isn't suffixed with ".dev" in debug builds, so detect the build
+            // configuration at compile time rather than from the bundle id.
+            #if DEBUG
+            debugScheme
+            #else
+            releaseScheme
+            #endif
         }
 
         static var assistURL: URL? {
