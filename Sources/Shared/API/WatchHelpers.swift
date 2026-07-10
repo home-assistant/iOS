@@ -11,7 +11,6 @@ public enum WatchContext: String, CaseIterable {
     case servers
     case complications
     case complicationConfigs
-    case ssid = "SSID"
     case activeFamilies
     case watchModel
     case watchVersion
@@ -41,11 +40,8 @@ public extension HomeAssistantAPI {
                 (try? JSONEncoder().encode(complicationConfigs)) ?? Data()
         }
 
-        #if targetEnvironment(simulator)
-        content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
-        #else
-        content[WatchContext.ssid.rawValue] = await Current.connectivity.currentWiFiSSID()
-        #endif
+        // The watch has no network info of its own and no longer reads a phone-synced SSID, so there's
+        // nothing to send here.
 
         #elseif os(watchOS)
 
