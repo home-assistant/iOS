@@ -67,7 +67,7 @@ struct CircularComplicationView: View {
                     }
                     if complication.showsValue(for: family), !complication.title.isEmpty {
                         Text(complication.title)
-                            .minimumScaleFactor(0.3)
+                            .minimumScaleFactor(0.2)
                             .lineLimit(1)
                             .foregroundStyle(complication.textColor(for: family) ?? .primary)
                     }
@@ -87,8 +87,6 @@ struct CircularComplicationView: View {
     }
 }
 
-// A widget extension can only host widget previews, so preview this view through the widget for the
-// circular family (which dispatches to CircularComplicationView).
 #if DEBUG
 @available(watchOS 10.0, *)
 #Preview("Open", as: .accessoryCircular) {

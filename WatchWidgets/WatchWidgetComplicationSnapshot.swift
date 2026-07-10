@@ -194,7 +194,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
 extension WatchWidgetComplicationSnapshot {
     /// Sample used by the SwiftUI previews of the per-family complication views.
     static func previewSample(
-        title: String = "68%",
+        title: String = "100%",
         fraction: Double? = 0.68,
         gaugeStyle: String = "open"
     ) -> Self {
