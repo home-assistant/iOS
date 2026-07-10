@@ -6,7 +6,8 @@ import WidgetKit
 @available(watchOS 10.0, *)
 struct RectangularProgressView: View {
     static let barHeight: CGFloat = 7
-    static let thumbSize: CGFloat = 22
+    static let thumbHeight: CGFloat = 22
+    static let thumbWidth: CGFloat = 34
 
     let fraction: Double
     let minLabel: String?
@@ -31,24 +32,25 @@ struct RectangularProgressView: View {
                     Capsule().fill(tint).frame(width: max(Self.barHeight, width * clamped), height: Self.barHeight)
                     if let valueLabel {
                         Text(verbatim: valueLabel)
-                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                            .font(.body.bold())
                             .foregroundStyle(contrastColor)
                             .lineLimit(1)
-                            .minimumScaleFactor(0.4)
-                            .padding(1)
-                            .frame(width: Self.thumbSize, height: Self.thumbSize)
+                            .minimumScaleFactor(0.5)
+                            .padding(.vertical, 1)
+                            .padding(.horizontal, 4)
+                            .frame(width: Self.thumbWidth, height: Self.thumbHeight)
                             .padding(.horizontal, 4)
                             .background(tint)
                             .clipShape(.capsule)
                             .position(
-                                x: min(max(width * clamped, Self.thumbSize / 2), width - Self.thumbSize / 2),
-                                y: Self.thumbSize / 2
+                                x: min(max(width * clamped, Self.thumbWidth / 2), width - Self.thumbWidth / 2),
+                                y: Self.thumbHeight / 2
                             )
                     }
                 }
-                .frame(height: Self.thumbSize)
+                .frame(height: Self.thumbHeight)
             }
-            .frame(height: Self.thumbSize)
+            .frame(height: Self.thumbHeight)
             HStack {
                 Text(verbatim: minLabel ?? " ")
                 Spacer()
