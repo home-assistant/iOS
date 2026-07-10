@@ -342,6 +342,21 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
+/// Result of refreshing a single modern complication, surfaced to the watch's on-device diagnostics
+/// (the "Refresh complications" button in Settings).
+struct ComplicationRefreshOutcome: Identifiable {
+    enum Status {
+        case live
+        case cached
+        case failed
+    }
+
+    let id: String
+    let name: String
+    let status: Status
+    let reason: String?
+}
+
 enum WatchWidgetComplicationSnapshotStore {
     static var kind: String {
         AppConstants.BundleID + ".watchkitapp.WatchWidgets"
@@ -377,7 +392,8 @@ enum WatchWidgetComplicationSnapshotStore {
     /// REST — no paired iPhone required, so this also refreshes when the watch is on its own (e.g. on
     /// LTE), provided the server has a reachable URL. `async` so a background task can await it before
     /// completing (otherwise the app may be suspended before the REST fetch returns).
-    static func refresh() async {
+    @discardableResult
+    static func refresh() async -> [ComplicationRefreshOutcome] {
         MaterialDesignIcons.register()
         let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
 
@@ -396,20 +412,21 @@ enum WatchWidgetComplicationSnapshotStore {
         let cachedConfigSnapshots = configs.compactMap { previous[$0.id] }
         write(snapshots: [.placeholder, .assist] + legacy + cachedConfigSnapshots, defaults: defaults)
 
-        guard !configs.isEmpty else { return }
+        guard !configs.isEmpty else { return [] }
         var configSnapshots: [WatchWidgetComplicationSnapshot] = []
-        var liveCount = 0, cachedCount = 0, failedCount = 0
+        var outcomes: [ComplicationRefreshOutcome] = []
         for config in configs {
+            let name = config.name ?? config.entityDisplayName ?? config.entityId ?? "Complication"
             let result = await WatchWidgetComplicationSnapshot.make(config: config)
             if result.isLive {
                 configSnapshots.append(result.snapshot)
-                liveCount += 1
+                outcomes.append(.init(id: config.id, name: name, status: .live, reason: nil))
             } else if let cached = previous[config.id] {
                 // Live fetch failed but we have a previous value — keep it rather than overwrite.
                 configSnapshots.append(cached)
-                cachedCount += 1
+                outcomes.append(.init(id: config.id, name: name, status: .cached, reason: result.failureReason))
                 Current.clientEventStore.addEvent(ClientEvent(
-                    text: "Watch complication “\(cached.menuName ?? cached.title)” is showing a cached "
+                    text: "Watch complication “\(name)” is showing a cached "
                         + "value; live refresh failed (\(result.failureReason ?? "unknown"))",
                     type: .backgroundOperation,
                     payload: ["complication": config.id, "reason": result.failureReason ?? "unknown"]
@@ -417,9 +434,9 @@ enum WatchWidgetComplicationSnapshotStore {
             } else {
                 // Nothing cached (e.g. just added) — show the name-only snapshot and record the error.
                 configSnapshots.append(result.snapshot)
-                failedCount += 1
+                outcomes.append(.init(id: config.id, name: name, status: .failed, reason: result.failureReason))
                 Current.clientEventStore.addEvent(ClientEvent(
-                    text: "Watch complication “\(result.snapshot.menuName ?? result.snapshot.title)” "
+                    text: "Watch complication “\(name)” "
                         + "could not load live data (\(result.failureReason ?? "unknown"))",
                     type: .networkRequest,
                     payload: ["complication": config.id, "reason": result.failureReason ?? "unknown"]
@@ -427,12 +444,16 @@ enum WatchWidgetComplicationSnapshotStore {
             }
         }
         write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
+        let liveCount = outcomes.filter { $0.status == .live }.count
+        let cachedCount = outcomes.filter { $0.status == .cached }.count
+        let failedCount = outcomes.filter { $0.status == .failed }.count
         Current.clientEventStore.addEvent(ClientEvent(
             text: "Refreshed \(configs.count) watch complication(s): \(liveCount) live, "
                 + "\(cachedCount) cached, \(failedCount) unavailable",
             type: .backgroundOperation,
             payload: ["live": liveCount, "cached": cachedCount, "failed": failedCount]
         ))
+        return outcomes
     }
 
     private static func readSnapshots(_ defaults: UserDefaults?) -> [String: WatchWidgetComplicationSnapshot] {

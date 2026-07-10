@@ -1869,6 +1869,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.settings.client_events.title" = "Logs";
 "watch.settings.client_events.empty" = "No events recorded yet.";
 "watch.settings.client_events.clear" = "Clear";
+"watch.settings.complications.title" = "Complications";
+"watch.settings.complications.refresh" = "Refresh Now";
+"watch.settings.complications.refreshing" = "Refreshing…";
+"watch.settings.complications.empty" = "No complications configured yet.";
+"watch.settings.complications.footer" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).";
+"watch.settings.complications.status.live" = "Updated";
+"watch.settings.complications.status.cached" = "Showing cached value";
+"watch.settings.complications.status.failed" = "Failed";
 "watch.settings.delete_local_data.confirm.delete" = "Delete";
 "watch.settings.delete_local_data.confirm.message" = "This deletes the offline database and cached files stored on this Watch. Your iPhone and servers aren't affected. Refresh from the Home screen to sync again.";
 "watch.settings.delete_local_data.confirm.title" = "Delete local data?";

@@ -6292,6 +6292,26 @@ public enum L10n {
         /// Logs
         public static var title: String { return L10n.tr("Localizable", "watch.settings.client_events.title") }
       }
+      public enum Complications {
+        /// No complications configured yet.
+        public static var empty: String { return L10n.tr("Localizable", "watch.settings.complications.empty") }
+        /// Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.complications.footer") }
+        /// Refresh Now
+        public static var refresh: String { return L10n.tr("Localizable", "watch.settings.complications.refresh") }
+        /// Refreshing…
+        public static var refreshing: String { return L10n.tr("Localizable", "watch.settings.complications.refreshing") }
+        /// Complications
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.complications.title") }
+        public enum Status {
+          /// Showing cached value
+          public static var cached: String { return L10n.tr("Localizable", "watch.settings.complications.status.cached") }
+          /// Failed
+          public static var failed: String { return L10n.tr("Localizable", "watch.settings.complications.status.failed") }
+          /// Updated
+          public static var live: String { return L10n.tr("Localizable", "watch.settings.complications.status.live") }
+        }
+      }
       public enum DeleteLocalData {
         /// Couldn't delete local data
         public static var error: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.error") }

@@ -195,6 +195,11 @@ private struct WatchTroubleshootingView: View {
 
             Section {
                 NavigationLink {
+                    WatchComplicationsDiagnosticsView()
+                } label: {
+                    Label(L10n.Watch.Settings.Complications.title, systemSymbol: .clockArrowCirclepath)
+                }
+                NavigationLink {
                     WatchClientEventsView()
                 } label: {
                     Label(L10n.Watch.Settings.ClientEvents.title, systemSymbol: .listBulletRectangle)
@@ -202,6 +207,92 @@ private struct WatchTroubleshootingView: View {
             }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Troubleshooting.title))
+    }
+}
+
+/// On-device complication diagnostics: forces a live refresh of every configured complication and
+/// shows the per-complication outcome (updated / cached / failed) so connectivity issues are visible
+/// without the paired iPhone.
+private struct WatchComplicationsDiagnosticsView: View {
+    @State private var outcomes: [ComplicationRefreshOutcome] = []
+    @State private var isRefreshing = false
+    @State private var hasRun = false
+
+    var body: some View {
+        List {
+            Section {
+                Button {
+                    Task { await refresh() }
+                } label: {
+                    if isRefreshing {
+                        Label(L10n.Watch.Settings.Complications.refreshing, systemSymbol: .arrowClockwise)
+                    } else {
+                        Label(L10n.Watch.Settings.Complications.refresh, systemSymbol: .arrowClockwise)
+                    }
+                }
+                .disabled(isRefreshing)
+            } footer: {
+                Text(verbatim: L10n.Watch.Settings.Complications.footer)
+            }
+
+            if hasRun, outcomes.isEmpty {
+                Text(verbatim: L10n.Watch.Settings.Complications.empty)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(outcomes) { outcome in
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                        Label {
+                            Text(verbatim: outcome.name)
+                        } icon: {
+                            Image(systemSymbol: icon(for: outcome.status))
+                                .foregroundStyle(color(for: outcome.status))
+                        }
+                        Text(verbatim: statusText(for: outcome))
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, DesignSystem.Spaces.half)
+                }
+            }
+        }
+        .navigationTitle(Text(verbatim: L10n.Watch.Settings.Complications.title))
+    }
+
+    private func refresh() async {
+        isRefreshing = true
+        outcomes = await WatchWidgetComplicationSnapshotStore.refresh()
+        isRefreshing = false
+        hasRun = true
+    }
+
+    private func icon(for status: ComplicationRefreshOutcome.Status) -> SFSymbol {
+        switch status {
+        case .live: return .checkmarkCircleFill
+        case .cached: return .clockArrowCirclepath
+        case .failed: return .exclamationmarkTriangleFill
+        }
+    }
+
+    private func color(for status: ComplicationRefreshOutcome.Status) -> Color {
+        switch status {
+        case .live: return .green
+        case .cached: return .orange
+        case .failed: return .red
+        }
+    }
+
+    private func statusText(for outcome: ComplicationRefreshOutcome) -> String {
+        switch outcome.status {
+        case .live:
+            return L10n.Watch.Settings.Complications.Status.live
+        case .cached:
+            return [L10n.Watch.Settings.Complications.Status.cached, outcome.reason]
+                .compactMap { $0 }.joined(separator: " • ")
+        case .failed:
+            return [L10n.Watch.Settings.Complications.Status.failed, outcome.reason]
+                .compactMap { $0 }.joined(separator: " • ")
+        }
     }
 }
 
