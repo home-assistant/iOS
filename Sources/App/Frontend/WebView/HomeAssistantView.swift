@@ -26,6 +26,10 @@ struct HomeAssistantView: View, WebFrontendView {
     @State private var webViewResetID = UUID()
     @State private var webViewController: WebViewController?
 
+    @State private var contentOpacity: Double = 0
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
         self.server = server
         self.onWebViewController = onWebViewController
@@ -63,6 +67,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 .ignoresSafeArea(edges: webViewIgnoredSafeAreaEdges)
                 macTitleBar
             }
+            .opacity(contentOpacity)
             emptyStates
         }
         .background(themedStatusBar)
@@ -70,6 +75,18 @@ struct HomeAssistantView: View, WebFrontendView {
         .animation(DesignSystem.Animation.easeInOutFaster, value: overlayState.showsNoActiveURL)
         .statusBarHidden(chrome.statusBarHidden)
         .persistentSystemOverlays(chrome.homeIndicatorHidden ? .hidden : .automatic)
+        .onAppear { fade(to: 1) }
+        .onDisappear { fade(to: 0) }
+    }
+
+    private func fade(to opacity: Double) {
+        guard !reduceMotion else {
+            contentOpacity = opacity
+            return
+        }
+        withAnimation(DesignSystem.Animation.easeInOutSlowest) {
+            contentOpacity = opacity
+        }
     }
 
     @ViewBuilder
