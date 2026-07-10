@@ -178,6 +178,8 @@ final class WatchComplicationConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplicationConfig.gaugeMin.rawValue, .double)
                     t.column(DatabaseTables.WatchComplicationConfig.gaugeMax.rawValue, .double)
                     t.column(DatabaseTables.WatchComplicationConfig.showValue.rawValue, .boolean).notNull()
+                    // Nullable: absent means "show the unit" (see WatchComplicationConfig.showsUnit()).
+                    t.column(DatabaseTables.WatchComplicationConfig.showUnit.rawValue, .boolean)
                     t.column(DatabaseTables.WatchComplicationConfig.customTextTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.customGaugeTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()

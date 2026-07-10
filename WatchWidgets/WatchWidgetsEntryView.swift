@@ -27,15 +27,36 @@ struct WatchWidgetsEntryView: View {
         }
     }
 
-    /// Circular: a progress ring around the icon when a gauge value exists, otherwise the icon.
+    /// Circular: a gauge around the icon when a value exists — an open arc (optionally with min/max
+    /// labels) or a full capacity ring, per the complication's gauge style — otherwise just the icon.
     @ViewBuilder
     private var circular: some View {
         if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
-            Gauge(value: fraction) {
-                icon
+            if complication.isCapacityGauge(for: entry.family) {
+                Gauge(value: fraction) {
+                    icon
+                }
+                .gaugeStyle(.accessoryCircularCapacity)
+                .tint(complication.tintColor(for: entry.family))
+            } else if let labels = complication.gaugeLabels(for: entry.family) {
+                Gauge(value: fraction) {
+                    icon
+                } currentValueLabel: {
+                    icon
+                } minimumValueLabel: {
+                    Text(labels.min)
+                } maximumValueLabel: {
+                    Text(labels.max)
+                }
+                .gaugeStyle(.accessoryCircular)
+                .tint(complication.tintColor(for: entry.family))
+            } else {
+                Gauge(value: fraction) {
+                    icon
+                }
+                .gaugeStyle(.accessoryCircular)
+                .tint(complication.tintColor(for: entry.family))
             }
-            .gaugeStyle(.accessoryCircular)
-            .tint(complication.tintColor(for: entry.family))
         } else {
             icon
                 .padding(WatchWidgetConstants.Layout.logoPadding)

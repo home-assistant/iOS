@@ -1649,6 +1649,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.family.corner" = "Corner";
 "watch.complications.family.inline" = "Inline";
 "watch.complications.family.rectangular" = "Rectangular";
+"watch.complications.gauge_style.open" = "Open";
+"watch.complications.gauge_style.capacity" = "Ring";
+"watch.complications.gauge_style.title" = "Gauge style";
+"watch.complications.builder.show_unit" = "Show unit";
 "watch.complications.legacy.title" = "Legacy Complications";
 "watch.complications.root.header_subtitle" = "Show entity state and gauges on your watch face. Create a complication, then add it to any watch face.";
 "watch.complications.root.your_complications" = "Your complications";

@@ -12,6 +12,11 @@ struct WatchWidgetComplicationSnapshot: Codable {
         let fraction: Double?
         let tint: String?
         let showValue: Bool
+        /// Raw gauge style ("open"/"capacity") for circular; nil defaults to open.
+        var gaugeStyle: String?
+        /// Pre-formatted gauge min/max labels for the open circular gauge.
+        var minLabel: String?
+        var maxLabel: String?
     }
 
     let id: String?
@@ -84,6 +89,18 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// Whether to show the state value as text for a given family (default true).
     func showsValue(for widgetFamily: WidgetFamily) -> Bool {
         options(for: widgetFamily)?.showValue ?? true
+    }
+
+    /// Whether the circular gauge should be drawn as a full capacity ring (vs the open arc).
+    func isCapacityGauge(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.gaugeStyle == "capacity"
+    }
+
+    /// Gauge min/max labels (open circular gauge only), when a range is configured.
+    func gaugeLabels(for widgetFamily: WidgetFamily) -> (min: String, max: String)? {
+        guard let options = options(for: widgetFamily),
+              let minLabel = options.minLabel, let maxLabel = options.maxLabel else { return nil }
+        return (minLabel, maxLabel)
     }
 
     var recommendationID: String {

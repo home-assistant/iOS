@@ -10,6 +10,8 @@ struct ComplicationsRootView: View {
     @State private var configs: [WatchComplicationConfig] = []
     /// Context line per config (entity `Area • Device`, or "Template"), computed off the DB in `reload`.
     @State private var subtitles: [String: String] = [:]
+    /// Whether any legacy (ClockKit-era) complications exist — the legacy link is hidden otherwise.
+    @State private var hasLegacy = false
     @State private var editing: WatchComplicationConfig?
     @State private var showAdd = false
 
@@ -18,15 +20,17 @@ struct ComplicationsRootView: View {
             header
             yourComplicationsSection
 
-            Section {
-                NavigationLink {
-                    ComplicationListView()
-                } label: {
-                    Label(title: { Text(L10n.Watch.Complications.Root.legacy) },
-                          icon: { Image(systemSymbol: .clockArrowCirclepath) })
+            if hasLegacy {
+                Section {
+                    NavigationLink {
+                        ComplicationListView()
+                    } label: {
+                        Label(title: { Text(L10n.Watch.Complications.Root.legacy) },
+                              icon: { Image(systemSymbol: .clockArrowCirclepath) })
+                    }
+                } footer: {
+                    Text(L10n.Watch.Complications.Root.legacyFooter)
                 }
-            } footer: {
-                Text(L10n.Watch.Complications.Root.legacyFooter)
             }
         }
         .sheet(isPresented: $showAdd) {
@@ -95,6 +99,7 @@ struct ComplicationsRootView: View {
     }
 
     private func reload() {
+        hasLegacy = !((try? WatchComplication.all()) ?? []).isEmpty
         let all = (try? WatchComplicationConfig.all()) ?? []
         configs = all
         var map: [String: String] = [:]
@@ -252,6 +257,9 @@ struct WatchComplicationBuilderEditView: View {
     @State private var selectedEntity: HAAppEntity?
     /// Cached context line for the selected entity — computed off the DB, so kept out of `body`.
     @State private var entitySubtitle: String?
+    /// The selected entity's unit of measurement (nil when it has none), reported by the live preview.
+    /// Used to decide whether to offer the "Show unit" toggle.
+    @State private var entityUnit: String?
     private let isNew: Bool
 
     init(existing: WatchComplicationConfig?) {
@@ -330,14 +338,31 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
+    /// Unit visibility is global (the value text is shared across sizes).
+    private var showUnitBinding: Binding<Bool> {
+        Binding(
+            get: { config.showsUnit() },
+            set: { config.showUnit = $0 }
+        )
+    }
+
+    private var gaugeStyleBinding: Binding<WatchComplicationConfig.GaugeStyle> {
+        Binding(
+            get: { config.gaugeStyle(for: currentFamily) },
+            set: { value in updateOptions { $0.gaugeStyle = value.rawValue } }
+        )
+    }
+
     var body: some View {
         Form {
             if let server {
                 Section {
-                    WatchComplicationLivePreview(config: config, server: server)
-                        .frame(maxWidth: .infinity)
-                        .listRowBackground(Color(uiColor: .systemBackground))
-                        .listRowSeparator(.hidden)
+                    WatchComplicationLivePreview(config: config, server: server) { unit in
+                        entityUnit = unit
+                    }
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color(uiColor: .systemBackground))
+                    .listRowSeparator(.hidden)
                     Picker(selection: $config.widgetFamily) {
                         ForEach(WatchComplicationConfig.Family.allCases) { family in
                             Text(verbatim: family.title).tag(family)
@@ -403,8 +428,23 @@ struct WatchComplicationBuilderEditView: View {
                 // Per-size customization: bound to the size currently selected in the preview above.
                 Section {
                     Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
+                    if entityUnit != nil {
+                        Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
+                    }
                     Toggle(isOn: showGaugeBinding) { Text(L10n.Watch.Complications.Builder.showGauge) }
                     if config.showsGauge(for: config.widgetFamily) {
+                        // A circular gauge can be an open arc or a full ring; other families have a
+                        // single family-appropriate gauge, so the style picker only applies to circular.
+                        if config.widgetFamily == .circular {
+                            Picker(selection: gaugeStyleBinding) {
+                                ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
+                                    Text(verbatim: style.title).tag(style)
+                                }
+                            } label: {
+                                Text(L10n.Watch.Complications.GaugeStyle.title)
+                            }
+                            .pickerStyle(.segmented)
+                        }
                         numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
                         numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
                     }
@@ -568,24 +608,43 @@ struct ComplicationFamilyPreview: View {
 /// before saving. Not pixel-identical to watchOS, but faithful to layout, icon, value and gauge.
 struct WatchComplicationLivePreview: View {
     let config: WatchComplicationConfig
+    /// Reports the entity's rendered unit of measurement (nil when it has none) so the editor can
+    /// decide whether to offer the "Show unit" toggle.
+    var onUnit: (String?) -> Void = { _ in }
     @StateObject private var valueRenderer: TemplateRenderer
     @StateObject private var gaugeRenderer: TemplateRenderer
+    @StateObject private var unitRenderer: TemplateRenderer
 
-    init(config: WatchComplicationConfig, server: Server) {
+    init(config: WatchComplicationConfig, server: Server, onUnit: @escaping (String?) -> Void = { _ in }) {
         self.config = config
+        self.onUnit = onUnit
         _valueRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
         _gaugeRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
+        _unitRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
     }
 
     private var name: String {
         config.name ?? config.entityDisplayName ?? config.entityId ?? ""
     }
 
-    private var value: String {
-        if case let .success(rendered) = valueRenderer.output, !rendered.isEmpty {
-            return rendered
-        }
+    private var renderedValue: String {
+        if case let .success(rendered) = valueRenderer.output { return rendered }
         return ""
+    }
+
+    private var renderedUnit: String? {
+        if case let .success(unit) = unitRenderer.output, !unit.isEmpty { return unit }
+        return nil
+    }
+
+    /// The value as displayed: appends the unit when present and enabled (entity source only).
+    private var value: String {
+        let base = renderedValue
+        guard !base.isEmpty else { return "" }
+        if config.kind == .entity, config.showsUnit(), let unit = renderedUnit {
+            return "\(base) \(unit)"
+        }
+        return base
     }
 
     private var fraction: Double? {
@@ -595,6 +654,10 @@ struct WatchComplicationLivePreview: View {
         }
         return min(max(Double(raw), 0), 1)
     }
+
+    private var showsGauge: Bool { config.showsGauge(for: config.widgetFamily) && fraction != nil }
+
+    private var range: (min: Double, max: Double)? { config.gaugeRange(for: config.widgetFamily) }
 
     private var tint: Color {
         config.tint(for: config.widgetFamily).map { Color(uiColor: UIColor($0)) } ?? .accentColor
@@ -615,6 +678,7 @@ struct WatchComplicationLivePreview: View {
             .frame(height: 150)
             .onAppear(perform: applyTemplates)
             .onChange(of: config) { _ in applyTemplates() }
+            .onChange(of: unitRenderer.output) { _ in onUnit(renderedUnit) }
     }
 
     @ViewBuilder
@@ -629,32 +693,65 @@ struct WatchComplicationLivePreview: View {
         }
     }
 
+    /// Icon (+ value) shown in the middle of a circular complication.
+    private var centerContent: some View {
+        VStack(spacing: 1) {
+            iconImage?
+                .resizable()
+                .scaledToFit()
+                .frame(width: 22, height: 22)
+            if showsValue, !value.isEmpty {
+                Text(value)
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+            }
+        }
+    }
+
+    /// Uses the real WidgetKit accessory gauge styles so the preview matches watchOS: an open arc
+    /// (with min/max labels) or a full capacity ring, otherwise just the icon/value.
+    @ViewBuilder
     private var circular: some View {
         ZStack {
             Circle().fill(Color.black)
-            if let fraction {
-                Circle().stroke(Color.white.opacity(0.25), lineWidth: 6)
-                Circle()
-                    .trim(from: 0, to: fraction)
-                    .stroke(tint, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-            }
-            VStack(spacing: 1) {
-                iconImage?
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 26, height: 26)
-                if showsValue, !value.isEmpty {
-                    Text(value)
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.white)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
+            Group {
+                if showsGauge, let fraction {
+                    switch config.gaugeStyle(for: config.widgetFamily) {
+                    case .open:
+                        Gauge(value: fraction) {
+                            EmptyView()
+                        } currentValueLabel: {
+                            centerContent
+                        } minimumValueLabel: {
+                            Text(verbatim: range.map { label($0.min) } ?? "")
+                        } maximumValueLabel: {
+                            Text(verbatim: range.map { label($0.max) } ?? "")
+                        }
+                        .gaugeStyle(.accessoryCircular)
+                        .tint(tint)
+                    case .capacity:
+                        Gauge(value: fraction) {
+                            EmptyView()
+                        } currentValueLabel: {
+                            centerContent
+                        }
+                        .gaugeStyle(.accessoryCircularCapacity)
+                        .tint(tint)
+                    }
+                } else {
+                    centerContent
                 }
             }
-            .padding(20)
+            .padding(12)
         }
         .frame(width: 100, height: 100)
+        .environment(\.colorScheme, .dark)
+    }
+
+    private func label(_ value: Double) -> String {
+        value == value.rounded() ? String(Int(value)) : String(value)
     }
 
     private var rectangular: some View {
@@ -694,13 +791,11 @@ struct WatchComplicationLivePreview: View {
             guard let entityId = config.entityId else {
                 valueRenderer.updateTemplate("")
                 gaugeRenderer.updateTemplate("")
+                unitRenderer.updateTemplate("")
                 return
             }
-            // Value with unit, mirroring the watch (which also applies registry precision).
-            valueRenderer.updateTemplate(
-                "{{ states('\(entityId)') }}{{ ' ' ~ state_attr('\(entityId)', 'unit_of_measurement') " +
-                    "if state_attr('\(entityId)', 'unit_of_measurement') else '' }}"
-            )
+            valueRenderer.updateTemplate("{{ states('\(entityId)') }}")
+            unitRenderer.updateTemplate("{{ state_attr('\(entityId)', 'unit_of_measurement') or '' }}")
             if let range = config.gaugeRange(for: config.widgetFamily) {
                 let source = config.gaugeAttribute(for: config.widgetFamily)
                     .map { "state_attr('\(entityId)', '\($0)')" } ?? "states('\(entityId)')"
@@ -713,6 +808,7 @@ struct WatchComplicationLivePreview: View {
         case .customTemplate:
             valueRenderer.updateTemplate(config.customTextTemplate ?? "")
             gaugeRenderer.updateTemplate(config.customGaugeTemplate ?? "")
+            unitRenderer.updateTemplate("")
         }
     }
 }

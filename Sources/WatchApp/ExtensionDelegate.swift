@@ -564,6 +564,11 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         let fraction: Double?
         let tint: String?
         let showValue: Bool
+        /// Raw `WatchComplicationConfig.GaugeStyle` (circular only); nil defaults to open.
+        var gaugeStyle: String?
+        /// Pre-formatted gauge min/max labels for the open circular gauge.
+        var minLabel: String?
+        var maxLabel: String?
     }
 
     let id: String
@@ -653,8 +658,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 rawState = result.state
                 attributes = result.attributes
                 // Unit comes from the live state; precision comes from the entity registry in GRDB (synced
-                // to the watch) — neither is duplicated into the config.
-                let unit = result.attributes["unit_of_measurement"] as? String
+                // to the watch) — neither is duplicated into the config. The unit is suppressed when the
+                // user turned it off.
+                let unit = config.showsUnit() ? result.attributes["unit_of_measurement"] as? String : nil
                 let precision = EntityRegistryListForDisplay.Entity.displayPrecision(
                     serverId: config.serverId,
                     entityId: entityId
@@ -701,12 +707,20 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             }
         }
 
+        func label(_ value: Double) -> String {
+            value == value.rounded() ? String(Int(value)) : String(value)
+        }
+
         var perFamily: [String: PerFamily] = [:]
         for family in Family.allCases {
+            let range = config.gaugeRange(for: family)
             perFamily[family.rawValue] = PerFamily(
                 fraction: fraction(for: family),
                 tint: config.tint(for: family),
-                showValue: config.showsValue(for: family)
+                showValue: config.showsValue(for: family),
+                gaugeStyle: config.gaugeStyle(for: family).rawValue,
+                minLabel: range.map { label($0.min) },
+                maxLabel: range.map { label($0.max) }
             )
         }
 

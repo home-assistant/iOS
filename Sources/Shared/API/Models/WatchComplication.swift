@@ -248,6 +248,22 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
 
     public enum Kind: String, Codable, CaseIterable { case entity, customTemplate }
 
+    /// How a gauge/ring is drawn for a circular complication. `open` is the ~270° arc gauge
+    /// (`.accessoryCircular`) that can show min/max labels; `capacity` is the full closed ring
+    /// (`.accessoryCircularCapacity`). Other families ignore this and draw their family-appropriate gauge.
+    public enum GaugeStyle: String, Codable, CaseIterable, Identifiable {
+        case open
+        case capacity
+        public var id: String { rawValue }
+
+        public var title: String {
+            switch self {
+            case .open: return L10n.Watch.Complications.GaugeStyle.open
+            case .capacity: return L10n.Watch.Complications.GaugeStyle.capacity
+            }
+        }
+    }
+
     /// The four modern WidgetKit accessory families.
     public enum Family: String, Codable, CaseIterable, Identifiable {
         case circular
@@ -283,6 +299,9 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public var gaugeMax: Double?
     /// Whether to show the state value as text (vs. icon-only). Base default; can be overridden per size.
     public var showValue: Bool
+    /// Whether to append the entity's unit of measurement to the value. Nullable so pre-existing rows
+    /// (NULL) default to visible; see `showsUnit()`.
+    public var showUnit: Bool?
 
     // Custom-template kind
     public var customTextTemplate: String?
@@ -302,6 +321,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var gaugeMax: Double?
         public var gaugeAttribute: String?
         public var tint: String?
+        /// Raw value of `GaugeStyle`; nil defaults to `.open`. Only meaningful for circular.
+        public var gaugeStyle: String?
 
         public init(
             showValue: Bool? = nil,
@@ -309,7 +330,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             gaugeMin: Double? = nil,
             gaugeMax: Double? = nil,
             gaugeAttribute: String? = nil,
-            tint: String? = nil
+            tint: String? = nil,
+            gaugeStyle: String? = nil
         ) {
             self.showValue = showValue
             self.showGauge = showGauge
@@ -317,13 +339,14 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             self.gaugeMax = gaugeMax
             self.gaugeAttribute = gaugeAttribute
             self.tint = tint
+            self.gaugeStyle = gaugeStyle
         }
     }
 
     public enum CodingKeys: String, CodingKey {
         case id, serverId, widgetFamily, kind, name
         case entityId, entityDisplayName, iconName, iconColor
-        case gaugeAttribute, gaugeMin, gaugeMax, showValue
+        case gaugeAttribute, gaugeMin, gaugeMax, showValue, showUnit
         case customTextTemplate, customGaugeTemplate, sortOrder, families
     }
 
@@ -341,6 +364,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         gaugeMin: Double? = nil,
         gaugeMax: Double? = nil,
         showValue: Bool = true,
+        showUnit: Bool? = nil,
         customTextTemplate: String? = nil,
         customGaugeTemplate: String? = nil,
         sortOrder: Int = 0,
@@ -359,6 +383,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.gaugeMin = gaugeMin
         self.gaugeMax = gaugeMax
         self.showValue = showValue
+        self.showUnit = showUnit
         self.customTextTemplate = customTextTemplate
         self.customGaugeTemplate = customGaugeTemplate
         self.sortOrder = sortOrder
@@ -397,6 +422,17 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
 
     public func gaugeAttribute(for family: Family) -> String? {
         families?[family.rawValue]?.gaugeAttribute ?? gaugeAttribute
+    }
+
+    /// Whether the entity's unit of measurement is appended to the value. Global (the value text is
+    /// shared across sizes); defaults to visible when unset.
+    public func showsUnit() -> Bool {
+        showUnit ?? true
+    }
+
+    /// The gauge style for a family (circular only); defaults to `.open`.
+    public func gaugeStyle(for family: Family) -> GaugeStyle {
+        families?[family.rawValue]?.gaugeStyle.flatMap(GaugeStyle.init(rawValue:)) ?? .open
     }
 
     public func tint(for family: Family) -> String? {

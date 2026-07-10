@@ -5345,6 +5345,8 @@ public enum L10n {
         public static var previewSize: String { return L10n.tr("Localizable", "watch.complications.builder.preview_size") }
         /// Show as gauge / ring
         public static var showGauge: String { return L10n.tr("Localizable", "watch.complications.builder.show_gauge") }
+        /// Show unit
+        public static var showUnit: String { return L10n.tr("Localizable", "watch.complications.builder.show_unit") }
         /// Show value
         public static var showValue: String { return L10n.tr("Localizable", "watch.complications.builder.show_value") }
         /// %1$@ options
@@ -5375,6 +5377,14 @@ public enum L10n {
         public static var inline: String { return L10n.tr("Localizable", "watch.complications.family.inline") }
         /// Rectangular
         public static var rectangular: String { return L10n.tr("Localizable", "watch.complications.family.rectangular") }
+      }
+      public enum GaugeStyle {
+        /// Ring
+        public static var capacity: String { return L10n.tr("Localizable", "watch.complications.gauge_style.capacity") }
+        /// Open
+        public static var `open`: String { return L10n.tr("Localizable", "watch.complications.gauge_style.open") }
+        /// Gauge style
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.gauge_style.title") }
       }
       public enum Legacy {
         /// Legacy Complications
