@@ -136,8 +136,9 @@ struct WatchComplicationLivePreview: View {
         }
     }
 
-    /// Display precision comes from the entity registry (never duplicated into the config).
+    /// Display precision: the user's override when set, otherwise Home Assistant's from the registry.
     private var entityPrecision: Int? {
+        if let override = config.valuePrecision { return override }
         guard let entityId = config.entityId else { return nil }
         return EntityRegistryListForDisplay.Entity.displayPrecision(serverId: config.serverId, entityId: entityId)
     }

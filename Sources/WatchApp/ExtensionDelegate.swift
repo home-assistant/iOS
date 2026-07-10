@@ -758,7 +758,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 // Unit comes from the live state; precision comes from the entity registry in GRDB (synced
                 // to the watch) — neither is duplicated into the config. The unit is suppressed when the
                 // user turned it off.
-                let precision = EntityRegistryListForDisplay.Entity.displayPrecision(
+                // The user can override the decimal precision; otherwise follow Home Assistant's.
+                let precision = config.valuePrecision ?? EntityRegistryListForDisplay.Entity.displayPrecision(
                     serverId: config.serverId,
                     entityId: entityId
                 )

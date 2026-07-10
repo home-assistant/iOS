@@ -466,6 +466,15 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
+    /// Decimal precision override: `-1` (the picker's "Automatic") maps to nil, meaning follow Home
+    /// Assistant's display precision.
+    private var valuePrecisionBinding: Binding<Int> {
+        Binding(
+            get: { config.valuePrecision ?? -1 },
+            set: { config.valuePrecision = $0 < 0 ? nil : $0 }
+        )
+    }
+
     /// Unit visibility is global (the value text is shared across sizes).
     private var showUnitBinding: Binding<Bool> {
         Binding(
@@ -597,6 +606,20 @@ struct WatchComplicationBuilderEditView: View {
                             }
                         } label: {
                             Text(L10n.Watch.Complications.Builder.valueSource)
+                        }
+                    }
+
+                    // Decimal precision for a numeric value. A picker (not free text) so there is nothing
+                    // to validate; "Automatic" follows Home Assistant, and the initial selection is seeded
+                    // with Home Assistant's current precision when the entity is chosen.
+                    if config.entityId != nil {
+                        Picker(selection: valuePrecisionBinding) {
+                            Text(L10n.Watch.Complications.Builder.precisionAutomatic).tag(-1)
+                            ForEach(0 ... 4, id: \.self) { number in
+                                Text(verbatim: "\(number)").tag(number)
+                            }
+                        } label: {
+                            Text(L10n.Watch.Complications.Builder.precision)
                         }
                     }
                 }
@@ -745,6 +768,12 @@ struct WatchComplicationBuilderEditView: View {
             config.entityDisplayName = entity.name
             // A new entity's value source no longer applies to the old attributes.
             config.valueAttribute = nil
+            // Seed the precision override with Home Assistant's current display precision, so the picker
+            // starts on the value HA uses (the user can then override it or pick Automatic).
+            config.valuePrecision = EntityRegistryListForDisplay.Entity.displayPrecision(
+                serverId: config.serverId,
+                entityId: entity.entityId
+            )
             // Prefer the entity's own icon; otherwise fall back to a domain/device-class default so the
             // complication isn't icon-less on the watch.
             config.iconName = entity.icon
