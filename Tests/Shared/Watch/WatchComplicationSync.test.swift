@@ -1,5 +1,5 @@
-@testable import Shared
 import Foundation
+@testable import Shared
 import Testing
 
 /// Tests for the watch complication sync additions: the proactive mirror-push constants/reasons, the
@@ -57,7 +57,9 @@ struct WatchComplicationSyncTests {
     @Test("Attribute unit is nil for unknown attributes and never uses the state unit")
     func attributeUnitNil() {
         let attributes: [String: Any] = ["unit_of_measurement": "W", "foo": 1]
-        #expect(WatchComplicationConfig.attributeUnit(attribute: "foo", attributes: attributes, domain: "sensor") == nil)
+        #expect(
+            WatchComplicationConfig.attributeUnit(attribute: "foo", attributes: attributes, domain: "sensor") == nil
+        )
     }
 
     // MARK: - Config round-trip
