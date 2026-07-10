@@ -492,3 +492,102 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         }
     }
 }
+
+#if DEBUG
+public extension WatchComplicationConfig {
+    static let debugFixturePrefix = "debug-fixture-"
+
+    /// On the simulator, seed one example complication for each family / source / style / option so
+    /// every rendering variant is visible while debugging. Idempotent (stable ids, only inserts what's
+    /// missing) and confined to the simulator so it never touches a real device's configuration.
+    static func seedDebugFixturesIfNeeded() {
+        #if targetEnvironment(simulator)
+        let serverId = Current.servers.all.first?.identifier.rawValue ?? "debug"
+        let existingIds = Set(((try? all()) ?? []).map(\.id))
+        for fixture in debugFixtures(serverId: serverId) where !existingIds.contains(fixture.id) {
+            try? fixture.save()
+        }
+        #endif
+    }
+
+    private static func debugFixtures(serverId: String) -> [WatchComplicationConfig] {
+        // Custom-template fixtures render concrete values without needing a real entity.
+        func custom(
+            _ id: String,
+            _ family: Family,
+            _ name: String,
+            text: String,
+            gauge: String?,
+            icon: String = "flash",
+            options: FamilyOptions
+        ) -> WatchComplicationConfig {
+            var config = WatchComplicationConfig(
+                id: debugFixturePrefix + id,
+                serverId: serverId,
+                widgetFamily: family,
+                kind: .customTemplate,
+                name: name,
+                iconName: icon,
+                customTextTemplate: text,
+                customGaugeTemplate: gauge
+            )
+            config.setOptions(options, for: family)
+            return config
+        }
+
+        let green = "#34C759FF"
+        let orange = "#FF9500FF"
+
+        var battery = WatchComplicationConfig(
+            id: debugFixturePrefix + "entity-battery",
+            serverId: serverId,
+            widgetFamily: .circular,
+            kind: .entity,
+            name: "Entity Battery",
+            entityId: "sensor.battery",
+            entityDisplayName: "Battery",
+            iconName: "battery",
+            gaugeMin: 0,
+            gaugeMax: 100
+        )
+        battery.setOptions(.init(showGauge: true, tint: green, gaugeStyle: "open"), for: .circular)
+
+        return [
+            custom(
+                "circular-open", .circular, "Circular Open",
+                text: "66", gauge: "{{ 0.66 }}",
+                options: .init(showValue: true, showGauge: true, tint: green, gaugeStyle: "open")
+            ),
+            custom(
+                "circular-capacity", .circular, "Circular Ring",
+                text: "98", gauge: "{{ 0.98 }}",
+                options: .init(showValue: true, showGauge: true, tint: green, gaugeStyle: "capacity")
+            ),
+            custom(
+                "circular-icon", .circular, "Circular Icon", text: "", gauge: nil, icon: "music",
+                options: .init(showValue: false, showGauge: false)
+            ),
+            custom(
+                "circular-text", .circular, "Circular Text",
+                text: "6.4", gauge: nil, icon: "weather-sunny",
+                options: .init(showValue: true, showGauge: false, textColor: orange)
+            ),
+            custom(
+                "rectangular", .rectangular, "Rectangular",
+                text: "72", gauge: "{{ 0.72 }}",
+                options: .init(showValue: true, showGauge: true, tint: green)
+            ),
+            custom(
+                "inline", .inline, "Inline", text: "21°", gauge: nil,
+                options: .init(showValue: true, showGauge: false)
+            ),
+            custom(
+                "corner", .corner, "Corner",
+                text: "88", gauge: "{{ 0.88 }}",
+                options: .init(showValue: true, showGauge: true, tint: green)
+            ),
+            battery,
+        ]
+    }
+}
+#endif

@@ -38,6 +38,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
 
         setupWatchCommunicator()
+        #if DEBUG
+        // Seed one example of every complication variant so they're all visible while debugging.
+        WatchComplicationConfig.seedDebugFixturesIfNeeded()
+        #endif
         WatchWidgetComplicationSnapshotStore.update()
 
         // Re-apply any watch-local "Always use" URL choices to the persisted servers (their

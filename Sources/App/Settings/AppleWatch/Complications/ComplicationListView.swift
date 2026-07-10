@@ -103,6 +103,10 @@ struct ComplicationsRootView: View {
     }
 
     private func reload() {
+        #if DEBUG
+        // Seed one example of every complication variant so they're all visible while debugging.
+        WatchComplicationConfig.seedDebugFixturesIfNeeded()
+        #endif
         hasLegacy = !((try? WatchComplication.all()) ?? []).isEmpty
         let all = (try? WatchComplicationConfig.all()) ?? []
         configs = all
