@@ -26,9 +26,12 @@ struct InlineComplicationView: View {
     }
 }
 
+// A widget extension can only host widget previews, so preview through the inline-family widget.
 #if DEBUG
 @available(watchOS 10.0, *)
-#Preview {
-    InlineComplicationView(complication: .previewSample(), family: .accessoryInline)
+#Preview(as: .accessoryInline) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryInline, complication: .previewSample())
 }
 #endif

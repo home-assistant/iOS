@@ -43,10 +43,12 @@ struct CornerComplicationView: View {
     }
 }
 
+// A widget extension can only host widget previews, so preview through the corner-family widget.
 #if DEBUG
 @available(watchOS 10.0, *)
-#Preview {
-    CornerComplicationView(complication: .previewSample(), family: .accessoryCorner)
-        .frame(width: 90, height: 90)
+#Preview(as: .accessoryCorner) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryCorner, complication: .previewSample())
 }
 #endif

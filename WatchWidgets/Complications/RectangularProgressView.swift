@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 /// A horizontal progress bar with a circular value "thumb" riding the fill, and the minimum / maximum
 /// labels below the bar. Mirrors the iOS builder preview.
@@ -59,11 +60,13 @@ struct RectangularProgressView: View {
     }
 }
 
+// A widget extension can only host widget previews; the rectangular-family widget renders this progress
+// bar, so preview it through the widget.
 #if DEBUG
 @available(watchOS 10.0, *)
-#Preview {
-    RectangularProgressView(fraction: 0.68, minLabel: "0", maxLabel: "100", valueLabel: "68", tint: .green)
-        .frame(width: 160, height: 40)
-        .padding()
+#Preview(as: .accessoryRectangular) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryRectangular, complication: .previewSample())
 }
 #endif

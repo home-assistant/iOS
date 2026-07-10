@@ -32,16 +32,14 @@ struct ComplicationIconView: View {
     }
 }
 
+// A widget extension can only host widget previews. The circular placeholder / Assist entries route
+// through the icon-only path, so this previews ComplicationIconView via the widget.
 #if DEBUG
 @available(watchOS 10.0, *)
-#Preview("Fallback logo") {
-    ComplicationIconView(complication: .previewSample())
-        .frame(width: 60, height: 60)
-}
-
-@available(watchOS 10.0, *)
-#Preview("Assist") {
-    ComplicationIconView(complication: .assist)
-        .frame(width: 60, height: 60)
+#Preview("Logo & Assist", as: .accessoryCircular) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryCircular, complication: .placeholder)
+    WatchWidgetEntry(date: .now, family: .accessoryCircular, complication: .assist)
 }
 #endif

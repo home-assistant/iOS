@@ -86,10 +86,12 @@ struct RectangularComplicationView: View {
     }
 }
 
+// A widget extension can only host widget previews, so preview through the rectangular-family widget.
 #if DEBUG
 @available(watchOS 10.0, *)
-#Preview {
-    RectangularComplicationView(complication: .previewSample(), family: .accessoryRectangular)
-        .frame(width: 160, height: 70)
+#Preview(as: .accessoryRectangular) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryRectangular, complication: .previewSample())
 }
 #endif

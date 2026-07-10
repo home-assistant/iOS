@@ -87,16 +87,20 @@ struct CircularComplicationView: View {
     }
 }
 
+// A widget extension can only host widget previews, so preview this view through the widget for the
+// circular family (which dispatches to CircularComplicationView).
 #if DEBUG
 @available(watchOS 10.0, *)
-#Preview("Open") {
-    CircularComplicationView(complication: .previewSample(gaugeStyle: "open"), family: .accessoryCircular)
-        .frame(width: 90, height: 90)
+#Preview("Open", as: .accessoryCircular) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryCircular, complication: .previewSample(gaugeStyle: "open"))
 }
 
 @available(watchOS 10.0, *)
-#Preview("Ring") {
-    CircularComplicationView(complication: .previewSample(gaugeStyle: "capacity"), family: .accessoryCircular)
-        .frame(width: 90, height: 90)
+#Preview("Ring", as: .accessoryCircular) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryCircular, complication: .previewSample(gaugeStyle: "capacity"))
 }
 #endif
