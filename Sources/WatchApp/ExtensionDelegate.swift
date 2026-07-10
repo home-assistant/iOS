@@ -406,13 +406,26 @@ private enum ComplicationStateFetcher {
         }
     }
 
+    /// Performs `request` on the server's mTLS/self-signed-aware session (so local servers work),
+    /// invalidating the session afterwards as `MagicItem.sendRESTServiceCall` does.
+    private static func data(for request: URLRequest, server: Server) async -> Data? {
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        defer { session.finishTasksAndInvalidate() }
+        guard let (data, response) = try? await session.data(for: request),
+              let http = response as? HTTPURLResponse, (200 ..< 300).contains(http.statusCode) else {
+            return nil
+        }
+        return data
+    }
+
     static func fetchState(entityId: String, server: Server) async -> EntityState? {
         guard let baseURL = await server.activeURL(), let token = await bearerToken(for: server) else {
             return nil
         }
         var request = URLRequest(url: baseURL.appendingPathComponent("api/states/\(entityId)"))
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        guard let (data, _) = try? await URLSession.shared.data(for: request),
+        request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
+        guard let data = await data(for: request, server: server),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let state = json["state"] as? String else {
             return nil
@@ -429,8 +442,9 @@ private enum ComplicationStateFetcher {
         request.httpMethod = "POST"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
         request.httpBody = try? JSONSerialization.data(withJSONObject: ["template": template])
-        guard let (data, _) = try? await URLSession.shared.data(for: request) else { return nil }
+        guard let data = await data(for: request, server: server) else { return nil }
         return String(data: data, encoding: .utf8)
     }
 }

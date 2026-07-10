@@ -5313,6 +5313,68 @@ public enum L10n {
         }
       }
     }
+    public enum Complications {
+      public enum Builder {
+        /// Edit complication
+        public static var editTitle: String { return L10n.tr("Localizable", "watch.complications.builder.edit_title") }
+        /// No complications yet. Tap + to create one from an entity or a template.
+        public static var empty: String { return L10n.tr("Localizable", "watch.complications.builder.empty") }
+        /// Entity
+        public static var entity: String { return L10n.tr("Localizable", "watch.complications.builder.entity") }
+        /// Family
+        public static var family: String { return L10n.tr("Localizable", "watch.complications.builder.family") }
+        /// Gauge range (optional)
+        public static var gaugeRange: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range") }
+        /// Set a numeric range to show a ring or gauge from the state.
+        public static var gaugeRangeFooter: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range_footer") }
+        /// Maximum
+        public static var maximum: String { return L10n.tr("Localizable", "watch.complications.builder.maximum") }
+        /// Minimum
+        public static var minimum: String { return L10n.tr("Localizable", "watch.complications.builder.minimum") }
+        /// Name (optional)
+        public static var name: String { return L10n.tr("Localizable", "watch.complications.builder.name") }
+        /// New complication
+        public static var newTitle: String { return L10n.tr("Localizable", "watch.complications.builder.new_title") }
+        /// Show value
+        public static var showValue: String { return L10n.tr("Localizable", "watch.complications.builder.show_value") }
+        /// Source
+        public static var source: String { return L10n.tr("Localizable", "watch.complications.builder.source") }
+        /// Custom template
+        public static var sourceCustom: String { return L10n.tr("Localizable", "watch.complications.builder.source_custom") }
+        /// Entity
+        public static var sourceEntity: String { return L10n.tr("Localizable", "watch.complications.builder.source_entity") }
+        /// Style
+        public static var style: String { return L10n.tr("Localizable", "watch.complications.builder.style") }
+        /// Templates
+        public static var templates: String { return L10n.tr("Localizable", "watch.complications.builder.templates") }
+        /// Complications
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.builder.title") }
+      }
+      public enum Family {
+        /// Circular
+        public static var circular: String { return L10n.tr("Localizable", "watch.complications.family.circular") }
+        /// Corner
+        public static var corner: String { return L10n.tr("Localizable", "watch.complications.family.corner") }
+        /// Inline
+        public static var inline: String { return L10n.tr("Localizable", "watch.complications.family.inline") }
+        /// Rectangular
+        public static var rectangular: String { return L10n.tr("Localizable", "watch.complications.family.rectangular") }
+      }
+      public enum Legacy {
+        /// Legacy Complications
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.legacy.title") }
+      }
+      public enum Root {
+        /// Legacy complications
+        public static var legacy: String { return L10n.tr("Localizable", "watch.complications.root.legacy") }
+        /// Complications created with the older watchOS templates. Existing ones keep working and map to their closest modern style.
+        public static var legacyFooter: String { return L10n.tr("Localizable", "watch.complications.root.legacy_footer") }
+        /// New complication
+        public static var new: String { return L10n.tr("Localizable", "watch.complications.root.new") }
+        /// Build a complication from an entity or a custom template. The watch renders it using live data.
+        public static var newFooter: String { return L10n.tr("Localizable", "watch.complications.root.new_footer") }
+      }
+    }
     public enum Config {
       public enum Add {
         /// Nothing to add yet. Add scripts, scenes or automations on your iPhone first.

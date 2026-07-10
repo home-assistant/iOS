@@ -182,7 +182,7 @@ public class HomeAssistantAPI {
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
     /// exceptions (mTLS), or a plain ephemeral session when neither is configured. Reused by HAKit's
     /// REST calls and, on watchOS, by direct REST execution (where WebSocket transport is unavailable).
-    static func makeCertificateAwareURLSession(server: Server) -> URLSession {
+    public static func makeCertificateAwareURLSession(server: Server) -> URLSession {
         if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
             Current.Log.info("[mTLS] Using HAKit certificate provider")
             let certificateProvider = HomeAssistantCertificateProvider(server: server)

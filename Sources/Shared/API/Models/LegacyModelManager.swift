@@ -127,6 +127,11 @@ public class LegacyModelManager: ServerObserver {
 
         cleanupDefinitions = definitions
         workQueue.async {
+            // GRDB-backed watch complications/configs: drop rows for servers that no longer exist.
+            let serverIds = Current.servers.all.map(\.identifier.rawValue)
+            try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIds)
+            try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIds)
+
             let realm = Current.realm()
             let writes = definitions.map { definition in
                 realm.reentrantWrite {

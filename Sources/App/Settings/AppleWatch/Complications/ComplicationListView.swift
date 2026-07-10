@@ -11,24 +11,22 @@ struct ComplicationsRootView: View {
                 NavigationLink {
                     WatchComplicationBuilderView()
                 } label: {
-                    Label(title: { Text(verbatim: "New complication") },
+                    Label(title: { Text(L10n.Watch.Complications.Root.new) },
                           icon: { Image(systemSymbol: .plusCircle) })
                 }
             } footer: {
-                Text(verbatim: "Build a complication from an entity or a custom template. The watch " +
-                    "renders it using live data.")
+                Text(L10n.Watch.Complications.Root.newFooter)
             }
 
             Section {
                 NavigationLink {
                     ComplicationListView()
                 } label: {
-                    Label(title: { Text(verbatim: "Legacy complications") },
+                    Label(title: { Text(L10n.Watch.Complications.Root.legacy) },
                           icon: { Image(systemSymbol: .clockArrowCirclepath) })
                 }
             } footer: {
-                Text(verbatim: "Complications created with the older watchOS templates. Existing ones " +
-                    "keep working and map to their closest modern style.")
+                Text(L10n.Watch.Complications.Root.legacyFooter)
             }
         }
         .navigationTitle(L10n.SettingsDetails.Watch.title)
@@ -47,7 +45,7 @@ struct ComplicationListView: View {
             groupSections
             addSection
         }
-        .navigationTitle(Text(verbatim: "Legacy Complications"))
+        .navigationTitle(Text(L10n.Watch.Complications.Legacy.title))
         .sheet(isPresented: $showFamilyPicker) {
             NavigationView {
                 ComplicationFamilySelectView(
@@ -160,7 +158,7 @@ struct WatchComplicationBuilderView: View {
         List {
             if configs.isEmpty {
                 Section {
-                    Text(verbatim: "No complications yet. Tap + to create one from an entity or a template.")
+                    Text(L10n.Watch.Complications.Builder.empty)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -184,7 +182,7 @@ struct WatchComplicationBuilderView: View {
             }
             .onDelete(perform: delete)
         }
-        .navigationTitle(Text(verbatim: "Complications"))
+        .navigationTitle(Text(L10n.Watch.Complications.Builder.title))
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button { showAdd = true } label: { Image(systemSymbol: .plus) }
@@ -237,7 +235,7 @@ struct WatchComplicationBuilderEditView: View {
                         Text(verbatim: family.title).tag(family)
                     }
                 } label: {
-                    Text(verbatim: "Family")
+                    Text(L10n.Watch.Complications.Builder.family)
                 }
                 HStack {
                     Spacer()
@@ -247,15 +245,15 @@ struct WatchComplicationBuilderEditView: View {
                     Spacer()
                 }
             } header: {
-                Text(verbatim: "Style")
+                Text(L10n.Watch.Complications.Builder.style)
             }
 
             Section {
                 Picker(selection: $config.kind) {
-                    Text(verbatim: "Entity").tag(WatchComplicationConfig.Kind.entity)
-                    Text(verbatim: "Custom template").tag(WatchComplicationConfig.Kind.customTemplate)
+                    Text(L10n.Watch.Complications.Builder.sourceEntity).tag(WatchComplicationConfig.Kind.entity)
+                    Text(L10n.Watch.Complications.Builder.sourceCustom).tag(WatchComplicationConfig.Kind.customTemplate)
                 } label: {
-                    Text(verbatim: "Source")
+                    Text(L10n.Watch.Complications.Builder.source)
                 }
             }
 
@@ -267,18 +265,18 @@ struct WatchComplicationBuilderEditView: View {
                         domainFilter: nil,
                         mode: .button
                     )
-                    Toggle(isOn: $config.showValue) { Text(verbatim: "Show value") }
+                    Toggle(isOn: $config.showValue) { Text(L10n.Watch.Complications.Builder.showValue) }
                 } header: {
-                    Text(verbatim: "Entity")
+                    Text(L10n.Watch.Complications.Builder.entity)
                 }
 
                 Section {
-                    numberField(title: "Minimum", value: $config.gaugeMin)
-                    numberField(title: "Maximum", value: $config.gaugeMax)
+                    numberField(title: L10n.Watch.Complications.Builder.minimum, value: $config.gaugeMin)
+                    numberField(title: L10n.Watch.Complications.Builder.maximum, value: $config.gaugeMax)
                 } header: {
-                    Text(verbatim: "Gauge range (optional)")
+                    Text(L10n.Watch.Complications.Builder.gaugeRange)
                 } footer: {
-                    Text(verbatim: "Set a numeric range to show a ring/gauge from the state.")
+                    Text(L10n.Watch.Complications.Builder.gaugeRangeFooter)
                 }
             } else {
                 Section {
@@ -286,20 +284,21 @@ struct WatchComplicationBuilderEditView: View {
                         Text(verbatim: "{{ states('sensor.x') }}")
                     }
                     TextField(text: stringBinding(\.customGaugeTemplate)) {
-                        Text(verbatim: "Gauge 0–1 (optional)")
+                        Text(verbatim: "{{ … }} → 0–1")
                     }
                 } header: {
-                    Text(verbatim: "Templates")
+                    Text(L10n.Watch.Complications.Builder.templates)
                 }
             }
 
             Section {
                 TextField(text: stringBinding(\.name)) {
-                    Text(verbatim: "Name (optional)")
+                    Text(L10n.Watch.Complications.Builder.name)
                 }
             }
         }
-        .navigationTitle(Text(verbatim: isNew ? "New complication" : "Edit complication"))
+        .navigationTitle(Text(isNew ? L10n.Watch.Complications.Builder.newTitle : L10n.Watch.Complications.Builder
+                .editTitle))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {

@@ -217,6 +217,15 @@ public struct WatchComplication: Codable, FetchableRecord, PersistableRecord, Eq
             try WatchComplication.deleteOne(db, key: identifier)
         }
     }
+
+    /// Delete complications whose server no longer exists (rows with no server are kept).
+    public static func deleteOrphans(keepingServerIdentifiers serverIdentifiers: [String]) throws {
+        _ = try Current.database().write { db in
+            try WatchComplication
+                .filter(!serverIdentifiers.contains(Column(CodingKeys.serverIdentifier.rawValue)))
+                .deleteAll(db)
+        }
+    }
 }
 
 /// A modern watch complication built from a Home Assistant entity (auto-designed) or a custom
@@ -241,10 +250,10 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
 
         public var title: String {
             switch self {
-            case .circular: return "Circular"
-            case .rectangular: return "Rectangular"
-            case .inline: return "Inline"
-            case .corner: return "Corner"
+            case .circular: return L10n.Watch.Complications.Family.circular
+            case .rectangular: return L10n.Watch.Complications.Family.rectangular
+            case .inline: return L10n.Watch.Complications.Family.inline
+            case .corner: return L10n.Watch.Complications.Family.corner
             }
         }
     }
@@ -333,6 +342,15 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public func delete() throws {
         _ = try Current.database().write { db in
             try WatchComplicationConfig.deleteOne(db, key: id)
+        }
+    }
+
+    /// Delete configs whose server no longer exists.
+    public static func deleteOrphans(keepingServerIds serverIds: [String]) throws {
+        _ = try Current.database().write { db in
+            try WatchComplicationConfig
+                .filter(!serverIds.contains(Column(CodingKeys.serverId.rawValue)))
+                .deleteAll(db)
         }
     }
 }
