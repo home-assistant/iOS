@@ -5401,7 +5401,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.complications.legacy.title") }
       }
       public enum Root {
-        /// Show entity state and gauges on your watch face. Create a complication, then add it to any watch face.
+        /// Show entity state and gauges on your watch face.
         public static var headerSubtitle: String { return L10n.tr("Localizable", "watch.complications.root.header_subtitle") }
         /// Legacy complications
         public static var legacy: String { return L10n.tr("Localizable", "watch.complications.root.legacy") }

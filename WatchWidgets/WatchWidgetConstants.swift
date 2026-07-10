@@ -58,6 +58,8 @@ enum WatchWidgetConstants {
     enum Layout {
         static let logoPadding: CGFloat = 5
         static let gaugeLogoPadding: CGFloat = 6
+        /// Inset for an icon shown inside a circular gauge, so it doesn't touch the ring.
+        static let circularIconGaugePadding: CGFloat = 8
         static let assistIconPadding: CGFloat = 8
         static let rectangularLogoSize: CGFloat = 18
         static let rectangularSpacing: CGFloat = 6

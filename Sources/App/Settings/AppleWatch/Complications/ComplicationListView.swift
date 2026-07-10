@@ -339,11 +339,11 @@ struct WatchComplicationBuilderEditView: View {
         config.iconColor.map { Color(uiColor: UIColor(hex: $0)) } ?? Color.haPrimary
     }
 
-    /// Two-way binding between the stored (possibly server-side "mdi:") icon name and the picker.
-    private var iconBinding: Binding<MaterialDesignIcons> {
+    /// Two-way binding between the stored (possibly server-side "mdi:") icon name and the icon picker.
+    private var iconBinding: Binding<MaterialDesignIcons?> {
         Binding(
-            get: { config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) } ?? .gaugeIcon },
-            set: { config.iconName = $0.name }
+            get: { config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) } },
+            set: { config.iconName = $0?.name }
         )
     }
 
@@ -397,10 +397,17 @@ struct WatchComplicationBuilderEditView: View {
             }
 
             Section {
-                // When left blank the complication falls back to the entity's name, so the placeholder
-                // previews that fallback.
-                TextField(text: stringBinding(\.name)) {
-                    Text(verbatim: namePlaceholder)
+                // Icon + name on one row, matching MagicItemCustomizationView. The icon is auto-derived
+                // from the entity and can be overridden here; a blank name falls back to the entity name.
+                HStack(spacing: DesignSystem.Spaces.two) {
+                    IconPicker(
+                        selectedIcon: iconBinding,
+                        selectedColor: .constant(iconColor)
+                    )
+                    TextField(text: stringBinding(\.name)) {
+                        Text(verbatim: namePlaceholder)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             } header: {
                 Text(L10n.Watch.Complications.Builder.displayName)
@@ -435,7 +442,7 @@ struct WatchComplicationBuilderEditView: View {
                         HStack {
                             VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                                 Text(verbatim: selectedEntity?.name ?? L10n.EntityPicker.placeholder)
-                                    .foregroundColor(selectedEntity == nil ? .accentColor : .primary)
+                                    .foregroundColor(.accentColor)
                                 if let entitySubtitle {
                                     Text(verbatim: entitySubtitle)
                                         .font(.caption)
@@ -459,13 +466,6 @@ struct WatchComplicationBuilderEditView: View {
                         }
                         .navigationViewStyle(.stack)
                     }
-
-                    // The icon is auto-derived from the entity but can be overridden here.
-                    IconSearchPicker(
-                        selectedIcon: iconBinding,
-                        tintColor: iconColor,
-                        title: L10n.Watch.Complications.Builder.icon
-                    )
                 }
             }
 

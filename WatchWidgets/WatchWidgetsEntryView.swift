@@ -130,7 +130,9 @@ struct WatchWidgetsEntryView: View {
                 .lineLimit(1)
                 .foregroundStyle(complication.textColor(for: entry.family) ?? .primary)
         } else {
+            // Inset the icon so it doesn't touch the surrounding gauge ring.
             icon
+                .padding(WatchWidgetConstants.Layout.circularIconGaugePadding)
         }
     }
 
