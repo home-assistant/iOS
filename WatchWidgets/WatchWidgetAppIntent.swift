@@ -10,7 +10,7 @@ struct WatchWidgetConfigurationIntent: WidgetConfigurationIntent {
     var complication: WatchWidgetComplicationEntity?
 
     init() {
-        complication = nil
+        self.complication = nil
     }
 
     init(complication: WatchWidgetComplicationEntity) {

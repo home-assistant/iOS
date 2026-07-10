@@ -18,6 +18,7 @@ struct WatchSettingsView: View {
             List {
                 serversSection
                 configurationSection
+                layoutSection
                 performActionSection
                 troubleshootingSection
                 deleteLocalDataSection
@@ -82,6 +83,21 @@ struct WatchSettingsView: View {
             .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
                 viewModel.reload()
             }
+        }
+    }
+
+    private var layoutSection: some View {
+        Section {
+            Picker(L10n.Watch.Configuration.Layout.title, selection: Binding(
+                get: { viewModel.layout },
+                set: { viewModel.updateLayout($0) }
+            )) {
+                ForEach(WatchLayout.allCases, id: \.rawValue) { layout in
+                    Text(verbatim: layout.name).tag(layout)
+                }
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.Layout.footer)
         }
     }
 

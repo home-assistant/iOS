@@ -815,6 +815,14 @@ public enum L10n {
       /// Tap to open camera
       public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
     }
+    public enum Talkback {
+      /// Microphone access is required for two-way audio. Enable it in Settings.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_player.talkback.microphone_denied") }
+      /// Start talking
+      public static var start: String { return L10n.tr("Localizable", "camera_player.talkback.start") }
+      /// Stop talking
+      public static var stop: String { return L10n.tr("Localizable", "camera_player.talkback.stop") }
+    }
   }
 
   public enum Cameras {
@@ -5582,6 +5590,12 @@ public enum L10n {
         /// Folder Name
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.folder_name.title") }
       }
+      public enum Header {
+        /// Customize the items, folders and layout shown on your Apple Watch.
+        public static var subtitle: String { return L10n.tr("Localizable", "watch.configuration.header.subtitle") }
+        /// Apple Watch
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.header.title") }
+      }
       public enum Items {
         /// Items
         public static var title: String { return L10n.tr("Localizable", "watch.configuration.items.title") }
@@ -5836,8 +5850,8 @@ public enum L10n {
     public enum Labels {
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
-      /// With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.
-      public static var noConfigAdd: String { return L10n.tr("Localizable", "watch.labels.no_config_add") }
+      /// With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.
+      public static var noConfigAddPlus: String { return L10n.tr("Localizable", "watch.labels.no_config_add_plus") }
       public enum ComplicationGroup {
         public enum CircularSmall {
           /// Use circular small complications to display content in the corners of the Color watch face.
@@ -6435,6 +6449,8 @@ public enum L10n {
       /// Starting sync…
       public static var starting: String { return L10n.tr("Localizable", "watch.sync.starting") }
       public enum Error {
+        /// We couldn't connect to your iPhone. Open the Home Assistant app on your iPhone, then tap the reload button here on your Watch.
+        public static var connectionFailed: String { return L10n.tr("Localizable", "watch.sync.error.connection_failed") }
         /// Received incomplete data from iPhone. Please try again.
         public static var data: String { return L10n.tr("Localizable", "watch.sync.error.data") }
         /// Sync failed. Please try again.

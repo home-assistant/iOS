@@ -30,6 +30,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var initialURL: URL?
     var statusBarButtonsStack: UIStackView?
     var lastNavigationWasServerError = false
+    var didHandleServerErrorResponse = false
     var reconnectBackgroundTimer: Timer? {
         willSet {
             if reconnectBackgroundTimer != newValue {
@@ -50,7 +51,15 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Owns disconnected empty-state recovery timing. Kept in `HomeAssistantView` so attempts survive reset.
     var reconnectManager: WebViewReconnectManager?
 
-    var loadActiveURLIfNeededInProgress = false
+    /// In-flight `loadActiveURLIfNeeded()` attempt and when it started. Repeat calls are skipped
+    /// while a recent attempt is running, but an attempt older than
+    /// `WebViewController.loadActiveURLStaleInterval` is assumed hung, cancelled, and replaced —
+    /// a hung attempt must never block URL loading until the app is killed.
+    var loadActiveURLTask: Task<Void, Never>?
+    var loadActiveURLTaskStartDate: Date?
+
+    /// Wrapper around the application state; replaceable in tests.
+    var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
     /// Track the timestamp of the last pull-to-refresh action
     var lastPullToRefreshTimestamp: Date?
@@ -71,7 +80,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Handler for script messages sent from the webview to the app
     let webViewScriptMessageHandler = WebViewScriptMessageHandler()
 
-    /// Defer showing the empty state until disconnected for 10 seconds (used by
+    /// Defer showing the empty state until the frontend has been disconnected for
+    /// `Current.settingsStore.webViewEmptyStateTimeout` seconds (used by
     /// updateFrontendConnectionState in WebViewController+ProtocolConformance.swift)
     var emptyStateTimer: Timer?
 
@@ -185,6 +195,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
+        loadActiveURLTask?.cancel()
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {

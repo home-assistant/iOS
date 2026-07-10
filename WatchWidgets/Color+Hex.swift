@@ -32,15 +32,15 @@ private struct ColorComponents {
 
     init(value: UInt64, includesAlpha: Bool) {
         if includesAlpha {
-            red = Double((value & 0xFF00_0000) >> 24) / 255
-            green = Double((value & 0x00FF_0000) >> 16) / 255
-            blue = Double((value & 0x0000_FF00) >> 8) / 255
-            alpha = Double(value & 0x0000_00FF) / 255
+            self.red = Double((value & 0xFF00_0000) >> 24) / 255
+            self.green = Double((value & 0x00FF_0000) >> 16) / 255
+            self.blue = Double((value & 0x0000_FF00) >> 8) / 255
+            self.alpha = Double(value & 0x0000_00FF) / 255
         } else {
-            red = Double((value & 0xFF0000) >> 16) / 255
-            green = Double((value & 0x00FF00) >> 8) / 255
-            blue = Double(value & 0x0000FF) / 255
-            alpha = 1
+            self.red = Double((value & 0xFF0000) >> 16) / 255
+            self.green = Double((value & 0x00FF00) >> 8) / 255
+            self.blue = Double(value & 0x0000FF) / 255
+            self.alpha = 1
         }
     }
 }

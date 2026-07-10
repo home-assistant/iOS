@@ -13,6 +13,8 @@ final class WebFrontendOverlayState: ObservableObject {
     /// Non-nil while the disconnected/unauthenticated empty state should be shown.
     @Published var emptyState: EmptyStateContent?
 
+    @Published var isLoading = false
+
     /// Theme color for the top status-bar inset, drawn by `HomeAssistantView` over the (always edge-to-edge)
     /// web view. Nil when there should be no themed bar — i.e. edge-to-edge / full-screen is enabled, or on
     /// Catalyst (where the native status-bar view handles it).

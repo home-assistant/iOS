@@ -42,11 +42,11 @@ struct WatchWidgetComplicationEntity: AppEntity, Sendable {
     }
 
     init(snapshot: WatchWidgetComplicationSnapshot) {
-        id = snapshot.recommendationID
-        title = snapshot.recommendationTitle
-        subtitle = snapshot.subtitle
-        iconData = snapshot.iconData
-        kind = WatchWidgetComplicationKind(snapshot: snapshot)
+        self.id = snapshot.recommendationID
+        self.title = snapshot.recommendationTitle
+        self.subtitle = snapshot.subtitle
+        self.iconData = snapshot.iconData
+        self.kind = WatchWidgetComplicationKind(snapshot: snapshot)
     }
 }
 
