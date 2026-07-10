@@ -53,6 +53,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // If the application was previously in the background, optionally refresh the user interface.
 
         Current.Log.verbose("didBecomeActive")
+        // watchOS can leave `WCSession.isReachable` stale across a suspend→resume (no
+        // sessionReachabilityDidChange fires), which is why the app looked "unreachable" until a
+        // restart. Re-read and re-broadcast the live value so reachability recovers on foreground.
+        Communicator.shared.refreshConnectivityState()
         HomeAssistantAPI.syncWatchContext()
     }
 
