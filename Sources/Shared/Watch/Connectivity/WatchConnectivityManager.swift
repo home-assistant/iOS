@@ -106,6 +106,7 @@ public final class WatchConnectivityManager: NSObject {
         notifyState()
         notifyReachability()
     }
+
     #if os(iOS)
     func notifyWatchState() { watchState.notify(currentWatchState) }
     #endif
