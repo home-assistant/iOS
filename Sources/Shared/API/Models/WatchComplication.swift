@@ -315,6 +315,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     public var families: [String: FamilyOptions]?
 
     public struct FamilyOptions: Codable, Equatable {
+        public var showName: Bool?
         public var showValue: Bool?
         public var showGauge: Bool?
         public var gaugeMin: Double?
@@ -327,6 +328,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var textColor: String?
 
         public init(
+            showName: Bool? = nil,
             showValue: Bool? = nil,
             showGauge: Bool? = nil,
             gaugeMin: Double? = nil,
@@ -336,6 +338,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             gaugeStyle: String? = nil,
             textColor: String? = nil
         ) {
+            self.showName = showName
             self.showValue = showValue
             self.showGauge = showGauge
             self.gaugeMin = gaugeMin
@@ -399,6 +402,11 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     }
 
     // MARK: - Per-family resolution (override → base fallback)
+
+    /// Whether the complication's name is shown for this family (default true).
+    public func showsName(for family: Family) -> Bool {
+        families?[family.rawValue]?.showName ?? true
+    }
 
     public func showsValue(for family: Family) -> Bool {
         families?[family.rawValue]?.showValue ?? showValue

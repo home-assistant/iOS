@@ -568,6 +568,8 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         let fraction: Double?
         let tint: String?
         let showValue: Bool
+        /// Whether to show the complication name (default true).
+        var showName: Bool?
         /// Raw `WatchComplicationConfig.GaugeStyle` (circular only); nil defaults to open.
         var gaugeStyle: String?
         /// Pre-formatted gauge min/max labels for the open circular gauge.
@@ -724,6 +726,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                 fraction: fraction(for: family),
                 tint: config.tint(for: family),
                 showValue: config.showsValue(for: family),
+                showName: config.showsName(for: family),
                 gaugeStyle: config.gaugeStyle(for: family).rawValue,
                 minLabel: range.map { label($0.min) },
                 maxLabel: range.map { label($0.max) },

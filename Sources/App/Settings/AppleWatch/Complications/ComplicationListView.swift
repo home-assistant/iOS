@@ -20,6 +20,16 @@ struct ComplicationsRootView: View {
             header
             yourComplicationsSection
 
+            Section {
+                Button {
+                    HomeAssistantAPI.syncWatchContext()
+                } label: {
+                    Label(L10n.Watch.Complications.Root.reload, systemSymbol: .arrowClockwise)
+                }
+            } footer: {
+                Text(L10n.Watch.Complications.Root.reloadFooter)
+            }
+
             if hasLegacy {
                 Section {
                     NavigationLink {
@@ -306,6 +316,13 @@ struct WatchComplicationBuilderEditView: View {
         )
     }
 
+    private var showNameBinding: Binding<Bool> {
+        Binding(
+            get: { config.showsName(for: currentFamily) },
+            set: { value in updateOptions { $0.showName = value } }
+        )
+    }
+
     private var showGaugeBinding: Binding<Bool> {
         Binding(
             get: { config.showsGauge(for: currentFamily) },
@@ -472,6 +489,7 @@ struct WatchComplicationBuilderEditView: View {
             if config.kind == .entity {
                 // Per-size customization: bound to the size currently selected in the preview above.
                 Section {
+                    Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
                     Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
                     if entityUnit != nil {
                         Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
@@ -504,7 +522,17 @@ struct WatchComplicationBuilderEditView: View {
                         supportsOpacity: false
                     )
                 } header: {
-                    Text(L10n.Watch.Complications.Builder.sizeOptions(config.widgetFamily.title))
+                    // Family switcher, so the size being customized can be changed without scrolling
+                    // back up to the preview.
+                    Picker(selection: $config.widgetFamily) {
+                        ForEach(WatchComplicationConfig.Family.allCases) { family in
+                            Text(verbatim: family.title).tag(family)
+                        }
+                    } label: { EmptyView() }
+                        .pickerStyle(.segmented)
+                        .frame(maxWidth: .infinity)
+                        .textCase(nil)
+                        .padding(.bottom, DesignSystem.Spaces.one)
                 } footer: {
                     Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
                 }
@@ -722,6 +750,8 @@ struct WatchComplicationLivePreview: View {
 
     private var showsValue: Bool { config.showsValue(for: config.widgetFamily) }
 
+    private var showsName: Bool { config.showsName(for: config.widgetFamily) }
+
     private var iconImage: Image? {
         guard let iconName = config.iconName else { return nil }
         let image = MaterialDesignIcons(serversideValueNamed: iconName)
@@ -853,7 +883,9 @@ struct WatchComplicationLivePreview: View {
                 .frame(width: 22, height: 22)
                 .foregroundStyle(.white)
             VStack(alignment: .leading, spacing: 1) {
-                Text(name).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+                if showsName {
+                    Text(name).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+                }
                 Text(showsValue && !value.isEmpty ? value : " ")
                     .font(.system(size: 13)).foregroundStyle(textColor.opacity(0.85)).lineLimit(1)
             }
@@ -868,10 +900,10 @@ struct WatchComplicationLivePreview: View {
     private var inline: some View {
         HStack(spacing: 4) {
             iconImage?.resizable().scaledToFit().frame(width: 16, height: 16)
-            Text([name, showsValue ? value : ""].filter { !$0.isEmpty }.joined(separator: " "))
+            Text([showsName ? name : "", showsValue ? value : ""].filter { !$0.isEmpty }.joined(separator: " "))
                 .font(.system(size: 15)).lineLimit(1)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(textColor)
         .padding(.horizontal, 14).padding(.vertical, 8)
         .background(Capsule().fill(Color.black))
     }

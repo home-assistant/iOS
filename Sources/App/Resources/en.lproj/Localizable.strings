@@ -1637,6 +1637,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.preview_footer" = "A live approximation using current data. This complication is available in every size. Add it to any complication slot on your watch face.";
 "watch.complications.builder.preview_size" = "Preview size";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
+"watch.complications.builder.show_name" = "Show name";
 "watch.complications.builder.show_value" = "Show value";
 "watch.complications.builder.size_options" = "%1$@ options";
 "watch.complications.builder.size_options_footer" = "These settings apply to the selected size. Switch the preview size above to customize each size independently.";
@@ -1665,6 +1666,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.root.legacy_footer" = "Complications created with the older watchOS templates. Existing ones keep working and map to their closest modern style.";
 "watch.complications.root.new" = "Create";
 "watch.complications.root.new_footer" = "Build a complication from an entity or a custom template. The watch renders it using live data.";
+"watch.complications.root.reload" = "Reload Complications";
+"watch.complications.root.reload_footer" = "Sends your complications to the Apple Watch and refreshes them.";
 "watch.complications.root.template" = "Template";
 "watch.configurator.delete.message" = "Are you sure you want to delete this Complication? This cannot be undone.";
 "watch.configurator.delete.title" = "Delete Complication?";

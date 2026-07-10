@@ -5349,6 +5349,8 @@ public enum L10n {
         public static var previewSize: String { return L10n.tr("Localizable", "watch.complications.builder.preview_size") }
         /// Show as gauge / ring
         public static var showGauge: String { return L10n.tr("Localizable", "watch.complications.builder.show_gauge") }
+        /// Show name
+        public static var showName: String { return L10n.tr("Localizable", "watch.complications.builder.show_name") }
         /// Show unit
         public static var showUnit: String { return L10n.tr("Localizable", "watch.complications.builder.show_unit") }
         /// Show value
@@ -5411,6 +5413,10 @@ public enum L10n {
         public static var new: String { return L10n.tr("Localizable", "watch.complications.root.new") }
         /// Build a complication from an entity or a custom template. The watch renders it using live data.
         public static var newFooter: String { return L10n.tr("Localizable", "watch.complications.root.new_footer") }
+        /// Reload Complications
+        public static var reload: String { return L10n.tr("Localizable", "watch.complications.root.reload") }
+        /// Sends your complications to the Apple Watch and refreshes them.
+        public static var reloadFooter: String { return L10n.tr("Localizable", "watch.complications.root.reload_footer") }
         /// Template
         public static var template: String { return L10n.tr("Localizable", "watch.complications.root.template") }
         /// Your complications

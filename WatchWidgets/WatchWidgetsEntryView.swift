@@ -17,7 +17,7 @@ struct WatchWidgetsEntryView: View {
     private var content: some View {
         switch entry.family {
         case .accessoryInline:
-            Text(entry.complication?.inlineText ?? WatchWidgetConstants.appName)
+            inline
         case .accessoryCorner:
             corner
         case .accessoryRectangular:
@@ -25,6 +25,27 @@ struct WatchWidgetsEntryView: View {
         default:
             circular
         }
+    }
+
+    /// Inline: name + value on one line. For a modern config the name/value honor the per-size
+    /// toggles and text color; legacy/built-ins use their precomputed inline text.
+    @ViewBuilder
+    private var inline: some View {
+        if let complication = entry.complication {
+            let text = inlineText(for: complication)
+            Text(text.isEmpty ? WatchWidgetConstants.appName : text)
+                .foregroundStyle(complication.textColor(for: entry.family) ?? .primary)
+        } else {
+            Text(WatchWidgetConstants.appName)
+        }
+    }
+
+    private func inlineText(for complication: WatchWidgetComplicationSnapshot) -> String {
+        guard complication.perFamily != nil else { return complication.inlineText }
+        return [
+            complication.showsName(for: entry.family) ? complication.subtitle : "",
+            complication.showsValue(for: entry.family) ? complication.title : "",
+        ].filter { !$0.isEmpty }.joined(separator: " ")
     }
 
     /// Circular: a gauge around the icon when a value exists — an open arc (optionally with min/max
@@ -94,23 +115,50 @@ struct WatchWidgetsEntryView: View {
                 )
 
             VStack(alignment: .leading, spacing: WatchWidgetConstants.Layout.rectangularTextSpacing) {
-                Text(entry.complication?.title ?? WatchWidgetConstants.appName)
-                    .font(.caption2.weight(.semibold))
-                    .lineLimit(1)
-                    .foregroundStyle(entry.complication?.textColor(for: entry.family) ?? .primary)
-
-                if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
-                    Gauge(value: fraction) {
-                        EmptyView()
-                    } currentValueLabel: {
-                        Text(complication.subtitle).lineLimit(1)
+                if let complication = entry.complication, complication.perFamily != nil {
+                    // Modern config: name (subtitle) on top, value (title) below, both honoring toggles.
+                    let textColor = complication.textColor(for: entry.family) ?? .primary
+                    if complication.showsName(for: entry.family) {
+                        Text(complication.subtitle)
+                            .font(.caption2.weight(.semibold))
+                            .lineLimit(1)
+                            .foregroundStyle(textColor)
                     }
-                    .gaugeStyle(.accessoryLinearCapacity)
-                    .tint(complication.tintColor(for: entry.family))
+                    if let fraction = complication.fraction(for: entry.family) {
+                        Gauge(value: fraction) {
+                            EmptyView()
+                        } currentValueLabel: {
+                            if complication.showsValue(for: entry.family) {
+                                Text(complication.title).lineLimit(1)
+                            }
+                        }
+                        .gaugeStyle(.accessoryLinearCapacity)
+                        .tint(complication.tintColor(for: entry.family))
+                    } else if complication.showsValue(for: entry.family), !complication.title.isEmpty {
+                        Text(complication.title)
+                            .font(.caption2)
+                            .lineLimit(2)
+                            .foregroundStyle(textColor)
+                    }
                 } else {
-                    Text(entry.complication?.subtitle ?? WatchWidgetConstants.placeholderSubtitle)
-                        .font(.caption2)
-                        .lineLimit(2)
+                    // Legacy / built-in: primary text on top, secondary (or gauge) below.
+                    Text(entry.complication?.title ?? WatchWidgetConstants.appName)
+                        .font(.caption2.weight(.semibold))
+                        .lineLimit(1)
+
+                    if let complication = entry.complication, let fraction = complication.fraction(for: entry.family) {
+                        Gauge(value: fraction) {
+                            EmptyView()
+                        } currentValueLabel: {
+                            Text(complication.subtitle).lineLimit(1)
+                        }
+                        .gaugeStyle(.accessoryLinearCapacity)
+                        .tint(complication.tintColor(for: entry.family))
+                    } else {
+                        Text(entry.complication?.subtitle ?? WatchWidgetConstants.placeholderSubtitle)
+                            .font(.caption2)
+                            .lineLimit(2)
+                    }
                 }
             }
 
