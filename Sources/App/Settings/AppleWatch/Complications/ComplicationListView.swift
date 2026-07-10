@@ -719,13 +719,47 @@ struct WatchComplicationLivePreview: View {
     @ViewBuilder
     private var content: some View {
         switch config.widgetFamily {
-        case .circular, .corner:
+        case .circular:
             circular
+        case .corner:
+            corner
         case .rectangular:
             rectangular
         case .inline:
             inline
         }
+    }
+
+    /// Corner: content tucked in the screen corner with a curved gauge along the bezel. Approximated
+    /// here with the value above a linear gauge, anchored to the bottom of the face.
+    private var corner: some View {
+        ZStack {
+            Circle().fill(Color.black)
+            VStack(spacing: 3) {
+                Spacer()
+                if showsValue, !value.isEmpty {
+                    Text(value)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                } else {
+                    iconImage?
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 22, height: 22)
+                }
+                if showsGauge, let fraction {
+                    Gauge(value: fraction) { EmptyView() }
+                        .gaugeStyle(.accessoryLinearCapacity)
+                        .tint(tint)
+                        .frame(width: 66)
+                }
+            }
+            .padding(12)
+        }
+        .frame(width: 100, height: 100)
+        .environment(\.colorScheme, .dark)
     }
 
     /// Icon (+ value) shown in the middle of a circular complication.

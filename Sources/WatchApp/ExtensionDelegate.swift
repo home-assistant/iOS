@@ -879,7 +879,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         }
 
         let color = icon["icon_color"].map { UIColor($0) } ?? AppConstants.tintColor
-        return MaterialDesignIcons(named: name)
+        // The stored name may be a server-side value (e.g. "mdi:music"); normalize before lookup so
+        // image-based legacy complications (e.g. "Ring Image") actually resolve an icon.
+        return MaterialDesignIcons(serversideValueNamed: name)
             .image(ofSize: iconRenderSize, color: color)
             .pngData()
     }

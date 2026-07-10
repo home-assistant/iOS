@@ -117,11 +117,12 @@ struct WatchWidgetsEntryView: View {
         }
     }
 
-    /// Center of a circular gauge: the state value when the complication shows it (matching watchOS
-    /// gauges, which put the number in the middle), otherwise the icon.
+    /// Center of a circular gauge: for a modern config, the state value when shown (matching watchOS
+    /// gauges, which put the number in the middle); otherwise the icon. Legacy/image complications
+    /// (no per-family options) keep their icon, since their title is just the name.
     @ViewBuilder
     private var circularCenter: some View {
-        if let complication = entry.complication,
+        if let complication = entry.complication, complication.perFamily != nil,
            complication.showsValue(for: entry.family), !complication.title.isEmpty {
             Text(complication.title)
                 .minimumScaleFactor(0.4)
