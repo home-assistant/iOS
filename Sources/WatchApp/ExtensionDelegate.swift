@@ -80,6 +80,16 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
                 firstly {
                     when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
+                }.then { _ -> Promise<Void> in
+                    // Refresh the modern watch-rendered complications by fetching their live values
+                    // directly over REST. This path doesn't need the paired iPhone, so a watch on its
+                    // own network (e.g. LTE) still updates as long as the server is reachable.
+                    Promise { seal in
+                        Task {
+                            await WatchWidgetComplicationSnapshotStore.refresh()
+                            seal.fulfill(())
+                        }
+                    }
                 }.ensureThen {
                     Current.backgroundRefreshScheduler.schedule()
                 }.ensure {
@@ -357,7 +367,17 @@ enum WatchWidgetComplicationSnapshotStore {
         }
     }
 
+    /// Fire-and-forget refresh for synchronous callers (launch, context receipt, home sync).
     static func update() {
+        Task { await refresh() }
+    }
+
+    /// Rebuilds every complication snapshot. Legacy complications render synchronously from their
+    /// server-rendered data; modern configs fetch their live value directly from Home Assistant over
+    /// REST — no paired iPhone required, so this also refreshes when the watch is on its own (e.g. on
+    /// LTE), provided the server has a reachable URL. `async` so a background task can await it before
+    /// completing (otherwise the app may be suspended before the REST fetch returns).
+    static func refresh() async {
         MaterialDesignIcons.register()
         let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
 
@@ -367,18 +387,60 @@ enum WatchWidgetComplicationSnapshotStore {
             .map(WatchWidgetComplicationSnapshot.init(complication:))
         let configs = ((try? WatchComplicationConfig.all()) ?? [])
 
-        // Write the synchronous set first so the face is never empty, then refine the
-        // watch-rendered (entity/custom) configs asynchronously once their live values are fetched.
-        write(snapshots: [.placeholder, .assist] + legacy, defaults: defaults)
+        // Last-known snapshots, keyed by id, so a failed refresh can keep showing the previous value
+        // instead of blanking the complication.
+        let previous = readSnapshots(defaults)
+
+        // Write the synchronous set first so the face is never empty. Carry the last-known config
+        // snapshots through so their live values aren't dropped while the async refresh runs.
+        let cachedConfigSnapshots = configs.compactMap { previous[$0.id] }
+        write(snapshots: [.placeholder, .assist] + legacy + cachedConfigSnapshots, defaults: defaults)
 
         guard !configs.isEmpty else { return }
-        Task {
-            var configSnapshots: [WatchWidgetComplicationSnapshot] = []
-            for config in configs {
-                configSnapshots.append(await WatchWidgetComplicationSnapshot.make(config: config))
+        var configSnapshots: [WatchWidgetComplicationSnapshot] = []
+        var liveCount = 0, cachedCount = 0, failedCount = 0
+        for config in configs {
+            let result = await WatchWidgetComplicationSnapshot.make(config: config)
+            if result.isLive {
+                configSnapshots.append(result.snapshot)
+                liveCount += 1
+            } else if let cached = previous[config.id] {
+                // Live fetch failed but we have a previous value — keep it rather than overwrite.
+                configSnapshots.append(cached)
+                cachedCount += 1
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Watch complication “\(cached.menuName ?? cached.title)” is showing a cached "
+                        + "value; live refresh failed (\(result.failureReason ?? "unknown"))",
+                    type: .backgroundOperation,
+                    payload: ["complication": config.id, "reason": result.failureReason ?? "unknown"]
+                ))
+            } else {
+                // Nothing cached (e.g. just added) — show the name-only snapshot and record the error.
+                configSnapshots.append(result.snapshot)
+                failedCount += 1
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Watch complication “\(result.snapshot.menuName ?? result.snapshot.title)” "
+                        + "could not load live data (\(result.failureReason ?? "unknown"))",
+                    type: .networkRequest,
+                    payload: ["complication": config.id, "reason": result.failureReason ?? "unknown"]
+                ))
             }
-            write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
         }
+        write(snapshots: [.placeholder, .assist] + legacy + configSnapshots, defaults: defaults)
+        Current.clientEventStore.addEvent(ClientEvent(
+            text: "Refreshed \(configs.count) watch complication(s): \(liveCount) live, "
+                + "\(cachedCount) cached, \(failedCount) unavailable",
+            type: .backgroundOperation,
+            payload: ["live": liveCount, "cached": cachedCount, "failed": failedCount]
+        ))
+    }
+
+    private static func readSnapshots(_ defaults: UserDefaults?) -> [String: WatchWidgetComplicationSnapshot] {
+        guard let defaults, let data = defaults.data(forKey: defaultsKey),
+              let snapshots = try? JSONDecoder().decode([WatchWidgetComplicationSnapshot].self, from: data) else {
+            return [:]
+        }
+        return Dictionary(snapshots.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
     }
 
     private static func write(snapshots: [WatchWidgetComplicationSnapshot], defaults: UserDefaults?) {
@@ -538,7 +600,9 @@ private struct WatchWidgetComplicationSnapshot: Codable {
     /// Builds a snapshot for a modern config, fetching the live entity state / rendering the custom
     /// template on the watch. The value is shared across sizes; per-family gauge/tint/showValue are
     /// resolved from the config's per-size customization. Falls back to the name when unavailable.
-    static func make(config: WatchComplicationConfig) async -> WatchWidgetComplicationSnapshot {
+    static func make(
+        config: WatchComplicationConfig
+    ) async -> (snapshot: WatchWidgetComplicationSnapshot, isLive: Bool, failureReason: String?) {
         typealias Family = WatchComplicationConfig.Family
         let server = Current.servers.all.first(where: { $0.identifier.rawValue == config.serverId })
         if server == nil {
@@ -549,11 +613,22 @@ private struct WatchWidgetComplicationSnapshot: Codable {
         var rawState = ""
         var attributes: [String: Any] = [:]
         var customGaugeFraction: Double?
+        // Whether we obtained fresh live data this pass. When false the caller keeps the last-known
+        // snapshot instead of overwriting it with a value-less one.
+        var isLive = false
+        var failureReason: String?
 
         switch config.kind {
         case .entity:
-            if let server, let entityId = config.entityId,
-               let result = await ComplicationStateFetcher.fetchState(entityId: entityId, server: server) {
+            guard let server else {
+                failureReason = "no server configured"
+                break
+            }
+            guard let entityId = config.entityId else {
+                failureReason = "no entity configured"
+                break
+            }
+            if let result = await ComplicationStateFetcher.fetchState(entityId: entityId, server: server) {
                 rawState = result.state
                 attributes = result.attributes
                 // Unit comes from the live state; precision comes from the entity registry in GRDB (synced
@@ -564,19 +639,29 @@ private struct WatchWidgetComplicationSnapshot: Codable {
                     entityId: entityId
                 )
                 valueText = formatValue(result.state, unit: unit, precision: precision)
+                isLive = true
+            } else {
+                failureReason = "live state unavailable"
             }
         case .customTemplate:
-            if let server {
-                if let template = config.customTextTemplate,
-                   let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server) {
-                    valueText = rendered
-                    rawState = rendered
-                }
-                if let template = config.customGaugeTemplate,
-                   let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server),
-                   let raw = WatchComplication.percentileNumber(from: rendered) {
-                    customGaugeFraction = min(max(Double(raw), 0), 1)
-                }
+            guard let server else {
+                failureReason = "no server configured"
+                break
+            }
+            if let template = config.customTextTemplate,
+               let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server) {
+                valueText = rendered
+                rawState = rendered
+                isLive = true
+            }
+            if let template = config.customGaugeTemplate,
+               let rendered = await ComplicationStateFetcher.renderTemplate(template, server: server),
+               let raw = WatchComplication.percentileNumber(from: rendered) {
+                customGaugeFraction = min(max(Double(raw), 0), 1)
+                isLive = true
+            }
+            if !isLive {
+                failureReason = "template render failed"
             }
         }
 
@@ -610,7 +695,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             .map { MaterialDesignIcons(named: $0).image(ofSize: iconRenderSize, color: color) }?
             .pngData()
 
-        return .init(
+        let snapshot = WatchWidgetComplicationSnapshot(
             id: config.id,
             family: "",
             title: valueText.isEmpty ? name : valueText,
@@ -622,6 +707,7 @@ private struct WatchWidgetComplicationSnapshot: Codable {
             perFamily: perFamily,
             menuName: name
         )
+        return (snapshot, isLive, failureReason)
     }
 
     init(complication: WatchComplication) {
