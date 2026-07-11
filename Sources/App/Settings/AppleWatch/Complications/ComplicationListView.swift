@@ -317,6 +317,8 @@ struct WatchComplicationBuilderEditView: View {
     /// The selected entity's attribute names, reported by the live preview, offered as value sources.
     @State private var entityAttributeKeys: [String] = []
     @State private var showEntityPicker = false
+    /// Whether the current value is numeric (reported by the preview) — gates the decimals picker.
+    @State private var valueIsNumeric = false
     /// Progressive disclosure: the per-size option toggles are hidden behind "Customize" so the initial
     /// screen (name + source) stays simple for the average user.
     @State private var isCustomizing: Bool
@@ -520,7 +522,8 @@ struct WatchComplicationBuilderEditView: View {
                         server: server,
                         selectedFamily: $config.widgetFamily,
                         onUnit: { entityUnit = $0 },
-                        onAttributes: { entityAttributeKeys = $0 }
+                        onAttributes: { entityAttributeKeys = $0 },
+                        onValueIsNumeric: { valueIsNumeric = $0 }
                     )
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
@@ -620,13 +623,17 @@ struct WatchComplicationBuilderEditView: View {
                     // to validate; "Automatic" follows Home Assistant, and the initial selection is seeded
                     // with Home Assistant's current precision when the entity is chosen.
                     if config.entityId != nil {
-                        Picker(selection: valuePrecisionBinding) {
-                            Text(L10n.Watch.Complications.Builder.precisionAutomatic).tag(-1)
-                            ForEach(0 ... 4, id: \.self) { number in
-                                Text(verbatim: "\(number)").tag(number)
+                        // Decimals only make sense for a numeric value; hidden for string states
+                        // (e.g. "home", "on").
+                        if valueIsNumeric {
+                            Picker(selection: valuePrecisionBinding) {
+                                Text(L10n.Watch.Complications.Builder.precisionAutomatic).tag(-1)
+                                ForEach(0 ... 4, id: \.self) { number in
+                                    Text(verbatim: "\(number)").tag(number)
+                                }
+                            } label: {
+                                Text(L10n.Watch.Complications.Builder.precision)
                             }
-                        } label: {
-                            Text(L10n.Watch.Complications.Builder.precision)
                         }
 
                         // Optional custom unit; the placeholder shows the auto-resolved unit, so leaving

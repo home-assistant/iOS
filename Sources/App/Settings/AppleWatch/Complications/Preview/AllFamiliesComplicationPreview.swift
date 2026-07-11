@@ -13,6 +13,9 @@ struct AllFamiliesComplicationPreview: View {
     var onUnit: (String?) -> Void = { _ in }
     /// Reports the entity's attribute names (sorted), offered as value sources.
     var onAttributes: ([String]) -> Void = { _ in }
+    /// Reports whether the current value (state or chosen attribute) is numeric, so the editor can hide
+    /// the decimals picker for non-numeric values.
+    var onValueIsNumeric: (Bool) -> Void = { _ in }
 
     @State private var entityState = ""
     @State private var entityAttributes: [String: Any] = [:]
@@ -28,19 +31,33 @@ struct AllFamiliesComplicationPreview: View {
         server: Server,
         selectedFamily: Binding<WatchComplicationConfig.Family>,
         onUnit: @escaping (String?) -> Void = { _ in },
-        onAttributes: @escaping ([String]) -> Void = { _ in }
+        onAttributes: @escaping ([String]) -> Void = { _ in },
+        onValueIsNumeric: @escaping (Bool) -> Void = { _ in }
     ) {
         self.config = config
         self.server = server
         self._selectedFamily = selectedFamily
         self.onUnit = onUnit
         self.onAttributes = onAttributes
+        self.onValueIsNumeric = onValueIsNumeric
         _valueRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
         _gaugeRenderer = StateObject(wrappedValue: TemplateRenderer(server: server))
     }
 
     private var fetchKey: String {
-        [config.kind.rawValue, config.serverId, config.entityId ?? ""].joined(separator: "|")
+        [
+            config.kind.rawValue, config.serverId, config.entityId ?? "",
+            config.customTextTemplate ?? "", config.customGaugeTemplate ?? "",
+        ].joined(separator: "|")
+    }
+
+    /// True before the user has chosen a data source — the preview then shows sample (mock) content.
+    private var isUnconfigured: Bool {
+        switch config.kind {
+        case .entity: return config.entityId == nil
+        case .customTemplate:
+            return (config.customTextTemplate ?? "").isEmpty && (config.customGaugeTemplate ?? "").isEmpty
+        }
     }
 
     var body: some View {
@@ -64,8 +81,9 @@ struct AllFamiliesComplicationPreview: View {
             }
         }
         .environment(\.colorScheme, .dark)
-        .onAppear(perform: refresh)
-        .onChange(of: config) { _ in refresh() }
+        // Re-run the fetch/render whenever a fetch input changes (entity, server, kind, template) —
+        // reliably, so the preview updates on entity change without needing to tap a family first.
+        .task(id: fetchKey) { refresh() }
     }
 
     /// One tappable family render + label; the selected family is highlighted.
@@ -102,6 +120,9 @@ struct AllFamiliesComplicationPreview: View {
     }
 
     private func context(for family: WatchComplicationConfig.Family) -> ComplicationPreviewContext {
+        if isUnconfigured {
+            return .mock(config: config, family: family)
+        }
         switch config.kind {
         case .entity:
             return .entity(config: config, family: family, state: entityState, attributes: entityAttributes)
@@ -155,6 +176,9 @@ struct AllFamiliesComplicationPreview: View {
         } ?? entityAttributes["unit_of_measurement"] as? String
         onUnit(resolvedUnit)
         onAttributes(entityAttributes.keys.sorted())
+        // The value the decimals picker applies to: the chosen attribute, else the state.
+        let raw = config.valueAttribute.flatMap { entityAttributes[$0] }.map { String(describing: $0) } ?? entityState
+        onValueIsNumeric(Double(raw) != nil)
     }
 
     private func fetchEntityState() {
@@ -179,3 +203,15 @@ struct AllFamiliesComplicationPreview: View {
         }
     }
 }
+
+#if DEBUG
+#Preview {
+    // No entity selected → the panel renders the mock (sample) complications.
+    AllFamiliesComplicationPreview(
+        config: WatchComplicationConfig(serverId: "preview"),
+        server: ServerFixture.standard,
+        selectedFamily: .constant(.circular)
+    )
+    .padding()
+}
+#endif

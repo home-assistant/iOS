@@ -118,6 +118,21 @@ extension ComplicationPreviewContext {
 
         return ComplicationPreviewContext(config: familyConfig, value: value, fraction: fraction, iconImage: iconImage)
     }
+
+    /// A representative placeholder shown before the user picks an entity/template, so every size renders
+    /// meaningful sample content instead of an empty face. Honors the config's toggles, colors, chosen
+    /// icon, and any typed name.
+    static func mock(config: WatchComplicationConfig, family: WatchComplicationConfig.Family) -> ComplicationPreviewContext {
+        var familyConfig = config
+        familyConfig.widgetFamily = family
+        var iconImage: Image?
+        if familyConfig.showsIcon(for: family) {
+            let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) } ?? .gaugeIcon
+            let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
+            iconImage = Image(uiImage: icon.image(ofSize: CGSize(width: 64, height: 64), color: color))
+        }
+        return ComplicationPreviewContext(config: familyConfig, value: "72", fraction: 0.72, iconImage: iconImage)
+    }
 }
 
 /// A live approximation of the watch complication, rendered on iPhone with current data so the user

@@ -5365,7 +5365,7 @@ public enum L10n {
         public static var precisionAutomatic: String { return L10n.tr("Localizable", "watch.complications.builder.precision_automatic") }
         /// Preview
         public static var preview: String { return L10n.tr("Localizable", "watch.complications.builder.preview") }
-        /// A live approximation using current data. This complication is available in every size. Add it to any complication slot on your watch face.
+        /// A live preview at every size. Tap a size to customize it, then add the complication to any slot on your watch face.
         public static var previewFooter: String { return L10n.tr("Localizable", "watch.complications.builder.preview_footer") }
         /// Preview size
         public static var previewSize: String { return L10n.tr("Localizable", "watch.complications.builder.preview_size") }
