@@ -26,13 +26,8 @@ public enum ServerLocationPrivacy: String, CaseIterable, RawRepresentable, Setti
     case never
 
     public static var defaultSettingValue: Self { .exact }
-    public var localizedDescription: String {
-        switch self {
-        case .never: return L10n.Settings.ConnectionSection.LocationSendType.Setting.never
-        case .exact: return L10n.Settings.ConnectionSection.LocationSendType.Setting.exact
-        case .zoneOnly: return L10n.Settings.ConnectionSection.LocationSendType.Setting.zoneOnly
-        }
-    }
+    // `localizedDescription` lives in the Shared module (HANetworkingLocalization.swift); L10n isn't
+    // available in this package.
 }
 
 public enum ServerSensorPrivacy: String, CaseIterable, RawRepresentable, SettingValue {
@@ -40,12 +35,8 @@ public enum ServerSensorPrivacy: String, CaseIterable, RawRepresentable, Setting
     case none
 
     public static var defaultSettingValue: Self { .all }
-    public var localizedDescription: String {
-        switch self {
-        case .all: return L10n.Settings.ConnectionSection.SensorSendType.Setting.all
-        case .none: return L10n.Settings.ConnectionSection.SensorSendType.Setting.none
-        }
-    }
+    // `localizedDescription` lives in the Shared module (HANetworkingLocalization.swift); L10n isn't
+    // available in this package.
 }
 
 public extension ServerSettingKey {
@@ -124,9 +115,7 @@ public struct ServerInfo: Codable, Equatable {
         self.settings = [:]
     }
 
-    public static var defaultName: String {
-        L10n.Settings.StatusSection.LocationNameRow.placeholder
-    }
+    // `defaultName` (localized) lives in the Shared module (HANetworkingLocalization.swift).
 
     public static var defaultSortOrder: Int { -1 }
 
@@ -233,7 +222,7 @@ extension ServerInfo {
     // webhook path itself is effectively a credential.
     static var mirrorPlaceholderWebhookID: String { "" }
 
-    var mirroredForPersistence: ServerInfo {
+    public var mirroredForPersistence: ServerInfo {
         // Start from the full server info, then remove secrets before writing to GRDB.
         var info = self
         // The GRDB mirror is only for recovering non-secret server metadata if Keychain
@@ -337,7 +326,7 @@ public extension Server {
     ///
     /// The re-evaluated active URL type is written back to `info`.
     func activeURL() async -> URL? {
-        await Current.connectivity.refreshNetworkInformation()
+        await HANetworkingEnvironment.current.connectivity.refreshNetworkInformation()
 
         var url: URL?
         update { info in
@@ -375,7 +364,7 @@ public extension Server {
     ///
     /// The re-evaluated active URL type is written back to `info`.
     func webhookURL() async -> URL? {
-        await Current.connectivity.refreshNetworkInformation()
+        await HANetworkingEnvironment.current.connectivity.refreshNetworkInformation()
 
         var url: URL?
         update { info in
@@ -390,7 +379,7 @@ public extension Server {
     /// Triggers a refresh of this server's data from Home Assistant
     /// - Parameter forceUpdate: Whether to force the update regardless of cache state. Defaults to `false`.
     func refreshAppDatabase(forceUpdate: Bool = false) {
-        Current.appDatabaseUpdater.update(server: self, forceUpdate: forceUpdate)
+        HANetworkingEnvironment.current.refreshAppDatabase(self, forceUpdate)
     }
 }
 #endif

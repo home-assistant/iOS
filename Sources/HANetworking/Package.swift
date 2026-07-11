@@ -34,6 +34,7 @@ let package = Package(
         // (a second copy of a static product would crash at runtime — see PromiseKitDynamic).
         .package(url: "https://github.com/Alamofire/Alamofire.git", exact: "5.12.0"),
         .package(url: "https://github.com/tristanhimmelman/ObjectMapper.git", exact: "4.4.3"),
+        .package(url: "https://github.com/home-assistant/HAKit.git", exact: "0.4.18"),
     ],
     targets: [
         .target(
@@ -41,6 +42,7 @@ let package = Package(
             dependencies: [
                 "Alamofire",
                 "ObjectMapper",
+                .product(name: "HAKit", package: "HAKit"),
             ],
             path: "Sources"
         ),

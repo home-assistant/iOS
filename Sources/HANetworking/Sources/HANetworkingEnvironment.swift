@@ -26,6 +26,11 @@ public struct HANetworkingEnvironment {
     /// it to `Current.connectivity`; the concrete fetch (CoreTelephony/macBridge) stays in HACore.
     public var connectivity = Connectivity.noop
 
+    /// Triggers a refresh of a server's cached data from Home Assistant (`Server.refreshAppDatabase`).
+    /// HACore wires this to `Current.appDatabaseUpdater.update(server:forceUpdate:)`; no-op by default
+    /// (and on watchOS, where there is no app database updater).
+    public var refreshAppDatabase: (_ server: Server, _ forceUpdate: Bool) -> Void = { _, _ in }
+
     public init() {}
 
     public struct Connectivity {

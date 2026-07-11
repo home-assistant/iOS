@@ -9,16 +9,8 @@ public enum ConnectionSecurityLevel: String, Codable {
     // Allows non-https URLs always
     case lessSecure
 
-    public var description: String {
-        switch self {
-        case .undefined:
-            return L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.Undefined.title
-        case .mostSecure:
-            return L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.MostSecure.title
-        case .lessSecure:
-            return L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.LessSecure.title
-        }
-    }
+    // `description` (localized) lives in the Shared module (see HANetworkingLocalization.swift) since
+    // L10n isn't available in this package.
 }
 
 public struct ConnectionInfo: Codable, Equatable {
@@ -74,7 +66,7 @@ public struct ConnectionInfo: Codable, Equatable {
     public var isLocalPushEnabled = true {
         didSet {
             guard oldValue != isLocalPushEnabled else { return }
-            Current.Log.verbose("updated local push from \(oldValue) to \(isLocalPushEnabled)")
+            HANetworkingEnvironment.current.log.verbose("updated local push from \(oldValue) to \(isLocalPushEnabled)")
         }
     }
 
@@ -86,14 +78,14 @@ public struct ConnectionInfo: Codable, Equatable {
             if let cert = clientCertificate {
                 do {
                     let credential = try ClientCertificateManager.shared.urlCredential(for: cert)
-                    Current.Log.info("[mTLS] Using client certificate for webhook: \(cert.displayName)")
+                    HANetworkingEnvironment.current.log.info("[mTLS] Using client certificate for webhook: \(cert.displayName)")
                     return (.useCredential, credential)
                 } catch {
-                    Current.Log.error("[mTLS] Failed to get credential: \(error)")
+                    HANetworkingEnvironment.current.log.error("[mTLS] Failed to get credential: \(error)")
                     return (.cancelAuthenticationChallenge, nil)
                 }
             } else {
-                Current.Log.warning("[mTLS] Client certificate requested but none configured")
+                HANetworkingEnvironment.current.log.warning("[mTLS] Client certificate requested but none configured")
                 return (.performDefaultHandling, nil)
             }
         }
@@ -157,7 +149,9 @@ public struct ConnectionInfo: Codable, Equatable {
         )
     }
 
-    public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
+    // Localized `description` (CustomStringConvertible) is added retroactively in the Shared module
+    // (HANetworkingLocalization.swift) because L10n isn't available in this package.
+    public enum URLType: Int, Codable, CaseIterable, CustomDebugStringConvertible {
         case `internal`
         case remoteUI
         case external
@@ -173,19 +167,6 @@ public struct ConnectionInfo: Codable, Equatable {
                 return "External URL"
             case .none:
                 return "No URL (Active URL nil)"
-            }
-        }
-
-        public var description: String {
-            switch self {
-            case .internal:
-                return L10n.Settings.ConnectionSection.InternalBaseUrl.title
-            case .remoteUI:
-                return L10n.Settings.ConnectionSection.RemoteUiUrl.title
-            case .external:
-                return L10n.Settings.ConnectionSection.ExternalBaseUrl.title
-            case .none:
-                return L10n.Settings.ConnectionSection.NoBaseUrl.title
             }
         }
 
@@ -205,7 +186,7 @@ public struct ConnectionInfo: Codable, Equatable {
 
         public var isAffectedByHardwareAddress: Bool {
             switch self {
-            case .internal: return Current.isCatalyst
+            case .internal: return HANetworkingEnvironment.current.isCatalyst
             case .remoteUI, .external, .none: return false
             }
         }
@@ -213,7 +194,7 @@ public struct ConnectionInfo: Codable, Equatable {
         public var hasLocalPush: Bool {
             switch self {
             case .internal:
-                if Current.isCatalyst {
+                if HANetworkingEnvironment.current.isCatalyst {
                     return false
                 }
                 return true
@@ -225,7 +206,7 @@ public struct ConnectionInfo: Codable, Equatable {
     /// Returns the url that should be used at this moment to access the Home Assistant instance,
     /// refreshing network information (e.g. current SSID) before evaluating which URL is active.
     public mutating func activeURL() async -> URL? {
-        await Current.connectivity.refreshNetworkInformation()
+        await HANetworkingEnvironment.current.connectivity.refreshNetworkInformation()
         return evaluateActiveURL()
     }
 
@@ -235,7 +216,7 @@ public struct ConnectionInfo: Codable, Equatable {
     /// Not meant for general use: prefer the async `activeURL()`, which refreshes network
     /// information first. This exists for callers that must stay synchronous and accept
     /// potentially stale network information.
-    mutating func evaluateActiveURL() -> URL? {
+    public mutating func evaluateActiveURL() -> URL? {
         if let overrideActiveURLType {
             let overrideURL: URL?
 
@@ -319,7 +300,7 @@ public struct ConnectionInfo: Codable, Equatable {
     /// Returns the url that should be used at this moment to reach the webhook, refreshing network
     /// information (e.g. current SSID) before evaluating which URL is active.
     public mutating func webhookURL() async -> URL? {
-        await Current.connectivity.refreshNetworkInformation()
+        await HANetworkingEnvironment.current.connectivity.refreshNetworkInformation()
         return evaluateWebhookURL()
     }
 
@@ -378,7 +359,7 @@ public struct ConnectionInfo: Codable, Equatable {
     /// Returns true if the current SSID (or hardware address) is marked for internal URL use,
     /// fetching fresh network information before evaluating.
     public func isOnInternalNetwork() async -> Bool {
-        await isOnInternalNetwork(using: Current.connectivity.currentNetworkState())
+        await isOnInternalNetwork(using: HANetworkingEnvironment.current.connectivity.currentNetworkState())
     }
 
     /// Returns true if the given network state's SSID (or hardware address) is marked for internal
@@ -399,7 +380,7 @@ public struct ConnectionInfo: Codable, Equatable {
     /// `isOnInternalNetwork(using:)` evaluated against the cached network information, which may be
     /// stale. Only for synchronous evaluation (`evaluateActiveURL()`/`evaluateWebhookURL()`).
     var isOnInternalNetworkUsingLastKnownState: Bool {
-        isOnInternalNetwork(using: Current.connectivity.lastKnownNetworkState())
+        isOnInternalNetwork(using: HANetworkingEnvironment.current.connectivity.lastKnownNetworkState())
     }
 
     public var hasInternalURLSet: Bool {
@@ -407,7 +388,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Secret as byte array
-    func webhookSecretBytes(version: Version) -> [UInt8]? {
+    public func webhookSecretBytes(version: Version) -> [UInt8]? {
         guard let webhookSecret, webhookSecret.count.isMultiple(of: 2) else {
             return nil
         }
@@ -436,14 +417,14 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 }
 
-final class ServerRequestAdapter: RequestAdapter, @unchecked Sendable {
+public final class ServerRequestAdapter: RequestAdapter, @unchecked Sendable {
     let server: Server
 
-    init(server: Server) {
+    public init(server: Server) {
         self.server = server
     }
 
-    func adapt(
+    public func adapt(
         _ urlRequest: URLRequest,
         for session: Session,
         completion: @escaping (Result<URLRequest, Error>) -> Void
@@ -458,11 +439,11 @@ final class ServerRequestAdapter: RequestAdapter, @unchecked Sendable {
             if let activeURL = server.info.connection.evaluateActiveURL() {
                 let expectedURL = activeURL.adapting(url: currentURL)
                 if currentURL != expectedURL {
-                    Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
+                    HANetworkingEnvironment.current.log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
                     updatedRequest.url = expectedURL
                 }
             } else {
-                Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
+                HANetworkingEnvironment.current.log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
                 completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
                 return
             }

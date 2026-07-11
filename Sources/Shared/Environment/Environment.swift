@@ -102,6 +102,11 @@ public class AppEnvironment {
             currentNetworkState: { await Current.connectivity.currentNetworkState() },
             lastKnownNetworkState: { Current.connectivity.lastKnownNetworkState() }
         )
+        #if !os(watchOS)
+        HANetworkingEnvironment.current.refreshAppDatabase = { server, forceUpdate in
+            Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate)
+        }
+        #endif
 
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
