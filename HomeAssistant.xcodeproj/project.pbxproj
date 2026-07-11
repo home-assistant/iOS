@@ -1010,6 +1010,7 @@
 		42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */; };
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
+		42EDB6173002F8380051FC9B /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = 42EDB6163002F8380051FC9B /* HAModels */; };
 		42EEEFE22E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE32E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
@@ -1169,6 +1170,8 @@
 		A95FDD142F6B8A3E008EF72F /* HADynamicIslandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD102F6B8A3E008EF72F /* HADynamicIslandView.swift */; };
 		A95FDD152F6B8A3E008EF72F /* HALiveActivityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */; };
 		A95FDD162F6B8A3E008EF72F /* HALockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */; };
+		AABB110000000000000000F1 /* HANetworkingLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB110000000000000000F0 /* HANetworkingLocalization.swift */; };
+		AABB110000000000000000F2 /* HANetworkingLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB110000000000000000F0 /* HANetworkingLocalization.swift */; };
 		ABB0897221138DA70FAC3460 /* WatchConnectivityManager+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F583CF6B1B80D904D17CA /* WatchConnectivityManager+Delegate.swift */; };
 		AC0100000000000000000102 /* MacToolbarConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000101 /* MacToolbarConfigTable.swift */; };
 		AC0100000000000000000103 /* MacToolbarConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000101 /* MacToolbarConfigTable.swift */; };
@@ -1365,8 +1368,6 @@
 		B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */; };
 		B67CE8A822200F220034C1D0 /* MJPEGStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */; };
 		B67CE8A922200F220034C1D0 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884792122A65800CCB501 /* SettingsStore.swift */; };
-		CC00110000000000000000F1 /* ServerManager+ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */; };
-		AABB110000000000000000F1 /* HANetworkingLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB110000000000000000F0 /* HANetworkingLocalization.swift */; };
 		B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
 		B67CE8B022200F220034C1D0 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
 		B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */; };
@@ -1422,6 +1423,8 @@
 		CA11B4CC0000000000000011 /* CallbackURLKit in Frameworks */ = {isa = PBXBuildFile; productRef = CA11B4CC0000000000000010 /* CallbackURLKit */; };
 		CA40A11000000000000000B1 /* WidgetCarPlayLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */; };
 		CA40A11000000000000000B2 /* WidgetCarPlayLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */; };
+		CC00110000000000000000F1 /* ServerManager+ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */; };
+		CC00110000000000000000F2 /* ServerManager+ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */; };
 		CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
 		CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000020 /* KeychainAccess */; };
 		CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000030 /* KeychainAccess */; };
@@ -1440,8 +1443,6 @@
 		D090217B33959041E3137A59 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; };
 		D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
 		D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
-		CC00110000000000000000F2 /* ServerManager+ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */; };
-		AABB110000000000000000F2 /* HANetworkingLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB110000000000000000F0 /* HANetworkingLocalization.swift */; };
 		D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
 		D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C8845F211ED11900CCB501 /* SafariServices.framework */; };
 		D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88461211ED16300CCB501 /* OnboardingAuth.swift */; };
@@ -1469,16 +1470,16 @@
 		D9BF1EFF40733A4A1D03B9C8 /* CustomWidgetIntentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7FF77B68D19A4AD68F8FE3 /* CustomWidgetIntentHelper.swift */; };
 		DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */; };
 		DE51600000000000000000A3 /* HADesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000A2 /* HADesignSystem */; };
-		DE51600000000000000000D3 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D2 /* HAIconic */; };
-		DE51600000000000000000F3 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F2 /* HANetworking */; };
-		DE51600000000000000000E3 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E2 /* HAModels */; };
-		DE51600000000000000000C3 /* HAUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000C2 /* HAUtilities */; };
 		DE51600000000000000000A5 /* HADesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000A4 /* HADesignSystem */; };
-		DE51600000000000000000D5 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D4 /* HAIconic */; };
-		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
-		DE51600000000000000000E5 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E4 /* HAModels */; };
 		DE51600000000000000000B2 /* HADesignSystemExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE51600000000000000000B1 /* HADesignSystemExports.swift */; };
 		DE51600000000000000000B3 /* HADesignSystemExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE51600000000000000000B1 /* HADesignSystemExports.swift */; };
+		DE51600000000000000000C3 /* HAUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000C2 /* HAUtilities */; };
+		DE51600000000000000000D3 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D2 /* HAIconic */; };
+		DE51600000000000000000D5 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D4 /* HAIconic */; };
+		DE51600000000000000000E3 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E2 /* HAModels */; };
+		DE51600000000000000000E5 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E4 /* HAModels */; };
+		DE51600000000000000000F3 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F2 /* HANetworking */; };
+		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		DE8048842D9FB6C90459E229 /* QuickActionWindowSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */; };
@@ -2863,6 +2864,7 @@
 		A95FDD102F6B8A3E008EF72F /* HADynamicIslandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HADynamicIslandView.swift; sourceTree = "<group>"; };
 		A95FDD112F6B8A3E008EF72F /* HALiveActivityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALiveActivityConfiguration.swift; sourceTree = "<group>"; };
 		A95FDD122F6B8A3E008EF72F /* HALockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HALockScreenView.swift; sourceTree = "<group>"; };
+		AABB110000000000000000F0 /* HANetworkingLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HANetworkingLocalization.swift; sourceTree = "<group>"; };
 		AC0100000000000000000101 /* MacToolbarConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacToolbarConfigTable.swift; sourceTree = "<group>"; };
 		AC730011000000000000AA01 /* AppIconShortcutConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutConfig.swift; sourceTree = "<group>"; };
 		AC730012000000000000AA01 /* AppIconShortcutConfigTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutConfigTable.swift; sourceTree = "<group>"; };
@@ -3166,6 +3168,7 @@
 		C8762CF6B50A0FB05013908A /* HAWatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAWatchConnectivity.swift; sourceTree = "<group>"; };
 		C8A49D68C2121E4EF9253980 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		CA40A11000000000000000F1 /* WidgetCarPlayLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCarPlayLocation.swift; sourceTree = "<group>"; };
+		CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServerManager+ServerProviding.swift"; sourceTree = "<group>"; };
 		D00302BD20D4BEDB004C2CA9 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		D03D891720E0A85200D4F28D /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D03D891920E0A85300D4F28D /* Shared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shared.h; sourceTree = "<group>"; };
@@ -3178,8 +3181,6 @@
 		D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+Initialization.swift"; sourceTree = "<group>"; };
 		D0B25BCC2130CAB400678C2C /* Bonjour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonjour.swift; sourceTree = "<group>"; };
 		D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationContent+ClientEvent.swift"; sourceTree = "<group>"; };
-		CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServerManager+ServerProviding.swift"; sourceTree = "<group>"; };
-		AABB110000000000000000F0 /* HANetworkingLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HANetworkingLocalization.swift; sourceTree = "<group>"; };
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0C88461211ED16300CCB501 /* OnboardingAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuth.swift; sourceTree = "<group>"; };
 		D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+RequestHelpers.swift"; sourceTree = "<group>"; };
@@ -3350,6 +3351,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42EDB6173002F8380051FC9B /* HAModels in Frameworks */,
 				423FB76E2FFFDFDE000CB8FD /* SwiftUI.framework in Frameworks */,
 				423FB76D2FFFDFDE000CB8FD /* WidgetKit.framework in Frameworks */,
 			);
@@ -7017,6 +7019,7 @@
 			);
 			name = "Extensions-WatchWidgets";
 			packageProductDependencies = (
+				42EDB6163002F8380051FC9B /* HAModels */,
 			);
 			productName = WatchWidgetsExtension;
 			productReference = 423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */;
@@ -10875,21 +10878,21 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HADesignSystem;
 		};
+		DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HAUtilities;
+		};
 		DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HAIconic;
-		};
-		DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Sources/HANetworking;
 		};
 		DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HAModels;
 		};
-		DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */ = {
+		DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = Sources/HAUtilities;
+			relativePath = Sources/HANetworking;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -11321,6 +11324,11 @@
 			package = 42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */;
 			productName = XCGLogger;
 		};
+		42EDB6163002F8380051FC9B /* HAModels */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */;
+			productName = HAModels;
+		};
 		42F384042FB49C9500390AFC /* DebugSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */;
@@ -11461,45 +11469,45 @@
 			package = DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */;
 			productName = HADesignSystem;
 		};
-		DE51600000000000000000D2 /* HAIconic */ = {
+		DE51600000000000000000A4 /* HADesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */;
-			productName = HAIconic;
-		};
-		DE51600000000000000000F2 /* HANetworking */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */;
-			productName = HANetworking;
-		};
-		DE51600000000000000000E2 /* HAModels */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */;
-			productName = HAModels;
+			package = DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */;
+			productName = HADesignSystem;
 		};
 		DE51600000000000000000C2 /* HAUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */;
 			productName = HAUtilities;
 		};
-		DE51600000000000000000A4 /* HADesignSystem */ = {
+		DE51600000000000000000D2 /* HAIconic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */;
-			productName = HADesignSystem;
+			package = DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */;
+			productName = HAIconic;
 		};
 		DE51600000000000000000D4 /* HAIconic */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */;
 			productName = HAIconic;
 		};
-		DE51600000000000000000F4 /* HANetworking */ = {
+		DE51600000000000000000E2 /* HAModels */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */;
-			productName = HANetworking;
+			package = DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */;
+			productName = HAModels;
 		};
 		DE51600000000000000000E4 /* HAModels */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */;
 			productName = HAModels;
+		};
+		DE51600000000000000000F2 /* HANetworking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */;
+			productName = HANetworking;
+		};
+		DE51600000000000000000F4 /* HANetworking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */;
+			productName = HANetworking;
 		};
 		E35AE15984C6303B97D502F8 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
