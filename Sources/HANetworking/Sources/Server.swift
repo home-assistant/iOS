@@ -214,13 +214,13 @@ public struct ServerInfo: Codable, Equatable {
 extension ServerInfo {
     // Used in the GRDB mirror so recovered servers have an explicit "no credentials"
     // state instead of accidentally persisting real auth tokens outside Keychain.
-    static var mirrorPlaceholderToken: TokenInfo {
+    public static var mirrorPlaceholderToken: TokenInfo {
         .init(accessToken: "", refreshToken: "", expiration: .distantPast)
     }
 
     // Webhook-based features must stay disabled for mirrored servers because the
     // webhook path itself is effectively a credential.
-    static var mirrorPlaceholderWebhookID: String { "" }
+    public static var mirrorPlaceholderWebhookID: String { "" }
 
     public var mirroredForPersistence: ServerInfo {
         // Start from the full server info, then remove secrets before writing to GRDB.

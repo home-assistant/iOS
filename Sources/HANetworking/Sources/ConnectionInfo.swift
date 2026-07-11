@@ -310,7 +310,7 @@ public struct ConnectionInfo: Codable, Equatable {
     /// Not meant for general use: prefer the async `webhookURL()`, which refreshes network
     /// information first. This exists for callers that must stay synchronous and accept
     /// potentially stale network information.
-    mutating func evaluateWebhookURL() -> URL? {
+    public mutating func evaluateWebhookURL() -> URL? {
         if let cloudhookURL, !isOnInternalNetworkUsingLastKnownState {
             return cloudhookURL
         }

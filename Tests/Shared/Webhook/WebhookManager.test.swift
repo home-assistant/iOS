@@ -4,7 +4,6 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
-@testable import HANetworking
 import XCTest
 
 class WebhookManagerTests: XCTestCase {

@@ -3,7 +3,7 @@ import KeychainAccess
 
 // These protocols let ServerManager keep the core lifecycle logic independent from
 // the concrete persistence backends used for the full record and the sanitized mirror.
-protocol ServerManagerKeychain {
+public protocol ServerManagerKeychain {
     func removeAll() throws
     func allKeys() -> [String]
     func getData(_ key: String) throws -> Data?
@@ -11,7 +11,7 @@ protocol ServerManagerKeychain {
     func remove(_ key: String) throws
 }
 
-protocol ServerManagerMirrorStore {
+public protocol ServerManagerMirrorStore {
     func removeAll()
     func allKeys() -> [String]
     func allServerInfo() -> [(String, ServerInfo)]
@@ -35,7 +35,7 @@ extension Keychain: ServerManagerKeychain {
 }
 
 extension ServerManagerKeychain {
-    func allServerInfo(decoder: JSONDecoder) -> [(String, ServerInfo)] {
+    public func allServerInfo(decoder: JSONDecoder) -> [(String, ServerInfo)] {
         allKeys().compactMap { key in
             getServerInfo(key: key, decoder: decoder).map { (key, $0) }
         }
@@ -43,7 +43,7 @@ extension ServerManagerKeychain {
 
     // Decode failures are logged and ignored so one bad Keychain entry does not
     // prevent the rest of the server list from loading.
-    func getServerInfo(key: String, decoder: JSONDecoder) -> ServerInfo? {
+    public func getServerInfo(key: String, decoder: JSONDecoder) -> ServerInfo? {
         do {
             guard let data = try getData(key) else {
                 return nil
@@ -56,7 +56,7 @@ extension ServerManagerKeychain {
         }
     }
 
-    func set(serverInfo: ServerInfo, key: String, encoder: JSONEncoder) {
+    public func set(serverInfo: ServerInfo, key: String, encoder: JSONEncoder) {
         do {
             try set(encoder.encode(serverInfo), key: key)
         } catch {
@@ -64,7 +64,7 @@ extension ServerManagerKeychain {
         }
     }
 
-    func deleteServerInfo(key: String) {
+    public func deleteServerInfo(key: String) {
         do {
             try remove(key)
         } catch {

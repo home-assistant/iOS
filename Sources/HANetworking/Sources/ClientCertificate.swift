@@ -75,7 +75,7 @@ public final class ClientCertificateManager {
 
     private init() {}
 
-    static func pkcs12ImportOptions(password: String) -> [String: Any] {
+    public static func pkcs12ImportOptions(password: String) -> [String: Any] {
         // On macOS, passwordless PKCS#12 imports fail when an explicit empty-string passphrase
         // is supplied. Omitting the option lets Security treat the bundle as unprotected.
         guard !password.isEmpty else {

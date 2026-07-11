@@ -121,8 +121,8 @@ public final class ServerManagerImpl: ServerManager {
 
     // MARK: Lifecycle
 
-    /// Public entry point used by HACore's `Current.servers`. The designated initializer stays internal
-    /// because its defaults reference internal types (keychain/mirror store).
+    /// Convenience no-arg initializer used by HACore's `Current.servers`; supplies the default keychain
+    /// + GRDB mirror store. The designated initializer takes them explicitly (used by tests to inject fakes).
     public convenience init() {
         self.init(
             keychain: Keychain(service: ServerManagerImpl.service),
@@ -131,10 +131,10 @@ public final class ServerManagerImpl: ServerManager {
         )
     }
 
-    init(
-        keychain: ServerManagerKeychain = Keychain(service: ServerManagerImpl.service),
-        historicKeychain: ServerManagerKeychain = Keychain(service: HANetworkingEnvironment.current.bundleID),
-        mirrorStore: ServerManagerMirrorStore = ServerManagerGRDBMirrorStore()
+    public init(
+        keychain: ServerManagerKeychain,
+        historicKeychain: ServerManagerKeychain,
+        mirrorStore: ServerManagerMirrorStore
     ) {
         self.keychain = keychain
         self.historicKeychain = historicKeychain

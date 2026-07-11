@@ -1,7 +1,6 @@
 import Foundation
 import Security
 @testable import Shared
-@testable import HANetworking
 import Testing
 
 @Suite("ClientCertificate Tests")
