@@ -27,7 +27,6 @@
 		021F87AB961ED9CEE16B5535 /* HAWatchConnectivityError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49867CD42F9A2EBEFE97143F /* HAWatchConnectivityError.swift */; };
 		027A90037B4049A1AFFF27E3 /* TestFlightCommunicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C389A0CF18C042F18FAD572C /* TestFlightCommunicationView.swift */; };
 		0907D6244565287ED4E46A3C /* WhatsNewCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09953104F4749B10268B7C61 /* WhatsNewCatalog.swift */; };
-		09C9974C22F113423EE3B3DC /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B19185B1C20DABFD5B0D1B5D /* GRDB */; };
 		0D20E5697E7DA70D01E77A51 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E35AE15984C6303B97D502F8 /* RealmSwift */; };
 		0F682BC2703945208CFAB9A4 /* CarPlayPreferredServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B40938BEB944969AAB2895 /* CarPlayPreferredServer.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
@@ -822,8 +821,6 @@
 		42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */; };
 		42A1860A2E1D310D004B729A /* HATextField.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A186092E1D310D004B729A /* HATextField.test.swift */; };
 		42A1F0B12E000000000000B1 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A12E000000000000A1 /* Alamofire */; };
-		42A1F0B22E000000000000B2 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A22E000000000000A2 /* Alamofire */; };
-		42A1F0B32E000000000000B3 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A32E000000000000A3 /* Alamofire */; };
 		42A1F0B42E000000000000B4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A42E000000000000A4 /* Alamofire */; };
 		42A1F0B52E000000000000B5 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A52E000000000000A5 /* Alamofire */; };
 		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
@@ -934,8 +931,6 @@
 		42C1012E2CD3DBF00012BA78 /* ControlCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C1012C2CD3DBF00012BA78 /* ControlCover.swift */; };
 		42C101302CD3DC0C0012BA78 /* ControlCoverValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C1012F2CD3DC0C0012BA78 /* ControlCoverValueProvider.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
-		42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CAF2FFD4BD5002457D9 /* ObjectMapper */; };
-		42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CB12FFD4BE5002457D9 /* ObjectMapper */; };
 		42C5E5AB2F7C20EA004797B5 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
 		42C5E5AD2F7E74DE004797B5 /* SafeScriptMessageHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C5E5AC2F7E74DE004797B5 /* SafeScriptMessageHandlerTests.swift */; };
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
@@ -1197,7 +1192,6 @@
 		B04052B547BCC2FA7B75F85B /* NotificationSnoozeActionTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31B4C3B146C0560BFDF64F2 /* NotificationSnoozeActionTable.swift */; };
 		B0B0B0B00000000000000011 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000010 /* ProgressHUD.swift */; };
 		B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000030 /* Color+Hex.test.swift */; };
-		B3FD7A16B24D03BE49029BB0 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 638EC9AD85B8C58C9C77DCC7 /* GRDB */; };
 		B56A9AFECBA6229C0AEEAB4B /* WatchConnectivityManager+Send.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6C0AF840114403CECD9CE2 /* WatchConnectivityManager+Send.swift */; };
 		B5B0ED4D411BE12F4C7DC29A /* CallServiceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94616AE6CF9100E44C576B8D /* CallServiceResponse.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
@@ -1440,8 +1434,6 @@
 		CC00110000000000000000F1 /* ServerManager+ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */; };
 		CC00110000000000000000F2 /* ServerManager+ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */; };
 		CEA1C4A10000000000000011 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000010 /* KeychainAccess */; };
-		CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000020 /* KeychainAccess */; };
-		CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000030 /* KeychainAccess */; };
 		CEA1C4A10000000000000041 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000040 /* KeychainAccess */; };
 		CEA1C4A10000000000000051 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1C4A10000000000000050 /* KeychainAccess */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1490,8 +1482,6 @@
 		DE51600000000000000000C3 /* HAUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000C2 /* HAUtilities */; };
 		DE51600000000000000000D3 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D2 /* HAIconic */; };
 		DE51600000000000000000D5 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D4 /* HAIconic */; };
-		DE51600000000000000000E3 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E2 /* HAModels */; };
-		DE51600000000000000000E5 /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000E4 /* HAModels */; };
 		DE8048842D9FB6C90459E229 /* QuickActionWindowSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */; };
@@ -3489,18 +3479,13 @@
 			files = (
 				DE51600000000000000000A5 /* HADesignSystem in Frameworks */,
 				DE51600000000000000000D5 /* HAIconic in Frameworks */,
-				DE51600000000000000000E5 /* HAModels in Frameworks */,
 				42886D382FFE883A004EB33B /* HAKit in Frameworks */,
-				42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */,
 				13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */,
-				CEA1C4A10000000000000031 /* KeychainAccess in Frameworks */,
 				427692E52B98B83200F24321 /* SharedPush in Frameworks */,
-				42A1F0B32E000000000000B3 /* Alamofire in Frameworks */,
 				42886D182FFE5C19004EB33B /* Sodium in Frameworks */,
 				42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */,
 				42886D3C2FFE8841004EB33B /* PromiseKitDynamic in Frameworks */,
 				AC0F1D3C2FFE8841004EB33B /* HANetworking in Frameworks */,
-				09C9974C22F113423EE3B3DC /* GRDB in Frameworks */,
 				0D20E5697E7DA70D01E77A51 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3523,13 +3508,10 @@
 			files = (
 				DE51600000000000000000A3 /* HADesignSystem in Frameworks */,
 				DE51600000000000000000D3 /* HAIconic in Frameworks */,
-				DE51600000000000000000E3 /* HAModels in Frameworks */,
 				DE51600000000000000000C3 /* HAUtilities in Frameworks */,
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
 				42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */,
 				AC0F1D362FFE882F004EB33B /* HANetworking in Frameworks */,
-				CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */,
-				42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */,
 				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
 				1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */,
 				42886D162FFE5C12004EB33B /* Sodium in Frameworks */,
@@ -3539,8 +3521,6 @@
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */,
 				42E1C8102FFE4DA3008DAEE5 /* XCGLogger in Frameworks */,
-				42A1F0B22E000000000000B2 /* Alamofire in Frameworks */,
-				B3FD7A16B24D03BE49029BB0 /* GRDB in Frameworks */,
 				78C739CC566382B44154608A /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7243,13 +7223,8 @@
 				427692E42B98B83200F24321 /* SharedPush */,
 				DE51600000000000000000A4 /* HADesignSystem */,
 				DE51600000000000000000D4 /* HAIconic */,
-				DE51600000000000000000E4 /* HAModels */,
-				B19185B1C20DABFD5B0D1B5D /* GRDB */,
 				E35AE15984C6303B97D502F8 /* RealmSwift */,
-				42A1F0A32E000000000000A3 /* Alamofire */,
 				C8FA7E5B23954D258050DD72 /* SFSafeSymbols */,
-				CEA1C4A10000000000000030 /* KeychainAccess */,
-				42C57CB12FFD4BE5002457D9 /* ObjectMapper */,
 				42E1C8112FFE4DB2008DAEE5 /* XCGLogger */,
 				42886D172FFE5C19004EB33B /* Sodium */,
 				42886D372FFE883A004EB33B /* HAKit */,
@@ -7329,15 +7304,10 @@
 				427692E22B98B82500F24321 /* SharedPush */,
 				DE51600000000000000000A2 /* HADesignSystem */,
 				DE51600000000000000000D2 /* HAIconic */,
-				DE51600000000000000000E2 /* HAModels */,
 				DE51600000000000000000C2 /* HAUtilities */,
 				4237E6382E5333370023B673 /* ZIPFoundation */,
-				638EC9AD85B8C58C9C77DCC7 /* GRDB */,
 				E9035E07265E8F5491BE067E /* RealmSwift */,
-				42A1F0A22E000000000000A2 /* Alamofire */,
 				294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */,
-				CEA1C4A10000000000000020 /* KeychainAccess */,
-				42C57CAF2FFD4BD5002457D9 /* ObjectMapper */,
 				42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */,
 				42886D152FFE5C12004EB33B /* Sodium */,
 				42886D312FFE8829004EB33B /* HAKit */,
