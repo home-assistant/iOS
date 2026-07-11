@@ -27,13 +27,11 @@ let package = Package(
         .watchOS(.v9),
     ],
     products: [
-        // NOTE: Currently static, linked only into the two `Shared` framework targets (absorbed into
-        // Shared.framework — one image, no duplication). To let the watch widget link it directly, flip
-        // to `type: .dynamic` AND wire it into every consuming target's Frameworks phase + Embed
-        // Frameworks (CodeSignOnCopy), mirroring PromiseKitDynamic (12 targets linked, app + watch app
-        // embedded, extensions link-only). Do that via Xcode's "Frameworks, Libraries & Embedded
-        // Content" UI — the embed/code-signing must be exact and isn't validated by a simulator build.
-        .library(name: "HANetworking", targets: ["HANetworking"]),
+        // Dynamic (mirrors PromiseKitDynamic): HANetworking is linked into `Shared.framework` AND the
+        // watch widget extension, so a static product would duplicate its type-metadata across images
+        // and crash. Wired into every consuming target's Frameworks phase + Embed Frameworks
+        // (CodeSignOnCopy on App + WatchApp; extensions link-only) in project.pbxproj.
+        .library(name: "HANetworking", type: .dynamic, targets: ["HANetworking"]),
     ],
     dependencies: [
         // Pinned to the app's exact versions so Xcode's package graph unifies each into one instance
@@ -44,6 +42,10 @@ let package = Package(
         .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.8.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", exact: "4.2.2"),
         .package(path: "../HAModels"),
+        // PromiseKit via the dynamic wrapper (TokenManager/AuthenticationAPI use `import PromiseKit`).
+        // As a dynamic framework, HANetworking must link PromiseKit itself; using PromiseKitDynamic
+        // (not raw static PromiseKit) keeps a single shared copy — see Sources/PromiseKitDynamic.
+        .package(path: "../PromiseKitDynamic"),
     ],
     targets: [
         .target(
@@ -53,6 +55,7 @@ let package = Package(
                 "ObjectMapper",
                 "KeychainAccess",
                 "HAModels",
+                "PromiseKitDynamic",
                 .product(name: "HAKit", package: "HAKit"),
                 .product(name: "GRDB", package: "GRDB.swift"),
             ],
