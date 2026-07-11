@@ -27,6 +27,12 @@ let package = Package(
         .watchOS(.v9),
     ],
     products: [
+        // NOTE: Currently static, linked only into the two `Shared` framework targets (absorbed into
+        // Shared.framework — one image, no duplication). To let the watch widget link it directly, flip
+        // to `type: .dynamic` AND wire it into every consuming target's Frameworks phase + Embed
+        // Frameworks (CodeSignOnCopy), mirroring PromiseKitDynamic (12 targets linked, app + watch app
+        // embedded, extensions link-only). Do that via Xcode's "Frameworks, Libraries & Embedded
+        // Content" UI — the embed/code-signing must be exact and isn't validated by a simulator build.
         .library(name: "HANetworking", targets: ["HANetworking"]),
     ],
     dependencies: [
