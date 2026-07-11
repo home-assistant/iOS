@@ -437,6 +437,25 @@ struct WatchConnectivityReceive_test {
         #expect(replied == true)
         #expect(interactiveBox.count == 0)
     }
+
+    /// `refreshConnectivityState()` re-reads the live `isReachable` and re-broadcasts it. This is what
+    /// lets the watch recover a stale "unreachable" on foreground (watchOS doesn't reliably emit
+    /// `sessionReachabilityDidChange` across a suspend→resume) without an app restart.
+    @Test func refreshConnectivityStateRebroadcastsLiveReachability() async throws {
+        let fake = FakeWCSession()
+        fake.isReachableProxy = false
+        let manager = WatchConnectivityManager(session: fake)
+        let box = ValueBox<HAWatchConnectivity.Reachability>()
+        manager.reachability.observe { box.set($0) }
+
+        // The value flipped to reachable while suspended, but no delegate callback fired.
+        fake.isReachableProxy = true
+        manager.refreshConnectivityState()
+
+        try await Task.sleep(nanoseconds: 250_000_000)
+        #expect(box.value == .immediatelyReachable)
+        #expect(manager.currentReachability == .immediatelyReachable)
+    }
 }
 
 #if os(iOS)

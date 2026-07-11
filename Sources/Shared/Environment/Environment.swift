@@ -110,7 +110,10 @@ public class AppEnvironment {
     }
 
     public var database: () -> DatabaseQueue = {
-        .appDatabase
+        // App Intents can run in a background-woken process without a foreground transition,
+        // leaving the DB suspended; resume it here so accesses don't abort mid-shortcut.
+        NotificationCenter.default.post(name: Database.resumeNotification, object: nil)
+        return .appDatabase
     }
 
     public var watchConfig: () throws -> WatchConfig? = {

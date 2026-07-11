@@ -114,12 +114,7 @@ public class LegacyModelManager: ServerObserver {
             ),
             CleanupDefinition(orphansOf: RLMZone.self),
             CleanupDefinition(orphansOf: NotificationCategory.self),
-            CleanupDefinition(
-                orphansOf: WatchComplication.self,
-                serverIdentifierKey: #keyPath(WatchComplication.serverIdentifier),
-                allowedPredicate: .init(value: true),
-                mode: .replace
-            ),
+            // WatchComplication moved to GRDB; its server-orphan handling now lives in the GRDB layer.
         ]
     }
 
@@ -132,6 +127,11 @@ public class LegacyModelManager: ServerObserver {
 
         cleanupDefinitions = definitions
         workQueue.async {
+            // GRDB-backed watch complications/configs: drop rows for servers that no longer exist.
+            let serverIds = Current.servers.all.map(\.identifier.rawValue)
+            try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIds)
+            try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIds)
+
             let realm = Current.realm()
             let writes = definitions.map { definition in
                 realm.reentrantWrite {

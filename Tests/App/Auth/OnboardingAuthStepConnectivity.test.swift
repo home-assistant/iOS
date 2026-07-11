@@ -2,6 +2,7 @@ import Alamofire
 @testable import HomeAssistant
 import OHHTTPStubs
 import PromiseKit
+import Shared
 import XCTest
 
 class OnboardingAuthStepConnectivityTests: XCTestCase {

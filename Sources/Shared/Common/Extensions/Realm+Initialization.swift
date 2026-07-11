@@ -86,6 +86,7 @@ public extension Realm {
         // 20…25 - 2022-08-13 v2022.x undoing realm automatic migration
         // 26 - 2022-08-13 v2022.x bumping mdi version
         // 29 - 2026-05-27 v2026.x Remove legacy iOS action Realm models
+        // 30 - 2026-07 v2026.x Migrate WatchComplication from Realm to GRDB
 
         // Current schema version from database
         if let currentSchemaVersion = try? schemaVersionAtURL(storeURL) {
@@ -93,7 +94,7 @@ public extension Realm {
         }
 
         // New schema version
-        let schemaVersion: UInt64 = 29
+        let schemaVersion: UInt64 = 30
         Current.Log.verbose("Schema version defined: \(schemaVersion)")
 
         let config = Realm.Configuration(
@@ -122,21 +123,9 @@ public extension Realm {
                     }
                 }
 
-                if oldVersion < 13 {
-                    migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
-                        // initially creating these with their old family name
-                        // this is so we migrate them to have identical names on both watch and phone, independently
-                        // since future objects are created with a UUID-based identifier, this won't be an issue
-                        // we also need to reference them by family for complications configured prior to watchOS 7
-                        newObject!["identifier"] = newObject!["rawFamily"]
-                    }
-                }
-
-                if oldVersion < 14 {
-                    migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
-                        newObject?["IsPublic"] = true
-                    }
-                }
+                // WatchComplication moved off Realm to GRDB; its historical Realm migrations
+                // (v13/v14 identifier + IsPublic, v18 serverIdentifier, MDI icon) are handled by the
+                // one-time Realm→GRDB migration instead.
 
                 if oldVersion < 16 {
                     // nothing, it added an optional
@@ -156,10 +145,6 @@ public extension Realm {
 
                     migrate(NotificationCategory.self)
                     migrate(RLMZone.self)
-
-                    migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
-                        newObject?["serverIdentifier"] = Server.historicId.rawValue
-                    }
                 }
 
                 if oldVersion < 19 {
@@ -175,25 +160,29 @@ public extension Realm {
                     }
                 }
 
-                do {
-                    // always do an MDI migration, since micro-managing whether it needs to be done is annoying
-                    migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
-                        let dataKey = "complicationData"
-                        let iconDictKey = "icon"
-                        let iconDictIconKey = "icon"
-
-                        if let oldData = newObject?[dataKey] as? Data,
-                           let oldJson = try? JSONSerialization
-                           .jsonObject(with: oldData) as? [String: Any],
-                           let oldIconDict = oldJson[iconDictKey] as? [String: String],
-                           let oldIconIcon = oldIconDict[iconDictIconKey] {
-                            var updatedIconDict = oldIconDict
-                            updatedIconDict[iconDictIconKey] = MDIMigration.migrate(icon: oldIconIcon)
-                            var updatedJson = oldJson
-                            updatedJson[iconDictKey] = updatedIconDict
-                            if let newData = try? JSONSerialization.data(withJSONObject: updatedJson) {
-                                newObject?[dataKey] = newData
-                            }
+                if oldVersion < 30 {
+                    // One-time migration of legacy watch complications from Realm to GRDB. The
+                    // `WatchComplication` class no longer exists, so we read the old rows dynamically and
+                    // write GRDB records (mirroring the historic v13/v14/v18 + MDI icon fixups).
+                    migration.enumerateObjects(ofType: "WatchComplication") { oldObject, _ in
+                        guard let oldObject else { return }
+                        let dataString: String? = (oldObject["complicationData"] as? Data)
+                            .flatMap { String(data: $0, encoding: .utf8) }
+                        var complication = WatchComplication(
+                            identifier: (oldObject["identifier"] as? String) ?? UUID().uuidString,
+                            serverIdentifier: (oldObject["serverIdentifier"] as? String) ?? Server.historicId.rawValue,
+                            family: ComplicationGroupMember(rawValue: (oldObject["rawFamily"] as? String) ?? "")
+                                ?? .modularSmall,
+                            template: ComplicationTemplate(rawValue: (oldObject["rawTemplate"] as? String) ?? ""),
+                            createdAt: (oldObject["CreatedAt"] as? Date) ?? Current.date(),
+                            name: oldObject["name"] as? String,
+                            isPublic: (oldObject["IsPublic"] as? Bool) ?? true
+                        )
+                        complication.complicationData = dataString
+                        do {
+                            try complication.save()
+                        } catch {
+                            Current.Log.error("Failed to migrate complication \(complication.identifier): \(error)")
                         }
                     }
                 }
