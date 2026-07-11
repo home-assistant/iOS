@@ -13,6 +13,10 @@ public struct SecurityExceptions: Codable, Equatable {
 
     public var hasExceptions: Bool { !exceptions.isEmpty }
 
+    /// The raw `SecTrustCopyExceptions` blobs, so a lightweight consumer (e.g. the watch widget, which
+    /// can't link this package) can re-apply the same self-signed / pinned trust with `SecTrustSetExceptions`.
+    public var rawExceptionData: [Data] { exceptions.map(\.rawData) }
+
     public mutating func add(for secTrust: SecTrust) {
         if let exception = SecurityException(secTrust: secTrust) {
             exceptions.append(exception)
@@ -69,6 +73,9 @@ public struct SecurityException: Codable, Equatable {
             return nil
         }
     }
+
+    /// The raw exception blob, for lightweight consumers that re-apply it via `SecTrustSetExceptions`.
+    public var rawData: Data { data }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
