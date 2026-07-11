@@ -78,7 +78,8 @@ public struct ConnectionInfo: Codable, Equatable {
             if let cert = clientCertificate {
                 do {
                     let credential = try ClientCertificateManager.shared.urlCredential(for: cert)
-                    HANetworkingEnvironment.current.log.info("[mTLS] Using client certificate for webhook: \(cert.displayName)")
+                    HANetworkingEnvironment.current.log
+                        .info("[mTLS] Using client certificate for webhook: \(cert.displayName)")
                     return (.useCredential, credential)
                 } catch {
                     HANetworkingEnvironment.current.log.error("[mTLS] Failed to get credential: \(error)")
@@ -439,11 +440,13 @@ public final class ServerRequestAdapter: RequestAdapter, @unchecked Sendable {
             if let activeURL = server.info.connection.evaluateActiveURL() {
                 let expectedURL = activeURL.adapting(url: currentURL)
                 if currentURL != expectedURL {
-                    HANetworkingEnvironment.current.log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
+                    HANetworkingEnvironment.current.log
+                        .verbose("Changing request URL from \(currentURL) to \(expectedURL)")
                     updatedRequest.url = expectedURL
                 }
             } else {
-                HANetworkingEnvironment.current.log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
+                HANetworkingEnvironment.current.log
+                    .error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
                 completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
                 return
             }

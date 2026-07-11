@@ -34,8 +34,8 @@ extension Keychain: ServerManagerKeychain {
     }
 }
 
-extension ServerManagerKeychain {
-    public func allServerInfo(decoder: JSONDecoder) -> [(String, ServerInfo)] {
+public extension ServerManagerKeychain {
+    func allServerInfo(decoder: JSONDecoder) -> [(String, ServerInfo)] {
         allKeys().compactMap { key in
             getServerInfo(key: key, decoder: decoder).map { (key, $0) }
         }
@@ -43,7 +43,7 @@ extension ServerManagerKeychain {
 
     // Decode failures are logged and ignored so one bad Keychain entry does not
     // prevent the rest of the server list from loading.
-    public func getServerInfo(key: String, decoder: JSONDecoder) -> ServerInfo? {
+    func getServerInfo(key: String, decoder: JSONDecoder) -> ServerInfo? {
         do {
             guard let data = try getData(key) else {
                 return nil
@@ -56,7 +56,7 @@ extension ServerManagerKeychain {
         }
     }
 
-    public func set(serverInfo: ServerInfo, key: String, encoder: JSONEncoder) {
+    func set(serverInfo: ServerInfo, key: String, encoder: JSONEncoder) {
         do {
             try set(encoder.encode(serverInfo), key: key)
         } catch {
@@ -64,11 +64,12 @@ extension ServerManagerKeychain {
         }
     }
 
-    public func deleteServerInfo(key: String) {
+    func deleteServerInfo(key: String) {
         do {
             try remove(key)
         } catch {
-            HANetworkingEnvironment.current.log.error("failed to delete server info for \(key): \(error.localizedDescription)")
+            HANetworkingEnvironment.current.log
+                .error("failed to delete server info for \(key): \(error.localizedDescription)")
         }
     }
 }

@@ -166,11 +166,13 @@ private class OnboardingClientCertificateDelegate: SessionDelegate, @unchecked S
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
             do {
                 let credential = try ClientCertificateManager.shared.urlCredential(for: certificate)
-                HANetworkingEnvironment.current.log.info("[mTLS] Using client certificate for token exchange: \(certificate.displayName)")
+                HANetworkingEnvironment.current.log
+                    .info("[mTLS] Using client certificate for token exchange: \(certificate.displayName)")
                 completionHandler(.useCredential, credential)
                 return
             } catch {
-                HANetworkingEnvironment.current.log.error("[mTLS] Failed to get credential for token exchange: \(error)")
+                HANetworkingEnvironment.current.log
+                    .error("[mTLS] Failed to get credential for token exchange: \(error)")
             }
         }
 
@@ -211,8 +213,8 @@ extension DataRequest {
     }
 }
 
-extension Error {
-    public var authenticationAPIError: AuthenticationAPI.AuthenticationError? {
+public extension Error {
+    var authenticationAPIError: AuthenticationAPI.AuthenticationError? {
         if let authenticationError = self as? AuthenticationAPI.AuthenticationError {
             return authenticationError
         }

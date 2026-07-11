@@ -460,7 +460,8 @@ public final class ServerManagerImpl: ServerManager {
 
     private var restoredMirroredServers: Set<String> {
         get {
-            let values = HANetworkingEnvironment.current.prefs.array(forKey: Self.restoredMirroredServersKey) as? [String] ?? []
+            let values = HANetworkingEnvironment.current.prefs
+                .array(forKey: Self.restoredMirroredServersKey) as? [String] ?? []
             return Set(values)
         }
         set {

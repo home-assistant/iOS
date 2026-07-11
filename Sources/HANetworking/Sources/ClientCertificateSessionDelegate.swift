@@ -31,17 +31,20 @@ open class ClientCertificateSessionDelegate: SessionDelegate, @unchecked Sendabl
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
         guard let clientCertificate = server.info.connection.clientCertificate else {
-            HANetworkingEnvironment.current.log.warning("[mTLS] Client certificate requested but none configured for server")
+            HANetworkingEnvironment.current.log
+                .warning("[mTLS] Client certificate requested but none configured for server")
             completionHandler(.performDefaultHandling, nil)
             return
         }
 
         do {
             let credential = try ClientCertificateManager.shared.urlCredential(for: clientCertificate)
-            HANetworkingEnvironment.current.log.info("[mTLS] Using client certificate: \(clientCertificate.displayName)")
+            HANetworkingEnvironment.current.log
+                .info("[mTLS] Using client certificate: \(clientCertificate.displayName)")
             completionHandler(.useCredential, credential)
         } catch {
-            HANetworkingEnvironment.current.log.error("[mTLS] Failed to get credential for client certificate: \(error)")
+            HANetworkingEnvironment.current.log
+                .error("[mTLS] Failed to get credential for client certificate: \(error)")
             completionHandler(.cancelAuthenticationChallenge, nil)
         }
     }

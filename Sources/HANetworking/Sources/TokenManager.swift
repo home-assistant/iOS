@@ -121,9 +121,11 @@ public final class TokenManager: @unchecked Sendable {
                     from: tokenInfo.expiration,
                     to: HANetworkingEnvironment.current.date()
                 ).second {
-                    HANetworkingEnvironment.current.log.error("Token \(tokenInfo.accessToken.hash) is expired by \(expirationAmount) seconds")
+                    HANetworkingEnvironment.current.log
+                        .error("Token \(tokenInfo.accessToken.hash) is expired by \(expirationAmount) seconds")
                 } else {
-                    HANetworkingEnvironment.current.log.error("Token \(tokenInfo.accessToken.hash) is expired by unknown")
+                    HANetworkingEnvironment.current.log
+                        .error("Token \(tokenInfo.accessToken.hash) is expired by unknown")
                 }
 
                 seal.reject(TokenError.expired)
