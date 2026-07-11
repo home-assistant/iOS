@@ -107,6 +107,10 @@ public class AppEnvironment {
             Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate)
         }
         #endif
+        HANetworkingEnvironment.current.prefs = Current.settingsStore.prefs
+        HANetworkingEnvironment.current.database = { Current.database() }
+        HANetworkingEnvironment.current.bundleID = AppConstants.BundleID
+        HANetworkingEnvironment.current.defaultServerName = ServerInfo.defaultName
 
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()

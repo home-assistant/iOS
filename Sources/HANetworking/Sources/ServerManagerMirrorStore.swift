@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import HAModels
 
 private struct ServerInfoMirrorRecord: Codable, FetchableRecord, PersistableRecord {
     static var databaseTableName: String { GRDBDatabaseTable.serverInfoMirror.rawValue }
@@ -14,11 +15,11 @@ private struct ServerInfoMirrorRecord: Codable, FetchableRecord, PersistableReco
 final class ServerManagerGRDBMirrorStore: ServerManagerMirrorStore {
     func removeAll() {
         do {
-            try Current.database().write { db in
+            try HANetworkingEnvironment.current.database().write { db in
                 _ = try ServerInfoMirrorRecord.deleteAll(db)
             }
         } catch {
-            Current.Log.error("failed to clear mirrored server info: \(error)")
+            HANetworkingEnvironment.current.log.error("failed to clear mirrored server info: \(error)")
         }
     }
 
@@ -28,24 +29,24 @@ final class ServerManagerGRDBMirrorStore: ServerManagerMirrorStore {
 
     func allServerInfo() -> [(String, ServerInfo)] {
         do {
-            return try Current.database().read { db in
+            return try HANetworkingEnvironment.current.database().read { db in
                 try ServerInfoMirrorRecord
                     .fetchAll(db)
                     .map { ($0.id, $0.serverInfoJSON) }
             }
         } catch {
-            Current.Log.error("failed to fetch mirrored server info: \(error)")
+            HANetworkingEnvironment.current.log.error("failed to fetch mirrored server info: \(error)")
             return []
         }
     }
 
     func getServerInfo(_ key: String) -> ServerInfo? {
         do {
-            return try Current.database().read { db in
+            return try HANetworkingEnvironment.current.database().read { db in
                 try ServerInfoMirrorRecord.fetchOne(db, key: key)?.serverInfoJSON
             }
         } catch {
-            Current.Log.error("failed to fetch mirrored server info for \(key): \(error)")
+            HANetworkingEnvironment.current.log.error("failed to fetch mirrored server info for \(key): \(error)")
             return nil
         }
     }
@@ -54,21 +55,21 @@ final class ServerManagerGRDBMirrorStore: ServerManagerMirrorStore {
         let record = ServerInfoMirrorRecord(id: key, serverInfoJSON: serverInfo.mirroredForPersistence)
 
         do {
-            try Current.database().write { db in
+            try HANetworkingEnvironment.current.database().write { db in
                 try record.insert(db, onConflict: .replace)
             }
         } catch {
-            Current.Log.error("failed to persist mirrored server info for \(key): \(error)")
+            HANetworkingEnvironment.current.log.error("failed to persist mirrored server info for \(key): \(error)")
         }
     }
 
     func remove(_ key: String) {
         do {
-            try Current.database().write { db in
+            try HANetworkingEnvironment.current.database().write { db in
                 _ = try ServerInfoMirrorRecord.deleteOne(db, key: key)
             }
         } catch {
-            Current.Log.error("failed to delete mirrored server info for \(key): \(error)")
+            HANetworkingEnvironment.current.log.error("failed to delete mirrored server info for \(key): \(error)")
         }
     }
 }

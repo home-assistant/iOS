@@ -42,8 +42,6 @@
 		1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */; };
 		1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
 		1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
-		1105CE1C272B9CB300F33BD8 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1105CE1B272B9CB300F33BD8 /* ServerManager.swift */; };
-		1105CE1D272B9CB300F33BD8 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1105CE1B272B9CB300F33BD8 /* ServerManager.swift */; };
 		1108BC4325A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1108BC4225A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift */; };
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
@@ -254,8 +252,6 @@
 		11ADF941267D34B20040A7E3 /* NotificationsCommandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */; };
 		11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
-		11AF4D16249C8083006C74C0 /* With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D15249C8082006C74C0 /* With.swift */; };
-		11AF4D17249C8083006C74C0 /* With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D15249C8082006C74C0 /* With.swift */; };
 		11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D18249C8253006C74C0 /* PedometerSensor.swift */; };
 		11AF4D1A249C8253006C74C0 /* PedometerSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D18249C8253006C74C0 /* PedometerSensor.swift */; };
 		11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D1B249C8AA0006C74C0 /* BatterySensor.swift */; };
@@ -341,8 +337,6 @@
 		11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */; };
 		11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */; };
 		11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */; };
-		11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C9249E62E700B05222 /* Version+HA.swift */; };
-		11CB98CB249E62E700B05222 /* Version+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C9249E62E700B05222 /* Version+HA.swift */; };
 		11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98CC249E637300B05222 /* Version+HA.test.swift */; };
 		11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B424B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift */; };
 		11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */; };
@@ -952,10 +946,6 @@
 		42C5E5AD2F7E74DE004797B5 /* SafeScriptMessageHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C5E5AC2F7E74DE004797B5 /* SafeScriptMessageHandlerTests.swift */; };
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
-		42C95E822F7EDAAA00112233 /* ServerManagerPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C95E812F7EDAAA00112233 /* ServerManagerPersistence.swift */; };
-		42C95E832F7EDAAA00112233 /* ServerManagerPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C95E812F7EDAAA00112233 /* ServerManagerPersistence.swift */; };
-		42C95E852F7EDB1000112233 /* ServerManagerMirrorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C95E842F7EDB1000112233 /* ServerManagerMirrorStore.swift */; };
-		42C95E862F7EDB1000112233 /* ServerManagerMirrorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C95E842F7EDB1000112233 /* ServerManagerMirrorStore.swift */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -1383,6 +1373,7 @@
 		B67CE8A922200F220034C1D0 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884792122A65800CCB501 /* SettingsStore.swift */; };
 		B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */; };
 		B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
+		CC00110000000000000000F1 /* ServerManager+ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */; };
 		AABB110000000000000000F1 /* HANetworkingLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB110000000000000000F0 /* HANetworkingLocalization.swift */; };
 		B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
 		B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
@@ -1462,6 +1453,7 @@
 		D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */; };
 		D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
+		CC00110000000000000000F2 /* ServerManager+ServerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */; };
 		AABB110000000000000000F2 /* HANetworkingLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB110000000000000000F0 /* HANetworkingLocalization.swift */; };
 		D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
 		D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C8845F211ED11900CCB501 /* SafariServices.framework */; };
@@ -1834,7 +1826,6 @@
 		1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBackgroundRefreshScheduler.swift; sourceTree = "<group>"; };
 		1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBackgroundRefreshScheduler.test.swift; sourceTree = "<group>"; };
 		1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guarantee+Additions.swift"; sourceTree = "<group>"; };
-		1105CE1B272B9CB300F33BD8 /* ServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.swift; sourceTree = "<group>"; };
 		1108BC4225A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeAppDelegateHandler.swift; sourceTree = "<group>"; };
 		1109B6BA25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Intents.strings; sourceTree = "<group>"; };
 		1109B6BC25263EEF005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -2035,7 +2026,6 @@
 		11AF1EC92528FB2300AAE364 /* App-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "App-catalyst.entitlements"; sourceTree = "<group>"; };
 		11AF1ECA2528FB2300AAE364 /* App-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "App-ios.entitlements"; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySensor.swift; sourceTree = "<group>"; };
-		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
 		11AF4D18249C8253006C74C0 /* PedometerSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.swift; sourceTree = "<group>"; };
 		11AF4D1B249C8AA0006C74C0 /* BatterySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatterySensor.swift; sourceTree = "<group>"; };
 		11AF4D1E249C8AF0006C74C0 /* ConnectivitySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.swift; sourceTree = "<group>"; };
@@ -2086,7 +2076,6 @@
 		11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreAudioObjectSystem.swift; sourceTree = "<group>"; };
 		11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.test.swift; sourceTree = "<group>"; };
 		11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.test.swift; sourceTree = "<group>"; };
-		11CB98C9249E62E700B05222 /* Version+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.swift"; sourceTree = "<group>"; };
 		11CB98CC249E637300B05222 /* Version+HA.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.test.swift"; sourceTree = "<group>"; };
 		11CD94B424B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateSensors.test.swift; sourceTree = "<group>"; };
 		11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseLocation.test.swift; sourceTree = "<group>"; };
@@ -2721,8 +2710,6 @@
 		42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		42C5E5AC2F7E74DE004797B5 /* SafeScriptMessageHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeScriptMessageHandlerTests.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
-		42C95E812F7EDAAA00112233 /* ServerManagerPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManagerPersistence.swift; sourceTree = "<group>"; };
-		42C95E842F7EDB1000112233 /* ServerManagerMirrorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManagerMirrorStore.swift; sourceTree = "<group>"; };
 		42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectView.swift; sourceTree = "<group>"; };
 		42CB330E2DAE530400491DCE /* SettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButton.swift; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
@@ -3211,6 +3198,7 @@
 		D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationContent+ClientEvent.swift"; sourceTree = "<group>"; };
 		D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationRoutes.swift; sourceTree = "<group>"; };
 		D0BE44152104410D00C74314 /* AuthenticationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationAPI.swift; sourceTree = "<group>"; };
+		CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServerManager+ServerProviding.swift"; sourceTree = "<group>"; };
 		AABB110000000000000000F0 /* HANetworkingLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HANetworkingLocalization.swift; sourceTree = "<group>"; };
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0C88461211ED16300CCB501 /* OnboardingAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuth.swift; sourceTree = "<group>"; };
@@ -6511,9 +6499,6 @@
 				42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */,
 				D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */,
 				D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */,
-				1105CE1B272B9CB300F33BD8 /* ServerManager.swift */,
-				42C95E812F7EDAAA00112233 /* ServerManagerPersistence.swift */,
-				42C95E842F7EDB1000112233 /* ServerManagerMirrorStore.swift */,
 				1120C57E274638330046C38B /* PerServerContainer.swift */,
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
@@ -6662,7 +6647,6 @@
 				D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */,
 				B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */,
 				B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */,
-				11CB98C9249E62E700B05222 /* Version+HA.swift */,
 				11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */,
 				11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */,
 				1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */,
@@ -6725,6 +6709,7 @@
 			children = (
 				D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */,
 				D0BE44152104410D00C74314 /* AuthenticationAPI.swift */,
+				CC00110000000000000000F0 /* ServerManager+ServerProviding.swift */,
 				AABB110000000000000000F0 /* HANetworkingLocalization.swift */,
 				D0C88463211F33CE00CCB501 /* TokenManager.swift */,
 			);
@@ -6806,7 +6791,6 @@
 				11B7FD732493225200E60ED9 /* BackgroundTask.swift */,
 				1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */,
 				D0A6367320DBE91300E5C49B /* Extensions */,
-				11AF4D15249C8082006C74C0 /* With.swift */,
 				1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */,
 				116570762702B0F6003906A7 /* DiskCache.swift */,
 				1120C5832749C6350046C38B /* ServerProviding.swift */,
@@ -8935,7 +8919,6 @@
 				B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */,
 				B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */,
 				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
-				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
 				42C5E5AB2F7C20EA004797B5 /* EntityColorAttributesParser.swift in Sources */,
 				42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
@@ -8943,6 +8926,7 @@
 				426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
 				119385A5249E8E360097F497 /* StorageSensor.swift in Sources */,
 				B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */,
+				CC00110000000000000000F1 /* ServerManager+ServerProviding.swift in Sources */,
 				AABB110000000000000000F1 /* HANetworkingLocalization.swift in Sources */,
 				119A7DF32529761800D7000D /* CLKComplication+Strings.swift in Sources */,
 				1182620524F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,
@@ -8978,7 +8962,6 @@
 				115BC82F2677093A00452430 /* FocusStatusWrapper.swift in Sources */,
 				B67CE89E22200F220034C1D0 /* DiscoveredHomeAssistant.swift in Sources */,
 				1182620824F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
-				11CB98CB249E62E700B05222 /* Version+HA.swift in Sources */,
 				422368912D40FCDE005911E4 /* CustomWidget.swift in Sources */,
 				11FA53F3251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */,
 				B67CE8B022200F220034C1D0 /* CLLocation+Extensions.swift in Sources */,
@@ -9012,9 +8995,6 @@
 				42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */,
 				11F2F27F258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */,
 				B67CE8A622200F220034C1D0 /* HAAPI.swift in Sources */,
-				1105CE1D272B9CB300F33BD8 /* ServerManager.swift in Sources */,
-				42C95E832F7EDAAA00112233 /* ServerManagerPersistence.swift in Sources */,
-				42C95E862F7EDB1000112233 /* ServerManagerMirrorStore.swift in Sources */,
 				42D334272D105990008D8E78 /* AppPanel.swift in Sources */,
 				1141182724AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				1104FC9225322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
@@ -9101,7 +9081,6 @@
 				110ED56325A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				424151FB2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */,
 				42DE75D32D1061A600FF379F /* PanelsUpdater.swift in Sources */,
-				11AF4D16249C8083006C74C0 /* With.swift in Sources */,
 				11B38EEC275C54A200205C7B /* IntentHandlerFactory.swift in Sources */,
 				1182620124F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
 				B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
@@ -9109,6 +9088,7 @@
 				11AF4D25249D1931006C74C0 /* LastUpdateSensor.swift in Sources */,
 				11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
+				CC00110000000000000000F2 /* ServerManager+ServerProviding.swift in Sources */,
 				AABB110000000000000000F2 /* HANetworkingLocalization.swift in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
@@ -9119,7 +9099,6 @@
 				11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */,
 				428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				A95FDD0F2F6B8A19008EF72F /* HandlerLiveActivity.swift in Sources */,
-				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */,
 				42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
@@ -9332,9 +9311,6 @@
 				425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */,
 				11521BBC25400284009C5C72 /* CrashReporter.swift in Sources */,
 				11F2F26E25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */,
-				1105CE1C272B9CB300F33BD8 /* ServerManager.swift in Sources */,
-				42C95E822F7EDAAA00112233 /* ServerManagerPersistence.swift in Sources */,
-				42C95E852F7EDB1000112233 /* ServerManagerMirrorStore.swift in Sources */,
 				D0EEF322214DE56B00D1D360 /* LocationTrigger.swift in Sources */,
 				422368902D40FCDE005911E4 /* CustomWidget.swift in Sources */,
 				D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */,

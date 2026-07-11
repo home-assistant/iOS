@@ -51,7 +51,7 @@ extension ServerManagerKeychain {
 
             return try decoder.decode(ServerInfo.self, from: data)
         } catch {
-            Current.Log.error("failed to get server info for \(key): \(error)")
+            HANetworkingEnvironment.current.log.error("failed to get server info for \(key): \(error)")
             return nil
         }
     }
@@ -60,7 +60,7 @@ extension ServerManagerKeychain {
         do {
             try set(encoder.encode(serverInfo), key: key)
         } catch {
-            Current.Log.error("failed to set server info for \(key): \(error)")
+            HANetworkingEnvironment.current.log.error("failed to set server info for \(key): \(error)")
         }
     }
 
@@ -68,7 +68,7 @@ extension ServerManagerKeychain {
         do {
             try remove(key)
         } catch {
-            Current.Log.error("failed to delete server info for \(key): \(error.localizedDescription)")
+            HANetworkingEnvironment.current.log.error("failed to delete server info for \(key): \(error.localizedDescription)")
         }
     }
 }
