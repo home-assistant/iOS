@@ -3,6 +3,7 @@ import HAKit
 import HAKit_Mocks
 import PromiseKit
 @testable import Shared
+@testable import HANetworking
 import XCTest
 
 class AuthenticationAPIActiveURLTests: XCTestCase {

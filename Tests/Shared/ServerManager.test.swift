@@ -1,4 +1,5 @@
 @testable import Shared
+@testable import HANetworking
 import XCTest
 
 class ServerManagerTests: XCTestCase {
