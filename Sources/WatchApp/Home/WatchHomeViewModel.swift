@@ -21,6 +21,9 @@ final class WatchHomeViewModel: ObservableObject {
     @Published var showAssist = false
     @Published var showError = false
     @Published var errorMessage = ""
+    /// Set when the user taps reload but the iPhone isn't reachable, so the view can explain why instead
+    /// of appearing to do nothing.
+    @Published var showNotReachableAlert = false
     @Published var currentSSID: String = ""
     @Published private(set) var homeType: WatchHomeType = .undefined
 
@@ -31,6 +34,11 @@ final class WatchHomeViewModel: ObservableObject {
     /// Set when the watch and iPhone both changed the config since the last sync; the UI prompts the
     /// user to choose which to keep.
     @Published var pendingConflict: ConfigConflict?
+
+    /// True while a config/database sync is running. A second `requestConfig` is ignored until it
+    /// finishes, so repeated reload taps can't stack several syncs (each holding a 30s reply timeout)
+    /// in parallel.
+    private var isSyncInFlight = false
 
     private var networkPathMonitor: NWPathMonitor?
     private let networkMonitorQueue = DispatchQueue(label: "WatchHomeNetworkPathMonitor")
@@ -134,7 +142,14 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     @MainActor
-    func requestConfig() {
+    func requestConfig(userInitiated: Bool = false) {
+        // Re-entrancy guard: one sync at a time. Without this, tapping reload repeatedly stacks several
+        // concurrent syncs — each interactive send holds a 30s reply timeout — which looks like the app
+        // "hanging" with multiple refreshes in flight.
+        guard !isSyncInFlight else {
+            Current.Log.info("requestConfig ignored: a sync is already in flight")
+            return
+        }
         homeType = .undefined
         guard Communicator.shared.currentReachability != .notReachable else {
             Current.Log.error("iPhone reachability is not immediate reachable")
@@ -143,8 +158,11 @@ final class WatchHomeViewModel: ObservableObject {
             // screen via the guaranteed-response reconcile — no need for the phone to be foreground.
             setLoadingStatus(L10n.Watch.Home.Sync.waiting)
             enqueueGuaranteedConfigPull()
+            // Tell the user why an explicit reload appears to do nothing (background pull still runs).
+            if userInitiated { showNotReachableAlert = true }
             return
         }
+        isSyncInFlight = true
         isLoading = true
         clearError()
         setLoadingStatus(L10n.Watch.Sync.starting)
@@ -316,7 +334,10 @@ final class WatchHomeViewModel: ObservableObject {
         ), errorHandler: { [weak self] error in
             Task { @MainActor in
                 Current.Log.error("Database sync start failed: \(error.localizedDescription)")
-                self?.failSync(L10n.Watch.Sync.Error.unreachable)
+                self?.failSync(
+                    L10n.Watch.Sync.Error.unreachable,
+                    detail: "sync start request failed: \(error.localizedDescription)"
+                )
             }
         })
     }
@@ -326,7 +347,12 @@ final class WatchHomeViewModel: ObservableObject {
         guard message.content["error"] == nil,
               let transferId = message.content["transferId"] as? String,
               let totalChunks = message.content["totalChunks"] as? Int, totalChunks > 0 else {
-            failSync(L10n.Watch.Sync.Error.generic)
+            let phoneError = message.content["error"] as? String
+            failSync(
+                L10n.Watch.Sync.Error.generic,
+                detail: phoneError.map { "iPhone reported: \($0)" }
+                    ?? "sync start reply missing transferId/totalChunks (keys: \(message.content.keys.sorted()))"
+            )
             return
         }
         syncTransferId = transferId
@@ -353,7 +379,10 @@ final class WatchHomeViewModel: ObservableObject {
         ), errorHandler: { [weak self] error in
             Task { @MainActor in
                 Current.Log.error("Database sync chunk \(index) failed: \(error.localizedDescription)")
-                self?.failSync(L10n.Watch.Sync.Error.generic)
+                self?.failSync(
+                    L10n.Watch.Sync.Error.generic,
+                    detail: "chunk \(index) request failed: \(error.localizedDescription)"
+                )
             }
         })
     }
@@ -361,7 +390,12 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func handleChunk(_ message: HAWatchConnectivity.ImmediateMessage, index: Int) {
         guard message.content["error"] == nil, let chunk = message.content["chunkData"] as? Data else {
-            failSync(L10n.Watch.Sync.Error.generic)
+            let phoneError = message.content["error"] as? String
+            failSync(
+                L10n.Watch.Sync.Error.generic,
+                detail: phoneError.map { "iPhone reported on chunk \(index): \($0)" }
+                    ?? "chunk \(index) reply missing chunkData"
+            )
             return
         }
         syncAccumulated.append(chunk)
@@ -379,8 +413,11 @@ final class WatchHomeViewModel: ObservableObject {
     private func finishDatabaseSync() {
         let data = syncAccumulated
         resetSyncState()
-        guard let mirror = WatchDatabaseMirror.decodeForWatch(data) else {
-            failSync(L10n.Watch.Sync.Error.data)
+        let mirror: WatchDatabaseMirror
+        do {
+            mirror = try WatchDatabaseMirror.decodeForWatchThrowing(data)
+        } catch {
+            failSync(L10n.Watch.Sync.Error.data, detail: "decode failed (\(data.count) bytes): \(error)")
             return
         }
         do {
@@ -390,8 +427,11 @@ final class WatchHomeViewModel: ObservableObject {
                 text: "Apple Watch database sync applied (\(data.count) bytes)",
                 type: .database
             ))
+            // The mirror carries complications too — rebuild widget snapshots now so a reload is another
+            // chance to obtain them if the background context push hasn't delivered them yet.
+            WatchWidgetComplicationSnapshotStore.update()
         } catch {
-            failSync(L10n.Watch.Sync.Error.data)
+            failSync(L10n.Watch.Sync.Error.data, detail: "apply to database failed: \(error)")
             return
         }
         // Reference tables are fresh — now pull the watch config and render everything from the DB.
@@ -400,12 +440,16 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     @MainActor
-    private func failSync(_ friendlyMessage: String) {
+    private func failSync(_ friendlyMessage: String, detail: String? = nil) {
         resetSyncState()
-        Current.Log.error("Watch database sync failed: \(friendlyMessage)")
+        // The friendly message goes to the UI; the technical detail (which step failed and why) goes to
+        // the log and the client-event payload so failures are actually diagnosable on-device.
+        let logMessage = detail.map { "\(friendlyMessage) — \($0)" } ?? friendlyMessage
+        Current.Log.error("Watch database sync failed: \(logMessage)")
         Current.clientEventStore.addEvent(.init(
-            text: "Apple Watch database sync failed: \(friendlyMessage)",
-            type: .database
+            text: "Apple Watch database sync failed: \(logMessage)",
+            type: .database,
+            payload: detail.map { ["detail": $0] } ?? [:]
         ))
         errorMessage = friendlyMessage
         showError = true
@@ -484,7 +528,9 @@ final class WatchHomeViewModel: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.isLoading = isLoading
             if !isLoading {
-                // Loading is over — cancel any pending throttled status update and clear immediately.
+                // Loading is over — the sync (if any) has reached a terminal state, so a new reload may
+                // start. Cancel any pending throttled status update and clear immediately.
+                self?.isSyncInFlight = false
                 self?.pendingStatusWork?.cancel()
                 self?.pendingStatusWork = nil
                 self?.loadingStatus = nil

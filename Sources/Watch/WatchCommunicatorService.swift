@@ -22,10 +22,14 @@ final class WatchCommunicatorService {
     private var databaseSyncChunks: [String: [Data]] = [:]
 
     private var didBecomeActiveObserver: NSObjectProtocol?
+    private var databaseUpdatedObserver: NSObjectProtocol?
 
     deinit {
         if let didBecomeActiveObserver {
             NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+        }
+        if let databaseUpdatedObserver {
+            NotificationCenter.default.removeObserver(databaseUpdatedObserver)
         }
     }
 
@@ -59,6 +63,17 @@ final class WatchCommunicatorService {
             if messageId == .watchConfig {
                 respondToGuaranteedWatchConfigRequest()
             }
+        }
+
+        // When the iOS app finishes refreshing its local database from a server, proactively push the
+        // updated reference tables to the watch over transferFile so its cached data stays fresh without
+        // the user opening the watch app.
+        databaseUpdatedObserver = NotificationCenter.default.addObserver(
+            forName: .appDatabaseUpdaterDidFinishRoutine,
+            object: nil,
+            queue: .main
+        ) { _ in
+            WatchMirrorPushCoordinator.schedule(reason: .databaseUpdated)
         }
 
         // Present any client-certificate import the watch requested while the app was backgrounded.
@@ -794,8 +809,10 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         HomeAssistantAPI.syncWatchContext()
-        // Servers + client certificates are delivered on demand via the `serversConfigSync` reply
-        // (watch Home refresh); no proactive push needed here.
+        // Also push the reference database so entity/area/pipeline data for the new server set reaches
+        // the watch proactively. Server credentials themselves still flow through the on-demand
+        // `serversConfigSync` reply (they carry Keychain material kept off the mirror).
+        WatchMirrorPushCoordinator.schedule(reason: .serversChanged)
     }
 }
 

@@ -10,7 +10,7 @@ import WatchKit
 public enum WatchContext: String, CaseIterable {
     case servers
     case complications
-    case ssid = "SSID"
+    case complicationConfigs
     case activeFamilies
     case watchModel
     case watchVersion
@@ -26,13 +26,22 @@ public extension HomeAssistantAPI {
         #if os(iOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
-        content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
+        // Legacy complications are now GRDB records synced to the watch as Codable JSON `Data`.
+        // Only attach them when the read actually succeeds: sending an empty array on a read failure
+        // would look authoritative to the watch and wipe its existing complications. A successful read
+        // that happens to be empty IS authoritative (that is how deleting the last one propagates).
+        if let complications = try? WatchComplication.all() {
+            content[WatchContext.complications.rawValue] = (try? JSONEncoder().encode(complications)) ?? Data()
+        }
 
-        #if targetEnvironment(simulator)
-        content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
-        #else
-        content[WatchContext.ssid.rawValue] = await Current.connectivity.currentWiFiSSID()
-        #endif
+        // Modern complications (entity/custom) are rendered by the watch itself.
+        if let complicationConfigs = try? WatchComplicationConfig.all() {
+            content[WatchContext.complicationConfigs.rawValue] =
+                (try? JSONEncoder().encode(complicationConfigs)) ?? Data()
+        }
+
+        // The watch has no network info of its own and no longer reads a phone-synced SSID, so there's
+        // nothing to send here.
 
         #elseif os(watchOS)
 
@@ -66,8 +75,16 @@ public extension HomeAssistantAPI {
         do {
             try Communicator.shared.sync(context)
             Current.Log.info("updated context")
+            Current.clientEventStore.addEvent(.init(
+                text: "Synced watch context to Apple Watch (updateApplicationContext)",
+                type: .database
+            ))
         } catch let error as NSError {
             Current.Log.error("Updating the context failed: \(error)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to sync watch context: \(error.localizedDescription)",
+                type: .database
+            ))
             return error
         }
 
@@ -82,6 +99,36 @@ public extension HomeAssistantAPI {
         }
     }
 
+    /// Outcome of a user-initiated watch reload, so the iPhone UI can give real feedback instead of
+    /// silently firing a sync.
+    enum WatchReloadOutcome: Equatable {
+        case success
+        /// The watch isn't paired or the watch app isn't installed — nothing to sync to.
+        case watchUnavailable
+        case failed(String)
+    }
+
+    #if os(iOS)
+    /// Push the current context to the watch and report whether it worked, for the Complications
+    /// settings "Reload" button. Distinguishes "no watch" (so the UI can explain why) from a transport
+    /// failure (so the UI can show the error).
+    static func reloadWatchComplications() async -> WatchReloadOutcome {
+        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
+            Current.Log.warning("Watch reload requested but watch not paired or app not installed")
+            return .watchUnavailable
+        }
+        let context = await HAWatchConnectivity.Context(content: watchContext())
+        do {
+            try Communicator.shared.sync(context)
+            Current.Log.info("Watch reload: context synced")
+            return .success
+        } catch {
+            Current.Log.error("Watch reload failed: \(error.localizedDescription)")
+            return .failed(error.localizedDescription)
+        }
+    }
+    #endif
+
     func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
         guard case .paired = Communicator.shared.currentWatchState else {
@@ -90,10 +137,7 @@ public extension HomeAssistantAPI {
         }
         #endif
 
-        let complications = Set(
-            Current.realm().objects(WatchComplication.self)
-                .filter("serverIdentifier = %@", server.identifier.rawValue)
-        )
+        let complications = (try? WatchComplication.all(forServerIdentifier: server.identifier.rawValue)) ?? []
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")
@@ -116,3 +160,88 @@ public extension HomeAssistantAPI {
         }
     }
 }
+
+#if os(iOS)
+/// Coalesces and de-duplicates proactive pushes of the full watch database mirror to the Apple Watch
+/// over `transferFile` (background-capable), so the watch always ends up with the latest reference data
+/// without the user asking. Multiple triggers within `debounceInterval` collapse into a single push, and
+/// a snapshot identical to the last-pushed one is skipped.
+public enum WatchMirrorPushCoordinator {
+    /// Why a push was requested — a typed value (not a bare string) so triggers, logging and tests all
+    /// share the same source of truth.
+    public enum Reason: String, CaseIterable {
+        case databaseUpdated
+        case complicationChanged
+        case serversChanged
+
+        /// Human-readable text used in logs and client events.
+        public var logDescription: String {
+            switch self {
+            case .databaseUpdated: return "database updated"
+            case .complicationChanged: return "complication changed"
+            case .serversChanged: return "servers changed"
+            }
+        }
+    }
+
+    /// Window over which repeated triggers coalesce into a single push.
+    public static let debounceInterval: TimeInterval = 3
+    /// Serial queue guarding the de-dup cache and debounce work item.
+    private static let queue = DispatchQueue(label: AppConstants.BundleID + ".watchMirrorPush")
+    private static var pendingWork: DispatchWorkItem?
+    private static var lastPushedData: Data?
+
+    /// Request a push. Safe to call from anywhere and as often as needed — it debounces and de-dupes.
+    public static func schedule(reason: Reason) {
+        queue.async {
+            pendingWork?.cancel()
+            let work = DispatchWorkItem { push(reason: reason) }
+            pendingWork = work
+            queue.asyncAfter(deadline: .now() + debounceInterval, execute: work)
+        }
+    }
+
+    /// Clear the de-dup cache so the next `schedule` pushes even if the snapshot is unchanged. Used
+    /// after a failed transfer and by tests.
+    public static func reset() {
+        queue.async { lastPushedData = nil }
+    }
+
+    private static func push(reason: Reason) {
+        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
+            Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): watch unavailable")
+            return
+        }
+        let data: Data
+        do {
+            data = try WatchDatabaseMirror.snapshot().encodeForWatch()
+        } catch {
+            Current.Log.error("Watch mirror push snapshot failed (\(reason.logDescription)): \(error)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Watch mirror push failed to build (\(reason.logDescription)): \(error.localizedDescription)",
+                type: .database
+            ))
+            return
+        }
+        if data == lastPushedData {
+            Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): unchanged")
+            return
+        }
+        lastPushedData = data
+        Communicator.shared.transfer(HAWatchConnectivity.Blob(
+            identifier: WatchDatabaseMirror.blobIdentifier,
+            content: data
+        )) { result in
+            if case let .failure(error) = result {
+                Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")
+                queue.async { lastPushedData = nil }
+            }
+        }
+        Current.clientEventStore.addEvent(.init(
+            text: "Pushed watch database mirror to Apple Watch (\(data.count) bytes) — \(reason.logDescription)",
+            type: .database,
+            payload: ["reason": reason.rawValue, "bytes": data.count]
+        ))
+    }
+}
+#endif

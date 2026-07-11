@@ -13,6 +13,10 @@ struct WatchHomeView: View {
     @State private var openFolderId: String?
     @State private var isEditing = false
     @State private var activeSheet: HomeSheet?
+    /// Latched copy of the sync error so the alert stays up until the user acts. The view model's
+    /// `showError` gets cleared by later syncs (`clearError()`/`loadCache`), which would otherwise
+    /// auto-dismiss the alert and make it flash by.
+    @State private var latchedSyncError: String?
 
     init(viewModel: WatchHomeViewModel = WatchHomeViewModel(), autoLoad: Bool = true) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -109,6 +113,43 @@ struct WatchHomeView: View {
         } message: {
             Text(verbatim: L10n.Watch.Config.Conflict.message)
         }
+        // Sync failures are shown as a full-screen alert (not a fleeting banner) so the reason is
+        // actually readable, with a one-tap retry. The message is latched into local state so the alert
+        // only dismisses on a button tap — not when a later sync clears the view model's `showError`.
+        .onChange(of: viewModel.showError) { show in
+            if show, !viewModel.errorMessage.isEmpty {
+                latchedSyncError = viewModel.errorMessage
+            }
+        }
+        .alert(
+            Text(verbatim: L10n.Watch.Sync.Error.title),
+            isPresented: Binding(
+                get: { latchedSyncError != nil },
+                set: { if !$0 { latchedSyncError = nil; viewModel.showError = false } }
+            )
+        ) {
+            Button(L10n.Watch.Sync.retry) {
+                latchedSyncError = nil
+                viewModel.showError = false
+                viewModel.requestConfig(userInitiated: true)
+            }
+            Button(role: .cancel) {
+                latchedSyncError = nil
+                viewModel.showError = false
+            } label: { Text(verbatim: L10n.okLabel) }
+        } message: {
+            Text(verbatim: latchedSyncError ?? viewModel.errorMessage)
+        }
+        // Explicit reload while the iPhone isn't reachable: explain why (the data still refreshes in the
+        // background once the phone is reachable).
+        .alert(
+            Text(verbatim: L10n.Watch.Sync.NotReachable.title),
+            isPresented: $viewModel.showNotReachableAlert
+        ) {
+            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+        } message: {
+            Text(verbatim: L10n.Watch.Sync.NotReachable.message)
+        }
         .onAppear {
             // Consume a launch requested from the complication before this view existed (cold launch).
             if AssistDefaultComplication.pendingLaunch {
@@ -147,9 +188,6 @@ struct WatchHomeView: View {
                 onAssist: { showAssist = true },
                 onAdd: { activeSheet = .add }
             )
-            if viewModel.showError, !viewModel.errorMessage.isEmpty {
-                syncErrorBanner
-            }
             listContent
             if !isEditing, viewModel.showAssist {
                 addRow
@@ -241,22 +279,6 @@ struct WatchHomeView: View {
                 .contentShape(Rectangle())
         }
         .watchItemRowStyle()
-    }
-
-    /// Inline, understandable sync failure with a retry — so the user is never left hanging or guessing.
-    private var syncErrorBanner: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            Label(viewModel.errorMessage, systemSymbol: .exclamationmarkTriangleFill)
-                .font(.footnote)
-                .foregroundStyle(.orange)
-            Button(L10n.Watch.Sync.retry) {
-                viewModel.requestConfig()
-            }
-            .buttonStyle(.bordered)
-            .tint(.haPrimary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .listRowBackground(Color.clear)
     }
 
     @ViewBuilder

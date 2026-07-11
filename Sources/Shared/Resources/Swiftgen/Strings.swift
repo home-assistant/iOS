@@ -5321,6 +5321,156 @@ public enum L10n {
         }
       }
     }
+    public enum Complications {
+      public enum Builder {
+        /// Gauge color
+        public static var color: String { return L10n.tr("Localizable", "watch.complications.builder.color") }
+        /// Colors
+        public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
+        /// Display name
+        public static var displayName: String { return L10n.tr("Localizable", "watch.complications.builder.display_name") }
+        /// Edit complication
+        public static var editTitle: String { return L10n.tr("Localizable", "watch.complications.builder.edit_title") }
+        /// No complications yet. Tap + to create one from an entity or a template.
+        public static var empty: String { return L10n.tr("Localizable", "watch.complications.builder.empty") }
+        /// Entity
+        public static var entity: String { return L10n.tr("Localizable", "watch.complications.builder.entity") }
+        /// Family
+        public static var family: String { return L10n.tr("Localizable", "watch.complications.builder.family") }
+        /// Gauge range (optional)
+        public static var gaugeRange: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range") }
+        /// Set a numeric range to show a ring or gauge from the state.
+        public static var gaugeRangeFooter: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range_footer") }
+        /// Icon
+        public static var icon: String { return L10n.tr("Localizable", "watch.complications.builder.icon") }
+        /// Icon color
+        public static var iconColor: String { return L10n.tr("Localizable", "watch.complications.builder.icon_color") }
+        /// Maximum
+        public static var maximum: String { return L10n.tr("Localizable", "watch.complications.builder.maximum") }
+        /// Minimum
+        public static var minimum: String { return L10n.tr("Localizable", "watch.complications.builder.minimum") }
+        /// Name (optional)
+        public static var name: String { return L10n.tr("Localizable", "watch.complications.builder.name") }
+        /// New complication
+        public static var newTitle: String { return L10n.tr("Localizable", "watch.complications.builder.new_title") }
+        /// Decimals
+        public static var precision: String { return L10n.tr("Localizable", "watch.complications.builder.precision") }
+        /// Automatic
+        public static var precisionAutomatic: String { return L10n.tr("Localizable", "watch.complications.builder.precision_automatic") }
+        /// Preview
+        public static var preview: String { return L10n.tr("Localizable", "watch.complications.builder.preview") }
+        /// A live approximation using current data. This complication is available in every size. Add it to any complication slot on your watch face.
+        public static var previewFooter: String { return L10n.tr("Localizable", "watch.complications.builder.preview_footer") }
+        /// Preview size
+        public static var previewSize: String { return L10n.tr("Localizable", "watch.complications.builder.preview_size") }
+        /// Progress bar color
+        public static var progressBarColor: String { return L10n.tr("Localizable", "watch.complications.builder.progress_bar_color") }
+        /// Show as gauge / ring
+        public static var showGauge: String { return L10n.tr("Localizable", "watch.complications.builder.show_gauge") }
+        /// Show icon
+        public static var showIcon: String { return L10n.tr("Localizable", "watch.complications.builder.show_icon") }
+        /// Show maximum
+        public static var showMax: String { return L10n.tr("Localizable", "watch.complications.builder.show_max") }
+        /// Show minimum
+        public static var showMin: String { return L10n.tr("Localizable", "watch.complications.builder.show_min") }
+        /// Show name
+        public static var showName: String { return L10n.tr("Localizable", "watch.complications.builder.show_name") }
+        /// Show progress bar
+        public static var showProgressBar: String { return L10n.tr("Localizable", "watch.complications.builder.show_progress_bar") }
+        /// Show unit
+        public static var showUnit: String { return L10n.tr("Localizable", "watch.complications.builder.show_unit") }
+        /// Show value
+        public static var showValue: String { return L10n.tr("Localizable", "watch.complications.builder.show_value") }
+        /// Show when inactive
+        public static var showWhenInactive: String { return L10n.tr("Localizable", "watch.complications.builder.show_when_inactive") }
+        /// When your display is dimmed (wrist down).
+        public static var showWhenInactiveFooter: String { return L10n.tr("Localizable", "watch.complications.builder.show_when_inactive_footer") }
+        /// %1$@ options
+        public static func sizeOptions(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.complications.builder.size_options", String(describing: p1))
+        }
+        /// These settings apply to the selected size. Switch the preview size above to customize each size independently.
+        public static var sizeOptionsFooter: String { return L10n.tr("Localizable", "watch.complications.builder.size_options_footer") }
+        /// Source
+        public static var source: String { return L10n.tr("Localizable", "watch.complications.builder.source") }
+        /// Custom template
+        public static var sourceCustom: String { return L10n.tr("Localizable", "watch.complications.builder.source_custom") }
+        /// Entity
+        public static var sourceEntity: String { return L10n.tr("Localizable", "watch.complications.builder.source_entity") }
+        /// Style
+        public static var style: String { return L10n.tr("Localizable", "watch.complications.builder.style") }
+        /// Templates
+        public static var templates: String { return L10n.tr("Localizable", "watch.complications.builder.templates") }
+        /// Text color
+        public static var textColor: String { return L10n.tr("Localizable", "watch.complications.builder.text_color") }
+        /// Complications
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.builder.title") }
+        /// Unit
+        public static var unit: String { return L10n.tr("Localizable", "watch.complications.builder.unit") }
+        /// Automatic
+        public static var unitAutomatic: String { return L10n.tr("Localizable", "watch.complications.builder.unit_automatic") }
+        /// Value
+        public static var valueSource: String { return L10n.tr("Localizable", "watch.complications.builder.value_source") }
+        /// State
+        public static var valueSourceState: String { return L10n.tr("Localizable", "watch.complications.builder.value_source_state") }
+      }
+      public enum Family {
+        /// Circular
+        public static var circular: String { return L10n.tr("Localizable", "watch.complications.family.circular") }
+        /// Corner
+        public static var corner: String { return L10n.tr("Localizable", "watch.complications.family.corner") }
+        /// Inline
+        public static var inline: String { return L10n.tr("Localizable", "watch.complications.family.inline") }
+        /// Rectangular
+        public static var rectangular: String { return L10n.tr("Localizable", "watch.complications.family.rectangular") }
+      }
+      public enum GaugeStyle {
+        /// Ring
+        public static var capacity: String { return L10n.tr("Localizable", "watch.complications.gauge_style.capacity") }
+        /// Open
+        public static var `open`: String { return L10n.tr("Localizable", "watch.complications.gauge_style.open") }
+        /// Gauge style
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.gauge_style.title") }
+      }
+      public enum Legacy {
+        /// Delete All Legacy Complications
+        public static var deleteAll: String { return L10n.tr("Localizable", "watch.complications.legacy.delete_all") }
+        /// Delete all legacy complications? This cannot be undone.
+        public static var deleteAllConfirm: String { return L10n.tr("Localizable", "watch.complications.legacy.delete_all_confirm") }
+        /// Legacy Complications
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.legacy.title") }
+      }
+      public enum Root {
+        /// Show entity state and gauges on your watch face.
+        public static var headerSubtitle: String { return L10n.tr("Localizable", "watch.complications.root.header_subtitle") }
+        /// Legacy complications
+        public static var legacy: String { return L10n.tr("Localizable", "watch.complications.root.legacy") }
+        /// Complications created with the older watchOS templates. Existing ones keep working and map to their closest modern style.
+        public static var legacyFooter: String { return L10n.tr("Localizable", "watch.complications.root.legacy_footer") }
+        /// Create
+        public static var new: String { return L10n.tr("Localizable", "watch.complications.root.new") }
+        /// Build a complication from an entity or a custom template. The watch renders it using live data.
+        public static var newFooter: String { return L10n.tr("Localizable", "watch.complications.root.new_footer") }
+        /// Reload Complications
+        public static var reload: String { return L10n.tr("Localizable", "watch.complications.root.reload") }
+        /// Reload Failed
+        public static var reloadFailedTitle: String { return L10n.tr("Localizable", "watch.complications.root.reload_failed_title") }
+        /// Sends your complications to the Apple Watch and refreshes them.
+        public static var reloadFooter: String { return L10n.tr("Localizable", "watch.complications.root.reload_footer") }
+        /// Your complications were sent to the Apple Watch. They refresh shortly.
+        public static var reloadSuccessMessage: String { return L10n.tr("Localizable", "watch.complications.root.reload_success_message") }
+        /// Reload Sent
+        public static var reloadSuccessTitle: String { return L10n.tr("Localizable", "watch.complications.root.reload_success_title") }
+        /// Make sure your Apple Watch is paired and the Home Assistant watch app is installed, then try again.
+        public static var reloadUnavailableMessage: String { return L10n.tr("Localizable", "watch.complications.root.reload_unavailable_message") }
+        /// Apple Watch Not Available
+        public static var reloadUnavailableTitle: String { return L10n.tr("Localizable", "watch.complications.root.reload_unavailable_title") }
+        /// Template
+        public static var template: String { return L10n.tr("Localizable", "watch.complications.root.template") }
+        /// Your complications
+        public static var yourComplications: String { return L10n.tr("Localizable", "watch.complications.root.your_complications") }
+      }
+    }
     public enum Config {
       public enum Add {
         /// Nothing to add yet. Add scripts, scenes or automations on your iPhone first.
@@ -6228,6 +6378,44 @@ public enum L10n {
         /// Logs
         public static var title: String { return L10n.tr("Localizable", "watch.settings.client_events.title") }
       }
+      public enum Complications {
+        /// No complications configured yet.
+        public static var empty: String { return L10n.tr("Localizable", "watch.settings.complications.empty") }
+        /// Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.complications.footer") }
+        /// Last attempt: %@
+        public static func lastAttempt(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.settings.complications.last_attempt", String(describing: p1))
+        }
+        /// Tap a complication to see when it last updated and to retry.
+        public static var listFooter: String { return L10n.tr("Localizable", "watch.settings.complications.list_footer") }
+        /// Not yet updated
+        public static var never: String { return L10n.tr("Localizable", "watch.settings.complications.never") }
+        /// Details
+        public static var reasonHeader: String { return L10n.tr("Localizable", "watch.settings.complications.reason_header") }
+        /// Refresh Now
+        public static var refresh: String { return L10n.tr("Localizable", "watch.settings.complications.refresh") }
+        /// Refresh All
+        public static var refreshAll: String { return L10n.tr("Localizable", "watch.settings.complications.refresh_all") }
+        /// Refreshing…
+        public static var refreshing: String { return L10n.tr("Localizable", "watch.settings.complications.refreshing") }
+        /// Retry
+        public static var retry: String { return L10n.tr("Localizable", "watch.settings.complications.retry") }
+        /// Retrying…
+        public static var retrying: String { return L10n.tr("Localizable", "watch.settings.complications.retrying") }
+        /// Status
+        public static var statusHeader: String { return L10n.tr("Localizable", "watch.settings.complications.status_header") }
+        /// Complications
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.complications.title") }
+        public enum Status {
+          /// Showing cached value
+          public static var cached: String { return L10n.tr("Localizable", "watch.settings.complications.status.cached") }
+          /// Failed
+          public static var failed: String { return L10n.tr("Localizable", "watch.settings.complications.status.failed") }
+          /// Updated
+          public static var live: String { return L10n.tr("Localizable", "watch.settings.complications.status.live") }
+        }
+      }
       public enum DeleteLocalData {
         /// Couldn't delete local data
         public static var error: String { return L10n.tr("Localizable", "watch.settings.delete_local_data.error") }
@@ -6307,8 +6495,16 @@ public enum L10n {
         public static var data: String { return L10n.tr("Localizable", "watch.sync.error.data") }
         /// Sync failed. Please try again.
         public static var generic: String { return L10n.tr("Localizable", "watch.sync.error.generic") }
+        /// Sync Failed
+        public static var title: String { return L10n.tr("Localizable", "watch.sync.error.title") }
         /// Can't reach your iPhone. Open Home Assistant on it, keep it nearby, and try again.
         public static var unreachable: String { return L10n.tr("Localizable", "watch.sync.error.unreachable") }
+      }
+      public enum NotReachable {
+        /// Open the Home Assistant app on your iPhone and keep it nearby. Your complications will still refresh in the background once it becomes reachable.
+        public static var message: String { return L10n.tr("Localizable", "watch.sync.not_reachable.message") }
+        /// iPhone Not Reachable
+        public static var title: String { return L10n.tr("Localizable", "watch.sync.not_reachable.title") }
       }
     }
   }

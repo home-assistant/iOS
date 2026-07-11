@@ -58,7 +58,7 @@ struct WatchHomeHeaderView: View {
 
     private var navReloadButton: some View {
         Button {
-            viewModel.requestConfig()
+            viewModel.requestConfig(userInitiated: true)
         } label: {
             Image(systemSymbol: .arrowCounterclockwise)
         }

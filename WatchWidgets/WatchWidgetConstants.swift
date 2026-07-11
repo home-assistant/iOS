@@ -6,6 +6,7 @@ enum WatchWidgetConstants {
     static let defaultBundleID = "io.robbie.HomeAssistant.watchkitapp.WatchWidgets"
     static let defaultsKey = "watchWidgetComplicationSnapshots"
     static let logoAssetName = "Logo"
+    static let templateLogoAssetName = "TemplateLogo"
     static let assistIconAssetName = "message-processing-outline"
     static let placeholderSubtitle = "Complication"
     static let timelineRefreshInterval: TimeInterval = 15 * 60
@@ -16,7 +17,13 @@ enum WatchWidgetConstants {
         static let assistHost = "assist"
 
         static var scheme: String {
-            appBundleID.contains(".dev") ? debugScheme : releaseScheme
+            // The widget's bundle id isn't suffixed with ".dev" in debug builds, so detect the build
+            // configuration at compile time rather than from the bundle id.
+            #if DEBUG
+            debugScheme
+            #else
+            releaseScheme
+            #endif
         }
 
         static var assistURL: URL? {
@@ -58,6 +65,8 @@ enum WatchWidgetConstants {
     enum Layout {
         static let logoPadding: CGFloat = 5
         static let gaugeLogoPadding: CGFloat = 6
+        /// Inset for an icon shown inside a circular gauge, so it doesn't touch the ring.
+        static let circularIconGaugePadding: CGFloat = 8
         static let assistIconPadding: CGFloat = 8
         static let rectangularLogoSize: CGFloat = 18
         static let rectangularSpacing: CGFloat = 6

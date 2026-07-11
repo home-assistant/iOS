@@ -24,6 +24,10 @@ public enum GRDBDatabaseTable: String {
     case allowedTags
     case kioskSettings
     case notificationSnoozeAction
+    // Legacy (ClockKit-era) watch complications, migrated off Realm.
+    case watchComplication
+    // Modern watch complications built from an entity or a custom template; rendered by the watch.
+    case watchComplicationConfig
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -184,6 +188,44 @@ public enum DatabaseTables {
 
     public enum AllowedTag: String, CaseIterable {
         case tag
+    }
+
+    // Legacy (ClockKit-era) watch complication. Column names match `WatchComplication`'s CodingKeys.
+    public enum WatchComplication: String, CaseIterable {
+        case identifier
+        case serverIdentifier
+        case rawFamily
+        case rawTemplate
+        case complicationData
+        case createdAt
+        case name
+        case isPublic
+    }
+
+    // Modern watch complication config. Column names match `WatchComplicationConfig`'s CodingKeys.
+    public enum WatchComplicationConfig: String, CaseIterable {
+        case id
+        case serverId
+        case widgetFamily
+        case kind
+        case name
+        case entityId
+        case entityDisplayName
+        case iconName
+        case iconColor
+        case gaugeAttribute
+        case valueAttribute
+        case valuePrecision
+        case unitOverride
+        case gaugeMin
+        case gaugeMax
+        case showValue
+        case showUnit
+        case showWhenInactive
+        case customTextTemplate
+        case customGaugeTemplate
+        case sortOrder
+        case families
     }
 
     // Default notification quick actions (e.g. snooze presets)

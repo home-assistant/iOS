@@ -95,6 +95,18 @@ public final class WatchConnectivityManager: NSObject {
 
     func notifyState() { state.notify(sessionState) }
     func notifyReachability() { reachability.notify(currentReachability) }
+
+    /// Re-read and re-broadcast the current session + reachability state to all observers.
+    ///
+    /// watchOS does not reliably emit `sessionReachabilityDidChange` across a suspend→resume, so a
+    /// watch app returning to the foreground can be left observing a stale `isReachable` (typically a
+    /// false "unreachable") until the app is restarted. Calling this on foreground re-reads the live
+    /// value from `WCSession` and pushes it out, so the UI recovers without a restart.
+    public func refreshConnectivityState() {
+        notifyState()
+        notifyReachability()
+    }
+
     #if os(iOS)
     func notifyWatchState() { watchState.notify(currentWatchState) }
     #endif

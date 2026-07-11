@@ -90,4 +90,10 @@ public extension WatchCodable {
             return nil
         }
     }
+
+    /// Throwing variant so callers can surface *why* a decode failed (e.g. to the watch client-event
+    /// log) instead of only seeing a `nil`.
+    static func decodeForWatchThrowing(_ data: Data) throws -> Self {
+        try PropertyListDecoder().decode(Self.self, from: data)
+    }
 }

@@ -1,145 +1,103 @@
 import Foundation
+import GRDB
 import PromiseKit
-import RealmSwift
 @testable import Shared
 import XCTest
 
 class WebhookResponseUpdateComplicationsTests: XCTestCase {
     private var api: FakeHomeAssistantAPI!
     private var webhookManager: FakeWebhookManager!
-    private var realm: Realm!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-
-        let executionIdentifier = UUID().uuidString
-
-        realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
-        Current.realm = { self.realm }
 
         api = FakeHomeAssistantAPI(server: .fake())
         webhookManager = FakeWebhookManager()
         Current.webhooks = webhookManager
 
-        FakeWatchComplication.rawRenderedUpdates = [:]
+        // WatchComplication is now a GRDB record; start each test with a clean table.
+        try Current.database().write { db in
+            try WatchComplication.deleteAll(db)
+        }
     }
 
     override func tearDown() {
         api = nil
         webhookManager = nil
-        realm = nil
+        try? Current.database().write { db in
+            try WatchComplication.deleteAll(db)
+        }
+        super.tearDown()
+    }
+
+    /// Builds a complication whose `ExtraLargeColumnsText` text areas hold the given templates. Only
+    /// values containing a Jinja template are surfaced by `rawRendered()`, keyed as `textArea,<slug>`.
+    private func makeComplication(
+        identifier: String,
+        serverIdentifier: String,
+        textAreas: [String: String]
+    ) -> WatchComplication {
+        var complication = WatchComplication(
+            identifier: identifier,
+            serverIdentifier: serverIdentifier,
+            family: .extraLarge,
+            template: .ExtraLargeColumnsText
+        )
+        var areas: [String: [String: Any]] = [:]
+        for (slug, text) in textAreas {
+            areas[slug] = ["text": text, "color": "#ffffffff"]
+        }
+        complication.Data = ["textAreas": areas]
+        return complication
     }
 
     func testNoComplicationGivesNoRequest() {
-        XCTAssertNil(WebhookResponseUpdateComplications.request(for: .init()))
+        XCTAssertNil(WebhookResponseUpdateComplications.request(for: [WatchComplication]()))
     }
 
-    func testComplicationsWithoutPreRendered() {
-        let complications = Set([
-            FakeWatchComplication(),
-            FakeWatchComplication(),
-            FakeWatchComplication(),
-        ])
-
+    func testComplicationsWithoutTemplatesGiveNoRequest() {
+        let complications = [
+            makeComplication(identifier: "c1", serverIdentifier: "s", textAreas: ["Row1Column1": "static"]),
+            makeComplication(identifier: "c2", serverIdentifier: "s", textAreas: ["Row1Column1": "also static"]),
+        ]
         XCTAssertNil(WebhookResponseUpdateComplications.request(for: complications))
     }
 
-    func testComplicationsWithPreRendered() {
+    func testComplicationsWithTemplatesProduceRequest() {
         let complications = [
-            with(FakeWatchComplication()) {
-                $0.identifier = "c1"
-                $0.serverIdentifier = api.server.identifier.rawValue
-                $0.Template = .ExtraLargeColumnsText
-                $0.resultRawRendered = [
-                    "fwc1k1": "fwc1v1",
-                    "fwc1k2": "fwc1v2",
-                ]
-            },
-            with(FakeWatchComplication()) {
-                $0.identifier = "c2"
-                $0.serverIdentifier = api.server.identifier.rawValue
-                $0.Template = .CircularSmallRingText
-                $0.resultRawRendered = [:]
-            },
-            with(FakeWatchComplication()) {
-                $0.identifier = "c3"
-                $0.serverIdentifier = api.server.identifier.rawValue
-                $0.Template = .GraphicBezelCircularText
-                $0.resultRawRendered = [
-                    "fwc3k1": "fwc3v1",
-                ]
-            },
-            with(FakeWatchComplication()) {
-                $0.identifier = "bad1"
-                $0.serverIdentifier = UUID().uuidString
-                $0.Template = .ExtraLargeColumnsText
-            },
+            makeComplication(
+                identifier: "c1",
+                serverIdentifier: api.server.identifier.rawValue,
+                textAreas: ["Row1Column1": "{{ states('sensor.one') }}"]
+            ),
+            makeComplication(
+                identifier: "c2",
+                serverIdentifier: api.server.identifier.rawValue,
+                textAreas: ["Row1Column1": "static"]
+            ),
         ]
 
-        let request = WebhookResponseUpdateComplications.request(for: Set(complications))
+        let request = WebhookResponseUpdateComplications.request(for: complications)
         XCTAssertEqual(request?.type, "render_template")
 
         let expected: [String: [String: String]] = [
-            "c1|fwc1k1": [
-                "template": "fwc1v1",
-            ],
-            "c1|fwc1k2": [
-                "template": "fwc1v2",
-            ],
-            "c3|fwc3k1": [
-                "template": "fwc3v1",
-            ],
+            "c1|textArea,Row1Column1": ["template": "{{ states('sensor.one') }}"],
         ]
-
         XCTAssertEqual(request?.data as? [String: [String: String]], expected)
     }
 
-    func testResponseUpdatesComplication() throws {
-        let complications = [
-            with(FakeWatchComplication()) {
-                $0.identifier = "c1"
-                $0.serverIdentifier = api.server.identifier.rawValue
-                $0.Template = .ExtraLargeColumnsText
-                $0.Family = .extraLarge
-                $0.resultRawRendered = [
-                    "fwc1k1": "fwc1v1",
-                    "fwc1k2": "fwc1v2",
-                ]
-            },
-            with(FakeWatchComplication()) {
-                $0.identifier = "c2"
-                $0.serverIdentifier = api.server.identifier.rawValue
-                $0.Template = .CircularSmallRingText
-                $0.Family = .circularSmall
-                $0.resultRawRendered = [:]
-            },
-            with(FakeWatchComplication()) {
-                $0.identifier = "c3"
-                $0.serverIdentifier = api.server.identifier.rawValue
-                $0.Template = .GraphicBezelCircularText
-                $0.Family = .graphicBezel
-                $0.resultRawRendered = [
-                    "fwc3k1": "fwc3v1",
-                ]
-            },
-            with(FakeWatchComplication()) {
-                $0.identifier = "bad1"
-                $0.serverIdentifier = UUID().uuidString
-                $0.Template = .ExtraLargeColumnsText
-            },
-        ]
-        try realm.write {
-            realm.add(complications)
-        }
+    func testResponseUpdatesComplicationInDatabase() throws {
+        let complication = makeComplication(
+            identifier: "c1",
+            serverIdentifier: api.server.identifier.rawValue,
+            textAreas: ["Row1Column1": "{{ states('sensor.one') }}"]
+        )
+        try complication.save()
 
-        var handler = WebhookResponseUpdateComplications(api: api)
-        handler.watchComplicationClass = FakeWatchComplication.self
-
-        let request = WebhookResponseUpdateComplications.request(for: Set(complications))!
+        let handler = WebhookResponseUpdateComplications(api: api)
+        let request = WebhookResponseUpdateComplications.request(for: [complication])!
         let result: [String: Any] = [
-            "c1|fwc1k1": "rendered_fwc1v1",
-            "c1|fwc1k2": "rendered_fwc1v2",
-            "c3|fwc3k1": 3,
+            "c1|textArea,Row1Column1": "rendered_value",
         ]
 
         let expectation = expectation(description: "result")
@@ -149,40 +107,12 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 30)
 
-        let complication0Updates = FakeWatchComplication.rawRenderedUpdates["c1"]
-        let complication2Updates = FakeWatchComplication.rawRenderedUpdates["c3"]
-
-        XCTAssertEqual(
-            complication0Updates?["fwc1k1"] as? String,
-            "rendered_fwc1v1"
-        )
-
-        XCTAssertEqual(
-            complication0Updates?["fwc1k2"] as? String,
-            "rendered_fwc1v2"
-        )
-
-        XCTAssertEqual(
-            complication2Updates?["fwc3k1"] as? Int,
-            3
-        )
-
-        XCTAssertNil(FakeWatchComplication.rawRenderedUpdates["bad1"])
+        let stored = try Current.database().read { db in
+            try WatchComplication.fetchOne(db, key: "c1")
+        }
+        let rendered = stored?.renderedValues()
+        XCTAssertEqual(rendered?[.textArea("Row1Column1")] as? String, "rendered_value")
     }
 }
 
 private class FakeHomeAssistantAPI: HomeAssistantAPI {}
-
-class FakeWatchComplication: WatchComplication {
-    var resultRawRendered: [String: String] = [:]
-
-    override func rawRendered() -> [String: String] {
-        resultRawRendered
-    }
-
-    static var rawRenderedUpdates: [String: [String: Any]] = [:]
-
-    override func updateRawRendered(from response: [String: Any]) {
-        Self.rawRenderedUpdates[identifier] = response
-    }
-}
