@@ -84,7 +84,7 @@ struct HomeAssistantView: View, WebFrontendView {
             contentOpacity = opacity
             return
         }
-        withAnimation(DesignSystem.Animation.easeInOutSlow) {
+        withAnimation(DesignSystem.Animation.easeInOutSlower) {
             contentOpacity = opacity
         }
     }
