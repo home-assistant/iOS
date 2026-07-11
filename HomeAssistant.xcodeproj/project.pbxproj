@@ -657,6 +657,7 @@
 		425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */; };
 		425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */; };
 		425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.test.swift */; };
+		52386BFCFAFCBE783D0BCDD9 /* MacBrowserSceneLauncher.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BE2F311BDB2F205F7432FF /* MacBrowserSceneLauncher.test.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
 		4256A70D2F5ECBB3003D464F /* SpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */; };
@@ -1529,6 +1530,7 @@
 		DE51600000000000000000B2 /* HADesignSystemExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE51600000000000000000B1 /* HADesignSystemExports.swift */; };
 		DE51600000000000000000B3 /* HADesignSystemExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE51600000000000000000B1 /* HADesignSystemExports.swift */; };
 		DE8048842D9FB6C90459E229 /* QuickActionWindowSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */; };
+		1A693E34211ADFAB76155607 /* MacBrowserSceneLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730D7B17F8A2B19BCA181F91 /* MacBrowserSceneLauncher.swift */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */; };
 		E8EEF4E584B6F9F24A3F24C8 /* WatchConnectivityAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */; };
@@ -2174,6 +2176,7 @@
 		14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationEngine.test.swift; sourceTree = "<group>"; };
 		1945E8E386664E5A88668E77 /* WebViewController+ReAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+ReAuth.swift"; sourceTree = "<group>"; };
 		1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionWindowSceneDelegate.swift; sourceTree = "<group>"; };
+		730D7B17F8A2B19BCA181F91 /* MacBrowserSceneLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBrowserSceneLauncher.swift; sourceTree = "<group>"; };
 		1CCF41D72CA895DB501333EF /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
 		212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationModels.swift; sourceTree = "<group>"; };
 		28B40938BEB944969AAB2895 /* CarPlayPreferredServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPreferredServer.swift; sourceTree = "<group>"; };
@@ -2367,6 +2370,7 @@
 		425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayDomainsListTemplate+Build.swift"; sourceTree = "<group>"; };
 		425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListViewModel.swift; sourceTree = "<group>"; };
 		425573D92B57DDE000145217 /* WindowScenesManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.test.swift; sourceTree = "<group>"; };
+		26BE2F311BDB2F205F7432FF /* MacBrowserSceneLauncher.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBrowserSceneLauncher.test.swift; sourceTree = "<group>"; };
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
@@ -4171,6 +4175,7 @@
 				118261F424F8C7C1000795C6 /* SceneManager.swift */,
 				FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */,
 				1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */,
+				730D7B17F8A2B19BCA181F91 /* MacBrowserSceneLauncher.swift */,
 				42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */,
 				42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */,
 			);
@@ -4282,6 +4287,7 @@
 			isa = PBXGroup;
 			children = (
 				425573D92B57DDE000145217 /* WindowScenesManager.test.swift */,
+				26BE2F311BDB2F205F7432FF /* MacBrowserSceneLauncher.test.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -8472,6 +8478,7 @@
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
 				DE8048842D9FB6C90459E229 /* QuickActionWindowSceneDelegate.swift in Sources */,
+				1A693E34211ADFAB76155607 /* MacBrowserSceneLauncher.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				42106F562F447C6B009351FC /* MTLSLabsLabel.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
@@ -8717,6 +8724,7 @@
 				42ACC2AF2E9FA1D60045A3FD /* DiscoveredHomeAssistant.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */,
+				52386BFCFAFCBE783D0BCDD9 /* MacBrowserSceneLauncher.test.swift in Sources */,
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				42E3B8C02D8ACE0400F5D084 /* OptionalsDefaultTests.swift in Sources */,
