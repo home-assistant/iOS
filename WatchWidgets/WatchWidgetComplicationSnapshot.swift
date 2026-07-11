@@ -30,10 +30,10 @@ struct WatchWidgetComplicationSnapshot: Codable {
 
     let id: String?
     let family: String
-    let title: String
+    var title: String
     let subtitle: String
-    let inlineText: String
-    let fraction: Double?
+    var inlineText: String
+    var fraction: Double?
     let tint: String?
     let iconData: Data?
     let perFamily: [String: PerFamily]?

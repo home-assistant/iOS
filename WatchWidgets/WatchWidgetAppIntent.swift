@@ -39,7 +39,11 @@ struct WatchWidgetAppIntentProvider: AppIntentTimelineProvider {
         for configuration: WatchWidgetConfigurationIntent,
         in context: Context
     ) async -> Timeline<WatchWidgetEntry> {
-        Timeline(
+        // Fetch live values directly from Home Assistant on the widget's own refresh budget, so
+        // complications stay fresh without the WatchApp being woken. Best-effort: on failure the
+        // entry is built from the last stored snapshot.
+        await WatchWidgetLiveFetch.refresh(configuredID: configuration.complication?.id)
+        return Timeline(
             entries: [entry(for: configuration, in: context)],
             policy: .after(Date().addingTimeInterval(WatchWidgetConstants.timelineRefreshInterval))
         )
