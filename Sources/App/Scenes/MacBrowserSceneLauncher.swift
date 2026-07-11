@@ -13,7 +13,7 @@ import Shared
 enum MacBrowserSceneLauncher {
     /// Whether the initial (cold-launch) `"WebView"` scene connection has already been observed this process.
     /// Reset only implicitly, by the process being relaunched.
-    static var didHandleInitialSceneConnection = false
+    private(set) static var didHandleInitialSceneConnection = false
 
     /// Records that a `"WebView"` scene has connected and reports whether this was the first connection of the
     /// process (i.e. the user's cold launch). Subsequent calls return `false`.
@@ -40,4 +40,10 @@ enum MacBrowserSceneLauncher {
         }
         return SceneConnectionActions(opensBrowser: isInitialConnection, destroysEmptyWindow: true)
     }
+
+    #if DEBUG
+    static func resetInitialSceneConnectionForTesting() {
+        didHandleInitialSceneConnection = false
+    }
+    #endif
 }

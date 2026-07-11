@@ -3,20 +3,18 @@
 import XCTest
 
 final class MacBrowserSceneLauncherTests: XCTestCase {
-    private var originalIsCatalyst: Bool!
-    private var originalMacNativeFeaturesOnly: Bool!
+    private let originalIsCatalyst = Current.isCatalyst
+    private let originalMacNativeFeaturesOnly = Current.settingsStore.macNativeFeaturesOnly
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        originalIsCatalyst = Current.isCatalyst
-        originalMacNativeFeaturesOnly = Current.settingsStore.macNativeFeaturesOnly
-        MacBrowserSceneLauncher.didHandleInitialSceneConnection = false
+        MacBrowserSceneLauncher.resetInitialSceneConnectionForTesting()
     }
 
     override func tearDownWithError() throws {
         Current.isCatalyst = originalIsCatalyst
         Current.settingsStore.macNativeFeaturesOnly = originalMacNativeFeaturesOnly
-        MacBrowserSceneLauncher.didHandleInitialSceneConnection = false
+        MacBrowserSceneLauncher.resetInitialSceneConnectionForTesting()
         try super.tearDownWithError()
     }
 
