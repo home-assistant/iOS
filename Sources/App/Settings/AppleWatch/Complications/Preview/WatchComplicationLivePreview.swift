@@ -61,6 +61,65 @@ extension ComplicationPreviewContext {
 }
 #endif
 
+extension ComplicationPreviewContext {
+    /// Build a context for `family` from already-fetched entity data. Centralizes the value / unit /
+    /// fraction / icon resolution so the single-family and all-families previews render identically off
+    /// one fetch.
+    static func entity(
+        config: WatchComplicationConfig,
+        family: WatchComplicationConfig.Family,
+        state: String,
+        attributes: [String: Any]
+    ) -> ComplicationPreviewContext {
+        var familyConfig = config
+        familyConfig.widgetFamily = family
+
+        // Value is shared across families: the chosen attribute (or the state), formatted with the
+        // resolved unit + precision.
+        let raw = config.valueAttribute.flatMap { attributes[$0] }.map { String(describing: $0) } ?? state
+        let resolvedUnit: String? = {
+            if let attribute = config.valueAttribute {
+                return WatchComplicationConfig.attributeUnit(
+                    attribute: attribute,
+                    attributes: attributes,
+                    domain: config.entityId?.components(separatedBy: ".").first
+                )
+            }
+            return attributes["unit_of_measurement"] as? String
+        }()
+        let unit: String? = {
+            guard config.showsUnit() else { return nil }
+            if let override = config.unitOverride, !override.isEmpty { return override }
+            return resolvedUnit
+        }()
+        let precision = config.valuePrecision ?? config.entityId.flatMap {
+            EntityRegistryListForDisplay.Entity.displayPrecision(serverId: config.serverId, entityId: $0)
+        }
+        let value = state.isEmpty ? "" : WatchComplicationLivePreview.formatValue(raw, unit: unit, precision: precision)
+
+        // Fraction depends on the family's gauge range.
+        var fraction: Double?
+        if let range = familyConfig.gaugeRange(for: family) {
+            let source: Any = familyConfig.gaugeAttribute(for: family).flatMap { attributes[$0] }
+                ?? config.valueAttribute.flatMap { attributes[$0] }
+                ?? state
+            if let rawNumber = WatchComplication.percentileNumber(from: source), range.max > range.min {
+                fraction = min(max((Double(rawNumber) - range.min) / (range.max - range.min), 0), 1)
+            }
+        }
+
+        // Icon is gated by the family's "show icon" toggle.
+        var iconImage: Image?
+        if familyConfig.showsIcon(for: family), let iconName = config.iconName {
+            let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
+            iconImage = Image(uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
+                .image(ofSize: CGSize(width: 64, height: 64), color: color))
+        }
+
+        return ComplicationPreviewContext(config: familyConfig, value: value, fraction: fraction, iconImage: iconImage)
+    }
+}
+
 /// A live approximation of the watch complication, rendered on iPhone with current data so the user
 /// sees the real result before saving. Entity complications fetch their value over the plain REST
 /// states API (no admin-only templating); only the custom-template kind renders templates.
@@ -198,7 +257,12 @@ struct WatchComplicationLivePreview: View {
     }
 
     private var context: ComplicationPreviewContext {
-        ComplicationPreviewContext(config: config, value: value, fraction: fraction, iconImage: iconImage)
+        switch config.kind {
+        case .entity:
+            return .entity(config: config, family: config.widgetFamily, state: entityState, attributes: entityAttributes)
+        case .customTemplate:
+            return ComplicationPreviewContext(config: config, value: value, fraction: fraction, iconImage: iconImage)
+        }
     }
 
     var body: some View {
@@ -280,12 +344,12 @@ struct WatchComplicationLivePreview: View {
 
     // MARK: - REST helpers (plain states API — no admin-only templating)
 
-    private struct EntityState {
+    struct EntityState {
         let state: String
         let attributes: [String: Any]
     }
 
-    private static func fetchState(entityId: String, server: Server) async -> EntityState? {
+    static func fetchState(entityId: String, server: Server) async -> EntityState? {
         guard let baseURL = await server.activeURL() else { return nil }
         guard let token = await bearerToken(for: server) else { return nil }
         var request = URLRequest(url: baseURL.appendingPathComponent("api/states/\(entityId)"))
@@ -302,7 +366,7 @@ struct WatchComplicationLivePreview: View {
         return EntityState(state: state, attributes: json["attributes"] as? [String: Any] ?? [:])
     }
 
-    private static func bearerToken(for server: Server) async -> String? {
+    static func bearerToken(for server: Server) async -> String? {
         let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
         return try? await withCheckedThrowingContinuation { continuation in
             tokenManager.bearerToken.done { token, _ in
@@ -313,7 +377,7 @@ struct WatchComplicationLivePreview: View {
         }
     }
 
-    private static func formatValue(_ state: String, unit: String?, precision: Int?) -> String {
+    static func formatValue(_ state: String, unit: String?, precision: Int?) -> String {
         var text = state
         if let precision, let number = Double(state) {
             let formatter = NumberFormatter()

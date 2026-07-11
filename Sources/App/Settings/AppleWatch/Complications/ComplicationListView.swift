@@ -317,12 +317,23 @@ struct WatchComplicationBuilderEditView: View {
     /// The selected entity's attribute names, reported by the live preview, offered as value sources.
     @State private var entityAttributeKeys: [String] = []
     @State private var showEntityPicker = false
+    /// Progressive disclosure: the per-size option toggles are hidden behind "Customize" so the initial
+    /// screen (name + source) stays simple for the average user.
+    @State private var isCustomizing: Bool
+    /// Nested opt-in under "Customize": reveals the color pickers.
+    @State private var useCustomColors: Bool
     private let isNew: Bool
 
     init(existing: WatchComplicationConfig?) {
         self.isNew = existing == nil
         let serverId = Current.servers.all.first?.identifier.rawValue ?? ""
-        _config = State(initialValue: existing ?? WatchComplicationConfig(serverId: serverId))
+        let initial = existing ?? WatchComplicationConfig(serverId: serverId)
+        _config = State(initialValue: initial)
+        // Start expanded only when the config already carries per-size customization, so editing a
+        // previously-customized complication doesn't hide the user's settings.
+        _isCustomizing = State(initialValue: initial.families?.isEmpty == false)
+        _useCustomColors = State(initialValue: initial.iconColor != nil
+            || (initial.families?.values.contains { $0.tint != nil || $0.textColor != nil } ?? false))
     }
 
     private var server: Server? {
@@ -504,23 +515,17 @@ struct WatchComplicationBuilderEditView: View {
         Form {
             if let server {
                 Section {
-                    WatchComplicationLivePreview(config: config, server: server) { unit in
-                        entityUnit = unit
-                    } onAttributes: { keys in
-                        entityAttributeKeys = keys
-                    }
-                    .frame(maxWidth: .infinity)
-                    .listRowBackground(Color(uiColor: .systemBackground))
+                    AllFamiliesComplicationPreview(
+                        config: config,
+                        server: server,
+                        selectedFamily: $config.widgetFamily,
+                        onUnit: { entityUnit = $0 },
+                        onAttributes: { entityAttributeKeys = $0 }
+                    )
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
                     .listRowSeparator(.hidden)
-                    Picker(selection: $config.widgetFamily) {
-                        ForEach(WatchComplicationConfig.Family.allCases) { family in
-                            Text(verbatim: family.title).tag(family)
-                        }
-                    } label: {
-                        Text(L10n.Watch.Complications.Builder.previewSize)
-                    }
-                    .pickerStyle(.segmented)
-                    .listRowSeparator(.hidden)
+                    .padding(.vertical, DesignSystem.Spaces.one)
                 } header: {
                     Text(L10n.Watch.Complications.Builder.preview)
                 } footer: {
@@ -652,7 +657,16 @@ struct WatchComplicationBuilderEditView: View {
                 }
             }
 
-            // Per-size display options, bound to the size currently selected in the header picker.
+            // Progressive disclosure: keep the initial screen simple (name + source). Everything below
+            // is opt-in behind "Customize", so the average user isn't faced with a crowded form.
+            Section {
+                Toggle(isOn: $isCustomizing.animation()) { Text(verbatim: "Customize") }
+            } footer: {
+                Text(verbatim: "Customize how each size shows its name, value, gauge, and colors.")
+            }
+
+            if isCustomizing {
+            // Per-size display options, bound to the size selected in the preview above.
             Section {
                 Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
                 Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
@@ -710,38 +724,33 @@ struct WatchComplicationBuilderEditView: View {
                 Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
             }
 
-            // Colors for the selected size. Inline is rendered in the watch-face tint, so it has none.
+            // Colors are a further opt-in under Customize. Inline is rendered in the watch-face tint,
+            // so it has no custom colors.
             if currentFamily != .inline {
                 Section {
-                    if familyHasProgressBar, config.showsGauge(for: currentFamily) {
-                        ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
-                    }
-                    if config.showsIcon(for: currentFamily) {
+                    Toggle(isOn: $useCustomColors.animation()) { Text(verbatim: "Custom colors") }
+                    if useCustomColors {
+                        if familyHasProgressBar, config.showsGauge(for: currentFamily) {
+                            ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
+                        }
+                        if config.showsIcon(for: currentFamily) {
+                            ColorPicker(
+                                L10n.Watch.Complications.Builder.iconColor,
+                                selection: iconColorBinding,
+                                supportsOpacity: false
+                            )
+                        }
                         ColorPicker(
-                            L10n.Watch.Complications.Builder.iconColor,
-                            selection: iconColorBinding,
+                            L10n.Watch.Complications.Builder.textColor,
+                            selection: textColorBinding,
                             supportsOpacity: false
                         )
                     }
-                    ColorPicker(
-                        L10n.Watch.Complications.Builder.textColor,
-                        selection: textColorBinding,
-                        supportsOpacity: false
-                    )
                 } header: {
                     Text(L10n.Watch.Complications.Builder.colors)
                 }
             }
-
-            // Mirror of the top preview so the result is visible from the bottom of the form too.
-            if let server {
-                Section {
-                    WatchComplicationLivePreview(config: config, server: server)
-                        .frame(maxWidth: .infinity)
-                        .listRowBackground(Color(uiColor: .systemBackground))
-                        .listRowSeparator(.hidden)
-                }
-            }
+            } // end if isCustomizing
         }
         .navigationTitle(Text(
             isNew ? L10n.Watch.Complications.Builder.newTitle : L10n.Watch.Complications.Builder
@@ -857,6 +866,10 @@ struct WatchComplicationBuilderEditView: View {
     }
 }
 
-#Preview {
+#Preview("Complications root") {
     NavigationView { ComplicationsRootView() }
+}
+
+#Preview("Complication builder") {
+    NavigationView { WatchComplicationBuilderEditView(existing: nil) }
 }
