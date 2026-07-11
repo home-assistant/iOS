@@ -110,7 +110,8 @@ public class AppEnvironment {
     }
 
     public var database: () -> DatabaseQueue = {
-        .appDatabase
+        NotificationCenter.default.post(name: Database.resumeNotification, object: nil)
+        return .appDatabase
     }
 
     public var watchConfig: () throws -> WatchConfig? = {
