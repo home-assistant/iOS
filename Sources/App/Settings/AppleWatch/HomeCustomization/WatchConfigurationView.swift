@@ -37,7 +37,6 @@ struct WatchConfigurationView: View {
                 title: L10n.Watch.Configuration.Header.title,
                 subtitle: L10n.Watch.Configuration.Header.subtitle
             )
-            .listRowBackground(Color.clear)
             .onAppear {
                 // Prevent trigger when popping nav controller
                 guard !isLoaded else { return }
