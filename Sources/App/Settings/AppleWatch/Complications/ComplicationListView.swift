@@ -74,7 +74,7 @@ struct ComplicationsRootView: View {
                 dismissButton: .default(Text(L10n.okLabel))
             )
         }
-        .navigationTitle(Text(verbatim: " "))
+        .navigationTitle(Text(verbatim: ""))
         .onAppear(perform: load)
         .onReceive(NotificationCenter.default.publisher(for: WatchComplicationConfig.didChangeNotification)) { _ in
             load()
@@ -660,9 +660,9 @@ struct WatchComplicationBuilderEditView: View {
             // Progressive disclosure: keep the initial screen simple (name + source). Everything below
             // is opt-in behind "Customize", so the average user isn't faced with a crowded form.
             Section {
-                Toggle(isOn: $isCustomizing.animation()) { Text(verbatim: "Customize") }
+                Toggle(isOn: $isCustomizing.animation()) { Text(L10n.Watch.Complications.Builder.customize) }
             } footer: {
-                Text(verbatim: "Customize how each size shows its name, value, gauge, and colors.")
+                Text(L10n.Watch.Complications.Builder.customizeFooter)
             }
 
             if isCustomizing {
@@ -728,7 +728,7 @@ struct WatchComplicationBuilderEditView: View {
             // so it has no custom colors.
             if currentFamily != .inline {
                 Section {
-                    Toggle(isOn: $useCustomColors.animation()) { Text(verbatim: "Custom colors") }
+                    Toggle(isOn: $useCustomColors.animation()) { Text(L10n.Watch.Complications.Builder.customColors) }
                     if useCustomColors {
                         if familyHasProgressBar, config.showsGauge(for: currentFamily) {
                             ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)

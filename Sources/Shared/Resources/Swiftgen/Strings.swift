@@ -5327,6 +5327,12 @@ public enum L10n {
         public static var color: String { return L10n.tr("Localizable", "watch.complications.builder.color") }
         /// Colors
         public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
+        /// Custom colors
+        public static var customColors: String { return L10n.tr("Localizable", "watch.complications.builder.custom_colors") }
+        /// Customize
+        public static var customize: String { return L10n.tr("Localizable", "watch.complications.builder.customize") }
+        /// Customize how each size shows its name, value, gauge, and colors.
+        public static var customizeFooter: String { return L10n.tr("Localizable", "watch.complications.builder.customize_footer") }
         /// Display name
         public static var displayName: String { return L10n.tr("Localizable", "watch.complications.builder.display_name") }
         /// Edit complication
