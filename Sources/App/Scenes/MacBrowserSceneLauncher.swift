@@ -3,13 +3,13 @@ import Shared
 /// Gates the Mac "Open Home Assistant UI in browser" (`macNativeFeaturesOnly`) auto-launch that runs when a
 /// `"WebView"` scene connects (see `QuickActionWindowSceneDelegate`).
 ///
-/// Only the *first* scene connection of the process — the user's cold launch — should open Home Assistant in
-/// the browser and destroy the otherwise-empty window. macOS reconnects this scene in the background throughout
-/// the app's lifetime (for state restoration and other background work), and every reconnection used to run the
-/// browser auto-launch, so the dashboard reopened every few minutes even though the user never asked for it
-/// (#4985). Later, genuinely user-initiated opens while the app is already running are handled elsewhere — the
-/// Dock reopen handler and the status-item menu both go through `StatusItemPrimaryAction.openInBrowserIfNeeded()`
-/// — so this scene-connection path only ever needs to cover the cold launch.
+/// The empty webview window is destroyed on every `"WebView"` scene connection — under `macNativeFeaturesOnly`
+/// there is never an in-app window — but Home Assistant is opened in the browser only on the *first* connection
+/// of the process, the user's cold launch. macOS reconnects this scene in the background throughout the app's
+/// lifetime (for state restoration and other background work), and every reconnection used to reopen the
+/// browser, so the dashboard reappeared every few minutes even though the user never asked for it (#4985).
+/// Later, genuinely user-initiated opens while the app is already running are handled elsewhere — the Dock
+/// reopen handler and the status-item menu both go through `StatusItemPrimaryAction.openInBrowserIfNeeded()`.
 enum MacBrowserSceneLauncher {
     /// Whether the initial (cold-launch) `"WebView"` scene connection has already been observed this process.
     /// Reset only implicitly, by the process being relaunched.
@@ -27,5 +27,17 @@ enum MacBrowserSceneLauncher {
     /// Whether the "Open Home Assistant UI in browser" behaviour applies on this platform/configuration.
     static var isBrowserLaunchEnabled: Bool {
         Current.isCatalyst && Current.settingsStore.macNativeFeaturesOnly
+    }
+
+    struct SceneConnectionActions {
+        let opensBrowser: Bool
+        let destroysEmptyWindow: Bool
+    }
+
+    static func actions(isInitialConnection: Bool) -> SceneConnectionActions {
+        guard isBrowserLaunchEnabled else {
+            return SceneConnectionActions(opensBrowser: false, destroysEmptyWindow: false)
+        }
+        return SceneConnectionActions(opensBrowser: isInitialConnection, destroysEmptyWindow: true)
     }
 }

@@ -49,4 +49,39 @@ final class MacBrowserSceneLauncherTests: XCTestCase {
         Current.settingsStore.macNativeFeaturesOnly = true
         XCTAssertFalse(MacBrowserSceneLauncher.isBrowserLaunchEnabled)
     }
+
+    func testActionsOnInitialConnectionOpenBrowserAndDestroyWindow() {
+        Current.isCatalyst = true
+        Current.settingsStore.macNativeFeaturesOnly = true
+        let actions = MacBrowserSceneLauncher.actions(isInitialConnection: true)
+        XCTAssertTrue(actions.opensBrowser)
+        XCTAssertTrue(actions.destroysEmptyWindow)
+    }
+
+    func testActionsOnReconnectionDestroyWindowWithoutReopeningBrowser() {
+        Current.isCatalyst = true
+        Current.settingsStore.macNativeFeaturesOnly = true
+        let actions = MacBrowserSceneLauncher.actions(isInitialConnection: false)
+        XCTAssertFalse(actions.opensBrowser)
+        XCTAssertTrue(actions.destroysEmptyWindow)
+    }
+
+    func testActionsAreNoOpWhenPreferenceOff() {
+        Current.isCatalyst = true
+        Current.settingsStore.macNativeFeaturesOnly = false
+        let initial = MacBrowserSceneLauncher.actions(isInitialConnection: true)
+        XCTAssertFalse(initial.opensBrowser)
+        XCTAssertFalse(initial.destroysEmptyWindow)
+        let reconnection = MacBrowserSceneLauncher.actions(isInitialConnection: false)
+        XCTAssertFalse(reconnection.opensBrowser)
+        XCTAssertFalse(reconnection.destroysEmptyWindow)
+    }
+
+    func testActionsAreNoOpWhenNotCatalyst() {
+        Current.isCatalyst = false
+        Current.settingsStore.macNativeFeaturesOnly = true
+        let actions = MacBrowserSceneLauncher.actions(isInitialConnection: true)
+        XCTAssertFalse(actions.opensBrowser)
+        XCTAssertFalse(actions.destroysEmptyWindow)
+    }
 }
