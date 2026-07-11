@@ -5,9 +5,8 @@ import ObjectMapper
 
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
-public enum ServerConnectionError: Error {
-    case noActiveURL(_ serverName: String)
-}
+// `ServerConnectionError` moved to the HANetworking package (also thrown by ConnectionInfo);
+// re-exported via the Shared umbrella so references resolve unchanged.
 
 public class AuthenticationAPI {
     public enum AuthenticationError: LocalizedError {

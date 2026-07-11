@@ -1199,8 +1199,6 @@
 		ADA8DA7ECE39D94C88C4AA2E /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A49D68C2121E4EF9253980 /* WatchConnectivityManager.swift */; };
 		B04052B547BCC2FA7B75F85B /* NotificationSnoozeActionTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31B4C3B146C0560BFDF64F2 /* NotificationSnoozeActionTable.swift */; };
 		B0B0B0B00000000000000011 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000010 /* ProgressHUD.swift */; };
-		B0B0B0B00000000000000021 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000020 /* Version.swift */; };
-		B0B0B0B00000000000000022 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000020 /* Version.swift */; };
 		B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000030 /* Color+Hex.test.swift */; };
 		B3FD7A16B24D03BE49029BB0 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 638EC9AD85B8C58C9C77DCC7 /* GRDB */; };
 		B56A9AFECBA6229C0AEEAB4B /* WatchConnectivityManager+Send.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6C0AF840114403CECD9CE2 /* WatchConnectivityManager+Send.swift */; };
@@ -2909,7 +2907,6 @@
 		AC730011000000000000AA01 /* AppIconShortcutConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutConfig.swift; sourceTree = "<group>"; };
 		AC730012000000000000AA01 /* AppIconShortcutConfigTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppIconShortcutConfigTable.swift; sourceTree = "<group>"; };
 		B0B0B0B00000000000000010 /* ProgressHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressHUD.swift; sourceTree = "<group>"; };
-		B0B0B0B00000000000000020 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		B0B0B0B00000000000000030 /* Color+Hex.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.test.swift"; sourceTree = "<group>"; };
 		B153E9DF0CE64E989B6185A9 /* CarPlayAddItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAddItemViewModel.swift; sourceTree = "<group>"; };
 		B58D524991C142DBB38A1968 /* HandlerLiveActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerLiveActivityTests.swift; sourceTree = "<group>"; };
@@ -6821,7 +6818,6 @@
 				42886D612FFE8BF1004EB33B /* PromiseKitURLSession.swift */,
 				B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */,
 				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
-				B0B0B0B00000000000000020 /* Version.swift */,
 				11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */,
 				11B7FD732493225200E60ED9 /* BackgroundTask.swift */,
 				1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */,
@@ -8850,7 +8846,6 @@
 				11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */,
 				426D9C752C9C60B000F278AF /* ControlEntityProvider.swift in Sources */,
 				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
-				B0B0B0B00000000000000021 /* Version.swift in Sources */,
 				11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */,
 				11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
 				11AF4D1D249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
@@ -9171,7 +9166,6 @@
 				11B38EE9275C54A200205C7B /* GetCameraImageIntentHandler.swift in Sources */,
 				426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */,
 				D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */,
-				B0B0B0B00000000000000022 /* Version.swift in Sources */,
 				113A8D49283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
