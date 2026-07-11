@@ -4,21 +4,8 @@ import CoreTelephony
 #endif
 import NetworkExtension
 
-/// A snapshot of the network information (Wi-Fi and interface details) available to the app.
-public struct NetworkState: Equatable {
-    /// The SSID of the Wi-Fi network the device is currently connected to, if any.
-    public var ssid: String?
-    /// The BSSID of the Wi-Fi network the device is currently connected to, if any.
-    public var bssid: String?
-    /// The hardware (MAC) address of the active network interface, if available (macOS only).
-    public var hardwareAddress: String?
-
-    public init(ssid: String? = nil, bssid: String? = nil, hardwareAddress: String? = nil) {
-        self.ssid = ssid
-        self.bssid = bssid
-        self.hardwareAddress = hardwareAddress
-    }
-}
+// `NetworkState` moved to the HANetworking package (ConnectionInfo evaluates it); re-exported via the
+// Shared umbrella so references here and across the app resolve unchanged.
 
 /// Wrapper around CoreTelephony, Reachability
 ///

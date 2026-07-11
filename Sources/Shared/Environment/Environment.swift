@@ -85,6 +85,24 @@ public class AppEnvironment {
     func setup() {
         _ = Current // just to make sure we don't crash for this case
 
+        // Point the HANetworking package's injected environment at the real `Current` services. The
+        // package can't import HACore (cycle), so it reads these through `HANetworkingEnvironment`.
+        HANetworkingEnvironment.current.log = .init(
+            error: { Current.Log.error($0) },
+            warning: { Current.Log.warning($0) },
+            info: { Current.Log.info($0) },
+            verbose: { Current.Log.verbose($0) },
+            debug: { Current.Log.debug($0) }
+        )
+        HANetworkingEnvironment.current.date = { Current.date() }
+        HANetworkingEnvironment.current.isCatalyst = Current.isCatalyst
+        HANetworkingEnvironment.current.isAppExtension = Current.isAppExtension
+        HANetworkingEnvironment.current.connectivity = .init(
+            refreshNetworkInformation: { await Current.connectivity.refreshNetworkInformation() },
+            currentNetworkState: { await Current.connectivity.currentNetworkState() },
+            lastKnownNetworkState: { Current.connectivity.lastKnownNetworkState() }
+        )
+
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
     }

@@ -87,7 +87,7 @@ public extension ServerManager {
 
 private extension Identifier where ObjectType == Server {
     var keychainKey: String { rawValue }
-    init(keychainKey: String) { rawValue = keychainKey }
+    init(keychainKey: String) { self.init(rawValue: keychainKey) }
 }
 
 private struct ServerCache {

@@ -214,7 +214,8 @@ public final class ClientCertificateManager {
             ]
             let updateStatus = SecItemUpdate(updateQuery as CFDictionary, updateAttrs as CFDictionary)
             if updateStatus != errSecSuccess {
-                Current.Log.error("Failed to update duplicate client certificate identity label: \(updateStatus)")
+                HANetworkingEnvironment.current.log
+                    .error("Failed to update duplicate client certificate identity label: \(updateStatus)")
                 throw ClientCertificateError.keychainError(updateStatus)
             }
             return
@@ -266,7 +267,7 @@ public final class ClientCertificateManager {
             return URLCredential(identity: identity, certificates: certChain, persistence: .forSession)
         }
 
-        Current.Log
+        HANetworkingEnvironment.current.log
             .warning(
                 "Failed to copy client certificate from identity (SecIdentityCopyCertificate status: \(leafStatus)); falling back to identity-only credential"
             )
@@ -297,7 +298,7 @@ public final class ClientCertificateManager {
             format: .binary,
             options: 0
         ) else {
-            Current.Log.warning("Failed to serialize intermediate certificate chain")
+            HANetworkingEnvironment.current.log.warning("Failed to serialize intermediate certificate chain")
             return
         }
 
@@ -310,7 +311,8 @@ public final class ClientCertificateManager {
         ]
         let status = SecItemAdd(addQuery as CFDictionary, nil)
         if status != errSecSuccess {
-            Current.Log.warning("Failed to store intermediate certificate chain in keychain: \(status)")
+            HANetworkingEnvironment.current.log
+                .warning("Failed to store intermediate certificate chain in keychain: \(status)")
         }
     }
 
@@ -352,7 +354,7 @@ public final class ClientCertificateManager {
         deleteTransferMaterial(for: item.keychainIdentifier)
 
         guard let serialized = try? JSONEncoder().encode(item) else {
-            Current.Log.warning("Failed to serialize client certificate transfer material")
+            HANetworkingEnvironment.current.log.warning("Failed to serialize client certificate transfer material")
             return
         }
 
@@ -365,7 +367,8 @@ public final class ClientCertificateManager {
         ]
         let status = SecItemAdd(addQuery as CFDictionary, nil)
         if status != errSecSuccess {
-            Current.Log.warning("Failed to store client certificate transfer material: \(status)")
+            HANetworkingEnvironment.current.log
+                .warning("Failed to store client certificate transfer material: \(status)")
         }
     }
 
@@ -414,7 +417,7 @@ public final class ClientCertificateManager {
     @discardableResult
     public func importTransferPayload(_ data: Data) -> [String] {
         guard let items = try? JSONDecoder().decode([ClientCertificateTransferItem].self, from: data) else {
-            Current.Log.error("[mTLS] Failed to decode client certificate transfer payload")
+            HANetworkingEnvironment.current.log.error("[mTLS] Failed to decode client certificate transfer payload")
             return []
         }
 
@@ -423,9 +426,11 @@ public final class ClientCertificateManager {
             do {
                 let certificate = try importTransferMaterial(item)
                 imported.append(certificate.keychainIdentifier)
-                Current.Log.info("[mTLS] Imported client certificate into local Keychain: \(certificate.displayName)")
+                HANetworkingEnvironment.current.log
+                    .info("[mTLS] Imported client certificate into local Keychain: \(certificate.displayName)")
             } catch {
-                Current.Log.error("[mTLS] Failed to import client certificate into local Keychain: \(error)")
+                HANetworkingEnvironment.current.log
+                    .error("[mTLS] Failed to import client certificate into local Keychain: \(error)")
             }
         }
         return imported
@@ -474,7 +479,7 @@ public extension ClientCertificateManager {
             let credential = try urlCredential(for: certificate)
             return (.useCredential, credential)
         } catch {
-            Current.Log.error("Failed to get credential for client certificate: \(error)")
+            HANetworkingEnvironment.current.log.error("Failed to get credential for client certificate: \(error)")
             return (.cancelAuthenticationChallenge, nil)
         }
     }

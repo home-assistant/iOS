@@ -597,7 +597,11 @@ enum WatchWidgetComplicationSnapshotStore {
             return
         }
         defaults.set(data, forKey: defaultsKey)
-        WidgetCenter.shared.reloadTimelines(ofKind: kind)
+        // Reload every kind rather than a single `kind` string: the widget registers its kind from the
+        // extension's `Bundle.main.bundleIdentifier`, which can differ from this app-process-derived
+        // value (e.g. debug `.dev` suffixing), and a mismatched `ofKind:` is a silent no-op that leaves
+        // the freshly-written snapshot unread. There is only one widget, so reloading all is equivalent.
+        WidgetCenter.shared.reloadAllTimelines()
         WidgetCenter.shared.invalidateConfigurationRecommendations()
     }
 }
