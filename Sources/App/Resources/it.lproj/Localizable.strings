@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Non siamo riusciti a collegarci a Home Assistant";
 "connection.error.failed_connect.url" = "L'app si sta attualmente connettendo a";
 "connection.error.generic_title" = "Uh oh! Sembra che non siamo in grado di stabilire una connessione";
-"connection.permission.internal_url.body1" = "Per accedere a Home Assistant in locale in modo sicuro, è necessario concedere l'autorizzazione alla posizione ('Sempre').";
-"connection.permission.internal_url.body2" = "Questa autorizzazione consente a Home Assistant di rilevare la rete wireless a cui sei connesso e di stabilire una connessione locale.";
 "connection.permission.internal_url.footer" = "Se desideri comunque utilizzare l'URL locale e non vuoi fornire l'autorizzazione alla posizione, puoi toccare il pulsante qui sotto, sii consapevole dei rischi per la sicurezza.";
 "connection.permission.internal_url.ignore.alert.title" = "Sei sicuro?";
 "connection.permission.internal_url.title" = "Accesso ai permessi";
@@ -1662,7 +1660,6 @@ Home Assistant è un software open source, difende la privacy e funziona localme
 "watch.configurator.sections.icon.header" = "Icona";
 "watch.configurator.sections.ring.footer" = "L'anello che mostra il progresso attorno al testo.";
 "watch.configurator.sections.ring.header" = "Anello";
-"watch.configurator.warning.templating_admin" = "ATTENZIONE: per creare modelli nelle complicazioni dell'orologio, l'utente deve disporre dei diritti di amministratore.";
 "watch.debug.delete_db.alert.failed.message" = "Impossibile eliminare la configurazione, errore: %@";
 "watch.debug.delete_db.alert.title" = "Sei sicuro di voler eliminare la configurazione dell'orologio? Questa azione non può essere annullata";
 "watch.debug.delete_db.reset.title" = "Ripristina configurazione";

@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Home Assistantに接続できませんでした";
 "connection.error.failed_connect.url" = "アプリは現在接続中です";
 "connection.error.generic_title" = "ああ！接続が確立できないようだ。";
-"connection.permission.internal_url.body1" = "Home Assistant にローカルで安全にアクセスするには、位置情報の許可（「常に」）を付与する必要があります。";
-"connection.permission.internal_url.body2" = "この許可により、Home Assistant は接続しているワイヤレス ネットワークを検出し、ローカル接続を確立できるようになります。";
 "connection.permission.internal_url.footer" = "引き続きローカル URL を使用し、位置情報の許可を与えたくない場合は、下のボタンをタップできますが、セキュリティ上のリスクに注意してください。";
 "connection.permission.internal_url.ignore.alert.title" = "よろしいですか？";
 "connection.permission.internal_url.title" = "アクセス許可";
@@ -1661,7 +1659,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "watch.configurator.sections.icon.header" = "アイコン";
 "watch.configurator.sections.ring.footer" = "テキストを囲む進捗状況を示すリング。";
 "watch.configurator.sections.ring.header" = "リング";
-"watch.configurator.warning.templating_admin" = "注意:ウォッチコンプリケーションのテンプレートを作成するには、ユーザーは管理者ロールを持っている必要があります。";
 "watch.debug.delete_db.alert.failed.message" = "設定の削除に失敗しました。エラー: %@";
 "watch.debug.delete_db.alert.title" = "ウォッチ設定を削除してもよろしいですか? 元に戻すことはできません";
 "watch.debug.delete_db.reset.title" = "設定をリセット";

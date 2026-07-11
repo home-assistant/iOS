@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Kami tidak dapat terhubung ke Home Assistant";
 "connection.error.failed_connect.url" = "Aplikasi saat ini terhubung ke";
 "connection.error.generic_title" = "Waduh! Sepertinya kita tidak dapat terhubung.";
-"connection.permission.internal_url.body1" = "Untuk mengakses Home Assistant secara lokal dengan cara yang aman, Anda perlu memberikan izin lokasi ('Selalu').";
-"connection.permission.internal_url.body2" = "Izin ini memungkinkan Home Assistant mendeteksi jaringan nirkabel tempat  Anda tersambung dan membuat koneksi lokal.";
 "connection.permission.internal_url.footer" = "Jika Anda masih ingin menggunakan URL lokal dan tidak ingin memberikan izin lokasi, Anda bisa mengetuk tombol di bawah ini, tetapi harap perhatikan risiko keamanan yang timbul.";
 "connection.permission.internal_url.ignore.alert.title" = "Yakin?";
 "connection.permission.internal_url.title" = "Akses izin";
@@ -1661,7 +1659,6 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Cincin menunjukkan kemajuan di sekitar teks.";
 "watch.configurator.sections.ring.header" = "Cincin";
-"watch.configurator.warning.templating_admin" = "CATATAN: Untuk membuat templat dalam komplikasi jam tangan, pengguna harus memiliki peran admin.";
 "watch.debug.delete_db.alert.failed.message" = "Gagal menghapus konfigurasi, kesalahan: %@";
 "watch.debug.delete_db.alert.title" = "Yakin ingin menghapus konfigurasi Watch? Ini tidak dapat dikembalikan";
 "watch.debug.delete_db.reset.title" = "Setel ulang konfigurasi";

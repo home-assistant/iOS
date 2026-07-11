@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Me ei saanud ome Assistantiga ühendust";
 "connection.error.failed_connect.url" = "Rakendus loob praegu ühendust";
 "connection.error.generic_title" = "Oh oh! Näib, et ei saa ühendust luua.";
-"connection.permission.internal_url.body1" = "Selleks, et pääseda Home Assistantile turvaliselt ligi, pead andma asukoha kasutamise loa (\"Alati\").";
-"connection.permission.internal_url.body2" = "See luba võimaldab Home Assistantil tuvastada traadita võrgu, millega oled ühendatud, ja luua kohaliku ühenduse.";
 "connection.permission.internal_url.footer" = "Kui soovid siiski kasutada kohalikku URL-i ja ei soovi asukoha luba anda, võid puudutada allolevat nupp, kuid pea meeles turvariske.";
 "connection.permission.internal_url.ignore.alert.title" = "Kas oled kindel?";
 "connection.permission.internal_url.title" = "Juurdepääsuluba";
@@ -1662,7 +1660,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.configurator.sections.icon.header" = "Ikoon";
 "watch.configurator.sections.ring.footer" = "Rõngas mis näitab teksti ümber edenemist.";
 "watch.configurator.sections.ring.header" = "Sõõr";
-"watch.configurator.warning.templating_admin" = "TÄHELEPANU: Kellaprobleemide puhul mallide koostamiseks peab kasutajal olema administraatori roll.";
 "watch.debug.delete_db.alert.failed.message" = "Konfiguratsiooni kustutamine nurjus, viga: %@";
 "watch.debug.delete_db.alert.title" = "Kas soovid kindlasti kella konfiguratsiooni kustutada? Seda ei saa tagasi võtta";
 "watch.debug.delete_db.reset.title" = "Lähtesta konfiguratsioon";
