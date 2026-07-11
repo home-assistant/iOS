@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 
 /// Custom SessionDelegate that handles client certificate authentication (mTLS)
-public class ClientCertificateSessionDelegate: SessionDelegate, @unchecked Sendable {
+open class ClientCertificateSessionDelegate: SessionDelegate, @unchecked Sendable {
     private let server: Server
 
     public init(server: Server) {
@@ -10,7 +10,7 @@ public class ClientCertificateSessionDelegate: SessionDelegate, @unchecked Senda
         super.init()
     }
 
-    override public func urlSession(
+    override open func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge,
@@ -31,17 +31,17 @@ public class ClientCertificateSessionDelegate: SessionDelegate, @unchecked Senda
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
         guard let clientCertificate = server.info.connection.clientCertificate else {
-            Current.Log.warning("[mTLS] Client certificate requested but none configured for server")
+            HANetworkingEnvironment.current.log.warning("[mTLS] Client certificate requested but none configured for server")
             completionHandler(.performDefaultHandling, nil)
             return
         }
 
         do {
             let credential = try ClientCertificateManager.shared.urlCredential(for: clientCertificate)
-            Current.Log.info("[mTLS] Using client certificate: \(clientCertificate.displayName)")
+            HANetworkingEnvironment.current.log.info("[mTLS] Using client certificate: \(clientCertificate.displayName)")
             completionHandler(.useCredential, credential)
         } catch {
-            Current.Log.error("[mTLS] Failed to get credential for client certificate: \(error)")
+            HANetworkingEnvironment.current.log.error("[mTLS] Failed to get credential for client certificate: \(error)")
             completionHandler(.cancelAuthenticationChallenge, nil)
         }
     }

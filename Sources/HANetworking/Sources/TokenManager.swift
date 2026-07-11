@@ -76,12 +76,12 @@ public final class TokenManager: @unchecked Sendable {
             self.currentToken
         }.recover { [self] error -> Promise<(String, Date)> in
             guard let tokenError = error as? TokenError, tokenError == TokenError.expired else {
-                Current.Log.verbose("Unable to recover from token error! \(error)")
+                HANetworkingEnvironment.current.log.verbose("Unable to recover from token error! \(error)")
                 throw error
             }
 
             return refreshToken().map {
-                Current.Log.info("providing token \($0.accessToken.hash)")
+                HANetworkingEnvironment.current.log.info("providing token \($0.accessToken.hash)")
                 return ($0.accessToken, $0.expiration)
             }
         }
@@ -90,17 +90,17 @@ public final class TokenManager: @unchecked Sendable {
     public func authDictionaryForWebView(forceRefresh: Bool) -> Promise<[String: Any]> {
         firstly { () -> Promise<(String, Date)> in
             if forceRefresh {
-                Current.Log.info("forcing a refresh of token")
+                HANetworkingEnvironment.current.log.info("forcing a refresh of token")
                 return refreshToken().map { ($0.accessToken, $0.expiration) }
             } else {
-                Current.Log.info("using existing token")
+                HANetworkingEnvironment.current.log.info("using existing token")
                 return bearerToken
             }
         }.map { token, expiration -> [String: Any] in
-            Current.Log.info("creating webview token with \(token.hash)")
+            HANetworkingEnvironment.current.log.info("creating webview token with \(token.hash)")
             var dictionary: [String: Any] = [:]
             dictionary["access_token"] = token
-            dictionary["expires_in"] = Int(expiration.timeIntervalSince(Current.date()))
+            dictionary["expires_in"] = Int(expiration.timeIntervalSince(HANetworkingEnvironment.current.date()))
             return dictionary
         }
     }
@@ -113,17 +113,17 @@ public final class TokenManager: @unchecked Sendable {
 
             // Add a margin to -10 seconds so that we never get into a state where we return a token
             // that immediately fails.
-            if tokenInfo.expiration.addingTimeInterval(-10) > Current.date() {
+            if tokenInfo.expiration.addingTimeInterval(-10) > HANetworkingEnvironment.current.date() {
                 seal.fulfill((tokenInfo.accessToken, tokenInfo.expiration))
             } else {
                 if let expirationAmount = Calendar.current.dateComponents(
                     [.second],
                     from: tokenInfo.expiration,
-                    to: Current.date()
+                    to: HANetworkingEnvironment.current.date()
                 ).second {
-                    Current.Log.error("Token \(tokenInfo.accessToken.hash) is expired by \(expirationAmount) seconds")
+                    HANetworkingEnvironment.current.log.error("Token \(tokenInfo.accessToken.hash) is expired by \(expirationAmount) seconds")
                 } else {
-                    Current.Log.error("Token \(tokenInfo.accessToken.hash) is expired by unknown")
+                    HANetworkingEnvironment.current.log.error("Token \(tokenInfo.accessToken.hash) is expired by unknown")
                 }
 
                 seal.reject(TokenError.expired)
@@ -136,65 +136,47 @@ public final class TokenManager: @unchecked Sendable {
             let tokenInfo = server.info.token
 
             if let refreshPromise = refreshPromiseCache.promise {
-                Current.Log.info("using cached refreshToken promise")
+                HANetworkingEnvironment.current.log.info("using cached refreshToken promise")
                 return refreshPromise
             }
 
             let promise: Promise<TokenInfo> = firstly {
                 authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
             }.get { [server] tokenInfo in
-                Current.Log.info("storing refresh token")
+                HANetworkingEnvironment.current.log.info("storing refresh token")
                 server.info.token = tokenInfo
             }.ensure(on: refreshPromiseCache.queue) { [self] in
-                Current.Log.info("reset cached refreshToken promise")
+                HANetworkingEnvironment.current.log.info("reset cached refreshToken promise")
                 refreshPromiseCache.promise = nil
             }.tap { [server] result in
                 switch result {
                 case let .rejected(error):
-                    Current.Log.error("refresh token got error: \(error)")
+                    HANetworkingEnvironment.current.log.error("refresh token got error: \(error)")
 
                     if let underlying = error.authenticationAPIError,
                        underlying.shouldRequireReauthentication {
-                        /// Server rejected the refresh token. All is lost.
-                        let event = ClientEvent(
-                            text: "Refresh token is invalid, notifying user",
-                            type: .networkRequest,
-                            payload: [
-                                "error": String(describing: underlying),
-                            ]
+                        /// Server rejected the refresh token. All is lost. HACore performs the actual
+                        /// client-event log + unsubscribe + disconnect + onboarding-needed via this seam.
+                        HANetworkingEnvironment.current.handleReauthenticationRequired(
+                            server,
+                            underlying.statusCode,
+                            String(describing: underlying)
                         )
-                        Current.clientEventStore.addEvent(event)
-                        Current.modelManager.unsubscribe()
-                        Current.api(for: server)?.connection.disconnect()
-                        Current.onboardingObservation.needed(.unauthenticated(
-                            server.identifier.rawValue,
-                            underlying.statusCode
-                        ))
                     }
                 case .fulfilled:
-                    Current.Log.info("refresh token got success")
+                    HANetworkingEnvironment.current.log.info("refresh token got success")
                 }
             }
 
-            Current.Log.info("starting refreshToken cache")
+            HANetworkingEnvironment.current.log.info("starting refreshToken cache")
             refreshPromiseCache.promise = promise
             return promise
         }
     }
 }
 
-extension TokenManager.TokenError: LocalizedError {
-    public var errorDescription: String? {
-        switch self {
-        case .tokenUnavailable:
-            return L10n.TokenError.tokenUnavailable
-        case .expired:
-            return L10n.TokenError.expired
-        case .connectionFailed:
-            return L10n.TokenError.connectionFailed
-        }
-    }
-}
+// `TokenError`'s localized `errorDescription` lives in the Shared module
+// (HANetworkingLocalization.swift); L10n isn't available in this package.
 
 extension TokenManager: Authenticator {
     public var authenticationInterceptor: AuthenticationInterceptor<TokenManager> {

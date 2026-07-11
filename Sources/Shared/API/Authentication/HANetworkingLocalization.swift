@@ -57,3 +57,16 @@ public extension ServerInfo {
         L10n.Settings.StatusSection.LocationNameRow.placeholder
     }
 }
+
+extension TokenManager.TokenError: @retroactive LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .tokenUnavailable:
+            return L10n.TokenError.tokenUnavailable
+        case .expired:
+            return L10n.TokenError.expired
+        case .connectionFailed:
+            return L10n.TokenError.connectionFailed
+        }
+    }
+}

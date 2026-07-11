@@ -50,6 +50,16 @@ public struct HANetworkingEnvironment {
         try! DatabaseQueue()
     }
 
+    /// Whether the app is a debug build (`AuthenticationRoutes` picks the auth callback scheme from it).
+    /// HACore wires this to `Current.appConfiguration == .debug`.
+    public var isDebug: Bool = false
+
+    /// Invoked when the server permanently rejects the refresh token (reauthentication needed). HACore
+    /// wires this to log a client event, unsubscribe the model manager, disconnect the API connection,
+    /// and mark onboarding as needed (`.unauthenticated`). No-op by default.
+    public var handleReauthenticationRequired: (_ server: Server, _ statusCode: Int, _ errorDescription: String)
+        -> Void = { _, _, _ in }
+
     public init() {}
 
     public struct Connectivity {

@@ -111,6 +111,17 @@ public class AppEnvironment {
         HANetworkingEnvironment.current.database = { Current.database() }
         HANetworkingEnvironment.current.bundleID = AppConstants.BundleID
         HANetworkingEnvironment.current.defaultServerName = ServerInfo.defaultName
+        HANetworkingEnvironment.current.isDebug = Current.appConfiguration == .debug
+        HANetworkingEnvironment.current.handleReauthenticationRequired = { server, statusCode, errorDescription in
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Refresh token is invalid, notifying user",
+                type: .networkRequest,
+                payload: ["error": errorDescription]
+            ))
+            Current.modelManager.unsubscribe()
+            Current.api(for: server)?.connection.disconnect()
+            Current.onboardingObservation.needed(.unauthenticated(server.identifier.rawValue, statusCode))
+        }
 
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()

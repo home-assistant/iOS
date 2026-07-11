@@ -19,7 +19,7 @@ public class AuthenticationAPI {
             }
         }
 
-        var shouldRequireReauthentication: Bool {
+        public var shouldRequireReauthentication: Bool {
             if case let .serverError(statusCode, _, _) = self {
                 return (400 ... 403).contains(statusCode)
             }
@@ -27,7 +27,7 @@ public class AuthenticationAPI {
             return false
         }
 
-        var statusCode: Int {
+        public var statusCode: Int {
             switch self {
             case let .serverError(statusCode, _, _):
                 return statusCode
@@ -166,11 +166,11 @@ private class OnboardingClientCertificateDelegate: SessionDelegate, @unchecked S
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
             do {
                 let credential = try ClientCertificateManager.shared.urlCredential(for: certificate)
-                Current.Log.info("[mTLS] Using client certificate for token exchange: \(certificate.displayName)")
+                HANetworkingEnvironment.current.log.info("[mTLS] Using client certificate for token exchange: \(certificate.displayName)")
                 completionHandler(.useCredential, credential)
                 return
             } catch {
-                Current.Log.error("[mTLS] Failed to get credential for token exchange: \(error)")
+                HANetworkingEnvironment.current.log.error("[mTLS] Failed to get credential for token exchange: \(error)")
             }
         }
 
@@ -212,7 +212,7 @@ extension DataRequest {
 }
 
 extension Error {
-    var authenticationAPIError: AuthenticationAPI.AuthenticationError? {
+    public var authenticationAPIError: AuthenticationAPI.AuthenticationError? {
         if let authenticationError = self as? AuthenticationAPI.AuthenticationError {
             return authenticationError
         }
