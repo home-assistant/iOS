@@ -61,7 +61,7 @@ jobs:
   open_cleanup_pr:
     needs: delete_keys
     if: ${{ inputs.dry_run == false }}
-    runs-on: macos-15
+    runs-on: macos-26
     permissions:
       contents: write
       pull-requests: write
