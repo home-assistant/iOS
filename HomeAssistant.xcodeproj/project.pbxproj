@@ -735,6 +735,7 @@
 		42886D2C2FFE8815004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2B2FFE8815004EB33B /* HAKit */; };
 		42886D302FFE881B004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2F2FFE881B004EB33B /* PromiseKitDynamic */; };
 		AC0F1D302FFE881B004EB33B /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = AC0F1D2F2FFE881B004EB33B /* HANetworking */; };
+		AC0F1D0000000000000000B0 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = AC0F1D0000000000000000A0 /* HANetworking */; };
 		42886D322FFE8829004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D312FFE8829004EB33B /* HAKit */; };
 		42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D352FFE882F004EB33B /* PromiseKitDynamic */; };
 		AC0F1D362FFE882F004EB33B /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = AC0F1D352FFE882F004EB33B /* HANetworking */; };
@@ -3370,6 +3371,7 @@
 			files = (
 				423FB76E2FFFDFDE000CB8FD /* SwiftUI.framework in Frameworks */,
 				423FB76D2FFFDFDE000CB8FD /* WidgetKit.framework in Frameworks */,
+				AC0F1D0000000000000000B0 /* HANetworking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7045,6 +7047,7 @@
 			);
 			name = "Extensions-WatchWidgets";
 			packageProductDependencies = (
+				AC0F1D0000000000000000A0 /* HANetworking */,
 			);
 			productName = WatchWidgetsExtension;
 			productReference = 423FB76C2FFFDFDE000CB8FD /* Extensions-WatchWidgets.appex */;
@@ -11176,6 +11179,11 @@
 			productName = PromiseKitDynamic;
 		};
 		AC0F1D2F2FFE881B004EB33B /* HANetworking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */;
+			productName = HANetworking;
+		};
+		AC0F1D0000000000000000A0 /* HANetworking */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */;
 			productName = HANetworking;
