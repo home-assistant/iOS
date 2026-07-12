@@ -5862,6 +5862,8 @@ public enum L10n {
     public enum Labels {
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
+      /// With your iPhone nearby, you can add compatible entities to your Apple Watch using the button below, or from your companion app settings on iPhone.
+      public static var noConfigAdd: String { return L10n.tr("Localizable", "watch.labels.no_config_add") }
       /// With your iPhone nearby, you can add compatible entities to your Apple Watch using the '+' button, or from your companion app settings on iPhone.
       public static var noConfigAddPlus: String { return L10n.tr("Localizable", "watch.labels.no_config_add_plus") }
       public enum ComplicationGroup {
@@ -6470,7 +6472,7 @@ public enum L10n {
       }
     }
     public enum Sync {
-      /// %1$d/%2$d
+      /// %1$li/%2$li
       public static func progress(_ p1: Int, _ p2: Int) -> String {
         return L10n.tr("Localizable", "watch.sync.progress", p1, p2)
       }
