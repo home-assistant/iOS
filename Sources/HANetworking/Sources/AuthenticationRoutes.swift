@@ -32,7 +32,7 @@ enum AuthenticationRoute {
         var clientID = "https://home-assistant.io/iOS"
 
         // swiftlint:disable prohibit_environment_assignment
-        if Current.appConfiguration == .debug {
+        if HANetworkingEnvironment.current.isDebug {
             clientID = "https://home-assistant.io/iOS/dev-auth"
         }
         // swiftlint:enable prohibit_environment_assignment

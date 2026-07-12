@@ -43,34 +43,9 @@ public extension ServerManager {
         server(forServerIdentifier: identifier.rawValue) ?? all.first
     }
 
-    private var fallbackServer: Server? {
-        let all = all
-        if all.count == 1, let server = all.first {
-            return server
-        } else {
-            return nil
-        }
-    }
-
-    func server(for providing: ServerIdentifierProviding, fallback: Bool = true) -> Server? {
-        if let server = server(forServerIdentifier: providing.serverIdentifier) {
-            return server
-        } else if fallback {
-            return fallbackServer
-        } else {
-            return nil
-        }
-    }
-
-    func server(for intent: ServerIntentProviding, fallback: Bool = true) -> Server? {
-        if let server = server(forServerIdentifier: intent.server?.identifier) {
-            return server
-        } else if fallback {
-            return fallbackServer
-        } else {
-            return nil
-        }
-    }
+    // `server(for: ServerIdentifierProviding)` and `server(for: ServerIntentProviding)` live in the
+    // Shared module (ServerManager+ServerProviding.swift) because `ServerIntentProviding` depends on
+    // `IntentServer` (Intents), which isn't available in this package.
 
     func server(for content: UNNotificationContent) -> Server? {
         if let webhookID = content.userInfo["webhook_id"] as? String {
@@ -87,7 +62,7 @@ public extension ServerManager {
 
 private extension Identifier where ObjectType == Server {
     var keychainKey: String { rawValue }
-    init(keychainKey: String) { rawValue = keychainKey }
+    init(keychainKey: String) { self.init(rawValue: keychainKey) }
 }
 
 private struct ServerCache {
@@ -111,7 +86,7 @@ private struct ServerCache {
 
 // MARK: - Server Manager
 
-final class ServerManagerImpl: ServerManager {
+public final class ServerManagerImpl: ServerManager {
     private static let restoredMirroredServersKey = "restoredMirroredServers"
 
     private var keychain: ServerManagerKeychain
@@ -136,20 +111,30 @@ final class ServerManagerImpl: ServerManager {
 
     private var deletedServers: Set<Identifier<Server>> {
         get {
-            let identifiers = Current.settingsStore.prefs.array(forKey: "deletedServers") as? [String] ?? []
+            let identifiers = HANetworkingEnvironment.current.prefs.array(forKey: "deletedServers") as? [String] ?? []
             return Set(identifiers.map { Identifier<Server>(rawValue: $0) })
         }
         set {
-            Current.settingsStore.prefs.set(newValue.map(\.rawValue), forKey: "deletedServers")
+            HANetworkingEnvironment.current.prefs.set(newValue.map(\.rawValue), forKey: "deletedServers")
         }
     }
 
     // MARK: Lifecycle
 
-    init(
-        keychain: ServerManagerKeychain = Keychain(service: ServerManagerImpl.service),
-        historicKeychain: ServerManagerKeychain = Keychain(service: AppConstants.BundleID),
-        mirrorStore: ServerManagerMirrorStore = ServerManagerGRDBMirrorStore()
+    /// Convenience no-arg initializer used by HACore's `Current.servers`; supplies the default keychain
+    /// + GRDB mirror store. The designated initializer takes them explicitly (used by tests to inject fakes).
+    public convenience init() {
+        self.init(
+            keychain: Keychain(service: ServerManagerImpl.service),
+            historicKeychain: Keychain(service: HANetworkingEnvironment.current.bundleID),
+            mirrorStore: ServerManagerGRDBMirrorStore()
+        )
+    }
+
+    public init(
+        keychain: ServerManagerKeychain,
+        historicKeychain: ServerManagerKeychain,
+        mirrorStore: ServerManagerMirrorStore
     ) {
         self.keychain = keychain
         self.historicKeychain = historicKeychain
@@ -161,9 +146,9 @@ final class ServerManagerImpl: ServerManager {
         self.decoder = decoder
     }
 
-    func setup() {
+    public func setup() {
         cache.mutate { value in
-            value.restrictCaching = Current.isAppExtension
+            value.restrictCaching = HANetworkingEnvironment.current.isAppExtension()
         }
 
         // load to cache immediately
@@ -172,7 +157,7 @@ final class ServerManagerImpl: ServerManager {
         do {
             try migrateIfNeeded()
         } catch {
-            Current.Log.error("failed to load historic server: \(error)")
+            HANetworkingEnvironment.current.log.error("failed to load historic server: \(error)")
         }
 
         // Keep a sanitized startup snapshot of non-secret server metadata so the app
@@ -381,7 +366,7 @@ final class ServerManagerImpl: ServerManager {
             let deletedServers = self?.deletedServers ?? []
             return cache.mutate { cache in
                 guard !deletedServers.contains(identifier) else {
-                    Current.Log.verbose("ignoring update to deleted server \(identifier)")
+                    HANetworkingEnvironment.current.log.verbose("ignoring update to deleted server \(identifier)")
                     return false
                 }
 
@@ -475,11 +460,12 @@ final class ServerManagerImpl: ServerManager {
 
     private var restoredMirroredServers: Set<String> {
         get {
-            let values = Current.settingsStore.prefs.array(forKey: Self.restoredMirroredServersKey) as? [String] ?? []
+            let values = HANetworkingEnvironment.current.prefs
+                .array(forKey: Self.restoredMirroredServersKey) as? [String] ?? []
             return Set(values)
         }
         set {
-            Current.settingsStore.prefs.set(Array(newValue).sorted(), forKey: Self.restoredMirroredServersKey)
+            HANetworkingEnvironment.current.prefs.set(Array(newValue).sorted(), forKey: Self.restoredMirroredServersKey)
         }
     }
 
@@ -545,14 +531,14 @@ final class ServerManagerImpl: ServerManager {
     private func migrateIfNeeded() throws {
         guard all.isEmpty else { return }
 
-        let userDefaults = Current.settingsStore.prefs
+        let userDefaults = HANetworkingEnvironment.current.prefs
         if let tokenInfoData = try historicKeychain.getData("tokenInfo"),
            let connectionInfoData = try historicKeychain.getData("connectionInfo") {
-            Current.Log.info("migrating historic server")
+            HANetworkingEnvironment.current.log.info("migrating historic server")
 
             // UserDefaults may be missing due to delete/reinstall, so fill in values for those if needed
             let versionString = userDefaults.string(forKey: "version") ?? "2021.1"
-            let name = userDefaults.string(forKey: "location_name") ?? ServerInfo.defaultName
+            let name = userDefaults.string(forKey: "location_name") ?? HANetworkingEnvironment.current.defaultServerName
 
             var serverInfo = try ServerInfo(
                 name: name,
@@ -568,7 +554,7 @@ final class ServerManagerImpl: ServerManager {
             add(identifier: Server.historicId, serverInfo: serverInfo)
             try historicKeychain.removeAll()
         } else {
-            Current.Log.info("no historic server found to import")
+            HANetworkingEnvironment.current.log.info("no historic server found to import")
         }
     }
 
@@ -584,7 +570,7 @@ final class ServerManagerImpl: ServerManager {
         do {
             return try encoder.encode(state)
         } catch {
-            Current.Log.error(error)
+            HANetworkingEnvironment.current.log.error(error)
             return Data()
         }
     }
@@ -610,7 +596,7 @@ final class ServerManagerImpl: ServerManager {
                 }
             }
         } catch {
-            Current.Log.error(error)
+            HANetworkingEnvironment.current.log.error(error)
         }
 
         suppressNotify = false

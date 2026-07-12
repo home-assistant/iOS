@@ -30,9 +30,11 @@ struct WatchWidgetComplicationSnapshot: Codable {
 
     let id: String?
     let family: String
-    let title: String
+    /// Mutable so the widget's live self-fetch can update the on-face value in place.
+    var title: String
     let subtitle: String
-    let inlineText: String
+    /// Mutable so the widget's live self-fetch can update the inline value in place.
+    var inlineText: String
     let fraction: Double?
     let tint: String?
     let iconData: Data?

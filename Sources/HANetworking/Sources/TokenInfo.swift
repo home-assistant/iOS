@@ -3,13 +3,16 @@ import Foundation
 import ObjectMapper
 
 public struct TokenInfo: ImmutableMappable, Codable, Equatable {
-    struct TokenInfoContext: MapContext {
-        var oldTokenInfo: TokenInfo
+    public struct TokenInfoContext: MapContext {
+        public var oldTokenInfo: TokenInfo
+        public init(oldTokenInfo: TokenInfo) {
+            self.oldTokenInfo = oldTokenInfo
+        }
     }
 
-    var accessToken: String
-    var expiration: Date
-    var refreshToken: String
+    public var accessToken: String
+    public var expiration: Date
+    public var refreshToken: String
 
     public init(accessToken: String, refreshToken: String, expiration: Date) {
         self.accessToken = accessToken
@@ -37,6 +40,6 @@ public struct TokenInfo: ImmutableMappable, Codable, Equatable {
 
 extension TokenInfo: AuthenticationCredential {
     public var requiresRefresh: Bool {
-        expiration.addingTimeInterval(-60) < Current.date()
+        expiration.addingTimeInterval(-60) < HANetworkingEnvironment.current.date()
     }
 }

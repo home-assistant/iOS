@@ -440,6 +440,17 @@ enum WatchWidgetComplicationSnapshotStore {
         Task { await refresh() }
     }
 
+    /// Write each server's self-fetch credential to the shared app group for the widget extension.
+    private static func writeWidgetCredentials(to defaults: UserDefaults?) async {
+        var credentials: [WatchWidgetServerCredential] = []
+        for server in Current.servers.all {
+            if let credential = await ComplicationStateFetcher.credential(for: server) {
+                credentials.append(credential)
+            }
+        }
+        WatchWidgetServerCredential.write(credentials, to: defaults)
+    }
+
     /// Rebuilds every complication snapshot. Legacy complications render synchronously from their
     /// server-rendered data; modern configs fetch their live value directly from Home Assistant over
     /// REST — no paired iPhone required, so this also refreshes when the watch is on its own (e.g. on
@@ -449,6 +460,11 @@ enum WatchWidgetComplicationSnapshotStore {
     static func refresh() async -> [ComplicationRefreshOutcome] {
         MaterialDesignIcons.register()
         let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
+
+        // Hand the widget everything it needs to self-fetch on its own WidgetKit budget (so complications
+        // stay fresh even when this WatchApp isn't woken). Best-effort; a missing credential just means the
+        // widget keeps its last-known value until we write a fresh one.
+        await writeWidgetCredentials(to: defaults)
 
         // GRDB is the single source of truth on the watch (populated by the background context and the
         // reload mirror). Legacy complications render synchronously from their server-rendered data.
@@ -597,7 +613,11 @@ enum WatchWidgetComplicationSnapshotStore {
             return
         }
         defaults.set(data, forKey: defaultsKey)
-        WidgetCenter.shared.reloadTimelines(ofKind: kind)
+        // Reload every kind rather than a single `kind` string: the widget registers its kind from the
+        // extension's `Bundle.main.bundleIdentifier`, which can differ from this app-process-derived
+        // value (e.g. debug `.dev` suffixing), and a mismatched `ofKind:` is a silent no-op that leaves
+        // the freshly-written snapshot unread. There is only one widget, so reloading all is equivalent.
+        WidgetCenter.shared.reloadAllTimelines()
         WidgetCenter.shared.invalidateConfigurationRecommendations()
     }
 }
@@ -662,6 +682,22 @@ private enum ComplicationStateFetcher {
             return nil
         }
         return EntityState(state: state, attributes: json["attributes"] as? [String: Any] ?? [:])
+    }
+
+    /// Snapshot everything the watch-widget extension needs to self-fetch this server over REST on its
+    /// own WidgetKit budget (it can't link the networking stack to derive these itself). Mirrors the
+    /// inputs `fetchState` uses: the resolved base URL, a bearer token, and the mTLS/self-signed material.
+    static func credential(for server: Server) async -> WatchWidgetServerCredential? {
+        guard let baseURL = await server.activeURL(), let token = await bearerToken(for: server) else {
+            return nil
+        }
+        return WatchWidgetServerCredential(
+            serverId: server.identifier.rawValue,
+            baseURL: baseURL,
+            token: token,
+            clientCertLabel: server.info.connection.clientCertificate?.keychainIdentifier,
+            trustExceptions: server.info.connection.securityExceptions.rawExceptionData
+        )
     }
 
     static func renderTemplate(_ template: String, server: Server) async -> String? {

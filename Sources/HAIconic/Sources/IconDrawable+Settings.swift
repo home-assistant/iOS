@@ -1,4 +1,6 @@
 #if os(iOS)
+import UIKit
+
 public extension IconDrawable {
     static var settingsIconSize: CGSize { .init(width: 24, height: 24) }
 
