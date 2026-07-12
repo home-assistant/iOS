@@ -86,7 +86,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var showIcon: Bool?
         public var showGauge: Bool?
         /// Whether the minimum / maximum labels are shown alongside a progress bar / open gauge
-        /// (each default true).
+        /// (each default false).
         public var showMin: Bool?
         public var showMax: Bool?
         public var gaugeMin: Double?
@@ -205,14 +205,14 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         families?[family.rawValue]?.showIcon ?? (family == .rectangular)
     }
 
-    /// Whether the minimum label is shown next to a progress bar / open gauge (default true).
+    /// Whether the minimum label is shown next to a progress bar / open gauge (default false).
     public func showsMin(for family: Family) -> Bool {
-        families?[family.rawValue]?.showMin ?? true
+        families?[family.rawValue]?.showMin ?? false
     }
 
-    /// Whether the maximum label is shown next to a progress bar / open gauge (default true).
+    /// Whether the maximum label is shown next to a progress bar / open gauge (default false).
     public func showsMax(for family: Family) -> Bool {
-        families?[family.rawValue]?.showMax ?? true
+        families?[family.rawValue]?.showMax ?? false
     }
 
     /// Whether a gauge/ring should be drawn for this family.
