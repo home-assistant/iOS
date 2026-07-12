@@ -1,5 +1,5 @@
 #if !os(watchOS)
-import HADesignSystem
+import HAIconic
 import SFSafeSymbols
 import SwiftUI
 

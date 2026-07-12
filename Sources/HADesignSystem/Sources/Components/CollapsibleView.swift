@@ -1,3 +1,4 @@
+#if !os(watchOS)
 import SFSafeSymbols
 import SwiftUI
 
@@ -36,20 +37,19 @@ public struct CollapsibleView<CollapsedContent: View, ExpandedContent: View>: Vi
                     expanded.toggle()
                 }
             }
-            .accessibilityHint(
-                expanded ? L10n.Component.CollapsibleView.collapse : L10n.Component.CollapsibleView
-                    .expand
-            )
-            .accessibilityLabel(
-                expanded ? L10n.Component.CollapsibleView.collapse : L10n.Component.CollapsibleView
-                    .expand
-            )
+            .accessibilityHint(toggleAccessibilityText)
+            .accessibilityLabel(toggleAccessibilityText)
             VStack(alignment: .leading) {
                 if expanded {
                     expandedContent()
                 }
             }
         }
+    }
+
+    private var toggleAccessibilityText: String {
+        expanded ? HADesignSystemEnvironment.current.strings.collapsibleViewCollapse
+            : HADesignSystemEnvironment.current.strings.collapsibleViewExpand
     }
 }
 
@@ -77,3 +77,4 @@ public struct CollapsibleView<CollapsedContent: View, ExpandedContent: View>: Vi
         })
     }
 }
+#endif

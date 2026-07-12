@@ -12,11 +12,12 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols", .upToNextMajor(from: "5.3.0")),
+        .package(path: "../HAIconic"),
     ],
     targets: [
         .target(
             name: "HADesignSystem",
-            dependencies: ["SFSafeSymbols"],
+            dependencies: ["SFSafeSymbols", "HAIconic"],
             path: "Sources"
         ),
         .testTarget(

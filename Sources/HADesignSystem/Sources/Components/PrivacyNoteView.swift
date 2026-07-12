@@ -1,4 +1,4 @@
-import HADesignSystem
+#if !os(watchOS)
 import SwiftUI
 
 /// View used to display and highlight privacy related information
@@ -28,7 +28,7 @@ public struct PrivacyNoteView: View {
 
     public var body: some View {
         VStack(spacing: DesignSystem.Spaces.one) {
-            Text(L10n.privacyLabel)
+            Text(HADesignSystemEnvironment.current.strings.privacyLabel)
                 .font(.caption.bold())
                 .padding(.horizontal, DesignSystem.Spaces.one)
                 .padding(.vertical, DesignSystem.Spaces.half)
@@ -133,3 +133,4 @@ struct ThickMaterialOverlay: View {
         .padding()
     }
 }
+#endif

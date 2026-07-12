@@ -1,3 +1,5 @@
+#if !os(watchOS)
+import HAIconic
 import SwiftUI
 
 public struct SettingsButton: View {
@@ -30,3 +32,4 @@ public struct SettingsButton: View {
         Spacer()
     }
 }
+#endif

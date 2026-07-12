@@ -1,4 +1,5 @@
-import HADesignSystem
+#if !os(watchOS)
+import HAIconic
 import SwiftUI
 
 public struct LabsLabel: View {
@@ -58,9 +59,9 @@ public struct LabsLabel: View {
             .navigationViewStyle(.stack)
             .safeAreaInset(edge: .bottom) {
                 Button(action: {
-                    openURL(AppConstants.WebURLs.issues)
+                    openURL(HADesignSystemEnvironment.current.reportIssueURL)
                 }, label: {
-                    Text(L10n.Experimental.Badge.ReportIssueButton.title)
+                    Text(HADesignSystemEnvironment.current.strings.reportIssueButtonTitle)
                 })
                 .buttonStyle(.primaryButton)
                 .padding(.horizontal)
@@ -85,3 +86,4 @@ public struct LabsLabel: View {
         info: "This is an information that can be linked to a beta label to describe what are the limitations and or the current state of the feature."
     )
 }
+#endif

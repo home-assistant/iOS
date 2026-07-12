@@ -1,4 +1,5 @@
-import HADesignSystem
+#if !os(watchOS)
+import HAIconic
 import SFSafeSymbols
 import SwiftUI
 
@@ -103,3 +104,4 @@ public struct ActionLinkButton: View {
             }
         }
 }
+#endif
