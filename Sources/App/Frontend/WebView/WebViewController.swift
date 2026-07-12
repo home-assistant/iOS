@@ -53,9 +53,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var loadActiveURLIfNeededInProgress = false
 
-    /// Track the timestamp of the last pull-to-refresh action
-    var lastPullToRefreshTimestamp: Date?
-
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
         improvManager: ImprovManager.shared
