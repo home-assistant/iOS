@@ -5359,8 +5359,6 @@ public enum L10n {
         public static var preview: String { return L10n.tr("Localizable", "watch.complications.builder.preview") }
         /// A live preview at every size. Tap a size to customize it, then add the complication to any slot on your watch face.
         public static var previewFooter: String { return L10n.tr("Localizable", "watch.complications.builder.preview_footer") }
-        /// Preview size
-        public static var previewSize: String { return L10n.tr("Localizable", "watch.complications.builder.preview_size") }
         /// Progress bar color
         public static var progressBarColor: String { return L10n.tr("Localizable", "watch.complications.builder.progress_bar_color") }
         /// Show as gauge / ring
