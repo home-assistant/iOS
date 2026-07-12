@@ -276,6 +276,7 @@ public class AppEnvironment {
         $0.register(provider: KioskModeSensor.self)
         $0.register(provider: KioskBrightnessSensor.self)
         $0.register(provider: KioskVolumeSensor.self)
+        $0.register(provider: KioskScreensaverSensor.self)
     }
 
     public var localized = LocalizedManager()

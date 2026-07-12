@@ -15,6 +15,7 @@ public enum KioskScreensaverCommand: Equatable {
 public final class KioskModeManager: ObservableObject {
     @Published public private(set) var settings: KioskSettings
     @Published public private(set) var isCameraOverlayVisible = false
+    @Published public private(set) var isScreensaverVisible = false
 
     public var shouldKeepScreenOn: Bool {
         settings.enabled && settings.keepScreenOn
@@ -31,6 +32,12 @@ public final class KioskModeManager: ObservableObject {
 
     public var cameraOverlayVisiblePublisher: AnyPublisher<Bool, Never> {
         $isCameraOverlayVisible.eraseToAnyPublisher()
+    }
+
+    /// Emits the current screensaver visibility and every subsequent change, so the kiosk screensaver
+    /// sensor can report whether the screensaver is on screen.
+    public var screensaverVisiblePublisher: AnyPublisher<Bool, Never> {
+        $isScreensaverVisible.eraseToAnyPublisher()
     }
 
     public func requestScreensaver(_ command: KioskScreensaverCommand) {
@@ -65,6 +72,11 @@ public final class KioskModeManager: ObservableObject {
         isCameraOverlayVisible = visible
     }
 
+    /// Called by the screensaver controller whenever the screensaver is shown or dismissed.
+    public func setScreensaverVisible(_ visible: Bool) {
+        isScreensaverVisible = visible
+    }
+
     private let screensaverCommandSubject = PassthroughSubject<KioskScreensaverCommand, Never>()
     private var observation: AnyDatabaseCancellable?
 
@@ -90,11 +102,11 @@ public final class KioskModeManager: ObservableObject {
         )
     }
 
-    /// The kiosk brightness and volume sensors only make sense on a device acting as a kiosk, so we
-    /// keep them enabled only while kiosk mode is enabled. This runs for the observation's initial
-    /// value and every subsequent change, and is idempotent so it won't fire spurious updates.
+    /// The kiosk brightness, volume and screensaver sensors only make sense on a device acting as a
+    /// kiosk, so we keep them enabled only while kiosk mode is enabled. This runs for the observation's
+    /// initial value and every subsequent change, and is idempotent so it won't fire spurious updates.
     private func syncKioskSensorsEnabled(with settings: KioskSettings) {
-        for sensorId in [WebhookSensorId.kioskBrightness, .kioskVolume] {
+        for sensorId in [WebhookSensorId.kioskBrightness, .kioskVolume, .kioskScreensaver] {
             guard Current.sensors.isEnabled(uniqueID: sensorId.rawValue) != settings.enabled else { continue }
             Current.sensors.setEnabled(settings.enabled, forUniqueID: sensorId.rawValue)
         }
