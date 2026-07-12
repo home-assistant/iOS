@@ -2,9 +2,8 @@ import Shared
 import SwiftUI
 
 /// Shows the complication in all four WidgetKit families at once, arranged like an Apple Watch face,
-/// so the user sees every size simultaneously instead of flipping a size picker. Tapping a family
-/// selects it as the one being customized below (bound to `selectedFamily`), with the selection
-/// highlighted. Fetches the entity state once and renders every family from that single fetch.
+/// so the user sees every size simultaneously instead of flipping a size picker. Fetches the entity
+/// state once and renders every family from that single fetch.
 struct AllFamiliesComplicationPreview: View {
     let config: WatchComplicationConfig
     let server: Server
@@ -61,51 +60,86 @@ struct AllFamiliesComplicationPreview: View {
     }
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spaces.two) {
-            HStack(alignment: .top, spacing: DesignSystem.Spaces.three) {
-                familyTile(.circular)
-                familyTile(.corner)
+        ZStack(alignment: .topTrailing) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 72, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color(white: 0.28), Color(white: 0.1)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 244, height: 300)
+                    .shadow(color: .black.opacity(0.25), radius: 14, y: 8)
+
+                RoundedRectangle(cornerRadius: 64, style: .continuous)
+                    .stroke(Color.white.opacity(0.18), lineWidth: 1)
+                    .frame(width: 230, height: 286)
+
+                RoundedRectangle(cornerRadius: 58, style: .continuous)
+                    .fill(Color.black)
+                    .frame(width: 214, height: 270)
+                    .overlay {
+                        ZStack {
+                            familyButton(.circular)
+                                .position(x: 58, y: 68)
+                            familyButton(.corner)
+                                .position(x: 156, y: 68)
+                            familyButton(.rectangular)
+                                .position(x: 107, y: 148)
+                            familyButton(.inline)
+                                .position(x: 107, y: 226)
+                        }
+                        .frame(width: 214, height: 270)
+                        .clipShape(RoundedRectangle(cornerRadius: 58, style: .continuous))
+                    }
             }
-            familyTile(.rectangular)
-            familyTile(.inline)
-        }
-        .padding(DesignSystem.Spaces.two)
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(Color.black)
-        )
-        .overlay(alignment: .topTrailing) {
+            .frame(width: 260, height: 316)
+
             if isFetching {
-                ProgressView().controlSize(.small).tint(.white).padding(10)
+                ProgressView()
+                    .controlSize(.small)
+                    .tint(.white)
+                    .padding(DesignSystem.Spaces.two)
             }
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, DesignSystem.Spaces.two)
         .environment(\.colorScheme, .dark)
         // Re-run the fetch/render whenever a fetch input changes (entity, server, kind, template) —
         // reliably, so the preview updates on entity change without needing to tap a family first.
         .task(id: fetchKey) { refresh() }
     }
 
-    /// One tappable family render + label; the selected family is highlighted.
     @ViewBuilder
-    private func familyTile(_ family: WatchComplicationConfig.Family) -> some View {
-        let isSelected = selectedFamily == family
+    private func familyButton(_ family: WatchComplicationConfig.Family) -> some View {
         Button {
             selectedFamily = family
         } label: {
-            VStack(spacing: DesignSystem.Spaces.half) {
-                preview(for: family)
-                    .padding(DesignSystem.Spaces.one)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(Color.accentColor, lineWidth: isSelected ? 2 : 0)
-                    )
-                Text(verbatim: family.title)
-                    .font(.caption2)
-                    .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.6))
-            }
+            preview(for: family)
+                .padding(DesignSystem.Spaces.half)
+                .overlay {
+                    if selectedFamily == family {
+                        switch family {
+                        case .circular, .corner:
+                            Circle()
+                                .stroke(Color.accentColor, lineWidth: 2)
+                                .padding(10)
+                        case .rectangular:
+                            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                .stroke(Color.accentColor, lineWidth: 2)
+                        case .inline:
+                            Capsule()
+                                .stroke(Color.accentColor, lineWidth: 2)
+                        }
+                    }
+                }
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(Text(verbatim: family.title))
+        .accessibilityAddTraits(selectedFamily == family ? .isSelected : [])
     }
 
     @ViewBuilder
@@ -208,12 +242,63 @@ struct AllFamiliesComplicationPreview: View {
 
 #if DEBUG
 #Preview {
-    // No entity selected → the panel renders the mock (sample) complications.
-    AllFamiliesComplicationPreview(
-        config: WatchComplicationConfig(serverId: "preview"),
-        server: ServerFixture.standard,
-        selectedFamily: .constant(.circular)
-    )
-    .padding()
+    ScrollView {
+        VStack(spacing: DesignSystem.Spaces.three) {
+            AllFamiliesComplicationPreview(
+                config: WatchComplicationConfig(serverId: "preview"),
+                server: ServerFixture.standard,
+                selectedFamily: .constant(.circular)
+            )
+
+            AllFamiliesComplicationPreview(
+                config: {
+                    var config = WatchComplicationConfig(
+                        serverId: "preview",
+                        name: "Solar",
+                        iconName: "solar-power",
+                        iconColor: "#FFD60AFF"
+                    )
+                    config.setOptions(
+                        WatchComplicationConfig.FamilyOptions(
+                            showIcon: true,
+                            showMin: false,
+                            showMax: false,
+                            tint: "#FFD60AFF",
+                            gaugeStyle: WatchComplicationConfig.GaugeStyle.capacity.rawValue
+                        ),
+                        for: .circular
+                    )
+                    config.setOptions(
+                        WatchComplicationConfig.FamilyOptions(tint: "#FFD60AFF"),
+                        for: .corner
+                    )
+                    return config
+                }(),
+                server: ServerFixture.standard,
+                selectedFamily: .constant(.corner)
+            )
+
+            AllFamiliesComplicationPreview(
+                config: {
+                    var config = WatchComplicationConfig(
+                        serverId: "preview",
+                        name: "Humidity",
+                        iconName: "water-percent",
+                        iconColor: "#64D2FFFF"
+                    )
+                    for family in WatchComplicationConfig.Family.allCases {
+                        config.setOptions(
+                            WatchComplicationConfig.FamilyOptions(showGauge: false, tint: "#64D2FFFF"),
+                            for: family
+                        )
+                    }
+                    return config
+                }(),
+                server: ServerFixture.standard,
+                selectedFamily: .constant(.rectangular)
+            )
+        }
+        .padding()
+    }
 }
 #endif

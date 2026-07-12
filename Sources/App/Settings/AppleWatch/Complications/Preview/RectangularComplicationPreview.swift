@@ -38,7 +38,6 @@ struct RectangularComplicationPreview: View {
         }
         .padding(12)
         .frame(width: 200)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Color.black))
     }
 }
 

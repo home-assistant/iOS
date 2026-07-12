@@ -130,13 +130,18 @@ extension ComplicationPreviewContext {
     ) -> ComplicationPreviewContext {
         var familyConfig = config
         familyConfig.widgetFamily = family
+        familyConfig.gaugeMin = familyConfig.gaugeMin ?? 0
+        familyConfig.gaugeMax = familyConfig.gaugeMax ?? 100
+        if familyConfig.name == nil, familyConfig.entityDisplayName == nil, familyConfig.entityId == nil {
+            familyConfig.name = "Battery"
+        }
         var iconImage: Image?
         if familyConfig.showsIcon(for: family) {
             let icon = config.iconName.map { MaterialDesignIcons(serversideValueNamed: $0) } ?? .gaugeIcon
             let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
             iconImage = Image(uiImage: icon.image(ofSize: CGSize(width: 64, height: 64), color: color))
         }
-        return ComplicationPreviewContext(config: familyConfig, value: "72", fraction: 0.72, iconImage: iconImage)
+        return ComplicationPreviewContext(config: familyConfig, value: "72%", fraction: 0.72, iconImage: iconImage)
     }
 }
 
