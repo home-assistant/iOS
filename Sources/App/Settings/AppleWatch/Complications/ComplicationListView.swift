@@ -329,7 +329,13 @@ struct WatchComplicationBuilderEditView: View {
     init(existing: WatchComplicationConfig?) {
         self.isNew = existing == nil
         let serverId = Current.servers.all.first?.identifier.rawValue ?? ""
-        let initial = existing ?? WatchComplicationConfig(serverId: serverId)
+        let initial = existing ?? WatchComplicationConfig(
+            serverId: serverId,
+            gaugeMin: 0,
+            gaugeMax: 100,
+            showMin: false,
+            showMax: false
+        )
         _config = State(initialValue: initial)
         // Start expanded only when the config already carries per-size customization, so editing a
         // previously-customized complication doesn't hide the user's settings.

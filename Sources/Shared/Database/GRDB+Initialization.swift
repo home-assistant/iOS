@@ -185,6 +185,9 @@ final class WatchComplicationConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplicationConfig.showUnit.rawValue, .boolean)
                     // Nullable: absent means "show when inactive" (see showsWhenInactive()).
                     t.column(DatabaseTables.WatchComplicationConfig.showWhenInactive.rawValue, .boolean)
+                    // Nullable: absent means the min/max labels are visible (see showsMin()/showsMax()).
+                    t.column(DatabaseTables.WatchComplicationConfig.showMin.rawValue, .boolean)
+                    t.column(DatabaseTables.WatchComplicationConfig.showMax.rawValue, .boolean)
                     t.column(DatabaseTables.WatchComplicationConfig.customTextTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.customGaugeTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()

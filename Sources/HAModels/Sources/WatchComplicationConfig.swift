@@ -68,6 +68,10 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// Whether the complication is shown while the display is dimmed (wrist down / always-on). Nullable
     /// so pre-existing rows (NULL) default to visible; see `showsWhenInactive()`.
     public var showWhenInactive: Bool?
+    /// Whether the minimum / maximum labels are shown alongside a progress bar / open gauge. Base default
+    /// (can be overridden per size); nullable so pre-existing rows (NULL) default to visible.
+    public var showMin: Bool?
+    public var showMax: Bool?
 
     // Custom-template kind
     public var customTextTemplate: String?
@@ -85,8 +89,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var showValue: Bool?
         public var showIcon: Bool?
         public var showGauge: Bool?
-        /// Whether the minimum / maximum labels are shown alongside a progress bar / open gauge
-        /// (each default true).
+        /// Per-size override for whether the minimum / maximum labels are shown alongside a progress bar /
+        /// open gauge; nil falls back to the base `showMin` / `showMax`.
         public var showMin: Bool?
         public var showMax: Bool?
         public var gaugeMin: Double?
@@ -131,7 +135,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         case id, serverId, widgetFamily, kind, name
         case entityId, entityDisplayName, iconName, iconColor
         case gaugeAttribute, valueAttribute, valuePrecision, unitOverride, gaugeMin, gaugeMax
-        case showValue, showUnit, showWhenInactive
+        case showValue, showUnit, showWhenInactive, showMin, showMax
         case customTextTemplate, customGaugeTemplate, sortOrder, families
     }
 
@@ -154,6 +158,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         showValue: Bool = true,
         showUnit: Bool? = nil,
         showWhenInactive: Bool? = nil,
+        showMin: Bool? = nil,
+        showMax: Bool? = nil,
         customTextTemplate: String? = nil,
         customGaugeTemplate: String? = nil,
         sortOrder: Int = 0,
@@ -177,6 +183,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.showValue = showValue
         self.showUnit = showUnit
         self.showWhenInactive = showWhenInactive
+        self.showMin = showMin
+        self.showMax = showMax
         self.customTextTemplate = customTextTemplate
         self.customGaugeTemplate = customGaugeTemplate
         self.sortOrder = sortOrder
@@ -205,14 +213,16 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         families?[family.rawValue]?.showIcon ?? (family == .rectangular)
     }
 
-    /// Whether the minimum label is shown next to a progress bar / open gauge (default true).
+    /// Whether the minimum label is shown next to a progress bar / open gauge: per-size override, then
+    /// the base value, then visible by default (so pre-existing configs are unchanged).
     public func showsMin(for family: Family) -> Bool {
-        families?[family.rawValue]?.showMin ?? true
+        families?[family.rawValue]?.showMin ?? showMin ?? true
     }
 
-    /// Whether the maximum label is shown next to a progress bar / open gauge (default true).
+    /// Whether the maximum label is shown next to a progress bar / open gauge: per-size override, then
+    /// the base value, then visible by default (so pre-existing configs are unchanged).
     public func showsMax(for family: Family) -> Bool {
-        families?[family.rawValue]?.showMax ?? true
+        families?[family.rawValue]?.showMax ?? showMax ?? true
     }
 
     /// Whether a gauge/ring should be drawn for this family.

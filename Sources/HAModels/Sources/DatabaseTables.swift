@@ -222,6 +222,8 @@ public enum DatabaseTables {
         case showValue
         case showUnit
         case showWhenInactive
+        case showMin
+        case showMax
         case customTextTemplate
         case customGaugeTemplate
         case sortOrder
