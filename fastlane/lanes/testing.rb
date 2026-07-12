@@ -41,6 +41,9 @@ lane :test do
     result_bundle: true,
     skip_package_dependencies_resolution: true,
     skip_detect_devices: true,
+    # Run only the `test` action: `build test` compiles every SPM target twice
+    # because the plain `build` action disables testability for packages.
+    skip_build: true,
     code_coverage: code_coverage,
     xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
     destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
