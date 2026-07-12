@@ -38,12 +38,36 @@ enum WatchServerSync {
     static func applyMirroredServers(_ data: Data?) {
         guard let data else { return }
         applyServersState(data)
-        let missingCertificate = Current.servers.all.contains { server in
-            guard let certificate = server.info.connection.clientCertificate else { return false }
-            return !ClientCertificateManager.shared.hasIdentity(for: certificate)
-        }
-        if missingCertificate {
+        // Keychain lookups (SecItemCopyMatching) are too slow for the main thread this runs on, so
+        // check off-main; pushed mirrors also often arrive while the phone isn't immediately
+        // reachable, so the follow-up request waits for reachability instead of being dropped.
+        let servers = Current.servers.all
+        DispatchQueue.global(qos: .utility).async {
+            let missingCertificate = servers.contains { server in
+                guard let certificate = server.info.connection.clientCertificate else { return false }
+                return !ClientCertificateManager.shared.hasIdentity(for: certificate)
+            }
+            guard missingCertificate else { return }
             Current.Log.info("[Watch] Mirrored servers reference a client certificate not in the Keychain")
+            DispatchQueue.main.async { requestWhenReachable() }
+        }
+    }
+
+    /// One-shot reachability observation guarding the deferred certificate request. Main-thread only.
+    private static var reachabilityToken: HAWatchConnectivity.ObservationToken?
+
+    /// Run `request()` now if the phone is immediately reachable, otherwise once it becomes so.
+    /// Must be called on the main thread (observer callbacks also arrive there).
+    private static func requestWhenReachable() {
+        guard Communicator.shared.currentReachability != .immediatelyReachable else {
+            request()
+            return
+        }
+        guard reachabilityToken == nil else { return }
+        reachabilityToken = Communicator.shared.reachability.observe { reachability in
+            guard reachability == .immediatelyReachable, let token = reachabilityToken else { return }
+            Communicator.shared.reachability.unobserve(token)
+            reachabilityToken = nil
             request()
         }
     }

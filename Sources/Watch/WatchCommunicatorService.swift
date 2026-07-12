@@ -525,17 +525,22 @@ final class WatchCommunicatorService {
 
     private func magicItemPressed(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
-        // Every failure reply carries the reason so the watch can show/log why instead of a generic
-        // "didn't run".
-        func fail(_ reason: String) {
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false, "error": reason]))
+        // Every failure reply carries a stable code (which the watch maps to a localized message)
+        // plus the technical reason (which the watch records in client events) instead of a bare
+        // `fired: false`.
+        func fail(_ code: MagicItemExecutionFailureCode, _ reason: String) {
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "fired": false,
+                "errorCode": code.rawValue,
+                "error": reason,
+            ]))
         }
 
         if let triggeredAt = message.content["triggeredAt"] as? TimeInterval {
             let age = Current.date().timeIntervalSince1970 - triggeredAt
             if age > 30 {
                 Current.Log.warning("Discarding stale magic item press received \(Int(age))s after it was triggered")
-                fail("Request expired before reaching the iPhone (\(Int(age))s old)")
+                fail(.staleRequest, "Request expired before reaching the iPhone (\(Int(age))s old)")
                 return
             }
         }
@@ -544,20 +549,20 @@ final class WatchCommunicatorService {
               let itemId = message.content["itemId"] as? String,
               let type = MagicItem.ItemType(rawValue: itemType) else {
             Current.Log.warning("Magic item press did not provide item type or item id")
-            fail("Invalid item type or id")
+            fail(.invalidItem, "Invalid item type or id")
             return
         }
 
         // Folders don't execute actions, they are containers
         if type == .folder {
-            fail("Folders don't execute actions")
+            fail(.notExecutable, "Folders don't execute actions")
             return
         }
 
         guard let serverId = message.content["serverId"] as? String,
               let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
             Current.Log.warning("Magic item press did not provide valid server info")
-            fail("Server not found on iPhone")
+            fail(.serverNotFound, "Server not found on iPhone")
             return
         }
 
@@ -583,7 +588,7 @@ final class WatchCommunicatorService {
         case .entity:
             guard let domain = MagicItem(id: itemId, serverId: serverId, type: .entity).domain,
                   let mainAction = domain.mainAction else {
-                fail("Entity domain has no executable action")
+                fail(.notExecutable, "Entity domain has no executable action")
                 return
             }
             callService(
@@ -600,9 +605,9 @@ final class WatchCommunicatorService {
             break
         case .assistPipeline, .assistPrompt:
             // Assist items are not supported on Watch
-            fail("Assist items are not supported on Watch")
+            fail(.notExecutable, "Assist items are not supported on Watch")
         case .unsupported:
-            fail("Unsupported item type")
+            fail(.notExecutable, "Unsupported item type")
         }
     }
 
@@ -616,10 +621,11 @@ final class WatchCommunicatorService {
         responseIdentifier: String
     ) {
         guard let api = Current.api(for: server) else {
-            message.reply(.init(
-                identifier: responseIdentifier,
-                content: ["fired": false, "error": "iPhone has no usable connection for this server"]
-            ))
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "fired": false,
+                "errorCode": MagicItemExecutionFailureCode.noConnection.rawValue,
+                "error": "iPhone has no usable connection for this server",
+            ]))
             Current.Log.error("No API available to call service")
             return
         }
@@ -637,10 +643,11 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
             case let .rejected(error):
                 Current.Log.error("Failed to run \(domain), error: \(error.localizedDescription)")
-                message.reply(.init(
-                    identifier: responseIdentifier,
-                    content: ["fired": false, "error": error.localizedDescription]
-                ))
+                message.reply(.init(identifier: responseIdentifier, content: [
+                    "fired": false,
+                    "errorCode": MagicItemExecutionFailureCode.serviceCallFailed.rawValue,
+                    "error": error.localizedDescription,
+                ]))
             }
         }
     }

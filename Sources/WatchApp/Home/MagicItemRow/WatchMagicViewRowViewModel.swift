@@ -86,9 +86,18 @@ final class WatchMagicViewRowViewModel: ObservableObject {
                 if message.content["fired"] as? Bool == true {
                     completion(true)
                 } else {
-                    // The iPhone includes the reason it couldn't run the item; surface and record it.
+                    // The iPhone replies with a stable code plus a technical reason. The reason feeds
+                    // the client-event log; the alert only shows it for `serviceCallFailed` (the
+                    // server's own error message) and falls back to the localized generic text for
+                    // the protocol-level codes, which are English-only diagnostics.
+                    let code = (message.content["errorCode"] as? String)
+                        .flatMap(MagicItemExecutionFailureCode.init(rawValue:))
                     let reason = message.content["error"] as? String
-                    self?.reportFailure(route: "iPhone", reason: reason)
+                    self?.reportFailure(
+                        route: "iPhone",
+                        reason: reason ?? code?.rawValue,
+                        alertMessage: code == .serviceCallFailed ? reason : nil
+                    )
                     completion(false)
                 }
             }
@@ -100,7 +109,12 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             )
         Communicator.shared.send(itemMessage, errorHandler: { [weak self] error in
             Current.Log.error("Received error when sending immediate message \(error)")
-            self?.reportFailure(route: "iPhone", reason: error.localizedDescription)
+            // WatchConnectivity errors are system errors with localized descriptions.
+            self?.reportFailure(
+                route: "iPhone",
+                reason: error.localizedDescription,
+                alertMessage: error.localizedDescription
+            )
             completion(false)
         })
     }
@@ -115,23 +129,30 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
         magicItem.execute(on: server, source: .Watch) { [weak self] success, error in
             if !success {
-                self?.reportFailure(route: "Watch", reason: error?.localizedDescription)
+                // These errors implement LocalizedError (connection / TLS / HTTP body / "no active
+                // URL"), so their descriptions are fit for the alert.
+                self?.reportFailure(
+                    route: "Watch",
+                    reason: error?.localizedDescription,
+                    alertMessage: error?.localizedDescription
+                )
             }
             completion(success)
         }
     }
 
-    /// Surface a failure to the user (alert on the row) and record it in the watch's client events so
-    /// the reason is diagnosable later from Settings → Troubleshooting, not just flashed on screen.
-    /// The reason is the underlying error when available (e.g. connection / TLS / HTTP body /
-    /// "no active URL"), or a generic message otherwise.
-    private func reportFailure(route: String, reason: String?) {
-        let message = reason ?? L10n.Watch.Home.Run.Error.message
+    /// Record a failure in the watch's client events (full technical `reason`, for Settings →
+    /// Troubleshooting) and surface an alert on the row. The alert shows `alertMessage` when the
+    /// failure carries user-fit text (a localized error or the server's own message); otherwise it
+    /// falls back to the localized generic run-error message.
+    private func reportFailure(route: String, reason: String?, alertMessage: String? = nil) {
+        let detail = reason ?? "unknown"
         Current.clientEventStore.addEvent(.init(
-            text: "Magic item \(item.id) failed to run via \(route): \(message)",
+            text: "Magic item \(item.id) failed to run via \(route): \(detail)",
             type: .serviceCall,
-            payload: ["item": item.id, "server": item.serverId, "route": route, "reason": message]
+            payload: ["item": item.id, "server": item.serverId, "route": route, "reason": detail]
         ))
+        let message = alertMessage ?? L10n.Watch.Home.Run.Error.message
         DispatchQueue.main.async { [weak self] in
             self?.errorMessage = message
         }
