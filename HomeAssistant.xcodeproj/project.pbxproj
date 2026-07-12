@@ -626,6 +626,7 @@
 		42EDEA79300315A50051FC9B /* AppIconShortcutItemsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE885300315A50051FC9B /* AppIconShortcutItemsUpdater.swift */; };
 		42EDEA7A300315A50051FC9B /* AppIconShortcutsConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE886300315A50051FC9B /* AppIconShortcutsConfigurationView.swift */; };
 		42EDEA7B300315A50051FC9B /* AppIconShortcutsConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE887300315A50051FC9B /* AppIconShortcutsConfigurationViewModel.swift */; };
+		A2B570C515522A3E535B6D09 /* AllFamiliesComplicationPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11E7A3B0AF1F0B81A43DA05 /* AllFamiliesComplicationPreview.swift */; };
 		42EDEA7C300315A50051FC9B /* CircularComplicationPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE889300315A50051FC9B /* CircularComplicationPreview.swift */; };
 		42EDEA7D300315A50051FC9B /* ComplicationFamilyPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE88A300315A50051FC9B /* ComplicationFamilyPreview.swift */; };
 		42EDEA7E300315A50051FC9B /* CornerComplicationPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE88B300315A50051FC9B /* CornerComplicationPreview.swift */; };
@@ -1977,6 +1978,7 @@
 		42EDE885300315A50051FC9B /* AppIconShortcutItemsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconShortcutItemsUpdater.swift; sourceTree = "<group>"; };
 		42EDE886300315A50051FC9B /* AppIconShortcutsConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconShortcutsConfigurationView.swift; sourceTree = "<group>"; };
 		42EDE887300315A50051FC9B /* AppIconShortcutsConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconShortcutsConfigurationViewModel.swift; sourceTree = "<group>"; };
+		B11E7A3B0AF1F0B81A43DA05 /* AllFamiliesComplicationPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllFamiliesComplicationPreview.swift; sourceTree = "<group>"; };
 		42EDE889300315A50051FC9B /* CircularComplicationPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularComplicationPreview.swift; sourceTree = "<group>"; };
 		42EDE88A300315A50051FC9B /* ComplicationFamilyPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFamilyPreview.swift; sourceTree = "<group>"; };
 		42EDE88B300315A50051FC9B /* CornerComplicationPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerComplicationPreview.swift; sourceTree = "<group>"; };
@@ -4161,6 +4163,7 @@
 		42EDE890300315A50051FC9B /* Preview */ = {
 			isa = PBXGroup;
 			children = (
+				B11E7A3B0AF1F0B81A43DA05 /* AllFamiliesComplicationPreview.swift */,
 				42EDE889300315A50051FC9B /* CircularComplicationPreview.swift */,
 				42EDE88A300315A50051FC9B /* ComplicationFamilyPreview.swift */,
 				42EDE88B300315A50051FC9B /* CornerComplicationPreview.swift */,
@@ -6432,6 +6435,7 @@
 				42EDEA79300315A50051FC9B /* AppIconShortcutItemsUpdater.swift in Sources */,
 				42EDEA7A300315A50051FC9B /* AppIconShortcutsConfigurationView.swift in Sources */,
 				42EDEA7B300315A50051FC9B /* AppIconShortcutsConfigurationViewModel.swift in Sources */,
+				A2B570C515522A3E535B6D09 /* AllFamiliesComplicationPreview.swift in Sources */,
 				42EDEA7C300315A50051FC9B /* CircularComplicationPreview.swift in Sources */,
 				42EDEA7D300315A50051FC9B /* ComplicationFamilyPreview.swift in Sources */,
 				42EDEA7E300315A50051FC9B /* CornerComplicationPreview.swift in Sources */,
