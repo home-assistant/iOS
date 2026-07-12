@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Nem sikerült csatlakozni a Home Assistanthoz";
 "connection.error.failed_connect.url" = "Az alkalmazás jelenleg csatlakozik a következőhöz:";
 "connection.error.generic_title" = "Ajjaj! Úgy tűnik, nem sikerült kapcsolatot létesíteni.";
-"connection.permission.internal_url.body1" = "Ahhoz, hogy biztonságosan elérhesse a Home Assistantot helyi hálózaton, engedélyeznie kell a helyhozzáférést („Mindig”).";
-"connection.permission.internal_url.body2" = "Ez az engedély lehetővé teszi a Home Assistant számára, hogy felismerje a vezeték nélküli hálózatot, amelyhez csatlakozik és helyi kapcsolatot létesítsen.";
 "connection.permission.internal_url.footer" = "Ha továbbra is szeretné használni a helyi URL-t és nem kíván helyhozzáférési engedélyt adni, kattintson az alábbi gombra, de kérjük, vegye figyelembe az ezzel járó biztonsági kockázatokat.";
 "connection.permission.internal_url.ignore.alert.title" = "Biztos benne?";
 "connection.permission.internal_url.title" = "Hozzáférési engedély";
@@ -1661,7 +1659,6 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "A szöveget körülvevő, a haladást mutató gyűrű.";
 "watch.configurator.sections.ring.header" = "Gyűrű";
-"watch.configurator.warning.templating_admin" = "FIGYELEM: Az óra kiegészítő kijelzőinek sablonkezeléséhez adminisztrátori jogosultság szükséges.";
 "watch.debug.delete_db.alert.failed.message" = "Nem sikerült törölni a konfigurációt, hiba: %@";
 "watch.debug.delete_db.alert.title" = "Biztosan törölni szeretné a watch konfigurációját? Ez a művelet nem vonható vissza.";
 "watch.debug.delete_db.reset.title" = "Konfiguráció visszaállítása";

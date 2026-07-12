@@ -816,8 +816,6 @@ public enum L10n {
       public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
     }
     public enum Talkback {
-      /// Microphone access is required for two-way audio. Enable it in Settings.
-      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_player.talkback.microphone_denied") }
       /// Start talking
       public static var start: String { return L10n.tr("Localizable", "camera_player.talkback.start") }
       /// Stop talking
@@ -1366,10 +1364,6 @@ public enum L10n {
     }
     public enum Permission {
       public enum InternalUrl {
-        /// To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').
-        public static var body1: String { return L10n.tr("Localizable", "connection.permission.internal_url.body1") }
-        /// This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.
-        public static var body2: String { return L10n.tr("Localizable", "connection.permission.internal_url.body2") }
         /// If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.
         public static var footer: String { return L10n.tr("Localizable", "connection.permission.internal_url.footer") }
         /// Permission access
@@ -5339,8 +5333,6 @@ public enum L10n {
         public static var family: String { return L10n.tr("Localizable", "watch.complications.builder.family") }
         /// Gauge range (optional)
         public static var gaugeRange: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range") }
-        /// Set a numeric range to show a ring or gauge from the state.
-        public static var gaugeRangeFooter: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range_footer") }
         /// Icon
         public static var icon: String { return L10n.tr("Localizable", "watch.complications.builder.icon") }
         /// Icon color
@@ -5383,8 +5375,6 @@ public enum L10n {
         public static var showValue: String { return L10n.tr("Localizable", "watch.complications.builder.show_value") }
         /// Show when inactive
         public static var showWhenInactive: String { return L10n.tr("Localizable", "watch.complications.builder.show_when_inactive") }
-        /// When your display is dimmed (wrist down).
-        public static var showWhenInactiveFooter: String { return L10n.tr("Localizable", "watch.complications.builder.show_when_inactive_footer") }
         /// %1$@ options
         public static func sizeOptions(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.complications.builder.size_options", String(describing: p1))
@@ -5449,8 +5439,6 @@ public enum L10n {
         public static var legacyFooter: String { return L10n.tr("Localizable", "watch.complications.root.legacy_footer") }
         /// Create
         public static var new: String { return L10n.tr("Localizable", "watch.complications.root.new") }
-        /// Build a complication from an entity or a custom template. The watch renders it using live data.
-        public static var newFooter: String { return L10n.tr("Localizable", "watch.complications.root.new_footer") }
         /// Reload Complications
         public static var reload: String { return L10n.tr("Localizable", "watch.complications.root.reload") }
         /// Reload Failed
@@ -5795,10 +5783,6 @@ public enum L10n {
           /// Ring
           public static var header: String { return L10n.tr("Localizable", "watch.configurator.sections.ring.header") }
         }
-      }
-      public enum Warning {
-        /// ATTENTION: For templating in watch complications the user needs to have admin role.
-        public static var templatingAdmin: String { return L10n.tr("Localizable", "watch.configurator.warning.templating_admin") }
       }
     }
     public enum Debug {

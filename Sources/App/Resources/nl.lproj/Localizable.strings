@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "We konden geen verbinding maken met Home Assistant";
 "connection.error.failed_connect.url" = "De app maakt nu verbinding met";
 "connection.error.generic_title" = "Oei! Het lijkt erop dat we geen verbinding kunnen maken.";
-"connection.permission.internal_url.body1" = "Om Home Assistant lokaal op een veilige manier te openen, moet je de locatie-toestemming ('Altijd') geven.";
-"connection.permission.internal_url.body2" = "Met deze toestemming kan Home Assistant het draadloze netwerk waarmee je verbonden bent detecteren en een lokale verbinding tot stand brengen.";
 "connection.permission.internal_url.footer" = "Als je toch de lokale URL wilt gebruiken en geen locatietoestemming wilt geven, kun je op de knop hieronder tikken, maar wees je bewust van de veiligheidsrisico's.";
 "connection.permission.internal_url.ignore.alert.title" = "Weet je het zeker?";
 "connection.permission.internal_url.title" = "Toestemming toegang";
@@ -1662,7 +1660,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "watch.configurator.sections.icon.header" = "Icoon";
 "watch.configurator.sections.ring.footer" = "De ring toont de voortgang van de tekst.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.configurator.warning.templating_admin" = "LET OP: Om sjablonen te kunnen maken voor complicaties in horloges, moet de gebruiker de beheerdersrol hebben.";
 "watch.debug.delete_db.alert.failed.message" = "Kan configuratie niet verwijderen, fout: %@";
 "watch.debug.delete_db.alert.title" = "Weet je zeker dat je de Watch-configuratie wilt verwijderen? Dit kan niet worden teruggedraaid";
 "watch.debug.delete_db.reset.title" = "Configuratie resetten";

@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Nous n'avons pas pu nous connecter à Home Assistant";
 "connection.error.failed_connect.url" = "L'app se connecte actuellement à";
 "connection.error.generic_title" = "Oups ! Il semble que nous ne parvenions pas à établir de connexion.";
-"connection.permission.internal_url.body1" = "Pour accéder à Home Assistant localement de manière sécurisée, vous devez accorder l'autorisation de localisation (« Toujours »).";
-"connection.permission.internal_url.body2" = "Cette autorisation permet à Home Assistant de détecter le réseau sans fil auquel vous êtes connecté et d'établir une connexion locale.";
 "connection.permission.internal_url.footer" = "Si vous souhaitez tout de même utiliser l'URL locale sans accorder l'autorisation de localisation, vous pouvez appuyer sur le bouton ci-dessous, mais soyez conscient des risques de sécurité.";
 "connection.permission.internal_url.ignore.alert.title" = "Êtes-vous sûr ?";
 "connection.permission.internal_url.title" = "Accès aux autorisations";
@@ -1662,7 +1660,6 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "watch.configurator.sections.icon.header" = "Icône";
 "watch.configurator.sections.ring.footer" = "L'anneau montrant les progrès entourant le texte.";
 "watch.configurator.sections.ring.header" = "Anneau";
-"watch.configurator.warning.templating_admin" = "ATTENTION : pour l'utilisation de modèles dans les complications de la montre, l'utilisateur doit avoir le rôle d'administrateur.";
 "watch.debug.delete_db.alert.failed.message" = "Échec de la suppression de la configuration, erreur : %@";
 "watch.debug.delete_db.alert.title" = "Êtes-vous sûr de vouloir supprimer la configuration de la montre ? Cette opération ne peut pas être annulée";
 "watch.debug.delete_db.reset.title" = "Réinitialiser la configuration";
