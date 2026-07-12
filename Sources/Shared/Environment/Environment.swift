@@ -170,6 +170,17 @@ public class AppEnvironment {
             Current.onboardingObservation.needed(.unauthenticated(server.identifier.rawValue, statusCode))
         }
 
+        // Point the HADesignSystem package's injected environment at the app's localized strings and
+        // constants. Like HANetworking, the package can't import Shared (cycle), so it reads these
+        // through `HADesignSystemEnvironment`.
+        HADesignSystemEnvironment.current.strings = with(.init()) {
+            $0.collapsibleViewCollapse = L10n.Component.CollapsibleView.collapse
+            $0.collapsibleViewExpand = L10n.Component.CollapsibleView.expand
+            $0.privacyLabel = L10n.privacyLabel
+            $0.reportIssueButtonTitle = L10n.Experimental.Badge.ReportIssueButton.title
+        }
+        HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
+
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
     }
