@@ -643,6 +643,9 @@ public extension MagicItem {
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        // Bound the wait so a dead route fails visibly instead of hanging the row for the default 60s
+        // (the UI resets after ~4s, but the task would otherwise keep a session + tokens alive).
+        request.timeoutInterval = 15
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")

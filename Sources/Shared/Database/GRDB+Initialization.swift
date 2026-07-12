@@ -124,6 +124,20 @@ public extension DatabaseQueue {
     }
 }
 
+/// Posts GRDB's database suspension notifications without requiring callers to import GRDB
+/// (app targets don't all link it directly). Suspending while backgrounded prevents the system from
+/// killing the process with 0xdead10cc for holding the app-group SQLite file lock during suspension —
+/// see https://github.com/groue/GRDB.swift/issues/1626.
+public enum AppDatabaseSuspension {
+    public static func suspend() {
+        NotificationCenter.default.post(name: Database.suspendNotification, object: nil)
+    }
+
+    public static func resume() {
+        NotificationCenter.default.post(name: Database.resumeNotification, object: nil)
+    }
+}
+
 /// Legacy watch complications table. Defined here (rather than a new file) so it joins the Shared
 /// target without a project-file change. Mirrors the `WatchConfigTable` pattern.
 final class WatchComplicationTable: DatabaseTableProtocol {
