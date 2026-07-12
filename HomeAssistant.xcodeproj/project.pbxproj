@@ -2506,7 +2506,6 @@
 		42EDBE6E3002FC080051FC9B /* AppIconShortcuts */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppIconShortcuts; sourceTree = "<group>"; };
 		42EDBE723002FC080051FC9B /* Assist */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Assist; sourceTree = "<group>"; };
 		42EDBE783002FC080051FC9B /* Domain */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Domain; sourceTree = "<group>"; };
-		42EDBE7F3002FC080051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
 		42EDBE883002FC080051FC9B /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDC0BD3002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		42EDBE983002FC080051FC9B /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		42EDBEFA3002FC080051FC9B /* API */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = API; sourceTree = "<group>"; };
@@ -4788,7 +4787,6 @@
 				42EDC09B3002FC090051FC9B /* Resources */,
 				42EDBE693002FC080051FC9B /* Services */,
 				42EDC04D3002FC090051FC9B /* Settings */,
-				42EDBE7F3002FC080051FC9B /* Utilities */,
 				42EDC0153002FC090051FC9B /* Watch */,
 				42EDBE603002FC080051FC9B /* Widget */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
