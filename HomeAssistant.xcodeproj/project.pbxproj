@@ -219,6 +219,8 @@
 		42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D352FFE882F004EB33B /* PromiseKitDynamic */; };
 		42886D382FFE883A004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D372FFE883A004EB33B /* HAKit */; };
 		42886D3C2FFE8841004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3B2FFE8841004EB33B /* PromiseKitDynamic */; };
+		42ED095B30033B750051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095A30033B750051FC9B /* Dependencies */; };
+		42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095C30033B7D0051FC9B /* Dependencies */; };
 		42886D3E2FFE884E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3D2FFE884E004EB33B /* HAKit */; };
 		42886D422FFE8853004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D412FFE8853004EB33B /* PromiseKitDynamic */; };
 		42886D442FFE885E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D432FFE885E004EB33B /* HAKit */; };
@@ -2730,6 +2732,7 @@
 				42886D182FFE5C19004EB33B /* Sodium in Frameworks */,
 				42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */,
 				42886D3C2FFE8841004EB33B /* PromiseKitDynamic in Frameworks */,
+				42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */,
 				09C9974C22F113423EE3B3DC /* GRDB in Frameworks */,
 				0D20E5697E7DA70D01E77A51 /* RealmSwift in Frameworks */,
 			);
@@ -2757,6 +2760,7 @@
 				DE51600000000000000000C3 /* HAUtilities in Frameworks */,
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
 				42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */,
+				42ED095B30033B750051FC9B /* Dependencies in Frameworks */,
 				CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */,
 				42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */,
 				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
@@ -5319,6 +5323,7 @@
 				42886D172FFE5C19004EB33B /* Sodium */,
 				42886D372FFE883A004EB33B /* HAKit */,
 				42886D3B2FFE8841004EB33B /* PromiseKitDynamic */,
+				42ED095C30033B7D0051FC9B /* Dependencies */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -5431,6 +5436,7 @@
 				42886D152FFE5C12004EB33B /* Sodium */,
 				42886D312FFE8829004EB33B /* HAKit */,
 				42886D352FFE882F004EB33B /* PromiseKitDynamic */,
+				42ED095A30033B750051FC9B /* Dependencies */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -5707,6 +5713,7 @@
 				42886D282FFE8366004EB33B /* XCRemoteSwiftPackageReference "starscream" */,
 				42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */,
+				42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 			);
 			preferredProjectObjectVersion = 55;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -8369,6 +8376,14 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.14.1;
+			};
+		};
 		420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
@@ -8524,6 +8539,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		42ED095A30033B750051FC9B /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+		42ED095C30033B7D0051FC9B /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
 		294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
