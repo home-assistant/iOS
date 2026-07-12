@@ -82,7 +82,13 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.latestLoadError)
     }
 
-    func testDisconnectedRetryUsesResetFrontendAction() {
+    func testDisconnectedRetryClearsFrontendCacheThenUsesResetFrontendAction() {
+        let original = Current.websiteDataStoreHandler
+        defer { Current.websiteDataStoreHandler = original }
+        let handler = FakeWebsiteDataStoreHandler()
+        handler.invokesCompletion = true
+        Current.websiteDataStoreHandler = handler
+
         let sut = makeSUT()
         let overlayState = WebFrontendOverlayState()
         var resetCalled = false
@@ -96,6 +102,8 @@ final class WebViewControllerTests: XCTestCase {
         sut.showEmptyState()
         overlayState.emptyState?.retryAction()
 
+        XCTAssertEqual(handler.cleanCacheCallCount, 1)
+        XCTAssertEqual(handler.lastDataTypes, WebsiteDataStoreHandlerImpl.frontendAssetDataTypes)
         XCTAssertTrue(resetCalled)
         XCTAssertNil(overlayState.emptyState)
     }
@@ -254,10 +262,14 @@ final class WebViewControllerTests: XCTestCase {
 private final class FakeWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
     private(set) var cleanCacheCallCount = 0
     private(set) var lastDataTypes: Set<String>?
+    var invokesCompletion = false
 
     func cleanCache(dataTypes: Set<String>, completion: (() -> Void)?) {
         cleanCacheCallCount += 1
         lastDataTypes = dataTypes
+        if invokesCompletion {
+            completion?()
+        }
     }
 }
 

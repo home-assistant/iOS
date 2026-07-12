@@ -47,6 +47,14 @@ extension WebViewController {
         )
     }
 
+    func retryClearingFrontendCache() {
+        Current.Log.info("Resetting frontend cache for \(server.identifier) before empty-state retry")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
+                self?.recoverDisconnectedFrontend()
+            }
+    }
+
     func recoverDisconnectedFrontend() {
         if let resetFrontendAction {
             resetFrontendAction()
@@ -63,7 +71,7 @@ extension WebViewController {
             showsErrorDetailsButton: shouldShowErrorDetailsButton,
             availableReauthURLTypes: availableReauthURLTypes(for: server),
             retryAction: { [weak self] in
-                self?.recoverDisconnectedFrontend()
+                self?.retryClearingFrontendCache()
             },
             settingsAction: { [weak self] in self?.showSettingsViewController() },
             errorDetailsAction: { [weak self] in self?.presentLatestLoadErrorDetails() },
