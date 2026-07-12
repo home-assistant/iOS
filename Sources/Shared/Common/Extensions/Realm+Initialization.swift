@@ -209,8 +209,14 @@ public extension Realm {
             )
 
             do {
-                // temporarily provide an in-memory instance so we don't crash
-                return try Realm(configuration: .init(inMemoryIdentifier: "Fallback"))
+                // Temporarily provide an in-memory instance so we don't crash. The identifier must be
+                // unique per call: in-memory Realms share schema by identifier, so reusing one across
+                // calls with different `objectTypes` throws a schema mismatch — which used to hit the
+                // fatalError below and take the whole app down at launch.
+                return try Realm(configuration: .init(
+                    inMemoryIdentifier: "Fallback-\(UUID().uuidString)",
+                    objectTypes: objectTypes
+                ))
             } catch {
                 fatalError(String(describing: error))
             }
@@ -294,7 +300,10 @@ public extension Realm {
             timer.fire()
         }
         #else
-        fatalError("\(message) \(error.localizedDescription)")
+        // Don't crash here: on watchOS this ran before `getRealm`'s in-memory fallback could engage,
+        // so any Realm open error (e.g. file locked during a background wake) killed the app instead
+        // of degrading to the fallback store.
+        Current.Log.error("Realm error (continuing with fallback): \(message) \(error.localizedDescription)")
         #endif
     }
 
