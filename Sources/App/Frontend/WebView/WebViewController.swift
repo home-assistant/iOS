@@ -61,9 +61,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
-    /// Track the timestamp of the last pull-to-refresh action
-    var lastPullToRefreshTimestamp: Date?
-
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
         improvManager: ImprovManager.shared
