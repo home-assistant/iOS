@@ -1,6 +1,7 @@
 import CoreBluetooth
 import CoreLocation
 import CoreMotion
+import Dependencies
 import Foundation
 import GRDB
 import HAKit
@@ -30,13 +31,33 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equata
 private let underlyingWasSetUp = OSAllocatedUnfairLock(initialState: false)
 private var underlyingCurrent = AppEnvironment()
 
+private enum AppEnvironmentDependencyKey: DependencyKey {
+    static var liveValue: AppEnvironment { underlyingCurrent }
+    // Tests share the global instance so pre-bridge semantics are preserved;
+    // suites opt into an isolated environment via `withCurrent`.
+    static var testValue: AppEnvironment { underlyingCurrent }
+}
+
+public extension DependencyValues {
+    /// The app's operating environment. Prefer `@Dependency(\.environment)` over `Current` in new code.
+    var environment: AppEnvironment {
+        get { self[AppEnvironmentDependencyKey.self] }
+        set { self[AppEnvironmentDependencyKey.self] = newValue }
+    }
+}
+
 public var Current: AppEnvironment {
-    get {
-        let result = underlyingCurrent
-        // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
-        // reentrant, which is a requirement for touching things like Log but also touching more unexpected
-        // things like accessing any L10n helper value, which funnels through Current as well.
-        // so this is a test-and-set: the flag flips inside the lock, but setup() runs outside it.
+    // resolved through the dependency system so `withCurrent`/`withDependencies` can override it
+    // task-locally; outside any override this is the process-wide global, exactly as before.
+    @Dependency(\.environment) var environment
+    let result = environment
+    // one-time setup applies only to the global environment; scoped overrides are
+    // responsible for their own configuration.
+    // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
+    // reentrant, which is a requirement for touching things like Log but also touching more unexpected
+    // things like accessing any L10n helper value, which funnels through Current as well.
+    // so this is a test-and-set: the flag flips inside the lock, but setup() runs outside it.
+    if result === underlyingCurrent {
         let needsSetup = underlyingWasSetUp.withLock { wasSetUp -> Bool in
             if wasSetUp {
                 return false
@@ -47,10 +68,33 @@ public var Current: AppEnvironment {
         if needsSetup {
             result.setup()
         }
-        return result
     }
-    set {
-        underlyingCurrent = newValue
+    return result
+}
+
+/// Runs `operation` with `Current` (and `@Dependency(\.environment)`) resolving to `environment`,
+/// including in structured-concurrency child tasks spawned inside it. Work that hops to a dispatch
+/// queue or PromiseKit callback does not inherit the override and falls back to the global environment.
+public func withCurrent<R>(
+    _ environment: AppEnvironment,
+    operation: () throws -> R
+) rethrows -> R {
+    try withDependencies {
+        $0.environment = environment
+    } operation: {
+        try operation()
+    }
+}
+
+/// Async variant of the synchronous `withCurrent`.
+public func withCurrent<R>(
+    _ environment: AppEnvironment,
+    operation: () async throws -> R
+) async rethrows -> R {
+    try await withDependencies {
+        $0.environment = environment
+    } operation: {
+        try await operation()
     }
 }
 

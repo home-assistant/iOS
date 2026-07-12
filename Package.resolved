@@ -34,6 +34,14 @@
         }
       },
       {
+        "package": "combine-schedulers",
+        "repositoryURL": "https://github.com/pointfreeco/combine-schedulers",
+        "state": {
+          "revision": "dcccb979a2183b8df3334237e3dc1ae2b4116a86",
+          "version": "1.2.0"
+        }
+      },
+      {
         "package": "debugswift",
         "repositoryURL": "https://github.com/DebugSwift/DebugSwift.git",
         "state": {
@@ -209,11 +217,35 @@
         }
       },
       {
+        "package": "swift-clocks",
+        "repositoryURL": "https://github.com/pointfreeco/swift-clocks",
+        "state": {
+          "revision": "72d749bf341b78851203066ab421869b783ec42a",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "package": "swift-concurrency-extras",
+        "repositoryURL": "https://github.com/pointfreeco/swift-concurrency-extras",
+        "state": {
+          "revision": "a90e2e40a7a840a853dd29e57cbef5dbb72c9d5b",
+          "version": "1.4.0"
+        }
+      },
+      {
         "package": "swift-custom-dump",
         "repositoryURL": "https://github.com/pointfreeco/swift-custom-dump",
         "state": {
           "revision": "a8cd6c976f335ed361dcecddb0dc39ebda51bc3e",
           "version": "1.6.1"
+        }
+      },
+      {
+        "package": "swift-dependencies",
+        "repositoryURL": "https://github.com/pointfreeco/swift-dependencies",
+        "state": {
+          "revision": "8dc1fbf2f6255a73dec53b4648164884898db4c5",
+          "version": "1.14.1"
         }
       },
       {

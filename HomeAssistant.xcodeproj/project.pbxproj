@@ -424,6 +424,7 @@
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
+		1A693E34211ADFAB76155607 /* MacBrowserSceneLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730D7B17F8A2B19BCA181F91 /* MacBrowserSceneLauncher.swift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BACC6CFCE37E6AA2DC862F4 /* HAWatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8762CF6B50A0FB05013908A /* HAWatchConnectivity.swift */; };
@@ -657,7 +658,6 @@
 		425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */; };
 		425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */; };
 		425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.test.swift */; };
-		52386BFCFAFCBE783D0BCDD9 /* MacBrowserSceneLauncher.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BE2F311BDB2F205F7432FF /* MacBrowserSceneLauncher.test.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
 		4256A70D2F5ECBB3003D464F /* SpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4256A70C2F5ECBB3003D464F /* SpeechTranscriber.swift */; };
@@ -1052,6 +1052,8 @@
 		42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */; };
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
+		42ED095B30033B750051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095A30033B750051FC9B /* Dependencies */; };
+		42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095C30033B7D0051FC9B /* Dependencies */; };
 		42EEEFE22E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE32E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
@@ -1160,6 +1162,7 @@
 		5002BDAF2FEE000100BEEF01 /* WhatsNewEngine.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5002BDAE2FEE000100BEEF01 /* WhatsNewEngine.test.swift */; };
 		50099BBED6A1441E8A6B6C5C /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = EBD991757B454B819925F6B9 /* SFSafeSymbols */; };
 		5189F6FB2CC89777A8E2172A /* KioskBrightnessSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D3EF229B8D9A2DB7DF078A /* KioskBrightnessSensor.swift */; };
+		52386BFCFAFCBE783D0BCDD9 /* MacBrowserSceneLauncher.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BE2F311BDB2F205F7432FF /* MacBrowserSceneLauncher.test.swift */; };
 		52599DB740A83DDEC7E2725D /* HAWatchConnectivityContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A663A6E9D2634AAD5D5D5B4 /* HAWatchConnectivityContext.swift */; };
 		54B2C38995814098B677135A /* WidgetCommonlyUsedEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEEA3344F064DB183F46C47 /* WidgetCommonlyUsedEntities.swift */; };
 		56EA37CD70DF98104A87EB0C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A49460AC07F40DB7EE5373E8 /* RealmSwift */; };
@@ -1530,7 +1533,6 @@
 		DE51600000000000000000B2 /* HADesignSystemExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE51600000000000000000B1 /* HADesignSystemExports.swift */; };
 		DE51600000000000000000B3 /* HADesignSystemExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE51600000000000000000B1 /* HADesignSystemExports.swift */; };
 		DE8048842D9FB6C90459E229 /* QuickActionWindowSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */; };
-		1A693E34211ADFAB76155607 /* MacBrowserSceneLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730D7B17F8A2B19BCA181F91 /* MacBrowserSceneLauncher.swift */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		E60778133EC44B10A61D551C /* TestFlightCommunicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */; };
 		E8EEF4E584B6F9F24A3F24C8 /* WatchConnectivityAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */; };
@@ -2176,9 +2178,9 @@
 		14EE842480AD406D8305F377 /* TestFlightCommunicationEngine.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationEngine.test.swift; sourceTree = "<group>"; };
 		1945E8E386664E5A88668E77 /* WebViewController+ReAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+ReAuth.swift"; sourceTree = "<group>"; };
 		1948705C52B43ACD36FD0B32 /* QuickActionWindowSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionWindowSceneDelegate.swift; sourceTree = "<group>"; };
-		730D7B17F8A2B19BCA181F91 /* MacBrowserSceneLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBrowserSceneLauncher.swift; sourceTree = "<group>"; };
 		1CCF41D72CA895DB501333EF /* KioskModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskModeManager.swift; sourceTree = "<group>"; };
 		212E30CB76DE4ED1B6E317CD /* TestFlightCommunicationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationModels.swift; sourceTree = "<group>"; };
+		26BE2F311BDB2F205F7432FF /* MacBrowserSceneLauncher.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBrowserSceneLauncher.test.swift; sourceTree = "<group>"; };
 		28B40938BEB944969AAB2895 /* CarPlayPreferredServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPreferredServer.swift; sourceTree = "<group>"; };
 		2A663A6E9D2634AAD5D5D5B4 /* HAWatchConnectivityContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAWatchConnectivityContext.swift; sourceTree = "<group>"; };
 		2F5A1F2C65420338C176B7BD /* CameraZoomGestureOverlay.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CameraZoomGestureOverlay.swift; sourceTree = "<group>"; };
@@ -2370,7 +2372,6 @@
 		425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayDomainsListTemplate+Build.swift"; sourceTree = "<group>"; };
 		425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListViewModel.swift; sourceTree = "<group>"; };
 		425573D92B57DDE000145217 /* WindowScenesManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.test.swift; sourceTree = "<group>"; };
-		26BE2F311BDB2F205F7432FF /* MacBrowserSceneLauncher.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBrowserSceneLauncher.test.swift; sourceTree = "<group>"; };
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
@@ -2918,6 +2919,7 @@
 		6F482639B10AA7F76717F84F /* WatchConnectivity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.test.swift; sourceTree = "<group>"; };
 		7182697D2C66EC0B42D73AC2 /* CarPlayAssistSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistSession.swift; sourceTree = "<group>"; };
 		7188E89B38708CCA5D2F47CA /* HAWatchConnectivityState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAWatchConnectivityState.swift; sourceTree = "<group>"; };
+		730D7B17F8A2B19BCA181F91 /* MacBrowserSceneLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBrowserSceneLauncher.swift; sourceTree = "<group>"; };
 		7A0B01160F7B467E8FE2C7C7 /* TestFlightCommunicationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlightCommunicationEngine.swift; sourceTree = "<group>"; };
 		81244555FB7D99C165A57AFA /* WatchConnectivityAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityAliases.swift; sourceTree = "<group>"; };
 		892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/DatabaseMigration.test.swift; sourceTree = "<group>"; };
@@ -3555,6 +3557,7 @@
 				42886D182FFE5C19004EB33B /* Sodium in Frameworks */,
 				42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */,
 				42886D3C2FFE8841004EB33B /* PromiseKitDynamic in Frameworks */,
+				42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */,
 				09C9974C22F113423EE3B3DC /* GRDB in Frameworks */,
 				0D20E5697E7DA70D01E77A51 /* RealmSwift in Frameworks */,
 			);
@@ -3578,6 +3581,7 @@
 				DE51600000000000000000A3 /* HADesignSystem in Frameworks */,
 				223B508E6D6C41C599FC6838 /* SFSafeSymbols in Frameworks */,
 				42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */,
+				42ED095B30033B750051FC9B /* Dependencies in Frameworks */,
 				CEA1C4A10000000000000021 /* KeychainAccess in Frameworks */,
 				42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */,
 				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
@@ -7324,6 +7328,7 @@
 				42886D172FFE5C19004EB33B /* Sodium */,
 				42886D372FFE883A004EB33B /* HAKit */,
 				42886D3B2FFE8841004EB33B /* PromiseKitDynamic */,
+				42ED095C30033B7D0051FC9B /* Dependencies */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -7407,6 +7412,7 @@
 				42886D152FFE5C12004EB33B /* Sodium */,
 				42886D312FFE8829004EB33B /* HAKit */,
 				42886D352FFE882F004EB33B /* PromiseKitDynamic */,
+				42ED095A30033B750051FC9B /* Dependencies */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -7673,6 +7679,7 @@
 				42886D282FFE8366004EB33B /* XCRemoteSwiftPackageReference "starscream" */,
 				42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */,
+				42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -11155,6 +11162,14 @@
 				minimumVersion = 7.1.5;
 			};
 		};
+		42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.14.1;
+			};
+		};
 		42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DebugSwift/DebugSwift.git";
@@ -11477,6 +11492,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */;
 			productName = XCGLogger;
+		};
+		42ED095A30033B750051FC9B /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+		42ED095C30033B7D0051FC9B /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
 		};
 		42F384042FB49C9500390AFC /* DebugSwift */ = {
 			isa = XCSwiftPackageProductDependency;
