@@ -334,8 +334,10 @@ struct WatchComplicationBuilderEditView: View {
         // Start expanded only when the config already carries per-size customization, so editing a
         // previously-customized complication doesn't hide the user's settings.
         _isCustomizing = State(initialValue: initial.families?.isEmpty == false)
-        _useCustomColors = State(initialValue: initial.iconColor != nil
-            || (initial.families?.values.contains { $0.tint != nil || $0.textColor != nil } ?? false))
+        _useCustomColors = State(
+            initialValue: initial.iconColor != nil
+                || (initial.families?.values.contains { $0.tint != nil || $0.textColor != nil } ?? false)
+        )
     }
 
     private var server: Server? {
@@ -673,90 +675,92 @@ struct WatchComplicationBuilderEditView: View {
             }
 
             if isCustomizing {
-            // Per-size display options, bound to the size selected in the preview above.
-            Section {
-                Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
-                Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
-                // Inline has no icon.
-                if currentFamily != .inline {
-                    Toggle(isOn: showIconBinding) { Text(L10n.Watch.Complications.Builder.showIcon) }
-                }
-                if config.kind == .entity, entityUnit != nil || !(config.unitOverride ?? "").isEmpty {
-                    Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
-                }
-
-                if familyHasProgressBar {
-                    Toggle(isOn: showGaugeBinding) { Text(verbatim: gaugeToggleTitle) }
-                    if config.showsGauge(for: currentFamily) {
-                        // Only the circular gauge has an open/ring style choice.
-                        if currentFamily == .circular {
-                            Picker(selection: gaugeStyleBinding) {
-                                ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
-                                    Text(verbatim: style.title).tag(style)
-                                }
-                            } label: {
-                                Text(L10n.Watch.Complications.GaugeStyle.title)
-                            }
-                            .pickerStyle(.segmented)
-                        }
-                        // Numeric range + min/max labels only apply to entity gauges.
-                        if config.kind == .entity {
-                            numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
-                            numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
-                            if config.gaugeRange(for: currentFamily) != nil {
-                                Toggle(isOn: showMinBinding) {
-                                    Text(L10n.Watch.Complications.Builder.showMin)
-                                }
-                                Toggle(isOn: showMaxBinding) {
-                                    Text(L10n.Watch.Complications.Builder.showMax)
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } header: {
-                // Family switcher, so the size being customized can be changed without scrolling
-                // back up to the preview.
-                Picker(selection: $config.widgetFamily) {
-                    ForEach(WatchComplicationConfig.Family.allCases) { family in
-                        Text(verbatim: family.title).tag(family)
-                    }
-                } label: { EmptyView() }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: .infinity)
-                    .textCase(nil)
-                    .padding(.bottom, DesignSystem.Spaces.one)
-            } footer: {
-                Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
-            }
-
-            // Colors are a further opt-in under Customize. Inline is rendered in the watch-face tint,
-            // so it has no custom colors.
-            if currentFamily != .inline {
+                // Per-size display options, bound to the size selected in the preview above.
                 Section {
-                    Toggle(isOn: $useCustomColors.animation()) { Text(L10n.Watch.Complications.Builder.customColors) }
-                    if useCustomColors {
-                        if familyHasProgressBar, config.showsGauge(for: currentFamily) {
-                            ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
+                    Toggle(isOn: showNameBinding) { Text(L10n.Watch.Complications.Builder.showName) }
+                    Toggle(isOn: showValueBinding) { Text(L10n.Watch.Complications.Builder.showValue) }
+                    // Inline has no icon.
+                    if currentFamily != .inline {
+                        Toggle(isOn: showIconBinding) { Text(L10n.Watch.Complications.Builder.showIcon) }
+                    }
+                    if config.kind == .entity, entityUnit != nil || !(config.unitOverride ?? "").isEmpty {
+                        Toggle(isOn: showUnitBinding) { Text(L10n.Watch.Complications.Builder.showUnit) }
+                    }
+
+                    if familyHasProgressBar {
+                        Toggle(isOn: showGaugeBinding) { Text(verbatim: gaugeToggleTitle) }
+                        if config.showsGauge(for: currentFamily) {
+                            // Only the circular gauge has an open/ring style choice.
+                            if currentFamily == .circular {
+                                Picker(selection: gaugeStyleBinding) {
+                                    ForEach(WatchComplicationConfig.GaugeStyle.allCases) { style in
+                                        Text(verbatim: style.title).tag(style)
+                                    }
+                                } label: {
+                                    Text(L10n.Watch.Complications.GaugeStyle.title)
+                                }
+                                .pickerStyle(.segmented)
+                            }
+                            // Numeric range + min/max labels only apply to entity gauges.
+                            if config.kind == .entity {
+                                numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
+                                numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
+                                if config.gaugeRange(for: currentFamily) != nil {
+                                    Toggle(isOn: showMinBinding) {
+                                        Text(L10n.Watch.Complications.Builder.showMin)
+                                    }
+                                    Toggle(isOn: showMaxBinding) {
+                                        Text(L10n.Watch.Complications.Builder.showMax)
+                                    }
+                                }
+                            }
                         }
-                        if config.showsIcon(for: currentFamily) {
+                    }
+
+                } header: {
+                    // Family switcher, so the size being customized can be changed without scrolling
+                    // back up to the preview.
+                    Picker(selection: $config.widgetFamily) {
+                        ForEach(WatchComplicationConfig.Family.allCases) { family in
+                            Text(verbatim: family.title).tag(family)
+                        }
+                    } label: { EmptyView() }
+                        .pickerStyle(.segmented)
+                        .frame(maxWidth: .infinity)
+                        .textCase(nil)
+                        .padding(.bottom, DesignSystem.Spaces.one)
+                } footer: {
+                    Text(L10n.Watch.Complications.Builder.sizeOptionsFooter)
+                }
+
+                // Colors are a further opt-in under Customize. Inline is rendered in the watch-face tint,
+                // so it has no custom colors.
+                if currentFamily != .inline {
+                    Section {
+                        Toggle(isOn: $useCustomColors.animation()) {
+                            Text(L10n.Watch.Complications.Builder.customColors)
+                        }
+                        if useCustomColors {
+                            if familyHasProgressBar, config.showsGauge(for: currentFamily) {
+                                ColorPicker(gaugeColorTitle, selection: tintBinding, supportsOpacity: false)
+                            }
+                            if config.showsIcon(for: currentFamily) {
+                                ColorPicker(
+                                    L10n.Watch.Complications.Builder.iconColor,
+                                    selection: iconColorBinding,
+                                    supportsOpacity: false
+                                )
+                            }
                             ColorPicker(
-                                L10n.Watch.Complications.Builder.iconColor,
-                                selection: iconColorBinding,
+                                L10n.Watch.Complications.Builder.textColor,
+                                selection: textColorBinding,
                                 supportsOpacity: false
                             )
                         }
-                        ColorPicker(
-                            L10n.Watch.Complications.Builder.textColor,
-                            selection: textColorBinding,
-                            supportsOpacity: false
-                        )
+                    } header: {
+                        Text(L10n.Watch.Complications.Builder.colors)
                     }
-                } header: {
-                    Text(L10n.Watch.Complications.Builder.colors)
                 }
-            }
             } // end if isCustomizing
         }
         .navigationTitle(Text(

@@ -112,8 +112,10 @@ extension ComplicationPreviewContext {
         var iconImage: Image?
         if familyConfig.showsIcon(for: family), let iconName = config.iconName {
             let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
-            iconImage = Image(uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
-                .image(ofSize: CGSize(width: 64, height: 64), color: color))
+            iconImage = Image(
+                uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
+                    .image(ofSize: CGSize(width: 64, height: 64), color: color)
+            )
         }
 
         return ComplicationPreviewContext(config: familyConfig, value: value, fraction: fraction, iconImage: iconImage)
@@ -122,7 +124,10 @@ extension ComplicationPreviewContext {
     /// A representative placeholder shown before the user picks an entity/template, so every size renders
     /// meaningful sample content instead of an empty face. Honors the config's toggles, colors, chosen
     /// icon, and any typed name.
-    static func mock(config: WatchComplicationConfig, family: WatchComplicationConfig.Family) -> ComplicationPreviewContext {
+    static func mock(
+        config: WatchComplicationConfig,
+        family: WatchComplicationConfig.Family
+    ) -> ComplicationPreviewContext {
         var familyConfig = config
         familyConfig.widgetFamily = family
         var iconImage: Image?
@@ -274,7 +279,12 @@ struct WatchComplicationLivePreview: View {
     private var context: ComplicationPreviewContext {
         switch config.kind {
         case .entity:
-            return .entity(config: config, family: config.widgetFamily, state: entityState, attributes: entityAttributes)
+            return .entity(
+                config: config,
+                family: config.widgetFamily,
+                state: entityState,
+                attributes: entityAttributes
+            )
         case .customTemplate:
             return ComplicationPreviewContext(config: config, value: value, fraction: fraction, iconImage: iconImage)
         }

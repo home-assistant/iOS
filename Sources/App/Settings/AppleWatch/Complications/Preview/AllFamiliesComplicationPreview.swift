@@ -141,8 +141,10 @@ struct AllFamiliesComplicationPreview: View {
             var iconImage: Image?
             if familyConfig.showsIcon(for: family), let iconName = config.iconName {
                 let color = config.iconColor.map { UIColor(hex: $0) } ?? .white
-                iconImage = Image(uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
-                    .image(ofSize: CGSize(width: 64, height: 64), color: color))
+                iconImage = Image(
+                    uiImage: MaterialDesignIcons(serversideValueNamed: iconName)
+                        .image(ofSize: CGSize(width: 64, height: 64), color: color)
+                )
             }
             return ComplicationPreviewContext(
                 config: familyConfig, value: value, fraction: fraction, iconImage: iconImage
