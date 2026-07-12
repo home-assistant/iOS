@@ -86,7 +86,6 @@ final class WebViewControllerTests: XCTestCase {
         let original = Current.websiteDataStoreHandler
         defer { Current.websiteDataStoreHandler = original }
         let handler = FakeWebsiteDataStoreHandler()
-        handler.invokesCompletion = true
         Current.websiteDataStoreHandler = handler
 
         let sut = makeSUT()
@@ -104,6 +103,10 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertEqual(handler.cleanCacheCallCount, 1)
         XCTAssertEqual(handler.lastDataTypes, WebsiteDataStoreHandlerImpl.frontendAssetDataTypes)
+        XCTAssertFalse(resetCalled, "retry must wait for cache clearing to finish before resetting")
+
+        handler.invokePendingCompletion()
+
         XCTAssertTrue(resetCalled)
         XCTAssertNil(overlayState.emptyState)
     }
@@ -262,14 +265,18 @@ final class WebViewControllerTests: XCTestCase {
 private final class FakeWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
     private(set) var cleanCacheCallCount = 0
     private(set) var lastDataTypes: Set<String>?
-    var invokesCompletion = false
+    private var pendingCompletion: (() -> Void)?
 
     func cleanCache(dataTypes: Set<String>, completion: (() -> Void)?) {
         cleanCacheCallCount += 1
         lastDataTypes = dataTypes
-        if invokesCompletion {
-            completion?()
-        }
+        pendingCompletion = completion
+    }
+
+    func invokePendingCompletion() {
+        let completion = pendingCompletion
+        pendingCompletion = nil
+        completion?()
     }
 }
 
