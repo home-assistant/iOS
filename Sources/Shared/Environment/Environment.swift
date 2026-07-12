@@ -85,6 +85,44 @@ public class AppEnvironment {
     func setup() {
         _ = Current // just to make sure we don't crash for this case
 
+        // Point the HANetworking package's injected environment at the real `Current` services. The
+        // package can't import HACore (cycle), so it reads these through `HANetworkingEnvironment`.
+        HANetworkingEnvironment.current.log = .init(
+            error: { Current.Log.error($0) },
+            warning: { Current.Log.warning($0) },
+            info: { Current.Log.info($0) },
+            verbose: { Current.Log.verbose($0) },
+            debug: { Current.Log.debug($0) }
+        )
+        HANetworkingEnvironment.current.date = { Current.date() }
+        HANetworkingEnvironment.current.isCatalyst = Current.isCatalyst
+        HANetworkingEnvironment.current.isAppExtension = { Current.isAppExtension }
+        HANetworkingEnvironment.current.connectivity = .init(
+            refreshNetworkInformation: { await Current.connectivity.refreshNetworkInformation() },
+            currentNetworkState: { await Current.connectivity.currentNetworkState() },
+            lastKnownNetworkState: { Current.connectivity.lastKnownNetworkState() }
+        )
+        #if !os(watchOS)
+        HANetworkingEnvironment.current.refreshAppDatabase = { server, forceUpdate in
+            Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate)
+        }
+        #endif
+        HANetworkingEnvironment.current.prefs = Current.settingsStore.prefs
+        HANetworkingEnvironment.current.database = { Current.database() }
+        HANetworkingEnvironment.current.bundleID = AppConstants.BundleID
+        HANetworkingEnvironment.current.defaultServerName = ServerInfo.defaultName
+        HANetworkingEnvironment.current.isDebug = Current.appConfiguration == .debug
+        HANetworkingEnvironment.current.handleReauthenticationRequired = { server, statusCode, errorDescription in
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Refresh token is invalid, notifying user",
+                type: .networkRequest,
+                payload: ["error": errorDescription]
+            ))
+            Current.modelManager.unsubscribe()
+            Current.api(for: server)?.connection.disconnect()
+            Current.onboardingObservation.needed(.unauthenticated(server.identifier.rawValue, statusCode))
+        }
+
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
     }

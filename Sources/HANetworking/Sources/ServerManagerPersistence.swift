@@ -3,7 +3,7 @@ import KeychainAccess
 
 // These protocols let ServerManager keep the core lifecycle logic independent from
 // the concrete persistence backends used for the full record and the sanitized mirror.
-protocol ServerManagerKeychain {
+public protocol ServerManagerKeychain {
     func removeAll() throws
     func allKeys() -> [String]
     func getData(_ key: String) throws -> Data?
@@ -11,7 +11,7 @@ protocol ServerManagerKeychain {
     func remove(_ key: String) throws
 }
 
-protocol ServerManagerMirrorStore {
+public protocol ServerManagerMirrorStore {
     func removeAll()
     func allKeys() -> [String]
     func allServerInfo() -> [(String, ServerInfo)]
@@ -34,7 +34,7 @@ extension Keychain: ServerManagerKeychain {
     }
 }
 
-extension ServerManagerKeychain {
+public extension ServerManagerKeychain {
     func allServerInfo(decoder: JSONDecoder) -> [(String, ServerInfo)] {
         allKeys().compactMap { key in
             getServerInfo(key: key, decoder: decoder).map { (key, $0) }
@@ -51,7 +51,7 @@ extension ServerManagerKeychain {
 
             return try decoder.decode(ServerInfo.self, from: data)
         } catch {
-            Current.Log.error("failed to get server info for \(key): \(error)")
+            HANetworkingEnvironment.current.log.error("failed to get server info for \(key): \(error)")
             return nil
         }
     }
@@ -60,7 +60,7 @@ extension ServerManagerKeychain {
         do {
             try set(encoder.encode(serverInfo), key: key)
         } catch {
-            Current.Log.error("failed to set server info for \(key): \(error)")
+            HANetworkingEnvironment.current.log.error("failed to set server info for \(key): \(error)")
         }
     }
 
@@ -68,7 +68,8 @@ extension ServerManagerKeychain {
         do {
             try remove(key)
         } catch {
-            Current.Log.error("failed to delete server info for \(key): \(error.localizedDescription)")
+            HANetworkingEnvironment.current.log
+                .error("failed to delete server info for \(key): \(error.localizedDescription)")
         }
     }
 }

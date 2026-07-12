@@ -39,7 +39,10 @@ struct WatchWidgetAppIntentProvider: AppIntentTimelineProvider {
         for configuration: WatchWidgetConfigurationIntent,
         in context: Context
     ) async -> Timeline<WatchWidgetEntry> {
-        Timeline(
+        // Self-fetch live values on the widget's own WidgetKit budget so complications stay fresh even
+        // when the WatchApp isn't woken. This updates the app-group snapshot store that `entry(...)` reads.
+        await WatchWidgetLiveFetch.refresh(configuredID: configuration.complication?.id)
+        return Timeline(
             entries: [entry(for: configuration, in: context)],
             policy: .after(Date().addingTimeInterval(WatchWidgetConstants.timelineRefreshInterval))
         )

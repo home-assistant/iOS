@@ -47,6 +47,6 @@ json:
     - Tools/MaterialDesignIcons.json
   outputs:
     templatePath: Tools/icons.stencil
-    output: Sources/Shared/Iconic/MaterialDesignIcons.swift
+    output: Sources/HAIconic/Sources/MaterialDesignIcons.swift
     params:
       publicAccess: true

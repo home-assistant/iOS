@@ -1,16 +1,14 @@
 import Foundation
 
 // https://github.com/home-assistant/frontend/blob/92d30a889663008317f7a28faa65beea025f0bfd/src/components/ha-icon.ts
-enum MDIMigration {
+public enum MDIMigration {
     // MDI Version number is based on number of icons, so count is directly related to version
-    static let migrationNumber: Int = MaterialDesignIcons.count / 1000 - 5
+    public static let migrationNumber: Int = MaterialDesignIcons.count / 1000 - 5
 
-    static func migrate(icon old: String) -> String {
+    public static func migrate(icon old: String) -> String {
         if let updated = renamed[old] {
-            Current.Log.info("migrating \(old) to \(updated)")
             return updated
         } else if removed.contains(old) {
-            Current.Log.info("replacing mdi \(old)")
             return MaterialDesignIcons.emoticonSadIcon.name
         } else {
             return old

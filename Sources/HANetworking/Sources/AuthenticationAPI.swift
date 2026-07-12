@@ -5,9 +5,8 @@ import ObjectMapper
 
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
-public enum ServerConnectionError: Error {
-    case noActiveURL(_ serverName: String)
-}
+// `ServerConnectionError` moved to the HANetworking package (also thrown by ConnectionInfo);
+// re-exported via the Shared umbrella so references resolve unchanged.
 
 public class AuthenticationAPI {
     public enum AuthenticationError: LocalizedError {
@@ -20,7 +19,7 @@ public class AuthenticationAPI {
             }
         }
 
-        var shouldRequireReauthentication: Bool {
+        public var shouldRequireReauthentication: Bool {
             if case let .serverError(statusCode, _, _) = self {
                 return (400 ... 403).contains(statusCode)
             }
@@ -28,7 +27,7 @@ public class AuthenticationAPI {
             return false
         }
 
-        var statusCode: Int {
+        public var statusCode: Int {
             switch self {
             case let .serverError(statusCode, _, _):
                 return statusCode
@@ -39,7 +38,7 @@ public class AuthenticationAPI {
     let server: Server
     let session: Session
 
-    init(server: Server) {
+    public init(server: Server) {
         self.server = server
         // Use custom delegate that supports client certificates (mTLS). Required on watchOS too:
         // token refresh is a REST call, and an mTLS server rejects it without the client cert.
@@ -167,11 +166,13 @@ private class OnboardingClientCertificateDelegate: SessionDelegate, @unchecked S
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
             do {
                 let credential = try ClientCertificateManager.shared.urlCredential(for: certificate)
-                Current.Log.info("[mTLS] Using client certificate for token exchange: \(certificate.displayName)")
+                HANetworkingEnvironment.current.log
+                    .info("[mTLS] Using client certificate for token exchange: \(certificate.displayName)")
                 completionHandler(.useCredential, credential)
                 return
             } catch {
-                Current.Log.error("[mTLS] Failed to get credential for token exchange: \(error)")
+                HANetworkingEnvironment.current.log
+                    .error("[mTLS] Failed to get credential for token exchange: \(error)")
             }
         }
 
@@ -212,7 +213,7 @@ extension DataRequest {
     }
 }
 
-extension Error {
+public extension Error {
     var authenticationAPIError: AuthenticationAPI.AuthenticationError? {
         if let authenticationError = self as? AuthenticationAPI.AuthenticationError {
             return authenticationError

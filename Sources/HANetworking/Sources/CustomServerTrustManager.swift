@@ -2,24 +2,24 @@ import Alamofire
 import Foundation
 import Security
 
-final class CustomServerTrustManager: ServerTrustManager, ServerTrustEvaluating, @unchecked Sendable {
+public final class CustomServerTrustManager: ServerTrustManager, ServerTrustEvaluating, @unchecked Sendable {
     let exceptions: () -> SecurityExceptions
 
-    init(server: Server) {
+    public init(server: Server) {
         self.exceptions = { server.info.connection.securityExceptions }
         super.init(evaluators: [:])
     }
 
-    init(exceptions: SecurityExceptions) {
+    public init(exceptions: SecurityExceptions) {
         self.exceptions = { exceptions }
         super.init(evaluators: [:])
     }
 
-    override func serverTrustEvaluator(forHost host: String) -> ServerTrustEvaluating? {
+    override public func serverTrustEvaluator(forHost host: String) -> ServerTrustEvaluating? {
         self
     }
 
-    func evaluate(_ trust: SecTrust, forHost host: String) throws {
+    public func evaluate(_ trust: SecTrust, forHost host: String) throws {
         try exceptions().evaluate(trust)
     }
 }

@@ -177,13 +177,11 @@ extension IconDrawable {
 
         // No need to register the font more than once
         if UIFont.familyNames.map({ $0.replacingOccurrences(of: " ", with: "") }).contains(familyName) {
-            Current.Log.verbose(".register() called, but font '\(familyName)' is already registered.")
             return
         }
 
         guard let url = resourceUrl() else {
             let message = "Unable to register font '\(familyName)' beacuse URL was nil!"
-            Current.Log.error(message)
             assertionFailure(message)
             return
         }
@@ -192,7 +190,6 @@ extension IconDrawable {
 
         guard let descriptor = (descriptors as? [CTFontDescriptor])?.first else {
             let message = "Could not retrieve font descriptors of font at path '\(url)',"
-            Current.Log.error(message)
             assertionFailure(message)
             return
         }
@@ -206,25 +203,21 @@ extension IconDrawable {
                 // this is fine
             } else {
                 let message = "Failed registering font with the postscript name '\(fontName)' at path '\(url)' with error: \(String(describing: error))."
-                Current.Log.error(message)
                 assertionFailure(message)
             }
         }
 
-        Current.Log.verbose("Font '\(familyName)' registered successfully!")
     }
 
     public static func unregister() {
 
         // No need to unregister if the font isn't registered
         if UIFont.familyNames.contains(familyName) == false {
-            Current.Log.verbose(".unregister() called, but font '\(familyName)' is not registered.")
             return
         }
 
         guard let url = resourceUrl() else {
             let message = "Unable to unregister font '\(familyName)' beacuse URL was nil!"
-            Current.Log.error(message)
             assertionFailure(message)
             return
         }
@@ -232,16 +225,14 @@ extension IconDrawable {
 
         if CTFontManagerUnregisterFontsForURL(url as CFURL, .none, &error) == false || error != nil {
             let message = "Failed unregistering font with name '\(familyName)' at path '\(url)' with error: \(String(describing: error))."
-            Current.Log.error(message)
             assertionFailure(message)
         }
 
-        Current.Log.verbose("Font '\(familyName)' unregistered successfully!")
     }
 
     fileprivate static func resourceUrl() -> URL? {
         let extensions = ["otf", "ttf"]
-        let bundle = Bundle(for: Iconic.self)
+        let bundle = Bundle.module
 
         return extensions.compactMap { bundle.url(forResource: familyName, withExtension: $0) }.first
     }
