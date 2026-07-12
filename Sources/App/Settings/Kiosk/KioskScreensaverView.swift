@@ -142,7 +142,14 @@ private struct PixelShiftContainer<Content: View>: View {
 /// Drives the screensaver: starts an inactivity timer (per `timeToStart`) and toggles `isActive`. Activity
 /// reported via `recordActivity()` resets the timer; `wake()` dismisses an active screensaver.
 final class KioskScreensaverController: ObservableObject {
-    @Published private(set) var isActive = false
+    @Published private(set) var isActive = false {
+        didSet {
+            guard oldValue != isActive else { return }
+            // Mirror visibility into the shared kiosk manager so the kiosk screensaver sensor can report it.
+            Current.kiosk.setScreensaverVisible(isActive)
+        }
+    }
+
     @Published private(set) var screensaver = KioskScreensaverSettings()
 
     private var isEnabled = false
@@ -192,6 +199,8 @@ final class KioskScreensaverController: ObservableObject {
     deinit {
         idleTimer?.invalidate()
         restoreBrightness()
+        // The screensaver is no longer on screen once this controller goes away (e.g. kiosk mode disabled).
+        Current.kiosk.setScreensaverVisible(false)
     }
 
     func recordActivity() {
