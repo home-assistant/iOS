@@ -62,16 +62,6 @@ public extension ServerManager {
         }
     }
 
-    func server(for intent: ServerIntentProviding, fallback: Bool = true) -> Server? {
-        if let server = server(forServerIdentifier: intent.server?.identifier) {
-            return server
-        } else if fallback {
-            return fallbackServer
-        } else {
-            return nil
-        }
-    }
-
     func server(for content: UNNotificationContent) -> Server? {
         if let webhookID = content.userInfo["webhook_id"] as? String {
             return server(forWebhookID: webhookID)

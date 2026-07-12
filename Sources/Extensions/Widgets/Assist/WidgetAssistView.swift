@@ -8,13 +8,12 @@ struct WidgetAssistView: View {
     private let tinted: Bool
 
     private var subtitle: String {
-        // Even though server is not visible, show ".unknownConfiguration"
-        // so user knows it needs to be set
-        if entry.pipeline == nil || entry.server == nil {
+        // Show ".unknownConfiguration" when no pipeline is set so the user knows it needs configuring.
+        guard let pipeline = entry.pipeline, !pipeline.serverId.isEmpty else {
             return L10n.Widgets.Assist.unknownConfiguration
         }
 
-        return entry.pipeline?.displayString ?? L10n.Widgets.Assist.unknownConfiguration
+        return pipeline.name
     }
 
     init(entry: WidgetAssistEntry, tinted: Bool) {
