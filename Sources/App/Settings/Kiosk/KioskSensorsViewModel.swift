@@ -9,7 +9,7 @@ import UIKit
 /// through `Current.sensors`, so the two screens always mirror each other.
 final class KioskSensorsViewModel: ObservableObject {
     /// Identifiers of the sensors surfaced in the kiosk sensors menu, in display order.
-    static let sensorIds: [WebhookSensorId] = [.kioskMode, .kioskBrightness, .kioskVolume]
+    static let sensorIds: [WebhookSensorId] = [.kioskMode, .kioskBrightness, .kioskVolume, .kioskScreensaver]
     private static let order: [String: Int] = Dictionary(
         uniqueKeysWithValues: sensorIds.enumerated().map { ($0.element.rawValue, $0.offset) }
     )
