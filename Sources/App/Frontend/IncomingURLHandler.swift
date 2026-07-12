@@ -240,6 +240,27 @@ class IncomingURLHandler {
     func handle(userActivity: NSUserActivity) -> Bool {
         Current.Log.info(userActivity)
 
+        if let assistInAppIntent = userActivity.interaction?.intent as? AssistInAppIntent {
+            guard let server = Current.servers.server(for: assistInAppIntent) ?? Current.servers.all.first else { return false }
+            let pipeline = assistInAppIntent.pipeline
+            let autoStartRecording = Bool(exactly: assistInAppIntent.withVoice ?? 0) ?? false
+
+            Current.sceneManager.webViewControllerPromise.pipe { result in
+                switch result {
+                case let .fulfilled(webView):
+                    webView.webViewExternalMessageHandler.showAssist(
+                        server: server,
+                        pipeline: pipeline?.identifier ?? "",
+                        autoStartRecording: autoStartRecording
+                    )
+                case let .rejected(error):
+                    Current.Log.error("Failed to obtain webview to open Assist In App: \(error.localizedDescription)")
+                }
+            }
+
+            return true
+        }
+
         switch Current.tags.handle(userActivity: userActivity) {
         case let .handled(type):
             showTagReadConfirmation(type: type)
@@ -254,6 +275,33 @@ class IncomingURLHandler {
             // not a tag
             if let url = userActivity.webpageURL, url.host?.lowercased() == "my.home-assistant.io" {
                 return showMy(for: url)
+            } else if let interaction = userActivity.interaction {
+                if
+                    let intent = interaction.intent as? OpenPageIntent,
+                    let panel = intent.page, let path = panel.identifier {
+                    Current.Log.info("launching from shortcuts with panel \(panel)")
+
+                    let urlString = "/" + path
+                    if let server = Current.servers.server(for: panel) {
+                        coordinator.open(
+                            from: .deeplink,
+                            server: server,
+                            urlString: urlString,
+                            skipConfirm: true,
+                            isComingFromAppIntent: false
+                        )
+                    } else {
+                        coordinator.openSelectingServer(
+                            from: .deeplink,
+                            urlString: urlString,
+                            skipConfirm: true,
+                            isComingFromAppIntent: false
+                        )
+                    }
+                    return true
+                }
+
+                return false
             } else {
                 return false
             }

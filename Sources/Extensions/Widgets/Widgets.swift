@@ -26,6 +26,8 @@ struct WidgetsBundleLegacy: WidgetBundle {
             HALiveActivityConfiguration()
         }
         #endif
+        WidgetAssist()
+        WidgetOpenPage()
     }
 }
 
