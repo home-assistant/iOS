@@ -148,7 +148,7 @@ public final class ServerManagerImpl: ServerManager {
 
     public func setup() {
         cache.mutate { value in
-            value.restrictCaching = HANetworkingEnvironment.current.isAppExtension
+            value.restrictCaching = HANetworkingEnvironment.current.isAppExtension()
         }
 
         // load to cache immediately

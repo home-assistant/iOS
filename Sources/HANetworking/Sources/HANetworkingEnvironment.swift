@@ -20,8 +20,10 @@ public struct HANetworkingEnvironment {
     /// Running under Mac Catalyst. HACore wires this to `Current.isCatalyst`.
     public var isCatalyst = false
 
-    /// Running inside an app extension. HACore wires this to `Current.isAppExtension`.
-    public var isAppExtension = false
+    /// Running inside an app extension. HACore wires this to `Current.isAppExtension`. Read live (a
+    /// closure, not a snapshot) so tests that toggle `Current.isAppExtension` after the one-time
+    /// environment setup are honoured.
+    public var isAppExtension: () -> Bool = { false }
 
     /// Network-state access. `ConnectionInfo` uses this to decide internal-vs-external URL. HACore wires
     /// it to `Current.connectivity`; the concrete fetch (CoreTelephony/macBridge) stays in HACore.

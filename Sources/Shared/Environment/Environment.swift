@@ -96,7 +96,7 @@ public class AppEnvironment {
         )
         HANetworkingEnvironment.current.date = { Current.date() }
         HANetworkingEnvironment.current.isCatalyst = Current.isCatalyst
-        HANetworkingEnvironment.current.isAppExtension = Current.isAppExtension
+        HANetworkingEnvironment.current.isAppExtension = { Current.isAppExtension }
         HANetworkingEnvironment.current.connectivity = .init(
             refreshNetworkInformation: { await Current.connectivity.refreshNetworkInformation() },
             currentNetworkState: { await Current.connectivity.currentNetworkState() },
