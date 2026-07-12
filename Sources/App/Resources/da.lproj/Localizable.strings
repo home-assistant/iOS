@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Vi kunne ikke oprette forbindelse til Home Assistant";
 "connection.error.failed_connect.url" = "Appen opretter i øjeblikket forbindelse til";
 "connection.error.generic_title" = "Åh nej! Det ser ud til, at vi ikke kan oprette forbindelse.";
-"connection.permission.internal_url.body1" = "For at tilgå Home Assistant lokalt på en sikker måde, skal du give adgang til din lokalitet (\"Altid\").";
-"connection.permission.internal_url.body2" = "Denne tilladelse giver Home Assistant adgang til at opdage det trådløse netværk, du er forbundet til, for at oprette en lokal forbindelse.";
 "connection.permission.internal_url.footer" = "Hvis du stadig vil bruge den lokale URL, og ikke ønsker at give lokalitetstilladelse, kan du trykke på knappen herunder - vær dog opmærksom på sikkerhedsrisikoen.";
 "connection.permission.internal_url.ignore.alert.title" = "Er du sikker?";
 "connection.permission.internal_url.title" = "Tilladelsesadgang";
@@ -1662,7 +1660,6 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Ringen viser fremskridt omkring teksten.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.configurator.warning.templating_admin" = "OBS: For at kunne lave skabeloner i Watch-komplikationer skal brugeren have en administratorrolle.";
 "watch.debug.delete_db.alert.failed.message" = "Kunne ikke slette konfiguration, fejl: %@";
 "watch.debug.delete_db.alert.title" = "Er du sikker på at du vil slette Watch-konfigurationen? Dette kan ikke fortrydes";
 "watch.debug.delete_db.reset.title" = "Nulstil konfiguration";

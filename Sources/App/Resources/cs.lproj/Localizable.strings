@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Nepodařilo se nám připojit k Home Assistantovi";
 "connection.error.failed_connect.url" = "Aplikace se aktuálně připojuje k";
 "connection.error.generic_title" = "Jéje! Zdá se, že se nám nedaří navázat spojení.";
-"connection.permission.internal_url.body1" = "Chcete-li získat místní přístup k Home Assistantovi bezpečným způsobem, musíte místu oprávnění pro polohu na (\"Vždy\").";
-"connection.permission.internal_url.body2" = "Toto oprávnění umožňuje Home Assistantovidetekovat bezdrátovou síť, ke které jste připojeni, a navázat místní připojení.";
 "connection.permission.internal_url.footer" = "Pokud stále chcete používat místní adresu URL a nechcete poskytnout oprávnění pro polohu, můžete klepnout na tlačítko níže, ale uvědomte si bezpečnostní rizika.";
 "connection.permission.internal_url.ignore.alert.title" = "Jste si jisti?";
 "connection.permission.internal_url.title" = "Povolení přístupu";
@@ -1662,7 +1660,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.configurator.sections.icon.header" = "Ikona";
 "watch.configurator.sections.ring.footer" = "Kroužek znázorňující průběh kolem textu.";
 "watch.configurator.sections.ring.header" = "Kroužek";
-"watch.configurator.warning.templating_admin" = "POZOR: Pro šablonování v komplikacích na hodinkách musí mít uživatel roli správce.";
 "watch.debug.delete_db.alert.failed.message" = "Nastavení se nepodařilo smazat, chyba: %@";
 "watch.debug.delete_db.alert.title" = "Opravdu chcete smazat nastavení hodinek? Toto nelze vrátit zpět.";
 "watch.debug.delete_db.reset.title" = "Resetovat nastavení";

@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Δεν ήταν δυνατή η σύνδεση με το Home Assistant";
 "connection.error.failed_connect.url" = "Η εφαρμογή συνδέεται προς το παρόν με";
 "connection.error.generic_title" = "Ωχ! Φαίνεται ότι δεν μπορούμε να δημιουργήσουμε μια σύνδεση.";
-"connection.permission.internal_url.body1" = "Για να αποκτήσετε τοπικά πρόσβαση στο Home Assistant με ασφαλή τρόπο, πρέπει να εκχωρήσετε την άδεια τοποθεσίας (\"Πάντα\").";
-"connection.permission.internal_url.body2" = "Αυτό το δικαίωμα επιτρέπει στο Home Assistant να εντοπίσει το ασύρματο δίκτυο στο οποίο είστε συνδεδεμένοι και να δημιουργήσει μια τοπική σύνδεση.";
 "connection.permission.internal_url.footer" = "Αν εξακολουθείτε να θέλετε να χρησιμοποιήσετε την τοπική διεύθυνση URL και δεν θέλετε να δώσετε άδεια τοποθεσίας, μπορείτε να πατήσετε το παρακάτω κουμπί, όμως παρακαλώ, λάβετε υπόψη τους κινδύνους ασφαλείας.";
 "connection.permission.internal_url.ignore.alert.title" = "Είστε σίγουρος/η;";
 "connection.permission.internal_url.title" = "Αδεια πρόσβασης";
@@ -1662,7 +1660,6 @@
 "watch.configurator.sections.icon.header" = "Εικονίδιο";
 "watch.configurator.sections.ring.footer" = "Ο δακτύλιος που δείχνει την πρόοδο που περιβάλλει το κείμενο.";
 "watch.configurator.sections.ring.header" = "Δακτύλιος";
-"watch.configurator.warning.templating_admin" = "ΠΡΟΣΟΧΗ: Για τη δημιουργία προτύπων στις σύνθετες λειτουργίες του ρολογιού ο χρήστης πρέπει να έχει ρόλο διαχειριστή.";
 "watch.debug.delete_db.alert.failed.message" = "Αποτυχία διαγραφής της διαμόρφωσης, σφάλμα: %@";
 "watch.debug.delete_db.alert.title" = "Θέλετε σίγουρα να διαγράψετε τη διαμόρφωση ρολογιού. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί";
 "watch.debug.delete_db.reset.title" = "Επαναφορά διαμόρφωσης";

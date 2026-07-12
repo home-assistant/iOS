@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
 "connection.error.failed_connect.url" = "The app is currently connecting to";
 "connection.error.generic_title" = "Uh oh! Looks like we are unable to establish a connection.";
-"connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
-"connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
 "connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
 "connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
 "connection.permission.internal_url.title" = "Permission access";
@@ -1662,7 +1660,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.configurator.sections.icon.header" = "Icono";
 "watch.configurator.sections.ring.footer" = "El anillo que muestra el progreso alrededor del texto.";
 "watch.configurator.sections.ring.header" = "Anillo";
-"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";

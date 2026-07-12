@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
 "connection.error.failed_connect.url" = "The app is currently connecting to";
 "connection.error.generic_title" = "Ồ không! Có vẻ như chúng ta không thể thiết lập kết nối.";
-"connection.permission.internal_url.body1" = "Để truy cập Home Assistant cục bộ theo cách an toàn, bạn cần cấp quyền vị trí ('Luôn luôn').";
-"connection.permission.internal_url.body2" = "Quyền này cho phép Home Assistant phát hiện mạng không dây mà bạn đang kết nối và thiết lập kết nối cục bộ.";
 "connection.permission.internal_url.footer" = "Nếu bạn vẫn muốn sử dụng URL cục bộ và không muốn cấp quyền vị trí, bạn có thể nhấn vào nút bên dưới, nhưng vui lòng lưu ý đến các rủi ro bảo mật.";
 "connection.permission.internal_url.ignore.alert.title" = "Bạn có chắc không?";
 "connection.permission.internal_url.title" = "Quyền truy cập";
@@ -1662,7 +1660,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.configurator.sections.icon.header" = "Icon";
 "watch.configurator.sections.ring.footer" = "The ring showing progress surrounding the text.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.configurator.warning.templating_admin" = "LƯU Ý: Để tạo mẫu trong các tính năng phức tạp của đồng hồ, người dùng cần có vai trò quản trị viên.";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";

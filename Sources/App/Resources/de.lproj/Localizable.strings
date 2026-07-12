@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Wir konnten keine Verbindung zum Home Assistant herstellen";
 "connection.error.failed_connect.url" = "Die App verbindet sich derzeit mit";
 "connection.error.generic_title" = "Oh oh! Es sieht so aus, als ob wir keine Verbindung herstellen können.";
-"connection.permission.internal_url.body1" = "Um lokal und sicher auf Home Assistant zuzugreifen,  musst du die Standortberechtigung („Immer“) erteilen.";
-"connection.permission.internal_url.body2" = "Mit dieser Berechtigung kann Home Assistant das drahtlose Netzwerk erkennen, mit dem du verbunden bist, und eine lokale Verbindung herstellen.";
 "connection.permission.internal_url.footer" = "Wenn du dennoch die lokale URL verwenden und keine Standortberechtigung erteilen möchtest, kannst du auf den Knopf unten tippen. Beachte jedoch bitte die Sicherheitsrisiken.";
 "connection.permission.internal_url.ignore.alert.title" = "Bist du sicher?";
 "connection.permission.internal_url.title" = "Berechtigungszugriff";
@@ -1663,7 +1661,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.configurator.sections.icon.header" = "Symbol";
 "watch.configurator.sections.ring.footer" = "Der Ring zeigt den Fortschritt rund um den Text an.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.configurator.warning.templating_admin" = "ACHTUNG: Für die Erstellung von Templates in Watch-Komplikationen muss der Benutzer die Rolle eines Administrators haben.";
 "watch.debug.delete_db.alert.failed.message" = "Löschen der Konfiguration fehlgeschlagen, Fehler: %@";
 "watch.debug.delete_db.alert.title" = "Möchtest du die Watch-Konfiguration wirklich löschen? Dies kann nicht rückgängig gemacht werden.";
 "watch.debug.delete_db.reset.title" = "Konfiguration zurücksetzen";
