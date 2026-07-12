@@ -10062,6 +10062,11 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Matter/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				PROVISIONING_SUFFIX = .Matter;
 				SDKROOT = iphoneos;
 			};
@@ -10074,6 +10079,11 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Matter/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				PROVISIONING_SUFFIX = .Matter;
 				SDKROOT = iphoneos;
 			};
@@ -10085,6 +10095,11 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				PROVISIONING_SUFFIX = .PushProvider;
 			};
 			name = Debug;
@@ -10095,6 +10110,11 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				PROVISIONING_SUFFIX = .PushProvider;
 			};
 			name = Release;
