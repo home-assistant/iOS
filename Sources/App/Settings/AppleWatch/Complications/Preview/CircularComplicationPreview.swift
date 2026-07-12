@@ -8,7 +8,6 @@ struct CircularComplicationPreview: View {
 
     var body: some View {
         ZStack {
-            Circle().fill(Color.black)
             Group {
                 if context.showsGauge, let fraction = context.fraction {
                     switch context.gaugeStyle {
