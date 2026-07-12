@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Não foi possível conectar ao Home Assistant";
 "connection.error.failed_connect.url" = "O aplicativo está se conectando a";
 "connection.error.generic_title" = "Uh oh! Parece que não conseguimos estabelecer uma conexão.";
-"connection.permission.internal_url.body1" = "Para acessar o Home Assistant localmente de forma segura, você precisa conceder a permissão de localização ('Sempre').";
-"connection.permission.internal_url.body2" = "Essa permissão permite que o Home Assistant detecte a rede sem fio à qual você está conectado e estabeleça uma conexão local.";
 "connection.permission.internal_url.footer" = "Se você ainda quiser usar a URL local e não quiser fornecer permissão de localização, toque no botão abaixo, mas esteja ciente dos riscos de segurança.";
 "connection.permission.internal_url.ignore.alert.title" = "Tem certeza?";
 "connection.permission.internal_url.title" = "Permissão de acesso";
@@ -1662,7 +1660,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "watch.configurator.sections.icon.header" = "Ícone";
 "watch.configurator.sections.ring.footer" = "O anel mostrando o progresso em torno do texto.";
 "watch.configurator.sections.ring.header" = "Anel";
-"watch.configurator.warning.templating_admin" = "ATENÇÃO: Para criar modelos nas complicações do relógio, o usuário precisa ter a função de administrador.";
 "watch.debug.delete_db.alert.failed.message" = "Falha ao excluir configuração, erro: %@";
 "watch.debug.delete_db.alert.title" = "Tem certeza de que deseja excluir a configuração do relógio? Isso não pode ser revertido";
 "watch.debug.delete_db.reset.title" = "Redefinir configuração";

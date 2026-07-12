@@ -364,8 +364,6 @@
 "connection.error.failed_connect.title" = "Vi kunde inte ansluta till Home Assistant";
 "connection.error.failed_connect.url" = "Appen ansluter för närvarande till";
 "connection.error.generic_title" = "Hoppsan! Det ser ut som om vi inte kan upprätta en anslutning.";
-"connection.permission.internal_url.body1" = "För att komma åt Home Assistant lokalt på ett säkert sätt måste du bevilja platsbehörigheten ('Alltid').";
-"connection.permission.internal_url.body2" = "Den här behörigheten gör att Home Assistant kan upptäcka det trådlösa nätverk som du är ansluten till och upprätta en lokal anslutning.";
 "connection.permission.internal_url.footer" = "Om du fortfarande vill använda den lokala URL:en och inte vill ge platsbehörighet kan du trycka på knappen nedan, men var medveten om säkerhetsriskerna.";
 "connection.permission.internal_url.ignore.alert.title" = "Är du säker?";
 "connection.permission.internal_url.title" = "Åtkomst med behörighet";
@@ -1657,7 +1655,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Ringen visar förloppet runt texten.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.configurator.warning.templating_admin" = "OBS: För mallhantering i smartklocka måste användaren ha administratörsrättigheter.";
 "watch.debug.delete_db.alert.failed.message" = "Det gick inte att ta bort konfigurationen, fel: %@";
 "watch.debug.delete_db.alert.title" = "Är du säker på att du vill ta bort klockkonfigurationen? Detta kan inte återställas";
 "watch.debug.delete_db.reset.title" = "Nollställ konfiguration";

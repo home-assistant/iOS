@@ -198,7 +198,6 @@
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.unknown" = "Unknown error";
 "camera_player.notification.body" = "Tap to open camera";
-"camera_player.talkback.microphone_denied" = "Microphone access is required for two-way audio. Enable it in Settings.";
 "camera_player.talkback.start" = "Start talking";
 "camera_player.talkback.stop" = "Stop talking";
 "cameras.no_server_found" = "No server found for camera: %@";
@@ -367,8 +366,6 @@
 "connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
 "connection.error.failed_connect.url" = "The app is currently connecting to";
 "connection.error.generic_title" = "Uh oh! Looks like we are unable to establish a connection.";
-"connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
-"connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
 "connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
 "connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
 "connection.permission.internal_url.title" = "Permission access";
@@ -1633,7 +1630,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.icon" = "Icon";
 "watch.complications.builder.family" = "Family";
 "watch.complications.builder.gauge_range" = "Gauge range (optional)";
-"watch.complications.builder.gauge_range_footer" = "Set a numeric range to show a ring or gauge from the state.";
 "watch.complications.builder.maximum" = "Maximum";
 "watch.complications.builder.minimum" = "Minimum";
 "watch.complications.builder.name" = "Name (optional)";
@@ -1649,7 +1645,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.builder.show_progress_bar" = "Show progress bar";
 "watch.complications.builder.show_value" = "Show value";
 "watch.complications.builder.show_when_inactive" = "Show when inactive";
-"watch.complications.builder.show_when_inactive_footer" = "When your display is dimmed (wrist down).";
 "watch.complications.builder.size_options" = "%1$@ options";
 "watch.complications.builder.size_options_footer" = "These settings apply to the selected size. Switch the preview size above to customize each size independently.";
 "watch.complications.builder.color" = "Gauge color";
@@ -1688,7 +1683,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.complications.root.legacy" = "Legacy complications";
 "watch.complications.root.legacy_footer" = "Complications created with the older watchOS templates. Existing ones keep working and map to their closest modern style.";
 "watch.complications.root.new" = "Create";
-"watch.complications.root.new_footer" = "Build a complication from an entity or a custom template. The watch renders it using live data.";
 "watch.complications.root.reload" = "Reload Complications";
 "watch.complications.root.reload_footer" = "Sends your complications to the Apple Watch and refreshes them.";
 "watch.complications.root.reload_success_title" = "Reload Sent";
@@ -1740,7 +1734,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.configurator.sections.icon.header" = "Icon";
 "watch.configurator.sections.ring.footer" = "The ring showing progress surrounding the text.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";
