@@ -146,7 +146,6 @@ jobs:
             ```
 
   test:
-    needs: lint
     runs-on: macos-26
     timeout-minutes: 60
     steps:
