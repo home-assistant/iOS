@@ -30,6 +30,7 @@ extension WatchConnectivityManager {
     }
 
     func receiveApplicationContext(_ applicationContext: [String: Any]) {
+        cacheReceivedContext(applicationContext)
         context.notify(HAWatchConnectivity.Context(content: applicationContext))
     }
 

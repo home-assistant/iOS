@@ -70,6 +70,44 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         Current.backgroundRefreshScheduler.schedule().cauterize()
     }
 
+    func applicationWillEnterForeground() {
+        AppDatabaseSuspension.resume()
+    }
+
+    func applicationDidEnterBackground() {
+        // Suspend GRDB so a write can't be caught holding the app-group SQLite lock when the system
+        // suspends the process — that termination (0xdead10cc) was the watch app's top crash cluster.
+        AppDatabaseSuspension.suspend()
+    }
+
+    /// Runs database work delivered while the app may be backgrounded/suspending (WCSession callbacks)
+    /// inside an expiring background activity, so the system keeps the process alive for the write
+    /// instead of suspending it mid-commit (0xdead10cc). If the activity expires, GRDB is re-suspended,
+    /// which aborts the in-flight write and releases the file lock. `completion` runs on the main queue
+    /// after the work finished (not when it expired).
+    private static func performProtectedDatabaseWork(
+        reason: String,
+        _ work: @escaping () -> Void,
+        completion: (() -> Void)? = nil
+    ) {
+        ProcessInfo.processInfo.performExpiringActivity(withReason: reason) { expired in
+            if expired {
+                AppDatabaseSuspension.suspend()
+                return
+            }
+            AppDatabaseSuspension.resume()
+            work()
+            DispatchQueue.main.async {
+                // Re-suspend when still backgrounded; harmless when active (any `Current.database()`
+                // access resumes it again).
+                if WKApplication.shared().applicationState == .background {
+                    AppDatabaseSuspension.suspend()
+                }
+                completion?()
+            }
+        }
+    }
+
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
         HomeAssistantAPI.syncWatchContext()
 
@@ -258,20 +296,23 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     private func updateContext(_ content: HAWatchConnectivity.Content) {
         // Complications arrive from the phone as Codable JSON `Data` over the background context, and
         // also via the watch database mirror on reload. Both write into GRDB — the single source the
-        // snapshot writer reads from.
-        if let data = content["complications"] as? Data,
-           let complications = try? JSONDecoder().decode([WatchComplication].self, from: data) {
-            Current.Log.verbose("Updating \(complications.count) legacy complications from context")
-            WatchWidgetComplicationSnapshotStore.replaceLegacyComplications(complications)
+        // snapshot writer reads from. Contexts are delivered while the app is backgrounded, so the
+        // writes run under an expiring activity (see performProtectedDatabaseWork).
+        Self.performProtectedDatabaseWork(reason: "watch-context-write") {
+            if let data = content["complications"] as? Data,
+               let complications = try? JSONDecoder().decode([WatchComplication].self, from: data) {
+                Current.Log.verbose("Updating \(complications.count) legacy complications from context")
+                WatchWidgetComplicationSnapshotStore.replaceLegacyComplications(complications)
+            }
+            if let data = content["complicationConfigs"] as? Data,
+               let configs = try? JSONDecoder().decode([WatchComplicationConfig].self, from: data) {
+                Current.Log.verbose("Updating \(configs.count) complication configs from context")
+                WatchWidgetComplicationSnapshotStore.replaceConfigs(configs)
+            }
+        } completion: { [weak self] in
+            WatchWidgetComplicationSnapshotStore.update()
+            self?.updateComplications()
         }
-        if let data = content["complicationConfigs"] as? Data,
-           let configs = try? JSONDecoder().decode([WatchComplicationConfig].self, from: data) {
-            Current.Log.verbose("Updating \(configs.count) complication configs from context")
-            WatchWidgetComplicationSnapshotStore.replaceConfigs(configs)
-        }
-
-        WatchWidgetComplicationSnapshotStore.update()
-        updateComplications()
     }
 
     /// Apply a reference database mirror the iPhone pushed proactively over `transferFile` (arrives even
@@ -289,22 +330,28 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             ))
             return
         }
-        do {
-            try mirror.apply()
-            Current.Log.info("Applied pushed watch database mirror (\(data.count) bytes)")
-            Current.clientEventStore.addEvent(.init(
-                text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",
-                type: .database
-            ))
+        // Pushed mirrors typically arrive while the app is backgrounded — protect the write.
+        Self.performProtectedDatabaseWork(reason: "watch-mirror-apply") {
+            do {
+                try mirror.apply()
+                Current.Log.info("Applied pushed watch database mirror (\(data.count) bytes)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Applied pushed watch database mirror from iPhone (\(data.count) bytes)",
+                    type: .database
+                ))
+            } catch {
+                Current.Log.error("Failed to apply pushed watch database mirror: \(error)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Failed to apply pushed watch database mirror (\(data.count) bytes): \(error)",
+                    type: .database
+                ))
+            }
+        } completion: {
+            // The mirror also carries the servers; keep them in step with the reference tables.
+            WatchServerSync.applyMirroredServers(mirror.servers)
             // Rebuild complication snapshots and let the home screen re-render from the fresh data.
             WatchWidgetComplicationSnapshotStore.update()
             NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
-        } catch {
-            Current.Log.error("Failed to apply pushed watch database mirror: \(error)")
-            Current.clientEventStore.addEvent(.init(
-                text: "Failed to apply pushed watch database mirror (\(data.count) bytes): \(error)",
-                type: .database
-            ))
         }
     }
 

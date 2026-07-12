@@ -39,6 +39,10 @@ final class WatchHomeViewModel: ObservableObject {
     /// finishes, so repeated reload taps can't stack several syncs (each holding a 30s reply timeout)
     /// in parallel.
     private var isSyncInFlight = false
+    /// Whether the running sync was explicitly requested by the user (reload tap / retry). Failures of
+    /// the automatic launch sync stay silent — the cache is already on screen — while user-initiated
+    /// syncs surface an error alert.
+    private var isSyncUserInitiated = false
 
     private var networkPathMonitor: NWPathMonitor?
     private let networkMonitorQueue = DispatchQueue(label: "WatchHomeNetworkPathMonitor")
@@ -163,6 +167,7 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         isSyncInFlight = true
+        isSyncUserInitiated = userInitiated
         isLoading = true
         clearError()
         setLoadingStatus(L10n.Watch.Sync.starting)
@@ -427,6 +432,9 @@ final class WatchHomeViewModel: ObservableObject {
                 text: "Apple Watch database sync applied (\(data.count) bytes)",
                 type: .database
             ))
+            // The sync also refreshes the servers carried by the mirror (in addition to the dedicated
+            // serversConfigSync exchange kicked off at the start of the reload).
+            WatchServerSync.applyMirroredServers(mirror.servers)
             // The mirror carries complications too — rebuild widget snapshots now so a reload is another
             // chance to obtain them if the background context push hasn't delivered them yet.
             WatchWidgetComplicationSnapshotStore.update()
@@ -451,8 +459,12 @@ final class WatchHomeViewModel: ObservableObject {
             type: .database,
             payload: detail.map { ["detail": $0] } ?? [:]
         ))
-        errorMessage = friendlyMessage
-        showError = true
+        // Only user-initiated syncs alert: the automatic launch sync fails silently onto the cache
+        // that's already displayed (the failure is still logged/recorded above).
+        if isSyncUserInitiated {
+            errorMessage = friendlyMessage
+            showError = true
+        }
         updateLoading(isLoading: false)
         // Never leave the user with nothing: show whatever is cached locally.
         loadCache()
@@ -481,9 +493,17 @@ final class WatchHomeViewModel: ObservableObject {
         do {
             config = try Current.database().read { db in try WatchConfig.fetchOne(db) } ?? WatchConfig()
         } catch {
+            // A transient read failure must not blank the home screen: keep whatever config is
+            // currently rendered (possibly from an earlier successful read) — the cache is only ever
+            // replaced by data that actually loaded. Only alert when there's nothing on screen at all.
             Current.Log.error("Failed to fetch watch config from database, error: \(error.localizedDescription)")
-            displayError(message: L10n.Watch.Config.Cache.Error.message)
-            updateConfig(config: .init(), magicItemsInfo: [])
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to read watch config cache: \(error.localizedDescription)",
+                type: .database
+            ))
+            if watchConfig.items.isEmpty {
+                displayError(message: L10n.Watch.Config.Cache.Error.message)
+            }
             updateLoading(isLoading: false)
             return
         }

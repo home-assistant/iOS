@@ -81,11 +81,14 @@ final class WatchMagicViewRowViewModel: ObservableObject {
                 "itemType": magicItem.type.rawValue,
                 "triggeredAt": Current.date().timeIntervalSince1970,
             ],
-            reply: { message in
+            reply: { [weak self] message in
                 Current.Log.verbose("Received reply dictionary \(message)")
                 if message.content["fired"] as? Bool == true {
                     completion(true)
                 } else {
+                    // The iPhone includes the reason it couldn't run the item; surface and record it.
+                    let reason = message.content["error"] as? String
+                    self?.reportFailure(route: "iPhone", reason: reason)
                     completion(false)
                 }
             }
@@ -97,31 +100,38 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             )
         Communicator.shared.send(itemMessage, errorHandler: { [weak self] error in
             Current.Log.error("Received error when sending immediate message \(error)")
-            self?.presentError(error)
+            self?.reportFailure(route: "iPhone", reason: error.localizedDescription)
             completion(false)
         })
     }
 
     private func executeMagicItemUsingAPI(magicItem: MagicItem, completion: @escaping (Bool) -> Void) {
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
-            presentError(nil)
+            reportFailure(route: "Watch", reason: "Server \(magicItem.serverId) not synced to the watch")
             completion(false)
             return
         }
-        Current.Log.error("Executing watch magic item directly via API")
+        Current.Log.info("Executing watch magic item directly via API")
 
         magicItem.execute(on: server, source: .Watch) { [weak self] success, error in
             if !success {
-                self?.presentError(error)
+                self?.reportFailure(route: "Watch", reason: error?.localizedDescription)
             }
             completion(success)
         }
     }
 
-    /// Surface a failure to the user instead of letting it fail silently. Uses the underlying
-    /// error's description when available (e.g. a connection / TLS / "no active URL" error).
-    private func presentError(_ error: Error?) {
-        let message = error?.localizedDescription ?? L10n.Watch.Home.Run.Error.message
+    /// Surface a failure to the user (alert on the row) and record it in the watch's client events so
+    /// the reason is diagnosable later from Settings → Troubleshooting, not just flashed on screen.
+    /// The reason is the underlying error when available (e.g. connection / TLS / HTTP body /
+    /// "no active URL"), or a generic message otherwise.
+    private func reportFailure(route: String, reason: String?) {
+        let message = reason ?? L10n.Watch.Home.Run.Error.message
+        Current.clientEventStore.addEvent(.init(
+            text: "Magic item \(item.id) failed to run via \(route): \(message)",
+            type: .serviceCall,
+            payload: ["item": item.id, "server": item.serverId, "route": route, "reason": message]
+        ))
         DispatchQueue.main.async { [weak self] in
             self?.errorMessage = message
         }

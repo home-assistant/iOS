@@ -24,13 +24,34 @@ enum WatchServerSync {
 
     private static func apply(_ message: HAWatchConnectivity.ImmediateMessage) {
         if let serversData = message.content["servers"] as? Data {
-            WatchUserDefaults.shared.set(Date(), key: .serversUpdatedAt)
-            Current.servers.restoreState(serversData)
-            applyURLOverrides()
+            applyServersState(serversData)
         }
         if let certificatesData = message.content["clientCertificates"] as? Data {
             importCertificates(certificatesData)
         }
+    }
+
+    /// Apply the servers carried by a database mirror (chunked pull or background push). The mirror
+    /// keeps mTLS Keychain material off of it, so when a restored server references a client
+    /// certificate the local Keychain doesn't have yet, follow up with a full `serversConfigSync`
+    /// (which delivers the bundles inline) as soon as the phone is reachable.
+    static func applyMirroredServers(_ data: Data?) {
+        guard let data else { return }
+        applyServersState(data)
+        let missingCertificate = Current.servers.all.contains { server in
+            guard let certificate = server.info.connection.clientCertificate else { return false }
+            return !ClientCertificateManager.shared.hasIdentity(for: certificate)
+        }
+        if missingCertificate {
+            Current.Log.info("[Watch] Mirrored servers reference a client certificate not in the Keychain")
+            request()
+        }
+    }
+
+    private static func applyServersState(_ data: Data) {
+        WatchUserDefaults.shared.set(Date(), key: .serversUpdatedAt)
+        Current.servers.restoreState(data)
+        applyURLOverrides()
     }
 
     /// Re-apply each server's watch-local "Always use" URL choice. `ConnectionInfo` is overwritten on

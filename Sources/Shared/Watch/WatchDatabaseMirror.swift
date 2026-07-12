@@ -33,6 +33,12 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// Registry rows for the entities used by complications, so the watch can format values with the
     /// right display precision without carrying the whole registry.
     public var complicationEntities: [EntityRegistryListForDisplay.Entity]
+    /// The phone's servers (`ServerManager.restorableState()` encoding), so every sync — the chunked
+    /// pull and the proactive background push — also refreshes the watch's servers *in addition to*
+    /// the on-demand `serversConfigSync` interactive exchange (which additionally carries the mTLS
+    /// client-certificate bundles; those Keychain materials stay off the mirror on purpose).
+    /// Same contract as the complication fields: `nil` means "not carried", retain what's local.
+    public var servers: Data?
 
     public init(
         entities: [HAAppEntity],
@@ -40,7 +46,8 @@ public struct WatchDatabaseMirror: WatchCodable {
         pipelines: [AssistPipelines],
         complications: [WatchComplication]? = nil,
         complicationConfigs: [WatchComplicationConfig]? = nil,
-        complicationEntities: [EntityRegistryListForDisplay.Entity] = []
+        complicationEntities: [EntityRegistryListForDisplay.Entity] = [],
+        servers: Data? = nil
     ) {
         self.entities = entities
         self.areas = areas
@@ -48,10 +55,11 @@ public struct WatchDatabaseMirror: WatchCodable {
         self.complications = complications
         self.complicationConfigs = complicationConfigs
         self.complicationEntities = complicationEntities
+        self.servers = servers
     }
 
     private enum CodingKeys: String, CodingKey {
-        case entities, areas, pipelines, complications, complicationConfigs, complicationEntities
+        case entities, areas, pipelines, complications, complicationConfigs, complicationEntities, servers
     }
 
     // Decode the complication fields defensively: they were added after the mirror shipped, so a payload
@@ -73,6 +81,7 @@ public struct WatchDatabaseMirror: WatchCodable {
             [EntityRegistryListForDisplay.Entity].self,
             forKey: .complicationEntities
         )).flatMap { $0 } ?? []
+        self.servers = (try? container.decodeIfPresent(Data.self, forKey: .servers)).flatMap { $0 }
     }
 
     /// Domains the watch can add (mirrors the iPhone watch picker).
@@ -97,6 +106,8 @@ public struct WatchDatabaseMirror: WatchCodable {
                 entityIds: pairs.map(\.1)
             )) ?? []
         }
+        // Resolved outside the GRDB read: servers live in their own store, not the database.
+        let servers = Current.servers.restorableState()
 
         return try Current.database().read { db in
             let entities = try HAAppEntity
@@ -110,7 +121,8 @@ public struct WatchDatabaseMirror: WatchCodable {
                 pipelines: pipelines,
                 complications: complications,
                 complicationConfigs: configs,
-                complicationEntities: registry
+                complicationEntities: registry,
+                servers: servers
             )
         }
     }

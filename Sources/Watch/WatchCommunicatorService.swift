@@ -525,12 +525,17 @@ final class WatchCommunicatorService {
 
     private func magicItemPressed(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
+        // Every failure reply carries the reason so the watch can show/log why instead of a generic
+        // "didn't run".
+        func fail(_ reason: String) {
+            message.reply(.init(identifier: responseIdentifier, content: ["fired": false, "error": reason]))
+        }
 
         if let triggeredAt = message.content["triggeredAt"] as? TimeInterval {
             let age = Current.date().timeIntervalSince1970 - triggeredAt
             if age > 30 {
                 Current.Log.warning("Discarding stale magic item press received \(Int(age))s after it was triggered")
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                fail("Request expired before reaching the iPhone (\(Int(age))s old)")
                 return
             }
         }
@@ -539,20 +544,20 @@ final class WatchCommunicatorService {
               let itemId = message.content["itemId"] as? String,
               let type = MagicItem.ItemType(rawValue: itemType) else {
             Current.Log.warning("Magic item press did not provide item type or item id")
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail("Invalid item type or id")
             return
         }
 
         // Folders don't execute actions, they are containers
         if type == .folder {
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail("Folders don't execute actions")
             return
         }
 
         guard let serverId = message.content["serverId"] as? String,
               let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
             Current.Log.warning("Magic item press did not provide valid server info")
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail("Server not found on iPhone")
             return
         }
 
@@ -578,7 +583,7 @@ final class WatchCommunicatorService {
         case .entity:
             guard let domain = MagicItem(id: itemId, serverId: serverId, type: .entity).domain,
                   let mainAction = domain.mainAction else {
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                fail("Entity domain has no executable action")
                 return
             }
             callService(
@@ -595,9 +600,9 @@ final class WatchCommunicatorService {
             break
         case .assistPipeline, .assistPrompt:
             // Assist items are not supported on Watch
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail("Assist items are not supported on Watch")
         case .unsupported:
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail("Unsupported item type")
         }
     }
 
@@ -611,7 +616,10 @@ final class WatchCommunicatorService {
         responseIdentifier: String
     ) {
         guard let api = Current.api(for: server) else {
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            message.reply(.init(
+                identifier: responseIdentifier,
+                content: ["fired": false, "error": "iPhone has no usable connection for this server"]
+            ))
             Current.Log.error("No API available to call service")
             return
         }
@@ -629,7 +637,10 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
             case let .rejected(error):
                 Current.Log.error("Failed to run \(domain), error: \(error.localizedDescription)")
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                message.reply(.init(
+                    identifier: responseIdentifier,
+                    content: ["fired": false, "error": error.localizedDescription]
+                ))
             }
         }
     }
@@ -809,9 +820,9 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         HomeAssistantAPI.syncWatchContext()
-        // Also push the reference database so entity/area/pipeline data for the new server set reaches
-        // the watch proactively. Server credentials themselves still flow through the on-demand
-        // `serversConfigSync` reply (they carry Keychain material kept off the mirror).
+        // Also push the reference database (which now carries the servers too) so the new server set
+        // reaches the watch proactively. mTLS client-certificate bundles still flow only through the
+        // on-demand `serversConfigSync` reply (they carry Keychain material kept off the mirror).
         WatchMirrorPushCoordinator.schedule(reason: .serversChanged)
     }
 }

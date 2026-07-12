@@ -129,7 +129,9 @@ struct WatchSettingsView: View {
     private var restartAppSection: some View {
         Section {
             Button(role: .destructive) {
-                fatalError("User requested app restart from watch settings")
+                // Terminate cleanly (watchOS relaunches on next tap). A `fatalError` here would file a
+                // crash report for every use — it was one of the app's top "crashes" in the field.
+                exit(0)
             } label: {
                 Label(L10n.Watch.Settings.RestartApp.title, systemSymbol: .arrowClockwise)
             }
