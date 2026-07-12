@@ -1589,7 +1589,6 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "watch.complications.builder.precision_automatic" = "Automatic";
 "watch.complications.builder.preview" = "Preview";
 "watch.complications.builder.preview_footer" = "A live preview at every size. Tap a size to customize it, then add the complication to any slot on your watch face.";
-"watch.complications.builder.preview_size" = "Preview size";
 "watch.complications.builder.progress_bar_color" = "Progress bar color";
 "watch.complications.builder.show_gauge" = "Show as gauge / ring";
 "watch.complications.builder.show_icon" = "Show icon";
