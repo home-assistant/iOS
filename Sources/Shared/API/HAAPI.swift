@@ -3,7 +3,6 @@ import CoreLocation
 import Foundation
 import HAKit
 import HAKit_PromiseKit
-import Intents
 import ObjectMapper
 import PromiseKit
 import RealmSwift
@@ -373,10 +372,7 @@ public class HomeAssistantAPI {
     }
 
     public func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
-        let intent = FireEventIntent(eventName: eventType, payload: eventData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return Current.webhooks.sendEphemeral(
+        Current.webhooks.sendEphemeral(
             server: server,
             request: .init(type: "fire_event", data: [
                 "event_type": eventType,
@@ -499,10 +495,7 @@ public class HomeAssistantAPI {
         triggerSource: AppTriggerSource,
         shouldLog: Bool = true
     ) -> Promise<Void> {
-        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return Current.webhooks.send(
+        Current.webhooks.send(
             identifier: .serviceCall,
             server: server,
             request: .init(type: "call_service", data: [
@@ -524,10 +517,7 @@ public class HomeAssistantAPI {
         serviceData: [String: Any],
         returnResponse: Bool
     ) -> Promise<CallServiceResponse> {
-        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return connection.send(.callService(
+        connection.send(.callService(
             domain: domain,
             service: service,
             serviceData: serviceData,

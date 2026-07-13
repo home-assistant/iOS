@@ -43,9 +43,8 @@ public extension ServerManager {
         server(forServerIdentifier: identifier.rawValue) ?? all.first
     }
 
-    // `server(for: ServerIdentifierProviding)` and `server(for: ServerIntentProviding)` live in the
-    // Shared module (ServerManager+ServerProviding.swift) because `ServerIntentProviding` depends on
-    // `IntentServer` (Intents), which isn't available in this package.
+    // `server(for: ServerIdentifierProviding)` lives in the Shared module
+    // (ServerManager+ServerProviding.swift) because that protocol isn't available in this package.
 
     func server(for content: UNNotificationContent) -> Server? {
         if let webhookID = content.userInfo["webhook_id"] as? String {
