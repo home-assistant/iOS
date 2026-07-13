@@ -47,6 +47,9 @@ struct WatchConfigurationView: View {
             itemsSection
             assistSection
             resetView
+            DebugDatabaseTransferSection(part: .watchConfiguration) {
+                viewModel.loadWatchConfig()
+            }
         }
         .preferredColorScheme(.dark)
         .navigationTitle("Apple Watch")

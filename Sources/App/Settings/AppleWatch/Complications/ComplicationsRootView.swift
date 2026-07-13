@@ -60,6 +60,10 @@ struct ComplicationsRootView: View {
                     Text(L10n.Watch.Complications.Root.legacyFooter)
                 }
             }
+
+            DebugDatabaseTransferSection(part: .complications) {
+                load()
+            }
         }
         .sheet(isPresented: $showAdd) {
             NavigationView { WatchComplicationBuilderEditView(existing: nil) }

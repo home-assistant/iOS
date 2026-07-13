@@ -15,6 +15,9 @@ struct AppIconShortcutsConfigurationView: View {
             header
             itemsSection
             resetView
+            DebugDatabaseTransferSection(part: .appIconShortcuts) {
+                viewModel.loadConfig()
+            }
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)

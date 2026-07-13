@@ -43,6 +43,10 @@ struct CustomWidgetsListView: View {
             Section {
                 WidgetDocumentationLink()
             }
+
+            DebugDatabaseTransferSection(part: .customWidgets) {
+                viewModel.loadWidgets()
+            }
         }
         .onAppear {
             viewModel.loadWidgets()
