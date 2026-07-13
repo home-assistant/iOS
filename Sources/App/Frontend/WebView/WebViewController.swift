@@ -53,9 +53,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var loadActiveURLIfNeededInProgress = false
 
-    /// Track the timestamp of the last pull-to-refresh action
-    var lastPullToRefreshTimestamp: Date?
-
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
         improvManager: ImprovManager.shared
@@ -72,7 +69,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Handler for script messages sent from the webview to the app
     let webViewScriptMessageHandler = WebViewScriptMessageHandler()
 
-    /// Defer showing the empty state until disconnected for 10 seconds (used by
+    /// Defer showing the empty state until the frontend has been disconnected for
+    /// `Current.settingsStore.webViewEmptyStateTimeout` seconds (used by
     /// updateFrontendConnectionState in WebViewController+ProtocolConformance.swift)
     var emptyStateTimer: Timer?
 

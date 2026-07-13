@@ -3,15 +3,19 @@ import Shared
 import SwiftUI
 
 struct WebViewEmptyStateView: View {
+    static let dismissTapThreshold = 5
+
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
     @State private var isPerformingPrimaryAction = false
     @State private var errorMessage: String?
+    @State private var dismissTapCount = 0
 
     private let headerAccessorySize = CGSize(width: 44, height: 44)
 
     let style: WebViewEmptyStateStyle
     let server: Server
+    let isLoading: Bool
     let showsErrorDetailsButton: Bool
     let availableReauthURLTypes: [ConnectionInfo.URLType]
     let retryAction: (() -> Void)?
@@ -25,6 +29,7 @@ struct WebViewEmptyStateView: View {
     init(
         style: WebViewEmptyStateStyle,
         server: Server,
+        isLoading: Bool = false,
         showsErrorDetailsButton: Bool = false,
         availableReauthURLTypes: [ConnectionInfo.URLType] = [],
         retryAction: (() -> Void)? = nil,
@@ -40,6 +45,7 @@ struct WebViewEmptyStateView: View {
     ) {
         self.style = style
         self.server = server
+        self.isLoading = isLoading
         self.showsErrorDetailsButton = showsErrorDetailsButton
         self.availableReauthURLTypes = availableReauthURLTypes
         self._selectedReauthURLType = State(initialValue: availableReauthURLTypes.first ?? .external)
@@ -186,11 +192,25 @@ struct WebViewEmptyStateView: View {
                 }
             )
             .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
-        case .close:
-            ModalCloseButton {
-                dismissAction?()
-            }
+        case .hiddenDismiss:
+            Color.clear
+                .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
+                .overlay {
+                    if isLoading {
+                        ProgressView()
+                    }
+                }
+                .contentShape(Rectangle())
+                .onTapGesture(perform: registerDismissTap)
+                .accessibilityHidden(true)
         }
+    }
+
+    private func registerDismissTap() {
+        dismissTapCount += 1
+        guard dismissTapCount >= Self.dismissTapThreshold else { return }
+        dismissTapCount = 0
+        dismissAction?()
     }
 
     @ViewBuilder
@@ -341,6 +361,10 @@ struct WebViewEmptyStateView: View {
     WebViewEmptyStatePreview.view(style: .disconnected)
 }
 
+#Preview("Disconnected Loading") {
+    WebViewEmptyStatePreview.view(style: .disconnected, isLoading: true)
+}
+
 #Preview("Disconnected With Error Details") {
     WebViewEmptyStatePreview.view(
         style: .disconnected,
@@ -393,6 +417,7 @@ struct WebViewEmptyStateView: View {
 private enum WebViewEmptyStatePreview {
     static func view(
         style: WebViewEmptyStateStyle,
+        isLoading: Bool = false,
         showsErrorDetailsButton: Bool = false,
         availableReauthURLTypes: [ConnectionInfo.URLType] = [],
         errorDetailsAction: (() -> Void)? = nil,
@@ -405,6 +430,7 @@ private enum WebViewEmptyStatePreview {
         WebViewEmptyStateView(
             style: style,
             server: ServerFixture.standard,
+            isLoading: isLoading,
             showsErrorDetailsButton: showsErrorDetailsButton,
             availableReauthURLTypes: availableReauthURLTypes,
             retryAction: {},

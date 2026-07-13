@@ -5,9 +5,13 @@ public extension DatabaseQueue {
     // Following GRDB cocnurrency rules, we have just one database instance
     // https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/concurrency#Concurrency-Rules
     static var appDatabase: DatabaseQueue = {
+        var configuration = Configuration()
+        configuration.busyMode = .timeout(3)
+
         let database: DatabaseQueue
+        var isInMemoryFallback = false
         do {
-            database = try DatabaseQueue(path: databasePath())
+            database = try DatabaseQueue(path: databasePath(), configuration: configuration)
             #if targetEnvironment(simulator)
             print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
@@ -16,13 +20,16 @@ public extension DatabaseQueue {
             // Fallback to in-memory database so extensions don't crash
             do {
                 database = try DatabaseQueue()
+                isInMemoryFallback = true
                 Current.Log.error("Using in-memory GRDB database as fallback")
             } catch {
                 fatalError("Failed to create even an in-memory GRDB database: \(error.localizedDescription)")
             }
         }
 
-        setupSchema(database: database)
+        if !Current.isAppExtension || isInMemoryFallback {
+            setupSchema(database: database)
+        }
         return database
     }()
 

@@ -74,6 +74,27 @@ class SensorProviderDependenciesTests: XCTestCase {
         XCTAssertTrue(info1_2 !== info2_2)
         XCTAssertTrue(info2_1 === info2_2)
     }
+
+    func testUpdateSignalerConcurrentAccessIsThreadSafe() {
+        let dependencies = SensorProviderDependencies()
+
+        func makeProvider() -> MockSensorProvider1 {
+            MockSensorProvider1(request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: dependencies,
+                location: nil,
+                serverVersion: Version()
+            ))
+        }
+
+        DispatchQueue.concurrentPerform(iterations: 1000) { _ in
+            let _: MockUpdateSignaler = dependencies.updateSignaler(for: makeProvider())
+        }
+
+        let info1: MockUpdateSignaler = dependencies.updateSignaler(for: makeProvider())
+        let info2: MockUpdateSignaler = dependencies.updateSignaler(for: makeProvider())
+        XCTAssertTrue(info1 === info2)
+    }
 }
 
 private class MockSensorProvider1: SensorProvider {

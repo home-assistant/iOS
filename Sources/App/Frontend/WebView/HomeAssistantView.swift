@@ -99,6 +99,7 @@ struct HomeAssistantView: View, WebFrontendView {
             WebViewEmptyStateView(
                 style: emptyState.style,
                 server: emptyState.server,
+                isLoading: overlayState.isLoading,
                 showsErrorDetailsButton: emptyState.showsErrorDetailsButton,
                 availableReauthURLTypes: emptyState.availableReauthURLTypes,
                 retryAction: emptyState.retryAction,
