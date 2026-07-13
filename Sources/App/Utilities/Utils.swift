@@ -25,6 +25,7 @@ func resetStores() {
 
     let bundleId = Bundle.main.bundleIdentifier!
     UserDefaults.standard.removePersistentDomain(forName: bundleId)
+    UserDefaults.standard.removePersistentDomain(forName: AppConstants.AppGroupID)
     prefs.removePersistentDomain(forName: AppConstants.AppGroupID)
 
     do {
