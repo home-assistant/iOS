@@ -20,12 +20,12 @@ public struct PipelineResponse: HADataDecodable {
 // `Pipeline` itself lives in the `HAModels` package; this maps the websocket payload.
 extension Pipeline: @retroactive HADataDecodable {
     public init(data: HAData) throws {
-        self.init(
+        try self.init(
             conversationEngine: try? data.decode("conversation_engine"),
             conversationLanguage: try? data.decode("conversation_language"),
-            id: try data.decode("id"),
+            id: data.decode("id"),
             language: try? data.decode("language"),
-            name: try data.decode("name"),
+            name: data.decode("name"),
             sttEngine: try? data.decode("stt_engine"),
             sttLanguage: try? data.decode("stt_language"),
             ttsEngine: try? data.decode("tts_engine"),
