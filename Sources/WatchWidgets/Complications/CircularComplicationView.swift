@@ -55,26 +55,34 @@ struct CircularComplicationView: View {
     /// alone for legacy/built-ins. `padded` insets it off the surrounding open-gauge ring.
     @ViewBuilder
     private func center(_ complication: WatchWidgetComplicationSnapshot?, padded: Bool) -> some View {
+        let valueOnly = isValueOnly(complication)
         Group {
             if let complication, complication.perFamily != nil {
-                VStack(spacing: 0) {
+                VStack(spacing: WatchWidgetConstants.Layout.circularCenterSpacing) {
                     if complication.showsIcon(for: family), let iconImage = complication.iconImage {
                         iconImage
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 18, height: 18)
+                            .frame(
+                                width: WatchWidgetConstants.Layout.circularIconSize,
+                                height: WatchWidgetConstants.Layout.circularIconSize
+                            )
                             .widgetAccentable()
                     }
                     if complication.showsValue(for: family), !complication.title.isEmpty {
                         Text(complication.title)
-                            .minimumScaleFactor(0.2)
+                            .font(valueOnly ? .system(
+                                size: WatchWidgetConstants.Font.circularValueOnlySize,
+                                weight: .semibold
+                            ) : nil)
                             .lineLimit(1)
+                            .minimumScaleFactor(WatchWidgetConstants.Font.circularValueMinScale)
                             .foregroundStyle(complication.textColor(for: family) ?? .primary)
                     }
                     if complication.showsName(for: family), !complication.subtitle.isEmpty {
                         Text(complication.subtitle)
-                            .font(.system(size: 9))
-                            .minimumScaleFactor(0.4)
+                            .font(.system(size: WatchWidgetConstants.Font.circularNameSize))
+                            .minimumScaleFactor(WatchWidgetConstants.Font.circularNameMinScale)
                             .lineLimit(1)
                             .foregroundStyle(complication.textColor(for: family) ?? .primary)
                     }
@@ -83,7 +91,18 @@ struct CircularComplicationView: View {
                 ComplicationIconView(complication: complication)
             }
         }
-        .padding(padded ? WatchWidgetConstants.Layout.circularIconGaugePadding : 0)
+        // The value-only layout needs the full inner circle, so skip the ring inset that would
+        // otherwise shrink the enlarged value text.
+        .padding(padded && !valueOnly ? WatchWidgetConstants.Layout.circularIconGaugePadding : 0)
+    }
+
+    /// Whether the center renders only the state value (no icon and no name), so it can use the full
+    /// inner circle and a larger font.
+    private func isValueOnly(_ complication: WatchWidgetComplicationSnapshot?) -> Bool {
+        guard let complication, complication.perFamily != nil else { return false }
+        let showsIcon = complication.showsIcon(for: family) && complication.iconImage != nil
+        let showsName = complication.showsName(for: family) && !complication.subtitle.isEmpty
+        return !showsIcon && !showsName
     }
 }
 
@@ -93,6 +112,13 @@ struct CircularComplicationView: View {
     WatchWidgets()
 } timeline: {
     WatchWidgetEntry(date: .now, family: .accessoryCircular, complication: .previewSample(gaugeStyle: "open"))
+}
+
+@available(watchOS 10.0, *)
+#Preview("Open - value only", as: .accessoryCircular) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryCircular, complication: .previewSampleValueOnly(gaugeStyle: "open"))
 }
 
 @available(watchOS 10.0, *)
