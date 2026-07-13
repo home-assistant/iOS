@@ -58,6 +58,39 @@ extension ComplicationPreviewContext {
             iconImage: Image(systemSymbol: .battery75)
         )
     }
+
+    /// Corner-specific sample with individually toggleable value / name / icon / gauge, used to preview
+    /// the corner layout's permutations.
+    static func previewCorner(
+        value: String = "68%",
+        name: String = "Battery",
+        showValue: Bool = true,
+        showName: Bool = true,
+        showIcon: Bool = true,
+        gauge: Bool = true
+    ) -> ComplicationPreviewContext {
+        var config = WatchComplicationConfig(serverId: "preview", widgetFamily: .corner, name: name)
+        if gauge {
+            config.gaugeMin = 0
+            config.gaugeMax = 100
+        }
+        config.setOptions(
+            WatchComplicationConfig.FamilyOptions(
+                showName: showName,
+                showValue: showValue,
+                showIcon: showIcon,
+                showGauge: gauge,
+                tint: "#34C759FF"
+            ),
+            for: .corner
+        )
+        return ComplicationPreviewContext(
+            config: config,
+            value: value,
+            fraction: gauge ? 0.68 : nil,
+            iconImage: showIcon ? Image(systemSymbol: .battery75) : nil
+        )
+    }
 }
 #endif
 
