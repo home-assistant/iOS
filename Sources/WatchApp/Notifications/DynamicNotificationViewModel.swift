@@ -32,6 +32,8 @@ final class DynamicNotificationViewModel: ObservableObject {
     func didReceive(_ notification: UNNotification) {
         let notificationContent = notification.request.content
 
+        reset()
+
         // Unlike iOS, the watch long-look does not show the app name near our custom
         // content, so a title-less payload would render as a bare message.
         title = notificationContent.title.isEmpty ? "Home Assistant" : notificationContent.title
@@ -83,6 +85,17 @@ final class DynamicNotificationViewModel: ObservableObject {
     func pause() {
         streamer?.cancel()
         streamer = nil
+    }
+
+    private func reset() {
+        streamer?.cancel()
+        streamer = nil
+        cameraEntityId = nil
+        securityScopedURL?.stopAccessingSecurityScopedResource()
+        securityScopedURL = nil
+        content = nil
+        errorMessage = nil
+        isLoading = false
     }
 
     private func startCameraStream() {

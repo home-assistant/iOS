@@ -27,8 +27,8 @@ struct DynamicNotificationView: View {
                     .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: attachmentCornerRadius))
             case let .map(primary, secondary):
-                let pins = [NotificationMapPin(coordinate: primary, tint: .red)] +
-                    (secondary.map { [NotificationMapPin(coordinate: $0, tint: .green)] } ?? [])
+                let pins = [NotificationMapPin(id: "primary", coordinate: primary, tint: .red)] +
+                    (secondary.map { [NotificationMapPin(id: "secondary", coordinate: $0, tint: .green)] } ?? [])
                 let region = secondary.map { MKCoordinateRegion(coordinates: [primary, $0]) }
                     ?? MKCoordinateRegion(
                         center: primary,
