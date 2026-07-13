@@ -91,6 +91,7 @@ struct DynamicNotificationView: View {
     }
 }
 
+#if DEBUG
 #Preview("Text") {
     DynamicNotificationView(viewModel: .preview(
         title: "Garage door",
@@ -124,3 +125,4 @@ struct DynamicNotificationView: View {
         }())
     ))
 }
+#endif
