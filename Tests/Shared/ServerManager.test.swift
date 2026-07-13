@@ -230,6 +230,61 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(keychain.data.isEmpty)
     }
 
+    func testRestoreStateKeepsFresherExistingTokenButUpdatesOtherFields() throws {
+        // Existing server holds a freshly-refreshed token (later expiration).
+        let existing = with(ServerInfo.fake()) {
+            $0.connection.webhookID = "webhook1"
+            $0.token = .init(
+                accessToken: "fresh",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(3600)
+            )
+        }
+        try setupRegular(["fake1": existing])
+
+        // Incoming snapshot carries an older token (earlier expiration) but a changed non-token field.
+        let older = with(existing) {
+            $0.connection.webhookID = "webhook1-updated"
+            $0.token = .init(
+                accessToken: "stale",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(60)
+            )
+        }
+        servers.restoreState(try encoder.encode(["fake1": older]))
+
+        let server = try XCTUnwrap(servers.server(for: "fake1"))
+        // Token is not downgraded (compared by value since TokenInfo.== ignores expiration)...
+        XCTAssertEqual(server.info.token.accessToken, "fresh")
+        XCTAssertEqual(server.info.token.expiration, existing.token.expiration)
+        // ...but the rest of the snapshot still applies.
+        XCTAssertEqual(server.info.connection.webhookID, "webhook1-updated")
+    }
+
+    func testRestoreStateAcceptsNewerIncomingToken() throws {
+        let existing = with(ServerInfo.fake()) {
+            $0.token = .init(
+                accessToken: "old",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(60)
+            )
+        }
+        try setupRegular(["fake1": existing])
+
+        let newer = with(existing) {
+            $0.token = .init(
+                accessToken: "new",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(3600)
+            )
+        }
+        servers.restoreState(try encoder.encode(["fake1": newer]))
+
+        let server = try XCTUnwrap(servers.server(for: "fake1"))
+        XCTAssertEqual(server.info.token.accessToken, "new")
+        XCTAssertEqual(server.info.token.expiration, newer.token.expiration)
+    }
+
     func testWithInitialServers() throws {
         let info1 = with(ServerInfo.fake()) {
             $0.connection.webhookID = "webhook1"
