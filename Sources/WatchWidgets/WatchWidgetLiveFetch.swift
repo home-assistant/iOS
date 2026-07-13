@@ -22,18 +22,26 @@ enum WatchWidgetLiveFetch {
         guard !configs.isEmpty else { return }
 
         let defaults = UserDefaults(suiteName: WatchWidgetConstants.appGroupID)
-        let credentialsByServer = Dictionary(
+        let stored = Dictionary(
             WatchWidgetServerCredential.read(from: defaults).map { ($0.serverId, $0) },
             uniquingKeysWith: { first, _ in first }
         )
-        guard !credentialsByServer.isEmpty else { return }
+        guard !stored.isEmpty else { return }
+
+        // Ensure each server's access token is valid before touching `/api/states`. If it's at/near
+        // expiry we refresh it ourselves (a plain `POST /auth/token`); if we can't get a valid token we
+        // drop that server so we skip the request entirely rather than send an expired token — the latter
+        // is what the server logs as invalid auth and eventually IP-bans.
+        let (usable, persist) = await validated(stored)
+        if let persist { WatchWidgetServerCredential.write(persist, to: defaults) }
+        guard !usable.isEmpty else { return }
 
         let targets = configuredID.flatMap { id in configs.filter { $0.id == id } } ?? configs
         var updates: [String: String] = [:] // config.id -> fresh value text
 
         for config in targets where config.kind == .entity {
             guard let entityId = config.entityId,
-                  let credential = credentialsByServer[config.serverId],
+                  let credential = usable[config.serverId],
                   let value = await fetchValue(config: config, entityId: entityId, credential: credential) else {
                 continue
             }
@@ -42,6 +50,80 @@ enum WatchWidgetLiveFetch {
 
         guard !updates.isEmpty else { return }
         applyUpdates(updates)
+    }
+
+    // MARK: - Token validity / refresh
+
+    /// Returns the credentials that currently hold a valid access token (refreshing the ones near expiry),
+    /// plus the full set to persist back to the app group when a refresh changed anything (nil = no write
+    /// needed). Servers whose token can't be validated are omitted from the usable set but kept in the
+    /// persisted set, so their refresh token survives for the next attempt.
+    private static func validated(
+        _ stored: [String: WatchWidgetServerCredential]
+    ) async -> (usable: [String: WatchWidgetServerCredential], persist: [WatchWidgetServerCredential]?) {
+        var usable: [String: WatchWidgetServerCredential] = [:]
+        var persist = stored
+        var changed = false
+        for (serverId, credential) in stored {
+            // Refresh a little before the real expiry so the token doesn't lapse in flight.
+            if credential.expiration.addingTimeInterval(-60) > Date() {
+                usable[serverId] = credential
+            } else if let refreshed = await refreshedCredential(credential) {
+                usable[serverId] = refreshed
+                persist[serverId] = refreshed
+                changed = true
+            }
+        }
+        return (usable, changed ? Array(persist.values) : nil)
+    }
+
+    /// Mints a fresh access token via `POST /auth/token` (`grant_type=refresh_token`), returning the
+    /// credential updated with the new token + expiration, or nil if the refresh fails.
+    private static func refreshedCredential(
+        _ credential: WatchWidgetServerCredential
+    ) async -> WatchWidgetServerCredential? {
+        var request = URLRequest(url: credential.baseURL.appendingPathComponent("auth/token"))
+        request.httpMethod = "POST"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.httpBody = formEncode([
+            "grant_type": "refresh_token",
+            "refresh_token": credential.refreshToken,
+            "client_id": credential.clientID,
+        ]).data(using: .utf8)
+
+        let delegate = WatchWidgetTLSDelegate(credential: credential)
+        let session = URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+        defer { session.finishTasksAndInvalidate() }
+
+        guard let (data, response) = try? await session.data(for: request),
+              let http = response as? HTTPURLResponse, (200 ..< 300).contains(http.statusCode),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let accessToken = json["access_token"] as? String else {
+            return nil
+        }
+        let ttl = (json["expires_in"] as? Double) ?? (json["expires_in"] as? Int).map(Double.init) ?? 1800
+        return WatchWidgetServerCredential(
+            serverId: credential.serverId,
+            baseURL: credential.baseURL,
+            token: accessToken,
+            expiration: Date(timeIntervalSinceNow: ttl),
+            refreshToken: credential.refreshToken,
+            clientID: credential.clientID,
+            clientCertLabel: credential.clientCertLabel,
+            trustExceptions: credential.trustExceptions
+        )
+    }
+
+    /// `application/x-www-form-urlencoded` body: percent-encode everything but the RFC 3986 unreserved set
+    /// so values like the `client_id` URL survive intact.
+    private static func formEncode(_ params: [String: String]) -> String {
+        var allowed = CharacterSet.alphanumerics
+        allowed.insert(charactersIn: "-._~")
+        return params.map { key, value in
+            let k = key.addingPercentEncoding(withAllowedCharacters: allowed) ?? key
+            let v = value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
+            return "\(k)=\(v)"
+        }.joined(separator: "&")
     }
 
     // MARK: - Fetch

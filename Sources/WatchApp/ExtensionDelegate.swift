@@ -735,13 +735,20 @@ private enum ComplicationStateFetcher {
     /// own WidgetKit budget (it can't link the networking stack to derive these itself). Mirrors the
     /// inputs `fetchState` uses: the resolved base URL, a bearer token, and the mTLS/self-signed material.
     static func credential(for server: Server) async -> WatchWidgetServerCredential? {
-        guard let baseURL = await server.activeURL(), let token = await bearerToken(for: server) else {
+        // Resolve the URL and ensure a currently-valid access token (refreshing if needed). Reading
+        // `server.info.token` afterwards gives us the matching expiration + long-lived refresh token, so
+        // the widget can mint its own fresh access tokens on its budget instead of relying on this snapshot.
+        guard let baseURL = await server.activeURL(), await bearerToken(for: server) != nil else {
             return nil
         }
+        let tokenInfo = server.info.token
         return WatchWidgetServerCredential(
             serverId: server.identifier.rawValue,
             baseURL: baseURL,
-            token: token,
+            token: tokenInfo.accessToken,
+            expiration: tokenInfo.expiration,
+            refreshToken: tokenInfo.refreshToken,
+            clientID: WatchWidgetServerCredential.clientID(isDebug: Current.appConfiguration == .debug),
             clientCertLabel: server.info.connection.clientCertificate?.keychainIdentifier,
             trustExceptions: server.info.connection.securityExceptions.rawExceptionData
         )

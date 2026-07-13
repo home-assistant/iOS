@@ -589,7 +589,15 @@ public final class ServerManagerImpl: ServerManager {
             for (key, serverInfo) in state {
                 let identifier = Identifier<Server>(rawValue: key)
                 if let existing = cache.read({ $0.server[identifier] }) {
-                    existing.info = serverInfo
+                    var incoming = serverInfo
+                    // Don't let a restored snapshot downgrade a token this instance already refreshed to a
+                    // later expiry — e.g. the watch refreshing independently of the phone that produced this
+                    // snapshot. Keeping the fresher token avoids sending a stale one the server rejects.
+                    let current = existing.info.token
+                    if current.expiration > incoming.token.expiration {
+                        incoming.token = current
+                    }
+                    existing.info = incoming
                 } else {
                     add(identifier: identifier, serverInfo: serverInfo)
                 }

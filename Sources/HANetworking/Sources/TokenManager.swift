@@ -111,9 +111,10 @@ public final class TokenManager: @unchecked Sendable {
         Promise<(String, Date)> { seal in
             let tokenInfo = server.info.token
 
-            // Add a margin to -10 seconds so that we never get into a state where we return a token
-            // that immediately fails.
-            if tokenInfo.expiration.addingTimeInterval(-10) > HANetworkingEnvironment.current.date() {
+            // Refresh a full minute early (matching `TokenInfo.needsRefresh`) so we never hand back a
+            // token that lapses in flight — especially on slow watch/cloud paths where the round trip
+            // can outlast a token with only seconds left, which the server then logs as invalid auth.
+            if tokenInfo.expiration.addingTimeInterval(-60) > HANetworkingEnvironment.current.date() {
                 seal.fulfill((tokenInfo.accessToken, tokenInfo.expiration))
             } else {
                 if let expirationAmount = Calendar.current.dateComponents(
