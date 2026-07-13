@@ -1,5 +1,6 @@
 import SFSafeSymbols
 import SwiftUI
+import UIKit
 
 public extension View {
     /// Renders the currently presented `ToastPresenter.shared` toast as a top overlay. Attach once at
@@ -16,14 +17,72 @@ public extension View {
 
 @available(iOS 18, *)
 private struct ToastOverlayModifier: ViewModifier {
-    @ObservedObject private var presenter = ToastPresenter.shared
-
     func body(content: Content) -> some View {
         content
-            .overlay {
-                ToastView(toast: presenter.toast, isExpanded: presenter.toast != nil)
-                    .allowsHitTesting(false)
-            }
+            .background(ToastWindowInstaller())
+    }
+}
+
+@available(iOS 18, *)
+private struct ToastWindowInstaller: UIViewRepresentable {
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
+        view.isUserInteractionEnabled = false
+        DispatchQueue.main.async {
+            context.coordinator.attach(to: view.window?.windowScene)
+        }
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+        DispatchQueue.main.async {
+            context.coordinator.attach(to: uiView.window?.windowScene)
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    final class Coordinator {
+        private weak var windowScene: UIWindowScene?
+        private var toastWindow: ToastWindow?
+
+        func attach(to windowScene: UIWindowScene?) {
+            guard let windowScene else { return }
+            guard self.windowScene !== windowScene else { return }
+
+            self.windowScene = windowScene
+
+            let hostingController = UIHostingController(rootView: ToastWindowContent())
+            hostingController.view.backgroundColor = .clear
+
+            let toastWindow = ToastWindow(windowScene: windowScene)
+            toastWindow.rootViewController = hostingController
+            toastWindow.windowLevel = .alert + 1
+            toastWindow.backgroundColor = .clear
+            toastWindow.isHidden = false
+
+            self.toastWindow = toastWindow
+        }
+    }
+}
+
+@available(iOS 18, *)
+private final class ToastWindow: UIWindow {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        nil
+    }
+}
+
+@available(iOS 18, *)
+private struct ToastWindowContent: View {
+    @ObservedObject private var presenter = ToastPresenter.shared
+
+    var body: some View {
+        ToastView(toast: presenter.toast, isExpanded: presenter.toast != nil)
+            .allowsHitTesting(false)
+            .statusBarHidden(presenter.toast != nil)
     }
 }
 

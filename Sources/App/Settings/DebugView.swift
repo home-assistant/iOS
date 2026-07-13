@@ -1,5 +1,4 @@
 import PromiseKit
-import RealmSwift
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -7,6 +6,8 @@ import WebKit
 import XCGLogger
 
 struct DebugView: View {
+    @Environment(\.dismiss) private var dismiss
+
     @State private var showShareSheet = false
     @State private var logsURL: URL?
     @State private var tapsOnCasitaLogo = 0
@@ -22,13 +23,18 @@ struct DebugView: View {
     @State private var loadingLogs = false
     @State private var loadingCleaningWebCache = false
     @State private var loadingResetApp = false
+    @State private var resetAppToastMessage = ""
+    @State private var resetAppToastProgress = 0
 
     // Alerts
     @State private var showDeleteEntitiesAlert = false
+    @State private var showClearWebCacheAlert = false
     @State private var showResetAppAlert = false
     @State private var showClearAllowedTagsAlert = false
     @State private var watchSyncErrorMessage: String?
     @State private var showWatchSyncError = false
+
+    private static let resetAppToastID = "debug-reset-app"
 
     private static let deleteKeychainDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -48,68 +54,6 @@ struct DebugView: View {
             )
 
             Section {
-                Button(action: {
-                    if let url = Current.Log.archiveURL() {
-                        logsURL = url
-                        if Current.isCatalyst {
-                            if let url = Current.Log.archiveURL() {
-                                URLOpener.shared.open(url, options: [:], completionHandler: nil)
-                            }
-                        } else {
-                            loadingLogs = true
-                            showShareSheet = true
-                        }
-                    } else {
-                        Current.Log.error("Logs archive URL not available")
-                    }
-                }, label: {
-                    linkContent(
-                        image: .init(systemSymbol: .filemenuAndSelection),
-                        title: Current.isCatalyst ? L10n.Settings.Developer.ShowLogFiles.title : L10n.Settings.Developer
-                            .ExportLogFiles.title,
-                        showProgressView: loadingLogs
-                    )
-                })
-            }
-            .sheet(isPresented: .init(get: { showShareSheet && logsURL != nil }, set: { showShareSheet = $0 })) {
-                if let logsURL {
-                    ActivityViewController(shareWrapper: .init(url: logsURL))
-                        .onAppear {
-                            loadingLogs = false
-                        }
-                        .onDisappear {
-                            do {
-                                try FileManager.default.removeItem(at: logsURL)
-                            } catch {
-                                Current.Log.error("Error deleting logs file: \(error)")
-                            }
-                        }
-                }
-            }
-
-            if #available(iOS 17, *), !Current.isCatalyst {
-                Section {
-                    NavigationLink {
-                        ThreadCredentialsManagementView()
-                    } label: {
-                        linkContent(
-                            image: Image(
-                                uiImage: Asset.thread.image.withRenderingMode(
-                                    .alwaysTemplate
-                                )
-                            ),
-                            title: L10n.SettingsDetails.Thread.title,
-                            imageSize: 22
-                        )
-                    }
-                } footer: {
-                    Text(
-                        L10n.Settings.Debugging.Thread.footer
-                    )
-                }
-            }
-
-            Section {
                 NavigationLink {
                     ClientEventsLogView()
                 } label: {
@@ -125,37 +69,28 @@ struct DebugView: View {
                     )
                 }
 
-                NavigationLink {
-                    MediaTypesRequiringUserActionForPlaybackView()
-                } label: {
-                    linkContent(
-                        image: .init(systemSymbol: .speakerWave2Fill),
-                        title: "WKWebView Media Playback"
+                if #available(iOS 17, *), !Current.isCatalyst {
+                    NavigationLink {
+                        ThreadCredentialsManagementView()
+                    } label: {
+                        linkContent(
+                            image: Image(
+                                uiImage: Asset.thread.image.withRenderingMode(
+                                    .alwaysTemplate
+                                )
+                            ),
+                            title: L10n.SettingsDetails.Thread.title,
+                            imageSize: 22
+                        )
+                    }
+                }
+            } footer: {
+                if #available(iOS 17, *), !Current.isCatalyst {
+                    Text(
+                        L10n.Settings.Debugging.Thread.footer
                     )
                 }
-
-                NavigationLink {
-                    DatabaseExplorerView()
-                } label: {
-                    linkContent(
-                        image: .init(systemSymbol: .tablecells),
-                        title: L10n.Settings.DatabaseExplorer.title
-                    )
-                }
-
-                #if DEBUG
-                NavigationLink {
-                    KeychainExplorerView()
-                } label: {
-                    linkContent(
-                        image: .init(systemSymbol: .key),
-                        title: L10n.Settings.Debugging.KeychainExplorer.title
-                    )
-                }
-                #endif
             }
-
-            carPlayDebugSection
 
             criticalSection
 
@@ -175,6 +110,38 @@ struct DebugView: View {
                 developerSection
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    exportLogs()
+                } label: {
+                    if loadingLogs {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    } else {
+                        Text(
+                            Current.isCatalyst ? L10n.Settings.Developer.ShowLogFiles.title : L10n.Settings.Developer
+                                .ExportLogFiles.title
+                        )
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: .init(get: { showShareSheet && logsURL != nil }, set: { showShareSheet = $0 })) {
+            if let logsURL {
+                ActivityViewController(shareWrapper: .init(url: logsURL))
+                    .onAppear {
+                        loadingLogs = false
+                    }
+                    .onDisappear {
+                        do {
+                            try FileManager.default.removeItem(at: logsURL)
+                        } catch {
+                            Current.Log.error("Error deleting logs file: \(error)")
+                        }
+                    }
+            }
+        }
         .modifier(deleteKeychainAlert)
         .alert(deleteKeychainErrorMessage ?? L10n.errorLabel, isPresented: $showDeleteKeychainError) {
             Button(L10n.okLabel, role: .cancel) {
@@ -190,9 +157,6 @@ struct DebugView: View {
         } message: {
             Text(L10n.Settings.Debugging.KeychainRestartRequired.message)
         }
-        .alert(L10n.Settings.Developer.ClearAllowedTags.Complete.title, isPresented: $showClearAllowedTagsAlert) {
-            Button(L10n.okLabel, role: .cancel) {}
-        }
     }
 
     private func forceAppRestartAfterKeychainDeletion() {
@@ -202,6 +166,21 @@ struct DebugView: View {
         #else
         Current.Log.warning("Full keychain deletion completed; app restart is required")
         #endif
+    }
+
+    private func exportLogs() {
+        guard let url = Current.Log.archiveURL() else {
+            Current.Log.error("Logs archive URL not available")
+            return
+        }
+
+        logsURL = url
+        if Current.isCatalyst {
+            URLOpener.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            loadingLogs = true
+            showShareSheet = true
+        }
     }
 
     private var deleteKeychainAlert: some ViewModifier {
@@ -252,17 +231,15 @@ struct DebugView: View {
                 showDeleteEntitiesAlert = true
             } label: {
                 linkContent(
-                    image: .init(systemSymbol: .deleteBackwardFill),
-                    title: L10n.Debug.Reset.EntitiesDatabase.title,
+                    image: .init(systemSymbol: .tablecells),
+                    title: "Delete cached entity data",
                     iconColor: .red,
                     textColor: .red
                 )
             }
-            .alert(L10n.Alert.Confirmation.Generic.title, isPresented: $showDeleteEntitiesAlert) {
-                Button(role: .cancel, action: { /* no-op */ }) {
-                    Text(verbatim: L10n.cancelLabel)
-                }
-                Button(role: .destructive, action: {
+            .alert("Delete cached entity data?", isPresented: $showDeleteEntitiesAlert) {
+                Button(L10n.cancelLabel, role: .cancel) {}
+                Button("Delete Entity Data", role: .destructive) {
                     do {
                         _ = try Current.database().write { db in
                             try HAAppEntity.deleteAll(db)
@@ -271,24 +248,35 @@ struct DebugView: View {
                     } catch {
                         Current.Log.error("Failed to reset app entities, error: \(error)")
                     }
-                }) {
-                    Text(verbatim: L10n.yesLabel)
                 }
             } message: {
-                Text(verbatim: L10n.Alert.Confirmation.DeleteEntities.message)
+                Text(
+                    "Removes the app's cached Home Assistant entity records. They will be recreated as the app syncs again."
+                )
             }
+
             Button {
-                loadingCleaningWebCache = true
-                Current.websiteDataStoreHandler.cleanCache {
-                    loadingCleaningWebCache = false
-                }
+                showClearWebCacheAlert = true
             } label: {
                 linkContent(
-                    image: .init(systemSymbol: .deleteBackwardFill),
-                    title: L10n.Settings.ResetSection.ResetWebCache.title,
+                    image: .init(systemSymbol: .globe),
+                    title: "Clear web view cache",
                     iconColor: .red,
                     textColor: .red,
                     showProgressView: loadingCleaningWebCache
+                )
+            }
+            .alert("Clear web view cache?", isPresented: $showClearWebCacheAlert) {
+                Button(L10n.cancelLabel, role: .cancel) {}
+                Button("Clear Cache", role: .destructive) {
+                    loadingCleaningWebCache = true
+                    Current.websiteDataStoreHandler.cleanCache {
+                        loadingCleaningWebCache = false
+                    }
+                }
+            } message: {
+                Text(
+                    "Clears cached web content for the Home Assistant frontend. Frontend resources will be reloaded as needed."
                 )
             }
 
@@ -296,26 +284,22 @@ struct DebugView: View {
                 showResetAppAlert = true
             } label: {
                 linkContent(
-                    image: .init(systemSymbol: .deleteBackwardFill),
-                    title: L10n.Settings.ResetSection.ResetApp.title,
+                    image: .init(systemSymbol: .exclamationmarkTriangle),
+                    title: "Delete all app data",
                     iconColor: .red,
                     textColor: .red,
                     showProgressView: loadingResetApp
                 )
             }
-            .alert(L10n.Alert.Confirmation.Generic.title, isPresented: $showResetAppAlert) {
-                Button(role: .cancel, action: { /* no-op */ }) {
-                    Text(verbatim: L10n.cancelLabel)
-                }
-                Button(role: .destructive, action: {
+            .alert("Delete all app data?", isPresented: $showResetAppAlert) {
+                Button(L10n.cancelLabel, role: .cancel) {}
+                Button("Delete App Data", role: .destructive) {
                     Task {
                         await resetApp()
                     }
-                }) {
-                    Text(verbatim: L10n.yesLabel)
                 }
             } message: {
-                Text(verbatim: L10n.Settings.ResetSection.ResetAlert.title)
+                Text("Removes servers, tokens, settings, and local app data from this device. This cannot be undone.")
             }
 
         } footer: {
@@ -336,10 +320,48 @@ struct DebugView: View {
 
     private var developerSection: some View {
         Section {
-            Toggle("Toasts handled by the app", isOn: Binding(
-                get: { Current.settingsStore.toastsHandledByApp },
-                set: { Current.settingsStore.toastsHandledByApp = $0 }
-            ))
+            #if DEBUG
+            NavigationLink {
+                ComponentsLibraryView()
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .paintpalette),
+                    title: "Components Library"
+                )
+            }
+            #endif
+
+            NavigationLink {
+                MediaTypesRequiringUserActionForPlaybackView()
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .speakerWave2Fill),
+                    title: "WKWebView Media Playback"
+                )
+            }
+
+            NavigationLink {
+                DatabaseExplorerView()
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .tablecells),
+                    title: L10n.Settings.DatabaseExplorer.title
+                )
+            }
+
+            #if DEBUG
+            NavigationLink {
+                KeychainExplorerView()
+            } label: {
+                linkContent(
+                    image: .init(systemSymbol: .key),
+                    title: L10n.Settings.Debugging.KeychainExplorer.title
+                )
+            }
+            #endif
+
+            carPlayDebugSection
+
             Button {
                 Task { @MainActor in
                     if let syncError = await HomeAssistantAPI.SyncWatchContext() {
@@ -359,15 +381,6 @@ struct DebugView: View {
                 }
             } message: {
                 Text(watchSyncErrorMessage.orEmpty)
-            }
-
-            Button {
-                copyRealm()
-            } label: {
-                linkContent(
-                    image: .init(systemSymbol: .docOnDoc),
-                    title: L10n.Settings.Developer.CopyRealm.title
-                )
             }
 
             Button {
@@ -398,12 +411,23 @@ struct DebugView: View {
             }
 
             Button {
-                AllowedTag.clearAll()
                 showClearAllowedTagsAlert = true
             } label: {
                 linkContent(
-                    image: .init(systemSymbol: .trash),
-                    title: L10n.Settings.Developer.ClearAllowedTags.title
+                    image: .init(systemSymbol: .tag),
+                    title: "Clear approved NFC tags",
+                    iconColor: .red,
+                    textColor: .red
+                )
+            }
+            .alert("Clear approved NFC tags?", isPresented: $showClearAllowedTagsAlert) {
+                Button(L10n.cancelLabel, role: .cancel) {}
+                Button("Clear Tags", role: .destructive) {
+                    AllowedTag.clearAll()
+                }
+            } message: {
+                Text(
+                    "Removes all NFC tags that this app has approved. You will need to approve those tags again before using them."
                 )
             }
 
@@ -412,8 +436,8 @@ struct DebugView: View {
                 showDeleteKeychainAlert = true
             } label: {
                 linkContent(
-                    image: .init(systemSymbol: .trash),
-                    title: "Delete keychain completely",
+                    image: .init(systemSymbol: .key),
+                    title: "Delete saved credentials",
                     iconColor: .red,
                     textColor: .red
                 )
@@ -456,36 +480,6 @@ struct DebugView: View {
         } footer: {
             Text(verbatim: L10n.Settings.Developer.footer)
         }
-    }
-
-    private func copyRealm() {
-        guard let backupURL = Realm.backup() else {
-            fatalError("Unable to get Realm backup")
-        }
-        let containerRealmPath = Realm.Configuration.defaultConfiguration.fileURL!
-
-        Current.Log.verbose("Would copy from \(backupURL) to \(containerRealmPath)")
-
-        if FileManager.default.fileExists(atPath: containerRealmPath.path) {
-            do {
-                _ = try FileManager.default.removeItem(at: containerRealmPath)
-            } catch {
-                Current.Log.error("Error occurred, here are the details:\n \(error)")
-            }
-        }
-
-        do {
-            _ = try FileManager.default.copyItem(at: backupURL, to: containerRealmPath)
-        } catch let error as NSError {
-            // Catch fires here, with an NSError being thrown
-            Current.Log.error("Error occurred, here are the details:\n \(error)")
-        }
-
-        let msg = L10n.Settings.Developer.CopyRealm.Alert.message(
-            backupURL.path,
-            containerRealmPath.path
-        )
-        Current.Log.verbose(msg)
     }
 
     private func sendMapNotification() {
@@ -564,23 +558,74 @@ struct DebugView: View {
         Self.deleteKeychainDateFormatter.string(from: Date())
     }
 
+    @MainActor
     private func resetApp() async {
         loadingResetApp = true
+        resetAppToastMessage = "Preparing reset"
+        resetAppToastProgress = 0
+        let toastProgressTask = Task { @MainActor in
+            await showResetAppToastProgress()
+        }
+        async let minimumToastDuration: Void = wait(seconds: 3)
+
         Current.Log.verbose("Resetting app!")
 
         for api in Current.apis {
+            resetAppToastMessage = "Revoking token for \(api.server.info.name)"
             await revokeToken(api: api)
+            resetAppToastMessage = "Disconnecting \(api.server.info.name)"
             await wait(seconds: 13)
             api.connection.disconnect()
         }
+        resetAppToastMessage = "Removing saved servers"
         for server in Current.servers.all {
             Current.servers.remove(identifier: server.identifier)
         }
+        resetAppToastMessage = "Clearing local stores"
         resetStores()
         setDefaults()
+        resetAppToastMessage = "Resetting push registration"
         await resetPushID()
+        resetAppToastMessage = "Finishing reset"
+        await minimumToastDuration
+        toastProgressTask.cancel()
+        await toastProgressTask.value
+        hideResetAppToast()
         loadingResetApp = false
+        dismissSettingsAfterReset()
         Current.onboardingObservation.needed(.logout)
+    }
+
+    @MainActor
+    private func showResetAppToastProgress() async {
+        while !Task.isCancelled {
+            showResetAppToast(message: "\(resetAppToastMessage) \(resetAppToastProgress)%")
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            resetAppToastProgress = min(resetAppToastProgress + 2, 98)
+        }
+    }
+
+    private func showResetAppToast(message: String) {
+        if #available(iOS 18, *) {
+            ToastPresenter.shared.show(
+                id: Self.resetAppToastID,
+                symbol: .exclamationmarkTriangle,
+                symbolForegroundStyle: (.white, .red),
+                title: "Deleting app data",
+                message: message
+            )
+        }
+    }
+
+    private func hideResetAppToast() {
+        if #available(iOS 18, *) {
+            ToastPresenter.shared.hide(id: Self.resetAppToastID)
+        }
+    }
+
+    private func dismissSettingsAfterReset() {
+        AppSettingsPresenter.shared.isPresented = false
+        dismiss()
     }
 
     private func wait(seconds: Int) async {
@@ -834,7 +879,7 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
     let onDeleteSuccess: () -> Void
 
     func body(content: Content) -> some View {
-        content.alert(L10n.Settings.Debugging.DeleteKeychain.title, isPresented: $isPresented) {
+        content.alert("Delete saved credentials?", isPresented: $isPresented) {
             TextField(L10n.Settings.Debugging.DeleteKeychain.datePlaceholder, text: $confirmationText)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
@@ -842,7 +887,7 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
             Button(L10n.cancelLabel, role: .cancel) {
                 confirmationText = ""
             }
-            Button(L10n.Settings.Debugging.DeleteKeychain.deleteButton, role: .destructive) {
+            Button("Delete Credentials", role: .destructive) {
                 guard confirmationText == currentConfirmationDate else {
                     errorMessage = L10n.Settings.Debugging.DeleteKeychain.invalidDateFormat(currentConfirmationDate)
                     showError = true
@@ -862,7 +907,9 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
                 confirmationText = ""
             }
         } message: {
-            Text(L10n.Settings.Debugging.DeleteKeychain.messageFormat(currentConfirmationDate))
+            Text(
+                "Removes saved credentials and keychain items for this app. Type \(currentConfirmationDate) to confirm."
+            )
         }
     }
 }
