@@ -27,6 +27,8 @@ jobs:
         run: bundle install --jobs 4 --retry 3
 
       - name: Bump Material Design Icons to latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./Tools/BuildMaterialDesignIconsFont.sh --bump
 
       - name: Commit changes
