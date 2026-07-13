@@ -39,7 +39,7 @@ jobs:
           VERSION=$(sed -n 's/^MDI_VERSION=//p' Tools/BuildMaterialDesignIconsFont.sh)
           git add Tools/BuildMaterialDesignIconsFont.sh
           git add Tools/MaterialDesignIcons.ttf Tools/MaterialDesignIcons.json
-          git add Sources/Shared/Iconic/MaterialDesignIcons.swift
+          git add Sources/HAIconic/Sources/MaterialDesignIcons.swift
           if ! git diff --cached --quiet; then
             git commit -m "Bump MaterialDesignIcons to $VERSION"
           fi
