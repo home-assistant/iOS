@@ -26,9 +26,20 @@ if [ "${1:-}" = "--bump" ]; then
 	BUMP=1
 fi
 
+# Query the GitHub API, authenticating with GITHUB_TOKEN when it is available.
+# Unauthenticated requests share a 60/hour per-IP limit that CI runners routinely
+# exhaust, which returns an error body that parses to an empty result.
+gh_api() {
+	if [ -n "${GITHUB_TOKEN:-}" ]; then
+		curl --silent -H "Authorization: Bearer $GITHUB_TOKEN" "$@"
+	else
+		curl --silent "$@"
+	fi
+}
+
 echo "Checking for latest..."
 
-LATEST=$(curl --silent https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags | sed -n -e 's/.*"name": "v\([^"]*\)".*/\1/p' | head -1)
+LATEST=$(gh_api https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags | sed -n -e 's/.*"name": "v\([^"]*\)".*/\1/p' | head -1)
 echo "Latest available: $LATEST; currently pinned: $MDI_VERSION"
 
 if [ "$BUMP" -eq 1 ]; then
@@ -42,10 +53,10 @@ if [ "$BUMP" -eq 1 ]; then
 	fi
 
 	echo "Resolving commit for MaterialDesign-Webfont v$LATEST..."
-	MDI_COMMIT=$(curl --silent https://api.github.com/repos/Templarian/MaterialDesign-Webfont/commits/v$LATEST | sed -n -e 's/.*"sha": *"\([^"]*\)".*/\1/p' | head -1)
+	MDI_COMMIT=$(gh_api https://api.github.com/repos/Templarian/MaterialDesign-Webfont/commits/v$LATEST | sed -n -e 's/.*"sha": *"\([^"]*\)".*/\1/p' | head -1)
 
 	echo "Resolving commit for MaterialDesign-SVG v$LATEST..."
-	SVG_COMMIT=$(curl --silent https://api.github.com/repos/Templarian/MaterialDesign-SVG/commits/v$LATEST | sed -n -e 's/.*"sha": *"\([^"]*\)".*/\1/p' | head -1)
+	SVG_COMMIT=$(gh_api https://api.github.com/repos/Templarian/MaterialDesign-SVG/commits/v$LATEST | sed -n -e 's/.*"sha": *"\([^"]*\)".*/\1/p' | head -1)
 
 	if [ -z "$MDI_COMMIT" ] || [ -z "$SVG_COMMIT" ]; then
 		echo "Could not resolve matching commits for v$LATEST in both repositories; aborting."
@@ -69,7 +80,15 @@ else
 fi
 
 echo "Ensuring fonttools is installed via pip..."
-pip3 install --user fonttools
+# Install into a throwaway virtualenv so this works on PEP 668 "externally
+# managed" Python (Homebrew on CI) without needing --break-system-packages,
+# which older local pip versions do not support.
+FONTTOOLS_VENV="$(mktemp -d)"
+trap 'rm -rf "$FONTTOOLS_VENV"' EXIT
+python3 -m venv "$FONTTOOLS_VENV"
+# shellcheck disable=SC1091
+source "$FONTTOOLS_VENV/bin/activate"
+pip install --quiet fonttools
 
 if [ ! -f fontname-$FONT_RENAME_COMMIT.py ]; then
   echo "Downloading the fontname script..."

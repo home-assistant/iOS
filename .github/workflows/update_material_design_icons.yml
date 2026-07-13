@@ -26,10 +26,9 @@ jobs:
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
 
-      - name: Install Pods
-        run: ONLY_SUPPORT_MODULES=1 bundle exec pod install --repo-update
-
       - name: Bump Material Design Icons to latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./Tools/BuildMaterialDesignIconsFont.sh --bump
 
       - name: Commit changes
@@ -40,7 +39,7 @@ jobs:
           VERSION=$(sed -n 's/^MDI_VERSION=//p' Tools/BuildMaterialDesignIconsFont.sh)
           git add Tools/BuildMaterialDesignIconsFont.sh
           git add Tools/MaterialDesignIcons.ttf Tools/MaterialDesignIcons.json
-          git add Sources/Shared/Iconic/MaterialDesignIcons.swift
+          git add Sources/HAIconic/Sources/MaterialDesignIcons.swift
           if ! git diff --cached --quiet; then
             git commit -m "Bump MaterialDesignIcons to $VERSION"
           fi
