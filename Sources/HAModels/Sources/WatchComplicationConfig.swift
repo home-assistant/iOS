@@ -84,6 +84,11 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// rows created before this column migrate cleanly.
     public var families: [String: FamilyOptions]?
 
+    /// Whether the user opted into the "Customize" (per-size options) disclosure in the editor, so it
+    /// reopens expanded. Nullable so pre-existing rows fall back to inferring it from `families`;
+    /// see `showsCustomized()`.
+    public var isCustomized: Bool?
+
     public struct FamilyOptions: Codable, Equatable {
         public var showName: Bool?
         public var showValue: Bool?
@@ -136,7 +141,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         case entityId, entityDisplayName, iconName, iconColor
         case gaugeAttribute, valueAttribute, valuePrecision, unitOverride, gaugeMin, gaugeMax
         case showValue, showUnit, showWhenInactive, showMin, showMax
-        case customTextTemplate, customGaugeTemplate, sortOrder, families
+        case customTextTemplate, customGaugeTemplate, sortOrder, families, isCustomized
     }
 
     public init(
@@ -163,7 +168,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         customTextTemplate: String? = nil,
         customGaugeTemplate: String? = nil,
         sortOrder: Int = 0,
-        families: [String: FamilyOptions]? = nil
+        families: [String: FamilyOptions]? = nil,
+        isCustomized: Bool? = nil
     ) {
         self.id = id
         self.serverId = serverId
@@ -189,6 +195,14 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.customGaugeTemplate = customGaugeTemplate
         self.sortOrder = sortOrder
         self.families = families
+        self.isCustomized = isCustomized
+    }
+
+    /// Whether the editor's "Customize" (per-size options) disclosure should start expanded: the
+    /// user's explicit choice when stored, else inferred from the presence of per-size overrides
+    /// (pre-existing rows).
+    public func showsCustomized() -> Bool {
+        isCustomized ?? (families?.isEmpty == false)
     }
 
     public var displayName: String {
