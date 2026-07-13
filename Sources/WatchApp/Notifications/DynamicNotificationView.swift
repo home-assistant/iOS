@@ -4,7 +4,7 @@ import SwiftUI
 
 struct DynamicNotificationView: View {
     @ObservedObject var viewModel: DynamicNotificationViewModel
-
+    private let attachmentCornerRadius: CGFloat = DesignSystem.CornerRadius.oneAndHalf
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             if let errorMessage = viewModel.errorMessage {
@@ -25,6 +25,7 @@ struct DynamicNotificationView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: attachmentCornerRadius))
             case let .map(primary, secondary):
                 let pins = [NotificationMapPin(coordinate: primary, tint: .red)] +
                     (secondary.map { [NotificationMapPin(coordinate: $0, tint: .green)] } ?? [])
@@ -41,28 +42,33 @@ struct DynamicNotificationView: View {
                     MapMarker(coordinate: pin.coordinate, tint: pin.tint)
                 }
                 .frame(height: 150)
+                .clipShape(RoundedRectangle(cornerRadius: attachmentCornerRadius))
             case let .movie(url):
                 NotificationInlineMovieView(url: url)
                     .frame(height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: attachmentCornerRadius))
             case nil:
                 EmptyView()
             }
 
-            if !viewModel.title.isEmpty {
-                Text(viewModel.title)
-                    .font(.headline)
-            }
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
+                if !viewModel.title.isEmpty {
+                    Text(viewModel.title)
+                        .font(.headline)
+                }
 
-            if !viewModel.subtitle.isEmpty {
-                Text(viewModel.subtitle)
-                    .font(.headline)
-            }
+                if !viewModel.subtitle.isEmpty {
+                    Text(viewModel.subtitle)
+                        .font(.headline)
+                }
 
-            if !viewModel.message.isEmpty {
-                Text(viewModel.message)
+                if !viewModel.message.isEmpty {
+                    Text(viewModel.message)
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, -DesignSystem.Spaces.one) // Hack to remove extra padding in the custom notifications view
     }
 }
 
