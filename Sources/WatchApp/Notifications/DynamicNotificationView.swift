@@ -27,17 +27,10 @@ struct DynamicNotificationView: View {
                     .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: attachmentCornerRadius))
             case let .map(primary, secondary):
-                let pins = [NotificationMapPin(id: "primary", coordinate: primary, tint: .red)] +
-                    (secondary.map { [NotificationMapPin(id: "secondary", coordinate: $0, tint: .green)] } ?? [])
-                let region = secondary.map { MKCoordinateRegion(coordinates: [primary, $0]) }
-                    ?? MKCoordinateRegion(
-                        center: primary,
-                        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                    )
                 Map(
-                    coordinateRegion: .constant(region),
+                    coordinateRegion: .constant(mapRegion(primary: primary, secondary: secondary)),
                     interactionModes: [],
-                    annotationItems: pins
+                    annotationItems: mapPins(primary: primary, secondary: secondary)
                 ) { pin in
                     MapMarker(coordinate: pin.coordinate, tint: pin.tint)
                 }
@@ -69,6 +62,32 @@ struct DynamicNotificationView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, -DesignSystem.Spaces.one) // Hack to remove extra padding in the custom notifications view
+    }
+
+    // Kept out of the ViewBuilder body: building these inline (array `+` concatenation with an
+    // optional-map closure) is expensive for the type checker and can hang the Release compiler.
+    private func mapPins(
+        primary: CLLocationCoordinate2D,
+        secondary: CLLocationCoordinate2D?
+    ) -> [NotificationMapPin] {
+        var pins = [NotificationMapPin(id: "primary", coordinate: primary, tint: .red)]
+        if let secondary {
+            pins.append(NotificationMapPin(id: "secondary", coordinate: secondary, tint: .green))
+        }
+        return pins
+    }
+
+    private func mapRegion(
+        primary: CLLocationCoordinate2D,
+        secondary: CLLocationCoordinate2D?
+    ) -> MKCoordinateRegion {
+        if let secondary {
+            return MKCoordinateRegion(coordinates: [primary, secondary])
+        }
+        return MKCoordinateRegion(
+            center: primary,
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        )
     }
 }
 
