@@ -180,6 +180,7 @@
 		42EDEB11300315A50051FC9B /* HAApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE941300315A50051FC9B /* HAApp.swift */; };
 		42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */; };
 		42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE943300315A50051FC9B /* LifecycleManager.swift */; };
+		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
 		42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */; };
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
 		42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */; };
@@ -610,6 +611,7 @@
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		42EDE943300315A50051FC9B /* LifecycleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleManager.swift; sourceTree = "<group>"; };
+		FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowGroupCommands.swift; sourceTree = "<group>"; };
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
 		42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIIdentity.test.swift; sourceTree = "<group>"; };
@@ -2187,6 +2189,7 @@
 				42EDE941300315A50051FC9B /* HAApp.swift */,
 				42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */,
 				42EDE943300315A50051FC9B /* LifecycleManager.swift */,
+				FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */,
 				42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */,
 			);
 			path = App;
@@ -3650,6 +3653,7 @@
 				42EDEB11300315A50051FC9B /* HAApp.swift in Sources */,
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
+				FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */,
 				42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

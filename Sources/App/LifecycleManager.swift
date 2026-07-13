@@ -110,6 +110,7 @@ class LifecycleManager {
 
         periodicUpdateManager.invalidatePeriodicUpdateTimer(forBackground: true)
         DataWidgetsUpdater.update()
+        BackgroundRefreshManager.scheduleAppRefresh()
     }
 
     private var hasTriggeredWarm = false
