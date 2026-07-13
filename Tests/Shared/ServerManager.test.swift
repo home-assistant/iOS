@@ -251,7 +251,7 @@ class ServerManagerTests: XCTestCase {
                 expiration: Current.date().addingTimeInterval(60)
             )
         }
-        servers.restoreState(try encoder.encode(["fake1": older]))
+        try servers.restoreState(encoder.encode(["fake1": older]))
 
         let server = try XCTUnwrap(servers.server(for: "fake1"))
         // Token is not downgraded (compared by value since TokenInfo.== ignores expiration)...
@@ -278,7 +278,7 @@ class ServerManagerTests: XCTestCase {
                 expiration: Current.date().addingTimeInterval(3600)
             )
         }
-        servers.restoreState(try encoder.encode(["fake1": newer]))
+        try servers.restoreState(encoder.encode(["fake1": newer]))
 
         let server = try XCTUnwrap(servers.server(for: "fake1"))
         XCTAssertEqual(server.info.token.accessToken, "new")
