@@ -81,8 +81,6 @@
 		2ACC292CBD70CA7E061DE1D9 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AB784C585C188EB65EA62A21 /* RealmSwift */; };
 		3B5B2D52F2408473F8BFA79C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 70600C4E2473CC736B505F6D /* RealmSwift */; };
 		3CD55EFC5CB7477B681D04C0 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EBE9D41C3797206D88C3FBC2 /* RealmSwift */; };
-		403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */; };
-		403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */; };
 		4206DE5A2E25055E00142E85 /* WebsiteDataStoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */; };
 		420E64BD2D676B2400A31E86 /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 420E64BC2D676B2400A31E86 /* InlineSnapshotTesting */; };
 		420E64BF2D676B2400A31E86 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 420E64BE2D676B2400A31E86 /* SnapshotTesting */; };
@@ -127,8 +125,6 @@
 		42886D362FFE882F004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D352FFE882F004EB33B /* PromiseKitDynamic */; };
 		42886D382FFE883A004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D372FFE883A004EB33B /* HAKit */; };
 		42886D3C2FFE8841004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3B2FFE8841004EB33B /* PromiseKitDynamic */; };
-		42ED095B30033B750051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095A30033B750051FC9B /* Dependencies */; };
-		42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095C30033B7D0051FC9B /* Dependencies */; };
 		42886D3E2FFE884E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D3D2FFE884E004EB33B /* HAKit */; };
 		42886D422FFE8853004EB33B /* PromiseKitDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D412FFE8853004EB33B /* PromiseKitDynamic */; };
 		42886D442FFE885E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D432FFE885E004EB33B /* HAKit */; };
@@ -148,8 +144,6 @@
 		42886D652FFE8C0E004EB33B /* HAKit in Frameworks */ = {isa = PBXBuildFile; productRef = 42886D642FFE8C0E004EB33B /* HAKit */; };
 		42886DEE0000000000000011 /* PromiseKitDynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 42886D2F2FFE881B004EB33B /* PromiseKitDynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		42886DEE0000000000000012 /* PromiseKitDynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 42886D352FFE882F004EB33B /* PromiseKitDynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
-		428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
 		428EDB682DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
 		428EDB692DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
 		4298587E2EB1025E00E33710 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4298587D2EB1025E00E33710 /* LocationManager.swift */; };
@@ -163,25 +157,6 @@
 		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
 		42A1F0B72E000000000000B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A72E000000000000A7 /* Alamofire */; };
 		42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */; };
-		42AC20012FA1000000000001 /* PerformActionAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000001 /* PerformActionAppIntent.swift */; };
-		42AC20012FA1000000000002 /* AssistPromptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000002 /* AssistPromptAppIntent.swift */; };
-		42AC20012FA1000000000003 /* GetCameraSnapshotAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000003 /* GetCameraSnapshotAppIntent.swift */; };
-		42AC20012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */; };
-		42AC20012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */; };
-		42AC20012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */; };
-		42AC20012FA1000000000007 /* IntentActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000007 /* IntentActionEntity.swift */; };
-		42AC20012FA1000000000008 /* IntentCameraEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000008 /* IntentCameraEntity.swift */; };
-		42AC20012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */; };
-		42AC30012FA1000000000001 /* PerformActionAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000001 /* PerformActionAppIntent.swift */; };
-		42AC30012FA1000000000002 /* AssistPromptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000002 /* AssistPromptAppIntent.swift */; };
-		42AC30012FA1000000000003 /* GetCameraSnapshotAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000003 /* GetCameraSnapshotAppIntent.swift */; };
-		42AC30012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */; };
-		42AC30012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */; };
-		42AC30012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */; };
-		42AC30012FA1000000000007 /* IntentActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000007 /* IntentActionEntity.swift */; };
-		42AC30012FA1000000000008 /* IntentCameraEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000008 /* IntentCameraEntity.swift */; };
-		42AC30012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */; };
-		42AC30012FA1000000000010 /* OpenAppSettingsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC10012FA1000000000010 /* OpenAppSettingsAppIntent.swift */; };
 		42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 42B18FD62F38CA2300A1537A /* FirebaseMessaging */; };
 		42B7C1A32F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */; };
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
@@ -198,6 +173,8 @@
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E1C8102FFE4DA3008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C80F2FFE4DA3008DAEE5 /* XCGLogger */; };
 		42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C8112FFE4DB2008DAEE5 /* XCGLogger */; };
+		42ED095B30033B750051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095A30033B750051FC9B /* Dependencies */; };
+		42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095C30033B7D0051FC9B /* Dependencies */; };
 		42EDB6173002F8380051FC9B /* HAModels in Frameworks */ = {isa = PBXBuildFile; productRef = 42EDB6163002F8380051FC9B /* HAModels */; };
 		42EDE9CD300315A50051FC9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42EDE7BE300315A50051FC9B /* Assets.xcassets */; };
 		42EDE9D0300315A50051FC9B /* gallery.ckcomplication in Resources */ = {isa = PBXBuildFile; fileRef = 42EDE805300315A50051FC9B /* gallery.ckcomplication */; };
@@ -628,7 +605,6 @@
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.test.swift; sourceTree = "<group>"; };
-		403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentServerAppEntitiy.swift; sourceTree = "<group>"; };
 		4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataStoreHandler.swift; sourceTree = "<group>"; };
 		421125C62F51DE9200971BAD /* StatePrecision.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.test.swift; sourceTree = "<group>"; };
 		42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityColorAttributesParser.swift; sourceTree = "<group>"; };
@@ -643,21 +619,10 @@
 		4278CB822D01F09400CFAAC9 /* AppGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGesture.swift; sourceTree = "<group>"; };
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
 		42886D202FFE64DF004EB33B /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.resolved; sourceTree = "<group>"; };
-		428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityProvider+Details.swift"; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
 		4298587D2EB1025E00E33710 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWidgetsUpdater.swift; sourceTree = "<group>"; };
 		42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/AllowedTag.test.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000001 /* PerformActionAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformActionAppIntent.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000002 /* AssistPromptAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPromptAppIntent.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000003 /* GetCameraSnapshotAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCameraSnapshotAppIntent.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderTemplateAppIntent.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateLocationAppIntent.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensorsAppIntent.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000007 /* IntentActionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentActionEntity.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000008 /* IntentCameraEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentCameraEntity.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutAppIntentSupport.swift; sourceTree = "<group>"; };
-		42AC10012FA1000000000010 /* OpenAppSettingsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAppSettingsAppIntent.swift; sourceTree = "<group>"; };
 		42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDesignIconsSFSymbol.test.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
@@ -917,6 +882,200 @@
 			);
 			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
 		};
+		4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				/Localized/Intents/Resources/AppIntentVocabulary.plist,
+				AppIntents/AssistPromptAppIntent.swift,
+				AppIntents/GetCameraSnapshotAppIntent.swift,
+				AppIntents/IntentActionEntity.swift,
+				AppIntents/IntentCameraEntity.swift,
+				AppIntents/IntentServerAppEntitiy.swift,
+				AppIntents/OpenAppSettingsAppIntent.swift,
+				AppIntents/PerformActionAppIntent.swift,
+				AppIntents/RenderTemplateAppIntent.swift,
+				AppIntents/Script/ScriptAppIntent.swift,
+				AppIntents/Sensor/IntentSensorsAppEntity.swift,
+				AppIntents/ShortcutAppIntentSupport.swift,
+				AppIntents/UpdateLocationAppIntent.swift,
+				AppIntents/UpdateSensorsAppIntent.swift,
+				AppIntents/Widget/Details/WidgetDetailsAppIntent.swift,
+				AppIntents/Widget/Gauge/WidgetGaugeAppIntent.swift,
+				AppIntents/Widget/Gauge/WidgetGaugeAppIntentTimelineProvider.swift,
+				AppIntents/Widget/ReloadWidgetsAppIntent.swift,
+				AppIntents/Widget/Script/WidgetScriptsAppIntent.swift,
+				AppIntents/Widget/Sensor/WidgetSensorsAppIntent.swift,
+				AppIntents/Widget/Sensor/WidgetSensorsConfig.swift,
+				Widgets/Assist/AssistAppIntent.swift,
+				Widgets/Assist/Control/ControlAssistValueProvider.swift,
+				Widgets/Common/TileCardStyleModifier.swift,
+				Widgets/Common/WidgetBackground.swift,
+				Widgets/Common/WidgetBasicButtonView.swift,
+				Widgets/Common/WidgetBasicContainerView.swift,
+				Widgets/Common/WidgetBasicSensorView.swift,
+				Widgets/Common/WidgetBasicSizeStyle.swift,
+				Widgets/Common/WidgetBasicView.swift,
+				Widgets/Common/WidgetBasicViewModel.swift,
+				Widgets/Common/WidgetBasicViewProtocol.swift,
+				Widgets/Common/WidgetBasicViewTintedWrapper.swift,
+				Widgets/Common/WidgetCarPlayLocation.swift,
+				Widgets/Common/WidgetCircularView.swift,
+				Widgets/Common/WidgetContentMargin.swift,
+				"Widgets/Common/WidgetFamily+AppPreview.swift",
+				Widgets/Common/WidgetFamilySizes.swift,
+				Widgets/Common/WidgetTimelineProviderSupport.swift,
+				Widgets/Controls/Cover/CoverIntent.swift,
+				Widgets/Controls/Cover/IntentCoverEntity.swift,
+				Widgets/Controls/Fan/FanIntent.swift,
+				Widgets/Controls/Fan/IntentFanEntity.swift,
+				Widgets/Controls/Light/IntentLightEntity.swift,
+				Widgets/Controls/Light/LightIntent.swift,
+				Widgets/Controls/OpenEntity/ControlOpenCamera/ControlOpenCamera.swift,
+				Widgets/Controls/OpenEntity/ControlOpenCamera/ControlOpenCameraValueProvider.swift,
+				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntity.swift,
+				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntityValueProvider.swift,
+				Widgets/Controls/OpenEntity/ControlOpenEntity/OpenEntityAppIntent.swift,
+				Widgets/Controls/Switch/IntentSwitchEntity.swift,
+				Widgets/Controls/Switch/SwitchIntent.swift,
+				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
+				Widgets/Custom/AppIntents/CustomWidgetActivateAppIntent.swift,
+				Widgets/Custom/AppIntents/CustomWidgetIntentHelper.swift,
+				Widgets/Custom/AppIntents/CustomWidgetPressButtonAppIntent.swift,
+				Widgets/Custom/AppIntents/CustomWidgetToggleAppIntent.swift,
+				Widgets/Custom/AppIntents/ResetAllCustomWidgetConfirmationAppIntent.swift,
+				Widgets/Custom/AppIntents/UpdateWidgetItemConfirmationStateAppIntent.swift,
+				Widgets/Custom/WidgetCustom.swift,
+				Widgets/Custom/WidgetCustomTimelineProvider.swift,
+				Widgets/HAAppEntityAppIntentEntity.swift,
+				Widgets/Lockscreen/Gauge/GaugeArcView.swift,
+				Widgets/Lockscreen/Gauge/WidgetGauge.swift,
+				Widgets/Lockscreen/Gauge/WidgetGaugeView.swift,
+				Widgets/OpenPage/Control/ControlOpenPage.swift,
+				Widgets/OpenPage/Control/ControlOpenPageValueProvider.swift,
+				Widgets/OpenPage/OpenPageAppIntent.swift,
+				Widgets/OpenPage/PageAppEntity.swift,
+				Widgets/Script/Control/SFSymbolEntity.swift,
+				Widgets/TodoList/TodoItemCompleteAppIntent.swift,
+				Widgets/TodoList/TodoListAppEntity.swift,
+				Widgets/TodoList/TodoListRefreshAppIntent.swift,
+				Widgets/TodoList/WidgetTodoList.swift,
+				Widgets/TodoList/WidgetTodoListAppIntent.swift,
+				Widgets/TodoList/WidgetTodoListProvider.swift,
+				Widgets/TodoList/WidgetTodoListView.swift,
+			);
+			target = B657A8E51CA646EB00121384 /* App */;
+		};
+		4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppIntents/Widget/StatePrecision.swift,
+				"EntityProvider+Details.swift",
+			);
+			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
+		};
+		4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppIntents/Widget/StatePrecision.swift,
+				"EntityProvider+Details.swift",
+			);
+			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
+		};
+		4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				/Localized/Intents/Resources/AppIntentVocabulary.plist,
+				AppIntents/Widget/ReloadWidgetsAppIntent.swift,
+				Intents/IntentHandler.swift,
+			);
+			target = B66C58A4215086F0004AB261 /* Extensions-Intents */;
+		};
+		4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Matter/HATypedRequest+Matter.swift",
+				Matter/MatterRequestHandler.swift,
+			);
+			target = 11B6B57A2948F8E100B8B552 /* Extensions-Matter */;
+		};
+		4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				NotificationService/NotificationService.swift,
+			);
+			target = B6AAD7A01D827DD40090B220 /* Extensions-NotificationService */;
+		};
+		4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				/Localized/NotificationContent/MainInterface.storyboard,
+				NotificationContent/CameraStreamHandler.swift,
+				NotificationContent/CameraStreamHLSViewController.swift,
+				NotificationContent/CameraStreamMJPEGViewController.swift,
+				NotificationContent/CameraStreamWebRTCViewController.swift,
+				NotificationContent/CameraViewController.swift,
+				NotificationContent/ImageAttachmentViewController.swift,
+				NotificationContent/MapViewController.swift,
+				NotificationContent/NotificationErrorViewController.swift,
+				NotificationContent/NotificationLoadingViewController.swift,
+				NotificationContent/NotificationViewController.swift,
+				NotificationContent/VideoAudioAttachmentViewController.swift,
+			);
+			target = B627CB061D83C87B0057173E /* Extensions-NotificationContent */;
+		};
+		4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PushProvider/PushProvider.swift,
+			);
+			target = 11B92908266F145000786588 /* Extensions-PushProvider */;
+		};
+		4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Share/ShareViewController.swift,
+			);
+			target = 1155DD05250F4100003405C0 /* Extensions-Share */;
+		};
+		4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				/Localized/Intents/Resources/AppIntentVocabulary.plist,
+				/Localized/NotificationContent/MainInterface.storyboard,
+				AppIntents/OpenAppSettingsAppIntent.swift,
+				AppIntents/Widget/StatePrecision.swift,
+				"EntityProvider+Details.swift",
+				Intents/IntentHandler.swift,
+				Intents/Resources/Info.plist,
+				"Matter/HATypedRequest+Matter.swift",
+				Matter/MatterRequestHandler.swift,
+				Matter/Resources/Info.plist,
+				NotificationContent/CameraStreamHandler.swift,
+				NotificationContent/CameraStreamHLSViewController.swift,
+				NotificationContent/CameraStreamMJPEGViewController.swift,
+				NotificationContent/CameraStreamWebRTCViewController.swift,
+				NotificationContent/CameraViewController.swift,
+				NotificationContent/ImageAttachmentViewController.swift,
+				NotificationContent/MapViewController.swift,
+				NotificationContent/NotificationErrorViewController.swift,
+				NotificationContent/NotificationLoadingViewController.swift,
+				NotificationContent/NotificationViewController.swift,
+				NotificationContent/Resources/Info.plist,
+				NotificationContent/Resources/TestNotifications/camera_notification.apns,
+				NotificationContent/Resources/TestNotifications/dynamic_notification.apns,
+				NotificationContent/Resources/TestNotifications/map_notification.apns,
+				NotificationContent/VideoAudioAttachmentViewController.swift,
+				NotificationService/NotificationService.swift,
+				NotificationService/Resources/Info.plist,
+				PushProvider/PushProvider.swift,
+				PushProvider/Resources/Info.plist,
+				Share/Resources/Info.plist,
+				Share/ShareViewController.swift,
+				"Widgets/Common/WidgetFamily+AppPreview.swift",
+				Widgets/Resources/Info.plist,
+			);
+			target = 1171506824DFCDE60065E874 /* Extensions-Widgets */;
+		};
 		42EDBB533002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -968,117 +1127,6 @@
 				URLExtensions.test.swift,
 			);
 			target = B657A8FB1CA646EB00121384 /* Tests-App */;
-		};
-		42EDBDF23002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				/Localized/Resources/AppIntentVocabulary.plist,
-			);
-			target = B657A8E51CA646EB00121384 /* App */;
-		};
-		42EDBDF33002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Resources/Info.plist,
-			);
-			target = B66C58A4215086F0004AB261 /* Extensions-Intents */;
-		};
-		42EDBDF43002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Resources/Info.plist,
-				Resources/TestNotifications/camera_notification.apns,
-				Resources/TestNotifications/dynamic_notification.apns,
-				Resources/TestNotifications/map_notification.apns,
-			);
-			target = B627CB061D83C87B0057173E /* Extensions-NotificationContent */;
-		};
-		42EDBDF53002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Assist/Control/ControlAssist.swift,
-				Assist/WidgetAssist.swift,
-				Assist/WidgetAssistProvider.swift,
-				Assist/WidgetAssistView.swift,
-				Assist/WidgetAssistViewTintedWrapper.swift,
-				Common/WidgetEmptyView.swift,
-				CommonlyUsedEntities/WidgetCommonlyUsedEntities.swift,
-				CommonlyUsedEntities/WidgetCommonlyUsedEntitiesTimelineProvider.swift,
-				ControlRefreshDelay.swift,
-				Controls/Automation/AutomationAppIntent.swift,
-				Controls/Automation/ControlAutomation.swift,
-				Controls/Automation/ControlAutomationsValueProvider.swift,
-				Controls/Automation/IntentAutomationEntity.swift,
-				Controls/Button/ButtonIntent.swift,
-				Controls/Button/ControlButton.swift,
-				Controls/Button/ControlButtonValueProvider.swift,
-				Controls/Button/IntentButtonEntity.swift,
-				Controls/Cover/ControlCover.swift,
-				Controls/Cover/ControlCoverValueProvider.swift,
-				Controls/Fan/ControlFan.swift,
-				Controls/Fan/ControlFanValueProvider.swift,
-				Controls/Light/ControlLight.swift,
-				Controls/Light/ControlLightsValueProvider.swift,
-				Controls/Switch/ControlSwitch.swift,
-				Controls/Switch/ControlSwitchValueProvider.swift,
-				LiveActivity/HAActivityProgressBar.swift,
-				LiveActivity/HAActivityTimerProgressBar.swift,
-				LiveActivity/HADynamicIslandView.swift,
-				LiveActivity/HALiveActivityConfiguration.swift,
-				LiveActivity/HALockScreenView.swift,
-				Lockscreen/Details/WidgetDetails.swift,
-				Lockscreen/Details/WidgetDetailsView.swift,
-				OpenPage/WidgetOpenPage.swift,
-				OpenPage/WidgetOpenPageProvider.swift,
-				Resources/Assets.xcassets,
-				Resources/Info.plist,
-				Scene/Control/ControlScene.swift,
-				Scene/Control/ControlScenesValueProvider.swift,
-				Scene/Control/IntentSceneEntity.swift,
-				Scene/SceneAppIntent.swift,
-				Script/Control/ControlScript.swift,
-				Script/Control/ControlScriptsValueProvider.swift,
-				Script/WidgetScripts.swift,
-				Sensor/WidgetSensors.swift,
-				Widgets.swift,
-			);
-			target = B657A8E51CA646EB00121384 /* App */;
-		};
-		42EDBDF63002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Common/WidgetFamily+AppPreview.swift",
-				Resources/Info.plist,
-			);
-			target = 1171506824DFCDE60065E874 /* Extensions-Widgets */;
-		};
-		42EDBDF73002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Resources/Info.plist,
-			);
-			target = 11B6B57A2948F8E100B8B552 /* Extensions-Matter */;
-		};
-		42EDBDF83002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				NotificationService.swift,
-			);
-			target = B6AAD7A01D827DD40090B220 /* Extensions-NotificationService */;
-		};
-		42EDBDF93002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				PushProvider.swift,
-			);
-			target = 11B92908266F145000786588 /* Extensions-PushProvider */;
-		};
-		42EDBDFA3002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				ShareViewController.swift,
-			);
-			target = 1155DD05250F4100003405C0 /* Extensions-Share */;
 		};
 		42EDC0BD3002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -1168,8 +1216,8 @@
 				AssistSession.swift,
 				AssistSettingsView.swift,
 				AssistSettingsViewModel.swift,
-				"AssistView+Build.swift",
 				AssistView.swift,
+				"AssistView+Build.swift",
 				AssistViewModel.swift,
 				Audio/AudioRecorder.swift,
 				"Audio/CMSampleBuffer+AudioSamples.swift",
@@ -1241,8 +1289,8 @@
 				Views/BaseOnboardingViewModifiers.swift,
 				Views/CheckmarkDrawOnView.swift,
 				Views/ClientCertificateOnboardingView.swift,
-				Views/MTLSLabsLabel.swift,
 				Views/MacOnboardingSheetFrame.swift,
+				Views/MTLSLabsLabel.swift,
 				Views/OnboardingErrorView.swift,
 				Views/RecoveredServersImportView.swift,
 				Views/SafariWebView.swift,
@@ -1339,6 +1387,7 @@
 				MagicItem/Edit/MagicItemCustomizationView.swift,
 				MagicItem/Edit/MagicItemCustomizationViewModel.swift,
 				NFC/AllowedTagsView.swift,
+				NFC/iOSTagManager.swift,
 				NFC/NFCListView.swift,
 				"NFC/NFCNDEFPayload+Additions.swift",
 				NFC/NFCReader.swift,
@@ -1346,23 +1395,22 @@
 				NFC/NFCWriter.swift,
 				NFC/SimulatorNFCManager.swift,
 				NFC/TagsView.swift,
-				NFC/iOSTagManager.swift,
 				Notifications/NotificationActionEditorView.swift,
 				Notifications/NotificationCategoryEditorView.swift,
 				Notifications/NotificationCategoryListView.swift,
 				Notifications/NotificationDebugNotificationsView.swift,
 				Notifications/NotificationHistoryView.swift,
-				Notifications/NotificationRateLimitView.swift,
 				Notifications/NotificationRateLimitsAPI.swift,
+				Notifications/NotificationRateLimitView.swift,
 				Notifications/NotificationSettingsView.swift,
 				Notifications/NotificationSnoozeActionsView.swift,
 				Notifications/NotificationSoundsView.swift,
 				"Observation/NotificationCategory+Observation.swift",
 				PrivacyView.swift,
 				Sensors/Details/SensorDetailLabelRowView.swift,
+				Sensors/Details/SensorDetailsDecimalStepper.swift,
 				Sensors/Details/SensorDetailView.swift,
 				Sensors/Details/SensorDetailViewModel.swift,
-				Sensors/Details/SensorDetailsDecimalStepper.swift,
 				Sensors/List/SensorListView.swift,
 				Sensors/List/SensorListViewModel.swift,
 				Sensors/List/SensorRow.swift,
@@ -1461,6 +1509,7 @@
 				MagicItem/Edit/MagicItemCustomizationView.swift,
 				MagicItem/Edit/MagicItemCustomizationViewModel.swift,
 				NFC/AllowedTagsView.swift,
+				NFC/iOSTagManager.swift,
 				NFC/NFCListView.swift,
 				"NFC/NFCNDEFPayload+Additions.swift",
 				NFC/NFCReader.swift,
@@ -1468,23 +1517,22 @@
 				NFC/NFCWriter.swift,
 				NFC/SimulatorNFCManager.swift,
 				NFC/TagsView.swift,
-				NFC/iOSTagManager.swift,
 				Notifications/NotificationActionEditorView.swift,
 				Notifications/NotificationCategoryEditorView.swift,
 				Notifications/NotificationCategoryListView.swift,
 				Notifications/NotificationDebugNotificationsView.swift,
 				Notifications/NotificationHistoryView.swift,
-				Notifications/NotificationRateLimitView.swift,
 				Notifications/NotificationRateLimitsAPI.swift,
+				Notifications/NotificationRateLimitView.swift,
 				Notifications/NotificationSettingsView.swift,
 				Notifications/NotificationSnoozeActionsView.swift,
 				Notifications/NotificationSoundsView.swift,
 				"Observation/NotificationCategory+Observation.swift",
 				PrivacyView.swift,
 				Sensors/Details/SensorDetailLabelRowView.swift,
+				Sensors/Details/SensorDetailsDecimalStepper.swift,
 				Sensors/Details/SensorDetailView.swift,
 				Sensors/Details/SensorDetailViewModel.swift,
-				Sensors/Details/SensorDetailsDecimalStepper.swift,
 				Sensors/List/SensorListView.swift,
 				Sensors/List/SensorListViewModel.swift,
 				Sensors/List/SensorRow.swift,
@@ -1503,71 +1551,6 @@
 			);
 			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
 		};
-		42FD0000000800510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Details/WidgetDetailsAppIntentTimelineProvider.swift,
-				Script/WidgetScriptsAppIntentTimelineProvider.swift,
-				Sensor/WidgetSensorsAppIntentTimelineProvider.swift,
-				StatePrecision.swift,
-			);
-			target = B657A8E51CA646EB00121384 /* App */;
-		};
-		42FD0000000900510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Details/WidgetDetailsAppIntent.swift,
-				Details/WidgetDetailsAppIntentTimelineProvider.swift,
-				Gauge/WidgetGaugeAppIntent.swift,
-				Gauge/WidgetGaugeAppIntentTimelineProvider.swift,
-				Script/WidgetScriptsAppIntent.swift,
-				Script/WidgetScriptsAppIntentTimelineProvider.swift,
-				Sensor/WidgetSensorsAppIntent.swift,
-				Sensor/WidgetSensorsAppIntentTimelineProvider.swift,
-				Sensor/WidgetSensorsConfig.swift,
-				StatePrecision.swift,
-			);
-			target = B66C58A4215086F0004AB261 /* Extensions-Intents */;
-		};
-		42FD0000000A00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				StatePrecision.swift,
-			);
-			target = 1171506824DFCDE60065E874 /* Extensions-Widgets */;
-		};
-		42FD0000000B00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Details/WidgetDetailsAppIntent.swift,
-				Details/WidgetDetailsAppIntentTimelineProvider.swift,
-				Gauge/WidgetGaugeAppIntent.swift,
-				Gauge/WidgetGaugeAppIntentTimelineProvider.swift,
-				ReloadWidgetsAppIntent.swift,
-				Script/WidgetScriptsAppIntent.swift,
-				Script/WidgetScriptsAppIntentTimelineProvider.swift,
-				Sensor/WidgetSensorsAppIntent.swift,
-				Sensor/WidgetSensorsAppIntentTimelineProvider.swift,
-				Sensor/WidgetSensorsConfig.swift,
-			);
-			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
-		};
-		42FD0000000C00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Details/WidgetDetailsAppIntent.swift,
-				Details/WidgetDetailsAppIntentTimelineProvider.swift,
-				Gauge/WidgetGaugeAppIntent.swift,
-				Gauge/WidgetGaugeAppIntentTimelineProvider.swift,
-				ReloadWidgetsAppIntent.swift,
-				Script/WidgetScriptsAppIntent.swift,
-				Script/WidgetScriptsAppIntentTimelineProvider.swift,
-				Sensor/WidgetSensorsAppIntent.swift,
-				Sensor/WidgetSensorsAppIntentTimelineProvider.swift,
-				Sensor/WidgetSensorsConfig.swift,
-			);
-			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
-		};
 		42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -1579,8 +1562,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ActiveStateManager.swift,
-				"AppArea+Queries.swift",
 				AppArea.swift,
+				"AppArea+Queries.swift",
 				AppAreaTable.swift,
 				AppConstants.swift,
 				AppDatabaseUpdater.swift,
@@ -1656,10 +1639,10 @@
 				"__Snapshots__/OnboardingScanningInstanceRow.test/testConstrainedWidthSnapshot.constrained-width-light.png",
 				"__Snapshots__/OnboardingScanningInstanceRow.test/testHTTPVsHTTPSSnapshot.http-vs-https-dark.png",
 				"__Snapshots__/OnboardingScanningInstanceRow.test/testHTTPVsHTTPSSnapshot.http-vs-https-light.png",
-				"__Snapshots__/OnboardingScanningInstanceRow.test/testIPAddressURLsSnapshot.ip-address-urls-dark.png",
-				"__Snapshots__/OnboardingScanningInstanceRow.test/testIPAddressURLsSnapshot.ip-address-urls-light.png",
 				"__Snapshots__/OnboardingScanningInstanceRow.test/testInternalURLOnlySnapshot.internal-url-only-dark.png",
 				"__Snapshots__/OnboardingScanningInstanceRow.test/testInternalURLOnlySnapshot.internal-url-only-light.png",
+				"__Snapshots__/OnboardingScanningInstanceRow.test/testIPAddressURLsSnapshot.ip-address-urls-dark.png",
+				"__Snapshots__/OnboardingScanningInstanceRow.test/testIPAddressURLsSnapshot.ip-address-urls-light.png",
 				"__Snapshots__/OnboardingScanningInstanceRow.test/testLoadingStateSnapshot.loading-state-dark.png",
 				"__Snapshots__/OnboardingScanningInstanceRow.test/testLoadingStateSnapshot.loading-state-light.png",
 				"__Snapshots__/OnboardingScanningInstanceRow.test/testLoadingWithLongContentSnapshot.loading-with-long-content-dark.png",
@@ -1741,61 +1724,12 @@
 		42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				WidgetTodoListViewTests.swift,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallCapacitySnapshot.dark.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallCapacitySnapshot.light.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallSingleLabelSnapshot.dark.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallSingleLabelSnapshot.light.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallSnapshot.dark.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallSnapshot.light.png,
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-01_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-01_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-02_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-02_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-03_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-03_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-04_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-04_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-05_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-05_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-06_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-06_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-07_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-07_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-08_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-08_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-09_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-09_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-10_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-10_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-11_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-11_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-12_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-12_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-01_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-01_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-02_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-02_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-03_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-03_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-04_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-04_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-05_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-05_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-06_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-06_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-07_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-07_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-08_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-08_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-09_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-09_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-10_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-10_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-11_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-11_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-12_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-12_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withoutSubtitleWithIconBackground-systemLarge-01_tiles-dark.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withoutSubtitleWithIconBackground-systemLarge-01_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withoutSubtitleWithIconBackground-systemLarge-02_tiles-dark.png",
@@ -1844,30 +1778,54 @@
 				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withoutSubtitleWithoutIconBackground-systemLarge-11_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withoutSubtitleWithoutIconBackground-systemLarge-12_tiles-dark.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withoutSubtitleWithoutIconBackground-systemLarge-12_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-01_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-01_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-02_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-02_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-03_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-03_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-04_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-04_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-05_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-05_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-06_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-06_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-01_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-01_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-02_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-02_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-03_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-03_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-04_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-04_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-05_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-05_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-06_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-06_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-01_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-01_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-02_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-02_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-03_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-03_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-04_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-04_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-05_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-05_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-06_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-06_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-07_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-07_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-08_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-08_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-09_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-09_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-10_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-10_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-11_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-11_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-12_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithIconBackground-systemLarge-12_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-01_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-01_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-02_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-02_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-03_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-03_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-04_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-04_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-05_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-05_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-06_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-06_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-07_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-07_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-08_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-08_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-09_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-09_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-10_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-10_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-11_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-11_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-12_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemLargeSnapshots.withSubtitleWithoutIconBackground-systemLarge-12_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withoutSubtitleWithIconBackground-systemMedium-01_tiles-dark.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withoutSubtitleWithIconBackground-systemMedium-01_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withoutSubtitleWithIconBackground-systemMedium-02_tiles-dark.png",
@@ -1892,18 +1850,30 @@
 				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withoutSubtitleWithoutIconBackground-systemMedium-05_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withoutSubtitleWithoutIconBackground-systemMedium-06_tiles-dark.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withoutSubtitleWithoutIconBackground-systemMedium-06_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-01_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-01_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-02_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-02_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-03_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-03_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-01_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-01_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-02_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-02_tiles-light.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-03_tiles-dark.png",
-				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-03_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-01_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-01_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-02_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-02_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-03_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-03_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-04_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-04_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-05_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-05_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-06_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithIconBackground-systemMedium-06_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-01_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-01_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-02_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-02_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-03_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-03_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-04_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-04_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-05_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-05_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-06_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemMediumSnapshots.withSubtitleWithoutIconBackground-systemMedium-06_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withoutSubtitleWithIconBackground-systemSmall-01_tiles-dark.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withoutSubtitleWithIconBackground-systemSmall-01_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withoutSubtitleWithIconBackground-systemSmall-02_tiles-dark.png",
@@ -1916,14 +1886,39 @@
 				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withoutSubtitleWithoutIconBackground-systemSmall-02_tiles-light.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withoutSubtitleWithoutIconBackground-systemSmall-03_tiles-dark.png",
 				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withoutSubtitleWithoutIconBackground-systemSmall-03_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-01_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-01_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-02_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-02_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-03_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithIconBackground-systemSmall-03_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-01_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-01_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-02_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-02_tiles-light.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-03_tiles-dark.png",
+				"__Snapshots__/WidgetsSnapshot.test/systemSmallSnapshots.withSubtitleWithoutIconBackground-systemSmall-03_tiles-light.png",
+				WidgetTodoListViewTests.swift,
 			);
 			target = B657A8FB1CA646EB00121384 /* Tests-App */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		11AF1EC52528FB2300AAE364 /* Entitlements */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Entitlements; sourceTree = "<group>"; };
+		11B38EE0275C545C00205C7B /* Intents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Intents; sourceTree = "<group>"; };
+		11F2F28D2587285300F61F7C /* NotificationAttachment */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationAttachment; sourceTree = "<group>"; };
+		420E64B72D676A4200A31E86 /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
+		42196AD92DA5AF7A00BD501E /* Onboarding */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Onboarding; sourceTree = "<group>"; };
 		423FB76F2FFFDFDE000CB8FD /* WatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (423FB77E2FFFDFDF000CB8FD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgets; sourceTree = "<group>"; };
 		42479B4630013FE300F7FCD3 /* WatchApp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42479B7530013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42479B7630013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchApp; sourceTree = "<group>"; };
+		4283C0A63004CD31004D1061 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
+		428626002DA5CC8400D58D13 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001400510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
+		42A746A22E832FB8005E0332 /* .github */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = .github; sourceTree = "<group>"; };
+		42A7474C2E832FB8005E0332 /* fastlane */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = fastlane; sourceTree = "<group>"; };
+		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
+		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
+		42D3E49F2C5BCCF600444BE6 /* Watch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Watch; sourceTree = "<group>"; };
 		42EDB61A3002FB9A0051FC9B /* Launcher */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBB5E3002FB9B0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Launcher; sourceTree = "<group>"; };
 		42EDB6203002FB9A0051FC9B /* Improv */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Improv; sourceTree = "<group>"; };
 		42EDB6453002FB9A0051FC9B /* CarPlay */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CarPlay; sourceTree = "<group>"; };
@@ -1959,15 +1954,6 @@
 		42EDBC293002FBD10051FC9B /* Sensors */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sensors; sourceTree = "<group>"; };
 		42EDBC3A3002FBD90051FC9B /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		42EDBC3C3002FBE40051FC9B /* Watch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Watch; sourceTree = "<group>"; };
-		42EDBC413002FBEE0051FC9B /* PushProvider */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBDF93002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PushProvider; sourceTree = "<group>"; };
-		42EDBC6A3002FBEE0051FC9B /* Intents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBDF23002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42EDBDF33002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Intents; sourceTree = "<group>"; };
-		42EDBC733002FBEE0051FC9B /* Matter */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBDF73002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Matter; sourceTree = "<group>"; };
-		42EDBCF93002FBEE0051FC9B /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBDF53002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42EDBDF63002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
-		42EDBDC73002FBEE0051FC9B /* NotificationService */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBDF83002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationService; sourceTree = "<group>"; };
-		42EDBDCC3002FBEE0051FC9B /* Share */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBDFA3002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Share; sourceTree = "<group>"; };
-		42EDBDE13002FBEE0051FC9B /* NotificationContent */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDBDF43002FBEF0051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationContent; sourceTree = "<group>"; };
-		42EDBDFC3002FBF60051FC9B /* Sensor */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sensor; sourceTree = "<group>"; };
-		42EDBE003002FBF60051FC9B /* Script */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Script; sourceTree = "<group>"; };
 		42EDBE083002FC020051FC9B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		42EDBE1F3002FC020051FC9B /* Database */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Database; sourceTree = "<group>"; };
 		42EDBE463002FC020051FC9B /* Toast */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Toast; sourceTree = "<group>"; };
@@ -1991,8 +1977,6 @@
 		42EDC0723002FC090051FC9B /* Notifications */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDC0C13002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Notifications; sourceTree = "<group>"; };
 		42EDC09B3002FC090051FC9B /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDC0C23002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42EDC0C33002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		42EDC0AD3002FC090051FC9B /* Assets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42EDC0C43002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42EDC0C53002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42EDC0C63002FC090051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Assets; sourceTree = "<group>"; };
-		42A746A22E832FB8005E0332 /* .github */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = .github; sourceTree = "<group>"; };
-		11AF1EC52528FB2300AAE364 /* Entitlements */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Entitlements; sourceTree = "<group>"; };
 		42EDE685300315A50051FC9B /* Assist */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Assist; sourceTree = "<group>"; };
 		42EDE68E300315A50051FC9B /* BarcodeScanner */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = BarcodeScanner; sourceTree = "<group>"; };
 		42EDE699300315A50051FC9B /* Cameras */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Cameras; sourceTree = "<group>"; };
@@ -2012,19 +1996,9 @@
 		42EDE930300315A50051FC9B /* Utilities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utilities; sourceTree = "<group>"; };
 		42EDE935300315A50051FC9B /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
 		42EDE93F300315A50051FC9B /* ZoneManager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZoneManager; sourceTree = "<group>"; };
-		4296C3722B91F06D0051B63C /* Widget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000800510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000900510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000A00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000B00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000C00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widget; sourceTree = "<group>"; };
-		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
-		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
-		11B38EE0275C545C00205C7B /* Intents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Intents; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
-		42196AD92DA5AF7A00BD501E /* Onboarding */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Onboarding; sourceTree = "<group>"; };
-		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
-		42D3E49F2C5BCCF600444BE6 /* Watch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Watch; sourceTree = "<group>"; };
-		428626002DA5CC8400D58D13 /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001400510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
-		11F2F28D2587285300F61F7C /* NotificationAttachment */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationAttachment; sourceTree = "<group>"; };
-		420E64B72D676A4200A31E86 /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
-		42A7474C2E832FB8005E0332 /* fastlane */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = fastlane; sourceTree = "<group>"; };
+		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2295,7 +2269,7 @@
 				42EDB6203002FB9A0051FC9B /* Improv */,
 				42EDB66D3002FB9A0051FC9B /* Thread */,
 				42EDB68B3002FB9A0051FC9B /* Watch */,
-				111501A72528412C00DCFA94 /* Extensions */,
+				4283C0A63004CD31004D1061 /* Extensions */,
 				42EDB61A3002FB9A0051FC9B /* Launcher */,
 				42EDB6803002FB9A0051FC9B /* MacBridge */,
 				D03D891820E0A85300D4F28D /* Shared */,
@@ -2304,22 +2278,6 @@
 				423FB76F2FFFDFDE000CB8FD /* WatchWidgets */,
 			);
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		111501A72528412C00DCFA94 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				4296C36A2B90DB630051B63C /* AppIntents */,
-				42EDBC6A3002FBEE0051FC9B /* Intents */,
-				42EDBC733002FBEE0051FC9B /* Matter */,
-				42EDBDE13002FBEE0051FC9B /* NotificationContent */,
-				42EDBDC73002FBEE0051FC9B /* NotificationService */,
-				42EDBC413002FBEE0051FC9B /* PushProvider */,
-				42EDBDCC3002FBEE0051FC9B /* Share */,
-				42EDBCF93002FBEE0051FC9B /* Widgets */,
-				428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		111501A82528414000DCFA94 /* Tests */ = {
@@ -2357,27 +2315,6 @@
 				11B9290A266F145000786588 /* NetworkExtension.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		4296C36A2B90DB630051B63C /* AppIntents */ = {
-			isa = PBXGroup;
-			children = (
-				42EDBDFC3002FBF60051FC9B /* Sensor */,
-				42EDBE003002FBF60051FC9B /* Script */,
-				4296C3722B91F06D0051B63C /* Widget */,
-				42AC10012FA1000000000003 /* GetCameraSnapshotAppIntent.swift */,
-				403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */,
-				42AC10012FA1000000000007 /* IntentActionEntity.swift */,
-				42AC10012FA1000000000008 /* IntentCameraEntity.swift */,
-				42AC10012FA1000000000001 /* PerformActionAppIntent.swift */,
-				42AC10012FA1000000000002 /* AssistPromptAppIntent.swift */,
-				42AC10012FA1000000000004 /* RenderTemplateAppIntent.swift */,
-				42AC10012FA1000000000009 /* ShortcutAppIntentSupport.swift */,
-				42AC10012FA1000000000005 /* UpdateLocationAppIntent.swift */,
-				42AC10012FA1000000000006 /* UpdateSensorsAppIntent.swift */,
-				42AC10012FA1000000000010 /* OpenAppSettingsAppIntent.swift */,
-			);
-			path = AppIntents;
 			sourceTree = "<group>";
 		};
 		42EDE878300315A50051FC9B /* Resources */ = {
@@ -2700,8 +2637,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D00302BC20D4BEC0004C2CA9 /* Environment */,
 				42EDB6803002FB9A0051FC9B /* MacBridge */,
+				D00302BC20D4BEC0004C2CA9 /* Environment */,
 			);
 			name = MacBridge;
 			productName = MacBridge;
@@ -2722,10 +2659,7 @@
 				1171507E24DFCE0D0065E874 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				4296C3722B91F06D0051B63C /* Widget */,
-				42EDBCF93002FBEE0051FC9B /* Widgets */,
-				42EDBDFC3002FBF60051FC9B /* Sensor */,
-				42EDBE003002FBF60051FC9B /* Script */,
+				4283C0A63004CD31004D1061 /* Extensions */,
 				42EDC0AD3002FC090051FC9B /* Assets */,
 			);
 			name = "Extensions-Widgets";
@@ -2751,9 +2685,6 @@
 			);
 			dependencies = (
 				11B6B59729497C5800B8B552 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				42EDBC733002FBEE0051FC9B /* Matter */,
 			);
 			name = "Extensions-Matter";
 			packageProductDependencies = (
@@ -2872,7 +2803,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				42EDE699300315A50051FC9B /* Cameras */,
-				42EDBDE13002FBEE0051FC9B /* NotificationContent */,
 			);
 			name = "Extensions-NotificationContent";
 			packageProductDependencies = (
@@ -2918,6 +2848,11 @@
 				11B6B5812948F8E100B8B552 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				42EDB6203002FB9A0051FC9B /* Improv */,
+				42EDB6453002FB9A0051FC9B /* CarPlay */,
+				42EDB66D3002FB9A0051FC9B /* Thread */,
+				42EDB68B3002FB9A0051FC9B /* Watch */,
+				42EDC0AD3002FC090051FC9B /* Assets */,
 				42EDE685300315A50051FC9B /* Assist */,
 				42EDE68E300315A50051FC9B /* BarcodeScanner */,
 				42EDE699300315A50051FC9B /* Cameras */,
@@ -2937,15 +2872,6 @@
 				42EDE930300315A50051FC9B /* Utilities */,
 				42EDE935300315A50051FC9B /* WhatsNew */,
 				42EDE93F300315A50051FC9B /* ZoneManager */,
-				4296C3722B91F06D0051B63C /* Widget */,
-				42EDB6203002FB9A0051FC9B /* Improv */,
-				42EDB6453002FB9A0051FC9B /* CarPlay */,
-				42EDB66D3002FB9A0051FC9B /* Thread */,
-				42EDB68B3002FB9A0051FC9B /* Watch */,
-				42EDBCF93002FBEE0051FC9B /* Widgets */,
-				42EDBDFC3002FBF60051FC9B /* Sensor */,
-				42EDBE003002FBF60051FC9B /* Script */,
-				42EDC0AD3002FC090051FC9B /* Assets */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -2979,12 +2905,11 @@
 				4697F4C42D8A416400C5C467 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				46F103242D7214F7002BC586 /* ClientEvents */,
+				420E64B72D676A4200A31E86 /* Widgets */,
 				42196AD92DA5AF7A00BD501E /* Onboarding */,
+				428626002DA5CC8400D58D13 /* DesignSystem */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
-				428626002DA5CC8400D58D13 /* DesignSystem */,
-				420E64B72D676A4200A31E86 /* Widgets */,
 				42EDBB633002FBA70051FC9B /* Mocks */,
 				42EDBB663002FBBE0051FC9B /* EntityPicker */,
 				42EDBB6B3002FBBE0051FC9B /* Area */,
@@ -3005,6 +2930,7 @@
 				42EDBBEB3002FBC90051FC9B /* Webhook */,
 				42EDBBEF3002FBC90051FC9B /* Notifications */,
 				42EDBBF33002FBC90051FC9B /* WhatsNew */,
+				46F103242D7214F7002BC586 /* ClientEvents */,
 			);
 			name = "Tests-App";
 			packageProductDependencies = (
@@ -3051,10 +2977,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				4296C3722B91F06D0051B63C /* Widget */,
-				42EDBC6A3002FBEE0051FC9B /* Intents */,
-			);
 			name = "Extensions-Intents";
 			packageProductDependencies = (
 				EBE9D41C3797206D88C3FBC2 /* RealmSwift */,
@@ -3078,11 +3000,8 @@
 				111711FB25B29B24003C149E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				42EDE917300315A50051FC9B /* Settings */,
-				4296C3722B91F06D0051B63C /* Widget */,
-				42CA28AC2B101D320093B31A /* DesignSystem */,
-				D00302BC20D4BEC0004C2CA9 /* Environment */,
 				11B38EE0275C545C00205C7B /* Intents */,
+				42CA28AC2B101D320093B31A /* DesignSystem */,
 				42EDBE1F3002FC020051FC9B /* Database */,
 				42EDBE4E3002FC020051FC9B /* Models */,
 				42EDBE603002FC080051FC9B /* Widget */,
@@ -3099,6 +3018,8 @@
 				42EDC0723002FC090051FC9B /* Notifications */,
 				42EDC09B3002FC090051FC9B /* Resources */,
 				42EDC0AD3002FC090051FC9B /* Assets */,
+				42EDE917300315A50051FC9B /* Settings */,
+				D00302BC20D4BEC0004C2CA9 /* Environment */,
 			);
 			name = "Shared-watchOS";
 			packageProductDependencies = (
@@ -3163,9 +3084,9 @@
 				423FB77C2FFFDFDF000CB8FD /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				42EDE685300315A50051FC9B /* Assist */,
 				42479B4630013FE300F7FCD3 /* WatchApp */,
 				42EDC0AD3002FC090051FC9B /* Assets */,
+				42EDE685300315A50051FC9B /* Assist */,
 			);
 			name = WatchApp;
 			productName = WatchApp;
@@ -3189,12 +3110,8 @@
 				11A31C93252128B900D50A78 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				42EDE72C300315A50051FC9B /* Onboarding */,
-				42EDE917300315A50051FC9B /* Settings */,
-				4296C3722B91F06D0051B63C /* Widget */,
-				42CA28AC2B101D320093B31A /* DesignSystem */,
-				D00302BC20D4BEC0004C2CA9 /* Environment */,
 				11B38EE0275C545C00205C7B /* Intents */,
+				42CA28AC2B101D320093B31A /* DesignSystem */,
 				42EDBE083002FC020051FC9B /* LiveActivity */,
 				42EDBE1F3002FC020051FC9B /* Database */,
 				42EDBE463002FC020051FC9B /* Toast */,
@@ -3217,6 +3134,9 @@
 				42EDC0723002FC090051FC9B /* Notifications */,
 				42EDC09B3002FC090051FC9B /* Resources */,
 				42EDC0AD3002FC090051FC9B /* Assets */,
+				42EDE72C300315A50051FC9B /* Onboarding */,
+				42EDE917300315A50051FC9B /* Settings */,
+				D00302BC20D4BEC0004C2CA9 /* Environment */,
 			);
 			name = "Shared-iOS";
 			packageProductDependencies = (
@@ -3257,13 +3177,13 @@
 				D03D894920E0BC1800D4F28D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				8881A40916A3424685660E6B /* LiveActivity */,
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
 				42EDBB703002FBBE0051FC9B /* Extensions */,
 				42EDBC003002FBD10051FC9B /* Webhook */,
 				42EDBC163002FBD10051FC9B /* Models */,
 				42EDBC293002FBD10051FC9B /* Sensors */,
 				42EDBC3C3002FBE40051FC9B /* Watch */,
+				8881A40916A3424685660E6B /* LiveActivity */,
 			);
 			name = "Tests-Shared";
 			packageProductDependencies = (
@@ -3873,16 +3793,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
-				42AC20012FA1000000000001 /* PerformActionAppIntent.swift in Sources */,
-				42AC20012FA1000000000002 /* AssistPromptAppIntent.swift in Sources */,
-				42AC20012FA1000000000003 /* GetCameraSnapshotAppIntent.swift in Sources */,
-				42AC20012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */,
-				42AC20012FA1000000000007 /* IntentActionEntity.swift in Sources */,
-				42AC20012FA1000000000008 /* IntentCameraEntity.swift in Sources */,
-				42AC20012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */,
-				42AC20012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */,
-				42AC20012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3932,23 +3842,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				42EDEB28300315A50051FC9B /* Intents.intentdefinition in Sources */,
 				42EDEB10300315A50051FC9B /* AppDelegate.swift in Sources */,
 				42EDEB11300315A50051FC9B /* HAApp.swift in Sources */,
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
 				42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */,
-				42AC30012FA1000000000001 /* PerformActionAppIntent.swift in Sources */,
-				42AC30012FA1000000000002 /* AssistPromptAppIntent.swift in Sources */,
-				42AC30012FA1000000000003 /* GetCameraSnapshotAppIntent.swift in Sources */,
-				42AC30012FA1000000000004 /* RenderTemplateAppIntent.swift in Sources */,
-				42AC30012FA1000000000007 /* IntentActionEntity.swift in Sources */,
-				42AC30012FA1000000000008 /* IntentCameraEntity.swift in Sources */,
-				42AC30012FA1000000000009 /* ShortcutAppIntentSupport.swift in Sources */,
-				42AC30012FA1000000000005 /* UpdateLocationAppIntent.swift in Sources */,
-				42AC30012FA1000000000006 /* UpdateSensorsAppIntent.swift in Sources */,
-				42AC30012FA1000000000010 /* OpenAppSettingsAppIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3984,7 +3883,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
-				428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				42EDEB2A300315A50051FC9B /* Intents.intentdefinition in Sources */,
 				42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */,
 				428EDB682DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */,
@@ -4023,7 +3921,6 @@
 				42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */,
 				42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */,
 				428EDB692DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */,
-				428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				4286A2EF2F2A0F9200003459 /* EntityIconColorProvider.swift in Sources */,
 				42EDEB29300315A50051FC9B /* Intents.intentdefinition in Sources */,
 				42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */,
@@ -5586,14 +5483,6 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.14.1;
-			};
-		};
 		420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
@@ -5698,6 +5587,14 @@
 				minimumVersion = 7.1.5;
 			};
 		};
+		42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.14.1;
+			};
+		};
 		42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DebugSwift/DebugSwift.git";
@@ -5749,16 +5646,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		42ED095A30033B750051FC9B /* Dependencies */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */;
-			productName = Dependencies;
-		};
-		42ED095C30033B7D0051FC9B /* Dependencies */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */;
-			productName = Dependencies;
-		};
 		294DFA6C65284F6E95CC08F1 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
@@ -6030,6 +5917,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */;
 			productName = XCGLogger;
+		};
+		42ED095A30033B750051FC9B /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+		42ED095C30033B7D0051FC9B /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
 		};
 		42EDB6163002F8380051FC9B /* HAModels */ = {
 			isa = XCSwiftPackageProductDependency;
