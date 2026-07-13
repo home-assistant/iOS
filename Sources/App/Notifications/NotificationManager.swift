@@ -633,6 +633,18 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             } else {
                 Current.Log.error("Ignoring \(command.rawValue): missing or invalid volume in payload")
             }
+        case .setScreensaverMode:
+            if let mode = command.screensaverMode(from: userInfo) {
+                Current.kiosk.setScreensaverMode(mode)
+            } else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid mode in payload")
+            }
+        case .setScreensaverBrightness:
+            if let level = command.level(from: userInfo) {
+                Current.kiosk.setScreensaverDimLevel(Double(level))
+            } else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid level in payload")
+            }
         case .reload:
             Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
         case .defaultDashboard:

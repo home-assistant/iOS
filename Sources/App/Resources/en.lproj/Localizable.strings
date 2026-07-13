@@ -605,6 +605,8 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.push_command.hide_screensaver" = "Hiding screensaver";
 "kiosk.push_command.reload" = "Reloading dashboard";
 "kiosk.push_command.set_brightness" = "Setting brightness";
+"kiosk.push_command.set_screensaver_brightness" = "Setting screensaver brightness";
+"kiosk.push_command.set_screensaver_mode" = "Setting screensaver mode";
 "kiosk.push_command.set_volume" = "Setting volume";
 "kiosk.push_command.show_camera" = "Showing camera";
 "kiosk.push_command.show_screensaver" = "Showing screensaver";

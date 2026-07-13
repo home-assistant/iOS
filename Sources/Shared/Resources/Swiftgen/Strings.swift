@@ -2175,6 +2175,10 @@ public enum L10n {
       public static var reload: String { return L10n.tr("Localizable", "kiosk.push_command.reload") }
       /// Setting brightness
       public static var setBrightness: String { return L10n.tr("Localizable", "kiosk.push_command.set_brightness") }
+      /// Setting screensaver brightness
+      public static var setScreensaverBrightness: String { return L10n.tr("Localizable", "kiosk.push_command.set_screensaver_brightness") }
+      /// Setting screensaver mode
+      public static var setScreensaverMode: String { return L10n.tr("Localizable", "kiosk.push_command.set_screensaver_mode") }
       /// Setting volume
       public static var setVolume: String { return L10n.tr("Localizable", "kiosk.push_command.set_volume") }
       /// Showing camera
