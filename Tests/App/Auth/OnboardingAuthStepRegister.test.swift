@@ -1,4 +1,5 @@
 import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared

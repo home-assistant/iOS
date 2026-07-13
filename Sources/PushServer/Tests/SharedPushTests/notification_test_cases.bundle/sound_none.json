@@ -20,7 +20,8 @@
         "aps": {
             "alert": {
                 "body": "test"
-            }
+            },
+            "mutable-content": true
         }
     }
 }

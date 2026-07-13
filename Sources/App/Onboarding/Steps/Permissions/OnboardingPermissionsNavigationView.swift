@@ -8,11 +8,16 @@ struct OnboardingPermissionsNavigationView: View {
     @StateObject private var viewModel: OnboardingPermissionsNavigationViewModel
 
     let onboardingServer: Server
+    private let onDismiss: (() -> Void)?
 
     @Environment(\.layoutDirection) private var layoutDirection
     @Environment(\.dismiss) private var dismiss
 
-    init(onboardingServer: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID]? = nil) {
+    init(
+        onboardingServer: Server,
+        steps: [OnboardingPermissionsNavigationViewModel.StepID]? = nil,
+        onDismiss: (() -> Void)? = nil
+    ) {
         self
             ._viewModel =
             .init(wrappedValue: OnboardingPermissionsNavigationViewModel(
@@ -20,6 +25,7 @@ struct OnboardingPermissionsNavigationView: View {
                 steps: steps
             ))
         self.onboardingServer = onboardingServer
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -101,7 +107,7 @@ struct OnboardingPermissionsNavigationView: View {
             .onAppear {
                 // Start fade out animation after a short delay
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    viewModel.completeOnboarding()
+                    finishFlow()
                 }
             }
     }
@@ -112,13 +118,21 @@ struct OnboardingPermissionsNavigationView: View {
             .onAppear {
                 // Dismiss after a short delay to allow the user to see the success state
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    dismiss()
+                    finishFlow()
                 }
             }
     }
 
     private func navigateToCompletionScreen() {
         viewModel.nextStep()
+    }
+
+    private func finishFlow() {
+        if let onDismiss {
+            onDismiss()
+        } else {
+            dismiss()
+        }
     }
 
     // MARK: - Animation

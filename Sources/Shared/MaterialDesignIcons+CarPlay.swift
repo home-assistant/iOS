@@ -1,5 +1,6 @@
 import CarPlay
 import Foundation
+import HADesignSystem
 import UIKit
 
 public enum CarPlayIconContext {

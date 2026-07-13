@@ -383,9 +383,3 @@ struct NotificationCategoryEditorView: View {
         ))
     }
 }
-
-// MARK: - NotificationAction Identifiable conformance
-
-extension NotificationAction: Identifiable {
-    public var id: String { uuid }
-}

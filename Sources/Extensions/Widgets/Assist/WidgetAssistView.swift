@@ -1,5 +1,6 @@
 import Shared
 import SwiftUI
+import WidgetKit
 
 struct WidgetAssistView: View {
     @Environment(\.widgetFamily) private var widgetFamily
@@ -7,13 +8,11 @@ struct WidgetAssistView: View {
     private let tinted: Bool
 
     private var subtitle: String {
-        // Even though server is not visible, show ".unknownConfiguration"
-        // so user knows it needs to be set
-        if entry.pipeline == nil || entry.server == nil {
+        guard let pipeline = entry.pipeline else {
             return L10n.Widgets.Assist.unknownConfiguration
         }
 
-        return entry.pipeline?.displayString ?? L10n.Widgets.Assist.unknownConfiguration
+        return pipeline.name
     }
 
     init(entry: WidgetAssistEntry, tinted: Bool) {

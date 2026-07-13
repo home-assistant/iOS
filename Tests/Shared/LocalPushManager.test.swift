@@ -1,7 +1,7 @@
 import HAKit
+import HAKit_Mocks
 import PromiseKit
 @testable import Shared
-import Version
 import XCTest
 
 class LocalPushManagerTests: XCTestCase {
@@ -399,10 +399,10 @@ class LocalPushManagerTests: XCTestCase {
                 content: UNNotificationContent,
                 sender: NotificationSenderInfo,
                 api: HomeAssistantAPI?
-            ) -> Guarantee<UNNotificationContent> {
+            ) async -> UNNotificationContent {
                 decorateCalled = true
                 apiUsed = api
-                return .value(content)
+                return content
             }
         }
 
@@ -444,6 +444,111 @@ class LocalPushManagerTests: XCTestCase {
 
         XCTAssertTrue(spy.decorateCalled)
         XCTAssertIdentical(spy.apiUsed, api)
+    }
+
+    func testSilentLiveActivityCommandSuppressesBannerAndDefersConfirm() throws {
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+            "hass_confirm_id": "test_confirm_id",
+            "data": [
+                "live_update": true,
+                "tag": "test_tag",
+                "silent": true,
+            ],
+        ]))
+
+        let runLoop = expectation(description: "run loop")
+        DispatchQueue.main.async(execute: runLoop.fulfill)
+        waitForExpectations(timeout: 10.0)
+
+        XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
+        XCTAssertTrue(added.isEmpty)
+        XCTAssertFalse(
+            apiConnection.pendingRequests
+                .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        )
+    }
+
+    func testNonSilentLiveActivityCommandSuppressesBannerAndDefersConfirm() throws {
+        // A live_update without `silent: true` must behave like the silent case: only update the
+        // Live Activity, never present a standalone banner, and defer the confirm to the live
+        // activity presentation path.
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+            "hass_confirm_id": "test_confirm_id",
+            "data": [
+                "live_update": true,
+                "tag": "test_tag",
+            ],
+        ]))
+
+        let runLoop = expectation(description: "run loop")
+        DispatchQueue.main.async(execute: runLoop.fulfill)
+        waitForExpectations(timeout: 10.0)
+
+        XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
+        XCTAssertTrue(added.isEmpty)
+        XCTAssertFalse(
+            apiConnection.pendingRequests
+                .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        )
+    }
+
+    func testLiveActivityLocalPushPromotesStylingFields() throws {
+        // Local push delivers a flat {message, data} payload; the parser must promote the
+        // live-activity styling fields out of `data` into `homeassistant` so they reach the
+        // content state. Regression test: background_color / text_color / progress_bar_color
+        // were previously dropped, so updates reset the lock-screen background to black and
+        // later updates could never re-color it.
+        let event = try LocalPushEvent(data: .dictionary([
+            "message": "Washing",
+            "data": [
+                "live_update": true,
+                "tag": "laundry",
+                "notification_icon_color": "#FF0000",
+                "background_color": "#101820",
+                "text_color": "#FFFFFF",
+                "progress_bar_color": "#03A9F4",
+            ],
+        ]))
+
+        let ha = try XCTUnwrap(event.contentWithoutServer.userInfo["homeassistant"] as? [String: Any])
+        XCTAssertEqual(ha["live_update"] as? Bool, true)
+        XCTAssertEqual(ha["background_color"] as? String, "#101820")
+        XCTAssertEqual(ha["text_color"] as? String, "#FFFFFF")
+        XCTAssertEqual(ha["progress_bar_color"] as? String, "#03A9F4")
+        XCTAssertEqual(ha["notification_icon_color"] as? String, "#FF0000")
+    }
+
+    func testNonLiveActivityCommandSuppressesBannerButConfirms() throws {
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "clear_notification",
+            "hass_confirm_id": "test_confirm_id",
+            "data": [
+                "tag": "test_tag",
+            ],
+        ]))
+
+        let runLoop = expectation(description: "run loop")
+        DispatchQueue.main.async(execute: runLoop.fulfill)
+        waitForExpectations(timeout: 10.0)
+
+        XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
+        XCTAssertTrue(added.isEmpty)
+        let confirm = try XCTUnwrap(
+            apiConnection.pendingRequests
+                .first(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        )
+        XCTAssertEqual(confirm.request.data["confirm_id"] as? String, "test_confirm_id")
     }
 }
 

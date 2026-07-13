@@ -4,7 +4,7 @@ import SwiftUI
 @available(iOS 18, *)
 public struct Toast {
     private(set) var id: String
-    public var symbol: String
+    public var symbol: SFSymbol
     public var symbolFont: Font
     public var symbolForegroundStyle: (Color, Color)
 
@@ -13,7 +13,7 @@ public struct Toast {
 
     public init(
         id: String = UUID().uuidString,
-        symbol: String,
+        symbol: SFSymbol,
         symbolFont: Font = .system(size: 35),
         symbolForegroundStyle: (Color, Color),
         title: String,
@@ -29,7 +29,7 @@ public struct Toast {
 
     public static var example1: Toast {
         Toast(
-            symbol: "checkmark.seal.fill",
+            symbol: .checkmarkSealFill,
             symbolFont: .system(size: 35),
             symbolForegroundStyle: (.white, .green),
             title: "Transaction Success!",
@@ -39,7 +39,7 @@ public struct Toast {
 
     public static var example2: Toast {
         Toast(
-            symbol: "xmark.seal.fill",
+            symbol: .xmarkSealFill,
             symbolFont: .system(size: 35),
             symbolForegroundStyle: (.white, .red),
             title: "Transaction Failed!",

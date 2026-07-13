@@ -1,5 +1,5 @@
 import Foundation
-import UIColor_Hex_Swift
+import SharedPush
 import UIKit
 import UserNotifications
 
@@ -15,8 +15,7 @@ public enum NotificationSenderParser {
             userInfo[key] ?? nestedData?[key]
         }
 
-        // icon_url wins when both are present.
-        if let urlString = value(forKey: "icon_url") as? String,
+        if let urlString = value(forKey: NotificationPayloadKey.iconURL.rawValue) as? String,
            !urlString.isEmpty,
            let url = URL(string: urlString) {
             return NotificationSenderInfo(
@@ -25,9 +24,10 @@ public enum NotificationSenderParser {
             )
         }
 
-        if let mdiName = value(forKey: "notification_icon") as? String, !mdiName.isEmpty {
-            let colorString = value(forKey: "color") as? String
-            let iconColorString = value(forKey: "notification_icon_color") as? String
+        if let mdiName = value(forKey: NotificationPayloadKey.notificationIcon.rawValue) as? String,
+           !mdiName.isEmpty {
+            let colorString = value(forKey: NotificationPayloadKey.color.rawValue) as? String
+            let iconColorString = value(forKey: NotificationPayloadKey.notificationIconColor.rawValue) as? String
             let background = colorString.flatMap(Self.color(fromHex:))
                 ?? AppConstants.tintColor
             let foreground = iconColorString.flatMap(Self.color(fromHex:))
@@ -47,10 +47,7 @@ public enum NotificationSenderParser {
         return nil
     }
 
-    /// Returns nil for malformed inputs so the caller can fall back to a default,
-    /// instead of relying on UIColor(hex:)'s crash-on-bad-input behavior.
     private static func color(fromHex hex: String) -> UIColor? {
-        guard let color = try? UIColor(rgba_throws: hex) else { return nil }
-        return color
+        UIColor(rgbaString: hex)
     }
 }

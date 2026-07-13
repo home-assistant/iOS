@@ -1,43 +1,61 @@
-import Communicator
 import Foundation
 import PromiseKit
-import RealmSwift
 import Shared
-import Version
 
-/// Observable view model backing `ComplicationListView`. Wraps the Realm
-/// notification tokens used to drive the existing Eureka controller.
+/// Observable view model backing the legacy `ComplicationListView`. Reads complications from GRDB
+/// and refreshes whenever one is created/edited/deleted.
 final class ComplicationListViewModel: ObservableObject {
     @Published private(set) var complicationsByGroup: [ComplicationGroup: [WatchComplication]] = [:]
-    @Published private(set) var watchState: WatchState = Communicator.shared.currentWatchState
+    @Published private(set) var watchState: HAWatchConnectivity.WatchState = Communicator.shared.currentWatchState
     @Published var isUpdatingComplications = false
     @Published var errorMessage: String?
     @Published var showError = false
 
-    private var realmToken: NotificationToken?
-    private var watchStateToken: Observation?
+    private var watchStateToken: HAWatchConnectivity.ObservationToken?
     private var updateNotificationToken: NSObjectProtocol?
+    private var didChangeToken: NSObjectProtocol?
 
     init() {
-        observeRealm()
+        reload()
         observeWatchState()
         observeComplicationsUpdate()
+        self.didChangeToken = NotificationCenter.default.addObserver(
+            forName: WatchComplication.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.reload()
+        }
     }
 
     deinit {
-        realmToken?.invalidate()
         if let watchStateToken {
-            WatchState.unobserve(watchStateToken)
+            Communicator.shared.watchState.unobserve(watchStateToken)
         }
         if let updateNotificationToken {
             NotificationCenter.default.removeObserver(updateNotificationToken)
         }
+        if let didChangeToken {
+            NotificationCenter.default.removeObserver(didChangeToken)
+        }
+    }
+
+    func reload() {
+        let complications = (try? WatchComplication.all()) ?? []
+        var grouped: [ComplicationGroup: [WatchComplication]] = [:]
+        for complication in complications {
+            for group in ComplicationGroup.allCases where group.members.contains(complication.Family) {
+                grouped[group, default: []].append(complication)
+                break
+            }
+        }
+        complicationsByGroup = grouped
     }
 
     // MARK: - Capability
 
     var supportsMultipleComplications: Bool {
-        guard let string = Communicator.shared.mostRecentlyReceievedContext.content["watchVersion"] as? String else {
+        guard let string = Communicator.shared.mostRecentlyReceivedContext.content["watchVersion"] as? String else {
             return false
         }
         do {
@@ -51,6 +69,22 @@ final class ComplicationListViewModel: ObservableObject {
 
     var currentFamilies: Set<ComplicationGroupMember> {
         Set(complicationsByGroup.values.flatMap { $0 }.map(\.Family))
+    }
+
+    // MARK: - Delete
+
+    /// Deletes every legacy complication, then nudges the watch to sync the (now empty) set.
+    func deleteAll() {
+        do {
+            try WatchComplication.replaceAll([])
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+            return
+        }
+        NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
+        HomeAssistantAPI.syncWatchContext()
+        reload()
     }
 
     // MARK: - Manual update
@@ -71,30 +105,10 @@ final class ComplicationListViewModel: ObservableObject {
             }
     }
 
-    // MARK: - Realm observation
-
-    private func observeRealm() {
-        let results = Current.realm().objects(WatchComplication.self).sorted(byKeyPath: "rawFamily")
-        realmToken = results.observe { [weak self] _ in
-            self?.rebuildGroups(from: results)
-        }
-    }
-
-    private func rebuildGroups(from results: Results<WatchComplication>) {
-        var grouped: [ComplicationGroup: [WatchComplication]] = [:]
-        for complication in results {
-            for group in ComplicationGroup.allCases where group.members.contains(complication.Family) {
-                grouped[group, default: []].append(complication)
-                break
-            }
-        }
-        complicationsByGroup = grouped
-    }
-
     // MARK: - Watch state observation
 
     private func observeWatchState() {
-        watchStateToken = WatchState.observe { [weak self] state in
+        watchStateToken = Communicator.shared.watchState.observe { [weak self] state in
             DispatchQueue.main.async {
                 self?.watchState = state
             }

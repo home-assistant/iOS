@@ -1,0 +1,27 @@
+{
+    "input": {
+        "message": "kiosk_set_volume",
+        "data": {
+            "volume": 30
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "10.15",
+            "app_version": "2021.5"
+        }
+    },
+    "rate_limit": true,
+    "headers": {
+        "apns-push-type": "alert"
+    },
+    "payload": {
+        "aps": {
+            "alert": {
+                "body": "kiosk_set_volume"
+            },
+            "mutable-content": true,
+            "sound": "default"
+        },
+        "volume": 30
+    }
+}

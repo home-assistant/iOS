@@ -216,8 +216,8 @@ final class CarPlayAssistSession: NSObject {
                     detail: L10n.Assist.Carplay.PlaybackHelp.OpenApp.detail
                 ),
                 CPInformationItem(
-                    title: L10n.Assist.Carplay.PlaybackHelp.GoToAdvanced.title,
-                    detail: L10n.Assist.Carplay.PlaybackHelp.GoToAdvanced.detail
+                    title: L10n.Assist.Carplay.PlaybackHelp.GoToTroubleshooting.title,
+                    detail: L10n.Assist.Carplay.PlaybackHelp.GoToTroubleshooting.detail
                 ),
                 CPInformationItem(
                     title: L10n.Assist.Carplay.PlaybackHelp.ChangePlayback.title,

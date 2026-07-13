@@ -385,105 +385,116 @@ public enum ComplicationGroupMember: String, Comparable {
 
         switch self {
         case .circularSmall:
-            let template = CLKComplicationTemplateCircularSmallSimpleImage()
-            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+            let template = CLKComplicationTemplateCircularSmallSimpleImage(
+                imageProvider: CLKImageProvider(onePieceImage: templateImage)
+            )
             template.tintColor = hassColor
             return template
         case .extraLarge:
-            let template = CLKComplicationTemplateExtraLargeSimpleImage()
-            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+            let template = CLKComplicationTemplateExtraLargeSimpleImage(
+                imageProvider: CLKImageProvider(onePieceImage: templateImage)
+            )
             template.tintColor = hassColor
             return template
         case .graphicBezel:
-            let template = CLKComplicationTemplateGraphicBezelCircularText()
-            let imageTemplate = CLKComplicationTemplateGraphicCircularImage()
-            imageTemplate.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
-            template.circularTemplate = imageTemplate
-            template.textProvider = CLKSimpleTextProvider(text: isPlaceholder ? "HA" : "??")
-            return template
+            return CLKComplicationTemplateGraphicBezelCircularText(
+                circularTemplate: CLKComplicationTemplateGraphicCircularImage(
+                    imageProvider: CLKFullColorImageProvider(fullColorImage: logoImage)
+                ),
+                textProvider: CLKSimpleTextProvider(text: isPlaceholder ? "HA" : "??")
+            )
         case .graphicCircular:
-            let template = CLKComplicationTemplateGraphicCircularImage()
-            template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
-            return template
+            return CLKComplicationTemplateGraphicCircularImage(
+                imageProvider: CLKFullColorImageProvider(fullColorImage: logoImage)
+            )
         case .graphicCorner:
-            let template = CLKComplicationTemplateGraphicCornerCircularImage()
-            template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
-            return template
+            return CLKComplicationTemplateGraphicCornerCircularImage(
+                imageProvider: CLKFullColorImageProvider(fullColorImage: logoImage)
+            )
         case .graphicRectangular:
             if isPlaceholder {
-                let template = CLKComplicationTemplateGraphicRectangularFullImage()
-                template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
-                return template
+                return CLKComplicationTemplateGraphicRectangularFullImage(
+                    imageProvider: CLKFullColorImageProvider(fullColorImage: logoImage)
+                )
             } else {
-                let template = CLKComplicationTemplateGraphicRectangularStandardBody()
-                template.headerImageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
-                template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
                 let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
-                template.body1TextProvider = CLKSimpleTextProvider(text: desc)
-                template.body2TextProvider = CLKSimpleTextProvider(text: "has not been configured")
-                return template
+                return CLKComplicationTemplateGraphicRectangularStandardBody(
+                    headerImageProvider: CLKFullColorImageProvider(fullColorImage: logoImage),
+                    headerTextProvider: CLKSimpleTextProvider(text: "Not configured"),
+                    body1TextProvider: CLKSimpleTextProvider(text: desc),
+                    body2TextProvider: CLKSimpleTextProvider(text: "has not been configured")
+                )
             }
         case .modularLarge:
             if isPlaceholder {
-                let template = CLKComplicationTemplateModularLargeStandardBody()
-                template.headerTextProvider = CLKSimpleTextProvider(text: "Home Assistant")
-                template.body1TextProvider = CLKSimpleTextProvider(text: "Home Assistant")
+                let template = CLKComplicationTemplateModularLargeStandardBody(
+                    headerTextProvider: CLKSimpleTextProvider(text: "Home Assistant"),
+                    body1TextProvider: CLKSimpleTextProvider(text: "Home Assistant")
+                )
                 template.tintColor = hassColor
                 return template
             } else {
-                let template = CLKComplicationTemplateModularLargeTallBody()
-                template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
                 let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
-                template.bodyTextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                let template = CLKComplicationTemplateModularLargeTallBody(
+                    headerTextProvider: CLKSimpleTextProvider(text: "Not configured"),
+                    bodyTextProvider: CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                )
                 template.tintColor = hassColor
                 return template
             }
         case .modularSmall:
             if isPlaceholder {
-                let template = CLKComplicationTemplateModularSmallSimpleImage()
-                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+                let template = CLKComplicationTemplateModularSmallSimpleImage(
+                    imageProvider: CLKImageProvider(onePieceImage: templateImage)
+                )
                 template.tintColor = hassColor
                 return template
             } else {
-                let template = CLKComplicationTemplateModularSmallStackImage()
-                template.line1ImageProvider = CLKImageProvider(onePieceImage: templateImage)
                 let desc = ComplicationTemplate.ModularSmallStackImage.description
-                template.line2TextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                let template = CLKComplicationTemplateModularSmallStackImage(
+                    line1ImageProvider: CLKImageProvider(onePieceImage: templateImage),
+                    line2TextProvider: CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                )
                 template.tintColor = hassColor
                 return template
             }
         case .utilitarianLarge:
             if isPlaceholder {
-                let template = CLKComplicationTemplateUtilitarianLargeFlat()
-                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
-                template.textProvider = CLKSimpleTextProvider(text: "Home Assistant")
+                let template = CLKComplicationTemplateUtilitarianLargeFlat(
+                    textProvider: CLKSimpleTextProvider(text: "Home Assistant"),
+                    imageProvider: CLKImageProvider(onePieceImage: templateImage)
+                )
                 template.tintColor = hassColor
                 return template
             } else {
-                let template = CLKComplicationTemplateUtilitarianLargeFlat()
-                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
                 let desc = ComplicationTemplate.UtilitarianLargeFlat.description
-                template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                let template = CLKComplicationTemplateUtilitarianLargeFlat(
+                    textProvider: CLKSimpleTextProvider(text: "\(desc) has not been configured in the app"),
+                    imageProvider: CLKImageProvider(onePieceImage: templateImage)
+                )
                 template.tintColor = hassColor
                 return template
             }
         case .utilitarianSmall:
-            let template = CLKComplicationTemplateUtilitarianSmallSquare()
-            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+            let template = CLKComplicationTemplateUtilitarianSmallSquare(
+                imageProvider: CLKImageProvider(onePieceImage: templateImage)
+            )
             template.tintColor = hassColor
             return template
         case .utilitarianSmallFlat:
             if isPlaceholder {
-                let template = CLKComplicationTemplateUtilitarianSmallFlat()
-                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
-                template.textProvider = CLKSimpleTextProvider(text: "HA")
+                let template = CLKComplicationTemplateUtilitarianSmallFlat(
+                    textProvider: CLKSimpleTextProvider(text: "HA"),
+                    imageProvider: CLKImageProvider(onePieceImage: templateImage)
+                )
                 template.tintColor = hassColor
                 return template
             } else {
-                let template = CLKComplicationTemplateUtilitarianSmallFlat()
-                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
                 let desc = ComplicationTemplate.UtilitarianSmallFlat.description
-                template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                let template = CLKComplicationTemplateUtilitarianSmallFlat(
+                    textProvider: CLKSimpleTextProvider(text: "\(desc) has not been configured in the app"),
+                    imageProvider: CLKImageProvider(onePieceImage: templateImage)
+                )
                 template.tintColor = hassColor
                 return template
             }
@@ -976,95 +987,222 @@ public enum ComplicationTemplate: String {
     }
 
     public var CLKComplicationTemplate: CLKComplicationTemplate {
+        let textProvider = CLKSimpleTextProvider(text: "")
+        let imageProvider = CLKImageProvider(onePieceImage: UIImage())
+        let fullColorImageProvider = CLKFullColorImageProvider(fullColorImage: UIImage())
+        let gaugeProvider = CLKSimpleGaugeProvider(style: .fill, gaugeColor: .clear, fillFraction: 0)
+
         switch self {
         case .CircularSmallRingImage:
-            return CLKComplicationTemplateCircularSmallRingImage()
+            return CLKComplicationTemplateCircularSmallRingImage(
+                imageProvider: imageProvider,
+                fillFraction: 0,
+                ringStyle: .closed
+            )
         case .CircularSmallSimpleImage:
-            return CLKComplicationTemplateCircularSmallSimpleImage()
+            return CLKComplicationTemplateCircularSmallSimpleImage(imageProvider: imageProvider)
         case .CircularSmallStackImage:
-            return CLKComplicationTemplateCircularSmallStackImage()
+            return CLKComplicationTemplateCircularSmallStackImage(
+                line1ImageProvider: imageProvider,
+                line2TextProvider: textProvider
+            )
         case .CircularSmallRingText:
-            return CLKComplicationTemplateCircularSmallRingText()
+            return CLKComplicationTemplateCircularSmallRingText(
+                textProvider: textProvider,
+                fillFraction: 0,
+                ringStyle: .closed
+            )
         case .CircularSmallSimpleText:
-            return CLKComplicationTemplateCircularSmallSimpleText()
+            return CLKComplicationTemplateCircularSmallSimpleText(textProvider: textProvider)
         case .CircularSmallStackText:
-            return CLKComplicationTemplateCircularSmallStackText()
+            return CLKComplicationTemplateCircularSmallStackText(
+                line1TextProvider: textProvider,
+                line2TextProvider: textProvider
+            )
         case .ExtraLargeRingImage:
-            return CLKComplicationTemplateExtraLargeRingImage()
+            return CLKComplicationTemplateExtraLargeRingImage(
+                imageProvider: imageProvider,
+                fillFraction: 0,
+                ringStyle: .closed
+            )
         case .ExtraLargeSimpleImage:
-            return CLKComplicationTemplateExtraLargeSimpleImage()
+            return CLKComplicationTemplateExtraLargeSimpleImage(imageProvider: imageProvider)
         case .ExtraLargeStackImage:
-            return CLKComplicationTemplateExtraLargeStackImage()
+            return CLKComplicationTemplateExtraLargeStackImage(
+                line1ImageProvider: imageProvider,
+                line2TextProvider: textProvider
+            )
         case .ExtraLargeColumnsText:
-            return CLKComplicationTemplateExtraLargeColumnsText()
+            return CLKComplicationTemplateExtraLargeColumnsText(
+                row1Column1TextProvider: textProvider,
+                row1Column2TextProvider: textProvider,
+                row2Column1TextProvider: textProvider,
+                row2Column2TextProvider: textProvider
+            )
         case .ExtraLargeRingText:
-            return CLKComplicationTemplateExtraLargeRingText()
+            return CLKComplicationTemplateExtraLargeRingText(
+                textProvider: textProvider,
+                fillFraction: 0,
+                ringStyle: .closed
+            )
         case .ExtraLargeSimpleText:
-            return CLKComplicationTemplateExtraLargeSimpleText()
+            return CLKComplicationTemplateExtraLargeSimpleText(textProvider: textProvider)
         case .ExtraLargeStackText:
-            return CLKComplicationTemplateExtraLargeStackText()
+            return CLKComplicationTemplateExtraLargeStackText(
+                line1TextProvider: textProvider,
+                line2TextProvider: textProvider
+            )
         case .ModularSmallRingImage:
-            return CLKComplicationTemplateModularSmallRingImage()
+            return CLKComplicationTemplateModularSmallRingImage(
+                imageProvider: imageProvider,
+                fillFraction: 0,
+                ringStyle: .closed
+            )
         case .ModularSmallSimpleImage:
-            return CLKComplicationTemplateModularSmallSimpleImage()
+            return CLKComplicationTemplateModularSmallSimpleImage(imageProvider: imageProvider)
         case .ModularSmallStackImage:
-            return CLKComplicationTemplateModularSmallStackImage()
+            return CLKComplicationTemplateModularSmallStackImage(
+                line1ImageProvider: imageProvider,
+                line2TextProvider: textProvider
+            )
         case .ModularSmallColumnsText:
-            return CLKComplicationTemplateModularSmallColumnsText()
+            return CLKComplicationTemplateModularSmallColumnsText(
+                row1Column1TextProvider: textProvider,
+                row1Column2TextProvider: textProvider,
+                row2Column1TextProvider: textProvider,
+                row2Column2TextProvider: textProvider
+            )
         case .ModularSmallRingText:
-            return CLKComplicationTemplateModularSmallRingText()
+            return CLKComplicationTemplateModularSmallRingText(
+                textProvider: textProvider,
+                fillFraction: 0,
+                ringStyle: .closed
+            )
         case .ModularSmallSimpleText:
-            return CLKComplicationTemplateModularSmallSimpleText()
+            return CLKComplicationTemplateModularSmallSimpleText(textProvider: textProvider)
         case .ModularSmallStackText:
-            return CLKComplicationTemplateModularSmallStackText()
+            return CLKComplicationTemplateModularSmallStackText(
+                line1TextProvider: textProvider,
+                line2TextProvider: textProvider
+            )
         case .ModularLargeStandardBody:
-            return CLKComplicationTemplateModularLargeStandardBody()
+            return CLKComplicationTemplateModularLargeStandardBody(
+                headerTextProvider: textProvider,
+                body1TextProvider: textProvider
+            )
         case .ModularLargeTallBody:
-            return CLKComplicationTemplateModularLargeTallBody()
+            return CLKComplicationTemplateModularLargeTallBody(
+                headerTextProvider: textProvider,
+                bodyTextProvider: textProvider
+            )
         case .ModularLargeColumns:
-            return CLKComplicationTemplateModularLargeColumns()
+            return CLKComplicationTemplateModularLargeColumns(
+                row1Column1TextProvider: textProvider,
+                row1Column2TextProvider: textProvider,
+                row2Column1TextProvider: textProvider,
+                row2Column2TextProvider: textProvider,
+                row3Column1TextProvider: textProvider,
+                row3Column2TextProvider: textProvider
+            )
         case .ModularLargeTable:
-            return CLKComplicationTemplateModularLargeTable()
+            return CLKComplicationTemplateModularLargeTable(
+                headerTextProvider: textProvider,
+                row1Column1TextProvider: textProvider,
+                row1Column2TextProvider: textProvider,
+                row2Column1TextProvider: textProvider,
+                row2Column2TextProvider: textProvider
+            )
         case .UtilitarianSmallFlat:
-            return CLKComplicationTemplateUtilitarianSmallFlat()
+            return CLKComplicationTemplateUtilitarianSmallFlat(textProvider: textProvider)
         case .UtilitarianSmallRingImage:
-            return CLKComplicationTemplateUtilitarianSmallRingImage()
+            return CLKComplicationTemplateUtilitarianSmallRingImage(
+                imageProvider: imageProvider,
+                fillFraction: 0,
+                ringStyle: .closed
+            )
         case .UtilitarianSmallRingText:
-            return CLKComplicationTemplateUtilitarianSmallRingText()
+            return CLKComplicationTemplateUtilitarianSmallRingText(
+                textProvider: textProvider,
+                fillFraction: 0,
+                ringStyle: .closed
+            )
         case .UtilitarianSmallSquare:
-            return CLKComplicationTemplateUtilitarianSmallSquare()
+            return CLKComplicationTemplateUtilitarianSmallSquare(imageProvider: imageProvider)
         case .UtilitarianLargeFlat:
-            return CLKComplicationTemplateUtilitarianLargeFlat()
+            return CLKComplicationTemplateUtilitarianLargeFlat(textProvider: textProvider)
         case .GraphicCornerCircularImage:
-            return CLKComplicationTemplateGraphicCornerCircularImage()
+            return CLKComplicationTemplateGraphicCornerCircularImage(imageProvider: fullColorImageProvider)
         case .GraphicCornerGaugeImage:
-            return CLKComplicationTemplateGraphicCornerGaugeImage()
+            return CLKComplicationTemplateGraphicCornerGaugeImage(
+                gaugeProvider: gaugeProvider,
+                imageProvider: fullColorImageProvider
+            )
         case .GraphicCornerGaugeText:
-            return CLKComplicationTemplateGraphicCornerGaugeText()
+            return CLKComplicationTemplateGraphicCornerGaugeText(
+                gaugeProvider: gaugeProvider,
+                outerTextProvider: textProvider
+            )
         case .GraphicCornerStackText:
-            return CLKComplicationTemplateGraphicCornerStackText()
+            return CLKComplicationTemplateGraphicCornerStackText(
+                innerTextProvider: textProvider,
+                outerTextProvider: textProvider
+            )
         case .GraphicCornerTextImage:
-            return CLKComplicationTemplateGraphicCornerTextImage()
+            return CLKComplicationTemplateGraphicCornerTextImage(
+                textProvider: textProvider,
+                imageProvider: fullColorImageProvider
+            )
         case .GraphicCircularImage:
-            return CLKComplicationTemplateGraphicCircularImage()
+            return CLKComplicationTemplateGraphicCircularImage(imageProvider: fullColorImageProvider)
         case .GraphicCircularClosedGaugeImage:
-            return CLKComplicationTemplateGraphicCircularClosedGaugeImage()
+            return CLKComplicationTemplateGraphicCircularClosedGaugeImage(
+                gaugeProvider: gaugeProvider,
+                imageProvider: fullColorImageProvider
+            )
         case .GraphicCircularOpenGaugeImage:
-            return CLKComplicationTemplateGraphicCircularOpenGaugeImage()
+            return CLKComplicationTemplateGraphicCircularOpenGaugeImage(
+                gaugeProvider: gaugeProvider,
+                bottomImageProvider: fullColorImageProvider,
+                centerTextProvider: textProvider
+            )
         case .GraphicCircularClosedGaugeText:
-            return CLKComplicationTemplateGraphicCircularClosedGaugeText()
+            return CLKComplicationTemplateGraphicCircularClosedGaugeText(
+                gaugeProvider: gaugeProvider,
+                centerTextProvider: textProvider
+            )
         case .GraphicCircularOpenGaugeSimpleText:
-            return CLKComplicationTemplateGraphicCircularOpenGaugeSimpleText()
+            return CLKComplicationTemplateGraphicCircularOpenGaugeSimpleText(
+                gaugeProvider: gaugeProvider,
+                bottomTextProvider: textProvider,
+                centerTextProvider: textProvider
+            )
         case .GraphicCircularOpenGaugeRangeText:
-            return CLKComplicationTemplateGraphicCircularOpenGaugeRangeText()
+            return CLKComplicationTemplateGraphicCircularOpenGaugeRangeText(
+                gaugeProvider: gaugeProvider,
+                leadingTextProvider: textProvider,
+                trailingTextProvider: textProvider,
+                centerTextProvider: textProvider
+            )
         case .GraphicBezelCircularText:
-            return CLKComplicationTemplateGraphicBezelCircularText()
+            return CLKComplicationTemplateGraphicBezelCircularText(
+                circularTemplate: CLKComplicationTemplateGraphicCircularImage(imageProvider: fullColorImageProvider)
+            )
         case .GraphicRectangularStandardBody:
-            return CLKComplicationTemplateGraphicRectangularStandardBody()
+            return CLKComplicationTemplateGraphicRectangularStandardBody(
+                headerTextProvider: textProvider,
+                body1TextProvider: textProvider
+            )
         case .GraphicRectangularTextGauge:
-            return CLKComplicationTemplateGraphicRectangularTextGauge()
+            return CLKComplicationTemplateGraphicRectangularTextGauge(
+                headerTextProvider: textProvider,
+                body1TextProvider: textProvider,
+                gaugeProvider: gaugeProvider
+            )
         case .GraphicRectangularLargeImage:
-            return CLKComplicationTemplateGraphicRectangularLargeImage()
+            return CLKComplicationTemplateGraphicRectangularLargeImage(
+                textProvider: textProvider,
+                imageProvider: fullColorImageProvider
+            )
         }
     }
 

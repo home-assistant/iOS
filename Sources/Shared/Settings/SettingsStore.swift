@@ -3,7 +3,6 @@ import CoreMotion
 import Foundation
 import KeychainAccess
 import UIKit
-import Version
 
 public class SettingsStore {
     let keychain = AppConstants.Keychain
@@ -29,8 +28,6 @@ public class SettingsStore {
         let baseString = Current.device.identifierForVendor() ?? deviceID
 
         switch Current.appConfiguration {
-        case .beta:
-            return "beta_" + baseString
         case .debug:
             return "debug_" + baseString
         case .fastlaneSnapshot, .release:
@@ -157,6 +154,20 @@ public class SettingsStore {
             .init(100), .init(115), .init(125), .init(150), .init(175),
             .init(200),
         ]
+    }
+
+    public enum MediaTypeRequiringUserActionForPlayback: String, CaseIterable, Hashable {
+        case audio
+        case video
+
+        public var title: String {
+            switch self {
+            case .audio:
+                return "Audio"
+            case .video:
+                return "Video"
+            }
+        }
     }
 
     public var pageZoom: PageZoom {
@@ -541,6 +552,31 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "toastsHandledByApp")
+        }
+    }
+
+    public static let defaultWebViewEmptyStateTimeout = 5
+
+    /// Seconds the frontend can stay disconnected before the web view shows its empty state
+    public var webViewEmptyStateTimeout: Int {
+        get {
+            (prefs.object(forKey: "webViewEmptyStateTimeout") as? Int) ?? Self.defaultWebViewEmptyStateTimeout
+        }
+        set {
+            prefs.set(newValue, forKey: "webViewEmptyStateTimeout")
+        }
+    }
+
+    public var mediaTypesRequiringUserActionForPlayback: Set<MediaTypeRequiringUserActionForPlayback> {
+        get {
+            let rawValues = prefs.stringArray(forKey: "mediaTypesRequiringUserActionForPlayback") ?? [
+                MediaTypeRequiringUserActionForPlayback.audio.rawValue,
+            ]
+            return Set(rawValues.compactMap(MediaTypeRequiringUserActionForPlayback.init(rawValue:)))
+        }
+        set {
+            let rawValues = newValue.map(\.rawValue).sorted()
+            prefs.set(rawValues, forKey: "mediaTypesRequiringUserActionForPlayback")
         }
     }
 

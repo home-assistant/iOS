@@ -1,10 +1,6 @@
 import CryptoKit
 import Foundation
 
-/// Disk-backed byte cache.
-///
-/// Keys are opaque to the protocol; use `notificationIconCacheKey(for:)` to derive
-/// the canonical key for a URL so different callers reach the same entry.
 public protocol NotificationIconCache {
     func data(forKey key: String) -> Data?
     func setData(_ data: Data, forKey key: String)
@@ -25,9 +21,7 @@ public final class NotificationIconCacheImpl: NotificationIconCache {
     private let directory: URL
     private let maxEntries: Int
     private let queue = DispatchQueue(label: "io.home-assistant.NotificationIconCache")
-    /// Cross-process coordinator: the App Group container is shared between the host app,
-    /// the Notification Service Extension, and Watch extensions. The serial queue alone
-    /// only guarantees ordering within this process.
+    // The serial queue does not coordinate access between the app and its extensions.
     private let coordinator = NSFileCoordinator()
 
     public convenience init() {
@@ -55,9 +49,6 @@ public final class NotificationIconCacheImpl: NotificationIconCache {
                 read = try? Data(contentsOf: coordinatedURL)
             }
             guard let data = read else { return nil }
-            // Best-effort mtime touch so LRU tracks reads as well as writes.
-            // Failure here only means this entry may be evicted slightly earlier — not a
-            // correctness concern, so no log.
             try? FileManager.default.setAttributes(
                 [.modificationDate: Date()],
                 ofItemAtPath: url.path
@@ -86,7 +77,6 @@ public final class NotificationIconCacheImpl: NotificationIconCache {
         }
     }
 
-    /// Drop the oldest files until count <= maxEntries. Must be called on `queue`.
     private func prune() {
         guard let entries = try? FileManager.default.contentsOfDirectory(
             at: directory,
@@ -95,9 +85,6 @@ public final class NotificationIconCacheImpl: NotificationIconCache {
         ) else { return }
         guard entries.count > maxEntries else { return }
 
-        // Snapshot (url, mtime) once per entry, then sort — avoids re-stat'ing inside
-        // the comparator and keeps the prefetched cache from `contentsOfDirectory` the
-        // sole source of mtimes.
         let dated = entries.map { url -> (URL, Date) in
             let date = (
                 try? url.resourceValues(forKeys: [.contentModificationDateKey])

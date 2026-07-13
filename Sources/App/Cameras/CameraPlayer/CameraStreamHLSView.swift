@@ -3,7 +3,6 @@ import Shared
 import SwiftUI
 
 /// A SwiftUI view for playing HLS camera streams.
-@available(iOS 16.0, *)
 struct CameraStreamHLSView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -11,6 +10,7 @@ struct CameraStreamHLSView: View {
     private let cameraEntityId: String
     private let cameraName: String?
     private let onHLSUnsupported: (() -> Void)?
+    private let controlsVisible: Binding<Bool>?
 
     @State private var player: AVPlayer?
     @State private var isLoading = true
@@ -21,11 +21,13 @@ struct CameraStreamHLSView: View {
         server: Server,
         cameraEntityId: String,
         cameraName: String? = nil,
+        controlsVisible: Binding<Bool>? = nil,
         onHLSUnsupported: (() -> Void)? = nil
     ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
+        self.controlsVisible = controlsVisible
         self.onHLSUnsupported = onHLSUnsupported
     }
 
@@ -57,6 +59,10 @@ struct CameraStreamHLSView: View {
                         .padding(.horizontal)
                 }
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            controlsVisible?.wrappedValue.toggle()
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
@@ -102,7 +108,7 @@ struct CameraStreamHLSView: View {
         let response = api.StreamCamera(entityId: cameraEntityId).value
 
         if let hlsPath = response?.hlsPath,
-           let baseURL = api.server.info.connection.activeURL() {
+           let baseURL = await api.server.activeURL() {
             return baseURL.appendingPathComponent(hlsPath)
         } else {
             throw StreamError.noHLSAvailable
@@ -158,7 +164,6 @@ struct CameraStreamHLSView: View {
 }
 
 #if DEBUG
-@available(iOS 16.0, *)
 #Preview {
     CameraStreamHLSView(
         server: ServerFixture.standard,

@@ -11,15 +11,7 @@ final class NotificationSenderParserTests: XCTestCase {
         return c
     }
 
-    /// Asserts that a UIColor resolves to the same values as `AppConstants.tintColor`
-    /// in both light and dark trait collections.
-    ///
-    /// Direct `XCTAssertEqual(color, AppConstants.tintColor)` is unreliable: `tintColor`
-    /// is a dynamic `UIColor` built from a closure, and UIColor equality on two
-    /// independently-constructed dynamic providers compares closure identity, not
-    /// resolved component values. We resolve both sides in each trait collection
-    /// and compare those concrete values, which keeps the assertion in sync with
-    /// whatever `tintColor`'s provider currently returns.
+    // Dynamic UIColors must be resolved before comparing their component values.
     private func assertIsTintColor(_ color: UIColor, file: StaticString = #file, line: UInt = #line) {
         let expected = AppConstants.tintColor
         for style in [UIUserInterfaceStyle.light, .dark] {

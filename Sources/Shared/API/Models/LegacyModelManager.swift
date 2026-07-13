@@ -38,7 +38,9 @@ public class LegacyModelManager: ServerObserver {
         })
     }
 
-    public struct CleanupDefinition {
+    // Immutable value describing a Realm cleanup pass; safe to hand across queues even though
+    // Realm types themselves aren't Sendable.
+    public struct CleanupDefinition: @unchecked Sendable {
         public enum OrphanMode {
             case delete(handler: (Realm, [Object]) -> Void)
             case replace
@@ -112,12 +114,7 @@ public class LegacyModelManager: ServerObserver {
             ),
             CleanupDefinition(orphansOf: RLMZone.self),
             CleanupDefinition(orphansOf: NotificationCategory.self),
-            CleanupDefinition(
-                orphansOf: WatchComplication.self,
-                serverIdentifierKey: #keyPath(WatchComplication.serverIdentifier),
-                allowedPredicate: .init(value: true),
-                mode: .replace
-            ),
+            // WatchComplication moved to GRDB; its server-orphan handling now lives in the GRDB layer.
         ]
     }
 
@@ -130,6 +127,11 @@ public class LegacyModelManager: ServerObserver {
 
         cleanupDefinitions = definitions
         workQueue.async {
+            // GRDB-backed watch complications/configs: drop rows for servers that no longer exist.
+            let serverIds = Current.servers.all.map(\.identifier.rawValue)
+            try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIds)
+            try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIds)
+
             let realm = Current.realm()
             let writes = definitions.map { definition in
                 realm.reentrantWrite {
@@ -261,7 +263,9 @@ public class LegacyModelManager: ServerObserver {
         subscribedSubscriptions.removeAll()
         hakitTokens.forEach { $0.cancel() }
         hakitTokens = definitions.flatMap { definition -> [HACancellable] in
-            Current.apis.filter({ $0.server.info.connection.activeURL() != nil }).flatMap { api in
+            // Evaluated against cached network information: `Current.apis` already excludes servers
+            // without a usable URL, and this synchronous subscribe path cannot refresh.
+            Current.apis.filter({ $0.server.info.connection.evaluateActiveURL() != nil }).flatMap { api in
                 definition.subscribe(api.connection, api.server, workQueue, self)
             }
         }

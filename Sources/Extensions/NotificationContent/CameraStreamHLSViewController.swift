@@ -27,15 +27,12 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         }
     }
 
-    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse) throws {
+    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse, baseURL: URL) throws {
         guard let path = response.hlsPath else {
             throw HLSError.noPath
         }
 
-        guard let url = api.server.info.connection.activeURL()?.appendingPathComponent(path) else {
-            throw ServerConnectionError.noActiveURL(api.server.info.name)
-        }
-        self.init(api: api, url: url)
+        self.init(api: api, url: baseURL.appendingPathComponent(path))
     }
 
     init(api: HomeAssistantAPI, url: URL) {
@@ -82,6 +79,14 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
     func play() {
         setupVideo()
+    }
+
+    var hasAudio: Bool { true }
+
+    var isMuted: Bool { playerViewController.player?.isMuted ?? true }
+
+    func setMuted(_ muted: Bool) {
+        playerViewController.player?.isMuted = muted
     }
 
     private var aspectRatioConstraint: NSLayoutConstraint? {
@@ -161,15 +166,22 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         })
 
         observationTokens.append(videoPlayer.observe(\AVPlayer.currentItem?.tracks) { [weak self] item, _ in
-            let sizes = item.currentItem?
-                .tracks
-                .compactMap({ $0.assetTrack?.naturalSize })
-                .filter {
-                    // hls streams occasionally bounce between (0, 0); (1, 1); and the real size
-                    $0.width > 1 && $0.height > 1
+            let assetTracks = item.currentItem?.tracks.compactMap(\.assetTrack)
+            Task { @MainActor [weak self] in
+                var sizes: [CGSize]?
+                if let assetTracks {
+                    sizes = []
+                    for track in assetTracks {
+                        // hls streams occasionally bounce between (0, 0); (1, 1); and the real size
+                        if let size = try? await track.load(.naturalSize),
+                           size.width > 1, size.height > 1 {
+                            sizes?.append(size)
+                        }
+                    }
                 }
 
-            self?.lastSize = sizes?.first
+                self?.lastSize = sizes?.first
+            }
         })
     }
 }

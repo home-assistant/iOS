@@ -1,20 +1,19 @@
 import CoreBluetooth
 import CoreLocation
 import CoreMotion
+import Dependencies
 import Foundation
 import GRDB
 import HAKit
-import NetworkExtension
+import os
 import PromiseKit
 import RealmSwift
 import UserNotifications
-import Version
 import XCGLogger
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equatable {
     case fastlaneSnapshot
     case debug
-    case beta
     case release
 
     public var description: String {
@@ -23,30 +22,82 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equata
             return "fastlane"
         case .debug:
             return "debug"
-        case .beta:
-            return "beta"
         case .release:
             return "release"
         }
     }
 }
 
-private var underlyingWasSetUp: UInt32 = 0
+private let underlyingWasSetUp = OSAllocatedUnfairLock(initialState: false)
 private var underlyingCurrent = AppEnvironment()
 
-public var Current: AppEnvironment {
-    get {
-        let result = underlyingCurrent
-        if OSAtomicTestAndSetBarrier(0, &underlyingWasSetUp) == false {
-            // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
-            // reentrant, which is a requirement for touching things like Log but also touching more unexpected
-            // things like accessing any L10n helper value, which funnels through Current as well.
-            result.setup()
+private enum AppEnvironmentDependencyKey: DependencyKey {
+    static var liveValue: AppEnvironment { underlyingCurrent }
+    // Tests share the global instance so pre-bridge semantics are preserved;
+    // suites opt into an isolated environment via `withCurrent`.
+    static var testValue: AppEnvironment { underlyingCurrent }
+}
+
+public extension DependencyValues {
+    /// The app's operating environment. Prefer `@Dependency(\.environment)` over `Current` in new code.
+    var environment: AppEnvironment {
+        get {
+            let result = self[AppEnvironmentDependencyKey.self]
+            // one-time setup applies only to the global environment; scoped overrides are
+            // responsible for their own configuration.
+            // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current'
+            // to be reentrant, which is a requirement for touching things like Log but also touching more
+            // unexpected things like accessing any L10n helper value, which funnels through Current as well.
+            // so this is a test-and-set: the flag flips inside the lock, but setup() runs outside it.
+            if result === underlyingCurrent {
+                let needsSetup = underlyingWasSetUp.withLock { wasSetUp -> Bool in
+                    if wasSetUp {
+                        return false
+                    }
+                    wasSetUp = true
+                    return true
+                }
+                if needsSetup {
+                    result.setup()
+                }
+            }
+            return result
         }
-        return result
+        set { self[AppEnvironmentDependencyKey.self] = newValue }
     }
-    set {
-        underlyingCurrent = newValue
+}
+
+public var Current: AppEnvironment {
+    // resolved through the dependency system so `withCurrent`/`withDependencies` can override it
+    // task-locally; outside any override this is the process-wide global, exactly as before.
+    @Dependency(\.environment) var environment
+    return environment
+}
+
+/// Runs `operation` with `Current` (and `@Dependency(\.environment)`) resolving to `environment`,
+/// including in structured-concurrency child tasks spawned inside it. `Task.detached` and work that
+/// hops to a dispatch queue or PromiseKit callback do not inherit the override and fall back to the
+/// global environment.
+public func withCurrent<R>(
+    _ environment: AppEnvironment,
+    operation: () throws -> R
+) rethrows -> R {
+    try withDependencies {
+        $0.environment = environment
+    } operation: {
+        try operation()
+    }
+}
+
+/// Async variant of the synchronous `withCurrent`.
+public func withCurrent<R>(
+    _ environment: AppEnvironment,
+    operation: () async throws -> R
+) async rethrows -> R {
+    try await withDependencies {
+        $0.environment = environment
+    } operation: {
+        try await operation()
     }
 }
 
@@ -81,6 +132,55 @@ public class AppEnvironment {
     func setup() {
         _ = Current // just to make sure we don't crash for this case
 
+        // Point the HANetworking package's injected environment at the real `Current` services. The
+        // package can't import HACore (cycle), so it reads these through `HANetworkingEnvironment`.
+        HANetworkingEnvironment.current.log = .init(
+            error: { Current.Log.error($0) },
+            warning: { Current.Log.warning($0) },
+            info: { Current.Log.info($0) },
+            verbose: { Current.Log.verbose($0) },
+            debug: { Current.Log.debug($0) }
+        )
+        HANetworkingEnvironment.current.date = { Current.date() }
+        HANetworkingEnvironment.current.isCatalyst = Current.isCatalyst
+        HANetworkingEnvironment.current.isAppExtension = { Current.isAppExtension }
+        HANetworkingEnvironment.current.connectivity = .init(
+            refreshNetworkInformation: { await Current.connectivity.refreshNetworkInformation() },
+            currentNetworkState: { await Current.connectivity.currentNetworkState() },
+            lastKnownNetworkState: { Current.connectivity.lastKnownNetworkState() }
+        )
+        #if !os(watchOS)
+        HANetworkingEnvironment.current.refreshAppDatabase = { server, forceUpdate in
+            Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate)
+        }
+        #endif
+        HANetworkingEnvironment.current.prefs = Current.settingsStore.prefs
+        HANetworkingEnvironment.current.database = { Current.database() }
+        HANetworkingEnvironment.current.bundleID = AppConstants.BundleID
+        HANetworkingEnvironment.current.defaultServerName = ServerInfo.defaultName
+        HANetworkingEnvironment.current.isDebug = Current.appConfiguration == .debug
+        HANetworkingEnvironment.current.handleReauthenticationRequired = { server, statusCode, errorDescription in
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Refresh token is invalid, notifying user",
+                type: .networkRequest,
+                payload: ["error": errorDescription]
+            ))
+            Current.modelManager.unsubscribe()
+            Current.api(for: server)?.connection.disconnect()
+            Current.onboardingObservation.needed(.unauthenticated(server.identifier.rawValue, statusCode))
+        }
+
+        // Point the HADesignSystem package's injected environment at the app's localized strings and
+        // constants. Like HANetworking, the package can't import Shared (cycle), so it reads these
+        // through `HADesignSystemEnvironment`.
+        HADesignSystemEnvironment.current.strings = with(.init()) {
+            $0.collapsibleViewCollapse = L10n.Component.CollapsibleView.collapse
+            $0.collapsibleViewExpand = L10n.Component.CollapsibleView.expand
+            $0.privacyLabel = L10n.privacyLabel
+            $0.reportIssueButtonTitle = L10n.Experimental.Badge.ReportIssueButton.title
+        }
+        HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
+
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
     }
@@ -95,6 +195,9 @@ public class AppEnvironment {
     /// Provides the Client Event store used for local logging.
     public var clientEventStore: ClientEventStoreProtocol = ClientEventStore()
 
+    /// Provides the store that records received notifications for the in-app history.
+    public var notificationHistoryStore: NotificationHistoryStoreProtocol = NotificationHistoryStore()
+
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
     /// Provides the Realm given objectTypes to reduce memory usage mostly in extensions.
@@ -103,7 +206,10 @@ public class AppEnvironment {
     }
 
     public var database: () -> DatabaseQueue = {
-        .appDatabase
+        // App Intents can run in a background-woken process without a foreground transition,
+        // leaving the DB suspended; resume it here so accesses don't abort mid-shortcut.
+        NotificationCenter.default.post(name: Database.resumeNotification, object: nil)
+        return .appDatabase
     }
 
     public var watchConfig: () throws -> WatchConfig? = {
@@ -221,7 +327,9 @@ public class AppEnvironment {
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()
     public func api(for server: Server) -> HomeAssistantAPI? {
-        guard server.info.connection.activeURL() != nil else {
+        // Evaluated against cached network information: this is only a "has any usable URL" check,
+        // and refreshing here would force every caller to be async.
+        guard server.info.connection.evaluateActiveURL() != nil else {
             return nil
         }
 
@@ -273,6 +381,10 @@ public class AppEnvironment {
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
         $0.register(provider: BarometerSensor.self)
+        $0.register(provider: KioskModeSensor.self)
+        $0.register(provider: KioskBrightnessSensor.self)
+        $0.register(provider: KioskVolumeSensor.self)
+        $0.register(provider: KioskScreensaverSensor.self)
     }
 
     public var localized = LocalizedManager()
@@ -312,6 +424,12 @@ public class AppEnvironment {
     public lazy var clientVersion: () -> Version = { AppConstants.clientVersion }
 
     public var onboardingObservation = OnboardingStateObservation()
+
+    public lazy var kiosk = KioskModeManager()
+
+    /// The current kiosk mode configuration. Always available, defaulting to a disabled
+    /// configuration when nothing has been persisted yet.
+    public var kioskSettings: KioskSettings { kiosk.settings }
 
     public var isPerformingSingleShotLocationQuery = false
 
@@ -383,8 +501,6 @@ public class AppEnvironment {
             return .fastlaneSnapshot
         } else if isDebug {
             return .debug
-        } else if (Bundle.main.bundleIdentifier ?? "").lowercased().contains("beta"), isTestFlight {
-            return .beta
         } else {
             return .release
         }
@@ -563,22 +679,6 @@ public class AppEnvironment {
 
     public var userNotificationCenter: UNUserNotificationCenter {
         UNUserNotificationCenter.current()
-    }
-
-    public var networkInformation: NEHotspotNetwork? {
-        get async {
-            await withCheckedContinuation { continuation in
-                NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-                    continuation.resume(returning: hotspotNetwork)
-                }
-            }
-        }
-    }
-
-    public func networkInformation(completion: @escaping (NEHotspotNetwork?) -> Void) {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            completion(hotspotNetwork)
-        }
     }
 
     #if !os(watchOS)

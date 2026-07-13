@@ -10,7 +10,7 @@ env:
 
 jobs:
   update_strings:
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
@@ -18,9 +18,6 @@ jobs:
 
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
-
-      - name: Install Pods
-        run: ONLY_SUPPORT_MODULES=1 bundle exec pod install --repo-update
 
       - name: Upload to Lokalise
         run: bundle exec fastlane push_strings

@@ -7,27 +7,9 @@ enum WidgetLauncher {
     static func main() {
         if #available(iOSApplicationExtension 18.0, *) {
             WidgetsBundle18.main()
-        } else if #available(iOSApplicationExtension 17.0, *) {
-            WidgetsBundle17.main()
         } else {
-            WidgetsBundleLegacy.main()
+            WidgetsBundle17.main()
         }
-    }
-}
-
-struct WidgetsBundleLegacy: WidgetBundle {
-    init() {
-        MaterialDesignIcons.register()
-    }
-
-    var body: some Widget {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOSApplicationExtension 17.2, *) {
-            HALiveActivityConfiguration()
-        }
-        #endif
-        WidgetAssist()
-        WidgetOpenPage()
     }
 }
 

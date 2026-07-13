@@ -67,9 +67,9 @@ class NotificationParserLegacyTests: XCTestCase {
     }
 
     func testNotificationDecorationKeyRawValues() {
-        XCTAssertEqual(NotificationDecorationPayloadKey.iconURL.rawValue, "icon_url")
-        XCTAssertEqual(NotificationDecorationPayloadKey.notificationIcon.rawValue, "notification_icon")
-        XCTAssertEqual(NotificationDecorationPayloadKey.notificationIconColor.rawValue, "notification_icon_color")
-        XCTAssertEqual(NotificationDecorationPayloadKey.color.rawValue, "color")
+        XCTAssertEqual(NotificationPayloadKey.iconURL.rawValue, "icon_url")
+        XCTAssertEqual(NotificationPayloadKey.notificationIcon.rawValue, "notification_icon")
+        XCTAssertEqual(NotificationPayloadKey.notificationIconColor.rawValue, "notification_icon_color")
+        XCTAssertEqual(NotificationPayloadKey.color.rawValue, "color")
     }
 }

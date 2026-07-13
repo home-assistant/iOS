@@ -1,4 +1,5 @@
 import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import Shared
 import SwiftUI

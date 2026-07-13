@@ -1,6 +1,6 @@
-import CoreServices
 import Foundation
 import PromiseKit
+import UniformTypeIdentifiers
 import UserNotifications
 
 final class NotificationAttachmentParserCamera: NotificationAttachmentParser {
@@ -29,7 +29,7 @@ final class NotificationAttachmentParserCamera: NotificationAttachmentParser {
         return .value(.fulfilled(.init(
             url: proxyURL,
             needsAuth: true,
-            typeHint: kUTTypeJPEG,
+            typeHint: UTType.jpeg.identifier as CFString,
             hideThumbnail: hideThumbnail,
             lazy: lazy
         )))

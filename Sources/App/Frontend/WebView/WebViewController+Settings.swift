@@ -48,7 +48,6 @@ extension WebViewController {
         }
 
         if reason == .settingChange {
-            setNeedsStatusBarAppearanceUpdate()
             setNeedsUpdateOfHomeIndicatorAutoHidden()
             updateEdgeToEdgeLayout()
         }
@@ -92,29 +91,11 @@ extension WebViewController {
     }
 
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
-        let now = Current.date()
-
-        // Check if this is a consecutive pull-to-refresh within 10 seconds
-        if let lastTimestamp = lastPullToRefreshTimestamp,
-           now.timeIntervalSince(lastTimestamp) < 10 {
-            // Second pull-to-refresh within 10 seconds - reset frontend cache
-            Current.Log.info("Consecutive pull-to-refresh detected within 10 seconds, resetting frontend cache")
-            Current.impactFeedback.impactOccurred(style: .medium)
-
-            // Reset the cache
-            Current.websiteDataStoreHandler.cleanCache { [weak self] in
-                Current.Log.info("Frontend cache reset after consecutive pull-to-refresh")
+        Current.Log.info("Pull-to-refresh: resetting frontend cache before reload")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
                 self?.pullToRefreshActions()
             }
-
-            // Set the timestamp to now after cache reset to ensure proper timing for next pull
-            // This prevents immediate re-triggering while still tracking for future pulls
-            lastPullToRefreshTimestamp = now
-        } else {
-            // First pull-to-refresh or outside the 10-second window
-            lastPullToRefreshTimestamp = now
-            pullToRefreshActions()
-        }
     }
 
     func pullToRefreshActions() {

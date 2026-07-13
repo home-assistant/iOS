@@ -1,7 +1,6 @@
 import PromiseKit
 @testable import Shared
 import SwiftUI
-import Version
 import XCTest
 
 class FocusSensorTests: XCTestCase {

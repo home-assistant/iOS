@@ -9,11 +9,6 @@
 import Foundation
 
 public extension CoreStrings {
-    static func getDomainLocalizedTitle(domain: Domain) -> String {
-        let key = "component::\(domain.rawValue)::title"
-        return Current.localized.core(key) ?? domain.rawValue
-    }
-
     static func getDomainStateLocalizedTitle(state: String) -> String? {
         let key = "common::state::\(state)"
         return Current.localized.core(key)

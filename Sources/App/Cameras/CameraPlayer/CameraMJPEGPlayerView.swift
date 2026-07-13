@@ -3,21 +3,27 @@ import SwiftUI
 import UIKit
 
 /// A SwiftUI view for displaying MJPEG camera streams.
-@available(iOS 16.0, *)
 struct CameraMJPEGPlayerView: View {
     @Environment(\.dismiss) private var dismiss
 
     private let server: Server
     private let cameraEntityId: String
     private let cameraName: String?
+    private let controlsVisible: Binding<Bool>?
 
     @State private var isLoading = true
     @State private var errorMessage: String?
 
-    init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
+    init(
+        server: Server,
+        cameraEntityId: String,
+        cameraName: String? = nil,
+        controlsVisible: Binding<Bool>? = nil
+    ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
+        self.controlsVisible = controlsVisible
     }
 
     var body: some View {
@@ -53,6 +59,10 @@ struct CameraMJPEGPlayerView: View {
                 }
             }
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            controlsVisible?.wrappedValue.toggle()
+        }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
     }
@@ -60,7 +70,6 @@ struct CameraMJPEGPlayerView: View {
 
 // MARK: - UIViewControllerRepresentable wrapper
 
-@available(iOS 16.0, *)
 private struct MJPEGStreamContainerView: UIViewControllerRepresentable {
     let server: Server
     let cameraEntityId: String
@@ -105,7 +114,6 @@ private struct MJPEGStreamContainerView: UIViewControllerRepresentable {
 
 // MARK: - UIKit View Controller for MJPEG streaming
 
-@available(iOS 16.0, *)
 private class MJPEGStreamViewController: UIViewController {
     private let server: Server
     private let cameraEntityId: String
@@ -161,29 +169,33 @@ private class MJPEGStreamViewController: UIViewController {
             return
         }
 
-        guard let baseURL = api.server.info.connection.activeURL() else {
-            coordinator?.didEncounterError(StreamError.unableToConnect)
-            return
-        }
-
-        let mjpegURL = baseURL.appendingPathComponent("api/camera_proxy_stream/\(cameraEntityId)")
-
-        // Create streamer once and keep it for the lifetime of this view controller
-        let videoStreamer = api.VideoStreamer()
-        streamer = videoStreamer
-
-        videoStreamer.streamImages(fromURL: mjpegURL) { [weak self] image, error in
+        Task { [weak self] in
             guard let self else { return }
 
-            if let image {
-                imageView.image = image
-                if !hasReceivedFirstFrame {
-                    hasReceivedFirstFrame = true
-                    coordinator?.didReceiveFirstFrame()
+            guard let baseURL = await api.server.activeURL() else {
+                coordinator?.didEncounterError(StreamError.unableToConnect)
+                return
+            }
+
+            let mjpegURL = baseURL.appendingPathComponent("api/camera_proxy_stream/\(cameraEntityId)")
+
+            // Create streamer once and keep it for the lifetime of this view controller
+            let videoStreamer = api.VideoStreamer()
+            streamer = videoStreamer
+
+            videoStreamer.streamImages(fromURL: mjpegURL) { [weak self] image, error in
+                guard let self else { return }
+
+                if let image {
+                    imageView.image = image
+                    if !hasReceivedFirstFrame {
+                        hasReceivedFirstFrame = true
+                        coordinator?.didReceiveFirstFrame()
+                    }
+                } else if let error {
+                    Current.Log.error("MJPEG stream error: \(error.localizedDescription)")
+                    coordinator?.didEncounterError(error)
                 }
-            } else if let error {
-                Current.Log.error("MJPEG stream error: \(error.localizedDescription)")
-                coordinator?.didEncounterError(error)
             }
         }
     }
@@ -198,7 +210,6 @@ private class MJPEGStreamViewController: UIViewController {
 }
 
 #if DEBUG
-@available(iOS 16.0, *)
 #Preview {
     CameraMJPEGPlayerView(
         server: ServerFixture.standard,

@@ -1,11 +1,11 @@
 import AppIntents
 import Foundation
 import HAKit
+import HAKit_PromiseKit
 import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 16.4, *)
 struct CustomWidgetToggleAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle"
     static var isDiscoverable: Bool = false

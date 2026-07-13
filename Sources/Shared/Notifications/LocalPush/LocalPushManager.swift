@@ -1,4 +1,5 @@
 import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import UserNotifications
 
@@ -174,40 +175,86 @@ public class LocalPushManager {
         state.increment()
 
         let baseContent = event.content(server: server)
+        var userInfo = baseContent.userInfo
+        let isLiveActivity = Self.isLiveActivityCommand(userInfo)
 
-        delegate?.localPushManager(self, didReceiveRemoteNotification: baseContent.userInfo)
+        Current.notificationHistoryStore.record(NotificationHistoryEntry(
+            content: baseContent,
+            kind: isLiveActivity ? .liveActivityLocal : .local
+        ))
+
+        if isLiveActivity, let confirmID = event.confirmID {
+            userInfo[Self.confirmIDUserInfoKey] = confirmID
+        }
+
+        delegate?.localPushManager(self, didReceiveRemoteNotification: userInfo)
+
+        if isLiveActivity {
+            // A live update only starts/updates the Live Activity via the delegate above, silent
+            // or not; it never surfaces a standalone banner (the widget is the only visual
+            // feedback, matching NotificationManager.willPresent). The confirm is owned by the
+            // live activity presentation path, so it stays deferred here.
+            Current.Log.info("local push: Live Activity command, updating activity only, deferring confirm")
+            return
+        }
 
         guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to handle local push event")
             return
         }
 
-        firstly {
-            Current.notificationAttachmentManager.content(from: baseContent, api: api)
-        }.recover { error in
-            Current.Log.error("failed to get content, giving default: \(error)")
-            return .value(baseContent)
-        }.then { [notificationCommunicationDecorator] content -> Guarantee<UNNotificationContent> in
-            if let sender = NotificationSenderParser.parse(from: content) {
-                return notificationCommunicationDecorator.decorate(content: content, sender: sender, api: api)
-            } else {
-                return .value(content)
-            }
-        }.then { [add] content -> Promise<Void> in
-            add(UNNotificationRequest(identifier: event.identifier, content: content, trigger: nil))
-        }.then { [subscription] () -> Promise<Void> in
-            if let confirmID = event.confirmID, let webhookID = subscription?.webhookID {
-                return api.connection.send(.localPushConfirm(
-                    webhookID: webhookID,
-                    confirmID: confirmID
-                )).promise.map { _ in () }
-            } else {
+        let confirmReceipt: () -> Promise<Void> = { [subscription] in
+            guard let confirmID = event.confirmID, let webhookID = subscription?.webhookID else {
                 return .value(())
             }
-        }.done {
-            Current.Log.info("added local notification")
-        }.catch { error in
-            Current.Log.error("failed to add local notification: \(error)")
+            return api.connection.send(.localPushConfirm(
+                webhookID: webhookID,
+                confirmID: confirmID
+            )).promise.map { _ in () }
         }
+
+        if Self.isCommand(userInfo) {
+            Current.Log.info("local push: handled as command, suppressing banner")
+            confirmReceipt().cauterize()
+            return
+        }
+
+        Task { [add, notificationCommunicationDecorator] in
+            var content = await withCheckedContinuation { continuation in
+                Current.notificationAttachmentManager.content(from: baseContent, api: api).done {
+                    continuation.resume(returning: $0)
+                }
+            }
+            if let sender = NotificationSenderParser.parse(from: content) {
+                content = await notificationCommunicationDecorator.decorate(
+                    content: content,
+                    sender: sender,
+                    api: api
+                )
+            }
+            add(UNNotificationRequest(
+                identifier: event.identifier,
+                content: content,
+                trigger: nil
+            )).then {
+                confirmReceipt()
+            }.done {
+                Current.Log.info("added local notification")
+            }.catch { error in
+                Current.Log.error("failed to add local notification: \(error)")
+            }
+        }
+    }
+
+    static let confirmIDUserInfoKey = "hass_confirm_id"
+
+    private static func isLiveActivityCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
+        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
+        return (hadict["live_update"] as? Bool) == true || (hadict["command"] as? String) == "live_activity"
+    }
+
+    private static func isCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
+        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
+        return (hadict["command"] as? String) != nil
     }
 }

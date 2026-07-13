@@ -31,7 +31,7 @@ final class ComplicationEditViewModel: ObservableObject {
     @Published var textAreaValues: [String: TextAreaState] = [:]
 
     // Readonly
-    let config: WatchComplication
+    var config: WatchComplication
     let isNew: Bool
 
     var family: ComplicationGroupMember { config.Family }
@@ -45,7 +45,7 @@ final class ComplicationEditViewModel: ObservableObject {
         self.displayTemplate = config.Template
 
         self.name = config.name ?? ""
-        self.isPublic = config.IsPublic
+        self.isPublic = config.isPublic
 
         if let existing = Current.servers.server(forServerIdentifier: config.serverIdentifier) {
             self.serverIdentifier = existing.identifier.rawValue
@@ -155,50 +155,43 @@ final class ComplicationEditViewModel: ObservableObject {
 
     // MARK: - Save / Delete
 
-    /// Persists to Realm then asks the API to push the change. Returns once
-    /// the Realm write is committed; the API update is fired-and-forget like
+    /// Persists to GRDB then asks the API to push the change. The API update is fired-and-forget like
     /// the original Eureka controller.
     func save() {
-        let realm = Current.realm()
         let server = server
-        let payload = serializedData()
-        let nameValue = name.isEmpty ? nil : name
-        let isPublicValue = isPublic
-        let template = displayTemplate
-        let serverIdentifierValue = server?.identifier.rawValue
+        config.name = name.isEmpty ? nil : name
+        config.isPublic = isPublic
+        config.serverIdentifier = server?.identifier.rawValue
+        config.Template = displayTemplate
+        config.Data = serializedData()
 
-        realm.reentrantWrite {
-            config.name = nameValue
-            config.IsPublic = isPublicValue
-            config.serverIdentifier = serverIdentifierValue
-            config.Template = template
-            config.Data = payload
-            realm.add(config, update: .all)
-        }.then(on: nil) { () -> Promise<Void> in
-            if let server {
-                return Current.api(for: server)?
-                    .updateComplications(passively: false) ??
-                    .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            } else {
-                return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            }
-        }.cauterize()
+        do {
+            try config.save()
+        } catch {
+            Current.Log.error("Failed to save watch complication: \(error.localizedDescription)")
+        }
+
+        NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
+        pushUpdate(server: server)
     }
 
     func delete() {
-        let realm = Current.realm()
         let server = server
-        realm.reentrantWrite {
-            realm.delete(config)
-        }.then(on: nil) { () -> Promise<Void> in
-            if let server {
-                return Current.api(for: server)?
-                    .updateComplications(passively: false) ??
-                    .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            } else {
-                return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            }
-        }.cauterize()
+        do {
+            try config.delete()
+        } catch {
+            Current.Log.error("Failed to delete watch complication: \(error.localizedDescription)")
+        }
+        NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
+        pushUpdate(server: server)
+    }
+
+    private func pushUpdate(server: Server?) {
+        guard let server else { return }
+        (
+            Current.api(for: server)?.updateComplications(passively: false) ??
+                .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+        ).cauterize()
     }
 
     // MARK: - Serialization

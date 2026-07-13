@@ -42,20 +42,14 @@ enum WebViewExternalBusMessage: String, CaseIterable {
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
             "hasAssistSettings": true,
-            "hasCameraPlayer": {
-                if #available(iOS 16.0, *), !Current.isCatalyst {
-                    return true
-                } else {
-                    return false
-                }
-            }(),
+            "hasCameraPlayer": !Current.isCatalyst,
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
             "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
                 if #available(iOS 18, *), !Current.isCatalyst, Current.settingsStore.toastsHandledByApp {
-                    return ToastManager.toastComponentVersion
+                    return ToastPresenter.toastComponentVersion
                 } else {
                     return -1
                 }
@@ -73,4 +67,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case improvDiscoveredDeviceSetupDone = "improv/device_setup_done"
     case navigate = "navigate"
     case matterCommissionFinish = "matter/commission/finish"
+    case kioskModeSet = "kiosk_mode/set"
 }

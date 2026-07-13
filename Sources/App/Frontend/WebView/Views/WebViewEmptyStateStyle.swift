@@ -8,7 +8,7 @@ enum WebViewEmptyStateStyle: Equatable {
     enum HeaderAccessory {
         case none
         case settings
-        case close
+        case hiddenDismiss
     }
 
     var title: String {
@@ -64,8 +64,10 @@ enum WebViewEmptyStateStyle: Equatable {
 
     var trailingHeaderAccessory: HeaderAccessory {
         switch self {
-        case .disconnected, .unauthenticated:
-            .close
+        case .disconnected:
+            .hiddenDismiss
+        case .unauthenticated:
+            .none
         case .recoveredServerNeedingReauthentication:
             .settings
         }

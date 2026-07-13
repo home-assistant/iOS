@@ -162,14 +162,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         }
     }
 
-    /// Completes the onboarding process after a brief delay
-    /// - Note: Called from the completion step to finalize the onboarding flow
-    func completeOnboarding() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            Current.onboardingObservation.complete()
-        }
-    }
-
     // MARK: - Location Permission Management
 
     /// Requests location permission specifically for sharing location data with Home Assistant

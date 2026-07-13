@@ -15,6 +15,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     /// `getInfo` can attach the "Server • Area • Device" context line without a DB read per item.
     private var areasPerServer: [String: [String: AppArea]] = [:]
     private var devicesPerServer: [String: [String: AppDeviceRegistry]] = [:]
+    private var floorNamesPerServer: [String: [String: String]] = [:]
 
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
         loadAppEntities { [weak self] in
@@ -59,6 +60,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateCarPlayConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var carPlayConfig = try? Current.carPlayConfig() else {
             completion()
             return
@@ -78,6 +83,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateWatchConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var watchConfig = try? Current.watchConfig() else {
             completion()
             return
@@ -96,6 +105,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateAppIconShortcutConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var appIconShortcutConfig = try? Current.appIconShortcutConfig() else {
             completion()
             return
@@ -124,6 +137,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
      The completion handler is always called at the end of the process.
      */
     func migrateWidgetsConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard let customWidgets = try? Current.customWidgets() else {
             completion()
             return
@@ -164,6 +181,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 // a per-item database read.
                 self?.areasPerServer[serverId] = entities.areasMap(for: serverId)
                 self?.devicesPerServer[serverId] = entities.devicesMap(for: serverId)
+                self?.floorNamesPerServer[serverId] = entities.floorNamesMap(for: serverId)
             } catch {
                 Current.Log.error("Failed to load covers from database: \(error.localizedDescription)")
             }
@@ -288,6 +306,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             : nil
         return EntityContextSubtitle.make(
             serverName: serverName,
+            floorName: floorNamesPerServer[entity.serverId]?[entity.entityId],
             areaName: areasPerServer[entity.serverId]?[entity.entityId]?.name,
             deviceName: devicesPerServer[entity.serverId]?[entity.entityId]?.name,
             entityName: entity.name,

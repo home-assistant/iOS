@@ -66,26 +66,36 @@ extension WebViewController: WebViewControllerProtocol {
         } else {
             requestedState
         }
-        isConnected = resolvedState == .connected
         connectionState = resolvedState
 
         // Possible values: connected, disconnected, auth-invalid
         switch resolvedState {
         case .connected:
             hideEmptyState()
+            updateFrontendKioskMode()
         case .authInvalid:
             showEmptyState()
         case .disconnected, .unknown:
-            // Start a 10-second timer. If not interrupted by a 'connected' state, set alpha to 1.
-            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
+            // Start a timer. If not interrupted by a 'connected' state, show the empty state.
+            let timeout = TimeInterval(Current.settingsStore.webViewEmptyStateTimeout)
+            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
                 self?.showEmptyState()
             }
         }
     }
 
+    /// A hard reload (`reload()`/`refresh()`) tears down the frontend and its websocket, so mark disconnected
+    /// and arm the grace timer until the frontend reports `.connected` again.
+    func markDisconnectedForHardReload() {
+        updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+    }
+
     func navigateToPath(path: String) {
-        if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
-            load(request: URLRequest(url: url))
+        Task { [weak self] in
+            guard let self else { return }
+            if let activeURL = await server.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
+                load(request: URLRequest(url: url))
+            }
         }
     }
 
@@ -103,26 +113,21 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     @objc func refresh() {
-        let refreshBlock: () -> Void = { [weak self] in
+        // called via menu/keyboard shortcut too
+        Task { [weak self] in
             guard let self else { return }
-            // called via menu/keyboard shortcut too
-            if let webviewURL = server.info.connection.webviewURL() {
+            // `webviewURL()` refreshes the network information (e.g. current SSID) before
+            // evaluating which URL is active.
+            if let webviewURL = await server.webviewURL() {
                 if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                     reload()
                 } else {
+                    markDisconnectedForHardReload()
                     load(request: URLRequest(url: webviewURL))
                 }
                 hideNoActiveURLError()
             } else {
                 showNoActiveURLError()
-            }
-        }
-
-        if Current.isCatalyst {
-            refreshBlock()
-        } else {
-            Current.connectivity.syncNetworkInformation {
-                refreshBlock()
             }
         }
         updateDatabaseAndPanels()

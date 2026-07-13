@@ -1,4 +1,3 @@
-import Communicator
 import Shared
 import SwiftUI
 
@@ -87,14 +86,9 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var iOSView: some View {
-        if #available(iOS 16.0, *) {
-            iOSViewModern
-        } else {
-            iOSViewLegacy
-        }
+        iOSViewModern
     }
 
-    @available(iOS 16.0, *)
     private var iOSViewModern: some View {
         NavigationStack {
             iOSListContent
@@ -104,19 +98,12 @@ struct SettingsView: View {
         }
     }
 
-    private var iOSViewLegacy: some View {
-        NavigationView {
-            iOSListContent
-                .navigationViewStyle(.stack)
-        }
-    }
-
     private var iOSListContent: some View {
         List {
             // Servers section
             Section(
                 header: Text(L10n.Settings.ConnectionSection.serversHeader),
-                footer: Text(L10n.Settings.ConnectionSection.serversFooter)
+                footer: Text(L10n.Settings.ConnectionSection.serversReorderFooter)
             ) {
                 ServersListView()
             }
@@ -245,15 +232,8 @@ struct SettingsView: View {
             }
         }
         .sheet(isPresented: $showAbout) {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    aboutViewContent
-                }
-            } else {
-                NavigationView {
-                    aboutViewContent
-                }
-                .navigationViewStyle(.stack)
+            NavigationStack {
+                aboutViewContent
             }
         }
         .sheet(item: $whatsNewRelease) { release in
@@ -304,7 +284,7 @@ struct SettingsView: View {
         Label {
             HStack(spacing: DesignSystem.Spaces.one) {
                 Text(item.title)
-                if [.kiosk, .liveActivities].contains(item) {
+                if item == .liveActivities || item == .complications {
                     LabsLabel()
                 }
             }

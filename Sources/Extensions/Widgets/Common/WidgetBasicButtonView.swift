@@ -2,6 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 import SwiftUI
+import WidgetKit
 
 struct WidgetBasicButtonView: WidgetBasicViewProtocol {
     @Environment(\.widgetFamily) private var widgetFamily

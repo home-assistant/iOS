@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import PromiseKit
 import Shared
 import UIKit
@@ -70,16 +71,34 @@ class LifecycleManager {
             })
         }.cauterize()
 
-        periodicUpdateManager.connectAPI(reason: .cold)
+        // Resolve the network info (SSID) before the first connect so we don't pick the remote URL while on
+        // the home network and get rejected.
+        Task { @MainActor [periodicUpdateManager] in
+            await Current.connectivity.refreshNetworkInformation()
+            periodicUpdateManager.connectAPI(reason: .cold)
+        }
     }
 
     @objc private func willEnterForeground() {
         isActive = true
-        syncNetworkInformation()
+        NotificationCenter.default.post(name: Database.resumeNotification, object: self)
+        refreshNetworkInformation()
+        syncLiveActivities()
+    }
+
+    /// Reconcile running Live Activities with Core on every foreground, releasing tokens for any
+    /// that ended while the app was backgrounded so Core stops pushing to them.
+    private func syncLiveActivities() {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            Task { await Current.liveActivityRegistry?.reattach() }
+        }
+        #endif
     }
 
     @objc private func didEnterBackground() {
         isActive = false
+        NotificationCenter.default.post(name: Database.suspendNotification, object: self)
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidEnterBackground.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
@@ -112,12 +131,12 @@ class LifecycleManager {
                 )
             })
         }.cauterize()
-        syncNetworkInformation()
+        refreshNetworkInformation()
     }
 
-    private func syncNetworkInformation() {
+    private func refreshNetworkInformation() {
         Task {
-            await Current.connectivity.syncNetworkInformation()
+            await Current.connectivity.refreshNetworkInformation()
         }
     }
 }

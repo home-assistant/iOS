@@ -23,7 +23,7 @@ final class NotificationIconCacheTests: XCTestCase {
     }
 
     func testWriteThenRead_roundTrips() {
-        let payload = Data([0x89, 0x50, 0x4E, 0x47]) // PNG magic
+        let payload = Data([0x89, 0x50, 0x4E, 0x47])
         cache.setData(payload, forKey: "abc")
         XCTAssertEqual(cache.data(forKey: "abc"), payload)
     }
@@ -48,7 +48,7 @@ final class NotificationIconCacheTests: XCTestCase {
             ofItemAtPath: tempDir.appendingPathComponent("k3").path
         )
 
-        cache.setData(Data([4]), forKey: "k4") // triggers eviction; max is 3
+        cache.setData(Data([4]), forKey: "k4")
 
         XCTAssertNil(cache.data(forKey: "k1"), "k1 should be evicted")
         XCTAssertEqual(cache.data(forKey: "k4"), Data([4]))

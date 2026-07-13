@@ -3,7 +3,7 @@ import Foundation
 import SFSafeSymbols
 import Shared
 
-@available(iOS 17.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
+@available(iOS 17.0, macOS 13.0, tvOS 16.0, *)
 struct IntentSensorsAppEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Sensor")
 
@@ -15,6 +15,7 @@ struct IntentSensorsAppEntity: AppEntity, EntityContextRepresentable {
     var serverId: String
     var areaName: String?
     var deviceName: String?
+    var floorName: String?
     var displayString: String
     var icon: String?
 
@@ -31,6 +32,7 @@ struct IntentSensorsAppEntity: AppEntity, EntityContextRepresentable {
         serverId: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        floorName: String? = nil,
         displayString: String,
         icon: String?
     ) {
@@ -39,12 +41,13 @@ struct IntentSensorsAppEntity: AppEntity, EntityContextRepresentable {
         self.serverId = serverId
         self.areaName = areaName
         self.deviceName = deviceName
+        self.floorName = floorName
         self.displayString = displayString
         self.icon = icon
     }
 }
 
-@available(iOS 17.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
+@available(iOS 17.0, macOS 13.0, tvOS 16.0, *)
 struct IntentSensorsAppEntityQuery: EntityQuery {
     @IntentParameterDependency<WidgetSensorsAppIntent>(\.$server)
     var config
@@ -89,6 +92,7 @@ struct IntentSensorsAppEntityQuery: EntityQuery {
         for (server, values) in entities {
             let deviceMap = values.devicesMap(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
+            let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
             sensorEntities.append((server, values.map({ entity in
                 IntentSensorsAppEntity(
                     id: entity.id,
@@ -96,6 +100,7 @@ struct IntentSensorsAppEntityQuery: EntityQuery {
                     serverId: entity.serverId,
                     areaName: areasMap[entity.entityId]?.name,
                     deviceName: deviceMap[entity.entityId]?.name,
+                    floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     icon: entity.icon
                 )

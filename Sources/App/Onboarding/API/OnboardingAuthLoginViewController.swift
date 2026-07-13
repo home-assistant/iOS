@@ -21,6 +21,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
     private let webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
+        configuration.defaultWebpagePreferences.preferredContentMode = Current.isCatalyst ? .desktop : .mobile
 
         return WKWebView(frame: .zero, configuration: configuration)
     }()
@@ -82,6 +83,8 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
             webView.topAnchor.constraint(equalTo: view.topAnchor),
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+
+        webView.isInspectable = true
 
         refresh()
     }

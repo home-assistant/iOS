@@ -3,15 +3,9 @@ import Shared
 import StoreKit
 import SwiftUI
 
-enum WatchSupportedDomains {
-    static var all: [Domain] = [
-        .script,
-        .scene,
-    ]
-}
-
 struct WatchConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) private var requestReview
     @StateObject private var viewModel: WatchConfigurationViewModel
 
     @State private var isLoaded = false
@@ -28,14 +22,8 @@ struct WatchConfigurationView: View {
 
     var body: some View {
         if needsNavigationController {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    content
-                }
-            } else {
-                NavigationView {
-                    content
-                }
+            NavigationStack {
+                content
             }
         } else {
             content
@@ -44,14 +32,18 @@ struct WatchConfigurationView: View {
 
     private var content: some View {
         List {
-            watchPreview
-                .listRowBackground(Color.clear)
-                .onAppear {
-                    // Prevent trigger when popping nav controller
-                    guard !isLoaded else { return }
-                    viewModel.loadWatchConfig()
-                    isLoaded = true
-                }
+            AppleLikeListTopRowHeader(
+                image: .watchVariantIcon,
+                title: L10n.Watch.Configuration.Header.title,
+                subtitle: L10n.Watch.Configuration.Header.subtitle
+            )
+            .onAppear {
+                // Prevent trigger when popping nav controller
+                guard !isLoaded else { return }
+                viewModel.loadWatchConfig()
+                isLoaded = true
+            }
+            layoutSection
             itemsSection
             assistSection
             resetView
@@ -64,9 +56,7 @@ struct WatchConfigurationView: View {
                 Button(action: {
                     let success = viewModel.save()
                     if success {
-                        // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
-                        // private var requestReview`
-                        SKStoreReviewController.requestReview()
+                        requestReview()
                         dismiss()
                     }
                 }, label: {
@@ -111,6 +101,21 @@ struct WatchConfigurationView: View {
         }
     }
 
+    private var layoutSection: some View {
+        Section {
+            Picker(L10n.Watch.Configuration.Layout.title, selection: Binding(
+                get: { viewModel.watchConfig.resolvedLayout },
+                set: { viewModel.watchConfig.layout = $0 }
+            )) {
+                ForEach(WatchLayout.allCases, id: \.rawValue) { layout in
+                    Text(layout.name).tag(layout)
+                }
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.Layout.footer)
+        }
+    }
+
     private var itemsSection: some View {
         Section(L10n.Watch.Configuration.Items.title) {
             ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
@@ -138,19 +143,11 @@ struct WatchConfigurationView: View {
 
     @ViewBuilder
     private var addFolderSheet: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                addFolderForm
-            }
-            .presentationDetents([.medium])
-            .preferredColorScheme(.dark)
-        } else {
-            NavigationView {
-                addFolderForm
-            }
-            .navigationViewStyle(.stack)
-            .preferredColorScheme(.dark)
+        NavigationStack {
+            addFolderForm
         }
+        .presentationDetents([.medium])
+        .preferredColorScheme(.dark)
     }
 
     private var addFolderForm: some View {
@@ -199,44 +196,6 @@ struct WatchConfigurationView: View {
         }
     }
 
-    private var watchPreview: some View {
-        ZStack {
-            watchItemsList
-                .offset(x: -10)
-            Image(.watchFrame)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 260)
-                .foregroundStyle(.clear, Color(hue: 0, saturation: 0, brightness: 0.2))
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private var watchItemsList: some View {
-        ZStack(alignment: .top) {
-            List {
-                VStack {}.padding(.top, 40)
-                Group {
-                    ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
-                        makeWatchItem(item: item)
-                    }
-                    if viewModel.watchConfig.items.isEmpty {
-                        noItemsWatchView
-                    }
-                }
-                .listRowSeparator(.hidden)
-                .listRowSpacing(DesignSystem.Spaces.half)
-            }
-            .animation(.default, value: viewModel.watchConfig.items.map(\.contentHash))
-            .listStyle(.plain)
-            .frame(width: 200, height: 265)
-            .offset(x: 5, y: 10)
-            watchStatusBar
-                .offset(y: 10)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 62))
-    }
-
     private func makeListItem(item: MagicItem) -> some View {
         let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
             id: item.id,
@@ -273,7 +232,7 @@ struct WatchConfigurationView: View {
 
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
-            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .haPrimary))
+            Image(uiImage: image(for: item, itemInfo: info, color: .haPrimary))
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.name(info: info))
                 if let contextSubtitle = info.contextSubtitle {
@@ -289,70 +248,9 @@ struct WatchConfigurationView: View {
         }
     }
 
-    private func makeWatchItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-        let iconColor = iconColorForItem(item: item, itemInfo: itemInfo)
-
-        return HStack(spacing: DesignSystem.Spaces.one) {
-            VStack {
-                Image(uiImage: image(for: item, itemInfo: itemInfo, watchPreview: true))
-                    .foregroundColor(iconColor)
-                    .padding(DesignSystem.Spaces.one)
-            }
-            .background(iconColor.opacity(0.3))
-            .clipShape(Circle())
-            Text(item.name(info: itemInfo))
-                .font(.system(size: 16))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .foregroundStyle(textColorForWatchItem(itemInfo: itemInfo))
-            if item.type == .folder {
-                Image(systemSymbol: .chevronRight)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(.trailing, DesignSystem.Spaces.half)
-            }
-        }
-        .padding(DesignSystem.Spaces.one)
-        .frame(width: 190, height: 55)
-        .background(backgroundForWatchItem(itemInfo: itemInfo))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .padding(.vertical, -DesignSystem.Spaces.one)
-        .listRowSeparator(.hidden)
-    }
-
-    private func backgroundForWatchItem(itemInfo: MagicItem.Info) -> Color {
-        if let backgroundColor = itemInfo.customization?.backgroundColor {
-            Color(uiColor: .init(hex: backgroundColor))
-        } else {
-            Color.gray.opacity(0.3)
-        }
-    }
-
-    private func textColorForWatchItem(itemInfo: MagicItem.Info) -> Color {
-        if let textColor = itemInfo.customization?.textColor {
-            Color(uiColor: .init(hex: textColor))
-        } else {
-            Color.white
-        }
-    }
-
-    private func iconColorForItem(item: MagicItem, itemInfo: MagicItem.Info) -> Color {
-        if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
-            Color(uiColor: .init(hex: iconColor))
-        } else {
-            Color.haPrimary
-        }
-    }
-
     private func image(
         for item: MagicItem,
         itemInfo: MagicItem.Info,
-        watchPreview: Bool,
         color: UIColor? = nil
     ) -> UIImage {
         let icon: MaterialDesignIcons = item.icon(info: itemInfo)
@@ -365,41 +263,9 @@ struct WatchConfigurationView: View {
         }
 
         return icon.image(
-            ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
+            ofSize: .init(width: 18, height: 18),
             color: resolvedColor
         )
-    }
-
-    private var watchStatusBar: some View {
-        ZStack(alignment: .trailing) {
-            Text("9:41")
-                .font(.system(size: 14).bold())
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top)
-            if viewModel.watchConfig.assist.showAssist {
-                Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
-                    ofSize: .init(width: 18, height: 18),
-                    color: .haPrimary
-                ))
-                .padding(DesignSystem.Spaces.one)
-                .background(.regularMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 25.0))
-                .offset(x: -22)
-                .padding(.top)
-            }
-        }
-        .animation(.bouncy, value: viewModel.watchConfig.assist.showAssist)
-        .frame(width: 210, height: 50)
-        .background(LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom))
-    }
-
-    private var noItemsWatchView: some View {
-        Text(verbatim: L10n.Watch.Settings.NoItems.Phone.title)
-            .frame(maxWidth: .infinity, alignment: .center)
-            .font(.footnote)
-            .padding(DesignSystem.Spaces.one)
-            .background(.gray.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one))
     }
 }
 

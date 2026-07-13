@@ -1,6 +1,5 @@
 import Alamofire
 import CallbackURLKit
-import Communicator
 #if DEBUG
 import DebugSwift
 #endif
@@ -8,8 +7,6 @@ import FirebaseCore
 import FirebaseMessaging
 import Intents
 import KeychainAccess
-import MBProgressHUD
-import ObjectMapper
 import PromiseKit
 import RealmSwift
 import SafariServices
@@ -97,7 +94,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        #if targetEnvironment(simulator)
+        #if targetEnvironment(macCatalyst)
+        Current.tags = TagActivityManager()
+        #elseif targetEnvironment(simulator)
         Current.tags = SimulatorTagManager()
         #else
         Current.tags = iOSTagManager()
@@ -171,11 +170,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @objc func openAbout() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        sceneManager.activateAnyScene(for: .about)
-    }
-
     @objc func openMenuUrl(_ command: AnyObject) {
         guard let command = command as? UICommand, let url = MenuManager.url(from: command) else {
             return
@@ -188,24 +182,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @objc func openPreferences() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        sceneManager.activateAnyScene(for: .settings)
-    }
-
-    @objc func openHelp() {
-        openURLInBrowser(
-            URL(string: "https://companion.home-assistant.io")!,
-            nil
-        )
-    }
-
     func application(
         _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        if #available(iOS 16.0, *), connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+        if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
             return SceneActivity.carPlay.configuration
         } else {
             let activity = options.userActivities
@@ -410,6 +392,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private var liveActivityPendingEndObserver: Any?
+    private var liveActivityPendingStartObserver: Any?
 
     private func setupLiveActivityReattachment() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
@@ -419,10 +402,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // concurrently from a background thread.
             guard let registry = Current.liveActivityRegistry else { return }
 
-            // Register before draining so ends enqueued while the app was gone aren't missed.
+            // Register before draining so ends/starts enqueued while the app was gone aren't missed.
             let pendingEndObserver = LiveActivityPendingEndObserver()
             liveActivityPendingEndObserver = pendingEndObserver
             pendingEndObserver.drain()
+
+            // Starts handed off by the PushProvider extension (local-push live_update notifications,
+            // which can't touch ActivityKit in-process). Drained here and on foreground.
+            let pendingStartObserver = LiveActivityPendingStartObserver()
+            liveActivityPendingStartObserver = pendingStartObserver
+            pendingStartObserver.drain()
 
             Task {
                 // Re-attach observation tasks (push token + lifecycle) to any Live Activities
@@ -449,7 +438,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func setupFirebase() {
         let optionsFile: String = {
             switch Current.appConfiguration {
-            case .beta: return "GoogleService-Info-Beta"
             case .debug, .fastlaneSnapshot: return "GoogleService-Info-Debug"
             case .release: return "GoogleService-Info-Release"
             }

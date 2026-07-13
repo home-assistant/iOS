@@ -157,9 +157,3 @@ struct NotificationCategoryListView: View {
         openURLInBrowser(url, viewControllerProvider.viewController)
     }
 }
-
-// MARK: - NotificationCategory Identifiable conformance
-
-extension NotificationCategory: Identifiable {
-    public var id: String { Identifier }
-}

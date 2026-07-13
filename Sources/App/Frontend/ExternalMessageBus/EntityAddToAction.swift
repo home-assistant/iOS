@@ -45,6 +45,7 @@ enum EntityAddToActionType: String, Codable {
     case carPlayQuickAccess
     case watchItem
     case customWidget
+    case macToolbarItem
 }
 
 // MARK: - Action Implementations
@@ -76,6 +77,16 @@ struct CustomWidgetAction: EntityAddToAction {
 
     func text() -> String {
         L10n.WebView.AddTo.Option.Widget.title
+    }
+}
+
+/// Action to add an entity to the Mac titlebar/toolbar
+struct MacToolbarItemAction: EntityAddToAction {
+    var mdiIcon: String { "mdi:dock-window" }
+    var actionType: String { EntityAddToActionType.macToolbarItem.rawValue }
+
+    func text() -> String {
+        L10n.WebView.AddTo.Option.MacToolbar.title
     }
 }
 
@@ -164,6 +175,8 @@ private struct AnyEntityAddToAction: Codable {
             self.action = try container.decode(WatchItemAction.self, forKey: .data)
         case .customWidget:
             self.action = try container.decode(CustomWidgetAction.self, forKey: .data)
+        case .macToolbarItem:
+            self.action = try container.decode(MacToolbarItemAction.self, forKey: .data)
         }
     }
 
@@ -189,6 +202,12 @@ private struct AnyEntityAddToAction: Codable {
             }
         case .customWidget:
             if let typed = action as? CustomWidgetAction {
+                try container.encode(typed, forKey: .data)
+            } else {
+                throw EntityAddToError.encodingFailed
+            }
+        case .macToolbarItem:
+            if let typed = action as? MacToolbarItemAction {
                 try container.encode(typed, forKey: .data)
             } else {
                 throw EntityAddToError.encodingFailed

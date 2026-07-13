@@ -23,4 +23,8 @@ public enum WebhookSensorId: String, CaseIterable {
     case locationPermission = "location-permission"
     case focus
     case pressure
+    case kioskMode
+    case kioskBrightness
+    case kioskVolume
+    case kioskScreensaver
 }

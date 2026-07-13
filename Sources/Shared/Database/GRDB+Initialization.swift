@@ -5,9 +5,14 @@ public extension DatabaseQueue {
     // Following GRDB cocnurrency rules, we have just one database instance
     // https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/concurrency#Concurrency-Rules
     static var appDatabase: DatabaseQueue = {
+        var configuration = Configuration()
+        configuration.busyMode = .timeout(3)
+        configuration.observesSuspensionNotifications = true
+
         let database: DatabaseQueue
+        var isInMemoryFallback = false
         do {
-            database = try DatabaseQueue(path: databasePath())
+            database = try DatabaseQueue(path: databasePath(), configuration: configuration)
             #if targetEnvironment(simulator)
             print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
@@ -16,13 +21,16 @@ public extension DatabaseQueue {
             // Fallback to in-memory database so extensions don't crash
             do {
                 database = try DatabaseQueue()
+                isInMemoryFallback = true
                 Current.Log.error("Using in-memory GRDB database as fallback")
             } catch {
                 fatalError("Failed to create even an in-memory GRDB database: \(error.localizedDescription)")
             }
         }
 
-        setupSchema(database: database)
+        if !Current.isAppExtension || isInMemoryFallback {
+            setupSchema(database: database)
+        }
         return database
     }()
 
@@ -55,6 +63,7 @@ public extension DatabaseQueue {
             HAppEntityTable(),
             WatchConfigTable(),
             CarPlayConfigTable(),
+            MacToolbarConfigTable(),
             AppIconShortcutConfigTable(),
             AssistPipelinesTable(),
             ServerInfoMirrorTable(),
@@ -65,8 +74,11 @@ public extension DatabaseQueue {
             AppAreaTable(),
             HomeViewConfigurationTable(),
             AssistConfigurationTable(),
-            KioskSettingsTable(),
             AllowedTagTable(),
+            KioskSettingsTable(),
+            NotificationSnoozeActionTable(),
+            WatchComplicationTable(),
+            WatchComplicationConfigTable(),
         ]
     }
 
@@ -95,6 +107,109 @@ public extension DatabaseQueue {
                     "Failed or not needed to drop obsolete GRDB table \(tableName), error: \(error.localizedDescription)"
                 )
             }
+        }
+    }
+
+    /// Delete every row from all app tables, leaving the schema intact. Used by the watch's
+    /// "Delete local data" action to wipe the locally-mirrored config/entities without dropping the DB
+    /// (so the app keeps working and re-syncs on the next refresh). The table list is the same one used
+    /// to create the schema, so new tables are covered automatically. Exposed as an instance method so
+    /// callers can invoke it on `Current.database()` without importing GRDB directly.
+    func eraseAllData() throws {
+        try write { db in
+            for table in DatabaseQueue.tables() {
+                try db.execute(sql: "DELETE FROM \(table.tableName)")
+            }
+        }
+    }
+}
+
+/// Posts GRDB's database suspension notifications without requiring callers to import GRDB
+/// (app targets don't all link it directly). Suspending while backgrounded prevents the system from
+/// killing the process with 0xdead10cc for holding the app-group SQLite file lock during suspension —
+/// see https://github.com/groue/GRDB.swift/issues/1626.
+public enum AppDatabaseSuspension {
+    public static func suspend() {
+        NotificationCenter.default.post(name: Database.suspendNotification, object: nil)
+    }
+
+    public static func resume() {
+        NotificationCenter.default.post(name: Database.resumeNotification, object: nil)
+    }
+}
+
+/// Legacy watch complications table. Defined here (rather than a new file) so it joins the Shared
+/// target without a project-file change. Mirrors the `WatchConfigTable` pattern.
+final class WatchComplicationTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.watchComplication.rawValue }
+    var definedColumns: [String] { DatabaseTables.WatchComplication.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.WatchComplication.identifier.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.serverIdentifier.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplication.rawFamily.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.rawTemplate.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.complicationData.rawValue, .jsonText)
+                    t.column(DatabaseTables.WatchComplication.createdAt.rawValue, .datetime).notNull()
+                    t.column(DatabaseTables.WatchComplication.name.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplication.isPublic.rawValue, .boolean).notNull()
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
+        }
+    }
+}
+
+/// Modern watch complication configs table. Defined here to avoid a project-file change.
+final class WatchComplicationConfigTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.watchComplicationConfig.rawValue }
+    var definedColumns: [String] { DatabaseTables.WatchComplicationConfig.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.WatchComplicationConfig.id.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.serverId.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.widgetFamily.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.kind.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.name.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.entityId.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.entityDisplayName.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.iconName.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.iconColor.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeAttribute.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.valueAttribute.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.valuePrecision.rawValue, .integer)
+                    t.column(DatabaseTables.WatchComplicationConfig.unitOverride.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeMin.rawValue, .double)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeMax.rawValue, .double)
+                    t.column(DatabaseTables.WatchComplicationConfig.showValue.rawValue, .boolean).notNull()
+                    // Nullable: absent means "show the unit" (see WatchComplicationConfig.showsUnit()).
+                    t.column(DatabaseTables.WatchComplicationConfig.showUnit.rawValue, .boolean)
+                    // Nullable: absent means "show when inactive" (see showsWhenInactive()).
+                    t.column(DatabaseTables.WatchComplicationConfig.showWhenInactive.rawValue, .boolean)
+                    // Nullable: absent means the min/max labels are visible (see showsMin()/showsMax()).
+                    t.column(DatabaseTables.WatchComplicationConfig.showMin.rawValue, .boolean)
+                    t.column(DatabaseTables.WatchComplicationConfig.showMax.rawValue, .boolean)
+                    t.column(DatabaseTables.WatchComplicationConfig.customTextTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customGaugeTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.families.rawValue, .jsonText)
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
         }
     }
 }

@@ -126,6 +126,15 @@ struct DebugView: View {
                 }
 
                 NavigationLink {
+                    MediaTypesRequiringUserActionForPlaybackView()
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .speakerWave2Fill),
+                        title: "WKWebView Media Playback"
+                    )
+                }
+
+                NavigationLink {
                     DatabaseExplorerView()
                 } label: {
                     linkContent(
@@ -332,9 +341,11 @@ struct DebugView: View {
                 set: { Current.settingsStore.toastsHandledByApp = $0 }
             ))
             Button {
-                if let syncError = HomeAssistantAPI.SyncWatchContext() {
-                    watchSyncErrorMessage = syncError.localizedDescription
-                    showWatchSyncError = true
+                Task { @MainActor in
+                    if let syncError = await HomeAssistantAPI.SyncWatchContext() {
+                        watchSyncErrorMessage = syncError.localizedDescription
+                        showWatchSyncError = true
+                    }
                 }
             } label: {
                 linkContent(
@@ -427,6 +438,18 @@ struct DebugView: View {
             })) {
                 Text("Receive debug notifications")
             }
+
+            Picker(selection: Binding(
+                get: { Current.settingsStore.webViewEmptyStateTimeout },
+                set: { Current.settingsStore.webViewEmptyStateTimeout = $0 }
+            )) {
+                ForEach([5, 10, 15, 20, 30, 60], id: \.self) { seconds in
+                    Text(verbatim: "\(seconds)s").tag(seconds)
+                }
+            } label: {
+                Text(verbatim: "Web view empty state timeout")
+            }
+            .pickerStyle(.menu)
 
         } header: {
             Text(verbatim: L10n.Settings.Developer.header)
@@ -565,6 +588,7 @@ struct DebugView: View {
     }
 
     private func revokeToken(api: HomeAssistantAPI) async {
+        let activeURLString = await api.server.activeURL()?.absoluteString ?? "Uknown active URL"
         await withCheckedContinuation { continuation in
             api.tokenManager.revokeToken().pipe { result in
                 switch result {
@@ -573,7 +597,7 @@ struct DebugView: View {
                 case let .rejected(error):
                     Current.Log
                         .error(
-                            "Failed to revoke token for api \(api.server.info.name) \(api.server.info.connection.activeURL()?.absoluteString ?? "Uknown active URL"), error: \(error.localizedDescription)"
+                            "Failed to revoke token for api \(api.server.info.name) \(activeURLString), error: \(error.localizedDescription)"
                         )
                 }
                 continuation.resume()
@@ -593,6 +617,57 @@ struct DebugView: View {
                 continuation.resume()
             }
         }
+    }
+}
+
+private struct MediaTypesRequiringUserActionForPlaybackView: View {
+    @State private var selectedMediaTypes: Set<SettingsStore.MediaTypeRequiringUserActionForPlayback>
+    @State private var showRestartAlert = false
+
+    init() {
+        _selectedMediaTypes = State(initialValue: Current.settingsStore.mediaTypesRequiringUserActionForPlayback)
+    }
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(SettingsStore.MediaTypeRequiringUserActionForPlayback.allCases, id: \.self) { mediaType in
+                    Button {
+                        toggle(mediaType)
+                    } label: {
+                        HStack {
+                            Text(mediaType.title)
+                            Spacer()
+                            if selectedMediaTypes.contains(mediaType) {
+                                Image(systemSymbol: .checkmark)
+                                    .foregroundStyle(Color.haPrimary)
+                            }
+                        }
+                    }
+                    .foregroundStyle(Color(uiColor: .label))
+                }
+            } footer: {
+                Text("Select which frontend media types require a user action before playback.")
+            }
+        }
+        .navigationTitle("WKWebView Media Playback")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("Force close required", isPresented: $showRestartAlert) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            Text("Force close and reopen the app for this change to take effect.")
+        }
+    }
+
+    private func toggle(_ mediaType: SettingsStore.MediaTypeRequiringUserActionForPlayback) {
+        if selectedMediaTypes.contains(mediaType) {
+            selectedMediaTypes.remove(mediaType)
+        } else {
+            selectedMediaTypes.insert(mediaType)
+        }
+
+        Current.settingsStore.mediaTypesRequiringUserActionForPlayback = selectedMediaTypes
+        showRestartAlert = true
     }
 }
 

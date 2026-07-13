@@ -7,6 +7,23 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case assistPipelinesFetch
     case assistAudioDataChunked
     case watchConfig
+    /// Watch → phone: ask the phone for the list of items the user can add to the watch
+    /// configuration (scripts/scenes/automations across all servers). The phone owns the entity
+    /// database, so it builds the list and replies with `watchConfigAvailableItemsResponse`.
+    case watchConfigAvailableItems
+    /// Watch → phone: persist an edited `WatchConfig` (add/reorder/delete/customize done on the
+    /// watch). The phone writes it to GRDB and replies with the same payload as `watchConfig`
+    /// (`watchConfigResponse`) so the watch refreshes its cache with server-resolved info.
+    case watchConfigUpdate
+    /// Watch → phone: begin a full database sync. The phone snapshots the reference GRDB tables
+    /// (addable entities, areas, Assist pipelines), encodes them, splits the payload into ordered
+    /// chunks, and replies with `watchDatabaseMirrorResponse` carrying `{transferId, totalChunks,
+    /// totalBytes}`. The watch then pulls each chunk in order (see `watchDatabaseMirrorChunk`).
+    case watchDatabaseMirror
+    /// Watch → phone: request one chunk of an in-progress database sync, `{transferId, index}`. The
+    /// phone replies with `watchDatabaseMirrorChunkResponse` `{index, chunkData}`. Each request doubles
+    /// as the acknowledgement of the previous chunk, keeping the transfer ordered and reliable.
+    case watchDatabaseMirrorChunk
     /// Watch → phone: ask the phone for the latest server configuration. The phone replies with the
     /// encoded servers and any mTLS client certificate bundles inline (see WatchCommunicatorService).
     case serversConfigSync
@@ -28,9 +45,37 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case assistError
     case watchConfigResponse
     case emptyWatchConfigResponse
+    /// Phone → watch: reply to `watchConfigAvailableItems`, carrying the encoded
+    /// `WatchConfigAvailableItems` (the items the user can add, grouped by server).
+    case watchConfigAvailableItemsResponse
+    /// Phone → watch: reply to the `watchDatabaseMirror` start request, carrying `{transferId,
+    /// totalChunks, totalBytes}` so the watch can pull the chunks in order and show progress.
+    case watchDatabaseMirrorResponse
+    /// Phone → watch: reply to `watchDatabaseMirrorChunk`, carrying `{index, chunkData}` for the
+    /// requested chunk of the encoded `WatchDatabaseMirror`.
+    case watchDatabaseMirrorChunkResponse
     /// Phone → watch: reply to `serversConfigSync`, carrying the servers (and any client
     /// certificates) inline.
     case serversConfigSyncResponse
     /// Phone → watch: acknowledgement that the client-certificate import screen will be presented.
     case clientCertImportRequestResponse
+}
+
+/// Stable machine-readable reason sent in a `magicItemRowPressedResponse` alongside `fired: false`,
+/// so the watch can present a localized message while the technical detail (the `error` field) goes
+/// to client events. Raw values cross the WatchConnectivity wire — don't repurpose them.
+public enum MagicItemExecutionFailureCode: String {
+    /// The press was too old by the time it reached the phone.
+    case staleRequest
+    /// The message was missing/carrying an invalid item type or id.
+    case invalidItem
+    /// The item type has no executable action (folder, Assist, unsupported).
+    case notExecutable
+    /// The server referenced by the item isn't configured on the phone.
+    case serverNotFound
+    /// The phone has no usable connection for the server.
+    case noConnection
+    /// The service call ran and the server (or transport) reported an error — the `error` detail is
+    /// the underlying message and is meaningful to show the user.
+    case serviceCallFailed
 }

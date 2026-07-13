@@ -1,5 +1,4 @@
 @testable import Shared
-import Version
 import XCTest
 
 class ServerManagerTests: XCTestCase {
@@ -93,11 +92,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(servers.server(forWebhookID: "webhook1") === server1)
         XCTAssertTrue(servers.server(forServerIdentifier: "fake1") === server1)
         XCTAssertTrue(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")) === server1)
-        XCTAssertTrue(
-            servers
-                .server(for: FakeServerIntentProviding(server: .init(identifier: "fake1", display: "fake1"))) ===
-                server1
-        )
         XCTAssertEqual(server1.info, with(info1) {
             $0.sortOrder = 0
         })
@@ -111,11 +105,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(servers.server(forWebhookID: "webhook2") === server2)
         XCTAssertTrue(servers.server(forServerIdentifier: "fake2") === server2)
         XCTAssertTrue(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")) === server2)
-        XCTAssertTrue(
-            servers
-                .server(for: FakeServerIntentProviding(server: .init(identifier: "fake2", display: "fake1"))) ===
-                server2
-        )
         XCTAssertEqual(server2.info, with(info2) {
             $0.sortOrder = 1000
         })
@@ -241,6 +230,61 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(keychain.data.isEmpty)
     }
 
+    func testRestoreStateKeepsFresherExistingTokenButUpdatesOtherFields() throws {
+        // Existing server holds a freshly-refreshed token (later expiration).
+        let existing = with(ServerInfo.fake()) {
+            $0.connection.webhookID = "webhook1"
+            $0.token = .init(
+                accessToken: "fresh",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(3600)
+            )
+        }
+        try setupRegular(["fake1": existing])
+
+        // Incoming snapshot carries an older token (earlier expiration) but a changed non-token field.
+        let older = with(existing) {
+            $0.connection.webhookID = "webhook1-updated"
+            $0.token = .init(
+                accessToken: "stale",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(60)
+            )
+        }
+        try servers.restoreState(encoder.encode(["fake1": older]))
+
+        let server = try XCTUnwrap(servers.server(for: "fake1"))
+        // Token is not downgraded (compared by value since TokenInfo.== ignores expiration)...
+        XCTAssertEqual(server.info.token.accessToken, "fresh")
+        XCTAssertEqual(server.info.token.expiration, existing.token.expiration)
+        // ...but the rest of the snapshot still applies.
+        XCTAssertEqual(server.info.connection.webhookID, "webhook1-updated")
+    }
+
+    func testRestoreStateAcceptsNewerIncomingToken() throws {
+        let existing = with(ServerInfo.fake()) {
+            $0.token = .init(
+                accessToken: "old",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(60)
+            )
+        }
+        try setupRegular(["fake1": existing])
+
+        let newer = with(existing) {
+            $0.token = .init(
+                accessToken: "new",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(3600)
+            )
+        }
+        try servers.restoreState(encoder.encode(["fake1": newer]))
+
+        let server = try XCTUnwrap(servers.server(for: "fake1"))
+        XCTAssertEqual(server.info.token.accessToken, "new")
+        XCTAssertEqual(server.info.token.expiration, newer.token.expiration)
+    }
+
     func testWithInitialServers() throws {
         let info1 = with(ServerInfo.fake()) {
             $0.connection.webhookID = "webhook1"
@@ -312,8 +356,6 @@ class ServerManagerTests: XCTestCase {
         ])
 
         let server1 = servers.server(for: "fake1")
-        let intentServer1 = IntentServer(identifier: "fake1", display: "fake1")
-        let intentServer2 = IntentServer(identifier: "fake2", display: "fake2")
 
         XCTAssertEqual(servers.server(forServerIdentifier: nil), nil)
         XCTAssertEqual(servers.server(forServerIdentifier: "fake1"), server1)
@@ -325,10 +367,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook1")), server1)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook2")), nil)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: nil)), server1)
-
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer1)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2), fallback: false), nil)
 
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")), server1)
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")), server1)
@@ -352,9 +390,6 @@ class ServerManagerTests: XCTestCase {
 
         let server1 = servers.server(for: "fake1")
         let server2 = servers.server(for: "fake2")
-        let intentServer1 = IntentServer(identifier: "fake1", display: "fake1")
-        let intentServer2 = IntentServer(identifier: "fake2", display: "fake2")
-        let intentServer3 = IntentServer(identifier: "fake3", display: "fake3")
 
         XCTAssertEqual(servers.server(forServerIdentifier: nil), nil)
         XCTAssertEqual(servers.server(forServerIdentifier: "fake1"), server1)
@@ -369,11 +404,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook2")), server2)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: nil)), server1)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook3")), nil)
-
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer1)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2)), server2)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer3)), nil)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer3), fallback: false), nil)
 
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")), server1)
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")), server2)
@@ -904,10 +934,6 @@ class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
 
 private struct FakeServerIdentifierProviding: ServerIdentifierProviding {
     var serverIdentifier: String
-}
-
-private struct FakeServerIntentProviding: ServerIntentProviding {
-    var server: IntentServer?
 }
 
 private class FakeObserver: ServerObserver {

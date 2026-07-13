@@ -2,6 +2,7 @@
 import ActivityKit
 import Foundation
 import PromiseKit
+import SharedPush
 
 // MARK: - HandlerStartOrUpdateLiveActivity
 
@@ -18,54 +19,58 @@ import PromiseKit
 struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     private enum ValidationError: Error {
         case missingTag
-        case missingTitle
         case invalidTag
     }
 
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        // PushProvider (NEAppPushProvider) runs in a separate OS process — ActivityKit is
-        // unavailable there. The same notification will be re-delivered to the main app via
-        // UNUserNotificationCenter, where it will be handled correctly.
-        guard !Current.isAppExtension else {
-            Current.Log.verbose("HandlerStartOrUpdateLiveActivity: skipping in app extension, will handle in main app")
-            return .value(())
-        }
-
-        return Promise { seal in
+        Promise { seal in
             Task {
                 do {
-                    guard let tag = payload["tag"] as? String, !tag.isEmpty else {
-                        throw ValidationError.missingTag
-                    }
+                    let request = try Self.makeRequest(from: payload)
 
-                    guard Self.isValidTag(tag) else {
-                        Current.Log
-                            .error(
-                                "HandlerStartOrUpdateLiveActivity: invalid tag '\(tag)' — must be [a-zA-Z0-9_-], max 64 chars"
-                            )
-                        throw ValidationError.invalidTag
-                    }
-
-                    guard let title = payload["title"] as? String, !title.isEmpty else {
-                        throw ValidationError.missingTitle
-                    }
-
+                    // Record the disclosure on both start paths. settingsStore is App-Group-backed,
+                    // so the extension's write is visible to the app's Settings screen — without this
+                    // a Live Activity started via the extension hand-off (drained straight through the
+                    // registry, bypassing this handler) would never set the flag.
                     Self.showPrivacyDisclosureIfNeeded()
 
-                    let state = Self.contentState(from: payload)
+                    // PushProvider (NEAppPushProvider) runs in a separate OS process — ActivityKit is
+                    // unavailable there, and (unlike APNs) a notification delivered over the local-push
+                    // channel is never re-delivered to the main app. So instead of dropping the request,
+                    // hand it off to the app via the App Group queue + a Darwin signal, mirroring
+                    // HandlerClearNotification's end hand-off. The app drains it on the signal and at
+                    // launch/foreground. (Darwin can't wake a suspended app, so a local-push start only
+                    // materializes when the app is next active; real-time background starts need APNs.)
+                    if Current.isAppExtension {
+                        Current.Log.verbose(
+                            "HandlerStartOrUpdateLiveActivity: handing off start for tag \(request.tag) to the app"
+                        )
+                        LiveActivityPendingStart.append(request)
+                        LiveActivityPendingStart.postDarwinSignal()
+                        seal.fulfill(())
+                        return
+                    }
 
-                    try await Current.liveActivityRegistry?.startOrUpdate(
-                        tag: tag,
-                        title: title,
-                        state: state
+                    // In-app path handles APNs (foreground willPresent already plays the sound and
+                    // suppresses the banner; background shows the system banner). Alerting is owned
+                    // there, so the ActivityKit alert is only used on the local-push drain path.
+                    let presented = try await Current.liveActivityRegistry?.startOrUpdate(
+                        tag: request.tag,
+                        title: request.title,
+                        serverWebhookId: request.serverWebhookId,
+                        state: request.state,
+                        alert: false
                     )
+                    if presented == true {
+                        LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
+                    }
                     seal.fulfill(())
                 } catch {
                     Current.Log.error("HandlerStartOrUpdateLiveActivity: \(error)")
                     // Fulfill rather than reject for known validation/auth errors so HA
                     // doesn't treat them as transient failures and retry indefinitely.
                     switch error {
-                    case ValidationError.missingTag, ValidationError.missingTitle, ValidationError.invalidTag:
+                    case ValidationError.missingTag, ValidationError.invalidTag:
                         seal.fulfill(())
                     default:
                         seal.reject(error)
@@ -73,6 +78,30 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                 }
             }
         }
+    }
+
+    /// Validate and parse a notification payload into a serializable start/update request,
+    /// shared by the in-app and extension-handoff paths.
+    static func makeRequest(from payload: [String: Any]) throws -> LiveActivityPendingStart.Request {
+        guard let tag = payload["tag"] as? String, !tag.isEmpty else {
+            throw ValidationError.missingTag
+        }
+        guard isValidTag(tag) else {
+            Current.Log.error(
+                "HandlerStartOrUpdateLiveActivity: invalid tag '\(tag)' — must be [a-zA-Z0-9_-], max 64 chars"
+            )
+            throw ValidationError.invalidTag
+        }
+        let rawTitle = payload["title"] as? String ?? ""
+        let title = rawTitle.isEmpty ? HALiveActivityAttributes.defaultTitle : rawTitle
+        return LiveActivityPendingStart.Request(
+            tag: tag,
+            title: title,
+            serverWebhookId: payload["webhook_id"] as? String,
+            state: contentState(from: payload),
+            confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String,
+            alert: (payload["silent"] as? Bool) != true
+        )
     }
 
     // MARK: - Privacy Disclosure
@@ -103,22 +132,36 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     // MARK: - Payload Parsing
 
     static func contentState(from payload: [String: Any]) -> HALiveActivityAttributes.ContentState {
-        let title = payload["title"] as? String
+        let title = (payload["title"] as? String).flatMap { $0.isEmpty ? nil : $0 }
         let message = payload["message"] as? String ?? ""
         let criticalText = payload["critical_text"] as? String
-        // Use NSNumber coercion so both Int and Double JSON values (e.g. 50 vs 50.0) decode correctly.
-        let progress = (payload["progress"] as? NSNumber).map { Int(truncating: $0) }
-        let progressMax = (payload["progress_max"] as? NSNumber).map { Int(truncating: $0) }
+        // Round so both Int and Double JSON values (e.g. 50 vs 50.9) map to the nearest Int, matching
+        // the OS-side content-state decoder in HALiveActivityAttributes.ContentState.
+        let progress = (payload["progress"] as? NSNumber).flatMap { Int(exactly: $0.doubleValue.rounded()) }
+        let progressMax = (payload["progress_max"] as? NSNumber).flatMap { Int(exactly: $0.doubleValue.rounded()) }
         let chronometer = payload["chronometer"] as? Bool
-        let icon = payload["notification_icon"] as? String
-        let color = payload["notification_icon_color"] as? String
+        let icon = payload[NotificationPayloadKey.notificationIcon.rawValue] as? String
+        let color = payload[NotificationPayloadKey.notificationIconColor.rawValue] as? String
+        let url = payload["url"] as? String
+        let backgroundColor = payload["background_color"] as? String
+        let textColor = payload["text_color"] as? String
+        let progressBarColor = payload["progress_bar_color"] as? String
 
-        // `when` + `when_relative` → absolute countdown end date.
+        // `when` + `when_relative` → absolute timer end date.
         // Parsed as Double to preserve sub-second Unix timestamps sent by HA.
+        // A negative relative `when` is a bounded count-up: the timer counts up from now
+        // toward `|when|` seconds and freezes there — the sign is the direction, the
+        // magnitude is the duration. (Negative values never rendered before this existed,
+        // so the encoding is backward-compatible; Android shows an unbounded count-up.)
         var countdownEnd: Date?
+        var chronometerStart: Date?
         if let when = (payload["when"] as? NSNumber).map(\.doubleValue) {
             let whenRelative = payload["when_relative"] as? Bool ?? false
-            if whenRelative {
+            if whenRelative, when < 0 {
+                let now = Date()
+                chronometerStart = now
+                countdownEnd = now.addingTimeInterval(-when)
+            } else if whenRelative {
                 countdownEnd = Date().addingTimeInterval(when)
             } else {
                 countdownEnd = Date(timeIntervalSince1970: when)
@@ -133,8 +176,13 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             progressMax: progressMax,
             chronometer: chronometer,
             countdownEnd: countdownEnd,
+            chronometerStart: chronometerStart,
             icon: icon,
-            color: color
+            color: color,
+            url: url,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            progressBarColor: progressBarColor
         )
     }
 }

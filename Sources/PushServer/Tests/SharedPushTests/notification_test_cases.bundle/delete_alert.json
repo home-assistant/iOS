@@ -19,6 +19,7 @@
     "payload": {
         "aps": {
             "alert": {},
+            "mutable-content": true,
             "badge": 3
         }
     }

@@ -8,38 +8,31 @@ Home Assistant for Apple Platforms
 
 ## Getting Started
 
-Home Assistant uses Bundler, Homebrew, Cocoapods and SPM to manage build dependencies. You'll need Xcode 26.4 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get the app running using the following commands:
+Home Assistant uses Bundler, Homebrew, and SPM to manage build dependencies. You'll need Xcode 26.4 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get the app running using the following commands:
 
 ```bash
 git clone https://github.com/home-assistant/iOS.git
 cd iOS
 
-# you must do one of the following, but you do not need to do all of them:
-
-## install cocoapods via homebrew, use that
-brew install cocoapods
-$(brew --prefix)/opt/ruby/bin/gem install cocoapods-acknowledgements
-pod install --repo-update
+# Install the Ruby tooling (Fastlane) using one of the following.
+# Swift Package Manager dependencies are resolved automatically by Xcode.
 
 ## install ruby via homebrew, use that
 brew install ruby@3.1
 $(brew --prefix)/opt/ruby@3.1/bin/bundle install
-$(brew --prefix)/opt/ruby@3.1/bin/bundle exec pod install --repo-update
 
 ## install ruby via rbenv, use that
 brew install rbenv ruby-build
 rbenv install
 bundle install
-bundle exec pod install --repo-update
 
 ## install ruby via mise, use that
 brew install mise
 mise install
 bundle install
-bundle exec pod install --repo-update
 ```
 
-Once this completes, you can launch  `HomeAssistant.xcworkspace` and run the `App-Debug` scheme onto your simulator or iOS device.
+Once this completes, you can launch  `HomeAssistant.xcodeproj` and run the `App-Debug` scheme onto your simulator or iOS device.
 
 ## Testing just the frontend
 
@@ -93,6 +86,12 @@ Linters run as part of Pull Request checks. Additionally, some linting requireme
 bundle exec fastlane lint
 # checks for linting problems and fixes them
 bundle exec fastlane autocorrect
+```
+
+To run `autocorrect` automatically before each commit, install the git pre-commit hook once:
+
+```bash
+bundle exec fastlane install_git_hooks
 ```
 
 In the Xcode project, the autocorrectable linters will not modify your source code but will provide warnings. This project uses several linters:

@@ -1,6 +1,7 @@
 import Foundation
 import Shared
 import SwiftUI
+import WidgetKit
 
 @available(iOS 17, *)
 struct WidgetTodoListView: View {

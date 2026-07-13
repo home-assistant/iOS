@@ -1,61 +1,53 @@
-import PromiseKit
 import Shared
 import SwiftUI
 import WidgetKit
 
 struct WidgetAssistEntry: TimelineEntry {
     var date = Date()
-    var server: IntentServer?
-    var pipeline: IntentAssistPipeline?
+    var pipeline: AssistPipelineEntity?
     var withVoice = true
+
+    var widgetURL: URL {
+        let serverId = pipeline?.serverId.isEmpty == false
+            ? pipeline?.serverId
+            : Current.servers.all.first?.identifier.rawValue
+        return AppConstants.assistDeeplinkURL(
+            serverId: serverId ?? "",
+            pipelineId: pipeline?.pipelineId ?? "",
+            startListening: withVoice
+        ) ?? AppConstants.deeplinkURL
+    }
 }
 
-struct WidgetAssistProvider: IntentTimelineProvider {
-    typealias Intent = AssistInAppIntent
+@available(iOS 17.0, *)
+struct WidgetAssistProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetAssistEntry
+    typealias Intent = WidgetAssistAppIntent
 
-    private let defaultEntry = {
-        var intentServer: IntentServer? = {
-            if let server = Current.servers.all.first {
-                return IntentServer(server: server)
-            } else {
-                return nil
-            }
-        }()
-        return WidgetAssistEntry(
-            server: intentServer,
-            pipeline: IntentAssistPipeline(
-                identifier: "0",
-                display: L10n.AppIntents.Assist.PreferredPipeline.title
-            ),
-            withVoice: .init(true)
+    private var defaultEntry: WidgetAssistEntry {
+        WidgetAssistEntry(
+            pipeline: Current.servers.all.first.map { .preferred(serverId: $0.identifier.rawValue) },
+            withVoice: true
         )
-    }()
+    }
 
     func placeholder(in context: Context) -> WidgetAssistEntry {
         .init()
     }
 
-    func getSnapshot(for configuration: Intent, in context: Context, completion: @escaping (Entry) -> Void) {
-        guard let server = configuration.server, let pipeline = configuration.pipeline else {
-            completion(defaultEntry)
-            return
+    func snapshot(for configuration: Intent, in context: Context) async -> Entry {
+        guard let pipeline = configuration.pipeline else {
+            return defaultEntry
         }
-        let entry = WidgetAssistEntry(
-            server: server,
-            pipeline: pipeline,
-            withVoice: Bool(truncating: configuration.withVoice ?? 1)
-        )
-        completion(entry)
+        return WidgetAssistEntry(pipeline: pipeline, withVoice: configuration.withVoice)
     }
 
-    func getTimeline(for configuration: Intent, in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
-        completion(.init(entries: [
+    func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+        Timeline(entries: [
             WidgetAssistEntry(
-                server: configuration.server ?? defaultEntry.server,
                 pipeline: configuration.pipeline ?? defaultEntry.pipeline,
-                withVoice: Bool(truncating: configuration.withVoice ?? 1)
+                withVoice: configuration.withVoice
             ),
-        ], policy: .never))
+        ], policy: .never)
     }
 }

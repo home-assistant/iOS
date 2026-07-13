@@ -3,15 +3,19 @@ import Shared
 import SwiftUI
 
 struct WebViewEmptyStateView: View {
+    static let dismissTapThreshold = 5
+
     @State private var selectedReauthURLType: ConnectionInfo.URLType
     @State private var showURLPicker = false
     @State private var isPerformingPrimaryAction = false
     @State private var errorMessage: String?
+    @State private var dismissTapCount = 0
 
     private let headerAccessorySize = CGSize(width: 44, height: 44)
 
     let style: WebViewEmptyStateStyle
     let server: Server
+    let isLoading: Bool
     let showsErrorDetailsButton: Bool
     let availableReauthURLTypes: [ConnectionInfo.URLType]
     let retryAction: (() -> Void)?
@@ -25,6 +29,7 @@ struct WebViewEmptyStateView: View {
     init(
         style: WebViewEmptyStateStyle,
         server: Server,
+        isLoading: Bool = false,
         showsErrorDetailsButton: Bool = false,
         availableReauthURLTypes: [ConnectionInfo.URLType] = [],
         retryAction: (() -> Void)? = nil,
@@ -40,6 +45,7 @@ struct WebViewEmptyStateView: View {
     ) {
         self.style = style
         self.server = server
+        self.isLoading = isLoading
         self.showsErrorDetailsButton = showsErrorDetailsButton
         self.availableReauthURLTypes = availableReauthURLTypes
         self._selectedReauthURLType = State(initialValue: availableReauthURLTypes.first ?? .external)
@@ -128,14 +134,48 @@ struct WebViewEmptyStateView: View {
     @ViewBuilder
     private var serverSelection: some View {
         if style.showsServerPicker, Current.servers.all.count > 1 {
-            ServerPickerView(server: server, onSelect: serverSelectionAction)
-            #if targetEnvironment(macCatalyst)
-                .padding()
-            #endif
-                // Using .secondarySystemBackground to visually distinguish the server selection view
-                .background(Color(uiColor: .secondarySystemBackground))
-                .clipShape(Capsule())
+            if Current.isCatalyst {
+                macServerSelection
+            } else {
+                ServerPickerView(server: server, onSelect: serverSelectionAction)
+                    // Using .secondarySystemBackground to visually distinguish the server selection view
+                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(Capsule())
+            }
         }
+    }
+
+    private var macServerSelection: some View {
+        Menu {
+            ForEach(Current.servers.all, id: \.identifier) { availableServer in
+                Button {
+                    selectServer(availableServer)
+                } label: {
+                    Label(
+                        availableServer.info.name,
+                        systemSymbol: availableServer.identifier == server.identifier ? .checkmark : .serverRack
+                    )
+                }
+            }
+        } label: {
+            HStack(spacing: DesignSystem.Spaces.one) {
+                Image(systemSymbol: .serverRack)
+                    .foregroundStyle(Color.haPrimary)
+
+                Text(server.info.name)
+                    .font(.callout)
+                    .lineLimit(1)
+
+                Image(systemSymbol: .chevronUpChevronDown)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .padding(.vertical, DesignSystem.Spaces.one)
+            .background(Color(uiColor: .secondarySystemBackground))
+            .clipShape(.capsule)
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
@@ -145,20 +185,32 @@ struct WebViewEmptyStateView: View {
             Color.clear
                 .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
         case .settings:
-            Button(action: {
-                settingsAction?()
-            }) {
-                Image(systemSymbol: .gearshape)
-                    .font(.title3)
-                    .foregroundStyle(Color.secondary)
-                    .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
-            }
+            ModalReusableButton(
+                icon: .sfSymbol(.gearshape),
+                action: {
+                    settingsAction?()
+                }
+            )
             .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
-        case .close:
-            ModalCloseButton {
-                dismissAction?()
-            }
+        case .hiddenDismiss:
+            Color.clear
+                .frame(width: headerAccessorySize.width, height: headerAccessorySize.height)
+                .overlay {
+                    if isLoading {
+                        ProgressView()
+                    }
+                }
+                .contentShape(Rectangle())
+                .onTapGesture(perform: registerDismissTap)
+                .accessibilityHidden(true)
         }
+    }
+
+    private func registerDismissTap() {
+        dismissTapCount += 1
+        guard dismissTapCount >= Self.dismissTapThreshold else { return }
+        dismissTapCount = 0
+        dismissAction?()
     }
 
     @ViewBuilder
@@ -259,6 +311,16 @@ struct WebViewEmptyStateView: View {
         style == .disconnected && showsErrorDetailsButton && errorDetailsAction != nil
     }
 
+    private func selectServer(_ server: Server) {
+        if let serverSelectionAction {
+            serverSelectionAction(server)
+        } else {
+            Current.sceneManager.appCoordinator.done { coordinator in
+                coordinator.open(server: server)
+            }
+        }
+    }
+
     private var resolvedLeadingHeaderAccessory: WebViewEmptyStateStyle.HeaderAccessory {
         if style.showsSecondarySettingsButton, canShowErrorDetailsButton {
             .settings
@@ -292,5 +354,92 @@ struct WebViewEmptyStateView: View {
                 }
             }
         }
+    }
+}
+
+#Preview("Disconnected") {
+    WebViewEmptyStatePreview.view(style: .disconnected)
+}
+
+#Preview("Disconnected Loading") {
+    WebViewEmptyStatePreview.view(style: .disconnected, isLoading: true)
+}
+
+#Preview("Disconnected With Error Details") {
+    WebViewEmptyStatePreview.view(
+        style: .disconnected,
+        showsErrorDetailsButton: true,
+        errorDetailsAction: {}
+    )
+}
+
+#Preview("Unauthenticated") {
+    WebViewEmptyStatePreview.view(
+        style: .unauthenticated,
+        availableReauthURLTypes: [.external],
+        reauthAction: { _ in }
+    )
+}
+
+#Preview("Unauthenticated Multiple URLs") {
+    WebViewEmptyStatePreview.view(
+        style: .unauthenticated,
+        availableReauthURLTypes: [.remoteUI, .external, .internal],
+        reauthAction: { _ in }
+    )
+}
+
+#Preview("Recovered Server Reauthentication") {
+    WebViewEmptyStatePreview.view(
+        style: .recoveredServerNeedingReauthentication,
+        availableReauthURLTypes: [.remoteUI, .external],
+        recoveredServerReauthAction: { _, completion in
+            completion(.success(()))
+        }
+    )
+}
+
+#Preview("Recovered Server Reauthentication Dark") {
+    WebViewEmptyStatePreview.view(
+        style: .recoveredServerNeedingReauthentication,
+        availableReauthURLTypes: [.remoteUI, .external],
+        recoveredServerReauthAction: { _, completion in
+            completion(.failure(NSError(
+                domain: "Preview",
+                code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Reauthentication failed."]
+            )))
+        }
+    )
+    .preferredColorScheme(.dark)
+}
+
+private enum WebViewEmptyStatePreview {
+    static func view(
+        style: WebViewEmptyStateStyle,
+        isLoading: Bool = false,
+        showsErrorDetailsButton: Bool = false,
+        availableReauthURLTypes: [ConnectionInfo.URLType] = [],
+        errorDetailsAction: (() -> Void)? = nil,
+        reauthAction: ((ConnectionInfo.URLType) -> Void)? = nil,
+        recoveredServerReauthAction: ((
+            ConnectionInfo.URLType,
+            @escaping (Swift.Result<Void, Error>) -> Void
+        ) -> Void)? = nil
+    ) -> some View {
+        WebViewEmptyStateView(
+            style: style,
+            server: ServerFixture.standard,
+            isLoading: isLoading,
+            showsErrorDetailsButton: showsErrorDetailsButton,
+            availableReauthURLTypes: availableReauthURLTypes,
+            retryAction: {},
+            settingsAction: {},
+            errorDetailsAction: errorDetailsAction,
+            reauthAction: reauthAction,
+            recoveredServerReauthAction: recoveredServerReauthAction,
+            serverSelectionAction: { _ in },
+            dismissAction: {}
+        )
     }
 }

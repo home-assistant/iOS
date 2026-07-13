@@ -1,6 +1,5 @@
 import Intents
 import OHHTTPStubs
-import PromiseKit
 @testable import Shared
 import UIKit
 import UserNotifications
@@ -14,7 +13,9 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         cache = InMemoryIconCache()
-        decorator = NotificationCommunicationDecoratorImpl(cache: cache)
+        decorator = NotificationCommunicationDecoratorImpl(cache: cache) { _, _, _ in
+            INImage(imageData: Data([0]))
+        }
         api = FakeHomeAssistantAPI(server: .fake())
     }
 
@@ -30,9 +31,7 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         return c
     }
 
-    // MARK: - MDI
-
-    func testBuildIntent_mdi_setsSenderNameAndImage() throws {
+    func testBuildIntent_mdi_setsSenderNameAndImage() async {
         let info = NotificationSenderInfo(
             source: .mdi(
                 name: "mdi:door",
@@ -43,12 +42,12 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
             ),
             senderName: "Front Door"
         )
-        let intent = try hang(Promise(decorator.buildIntent(
+        let intent = await decorator.buildIntent(
             sender: info,
             title: "Front Door",
             body: "Opened",
             api: api
-        )))
+        )
 
         XCTAssertEqual(intent.sender?.displayName, "Front Door")
         XCTAssertNotNil(intent.sender?.image, "MDI source must produce a non-nil INImage")
@@ -56,7 +55,7 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         XCTAssertEqual(intent.serviceName, "HomeAssistant")
     }
 
-    func testBuildIntent_conversationIdentifier_stableAcrossCalls() throws {
+    func testBuildIntent_conversationIdentifier_stableAcrossCalls() async {
         let info = NotificationSenderInfo(
             source: .mdi(
                 name: "mdi:door",
@@ -67,13 +66,13 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
             ),
             senderName: "Front Door"
         )
-        let intent1 = try hang(Promise(decorator.buildIntent(sender: info, title: "Front Door", body: "x", api: api)))
-        let intent2 = try hang(Promise(decorator.buildIntent(sender: info, title: "Front Door", body: "y", api: api)))
+        let intent1 = await decorator.buildIntent(sender: info, title: "Front Door", body: "x", api: api)
+        let intent2 = await decorator.buildIntent(sender: info, title: "Front Door", body: "y", api: api)
         XCTAssertEqual(intent1.conversationIdentifier, intent2.conversationIdentifier)
         XCTAssertFalse(intent1.conversationIdentifier?.isEmpty ?? true)
     }
 
-    func testBuildIntent_conversationIdentifier_differsForDifferentSenderNames() throws {
+    func testBuildIntent_conversationIdentifier_differsForDifferentSenderNames() async {
         let a = NotificationSenderInfo(
             source: .mdi(
                 name: "mdi:door",
@@ -94,12 +93,12 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
             ),
             senderName: "Back Door"
         )
-        let ia = try hang(Promise(decorator.buildIntent(sender: a, title: "Front Door", body: "x", api: api)))
-        let ib = try hang(Promise(decorator.buildIntent(sender: b, title: "Back Door", body: "x", api: api)))
+        let ia = await decorator.buildIntent(sender: a, title: "Front Door", body: "x", api: api)
+        let ib = await decorator.buildIntent(sender: b, title: "Back Door", body: "x", api: api)
         XCTAssertNotEqual(ia.conversationIdentifier, ib.conversationIdentifier)
     }
 
-    func testDecorate_emptyTitle_returnsOriginalContentUnchanged() throws {
+    func testDecorate_emptyTitle_returnsOriginalContentUnchanged() async {
         let original = content(title: "", body: "x")
         let info = NotificationSenderInfo(
             source: .mdi(
@@ -109,32 +108,28 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
                 colorString: "#FF0000",
                 iconColorString: "#FFFFFF"
             ),
-            senderName: "X" // ignored — decorator uses content.title
+            senderName: "X"
         )
-        let result = try hang(Promise(decorator.decorate(content: original, sender: info, api: api)))
+        let result = await decorator.decorate(content: original, sender: info, api: api)
         XCTAssertEqual(result, original)
     }
 
-    // MARK: - URL
-
-    func testBuildIntent_iconURL_cacheHit_skipsDownload() throws {
+    func testBuildIntent_iconURL_cacheHit_skipsDownload() async throws {
         let url = try XCTUnwrap(URL(string: "https://example.com/avatar.png"))
-        let pngBytes = makeRedPNG() // helper below
+        let pngBytes = makeRedPNG()
         cache.setData(pngBytes, forKey: notificationIconCacheKey(for: url, serverID: api.server.identifier.rawValue))
 
         let info = NotificationSenderInfo(
             source: .iconURL(url, needsAuth: false),
             senderName: "Alex"
         )
-        let intent = try hang(Promise(decorator.buildIntent(
+        let intent = await decorator.buildIntent(
             sender: info, title: "Alex", body: "Hi", api: api
-        )))
+        )
         XCTAssertNotNil(intent.sender?.image)
-        // Cache hit means no HTTP call should have occurred. We assert that by
-        // confirming no stubs are required for this test to pass.
     }
 
-    func testBuildIntent_iconURL_cacheMiss_downloadsThenCaches() throws {
+    func testBuildIntent_iconURL_cacheMiss_downloadsThenCaches() async throws {
         let url = try XCTUnwrap(URL(string: "https://homeassistant.local:8123/icon.png"))
         let pngBytes = makeRedPNG()
 
@@ -147,9 +142,9 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
             source: .iconURL(url, needsAuth: false),
             senderName: "Alex"
         )
-        let intent = try hang(Promise(decorator.buildIntent(
+        let intent = await decorator.buildIntent(
             sender: info, title: "Alex", body: "Hi", api: api
-        )))
+        )
         XCTAssertNotNil(intent.sender?.image)
         XCTAssertNotNil(
             cache.data(forKey: notificationIconCacheKey(for: url, serverID: api.server.identifier.rawValue)),
@@ -157,7 +152,7 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         )
     }
 
-    func testBuildIntent_iconURL_downloadFails_returnsIntentWithNilImage() throws {
+    func testBuildIntent_iconURL_downloadFails_returnsIntentWithNilImage() async throws {
         let url = try XCTUnwrap(URL(string: "https://homeassistant.local:8123/missing.png"))
         let stubDesc = HTTPStubs.stubRequests(passingTest: { $0.url == url }) { _ in
             HTTPStubsResponse(data: Data(), statusCode: 500, headers: nil)
@@ -168,9 +163,9 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
             source: .iconURL(url, needsAuth: false),
             senderName: "Alex"
         )
-        let intent = try hang(Promise(decorator.buildIntent(
+        let intent = await decorator.buildIntent(
             sender: info, title: "Alex", body: "Hi", api: api
-        )))
+        )
         XCTAssertNil(intent.sender?.image, "failed download must produce a nil image, not crash")
         XCTAssertEqual(intent.sender?.displayName, "Alex", "we still build a sender so styling proceeds")
     }
@@ -182,8 +177,6 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         }
     }
 }
-
-// MARK: - Test doubles
 
 private final class InMemoryIconCache: NotificationIconCache {
     var store: [String: Data] = [:]

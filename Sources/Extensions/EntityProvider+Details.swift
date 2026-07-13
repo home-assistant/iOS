@@ -12,6 +12,8 @@ public enum EntityContextSubtitle {
     /// - Parameters:
     ///   - serverName: The server the entity belongs to. Pass this only when more than one server is
     ///     configured — it's prepended as the first segment; pass `nil` to omit it (single-server).
+    ///   - floorName: The floor the entity's area belongs to. Pass this only when it's needed to
+    ///     disambiguate two areas that share the same name; pass `nil` to omit it otherwise.
     ///   - areaName: The area the entity belongs to, if any.
     ///   - deviceName: The device the entity belongs to, if any. Omitted when it merely repeats the entity name.
     ///   - entityName: The entity's resolved display name (used to avoid echoing it as the device name).
@@ -23,6 +25,7 @@ public enum EntityContextSubtitle {
     ///   script/scene/automation with no server/area/device context).
     public static func make(
         serverName: String? = nil,
+        floorName: String? = nil,
         areaName: String?,
         deviceName: String?,
         entityName: String,
@@ -34,12 +37,25 @@ public enum EntityContextSubtitle {
         if let serverName, !serverName.isEmpty {
             parts.append(serverName)
         }
+        if let floorName, !floorName.isEmpty {
+            parts.append(floorName)
+        }
         if let areaName, !areaName.isEmpty {
             parts.append(areaName)
         }
         if let deviceName, !deviceName.isEmpty,
            deviceName.range(of: entityName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
             parts.append(deviceName)
+        }
+        // Collapse segments that resolve to the same label so the line doesn't repeat one twice — a
+        // device named after its area is common (e.g. a "Sala" camera in the "Sala" area) and would
+        // otherwise render as "Sala • Sala". Compared in the trimmed, case-/diacritic-insensitive form,
+        // which also drops whitespace-only segments that would show as a blank piece.
+        var seenNormalizedParts = Set<String>()
+        parts = parts.filter { part in
+            let normalized = part.normalizedForAreaComparison
+            guard !normalized.isEmpty else { return false }
+            return seenNormalizedParts.insert(normalized).inserted
         }
         guard parts.isEmpty else {
             return parts.joined(separator: " • ")
@@ -72,12 +88,18 @@ public protocol EntityContextRepresentable {
     var areaName: String? { get }
     /// The device the entity belongs to, if known.
     var deviceName: String? { get }
+    /// The floor the entity's area belongs to, set only when it's needed to disambiguate two areas
+    /// that share the same name. Defaults to `nil` so most conformers don't need to provide it.
+    var floorName: String? { get }
 }
 
 public extension EntityContextRepresentable {
-    /// The shared `Area • Device` context line for this entity. See `EntityContextSubtitle.make`.
+    var floorName: String? { nil }
+
+    /// The shared `Floor • Area • Device` context line for this entity. See `EntityContextSubtitle.make`.
     var contextSubtitle: String? {
         EntityContextSubtitle.make(
+            floorName: floorName,
             areaName: areaName,
             deviceName: deviceName,
             entityName: displayString,
@@ -123,15 +145,53 @@ public extension HAAppEntity {
         }
     }
 
-    /// The secondary context line shown under the entity name (`Area • Device`).
+    /// The secondary context line shown under the entity name (`Floor • Area • Device`).
     var contextualSubtitle: String? {
-        EntityContextSubtitle.make(
-            areaName: area?.name,
+        let allAreas = (try? AppArea.fetchAreas(for: serverId)) ?? []
+        let entityArea = allAreas.first { $0.entities.contains(entityId) }
+        let floorName = entityArea.flatMap { area in
+            allAreas.disambiguatingFloorName(for: area)
+        }
+        return EntityContextSubtitle.make(
+            floorName: floorName,
+            areaName: entityArea?.name,
             deviceName: device?.name,
             entityName: name,
             entityId: entityId,
             domain: Domain(rawValue: domain)
         )
+    }
+}
+
+public extension [AppArea] {
+    /// The normalized set of area names that occur in more than one area, i.e. the names that are
+    /// ambiguous on their own and need the floor to tell them apart.
+    func duplicatedAreaNames() -> Set<String> {
+        var counts: [String: Int] = [:]
+        for area in self {
+            counts[area.name.normalizedForAreaComparison, default: 0] += 1
+        }
+        return Set(counts.filter { $0.value > 1 }.keys)
+    }
+
+    /// The floor name to display for `area`, but only when its name collides with another area on the
+    /// same server (so the floor disambiguates them). Returns `nil` when the area name is unique or has
+    /// no floor.
+    func disambiguatingFloorName(for area: AppArea) -> String? {
+        guard let floorName = area.floorName, !floorName.isEmpty,
+              duplicatedAreaNames().contains(area.name.normalizedForAreaComparison) else {
+            return nil
+        }
+        return floorName
+    }
+}
+
+private extension String {
+    /// Case- and diacritic-insensitive, whitespace-trimmed form used to compare area names so that
+    /// "Bedroom" and "bedroom " count as the same name when detecting collisions.
+    var normalizedForAreaComparison: String {
+        folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
@@ -155,6 +215,32 @@ public extension [HAAppEntity] {
             return entityToAreaMap
         } catch {
             Current.Log.error("Failed to fetch areas for mapping: \(error)")
+            return [:]
+        }
+    }
+
+    /// Creates a mapping from entity IDs to the floor name that disambiguates their area, for a given
+    /// server. Only entities whose area name collides with another area on the same server are present
+    /// — for everything else the floor is omitted (so callers pass `nil`). Mirrors `areasMap`.
+    /// - Parameter serverId: The server identifier to filter areas by.
+    /// - Returns: A dictionary mapping entity IDs to their disambiguating floor name.
+    func floorNamesMap(for serverId: String) -> [String: String] {
+        do {
+            let areas = try AppArea.fetchAreas(for: serverId)
+            let duplicated = areas.duplicatedAreaNames()
+            var entityToFloorMap: [String: String] = [:]
+            for area in areas {
+                guard let floorName = area.floorName, !floorName.isEmpty,
+                      duplicated.contains(area.name.normalizedForAreaComparison) else {
+                    continue
+                }
+                for entityId in area.entities {
+                    entityToFloorMap[entityId] = floorName
+                }
+            }
+            return entityToFloorMap
+        } catch {
+            Current.Log.error("Failed to fetch areas for floor mapping: \(error)")
             return [:]
         }
     }

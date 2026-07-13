@@ -7,7 +7,7 @@ protocol BarcodeScannerCameraDelegate: AnyObject {
     func didDetectBarcode(_ code: String, format: String)
 }
 
-final class BarcodeScannerCamera: NSObject {
+final class BarcodeScannerCamera: NSObject, @unchecked Sendable {
     private let captureSession = AVCaptureSession()
     private var isCaptureSessionConfigured = false
     private var deviceInput: AVCaptureDeviceInput?
@@ -154,9 +154,7 @@ final class BarcodeScannerCamera: NSObject {
             .upce,
         ]
 
-        if #available(iOS 15.4, *) {
-            metadataObjectTypes.append(.codabar)
-        }
+        metadataObjectTypes.append(.codabar)
 
         metadataOutput.metadataObjectTypes = metadataObjectTypes
 

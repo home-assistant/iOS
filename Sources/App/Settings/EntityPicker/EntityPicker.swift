@@ -20,7 +20,7 @@ struct EntityPicker: View {
     init(
         selectedServerId: String? = nil,
         selectedEntity: Binding<HAAppEntity?>,
-        domainFilter: Domain?,
+        domainFilter: [Domain]?,
         mode: Mode = .button
     ) {
         self._selectedEntity = selectedEntity
@@ -75,15 +75,8 @@ struct EntityPicker: View {
         }
         #endif
         .navigationViewStyle(.stack)
-        .modify { view in
-            if #available(iOS 16.0, *) {
-                view
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
-            } else {
-                view
-            }
-        }
+        .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
     }
 
     private var content: some View {

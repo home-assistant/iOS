@@ -4,7 +4,7 @@ import PromiseKit
 import SFSafeSymbols
 import Shared
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct IntentAutomationEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Automation")
 
@@ -16,6 +16,7 @@ struct IntentAutomationEntity: AppEntity, EntityContextRepresentable {
     var serverName: String
     var areaName: String?
     var deviceName: String?
+    var floorName: String?
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
@@ -32,6 +33,7 @@ struct IntentAutomationEntity: AppEntity, EntityContextRepresentable {
         serverName: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        floorName: String? = nil,
         displayString: String,
         iconName: String
     ) {
@@ -41,12 +43,13 @@ struct IntentAutomationEntity: AppEntity, EntityContextRepresentable {
         self.serverName = serverName
         self.areaName = areaName
         self.deviceName = deviceName
+        self.floorName = floorName
         self.displayString = displayString
         self.iconName = iconName
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentAutomationEntity] {
         getAutomationEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
@@ -74,6 +77,7 @@ struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
         for (server, values) in entities {
             let deviceMap = values.devicesMap(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
+            let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
             automationEntities.append((server, values.map({ entity in
                 IntentAutomationEntity(
                     id: entity.id,
@@ -82,6 +86,7 @@ struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name,
                     deviceName: deviceMap[entity.entityId]?.name,
+                    floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.flowchart.rawValue
                 )

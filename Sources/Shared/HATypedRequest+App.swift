@@ -155,6 +155,12 @@ public extension HATypedRequest {
         ))
     }
 
+    static func configFloorRegistry() -> HATypedRequest<[HAFloorRegistryResponse]> {
+        HATypedRequest<[HAFloorRegistryResponse]>(request: .init(
+            type: "config/floor_registry/list"
+        ))
+    }
+
     static func configDeviceRegistryList() -> HATypedRequest<[DeviceRegistryEntry]> {
         HATypedRequest<[DeviceRegistryEntry]>(request: .init(
             type: "config/device_registry/list"

@@ -10,11 +10,16 @@ struct HAApp: App {
     var body: some Scene {
         // Main Onboarding + Home Assistant Frontend
         WindowGroup {
-            ContainerView()
+            ConditionalContainerView()
+                .toastOverlay()
                 .onOpenURL { handleIncoming(url: $0) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
         }
         .handlesExternalEvents(matching: [SceneActivity.webView.activityIdentifier])
+        .commands {
+            MainWindowGroupCommands()
+            AppMenuBarCommands()
+        }
 
         // Mac Settings
         WindowGroup {

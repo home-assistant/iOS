@@ -19,6 +19,7 @@ final class OnboardingServersListViewModel: ObservableObject {
     @Published var showPermissionsFlow = false
     @Published var shouldDismiss = false
     @Published var onboardingServer: Server?
+    var permissionsFlowCompleted = false
 
     @Published var manualInputLoading = false
     @Published var invitationLoading = false
