@@ -80,7 +80,15 @@ else
 fi
 
 echo "Ensuring fonttools is installed via pip..."
-pip3 install --user fonttools
+# Install into a throwaway virtualenv so this works on PEP 668 "externally
+# managed" Python (Homebrew on CI) without needing --break-system-packages,
+# which older local pip versions do not support.
+FONTTOOLS_VENV="$(mktemp -d)"
+trap 'rm -rf "$FONTTOOLS_VENV"' EXIT
+python3 -m venv "$FONTTOOLS_VENV"
+# shellcheck disable=SC1091
+source "$FONTTOOLS_VENV/bin/activate"
+pip install --quiet fonttools
 
 if [ ! -f fontname-$FONT_RENAME_COMMIT.py ]; then
   echo "Downloading the fontname script..."
