@@ -32,7 +32,9 @@ final class DynamicNotificationViewModel: ObservableObject {
     func didReceive(_ notification: UNNotification) {
         let notificationContent = notification.request.content
 
-        title = notificationContent.title
+        // Unlike iOS, the watch long-look does not show the app name near our custom
+        // content, so a title-less payload would render as a bare message.
+        title = notificationContent.title.isEmpty ? "Home Assistant" : notificationContent.title
         subtitle = notificationContent.subtitle
         message = notificationContent.body
 
@@ -175,3 +177,25 @@ final class DynamicNotificationViewModel: ObservableObject {
         errorMessage = L10n.NotificationService.failedToLoad + "\n" + error.localizedDescription
     }
 }
+
+#if DEBUG
+extension DynamicNotificationViewModel {
+    static func preview(
+        title: String = "",
+        subtitle: String = "",
+        message: String = "",
+        isLoading: Bool = false,
+        errorMessage: String? = nil,
+        content: Content? = nil
+    ) -> DynamicNotificationViewModel {
+        let viewModel = DynamicNotificationViewModel()
+        viewModel.title = title
+        viewModel.subtitle = subtitle
+        viewModel.message = message
+        viewModel.isLoading = isLoading
+        viewModel.errorMessage = errorMessage
+        viewModel.content = content
+        return viewModel
+    }
+}
+#endif

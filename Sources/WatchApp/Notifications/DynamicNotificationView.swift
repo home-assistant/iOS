@@ -66,6 +66,36 @@ struct DynamicNotificationView: View {
     }
 }
 
-#Preview {
-    DynamicNotificationView(viewModel: DynamicNotificationViewModel())
+#Preview("Text") {
+    DynamicNotificationView(viewModel: .preview(
+        title: "Garage door",
+        message: "The garage door has been open for 10 minutes"
+    ))
+}
+
+#Preview("Map") {
+    DynamicNotificationView(viewModel: .preview(
+        title: "Location update",
+        message: "Bruno arrived home",
+        content: .map(
+            primary: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+            secondary: CLLocationCoordinate2D(latitude: 37.7849, longitude: -122.4094)
+        )
+    ))
+}
+
+#Preview("Image") {
+    DynamicNotificationView(viewModel: .preview(
+        title: "Doorbell",
+        message: "Someone is at the door",
+        content: .image({
+            UIGraphicsBeginImageContextWithOptions(CGSize(width: 320, height: 180), true, 1)
+            defer { UIGraphicsEndImageContext() }
+            UIColor.cyan.setFill()
+            UIRectFill(CGRect(x: 0, y: 0, width: 320, height: 180))
+            UIColor.yellow.setFill()
+            UIRectFill(CGRect(x: 120, y: 50, width: 80, height: 80))
+            return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+        }())
+    ))
 }
