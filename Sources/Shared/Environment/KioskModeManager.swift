@@ -44,6 +44,18 @@ public final class KioskModeManager: ObservableObject {
         screensaverCommandSubject.send(command)
     }
 
+    public func setScreensaverMode(_ mode: KioskScreensaverMode) {
+        do {
+            try Current.database().write { db in
+                var settings = try KioskSettings.fetchOne(db) ?? KioskSettings()
+                settings.screensaver.mode = mode
+                try settings.insert(db, onConflict: .replace)
+            }
+        } catch {
+            Current.Log.error("Failed to set kiosk screensaver mode: \(error)")
+        }
+    }
+
     public func setCameraOverlayVisible(_ visible: Bool) {
         isCameraOverlayVisible = visible
     }

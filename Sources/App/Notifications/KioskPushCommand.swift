@@ -10,6 +10,7 @@ enum KioskPushCommand: String, CaseIterable {
     case hideCamera = "kiosk_hide_camera"
     case setBrightness = "kiosk_set_brightness"
     case setVolume = "kiosk_set_volume"
+    case setScreensaverMode = "kiosk_set_screensaver_mode"
     case reload = "kiosk_reload"
     case defaultDashboard = "kiosk_default"
 
@@ -34,7 +35,18 @@ enum KioskPushCommand: String, CaseIterable {
             return "level"
         case .setVolume:
             return "volume"
-        case .showScreensaver, .hideScreensaver, .showCamera, .hideCamera, .reload, .defaultDashboard:
+        case .showScreensaver, .hideScreensaver, .showCamera, .hideCamera, .setScreensaverMode, .reload,
+             .defaultDashboard:
+            return nil
+        }
+    }
+
+    var modeKey: String? {
+        switch self {
+        case .setScreensaverMode:
+            return "mode"
+        case .showScreensaver, .hideScreensaver, .showCamera, .hideCamera, .setBrightness, .setVolume, .reload,
+             .defaultDashboard:
             return nil
         }
     }
@@ -76,6 +88,30 @@ enum KioskPushCommand: String, CaseIterable {
         }
     }
 
+    func screensaverMode(from userInfo: [AnyHashable: Any]?) -> KioskScreensaverMode? {
+        guard let modeKey, let userInfo,
+              let raw = Self.stringValue(forKey: modeKey, in: userInfo) else {
+            return nil
+        }
+        let normalized = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return KioskScreensaverMode(rawValue: normalized)
+    }
+
+    private static func stringValue(forKey key: String, in userInfo: [AnyHashable: Any]) -> String? {
+        if let value = userInfo[key] as? String {
+            return value
+        }
+        if let homeassistant = userInfo["homeassistant"] as? [String: Any],
+           let value = homeassistant[key] as? String {
+            return value
+        }
+        if let homeassistant = userInfo["homeassistant"] as? [AnyHashable: Any],
+           let value = homeassistant[key] as? String {
+            return value
+        }
+        return nil
+    }
+
     var localizedString: String {
         switch self {
         case .showScreensaver:
@@ -90,6 +126,8 @@ enum KioskPushCommand: String, CaseIterable {
             return L10n.Kiosk.PushCommand.setBrightness
         case .setVolume:
             return L10n.Kiosk.PushCommand.setVolume
+        case .setScreensaverMode:
+            return L10n.Kiosk.PushCommand.setScreensaverMode
         case .reload:
             return L10n.Kiosk.PushCommand.reload
         case .defaultDashboard:
@@ -115,6 +153,8 @@ enum KioskPushCommand: String, CaseIterable {
             return .sunMax
         case .setVolume:
             return .speakerWave3Fill
+        case .setScreensaverMode:
+            return .moonStars
         case .reload:
             return .arrowClockwise
         case .defaultDashboard:
@@ -136,6 +176,8 @@ enum KioskPushCommand: String, CaseIterable {
             return (.white, .yellow)
         case .setVolume:
             return (.white, .teal)
+        case .setScreensaverMode:
+            return (.white, .purple)
         case .reload:
             return (.white, .green)
         case .defaultDashboard:
