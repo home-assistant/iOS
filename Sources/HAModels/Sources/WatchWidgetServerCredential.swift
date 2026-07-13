@@ -9,8 +9,10 @@ import Foundation
 /// self-signed) request is captured as plain, `Codable` data so the widget can apply it with a small
 /// `URLSession` delegate rather than reusing the server/connection objects.
 ///
-/// The token is a snapshot: a widget cannot refresh an expired token, so a stale token simply makes the
-/// fetch fail and the widget keeps its last-known snapshot until the WatchApp writes a fresh credential.
+/// The access token is a snapshot, but the credential also carries the long-lived `refreshToken` and the
+/// access token's `expiration`, so the widget can refresh the access token itself (a plain form-encoded
+/// `POST /auth/token`) when it's near expiry — keeping complications fresh on the widget's own budget and,
+/// crucially, never sending an expired token (which the server logs as invalid auth and eventually bans).
 public struct WatchWidgetServerCredential: Codable, Equatable {
     /// Matches `WatchComplicationConfig.serverId`.
     public let serverId: String
@@ -18,6 +20,13 @@ public struct WatchWidgetServerCredential: Codable, Equatable {
     public let baseURL: URL
     /// Bearer token snapshot at write time.
     public let token: String
+    /// Absolute expiration of `token`. The widget refreshes before this (and skips the request entirely
+    /// if it can't get a valid token) rather than sending an expired token.
+    public let expiration: Date
+    /// Long-lived refresh token, used by the widget to mint a fresh access token via `POST /auth/token`.
+    public let refreshToken: String
+    /// OAuth `client_id` the refresh request must present (differs between debug and release builds).
+    public let clientID: String
     /// Keychain label of the mTLS client identity, or nil when the server doesn't use a client cert.
     public let clientCertLabel: String?
     /// Raw `SecTrustCopyExceptions` blobs for self-signed / pinned server trust (empty when none).
@@ -27,14 +36,26 @@ public struct WatchWidgetServerCredential: Codable, Equatable {
         serverId: String,
         baseURL: URL,
         token: String,
+        expiration: Date,
+        refreshToken: String,
+        clientID: String,
         clientCertLabel: String?,
         trustExceptions: [Data]
     ) {
         self.serverId = serverId
         self.baseURL = baseURL
         self.token = token
+        self.expiration = expiration
+        self.refreshToken = refreshToken
+        self.clientID = clientID
         self.clientCertLabel = clientCertLabel
         self.trustExceptions = trustExceptions
+    }
+
+    /// The OAuth `client_id` to present when refreshing a token, matching the value used during
+    /// onboarding (`OnboardingAuthDetails`) and by `AuthenticationRoutes`.
+    public static func clientID(isDebug: Bool) -> String {
+        isDebug ? "https://home-assistant.io/iOS/dev-auth" : "https://home-assistant.io/iOS"
     }
 
     /// App-group `UserDefaults` key the blob array is stored under.
