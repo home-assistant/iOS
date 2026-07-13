@@ -92,11 +92,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(servers.server(forWebhookID: "webhook1") === server1)
         XCTAssertTrue(servers.server(forServerIdentifier: "fake1") === server1)
         XCTAssertTrue(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")) === server1)
-        XCTAssertTrue(
-            servers
-                .server(for: FakeServerIntentProviding(server: .init(identifier: "fake1", display: "fake1"))) ===
-                server1
-        )
         XCTAssertEqual(server1.info, with(info1) {
             $0.sortOrder = 0
         })
@@ -110,11 +105,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(servers.server(forWebhookID: "webhook2") === server2)
         XCTAssertTrue(servers.server(forServerIdentifier: "fake2") === server2)
         XCTAssertTrue(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")) === server2)
-        XCTAssertTrue(
-            servers
-                .server(for: FakeServerIntentProviding(server: .init(identifier: "fake2", display: "fake1"))) ===
-                server2
-        )
         XCTAssertEqual(server2.info, with(info2) {
             $0.sortOrder = 1000
         })
@@ -311,8 +301,6 @@ class ServerManagerTests: XCTestCase {
         ])
 
         let server1 = servers.server(for: "fake1")
-        let intentServer1 = IntentServer(identifier: "fake1", display: "fake1")
-        let intentServer2 = IntentServer(identifier: "fake2", display: "fake2")
 
         XCTAssertEqual(servers.server(forServerIdentifier: nil), nil)
         XCTAssertEqual(servers.server(forServerIdentifier: "fake1"), server1)
@@ -324,10 +312,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook1")), server1)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook2")), nil)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: nil)), server1)
-
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer1)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2), fallback: false), nil)
 
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")), server1)
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")), server1)
@@ -351,9 +335,6 @@ class ServerManagerTests: XCTestCase {
 
         let server1 = servers.server(for: "fake1")
         let server2 = servers.server(for: "fake2")
-        let intentServer1 = IntentServer(identifier: "fake1", display: "fake1")
-        let intentServer2 = IntentServer(identifier: "fake2", display: "fake2")
-        let intentServer3 = IntentServer(identifier: "fake3", display: "fake3")
 
         XCTAssertEqual(servers.server(forServerIdentifier: nil), nil)
         XCTAssertEqual(servers.server(forServerIdentifier: "fake1"), server1)
@@ -368,11 +349,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook2")), server2)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: nil)), server1)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook3")), nil)
-
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer1)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2)), server2)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer3)), nil)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer3), fallback: false), nil)
 
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")), server1)
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")), server2)
@@ -903,10 +879,6 @@ class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
 
 private struct FakeServerIdentifierProviding: ServerIdentifierProviding {
     var serverIdentifier: String
-}
-
-private struct FakeServerIntentProviding: ServerIntentProviding {
-    var server: IntentServer?
 }
 
 private class FakeObserver: ServerObserver {

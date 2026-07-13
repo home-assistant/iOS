@@ -1,13 +1,14 @@
-import Intents
+import AppIntents
 import Shared
 import SwiftUI
 import WidgetKit
 
+@available(iOS 17.0, *)
 struct WidgetOpenPage: Widget {
     var body: some WidgetConfiguration {
-        IntentConfiguration(
+        AppIntentConfiguration(
             kind: WidgetsKind.openPage.rawValue,
-            intent: WidgetOpenPageIntent.self,
+            intent: WidgetOpenPageAppIntent.self,
             provider: WidgetOpenPageProvider(),
             content: { entry in
                 WidgetBasicContainerView(
@@ -17,13 +18,16 @@ struct WidgetOpenPage: Widget {
                     contents: {
                         let showSubtitle = Current.servers.all.count > 1
 
-                        return entry.pages.map { panel in
+                        return entry.pages.map { page in
                             WidgetBasicViewModel(
-                                id: panel.identifier!,
-                                title: panel.displayString,
-                                subtitle: showSubtitle ? Current.servers.server(for: panel)?.info.name : nil,
-                                interactionType: .widgetURL(panel.widgetURL),
-                                icon: panel.materialDesignIcon,
+                                id: page.id,
+                                title: page.panel.title,
+                                subtitle: showSubtitle ? server(for: page)?.info.name : nil,
+                                interactionType: .widgetURL(widgetURL(for: page)),
+                                icon: MaterialDesignIcons(
+                                    serversideValueNamed: page.panel.icon ?? "",
+                                    fallback: .cogOutlineIcon
+                                ),
                                 iconColor: Color(AppConstants.darkerTintColor)
                             )
                         }
@@ -40,6 +44,18 @@ struct WidgetOpenPage: Widget {
         .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
             Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
         }
+    }
+
+    private func server(for page: PageAppEntity) -> Server? {
+        Current.servers.all.first { $0.identifier.rawValue == page.serverId } ?? Current.servers.all.first
+    }
+
+    private func widgetURL(for page: PageAppEntity) -> URL {
+        let path = page.panel.path.isEmpty ? "lovelace" : page.panel.path
+        return AppConstants.openPageDeeplinkURL(
+            path: path,
+            serverId: server(for: page)?.identifier.rawValue ?? ""
+        ) ?? AppConstants.deeplinkURL
     }
 }
 
