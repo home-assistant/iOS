@@ -226,5 +226,37 @@ extension WatchWidgetComplicationSnapshot {
             menuName: "Battery"
         )
     }
+
+    static func previewSampleValueOnly(
+        title: String = "100%",
+        fraction: Double? = 0.68,
+        gaugeStyle: String = "open"
+    ) -> Self {
+        let options = PerFamily(
+            fraction: fraction,
+            tint: "#34C759FF",
+            showValue: true,
+            showName: false,
+            showIcon: false,
+            showMin: true,
+            showMax: true,
+            gaugeStyle: gaugeStyle,
+            minLabel: "0",
+            maxLabel: "100",
+            textColor: nil
+        )
+        return .init(
+            id: "preview",
+            family: "",
+            title: title,
+            subtitle: "Battery",
+            inlineText: "Battery \(title)",
+            fraction: fraction,
+            tint: "#34C759FF",
+            iconData: nil,
+            perFamily: ["circular": options, "rectangular": options, "inline": options, "corner": options],
+            menuName: "Battery"
+        )
+    }
 }
 #endif
