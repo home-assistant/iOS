@@ -27,7 +27,32 @@ func resetStores() {
     UserDefaults.standard.removePersistentDomain(forName: bundleId)
     UserDefaults.standard.removePersistentDomain(forName: AppConstants.AppGroupID)
 
+    do {
+        try Current.database().eraseAllData()
+    } catch {
+        Current.Log.error("Error when trying to delete everything from the app database: \(error)")
+    }
+
+    Current.notificationHistoryStore.clearAllEntries()
+    removeAppCache(at: AppConstants.widgetsCacheURL)
+    removeAppCache(at: AppConstants.watchMagicItemsInfo)
+
     Realm.reset()
+
+    Current.clientEventStore.addEvent(ClientEvent(
+        text: L10n.Settings.Debugging.ResetApp.clientEvent,
+        type: .settings
+    ))
+}
+
+private func removeAppCache(at url: URL) {
+    guard FileManager.default.fileExists(atPath: url.path) else { return }
+
+    do {
+        try FileManager.default.removeItem(at: url)
+    } catch {
+        Current.Log.error("Error when trying to delete app cache at \(url.path): \(error)")
+    }
 }
 
 func deleteKeychainCompletely() throws {

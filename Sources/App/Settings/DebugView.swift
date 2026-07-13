@@ -232,14 +232,14 @@ struct DebugView: View {
             } label: {
                 linkContent(
                     image: .init(systemSymbol: .tablecells),
-                    title: "Delete cached entity data",
+                    title: L10n.Settings.Debugging.CachedEntityData.title,
                     iconColor: .red,
                     textColor: .red
                 )
             }
-            .alert("Delete cached entity data?", isPresented: $showDeleteEntitiesAlert) {
+            .alert(L10n.Settings.Debugging.CachedEntityData.alertTitle, isPresented: $showDeleteEntitiesAlert) {
                 Button(L10n.cancelLabel, role: .cancel) {}
-                Button("Delete Entity Data", role: .destructive) {
+                Button(L10n.Settings.Debugging.CachedEntityData.deleteButton, role: .destructive) {
                     do {
                         _ = try Current.database().write { db in
                             try HAAppEntity.deleteAll(db)
@@ -251,7 +251,7 @@ struct DebugView: View {
                 }
             } message: {
                 Text(
-                    "Removes the app's cached Home Assistant entity records. They will be recreated as the app syncs again."
+                    L10n.Settings.Debugging.CachedEntityData.message
                 )
             }
 
@@ -260,15 +260,15 @@ struct DebugView: View {
             } label: {
                 linkContent(
                     image: .init(systemSymbol: .globe),
-                    title: "Clear web view cache",
+                    title: L10n.Settings.Debugging.ClearWebCache.title,
                     iconColor: .red,
                     textColor: .red,
                     showProgressView: loadingCleaningWebCache
                 )
             }
-            .alert("Clear web view cache?", isPresented: $showClearWebCacheAlert) {
+            .alert(L10n.Settings.Debugging.ClearWebCache.alertTitle, isPresented: $showClearWebCacheAlert) {
                 Button(L10n.cancelLabel, role: .cancel) {}
-                Button("Clear Cache", role: .destructive) {
+                Button(L10n.Settings.Debugging.ClearWebCache.clearButton, role: .destructive) {
                     loadingCleaningWebCache = true
                     Current.websiteDataStoreHandler.cleanCache {
                         loadingCleaningWebCache = false
@@ -276,7 +276,7 @@ struct DebugView: View {
                 }
             } message: {
                 Text(
-                    "Clears cached web content for the Home Assistant frontend. Frontend resources will be reloaded as needed."
+                    L10n.Settings.Debugging.ClearWebCache.message
                 )
             }
 
@@ -285,21 +285,21 @@ struct DebugView: View {
             } label: {
                 linkContent(
                     image: .init(systemSymbol: .exclamationmarkTriangle),
-                    title: "Delete all app data",
+                    title: L10n.Settings.Debugging.ResetApp.title,
                     iconColor: .red,
                     textColor: .red,
                     showProgressView: loadingResetApp
                 )
             }
-            .alert("Delete all app data?", isPresented: $showResetAppAlert) {
+            .alert(L10n.Settings.Debugging.ResetApp.alertTitle, isPresented: $showResetAppAlert) {
                 Button(L10n.cancelLabel, role: .cancel) {}
-                Button("Delete App Data", role: .destructive) {
+                Button(L10n.Settings.Debugging.ResetApp.deleteButton, role: .destructive) {
                     Task {
                         await resetApp()
                     }
                 }
             } message: {
-                Text("Removes servers, tokens, settings, and local app data from this device. This cannot be undone.")
+                Text(L10n.Settings.Debugging.ResetApp.message)
             }
 
         } footer: {
@@ -326,7 +326,7 @@ struct DebugView: View {
             } label: {
                 linkContent(
                     image: .init(systemSymbol: .paintpalette),
-                    title: "Components Library"
+                    title: L10n.Settings.Debugging.ComponentsLibrary.title
                 )
             }
             #endif
@@ -336,7 +336,7 @@ struct DebugView: View {
             } label: {
                 linkContent(
                     image: .init(systemSymbol: .speakerWave2Fill),
-                    title: "WKWebView Media Playback"
+                    title: L10n.Settings.Debugging.MediaPlayback.title
                 )
             }
 
@@ -415,19 +415,19 @@ struct DebugView: View {
             } label: {
                 linkContent(
                     image: .init(systemSymbol: .tag),
-                    title: "Clear approved NFC tags",
+                    title: L10n.Settings.Debugging.ClearAllowedTags.title,
                     iconColor: .red,
                     textColor: .red
                 )
             }
-            .alert("Clear approved NFC tags?", isPresented: $showClearAllowedTagsAlert) {
+            .alert(L10n.Settings.Debugging.ClearAllowedTags.alertTitle, isPresented: $showClearAllowedTagsAlert) {
                 Button(L10n.cancelLabel, role: .cancel) {}
-                Button("Clear Tags", role: .destructive) {
+                Button(L10n.Settings.Debugging.ClearAllowedTags.clearButton, role: .destructive) {
                     AllowedTag.clearAll()
                 }
             } message: {
                 Text(
-                    "Removes all NFC tags that this app has approved. You will need to approve those tags again before using them."
+                    L10n.Settings.Debugging.ClearAllowedTags.message
                 )
             }
 
@@ -437,7 +437,7 @@ struct DebugView: View {
             } label: {
                 linkContent(
                     image: .init(systemSymbol: .key),
-                    title: "Delete saved credentials",
+                    title: L10n.Settings.Debugging.DeleteSavedCredentials.title,
                     iconColor: .red,
                     textColor: .red
                 )
@@ -460,7 +460,7 @@ struct DebugView: View {
             }, set: { newValue in
                 Current.settingsStore.receiveDebugNotifications = newValue
             })) {
-                Text("Receive debug notifications")
+                Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
 
             Picker(selection: Binding(
@@ -471,7 +471,7 @@ struct DebugView: View {
                     Text(verbatim: "\(seconds)s").tag(seconds)
                 }
             } label: {
-                Text(verbatim: "Web view empty state timeout")
+                Text(L10n.Settings.Debugging.WebViewEmptyStateTimeout.title)
             }
             .pickerStyle(.menu)
 
@@ -561,7 +561,7 @@ struct DebugView: View {
     @MainActor
     private func resetApp() async {
         loadingResetApp = true
-        resetAppToastMessage = "Preparing reset"
+        resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.preparing
         resetAppToastProgress = 0
         let toastProgressTask = Task { @MainActor in
             await showResetAppToastProgress()
@@ -571,22 +571,22 @@ struct DebugView: View {
         Current.Log.verbose("Resetting app!")
 
         for api in Current.apis {
-            resetAppToastMessage = "Revoking token for \(api.server.info.name)"
+            resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.revokingToken(api.server.info.name)
             await revokeToken(api: api)
-            resetAppToastMessage = "Disconnecting \(api.server.info.name)"
+            resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.disconnecting(api.server.info.name)
             await wait(seconds: 13)
             api.connection.disconnect()
         }
-        resetAppToastMessage = "Removing saved servers"
+        resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.removingServers
         for server in Current.servers.all {
             Current.servers.remove(identifier: server.identifier)
         }
-        resetAppToastMessage = "Clearing local stores"
+        resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.clearingDatabases
         resetStores()
         setDefaults()
-        resetAppToastMessage = "Resetting push registration"
+        resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.resettingPushRegistration
         await resetPushID()
-        resetAppToastMessage = "Finishing reset"
+        resetAppToastMessage = L10n.Settings.Debugging.ResetApp.Toast.finishing
         await minimumToastDuration
         toastProgressTask.cancel()
         await toastProgressTask.value
@@ -599,7 +599,9 @@ struct DebugView: View {
     @MainActor
     private func showResetAppToastProgress() async {
         while !Task.isCancelled {
-            showResetAppToast(message: "\(resetAppToastMessage) \(resetAppToastProgress)%")
+            showResetAppToast(
+                message: L10n.Settings.Debugging.ResetApp.Toast.progress(resetAppToastMessage, resetAppToastProgress)
+            )
             try? await Task.sleep(nanoseconds: 1_000_000_000)
             resetAppToastProgress = min(resetAppToastProgress + 2, 98)
         }
@@ -611,7 +613,7 @@ struct DebugView: View {
                 id: Self.resetAppToastID,
                 symbol: .exclamationmarkTriangle,
                 symbolForegroundStyle: (.white, .red),
-                title: "Deleting app data",
+                title: L10n.Settings.Debugging.ResetApp.Toast.title,
                 message: message
             )
         }
@@ -692,15 +694,15 @@ private struct MediaTypesRequiringUserActionForPlaybackView: View {
                     .foregroundStyle(Color(uiColor: .label))
                 }
             } footer: {
-                Text("Select which frontend media types require a user action before playback.")
+                Text(L10n.Settings.Debugging.MediaPlayback.footer)
             }
         }
-        .navigationTitle("WKWebView Media Playback")
+        .navigationTitle(L10n.Settings.Debugging.MediaPlayback.title)
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Force close required", isPresented: $showRestartAlert) {
+        .alert(L10n.Settings.Debugging.MediaPlayback.RestartRequired.title, isPresented: $showRestartAlert) {
             Button(L10n.okLabel, role: .cancel) {}
         } message: {
-            Text("Force close and reopen the app for this change to take effect.")
+            Text(L10n.Settings.Debugging.MediaPlayback.RestartRequired.message)
         }
     }
 
@@ -879,7 +881,7 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
     let onDeleteSuccess: () -> Void
 
     func body(content: Content) -> some View {
-        content.alert("Delete saved credentials?", isPresented: $isPresented) {
+        content.alert(L10n.Settings.Debugging.DeleteSavedCredentials.alertTitle, isPresented: $isPresented) {
             TextField(L10n.Settings.Debugging.DeleteKeychain.datePlaceholder, text: $confirmationText)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
@@ -887,7 +889,7 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
             Button(L10n.cancelLabel, role: .cancel) {
                 confirmationText = ""
             }
-            Button("Delete Credentials", role: .destructive) {
+            Button(L10n.Settings.Debugging.DeleteSavedCredentials.deleteButton, role: .destructive) {
                 guard confirmationText == currentConfirmationDate else {
                     errorMessage = L10n.Settings.Debugging.DeleteKeychain.invalidDateFormat(currentConfirmationDate)
                     showError = true
@@ -908,7 +910,7 @@ private struct DeleteKeychainAlertModifier: ViewModifier {
             }
         } message: {
             Text(
-                "Removes saved credentials and keychain items for this app. Type \(currentConfirmationDate) to confirm."
+                L10n.Settings.Debugging.DeleteSavedCredentials.message(currentConfirmationDate)
             )
         }
     }
