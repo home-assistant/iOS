@@ -119,7 +119,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         zoneManager = ZoneManager()
 
-        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+        BackgroundRefreshManager.register()
+        BackgroundRefreshManager.scheduleAppRefresh()
 
         setupWatchCommunicator()
         setupUIApplicationShortcutItems()
@@ -226,37 +227,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
         notificationManager.didReceiveRemoteNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
-    }
-
-    func application(
-        _ application: UIApplication,
-        performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
-    ) {
-        Current.clientEventStore.addEvent(ClientEvent(text: "Background fetch activated", type: .backgroundOperation))
-        Current.backgroundTask(withName: BackgroundTask.backgroundFetch.rawValue) { remaining in
-            let updatePromise: Promise<Void>
-            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-               Current.settingsStore.locationSources.backgroundFetch {
-                updatePromise = firstly {
-                    Current.location.oneShotLocation(.BackgroundFetch, remaining)
-                }.then { location in
-                    when(fulfilled: Current.apis.map {
-                        $0.SubmitLocation(updateType: .BackgroundFetch, location: location, zone: nil)
-                    })
-                }.asVoid()
-            } else {
-                updatePromise = when(fulfilled: Current.apis.map {
-                    $0.UpdateSensors(trigger: .BackgroundFetch, location: nil)
-                })
-            }
-
-            return updatePromise
-        }.done {
-            completionHandler(.newData)
-        }.catch { error in
-            Current.Log.error("Error when attempting to update data during background fetch: \(error)")
-            completionHandler(.failed)
-        }
     }
 
     func application(
