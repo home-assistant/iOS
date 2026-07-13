@@ -12,6 +12,7 @@ final class KioskPushCommandTests: XCTestCase {
         XCTAssertEqual(KioskPushCommand(message: "kiosk_set_brightness"), .setBrightness)
         XCTAssertEqual(KioskPushCommand(message: "kiosk_set_volume"), .setVolume)
         XCTAssertEqual(KioskPushCommand(message: "kiosk_set_screensaver_mode"), .setScreensaverMode)
+        XCTAssertEqual(KioskPushCommand(message: "kiosk_set_screensaver_brightness"), .setScreensaverBrightness)
         XCTAssertEqual(KioskPushCommand(message: "kiosk_reload"), .reload)
         XCTAssertEqual(KioskPushCommand(message: "kiosk_default"), .defaultDashboard)
     }
@@ -42,6 +43,7 @@ final class KioskPushCommandTests: XCTestCase {
         XCTAssertEqual(KioskPushCommand.setBrightness.rawValue, "kiosk_set_brightness")
         XCTAssertEqual(KioskPushCommand.setVolume.rawValue, "kiosk_set_volume")
         XCTAssertEqual(KioskPushCommand.setScreensaverMode.rawValue, "kiosk_set_screensaver_mode")
+        XCTAssertEqual(KioskPushCommand.setScreensaverBrightness.rawValue, "kiosk_set_screensaver_brightness")
         XCTAssertEqual(KioskPushCommand.reload.rawValue, "kiosk_reload")
         XCTAssertEqual(KioskPushCommand.defaultDashboard.rawValue, "kiosk_default")
     }
@@ -57,11 +59,31 @@ final class KioskPushCommandTests: XCTestCase {
     func testOnlyLevelCommandsHaveLevelKey() {
         XCTAssertEqual(KioskPushCommand.setBrightness.levelKey, "level")
         XCTAssertEqual(KioskPushCommand.setVolume.levelKey, "volume")
+        XCTAssertEqual(KioskPushCommand.setScreensaverBrightness.levelKey, "level")
         XCTAssertNil(KioskPushCommand.showScreensaver.levelKey)
         XCTAssertNil(KioskPushCommand.hideScreensaver.levelKey)
         XCTAssertNil(KioskPushCommand.showCamera.levelKey)
         XCTAssertNil(KioskPushCommand.hideCamera.levelKey)
         XCTAssertNil(KioskPushCommand.setScreensaverMode.levelKey)
+    }
+
+    func testScreensaverBrightnessParsesLevel() {
+        XCTAssertEqual(
+            KioskPushCommand.setScreensaverBrightness.level(from: ["level": 20]) ?? .nan,
+            0.2,
+            accuracy: 0.0001
+        )
+        XCTAssertEqual(
+            KioskPushCommand.setScreensaverBrightness.level(from: ["level": 0.35]) ?? .nan,
+            0.35,
+            accuracy: 0.0001
+        )
+        XCTAssertEqual(
+            KioskPushCommand.setScreensaverBrightness.level(from: ["homeassistant": ["level": "80"]]) ?? .nan,
+            0.8,
+            accuracy: 0.0001
+        )
+        XCTAssertNil(KioskPushCommand.setScreensaverBrightness.level(from: [:]))
     }
 
     func testLevelParsesFraction() {
@@ -109,6 +131,7 @@ final class KioskPushCommandTests: XCTestCase {
         XCTAssertEqual(KioskPushCommand.setScreensaverMode.modeKey, "mode")
         XCTAssertNil(KioskPushCommand.showScreensaver.modeKey)
         XCTAssertNil(KioskPushCommand.setBrightness.modeKey)
+        XCTAssertNil(KioskPushCommand.setScreensaverBrightness.modeKey)
     }
 
     func testModeParsesKnownModes() {

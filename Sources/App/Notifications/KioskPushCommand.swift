@@ -11,6 +11,7 @@ enum KioskPushCommand: String, CaseIterable {
     case setBrightness = "kiosk_set_brightness"
     case setVolume = "kiosk_set_volume"
     case setScreensaverMode = "kiosk_set_screensaver_mode"
+    case setScreensaverBrightness = "kiosk_set_screensaver_brightness"
     case reload = "kiosk_reload"
     case defaultDashboard = "kiosk_default"
 
@@ -31,7 +32,7 @@ enum KioskPushCommand: String, CaseIterable {
     /// The payload key holding this command's numeric level, for commands that take one.
     var levelKey: String? {
         switch self {
-        case .setBrightness:
+        case .setBrightness, .setScreensaverBrightness:
             return "level"
         case .setVolume:
             return "volume"
@@ -45,8 +46,8 @@ enum KioskPushCommand: String, CaseIterable {
         switch self {
         case .setScreensaverMode:
             return "mode"
-        case .showScreensaver, .hideScreensaver, .showCamera, .hideCamera, .setBrightness, .setVolume, .reload,
-             .defaultDashboard:
+        case .showScreensaver, .hideScreensaver, .showCamera, .hideCamera, .setBrightness, .setVolume,
+             .setScreensaverBrightness, .reload, .defaultDashboard:
             return nil
         }
     }
@@ -128,6 +129,8 @@ enum KioskPushCommand: String, CaseIterable {
             return L10n.Kiosk.PushCommand.setVolume
         case .setScreensaverMode:
             return L10n.Kiosk.PushCommand.setScreensaverMode
+        case .setScreensaverBrightness:
+            return L10n.Kiosk.PushCommand.setScreensaverBrightness
         case .reload:
             return L10n.Kiosk.PushCommand.reload
         case .defaultDashboard:
@@ -155,6 +158,8 @@ enum KioskPushCommand: String, CaseIterable {
             return .speakerWave3Fill
         case .setScreensaverMode:
             return .moonStars
+        case .setScreensaverBrightness:
+            return .sunMinFill
         case .reload:
             return .arrowClockwise
         case .defaultDashboard:
@@ -178,6 +183,8 @@ enum KioskPushCommand: String, CaseIterable {
             return (.white, .teal)
         case .setScreensaverMode:
             return (.white, .purple)
+        case .setScreensaverBrightness:
+            return (.white, .indigo)
         case .reload:
             return (.white, .green)
         case .defaultDashboard:
