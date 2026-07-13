@@ -18,12 +18,13 @@ struct HomeAssistantWatchApp: App {
         WindowGroup {
             WatchHomeView()
         }
-    }
-}
 
-// Retained so the legacy `Interface.storyboard` reference resolves; unused under the SwiftUI lifecycle.
-final class HostingController: WKHostingController<WatchHomeView> {
-    override var body: WatchHomeView {
-        WatchHomeView()
+        // Every category the server can send renders the same dynamic interface; both casings
+        // exist in the wild (the docs historically suggested uppercase, the app lowercase).
+        WKNotificationScene(controller: DynamicNotificationHostingController.self, category: "DYNAMIC")
+        WKNotificationScene(controller: DynamicNotificationHostingController.self, category: "CAMERA")
+        WKNotificationScene(controller: DynamicNotificationHostingController.self, category: "camera")
+        WKNotificationScene(controller: DynamicNotificationHostingController.self, category: "MAP")
+        WKNotificationScene(controller: DynamicNotificationHostingController.self, category: "map")
     }
 }
