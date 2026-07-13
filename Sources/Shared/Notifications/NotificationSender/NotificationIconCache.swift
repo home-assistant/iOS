@@ -50,7 +50,7 @@ public final class NotificationIconCacheImpl: NotificationIconCache {
             }
             guard let data = read else { return nil }
             try? FileManager.default.setAttributes(
-                [.modificationDate: Date()],
+                [.modificationDate: Current.date()],
                 ofItemAtPath: url.path
             )
             return data

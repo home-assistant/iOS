@@ -118,6 +118,11 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         let url = try XCTUnwrap(URL(string: "https://example.com/avatar.png"))
         let pngBytes = makeRedPNG()
         cache.setData(pngBytes, forKey: notificationIconCacheKey(for: url, serverID: api.server.identifier.rawValue))
+        let stubDesc = HTTPStubs.stubRequests(passingTest: { $0.url == url }) { _ in
+            XCTFail("A cached notification icon must not be downloaded")
+            return HTTPStubsResponse(error: URLError(.resourceUnavailable))
+        }
+        defer { HTTPStubs.removeStub(stubDesc) }
 
         let info = NotificationSenderInfo(
             source: .iconURL(url, needsAuth: false),

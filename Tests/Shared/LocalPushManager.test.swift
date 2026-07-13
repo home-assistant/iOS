@@ -394,6 +394,7 @@ class LocalPushManagerTests: XCTestCase {
         class SpyDecorator: NotificationCommunicationDecorator {
             var decorateCalled = false
             var apiUsed: HomeAssistantAPI?
+            let decoratedBody = "decorated_body"
 
             func decorate(
                 content: UNNotificationContent,
@@ -402,7 +403,9 @@ class LocalPushManagerTests: XCTestCase {
             ) async -> UNNotificationContent {
                 decorateCalled = true
                 apiUsed = api
-                return content
+                let decoratedContent = UNMutableNotificationContent()
+                decoratedContent.body = decoratedBody
+                return decoratedContent
             }
         }
 
@@ -444,6 +447,7 @@ class LocalPushManagerTests: XCTestCase {
 
         XCTAssertTrue(spy.decorateCalled)
         XCTAssertIdentical(spy.apiUsed, api)
+        XCTAssertEqual(added.last?.0.content.body, spy.decoratedBody)
     }
 
     func testSilentLiveActivityCommandSuppressesBannerAndDefersConfirm() throws {
