@@ -15,8 +15,13 @@ struct RectangularProgressView: View {
     let valueLabel: String?
     let tint: Color
 
-    /// Black on light tints, white on dark ones.
-    private var contrastColor: Color {
+    @Environment(\.widgetRenderingMode) private var renderingMode
+
+    /// Full color: black on light tints, white on dark ones. In accented (tinted) mode the pill fill
+    /// is placed in the accent group and the text is left in the default group, so the system renders
+    /// them in two distinct tint shades; the explicit color is ignored there.
+    private var valueTextColor: Color {
+        guard renderingMode == .fullColor else { return .white }
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
         UIColor(tint).getRed(&r, green: &g, blue: &b, alpha: &a)
         return (0.299 * r + 0.587 * g + 0.114 * b) > 0.6 ? .black : .white
@@ -31,21 +36,23 @@ struct RectangularProgressView: View {
                     Capsule().fill(tint.opacity(0.25)).frame(height: Self.barHeight)
                     Capsule().fill(tint).frame(width: max(Self.barHeight, width * clamped), height: Self.barHeight)
                     if let valueLabel {
-                        Text(verbatim: valueLabel)
-                            .font(.body.bold())
-                            .foregroundStyle(contrastColor)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                            .padding(.vertical, 1)
-                            .padding(.horizontal, 4)
-                            .frame(width: Self.thumbWidth, height: Self.thumbHeight)
-                            .padding(.horizontal, 4)
-                            .background(tint)
-                            .clipShape(.capsule)
-                            .position(
-                                x: min(max(width * clamped, Self.thumbWidth / 2), width - Self.thumbWidth / 2),
-                                y: Self.thumbHeight / 2
-                            )
+                        ZStack {
+                            Capsule()
+                                .fill(tint)
+                                .widgetAccentable()
+                            Text(verbatim: valueLabel)
+                                .font(.body.bold())
+                                .foregroundStyle(valueTextColor)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .padding(.vertical, 1)
+                                .padding(.horizontal, 4)
+                        }
+                        .frame(width: Self.thumbWidth, height: Self.thumbHeight)
+                        .position(
+                            x: min(max(width * clamped, Self.thumbWidth / 2), width - Self.thumbWidth / 2),
+                            y: Self.thumbHeight / 2
+                        )
                     }
                 }
                 .frame(height: Self.thumbHeight)
