@@ -228,6 +228,7 @@ public enum DatabaseTables {
         case customGaugeTemplate
         case sortOrder
         case families
+        case isCustomized
     }
 
     // Default notification quick actions (e.g. snooze presets)
