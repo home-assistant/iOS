@@ -2,29 +2,10 @@ import Foundation
 import GRDB
 import UserNotifications
 
-/// A user-configurable "snooze" quick action shown on notifications, identified on the wire as
-/// `actionIdentifierPrefix + minutes` (e.g. `HA_SNOOZE_5`).
-public struct NotificationSnoozeAction: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
-    public static let databaseTableName = GRDBDatabaseTable.notificationSnoozeAction.rawValue
-    public static let actionIdentifierPrefix = "HA_SNOOZE_"
-
-    public var id: String
-    public var minutes: Int
-    public var isEnabled: Bool
-    public var sortOrder: Int
-
-    public init(id: String = UUID().uuidString, minutes: Int, isEnabled: Bool = true, sortOrder: Int) {
-        self.id = id
-        self.minutes = minutes
-        self.isEnabled = isEnabled
-        self.sortOrder = sortOrder
-    }
-
-    public var actionIdentifier: String {
-        Self.actionIdentifierPrefix + String(minutes)
-    }
-
-    public var title: String {
+// `NotificationSnoozeAction` itself lives in the `HAModels` package; these are its localized
+// title, `UNNotificationAction` builders, and database-backed helpers.
+public extension NotificationSnoozeAction {
+    var title: String {
         guard minutes >= 60 else {
             return L10n.SettingsDetails.Notifications.SnoozeActions.titleMinutes(minutes)
         }
@@ -44,10 +25,12 @@ public struct NotificationSnoozeAction: Codable, FetchableRecord, PersistableRec
         }
     }
 
-    public var action: UNNotificationAction {
+    var action: UNNotificationAction {
         UNNotificationAction(identifier: actionIdentifier, title: title, options: [])
     }
+}
 
+extension NotificationSnoozeAction {
     static func seedDefaultsIfNeeded(database: DatabaseQueue) throws {
         let defaults = [5, 15, 60].enumerated().map { index, minutes in
             NotificationSnoozeAction(minutes: minutes, sortOrder: index)

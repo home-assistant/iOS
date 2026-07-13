@@ -112,73 +112,38 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
 
 // MARK: - Database Model
 
-public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Equatable {
-    public static var databaseTableName: String = GRDBDatabaseTable.deviceRegistry.rawValue
-    public let serverId: String
-
-    public let deviceId: String
-    public let areaId: String?
-    public let configurationURL: String?
-    public let configEntries: [String]?
-    public let configEntriesSubentries: [String: [String?]]?
-    public let connections: [[String]]?
-    public let createdAt: Double?
-    public let disabledBy: String?
-    public let entryType: String?
-    public let hwVersion: String?
-    public let identifiers: [[String]]?
-    public let labels: [String]?
-    public let manufacturer: String?
-    public let model: String?
-    public let modelID: String?
-    public let modifiedAt: Double?
-    public let nameByUser: String?
-    public let name: String?
-    public let primaryConfigEntry: String?
-    public let serialNumber: String?
-    public let swVersion: String?
-    public let viaDeviceID: String?
-
-    public init(serverId: String, registry: DeviceRegistryEntry) {
-        self.serverId = serverId
-
-        // Copy all fields from DeviceRegistry
-        self.areaId = registry.areaId
-        self.configurationURL = registry.configurationURL
-        self.configEntries = registry.configEntries
-        self.configEntriesSubentries = registry.configEntriesSubentries
-        self.connections = registry.connections
-        self.createdAt = registry.createdAt
-        self.disabledBy = registry.disabledBy
-        self.entryType = registry.entryType
-        self.hwVersion = registry.hwVersion
-        self.deviceId = registry.id
-        self.identifiers = registry.identifiers
-        self.labels = registry.labels
-        self.manufacturer = registry.manufacturer
-        self.model = registry.model
-        self.modelID = registry.modelID
-        self.modifiedAt = registry.modifiedAt
-        self.nameByUser = registry.nameByUser
-        self.name = registry.name
-        self.primaryConfigEntry = registry.primaryConfigEntry
-        self.serialNumber = registry.serialNumber
-        self.swVersion = registry.swVersion
-        self.viaDeviceID = registry.viaDeviceID
+// `AppDeviceRegistry` itself lives in the `HAModels` package; these map the websocket registry
+// payload and provide its database-backed queries.
+public extension AppDeviceRegistry {
+    init(serverId: String, registry: DeviceRegistryEntry) {
+        self.init(
+            serverId: serverId,
+            deviceId: registry.id,
+            areaId: registry.areaId,
+            configurationURL: registry.configurationURL,
+            configEntries: registry.configEntries,
+            configEntriesSubentries: registry.configEntriesSubentries,
+            connections: registry.connections,
+            createdAt: registry.createdAt,
+            disabledBy: registry.disabledBy,
+            entryType: registry.entryType,
+            hwVersion: registry.hwVersion,
+            identifiers: registry.identifiers,
+            labels: registry.labels,
+            manufacturer: registry.manufacturer,
+            model: registry.model,
+            modelID: registry.modelID,
+            modifiedAt: registry.modifiedAt,
+            nameByUser: registry.nameByUser,
+            name: registry.name,
+            primaryConfigEntry: registry.primaryConfigEntry,
+            serialNumber: registry.serialNumber,
+            swVersion: registry.swVersion,
+            viaDeviceID: registry.viaDeviceID
+        )
     }
 
-    public var id: String {
-        "\(serverId)-\(deviceId)"
-    }
-
-    // Computed helpers (same as DeviceRegistry)
-    public var displayName: String {
-        nameByUser ?? name ?? model ?? deviceId
-    }
-
-    public var isDisabled: Bool { disabledBy != nil }
-
-    public static func config(serverId: String) throws -> [AppDeviceRegistry] {
+    static func config(serverId: String) throws -> [AppDeviceRegistry] {
         try Current.database().read { db in
             try AppDeviceRegistry
                 .filter(
