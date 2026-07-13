@@ -197,15 +197,20 @@ extension WatchWidgetComplicationSnapshot {
     /// Sample used by the SwiftUI previews of the per-family complication views.
     static func previewSample(
         title: String = "100%",
+        subtitle: String = "Battery",
         fraction: Double? = 0.68,
-        gaugeStyle: String = "open"
+        gaugeStyle: String = "open",
+        showValue: Bool = true,
+        showName: Bool = true,
+        showIcon: Bool = true,
+        includeIcon: Bool = false
     ) -> Self {
         let options = PerFamily(
             fraction: fraction,
             tint: "#34C759FF",
-            showValue: true,
-            showName: true,
-            showIcon: true,
+            showValue: showValue,
+            showName: showName,
+            showIcon: showIcon,
             showMin: true,
             showMax: true,
             gaugeStyle: gaugeStyle,
@@ -217,13 +222,13 @@ extension WatchWidgetComplicationSnapshot {
             id: "preview",
             family: "",
             title: title,
-            subtitle: "Battery",
-            inlineText: "Battery \(title)",
+            subtitle: subtitle,
+            inlineText: "\(subtitle) \(title)",
             fraction: fraction,
             tint: "#34C759FF",
-            iconData: nil,
+            iconData: includeIcon ? UIImage(systemName: "lightbulb.fill")?.pngData() : nil,
             perFamily: ["circular": options, "rectangular": options, "inline": options, "corner": options],
-            menuName: "Battery"
+            menuName: subtitle
         )
     }
 
