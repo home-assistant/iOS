@@ -206,7 +206,6 @@ final class WatchComplicationConfigTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.WatchComplicationConfig.customGaugeTemplate.rawValue, .text)
                     t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()
                     t.column(DatabaseTables.WatchComplicationConfig.families.rawValue, .jsonText)
-                    // Nullable: absent falls back to inferring from `families` (see showsCustomized()).
                     t.column(DatabaseTables.WatchComplicationConfig.isCustomized.rawValue, .boolean)
                 }
             }
