@@ -35,15 +35,19 @@ final class ImmediateCommunicatorService {
                 Current.Log.error("Received assistSTTResponse without content")
                 return
             }
-            observers.forEach({ $0.delegate?
-                .didReceiveChatItem(AssistChatItem(content: payload.text, itemType: .input)) })
+            for observer in observers {
+                observer.delegate?
+                    .didReceiveChatItem(AssistChatItem(content: payload.text, itemType: .input))
+            }
         case .assistIntentEndResponse:
             guard let payload = AssistTextResponsePayload(content: message.content) else {
                 Current.Log.error("Received assistIntentEndResponse without content")
                 return
             }
-            observers.forEach({ $0.delegate?
-                .didReceiveChatItem(AssistChatItem(content: payload.text, itemType: .output)) })
+            for observer in observers {
+                observer.delegate?
+                    .didReceiveChatItem(AssistChatItem(content: payload.text, itemType: .output))
+            }
         case .assistTTSResponse:
             guard let payload = AssistTTSResponsePayload(content: message.content) else {
                 Current.Log.error("Received assistTTSResponse without valid media URL")

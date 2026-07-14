@@ -64,7 +64,8 @@ public final class WatchUserDefaults {
     /// then sends the full snapshot).
     public var databaseMirrorDigests: [String: String]? {
         get { userDefaults.dictionary(forKey: WatchUserDefaultsKey.databaseMirrorDigests.rawValue)
-            as? [String: String] }
+            as? [String: String]
+        }
         set {
             if let newValue {
                 userDefaults.set(newValue, forKey: WatchUserDefaultsKey.databaseMirrorDigests.rawValue)

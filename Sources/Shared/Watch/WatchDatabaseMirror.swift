@@ -143,46 +143,54 @@ public struct WatchDatabaseMirror: WatchCodable {
     /// registry rows are upserted (not wiped) so they don't disturb other registry data.
     public func apply() throws {
         try Current.database().write { db in
-            // Every table follows the same rule: present (even empty) is authoritative and
-            // replaces the local rows; absent means the sync didn't carry it — retain.
-            if let entities {
-                try HAAppEntity.deleteAll(db)
-                for entity in entities {
-                    try entity.insert(db)
-                }
+            try applyReferenceTables(in: db)
+            try applyComplicationTables(in: db)
+        }
+    }
+
+    private func applyReferenceTables(in db: Database) throws {
+        // Every table follows the same rule: present (even empty) is authoritative and
+        // replaces the local rows; absent means the sync didn't carry it — retain.
+        if let entities {
+            try HAAppEntity.deleteAll(db)
+            for entity in entities {
+                try entity.insert(db)
             }
-            if let areas {
-                try AppArea.deleteAll(db)
-                for area in areas {
-                    try area.insert(db)
-                }
+        }
+        if let areas {
+            try AppArea.deleteAll(db)
+            for area in areas {
+                try area.insert(db)
             }
-            if let pipelines {
-                try AssistPipelines.deleteAll(db)
-                for pipeline in pipelines {
-                    try pipeline.insert(db)
-                }
+        }
+        if let pipelines {
+            try AssistPipelines.deleteAll(db)
+            for pipeline in pipelines {
+                try pipeline.insert(db)
             }
-            // Only replace the complication tables when this sync actually carried them. A `nil` here is
-            // a half/broken/older sync — keep the watch's existing complications instead of wiping them.
-            if let complications {
-                try WatchComplication.deleteAll(db)
-                for complication in complications {
-                    try complication.insert(db)
-                }
+        }
+    }
+
+    private func applyComplicationTables(in db: Database) throws {
+        // Only replace the complication tables when this sync actually carried them. A `nil` here is
+        // a half/broken/older sync — keep the watch's existing complications instead of wiping them.
+        if let complications {
+            try WatchComplication.deleteAll(db)
+            for complication in complications {
+                try complication.insert(db)
             }
-            if let complicationConfigs {
-                try WatchComplicationConfig.deleteAll(db)
-                for config in complicationConfigs {
-                    try config.insert(db)
-                }
+        }
+        if let complicationConfigs {
+            try WatchComplicationConfig.deleteAll(db)
+            for config in complicationConfigs {
+                try config.insert(db)
             }
-            // The registry is keyed on (serverId, entityId) with no stable primary key, so a plain
-            // save() re-inserts on the next sync and violates that unique index (SQLite error 19).
-            // Replace on conflict to upsert just these rows without wiping the rest of the registry.
-            for entity in complicationEntities {
-                try entity.insert(db, onConflict: .replace)
-            }
+        }
+        // The registry is keyed on (serverId, entityId) with no stable primary key, so a plain
+        // save() re-inserts on the next sync and violates that unique index (SQLite error 19).
+        // Replace on conflict to upsert just these rows without wiping the rest of the registry.
+        for entity in complicationEntities {
+            try entity.insert(db, onConflict: .replace)
         }
     }
 

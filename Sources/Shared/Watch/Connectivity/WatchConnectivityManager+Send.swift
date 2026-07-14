@@ -84,7 +84,7 @@ public extension WatchConnectivityManager {
 
         // At most one of {delivery error, timeout} may call errorHandler; a reply or delivery error
         // cancels the pending timeout so it doesn't linger (retaining the handlers) for the full
-        // window after the send already resolved — chunked flows create one of these per chunk.
+        // window after the send already resolved - chunked flows create one of these per chunk.
         let errorGate = WatchConnectivityOnceFlag()
         let effectiveTimeout = timeout > 0 ? timeout : Self.interactiveReplyTimeout
         let timeoutWork = DispatchWorkItem {
