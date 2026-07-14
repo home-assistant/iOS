@@ -544,7 +544,6 @@
 "improv.wifi.alert.password_placeholder" = "Κωδικός πρόσβασης";
 "improv.wifi.alert.ssid_placeholder" = "Ονομα δικτύου";
 "improv.wifi.alert.title" = "Σύνδεση στο WiFi";
-"intents.server_required_for_value" = "Επιλέξτε έναν διακομιστή πριν επιλέξετε αυτή την τιμή.";
 "kiosk.accept_remote_commands.footer" = "When enabled, this device responds to kiosk commands sent through push notifications, such as showing or hiding the screensaver.";
 "kiosk.accept_remote_commands.title" = "Accept kiosk remote commands";
 "kiosk.active.title" = "Λειτουργία κιόσκι ενεργή";

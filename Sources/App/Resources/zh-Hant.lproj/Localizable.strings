@@ -544,7 +544,6 @@
 "improv.wifi.alert.password_placeholder" = "密碼";
 "improv.wifi.alert.ssid_placeholder" = "網路名稱";
 "improv.wifi.alert.title" = "連線至 WiFi";
-"intents.server_required_for_value" = "於選擇設值前請先選擇伺服器。";
 "kiosk.accept_remote_commands.footer" = "開啟後，此裝置將回應透過推播通知傳送的資訊台指令，例如顯示或隱藏螢幕保護程式。";
 "kiosk.accept_remote_commands.title" = "接受資訊台遠端指令";
 "kiosk.active.title" = "開啟資訊台模式";

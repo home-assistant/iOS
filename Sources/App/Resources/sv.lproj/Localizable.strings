@@ -542,7 +542,6 @@
 "improv.wifi.alert.password_placeholder" = "Lösenord";
 "improv.wifi.alert.ssid_placeholder" = "Nätverksnamn";
 "improv.wifi.alert.title" = "Anslut till Wi-Fi";
-"intents.server_required_for_value" = "Välj en server innan du väljer detta värde.";
 "kiosk.accept_remote_commands.footer" = "När denna funktion är aktiverad svarar enheten på kiosk-kommandon som skickas via push-meddelanden, till exempel att visa eller dölja skärmsläckaren.";
 "kiosk.accept_remote_commands.title" = "Acceptera fjärrkommandon för kiosk";
 "kiosk.active.title" = "Kioskläge aktivt";

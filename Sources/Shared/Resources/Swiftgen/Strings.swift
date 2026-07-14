@@ -1994,11 +1994,6 @@ public enum L10n {
     }
   }
 
-  public enum Intents {
-    /// Select a server before picking this value.
-    public static var serverRequiredForValue: String { return L10n.tr("Localizable", "intents.server_required_for_value") }
-  }
-
   public enum Kiosk {
     /// Lock the app into a single dashboard for wall panels and shared devices.
     public static var body: String { return L10n.tr("Localizable", "kiosk.body") }
@@ -5661,6 +5656,8 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "watch.complications.legacy.title") }
       }
       public enum Root {
+        /// Duplicate
+        public static var duplicate: String { return L10n.tr("Localizable", "watch.complications.root.duplicate") }
         /// Show entity state and gauges on your watch face.
         public static var headerSubtitle: String { return L10n.tr("Localizable", "watch.complications.root.header_subtitle") }
         /// Legacy complications

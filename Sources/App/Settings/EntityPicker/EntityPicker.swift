@@ -102,12 +102,9 @@ struct EntityPicker: View {
                     .listRowSeparator(.hidden)
             }
             filtersView
-            ForEach(
-                viewModel.filteredEntitiesByGroup.sorted(by: { $0.key < $1.key }),
-                id: \.key
-            ) { group, filteredEntities in
-                Section(group.uppercased()) {
-                    ForEach(filteredEntities, id: \.id) { entity in
+            ForEach(viewModel.filteredGroups) { group in
+                Section(group.title.uppercased()) {
+                    ForEach(group.entities, id: \.id) { entity in
                         Button(action: {
                             selectedEntity = entity
                             viewModel.showList = false

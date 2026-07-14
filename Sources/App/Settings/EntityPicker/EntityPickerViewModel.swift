@@ -27,12 +27,13 @@ final class EntityPickerViewModel: ObservableObject {
     @Published var selectedAreaFilter: String? = nil
     @Published var selectedGrouping: EntityGrouping = .area
     @Published var entitiesByDomain: [String: [HAAppEntity]] = [:]
-    @Published var filteredEntitiesByGroup: [String: [HAAppEntity]] = [:]
+    @Published var filteredGroups: [EntityPickerGroup] = []
 
     // Cached lookups to avoid recomputation on every filter
     private var cachedEntityToArea: [String: String] = [:]
     private var cachedAreaIdToEntityIds: [String: Set<String>] = [:]
     private var cachedEntitiesByServer: [String: [HAAppEntity]] = [:]
+    private var fuzzyIndex: EntityFuzzySearchIndex?
 
     let domainFilter: [Domain]?
     private var filterTask: Task<Void, Never>?
@@ -122,10 +123,16 @@ final class EntityPickerViewModel: ObservableObject {
             rebuildAreaCaches()
             // Prime server cache for this server
             cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
+            rebuildFuzzyIndex(for: serverId)
             updateFilteredEntities()
         } catch {
             Current.Log.error("Failed to fetch server data for entity picker, error: \(error)")
         }
+    }
+
+    private func rebuildFuzzyIndex(for serverId: String) {
+        let serverEntities = entities.filter { $0.serverId == serverId }
+        fuzzyIndex = EntityFuzzySearchIndex(entities: serverEntities, serverId: serverId)
     }
 
     func fetchEntities() {
@@ -172,7 +179,7 @@ final class EntityPickerViewModel: ObservableObject {
 
     private func performFiltering() async {
         // Snapshot state needed for filtering
-        let searchTerm = searchTerm
+        let searchTerm = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
         let presetDomains = domainFilter.map { Set($0.map(\.rawValue)) }
         let selectedDomainFilter = selectedDomainFilter
         let areaFilter = selectedAreaFilter
@@ -185,55 +192,64 @@ final class EntityPickerViewModel: ObservableObject {
 
         // Get entities already filtered by server
         let serverScopedEntities = entitiesForCurrentServer()
+        let fuzzyIndex = fuzzyIndex
 
-        let filtered = await Task.detached(priority: .userInitiated) { () -> [String: [HAAppEntity]] in
-            // Resolve area entity id set if filtering by area
+        let groups = await Task.detached(priority: .userInitiated) { () -> [EntityPickerGroup] in
             let areaEntityIds: Set<String>? = areaFilter.flatMap { areaIdToEntityIds[$0] }
 
-            // First, filter entities by domain, area, and search
-            let filteredEntities = serverScopedEntities.filter { entity in
-                // Filter by the preset domain(s), if any were provided by the caller
+            func passesStructuredFilters(_ entity: HAAppEntity) -> Bool {
                 if let presetDomains, !presetDomains.contains(entity.domain) { return false }
-
-                // Filter by the user-selected domain (only offered when there's no preset)
                 if let selectedDomainFilter, entity.domain != selectedDomainFilter { return false }
-
-                // Filter by area if set
                 if let areaEntityIds, !areaEntityIds.contains(entity.entityId) { return false }
-
-                // Filter by search term (only when 3+ chars). `entity.name` is the resolved display
-                // name (registry name, falling back to the state name), baked in at write time.
-                if searchTerm.count > 2 {
-                    let lower = searchTerm.lowercased()
-                    if !entity.name.lowercased().contains(lower),
-                       !entity.entityId.lowercased().contains(lower) {
-                        return false
-                    }
-                }
                 return true
             }
 
-            // Group by selected grouping
+            let isSearching = !searchTerm.isEmpty
+            let baseEntities: [HAAppEntity] = isSearching
+                ? (fuzzyIndex?.search(searchTerm) ?? [])
+                : serverScopedEntities
+            let filteredEntities = baseEntities.filter(passesStructuredFilters)
+
             switch grouping {
             case .domain:
-                return Dictionary(grouping: filteredEntities) { $0.domain }
+                return Self.groupPreservingOrder(filteredEntities, sortAlphabetically: !isSearching) { $0.domain }
             case .area:
-                var result: [String: [HAAppEntity]] = [:]
-                for entity in filteredEntities {
-                    let areaName = entityToArea[entity.entityId] ?? noAreaTitle
-                    result[areaName, default: []].append(entity)
-                }
-                // Ensure the "No Area" group appears last by moving it to the end
-                if let noAreaGroup = result.removeValue(forKey: noAreaTitle) {
-                    result[noAreaTitle] = noAreaGroup
-                }
-                return result
+                return Self.groupPreservingOrder(
+                    filteredEntities,
+                    sortAlphabetically: !isSearching,
+                    lastGroupTitle: noAreaTitle
+                ) { entityToArea[$0.entityId] ?? noAreaTitle }
             }
         }.value
 
         await MainActor.run {
-            self.filteredEntitiesByGroup = filtered
+            self.filteredGroups = groups
         }
+    }
+
+    private static func groupPreservingOrder(
+        _ entities: [HAAppEntity],
+        sortAlphabetically: Bool,
+        lastGroupTitle: String? = nil,
+        keyFor: (HAAppEntity) -> String
+    ) -> [EntityPickerGroup] {
+        var order: [String] = []
+        var grouped: [String: [HAAppEntity]] = [:]
+        for entity in entities {
+            let key = keyFor(entity)
+            if grouped[key] == nil { order.append(key) }
+            grouped[key, default: []].append(entity)
+        }
+
+        if sortAlphabetically {
+            order.sort(by: <)
+            if let lastGroupTitle, let index = order.firstIndex(of: lastGroupTitle) {
+                order.remove(at: index)
+                order.append(lastGroupTitle)
+            }
+        }
+
+        return order.map { EntityPickerGroup(title: $0, entities: grouped[$0] ?? []) }
     }
 
     // MARK: - Test helpers (DEBUG only)

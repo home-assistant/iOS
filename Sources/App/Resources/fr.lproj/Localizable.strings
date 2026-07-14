@@ -544,7 +544,6 @@ Ce serveur requiert un certificat client (mTLS), mais l'opération a été annul
 "improv.wifi.alert.password_placeholder" = "Mot de passe";
 "improv.wifi.alert.ssid_placeholder" = "Nom du réseau";
 "improv.wifi.alert.title" = "Se connecter au WiFi";
-"intents.server_required_for_value" = "Sélectionnez un serveur avant de choisir cette valeur.";
 "kiosk.accept_remote_commands.footer" = "Lorsque cette option est activée, cet appareil répond aux commandes kiosque envoyées via les notifications push, comme l'affichage ou le masquage de l'économiseur d'écran.";
 "kiosk.accept_remote_commands.title" = "Accepter les commandes kiosque à distance";
 "kiosk.active.title" = "Mode kiosque actif";
