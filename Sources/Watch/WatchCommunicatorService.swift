@@ -411,16 +411,19 @@ final class WatchCommunicatorService {
     /// we answer the same way so the config survives the phone being backgrounded/locked. No
     /// reachability required on either side.
     private func respondToGuaranteedWatchConfigRequest() {
+        // The types are spelled out: `.init` here is ambiguous between ImmediateMessage (requires
+        // reachability — would defeat this whole flow) and GuaranteedMessage, and used to compile as
+        // the latter only because Swift prefers the overload without defaulted arguments.
         do {
             if let config: WatchConfig = try Current.database().read({ db in try WatchConfig.fetchOne(db) }) {
                 buildWatchConfigResponseContent(watchConfig: config) { content in
-                    Communicator.shared.send(.init(
+                    Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(
                         identifier: InteractiveImmediateResponses.watchConfigResponse.rawValue,
                         content: content
                     ))
                 }
             } else {
-                Communicator.shared.send(.init(
+                Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(
                     identifier: InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
                 ))
             }

@@ -113,9 +113,14 @@ final class WatchHomeViewModel: ObservableObject {
     /// it wasn't immediately reachable. Used as a fallback when the interactive request can't run or
     /// times out.
     private func enqueueGuaranteedConfigPull() {
-        Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(
-            identifier: InteractiveImmediateMessages.watchConfig.rawValue
-        ))
+        let identifier = InteractiveImmediateMessages.watchConfig.rawValue
+        // Every reload while unreachable would otherwise queue another transferUserInfo, and the
+        // phone would answer each with a full config payload once it wakes.
+        guard !Communicator.shared.hasOutstandingGuaranteedMessage(identifier: identifier) else {
+            Current.Log.info("Skipping guaranteed config pull: one is already queued")
+            return
+        }
+        Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(identifier: identifier))
     }
 
     func startNetworkMonitoring() {
