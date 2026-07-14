@@ -53,10 +53,7 @@ struct JinjaTextEditor: UIViewRepresentable {
             context.coordinator.applyHighlighting(text)
         }
         if let insertion = pendingInsertion {
-            context.coordinator.insert(insertion)
-            DispatchQueue.main.async {
-                pendingInsertion = nil
-            }
+            context.coordinator.scheduleInsertion(insertion)
         }
     }
 
@@ -73,6 +70,7 @@ struct JinjaTextEditor: UIViewRepresentable {
     final class Coordinator: NSObject, UITextViewDelegate {
         var parent: JinjaTextEditor
         weak var textView: UITextView?
+        private var scheduledInsertion: JinjaTemplateSuggestion?
 
         init(parent: JinjaTextEditor) {
             self.parent = parent
@@ -100,7 +98,19 @@ struct JinjaTextEditor: UIViewRepresentable {
             )
         }
 
-        func insert(_ suggestion: JinjaTemplateSuggestion) {
+        func scheduleInsertion(_ suggestion: JinjaTemplateSuggestion) {
+            guard scheduledInsertion != suggestion else { return }
+            scheduledInsertion = suggestion
+
+            DispatchQueue.main.async { [weak self] in
+                guard let self, scheduledInsertion == suggestion else { return }
+                parent.pendingInsertion = nil
+                insert(suggestion)
+                scheduledInsertion = nil
+            }
+        }
+
+        private func insert(_ suggestion: JinjaTemplateSuggestion) {
             guard let textView else { return }
             let nsText = textView.text as NSString
             let cursor = min(textView.selectedRange.location, nsText.length)
