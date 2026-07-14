@@ -3,9 +3,10 @@ import Shared
 import SwiftUI
 import UIKit
 
-/// Presents app Settings from above the kiosk/container swap (hosted by `ConditionalContainerView`) so that
-/// toggling kiosk mode — reachable via Settings → Kiosk — doesn't tear the Settings sheet down with the
-/// container it would otherwise be presented from.
+/// Drives app Settings navigation from above the kiosk/container swap (hosted by `ConditionalContainerView`)
+/// so that toggling kiosk mode — reachable via Settings → Kiosk — doesn't tear Settings down with the
+/// container it would otherwise be presented from. On iOS Settings is pushed onto the container's navigation
+/// stack; on Catalyst it opens in its own scene.
 final class AppSettingsPresenter: ObservableObject {
     static let shared = AppSettingsPresenter()
     @Published var isPresented = false

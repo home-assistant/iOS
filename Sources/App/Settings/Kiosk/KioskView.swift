@@ -10,14 +10,21 @@ struct ConditionalContainerView: View {
     @State private var showKioskSettings = false
 
     var body: some View {
-        content
-            .sheet(isPresented: $appSettings.isPresented) {
-                SettingsView()
-                    .injectingViewControllerProvider()
-                    .onDisappear {
-                        Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
+        if Current.isCatalyst {
+            content
+        } else {
+            NavigationStack {
+                content
+                    .toolbar(.hidden, for: .navigationBar)
+                    .navigationDestination(isPresented: $appSettings.isPresented) {
+                        SettingsView(embedInOwnNavigation: false)
+                            .injectingViewControllerProvider()
+                            .onDisappear {
+                                Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
+                            }
                     }
             }
+        }
     }
 
     private var content: some View {

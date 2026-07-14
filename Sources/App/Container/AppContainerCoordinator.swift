@@ -13,7 +13,7 @@ final class AppContainerCoordinator: AppCoordinator {
     /// Set by `ContainerView` to drive `OnboardingStateObservable` (the screen/server source of truth).
     var onOpenServer: ((Server) -> Void)?
     var onSetup: (() -> Void)?
-    /// Set by `ContainerView` to present Settings as a sheet over the web view (non-Catalyst).
+    /// Set by `ContainerView` to push Settings onto the web view's navigation stack (non-Catalyst).
     var onShowSettings: (() -> Void)?
     /// Set by `ContainerView` to present Assist settings as a sheet over the web view.
     var onShowAssistSettings: (() -> Void)?
@@ -57,8 +57,8 @@ final class AppContainerCoordinator: AppCoordinator {
     }
 
     func showSettings() {
-        // On Catalyst with multiple scenes, Settings is its own window; otherwise present it as a sheet
-        // over the web view via `ContainerView`.
+        // On Catalyst with multiple scenes, Settings is its own window; otherwise push it onto the
+        // container's navigation stack via `ContainerView`.
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
         } else {
