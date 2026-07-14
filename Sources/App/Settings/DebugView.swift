@@ -635,7 +635,8 @@ struct DebugView: View {
     }
 
     private func dismissSettingsAfterReset() {
-        AppSettingsPresenter.shared.isPresented = false
+        AppSettingsPresenter.shared.isSheetPresented = false
+        AppSettingsPresenter.shared.isPushPresented = false
         dismiss()
     }
 
