@@ -544,7 +544,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "improv.wifi.alert.password_placeholder" = "Heslo";
 "improv.wifi.alert.ssid_placeholder" = "Název sítě";
 "improv.wifi.alert.title" = "Připojit k Wi-Fi";
-"intents.server_required_for_value" = "Před výběrem této hodnoty vyberte server.";
 "kiosk.accept_remote_commands.footer" = "Pokud je povoleno, toto zařízení reaguje na příkazy kiosku odeslané prostřednictvím push notifikací, jako je zobrazení nebo skrytí spořiče obrazovky.";
 "kiosk.accept_remote_commands.title" = "Přijímat vzdálené příkazy kiosku";
 "kiosk.active.title" = "Režim kiosku je aktivní";

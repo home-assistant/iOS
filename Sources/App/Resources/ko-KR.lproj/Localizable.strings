@@ -544,7 +544,6 @@
 "improv.wifi.alert.password_placeholder" = "비밀번호";
 "improv.wifi.alert.ssid_placeholder" = "네트워크 이름";
 "improv.wifi.alert.title" = "WiFi에 연결하기";
-"intents.server_required_for_value" = "이 값을 선택하기 전에 서버를 선택하세요.";
 "kiosk.accept_remote_commands.footer" = "활성화하면 이 기기는 화면 보호기 표시 또는 숨기기와 같이 푸시 알림으로 전송된 키오스크 명령에 응답합니다.";
 "kiosk.accept_remote_commands.title" = "키오스크 원격 명령 허용";
 "kiosk.active.title" = "키오스크 모드 활성";

@@ -544,7 +544,6 @@
 "improv.wifi.alert.password_placeholder" = "Salasõna";
 "improv.wifi.alert.ssid_placeholder" = "Võrgu nimi";
 "improv.wifi.alert.title" = "Ühendu WiFi-ga";
-"intents.server_required_for_value" = "Enne selle väärtuse valimist vali server.";
 "kiosk.accept_remote_commands.footer" = "Kui see on lubatud, reageerib seade tõukemärguannete kaudu saadetud kioski käsklustele, näiteks ekraanisäästja kuvamisele või peitmisele.";
 "kiosk.accept_remote_commands.title" = "Nõustu kioski kaugkäsklustega";
 "kiosk.active.title" = "Kioskirežiim on aktiivne";
