@@ -162,10 +162,9 @@ public class HomeAssistantAPI {
         self.connection = RetryAwareHAConnection(underlying: underlyingConnection)
         connection.delegate = self
 
-        // Use custom delegate that supports client certificates (mTLS)
-        let sessionDelegate: SessionDelegate = server.info.connection.clientCertificate != nil
-            ? ClientCertificateSessionDelegate(server: server)
-            : SessionDelegate()
+        // Attached unconditionally (see makeCertificateAwareURLSession): the delegate resolves the
+        // client certificate fresh at challenge time rather than gating on an init-time snapshot.
+        let sessionDelegate: SessionDelegate = ClientCertificateSessionDelegate(server: server)
 
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
@@ -181,18 +180,18 @@ public class HomeAssistantAPI {
     }
 
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
-    /// exceptions (mTLS), or a plain ephemeral session when neither is configured. Reused by HAKit's
-    /// REST calls and, on watchOS, by direct REST execution (where WebSocket transport is unavailable).
+    /// exceptions (mTLS). Reused by HAKit's REST calls and, on watchOS, by direct REST execution.
+    ///
+    /// The provider is attached unconditionally and resolves the certificate fresh at challenge
+    /// time. The certificate is not always present in the server-config snapshot when the session
+    /// is built (e.g. the config was just restored from a source that did not carry it, or a
+    /// Keychain read fell back to the sanitized GRDB mirror), yet is usable moments later. Gating
+    /// session construction on that snapshot would leave the session permanently without the
+    /// certificate, so every external, mTLS-protected request 403s for the process's lifetime.
     public static func makeCertificateAwareURLSession(server: Server) -> URLSession {
-        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
-            Current.Log.info("[mTLS] Using HAKit certificate provider")
-            let certificateProvider = HomeAssistantCertificateProvider(server: server)
-            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
-            return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
-        } else {
-            Current.Log.info("[mTLS] Using default URLSession for HAKit")
-            return URLSession(configuration: .ephemeral)
-        }
+        let certificateProvider = HomeAssistantCertificateProvider(server: server)
+        let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
+        return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
     }
 
     public static func apiAvailabilityCheck(for server: Server, timeout: TimeInterval = 5) async -> Bool {
