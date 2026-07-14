@@ -294,16 +294,12 @@ final class WatchCommunicatorService {
     }
 
     private func handleAssistAudioChunkedMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
-        guard let chunkData = message.content["chunkData"] as? Data,
-              let chunkIndex = message.content["chunkIndex"] as? Int,
-              let totalChunks = message.content["totalChunks"] as? Int,
-              let serverId = message.content["serverId"] as? String,
-              let pipelineId = message.content["pipelineId"] as? String else {
+        guard let payload = AssistAudioChunkPayload(content: message.content) else {
             Current.Log.error("Invalid chunked message data")
             return
         }
         // Older watch builds don't send a recordingId; fall back to the legacy key so they keep working.
-        let sessionKey = (message.content["recordingId"] as? String) ?? (serverId + "_" + pipelineId)
+        let sessionKey = payload.recordingId ?? (payload.serverId + "_" + payload.pipelineId)
 
         // Drop partial uploads that went quiet before starting/continuing this one.
         let now = Current.date()
@@ -316,24 +312,26 @@ final class WatchCommunicatorService {
         }
 
         var session = audioChunkSessions[sessionKey]
-            ?? AudioChunkSession(totalChunks: totalChunks, lastChunkAt: now)
-        session.chunks[chunkIndex] = chunkData
-        session.totalChunks = totalChunks
+            ?? AudioChunkSession(totalChunks: payload.totalChunks, lastChunkAt: now)
+        session.chunks[payload.chunkIndex] = payload.chunkData
+        session.totalChunks = payload.totalChunks
         session.lastChunkAt = now
         audioChunkSessions[sessionKey] = session
 
         // Acknowledge this chunk; the watch sends the next one only after receiving this.
-        message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioChunkAck.rawValue, content: [
-            "acknowledged": true,
-            "chunkIndex": chunkIndex,
-            "totalChunks": totalChunks,
-        ]))
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.assistAudioChunkAck.rawValue,
+            content: AssistAudioChunkAckPayload(
+                chunkIndex: payload.chunkIndex,
+                totalChunks: payload.totalChunks
+            ).content
+        ))
 
-        if session.chunks.count == totalChunks {
+        if session.chunks.count == payload.totalChunks {
             let sortedChunks = session.chunks.keys.sorted().compactMap { session.chunks[$0] }
             let combinedData = sortedChunks.reduce(Data(), +)
             audioChunkSessions.removeValue(forKey: sessionKey)
-            assistAudioData(message: message.toImmediateMessage(), data: combinedData)
+            assistAudioData(payload: payload, data: combinedData)
         }
     }
 
@@ -789,32 +787,25 @@ extension WatchCommunicatorService {
         }
     }
 
-    private func assistAudioData(message: HAWatchConnectivity.ImmediateMessage, data: Data) {
-        let serverId = message.content["serverId"] as? String
-        guard let server = assistTargetServer(for: serverId) else {
-            Current.Log.error("Assist audio targets unknown server \(serverId ?? "<none>")")
+    private func assistAudioData(payload: AssistAudioChunkPayload, data: Data) {
+        guard let server = assistTargetServer(for: payload.serverId) else {
+            Current.Log.error("Assist audio targets unknown server \(payload.serverId)")
             // Tell the watch instead of dropping the session on the floor — it routes assistError
             // to the chat UI, so the user sees a failure rather than an endless spinner.
             sendMessage(message: .init(
                 identifier: InteractiveImmediateResponses.assistError.rawValue,
-                content: [
-                    "code": "unknown_server",
-                    "message": "Server not found on iPhone",
-                ]
+                content: AssistErrorPayload(
+                    code: "unknown_server",
+                    message: "Server not found on iPhone"
+                ).content
             ))
             return
         }
 
-        let pipelineId = message.content["pipelineId"] as? String
-        guard let sampleRate = message.content["sampleRate"] as? Double else {
-            let errorMessage = "No sample rate received in message \(message.identifier)"
-            Current.Log.error(errorMessage)
-            return
-        }
         pendingAudioData = data
         initAssistServiceIfNeeded(server: server).assist(source: .audio(
-            pipelineId: pipelineId,
-            audioSampleRate: sampleRate,
+            pipelineId: payload.pipelineId,
+            audioSampleRate: payload.sampleRate,
             tts: true
         ))
     }
@@ -858,9 +849,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     func didReceiveSttContent(_ content: String) {
         let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistSTTResponse.rawValue,
-            content: [
-                "content": content,
-            ]
+            content: AssistTextResponsePayload(text: content).content
         )
         sendMessage(message: message)
     }
@@ -868,9 +857,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     func didReceiveIntentEndContent(_ content: String) {
         let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistIntentEndResponse.rawValue,
-            content: [
-                "content": content,
-            ]
+            content: AssistTextResponsePayload(text: content).content
         )
         sendMessage(message: message)
     }
@@ -882,9 +869,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
         let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistTTSResponse.rawValue,
-            content: [
-                "mediaURL": mediaUrl.absoluteString,
-            ]
+            content: AssistTTSResponsePayload(mediaURL: mediaUrl).content
         )
         sendMessage(message: message)
     }
@@ -892,10 +877,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     func didReceiveError(code: String, message: String) {
         let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistError.rawValue,
-            content: [
-                "code": code,
-                "message": message,
-            ]
+            content: AssistErrorPayload(code: code, message: message).content
         )
         sendMessage(message: message)
     }
@@ -910,11 +892,5 @@ extension WatchCommunicatorService: ServerObserver {
         // reaches the watch proactively. mTLS client-certificate bundles still flow only through the
         // on-demand `serversConfigSync` reply (they carry Keychain material kept off the mirror).
         WatchMirrorPushCoordinator.schedule(reason: .serversChanged)
-    }
-}
-
-private extension HAWatchConnectivity.InteractiveImmediateMessage {
-    func toImmediateMessage() -> HAWatchConnectivity.ImmediateMessage {
-        HAWatchConnectivity.ImmediateMessage(identifier: identifier, content: content)
     }
 }

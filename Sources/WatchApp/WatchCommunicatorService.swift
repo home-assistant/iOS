@@ -31,31 +31,31 @@ final class ImmediateCommunicatorService {
 
         switch messageId {
         case .assistSTTResponse:
-            guard let content = message.content["content"] as? String else {
+            guard let payload = AssistTextResponsePayload(content: message.content) else {
                 Current.Log.error("Received assistSTTResponse without content")
                 return
             }
-            observers.forEach({ $0.delegate?.didReceiveChatItem(AssistChatItem(content: content, itemType: .input)) })
+            observers.forEach({ $0.delegate?
+                .didReceiveChatItem(AssistChatItem(content: payload.text, itemType: .input)) })
         case .assistIntentEndResponse:
-            guard let content = message.content["content"] as? String else {
+            guard let payload = AssistTextResponsePayload(content: message.content) else {
                 Current.Log.error("Received assistIntentEndResponse without content")
                 return
             }
-            observers.forEach({ $0.delegate?.didReceiveChatItem(AssistChatItem(content: content, itemType: .output)) })
+            observers.forEach({ $0.delegate?
+                .didReceiveChatItem(AssistChatItem(content: payload.text, itemType: .output)) })
         case .assistTTSResponse:
-            guard let audioURLString = message.content["mediaURL"] as? String,
-                  let audioURL = URL(string: audioURLString) else {
+            guard let payload = AssistTTSResponsePayload(content: message.content) else {
                 Current.Log.error("Received assistTTSResponse without valid media URL")
                 return
             }
-            observers.forEach({ $0.delegate?.didReceiveTTS(url: audioURL) })
+            observers.forEach({ $0.delegate?.didReceiveTTS(url: payload.mediaURL) })
         case .assistError:
-            guard let code = message.content["code"] as? String,
-                  let message = message.content["message"] as? String else {
+            guard let payload = AssistErrorPayload(content: message.content) else {
                 Current.Log.error("Received assistError without valid code/message")
                 return
             }
-            observers.forEach({ $0.delegate?.didReceiveError(code: code, message: message) })
+            observers.forEach({ $0.delegate?.didReceiveError(code: payload.code, message: payload.message) })
         default:
             break
         }
