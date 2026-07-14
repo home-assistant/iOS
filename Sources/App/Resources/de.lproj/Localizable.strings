@@ -544,7 +544,6 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "improv.wifi.alert.password_placeholder" = "Passwort";
 "improv.wifi.alert.ssid_placeholder" = "Netzwerkname";
 "improv.wifi.alert.title" = "Mit WLAN verbinden";
-"intents.server_required_for_value" = "Wähle einen Server aus, bevor du diesen Wert wählst.";
 "kiosk.accept_remote_commands.footer" = "Ist diese Funktion aktiviert, reagiert das Gerät auf Kiosk-Befehle, die über Push-Benachrichtigungen gesendet werden, z. B. das Ein- oder Ausblenden des Bildschirmschoners.";
 "kiosk.accept_remote_commands.title" = "Kiosk-Fernbefehle akzeptieren";
 "kiosk.active.title" = "Kioskmodus aktiv";

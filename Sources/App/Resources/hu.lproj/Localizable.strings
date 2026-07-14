@@ -544,7 +544,6 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "improv.wifi.alert.password_placeholder" = "Jelszó";
 "improv.wifi.alert.ssid_placeholder" = "Hálózat neve";
 "improv.wifi.alert.title" = "Csatlakozás a WiFihez";
-"intents.server_required_for_value" = "Az érték kiválasztása előtt válasszon egy szervert.";
 "kiosk.accept_remote_commands.footer" = "Ha engedélyezve van, az eszköz válaszol a push értesítéseken keresztül küldött kioszk parancsokra, például a képernyővédő megjelenítésére vagy elrejtésére.";
 "kiosk.accept_remote_commands.title" = "Kioszk távoli parancsok fogadása";
 "kiosk.active.title" = "Kioskmód aktív";

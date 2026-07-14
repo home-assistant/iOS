@@ -544,7 +544,6 @@
 "improv.wifi.alert.password_placeholder" = "パスワード";
 "improv.wifi.alert.ssid_placeholder" = "ネットワーク名";
 "improv.wifi.alert.title" = "WiFiに接続する";
-"intents.server_required_for_value" = "この値を選択する前に、サーバーを選択してください。";
 "kiosk.accept_remote_commands.footer" = "この機能を有効にすると、このデバイスは、スクリーンセーバーの表示や非表示など、プッシュ通知を通じて送信されるキオスクコマンドに応答します。";
 "kiosk.accept_remote_commands.title" = "キオスクのリモートコマンドを受け入れる";
 "kiosk.active.title" = "キオスクモード有効";
