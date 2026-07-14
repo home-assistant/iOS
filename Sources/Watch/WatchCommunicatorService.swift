@@ -738,13 +738,22 @@ final class WatchCommunicatorService {
 // MARK: - Assist
 
 extension WatchCommunicatorService {
+    /// Resolve the server an assist message targets. A serverId that doesn't match any configured
+    /// server is an error — silently falling back to another server would run assist against the
+    /// wrong home. The first-server fallback remains only for messages carrying no serverId at all.
+    private func assistTargetServer(for serverId: String?) -> Server? {
+        if let serverId {
+            return Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
+        }
+        return Current.servers.all.first
+    }
+
     private func assistPipelinesFetch(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.assistPipelinesFetchResponse.rawValue
 
         let serverId = message.content["serverId"] as? String
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
-            .servers.all.first else {
-            Current.Log.warning("No server available to execute message \(message)")
+        guard let server = assistTargetServer(for: serverId) else {
+            Current.Log.error("Assist pipelines fetch targets unknown server \(serverId ?? "<none>")")
             message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
             return
         }
@@ -777,10 +786,17 @@ extension WatchCommunicatorService {
 
     private func assistAudioData(message: HAWatchConnectivity.ImmediateMessage, data: Data) {
         let serverId = message.content["serverId"] as? String
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
-            .servers.all.first else {
-            let errorMessage = "No server available to execute message \(message.identifier)"
-            Current.Log.warning(errorMessage)
+        guard let server = assistTargetServer(for: serverId) else {
+            Current.Log.error("Assist audio targets unknown server \(serverId ?? "<none>")")
+            // Tell the watch instead of dropping the session on the floor — it routes assistError
+            // to the chat UI, so the user sees a failure rather than an endless spinner.
+            sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistError.rawValue,
+                content: [
+                    "code": "unknown_server",
+                    "message": "Server not found on iPhone",
+                ]
+            ))
             return
         }
 
