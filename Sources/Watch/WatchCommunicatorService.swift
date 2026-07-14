@@ -581,8 +581,22 @@ final class WatchCommunicatorService {
         }
 
         if let triggeredAt = message.content["triggeredAt"] as? TimeInterval {
+            // The threshold is the watch's interactive reply timeout: past it the watch has given
+            // up on this message, shown the user a failure, and the user may already have retried —
+            // firing the original press now would surprise-execute the action (possibly twice).
+            // Under the threshold the watch is still waiting on this reply and executing is correct.
+            //
+            // The comparison uses wall clocks on two devices. Pairing keeps them within a second,
+            // but the age is a skew-sensitive estimate: a clearly negative value (press "from the
+            // future") is proof of skew, so log it — the same skew inflates positive ages and can
+            // spuriously reject a fresh press as stale.
             let age = Current.date().timeIntervalSince1970 - triggeredAt
-            if age > 30 {
+            if age < -5 {
+                Current.Log.warning(
+                    "Magic item press timestamp is \(Int(-age))s in the future; watch/phone clocks are skewed"
+                )
+            }
+            if age > WatchConnectivityManager.interactiveReplyTimeout {
                 Current.Log.warning("Discarding stale magic item press received \(Int(age))s after it was triggered")
                 fail(.staleRequest, "Request expired before reaching the iPhone (\(Int(age))s old)")
                 return
