@@ -30,13 +30,16 @@ struct JinjaEntitySuggestionsView: View {
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(Color.primary)
                             .lineLimit(1)
+                            .truncationMode(.tail)
                         if let subtitle = item.subtitle, !subtitle.isEmpty {
                             Text(verbatim: subtitle)
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
+                                .truncationMode(.tail)
                         }
                     }
+                    .frame(maxWidth: 220, alignment: .leading)
                     .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
                     .padding(.vertical, DesignSystem.Spaces.half)
                     .background(Capsule().fill(Color(uiColor: .tertiarySystemFill)))

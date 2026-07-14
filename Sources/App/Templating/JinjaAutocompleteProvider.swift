@@ -52,6 +52,32 @@ struct JinjaAutocompleteProvider {
         return JinjaTemplateSuggestion(label: entityId, insertion: "states('\(entityId)')")
     }
 
+    /// Known entity ids inside Jinja string literals. These are rendered as tappable inline pills.
+    func entityReferences(in text: String) -> [JinjaEntityReference] {
+        let knownEntityIds = Set(entityIds)
+        guard !knownEntityIds.isEmpty,
+              let regex = try? NSRegularExpression(pattern: "'([^']+)'|\"([^\"]+)\"") else {
+            return []
+        }
+
+        let nsText = text as NSString
+        return regex.matches(in: text, range: NSRange(location: 0, length: nsText.length)).compactMap { match in
+            let singleQuotedRange = match.range(at: 1)
+            let doubleQuotedRange = match.range(at: 2)
+            let entityRange = singleQuotedRange.location != NSNotFound ? singleQuotedRange : doubleQuotedRange
+            guard entityRange.location != NSNotFound else { return nil }
+
+            let entityId = nsText.substring(with: entityRange)
+            guard knownEntityIds.contains(entityId) else { return nil }
+            return JinjaEntityReference(entityId: entityId, range: entityRange)
+        }
+    }
+
+    /// The known entity id range at a tapped editor location, if any.
+    func entityReference(in text: String, at location: Int) -> JinjaEntityReference? {
+        entityReferences(in: text).first { NSLocationInRange(location, $0.range) }
+    }
+
     /// The content of the innermost expression (`{{ …` or `{% …`) still open at the cursor, or nil
     /// when the cursor sits in literal text.
     private func openExpression(in before: String) -> String? {

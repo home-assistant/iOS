@@ -88,4 +88,28 @@ struct JinjaAutocompleteProviderTests {
         #expect(insertion.insertion == "sensor.solar_power")
         #expect(insertion.replacingCount == 4)
     }
+
+    // MARK: - Inline entity references
+
+    @Test func entityReferencesFindKnownEntityIdsInsideQuotes() {
+        let text = "{{ states('sensor.solar_power') }} and {{ is_state(\"light.kitchen\", 'on') }}"
+        let references = provider.entityReferences(in: text)
+
+        #expect(references.map(\.entityId) == ["sensor.solar_power", "light.kitchen"])
+        #expect((text as NSString).substring(with: references[0].range) == "sensor.solar_power")
+        #expect((text as NSString).substring(with: references[1].range) == "light.kitchen")
+    }
+
+    @Test func entityReferencesIgnoreUnknownStrings() {
+        let text = "{{ states('sensor.unknown') }} {{ is_state('light.kitchen', 'on') }}"
+        #expect(provider.entityReferences(in: text).map(\.entityId) == ["light.kitchen"])
+    }
+
+    @Test func entityReferenceAtLocationReturnsTappedEntity() {
+        let text = "{{ states('sensor.solar_power') }} and {{ states('light.kitchen') }}"
+        let location = (text as NSString).range(of: "light.kitchen").location
+
+        #expect(provider.entityReference(in: text, at: location)?.entityId == "light.kitchen")
+        #expect(provider.entityReference(in: text, at: 0) == nil)
+    }
 }

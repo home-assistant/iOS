@@ -4,7 +4,11 @@ import UIKit
 /// bodies primary, with delimiters, keywords, numbers, and strings tinted — a lightweight take on
 /// the CodeMirror Jinja highlighting the Home Assistant frontend uses.
 enum JinjaSyntaxHighlighter {
-    static func highlight(_ text: String, font: UIFont) -> NSAttributedString {
+    static func highlight(
+        _ text: String,
+        font: UIFont,
+        entityReferences: [JinjaEntityReference] = []
+    ) -> NSAttributedString {
         let result = NSMutableAttributedString(string: text, attributes: [
             .font: font,
             .foregroundColor: UIColor.secondaryLabel,
@@ -38,6 +42,15 @@ enum JinjaSyntaxHighlighter {
             apply("\\b\\d+(\\.\\d+)?\\b", color: .systemBlue, in: range)
             apply("'[^']*'|\"[^\"]*\"", color: .systemOrange, in: range)
             apply("\\{\\{|\\}\\}|\\{%|%\\}|\\|", color: .systemPink, in: range)
+        }
+
+        for reference in entityReferences where NSMaxRange(reference.range) <= fullRange.length {
+            result.addAttributes([
+                .backgroundColor: UIColor.tertiarySystemFill,
+                .foregroundColor: UIColor.label,
+                .underlineStyle: NSUnderlineStyle.single.rawValue,
+                .underlineColor: UIColor.haPrimary,
+            ], range: reference.range)
         }
 
         return result

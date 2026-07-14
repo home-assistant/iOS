@@ -162,6 +162,7 @@
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
 		42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
+		42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */; };
 		42BC58202FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */; };
 		42C57CB02FFD4BD5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CAF2FFD4BD5002457D9 /* ObjectMapper */; };
 		42C57CB22FFD4BE5002457D9 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42C57CB12FFD4BE5002457D9 /* ObjectMapper */; };
@@ -613,6 +614,7 @@
 		42B7C1A22F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDesignIconsSFSymbol.test.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
+		42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaEntityReference.swift; sourceTree = "<group>"; };
 		42BC581F2FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAssistDebugSettings.test.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42DF195030065055003B7FA1 /* JinjaTemplateSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JinjaTemplateSuggestion.swift; sourceTree = "<group>"; };
@@ -2215,6 +2217,7 @@
 				42DF97B330066D95003B7FA1 /* JinjaTemplateEditorSheet.swift */,
 				42DF97B530066DAE003B7FA1 /* JinjaTemplateButton.swift */,
 				42DF97B73006721A003B7FA1 /* JinjaEntitySuggestionsView.swift */,
+				42BC36C4300683F700E5EE14 /* JinjaEntityReference.swift */,
 			);
 			path = Templating;
 			sourceTree = "<group>";
@@ -3723,6 +3726,7 @@
 				42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */,
 				42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */,
 				FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */,
+				42BC36C5300683F700E5EE14 /* JinjaEntityReference.swift in Sources */,
 				42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */,
 				42DF97B83006721A003B7FA1 /* JinjaEntitySuggestionsView.swift in Sources */,
 				42DF97B630066DAE003B7FA1 /* JinjaTemplateButton.swift in Sources */,

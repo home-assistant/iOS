@@ -34,6 +34,7 @@ struct JinjaTemplateEditorSheet: View {
     @State private var pendingInsertion: JinjaTemplateSuggestion?
     @State private var showEntityPicker = false
     @State private var pickedEntity: HAAppEntity?
+    @State private var replacingEntityReference: JinjaEntityReference?
 
     init(
         server: Server,
@@ -66,6 +67,17 @@ struct JinjaTemplateEditorSheet: View {
                 suggestion: suggestion,
                 name: entitiesById[suggestion.label]?.name ?? suggestion.label,
                 subtitle: entitySubtitles[suggestion.label]
+            )
+        }
+    }
+
+    private var entityReferences: [JinjaEntityReference] {
+        provider.entityReferences(in: draft).map { reference in
+            JinjaEntityReference(
+                entityId: reference.entityId,
+                range: reference.range,
+                name: entitiesById[reference.entityId]?.name,
+                subtitle: entitiesById[reference.entityId]?.contextualSubtitle
             )
         }
     }
@@ -128,6 +140,12 @@ struct JinjaTemplateEditorSheet: View {
                         text: $draft,
                         cursorLocation: $cursorLocation,
                         pendingInsertion: $pendingInsertion,
+                        entityReferences: entityReferences,
+                        onEntityTap: { reference in
+                            replacingEntityReference = reference
+                            pickedEntity = nil
+                            showEntityPicker = true
+                        },
                         autoFocus: true
                     )
                     .overlay(alignment: .topLeading) {
@@ -146,7 +164,10 @@ struct JinjaTemplateEditorSheet: View {
                         JinjaEntitySuggestionsView(
                             items: suggestionItems,
                             onSelect: { pendingInsertion = $0 },
-                            onMore: { showEntityPicker = true }
+                            onMore: {
+                                replacingEntityReference = nil
+                                showEntityPicker = true
+                            }
                         )
                     }
                 }
@@ -186,7 +207,10 @@ struct JinjaTemplateEditorSheet: View {
                     selectedEntity: $pickedEntity,
                     domainFilter: nil,
                     mode: .list,
-                    initialSearchTerm: provider.quotedPrefix(text: draft, cursorLocation: cursorLocation)
+                    initialSearchTerm: replacingEntityReference?.entityId ?? provider.quotedPrefix(
+                        text: draft,
+                        cursorLocation: cursorLocation
+                    )
                 )
             }
             .navigationViewStyle(.stack)
@@ -195,11 +219,20 @@ struct JinjaTemplateEditorSheet: View {
         .onChange(of: pickedEntity?.id) { _ in
             guard let entity = pickedEntity else { return }
             showEntityPicker = false
-            pendingInsertion = provider.entityInsertion(
-                for: entity.entityId,
-                text: draft,
-                cursorLocation: cursorLocation
-            )
+            if let replacingEntityReference {
+                pendingInsertion = JinjaTemplateSuggestion(
+                    label: entity.entityId,
+                    insertion: entity.entityId,
+                    replacementRange: replacingEntityReference.range
+                )
+            } else {
+                pendingInsertion = provider.entityInsertion(
+                    for: entity.entityId,
+                    text: draft,
+                    cursorLocation: cursorLocation
+                )
+            }
+            replacingEntityReference = nil
             pickedEntity = nil
         }
     }
