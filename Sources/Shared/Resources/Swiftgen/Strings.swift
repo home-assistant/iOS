@@ -5514,6 +5514,8 @@ public enum L10n {
       public enum Builder {
         /// Gauge color
         public static var color: String { return L10n.tr("Localizable", "watch.complications.builder.color") }
+        /// Color from template
+        public static var colorFromTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.color_from_template") }
         /// Colors
         public static var colors: String { return L10n.tr("Localizable", "watch.complications.builder.colors") }
         /// Custom colors
@@ -5534,6 +5536,8 @@ public enum L10n {
         public static var family: String { return L10n.tr("Localizable", "watch.complications.builder.family") }
         /// Gauge range (optional)
         public static var gaugeRange: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_range") }
+        /// Gauge template
+        public static var gaugeTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.gauge_template") }
         /// Icon
         public static var icon: String { return L10n.tr("Localizable", "watch.complications.builder.icon") }
         /// Icon color
@@ -5586,12 +5590,34 @@ public enum L10n {
         public static var sourceCustom: String { return L10n.tr("Localizable", "watch.complications.builder.source_custom") }
         /// Entity
         public static var sourceEntity: String { return L10n.tr("Localizable", "watch.complications.builder.source_entity") }
+        /// Display entity state
+        public static var sourceEntitySubtitle: String { return L10n.tr("Localizable", "watch.complications.builder.source_entity_subtitle") }
+        /// Template
+        public static var sourceTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.source_template") }
+        /// Admin role required
+        public static var sourceTemplateSubtitle: String { return L10n.tr("Localizable", "watch.complications.builder.source_template_subtitle") }
         /// Style
         public static var style: String { return L10n.tr("Localizable", "watch.complications.builder.style") }
+        /// Color
+        public static var templateColor: String { return L10n.tr("Localizable", "watch.complications.builder.template_color") }
+        /// Evaluating template…
+        public static var templateEvaluating: String { return L10n.tr("Localizable", "watch.complications.builder.template_evaluating") }
+        /// Result is not a hex color (e.g. #FF9500)
+        public static var templateInvalidHex: String { return L10n.tr("Localizable", "watch.complications.builder.template_invalid_hex") }
+        /// The server didn't return a result. Check the template for errors.
+        public static var templateNoResult: String { return L10n.tr("Localizable", "watch.complications.builder.template_no_result") }
+        /// Result
+        public static var templateResult: String { return L10n.tr("Localizable", "watch.complications.builder.template_result") }
+        /// The result appears here once the template is evaluated.
+        public static var templateResultPlaceholder: String { return L10n.tr("Localizable", "watch.complications.builder.template_result_placeholder") }
+        /// More
+        public static var templateSuggestionsMore: String { return L10n.tr("Localizable", "watch.complications.builder.template_suggestions_more") }
         /// Templates
         public static var templates: String { return L10n.tr("Localizable", "watch.complications.builder.templates") }
         /// Text color
         public static var textColor: String { return L10n.tr("Localizable", "watch.complications.builder.text_color") }
+        /// Text template
+        public static var textTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.text_template") }
         /// Complications
         public static var title: String { return L10n.tr("Localizable", "watch.complications.builder.title") }
         /// Unit

@@ -54,10 +54,11 @@ final class EntityPickerViewModel: ObservableObject {
         selectedGrouping = .area
     }
 
-    init(domainFilter: [Domain]?, selectedServerId: String?) {
+    init(domainFilter: [Domain]?, selectedServerId: String?, initialSearchTerm: String? = nil) {
         self.domainFilter = domainFilter
         self.selectedServerId = selectedServerId
         self.selectedDomainFilter = nil
+        self.searchTerm = initialSearchTerm ?? ""
         setupFiltering()
     }
 

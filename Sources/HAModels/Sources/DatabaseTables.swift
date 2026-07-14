@@ -226,6 +226,9 @@ public enum DatabaseTables {
         case showMax
         case customTextTemplate
         case customGaugeTemplate
+        case customGaugeColorTemplate
+        case customIconColorTemplate
+        case customTextColorTemplate
         case sortOrder
         case families
         case isCustomized

@@ -76,6 +76,12 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     // Custom-template kind
     public var customTextTemplate: String?
     public var customGaugeTemplate: String?
+    /// Optional templates rendering each customizable color as a hex string ("#RRGGBB"). One per
+    /// static color picker (gauge tint, icon, text); a valid render overrides that static color on
+    /// every size, an invalid render keeps it.
+    public var customGaugeColorTemplate: String?
+    public var customIconColorTemplate: String?
+    public var customTextColorTemplate: String?
 
     public var sortOrder: Int
 
@@ -142,6 +148,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         case gaugeAttribute, valueAttribute, valuePrecision, unitOverride, gaugeMin, gaugeMax
         case showValue, showUnit, showWhenInactive, showMin, showMax
         case customTextTemplate, customGaugeTemplate, sortOrder, families, isCustomized
+        case customGaugeColorTemplate, customIconColorTemplate, customTextColorTemplate
     }
 
     public init(
@@ -167,6 +174,9 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         showMax: Bool? = nil,
         customTextTemplate: String? = nil,
         customGaugeTemplate: String? = nil,
+        customGaugeColorTemplate: String? = nil,
+        customIconColorTemplate: String? = nil,
+        customTextColorTemplate: String? = nil,
         sortOrder: Int = 0,
         families: [String: FamilyOptions]? = nil,
         isCustomized: Bool? = nil
@@ -193,6 +203,9 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         self.showMax = showMax
         self.customTextTemplate = customTextTemplate
         self.customGaugeTemplate = customGaugeTemplate
+        self.customGaugeColorTemplate = customGaugeColorTemplate
+        self.customIconColorTemplate = customIconColorTemplate
+        self.customTextColorTemplate = customTextColorTemplate
         self.sortOrder = sortOrder
         self.families = families
         self.isCustomized = isCustomized
@@ -303,6 +316,16 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// to visible when unset.
     public func showsWhenInactive() -> Bool {
         showWhenInactive ?? true
+    }
+
+    /// Normalizes a color-template render to a "#RRGGBB" / "#RRGGBBAA" hex string, or nil when the
+    /// output isn't a valid hex color. Tolerates whitespace, quotes, and a missing leading "#".
+    public static func normalizedHexColor(from rendered: String) -> String? {
+        var value = rendered.trimmingCharacters(in: .whitespacesAndNewlines)
+        value = value.trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
+        if value.hasPrefix("#") { value.removeFirst() }
+        guard [6, 8].contains(value.count), value.allSatisfy(\.isHexDigit) else { return nil }
+        return "#\(value.uppercased())"
     }
 
     /// The gauge style for a family (circular only); defaults to `.open`.
